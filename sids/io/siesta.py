@@ -1,7 +1,6 @@
 """
 Sile object for reading/writing SIESTA binary files
 """
-
 from __future__ import print_function
 
 # Import sile objects

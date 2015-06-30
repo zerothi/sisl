@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/zerothi/sids.svg?branch=master)](https://travis-ci.org/zerothi/sids)
 
-The single incentive for dense simulation toolbox provides a simple
+The system incentive for dense simulation toolbox provides a simple
 toolbox for manipulating, constructing and creating tight-binding matrices 
 in a standard and uniform way.
 
