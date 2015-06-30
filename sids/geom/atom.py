@@ -5,7 +5,7 @@ from __future__ import print_function, division
 
 # To check for integers
 from numbers import Integral
-from ._help import array_fill_repeat
+from sids.geom._help import array_fill_repeat
 
 import numpy as np
 
@@ -489,4 +489,3 @@ if __name__ == "__main__":
     D = Atom[{'Z':'H','mass':2.001,'tag':'Deuterium'}]
     print('Default: \n\t' + str(D))
 
-        

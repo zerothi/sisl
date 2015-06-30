@@ -4,13 +4,13 @@ IO imports
 from __future__ import print_function, division
 from os.path import splitext as _ospsplitext
 
-from .sile import *
+from sids.io.sile import *
 
 # Import the different Sile objects
 # enabling the actual print-out
-from .fdf import *
-from .xyz import *
-from .siesta import *
+from sids.io.fdf import *
+from sids.io.xyz import *
+from sids.io.siesta import *
 
 # This is a file chooser which from the file-ending tries to 
 # determine which kind of file we are dealing with.

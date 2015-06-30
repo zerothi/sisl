@@ -4,8 +4,8 @@ Helper functions for returning special geometries often encountered
 from __future__ import print_function, division
 
 # The atom model
-from .atom import Atom
-from .geometry import Geometry
+from sids.geom.atom import Atom
+from sids.geom.geometry import Geometry
 
 import numpy as np
 

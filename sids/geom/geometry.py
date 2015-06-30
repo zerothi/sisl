@@ -7,11 +7,11 @@ from __future__ import print_function, division
 from numbers import Integral
 
 # Helpers
-from ._help import array_fill_repeat
+from sids.geom._help import array_fill_repeat
 
 # The atom model
-from .atom import Atom
-from .quaternion import Quaternion
+from sids.geom.atom import Atom
+from sids.geom.quaternion import Quaternion
 
 import numpy as np
 

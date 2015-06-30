@@ -5,7 +5,7 @@ Sile object for reading/writing FDF files
 from __future__ import print_function
 
 # Import sile objects
-from .sile import *
+from sids.io.sile import *
 
 # Import the geometry object
 from sids.geom import Geometry, Atom

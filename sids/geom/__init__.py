@@ -8,9 +8,9 @@ It also enables the rotation of the coordinates using quaternions
 """
 
 # Easy import all sub-classes
-from .atom import *
-from .geometry import *
-from .quaternion import *
+from sids.geom.atom import *
+from sids.geom.geometry import *
+from sids.geom.quaternion import *
 
 # Import default creation routines
-from .default import *
+from sids.geom.default import *
