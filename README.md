@@ -34,7 +34,7 @@ If you have a fix please consider adding a [pull request][pr].
 
 ## License ##
 
-The flook license is [LGPL][lgpl], please see the LICENSE file.
+The sids license is [LGPL][lgpl], please see the LICENSE file.
 
 
 <!---
