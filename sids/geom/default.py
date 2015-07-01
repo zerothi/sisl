@@ -15,11 +15,11 @@ def graphene(alat=1.42,orbs=1):
     """
     sq3h  = 3.**.5 * 0.5
     C = Atom(Z=6,R=alat * 1.01,orbs=orbs)
-    gr = Geometry(xa=np.array([[ 0., 0., 0.],
-                               [ 1., 0., 0.]],np.float64) * alat,
-                  cell=np.array([[1.5, sq3h,  0.],
+    gr = Geometry(cell=np.array([[1.5, sq3h,  0.],
                                  [1.5,-sq3h,  0.],
                                  [ 0.,   0., 10.]],np.float64) * alat,
+                  xyz=np.array([[ 0., 0., 0.],
+                               [ 1., 0., 0.]],np.float64) * alat,
                   atoms = C, nsc = [3,3,1])
     return gr
 

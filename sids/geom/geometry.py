@@ -100,7 +100,7 @@ class Geometry(object):
         self.lasto = np.cumsum(lasto)
 
         # Set number of super-cells
-        self.set_supercells(nsc=nsc)
+        self.set_supercell(nsc=nsc)
 
 
     def __len__(self):
@@ -114,7 +114,7 @@ class Geometry(object):
         ObjSile.write_geom(self)
 
 
-    def set_supercells(self,nsc=None,a=None,b=None,c=None):
+    def set_supercell(self,nsc=None,a=None,b=None,c=None):
         """ Sets the number of supercells in the 3 different cell directions
         nsc: [3], integer, optional
            number of supercells in each direction
@@ -219,7 +219,7 @@ class Geometry(object):
         
         >>> for ias, idxs in Geometry.iter():
         >>>    for ia in ias:
-        >>>        idx_a = dev.close_all(ia, dR = dR, idx = idxs)
+        >>>        idx_a = dev.close(ia, dR = dR, idx = idxs)
 
         This iterator is intended for systems with more than 1000 atoms.
 
@@ -254,7 +254,7 @@ class Geometry(object):
             # we want to create the index based stuff on
             
             # get all elements within two radii
-            all_idx = self.close_all(idx, dR = dR )
+            all_idx = self.close(idx, dR = dR )
 
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0])
@@ -684,7 +684,7 @@ class Geometry(object):
         return ret[0]
 
 
-    def close_all(self,xyz_ia,dR=None,idx=None,ret_coord=False,ret_dist=False):
+    def close(self,xyz_ia,dR=None,idx=None,ret_coord=False,ret_dist=False):
         """
         Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
 
@@ -758,6 +758,9 @@ class Geometry(object):
         if ret_special: return ret
         return ret[0]
 
+    # Hence ``close_all`` has exact meaning
+    # but ``close`` is shorten and retains meaning
+    close_all = close
 
     def a2o(self,ia):
         """
@@ -867,26 +870,26 @@ if __name__ == '__main__':
     # Print all closest atoms
     print('Atom')
     for sc in [1,3]:
-        dia.set_supercells(nsc=[sc]*3)
-        print(dia.close_all(0,dia.dR))
+        dia.set_supercell(nsc=[sc]*3)
+        print(dia.close(0,dia.dR))
 
     # Print all closest atoms and distances
     print('\nAtom and distance')
     for sc in [1,3]:
-        dia.set_supercells(nsc=[sc]*3)
-        print(dia.close_all(0,dia.dR,ret_dist=True))
+        dia.set_supercell(nsc=[sc]*3)
+        print(dia.close(0,dia.dR,ret_dist=True))
 
     # Print all closest atoms and coords
     print('\nAtom and coords')
     for sc in [1,3]:
-        dia.set_supercells(nsc=[sc]*3)
-        print(dia.close_all(0,dia.dR,ret_coord=True))
+        dia.set_supercell(nsc=[sc]*3)
+        print(dia.close(0,dia.dR,ret_coord=True))
 
     # Print all closest atoms, coords and distances
     print('\nAtom and coords and distances')
     for sc in [1,3]:
-        dia.set_supercells(nsc=[sc]*3)
-        print(dia.close_all(0,dia.dR,ret_coord=True,ret_dist=True))
+        dia.set_supercell(nsc=[sc]*3)
+        print(dia.close(0,dia.dR,ret_coord=True,ret_dist=True))
     print("\n")
 
 
