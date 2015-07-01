@@ -130,15 +130,21 @@ class TightBinding(object):
             # if no new values are left we return immediately
             if lj == 0: return
 
-        # As nnzs is deleted when the object has been finalized 
-        # this line should error out in case one tries to
-        # alter the sparsity pattern after finalization
-        m = self.ptr[i+1] - ptr
-        if m < ncol + lj:
-            print('Setting illegal number of parameters in sparsity pattern')
-            raise ValueError('Have you changed the sparsity pattern while editing '+
-                             'the TB parameters? This is not allowed.\n'+
-                             'Try resetting the model with larger connectivity')
+        while self.ptr[i+1] - ptr < ncol + lj:
+            # Ensure that it is not-set as finalized
+            # There is no need to set it all the time.
+            # Simply because the first call to finalize 
+            # will reduce the sparsity pattern, which 
+            # on first expansion calls this part.
+            self._finalized = False
+
+            # Expand size of the sparsity pattern
+            # We add 10 new elements on each extension
+            # This may be too reductionists, however, 
+            # it should happen rarely
+            self.ptr[i+1:] += 10
+            self.col = np.insert(self.col,ptr+ncol,np.empty([10],np.int))
+            self._TB = np.insert(self._TB,ptr+ncol,np.empty([10,2],np.int),axis=0)
 
         # Step to the placement of the new values
         ptr += ncol
@@ -152,7 +158,7 @@ class TightBinding(object):
 
     ############# DONE creating easy overrides #################
 
-    def reset(self,dtype=np.float,nc=None):
+    def reset(self,nc=None,dtype=np.float):
         """
         The sparsity pattern is cleaned and every thing 
         is reset. 
@@ -320,8 +326,19 @@ if __name__ == "__main__":
     print('H\n',tb.tocsr(k=[.25,.25,0])[0])
 
 
+    print('\nCheck expansion')
+    tb = TightBinding(gr)
+    tb.reset(1) # force only one connection (this should force expansion)
+    for ia in tb.geom:
+        idx_a = tb.close_all(ia,dR=dR)
+        tb[ia,idx_a[0]] = on
+        tb[ia,idx_a[1]] = nn
+    print(len(tb))
+    print('H\n',tb.tocsr()[0])
+    print('H\n',tb.tocsr(k=[.25,.25,0])[0])
+
     # Lets try and create a huge sample
-    print('Starting time... '+str(datetime.datetime.now().time()))
+    print('\n\nStarting time... '+str(datetime.datetime.now().time()))
     tb = TightBinding(gr.tile(41,0).tile(41,1))
     for ias, idxs in tb.iter_block(13):
         for ia in ias:
@@ -330,3 +347,5 @@ if __name__ == "__main__":
             tb[ia,idx_a[1]] = nn
     print(len(tb))
     print('Ending time... '+str(datetime.datetime.now().time()))
+
+    
