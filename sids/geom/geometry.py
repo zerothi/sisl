@@ -15,6 +15,8 @@ from sids.geom.quaternion import Quaternion
 
 import numpy as np
 
+__all__ = ['Geometry']
+
 class Geometry(object):
     """
     Geometry object handling atomic coordinates in a supercell
@@ -141,9 +143,9 @@ class Geometry(object):
 
         n = self.nsc
         # We define the following ones like this:
-        x = range(-n[0]//2+1,n[0]//2+1)
-        y = range(-n[1]//2+1,n[1]//2+1)
-        z = range(-n[2]//2+1,n[2]//2+1)
+        i = n[0] // 2 ; x = range(-i,i+1)
+        i = n[1] // 2 ; y = range(-i,i+1)
+        i = n[2] // 2 ; z = range(-i,i+1)
         i = 0
         for iz in z:
             for iy in y:
@@ -326,7 +328,7 @@ class Geometry(object):
         ----------
         axis  : integer
            the axis that will be cut
-        seps  : (2), integer, optional
+        seps  : integer, optional
            number of times the structure will be cut.
         """
         if self.na % seps != 0:
@@ -798,6 +800,11 @@ class Geometry(object):
         """ Returns atoms from super-cell indices to unit-cell indices (removing dublicates) """
         return np.unique(atoms % self.na)
     asc2uc = sc2uc
+
+
+    def osc2uc(self,orbs):
+        """ Returns orbitals from super-cell indices to unit-cell indices (removing dublicates) """
+        return np.unique(orbs % self.no)
 
 
     def sc_index(self,isc):

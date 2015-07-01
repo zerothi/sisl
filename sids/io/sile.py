@@ -113,18 +113,16 @@ class NCSile(object):
         """ Opens the output file and returns it self """
         # We do the import here
         try:
-            import netCDF4 as nc
+            import netCDF4
         except:
             raise ImportError("Could not import required module netCDF4, "+
                               "please add netCDF4 to your path and re-run.")
-        self.fh = nc.Dataset(self.file,self._mode,format='NETCDF4')
+        self.fh = netCDF4.Dataset(self.file,self._mode,format='NETCDF4')
         return self
 
     def __getattr__(self,attr):
         """ Bypass attributes to directly interact with the NetCDF model """
-        if hasattr(self,'fh'):
-            return getattr(self.fh,attr)
-
+        return getattr(self.fh,attr,None)
 
     def __exit__(self, type, value, traceback):
         self.fh.close()
@@ -132,12 +130,29 @@ class NCSile(object):
         del self.fh
         return False
 
+    @staticmethod
+    def _crt_grp(n,name):
+        if name in n.groups: return n.groups[name]
+        return n.createGroup(name)
+
+    @staticmethod
+    def _crt_dim(n,name,l):
+        if name in n.dimensions: return
+        n.createDimension(name,l)
+
+    @staticmethod
+    def _crt_var(n,name,*args,**kwargs):
+        if name in n.variables: return n.variables[name]
+        return n.createVariable(name,*args,**kwargs)
+
 
 class SileError(IOError):
     """ Define an error object related to the Sile objects """
+
     def __init__(self, value,obj=None):
         self.value = value
         self.obj = obj
+
     def __str__(self):
         s = ''
         if self.obj:

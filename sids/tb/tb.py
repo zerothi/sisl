@@ -3,12 +3,15 @@ Tight-binding class to create tight-binding models.
 """
 from __future__ import print_function, division
 
+import warnings
 from numbers import Integral
 
 # The atom model
 from sids.geom import Atom, Geometry, Quaternion
 
 import numpy as np
+
+__all__ = ['TightBinding']
 
 class TightBinding(object):
     """
@@ -23,7 +26,12 @@ class TightBinding(object):
     parameter set.
     """
 
-    def __init__(self,geom):
+    # The energy conversion factor
+    E = 13.60580
+    # The length conversion factor
+    Length = 0.529177
+
+    def __init__(self,geom,*args,**kwargs):
         """Create tight-binding model from geometry
 
         Initializes a tight-binding model using the ``geom`` object
@@ -31,7 +39,7 @@ class TightBinding(object):
         """
         self.geom = geom
 
-        self.reset()
+        self.reset(**kwargs)
 
     ######### Definitions of overrides ############
     def __len__(self):
@@ -149,7 +157,7 @@ class TightBinding(object):
         # Step to the placement of the new values
         ptr += ncol
         # set current value
-        self.col[ptr:ptr+lj]  = jj
+        self.col[ptr:ptr+lj]   = jj
         self._TB[ptr:ptr+lj,:] = v
         # Append the new columns
         self.ncol[i] += lj
@@ -299,6 +307,137 @@ class TightBinding(object):
                 S += Sfull[:,si*self.no:(si+1)*self.no] * phase
             del Hfull, Sfull
             return (H,S)
+
+    def cut(self,seps,axis):
+        """ Cuts the tight-binding model into different parts.
+
+        Creates a tight-binding model by retaining the parameters
+        for the cut-out region, possibly creating a super-cell.
+
+        Parameters
+        ----------
+        seps  : integer, optional
+           number of times the structure will be cut.
+        axis  : integer
+           the axis that will be cut
+        """
+        # Create new geometry
+        with warnings.catch_warnings(record=True) as w:
+            # Cause all warnings to always be triggered.
+            warnings.simplefilter("always")
+            # Create new cut geometry
+            geom = self.geom.cut(seps,axis)
+            # Check whether the warning exists
+            if len(w) > 0:
+                if issubclass(w[-1].category,UserWarning):
+                    raise ValueError('You cannot cut a tight-binding model '+
+                                     'if the structure cannot be recreated using tiling constructs.')
+        
+        # Now we need to re-create the tight-binding model
+        H, S = self.tocsr()
+        # they are created similarly, hence the following
+        # should keep their order
+
+        # First we need to figure out how long the interaction range is
+        # in the cut-direction
+        # We initialize to be the same as the parent direction
+        nsc = self.nsc // 2
+        nsc[axis] = 0 # we count the new direction
+        isc = np.zeros([3],np.int)
+        isc[axis] -= 1
+        out = False
+        while not out:
+            # Get supercell index
+            isc[axis] += 1
+            try:
+                idx = self.sc_idx(isc)
+            except: 
+                break
+
+            # Figure out if the Hamiltonian has interactions
+            # to ``isc``
+            sub = H[0:geom.no,idx*self.no:(idx+1)*self.no].indices[:]
+            if len(sub) == 0: break
+
+            c_max = np.amax(sub)
+            # Count the number of cells it interacts with
+            i = (c_max % self.no) // geom.no
+            ic = idx * self.no
+            for j in range(i):
+                idx = ic + geom.no * j
+                # We need to ensure that every "in between" index exists
+                # if it does not we discard those indices
+                if len(np.where( 
+                        np.logical_and(idx <= sub, 
+                                       sub < idx + geom.no)
+                        )[0]) == 0:
+                    i = j - 1
+                    out = True
+                    break
+            nsc[axis] = isc[axis] * seps + i
+            
+            if out:
+                warnings.warn('Cut the connection at {0} in direction {1}.'.format(nsc[axis],axis), UserWarning) 
+            
+        # Update number of super-cells
+        geom.set_supercell(nsc=nsc)
+
+        # Now we have a correct geometry, and 
+        # we are now ready to create the sparsity pattern
+        # Reduce the sparsity pattern, first create the new one
+        tb = self.__class__(geom,nc=np.amax(self.ncol))
+
+        def sco2sco(M,o,m,axis,seps):
+            # Converts an o from M to m
+            isc = np.copy( M.o2isc(o) )
+            isc[axis] *= seps
+            # Count cell-offset
+            i = (o % M.no) // m.no
+            isc[axis] += i
+            # find the equivalent cell in m
+            try:
+                # If a fail happens it is due to a discarded
+                # interaction across a non-interacting region
+                return ( o % m.no, 
+                        m.sc_idx( isc) * m.no, 
+                        m.sc_idx(-isc) * m.no)
+            except:
+                return None, None, None
+
+        # Copy elements
+        for jo in xrange(geom.no):
+
+            # make smaller cut
+            sH = H[jo,:]
+            sS = S[jo,:]
+
+            for io, iH, iS in zip(sH.indices,sH.data,sS.data):
+                # Get the equivalent orbital in the smaller cell
+                o, ofp, ofm = sco2sco(self.geom,io,tb.geom,axis,seps)
+                if o is None: continue
+                tb[jo,o+ofp] = iH, iS
+                tb[o,jo+ofm] = iH, iS
+
+        return tb
+
+    @classmethod
+    def sp2tb(cls,geom,H,S):
+        """ Returns a tight-binding model from a preset H, S and Geometry """
+
+        # Calculate number of connections
+        nc = 0
+        H = H.tocsr()
+        for i in range(geom.no):
+            nc = max(nc,H[i,:].getnnz())
+        H = H.tocoo()
+        
+        tb = cls(geom,nc=nc)
+
+        # Copy data to the model
+        for jo,io,h in zip(H.row,H.col,H.data):
+            tb[jo,io] = (h,S[jo,io])
+
+        return tb
 
         
 if __name__ == "__main__":

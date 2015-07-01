@@ -40,12 +40,13 @@ class GULPSile(NCSile):
         
         Z = []
         xyz = []
-        l = self.readline()
-        while l[0] != '-':
+        while True:
+            l = self.readline()
+            if l[0] == '-': break
+
             ls = l.split()
             Z.append({'Z':ls[1],'orbs':3})
             xyz.append([float(f) for f in ls[3:6]])
-            l = self.readline()
 
         # Convert to array
         xyz = np.array(xyz,np.float)
@@ -61,6 +62,54 @@ class GULPSile(NCSile):
 
         # Return the geometry
         return Geometry(cell,xyz,atoms=Atom[Z])
+
+    def read_tb(self,**kwargs):
+        """ Returns a GULP tight-binding model for the output of GULP """
+        if not hasattr(self,'fh'):
+            # The file-handle has not been opened
+            with self:
+                return self.read_tb(**kwargs)
+
+        geom = self.read_geom(**kwargs)
+
+        # Easier for creation of the sparsity pattern
+        from scipy.sparse import lil_matrix, diags
+
+        dyn = lil_matrix( (geom.no,geom.no) ,dtype = kwargs.get('dtype',np.float) )
+        
+        self.step_to('Real Dynamical matrix')
+
+        # skip 1 line
+        self.readline()
+        
+        no = geom.no
+        i = 0 ; j = 0
+        while True:
+            l = self.readline()
+            if len(l.strip()) == 0: break
+
+            ls = [float(f) for f in l.split()]
+            # add the values (12 values == 3*4)
+            for k in range(4):
+                dyn[i,j  ] = ls[k*3  ]
+                dyn[i,j+1] = ls[k*3+1]
+                dyn[i,j+2] = ls[k*3+2]
+                j += 3
+                if j >= no: 
+                    i += 1
+                    j = 0
+                    if i >= no: break
+
+        # Convert the GULP data to standard units
+        dyn = dyn.tocoo()
+        dyn.data[:] *= ( 521.469 * 1.23981e-4 ) ** 2
+
+        # Create "fake" overlap matrix
+        S = diags([1.],[0],shape=dyn.shape)
+        S = S.tocsr()
+
+        return PhononTightBinding.sp2tb(geom,dyn,S)
+
 
 if __name__ == "__main__":
     pass

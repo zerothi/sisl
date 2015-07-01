@@ -9,6 +9,8 @@ from sids.geom._help import array_fill_repeat
 
 import numpy as np
 
+__all__ = ['PeriodicTable','Atom']
+
 class PeriodicTable(object):
     """ 
     Very basic periodic table, not very pretty as it
