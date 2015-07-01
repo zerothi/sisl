@@ -14,8 +14,9 @@ python:
    - 3.4
 
 before_install:
-   - "pip install -r requirements.txt"
-   - "pip install nose"
+   - sudo apt-get install libnetcdf libnetcdf-dev
+   - pip install -r requirements.txt
+   - pip install nose
 
 install:
    - pip install .
