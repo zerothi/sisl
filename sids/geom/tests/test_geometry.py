@@ -6,6 +6,7 @@ from nose.tools import *
 
 from sids.geom import Geometry, Atom
 
+import math as m
 import numpy as np
 
 
@@ -78,4 +79,14 @@ class TestGeometry(object):
         nsc = np.copy(self.g.nsc)
         self.g.set_supercell([0,1,0])
         assert_true( np.allclose([1,1,1],self.g.nsc) )
+
+    def test_rotation1(self):
+        rot = self.g.copy()
+        rot.rotate(m.pi,[0,0,1])
+        rot.cell[2,2] *= -1
+        assert_true( np.allclose(-rot.cell,self.g.cell) )
+
+        rot.rotate(m.pi,[0,0,1])
+        rot.cell[2,2] *= -1
+        assert_true( np.allclose(rot.cell,self.g.cell) )
 
