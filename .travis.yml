@@ -1,0 +1,24 @@
+language: python
+
+notifications:
+   email:
+      recipients:
+         - nickpapior@gmail.com
+      on_failure: always
+      on_success: change
+
+python:
+   - 2.6
+   - 2.7
+   - 3.3
+   - 3.4
+
+before_install:
+   - "pip install -r requirements.txt"
+   - "pip install nose"
+
+install:
+   - pip install .
+
+script:
+   - nosetests --exe sids

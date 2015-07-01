@@ -502,8 +502,9 @@ class Geometry(object):
             # Single atom displacements
             # First add the basic atomic coordinate,
             # then add displacement for each repetition.
-            xa[ja:ja+reps,:] = self.xyz[ia,:][None,:] + dx[:,:]
-            Z[ja:ja+reps] = self.atoms[ia]
+            xyz[ja:ja+reps,:] = self.xyz[ia,:][None,:] + dx[:,:]
+            for i in xrange(reps):
+                atoms[ja+i] = self.atoms[ia]
             ja += reps
         # Create the geometry and return it
         return self.__class__(cell,xyz,atoms=atoms,nsc=np.copy(self.nsc))
