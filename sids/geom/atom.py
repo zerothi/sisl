@@ -3,6 +3,9 @@ Class for retaining information about a single atom
 """
 from __future__ import print_function, division
 
+# We need this for python3 support PY3
+from six import with_metaclass
+
 # To check for integers
 from numbers import Integral
 from sids.geom._help import array_fill_repeat
@@ -403,8 +406,9 @@ class PeriodicTable(object):
 # faster look up
 _ptbl = PeriodicTable()
 
+
 class AtomMeta(type):
-    def __getitem__(self,key):
+    def __getitem__(cls,key):
         """ Create a new atom object """
         if isinstance(key,Atom):
             # if the key already is an atomic object
@@ -413,17 +417,25 @@ class AtomMeta(type):
         if isinstance(key,dict):
             # The key is a dictionary, hence
             # we can return the atom directly
-            return Atom(**key)
+            return cls(**key)
         if isinstance(key,list):
             # The key is a list, 
             # we need to create a list of atoms
-            atm = [Atom[k] for k in key]
+            atm = [cls[k] for k in key]
             return atm
+        if isinstance(key,cls):
+            # if the key already is an atomic object
+            # return it
+            return key
         # Index Z based
-        return Atom(Z=key)
+        return cls(key)
 
 
-class Atom(object):
+# Note the with_metaclass which is required for python3 support.
+# The designation of metaclass in python3 is actually:
+#   class ...(..., metaclass=MetaClass)
+# This below construct handles both python2 and python3 cases
+class Atom(with_metaclass(AtomMeta,object)):
     """
     Atomic object to handle atomic mass, name etc.
     
@@ -483,9 +495,6 @@ class Atom(object):
         same &= a.mass == b.mass
         same &= a.tag == b.tag
         return same
-
-    # Enables easily to create new atoms
-    __metaclass__ = AtomMeta
 
 
 if __name__ == "__main__":

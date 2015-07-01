@@ -276,7 +276,7 @@ class TBSile(Sile):
                     #  :(, hence this actually constructs the full matrix
                     # Therefore we do it on a row basis, to limit memory
                     # requirements
-                    for j in xrange(geom.no):
+                    for j in range(geom.no):
                         H[j,o:o+geom.no] = 0.
                         H.eliminate_zeros()
                         S[j,o:o+geom.no] = 0.
@@ -284,12 +284,12 @@ class TBSile(Sile):
             o = geom.sc_index(np.zeros([3],np.int))
             # Get upper-triangular matrix of the unit-cell H and S
             ut = triu(H[:,o:o+geom.no],k=0).tocsr()
-            for j in xrange(geom.no):
+            for j in range(geom.no):
                 H[j,o:o+geom.no] = 0.
                 H[j,o:o+geom.no] = ut[j,:]
                 H.eliminate_zeros()
             ut = triu(S[:,o:o+geom.no],k=0).tocsr()
-            for j in xrange(geom.no):
+            for j in range(geom.no):
                 S[j,o:o+geom.no] = 0.
                 S[j,o:o+geom.no] = ut[j,:]
                 S.eliminate_zeros()

@@ -64,7 +64,7 @@ class XYZSile(Sile):
             cell.shape = (3,3)
         sp = [None] * na
         xyz = np.empty([na,3],np.float)
-        for ia in xrange(na):
+        for ia in range(na):
             l = self.readline().split()
             sp[ia] = l.pop(0)
             xyz[ia,:] = [float(k) for k in l[:3]]

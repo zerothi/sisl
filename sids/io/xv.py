@@ -61,7 +61,7 @@ class XVSile(Sile):
         atms = [None] * na
         xyz = np.empty([na,3],np.float)
         line = np.empty(8,np.float)
-        for ia in xrange(na):
+        for ia in range(na):
             line[:] = np.fromstring(self.readline(),dtype=float,sep = ' ')[0:8]
             atms[ia] = Atom[int(line[1])]
             xyz[ia,:] = line[2:5]

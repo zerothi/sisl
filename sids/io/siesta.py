@@ -54,7 +54,7 @@ class SIESTASile(NCSile):
                 atm['orbs'] = int(bg.groups[basis].Number_of_orbitals)
                 spc[ID-1] = Atom[atm]
             atoms = [None] * len(xyz)
-            for ia in xrange(len(xyz)):
+            for ia in range(len(xyz)):
                 atoms[ia] = spc[b_idx[ia]-1]
         else:
             atoms = Atom[1]

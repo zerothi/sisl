@@ -13,10 +13,13 @@ from sids.geom._help import array_fill_repeat
 from sids.geom.atom import Atom
 from sids.geom.quaternion import Quaternion
 
-import numpy as np
+import numpy as np, sys
 
 __all__ = ['Geometry']
 
+
+_H = Atom['H']
+_nsc = np.array([1]*3,np.int)
 
 class Geometry(object):
     """
@@ -74,7 +77,7 @@ class Geometry(object):
     # The length conversion factor
     Length = 0.529177
 
-    def __init__(self,cell,xyz,atoms=Atom['H'],nsc=np.array([1,1,1],np.int)):
+    def __init__(self,cell,xyz,atoms=_H,nsc=_nsc):
         self.cell = np.asarray(cell)
         self.xyz = np.asarray(xyz)
         self.xyz.shape = (-1,3)
@@ -82,9 +85,9 @@ class Geometry(object):
 
         # Correct the atoms input to Atom
         if isinstance(atoms,list):
-            if isinstance(atoms[0],basestring):
+            if isinstance(atoms[0],str):
                 atoms = [Atom[a] for a in atoms]
-        elif isinstance(atoms,basestring):
+        elif isinstance(atoms,str):
             atoms = Atom[atoms]
 
         # Create atom objects
@@ -200,10 +203,10 @@ class Geometry(object):
 
         This iterator is the same as:
 
-          >>> for ia in xrange(len(self)):
+          >>> for ia in range(len(self)):
           >>>    <do something>
         """
-        for ia in xrange(len(self)):
+        for ia in range(len(self)):
             yield ia
 
     __iter__ = iter_linear
@@ -498,12 +501,12 @@ class Geometry(object):
         dx = np.dot(np.arange(reps)[:,None],self.cell[axis,:][None,:])
         # Start the repetition
         ja = 0
-        for ia in xrange(self.na):
+        for ia in range(self.na):
             # Single atom displacements
             # First add the basic atomic coordinate,
             # then add displacement for each repetition.
             xyz[ja:ja+reps,:] = self.xyz[ia,:][None,:] + dx[:,:]
-            for i in xrange(reps):
+            for i in range(reps):
                 atoms[ja+i] = self.atoms[ia]
             ja += reps
         # Create the geometry and return it
@@ -617,7 +620,7 @@ class Geometry(object):
         else:
             ddR = np.array([dR],np.float).flatten()
 
-        if isinstance(xyz_ia,(int,np.int,np.int16,np.int32)):
+        if isinstance(xyz_ia,Integral):
             off = self.xyz[xyz_ia,:]
             # Get atomic coordinate in principal cell
             dxa = self.coords(isc=isc,idx=idx) - off[None,:]
@@ -737,7 +740,7 @@ class Geometry(object):
             i += 1
             ret.append(None)
         ret_special = ret_coord or ret_dist
-        for s in xrange(np.prod(self.nsc)):
+        for s in range(np.prod(self.nsc)):
             na = self.na * s
             sret = self.close_sc(xyz_ia,self.isc_off[s,:],dR=dR,idx=idx,ret_coord=ret_coord,ret_dist=ret_dist)
             if not ret_special: sret = (sret,)
@@ -819,7 +822,7 @@ class Geometry(object):
         corresponding to isc ([ix,iy,iz])
         """
         asc = np.asarray(isc,np.int)
-        for i in xrange(self.isc_off.shape[0]):
+        for i in range(self.isc_off.shape[0]):
             if np.all(self.isc_off[i,:] == asc): return i
         raise Exception('Could not find supercell index, number of super-cells not big enough')
 

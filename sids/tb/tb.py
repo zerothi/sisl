@@ -29,8 +29,6 @@ class TightBinding(object):
 
     # The energy conversion factor
     Energy = 13.60580
-    # The length conversion factor
-    Length = 0.529177
 
     def __init__(self,geom,*args,**kwargs):
         """Create tight-binding model from geometry
@@ -223,7 +221,7 @@ class TightBinding(object):
         
         if self.no > 1:
             # We truncate all the connections
-            for io in xrange(1,self.no):
+            for io in range(1,self.no):
                 cptr = self.ptr[io]
                 # Update actual pointer position
                 self.ptr[io] = ptr
@@ -249,7 +247,7 @@ class TightBinding(object):
         
         # Sort the indices, this is not strictly required, but
         # it should speed up things.
-        for io in xrange(self.no):
+        for io in range(self.no):
             ptr = self.ptr[io]
             no  = self.ncol[io]
             if no == 0: continue
@@ -406,7 +404,7 @@ class TightBinding(object):
                 return None, None, None
 
         # Copy elements
-        for jo in xrange(geom.no):
+        for jo in range(geom.no):
 
             # make smaller cut
             sH = H[jo,:]

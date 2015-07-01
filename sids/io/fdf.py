@@ -129,7 +129,7 @@ class FDFSile(Sile):
         # Create array
         xyz = np.empty([na,3],np.float)
         species = np.empty([na],np.int)
-        for ia in xrange(na):
+        for ia in range(na):
             l = atms[ia].split()
             xyz[ia,:] = [float(k) for k in l[:3]]
             species[ia] = int(l[3]) - 1
@@ -154,7 +154,7 @@ class FDFSile(Sile):
 
             # Create atoms array with species
             atoms = [None]*na
-            for ia in xrange(na):
+            for ia in range(na):
                 atoms[ia] = sp[species[ia]]
         else:
             # Default atom (hydrogen)
