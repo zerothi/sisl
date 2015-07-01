@@ -8,7 +8,10 @@ notifications:
      on_success: change
 
 python:
+  - 2.6
   - 2.7
+  - 3.3
+  - 3.4
 
 before_install:
   - sudo apt-get -qq install libhdf5-serial-dev libnetcdf-dev
@@ -21,7 +24,9 @@ before_install:
 # Travis and are not specific to using Miniconda
   - sudo rm -rf /dev/shm
   - sudo ln -s /run/shm /dev/shm
+# Do actual package installations
   - conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements.txt
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION nose
 
 install:
   - python setup.py install
