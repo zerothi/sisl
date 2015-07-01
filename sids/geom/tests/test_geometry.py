@@ -1,5 +1,3 @@
-"""Tests suite for Geometry class
-"""
 from __future__ import print_function, division
 
 from nose.tools import *
@@ -74,19 +72,45 @@ class TestGeometry(object):
         nsc = np.copy(self.g.nsc)
         self.g.set_supercell([5,5,0])
         assert_true( np.allclose([5,5,1],self.g.nsc) )
+        assert_true( len(self.g.isc_off) == np.prod(self.g.nsc) )
 
     def test_nsc2(self):
         nsc = np.copy(self.g.nsc)
         self.g.set_supercell([0,1,0])
         assert_true( np.allclose([1,1,1],self.g.nsc) )
+        assert_true( len(self.g.isc_off) == np.prod(self.g.nsc) )
 
     def test_rotation1(self):
         rot = self.g.copy()
         rot.rotate(m.pi,[0,0,1])
         rot.cell[2,2] *= -1
         assert_true( np.allclose(-rot.cell,self.g.cell) )
+        assert_true( np.allclose(-rot.xyz,self.g.xyz) )
 
         rot.rotate(m.pi,[0,0,1])
         rot.cell[2,2] *= -1
         assert_true( np.allclose(rot.cell,self.g.cell) )
+        assert_true( np.allclose(rot.xyz,self.g.xyz) )
+
+    def test_rotation2(self):
+        rot = self.g.copy()
+        rot.rotate(m.pi,[0,0,1],only='cell')
+        rot.cell[2,2] *= -1
+        assert_true( np.allclose(-rot.cell,self.g.cell) )
+        assert_true( np.allclose(rot.xyz,self.g.xyz) )
+
+        rot.rotate(m.pi,[0,0,1],only='cell')
+        rot.cell[2,2] *= -1
+        assert_true( np.allclose(rot.cell,self.g.cell) )
+        assert_true( np.allclose(rot.xyz,self.g.xyz) )
+
+    def test_rotation3(self):
+        rot = self.g.copy()
+        rot.rotate(m.pi,[0,0,1],only='xyz')
+        assert_true( np.allclose(rot.cell,self.g.cell) )
+        assert_true( np.allclose(-rot.xyz,self.g.xyz) )
+
+        rot.rotate(m.pi,[0,0,1],only='xyz')
+        assert_true( np.allclose(rot.cell,self.g.cell) )
+        assert_true( np.allclose(rot.xyz,self.g.xyz) )
 
