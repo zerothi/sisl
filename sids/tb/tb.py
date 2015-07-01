@@ -28,7 +28,7 @@ class TightBinding(object):
     """
 
     # The energy conversion factor
-    E = 13.60580
+    Energy = 13.60580
     # The length conversion factor
     Length = 0.529177
 

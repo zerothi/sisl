@@ -70,6 +70,10 @@ class Geometry(object):
     nsc  : (3) ndarray
         Total number of supercells in each direction
     """
+
+    # The length conversion factor
+    Length = 0.529177
+
     def __init__(self,cell,xyz,atoms=Atom['H'],nsc=np.array([1,1,1],np.int)):
         self.cell = np.asarray(cell)
         self.xyz = np.asarray(xyz)

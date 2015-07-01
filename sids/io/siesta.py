@@ -82,7 +82,7 @@ class SIESTASile(NCSile):
         v = sp.variables['isc_off']
         # pre-allocate the super-cells
         geom.set_supercell(np.amax(v[:,:],axis=0) * 2 + 1)
-        geom.isc_off[:,:]c = v[:,:]
+        geom.isc_off[:,:] = v[:,:]
 
         # Now create the tight-binding stuff (we re-create the 
         # array, hence just allocate the smallest amount possible)

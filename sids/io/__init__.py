@@ -13,6 +13,7 @@ from sids.io.gulp import *
 from sids.io.siesta import *
 from sids.io.tb import *
 from sids.io.xyz import *
+from sids.io.xv import *
 
 __all__ = ['add_Sile','get_Sile']
 
@@ -38,6 +39,7 @@ add_Sile('NC',SIESTASile)
 add_Sile('tb',TBSile)
 add_Sile('TB',TBSile)
 add_Sile('got',GULPSile)
+add_Sile('XV',XVSile)
 
 # When new 
 def get_Sile(file,*args,**kwargs):
@@ -69,3 +71,6 @@ if __name__ == "__main__":
     assert isinstance(get_Sile('test.tb'),TBSile),"Returning incorrect object"
     assert isinstance(get_Sile('test.TB'),TBSile),"Returning incorrect object"
     assert isinstance(get_Sile('test.got'),GULPSile),"Returning incorrect object"
+    assert isinstance(get_Sile('test.XV'),XVSile),"Returning incorrect object"
+    print('Finished tests successfully')
+
