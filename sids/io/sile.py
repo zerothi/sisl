@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 
+from sids.geom import Geometry
 import numpy as np
 
 def _starts_with_list(l,comments):
@@ -31,6 +32,7 @@ class Sile(object):
 
     @staticmethod
     def line_has_key(line,keyword,case=True):
+        found = False
         if isinstance(keyword,(list,np.ndarray)):
             if not case: keyword = [k.lower() for k in keyword]
             if not case: 
@@ -63,6 +65,7 @@ class Sile(object):
 
         while not found:
             l = self.readline()
+            if l == '': return found,''
             found = self.line_has_key(l,keyword,case=case)
             
         # sometimes the line contains information, as a
@@ -76,7 +79,9 @@ class Sile(object):
         for arg in args:
             if isinstance(arg,Geometry):
                 self.write_geom(arg)
-        if 'geom' in kwargs: self.write_geom(kwargs['geom'])
+        if 'geom' in kwargs: 
+            self.write_geom(kwargs['geom'])
+        
 
     def _write(self,*args,**kwargs):
         """ Wrapper to default the write statements """
@@ -113,8 +118,13 @@ class NCSile(object):
             raise ImportError("Could not import required module netCDF4, "+
                               "please add netCDF4 to your path and re-run.")
         self.fh = nc.Dataset(self.file,self._mode,format='NETCDF4')
-        # in this one we return the file-handle for the NetCDF file
-        return self.fh
+        return self
+
+    def __getattr__(self,attr):
+        """ Bypass attributes to directly interact with the NetCDF model """
+        if hasattr(self,'fh'):
+            return getattr(self.fh,attr)
+
 
     def __exit__(self, type, value, traceback):
         self.fh.close()

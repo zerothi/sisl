@@ -9,8 +9,10 @@ from sids.io.sile import *
 # Import the different Sile objects
 # enabling the actual print-out
 from sids.io.fdf import *
-from sids.io.xyz import *
+from sids.io.gulp import *
 from sids.io.siesta import *
+from sids.io.tb import *
+from sids.io.xyz import *
 
 # This is a file chooser which from the file-ending tries to 
 # determine which kind of file we are dealing with.
@@ -31,6 +33,9 @@ add_Sile('fdf',FDFSile)
 add_Sile('FDF',FDFSile)
 add_Sile('nc',SIESTASile)
 add_Sile('NC',SIESTASile)
+add_Sile('tb',TBSile)
+add_Sile('TB',TBSile)
+add_Sile('got',GULPSile)
 
 # When new 
 def get_Sile(file,*args,**kwargs):
@@ -59,3 +64,6 @@ if __name__ == "__main__":
     assert isinstance(get_Sile('test.FDF'),FDFSile),"Returning incorrect object"
     assert isinstance(get_Sile('test.nc'),SIESTASile),"Returning incorrect object"
     assert isinstance(get_Sile('test.NC'),SIESTASile),"Returning incorrect object"
+    assert isinstance(get_Sile('test.tb'),TBSile),"Returning incorrect object"
+    assert isinstance(get_Sile('test.TB'),TBSile),"Returning incorrect object"
+    assert isinstance(get_Sile('test.got'),GULPSile),"Returning incorrect object"

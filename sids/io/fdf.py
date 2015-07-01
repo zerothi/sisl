@@ -22,8 +22,10 @@ class FDFSile(Sile):
 
     def _read(self,key):
         """ Returns the arguments following the keyword in the FDF file """
-        with self as f:
-            return f.step_to(key.lower(),case=False)
+        if hasattr(self,'fh'):
+            return self.step_to(key.lower(),case=False)
+        with self:
+            return self.step_to(key.lower(),case=False)
 
     def _read_block(self,key,force=False):
         """ Returns the arguments following the keyword in the FDF file """
@@ -47,40 +49,44 @@ class FDFSile(Sile):
         # Check that we can write to the file
         sile_raise_write(self)
 
-        with self as f:
+        if not hasattr(self,'fh'):
+            # The file-handle has not been opened
+            with self:
+                return self.write_geom(geom,fmt)
 
-            # Write out the cell
-            f._write('LatticeConstant 1. Ang\n')
-            f._write('%block LatticeVectors\n')
-            for i in range(3):
-                f._write(' {0} {1} {2}\n'.format(*geom.cell[i,:]))
-            f._write('%endblock LatticeVectors\n\n')
-            f._write('NumberOfAtoms {0}\n'.format(geom.na))
-            f._write('AtomicCoordinatesFormat Ang\n')
-            f._write('%block AtomicCoordinatesAndAtomicSpecies\n')
+        # Write out the cell
+        self._write('LatticeConstant 1. Ang\n')
+        self._write('%block LatticeVectors\n')
+        for i in range(3):
+            self._write(' {0} {1} {2}\n'.format(*geom.cell[i,:]))
+        self._write('%endblock LatticeVectors\n\n')
+        self._write('NumberOfAtoms {0}\n'.format(geom.na))
+        self._write('AtomicCoordinatesFormat Ang\n')
+        self._write('%block AtomicCoordinatesAndAtomicSpecies\n')
         
-            fmt_str = ' {{2:{0}}} {{3:{0}}} {{4:{0}}} {{0}} # {{1}}\n'.format(fmt)
-            # Count for the species
-            spec = []
-            for ia,a,isp in geom.iter_species():
-                f._write(fmt_str.format(isp+1,ia+1,*geom.xyz[ia,:]))
-                if isp >= len(spec): spec.append(a)
-            f._write('%endblock AtomicCoordinatesAndAtomicSpecies\n\n')
-
-            # Write out species
-            # First swap key and value
-            f._write('NumberOfSpecies {0}\n'.format(len(spec)))
-            f._write('%block ChemicalSpeciesLabel\n')
-            for i,a in enumerate(spec):
-                f._write(' {0} {1} {2}\n'.format(i+1,a.Z,a.tag))
-            f._write('%endblock ChemicalSpeciesLabel\n')
+        fmt_str = ' {{2:{0}}} {{3:{0}}} {{4:{0}}} {{0}} # {{1}}\n'.format(fmt)
+        # Count for the species
+        spec = []
+        for ia,a,isp in geom.iter_species():
+            self._write(fmt_str.format(isp+1,ia+1,*geom.xyz[ia,:]))
+            if isp >= len(spec): spec.append(a)
+        self._write('%endblock AtomicCoordinatesAndAtomicSpecies\n\n')
+        
+        # Write out species
+        # First swap key and value
+        self._write('NumberOfSpecies {0}\n'.format(len(spec)))
+        self._write('%block ChemicalSpeciesLabel\n')
+        for i,a in enumerate(spec):
+            self._write(' {0} {1} {2}\n'.format(i+1,a.Z,a.tag))
+        self._write('%endblock ChemicalSpeciesLabel\n')
 
             
-    def read_geom(self):
+    def read_geom(self,*args,**kwargs):
         """ Returns Geometry object from the FDF file 
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
+
         f,lc = self._read('LatticeConstant')
         s = float(lc.split()[1])
         if 'ang' in lc.lower():
@@ -166,10 +172,8 @@ if __name__ == "__main__":
                     xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
                     atoms = C )
     # Write stuff
-    io = FDFSile('diamond.fdf','w')
-    io.write_geom(geom)
-    io = FDFSile('diamond.fdf','r')
-    geomr = io.read_geom()
+    geom.write(FDFSile('diamond.fdf','w'))
+    geomr = FDFSile('diamond.fdf','r').read_geom()
     print(geomr)
     print(geomr.cell)
     print(geomr.xyz)

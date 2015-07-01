@@ -73,8 +73,7 @@ if __name__ == "__main__":
     # Write stuff
     print(geom)
     geom.write(XYZSile('diamond.xyz','w'))
-    io = XYZSile('diamond.xyz','r')
-    geomr = io.read_geom()
+    geomr = XYZSile('diamond.xyz','r').read_geom()
     print(geomr)
     print(geomr.cell)
     print(geomr.xyz)

@@ -411,6 +411,11 @@ class AtomMeta(type):
             # The key is a dictionary, hence
             # we can return the atom directly
             return Atom(**key)
+        if isinstance(key,list):
+            # The key is a list, 
+            # we need to create a list of atoms
+            atm = [Atom[k] for k in key]
+            return atm
         # Index Z based
         return Atom(Z=key)
 

@@ -151,8 +151,7 @@ if __name__ == "__main__":
                     atoms = C )
     # Write stuff
     geom.write(SIESTASile('diamond.nc','w'))
-    io = SIESTASile('diamond.nc','r')
-    geomr = io.read_geom()
+    geomr = SIESTASile('diamond.nc','r').read_geom()
     print(geomr)
     print(geomr.cell)
     print(geomr.xyz)
