@@ -12,6 +12,9 @@ from sids.tb import TightBinding
 
 import numpy as np
 
+__all__ = ['TBSile']
+
+
 class TBSile(Sile):
     """ Tight-binding file object """
 

@@ -12,6 +12,9 @@ from sids.tb import TightBinding
 
 import numpy as np
 
+__all__ = ['SIESTASile']
+
+
 class SIESTASile(NCSile):
     """ SIESTA file object """
 

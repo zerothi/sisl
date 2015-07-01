@@ -11,6 +11,7 @@ import numpy as np
 
 __all__ = ['PeriodicTable','Atom']
 
+
 class PeriodicTable(object):
     """ 
     Very basic periodic table, not very pretty as it
@@ -421,6 +422,7 @@ class AtomMeta(type):
         # Index Z based
         return Atom(Z=key)
 
+
 class Atom(object):
     """
     Atomic object to handle atomic mass, name etc.
@@ -484,6 +486,7 @@ class Atom(object):
 
     # Enables easily to create new atoms
     __metaclass__ = AtomMeta
+
 
 if __name__ == "__main__":
     # Create C

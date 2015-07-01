@@ -9,6 +9,9 @@ from sids.geom.geometry import Geometry
 
 import numpy as np
 
+__all__ = ['graphene','diamond']
+
+
 def graphene(alat=1.42,orbs=1):
     """
     Returns a geometry with the graphene unit-cell (2-atoms)

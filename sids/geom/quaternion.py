@@ -3,6 +3,9 @@ from __future__ import print_function, division
 import math as m
 import numpy as np
 
+__all__ = ['Quaternion']
+
+
 class Quaternion(object):
     """
     Quaternion object to enable easy rotational quantities.
@@ -158,3 +161,7 @@ class Quaternion(object):
         a._v /= b
         return a
     __itruediv__ = __idiv__
+
+
+if __name__ == "__main__":
+    pass

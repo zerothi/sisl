@@ -8,6 +8,8 @@ def _starts_with_list(l,comments):
         if l.startswith(comment): return True
     return False
 
+__all__ = ['Sile','NCSile','SileError','sile_raise_write','sile_raise_read']
+
 
 class Sile(object):
     """ Class to contain a file with easy access """

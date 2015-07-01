@@ -11,6 +11,9 @@ from sids.geom import Geometry, Atom
 
 import numpy as np
 
+__all__ = ['GULPSile']
+
+
 class GULPSile(NCSile):
     """ GULP file object """
 

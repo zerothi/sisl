@@ -17,6 +17,7 @@ import numpy as np
 
 __all__ = ['Geometry']
 
+
 class Geometry(object):
     """
     Geometry object handling atomic coordinates in a supercell

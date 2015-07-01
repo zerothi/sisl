@@ -12,6 +12,9 @@ from sids.geom import Geometry, Atom
 
 import numpy as np
 
+__all__ = ['FDFSile']
+
+
 class FDFSile(Sile):
     """ FDF file object """
     # These are the comments

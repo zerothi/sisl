@@ -13,6 +13,7 @@ import numpy as np
 
 __all__ = ['TightBinding']
 
+
 class TightBinding(object):
     """
     The defining tight-binding model for constructing models

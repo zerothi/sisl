@@ -14,6 +14,8 @@ from sids.io.siesta import *
 from sids.io.tb import *
 from sids.io.xyz import *
 
+__all__ = ['add_Sile','get_Sile']
+
 # This is a file chooser which from the file-ending tries to 
 # determine which kind of file we are dealing with.
 

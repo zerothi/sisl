@@ -2,6 +2,9 @@ from __future__ import print_function, division
 
 import numpy as np
 
+__all__ = ['array_fill_repeat']
+
+
 def array_fill_repeat(array,size):
     """
     This repeats an array along the zeroth axis until it

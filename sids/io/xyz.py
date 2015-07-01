@@ -12,6 +12,9 @@ from sids.geom import Geometry, Atom
 
 import numpy as np
 
+__all__ = ['XYZSile']
+
+
 class XYZSile(Sile):
     """ XYZ file object """
     # These are the comments
