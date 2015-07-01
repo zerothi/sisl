@@ -88,7 +88,7 @@ class FDFSile(Sile):
         elif 'bohr' in lc.lower():
             s /= self._Bohr
         # Read in cell
-        cell = np.empty([3,3],np.float64)
+        cell = np.empty([3,3],np.float)
         f,lc = self._read_block('LatticeVectors',force=True)
         for i in range(3):
             cell[i,:] = [float(k) for k in lc[i].split()[:3]]
@@ -118,7 +118,7 @@ class FDFSile(Sile):
         na = len(atms)
 
         # Create array
-        xyz = np.empty([na,3],np.float64)
+        xyz = np.empty([na,3],np.float)
         species = np.empty([na],np.int)
         for ia in xrange(na):
             l = atms[ia].split()
@@ -162,8 +162,8 @@ if __name__ == "__main__":
     C = Atom(Z=6,R=dist * 1.01,orbs=2)
     geom = Geometry(cell=np.array([[0,1,1],
                                    [1,0,1],
-                                   [1,1,0]],np.float64) * alat/2,
-                    xyz = np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                                   [1,1,0]],np.float) * alat/2,
+                    xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
                     atoms = C )
     # Write stuff
     io = FDFSile('diamond.fdf','w')

@@ -22,9 +22,9 @@ class SIESTASile(NCSile):
         NOTE: Interaction range of the Atoms are currently not read.
         """
         with self as nc:
-            cell = np.array(nc.variables['cell'][:],np.float64) * self._Bohr
+            cell = np.array(nc.variables['cell'][:],np.float) * self._Bohr
             cell.shape = (3,3)
-            xyz = np.array(nc.variables['xa'][:],np.float64) * self._Bohr
+            xyz = np.array(nc.variables['xa'][:],np.float) * self._Bohr
             xyz.shape = (-1,3)
             nsc = np.array(nc.variables['nsc'][:],np.int)
             
@@ -146,8 +146,8 @@ if __name__ == "__main__":
     C = Atom(Z=6,R=dist * 1.01,orbs=2)
     geom = Geometry(cell=np.array([[0,1,1],
                                    [1,0,1],
-                                   [1,1,0]],np.float64) * alat/2,
-                    xyz = np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                                   [1,1,0]],np.float) * alat/2,
+                    xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
                     atoms = C )
     # Write stuff
     geom.write(SIESTASile('diamond.nc','w'))

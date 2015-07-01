@@ -152,7 +152,7 @@ class TightBinding(object):
 
     ############# DONE creating easy overrides #################
 
-    def reset(self,dtype=np.float64,nc=None):
+    def reset(self,dtype=np.float,nc=None):
         """
         The sparsity pattern is cleaned and every thing 
         is reset. 
@@ -232,7 +232,8 @@ class TightBinding(object):
         self._TB = self._TB[:self._nnzs,:]
         self.col = self.col[:self._nnzs]
         
-        # Sort the indices (THIS IS A REQUIREMENT!)
+        # Sort the indices, this is not strictly required, but
+        # it should speed up things.
         for io in xrange(self.no):
             ptr = self.ptr[io]
             no  = self.ncol[io]
@@ -262,26 +263,25 @@ class TightBinding(object):
         # We import here as the user might not want to
         # rely on this feature.
         from scipy.sparse import csr_matrix
-
-        kw = {'shape': (self.no,self.no_s),
-              'dtype': self._TB.dtype }
         
         if k is None:
+            kw = {'shape': (self.no,self.no_s),
+                  'dtype': self._TB.dtype }
             if self._TB.shape[1] == 1:
                 return csr_matrix((self._TB[:,0],self.col,self.ptr),**kw)
             return (csr_matrix((self._TB[:,0],self.col,self.ptr),**kw), \
                         csr_matrix((self._TB[:,1],self.col,self.ptr),**kw))
         else:
-            k = np.asarray(k,np.float64)
+            k = np.asarray(k,np.float)
             import scipy.linalg as sla
             # Setup the Hamiltonian for this k-point
-            Hfull,Sfull = self.tocsr()
+            Hfull, Sfull = self.tocsr()
 
-            del kw['shape']
             s = (self.no,self.no)
+
             # Create k-space Hamiltonian
-            H = csr_matrix(s,**kw)
-            S = csr_matrix(s,**kw)
+            H = csr_matrix(s,dtype=np.complex)
+            S = csr_matrix(s,dtype=np.complex)
             
             # Get the reciprocal lattice vectors dotted with k
             rcell = sla.inv(self.cell.copy())
@@ -317,12 +317,12 @@ if __name__ == "__main__":
     print(len(tb))
     tb.finalize()
     print('H\n',tb.tocsr()[0])
-    print('H\n',tb.tocsr(k=[.5,.5,0])[0])
+    print('H\n',tb.tocsr(k=[.25,.25,0])[0])
 
 
     # Lets try and create a huge sample
     print('Starting time... '+str(datetime.datetime.now().time()))
-    tb = TightBinding(gr.tile(71,0).tile(71,1))
+    tb = TightBinding(gr.tile(41,0).tile(41,1))
     for ias, idxs in tb.iter_block(13):
         for ia in ias:
             idx_a = tb.close(ia,dR=dR)

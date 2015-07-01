@@ -40,7 +40,7 @@ class XYZSile(Sile):
 
         NOTE: Unit-cell is the Eucledian 3D space.
         """
-        cell = np.asarray(np.diagflat([1]*3),np.float64)
+        cell = np.asarray(np.diagflat([1]*3),np.float)
         with self as fh:
             l = fh.readline()
             na = int(l)
@@ -53,7 +53,7 @@ class XYZSile(Sile):
                     cell[i] = float(il)
                 cell.shape = (3,3)
             sp = [None] * na
-            xyz = np.empty([na,3],np.float64)
+            xyz = np.empty([na,3],np.float)
             for ia in xrange(na):
                 l = fh.readline().split()
                 sp[ia] = l.pop(0)
@@ -67,8 +67,8 @@ if __name__ == "__main__":
     C = Atom(Z=6,R=dist * 1.01,orbs=2)
     geom = Geometry(cell=np.array([[0,1,1],
                                    [1,0,1],
-                                   [1,1,0]],np.float64) * alat/2,
-                    xyz = np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                                   [1,1,0]],np.float) * alat/2,
+                    xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
                     atoms = C )
     # Write stuff
     print(geom)

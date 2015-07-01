@@ -17,9 +17,9 @@ def graphene(alat=1.42,orbs=1):
     C = Atom(Z=6,R=alat * 1.01,orbs=orbs)
     gr = Geometry(cell=np.array([[1.5, sq3h,  0.],
                                  [1.5,-sq3h,  0.],
-                                 [ 0.,   0., 10.]],np.float64) * alat,
+                                 [ 0.,   0., 10.]],np.float) * alat,
                   xyz=np.array([[ 0., 0., 0.],
-                               [ 1., 0., 0.]],np.float64) * alat,
+                               [ 1., 0., 0.]],np.float) * alat,
                   atoms = C, nsc = [3,3,1])
     return gr
 
@@ -31,8 +31,8 @@ def diamond(alat=3.57,orbs=1):
     C = Atom(Z=6,R=dist * 1.01,orbs=2)
     dia = Geometry(cell=np.array([[0,1,1],
                                   [1,0,1],
-                                  [1,1,0]],np.float64) * alat/2,
-                   xyz = np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                                  [1,1,0]],np.float) * alat/2,
+                   xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
                    atoms = C , nsc = [3,3,3])
     return dia
 

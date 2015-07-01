@@ -486,7 +486,7 @@ class Geometry(object):
         cell[axis,:] *= reps
         # Pre-allocate geometry
         na = self.na * reps
-        xyz = np.zeros([na,3],np.float64)
+        xyz = np.zeros([na,3],np.float)
         atoms = [None for i in range(na)]
         dx = np.dot(np.arange(reps)[:,None],self.cell[axis,:][None,:])
         # Start the repetition
