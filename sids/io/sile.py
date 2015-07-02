@@ -94,7 +94,6 @@ class NCSile(object):
     The file format for this file is the NetCDF file format """
     _mode = 'r'
     _lvl = 0
-    _z   = False
 
     def __init__(self,filename,mode=None,lvl=0):
         self.file = filename
