@@ -875,6 +875,15 @@ class Geometry(object):
         if 'xyz' in only:
             self.xyz = q.rotate(self.xyz)
 
+    def translate(self,v):
+        """ Translates the geometry by ``v``
+
+        Returns a copy of the structure translated by ``v``.
+        """
+        g = self.copy()
+        g.xyz[:,:] += np.asarray(v,g.xyz.dtype)[None,:]
+        return g
+
 
 if __name__ == '__main__':
     import math as m
