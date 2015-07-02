@@ -6,6 +6,7 @@ def configuration(parent_package='',top_path=None):
     config = Configuration('sids', parent_package, top_path)
     config.add_subpackage('geom')
     config.add_subpackage('io')
+    config.add_subpackage('tb')
     config.make_config_py() # installs __config__.py
     return config
 
