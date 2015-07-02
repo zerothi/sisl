@@ -33,7 +33,10 @@ if [ "$ISRELEASED" == "True" ]; then
 fi
 
 # Tagging and releasing
+git add setup.py
+git commit -m "Prepping for release"
 git tag -a "$v" -m "$MSG"
+git push
 git push --tags
 
 
