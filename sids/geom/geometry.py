@@ -147,7 +147,8 @@ class Geometry(object):
             raise ValueError("Supercells has to be of un-even size. The primary cell counts "+
                              "one, all others count 2")
 
-        self.isc_off = np.zeros([np.prod(self.nsc),3],np.int)
+        self.n_s = np.prod(self.nsc)
+        self.isc_off = np.zeros([self.n_s,3],np.int)
 
         n = self.nsc
         # We define the following ones like this:
@@ -294,7 +295,7 @@ class Geometry(object):
     @property
     def no_s(self):
         """ Number of supercell orbitals """
-        return self.no * np.prod(self.nsc)
+        return self.no * self.n_s
 
 
     def sub(self,atoms,cell=None):
@@ -576,6 +577,9 @@ class Geometry(object):
         else:
             return self.xyz[idx,:] + offset[None,:]
 
+    def axyzsc(self,ia):
+        return self.coords(self.a2isc(ia),self.sc2uc(ia))
+
 
     def close_sc(self,xyz_ia,isc=[0,0,0],dR=None,idx=None,ret_coord=False,ret_dist=False):
         """
@@ -740,7 +744,7 @@ class Geometry(object):
             i += 1
             ret.append(None)
         ret_special = ret_coord or ret_dist
-        for s in range(np.prod(self.nsc)):
+        for s in range(self.n_s):
             na = self.na * s
             sret = self.close_sc(xyz_ia,self.isc_off[s,:],dR=dR,idx=idx,ret_coord=ret_coord,ret_dist=ret_dist)
             if not ret_special: sret = (sret,)
@@ -833,7 +837,7 @@ class Geometry(object):
 
         Hence one can easily figure out the supercell
         """
-        idx = np.where( a < self.na * np.arange(1,np.product(self.nsc)+1) )[0][0]
+        idx = np.where( a < self.na * np.arange(1,self.n_s+1) )[0][0]
         return self.isc_off[idx,:]
 
 
@@ -843,7 +847,7 @@ class Geometry(object):
 
         Hence one can easily figure out the supercell
         """
-        idx = np.where( o < self.no * np.arange(1,np.product(self.nsc)+1) )[0][0]
+        idx = np.where( o < self.no * np.arange(1,self.n_s+1) )[0][0]
         return self.isc_off[idx,:]
 
     def rotate(self,angle,v,only='cell+xyz'):
