@@ -8,6 +8,7 @@ from sids.io.sile import *
 
 # Import the geometry object
 from sids.geom import Geometry, Atom
+from sids.tb import PhononTightBinding
 
 import numpy as np
 
