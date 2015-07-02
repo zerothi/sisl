@@ -216,6 +216,8 @@ class TBSile(Sile):
         hermitian : boolean
         
         """
+        tb.finalize()
+
         if not hasattr(self,'fh'):
             # The file-handle has not been opened
             with self:

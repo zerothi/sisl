@@ -184,6 +184,8 @@ class SIESTASile(NCSile):
 
     def write_tb(self,tb,**kwargs):
         """ Writes tight-binding model to file """
+        # Ensure finalizations
+        tb.finalize()
 
         if not hasattr(self,'fh'):
             with self:

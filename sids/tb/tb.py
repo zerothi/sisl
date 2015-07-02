@@ -438,6 +438,12 @@ class TightBinding(object):
 
         return tb
 
+    def write(self,ObjSile):
+        """ Writes a tight-binding model to the ``ObjSile`` as implemented in the ``ObjSile.write_tb``
+        method """
+        self.finalize()
+        ObjSile.write_tb(self)
+
         
 if __name__ == "__main__":
     import datetime
