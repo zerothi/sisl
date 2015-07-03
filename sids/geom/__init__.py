@@ -14,3 +14,4 @@ from sids.geom.quaternion import *
 
 # Import default creation routines
 from sids.geom.default import *
+

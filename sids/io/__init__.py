@@ -15,7 +15,24 @@ from sids.io.tb import *
 from sids.io.xyz import *
 from sids.io.xv import *
 
+import sys
+
+def extendall(mod):
+    global __all__
+    __all__.extend(sys.modules[mod].__dict__['__all__'])
+
+# Default functions in this top module
 __all__ = ['add_Sile','get_Sile']
+
+# Extend all by the sub-modules
+extendall('sids.io.sile')
+extendall('sids.io.fdf')
+extendall('sids.io.gulp')
+extendall('sids.io.siesta')
+extendall('sids.io.tb')
+extendall('sids.io.xyz')
+extendall('sids.io.xv')
+
 
 # This is a file chooser which from the file-ending tries to 
 # determine which kind of file we are dealing with.
