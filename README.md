@@ -12,12 +12,72 @@ programs.
 
 ## Usage ##
 
+### Geometry manipulation ###
+
+sids contain a class for manipulating geometries in a consistent and easy
+way.
+
+For instance to create a huge graphene flake
+
+	sq3h  = 3.**.5 * 0.5
+    gr = Geometry(cell=np.array([[1.5, sq3h,  0.],
+                                 [1.5,-sq3h,  0.],
+                                 [ 0.,   0., 10.]],np.float) * 1.42,
+                  xyz=np.array([[ 0., 0., 0.],
+                                [ 1., 0., 0.]],np.float) * 1.42,
+                  atoms = Atom(Z=6,R = 1.42), nsc = [3,3,1])
+    huge = gr.tile(100,axis=0).tile(100,axis=1)
+
+Which results in a 20000 atom big graphene flake.
+
+
+### Tight-binding ###
+
+To create a tight-binding model you _extend_ a geometry to a `TightBinding` class which
+contains the required sparse pattern.
+
+To create the nearest neighbour tight-binding model for graphene you simply do
+
+    # Create nearest-neighbour tight-binding
+    # graphene lattice constant 1.42
+    dR = ( 0.1 , 1.5 )
+	on = (0.,1.)
+    nn = (-0.5,0.)
+
+	# Ensure that graphene has supercell connections
+	gr.set_supercell([3,3,1])
+    tb = TightBinding(gr)
+    for ia in tb.geom:
+        idx_a = tb.close_all(ia,dR=dR)
+        tb[ia,idx_a[0]] = on
+        tb[ia,idx_a[1]] = nn
+
+at this point you have the tight-binding model for graphene and you can easily create
+the Hamiltonian using this construct:
+
+    H, S = tb.tocsr(k=[0.,0.5,0])
+
+which returs the Hamiltonian and the overlap matrices in the `scipy.sparse.csr_matri`
+format. To calculate the dispersion you diagonalize and plot the eigenvalues
+
+	import matplotlib.pyplot as plt
+    klist = ... # dispersion curve
+	eigs = np.empty([len(klist),tb.no])
+	for ik,k in enumerate(klist):
+		H, S = tb.tocsr(k)
+		eigs[ik,:] = sli.eigh(H.todense(),S.todense(),eigvals_only=True)
+	for i in range(tb.no):
+		plt.plot(eigs[:,i])
+
+
 ## Downloading and installation ##
 
 Installing sids requires the following packages:
 
-   __numpy__
-   __scipy__
+   - __numpy__
+   - __scipy__
+   - __netCDF4__, this module is only required if you need interface to construct
+    the transport tight-binding model for `TBtrans`
 
 
 ## Contributions, issues and bugs ##
