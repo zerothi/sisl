@@ -212,13 +212,13 @@ class Geometry(object):
 
     __iter__ = iter_linear
 
-    def iter_block(self,iR=15):
+    def iter_block(self,iR=10):
         """ 
         Returns an iterator for performance critical looping.
         
         Parameters
         ----------
-        iR  : (15) integer
+        iR  : (10) integer
             the number of ``dR`` ranges taken into account when doing the iterator
  
         Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that 
@@ -268,9 +268,9 @@ class Geometry(object):
             all_idx = self.close(idx, dR = dR )
 
             # Get unit-cell atoms
-            all_idx[0] = self.sc2uc(all_idx[0])
+            all_idx[0] = self.sc2uc(all_idx[0],uniq=True)
             # First extend the search-space (before reducing)
-            all_idx[1] = self.sc2uc(np.append(all_idx[1],all_idx[0]))
+            all_idx[1] = self.sc2uc(np.append(all_idx[1],all_idx[0]),uniq=True)
 
             # Only select those who have not been runned yet
             all_idx[0] = all_idx[0][np.where(not_passed[all_idx[0]])[0]]
@@ -809,15 +809,17 @@ class Geometry(object):
         return np.asarray(a) + ( io // self.no ) * self.na
 
 
-    def sc2uc(self,atoms):
-        """ Returns atoms from super-cell indices to unit-cell indices (removing dublicates) """
-        return np.unique(atoms % self.na)
+    def sc2uc(self,atoms,uniq=False):
+        """ Returns atoms from super-cell indices to unit-cell indices, possibly removing dublicates """
+        if uniq: return np.unique( atoms % self.na )
+        return atoms % self.na
     asc2uc = sc2uc
 
 
-    def osc2uc(self,orbs):
-        """ Returns orbitals from super-cell indices to unit-cell indices (removing dublicates) """
-        return np.unique(orbs % self.no)
+    def osc2uc(self,orbs,uniq=False):
+        """ Returns orbitals from super-cell indices to unit-cell indices, possibly removing dublicates """
+        if uniq: return np.unique( orbs % self.no )
+        return orbs % self.no
 
 
     def sc_index(self,isc):
