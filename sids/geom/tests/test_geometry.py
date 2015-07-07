@@ -81,36 +81,33 @@ class TestGeometry(object):
         assert_true( len(self.g.isc_off) == np.prod(self.g.nsc) )
 
     def test_rotation1(self):
-        rot = self.g.copy()
-        rot.rotate(m.pi,[0,0,1])
+        rot = self.g.rotate(m.pi,[0,0,1])
         rot.cell[2,2] *= -1
         assert_true( np.allclose(-rot.cell,self.g.cell) )
         assert_true( np.allclose(-rot.xyz,self.g.xyz) )
 
-        rot.rotate(m.pi,[0,0,1])
+        rot = rot.rotate(m.pi,[0,0,1])
         rot.cell[2,2] *= -1
         assert_true( np.allclose(rot.cell,self.g.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 
     def test_rotation2(self):
-        rot = self.g.copy()
-        rot.rotate(m.pi,[0,0,1],only='cell')
+        rot = self.g.rotate(m.pi,[0,0,1],only='cell')
         rot.cell[2,2] *= -1
         assert_true( np.allclose(-rot.cell,self.g.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 
-        rot.rotate(m.pi,[0,0,1],only='cell')
+        rot = rot.rotate(m.pi,[0,0,1],only='cell')
         rot.cell[2,2] *= -1
         assert_true( np.allclose(rot.cell,self.g.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 
     def test_rotation3(self):
-        rot = self.g.copy()
-        rot.rotate(m.pi,[0,0,1],only='xyz')
+        rot = self.g.rotate(m.pi,[0,0,1],only='xyz')
         assert_true( np.allclose(rot.cell,self.g.cell) )
         assert_true( np.allclose(-rot.xyz,self.g.xyz) )
 
-        rot.rotate(m.pi,[0,0,1],only='xyz')
+        rot = rot.rotate(m.pi,[0,0,1],only='xyz')
         assert_true( np.allclose(rot.cell,self.g.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 

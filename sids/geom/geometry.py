@@ -18,6 +18,8 @@ import numpy as np, sys
 __all__ = ['Geometry']
 
 
+# Local default variables for the __init__ of the
+# Geometry class
 _H = Atom['H']
 _nsc = np.array([1]*3,np.int)
 
@@ -46,7 +48,7 @@ class Geometry(object):
     atoms : (Atom['H']), list of atoms associated
         These atoms constitute the atomic ranges, weights, orbitals
         etc. for the geometry.
-    nsc   : (0,0,0) array_like, integer
+    nsc   : (1,1,1) array_like, integer
         Number of supercells in the geometry.
         We default it to be a molecule, hence no interaction.
         NOTE That this quantity is the actual number of supercells.
@@ -118,10 +120,10 @@ class Geometry(object):
         return self.na
 
 
-    def write(self,ObjSile):
+    def write(self,sile):
         """ Writes a geometry to the ``ObjSile`` as implemented in the ``ObjSile.write_geom``
         method """
-        ObjSile.write_geom(self)
+        sile.write_geom(self)
 
 
     def set_supercell(self,nsc=None,a=None,b=None,c=None):
@@ -178,6 +180,7 @@ class Geometry(object):
             s += '[{0}], '.format(str(spec[z][1]))
         return s[:-2] + '\n }},\n nsc: [{1}, {2}, {3}], dR: {0}\n}}'.format(self.dR,*self.nsc)
 
+    
     def iter_species(self):
         """ 
         Returns an iterator over all atoms and species as a tuple in this geometry
@@ -519,6 +522,47 @@ class Geometry(object):
         # Create the geometry and return it
         return self.__class__(cell,xyz,atoms=atoms,nsc=np.copy(self.nsc))
 
+    
+    def rotate(self,angle,v,only='cell+xyz'):
+        """ 
+        Rotates the geometry, in-place by the angle around the vector
+
+        Per default will the entire geometry be rotated, such that everything
+        is aligned as before rotation.
+
+        However, by supplying ``only='cell|xyz'`` one can designate which
+        part of the geometry that will be rotated.
+        
+        Parameters
+        ----------
+        angle : float
+             the angle in radians of which the geometry should be rotated
+        v     : array_like [3]
+             the vector around the rotation is going to happen
+             v = [1,0,0] will rotate in the ``yz`` plane
+        only  : ('cell+xyz'), str, optional
+             which coordinate subject should be rotated,
+             if ``cell`` is in this string the cell will be rotated
+             if ``xyz`` is in this string the coordinates will be rotated
+        """
+        q = Quaternion(angle,v)
+        q /= q.norm() # normalize the quaternion
+        cell = np.copy(self.cell)
+        if 'cell' in only: cell = q.rotate(cell)
+        xyz = np.copy(self.xyz)
+        if 'xyz' in only: xyz = q.rotate(xyz)
+        return self.__class__(cell,xyz,atoms=self.atoms,nsc=np.copy(self.nsc))
+        
+
+    def translate(self,v):
+        """ Translates the geometry by ``v``
+
+        Returns a copy of the structure translated by ``v``.
+        """
+        g = self.copy()
+        g.xyz[:,:] += np.asarray(v,g.xyz.dtype)[None,:]
+        return g
+
 
     def append(self,other,axis):
         """
@@ -857,44 +901,6 @@ class Geometry(object):
         """
         idx = np.where( o < self.no * np.arange(1,self.n_s+1) )[0][0]
         return self.isc_off[idx,:]
-
-    def rotate(self,angle,v,only='cell+xyz'):
-        """ 
-        Rotates the geometry, in-place by the angle around the vector
-
-        Per default will the entire geometry be rotated, such that everything
-        is aligned as before rotation.
-
-        However, by supplying ``only='cell|xyz'`` one can designate which
-        part of the geometry that will be rotated.
-        
-        Parameters
-        ----------
-        angle : float
-             the angle in radians of which the geometry should be rotated
-        v     : array_like [3]
-             the vector around the rotation is going to happen
-             v = [1,0,0] will rotate in the ``yz`` plane
-        only  : ('cell+xyz'), str, optional
-             which coordinate subject should be rotated,
-             if ``cell`` is in this string the cell will be rotated
-             if ``xyz`` is in this string the coordinates will be rotated
-        """
-        q = Quaternion(angle,v)
-        q /= q.norm() # normalize
-        if 'cell' in only:
-            self.cell = q.rotate(self.cell)
-        if 'xyz' in only:
-            self.xyz = q.rotate(self.xyz)
-
-    def translate(self,v):
-        """ Translates the geometry by ``v``
-
-        Returns a copy of the structure translated by ``v``.
-        """
-        g = self.copy()
-        g.xyz[:,:] += np.asarray(v,g.xyz.dtype)[None,:]
-        return g
 
 
 if __name__ == '__main__':
