@@ -212,7 +212,7 @@ class Geometry(object):
 
     __iter__ = iter_linear
 
-    def iter_block(self,iR=10):
+    def iter_block(self,iR=10,dR=None):
         """ 
         Returns an iterator for performance critical looping.
         
@@ -220,6 +220,8 @@ class Geometry(object):
         ----------
         iR  : (10) integer
             the number of ``dR`` ranges taken into account when doing the iterator
+        dR  : (self.dR), float
+            enables overwriting the local dR quantity.
  
         Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that 
         need searched.
@@ -228,7 +230,7 @@ class Geometry(object):
 
         I.e. the loop would look like this:
         
-        >>> for ias, idxs in Geometry.iter():
+        >>> for ias, idxs in Geometry.iter_block():
         >>>    for ia in ias:
         >>>        idx_a = dev.close(ia, dR = dR, idx = idxs)
 
@@ -245,8 +247,12 @@ class Geometry(object):
         not_passed[:] = True
         not_passed_N = na
 
-        # The boundaries (ensure complete overlap)
-        dR = ( self.dR * (iR - 1), self.dR * (iR+.1))
+        if dR is None:
+            # The boundaries (ensure complete overlap)
+            dr = ( self.dR * (iR - 1), self.dR * (iR+.1))
+        else:
+            dr = (      dR * (iR - 1),      dR * (iR+.1))
+
 
         # loop until all passed are true
         while not_passed_N > 0:
@@ -265,7 +271,7 @@ class Geometry(object):
             # we want to create the index based stuff on
             
             # get all elements within two radii
-            all_idx = self.close(idx, dR = dR )
+            all_idx = self.close(idx, dR = dr )
 
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0],uniq=True)

@@ -2,7 +2,7 @@
 IO imports
 """
 from __future__ import print_function, division
-from os.path import splitext as _ospsplitext
+from os.path import splitext
 
 from sids.io.sile import *
 
@@ -65,7 +65,7 @@ def get_Sile(file,*args,**kwargs):
     and object with the file handle.
     """
     try:
-        end = _ospsplitext(file)[1]
+        end = splitext(file)[1]
         if end.startswith('.'): end = end[1:]
         return _objs[end](file,*args,**kwargs)
     except Exception as e:

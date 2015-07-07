@@ -15,7 +15,8 @@ programs.
 ### Geometry manipulation ###
 
 sids contain a class for manipulating geometries in a consistent and easy
-way.
+way. Without using any other feature this enables you to easily create and
+manipulate structures in a consistent manner. 
 
 For instance to create a huge graphene flake
 
@@ -30,6 +31,56 @@ For instance to create a huge graphene flake
 
 Which results in a 20000 atom big graphene flake.
 
+#### IO-manipulation ####
+
+sids employs a variety of IO interfaces for managing geometries.
+
+The hard-coded file formats are:
+
+1. ___xyz___, standard coordinate format
+ Note that the the _xyz_ file format does not _per see_ contain the cell size.
+ The `XYZSile` writes the cell information in the `xyz` file comment section (2nd line). Hence if the file was written with sids you retain the cell information.
+2. ___got___, reads geometries from GULP output
+3. ___nc___, reads/writes NetCDF4 files created by SIESTA
+4. ___tb___, intrinsic file format for geometry/tight-binding models
+5. ___fdf___, SIESTA native format
+6. ___XV___, SIESTA coordinate format with velocities
+
+All file formats in sids are called a _Sile_ (sids file). This small difference
+prohibits name clashes with other implementations.
+
+To read a file one can do
+
+    import sids
+	fxyz = sids.get_Sile('file.xyz')
+
+which returns an `XYZSile` file object that enables reading the information in
+`file.xyz`. To read the geometry and obtain a geometry object
+
+	geom = fxyz.read_geom()
+
+and now you can interact with that geometry at will. 
+
+Even though these are hard coded you can easily extend your own file format
+
+	sids.add_Sile(<file ending>,<SileObject>)
+
+for instance the `XYZSile` is hooked using:
+
+	sids.add_Sile('xyz',XYZSile)
+	sids.add_Sile('XYZ',XYZSile)
+
+which means that `sids.get_Sile` understands files `*.xyz` and `*.XYZ` files as
+an `XYZSile` object. You can put whatever file-endings here and classes to retain API
+compatibility. See the `sids.io` package for more information. Note that a call to
+`add_Sile` with an already existing file ending results in overwriting the initial
+meaning of that file object.
+
+__NOTE__: if you know the file is in _xyz_ file format but the ending is erroneous, you can force the `XYZSile` by instantiating using that class
+
+	sids.XYZSile(<filename>)
+
+which disregards the ending check. 
 
 ### Tight-binding ###
 
@@ -57,7 +108,7 @@ the Hamiltonian using this construct:
 
     H, S = tb.tocsr(k=[0.,0.5,0])
 
-which returs the Hamiltonian and the overlap matrices in the `scipy.sparse.csr_matri`
+which returns the Hamiltonian and the overlap matrices in the `scipy.sparse.csr_matrix`
 format. To calculate the dispersion you diagonalize and plot the eigenvalues
 
 	import matplotlib.pyplot as plt
@@ -69,6 +120,19 @@ format. To calculate the dispersion you diagonalize and plot the eigenvalues
 	for i in range(tb.no):
 		plt.plot(eigs[:,i])
 
+Very large tight-binding models are notoriously slow to create, however, sids
+implement a much faster method to loop over huge geometries
+
+	for ias, idxs in tb.geom.iter_block(iR = 10):
+		for ia in ias:
+			idx_a = tb.geom.close(ia, dR = dR, idx = idxs)
+			tb[ia,idx_a[0]] = on
+			tb[ia,idx_a[1]] = nn
+
+which accomplishes the same thing, but at much faster execution. `iR` should be a
+number such that `tb.geom.close(<any index>,dR = tb.geom.dR * iR)` is approximately
+1000 atoms.
+
 
 ## Downloading and installation ##
 
@@ -78,6 +142,10 @@ Installing sids requires the following packages:
    - __scipy__
    - __netCDF4__, this module is only required if you need interface to construct
     the transport tight-binding model for `TBtrans`
+
+Installing sids is as any simple Python package
+
+	python setup.py install --prefix=<prefix>
 
 
 ## Contributions, issues and bugs ##
@@ -105,4 +173,12 @@ Links to external and internal sites.
 [issue]: https://github.com/zerothi/sids/issues
 [pr]: https://github.com/zerothi/sids/pulls
 [lgpl]: http://www.gnu.org/licenses/lgpl.html
+
+
+<!---
+Local variables for emacs to turn on flyspell-mode
+% Local Variables:
+%   mode: flyspell
+% End:
+-->
 
