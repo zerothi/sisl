@@ -563,6 +563,11 @@ class Geometry(object):
         g.xyz[:,:] += np.asarray(v,g.xyz.dtype)[None,:]
         return g
 
+    
+    def center(self):
+        """ Returns the center of the geometry """
+        return np.mean(self.xyz,axis=0)
+
 
     def append(self,other,axis):
         """
