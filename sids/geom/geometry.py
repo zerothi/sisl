@@ -5,6 +5,7 @@ from __future__ import print_function, division
 
 # To check for integers
 from numbers import Integral
+from math import acos, pi
 
 # Helpers
 from sids.geom._help import array_fill_repeat
@@ -94,12 +95,12 @@ class Geometry(object):
 
         # Create atom objects
         self.atoms = array_fill_repeat(atoms,self.na)
-        
+
         # Store maximum interaction range
         if isinstance(atoms,Atom):
             self.dR = atoms.dR
         else:
-            self.dR = max(*[a.dR for a in atoms])
+            self.dR = np.argmax([a.dR for a in atoms])
 
         # Get total number of orbitals
         orbs = np.array([a.orbs for a in self.atoms],np.int)
@@ -121,7 +122,7 @@ class Geometry(object):
 
 
     def write(self,sile):
-        """ Writes a geometry to the ``ObjSile`` as implemented in the ``ObjSile.write_geom``
+        """ Writes a geometry to the ``sile`` as implemented in the ``sile.write_geom``
         method """
         sile.write_geom(self)
 
@@ -523,7 +524,7 @@ class Geometry(object):
         return self.__class__(cell,xyz,atoms=atoms,nsc=np.copy(self.nsc))
 
     
-    def rotate(self,angle,v,only='cell+xyz'):
+    def rotate(self,angle,v,only='cell+xyz',degree=False):
         """ 
         Rotates the geometry, in-place by the angle around the vector
 
@@ -545,28 +546,75 @@ class Geometry(object):
              if ``cell`` is in this string the cell will be rotated
              if ``xyz`` is in this string the coordinates will be rotated
         """
-        q = Quaternion(angle,v)
+        q = Quaternion(angle,v,degree=degree)
         q /= q.norm() # normalize the quaternion
         cell = np.copy(self.cell)
         if 'cell' in only: cell = q.rotate(cell)
         xyz = np.copy(self.xyz)
         if 'xyz' in only: xyz = q.rotate(xyz)
         return self.__class__(cell,xyz,atoms=self.atoms,nsc=np.copy(self.nsc))
+
+    def rotate_miller(self,m,v):
+        """ Align Miller direction along ``v`` 
+
+        Rotate geometry and cell such that the Miller direction 
+        points along the Cartesian vector ``v``.
+        """
+        # Create normal vector to miller direction and cartesian
+        # direction
+        cp = np.array([m[1]*v[2]-m[2]*v[1],
+                       m[2]*v[0]-m[0]*v[2],
+                       m[0]*v[1]-m[1]*v[0]],np.float)
+        cp /= np.sum(cp**2) ** .5
+
+        lm = np.array(m,np.float)
+        lm /= np.sum(lm**2) ** .5
+        lv = np.array(v,np.float)
+        lv /= np.sum(lv**2) ** .5
+
+        # Now rotate the angle between them
+        a = acos( np.sum(lm*lv) )
+        return self.rotate(a,cp)
         
 
-    def translate(self,v):
+    def translate(self,v,atoms=None):
         """ Translates the geometry by ``v``
+
+        One can translate a subset of the atoms by supplying ``atoms``.
 
         Returns a copy of the structure translated by ``v``.
         """
         g = self.copy()
-        g.xyz[:,:] += np.asarray(v,g.xyz.dtype)[None,:]
+        if atoms is None:
+            g.xyz[:,:] += np.asarray(v,g.xyz.dtype)[None,:]
+        else:
+            g.xyz[atoms,:] += np.asarray(v,g.xyz.dtype)[None,:]
         return g
 
+    def swapaxes(self,a,b,swap='cell+xyz'):
+        """ Returns geometry with swapped axis
+        
+        If ``swapaxes(0,1)`` it returns the 0 and 1 values
+        swapped in the ``cell`` variable.
+        """
+        xyz = np.copy(self.xyz)
+        if 'xyz' in swap:
+            xyz[:,a] = self.xyz[:,b]
+            xyz[:,b] = self.xyz[:,a]
+        cell = np.copy(self.cell)
+        if 'cell' in swap:
+            cell[a,:] = self.cell[b,:]
+            cell[b,:] = self.cell[a,:]
+        return self.__class__(cell,xyz, atoms = np.copy(self.atoms),
+                              nsc = np.copy(self.nsc) )
+
     
-    def center(self):
+    def center(self,atoms=None):
         """ Returns the center of the geometry """
-        return np.mean(self.xyz,axis=0)
+        if atoms is None:
+            return np.mean(self.xyz,axis=0)
+        return np.mean(self.xyz[atoms,:],axis=0)
+
 
 
     def append(self,other,axis):
@@ -600,6 +648,36 @@ class Geometry(object):
         atoms = np.append(self.atoms,other.atoms)
         cell = np.copy(self.cell)
         cell[axis,:] += other.cell[axis,:]
+        return self.__class__(cell,xyz,atoms=atoms,nsc=np.copy(self.nsc))
+
+
+    def reverse(self,atoms=None):
+        """ Returns a reversed geometry
+
+        Also enables reversing a subset
+        """
+        if atoms is None:
+            xyz = self.xyz[::-1,:]
+            atms = self.atoms[::-1]
+        else:
+            xyz = np.copy(self.xyz)
+            xyz[atoms,:] = self.xyz[atoms[::-1],:]
+            atms = np.copy(self.atoms)
+            atms[atoms] = atms[atoms][::-1]
+        # We retain the cell
+        cell = np.copy(self.cell)
+        return self.__class__(cell,xyz,atoms=atms,nsc=np.copy(self.nsc))
+
+    
+    def insert(self,atom,other):
+        """ Inserts other atoms right before index
+
+        We insert the `other` ``Geometry`` before obj
+        """
+        xyz = np.insert(self.xyz,atom,other.xyz,axis=0)
+        atoms = np.insert(self.atoms,atom,other.atoms)
+        # We retain the cell
+        cell = np.copy(self.cell)
         return self.__class__(cell,xyz,atoms=atoms,nsc=np.copy(self.nsc))
 
 
@@ -753,7 +831,7 @@ class Geometry(object):
         if ret_special: return ret
         return ret[0]
 
-
+    
     def close(self,xyz_ia,dR=None,idx=None,ret_coord=False,ret_dist=False):
         """
         Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
@@ -966,18 +1044,28 @@ if __name__ == '__main__':
     na = 0
     for ias, idxs in big.iter_block(5):
         na += len(ias)
-        print(len(ias))
     print('Completed with: '+str(na))
 
     # Try the rotation
     rot = dia.copy()
     print(rot.cell,rot.xyz)
-    rot.rotate(m.pi/4,[1,0,0])
+    rot = rot.rotate(m.pi/4,[1,0,0])
     print(rot.cell,rot.xyz)
 
     # Try the rotation
     rot = dia.copy()
     print(rot.cell,rot.xyz)
-    rot.rotate(m.pi/4,[1,0,0],only='cell')
+    rot = rot.rotate(m.pi/4,[1,0,0],only='cell')
     print(rot.cell,rot.xyz)
+
+    # Try and align Miller indices
+    fcc = Geometry(np.array([[ 0.5, 0.5, 0.5],
+                             [ 0.5,-0.5, 0.5],
+                             [ 0.5, 0.5,-0.5]]),
+                   np.zeros([3]),atoms=Atom['Fe'])
+    print(fcc.atoms)
+    print(fcc.cell)
+    rot = fcc.rotate_miller([1,1,1],[0,0,1]).swapaxes(0,2)
+    print(rot.cell)
+
 

@@ -6,13 +6,18 @@ import numpy as np
 __all__ = ['Quaternion']
 
 
+_v = np.array([1,0,0],np.float)
+
 class Quaternion(object):
     """
     Quaternion object to enable easy rotational quantities.
     """
-    def __init__(self,angle=0.,v=np.array([1,0,0],np.float)):
+    def __init__(self,angle=0.,v=_v,degree=False):
         """ Create quaternion object with angle and vector """
-        half = angle / 2
+        if degree:
+            half = angle / 180 * m.pi / 2
+        else:
+            half = angle / 2
         self._v = np.empty([4],np.float)
         self._v[0] = m.cos(half)
         self._v[1:] = np.array(v[:3],np.float) * m.sin(half)
