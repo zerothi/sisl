@@ -39,6 +39,8 @@ class XYZSile(Sile):
         fmt_str = '{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
         for ia,a,isp in geom.iter_species():
             self._write(fmt_str.format(a.symbol,*geom.xyz[ia,:]))
+        # Add a single new line
+        self._write('\n')
 
 
     def read_geom(self):
