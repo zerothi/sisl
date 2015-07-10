@@ -6,6 +6,7 @@ from __future__ import print_function
 
 # Import sile objects
 from sids.io.sile import *
+from sids.io._help import *
 
 # Import the geometry object
 from sids.geom import Geometry, Atom
@@ -20,8 +21,32 @@ class FDFSile(Sile):
     # These are the comments
     _comment = ['#','!',';']
 
+    # List of parent file-handles used while reading
+    _parent_fh = []
+
     # FDF values for conversions
     _Bohr = 0.529177
+
+    def readline(self,comment=False):
+        """ Reads the next line of the file """
+        l = self.fh.readline()
+        if comment: return l
+        while starts_with_list(l,self._comment):
+            l = self.fh.readline()
+        # In FDF files, %include marks files that progress
+        # down in a tree structure
+        if '%include' in l: 
+            # Split for reading tree file
+            self._parent_fh.append(self.fh)
+            self.fh = open(l.split()[1],self._mode)
+            # Read the following line in the new file
+            return self.readline()
+        if len(self._parent_fh) > 0 and l == '':
+            # l == '' marks the end of the file
+            self.fh.close()
+            self.fh = self._parent_fh.pop()
+            return self.readline()
+        return l
 
     def _read(self,key):
         """ Returns the arguments following the keyword in the FDF file """
@@ -173,12 +198,20 @@ if __name__ == "__main__":
                                    [1,0,1],
                                    [1,1,0]],np.float) * alat/2,
                     xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
-                    atoms = C )
+                    atoms = [C,Atom(Z=6,tag='C_pbe')] )
     # Write stuff
     geom.write(FDFSile('diamond.fdf','w'))
     geomr = FDFSile('diamond.fdf','r').read_geom()
     print(geomr)
     print(geomr.cell)
     print(geomr.xyz)
+
+    with open('tree.fdf','w') as fh:
+        fh.write('%include diamond.fdf')
+    geomr = FDFSile('tree.fdf','r').read_geom()
+    print(geomr)
+    print(geomr.cell)
+    print(geomr.xyz)
+    
 
     

@@ -216,6 +216,7 @@ class Geometry(object):
 
     __iter__ = iter_linear
 
+
     def iter_block(self,iR=10,dR=None):
         """ 
         Returns an iterator for performance critical looping.
@@ -321,7 +322,9 @@ class Geometry(object):
         cell   : (``self.cell`), array_like, optional
             the new associated cell of the geometry
         """
-        if cell is None: cell = np.copy(self.cell)
+        if cell is None: 
+            return self.__class__(np.copy(self.cell),np.copy(self.xyz[atoms,:]),
+                                  atoms = self.atoms[atoms], nsc = self.nsc)
         return self.__class__(cell,np.copy(self.xyz[atoms,:]),
                               atoms = self.atoms[atoms], nsc = self.nsc)
 
@@ -554,6 +557,7 @@ class Geometry(object):
         if 'xyz' in only: xyz = q.rotate(xyz)
         return self.__class__(cell,xyz,atoms=self.atoms,nsc=np.copy(self.nsc))
 
+
     def rotate_miller(self,m,v):
         """ Align Miller direction along ``v`` 
 
@@ -577,7 +581,7 @@ class Geometry(object):
         return self.rotate(a,cp)
         
 
-    def translate(self,v,atoms=None):
+    def translate(self,v,atoms=None,cell=False):
         """ Translates the geometry by ``v``
 
         One can translate a subset of the atoms by supplying ``atoms``.
@@ -589,7 +593,15 @@ class Geometry(object):
             g.xyz[:,:] += np.asarray(v,g.xyz.dtype)[None,:]
         else:
             g.xyz[atoms,:] += np.asarray(v,g.xyz.dtype)[None,:]
+        if cell:
+            # check which cell vector resembles v the most,
+            # use that
+            p = np.empty([3],np.float)
+            for i in range(3):
+                p[i] = abs(np.sum(g.cell[i,:] * v)) / np.sum(g.cell[i,:]**2)**.5
+            g.cell[np.argmax(p),:] += v
         return g
+
 
     def swapaxes(self,a,b,swap='cell+xyz'):
         """ Returns geometry with swapped axis
@@ -609,12 +621,26 @@ class Geometry(object):
                               nsc = np.copy(self.nsc) )
 
     
-    def center(self,atoms=None):
-        """ Returns the center of the geometry """
+    def center(self,atoms=None,which='xyz'):
+        """ Returns the center of the geometry 
+        By specifying ``which`` one can control whether it should be:
+        ``xyz``|``position: Center of coordinates (default)
+        ``mass``: Center of mass
+        ``cell``: Center of cell
+        """
+        if 'cell' in which:
+            return np.mean(self.cell,axis=0)
         if atoms is None:
-            return np.mean(self.xyz,axis=0)
-        return np.mean(self.xyz[atoms,:],axis=0)
-
+            g = self
+        else:
+            g = self.sub(atoms)
+        if 'mass' in which:
+            # Create list of masses
+            mass = np.array([atm.mass for atm in g.atoms])
+            return np.dot(mass,g.xyz) / np.sum(mass)
+        if not ('xyz' in which or 'position' in which):
+            raise ValueError('Unknown ``which``, not one of [xyz,position,mass,cell]')
+        return np.mean(g.xyz,axis=0)
 
 
     def append(self,other,axis):
@@ -709,6 +735,7 @@ class Geometry(object):
             return self.xyz + offset[None,:]
         else:
             return self.xyz[idx,:] + offset[None,:]
+
 
     def axyzsc(self,ia):
         return self.coords(self.a2isc(ia),self.sc2uc(ia))
@@ -910,6 +937,7 @@ class Geometry(object):
     # but ``close`` is shorten and retains meaning
     close_all = close
 
+
     def a2o(self,ia):
         """
         Returns an orbital index of the first orbital of said atom.
@@ -920,7 +948,6 @@ class Geometry(object):
         ----------
         ia : list, int
              Atomic indices
-
         """
         return self.lasto[ia % self.na] + (ia // self.na) * self.no
 

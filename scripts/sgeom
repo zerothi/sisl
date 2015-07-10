@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+"""
+Geometry handler for different formats
+"""
+
+import sys, os, os.path as osp
+import argparse as arg
+
+# Variable for python3 compliance
+is_3 = sys.version_info >= (3,0)
+
+import sids
+
+import numpy as np
+
+def run():
+
+    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files.')    
+
+    # Positional argument for the file.
+    in_file = arg.ArgumentParser(add_help=False)
+    in_file.add_argument('in_file',metavar='infile',type=str,
+                        help='Read geometry from file.')
+    out_file = arg.ArgumentParser(add_help=False)
+    out_file.add_argument('out_file',metavar='outfile',nargs='+',type=str,
+                        help='Write geometry to file, Append for more out files.')
+
+    # Set default parsers
+    std_parsers = [in_file,out_file]
+
+    # The subparsers, initialize
+    subparsers = p.add_subparsers(help='Select action you wish to do with the geometry')
+
+    # Convert
+    kw = {}
+    if is_3: kw = {'aliases':['c']}
+    convert = subparsers.add_parser('convert',parents=std_parsers,
+                                    help='Convert file to the output files.',**kw)
+    convert.add_argument('-o','--origin',action='store_true',default=False,
+                         help='Will push the coordinates to the origin.')
+    convert.add_argument('-co','--center-of',choices=['mass','xyz','position','cell'],default=None,
+                         help='Will move the coordinates to the center of the designated choice.')
+    convert.add_argument('-rx','--repeat-x',type=int,default=1,metavar='repeat',
+                         help='Repeats in the x-direction.')
+    convert.add_argument('-ry','--repeat-y',type=int,default=1,metavar='repeat',
+                         help='Repeats in the y-direction.')
+    convert.add_argument('-rz','--repeat-z',type=int,default=1,metavar='repeat',
+                         help='Repeats in the z-direction.')
+    convert.add_argument('-tx','--tile-x',type=int,default=1,metavar='tile',
+                         help='Tiles in the x-direction.')
+    convert.add_argument('-ty','--tile-y',type=int,default=1,metavar='tile',
+                         help='Tiles in the y-direction.')
+    convert.add_argument('-tz','--tile-z',type=int,default=1,metavar='tile',
+                         help='Tiles in the z-direction.')
+    convert.set_defaults(func=geom_convert)
+
+    args = p.parse_args()
+    args.func(args)
+
+
+def geom_convert(args):
+    """
+    sgeom convert $@
+    """
+    # Take geometry
+    g = sids.get_Sile(args.in_file).read_geom()
+    
+    if args.origin:
+        g.xyz[:,:] -= np.amin(g.xyz,axis=0)[None,:]
+
+    if args.center_of is not None:
+        g = g.translate(-g.center(which=args.center_of))
+
+    g = g.repeat(args.repeat_x,0).repeat(args.repeat_y,1).repeat(args.repeat_z,2)
+    g = g.tile(args.tile_x,0).tile(args.tile_y,1).tile(args.tile_z,2)
+
+    # Store geometry
+    for f in args.out_file:
+        sids.get_Sile(f,mode='w').write_geom(g)
+
+
+if __name__ == "__main__":
+    run()

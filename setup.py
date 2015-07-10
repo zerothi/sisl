@@ -41,6 +41,8 @@ def generate_cython():
     if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
+scripts = [osp.join('scripts', script) for script in ['sgeom']]
+
 metadata = dict(
     name = 'sids',
     maintainer = "Nick Papior Andersen",
@@ -52,6 +54,7 @@ metadata = dict(
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     platforms = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
     test_suite='nose.collector',
+    scripts = scripts,
     )
 
 from numpy.distutils.core import setup

@@ -1,12 +1,9 @@
 from __future__ import print_function, division
 
 from sids.geom import Geometry
-import numpy as np
+from sids.io._help import *
 
-def _starts_with_list(l,comments):
-    for comment in comments:
-        if l.startswith(comment): return True
-    return False
+import numpy as np
 
 __all__ = ['Sile','NCSile','SileError','sile_raise_write','sile_raise_read']
 
@@ -56,7 +53,7 @@ class Sile(object):
         """ Reads the next line of the file """
         l = self.fh.readline()
         if comment: return l
-        while _starts_with_list(l,self._comment):
+        while starts_with_list(l,self._comment):
             l = self.fh.readline()
         return l
 
