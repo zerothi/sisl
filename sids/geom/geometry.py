@@ -89,9 +89,9 @@ class Geometry(object):
         # Correct the atoms input to Atom
         if isinstance(atoms,list):
             if isinstance(atoms[0],str):
-                atoms = [Atom[a] for a in atoms]
+                atoms = np.array([Atom[a] for a in atoms])
         elif isinstance(atoms,str):
-            atoms = Atom[atoms]
+            atoms = np.array([Atom[atoms]])
 
         # Create atom objects
         self.atoms = array_fill_repeat(atoms,self.na)
@@ -322,11 +322,12 @@ class Geometry(object):
         cell   : (``self.cell`), array_like, optional
             the new associated cell of the geometry
         """
+        atms = np.asarray([atoms],np.int).flatten()
         if cell is None: 
             return self.__class__(np.copy(self.cell),np.copy(self.xyz[atoms,:]),
-                                  atoms = self.atoms[atoms], nsc = self.nsc)
+                                  atoms = [self.atoms[i] for i in atms], nsc = self.nsc)
         return self.__class__(cell,np.copy(self.xyz[atoms,:]),
-                              atoms = self.atoms[atoms], nsc = self.nsc)
+                              atoms = [self.atoms[i] for i in atms], nsc = self.nsc)
 
 
     def cut(self,seps,axis):
