@@ -699,12 +699,7 @@ class Geometry(object):
         """ Mirrors the structure around the center of the atoms """
         c = self.center(atoms=atoms)
         g = self.translate(-c)
-        xyz = np.copy(g.xyz)
-        if atoms is None:
-            xyz *= -1
-        else:
-            xyz[atoms,:] *= -1
-        g.xyz = xyz
+        g.xyz *= -1
         g = g.translate(c)
         return self.__class__(g.cell,g.xyz,atoms=g.atoms,nsc=g.nsc)
         
