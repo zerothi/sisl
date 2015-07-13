@@ -52,7 +52,7 @@ prohibits name clashes with other implementations.
 To read a file one can do
 
     import sids
-	fxyz = sids.get_Sile('file.xyz')
+	fxyz = sids.get_sile('file.xyz')
 
 which returns an `XYZSile` file object that enables reading the information in
 `file.xyz`. To read the geometry and obtain a geometry object
@@ -63,17 +63,17 @@ and now you can interact with that geometry at will.
 
 Even though these are hard coded you can easily extend your own file format
 
-	sids.add_Sile(<file ending>,<SileObject>)
+	sids.add_sile(<file ending>,<SileObject>)
 
 for instance the `XYZSile` is hooked using:
 
-	sids.add_Sile('xyz',XYZSile)
-	sids.add_Sile('XYZ',XYZSile)
+	sids.add_sile('xyz',XYZSile)
+	sids.add_sile('XYZ',XYZSile)
 
-which means that `sids.get_Sile` understands files `*.xyz` and `*.XYZ` files as
+which means that `sids.get_sile` understands files `*.xyz` and `*.XYZ` files as
 an `XYZSile` object. You can put whatever file-endings here and classes to retain API
 compatibility. See the `sids.io` package for more information. Note that a call to
-`add_Sile` with an already existing file ending results in overwriting the initial
+`add_sile` with an already existing file ending results in overwriting the initial
 meaning of that file object.
 
 __NOTE__: if you know the file is in _xyz_ file format but the ending is erroneous, you can force the `XYZSile` by instantiating using that class
