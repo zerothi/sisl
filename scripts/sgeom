@@ -15,44 +15,49 @@ import numpy as np
 
 def run():
 
-    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files.')    
+    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files.')
 
-    # Positional argument for the file.
-    in_file = arg.ArgumentParser(add_help=False)
-    in_file.add_argument('in_file',metavar='infile',type=str,
-                        help='Read geometry from file.')
-    out_file = arg.ArgumentParser(add_help=False)
-    out_file.add_argument('out_file',metavar='outfile',nargs='+',type=str,
-                        help='Write geometry to file, Append for more out files.')
+    def dir_type(val,check_type):
+        if val in ['x','y','z']:
+            if val == 'x': return 0
+            if val == 'y': return 1
+            if val == 'z': return 2
+        try:
+            return check_type(val)
+        except:
+            raise arg.ArgumentTypeError("Type: "+val+" not valid type "+str(check_type.__name__))
 
-    # Set default parsers
-    std_parsers = [in_file,out_file]
+    def dir_int(val): return dir_type(val,int)
+    def dir_float(val): return dir_type(val,float)
 
-    # The subparsers, initialize
-    subparsers = p.add_subparsers(help='Select action you wish to do with the geometry')
-
-    # Convert
-    kw = {}
-    if is_3: kw = {'aliases':['c']}
-    convert = subparsers.add_parser('convert',parents=std_parsers,
-                                    help='Convert file to the output files.',**kw)
-    convert.add_argument('-o','--origin',action='store_true',default=False,
+    p.add_argument('-o','--origin',action='store_true',default=False,
                          help='Will push the coordinates to the origin.')
-    convert.add_argument('-co','--center-of',choices=['mass','xyz','position','cell'],default=None,
+    p.add_argument('-co','--center-of',choices=['mass','xyz','position','cell'],default=None,
                          help='Will move the coordinates to the center of the designated choice.')
-    convert.add_argument('-rx','--repeat-x',type=int,default=1,metavar='repeat',
+    p.add_argument('-r','--repeat',nargs=2,default=None,type=dir_int,action='append',
+                         metavar=('dir','repeat'),
+                         help='Repeats in the specified direction.')
+    p.add_argument('-rx','--repeat-x',type=int,default=1,metavar='repeat',
                          help='Repeats in the x-direction.')
-    convert.add_argument('-ry','--repeat-y',type=int,default=1,metavar='repeat',
+    p.add_argument('-ry','--repeat-y',type=int,default=1,metavar='repeat',
                          help='Repeats in the y-direction.')
-    convert.add_argument('-rz','--repeat-z',type=int,default=1,metavar='repeat',
+    p.add_argument('-rz','--repeat-z',type=int,default=1,metavar='repeat',
                          help='Repeats in the z-direction.')
-    convert.add_argument('-tx','--tile-x',type=int,default=1,metavar='tile',
+    p.add_argument('-t','--tile',nargs=2,type=dir_int,action='append',
+                         metavar=('dir','tile'),
+                         help='Tiles in the specified direction.')
+    p.add_argument('-tx','--tile-x',type=int,default=1,metavar='tile',
                          help='Tiles in the x-direction.')
-    convert.add_argument('-ty','--tile-y',type=int,default=1,metavar='tile',
+    p.add_argument('-ty','--tile-y',type=int,default=1,metavar='tile',
                          help='Tiles in the y-direction.')
-    convert.add_argument('-tz','--tile-z',type=int,default=1,metavar='tile',
+    p.add_argument('-tz','--tile-z',type=int,default=1,metavar='tile',
                          help='Tiles in the z-direction.')
-    convert.set_defaults(func=geom_convert)
+    p.set_defaults(func=geom_convert)
+
+    p.add_argument('in_file',metavar='infile',type=str,
+                   help='Read geometry from file.')
+    p.add_argument('out_file',metavar='outfile',nargs='+',type=str,
+                   help='Write geometry to file, Append for more out files.')
 
     args = p.parse_args()
     args.func(args)
@@ -68,8 +73,16 @@ def geom_convert(args):
     if args.origin:
         g.xyz[:,:] -= np.amin(g.xyz,axis=0)[None,:]
 
-    if args.center_of is not None:
+    if not args.center_of is None:
         g = g.translate(-g.center(which=args.center_of))
+        
+    if not args.repeat is None:
+        for d,r in args.repeat:
+            g = g.repeat(r,d)
+
+    if not args.tile is None:
+        for d,t in args.tile:
+            g = g.tile(t,d)
 
     g = g.repeat(args.repeat_x,0).repeat(args.repeat_y,1).repeat(args.repeat_z,2)
     g = g.tile(args.tile_x,0).tile(args.tile_y,1).tile(args.tile_z,2)
