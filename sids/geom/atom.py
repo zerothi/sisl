@@ -472,6 +472,10 @@ class Atom(with_metaclass(AtomMeta,object)):
         else:
             self.tag = tag
 
+    def copy(self):
+        """ Returns copy of this object """
+        return self.__class__(self.Z,self.R,self.orbs,self.mass,self.tag)
+
     @property
     def symbol(self):
         return _ptbl.Z_short(self.Z)

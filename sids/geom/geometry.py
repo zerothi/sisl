@@ -100,7 +100,7 @@ class Geometry(object):
         if isinstance(atoms,Atom):
             self.dR = atoms.dR
         else:
-            self.dR = np.argmax([a.dR for a in atoms])
+            self.dR = np.amax([a.dR for a in atoms])
 
         # Get total number of orbitals
         orbs = np.array([a.orbs for a in self.atoms],np.int)
