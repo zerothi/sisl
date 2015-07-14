@@ -11,6 +11,7 @@ from sids.io._help import *
 # Import the geometry object
 from sids.geom import Geometry, Atom
 
+from os.path import dirname, sep
 import numpy as np
 
 __all__ = ['FDFSile']
@@ -23,9 +24,24 @@ class FDFSile(Sile):
 
     # List of parent file-handles used while reading
     _parent_fh = []
+    _directory = ''
 
     # FDF values for conversions
     _Bohr = 0.529177
+
+    def __init__(self,filename,mode=None,base=None):
+        """ Initialize an FDF file from the filename 
+
+        By supplying base you can reference files in other directories.
+        By default the ``base`` is the directory given in the file name.
+        """
+        super(self.__class__, self).__init__(filename,mode=mode)
+        if base is None:
+            # Extract from filename
+            self._directory = dirname(filename)
+        else:
+            self._directory = base
+        
 
     def readline(self,comment=False):
         """ Reads the next line of the file """
@@ -38,7 +54,7 @@ class FDFSile(Sile):
         if '%include' in l: 
             # Split for reading tree file
             self._parent_fh.append(self.fh)
-            self.fh = open(l.split()[1],self._mode)
+            self.fh = open(self._directory+sep+l.split()[1],self._mode)
             # Read the following line in the new file
             return self.readline()
         if len(self._parent_fh) > 0 and l == '':
