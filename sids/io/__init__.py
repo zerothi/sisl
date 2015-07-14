@@ -12,6 +12,7 @@ from sids.io.fdf import *
 from sids.io.gulp import *
 from sids.io.siesta import *
 from sids.io.tb import *
+from sids.io.tbtrans import *
 from sids.io.xyz import *
 from sids.io.xv import *
 
@@ -30,6 +31,7 @@ extendall('sids.io.fdf')
 extendall('sids.io.gulp')
 extendall('sids.io.siesta')
 extendall('sids.io.tb')
+extendall('sids.io.tbtrans')
 extendall('sids.io.xyz')
 extendall('sids.io.xv')
 
@@ -55,6 +57,7 @@ add_sile('nc',SIESTASile)
 add_sile('NC',SIESTASile)
 add_sile('tb',TBSile)
 add_sile('TB',TBSile)
+add_sile('TBT.nc',TBtransSile)
 add_sile('got',GULPSile)
 add_sile('XV',XVSile)
 
@@ -65,7 +68,13 @@ def get_sile(file,*args,**kwargs):
     and object with the file handle.
     """
     try:
-        end = splitext(file)[1]
+        f = file
+        end = ''
+        while True:
+            lext = splitext(f)
+            end = lext[1] + end
+            if len(lext[1]) == 0: break
+            f = lext[0]
         if end.startswith('.'): end = end[1:]
         return _objs[end](file,*args,**kwargs)
     except Exception as e:
@@ -89,5 +98,7 @@ if __name__ == "__main__":
     assert isinstance(get_sile('test.TB'),TBSile),"Returning incorrect object"
     assert isinstance(get_sile('test.got'),GULPSile),"Returning incorrect object"
     assert isinstance(get_sile('test.XV'),XVSile),"Returning incorrect object"
+    assert isinstance(get_sile('test.TBT.nc'),TBtransSile),"Returning incorrect object"
     print('Finished tests successfully')
+
 
