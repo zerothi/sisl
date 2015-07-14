@@ -68,7 +68,7 @@ def geom_convert(args):
     sgeom convert $@
     """
     # Take geometry
-    g = sids.get_Sile(args.in_file).read_geom()
+    g = sids.get_sile(args.in_file).read_geom()
     
     if args.origin:
         g.xyz[:,:] -= np.amin(g.xyz,axis=0)[None,:]
@@ -89,7 +89,7 @@ def geom_convert(args):
 
     # Store geometry
     for f in args.out_file:
-        sids.get_Sile(f,mode='w').write_geom(g)
+        sids.get_sile(f,mode='w').write_geom(g)
 
 
 if __name__ == "__main__":
