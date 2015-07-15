@@ -80,8 +80,7 @@ Even though these are hard coded you can easily extend your own file format
 
 for instance the `XYZSile` is hooked using:
 
-    sids.add_sile('xyz',XYZSile)
-    sids.add_sile('XYZ',XYZSile)
+    sids.add_sile('xyz',XYZSile,case=False)
 
 which means that `sids.get_sile` understands files `*.xyz` and `*.XYZ` files as
 an `XYZSile` object. You can put whatever file-endings here and classes to retain API
