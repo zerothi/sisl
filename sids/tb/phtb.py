@@ -5,11 +5,12 @@ from __future__ import print_function, division
 
 from numbers import Integral
 
-# The atom model
+import numpy as np
+
+
 from sids.geom import Atom, Geometry, Quaternion
 from .tb import TightBinding
 
-import numpy as np
 
 __all__ = ['PhononTightBinding']
 

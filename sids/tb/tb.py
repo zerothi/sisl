@@ -6,10 +6,11 @@ from __future__ import print_function, division
 import warnings
 from numbers import Integral
 
-# The atom model
-from sids.geom import Atom, Geometry, Quaternion
-
 import numpy as np
+import scipy.linalg as sli
+
+
+from sids.geom import Atom, Geometry, Quaternion
 
 __all__ = ['TightBinding']
 
@@ -307,6 +308,24 @@ class TightBinding(object):
             del Hfull, Sfull
             return (H,S)
 
+    def eigh(self,k=None,atoms=None,*args,**kwargs):
+        """ Returns the eigenvalues of the tight-binding model
+
+        Setup the Hamiltonian and overlap matrix with respect to
+        the given k-point, then reduce the space to the specified atoms
+        and calculate the eigenvalues.
+
+        All subsequent arguments gets passed directly to ``scipy.linalg.eigh``
+        """
+        H, S = self.tocsr(k=k)
+        # Reduce sparsity pattern
+        if not atoms is None:
+            orbs = self.a2o(atoms)
+            # Reduce space
+            H = H[orbs,orbs]
+            S = S[orbs,orbs]
+        return sli.eigh(H.todense(),S.todense(),*args,**kwargs)
+
     def cut(self,seps,axis):
         """ Cuts the tight-binding model into different parts.
 
@@ -438,11 +457,11 @@ class TightBinding(object):
 
         return tb
 
-    def write(self,ObjSile):
-        """ Writes a tight-binding model to the ``ObjSile`` as implemented in the ``ObjSile.write_tb``
+    def write(self,sile):
+        """ Writes a tight-binding model to the ``sile`` as implemented in the ``ObjSile.write_tb``
         method """
         self.finalize()
-        ObjSile.write_tb(self)
+        sile.write_tb(self)
 
         
 if __name__ == "__main__":
@@ -468,6 +487,7 @@ if __name__ == "__main__":
     tb.finalize()
     print('H\n',tb.tocsr()[0])
     print('H\n',tb.tocsr(k=[.25,.25,0])[0])
+    print('eig\n',tb.eigh(k=[3./4,.5,0],eigvals_only=True))
 
 
     print('\nCheck expansion')

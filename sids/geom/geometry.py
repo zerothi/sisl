@@ -6,15 +6,14 @@ from __future__ import print_function, division
 # To check for integers
 from numbers import Integral
 from math import acos, pi
+import sys
 
-# Helpers
+import numpy as np
+
+
 from sids.geom._help import array_fill_repeat
-
-# The atom model
 from sids.geom.atom import Atom
 from sids.geom.quaternion import Quaternion
-
-import numpy as np, sys
 
 __all__ = ['Geometry']
 
@@ -948,7 +947,7 @@ class Geometry(object):
     close_all = close
 
 
-    def a2o(self,ia):
+    def a2o(self,ia,all=False):
         """
         Returns an orbital index of the first orbital of said atom.
         This is particularly handy if you want to create
@@ -958,8 +957,21 @@ class Geometry(object):
         ----------
         ia : list, int
              Atomic indices
+        all: False, bool
+             `False`, return only the first orbital corresponding to the atom,
+             `True`, returns list of the full atom
         """
-        return self.lasto[ia % self.na] + (ia // self.na) * self.no
+        if not all:
+            return self.lasto[ia % self.na] + (ia // self.na) * self.no
+        ob = self.a2o(ia)
+        oe = self.a2o(np.asarray(ia,np.int)+1)
+        # Create ranges
+        o = np.empty([np.sum(oe-ob)],np.int)
+        n = 0
+        for i in range(len(ob)):
+            o[n:n+oe[i]-ob[i]] = np.arange(ob[i],oe[i],np.int)
+            n += oe[i]-ob[i]
+        return o
 
 
     def o2a(self,io):

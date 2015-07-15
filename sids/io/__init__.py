@@ -3,6 +3,7 @@ IO imports
 """
 from __future__ import print_function, division
 from os.path import splitext
+import sys
 
 from sids.io.sile import *
 
@@ -16,16 +17,14 @@ from sids.io.tbtrans import *
 from sids.io.xyz import *
 from sids.io.xv import *
 
-import sys
-
-def extendall(mod):
-    global __all__
-    __all__.extend(sys.modules[mod].__dict__['__all__'])
-
 # Default functions in this top module
 __all__ = ['add_sile','get_sile']
 
 # Extend all by the sub-modules
+def extendall(mod):
+    global __all__
+    __all__.extend(sys.modules[mod].__dict__['__all__'])
+
 extendall('sids.io.sile')
 extendall('sids.io.fdf')
 extendall('sids.io.gulp')
@@ -41,42 +40,54 @@ extendall('sids.io.xv')
 
 _objs = {}
 
-def add_sile(ending,obj):
+def add_sile(ending,obj,case=True):
     """
     Public for attaching lookup tables for allowing
     users to attach files for the IOSile function call
     """
     global _objs
+    if not case:
+        add_sile(ending.lower(),obj)
+        add_sile(ending.upper(),obj)
+        return
     _objs[ending] = obj
+    if ending[0] == '.':
+        _objs[ending[1:]] = obj
+    else:
+        _objs['.'+ending] = obj
 
-add_sile('xyz',XYZSile)
-add_sile('XYZ',XYZSile)
-add_sile('fdf',FDFSile)
-add_sile('FDF',FDFSile)
-add_sile('nc',SIESTASile)
-add_sile('NC',SIESTASile)
-add_sile('tb',TBSile)
-add_sile('TB',TBSile)
+
+add_sile('xyz',XYZSile,case=False)
+add_sile('fdf',FDFSile,case=False)
+add_sile('nc',SIESTASile,case=False)
+add_sile('tb',TBSile,case=False)
 add_sile('TBT.nc',TBtransSile)
 add_sile('got',GULPSile)
 add_sile('XV',XVSile)
 
-# When new 
 def get_sile(file,*args,**kwargs):
     """ 
     Guess the file handle for the input file and return
     and object with the file handle.
     """
     try:
+        # Create list of endings on this file
+        end_list = []
         f = file
         end = ''
         while True:
             lext = splitext(f)
             end = lext[1] + end
+            end_list.append(end)
             if len(lext[1]) == 0: break
             f = lext[0]
-        if end.startswith('.'): end = end[1:]
-        return _objs[end](file,*args,**kwargs)
+        while end_list:
+            end = end_list.pop()
+            try:
+                return _objs[end](file,*args,**kwargs)
+            except:
+                pass
+        raise Exception('print fail')
     except Exception as e:
         raise NotImplementedError("File requested could not be found, possibly the file has "+
                                   "not been implemented.")
@@ -99,6 +110,7 @@ if __name__ == "__main__":
     assert isinstance(get_sile('test.got'),GULPSile),"Returning incorrect object"
     assert isinstance(get_sile('test.XV'),XVSile),"Returning incorrect object"
     assert isinstance(get_sile('test.TBT.nc'),TBtransSile),"Returning incorrect object"
+    assert isinstance(get_sile('test.ueontsh.nc.XV'),XVSile),"Returning incorrect object"
     print('Finished tests successfully')
 
 

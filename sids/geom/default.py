@@ -3,11 +3,11 @@ Helper functions for returning special geometries often encountered
 """
 from __future__ import print_function, division
 
-# The atom model
+import numpy as np
+
+
 from sids.geom.atom import Atom
 from sids.geom.geometry import Geometry
-
-import numpy as np
 
 __all__ = ['graphene','graphene_square','diamond']
 

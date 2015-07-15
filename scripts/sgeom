@@ -2,6 +2,7 @@
 """
 Geometry handler for different formats
 """
+from __future__ import print_function, division
 
 import sys, os, os.path as osp
 import argparse as arg
@@ -9,9 +10,10 @@ import argparse as arg
 # Variable for python3 compliance
 is_3 = sys.version_info >= (3,0)
 
+import numpy as np
+
 import sids
 
-import numpy as np
 
 def run():
 

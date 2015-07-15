@@ -6,11 +6,12 @@ from __future__ import print_function, division
 # We need this for python3 support PY3
 from six import with_metaclass
 
-# To check for integers
 from numbers import Integral
-from sids.geom._help import array_fill_repeat
 
 import numpy as np
+
+
+from sids.geom._help import array_fill_repeat
 
 __all__ = ['PeriodicTable','Atom']
 
