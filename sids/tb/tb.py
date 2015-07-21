@@ -302,7 +302,7 @@ class TightBinding(object):
             kr = np.dot(np.asarray(k),rcell) * np.pi * 2.
             for si in range(np.product(self.nsc)):
                 isc = self.isc_off[si,:]
-                phase = np.exp(1j*np.dot(kr,np.dot(self.cell,isc)))
+                phase = np.exp(-1j*np.dot(kr,np.dot(self.cell,isc)))
                 H += Hfull[:,si*self.no:(si+1)*self.no] * phase
                 S += Sfull[:,si*self.no:(si+1)*self.no] * phase
             del Hfull, Sfull
