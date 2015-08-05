@@ -2,7 +2,7 @@
 Sile object for reading/writing FDF files
 """
 
-from __future__ import print_function
+from __future__ import print_function, division
 
 # Import sile objects
 from sids.io.sile import *
@@ -41,8 +41,10 @@ class FDFSile(Sile):
             self._directory = dirname(filename)
         else:
             self._directory = base
-        
+        if len(self._directory) == 0:
+            self._directory = '.'
 
+            
     def readline(self,comment=False):
         """ Reads the next line of the file """
         l = self.fh.readline()
@@ -139,13 +141,36 @@ class FDFSile(Sile):
             s /= self._Bohr
         # Read in cell
         cell = np.empty([3,3],np.float64)
-        f,lc = self._read_block('LatticeVectors',force=True)
-        for i in range(3):
-            cell[i,:] = [float(k) for k in lc[i].split()[:3]]
+        f, lc = self._read_block('LatticeVectors')
+        if f:
+            for i in range(3):
+                cell[i,:] = [float(k) for k in lc[i].split()[:3]]
+        else:
+            f, lc = self._read_block('LatticeParameters')
+            tmp = [float(k) for k in lc[0].split()[:6]]
+            if f:
+                cell[:,:] = 0.
+                cell[0,0] = tmp[0]
+                g = tmp[5] * np.pi / 180.
+                cg = np.cos(g)
+                sg = np.sin(g)
+                cell[1,0] = tmp[1] * cg
+                cell[1,1] = tmp[1] * sg
+                b = tmp[4] * np.pi / 180.
+                cb = np.cos(b)
+                sb = np.sin(b)
+                cell[2,0] = tmp[2] * cb
+                a = tmp[3] * np.pi / 180.
+                d = ( np.cos(a) - cb*cg ) / sg
+                cell[2,1] = tmp[2] * d
+                cell[2,2] = tmp[2] * np.sqrt(sb**2-d**2)
+        if not f:
+            # the fdf file contains neither the latticevectors or parameters
+            raise SileError('Could not find Vectors or Parameters block in file')
         cell *= s
 
         # Read atom scaling
-        f,lc = self._read('AtomicCoordinatesFormat')
+        f, lc = self._read('AtomicCoordinatesFormat')
         lc = lc.lower()
         if 'ang' in lc or 'notscaledcartesianang' in lc:
             s = 1.
