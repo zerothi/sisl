@@ -10,7 +10,7 @@ import numpy as np
 import scipy.linalg as sli
 
 
-from sids.geom import Atom, Geometry, Quaternion
+from sids import Atom, Geometry, Quaternion
 
 __all__ = ['TightBinding']
 
@@ -107,12 +107,12 @@ class TightBinding(object):
         ptr  = self.ptr[i]
         ncol = self.ncol[i]
         # Create the column indices in a strict manner
-        jj = np.array([j],np.int).flatten()
+        jj = np.array([j],np.int32).flatten()
         lj = jj.shape[0]
         if ncol > 0:
             # Checks whether any values in either array exists
             # if so we remove those from the jj
-            idx = np.intersect1d(jj,self.col[ptr:ptr+ncol],assume_unique=True)
+            idx = np.int32ersect1d(jj,self.col[ptr:ptr+ncol],assume_unique=True)
         else:
             idx = []
             
@@ -151,8 +151,8 @@ class TightBinding(object):
             # This may be too reductionists, however, 
             # it should happen rarely
             self.ptr[i+1:] += 10
-            self.col = np.insert(self.col,ptr+ncol,np.empty([10],np.int))
-            self._TB = np.insert(self._TB,ptr+ncol,np.empty([10,2],np.int),axis=0)
+            self.col = np.insert(self.col,ptr+ncol,np.empty([10],np.int32))
+            self._TB = np.insert(self._TB,ptr+ncol,np.empty([10,2],np.int32),axis=0)
 
         # Step to the placement of the new values
         ptr += ncol
@@ -166,7 +166,7 @@ class TightBinding(object):
 
     ############# DONE creating easy overrides #################
 
-    def reset(self,nc=None,dtype=np.float):
+    def reset(self,nc=None,dtype=np.float64):
         """
         The sparsity pattern is cleaned and every thing 
         is reset. 
@@ -188,11 +188,11 @@ class TightBinding(object):
             nc = max(5,len(nc) * 4)
 
         # Reset the sparsity pattern
-        self.ncol = np.zeros([self.geom.no],np.int)
+        self.ncol = np.zeros([self.geom.no],np.int32)
         # Create the interstitial pointer for each orbital
-        self.ptr = np.cumsum(np.array([nc] * (self.geom.no+1),np.int)) - nc
+        self.ptr = np.cumsum(np.array([nc] * (self.geom.no+1),np.int32)) - nc
         self._nnzs = 0
-        self.col = np.empty([self.ptr[-1]],np.int)
+        self.col = np.empty([self.ptr[-1]],np.int32)
         
         # Denote the tight-binding model as _not_ finalized
         # Before saving, or anything being done, it _has_ to be
@@ -286,7 +286,7 @@ class TightBinding(object):
             return (csr_matrix((self._TB[:,0],self.col,self.ptr),**kw), \
                         csr_matrix((self._TB[:,1],self.col,self.ptr),**kw))
         else:
-            k = np.asarray(k,np.float)
+            k = np.asarray(k,np.float64)
             import scipy.linalg as sla
             # Setup the Hamiltonian for this k-point
             Hfull, Sfull = self.tocsr()
@@ -361,7 +361,7 @@ class TightBinding(object):
         # We initialize to be the same as the parent direction
         nsc = self.nsc // 2
         nsc[axis] = 0 # we count the new direction
-        isc = np.zeros([3],np.int)
+        isc = np.zeros([3],np.int32)
         isc[axis] -= 1
         out = False
         while not out:

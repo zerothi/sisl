@@ -5,7 +5,7 @@ import numpy as np
 __all__ = ['array_fill_repeat']
 
 
-def array_fill_repeat(array,size):
+def array_fill_repeat(array,size,cls=None):
     """
     This repeats an array along the zeroth axis until it
     has size `size`. Note that initial size of `array` has
@@ -21,6 +21,11 @@ def array_fill_repeat(array,size):
         # repeatable part, full, or a single)
         raise ValueError('Repetition of or array is not divisible with actual length. ' +
                          'Hence we cannot create a repeated size.')
-    if reps > 1:
-        return np.tile(array,reps)
-    return array
+    if cls is None:
+        if reps > 1:
+            return np.tile(array,reps)
+        return array
+    else:
+        if reps > 1:
+            return np.tile(np.array(array,dtype=cls),reps)
+        return np.array(array,dtype=cls)

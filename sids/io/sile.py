@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from sids.geom import Geometry
+from sids import Geometry
 from sids.io._help import *
 
 import numpy as np

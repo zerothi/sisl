@@ -35,9 +35,9 @@ For instance to create a huge graphene flake
     sq3h  = 3.**.5 * 0.5
     gr = Geometry(cell=np.array([[1.5, sq3h,  0.],
                                  [1.5,-sq3h,  0.],
-                                 [ 0.,   0., 10.]],np.float) * 1.42,
+                                 [ 0.,   0., 10.]],np.float64) * 1.42,
                   xyz=np.array([[ 0., 0., 0.],
-                                [ 1., 0., 0.]],np.float) * 1.42,
+                                [ 1., 0., 0.]],np.float64) * 1.42,
                   atoms = Atom(Z=6,R = 1.42), nsc = [3,3,1])
     huge = gr.tile(100,axis=0).tile(100,axis=1)
 

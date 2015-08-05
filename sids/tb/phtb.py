@@ -8,7 +8,7 @@ from numbers import Integral
 import numpy as np
 
 
-from sids.geom import Atom, Geometry, Quaternion
+from sids import Atom, Geometry, Quaternion
 from .tb import TightBinding
 
 
@@ -44,8 +44,8 @@ class PhononTightBinding(TightBinding):
         # we need to correct the dynamical matrix found in GULP
         # This ensures that Newtons laws are obeyed, (i.e. 
         # action == re-action)
-        om = np.sqrt(np.array([a.mass for a in self.atoms],np.float))
-        MM = np.empty([len(om)],np.float)
+        om = np.sqrt(np.array([a.mass for a in self.atoms],np.float64))
+        MM = np.empty([len(om)],np.float64)
         r3 = range(3)
 
         for ja in range(self.na):

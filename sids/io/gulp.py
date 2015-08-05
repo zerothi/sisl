@@ -7,7 +7,7 @@ from __future__ import print_function
 from sids.io.sile import *
 
 # Import the geometry object
-from sids.geom import Geometry, Atom
+from sids import Geometry, Atom, SuperCell
 from sids.tb import PhononTightBinding
 
 import numpy as np
@@ -29,7 +29,7 @@ class GULPSile(NCSile):
 
         # skip 1 line
         self.readline()
-        cell = np.zeros([3,3],np.float)
+        cell = np.zeros([3,3],np.float64)
         for i in range(3):
             l = self.readline().split()
             cell[i,0] = float(l[0])
@@ -53,7 +53,7 @@ class GULPSile(NCSile):
             xyz.append([float(f) for f in ls[3:6]])
 
         # Convert to array
-        xyz = np.array(xyz,np.float)
+        xyz = np.array(xyz,np.float64)
         xyz.shape = (-1,3)
         if 'fractional' in key.lower():
             # Correct for fractional coordinates
@@ -65,7 +65,7 @@ class GULPSile(NCSile):
             raise ValueError('Could not read in cell information and/or coordinates')
 
         # Return the geometry
-        return Geometry(cell,xyz,atoms=Atom[Z])
+        return Geometry(xyz,atoms=Atom[Z],sc=SuperCell(cell))
 
     def read_tb(self,**kwargs):
         """ Returns a GULP tight-binding model for the output of GULP """
@@ -79,7 +79,7 @@ class GULPSile(NCSile):
         # Easier for creation of the sparsity pattern
         from scipy.sparse import lil_matrix, diags
 
-        dyn = lil_matrix( (geom.no,geom.no) ,dtype = kwargs.get('dtype',np.float) )
+        dyn = lil_matrix( (geom.no,geom.no) ,dtype = kwargs.get('dtype',np.float64) )
         
         self.step_to('Real Dynamical matrix')
 

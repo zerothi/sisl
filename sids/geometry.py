@@ -10,10 +10,10 @@ import sys
 
 import numpy as np
 
-
-from sids.geom._help import array_fill_repeat
-from sids.geom.atom import Atom
-from sids.geom.quaternion import Quaternion
+from .quaternion import Quaternion
+from .supercell import SuperCell, SuperCellChild
+from .atom import Atom
+from ._help import array_fill_repeat
 
 __all__ = ['Geometry']
 
@@ -21,9 +21,10 @@ __all__ = ['Geometry']
 # Local default variables for the __init__ of the
 # Geometry class
 _H = Atom['H']
-_nsc = np.array([1]*3,np.int)
+_nsc = np.array([1]*3,np.int32)
 
-class Geometry(object):
+
+class Geometry(SuperCellChild):
     """
     Geometry object handling atomic coordinates in a supercell
     fashion.
@@ -38,9 +39,7 @@ class Geometry(object):
     
     Parameters
     ----------
-    cell  : array_like
-        cell vectors in a 3x3 matrix.
-        ``cell[i,:]`` is the cell vector along the i'th direction.
+    sc  : `SuperCell`
     xyz   : array_like
         atomic coordinates in a Nx3 matrix.
         ``xyz[i,:]`` is the atomic coordinate of the i'th atom.
@@ -48,20 +47,10 @@ class Geometry(object):
     atoms : (Atom['H']), list of atoms associated
         These atoms constitute the atomic ranges, weights, orbitals
         etc. for the geometry.
-    nsc   : (1,1,1) array_like, integer
-        Number of supercells in the geometry.
-        We default it to be a molecule, hence no interaction.
-        NOTE That this quantity is the actual number of supercells.
-        Each direction can be any of these numbers:
-          0/1, 3, 5, ...,
-        as one starts with the primary cell, any other super-cell accounts
-        for both the positive and negative direction, hence two additional 
-        supercells per additional principal layer in any-one direction.
 
     Attributes
     ----------
-    cell : (3,3) ndarray
-        Cell vectors.
+    sc : The supercell object
     na/len(self) : integer
         Number of atoms.
     xyz  : (na,3) ndarray
@@ -74,47 +63,53 @@ class Geometry(object):
         Maximum orbital range.
     nsc  : (3) ndarray
         Total number of supercells in each direction
+    cell : (3,3) ndarray
+        Cell vectors, property locating the `sc.cell` variable
     """
 
     # The length conversion factor
     Length = 0.529177
 
-    def __init__(self,cell,xyz,atoms=_H,nsc=_nsc):
-        self.cell = np.asarray(cell)
+    def __init__(self,xyz,atoms=_H,sc=None):
+
+        if sc is None:
+            # Create fake super-cell of zero size
+            self.set_supercell(SuperCell([1.,1.,1.]))
+        else:
+            self.set_supercell(sc)
+
+        # Create the geometry coordinate
         self.xyz = np.asarray(xyz)
-        self.xyz.shape = (-1,3)
+        self.xyz.shape = (-1, 3)
         self.na = len(self.xyz)
 
         # Correct the atoms input to Atom
-        if isinstance(atoms,list):
+        if isinstance(atoms, list):
             if isinstance(atoms[0],str):
                 atoms = np.array([Atom[a] for a in atoms])
-        elif isinstance(atoms,str):
+        elif isinstance(atoms, str):
             atoms = np.array([Atom[atoms]])
 
         # Create atom objects
-        self.atoms = array_fill_repeat(atoms,self.na)
+        self.atoms = array_fill_repeat(atoms, self.na, cls=Atom)
 
         # Store maximum interaction range
-        if isinstance(atoms,Atom):
+        if isinstance(atoms, Atom):
             self.dR = atoms.dR
         else:
             self.dR = np.amax([a.dR for a in atoms])
 
         # Get total number of orbitals
-        orbs = np.array([a.orbs for a in self.atoms],np.int)
+        orbs = np.array([a.orbs for a in self.atoms], np.int32)
 
         # Get total number of orbitals
         self.no = np.sum(orbs)
 
         # Create local lasto
-        lasto = np.append(np.array(0,np.int),orbs)
+        lasto = np.append(np.array(0,np.int32), orbs)
         self.lasto = np.cumsum(lasto)
 
-        # Set number of super-cells
-        self.set_supercell(nsc=nsc)
-
-
+        
     def __len__(self):
         """ Return number of atoms in this geometry """
         return self.na
@@ -124,52 +119,6 @@ class Geometry(object):
         """ Writes a geometry to the ``sile`` as implemented in the ``sile.write_geom``
         method """
         sile.write_geom(self)
-
-
-    def set_supercell(self,nsc=None,a=None,b=None,c=None):
-        """ Sets the number of supercells in the 3 different cell directions
-        nsc: [3], integer, optional
-           number of supercells in each direction
-        a: integer, optional
-           number of supercells in the first unit-cell vector direction
-        b: integer, optional
-           number of supercells in the second unit-cell vector direction
-        c: integer, optional
-           number of supercells in the third unit-cell vector direction
-        """
-        if not nsc is None:
-            self.nsc = np.asarray(nsc)
-        if a: self.nsc[0] = a
-        if b: self.nsc[1] = b
-        if c: self.nsc[2] = c
-        # Correct for misplaced number of unit-cells
-        for i in range(3):
-            if self.nsc[i] == 0: self.nsc[i] = 1
-        if np.sum(self.nsc % 2) != 3 :
-            raise ValueError("Supercells has to be of un-even size. The primary cell counts "+
-                             "one, all others count 2")
-
-        self.n_s = np.prod(self.nsc)
-        self.isc_off = np.zeros([self.n_s,3],np.int)
-
-        n = self.nsc
-        # We define the following ones like this:
-        i = n[0] // 2 ; x = range(-i,i+1)
-        i = n[1] // 2 ; y = range(-i,i+1)
-        i = n[2] // 2 ; z = range(-i,i+1)
-        i = 0
-        for iz in z:
-            for iy in y:
-                for ix in x:
-                    if ix == 0 and iy == 0 and iz == 0:
-                        continue
-                    # Increment index
-                    i += 1
-                    # The offsets for the supercells in the
-                    # sparsity pattern
-                    self.isc_off[i,0] = ix
-                    self.isc_off[i,1] = iy
-                    self.isc_off[i,2] = iz
 
 
     def __repr__(self):
@@ -208,6 +157,9 @@ class Geometry(object):
         This iterator is the same as:
 
           >>> for ia in range(len(self)):
+          >>>    <do something>
+        or equivalently
+          >>> for ia in self:
           >>>    <do something>
         """
         for ia in range(len(self)):
@@ -299,8 +251,7 @@ class Geometry(object):
 
         if np.any(not_passed):
             raise ValueError('Error on iterations. Not all atoms has been visited.')
-
-
+    
 
     @property
     def no_s(self):
@@ -321,12 +272,12 @@ class Geometry(object):
         cell   : (``self.cell`), array_like, optional
             the new associated cell of the geometry
         """
-        atms = np.asarray([atoms],np.int).flatten()
+        atms = np.asarray([atoms],np.int32).flatten()
         if cell is None: 
-            return self.__class__(np.copy(self.cell),np.copy(self.xyz[atoms,:]),
-                                  atoms = [self.atoms[i] for i in atms], nsc = self.nsc)
-        return self.__class__(cell,np.copy(self.xyz[atoms,:]),
-                              atoms = [self.atoms[i] for i in atms], nsc = self.nsc)
+            return self.__class__(self.xyz[atoms,:],
+                                  atoms=[self.atoms[i] for i in atms], sc=self.sc.copy())
+        return self.__class__(self.xyz[atoms,:],
+                            atoms=[self.atoms[i] for i in atms], sc=cell)
 
 
     def cut(self,seps,axis):
@@ -357,10 +308,9 @@ class Geometry(object):
             raise ValueError('The system cannot be cut into {0} different '+
                              'pieces. Please check your geometry and input.'.format(seps))
         # Cut down cell
-        cell = np.copy(self.cell)
-        cell[axis,:] /= seps
-        new = self.sub(np.arange(self.na//seps),cell=cell)
-        if not np.allclose(new.tile(seps,axis).xyz,self.xyz):
+        sc = self.sc.cut(seps,axis)
+        new = self.sub(np.arange(self.na//seps), cell=sc)
+        if not np.allclose(new.tile(seps, axis).xyz, self.xyz):
             warnings.warn('The cut structure cannot be re-created by tiling', UserWarning) 
         return new
 
@@ -387,8 +337,8 @@ class Geometry(object):
         """
         Returns a copy of the object.
         """
-        return self.__class__(np.copy(self.cell),np.copy(self.xyz),
-                               atoms = self.atoms, nsc = np.copy(self.nsc) )
+        return self.__class__(np.copy(self.xyz),
+                              atoms=self.atoms, sc=self.sc.copy())
 
 
     def remove(self,atoms):
@@ -439,8 +389,10 @@ class Geometry(object):
          [ 1.5  1.   0. ]]
 
         """
-        cell = np.copy(self.cell)
-        cell[axis,:] *= reps
+        # We need a double copy as we want to re-calculate after
+        # enlarging cell
+        sc = self.sc.copy()
+        sc.cell[axis,:] *= reps ; sc = sc.copy()
         # Pre-allocate geometry
         # Our first repetition *must* be with
         # the later coordinate
@@ -452,7 +404,7 @@ class Geometry(object):
         xyz[0:self.na*reps,:] += np.repeat(dx,self.na,axis=0)
         # Create the geometry and return it (note the smaller atoms array
         # will also expand via tiling)
-        return self.__class__(cell,xyz,atoms = self.atoms,nsc = np.copy(self.nsc))
+        return self.__class__(xyz, atoms=self.atoms, sc=sc)
 
 
     def repeat(self,reps,axis):
@@ -506,11 +458,11 @@ class Geometry(object):
 
         """
         # Figure out the size
-        cell = np.copy(self.cell)
-        cell[axis,:] *= reps
+        sc = self.sc.copy()
+        sc.cell[axis,:] *= reps ; sc = sc.copy()
         # Pre-allocate geometry
         na = self.na * reps
-        xyz = np.zeros([na,3],np.float)
+        xyz = np.zeros([na,3],np.float64)
         atoms = [None for i in range(na)]
         dx = np.dot(np.arange(reps)[:,None],self.cell[axis,:][None,:])
         # Start the repetition
@@ -524,7 +476,7 @@ class Geometry(object):
                 atoms[ja+i] = self.atoms[ia]
             ja += reps
         # Create the geometry and return it
-        return self.__class__(cell,xyz,atoms=atoms,nsc=np.copy(self.nsc))
+        return self.__class__(xyz, atoms=atoms, sc=sc)
 
     
     def rotate(self,angle,v,only='cell+xyz',degree=False):
@@ -551,11 +503,14 @@ class Geometry(object):
         """
         q = Quaternion(angle,v,degree=degree)
         q /= q.norm() # normalize the quaternion
-        cell = np.copy(self.cell)
-        if 'cell' in only: cell = q.rotate(cell)
+        if 'cell' in only:
+            sc = self.sc.rotate(angle,v,degree=degree)
+        else:
+            sc = self.sc.copy()
+        
         xyz = np.copy(self.xyz)
         if 'xyz' in only: xyz = q.rotate(xyz)
-        return self.__class__(cell,xyz,atoms=self.atoms,nsc=np.copy(self.nsc))
+        return self.__class__(xyz, atoms=self.atoms, sc=sc)
 
 
     def rotate_miller(self,m,v):
@@ -568,12 +523,12 @@ class Geometry(object):
         # direction
         cp = np.array([m[1]*v[2]-m[2]*v[1],
                        m[2]*v[0]-m[0]*v[2],
-                       m[0]*v[1]-m[1]*v[0]],np.float)
+                       m[0]*v[1]-m[1]*v[0]],np.float64)
         cp /= np.sum(cp**2) ** .5
 
-        lm = np.array(m,np.float)
+        lm = np.array(m,np.float64)
         lm /= np.sum(lm**2) ** .5
-        lv = np.array(v,np.float)
+        lv = np.array(v,np.float64)
         lv /= np.sum(lv**2) ** .5
 
         # Now rotate the angle between them
@@ -594,12 +549,7 @@ class Geometry(object):
         else:
             g.xyz[atoms,:] += np.asarray(v,g.xyz.dtype)[None,:]
         if cell:
-            # check which cell vector resembles v the most,
-            # use that
-            p = np.empty([3],np.float)
-            for i in range(3):
-                p[i] = abs(np.sum(g.cell[i,:] * v)) / np.sum(g.cell[i,:]**2)**.5
-            g.cell[np.argmax(p),:] += v
+            g.sc = g.sc.translate(v)
         return g
 
 
@@ -615,10 +565,10 @@ class Geometry(object):
             xyz[:,b] = self.xyz[:,a]
         cell = np.copy(self.cell)
         if 'cell' in swap:
-            cell[a,:] = self.cell[b,:]
-            cell[b,:] = self.cell[a,:]
-        return self.__class__(cell,xyz, atoms = np.copy(self.atoms),
-                              nsc = np.copy(self.nsc) )
+            sc = self.sc.swapaxes(a,b)
+        else:
+            sc = self.sc.copy()
+        return self.__class__(xyz, atoms=np.copy(self.atoms), sc=sc)
 
     
     def center(self,atoms=None,which='xyz'):
@@ -629,7 +579,7 @@ class Geometry(object):
         ``cell``: Center of cell
         """
         if 'cell' in which:
-            return np.mean(self.cell,axis=0)
+            return self.sc.center()
         if atoms is None:
             g = self
         else:
@@ -672,9 +622,8 @@ class Geometry(object):
                        self.cell[axis,:][None,:] + other.xyz,
                        axis=0)
         atoms = np.append(self.atoms,other.atoms)
-        cell = np.copy(self.cell)
-        cell[axis,:] += other.cell[axis,:]
-        return self.__class__(cell,xyz,atoms=atoms,nsc=np.copy(self.nsc))
+        sc = self.sc.append(other.sc,axis)
+        return self.__class__(xyz, atoms=atoms, sc=sc)
 
 
     def reverse(self,atoms=None):
@@ -690,9 +639,7 @@ class Geometry(object):
             xyz[atoms,:] = self.xyz[atoms[::-1],:]
             atms = np.copy(self.atoms)
             atms[atoms] = atms[atoms][::-1]
-        # We retain the cell
-        cell = np.copy(self.cell)
-        return self.__class__(cell,xyz,atoms=atms,nsc=np.copy(self.nsc))
+        return self.__class__(xyz, atoms=atms, sc=self.sc.copy())
 
     
     def mirror(self,atoms=None):
@@ -701,7 +648,7 @@ class Geometry(object):
         g = self.translate(-c)
         g.xyz *= -1
         g = g.translate(c)
-        return self.__class__(g.cell,g.xyz,atoms=g.atoms,nsc=g.nsc)
+        return self.__class__(g.xyz, atoms=g.atoms, sc=self.sc.copy())
         
     
     def insert(self,atom,other):
@@ -709,11 +656,9 @@ class Geometry(object):
 
         We insert the `other` ``Geometry`` before obj
         """
-        xyz = np.insert(self.xyz,atom,other.xyz,axis=0)
-        atoms = np.insert(self.atoms,atom,other.atoms)
-        # We retain the cell
-        cell = np.copy(self.cell)
-        return self.__class__(cell,xyz,atoms=atoms,nsc=np.copy(self.nsc))
+        xyz = np.insert(self.xyz,atom, other.xyz, axis=0)
+        atoms = np.insert(self.atoms, atom, other.atoms)
+        return self.__class__(xyz, atoms=atoms, sc=self.sc.copy())
 
 
     def coords(self,isc=[0,0,0],idx=None):
@@ -737,9 +682,7 @@ class Geometry(object):
          [ 1.5  0.   0. ]]
 
         """
-        offset = self.cell[0,:] * isc[0] + \
-            self.cell[1,:] * isc[1] + \
-            self.cell[2,:] * isc[2]
+        offset = self.sc.offset(isc)
         if idx is None:
             return self.xyz + offset[None,:]
         else:
@@ -789,9 +732,9 @@ class Geometry(object):
         """
 
         if dR is None:
-            ddR = np.array([self.dR],np.float)
+            ddR = np.array([self.dR],np.float64)
         else:
-            ddR = np.array([dR],np.float).flatten()
+            ddR = np.array([dR],np.float64).flatten()
 
         if isinstance(xyz_ia,Integral):
             off = self.xyz[xyz_ia,:]
@@ -915,7 +858,7 @@ class Geometry(object):
         ret_special = ret_coord or ret_dist
         for s in range(self.n_s):
             na = self.na * s
-            sret = self.close_sc(xyz_ia,self.isc_off[s,:],dR=dR,idx=idx,ret_coord=ret_coord,ret_dist=ret_dist)
+            sret = self.close_sc(xyz_ia,self.sc.sc_off[s,:],dR=dR,idx=idx,ret_coord=ret_coord,ret_dist=ret_dist)
             if not ret_special: sret = (sret,)
             if isinstance(sret[0],list):
                 # we have a list of arrays
@@ -964,12 +907,12 @@ class Geometry(object):
         if not all:
             return self.lasto[ia % self.na] + (ia // self.na) * self.no
         ob = self.a2o(ia)
-        oe = self.a2o(np.asarray(ia,np.int)+1)
+        oe = self.a2o(np.asarray(ia,np.int32)+1)
         # Create ranges
-        o = np.empty([np.sum(oe-ob)],np.int)
+        o = np.empty([np.sum(oe-ob)],np.int32)
         n = 0
         for i in range(len(ob)):
-            o[n:n+oe[i]-ob[i]] = np.arange(ob[i],oe[i],np.int)
+            o[n:n+oe[i]-ob[i]] = np.arange(ob[i],oe[i],np.int32)
             n += oe[i]-ob[i]
         return o
 
@@ -1004,17 +947,6 @@ class Geometry(object):
         return orbs % self.no
 
 
-    def sc_index(self,isc):
-        """
-        Returns the geometry index for the supercell
-        corresponding to isc ([ix,iy,iz])
-        """
-        asc = np.asarray(isc,np.int)
-        for i in range(self.isc_off.shape[0]):
-            if np.all(self.isc_off[i,:] == asc): return i
-        raise Exception('Could not find supercell index, number of super-cells not big enough')
-
-
     def a2isc(self,a):
         """
         Returns the super-cell index for a specific atom
@@ -1022,7 +954,7 @@ class Geometry(object):
         Hence one can easily figure out the supercell
         """
         idx = np.where( a < self.na * np.arange(1,self.n_s+1) )[0][0]
-        return self.isc_off[idx,:]
+        return self.sc.sc_off[idx,:]
 
 
     def o2isc(self,o):
@@ -1032,12 +964,12 @@ class Geometry(object):
         Hence one can easily figure out the supercell
         """
         idx = np.where( o < self.no * np.arange(1,self.n_s+1) )[0][0]
-        return self.isc_off[idx,:]
+        return self.sc.sc_off[idx,:]
 
-
+    
 if __name__ == '__main__':
     import math as m
-    from .default import diamond
+    from .geom.default import diamond
     
     # Get a diamond
     dia = diamond()
@@ -1045,25 +977,25 @@ if __name__ == '__main__':
     # Print all closest atoms
     print('Atom')
     for sc in [1,3]:
-        dia.set_supercell(nsc=[sc]*3)
+        dia.sc.set_nsc(nsc=[sc]*3)
         print(dia.close(0,dia.dR))
 
     # Print all closest atoms and distances
     print('\nAtom and distance')
     for sc in [1,3]:
-        dia.set_supercell(nsc=[sc]*3)
+        dia.sc.set_nsc(nsc=[sc]*3)
         print(dia.close(0,dia.dR,ret_dist=True))
 
     # Print all closest atoms and coords
     print('\nAtom and coords')
     for sc in [1,3]:
-        dia.set_supercell(nsc=[sc]*3)
+        dia.sc.set_nsc(nsc=[sc]*3)
         print(dia.close(0,dia.dR,ret_coord=True))
 
     # Print all closest atoms, coords and distances
     print('\nAtom and coords and distances')
     for sc in [1,3]:
-        dia.set_supercell(nsc=[sc]*3)
+        dia.sc.set_nsc(nsc=[sc]*3)
         print(dia.close(0,dia.dR,ret_coord=True,ret_dist=True))
     print("\n")
 
@@ -1108,13 +1040,16 @@ if __name__ == '__main__':
     print(rot.cell,rot.xyz)
 
     # Try and align Miller indices
-    fcc = Geometry(np.array([[ 0.5, 0.5, 0.5],
-                             [ 0.5,-0.5, 0.5],
-                             [ 0.5, 0.5,-0.5]]),
-                   np.zeros([3]),atoms=Atom['Fe'])
+    fcc = Geometry(np.zeros([3]),atoms=Atom['Fe'],
+                   sc=SuperCell([[ 0.5, 0.5, 0.5],
+                                 [ 0.5,-0.5, 0.5],
+                                 [ 0.5, 0.5,-0.5]]))
     print(fcc.atoms)
     print(fcc.cell)
     rot = fcc.rotate_miller([1,1,1],[0,0,1]).swapaxes(0,2)
     print(rot.cell)
 
+    # Try the passing of an actual SuperCell
+    new = Geometry(np.zeros([3]),atoms=Atom['Fe'],sc=fcc.sc)
+    print(new)
 

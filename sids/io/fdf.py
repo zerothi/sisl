@@ -9,7 +9,7 @@ from sids.io.sile import *
 from sids.io._help import *
 
 # Import the geometry object
-from sids.geom import Geometry, Atom
+from sids import Geometry, Atom, SuperCell
 
 from os.path import dirname, sep
 import numpy as np
@@ -138,7 +138,7 @@ class FDFSile(Sile):
         elif 'bohr' in lc.lower():
             s /= self._Bohr
         # Read in cell
-        cell = np.empty([3,3],np.float)
+        cell = np.empty([3,3],np.float64)
         f,lc = self._read_block('LatticeVectors',force=True)
         for i in range(3):
             cell[i,:] = [float(k) for k in lc[i].split()[:3]]
@@ -168,8 +168,8 @@ class FDFSile(Sile):
         na = len(atms)
 
         # Create array
-        xyz = np.empty([na,3],np.float)
-        species = np.empty([na],np.int)
+        xyz = np.empty([na,3],np.float64)
+        species = np.empty([na],np.int32)
         for ia in range(na):
             l = atms[ia].split()
             xyz[ia,:] = [float(k) for k in l[:3]]
@@ -202,7 +202,7 @@ class FDFSile(Sile):
             atoms = Atom(1)
 
         # Create and return geometry object
-        return Geometry(cell,xyz,atoms=atoms)
+        return Geometry(xyz,atoms=atoms,sc=SuperCell(cell))
 
 
 if __name__ == "__main__":
@@ -210,11 +210,11 @@ if __name__ == "__main__":
     alat = 3.57
     dist = alat * 3. **.5 / 4
     C = Atom(Z=6,R=dist * 1.01,orbs=2)
-    geom = Geometry(cell=np.array([[0,1,1],
-                                   [1,0,1],
-                                   [1,1,0]],np.float) * alat/2,
-                    xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
-                    atoms = [C,Atom(Z=6,tag='C_pbe')] )
+    sc = SuperCell(np.array([[0,1,1],
+                             [1,0,1],
+                             [1,1,0]],np.float64) * alat/2)
+    geom = Geometry(np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                    atoms = [C,Atom(Z=6,tag='C_pbe')] , sc=sc)
     # Write stuff
     geom.write(FDFSile('diamond.fdf','w'))
     geomr = FDFSile('diamond.fdf','r').read_geom()

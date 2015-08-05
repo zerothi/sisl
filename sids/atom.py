@@ -11,7 +11,7 @@ from numbers import Integral
 import numpy as np
 
 
-from sids.geom._help import array_fill_repeat
+from ._help import array_fill_repeat
 
 __all__ = ['PeriodicTable','Atom']
 
@@ -387,7 +387,7 @@ class PeriodicTable(object):
         """ Returns the Z number """
         ak = np.asarray([key]).flatten()
         if len(ak) == 1: return self._Z_int[ak[0]]
-        return np.array([self._Z_int[i] for i in ak],np.int)
+        return np.array([self._Z_int[i] for i in ak],np.int32)
 
     Z = Z_int
 
@@ -395,12 +395,12 @@ class PeriodicTable(object):
         """ Returns the Z name in short """
         ak = np.asarray([key]).flatten()
         if len(ak) == 1: return self._Z_short[ak[0]]
-        return np.array([self._Z_short[i] for i in ak],np.int)
+        return np.array([self._Z_short[i] for i in ak],np.int32)
 
     def atomic_mass(self,key):
         Z = self.Z_int(key)
         if isinstance(Z,Integral): return self._atomic_mass[Z]
-        return np.array([self._atomic_mass[i] for i in Z],np.float)
+        return np.array([self._atomic_mass[i] for i in Z],np.float64)
 
 
 # Create a local instance of the periodic table to
@@ -423,7 +423,7 @@ class AtomMeta(type):
             # The key is a list, 
             # we need to create a list of atoms
             atm = [cls[k] for k in key]
-            return atm
+            return np.array(atm,dtype=Atom)
         if isinstance(key,cls):
             # if the key already is an atomic object
             # return it
@@ -463,7 +463,7 @@ class Atom(with_metaclass(AtomMeta,object)):
         try:
             self.orbs = max(len(R),orbs)
         except: pass
-        self.R = array_fill_repeat(np.asarray([R],np.float).flatten(),self.orbs)
+        self.R = array_fill_repeat(np.asarray([R],np.float64).flatten(),self.orbs)
         # Save the mass
         self.mass = mass
         if mass is None:

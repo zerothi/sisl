@@ -8,6 +8,7 @@ def configuration(parent_package='',top_path=None):
     config.add_subpackage('io')
     config.add_subpackage('tb')
     config.make_config_py() # installs __config__.py
+    config.add_data_dir('tests')
     return config
 
 if __name__ == '__main__':

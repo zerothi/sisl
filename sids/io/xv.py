@@ -8,7 +8,7 @@ from __future__ import print_function
 from sids.io.sile import *
 
 # Import the geometry object
-from sids.geom import Geometry, Atom
+from sids import Geometry, Atom, SuperCell
 
 import numpy as np
 
@@ -31,7 +31,7 @@ class XVSile(Sile):
                 return self.write_geom(geom)
 
         # Write unit-cell
-        tmp = np.zeros(6,np.float)
+        tmp = np.zeros(6,np.float64)
         fmt = ('   ' + '{:18.9f}'*3)*2 + '\n'
         for i in range(3):
             tmp[0:3] = geom.cell[i,:] / geom.Length
@@ -52,22 +52,22 @@ class XVSile(Sile):
             with self:
                 return self.read_geom()
 
-        cell = np.empty([3,3],np.float)
+        cell = np.empty([3,3],np.float64)
         for i in range(3):
             cell[i,:] = np.fromstring(self.readline(), dtype=float, sep = ' ')[0:3]
         cell *= Geometry.Length
         # Read number of atoms
         na = int(self.readline())
         atms = [None] * na
-        xyz = np.empty([na,3],np.float)
-        line = np.empty(8,np.float)
+        xyz = np.empty([na,3],np.float64)
+        line = np.empty(8,np.float64)
         for ia in range(na):
             line[:] = np.fromstring(self.readline(),dtype=float,sep = ' ')[0:8]
             atms[ia] = Atom[int(line[1])]
             xyz[ia,:] = line[2:5]
         xyz *= Geometry.Length
 
-        return Geometry(cell=cell,xyz=xyz,atoms=atms)
+        return Geometry(xyz=xyz,atoms=atms,sc=SuperCell(cell))
 
 
 if __name__ == "__main__":
@@ -75,11 +75,10 @@ if __name__ == "__main__":
     alat = 3.57
     dist = alat * 3. **.5 / 4
     C = Atom(Z=6,R=dist * 1.01,orbs=2)
-    geom = Geometry(cell=np.array([[0,1,1],
-                                   [1,0,1],
-                                   [1,1,0]],np.float) * alat/2,
-                    xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
-                    atoms = C )
+    geom = Geometry(np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                    atoms = C, sc=SuperCell(np.array([[0,1,1],
+                                                      [1,0,1],
+                                                      [1,1,0]],np.float64) * alat/2))
     # Write stuff
     print(geom)
     geom.write(XVSile('diamond.XV','w'))

@@ -8,7 +8,7 @@ from __future__ import print_function
 from sids.io.sile import *
 
 # Import the geometry object
-from sids.geom import Geometry, Atom
+from sids import Geometry, Atom, SuperCell
 
 import numpy as np
 
@@ -53,7 +53,7 @@ class XYZSile(Sile):
             with self:
                 return self.read_geom()
 
-        cell = np.asarray(np.diagflat([1]*3),np.float)
+        cell = np.asarray(np.diagflat([1]*3),np.float64)
         l = self.readline()
         na = int(l)
         l = self.readline()
@@ -65,23 +65,23 @@ class XYZSile(Sile):
                 cell[i] = float(il)
             cell.shape = (3,3)
         sp = [None] * na
-        xyz = np.empty([na,3],np.float)
+        xyz = np.empty([na,3],np.float64)
         for ia in range(na):
             l = self.readline().split()
             sp[ia] = l.pop(0)
             xyz[ia,:] = [float(k) for k in l[:3]]
-        return Geometry(cell=cell,xyz=xyz,atoms=sp)
+        return Geometry(xyz,atoms=sp,sc=SuperCell(cell))
 
 if __name__ == "__main__":
     # Create geometry
     alat = 3.57
     dist = alat * 3. **.5 / 4
     C = Atom(Z=6,R=dist * 1.01,orbs=2)
-    geom = Geometry(cell=np.array([[0,1,1],
-                                   [1,0,1],
-                                   [1,1,0]],np.float) * alat/2,
-                    xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
-                    atoms = C )
+    sc = SuperCell(np.array([[0,1,1],
+                             [1,0,1],
+                             [1,1,0]],np.float64) * alat/2)
+    geom = Geometry(np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                    atoms = C, sc=sc)
     # Write stuff
     print(geom)
     geom.write(XYZSile('diamond.xyz','w'))

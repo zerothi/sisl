@@ -7,7 +7,7 @@ from __future__ import print_function
 from sids.io.sile import *
 
 # Import the geometry object
-from sids.geom import Geometry, Atom
+from sids import Geometry, Atom, SuperCell
 from sids.tb import TightBinding
 
 import numpy as np
@@ -27,22 +27,22 @@ class SIESTASile(NCSile):
             with self:
                 return self.read_geom()
 
-        cell = np.array(self.variables['cell'][:],np.float)
+        cell = np.array(self.variables['cell'][:],np.float64)
         cell.shape = (3,3)
-        xyz = np.array(self.variables['xa'][:],np.float)
+        xyz = np.array(self.variables['xa'][:],np.float64)
         xyz.shape = (-1,3)
-        nsc = np.array(self.variables['nsc'][:],np.int)
+        nsc = np.array(self.variables['nsc'][:],np.int32)
             
         if 'BASIS' in self.groups:
             bg = self.groups['BASIS']
             # We can actually read the exact basis-information
-            b_idx = np.array(bg.variables['basis'][:],np.int)
+            b_idx = np.array(bg.variables['basis'][:],np.int32)
                 
             # Get number of different species
             n_b = len(bg.groups)
 
             spc = [None] * n_b
-            zb = np.zeros([n_b],np.int)
+            zb = np.zeros([n_b],np.int32)
             for basis in bg.groups:
                 # Retrieve index
                 ID = bg.groups[basis].ID
@@ -59,10 +59,11 @@ class SIESTASile(NCSile):
         else:
             atoms = Atom[1]
 
+        cell *= Geometry.Length
+        xyz *= Geometry.Length
+
         # Create and return geometry object
-        geom = Geometry(cell,xyz,atoms=atoms,nsc=nsc)
-        geom.cell *= geom.Length
-        geom.xyz *= geom.Length
+        geom = Geometry(xyz, atoms=atoms, sc=SuperCell(cell,nsc=nsc))
         return geom
 
     def read_tb(self,**kwargs):
@@ -91,16 +92,16 @@ class SIESTASile(NCSile):
         # Use Ef to move H to Ef = 0
         Ef = float(self.variables['Ef'][0]) * tb.Energy
 
-        S = np.array(sp.variables['S'][:],np.float)
-        H = np.array(sp.variables['H'][ispin,:],np.float) * tb.Energy
+        S = np.array(sp.variables['S'][:],np.float64)
+        H = np.array(sp.variables['H'][ispin,:],np.float64) * tb.Energy
 
         # Correct for the Fermi-level, Ef == 0
         H -= Ef * S[:]
-        ncol = np.array(sp.variables['n_col'][:],np.int)
+        ncol = np.array(sp.variables['n_col'][:],np.int32)
         # Update maximum number of connections (in case future stuff happens)
-        ptr = np.append(np.array(0,np.int),np.cumsum(ncol)).flatten()
+        ptr = np.append(np.array(0,np.int32),np.cumsum(ncol)).flatten()
 
-        col = np.array(sp.variables['list_col'][:],np.int) - 1
+        col = np.array(sp.variables['list_col'][:],np.int32) - 1
 
         # Copy information over
         tb.ncol = ncol
@@ -108,7 +109,7 @@ class SIESTASile(NCSile):
         tb.col = col
         tb._nnzs = len(col)
         # Create new container
-        tb._TB = np.empty([len(tb),2],np.float)
+        tb._TB = np.empty([len(tb),2],np.float64)
         tb._TB[:,0] = H[:]
         tb._TB[:,1] = S[:]
 
@@ -160,7 +161,7 @@ class SIESTASile(NCSile):
         b = self._crt_var(bs,'basis','i4',('na_u',))
         b.info = "Basis of each atom by ID"
 
-        orbs = np.empty([geom.na],np.int)
+        orbs = np.empty([geom.na],np.int32)
 
         for ia,a,isp in geom.iter_species():
             b[ia] = isp + 1
@@ -245,7 +246,7 @@ class SIESTASile(NCSile):
         v = self._crt_var(st,'BZ_displ','i4',('xyz',))
         v.info = "Monkhorst-Pack k-grid displacements"
         v.unit = "b**-1"
-        v[:] = np.zeros([3],np.float)
+        v[:] = np.zeros([3],np.float64)
 
 
 if __name__ == "__main__":
@@ -253,11 +254,11 @@ if __name__ == "__main__":
     alat = 3.57
     dist = alat * 3. **.5 / 4
     C = Atom(Z=6,R=dist * 1.01,orbs=2)
-    geom = Geometry(cell=np.array([[0,1,1],
-                                   [1,0,1],
-                                   [1,1,0]],np.float) * alat/2,
-                    xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
-                    atoms = C )
+    sc = SuperCell(np.array([[0,1,1],
+                             [1,0,1],
+                             [1,1,0]],np.float64) * alat/2 )
+    geom = Geometry(np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                atoms = C, sc=sc)
     # Write stuff
     geom.write(SIESTASile('diamond.nc','w'))
     geomr = SIESTASile('diamond.nc','r').read_geom()

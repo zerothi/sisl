@@ -4,7 +4,7 @@ from nose.tools import *
 
 from tempfile import mkstemp, mkdtemp
 
-from sids.geom import Geometry, Atom
+from sids import Geometry, Atom
 from sids.io.xv import *
 
 import os.path as osp

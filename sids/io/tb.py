@@ -7,7 +7,7 @@ from __future__ import print_function, division
 from sids.io.sile import *
 
 # Import the geometry object
-from sids.geom import Geometry, Atom
+from sids import Geometry, Atom, SuperCell
 from sids.tb import TightBinding
 
 import numpy as np
@@ -25,11 +25,11 @@ class TBSile(Sile):
             with self:
                 return self.read_geom()
 
-        cell = np.zeros([3,3],np.float)
+        cell = np.zeros([3,3],np.float64)
         Z = []
         xyz = []
 
-        nsc = np.zeros([3],np.int)
+        nsc = np.zeros([3],np.int32)
 
         def Z2no(i,no):
             try:
@@ -75,18 +75,17 @@ class TBSile(Sile):
                     Z.append({'Z':z,'orbs':no})
                     xyz.append([float(f) for f in ls[1:4]])
                     l = self.readline()
-                xyz = np.array(xyz,np.float)
+                xyz = np.array(xyz,np.float64)
                 xyz.shape = (-1,3)
                 self.readline() # step past the block
 
         # Return the geometry
         # Create list of atoms
-        geom = Geometry(cell,xyz,atoms=Atom[Z])
-        geom.set_supercell(nsc=nsc)
+        geom = Geometry(xyz,atoms=Atom[Z],sc=SuperCell(cell,nsc))
 
         return geom
 
-    def read_tb(self,hermitian=True,dtype=np.float,**kwargs):
+    def read_tb(self,hermitian=True,dtype=np.float64,**kwargs):
         """ Reads a tight-binding model (including the geometry)
 
         Reads the tight-binding model
@@ -126,9 +125,9 @@ class TBSile(Sile):
             # Get supercell
             ls = l.split()
             try:
-                isc = np.array([int(ls[i]) for i in range(2,5)],np.int)
+                isc = np.array([int(ls[i]) for i in range(2,5)],np.int32)
             except:
-                isc = np.array([0,0,0],np.int)
+                isc = np.array([0,0,0],np.int32)
             off1 = geom.sc_index(isc) * geom.no
             off2 = geom.sc_index(-isc) * geom.no
             l = self.readline()
@@ -235,7 +234,7 @@ class TBSile(Sile):
 
         # We default to the advanced layuot if we have more than one 
         # orbital on any one atom
-        advanced = kwargs.get('advanced',np.any(np.array([a.orbs for a in tb.atoms],np.int) > 1))
+        advanced = kwargs.get('advanced',np.any(np.array([a.orbs for a in tb.atoms],np.int32) > 1))
 
         fmt = kwargs.get('fmt','g')
         if advanced:
@@ -283,7 +282,7 @@ class TBSile(Sile):
                         H.eliminate_zeros()
                         S[j,o:o+geom.no] = 0.
                         S.eliminate_zeros()
-            o = geom.sc_index(np.zeros([3],np.int))
+            o = geom.sc_index(np.zeros([3],np.int32))
             # Get upper-triangular matrix of the unit-cell H and S
             ut = triu(H[:,o:o+geom.no],k=0).tocsr()
             for j in range(geom.no):
@@ -316,7 +315,7 @@ class TBSile(Sile):
             if advanced:
                 for jo,io,h in zip(Hsub.row,Hsub.col,Hsub.data):
                     s = Ssub[jo,io]
-                    o = np.array([jo,io],np.int)
+                    o = np.array([jo,io],np.int32)
                     a = geom.o2a(o)
                     o = o - geom.a2o(a)
                     if s == 0.:
@@ -338,11 +337,10 @@ if __name__ == "__main__":
     alat = 3.57
     dist = alat * 3. **.5 / 4
     C = Atom(Z=6,R=dist * 1.01,orbs=1)
-    geom = Geometry(cell=np.array([[0,1,1],
-                                   [1,0,1],
-                                   [1,1,0]],np.float) * alat/2,
-                    xyz = np.array([[0,0,0],[1,1,1]],np.float)*alat/4,
-                    atoms = C )
+    geom = Geometry(np.array([[0,0,0],[1,1,1]],np.float64)*alat/4,
+                    atoms = C , sc=SuperCell(np.array([[0,1,1],
+                                                       [1,0,1],
+                                                       [1,1,0]],np.float64) * alat/2))
     # Write stuff
     print('Writing TBSile')
     geom.write(TBSile('diamond.tb','w'))

@@ -6,7 +6,7 @@ import numpy as np
 __all__ = ['Quaternion']
 
 
-_v = np.array([1,0,0],np.float)
+_v = np.array([1,0,0],np.float64)
 
 class Quaternion(object):
     """
@@ -18,9 +18,9 @@ class Quaternion(object):
             half = angle / 180 * m.pi / 2
         else:
             half = angle / 2
-        self._v = np.empty([4],np.float)
+        self._v = np.empty([4],np.float64)
         self._v[0] = m.cos(half)
-        self._v[1:] = np.array(v[:3],np.float) * m.sin(half)
+        self._v[1:] = np.array(v[:3],np.float64) * m.sin(half)
 
         
     def copy(self):
@@ -63,13 +63,13 @@ class Quaternion(object):
         s = np.copy(v.shape)
         # First "flatten"
         v.shape = (-1,3)
-        f = np.empty([v.shape[0],4],np.float)
+        f = np.empty([v.shape[0],4],np.float64)
         f[:,0] = v1[0]        - v1[1]*v[:,0] - v1[2]*v[:,1] - v1[3]*v[:,2]
         f[:,1] = v1[0]*v[:,0] + v1[1]        + v1[2]*v[:,2] - v1[3]*v[:,1]
         f[:,2] = v1[0]*v[:,1] - v1[1]*v[:,2] + v1[2]        + v1[3]*v[:,0]
         f[:,3] = v1[0]*v[:,2] + v1[1]*v[:,1] - v1[2]*v[:,0] + v1[3]
         # Create actual rotated array
-        nv = np.empty(v.shape,np.float)
+        nv = np.empty(v.shape,np.float64)
         nv[:,0] = f[:,0]*v2[1] + f[:,1]*v2[0] + f[:,2]*v2[3] - f[:,3]*v2[2]
         nv[:,1] = f[:,0]*v2[2] - f[:,1]*v2[3] + f[:,2]*v2[0] + f[:,3]*v2[1]
         nv[:,2] = f[:,0]*v2[3] + f[:,1]*v2[2] - f[:,2]*v2[1] + f[:,3]*v2[0]
@@ -156,7 +156,6 @@ class Quaternion(object):
             a._v *= b
         return a
 
-    # The in-place operators
     def __idiv__(a,b):
         """ In-place division """
         if isinstance(b,Quaternion):

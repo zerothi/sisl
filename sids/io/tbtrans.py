@@ -7,7 +7,7 @@ from __future__ import print_function
 from sids.io.sile import *
 
 # Import the geometry object
-from sids.geom import Geometry, Atom
+from sids import Geometry, Atom, SuperCell
 
 import numpy as np
 
@@ -24,21 +24,22 @@ class TBtransSile(NCSile):
             with self:
                 return self.read_geom()
 
-        cell = np.array(self.variables['cell'][:],np.float)
+        cell = np.array(self.variables['cell'][:],np.float64)
         cell.shape = (3,3)
-        xyz = np.array(self.variables['xa'][:],np.float)
+        xyz = np.array(self.variables['xa'][:],np.float64)
         xyz.shape = (-1,3)
 
         # Create list with correct number of orbitals
-        lasto = np.array(self.variables['lasto'][:],np.int)
+        lasto = np.array(self.variables['lasto'][:],np.int32)
         orbs = np.append([lasto[0]],np.diff(lasto))
-        orbs = np.array(orbs,np.int)
+        orbs = np.array(orbs,np.int32)
 
         atms = [Atom(Z='H',orbs=o) for o in orbs]
             
         # Create and return geometry object
-        geom = Geometry(cell,xyz,atoms=atms)
-        geom.cell *= geom.Length
+        geom = Geometry(xyz,atoms=atms,sc=SuperCell(cell))
+        geom.sc.cell *= geom.Length
+        geom.set_supercell(geom.sc.copy())
         geom.xyz *= geom.Length
         return geom
 
