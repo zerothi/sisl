@@ -33,12 +33,13 @@ manipulate structures in a consistent manner.
 For instance to create a huge graphene flake
 
     sq3h  = 3.**.5 * 0.5
-    gr = Geometry(cell=np.array([[1.5, sq3h,  0.],
+    sc = SuperCell(np.array([[1.5, sq3h,  0.],
                                  [1.5,-sq3h,  0.],
                                  [ 0.,   0., 10.]],np.float64) * 1.42,
-                  xyz=np.array([[ 0., 0., 0.],
-                                [ 1., 0., 0.]],np.float64) * 1.42,
-                  atoms = Atom(Z=6,R = 1.42), nsc = [3,3,1])
+                                 nsc=[3,3,1])
+    gr = Geometry(np.array([[ 0., 0., 0.],
+                            [ 1., 0., 0.]],np.float64) * 1.42,
+                  atoms = Atom(Z=6,R = 1.42), sc=sc)
     huge = gr.tile(100,axis=0).tile(100,axis=1)
 
 Which results in a 20000 atom big graphene flake.
@@ -108,7 +109,7 @@ To create the nearest neighbour tight-binding model for graphene you simply do
     nn = (-0.5,0.)
 
     # Ensure that graphene has supercell connections
-    gr.set_supercell([3,3,1])
+    gr.set_nsc([3,3,1])
     tb = TightBinding(gr)
     for ia in tb.geom:
         idx_a = tb.close_all(ia,dR=dR)
@@ -127,10 +128,10 @@ format. To calculate the dispersion you diagonalize and plot the eigenvalues
     klist = ... # dispersion curve
     eigs = np.empty([len(klist),tb.no])
     for ik,k in enumerate(klist):
-        H, S = tb.tocsr(k)
-        eigs[ik,:] = sli.eigh(H.todense(),S.todense(),eigvals_only=True)
+        eigs[ik,:] = tb.eigh(k,eigvals_only=True)
         # Or equivalently:
-        #eigs[ik,:] = tb.eigh(k,eigvals_only=True)
+        #   H, S = tb.tocsr(k)
+        #   eigs[ik,:] = sli.eigh(H.todense(),S.todense(),eigvals_only=True)
      for i in range(tb.no):
         plt.plot(eigs[:,i])
 
