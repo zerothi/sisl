@@ -5,9 +5,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from .atom import Atom
-from .geometry import Geometry
-from .supercell import SuperCell
+from . import Atom, Geometry, SuperCell
 
 __all__ = ['graphene','graphene_square','diamond']
 
@@ -46,6 +44,30 @@ def graphene_square(alat=1.42,C=None):
     return gr
 
 
+def bcc(alat,A):
+    """
+    Returns a BCC lattice.
+    """
+    sc = SuperCell(np.array([[1, 1, 1],
+                             [1,-1, 1],
+                             [1, 1,-1]],np.float64) * alat/2,
+                   nsc=[3,3,3])
+    bcc = Geometry(np.array([[0,0,0]],np.float64), atoms=A , sc=sc)
+    return bcc
+
+
+def fcc(alat,A):
+    """
+    Returns a geometry with the FCC crystal structure
+    """
+    sc = SuperCell(np.array([[0,1,1],
+                             [1,0,1],
+                             [1,1,0]],np.float64) * alat/2,
+                   nsc=[3,3,3])
+    fcc = Geometry(np.array([[0,0,0]],np.float64), atoms=A, sc=sc)
+    return fcc
+
+
 def diamond(alat=3.57,C=None):
     """
     Returns a geometry with the diamond unit-cell (2-atoms)
@@ -61,3 +83,9 @@ def diamond(alat=3.57,C=None):
                    atoms=C , sc=sc)
     return dia
 
+
+if __name__ == "__main__":
+    g = graphene()
+    g = graphene_square()
+    g = diamond()
+    

@@ -5,17 +5,17 @@ from __future__ import print_function, division
 from os.path import splitext
 import sys
 
-from sids.io.sile import *
+from .sile import *
 
 # Import the different Sile objects
 # enabling the actual print-out
-from sids.io.fdf import *
-from sids.io.gulp import *
-from sids.io.siesta import *
-from sids.io.tb import *
-from sids.io.tbtrans import *
-from sids.io.xyz import *
-from sids.io.xv import *
+from .fdf import *
+from .gulp import *
+from .siesta import *
+from .tb import *
+from .tbtrans import *
+from .xyz import *
+from .xv import *
 
 # Default functions in this top module
 __all__ = ['add_sile','get_sile']

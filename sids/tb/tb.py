@@ -112,7 +112,7 @@ class TightBinding(object):
         if ncol > 0:
             # Checks whether any values in either array exists
             # if so we remove those from the jj
-            idx = np.int32ersect1d(jj,self.col[ptr:ptr+ncol],assume_unique=True)
+            idx = np.intersect1d(jj,self.col[ptr:ptr+ncol],assume_unique=True)
         else:
             idx = []
             
@@ -182,7 +182,7 @@ class TightBinding(object):
         # Hence, this choice of having H and S like this
 
         # We check the first atom and its neighbours, we then
-        # select a minimun of max(5,nc * 4)
+        # select max(5,len(nc) * 4)
         if nc is None:
             nc = self.geom.close_all(0)
             nc = max(5,len(nc) * 4)
