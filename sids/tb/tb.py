@@ -301,7 +301,7 @@ class TightBinding(object):
             rcell = sla.inv(self.cell.copy())
             kr = np.dot(np.asarray(k),rcell) * np.pi * 2.
             for si in range(np.product(self.nsc)):
-                isc = self.isc_off[si,:]
+                isc = self.sc_off[si,:]
                 phase = np.exp(-1j*np.dot(kr,np.dot(self.cell,isc)))
                 H += Hfull[:,si*self.no:(si+1)*self.no] * phase
                 S += Sfull[:,si*self.no:(si+1)*self.no] * phase
@@ -470,7 +470,7 @@ if __name__ == "__main__":
 
     # Create graphene unit-cell
     gr = graphene()
-    gr.set_supercell([3,3,1])
+    gr.sc.set_nsc([3,3,1])
 
     # Create nearest-neighbour tight-binding
     # graphene lattice constant 1.42
@@ -480,7 +480,7 @@ if __name__ == "__main__":
     
     tb = TightBinding(gr)
     for ia in tb.geom:
-        idx_a = tb.close_all(ia,dR=dR)
+        idx_a = tb.geom.close(ia,dR=dR)
         tb[ia,idx_a[0]] = on
         tb[ia,idx_a[1]] = nn
     print(len(tb))
@@ -494,7 +494,7 @@ if __name__ == "__main__":
     tb = TightBinding(gr)
     tb.reset(1) # force only one connection (this should force expansion)
     for ia in tb.geom:
-        idx_a = tb.close_all(ia,dR=dR)
+        idx_a = tb.geom.close(ia,dR=dR)
         tb[ia,idx_a[0]] = on
         tb[ia,idx_a[1]] = nn
     print(len(tb))
@@ -506,7 +506,7 @@ if __name__ == "__main__":
     tb = TightBinding(gr.tile(41,0).tile(41,1))
     for ias, idxs in tb.iter_block(13):
         for ia in ias:
-            idx_a = tb.close(ia,dR=dR)
+            idx_a = tb.geom.close(ia,dR=dR)
             tb[ia,idx_a[0]] = on
             tb[ia,idx_a[1]] = nn
     print(len(tb))

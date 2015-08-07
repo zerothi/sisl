@@ -34,15 +34,29 @@ For instance to create a huge graphene flake
 
     sq3h  = 3.**.5 * 0.5
     sc = SuperCell(np.array([[1.5, sq3h,  0.],
-                                 [1.5,-sq3h,  0.],
-                                 [ 0.,   0., 10.]],np.float64) * 1.42,
-                                 nsc=[3,3,1])
+                             [1.5,-sq3h,  0.],
+                             [ 0.,   0., 10.]],np.float64) * 1.42,
+                             nsc=[3,3,1])
     gr = Geometry(np.array([[ 0., 0., 0.],
                             [ 1., 0., 0.]],np.float64) * 1.42,
-                  atoms = Atom(Z=6,R = 1.42), sc=sc)
-    huge = gr.tile(100,axis=0).tile(100,axis=1)
+                  atoms=Atom(Z=6, R=1.42), sc=sc)
+    huge = gr.tile(100, axis=0).tile(100, axis=1)
 
 Which results in a 20000 atom big graphene flake.
+
+Several basic geometries are intrinsically available
+
+    from sids.geom import *
+
+    # Graphene basic unit-cell
+    g = graphene()
+    # Square graphene basic unit-cell
+    g = graphene_square()
+    # BCC crystal structure
+    g = bcc(<lattice constant>, <Atom>)
+    # FCC crystal structure
+    g = fcc(<lattice constant>, <Atom>)
+
 
 #### IO-manipulation ####
 
@@ -77,11 +91,11 @@ and now you can interact with that geometry at will.
 
 Even though these are hard coded you can easily extend your own file format
 
-    sids.add_sile(<file ending>,<SileObject>)
+    sids.add_sile(<file ending>, <SileObject>)
 
 for instance the `XYZSile` is hooked using:
 
-    sids.add_sile('xyz',XYZSile,case=False)
+    sids.add_sile('xyz', XYZSile, case=False)
 
 which means that `sids.get_sile` understands files `*.xyz` and `*.XYZ` files as
 an `XYZSile` object. You can put whatever file-endings here and classes to retain API
@@ -105,14 +119,14 @@ To create the nearest neighbour tight-binding model for graphene you simply do
     # Create nearest-neighbour tight-binding
     # graphene lattice constant 1.42
     dR = ( 0.1 , 1.5 )
-    on = (0.,1.)
-    nn = (-0.5,0.)
+    on = ( 0.  , 1.  )
+    nn = (-0.5 , 0.  )
 
     # Ensure that graphene has supercell connections
-    gr.set_nsc([3,3,1])
+    gr.sc.set_nsc([3,3,1])
     tb = TightBinding(gr)
     for ia in tb.geom:
-        idx_a = tb.close_all(ia,dR=dR)
+        idx_a = tb.close(ia, dR=dR)
         tb[ia,idx_a[0]] = on
         tb[ia,idx_a[1]] = nn
 
@@ -126,12 +140,12 @@ format. To calculate the dispersion you diagonalize and plot the eigenvalues
 
     import matplotlib.pyplot as plt
     klist = ... # dispersion curve
-    eigs = np.empty([len(klist),tb.no])
-    for ik,k in enumerate(klist):
-        eigs[ik,:] = tb.eigh(k,eigvals_only=True)
+    eigs = np.empty([len(klist), tb.no])
+    for ik, k in enumerate(klist):
+        eigs[ik,:] = tb.eigh(k, eigvals_only=True)
         # Or equivalently:
         #   H, S = tb.tocsr(k)
-        #   eigs[ik,:] = sli.eigh(H.todense(),S.todense(),eigvals_only=True)
+        #   eigs[ik,:] = sli.eigh(H.todense(), S.todense(), eigvals_only=True)
      for i in range(tb.no):
         plt.plot(eigs[:,i])
 

@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 from sids import Geometry
-from sids.io._help import *
+from ._help import *
 
 import numpy as np
 
@@ -110,11 +110,7 @@ class NCSile(object):
     def __enter__(self):
         """ Opens the output file and returns it self """
         # We do the import here
-        try:
-            import netCDF4
-        except:
-            raise ImportError("Could not import required module netCDF4, "+
-                              "please add netCDF4 to your path and re-run.")
+        import netCDF4
         self.fh = netCDF4.Dataset(self.file,self._mode,format='NETCDF4')
         return self
 

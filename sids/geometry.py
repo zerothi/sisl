@@ -79,7 +79,7 @@ class Geometry(SuperCellChild):
             self.set_supercell(sc)
 
         # Create the geometry coordinate
-        self.xyz = np.asarray(xyz)
+        self.xyz = np.asarray(xyz,dtype=np.float64)
         self.xyz.shape = (-1, 3)
         self.na = len(self.xyz)
 
