@@ -216,6 +216,10 @@ class SuperCellChild(object):
     routines directly related to the `SuperCell` class.
     """
 
+    def set_nsc(self,nsc):
+        """ Set the number of super-cells in the `SuperCell` object """
+        self.sc.set_nsc(nsc)
+
     def set_supercell(self,sc):
         """ Overwrites the local supercell """
         self.sc = sc
