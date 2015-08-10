@@ -184,7 +184,7 @@ class TightBinding(object):
         # We check the first atom and its neighbours, we then
         # select max(5,len(nc) * 4)
         if nc is None:
-            nc = self.geom.close_all(0)
+            nc = self.geom.close(0)
             nc = max(5,len(nc) * 4)
 
         # Reset the sparsity pattern
