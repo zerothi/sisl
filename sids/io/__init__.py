@@ -62,7 +62,7 @@ add_sile('fdf',FDFSile,case=False)
 add_sile('nc',SIESTASile,case=False)
 add_sile('tb',TBSile,case=False)
 add_sile('TBT.nc',TBtransSile)
-add_sile('got',GULPSile)
+add_sile('gout',GULPSile)
 add_sile('XV',XVSile)
 
 def get_sile(file,*args,**kwargs):

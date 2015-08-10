@@ -300,7 +300,7 @@ class TightBinding(object):
             # Get the reciprocal lattice vectors dotted with k
             rcell = sla.inv(self.cell.copy())
             kr = np.dot(np.asarray(k),rcell) * np.pi * 2.
-            for si in range(np.product(self.nsc)):
+            for si in range(self.sc.n_s):
                 isc = self.sc_off[si,:]
                 phase = np.exp(-1j*np.dot(kr,np.dot(self.cell,isc)))
                 H += Hfull[:,si*self.no:(si+1)*self.no] * phase
@@ -359,7 +359,7 @@ class TightBinding(object):
         # First we need to figure out how long the interaction range is
         # in the cut-direction
         # We initialize to be the same as the parent direction
-        nsc = self.nsc // 2
+        nsc = np.copy(self.nsc) // 2
         nsc[axis] = 0 # we count the new direction
         isc = np.zeros([3],np.int32)
         isc[axis] -= 1
@@ -368,7 +368,7 @@ class TightBinding(object):
             # Get supercell index
             isc[axis] += 1
             try:
-                idx = self.sc_idx(isc)
+                idx = self.sc_index(isc)
             except: 
                 break
 
@@ -396,29 +396,29 @@ class TightBinding(object):
             
             if out:
                 warnings.warn('Cut the connection at {0} in direction {1}.'.format(nsc[axis],axis), UserWarning) 
-            
+
         # Update number of super-cells
-        geom.set_supercell(nsc=nsc)
+        nsc[:] = nsc[:] * 2 + 1
+        geom.sc.set_nsc(nsc)
 
         # Now we have a correct geometry, and 
         # we are now ready to create the sparsity pattern
         # Reduce the sparsity pattern, first create the new one
         tb = self.__class__(geom,nc=np.amax(self.ncol))
 
-        def sco2sco(M,o,m,axis,seps):
+        def sco2sco(M,o,m,seps,axis):
             # Converts an o from M to m
             isc = np.copy( M.o2isc(o) )
-            isc[axis] *= seps
-            # Count cell-offset
-            i = (o % M.no) // m.no
-            isc[axis] += i
+            isc[axis] = isc[axis] * seps
+            # Correct for cell-offset
+            isc[axis] = isc[axis] + (o % M.no) // m.no
             # find the equivalent cell in m
             try:
                 # If a fail happens it is due to a discarded
                 # interaction across a non-interacting region
                 return ( o % m.no, 
-                        m.sc_idx( isc) * m.no, 
-                        m.sc_idx(-isc) * m.no)
+                        m.sc_index( isc) * m.no, 
+                        m.sc_index(-isc) * m.no)
             except:
                 return None, None, None
 
@@ -429,12 +429,12 @@ class TightBinding(object):
             sH = H[jo,:]
             sS = S[jo,:]
 
-            for io, iH, iS in zip(sH.indices,sH.data,sS.data):
+            for io, iH in zip(sH.indices,sH.data):
                 # Get the equivalent orbital in the smaller cell
-                o, ofp, ofm = sco2sco(self.geom,io,tb.geom,axis,seps)
+                o, ofp, ofm = sco2sco(self.geom,io,tb.geom,seps,axis)
                 if o is None: continue
-                tb[jo,o+ofp] = iH, iS
-                tb[o,jo+ofm] = iH, iS
+                tb[jo,o+ofp] = iH, S[jo,io]
+                tb[o,jo+ofm] = iH, S[jo,io]
 
         return tb
 

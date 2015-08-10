@@ -253,7 +253,7 @@ class TBSile(Sile):
         if hermitian:
             herm_acc = kwargs.get('herm_acc',1e-6)
             # We check whether it is Hermitian
-            for i, isc in enumerate(geom.isc_off):
+            for i, isc in enumerate(geom.sc.sc_off):
                 oi = i * geom.no
                 oj = geom.sc_index(-isc) * geom.no
                 # get the difference between the ^\dagger elements
@@ -268,7 +268,7 @@ class TBSile(Sile):
 
         if hermitian:
             # Remove all double stuff
-            for i, isc in enumerate(geom.isc_off):
+            for i, isc in enumerate(geom.sc.sc_off):
                 if np.any(isc < 0):
                     # We have ^\dagger element, remove it
                     o = i * geom.no
@@ -304,7 +304,7 @@ class TBSile(Sile):
                             
         # Start writing of the model
         # We loop on all super-cells
-        for i, isc in enumerate(geom.isc_off):
+        for i, isc in enumerate(geom.sc.sc_off):
             # Check that we have any contributions in this
             # sub-section
             Hsub = H[:,i*geom.no:(i+1)*geom.no].tocoo()

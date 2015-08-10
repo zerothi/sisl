@@ -67,7 +67,7 @@ The hard-coded file formats are:
 1. ___xyz___, standard coordinate format
  Note that the the _xyz_ file format does not _per see_ contain the cell size.
  The `XYZSile` writes the cell information in the `xyz` file comment section (2nd line). Hence if the file was written with sids you retain the cell information.
-2. ___got___, reads geometries from GULP output
+2. ___gout___, reads geometries from GULP output
 3. ___nc___, reads/writes NetCDF4 files created by SIESTA
 4. ___TBT.nc___, reads NetCDF4 files created by TBtrans
 5. ___tb___, intrinsic file format for geometry/tight-binding models

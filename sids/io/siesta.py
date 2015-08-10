@@ -82,8 +82,8 @@ class SIESTASile(NCSile):
         sp = self._crt_grp(self,'SPARSE')
         v = sp.variables['isc_off']
         # pre-allocate the super-cells
-        geom.set_supercell(np.amax(v[:,:],axis=0) * 2 + 1)
-        geom.isc_off[:,:] = v[:,:]
+        geom.sc.set_supercell(np.amax(v[:,:],axis=0) * 2 + 1)
+        geom.sc.sc_off[:,:] = v[:,:]
 
         # Now create the tight-binding stuff (we re-create the 
         # array, hence just allocate the smallest amount possible)
@@ -221,7 +221,7 @@ class SIESTASile(NCSile):
         v[:] = tb.col[:] + 1 # correct for fortran indices
         v = self._crt_var(sp,'isc_off','i4',('n_s','xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = tb.isc_off[:,:]
+        v[:] = tb.geom.sc.sc_off[:,:]
 
         # Save tight-binding parameters
         v = self._crt_var(sp,'S','f8',('nnzs',),

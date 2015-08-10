@@ -48,7 +48,7 @@ class PhononTightBinding(TightBinding):
         MM = np.empty([len(om)],np.float64)
         r3 = range(3)
 
-        for ja in range(self.na):
+        for ja in self.geom:
 
             # Create conversion to force-constant, and revert back
             # after correcting

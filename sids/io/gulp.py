@@ -15,7 +15,7 @@ import numpy as np
 __all__ = ['GULPSile']
 
 
-class GULPSile(NCSile):
+class GULPSile(Sile):
     """ GULP file object """
 
     def read_geom(self,key='Final fractional coordinates'):
@@ -37,7 +37,7 @@ class GULPSile(NCSile):
             cell[i,2] = float(l[2])
             
         # Skip to keyword
-        self.step_to(keyword)
+        self.step_to(key)
                     
         # We skip 5 lines
         for i in range(5): self.readline()
