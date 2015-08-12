@@ -1,8 +1,15 @@
 from __future__ import print_function, division
 
 import numpy as np
+import sys
+__all__ = ['array_fill_repeat','_str']
 
-__all__ = ['array_fill_repeat']
+
+# Base-class for string object checks
+if sys.version_info >= (3, 0):
+    _str = str
+else:
+    _str = basestring
 
 
 def array_fill_repeat(array,size,cls=None):

@@ -6,6 +6,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
+
 from .quaternion import Quaternion
 
 __all__ = ['SuperCell','SuperCellChild']
@@ -31,8 +32,13 @@ class SuperCell(object):
         Initialize a `SuperCell` object with cell information
         and number of supercells in each direction.
         """
-        # Store the actual 3D cell
-        self.cell = np.asarray(cell,np.float64)
+        # If the length of cell is 6 it must be cell-parameters, not
+        # actual cell coordinates
+        if len(cell) == 6:
+            self.cell = self.abc(*cell)
+        else:
+            # Store the actual 3D cell
+            self.cell = np.asarray(cell,np.float64)
         if len(self.cell.shape) == 1:
             # The cell is a diagonal entry cell
             self.cell = np.diag(self.cell)
@@ -207,6 +213,30 @@ class SuperCell(object):
         if axis is None:
             return np.mean(self.cell,axis=0)
         return self.cell[axis,:] / 2
+
+    @staticmethod
+    def abc(a,b,c,alpha,beta,gamma):
+        """ Returns the cell for parameters given in angles """
+
+        # Create cell
+        cell = np.zeros([3,3],np.float64)
+
+        cell[0,0] = a
+        g = gamma * np.pi / 180.
+        cg = np.cos(g)
+        sg = np.sin(g)
+        cell[1,0] = b * cg
+        cell[1,1] = b * sg
+        b = beta * np.pi / 180.
+        cb = np.cos(b)
+        sb = np.sin(b)
+        cell[2,0] = c * cb
+        a = alpha * np.pi / 180.
+        d = ( np.cos(a) - cb*cg ) / sg
+        cell[2,1] = c * d
+        cell[2,2] = c * np.sqrt(sb**2-d**2)
+        return cell
+
 
 
 class SuperCellChild(object):

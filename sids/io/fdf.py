@@ -149,21 +149,7 @@ class FDFSile(Sile):
             f, lc = self._read_block('LatticeParameters')
             tmp = [float(k) for k in lc[0].split()[:6]]
             if f:
-                cell[:,:] = 0.
-                cell[0,0] = tmp[0]
-                g = tmp[5] * np.pi / 180.
-                cg = np.cos(g)
-                sg = np.sin(g)
-                cell[1,0] = tmp[1] * cg
-                cell[1,1] = tmp[1] * sg
-                b = tmp[4] * np.pi / 180.
-                cb = np.cos(b)
-                sb = np.sin(b)
-                cell[2,0] = tmp[2] * cb
-                a = tmp[3] * np.pi / 180.
-                d = ( np.cos(a) - cb*cg ) / sg
-                cell[2,1] = tmp[2] * d
-                cell[2,2] = tmp[2] * np.sqrt(sb**2-d**2)
+                cell = SuperCell.abc(*tmp)
         if not f:
             # the fdf file contains neither the latticevectors or parameters
             raise SileError('Could not find Vectors or Parameters block in file')

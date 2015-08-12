@@ -5,10 +5,15 @@ from ._help import *
 
 import numpy as np
 
-__all__ = ['Sile','NCSile','SileError','sile_raise_write','sile_raise_read']
+__all__ = ['BaseSile','Sile','NCSile','SileError','sile_raise_write','sile_raise_read']
 
 
-class Sile(object):
+class BaseSile(object):
+    """ Base class for the Siles """
+    pass
+
+
+class Sile(BaseSile):
     """ Class to contain a file with easy access """
     _mode = 'r'
     _comment = ['#']
@@ -17,17 +22,20 @@ class Sile(object):
         self.file = filename
         if mode:
             self._mode = mode
+
         
     def __enter__(self):
         """ Opens the output file and returns it self """
         self.fh = open(self.file,self._mode)
         return self
 
+
     def __exit__(self, type, value, traceback):
         self.fh.close()
         # clean-up so that it does not exist
         del self.fh
         return False
+
 
     @staticmethod
     def line_has_key(line,keyword,case=True):
@@ -49,6 +57,7 @@ class Sile(object):
             found = l.find(keyword) >= 0
         return found    
 
+
     def readline(self,comment=False):
         """ Reads the next line of the file """
         l = self.fh.readline()
@@ -56,6 +65,7 @@ class Sile(object):
         while starts_with_list(l,self._comment):
             l = self.fh.readline()
         return l
+
 
     def step_to(self,keyword,case=True):
         """ Steps the file-handle until the keyword is found in the input """
@@ -70,6 +80,7 @@ class Sile(object):
         # sometimes the line contains information, as a
         # default we return the line found
         return found, l
+
 
     def write(self,*args,**kwargs):
         """
@@ -86,7 +97,8 @@ class Sile(object):
         """ Wrapper to default the write statements """
         self.fh.write(*args,**kwargs)
 
-class NCSile(object):
+
+class NCSile(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
     _mode = 'r'
@@ -99,6 +111,7 @@ class NCSile(object):
         # Save compression internally
         self._lvl = lvl
 
+
     def _cmp_args(self):
         """ Returns the compression arguments for the NetCDF file
 
@@ -106,6 +119,7 @@ class NCSile(object):
           >>> nc.createVariable(..., **self._cmp_args)
         """
         return {'zlib':self._lvl>0,'complevel':self._lvl}
+
         
     def __enter__(self):
         """ Opens the output file and returns it self """
@@ -114,9 +128,11 @@ class NCSile(object):
         self.fh = netCDF4.Dataset(self.file,self._mode,format='NETCDF4')
         return self
 
+
     def __getattr__(self,attr):
         """ Bypass attributes to directly interact with the NetCDF model """
         return getattr(self.fh,attr,None)
+
 
     def __exit__(self, type, value, traceback):
         self.fh.close()
@@ -124,15 +140,18 @@ class NCSile(object):
         del self.fh
         return False
 
+
     @staticmethod
     def _crt_grp(n,name):
         if name in n.groups: return n.groups[name]
         return n.createGroup(name)
 
+
     @staticmethod
     def _crt_dim(n,name,l):
         if name in n.dimensions: return
         n.createDimension(name,l)
+
 
     @staticmethod
     def _crt_var(n,name,*args,**kwargs):
@@ -147,6 +166,7 @@ class SileError(IOError):
         self.value = value
         self.obj = obj
 
+
     def __str__(self):
         s = ''
         if self.obj:
@@ -154,12 +174,16 @@ class SileError(IOError):
             
         return self.value + ' in ' + s
 
+
 def sile_raise_write(self):
     if not ('w' in self._mode or 'a' in self._mode):
         raise SileError('Writing to a read-only file not possible',self)
+
+
 def sile_raise_read(self):
     if not ('r' in self._mode or 'a' in self._mode):
         raise SileError('Reading a write-only file not possible',self)
+
 
 if __name__ == "__main__":
     i1 = Sile('f.dat','a')

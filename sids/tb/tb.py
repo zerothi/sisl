@@ -461,7 +461,14 @@ class TightBinding(object):
         """ Writes a tight-binding model to the ``sile`` as implemented in the ``ObjSile.write_tb``
         method """
         self.finalize()
-        sile.write_tb(self)
+
+        # This only works because, they *must*
+        # have been imported previously
+        from sids.io import get_sile, BaseSile
+        if isinstance(sile,BaseSile):
+            sile.write_tb(self)
+        else:
+            get_sile(sile,'w').write_tb(self)
 
         
 if __name__ == "__main__":

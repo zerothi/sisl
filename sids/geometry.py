@@ -10,6 +10,7 @@ import sys
 
 import numpy as np
 
+
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
@@ -118,7 +119,14 @@ class Geometry(SuperCellChild):
     def write(self,sile):
         """ Writes a geometry to the ``sile`` as implemented in the ``sile.write_geom``
         method """
-        sile.write_geom(self)
+
+        # This only works because, they *must*
+        # have been imported previously
+        from sids.io import get_sile, BaseSile
+        if isinstance(sile,BaseSile):
+            sile.write_geom(self)
+        else:
+            get_sile(sile,'w').write_geom(self)
 
 
     def __repr__(self):
@@ -642,12 +650,16 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atoms=atms, sc=self.sc.copy())
 
     
-    def mirror(self,atoms=None):
+    def mirror(self,plane,atoms=None):
         """ Mirrors the structure around the center of the atoms """
-        c = self.center(atoms=atoms)
-        g = self.translate(-c)
-        g.xyz *= -1
-        g = g.translate(c)
+        g = self.copy()
+        lplane = ''.join(sorted(plane.lower()))
+        if lplane == 'xy':
+            g.xyz[:,2] *= -1
+        elif lplane == 'yz':
+            g.xyz[:,0] *= -1
+        elif lplane == 'xz':
+            g.xyz[:,1] *= -1
         return self.__class__(g.xyz, atoms=g.atoms, sc=self.sc.copy())
         
     
@@ -966,7 +978,7 @@ class Geometry(SuperCellChild):
         idx = np.where( o < self.no * np.arange(1,self.n_s+1) )[0][0]
         return self.sc.sc_off[idx,:]
 
-    
+
 if __name__ == '__main__':
     import math as m
     from .geom.default import diamond
