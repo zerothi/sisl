@@ -7,6 +7,7 @@ from __future__ import print_function, division
 from numbers import Integral
 from math import acos, pi
 import sys
+import warnings
 
 import numpy as np
 
