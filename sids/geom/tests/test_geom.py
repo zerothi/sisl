@@ -17,7 +17,7 @@ class Test(object):
 
     def test_flat(self):
         a = graphene()
-        a = graphene_square()
+        a = graphene(square=True)
 
     def test_diamond(self):
         a = diamond()
