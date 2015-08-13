@@ -33,7 +33,7 @@ class Grid(SuperCellChild):
     Neumann = 2
     Dirichlet = 3
     
-    def __init__(self,size=_size,bc=_bc,sc=None):
+    def __init__(self,size=_size,bc=_bc,sc=None,dtype=_dtype):
         """ Initialize a `Grid` object.
         
         Initialize a `Grid` object.
@@ -43,7 +43,7 @@ class Grid(SuperCellChild):
         self.set_supercell(sc)
 
         # Create the grid
-        self.set_grid(size)
+        self.set_grid(size,dtype=dtype)
 
         # Create the grid boundary conditions
         self.set_bc(bc)

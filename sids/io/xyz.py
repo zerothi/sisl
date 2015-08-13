@@ -70,8 +70,10 @@ class XYZSile(Sile):
             l = self.readline().split()
             sp[ia] = l.pop(0)
             xyz[ia,:] = [float(k) for k in l[:3]]
+
         return Geometry(xyz,atoms=sp,sc=SuperCell(cell))
 
+    
 if __name__ == "__main__":
     # Create geometry
     alat = 3.57

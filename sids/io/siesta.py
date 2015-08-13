@@ -7,7 +7,7 @@ from __future__ import print_function
 from sids.io.sile import *
 
 # Import the geometry object
-from sids import Geometry, Atom, SuperCell
+from sids import Geometry, Atom, SuperCell, Grid
 from sids.tb import TightBinding
 
 import numpy as np
@@ -18,6 +18,23 @@ __all__ = ['SIESTASile']
 class SIESTASile(NCSile):
     """ SIESTA file object """
 
+    def read_sc(self):
+        """ Returns a SuperCell object from a SIESTA.nc file
+        """
+        if not hasattr(self,'fh'):
+            with self:
+                return self.read_sc()
+
+        cell = np.array(self.variables['cell'][:],np.float64)
+        # Yes, this is ugly, I really should implement my unit-conversion tool
+        cell = cell * Geometry.Length
+        cell.shape = (3,3)
+
+        nsc = np.array(self.variables['nsc'][:],np.int32)
+
+        return SuperCell(cell, nsc=nsc)
+
+
     def read_geom(self):
         """ Returns Geometry object from a SIESTA.nc file 
 
@@ -27,17 +44,17 @@ class SIESTASile(NCSile):
             with self:
                 return self.read_geom()
 
-        cell = np.array(self.variables['cell'][:],np.float64)
-        cell.shape = (3,3)
+        # Read supercell
+        sc = self.read_sc()
+
         xyz = np.array(self.variables['xa'][:],np.float64)
         xyz.shape = (-1,3)
-        nsc = np.array(self.variables['nsc'][:],np.int32)
-            
+
         if 'BASIS' in self.groups:
             bg = self.groups['BASIS']
             # We can actually read the exact basis-information
             b_idx = np.array(bg.variables['basis'][:],np.int32)
-                
+
             # Get number of different species
             n_b = len(bg.groups)
 
@@ -59,12 +76,12 @@ class SIESTASile(NCSile):
         else:
             atoms = Atom[1]
 
-        cell *= Geometry.Length
         xyz *= Geometry.Length
 
         # Create and return geometry object
-        geom = Geometry(xyz, atoms=atoms, sc=SuperCell(cell,nsc=nsc))
+        geom = Geometry(xyz, atoms=atoms, sc=sc)
         return geom
+
 
     def read_tb(self,**kwargs):
         """ Returns a tight-binding model from the underlying NetCDF file """
@@ -74,7 +91,7 @@ class SIESTASile(NCSile):
 
         ispin = 0
         if 'ispin' in kwargs: ispin = kwargs['ispin']
-                
+
         # First read the geometry
         geom = self.read_geom()
 
@@ -82,7 +99,7 @@ class SIESTASile(NCSile):
         sp = self._crt_grp(self,'SPARSE')
         v = sp.variables['isc_off']
         # pre-allocate the super-cells
-        geom.sc.set_supercell(np.amax(v[:,:],axis=0) * 2 + 1)
+        geom.sc.set_nsc(np.amax(v[:,:],axis=0) * 2 + 1)
         geom.sc.sc_off[:,:] = v[:,:]
 
         # Now create the tight-binding stuff (we re-create the 
@@ -114,7 +131,33 @@ class SIESTASile(NCSile):
         tb._TB[:,1] = S[:]
 
         return tb
-        
+
+
+    def read_grid(self,name):
+        """ Reads a grid in the current SIESTA.nc file
+
+        Enables the reading and processing of the grids created by SIESTA
+        """
+        # First read the geometry
+        sc = self.read_sc()
+
+        # Shorthand
+        g = self.groups['GRID']
+
+        # Create the grid
+        nx = len(g.dimensions['nx'])
+        ny = len(g.dimensions['ny'])
+        nz = len(g.dimensions['nz'])
+
+        # Create the grid, SIESTA uses periodic, always
+        grid = Grid([nz,ny,nx], bc=Grid.Periodic, sc=sc,
+                    dtype=g.variables[name].dtype)
+
+        # Read the grid
+        grid.grid[:,:,:] = g.variables[name][:,:,:]
+
+        return grid
+
 
     def write_geom(self,geom):
         """
@@ -156,7 +199,7 @@ class SIESTASile(NCSile):
 
         # Create basis group
         bs = self._crt_grp(self,'BASIS')
-                
+
         # Create variable of basis-indices
         b = self._crt_var(bs,'basis','i4',('na_u',))
         b.info = "Basis of each atom by ID"
@@ -179,7 +222,7 @@ class SIESTASile(NCSile):
                 ba.Label = a.tag
                 ba.Element = a.symbol
                 ba.Number_of_orbitals = np.int32(a.orbs)
-                
+
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = np.cumsum(orbs)
 

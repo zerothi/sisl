@@ -126,21 +126,19 @@ class FDFSile(Sile):
             self._write(' {0} {1} {2}\n'.format(i+1,a.Z,a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
-            
-    def read_geom(self,*args,**kwargs):
-        """ Returns Geometry object from the FDF file 
 
-        NOTE: Interaction range of the Atoms are currently not read.
-        """
-
+    def read_sc(self,*args,**kwargs):
+        """ Returns `SuperCell` object from the FDF file """
         f,lc = self._read('LatticeConstant')
         s = float(lc.split()[1])
         if 'ang' in lc.lower():
             pass
         elif 'bohr' in lc.lower():
             s /= self._Bohr
+
         # Read in cell
         cell = np.empty([3,3],np.float64)
+
         f, lc = self._read_block('LatticeVectors')
         if f:
             for i in range(3):
@@ -154,6 +152,24 @@ class FDFSile(Sile):
             # the fdf file contains neither the latticevectors or parameters
             raise SileError('Could not find Vectors or Parameters block in file')
         cell *= s
+
+        return SuperCell(cell)
+
+
+    def read_geom(self,*args,**kwargs):
+        """ Returns Geometry object from the FDF file 
+
+        NOTE: Interaction range of the Atoms are currently not read.
+        """
+
+        f,lc = self._read('LatticeConstant')
+        s = float(lc.split()[1])
+        if 'ang' in lc.lower():
+            pass
+        elif 'bohr' in lc.lower():
+            s /= self._Bohr
+
+        sc = self.read_sc(*args,**kwargs)
 
         # Read atom scaling
         f, lc = self._read('AtomicCoordinatesFormat')
@@ -213,7 +229,7 @@ class FDFSile(Sile):
             atoms = Atom(1)
 
         # Create and return geometry object
-        return Geometry(xyz,atoms=atoms,sc=SuperCell(cell))
+        return Geometry(xyz,atoms=atoms,sc=sc)
 
 
 if __name__ == "__main__":

@@ -18,12 +18,12 @@ __all__ = ['GULPSile']
 class GULPSile(Sile):
     """ GULP file object """
 
-    def read_geom(self,key='Final fractional coordinates'):
-        """ Reads a geometry and creates the GULP dynamical geometry """
+    def read_sc(self):
+        """ Reads a `SuperCell` and creates the GULP cell """
         if not hasattr(self,'fh'):
             # The file-handle has not been opened
             with self:
-                return self.read_geom()
+                return self.read_sc()
 
         self.step_to('Cartesian lattice vectors')
 
@@ -35,6 +35,18 @@ class GULPSile(Sile):
             cell[i,0] = float(l[0])
             cell[i,1] = float(l[1])
             cell[i,2] = float(l[2])
+
+        return SuperCell(cell)
+
+
+    def read_geom(self,key='Final fractional coordinates'):
+        """ Reads a geometry and creates the GULP dynamical geometry """
+        if not hasattr(self,'fh'):
+            # The file-handle has not been opened
+            with self:
+                return self.read_geom()
+
+        sc = self.read_sc()
             
         # Skip to keyword
         self.step_to(key)
@@ -65,7 +77,7 @@ class GULPSile(Sile):
             raise ValueError('Could not read in cell information and/or coordinates')
 
         # Return the geometry
-        return Geometry(xyz,atoms=Atom[Z],sc=SuperCell(cell))
+        return Geometry(xyz,atoms=Atom[Z],sc=sc)
 
     def read_tb(self,**kwargs):
         """ Returns a GULP tight-binding model for the output of GULP """

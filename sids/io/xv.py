@@ -44,6 +44,22 @@ class XVSile(Sile):
             tmp[0:3] = geom.xyz[ia,:] / geom.Length
             self._write(fmt.format(ips+1,a.Z,*tmp))
 
+        
+    def read_sc(self):
+        """ Returns `SuperCell` object from the XV file """
+        if not hasattr(self,'fh'):
+            # The file-handle has not been opened
+            with self:
+                return self.read_sc()
+
+        cell = np.empty([3,3],np.float64)
+        for i in range(3):
+            cell[i,:] = np.fromstring(self.readline(), dtype=float, sep = ' ')[0:3]
+        cell *= Geometry.Length
+
+        return SuperCell(cell)
+    
+
     def read_geom(self):
         """ Returns Geometry object from the XV file 
         """
@@ -52,10 +68,8 @@ class XVSile(Sile):
             with self:
                 return self.read_geom()
 
-        cell = np.empty([3,3],np.float64)
-        for i in range(3):
-            cell[i,:] = np.fromstring(self.readline(), dtype=float, sep = ' ')[0:3]
-        cell *= Geometry.Length
+        sc = self.read_sc()
+
         # Read number of atoms
         na = int(self.readline())
         atms = [None] * na
@@ -67,7 +81,7 @@ class XVSile(Sile):
             xyz[ia,:] = line[2:5]
         xyz *= Geometry.Length
 
-        return Geometry(xyz=xyz,atoms=atms,sc=SuperCell(cell))
+        return Geometry(xyz=xyz,atoms=atms,sc=sc)
 
 
 if __name__ == "__main__":
