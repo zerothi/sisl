@@ -74,11 +74,8 @@ class Geometry(SuperCellChild):
 
     def __init__(self,xyz,atoms=_H,sc=None):
 
-        if sc is None:
-            # Create fake super-cell of zero size
-            self.set_supercell(SuperCell([1.,1.,1.]))
-        else:
-            self.set_supercell(sc)
+        # Create the supercell
+        self.set_supercell(sc)
 
         # Create the geometry coordinate
         self.xyz = np.asarray(xyz,dtype=np.float64)

@@ -50,13 +50,19 @@ Several basic geometries are intrinsically available
 
     # Graphene basic unit-cell
     g = graphene()
-    # Square graphene basic unit-cell
-    g = graphene_square()
+    # SC crystal structure
+    g = sc(<lattice constant>, <Atom>)
     # BCC crystal structure
     g = bcc(<lattice constant>, <Atom>)
     # FCC crystal structure
     g = fcc(<lattice constant>, <Atom>)
+    # HCP crystal structure
+    g = hcp(<lattice constant>, <Atom>)
 
+The `Graphene`, `BCC`, `FCC` and `HCP` structures can be created in
+a square unit-cell by adding the flag `square=True` in the call:
+
+    g = graphene(square=True)
 
 #### IO-manipulation ####
 

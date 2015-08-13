@@ -62,4 +62,18 @@ class TestSuperCell(object):
         assert_true( np.allclose(cut.cell[0,:]*2,self.sc.cell[0,:]) )
         assert_true( np.allclose(cut.cell[1,:],self.sc.cell[1,:]) )
 
+    def test_creation(self):
+        # full cell
+        tmp1 = SuperCell([[1,0,0],[0,1,0],[0,0,1]])
+        # diagonal cell
+        tmp2 = SuperCell([1,1,1])
+        # cell parameters
+        tmp3 = SuperCell([1,1,1,90,90,90])
+        tmp4 = SuperCell([1])
+        assert_true( np.allclose(tmp1.cell,tmp2.cell) )
+        assert_true( np.allclose(tmp1.cell,tmp3.cell) )
+        assert_true( np.allclose(tmp1.cell,tmp4.cell) )
+
+
+
 

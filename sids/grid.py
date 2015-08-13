@@ -39,11 +39,8 @@ class Grid(SuperCellChild):
         Initialize a `Grid` object.
         """
 
-        if sc is None:
-            # Create fake super-cell of zero size
-            self.set_supercell(SuperCell([1.,1.,1.]))
-        else:
-            self.set_supercell(sc)
+        # Create the super-cell
+        self.set_supercell(sc)
 
         # Create the grid
         self.set_grid(size)

@@ -34,14 +34,7 @@ class SuperCell(object):
         """
         # If the length of cell is 6 it must be cell-parameters, not
         # actual cell coordinates
-        if len(cell) == 6:
-            self.cell = self.abc(*cell)
-        else:
-            # Store the actual 3D cell
-            self.cell = np.asarray(cell,np.float64)
-        if len(self.cell.shape) == 1:
-            # The cell is a diagonal entry cell
-            self.cell = np.diag(self.cell)
+        self.cell = self.tocell(cell)
 
         # Set the volume
         self.vol = np.abs(np.dot(self.cell[0,:],
@@ -214,30 +207,71 @@ class SuperCell(object):
             return np.mean(self.cell,axis=0)
         return self.cell[axis,:] / 2
 
-    @staticmethod
-    def abc(a,b,c,alpha,beta,gamma):
-        """ Returns the cell for parameters given in angles """
+    
+    @classmethod
+    def tocell(cls,*args):
+        """ Returns a 3x3 unit-cell dependent on the input
 
-        # Create cell
-        cell = np.zeros([3,3],np.float64)
+        If you supply a single argument it is regarded as either
+        a) a proper unit-cell
+        b) the diagonal elements in the unit-cell
 
-        cell[0,0] = a
-        g = gamma * np.pi / 180.
-        cg = np.cos(g)
-        sg = np.sin(g)
-        cell[1,0] = b * cg
-        cell[1,1] = b * sg
-        b = beta * np.pi / 180.
-        cb = np.cos(b)
-        sb = np.sin(b)
-        cell[2,0] = c * cb
-        a = alpha * np.pi / 180.
-        d = ( np.cos(a) - cb*cg ) / sg
-        cell[2,1] = c * d
-        cell[2,2] = c * np.sqrt(sb**2-d**2)
-        return cell
+        If you supply 3 arguments it will be the same as the
+        diagonal elements of the unit-cell
 
+        If you supply 6 arguments it will be the same as the 
+        cell parameters, a, b, c, alpha, beta, gamma.
+        """
+        # This is a diagonal unit-cell
+        if len(args) == 3:
+            return np.asarray(np.diag(args),np.float64)
+        
+        # This is a cell parameter unit-cell
+        if len(args) == 6:
+            # Create cell
+            cell = np.zeros([3,3],np.float64)
+            a = args[0]
+            b = args[1]
+            c = args[2]
+            alpha = args[3]
+            beta = args[4]
+            gamma = args[5]
 
+            cell[0,0] = a
+            g = gamma * np.pi / 180.
+            cg = np.cos(g)
+            sg = np.sin(g)
+            cell[1,0] = b * cg
+            cell[1,1] = b * sg
+            b = beta * np.pi / 180.
+            cb = np.cos(b)
+            sb = np.sin(b)
+            cell[2,0] = c * cb
+            a = alpha * np.pi / 180.
+            d = ( np.cos(a) - cb*cg ) / sg
+            cell[2,1] = c * d
+            cell[2,2] = c * np.sqrt(sb**2-d**2)
+            return cell
+
+        # The length has to be 1
+        if len(args) != 1:
+            raise ValueError("Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.")
+
+        # There is only one argument, make array
+        tmp = np.asarray(args[0],dtype=np.float64)
+        if len(tmp.shape) == 2:
+            return tmp
+        elif len(tmp.shape) == 1:
+            # Check whether it is cell-parametrs
+            if len(tmp) == 6:
+                return cls.tocell(*tmp)
+            elif len(tmp) == 1:
+                # A square unit-cell with one lattice parameter
+                return np.asarray(np.diag([tmp[0]]*3),np.float64)
+            return np.asarray(np.diag(tmp),np.float64)
+
+        # Reaching this point is erroneous
+        raise ValueError("Could not decipher the arguments for the cell creation")
 
 class SuperCellChild(object):
     """ Class to be inherited by using the `self.sc` as a `SuperCell` object
@@ -252,7 +286,15 @@ class SuperCellChild(object):
 
     def set_supercell(self,sc):
         """ Overwrites the local supercell """
-        self.sc = sc
+        if sc is None:
+            # Default supercell is a simple
+            # 1x1x1 unit-cell
+            self.sc = SuperCell([1.,1.,1.])
+        elif isinstance(sc,SuperCell):
+            self.sc = sc
+        else:
+            # The supercell is given as a cell
+            self.sc = Supercell(sc)
 
     @property
     def vol(self):
