@@ -10,6 +10,8 @@ import numpy as np
 
 from .quaternion import Quaternion
 from .supercell import SuperCellChild
+from .atom import Atom
+from .geometry import Geometry
 
 __all__ = ['Grid']
 
@@ -33,7 +35,7 @@ class Grid(SuperCellChild):
     Neumann = 2
     Dirichlet = 3
     
-    def __init__(self,size=_size,bc=_bc,sc=None,dtype=_dtype):
+    def __init__(self,size=_size,bc=_bc,sc=None,dtype=_dtype,geom=None):
         """ Initialize a `Grid` object.
         
         Initialize a `Grid` object.
@@ -47,7 +49,10 @@ class Grid(SuperCellChild):
 
         # Create the grid boundary conditions
         self.set_bc(bc)
-        
+
+        # Create the atomic structure in the grid, if possible
+        self.set_geom(geom)
+
 
     def set_grid(self,size,dtype=_dtype):
         """ Create the internal grid of certain size.
@@ -79,6 +84,20 @@ class Grid(SuperCellChild):
     set_boundary = set_bc
     set_boundary_condition = set_bc
 
+    def set_geom(self,geom):
+        """ Sets the `Geometry` for the grid.
+
+        Setting the `Geometry` for the grid is a possibility
+        to attach atoms to the grid.
+
+        It is not a necessary entity.
+        """
+        if geom is None:
+            # Fake geometry
+            self.set_geom(Geometry([0,0,0],Atom['H'],sc=self.sc))
+        else:
+            self.geom = geom
+                          
 
     def copy(self):
         """
@@ -100,6 +119,16 @@ class Grid(SuperCellChild):
         return self.__class__(self.size[idx], bc=self.bc[idx],
                               sc=self.sc.swapaxes(a,b))
 
+
+    @property
+    def dcell(self):
+        """ Returns the delta-cell """
+        # Calculate the grid-distribution
+        g_size = self.grid.shape
+        dcell = _np.empty([3,3],np.float64)
+        for ix in range(3):
+            dcell[ix,:] = self.cell[ix,:] / g_size[ix]
+        return dcell
             
     def append(self,other,axis):
         """ Appends other `Grid` to this grid along axis

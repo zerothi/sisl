@@ -96,7 +96,6 @@ class SuperCell(object):
     # Aliases
     set_supercell = set_nsc
 
-
     def copy(self):
         """
         Returns a copy of the object.
@@ -295,6 +294,8 @@ class SuperCellChild(object):
         else:
             # The supercell is given as a cell
             self.sc = Supercell(sc)
+
+    set_sc = set_supercell
 
     @property
     def vol(self):

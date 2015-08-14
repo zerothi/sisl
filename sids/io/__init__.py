@@ -9,6 +9,7 @@ from .sile import *
 
 # Import the different Sile objects
 # enabling the actual print-out
+from .cube import *
 from .fdf import *
 from .gulp import *
 from .siesta import *
@@ -26,6 +27,7 @@ def extendall(mod):
     __all__.extend(sys.modules[mod].__dict__['__all__'])
 
 extendall('sids.io.sile')
+extendall('sids.io.cube')
 extendall('sids.io.fdf')
 extendall('sids.io.gulp')
 extendall('sids.io.siesta')
@@ -57,12 +59,13 @@ def add_sile(ending,obj,case=True):
         _objs['.'+ending] = obj
 
 
-add_sile('xyz',XYZSile,case=False)
+add_sile('cube',CUBESile,case=False)
 add_sile('fdf',FDFSile,case=False)
+add_sile('gout',GULPSile)
 add_sile('nc',SIESTASile,case=False)
 add_sile('tb',TBSile,case=False)
 add_sile('TBT.nc',TBtransSile)
-add_sile('gout',GULPSile)
+add_sile('xyz',XYZSile,case=False)
 add_sile('XV',XVSile)
 
 def get_sile(file,*args,**kwargs):
@@ -95,6 +98,9 @@ def get_sile(file,*args,**kwargs):
 
 if __name__ == "__main__":
     
+    assert isinstance(get_sile('test.cube'),CUBESile),"Returning incorrect object"
+    assert isinstance(get_sile('test.CUBE'),CUBESile),"Returning incorrect object"
+
     assert isinstance(get_sile('test.xyz'),XYZSile),"Returning incorrect object"
     assert isinstance(get_sile('test.XYZ'),XYZSile),"Returning incorrect object"
     try:

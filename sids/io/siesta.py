@@ -150,11 +150,12 @@ class SIESTASile(NCSile):
         nz = len(g.dimensions['nz'])
 
         # Create the grid, SIESTA uses periodic, always
-        grid = Grid([nz,ny,nx], bc=Grid.Periodic, sc=sc,
+        grid = Grid([nx,ny,nz], bc=Grid.Periodic, sc=sc,
                     dtype=g.variables[name].dtype)
 
-        # Read the grid
-        grid.grid[:,:,:] = g.variables[name][:,:,:]
+        # Read the grid, we want the z-axis to be the fastest
+        # looping direction, hence x,y,z == 0,1,2
+        grid.grid[:,:,:] = np.swapaxes(g.variables[name][:,:,:],0,2)
 
         return grid
 
