@@ -133,11 +133,15 @@ class SIESTASile(NCSile):
         return tb
 
 
-    def read_grid(self,name):
+    def read_grid(self,name,idx=0):
         """ Reads a grid in the current SIESTA.nc file
 
         Enables the reading and processing of the grids created by SIESTA
         """
+        if not hasattr(self,'fh'):
+            with self:
+                return self.read_grid(name)
+            
         # First read the geometry
         sc = self.read_sc()
 
@@ -155,7 +159,12 @@ class SIESTASile(NCSile):
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
-        grid.grid[:,:,:] = np.swapaxes(g.variables[name][:,:,:],0,2)
+        if len(g.variables[name][:].shape) == 3:
+            grid.grid[:,:,:] = g.variables[name][:,:,:]
+        else:
+            tmp = g.variables[name][idx,:,:,:]
+            tmp.shape = (grid.grid.shape[2],tmp.shape[1],-1)
+            grid.grid[:,:,:] = np.swapaxes(tmp,0,2)
 
         return grid
 

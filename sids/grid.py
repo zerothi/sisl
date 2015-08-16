@@ -140,5 +140,10 @@ class Grid(SuperCellChild):
                               sc=self.sc.append(other.sc,axis))
 
 
+    def __repr__(self):
+        """ Representation of object """
+        return 'Grid[{} {} {}]'.format(*self.grid.shape)
+
+    
 if __name__ == "__main__":
     pass

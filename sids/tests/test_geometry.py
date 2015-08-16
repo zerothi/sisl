@@ -26,6 +26,15 @@ class TestGeometry(object):
         del self.g
         del self.sc
 
+    def test_objects(self):
+        assert_true( len(self.g) == 2 )
+        assert_true( len(self.g.xyz) == 2 )
+
+        i = 0 
+        for ia in self.g:
+            i += 1
+        assert_true( i == len(self.g) )
+        assert_true( self.g.no_s == 2 * len(self.g) * np.prod(self.g.sc.nsc) )
 
     def test_tile1(self):
         cell = np.copy(self.g.sc.cell)
@@ -69,6 +78,17 @@ class TestGeometry(object):
         assert_true( self.g.atoms[0].orbs == self.g.a2o(1) )
         assert_true( self.g.no == self.g.a2o(self.g.na) )
 
+    def test_sub(self):
+        assert_true( len(self.g.sub([0])) == 1 )
+        assert_true( len(self.g.sub([0,1])) == 2 )
+
+    def test_cut(self):
+        assert_true( len(self.g.cut(1,1)) == 2 )
+        assert_true( len(self.g.cut(2,1)) == 1 )
+
+    def test_remove(self):
+        assert_true( len(self.g.remove([0])) == 1 )
+        assert_true( len(self.g.remove([])) == 2 )
 
     def test_nsc1(self):
         nsc = np.copy(self.g.nsc)

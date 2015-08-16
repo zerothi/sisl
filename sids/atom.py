@@ -18,8 +18,10 @@ __all__ = ['PeriodicTable','Atom']
 
 class PeriodicTable(object):
     """ 
-    Very basic periodic table, not very pretty as it
-    was generated using reg-exps.
+    Basic periodic table.
+
+    It retains all periodic elements and allows easy conversion
+    from full names to the atomic number to their weights.
     """
     _Z_int = {
         'Actinium' : 89 , 'Ac' : 89 , '89' : 89, 89 : 89,
@@ -384,7 +386,21 @@ class PeriodicTable(object):
         }
 
     def Z_int(self,key):
-        """ Returns the Z number """
+        """ Returns the atomic number
+        Return the atomic number corresponding to the `key` lookup.
+
+        Parameters
+        ----------
+        key : array_like, str, int
+            Uses value to lookup the atomic number in the `PeriodicTable`
+            object.
+
+        Returns
+        -------
+        Z : ndarray, int
+            The atomic number corresponding to `key`, if `key` is array_like, so
+            will the returned value be.
+        """
         ak = np.asarray([key]).flatten()
         if len(ak) == 1: return self._Z_int[ak[0]]
         return np.array([self._Z_int[i] for i in ak],np.int32)
@@ -392,12 +408,41 @@ class PeriodicTable(object):
     Z = Z_int
 
     def Z_short(self,key):
-        """ Returns the Z name in short """
+        """ Returns the atomic short name
+        Return the atomic short name corresponding to the `key` lookup.
+
+        Parameters
+        ----------
+        key : array_like, str, int
+            Uses value to lookup the atomic short name in the 
+            `PeriodicTable` object.
+
+        Returns
+        -------
+        name : ndarray, str
+            The atomic short name corresponding to `key`, if `key` is array_like, so
+            will the returned value be.
+        """
         ak = np.asarray([key]).flatten()
         if len(ak) == 1: return self._Z_short[ak[0]]
         return np.array([self._Z_short[i] for i in ak],np.int32)
 
     def atomic_mass(self,key):
+        """ Returns the atomic mass
+        Return the atomic mass corresponding to the `key` lookup.
+
+        Parameters
+        ----------
+        key : array_like, str, int
+            Uses value to lookup the atomic mass in the 
+            `PeriodicTable` object.
+
+        Returns
+        -------
+        name : ndarray, float
+            The atomic mass in atomic units corresponding to `key`, if `key` is array_like, so
+            will the returned value be.
+        """
         Z = self.Z_int(key)
         if isinstance(Z,Integral): return self._atomic_mass[Z]
         return np.array([self._atomic_mass[i] for i in Z],np.float64)
@@ -409,6 +454,7 @@ _ptbl = PeriodicTable()
 
 
 class AtomMeta(type):
+    """ Meta class for key-lookup on the class. """
     def __getitem__(cls,key):
         """ Create a new atom object """
         if isinstance(key,Atom):
@@ -438,24 +484,41 @@ class AtomMeta(type):
 # This below construct handles both python2 and python3 cases
 class Atom(with_metaclass(AtomMeta,object)):
     """
-    Atomic object to handle atomic mass, name etc.
-    
-    This object handles the interaction ranges of the atoms, the
-    atomic orbitals etc.
+    Object to handle atomic mass, name, number of orbitals and 
+    orbital range.
 
+    The `Atom` object handles the atomic species with information
+    such as
+    - atomic number
+    - mass
+    - number of orbitals
+    - radius of each orbital
+
+    Attributes
+    ----------
+    Z : int
+        atomic number
+    R : ndarray
+        radius of orbitals belonging to the `Atom`
+    orbs : int
+        number of orbitals belonging to the `Atom`
+    mass : float
+        mass of `Atom`
+    
     Parameters
     ----------
-    Z     : (1) integer/string
-        description of the atom, the atom number or the atom name.
-    R     : (-1.) array_like/float
+    Z : int, str
+        key lookup for the atomic specie, `Atom[key]`
+    R : array_like, float
         the range of the atomic orbitals
-    orbs  : (1) integer 
+    orbs : int
         number of orbitals attached to this atom
-        NOTE: Length of ``R`` precedes this quantity.
-    mass  : (1) float
-        the atomic mass (defaults to the periodic table quantity)
-    tag   : arbitrary designation for user handling similar atoms with
-        different settings.
+        NOTE: Length of `R` precedes this quantity.
+    mass : float, optional
+        the atomic mass, if not specified uses the mass from `PeriodicTable`
+    tag : str
+        arbitrary designation for user handling similar atoms with
+        different settings
     """
     def __init__(self,Z,R=-1.,orbs=1,mass=None,tag=None):
         self.Z = _ptbl.Z_int(Z)
@@ -474,20 +537,20 @@ class Atom(with_metaclass(AtomMeta,object)):
             self.tag = tag
 
     def copy(self):
-        """ Returns copy of this object """
+        """ Return copy of this object. """
         return self.__class__(self.Z,self.R,self.orbs,self.mass,self.tag)
 
     @property
     def symbol(self):
+        """ Return short atomic name. """
         return _ptbl.Z_short(self.Z)
 
     @property
     def dR(self):
-        """ Returns the maximum range of orbitals """
+        """ Return the maximum range of orbitals. """
         return np.amax(self.R)
 
     def __repr__(self):
-        """ String representation """
         return self.tag + " orbs: "+str(self.orbs) \
             + " mass(au): "+str(self.mass)
 

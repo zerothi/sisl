@@ -28,47 +28,54 @@ _nsc = np.array([1]*3,np.int32)
 
 class Geometry(SuperCellChild):
     """
-    Geometry object handling atomic coordinates in a supercell
-    fashion.
+    Object for retaining a list of atoms.
 
-    Every geometry deals with these information:
-      - cell, the unit cell of the geometry
-      - xyz, the atomic coordinates
-      - atoms, the atoms associated with the coordinates
+    Every geometry deals with this information:
+    - atomic coordinates
+    - atomic species
+    - unit cell 
     
     All lengths are assumed to be in units of Angstrom, however, as
     long as units are kept same the exact units are irrespective.
-    
-    Parameters
-    ----------
-    sc  : `SuperCell`
-    xyz   : array_like
-        atomic coordinates in a Nx3 matrix.
-        ``xyz[i,:]`` is the atomic coordinate of the i'th atom.
-        This atomic coordinate need not be inside the unit-cell.
-    atoms : (Atom['H']), list of atoms associated
-        These atoms constitute the atomic ranges, weights, orbitals
-        etc. for the geometry.
+
+    Examples
+    --------
+    >>> xyz = [[0, 0, 0],
+               [1, 1, 1]]
+    >>> g = Geometry(xyz,Atom['H'])
+
+    >>> sc = SuperCell([2,2,2])
+    >>> g = Geometry(xyz,Atom['H'],sc)
 
     Attributes
     ----------
-    sc : The supercell object
-    na/len(self) : integer
-        Number of atoms.
-    xyz  : (na,3) ndarray
-        Atomic coordinates.
-    atoms  : (na)
-        The atomic objects associated with each atom.
-    no: sum([a.orbs for a in self.atoms])
-        Total number of orbitals 
-    dR   : float np.max([a.dR for a in self.atoms])
-        Maximum orbital range.
-    nsc  : (3) ndarray
-        Total number of supercells in each direction
-    cell : (3,3) ndarray
-        Cell vectors, property locating the `sc.cell` variable
-    """
+    na : int
+        number of atoms, ``len(self)``
+    xyz : ndarray
+        atomic coordinates
+    atoms : array_like, ``Atom``
+        the atomic objects associated with each atom
+    sc : ``SuperCell``
+        the supercell describing the periodicity of the 
+        geometry
+    no: int
+        total number of orbitals in the geometry
+    dR : float np.max([a.dR for a in self.atoms])
+        maximum orbital range
 
+    Parameters
+    ----------
+    xyz : array_like
+        atomic coordinates
+        ``xyz[i,:]`` is the atomic coordinate of the i'th atom.
+    atoms : array_like
+        atomic species retrieved from the ``PeriodicTable``
+    sc : ``SuperCell``
+        the unit-cell describing the atoms in a periodic
+        super-cell
+
+    """
+    
     # The length conversion factor
     Length = 0.529177
 
@@ -115,8 +122,14 @@ class Geometry(SuperCellChild):
 
 
     def write(self,sile):
-        """ Writes a geometry to the ``sile`` as implemented in the ``sile.write_geom``
-        method """
+        """ Writes geometry to the ``Sile`` using ``sile.write_geom``
+
+        Parameters
+        ----------
+        sile : Sile, str
+            a ``Sile`` object which will be used to write the geometry
+            if it is a string it will create a new sile using ``get_sile``
+        """
 
         # This only works because, they *must*
         # have been imported previously

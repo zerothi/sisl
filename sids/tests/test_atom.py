@@ -21,6 +21,8 @@ class TestAtom(object):
     def test1(self):
         assert_true( self.C == Atom['C'] )
         assert_true( self.Au == Atom['Au'] )
+        assert_true( self.Au != self.C )
+        assert_false( self.Au == self.C )
 
     def test2(self):
         C = Atom('C', R=20)
@@ -36,3 +38,11 @@ class TestAtom(object):
         assert_true( self.C.symbol == 'C' )
         assert_true( self.Au.symbol == 'Au' )
 
+    def test4(self):
+        assert_true( self.C.mass > 0 )
+        assert_true( self.Au.mass > 0 )
+
+    def test5(self):
+        assert_true( Atom(Z=1,mass=12).mass == 12 )
+        assert_true( Atom(Z=31,mass=12).mass == 12 )
+        assert_true( Atom(Z=31,mass=12).Z == 31 )
