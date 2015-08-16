@@ -278,6 +278,7 @@ class SuperCellChild(object):
     Initialize by a `SuperCell` object and get access to several different
     routines directly related to the `SuperCell` class.
     """
+    Length = 0.529177
 
     def set_nsc(self,nsc):
         """ Set the number of super-cells in the `SuperCell` object """

@@ -41,7 +41,6 @@ class Grid(SuperCellChild):
         Initialize a `Grid` object.
         """
 
-        # Create the super-cell
         self.set_supercell(sc)
 
         # Create the grid
@@ -97,6 +96,7 @@ class Grid(SuperCellChild):
             self.set_geom(Geometry([0,0,0],Atom['H'],sc=self.sc))
         else:
             self.geom = geom
+            self.set_sc(geom.sc)
                           
 
     def copy(self):
@@ -138,6 +138,24 @@ class Grid(SuperCellChild):
         size[axis] += other.grid.shape[axis]
         return self.__class__(size, bc = np.copy(self.bc),
                               sc=self.sc.append(other.sc,axis))
+    
+    def write(self,sile):
+        """ Writes grid to the ``Sile`` using ``sile.write_grid``
+
+        Parameters
+        ----------
+        sile : Sile, str
+            a ``Sile`` object which will be used to write the grid
+            if it is a string it will create a new sile using ``get_sile``
+        """
+
+        # This only works because, they *must*
+        # have been imported previously
+        from sids.io import get_sile, BaseSile
+        if isinstance(sile,BaseSile):
+            sile.write_grid(self)
+        else:
+            get_sile(sile,'w').write_grid(self)
 
 
     def __repr__(self):

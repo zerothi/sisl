@@ -75,9 +75,6 @@ class Geometry(SuperCellChild):
         super-cell
 
     """
-    
-    # The length conversion factor
-    Length = 0.529177
 
     def __init__(self,xyz,atoms=_H,sc=None):
 

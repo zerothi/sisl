@@ -142,8 +142,7 @@ class SIESTASile(NCSile):
             with self:
                 return self.read_grid(name)
             
-        # First read the geometry
-        sc = self.read_sc()
+        geom = self.read_geom()
 
         # Shorthand
         g = self.groups['GRID']
@@ -154,7 +153,7 @@ class SIESTASile(NCSile):
         nz = len(g.dimensions['nz'])
 
         # Create the grid, SIESTA uses periodic, always
-        grid = Grid([nx,ny,nz], bc=Grid.Periodic, sc=sc,
+        grid = Grid([nx,ny,nz], bc=Grid.Periodic, geom=geom,
                     dtype=g.variables[name].dtype)
 
         # Read the grid, we want the z-axis to be the fastest
