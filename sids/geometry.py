@@ -574,7 +574,7 @@ class Geometry(SuperCellChild):
         else:
             g.xyz[atoms,:] += np.asarray(v,g.xyz.dtype)[None,:]
         if cell:
-            g.sc = g.sc.translate(v)
+            g.set_supercell(g.sc.translate(v))
         return g
 
 
