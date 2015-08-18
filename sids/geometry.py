@@ -296,7 +296,7 @@ class Geometry(SuperCellChild):
                             atoms=[self.atoms[i] for i in atms], sc=cell)
 
 
-    def cut(self,seps,axis):
+    def cut(self,seps,axis,seg=0):
         """
         Returns a subset of atoms from the geometry by cutting the 
         geometry into ``seps`` parts along the direction ``axis``.
@@ -315,17 +315,26 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        axis  : integer
-           the axis that will be cut
-        seps  : integer, optional
-           number of times the structure will be cut.
+        axis  : int
+            the axis that will be cut
+        seps  : int
+            number of times the structure will be cut.
+        seg : int, optional (0)
+            returns the i'th segment of the cut structure
+            Currently the atomic coordinates are not translated,
+            this may change in the future.
         """
         if self.na % seps != 0:
             raise ValueError('The system cannot be cut into {0} different '+
                              'pieces. Please check your geometry and input.'.format(seps))
+        # Truncate to the correct segments
+        lseg = seg % seps
         # Cut down cell
         sc = self.sc.cut(seps,axis)
-        new = self.sub(np.arange(self.na//seps), cell=sc)
+        # List of atoms
+        n = self.na // seps
+        off = n * lseg
+        new = self.sub(np.arange(off,off+n), cell=sc)
         if not np.allclose(new.tile(seps, axis).xyz, self.xyz):
             warnings.warn('The cut structure cannot be re-created by tiling', UserWarning) 
         return new

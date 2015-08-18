@@ -85,6 +85,13 @@ class TestGeometry(object):
     def test_cut(self):
         assert_true( len(self.g.cut(1,1)) == 2 )
         assert_true( len(self.g.cut(2,1)) == 1 )
+        assert_true( len(self.g.cut(2,1,1)) == 1 )
+
+    def test_cut2(self):
+        c1 = self.g.cut(2,1)
+        c2 = self.g.cut(2,1,1)
+        assert_true( np.allclose(c1.xyz[0,:],self.g.xyz[0,:]) )
+        assert_true( np.allclose(c2.xyz[0,:],self.g.xyz[1,:]) )
 
     def test_remove(self):
         assert_true( len(self.g.remove([0])) == 1 )
