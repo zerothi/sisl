@@ -287,7 +287,6 @@ class TightBinding(object):
                         csr_matrix((self._TB[:,1],self.col,self.ptr),**kw))
         else:
             k = np.asarray(k,np.float64)
-            import scipy.linalg as sla
             # Setup the Hamiltonian for this k-point
             Hfull, Sfull = self.tocsr()
 
@@ -298,8 +297,8 @@ class TightBinding(object):
             S = csr_matrix(s,dtype=np.complex)
             
             # Get the reciprocal lattice vectors dotted with k
-            rcell = sla.inv(self.cell.copy())
-            kr = np.dot(np.asarray(k),rcell) * np.pi * 2.
+            rcell = self.rcell
+            kr = np.dot(rcell,np.asarray(k)) * np.pi * 2.
             for si in range(self.sc.n_s):
                 isc = self.sc_off[si,:]
                 phase = np.exp(-1j*np.dot(kr,np.dot(self.cell,isc)))
@@ -326,6 +325,7 @@ class TightBinding(object):
             S = S[orbs,orbs]
         return sli.eigh(H.todense(),S.todense(),*args,**kwargs)
 
+    
     def cut(self,seps,axis):
         """ Cuts the tight-binding model into different parts.
 

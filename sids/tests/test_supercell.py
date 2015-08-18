@@ -6,6 +6,7 @@ from sids import SuperCell, SuperCellChild
 
 import math as m
 import numpy as np
+import scipy.linalg as sli
 
 
 class TestSuperCell(object):
@@ -92,6 +93,12 @@ class TestSuperCell(object):
         assert_true( np.allclose(tmp1.cell,tmp3.cell) )
         assert_true( np.allclose(tmp1.cell,tmp4.cell) )
 
+    def test_rcell(self):
+        # LAPACK inverse algorithm implicitly does
+        # a transpose.
+        rcell = sli.inv(self.sc.cell)
+        assert_true( np.allclose(rcell.T,self.sc.rcell) )
+        
 
 
 

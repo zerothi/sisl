@@ -6,7 +6,6 @@ from __future__ import print_function, division
 
 import numpy as np
 
-
 from .quaternion import Quaternion
 
 __all__ = ['SuperCell','SuperCellChild']
@@ -113,6 +112,33 @@ class SuperCell(object):
         idx[b] = a
         idx[a] = b
         return self.__class__(self.cell[idx,:], nsc = self.nsc[idx])
+
+
+    @property
+    def rcell(self):
+        """ Returns the reciprocal cell for the `SuperCell` 
+
+        Note: The returned vectors are still in [0,:] format
+        and not as returned by an inverse LAPACK algorithm.
+        """
+        # Calculate the reciprocal cell
+        # This should probably be changed and checked for
+        # transposition 
+        cell = self.cell
+        rcell = np.empty([3,3],dtype=cell.dtype)
+        rcell[0,0] = cell[1,1]*cell[2,2] - cell[1,2]*cell[2,1]
+        rcell[0,1] = cell[1,2]*cell[2,0] - cell[1,0]*cell[2,2]
+        rcell[0,2] = cell[1,0]*cell[2,1] - cell[1,1]*cell[2,0]
+        rcell[1,0] = cell[2,1]*cell[0,2] - cell[2,2]*cell[0,1]
+        rcell[1,1] = cell[2,2]*cell[0,0] - cell[2,0]*cell[0,2]
+        rcell[1,2] = cell[2,0]*cell[0,1] - cell[2,1]*cell[0,0]
+        rcell[2,0] = cell[0,1]*cell[1,2] - cell[0,2]*cell[1,1]
+        rcell[2,1] = cell[0,2]*cell[1,0] - cell[0,0]*cell[1,2]
+        rcell[2,2] = cell[0,0]*cell[1,1] - cell[0,1]*cell[1,0]
+        rcell[0,:] = rcell[0,:] / np.sum(rcell[0,:] * cell[0,:])
+        rcell[1,:] = rcell[1,:] / np.sum(rcell[1,:] * cell[1,:])
+        rcell[2,:] = rcell[2,:] / np.sum(rcell[2,:] * cell[2,:])
+        return rcell
 
             
     def rotate(self,angle,v,degree=False):
@@ -307,6 +333,11 @@ class SuperCellChild(object):
     def cell(self):
         """ Returns the inherent `SuperCell` objects `cell` """
         return self.sc.cell
+
+    @property
+    def rcell(self):
+        """ Returns the inherent `SuperCell` objects `rcell` """
+        return self.sc.rcell
 
     @property
     def n_s(self):

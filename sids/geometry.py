@@ -118,6 +118,25 @@ class Geometry(SuperCellChild):
         return self.na
 
 
+    @staticmethod
+    def read(sile):
+        """ Reads geometry from the ``Sile`` using ``sile.read_geom``
+
+        Parameters
+        ----------
+        sile : Sile, str
+            a ``Sile`` object which will be used to read the geometry
+            if it is a string it will create a new sile using ``get_sile``.
+        """
+        # This only works because, they *must*
+        # have been imported previously
+        from sids.io import get_sile, BaseSile
+        if isinstance(sile,BaseSile):
+            return sile.read_geom()
+        else:
+            return get_sile(sile).read_geom()
+           
+
     def write(self,sile):
         """ Writes geometry to the ``Sile`` using ``sile.write_geom``
 
@@ -817,11 +836,11 @@ class Geometry(SuperCellChild):
             ret = [ [idx[ix[tidx]]] ]
         i = 0
         if ret_coord: 
-            c = i + 1
+            rc = i + 1
             i += 1
             ret.append([xa[tidx]])
-        if ret_dist: 
-            d = i + 1
+        if ret_dist:
+            rd = i + 1
             i += 1
             ret.append([d[tidx]])
         for i in range(1,len(ddR)):
@@ -834,8 +853,8 @@ class Geometry(SuperCellChild):
                 ret[0].append(ix[tidx])
             else:
                 ret[0].append(idx[ix[tidx]])
-            if ret_coord: ret[c].append(xa[tidx])
-            if ret_dist: ret[d].append(d[tidx])
+            if ret_coord: ret[rc].append(xa[tidx])
+            if ret_dist: ret[rd].append(d[tidx])
         if ret_special: return ret
         return ret[0]
 

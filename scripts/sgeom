@@ -17,7 +17,7 @@ import sids
 
 def run():
 
-    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files.')
+    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files. Piping is allowed to do complex corrections to geometries.')
 
     def dir_type(val,check_type):
         if val in ['x','y','z']:
@@ -32,13 +32,16 @@ def run():
     def dir_int(val): return dir_type(val,int)
     def dir_float(val): return dir_type(val,float)
 
-    p.add_argument('-o','--origin',action='store_true',default=False,
+    p.add_argument('-O','--origin',action='store_true',default=False,
                          help='Will push the coordinates to the origin.')
     p.add_argument('-co','--center-of',choices=['mass','xyz','position','cell'],default=None,
                          help='Will move the coordinates to the center of the designated choice.')
     p.add_argument('-r','--repeat',nargs=2,default=None,type=dir_int,action='append',
                          metavar=('dir','repeat'),
                          help='Repeats in the specified direction.')
+    p.add_argument('-uc','--unit-cell',choices=['translate','tr','t',
+                                                'mod'],default=None,
+                   help='Moves the coordinates into the unit-cell by translation or the mod-operator')
     p.add_argument('-rx','--repeat-x',type=int,default=1,metavar='repeat',
                          help='Repeats in the x-direction.')
     p.add_argument('-ry','--repeat-y',type=int,default=1,metavar='repeat',
@@ -56,10 +59,14 @@ def run():
                          help='Tiles in the z-direction.')
     p.set_defaults(func=geom_convert)
 
-    p.add_argument('in_file',metavar='infile',type=str,
+    p.add_argument('-o','--out',metavar='outfile',dest='opt_out_file',
+                   nargs='*',type=str,default=[],
+                   help='Write geometry to file, append for more out files. This is useful while piping geometries')
+
+    p.add_argument('in_file',metavar='infile',nargs='?',type=str,
                    help='Read geometry from file.')
-    p.add_argument('out_file',metavar='outfile',nargs='+',type=str,
-                   help='Write geometry to file, Append for more out files.')
+    p.add_argument('out_file',metavar='outfile',nargs='*',type=str,default=[],
+                   help='Write geometry to file, append for more out files.')
 
     args = p.parse_args()
     args.func(args)
@@ -69,18 +76,65 @@ def geom_convert(args):
     """
     sgeom convert $@
     """
-    # Take geometry
-    g = sids.get_sile(args.in_file).read_geom()
+
+    if args.in_file:
+        # Take geometry
+        g = sids.Geometry.read(args.in_file)
+    else:
+        # We will read in from the pipe
+        cell = np.empty([3,3],np.float64)
+        ic = 0
+        ix = 0
+        xyz = []
+        atoms = []
+        for i, line in enumerate(sys.stdin):
+            try:
+                l = np.array(line.split(),np.float64)
+            except:
+                continue
+            if ic < 3:
+                cell[ic,:] = l
+                ic += 1
+            else:
+                xyz.append(l[:3])
+                if len(l) > 3:
+                    atoms.append(sids.Atom[int(l[3])])
+        xyz = np.array(xyz,np.float64)
+        g = sids.Geometry(xyz=xyz,atoms=atoms,sc=cell)
     
     if args.origin:
         g.xyz[:,:] -= np.amin(g.xyz,axis=0)[None,:]
 
+    if args.unit_cell:
+        if args.unit_cell in ['translate','tr','t']:
+            # Simple translation
+            tmp = np.amin(g.xyz,axis=0)
+            # Find the smallest distance from the first
+            # atom
+            _, d = g.close(0,dR=(0.1,20.),ret_dist=True)
+            d = np.amin(d[1]) / 2
+            g = g.translate(-tmp + np.array([d,d,d]))
+        elif args.unit_cell in ['mod']:
+            # Change all coordinates using the reciprocal
+            # cell
+            rcell = g.rcell
+            idx = np.abs(np.array(np.dot(g.xyz,rcell),np.int32))
+            # change supercell
+            nsc = np.amax(idx * 2 + 1,axis=0)
+            g.set_nsc(nsc)
+            # Change the coordinates
+            for ia in g:
+                g.xyz[ia,:] = g.coords(isc=idx[ia,:],idx=ia)
+
+
     if not args.center_of is None:
         g = g.translate(-g.center(which=args.center_of))
-        
+
+
     if not args.repeat is None:
         for d,r in args.repeat:
             g = g.repeat(r,d)
+
 
     if not args.tile is None:
         for d,t in args.tile:
@@ -90,8 +144,19 @@ def geom_convert(args):
     g = g.tile(args.tile_x,0).tile(args.tile_y,1).tile(args.tile_z,2)
 
     # Store geometry
-    for f in args.out_file:
-        sids.get_sile(f,mode='w').write_geom(g)
+    args.out_file.extend(args.opt_out_file)
+    if args.out_file:
+        for f in args.out_file:
+            g.write(f)
+    else:
+        # We simply print it to the screen
+        print('Cell:')
+        for i in range(3):
+            print('  {0:10.4f} {1:10.4f} {2:10.4f}'.format(*g.cell[i,:]))
+        print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x','y','z','Z'))
+        for ia in g:
+            print(' {1:10.4f} {2:10.4f} {3:10.4f}  {0:3d}'.format(g.atoms[ia].Z,
+                                                                  *g.xyz[ia,:]))
 
 
 if __name__ == "__main__":
