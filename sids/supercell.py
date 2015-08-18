@@ -294,7 +294,7 @@ class SuperCellChild(object):
             self.sc = sc
         else:
             # The supercell is given as a cell
-            self.sc = Supercell(sc)
+            self.sc = SuperCell(sc)
 
     set_sc = set_supercell
 

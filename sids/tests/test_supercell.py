@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 from nose.tools import *
 
-from sids import SuperCell
+from sids import SuperCell, SuperCellChild
 
 import math as m
 import numpy as np
@@ -70,6 +70,24 @@ class TestSuperCell(object):
         # cell parameters
         tmp3 = SuperCell([1,1,1,90,90,90])
         tmp4 = SuperCell([1])
+        assert_true( np.allclose(tmp1.cell,tmp2.cell) )
+        assert_true( np.allclose(tmp1.cell,tmp3.cell) )
+        assert_true( np.allclose(tmp1.cell,tmp4.cell) )
+
+    def test_creation2(self):
+        # full cell
+        class P(SuperCellChild):
+            pass
+        tmp1 = P()
+        tmp1.set_supercell([[1,0,0],[0,1,0],[0,0,1]])
+        # diagonal cell
+        tmp2 = P()
+        tmp2.set_supercell([1,1,1])
+        # cell parameters
+        tmp3 = P()
+        tmp3.set_supercell([1,1,1,90,90,90])
+        tmp4 = P()
+        tmp4.set_supercell([1])
         assert_true( np.allclose(tmp1.cell,tmp2.cell) )
         assert_true( np.allclose(tmp1.cell,tmp3.cell) )
         assert_true( np.allclose(tmp1.cell,tmp4.cell) )
