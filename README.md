@@ -22,7 +22,17 @@ To convert a SIESTA FDF file to `xyz` _and_ an `XV` file one does
 
     sgeom siesta.fdf geom.xyz geom.XV
 
+When doing complex geometry complexes one can use piping to do consecutive
+manipulations of the geometry, for instance to first repeat, then rotate
+a structure one could do:
+
+    sgeom -rx 2 siesta.fdf | sgeom -Rx 90a -o rep_rot.fdf
+
+Note that `-o` is needed as `sgeom` otherwise does not now the difference
+between piping and input-file names.
+
 Try `sgeom -h` for additional features such as repeating the structure.
+
 
 ### Geometry manipulation ###
 
