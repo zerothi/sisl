@@ -14,16 +14,40 @@ import numpy as np
 
 import sids
 
+# For transforming a string to a range
+import re
+re_rng = re.compile('[,]?([0-9-]+)[,]?')
+
+# Function to change a string to a range of atoms
+def parse_rng(s):
+    """ Parses a string into a list of ranges 
+    
+    This range can be formatted like this:
+      1,2,3-6
+    in which case it will return:
+      [1,2,3,4,5,6]
+    """
+    rng = []
+    for la in re_rng.findall(s):
+        # We accumulate a list of integers
+        tmp = la.split('-')
+        if len(tmp) > 2: 
+            print('Error in parsing: "'+s+'".')
+        elif len(tmp) > 1:
+            bo, eo = tuple(map(int,tmp))
+            rng.extend(range(bo-1,eo))
+        else:
+            rng.append(int(tmp[0]-1))
+    return rng
+
 
 def run():
 
     p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files. Piping is allowed to do complex corrections to geometries.')
 
     def dir_type(val,check_type):
-        if val in ['x','y','z']:
-            if val == 'x': return 0
-            if val == 'y': return 1
-            if val == 'z': return 2
+        if val in ['x','y','z','a','b','c']:
+            return 'xaybzc'.index(val) // 2
         try:
             return check_type(val)
         except:
@@ -31,38 +55,75 @@ def run():
 
     def dir_int(val): return dir_type(val,int)
     def dir_float(val): return dir_type(val,float)
+    def dir_angle(val): 
+        if val in ['x','y','z','a','b','c']:
+            return 'xaybzc'.index(val) // 2
+        try:
+            if 'd' in val: 
+                tmp = float(val.replace('d','')) / 180 * np.pi
+            elif 'r' in val: 
+                tmp = float(val.replace('r',''))
+            else:
+                tmp = float(val)
+        except:
+            raise arg.ArgumentTypeError("Type: "+val+" not valid type float")
+        return tmp
 
-    p.add_argument('-O','--origin',action='store_true',default=False,
-                         help='Will push the coordinates to the origin.')
-    p.add_argument('-co','--center-of',choices=['mass','xyz','position','cell'],default=None,
-                         help='Will move the coordinates to the center of the designated choice.')
-    p.add_argument('-r','--repeat',nargs=2,default=None,type=dir_int,action='append',
-                         metavar=('dir','repeat'),
-                         help='Repeats in the specified direction.')
-    p.add_argument('-uc','--unit-cell',choices=['translate','tr','t',
-                                                'mod'],default=None,
+
+    # Moving of atoms
+    p.add_argument('-O','--origin', action='store_true', default=False,
+                   help='Will push the coordinates to the origin.')
+    p.add_argument('-co','--center-of', choices=['mass','xyz','position','cell'], default=None,
+                   help='Will move the coordinates to the center of the designated choice.')
+    p.add_argument('-uc','--unit-cell', choices=['translate','tr','t','mod'], default=None,
                    help='Moves the coordinates into the unit-cell by translation or the mod-operator')
+
+    # Rotation, translation
+    p.add_argument('-R','--rotate',nargs=2,default=[],type=dir_angle,action='append',
+                   metavar=('angle','dir'),
+                   help='Rotate geometry around given axis, appends.')
+    p.add_argument('-Rx','--rotate-x',type=dir_angle,default=None,metavar='angle',
+                   help='Rotate geometry around the x-axis')
+    p.add_argument('-Ry','--rotate-y',type=dir_angle,default=None,metavar='angle',
+                   help='Rotate geometry around the y-axis')
+    p.add_argument('-Rz','--rotate-z',type=dir_angle,default=None,metavar='angle',
+                   help='Rotate geometry around the z-axis')
+
+    # Removes atoms
+    p.add_argument('-s','--sub',type=str,default=None,action='append',
+                   metavar='rng',
+                   help='Removes the specified atoms, can be complex ranges. Appends.')
+    p.add_argument('--cut',nargs=2,type=dir_int,default=None,
+                   metavar=('seps','dir'),
+                   help='Cuts the geometry in pieces, saves the first cut.')
+
+
+    p.add_argument('-r','--repeat',nargs=2,type=dir_int,default=None,action='append',
+                   metavar=('repeat','dir'),
+                   help='Repeats in the specified direction, appends.')
     p.add_argument('-rx','--repeat-x',type=int,default=1,metavar='repeat',
-                         help='Repeats in the x-direction.')
+                   help='Repeats in the x-direction.')
     p.add_argument('-ry','--repeat-y',type=int,default=1,metavar='repeat',
-                         help='Repeats in the y-direction.')
+                   help='Repeats in the y-direction.')
     p.add_argument('-rz','--repeat-z',type=int,default=1,metavar='repeat',
-                         help='Repeats in the z-direction.')
+                   help='Repeats in the z-direction.')
+
     p.add_argument('-t','--tile',nargs=2,type=dir_int,action='append',
-                         metavar=('dir','tile'),
-                         help='Tiles in the specified direction.')
+                   metavar=('tile','dir'),
+                   help='Tiles in the specified direction, appends.')
     p.add_argument('-tx','--tile-x',type=int,default=1,metavar='tile',
-                         help='Tiles in the x-direction.')
+                   help='Tiles in the x-direction.')
     p.add_argument('-ty','--tile-y',type=int,default=1,metavar='tile',
-                         help='Tiles in the y-direction.')
+                   help='Tiles in the y-direction.')
     p.add_argument('-tz','--tile-z',type=int,default=1,metavar='tile',
-                         help='Tiles in the z-direction.')
+                   help='Tiles in the z-direction.')
+
     p.set_defaults(func=geom_convert)
-
+    
     p.add_argument('-o','--out',metavar='outfile',dest='opt_out_file',
-                   nargs='*',type=str,default=[],
-                   help='Write geometry to file, append for more out files. This is useful while piping geometries')
-
+                   action='append',type=str,default=[],
+                   help='Write geometry to file. This is useful while piping geometries. Appends.')
+    
     p.add_argument('in_file',metavar='infile',nargs='?',type=str,
                    help='Read geometry from file.')
     p.add_argument('out_file',metavar='outfile',nargs='*',type=str,default=[],
@@ -74,7 +135,7 @@ def run():
 
 def geom_convert(args):
     """
-    sgeom convert $@
+    sgeom $@
     """
 
     if args.in_file:
@@ -102,9 +163,11 @@ def geom_convert(args):
         xyz = np.array(xyz,np.float64)
         g = sids.Geometry(xyz=xyz,atoms=atoms,sc=cell)
     
+    
     if args.origin:
         g.xyz[:,:] -= np.amin(g.xyz,axis=0)[None,:]
-
+        
+    
     if args.unit_cell:
         if args.unit_cell in ['translate','tr','t']:
             # Simple translation
@@ -132,16 +195,44 @@ def geom_convert(args):
 
 
     if not args.repeat is None:
-        for d,r in args.repeat:
+        for r, d in args.repeat:
             g = g.repeat(r,d)
 
 
     if not args.tile is None:
-        for d,t in args.tile:
+        for t, d in args.tile:
             g = g.tile(t,d)
 
     g = g.repeat(args.repeat_x,0).repeat(args.repeat_y,1).repeat(args.repeat_z,2)
     g = g.tile(args.tile_x,0).tile(args.tile_y,1).tile(args.tile_z,2)
+
+    # Rotate geometry
+    if args.rotate_x: args.rotate.append( (args.rotate_x, 0) )
+    if args.rotate_y: args.rotate.append( (args.rotate_y, 1) )
+    if args.rotate_z: args.rotate.append( (args.rotate_z, 2) )
+    if args.rotate:
+        for ang, d in args.rotate:
+            if d == 0:
+                v = [1,0,0]
+            elif d == 1:
+                v = [0,1,0]
+            elif d == 2:
+                v = [0,0,1]
+            g = g.rotate(ang,v)
+
+
+    # Make cuts to geometry
+    if args.sub:
+        for sub in args.sub:
+            # Parse sub-string to correct format
+            srng = parse_rng(sub)
+            g = g.sub(srng)
+
+
+    # Cuts the geometry
+    if args.cut:
+        g = g.cut(*args.cut)
+
 
     # Store geometry
     args.out_file.extend(args.opt_out_file)
