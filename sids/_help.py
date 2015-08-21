@@ -2,7 +2,9 @@ from __future__ import print_function, division
 
 import numpy as np
 import sys
-__all__ = ['array_fill_repeat','_str']
+from numbers import Integral
+
+__all__ = ['array_fill_repeat','_str','ensure_array']
 
 
 # Base-class for string object checks
@@ -36,3 +38,9 @@ def array_fill_repeat(array,size,cls=None):
         if reps > 1:
             return np.tile(np.array(array,dtype=cls),reps)
         return np.array(array,dtype=cls)
+
+
+def ensure_array(arr,dtype=np.int32):
+    if isinstance(arr,Integral):
+        return np.array([arr],dtype)
+    return arr

@@ -15,7 +15,7 @@ import numpy as np
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
-from ._help import array_fill_repeat
+from ._help import array_fill_repeat, ensure_array
 
 __all__ = ['Geometry']
 
@@ -784,6 +784,10 @@ class Geometry(SuperCellChild):
         else:
             ddR = np.array([dR],np.float64).flatten()
 
+        # Convert to actual array
+        if idx is not None:
+            idx = ensure_array(idx)
+
         if isinstance(xyz_ia,Integral):
             off = self.xyz[xyz_ia,:]
             # Get atomic coordinate in principal cell
@@ -801,7 +805,7 @@ class Geometry(SuperCellChild):
         # has a lot of checks, hence we do it manually
         #xaR = np.linalg.norm(dxa,axis=-1)
         xaR = (dxa[:,0]**2+dxa[:,1]**2+dxa[:,2]**2) ** .5
-        ix = np.where(xaR <= ddR[-1])[0]
+        ix = ensure_array(np.where(xaR <= ddR[-1])[0])
         if ret_coord:
             xa = dxa[ix,:] + off[None,:]
         if ret_dist:
@@ -831,9 +835,9 @@ class Geometry(SuperCellChild):
         xaR = xaR[ix]
         tidx = np.where(xaR <= ddR[0])[0]
         if idx is None:
-            ret = [ [ix[tidx]] ]
+            ret = [ [ ensure_array(ix[tidx]) ] ]
         else:
-            ret = [ [idx[ix[tidx]]] ]
+            ret = [ [ ensure_array(idx[ix[tidx]]) ] ]
         i = 0
         if ret_coord: 
             rc = i + 1
@@ -850,15 +854,68 @@ class Geometry(SuperCellChild):
             # numerics)
             tidx = np.where(np.logical_and(ddR[i-1] < xaR,xaR <= ddR[i]))[0]
             if idx is None:
-                ret[0].append(ix[tidx])
+                ret[0].append( ensure_array(ix[tidx]) )
             else:
-                ret[0].append(idx[ix[tidx]])
+                ret[0].append( ensure_array(idx[ix[tidx]]) )
             if ret_coord: ret[rc].append(xa[tidx])
             if ret_dist: ret[rd].append(d[tidx])
         if ret_special: return ret
         return ret[0]
 
-    
+
+    def bond_correct(self,ia,atoms,radii='calc'):
+        """ Corrects the bond between `ia` and the `atoms`. 
+
+        Corrects the bond-length between atom `ia` and `atoms` in such
+        a way that the atomic radii is preserved.
+        I.e. the sum of the bond-lengths minimizes the distance matrix.
+
+        Only atom `ia` is moved.
+
+        Parameters
+        ----------
+        ia : int
+            The atom to be displaced according to the atomic radii
+        atoms : int, array_like
+            The atom(s) from which the radii should be reduced.
+        radii : str
+            The radii lookup, see `Atom.radii`.
+        """
+
+        # Decide which algorithm to choose from
+        if isinstance(atoms,Integral):
+            # a single point
+            algo = atoms
+        elif len(atoms) == 1:
+            algo = atoms[0]
+        else:
+            # signal a list of atoms
+            algo = -1
+            
+        if algo >= 0:
+            # We have a single atom
+            # Get bond length in the closest direction
+            idx, c, d = self.close(ia,dR=(0.1,1000.),idx=algo,
+                              ret_coord=True,ret_dist=True)
+            i = np.argmin(d[1])
+            idx = idx[1][i]
+            c = c[1][i]
+            d = d[1][i]
+
+            # Calculate the bond vector
+            bv = self.xyz[ia,:] - c
+
+            # get radii
+            rad = (self.atoms[idx].radii(radii=radii) + \
+                self.atoms[ia].radii(radii=radii)) / 2
+            
+            # Update the coordinate
+            self.xyz[ia,:] = c + bv / d * rad
+
+        else:
+            raise NotImplemented('Changing bond-length dependent on several lacks implementation.')
+            
+
     def close(self,xyz_ia,dR=None,idx=None,ret_coord=False,ret_dist=False):
         """
         Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
@@ -892,6 +949,10 @@ class Geometry(SuperCellChild):
             If true this method will return the distances from the ``xyz_ia`` 
             for each of the couplings.
         """
+
+        # Convert to actual array
+        if isinstance(idx,Integral):
+            idx = np.array([idx],np.int32)
 
         ret = [None]
         i = 0

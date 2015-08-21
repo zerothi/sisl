@@ -140,3 +140,25 @@ class TestGeometry(object):
         assert_true( np.allclose(rot.sc.cell,self.g.sc.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 
+    def test_bond_correct(self):
+        # Create ribbon
+        rib = self.g.tile(2,1)
+        # Convert the last atom to an H atom
+        rib.atoms[-1] = Atom[1]
+        ia = len(rib) - 1
+        # Get bond-length
+        idx, d = rib.close(ia,dR=(.1,1000),ret_dist=True)
+        i = np.argmin(d[1])
+        d = d[1][i]
+        rib.bond_correct(ia,idx[1][i])
+        idx, d2 = rib.close(ia,dR=(.1,1000),ret_dist=True)
+        i = np.argmin(d2[1])
+        d2 = d2[1][i]
+        assert_false( d == d2 )
+        # Calculate actual radii
+        assert_true( d2 == (Atom[1].radii() + Atom[6].radii())/2 )
+        
+        
+        
+
+
