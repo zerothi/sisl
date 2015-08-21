@@ -89,6 +89,9 @@ The hard-coded file formats are:
 5. ___tb___, intrinsic file format for geometry/tight-binding models
 6. ___fdf___, SIESTA native format
 7. ___XV___, SIESTA coordinate format with velocities
+8. ___POSCAR___/___CONTCAR___, VASP coordinate format, does _not_ contain species, i.e. returns Hydrogen geometry.
+
+All text files can also be read from their gzipped file formats with transparency.
 
 All file formats in sids are called a _Sile_ (sids file). This small difference
 prohibits name clashes with other implementations.

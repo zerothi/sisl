@@ -2,6 +2,7 @@ from __future__ import print_function, division
 
 from sids import Geometry
 from ._help import *
+import gzip
 
 import numpy as np
 
@@ -26,7 +27,10 @@ class Sile(BaseSile):
         
     def __enter__(self):
         """ Opens the output file and returns it self """
-        self.fh = open(self.file,self._mode)
+        if self.file.endswith('gz'):
+            self.fh = gzip.open(self.file)
+        else:
+            self.fh = open(self.file,self._mode)
         return self
 
 

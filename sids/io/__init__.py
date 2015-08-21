@@ -15,6 +15,7 @@ from .gulp import *
 from .siesta import *
 from .tb import *
 from .tbtrans import *
+from .vasp import *
 from .xyz import *
 from .xv import *
 
@@ -33,6 +34,7 @@ extendall('sids.io.gulp')
 extendall('sids.io.siesta')
 extendall('sids.io.tb')
 extendall('sids.io.tbtrans')
+extendall('sids.io.vasp')
 extendall('sids.io.xyz')
 extendall('sids.io.xv')
 
@@ -42,15 +44,39 @@ extendall('sids.io.xv')
 
 _objs = {}
 
-def add_sile(ending,obj,case=True):
+def add_sile(ending,obj,case=True,gzip=False):
     """
     Public for attaching lookup tables for allowing
     users to attach files for the IOSile function call
+
+    Parameters
+    ----------
+    ending : str
+         The file-name ending, it can be several file endings (.TBT.nc)
+    obj : `BaseSile` child
+         An object that is associated with the respective file.
+         It must be inherited from a `BaseSile`.
+    case : bool, (True)
+         Whether case sensitivity is applicable for determining
+         file.
+    gzip : bool, (False)
+         Whether files with `.gz` endings can be read.
+         This option should only be given to files with ASCII text
+         output.
+         It will automatically call:
+           `add_sile(ending+'.gz',...,gzip=False)`
+         to add the gzipped file to the list of possible files.
     """
     global _objs
+    # If the gzip is none, we decide whether we can
+    # read gzipped files
+    # In particular, if the obj is a `Sile`, we allow
+    # such reading
+    if gzip:
+        add_sile(ending+'.gz',obj,case=case)
     if not case:
-        add_sile(ending.lower(),obj)
-        add_sile(ending.upper(),obj)
+        add_sile(ending.lower(),obj,gzip=gzip)
+        add_sile(ending.upper(),obj,gzip=gzip)
         return
     _objs[ending] = obj
     if ending[0] == '.':
@@ -59,14 +85,19 @@ def add_sile(ending,obj,case=True):
         _objs['.'+ending] = obj
 
 
-add_sile('cube',CUBESile,case=False)
-add_sile('fdf',FDFSile,case=False)
-add_sile('gout',GULPSile)
+# Sile's
+add_sile('cube',CUBESile,case=False,gzip=True)
+add_sile('fdf',FDFSile,case=False,gzip=True)
+add_sile('gout',GULPSile,gzip=True)
+add_sile('tb',TBSile,case=False,gzip=True)
+add_sile('xyz',XYZSile,case=False,gzip=True)
+add_sile('XV',XVSile,gzip=True)
+add_sile('CONTCAR',POSCARSile,gzip=True)
+add_sile('POSCAR',POSCARSile,gzip=True)
+
+# NCSile's
 add_sile('nc',SIESTASile,case=False)
-add_sile('tb',TBSile,case=False)
 add_sile('TBT.nc',TBtransSile)
-add_sile('xyz',XYZSile,case=False)
-add_sile('XV',XVSile)
 
 def get_sile(file,*args,**kwargs):
     """ 
@@ -75,15 +106,17 @@ def get_sile(file,*args,**kwargs):
     """
     try:
         # Create list of endings on this file
-        end_list = []
         f = file
+        # We also check the entire file name (mainly for VASP)
+        end_list = [f]
         end = ''
-        while True:
-            lext = splitext(f)
+        lext = splitext(f)
+        # Check for files without ending, or that they are directly zipped
+        while len(lext[1]) > 0:
             end = lext[1] + end
             end_list.append(end)
-            if len(lext[1]) == 0: break
-            f = lext[0]
+            lext = splitext(lext[0])
+
         while end_list:
             end = end_list.pop()
             try:
