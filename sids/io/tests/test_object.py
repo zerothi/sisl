@@ -35,6 +35,10 @@ class TestObject(object):
         for obj in [BaseSile,NCSile,SIESTASile]:
             assert_true( isinstance(get_sile('test.nc'),obj) )
 
+    def test_grid_nc(self):
+        for obj in [BaseSile,NCSile,SIESTAGridSile]:
+            assert_true( isinstance(get_sile('test.grid.nc'),obj) )
+
     def test_tb(self):
         for obj in [BaseSile,Sile,TBSile]:
             assert_true( isinstance(get_sile('test.tb'),obj) )

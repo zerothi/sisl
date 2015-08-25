@@ -141,8 +141,9 @@ class SIESTASile(NCSile):
         if not hasattr(self,'fh'):
             with self:
                 return self.read_grid(name)
-            
-        geom = self.read_geom()
+
+        # Swap as we swap back in the end
+        geom = self.read_geom().swapaxes(0,2)
 
         # Shorthand
         g = self.groups['GRID']
@@ -153,19 +154,17 @@ class SIESTASile(NCSile):
         nz = len(g.dimensions['nz'])
 
         # Create the grid, SIESTA uses periodic, always
-        grid = Grid([nx,ny,nz], bc=Grid.Periodic, geom=geom,
+        grid = Grid([nz,ny,nx], bc=Grid.Periodic, geom=geom,
                     dtype=g.variables[name].dtype)
+
+        if len(g.variables[name][:].shape) == 3:
+            grid.grid = g.variables[name][:,:,:]
+        else:
+            grid.grid = g.variables[name][idx,:,:,:]
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
-        if len(g.variables[name][:].shape) == 3:
-            grid.grid[:,:,:] = g.variables[name][:,:,:]
-        else:
-            tmp = g.variables[name][idx,:,:,:]
-            tmp.shape = (grid.grid.shape[2],tmp.shape[1],-1)
-            grid.grid[:,:,:] = np.swapaxes(tmp,0,2)
-
-        return grid
+        return grid.swapaxes(0,2)
 
 
     def write_geom(self,geom):

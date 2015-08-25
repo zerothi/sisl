@@ -13,6 +13,7 @@ from .cube import *
 from .fdf import *
 from .gulp import *
 from .siesta import *
+from .siesta_grid import *
 from .tb import *
 from .tbtrans import *
 from .vasp import *
@@ -32,6 +33,7 @@ extendall('sids.io.cube')
 extendall('sids.io.fdf')
 extendall('sids.io.gulp')
 extendall('sids.io.siesta')
+extendall('sids.io.siesta_grid')
 extendall('sids.io.tb')
 extendall('sids.io.tbtrans')
 extendall('sids.io.vasp')
@@ -97,6 +99,7 @@ add_sile('POSCAR',POSCARSile,gzip=True)
 
 # NCSile's
 add_sile('nc',SIESTASile,case=False)
+add_sile('grid.nc',SIESTAGridSile,case=False)
 add_sile('TBT.nc',TBtransSile)
 
 def get_sile(file,*args,**kwargs):

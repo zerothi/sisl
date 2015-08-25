@@ -52,7 +52,13 @@ class Grid(SuperCellChild):
         # Create the atomic structure in the grid, if possible
         self.set_geom(geom)
 
+        
+    @property
+    def size(self):
+        """ Returns size of the grid """
+        return self.grid.shape
 
+    
     def set_grid(self,size,dtype=_dtype):
         """ Create the internal grid of certain size.
         """
@@ -103,8 +109,10 @@ class Grid(SuperCellChild):
         """
         Returns a copy of the object.
         """
-        return self.__class__(np.copy(self.size), bc=np.copy(self.bc),
+        grid = self.__class__(np.copy(self.size), bc=np.copy(self.bc),
                               sc=self.sc.copy())
+        grid.grid[:,:,:] = self.grid[:,:,:]
+        return grid
 
 
     def swapaxes(self,a,b):
@@ -116,15 +124,18 @@ class Grid(SuperCellChild):
         idx = np.arange(3)
         idx[b] = a
         idx[a] = b
-        return self.__class__(self.size[idx], bc=self.bc[idx],
+        s = np.copy(self.size)
+        grid = self.__class__(s[idx], bc=self.bc[idx],
                               sc=self.sc.swapaxes(a,b))
+        grid.grid = np.copy(np.swapaxes(self.grid,a,b))
+        return grid
 
 
     @property
     def dcell(self):
         """ Returns the delta-cell """
         # Calculate the grid-distribution
-        g_size = self.grid.shape
+        g_size = self.size
         dcell = _np.empty([3,3],np.float64)
         for ix in range(3):
             dcell[ix,:] = self.cell[ix,:] / g_size[ix]
@@ -134,8 +145,8 @@ class Grid(SuperCellChild):
         """ Appends other `Grid` to this grid along axis
 
         """
-        size = np.copy(self.grid.shape)
-        size[axis] += other.grid.shape[axis]
+        size = np.copy(self.size)
+        size[axis] += other.size[axis]
         return self.__class__(size, bc = np.copy(self.bc),
                               sc=self.sc.append(other.sc,axis))
     
@@ -160,7 +171,7 @@ class Grid(SuperCellChild):
 
     def __repr__(self):
         """ Representation of object """
-        return 'Grid[{} {} {}]'.format(*self.grid.shape)
+        return 'Grid[{} {} {}]'.format(*self.size)
 
     
 if __name__ == "__main__":
