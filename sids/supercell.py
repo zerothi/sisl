@@ -111,7 +111,7 @@ class SuperCell(object):
         idx = np.arange(3)
         idx[b] = a
         idx[a] = b
-        return self.__class__(self.cell[idx,:], nsc = self.nsc[idx])
+        return self.__class__(np.copy(self.cell[idx,:],order='C'), nsc = self.nsc[idx])
 
 
     @property

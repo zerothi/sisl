@@ -118,6 +118,11 @@ class Geometry(SuperCellChild):
         return self.na
 
 
+    def __getitem__(self,key):
+        """ Returns geometry coordinates """
+        return self.xa[key]
+
+
     @staticmethod
     def read(sile):
         """ Reads geometry from the ``Sile`` using ``sile.read_geom``

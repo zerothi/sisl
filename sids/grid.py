@@ -52,11 +52,49 @@ class Grid(SuperCellChild):
         # Create the atomic structure in the grid, if possible
         self.set_geom(geom)
 
+
+    def __getitem__(self,key):
+        """ Returns the grid contained """
+        return self.grid[key]
+
+
+    def __setitem__(self,key,val):
+        """ Updates the grid contained """
+        self.grid[key] = val
+
+
+    def interp(self,size,*args,**kwargs):
+        """ Returns an interpolated version of the grid 
+        
+        Parameters
+        ----------
+        size : int, array_like
+            the new size of the grid
+        *args, **kwargs : 
+            optional arguments passed to the interpolation algorithm
+            The interpolation routine is `scipy.interpolate.interpn`
+        """
+        # Get grid spacing
+        dold = []
+        dnew = []
+        for i in range(3):
+            dold.append(np.linspace(0,1,self.size[i]))
+            dnew.append(np.linspace(0,1,size[i]))
+
+        # Interpolate
+        from scipy.interpolate import interpn
+
+        # Create new grid
+        grid = self.__class__(size, bc=np.copy(self.bc), sc=self.sc.copy())
+        grid.grid = interpn(dold, self.grid, dnew, *args, **kwargs)
+
+        return grid
+
         
     @property
     def size(self):
         """ Returns size of the grid """
-        return self.grid.shape
+        return np.asarray(self.grid.shape,np.int32)
 
     
     def set_grid(self,size,dtype=_dtype):
@@ -110,7 +148,7 @@ class Grid(SuperCellChild):
         Returns a copy of the object.
         """
         grid = self.__class__(np.copy(self.size), bc=np.copy(self.bc),
-                              sc=self.sc.copy())
+                              sc=self.sc.copy(),dtype=self.grid.dtype)
         grid.grid[:,:,:] = self.grid[:,:,:]
         return grid
 
@@ -126,8 +164,9 @@ class Grid(SuperCellChild):
         idx[a] = b
         s = np.copy(self.size)
         grid = self.__class__(s[idx], bc=self.bc[idx],
-                              sc=self.sc.swapaxes(a,b))
-        grid.grid = np.copy(np.swapaxes(self.grid,a,b))
+                              sc=self.sc.swapaxes(a,b),dtype=self.grid.dtype)
+        # We need to force the C-order or we loose the contiguoity
+        grid.grid = np.copy(np.swapaxes(self.grid,a,b),order='C')
         return grid
 
 
@@ -140,6 +179,13 @@ class Grid(SuperCellChild):
         for ix in range(3):
             dcell[ix,:] = self.cell[ix,:] / g_size[ix]
         return dcell
+
+
+    @property 
+    def dvol(self):
+        """ Returns the delta-volume """
+        return self.sc.vol / np.prod(self.size)
+
             
     def append(self,other,axis):
         """ Appends other `Grid` to this grid along axis

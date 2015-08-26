@@ -183,6 +183,16 @@ class FDFSile(Sile):
             # the same scaling as the lattice-vectors
             pass
 
+        # If the user requests a shifted geometry
+        # we correct for this
+        origo = np.zeros([3],np.float64)
+        run = 'origin' in kwargs
+        if run: run = kwargs['origin']
+        if run:
+            f, lor = self._read_block('AtomicCoordinatesOrigin')
+            if f:
+                origo = np.fromstring(lor[0],count=3,sep=' ') * s
+
         # Read number of atoms and block
         f, l = self._read('NumberOfAtoms')
         na = 0
@@ -202,6 +212,7 @@ class FDFSile(Sile):
             xyz[ia,:] = [float(k) for k in l[:3]]
             species[ia] = int(l[3]) - 1
         xyz *= s
+        xyz += origo
         
         # Now we read in the species
         f, l = self._read('NumberOfSpecies')

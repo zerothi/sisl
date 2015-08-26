@@ -70,7 +70,7 @@ class CUBESile(Sile):
 
         g_size = np.copy(grid.grid.shape)
 
-        grid.grid.shape = (-1)
+        grid.grid.shape = (-1,)
 
         # Write the grid
         np.savetxt(self.fh,grid.grid[:],fmt)
