@@ -151,8 +151,8 @@ class TightBinding(object):
             # This may be too reductionists, however, 
             # it should happen rarely
             self.ptr[i+1:] += 10
-            self.col = np.insert(self.col,ptr+ncol,np.empty([10],np.int32))
-            self._TB = np.insert(self._TB,ptr+ncol,np.empty([10,2],np.int32),axis=0)
+            self.col = np.insert(self.col,ptr+ncol,np.empty([10],self.col.dtype))
+            self._TB = np.insert(self._TB,ptr+ncol,np.empty([10,2],self._TB.dtype),axis=0)
 
         # Step to the placement of the new values
         ptr += ncol
@@ -256,6 +256,15 @@ class TightBinding(object):
             si = np.argsort(self.col[ptr:ptr+no])
             self.col[ptr:ptr+no]  = self.col[ptr+si]
             self._TB[ptr:ptr+no,:] = self._TB[ptr+si,:]
+
+        # Check that the couplings are symmetric
+        TB = self.tocsr(k=[0,0,0])[0]
+        t1 = TB.nnz
+        t2 = (TB+TB.T).nnz
+        if t1 != t2:
+            warnings.warn('Tight-binding model does not retain symmetric couplings, this might be problematic: nnz(H) = {}, nnz(H+H^T) = {}.'.format(t1,t2), UserWarning) 
+        del TB
+    
 
     @property
     def nnzs(self):

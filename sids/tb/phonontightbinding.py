@@ -9,7 +9,7 @@ import numpy as np
 
 
 from sids import Atom, Geometry, Quaternion
-from .tb import TightBinding
+from .tightbinding import TightBinding
 
 
 __all__ = ['PhononTightBinding']
