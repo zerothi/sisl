@@ -59,12 +59,12 @@ def run():
         if val in ['x','y','z','a','b','c']:
             return 'xaybzc'.index(val) // 2
         try:
-            if 'd' in val: 
-                tmp = float(val.replace('d','')) / 180 * np.pi
-            elif 'r' in val: 
-                tmp = float(val.replace('r',''))
+            val = val.replace('pi',np.pi)
+            if 'r' in val:
+                # Radians
+                tmp = eval(val.replace('r',''))
             else:
-                tmp = float(val)
+                tmp = eval(val.replace('d','').replace('a','')) / 180 * np.pi
         except:
             raise arg.ArgumentTypeError("Type: "+val+" not valid type float")
         return tmp
@@ -81,7 +81,7 @@ def run():
     # Rotation, translation
     p.add_argument('-R','--rotate',nargs=2,default=[],type=dir_angle,action='append',
                    metavar=('angle','dir'),
-                   help='Rotate geometry around given axis, appends.')
+                   help='Rotate geometry around given axis (add <angle>r to get radians), appends.')
     p.add_argument('-Rx','--rotate-x',type=dir_angle,default=None,metavar='angle',
                    help='Rotate geometry around the x-axis')
     p.add_argument('-Ry','--rotate-y',type=dir_angle,default=None,metavar='angle',
