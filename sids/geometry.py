@@ -89,18 +89,19 @@ class Geometry(SuperCellChild):
         # Correct the atoms input to Atom
         if isinstance(atoms, list):
             if isinstance(atoms[0],str):
-                atoms = np.array([Atom[a] for a in atoms])
+                A = np.array([Atom[a] for a in atoms])
+            else:
+                A = np.array(atoms)
         elif isinstance(atoms, str):
-            atoms = np.array([Atom[atoms]])
+            A = np.array([Atom[atoms]])
+        else:
+            A = np.array([atoms]).flatten()
 
         # Create atom objects
-        self.atoms = array_fill_repeat(atoms, self.na, cls=Atom)
+        self.atoms = array_fill_repeat(A, self.na, cls=Atom)
 
         # Store maximum interaction range
-        if isinstance(atoms, Atom):
-            self.dR = atoms.dR
-        else:
-            self.dR = np.amax([a.dR for a in atoms])
+        self.dR = np.amax([a.dR for a in A])
 
         # Get total number of orbitals
         orbs = np.array([a.orbs for a in self.atoms], np.int32)
