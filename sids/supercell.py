@@ -298,6 +298,21 @@ class SuperCell(object):
         # Reaching this point is erroneous
         raise ValueError("Could not decipher the arguments for the cell creation")
 
+
+    def is_orthogonal(self):
+        """ Returns true if the cell vectors are orthogonal """
+        # Convert to unit-vector cell
+        cell = np.copy(self.cell)
+        for i in range(3):
+            cell[i,:] = cell[i,:] / np.sum( cell[i,:]**2 ) ** .5
+        i_s = True
+        i_s = i_s and np.dot(cell[0,:],cell[1,:]) < 0.001
+        i_s = i_s and np.dot(cell[0,:],cell[2,:]) < 0.001
+        i_s = i_s and np.dot(cell[1,:],cell[2,:]) < 0.001
+        return i_s
+
+
+
 class SuperCellChild(object):
     """ Class to be inherited by using the `self.sc` as a `SuperCell` object
 
@@ -358,6 +373,11 @@ class SuperCellChild(object):
     def sc_index(self,*args,**kwargs):
         """ Call local `SuperCell` object `sc_index` function """
         return self.sc.sc_index(*args,**kwargs)
+
+    def is_orthogonal(self):
+        """ Return true if all cell vectors are linearly independent"""
+        return self.sc.is_orthogonal()
+        
 
     
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ from numbers import Integral
 import numpy as np
 
 from .quaternion import Quaternion
-from .supercell import SuperCellChild
+from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
 
@@ -186,6 +186,58 @@ class Grid(SuperCellChild):
         """ Returns the delta-volume """
         return self.sc.vol / np.prod(self.size)
 
+
+    def cross_section(self,idx,axis):
+        """ Takes a cross-section of the grid along axis `axis`
+
+        Remark: This API entry might change to handle arbitrary
+        cuts via rotation of the axis """
+
+        # First calculate the new size
+        size = self.size
+        cell = np.copy(self.cell)
+        # Down-scale cell
+        cell[axis,:] /= size[axis]
+        size[axis] = 1
+        grid = self.__class__(size, bc=np.copy(self.bc),geom=self.geom.copy())
+        # Update cell size (the cell is smaller now)
+        grid.set_sc(cell)
+        
+        if axis == 0:
+            grid.grid[:,:,:] = self.grid[idx,:,:]
+        elif axis == 1:
+            grid.grid[:,:,:] = self.grid[:,idx,:]
+        elif axis == 2:
+            grid.grid[:,:,:] = self.grid[:,:,idx]
+        else:
+            raise ValueError('Unknown axis specification in cross_section')
+        
+        return grid
+
+
+    def sum(self,axis):
+        """ Returns the grid summed along axis `axis`. """
+        # First calculate the new size
+        size = self.size
+        cell = np.copy(self.cell)
+        # Down-scale cell
+        cell[axis,:] /= size[axis]
+        size[axis] = 1
+
+        grid = self.__class__(size, bc=np.copy(self.bc),geom=self.geom.copy())
+        # Update cell size (the cell is smaller now)
+        grid.set_sc(cell)
+
+        # Calculate sum
+        grid.grid[:,:,:] = np.sum(self.grid,axis=axis)
+        return grid
+
+
+    def average(self,axis):
+        """ Returns the average grid along direction `axis` """
+        n = self.size[axis]
+        return self.sum(axis) / n
+
             
     def append(self,other,axis):
         """ Appends other `Grid` to this grid along axis
@@ -219,6 +271,72 @@ class Grid(SuperCellChild):
         """ Representation of object """
         return 'Grid[{} {} {}]'.format(*self.size)
 
+
+    def __eq__(self,other):
+        """ Returns true if the two grids are commensurable
+
+        There will be no check of the values _on_ the grid. """
+        return bool(np.all(self.size == other.size))
+
+    def __ne__(self,other):
+        """ Returns whether two grids have the same size """
+        return not (self == other)
+
     
+    def __add__(self,other):
+        """ Returns a new grid with the addition of two grids
+
+        Returns same size with same cell as the first"""
+        if self == other:
+            # We can return a new grid
+            grid = self.copy()
+            grid.grid = self.grid + other.grid
+            return grid
+        raise ValueError('Grids are not compatible, they cannot be added.')
+
+    
+    def __sub__(self,other):
+        """ Returns a new grid with the difference of two grids
+
+        Returns same size with same cell as the first"""
+        if isinstance(other,Grid):
+            if self == other:
+                # We can return a new grid
+                grid = self.copy()
+                grid.grid = self.grid - other.grid
+            else:
+                raise ValueError('Grids are not compatible, they cannot be subtracted.')
+        else:
+            grid = self.copy()
+            grid.grid = self.grid - other
+        return grid
+        
+
+    def __div__(self,other):
+        if isinstance(other,Grid):
+            if self == other:
+                grid = self.copy()
+                grid.grid = self.grid / other.grid
+            else:
+                raise ValueError('Grids are not compatible, they cannot be dividided.')
+        else:
+            grid = self.copy()
+            grid.grid = self.grid / other
+        return grid
+
+    
+    def __mul__(self,other):
+        if isinstance(other,Grid):
+            if self == other:
+                grid = self.copy()
+                grid.grid = self.grid * other.grid
+            else:
+                raise ValueError('Grids are not compatible, they cannot be multiplied.')
+        else:
+            grid = self.copy()
+            grid.grid = self.grid * other
+        return grid
+
+
 if __name__ == "__main__":
     pass

@@ -85,7 +85,7 @@ The hard-coded file formats are:
  The `XYZSile` writes the cell information in the `xyz` file comment section (2nd line). Hence if the file was written with sids you retain the cell information.
 2. ___gout___, reads geometries from GULP output
 3. ___nc___, reads/writes NetCDF4 files created by SIESTA
-4. ___TBT.nc___, reads NetCDF4 files created by TBtrans
+4. ___TBT.nc___/___PHT.nc___, reads NetCDF4 files created by TBtrans/PHtrans
 5. ___tb___, intrinsic file format for geometry/tight-binding models
 6. ___fdf___, SIESTA native format
 7. ___XV___, SIESTA coordinate format with velocities
