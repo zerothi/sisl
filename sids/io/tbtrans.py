@@ -11,7 +11,7 @@ from sids import Geometry, Atom, SuperCell
 
 import numpy as np
 
-__all__ = ['TBtransSile']
+__all__ = ['TBtransSile','PHtransSile']
 
 
 class TBtransSile(NCSile):
@@ -60,3 +60,7 @@ class TBtransSile(NCSile):
         """ This does not work """
         raise ValueError(self.__class__.__name__+" can not write a geometry")
 
+
+class PHtransSile(TBtransSile):
+    """ PHtrans file object """
+    pass

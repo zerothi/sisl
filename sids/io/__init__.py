@@ -101,6 +101,8 @@ add_sile('POSCAR',POSCARSile,gzip=True)
 add_sile('nc',SIESTASile,case=False)
 add_sile('grid.nc',SIESTAGridSile,case=False)
 add_sile('TBT.nc',TBtransSile)
+add_sile('PHT.nc',PHtransSile)
+
 
 def get_sile(file,*args,**kwargs):
     """ 
