@@ -19,6 +19,7 @@ __all__ = ['Grid']
 # Default nsc variable
 _nsc = np.array([1]*3,np.int32)
 _size = np.array([0]*3,np.int32)
+_origo = np.array([0]*3,np.float64)
 _bc = 1 # Periodic (Grid.Periodic)
 _dtype = np.float64
 
@@ -238,7 +239,98 @@ class Grid(SuperCellChild):
         n = self.size[axis]
         return self.sum(axis) / n
 
-            
+
+    def sub(self,idx,axis):
+        """ Retains certain indices from a specified axis.
+
+        Parameters
+        ----------
+        idx : array_like
+           the indices of the grid axis `axis` to be retained
+        axis : int
+           the axis segment from which we retain the indices `idx`
+        """
+        uidx = np.unique(np.clip(idx,0,self.size[axis]-1))
+
+        # Calculate new size
+        size = self.size
+        cell = np.copy(self.cell)
+        old_N = size[axis]
+
+        # Calculate new size
+        size[axis] = len(idx)
+        if size[axis] < 1:
+            raise ValueError('You cannot retain no indices.')
+
+        # Down-scale cell
+        cell[axis,:] = cell[axis,:] / old_N * size[axis]
+
+        grid = self.__class__(size, bc=np.copy(self.bc), geom=self.geom.copy())
+        # Update cell size (the cell is smaller now)
+        grid.set_sc(cell)
+
+        # Remove the indices
+        # First create the opposite, index
+        if axis == 0:
+            grid.grid[:,:,:] = self.grid[idx,:,:]
+        elif axis == 1:
+            grid.grid[:,:,:] = self.grid[:,idx,:]
+        elif axis == 2:
+            grid.grid[:,:,:] = self.grid[:,:,idx]
+
+        return grid
+        
+        
+    def remove(self,idx,axis):
+        """ Removes certain indices from a specified axis.
+
+        Parameters
+        ----------
+        idx : array_like
+           the indices of the grid axis `axis` to be removed
+        axis : int
+           the axis segment from which we remove all indices `idx`
+        """
+        uidx = np.unique(np.clip(idx,0,self.size[axis]-1))
+        ret_idx = np.setdiff1d(np.arange(old_N), uidx, assume_unique=True)
+        return self.sub(ret_idx, axis)
+
+
+    def index(self,coord,axis=None):
+        """ Returns the index along the axis `axis` where `coord` exists
+
+        Parameters
+        ----------
+        coord : array_like / float
+           the coordinate of the axis
+        axis : int
+           the axis direction of the index
+        """
+
+        # if the axis is none, we do this for all axes
+        if axis is None:
+            # Loop over each direction
+            idx = np.empty([3],np.int32)
+            for i in [0,1,2]:
+                # Normalize cell vector
+                ca = self.cell[i,:] / np.sum(self.cell[i,:]**2)**.5
+                # get the coordinate along the direction of the cell vector
+                c = np.dot(self.cell[i,:],coord) * coord
+                # Calculate the index corresponding to this placement
+                idx[i] = self.index(c,i)
+            return idx
+
+        # Ensure a 1D array
+        ac = np.atleast_1d(coord,np.float64)
+        
+        # Calculate the index of the coord in the cell
+        dax = self.dcell[axis,:]
+        
+        # Calculate how many indices are required to fulfil
+        # the correct line cut
+        return int(np.rint( (np.sum(ac ** 2) / np.sum(dax ** 2)) **.5 ))
+ 
+    
     def append(self,other,axis):
         """ Appends other `Grid` to this grid along axis
 
@@ -247,6 +339,7 @@ class Grid(SuperCellChild):
         size[axis] += other.size[axis]
         return self.__class__(size, bc = np.copy(self.bc),
                               sc=self.sc.append(other.sc,axis))
+
     
     def write(self,sile):
         """ Writes grid to the ``Sile`` using ``sile.write_grid``
@@ -272,11 +365,29 @@ class Grid(SuperCellChild):
         return 'Grid[{} {} {}]'.format(*self.size)
 
 
+    def _check_compatibility(self,other,msg):
+        """ Internal check for asserting two grids are commensurable """
+        if self == other:
+            return True
+        else:
+            raise ValueError('Grids are not compatible, '+msg)
+
+
+    def _compatible_copy(self,other,*args,**kwargs):
+        """ Returns a copy of self with an additional check of commensurable """
+        if isinstance(other,Grid):
+            if self._check_compatibility(other,*args,**kwargs):
+                return self.copy()
+        else:
+            return self.copy()
+
+
     def __eq__(self,other):
         """ Returns true if the two grids are commensurable
 
         There will be no check of the values _on_ the grid. """
         return bool(np.all(self.size == other.size))
+
 
     def __ne__(self,other):
         """ Returns whether two grids have the same size """
@@ -299,41 +410,28 @@ class Grid(SuperCellChild):
         """ Returns a new grid with the difference of two grids
 
         Returns same size with same cell as the first"""
+        grid = self._compatible_copy(other,'they cannot be subtracted')
         if isinstance(other,Grid):
-            if self == other:
-                # We can return a new grid
-                grid = self.copy()
-                grid.grid = self.grid - other.grid
-            else:
-                raise ValueError('Grids are not compatible, they cannot be subtracted.')
+            grid.grid = self.grid - other.grid
         else:
-            grid = self.copy()
             grid.grid = self.grid - other
         return grid
         
 
     def __div__(self,other):
+        grid = self._compatible_copy(other,'they cannot be divided')
         if isinstance(other,Grid):
-            if self == other:
-                grid = self.copy()
-                grid.grid = self.grid / other.grid
-            else:
-                raise ValueError('Grids are not compatible, they cannot be dividided.')
+            grid.grid = self.grid / other.grid
         else:
-            grid = self.copy()
             grid.grid = self.grid / other
         return grid
 
     
     def __mul__(self,other):
+        grid = self._compatible_copy(other,'they cannot be multiplied')
         if isinstance(other,Grid):
-            if self == other:
-                grid = self.copy()
-                grid.grid = self.grid * other.grid
-            else:
-                raise ValueError('Grids are not compatible, they cannot be multiplied.')
+            grid.grid = self.grid * other.grid
         else:
-            grid = self.copy()
             grid.grid = self.grid * other
         return grid
 
