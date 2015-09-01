@@ -237,7 +237,7 @@ class Grid(SuperCellChild):
     def average(self,axis):
         """ Returns the average grid along direction `axis` """
         n = self.size[axis]
-        return self.sum(axis) / n
+        return self.sum(axis) / float(n)
 
 
     def sub(self,idx,axis):
@@ -292,7 +292,7 @@ class Grid(SuperCellChild):
            the axis segment from which we remove all indices `idx`
         """
         uidx = np.unique(np.clip(idx,0,self.size[axis]-1))
-        ret_idx = np.setdiff1d(np.arange(old_N), uidx, assume_unique=True)
+        ret_idx = np.setdiff1d(np.arange(self.size[axis]), uidx, assume_unique=True)
         return self.sub(ret_idx, axis)
 
 
@@ -418,7 +418,7 @@ class Grid(SuperCellChild):
         return grid
         
 
-    def __div__(self,other):
+    def __truediv__(self,other):
         grid = self._compatible_copy(other,'they cannot be divided')
         if isinstance(other,Grid):
             grid.grid = self.grid / other.grid
