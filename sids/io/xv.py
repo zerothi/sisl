@@ -34,14 +34,14 @@ class XVSile(Sile):
         tmp = np.zeros(6,np.float64)
         fmt = ('   ' + '{:18.9f}'*3)*2 + '\n'
         for i in range(3):
-            tmp[0:3] = geom.cell[i,:] / geom.Length
+            tmp[0:3] = geom.cell[i,:] / geom.Bohr
             self._write(fmt.format(*tmp))
         self._write('{:12d}\n'.format(geom.na))
         fmt  = '{:3d}{:6d}'
         fmt += '{:18.9f}'*3 + '   ' + '{:18.9f}'*3
         fmt += '\n'
         for ia, a, ips in geom.iter_species():
-            tmp[0:3] = geom.xyz[ia,:] / geom.Length
+            tmp[0:3] = geom.xyz[ia,:] / geom.Bohr
             self._write(fmt.format(ips+1,a.Z,*tmp))
 
         
@@ -55,7 +55,7 @@ class XVSile(Sile):
         cell = np.empty([3,3],np.float64)
         for i in range(3):
             cell[i,:] = np.fromstring(self.readline(), dtype=float, sep = ' ')[0:3]
-        cell *= Geometry.Length
+        cell *= Geometry.Bohr
 
         return SuperCell(cell)
     
@@ -79,7 +79,7 @@ class XVSile(Sile):
             line[:] = np.fromstring(self.readline(),dtype=float,sep = ' ')[0:8]
             atms[ia] = Atom[int(line[1])]
             xyz[ia,:] = line[2:5]
-        xyz *= Geometry.Length
+        xyz *= Geometry.Bohr
 
         return Geometry(xyz=xyz,atoms=atms,sc=sc)
 

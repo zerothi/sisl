@@ -25,7 +25,7 @@ class TBtransSile(NCSile):
 
         cell = np.array(self.variables['cell'][:],np.float64)
         cell.shape = (3,3)
-        cell *= Geometry.Length
+        cell *= Geometry.Bohr
 
         return SuperCell(cell)
     
@@ -41,7 +41,7 @@ class TBtransSile(NCSile):
 
         xyz = np.array(self.variables['xa'][:],np.float64)
         xyz.shape = (-1,3)
-        xyz *= Geometry.Length
+        xyz *= Geometry.Bohr
 
         # Create list with correct number of orbitals
         lasto = np.array(self.variables['lasto'][:],np.int32)

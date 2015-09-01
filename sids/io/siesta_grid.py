@@ -26,7 +26,7 @@ class SIESTAGridSile(NCSile):
 
         cell = np.array(self.variables['cell'][:],np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
-        cell = cell * Geometry.Length
+        cell = cell * Geometry.Bohr
         cell.shape = (3,3)
 
         return SuperCell(cell)

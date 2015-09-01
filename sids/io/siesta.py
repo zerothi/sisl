@@ -27,7 +27,7 @@ class SIESTASile(NCSile):
 
         cell = np.array(self.variables['cell'][:],np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
-        cell = cell * Geometry.Length
+        cell = cell * Geometry.Bohr
         cell.shape = (3,3)
 
         nsc = np.array(self.variables['nsc'][:],np.int32)
@@ -76,7 +76,7 @@ class SIESTASile(NCSile):
         else:
             atoms = Atom[1]
 
-        xyz *= Geometry.Length
+        xyz *= Geometry.Bohr
 
         # Create and return geometry object
         geom = Geometry(xyz, atoms=atoms, sc=sc)
@@ -202,8 +202,8 @@ class SIESTASile(NCSile):
 
         # Save stuff
         self.variables['nsc'][:] = geom.nsc
-        self.variables['xa'][:] = geom.xyz / geom.Length
-        self.variables['cell'][:] = geom.cell / geom.Length
+        self.variables['xa'][:] = geom.xyz / geom.Bohr
+        self.variables['cell'][:] = geom.cell / geom.Bohr
 
         # Create basis group
         bs = self._crt_grp(self,'BASIS')

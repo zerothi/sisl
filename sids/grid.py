@@ -176,7 +176,7 @@ class Grid(SuperCellChild):
         """ Returns the delta-cell """
         # Calculate the grid-distribution
         g_size = self.size
-        dcell = _np.empty([3,3],np.float64)
+        dcell = np.empty([3,3],np.float64)
         for ix in range(3):
             dcell[ix,:] = self.cell[ix,:] / g_size[ix]
         return dcell
@@ -321,7 +321,7 @@ class Grid(SuperCellChild):
             return idx
 
         # Ensure a 1D array
-        ac = np.atleast_1d(coord,np.float64)
+        ac = np.atleast_1d(np.asarray(coord,np.float64))
         
         # Calculate the index of the coord in the cell
         dax = self.dcell[axis,:]
