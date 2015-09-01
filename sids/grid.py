@@ -149,7 +149,8 @@ class Grid(SuperCellChild):
         Returns a copy of the object.
         """
         grid = self.__class__(np.copy(self.size), bc=np.copy(self.bc),
-                              sc=self.sc.copy(),dtype=self.grid.dtype)
+                              dtype=self.grid.dtype,
+                              geom=self.geom.copy())
         grid.grid[:,:,:] = self.grid[:,:,:]
         return grid
 
