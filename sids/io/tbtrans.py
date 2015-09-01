@@ -8,6 +8,7 @@ from sids.io.sile import *
 
 # Import the geometry object
 from sids import Geometry, Atom, SuperCell
+from sids import Bohr
 
 import numpy as np
 
@@ -25,7 +26,7 @@ class TBtransSile(NCSile):
 
         cell = np.array(self.variables['cell'][:],np.float64)
         cell.shape = (3,3)
-        cell *= Geometry.Bohr
+        cell /= Bohr
 
         return SuperCell(cell)
     
@@ -41,7 +42,7 @@ class TBtransSile(NCSile):
 
         xyz = np.array(self.variables['xa'][:],np.float64)
         xyz.shape = (-1,3)
-        xyz *= Geometry.Bohr
+        xyz /= Bohr
 
         # Create list with correct number of orbitals
         lasto = np.array(self.variables['lasto'][:],np.int32)

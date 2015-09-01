@@ -18,7 +18,10 @@ __all__ = ['PhononTightBinding']
 class PhononTightBinding(TightBinding):
     """ Phonon tight-binding model with slight modifications """
 
-    Energy = TightBinding.Energy ** 2
+    # The order of the Energy
+    # I.e. whether energy should be in other units than Ry
+    # This conversion is made: [eV] ** _E_order
+    _E_order = 2
 
     def correct_Newton(self):
         """

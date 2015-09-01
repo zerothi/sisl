@@ -11,6 +11,7 @@ from sids.io.sile import *
 
 # Import the geometry object
 from sids import Geometry, Atom, SuperCell, Grid
+from sids import Bohr
 
 __all__ = ['CUBESile']
 
@@ -35,12 +36,12 @@ class CUBESile(Sile):
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
         # Add #-of atoms and origo
-        self._write(_fmt.format(len(geom),*origo/geom.Bohr))
+        self._write(_fmt.format(len(geom),*origo * Bohr))
 
         # Write the cell and voxels
         dcell = np.empty([3,3],np.float64)
         for ix in range(3):
-            dcell[ix,:] = geom.cell[ix,:] / size[ix] / geom.Bohr
+            dcell[ix,:] = geom.cell[ix,:] / size[ix] * Bohr
         self._write(_fmt.format(size[0],*dcell[0,:]))
         self._write(_fmt.format(size[1],*dcell[1,:]))
         self._write(_fmt.format(size[2],*dcell[2,:]))
@@ -48,7 +49,7 @@ class CUBESile(Sile):
         tmp = ' {:' + fmt + '}'
         _fmt = '{:d} 0.0' + tmp + tmp + tmp + '\n'
         for ia in geom:
-            self._write(_fmt.format(geom.atoms[ia].Z,*geom.xyz[ia,:]/geom.Bohr))
+            self._write(_fmt.format(geom.atoms[ia].Z,*geom.xyz[ia,:] * Bohr))
 
 
     def write_grid(self,grid,fmt='%.5e',*args,**kwargs):
@@ -105,7 +106,7 @@ class CUBESile(Sile):
             for j in [0,1,2]:
                 cell[i,j] = float(tmp[j+1]) * s
 
-        cell = cell * SuperCell.Bohr
+        cell = cell / Bohr
         if na:
             return na, SuperCell(cell)
         return SuperCell(cell)
@@ -130,7 +131,7 @@ class CUBESile(Sile):
             xyz[ia,1] = float(tmp[2])
             xyz[ia,2] = float(tmp[3])
 
-        xyz = xyz * Geometry.Bohr
+        xyz = xyz / Bohr
 
         return Geometry(xyz,atoms,sc=sc)
 

@@ -28,8 +28,10 @@ class TightBinding(object):
     parameter set.
     """
 
-    # The energy conversion factor
-    Energy = 13.60580
+    # The order of the Energy
+    # I.e. whether energy should be in other units than Ry
+    # This conversion is made: [eV] ** _E_order
+    _E_order = 1
 
     def __init__(self,geom,*args,**kwargs):
         """Create tight-binding model from geometry

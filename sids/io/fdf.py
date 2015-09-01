@@ -10,6 +10,7 @@ from sids.io._help import *
 
 # Import the geometry object
 from sids import Geometry, Atom, SuperCell
+from sids import Bohr
 
 from os.path import dirname, sep
 import numpy as np
@@ -25,9 +26,6 @@ class FDFSile(Sile):
     # List of parent file-handles used while reading
     _parent_fh = []
     _directory = ''
-
-    # FDF values for conversions
-    _Bohr = 0.529177
 
     def __init__(self,filename,mode=None,base=None):
         """ Initialize an FDF file from the filename 
@@ -134,7 +132,7 @@ class FDFSile(Sile):
         if 'ang' in lc.lower():
             pass
         elif 'bohr' in lc.lower():
-            s /= self._Bohr
+            s *= Bohr
 
         # Read in cell
         cell = np.empty([3,3],np.float64)
@@ -167,7 +165,7 @@ class FDFSile(Sile):
         if 'ang' in lc.lower():
             pass
         elif 'bohr' in lc.lower():
-            s /= self._Bohr
+            s *= Bohr
 
         sc = self.read_sc(*args,**kwargs)
 
@@ -178,7 +176,7 @@ class FDFSile(Sile):
             s = 1.
             pass
         elif 'bohr' in lc or 'notscaledcartesianbohr' in lc:
-            s = 1. / self._Bohr
+            s = Bohr
         elif 'scaledcartesian' in lc:
             # the same scaling as the lattice-vectors
             pass

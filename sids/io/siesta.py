@@ -8,7 +8,8 @@ from sids.io.sile import *
 
 # Import the geometry object
 from sids import Geometry, Atom, SuperCell, Grid
-from sids.tb import TightBinding
+from sids import Bohr, Ry
+from sids.tb import TightBinding, PhononTightBinding
 
 import numpy as np
 
@@ -27,7 +28,7 @@ class SIESTASile(NCSile):
 
         cell = np.array(self.variables['cell'][:],np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
-        cell = cell * Geometry.Bohr
+        cell = cell / Bohr
         cell.shape = (3,3)
 
         nsc = np.array(self.variables['nsc'][:],np.int32)
@@ -76,7 +77,7 @@ class SIESTASile(NCSile):
         else:
             atoms = Atom[1]
 
-        xyz *= Geometry.Bohr
+        xyz /= Bohr
 
         # Create and return geometry object
         geom = Geometry(xyz, atoms=atoms, sc=sc)
@@ -107,10 +108,10 @@ class SIESTASile(NCSile):
         tb = TightBinding(geom,nc=1)
 
         # Use Ef to move H to Ef = 0
-        Ef = float(self.variables['Ef'][0]) * tb.Energy
+        Ef = float(self.variables['Ef'][0]) / Ry ** tb._E_order
 
         S = np.array(sp.variables['S'][:],np.float64)
-        H = np.array(sp.variables['H'][ispin,:],np.float64) * tb.Energy
+        H = np.array(sp.variables['H'][ispin,:],np.float64) / Ry ** tb._E_order
 
         # Correct for the Fermi-level, Ef == 0
         H -= Ef * S[:]
@@ -202,8 +203,8 @@ class SIESTASile(NCSile):
 
         # Save stuff
         self.variables['nsc'][:] = geom.nsc
-        self.variables['xa'][:] = geom.xyz / geom.Bohr
-        self.variables['cell'][:] = geom.cell / geom.Bohr
+        self.variables['xa'][:] = geom.xyz * Bohr
+        self.variables['cell'][:] = geom.cell * Bohr
 
         # Create basis group
         bs = self._crt_grp(self,'BASIS')
@@ -234,6 +235,7 @@ class SIESTASile(NCSile):
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = np.cumsum(orbs)
 
+
     def write_tb(self,tb,**kwargs):
         """ Writes tight-binding model to file """
         # Ensure finalizations
@@ -250,7 +252,7 @@ class SIESTASile(NCSile):
         v.info = 'Fermi level'
         v.unit = 'Ry'
         v[:] = 0.
-        if 'Ef' in kwargs: v[:] = kwargs['Ef'] / tb.Energy
+        if 'Ef' in kwargs: v[:] = kwargs['Ef'] * Ry ** tb._E_order
         v = self._crt_var(self,'Qtot','f8',('one',))
         v.info = 'Total charge'
         v[:] = 0.
@@ -283,14 +285,14 @@ class SIESTASile(NCSile):
                           chunksizes=(1,len(tb.col)),**self._cmp_args())
         v.info = "Hamiltonian"
         v.unit = "Ry"
-        v[:] = tb._TB[:,0] / tb.Energy
+        v[:] = tb._TB[:,0] * Ry ** tb._E_order
 
         # Create the settings
         st = self._crt_grp(self,'SETTINGS')
         v = self._crt_var(st,'ElectronicTemperature','f8',('one',))
         v.info = "Electronic temperature used for smearing DOS"
         v.unit = "Ry"
-        v[:] = 0.025 / tb.Energy
+        v[:] = 0.025 * Ry
         v = self._crt_var(st,'BZ','i4',('xyz','xyz'))
         v.info = "Grid used for the Brillouin zone integration"
         v[:] = np.identity(3) * 2

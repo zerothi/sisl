@@ -8,6 +8,7 @@ from sids.io.sile import *
 
 # Import the geometry object
 from sids import Geometry, SuperCell, Grid
+from sids import Bohr
 
 import numpy as np
 
@@ -26,7 +27,7 @@ class SIESTAGridSile(NCSile):
 
         cell = np.array(self.variables['cell'][:],np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
-        cell = cell * Geometry.Bohr
+        cell = cell / Bohr
         cell.shape = (3,3)
 
         return SuperCell(cell)
