@@ -331,11 +331,22 @@ class SuperCellChild(object):
             # Default supercell is a simple
             # 1x1x1 unit-cell
             self.sc = SuperCell([1.,1.,1.])
-        elif isinstance(sc,SuperCell):
+        elif isinstance(sc, SuperCell):
             self.sc = sc
         else:
             # The supercell is given as a cell
             self.sc = SuperCell(sc)
+
+        # Loop over attributes in this class
+        # if it inherits SuperCellChild, we call
+        # set_sc on that too.
+        # Sadly, getattr fails for @property methods
+        # which forces us to use try ... except
+        for a in dir(self):
+            try:
+                if isinstance(getattr(self, a), SuperCellChild):
+                    getattr(self, a).set_supercell(self.sc)
+            except: pass
 
     set_sc = set_supercell
 

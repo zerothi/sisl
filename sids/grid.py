@@ -64,6 +64,22 @@ class Grid(SuperCellChild):
         self.grid[key] = val
 
 
+    def set_geom(self,geom):
+        """ Sets the `Geometry` for the grid.
+
+        Setting the `Geometry` for the grid is a possibility
+        to attach atoms to the grid.
+
+        It is not a necessary entity.
+        """
+        if geom is None:
+            # Fake geometry
+            self.set_geom(Geometry([0,0,0],Atom['H'],sc=self.sc))
+        else:
+            self.geom = geom
+            self.set_sc(geom.sc)
+
+
     def interp(self,size,*args,**kwargs):
         """ Returns an interpolated version of the grid 
         
@@ -127,21 +143,6 @@ class Grid(SuperCellChild):
     # Aliases
     set_boundary = set_bc
     set_boundary_condition = set_bc
-
-    def set_geom(self,geom):
-        """ Sets the `Geometry` for the grid.
-
-        Setting the `Geometry` for the grid is a possibility
-        to attach atoms to the grid.
-
-        It is not a necessary entity.
-        """
-        if geom is None:
-            # Fake geometry
-            self.set_geom(Geometry([0,0,0],Atom['H'],sc=self.sc))
-        else:
-            self.geom = geom
-            self.set_sc(geom.sc)
                           
 
     def copy(self):
