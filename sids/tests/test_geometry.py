@@ -157,8 +157,32 @@ class TestGeometry(object):
         assert_false( d == d2 )
         # Calculate actual radii
         assert_true( d2 == (Atom[1].radii() + Atom[6].radii())/2 )
-        
-        
-        
+
+    def test_unit_cell_estimation1(self):
+        # Create new geometry with only the coordinates
+        # and atoms
+        geom = Geometry(self.g.xyz,Atom[6])
+        # Only check the two distances we know have sizes
+        for i in range(2):
+            # It cannot guess skewed axis
+            assert_false( np.allclose(geom.cell[i,:], self.g.cell[i,:]) )
+
+    def test_unit_cell_estimation2(self):
+        # Create new geometry with only the coordinates
+        # and atoms
+        s1 = SuperCell([2,2,2])
+        g1 = Geometry([[0,0,0],[1,1,1]],sc=s1)
+        g2 = Geometry(np.copy(g1.xyz))
+        assert_true( np.allclose(g1.cell, g2.cell) )
+
+        # Assert that it correctly calculates the bond-length in the 
+        # directions of actual distance
+        g1 = Geometry([[0,0,0],[1,1,0]],sc=s1)
+        g2 = Geometry(np.copy(g1.xyz))
+        for i in range(2):
+            assert_true( np.allclose(g1.cell[i,:], g2.cell[i,:]) )
+        assert_false( np.allclose(g1.cell[2,:], g2.cell[2,:]) )
+
+
 
 

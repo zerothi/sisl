@@ -78,9 +78,6 @@ class Geometry(SuperCellChild):
 
     def __init__(self,xyz,atoms=_H,sc=None):
 
-        # Create the supercell
-        self.set_supercell(sc)
-
         # Create the geometry coordinate
         self.xyz = np.asarray(xyz,dtype=np.float64)
         self.xyz.shape = (-1, 3)
@@ -112,6 +109,60 @@ class Geometry(SuperCellChild):
         # Create local lasto
         lasto = np.append(np.array(0,np.int32), orbs)
         self.lasto = np.cumsum(lasto)
+
+        self.__init_sc(sc)
+
+    def __init_sc(self,sc):
+        """ Initializes the supercell by *calculating* the size if not supplied
+
+        If the supercell has not been passed we estimate the unit cell size
+        by calculating the bond-length in each direction for a square
+        Cartesian coordinate system.
+        """
+        # We still need the *default* super cell for
+        # estimating the supercell
+        self.set_supercell(sc)
+
+        if sc is not None:
+            return
+
+        # First create an initial guess for the supercell
+        # It HAS to be VERY large to not interact
+        closest = self.close(0, dR=(0.,0.4,5.))[2]
+        if len(closest) < 1:
+            # We could not find any atoms very close,
+            # hence we simply return and now it becomes
+            # the users responsibility
+            return
+
+        sc_cart = np.zeros([3],np.float64)
+        cart = np.zeros([3],np.float64)
+        for i in range(3):
+            # Initialize cartesian direction
+            cart[i] = 1.
+            
+            # Get longest distance between atoms
+            max_dist = np.amax(self.xyz[:,i]) - np.amin(self.xyz[:,i])
+            
+            dist = self.xyz[closest,:] - self.xyz[0,:][None,:]
+            # Project onto the direction
+            dd = np.abs(np.dot(dist,cart))
+
+            # Remove all below .4
+            tmp_idx = np.where(dd >= .4)[0]
+            if len(tmp_idx) > 0:
+                # We have a success
+                # Add the bond-distance in the Cartesian direction
+                # to the maximum distance in the same direction
+                sc_cart[i] = max_dist + np.amin(dd[tmp_idx])
+            else:
+                # Default to LARGE array so as no
+                # interaction occurs (it may be 2D)
+                sc_cart[i] = max(10.,max_dist)
+            cart[i] = 0.
+            
+        # Re-set the supercell to the newly found one
+        self.set_supercell(sc_cart)
 
         
     def __len__(self):
