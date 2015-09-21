@@ -318,7 +318,7 @@ class TightBinding(object):
             del Hfull, Sfull
             return (H,S)
 
-    def eigh(self,k=None,atoms=None,*args,**kwargs):
+    def eigh(self,k=None,atoms=None,eigvals_only=True,overwrite_a=True,overwrite_b=True,*args,**kwargs):
         """ Returns the eigenvalues of the tight-binding model
 
         Setup the Hamiltonian and overlap matrix with respect to
@@ -334,7 +334,8 @@ class TightBinding(object):
             # Reduce space
             H = H[orbs,orbs]
             S = S[orbs,orbs]
-        return sli.eigh(H.todense(),S.todense(),*args,**kwargs)
+        return sli.eigh(H.todense(),S.todense(), *args, eigvals_only=eigvals_only,
+                        overwrite_a=overwrite_a, overwrite_b=overwrite_b, **kwargs)
 
     
     def cut(self,seps,axis):
