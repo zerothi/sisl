@@ -35,11 +35,15 @@ class TestSuperCell(object):
         assert_true( len(self.sc.sc_off) == np.prod(self.sc.nsc) )
 
     def test_rotation1(self):
-        rot = self.sc.rotate(m.pi,[0,0,1])
+        rot = self.sc.rotate(180,[0,0,1])
         rot.cell[2,2] *= -1
         assert_true( np.allclose(-rot.cell,self.sc.cell) )
 
-        rot = rot.rotate(m.pi,[0,0,1])
+        rot = self.sc.rotate(m.pi,[0,0,1],degree=False)
+        rot.cell[2,2] *= -1
+        assert_true( np.allclose(-rot.cell,self.sc.cell) )
+
+        rot = rot.rotate(180,[0,0,1])
         rot.cell[2,2] *= -1
         assert_true( np.allclose(rot.cell,self.sc.cell) )
 

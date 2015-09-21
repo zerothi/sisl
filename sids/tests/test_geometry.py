@@ -110,33 +110,47 @@ class TestGeometry(object):
         assert_true( len(self.g.sc_off) == np.prod(self.g.nsc) )
 
     def test_rotation1(self):
-        rot = self.g.rotate(m.pi,[0,0,1])
+        rot = self.g.rotate(180,[0,0,1])
         rot.sc.cell[2,2] *= -1
         assert_true( np.allclose(-rot.sc.cell,self.g.sc.cell) )
         assert_true( np.allclose(-rot.xyz,self.g.xyz) )
 
-        rot = rot.rotate(m.pi,[0,0,1])
+        rot = self.g.rotate(np.pi,[0,0,1],degree=False)
+        rot.sc.cell[2,2] *= -1
+        assert_true( np.allclose(-rot.sc.cell,self.g.sc.cell) )
+        assert_true( np.allclose(-rot.xyz,self.g.xyz) )
+
+        rot = rot.rotate(180,[0,0,1])
         rot.sc.cell[2,2] *= -1
         assert_true( np.allclose(rot.sc.cell,self.g.sc.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 
     def test_rotation2(self):
-        rot = self.g.rotate(m.pi,[0,0,1],only='cell')
+        rot = self.g.rotate(180,[0,0,1],only='cell')
         rot.sc.cell[2,2] *= -1
         assert_true( np.allclose(-rot.sc.cell,self.g.sc.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 
-        rot = rot.rotate(m.pi,[0,0,1],only='cell')
+        rot = self.g.rotate(np.pi,[0,0,1],degree=False,only='cell')
+        rot.sc.cell[2,2] *= -1
+        assert_true( np.allclose(-rot.sc.cell,self.g.sc.cell) )
+        assert_true( np.allclose(rot.xyz,self.g.xyz) )
+
+        rot = rot.rotate(180,[0,0,1],only='cell')
         rot.sc.cell[2,2] *= -1
         assert_true( np.allclose(rot.sc.cell,self.g.sc.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 
     def test_rotation3(self):
-        rot = self.g.rotate(m.pi,[0,0,1],only='xyz')
+        rot = self.g.rotate(180,[0,0,1],only='xyz')
         assert_true( np.allclose(rot.sc.cell,self.g.sc.cell) )
         assert_true( np.allclose(-rot.xyz,self.g.xyz) )
 
-        rot = rot.rotate(m.pi,[0,0,1],only='xyz')
+        rot = self.g.rotate(np.pi,[0,0,1],degree=False,only='xyz')
+        assert_true( np.allclose(rot.sc.cell,self.g.sc.cell) )
+        assert_true( np.allclose(-rot.xyz,self.g.xyz) )
+
+        rot = rot.rotate(180,[0,0,1],only='xyz')
         assert_true( np.allclose(rot.sc.cell,self.g.sc.cell) )
         assert_true( np.allclose(rot.xyz,self.g.xyz) )
 

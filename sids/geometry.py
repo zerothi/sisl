@@ -580,7 +580,7 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atoms=atoms, sc=sc)
 
     
-    def rotate(self,angle,v,only='cell+xyz',degree=False):
+    def rotate(self,angle,v,only='cell+xyz',degree=True):
         """ 
         Rotates the geometry, in-place by the angle around the vector
 

@@ -141,7 +141,7 @@ class SuperCell(object):
         return rcell
 
             
-    def rotate(self,angle,v,degree=False):
+    def rotate(self,angle,v,degree=True):
         """ 
         Rotates the geometry, in-place by the angle around the vector
 
@@ -159,7 +159,7 @@ class SuperCell(object):
              the vector around the rotation is going to happen
              v = [1,0,0] will rotate in the ``yz`` plane
         degree : bool
-             Whether the angle is in radians (False) or in degrees (True)
+             Whether the angle is in radians (False) or in degrees (True, default)
         """
         q = Quaternion(angle,v,degree=degree)
         q /= q.norm() # normalize the quaternion
