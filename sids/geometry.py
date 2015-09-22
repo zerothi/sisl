@@ -935,8 +935,9 @@ class Geometry(SuperCellChild):
             The atom to be displaced according to the atomic radii
         atoms : int, array_like
             The atom(s) from which the radii should be reduced.
-        radii : str
-            The radii lookup, see `Atom.radii`.
+        radii : str/float
+            If str will use that as lookup in `Atom.radii`.
+            Else it will be the new bond-length.
         """
 
         # Decide which algorithm to choose from
@@ -950,10 +951,12 @@ class Geometry(SuperCellChild):
             algo = -1
             
         if algo >= 0:
+
             # We have a single atom
             # Get bond length in the closest direction
-            idx, c, d = self.close(ia,dR=(0.1,1000.),idx=algo,
-                              ret_coord=True,ret_dist=True)
+            # A bond-length HAS to be below 10 
+            idx, c, d = self.close(ia,dR=(0.1,10.),idx=algo,
+                                   ret_coord=True,ret_dist=True)
             i = np.argmin(d[1])
             idx = idx[1][i]
             c = c[1][i]
@@ -962,9 +965,13 @@ class Geometry(SuperCellChild):
             # Calculate the bond vector
             bv = self.xyz[ia,:] - c
 
-            # get radii
-            rad = (self.atoms[idx].radii(radii=radii) + \
-                self.atoms[ia].radii(radii=radii))
+            try:
+                # If it is a number, we use that.
+                rad = float(radii)
+            except:
+                # get radii
+                rad = (self.atoms[idx].radii(radii=radii) + \
+                           self.atoms[ia].radii(radii=radii))
             
             # Update the coordinate
             self.xyz[ia,:] = c + bv / d * rad
