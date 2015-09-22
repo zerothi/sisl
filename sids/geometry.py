@@ -964,7 +964,7 @@ class Geometry(SuperCellChild):
 
             # get radii
             rad = (self.atoms[idx].radii(radii=radii) + \
-                self.atoms[ia].radii(radii=radii)) / 2
+                self.atoms[ia].radii(radii=radii))
             
             # Update the coordinate
             self.xyz[ia,:] = c + bv / d * rad
