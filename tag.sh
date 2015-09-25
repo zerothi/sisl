@@ -14,22 +14,32 @@ MICRO=$(read_num MICRO)
 
 _shifted=0
 
+function _help {
+    echo "Use the following commands:"
+    echo "  $0 M  :  steps the major revision, minor, micro turns 0"
+    echo "  $0 m  :  steps the minor revision, micro turns 0" 
+    echo "  $0 u  :  steps the minor revision"
+    echo ""
+    echo "Example, previous version is 0.1.3"
+    echo "  $0 M  => 1.0.0"
+    echo "  $0 m  => 0.2.0"
+    echo "  $0 u  => 0.1.4"
+}
+
+
+if [ $# -eq 0 ]; then
+    echo "You *must* supply at least one step option"
+    echo ""
+    _help
+    exit 1
+fi
+
 # Figure out what to step
 while [ $# -gt 0 ]; do
     opt=$1 ; shift
     case $opt in
 	-h|--h|--help|-help)
-	    echo "Use the following commands:"
-	    echo "  $0 M  :  steps the major revision, minor, micro turns 0"
-	    echo "  $0 m  :  steps the minor revision, micro turns 0" 
-	    echo "  $0 u  :  steps the minor revision"
-	    echo "  $0    :  same as '$0 u'"
-	    echo ""
-	    echo "Example, previous version is 0.1.3"
-	    echo "  $0 M  => 1.0.0"
-	    echo "  $0 m  => 0.2.0"
-	    echo "  $0 u  => 0.1.4"
-	    echo "  $0    => 0.1.4"
+	    _help
 	    exit 0
 	    ;;
 	a|A|M|major|ma)
