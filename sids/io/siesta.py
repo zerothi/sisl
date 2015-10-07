@@ -133,6 +133,19 @@ class SIESTASile(NCSile):
 
         return tb
 
+    
+    def grids(self):
+        """ Return a list of available grids in this file. """
+        if not hasattr(self,'fh'):
+            with self:
+                return self.grids()
+        
+        grids = []
+        for g in self.groups['GRID'].variables:
+            grids.expand(g)
+        
+        return grids
+            
 
     def read_grid(self,name,idx=0):
         """ Reads a grid in the current SIESTA.nc file
@@ -154,18 +167,23 @@ class SIESTASile(NCSile):
         ny = len(g.dimensions['ny'])
         nz = len(g.dimensions['nz'])
 
+        # Shorthand variable name
+        v = g.variables[name]
+        
         # Create the grid, SIESTA uses periodic, always
-        grid = Grid([nz,ny,nx], bc=Grid.Periodic, geom=geom,
-                    dtype=g.variables[name].dtype)
+        grid = Grid([nz,ny,nx], bc=Grid.Periodic, dtype=v.dtype)
 
-        if len(g.variables[name][:].shape) == 3:
-            grid.grid = g.variables[name][:,:,:]
+        if len(v[:].shape) == 3:
+            grid.grid = v[:,:,:]
         else:
-            grid.grid = g.variables[name][idx,:,:,:]
+            grid.grid = v[idx,:,:,:]
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
-        return grid.swapaxes(0,2)
+        grid = grid.swapaxes(0,2)
+        grid.set_geom(geom)
+        
+        return grid
 
 
     def write_geom(self,geom):

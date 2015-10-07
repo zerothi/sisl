@@ -27,7 +27,7 @@ Operating System :: MacOS
 
 MAJOR               = 0
 MINOR               = 3
-MICRO               = 0
+MICRO               = 1
 ISRELEASED          = False
 VERSION             = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
@@ -41,7 +41,9 @@ def generate_cython():
     if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
-scripts = [osp.join('scripts', script) for script in ['sgeom']]
+scripts = ['sgeom','sgrid']
+
+scripts = [osp.join('scripts', script) for script in scripts]
 
 metadata = dict(
     name = 'sids',

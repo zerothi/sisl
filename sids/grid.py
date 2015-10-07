@@ -167,7 +167,8 @@ class Grid(SuperCellChild):
         idx[a] = b
         s = np.copy(self.size)
         grid = self.__class__(s[idx], bc=self.bc[idx],
-                              sc=self.sc.swapaxes(a,b),dtype=self.grid.dtype)
+                              sc=self.sc.swapaxes(a,b),dtype=self.grid.dtype,
+                              geom=self.geom.copy())
         # We need to force the C-order or we loose the contiguoity
         grid.grid = np.copy(np.swapaxes(self.grid,a,b),order='C')
         return grid
@@ -236,7 +237,7 @@ class Grid(SuperCellChild):
         return grid
 
 
-    def average(self,axis):
+    def mean(self,axis):
         """ Returns the average grid along direction `axis` """
         n = self.size[axis]
         return self.sum(axis) / float(n)
@@ -340,7 +341,27 @@ class Grid(SuperCellChild):
         size = np.copy(self.size)
         size[axis] += other.size[axis]
         return self.__class__(size, bc = np.copy(self.bc),
-                              sc=self.sc.append(other.sc,axis))
+                              geom=self.geom.append(other.geom,axis))
+
+    
+    @staticmethod
+    def read(sile,*args,**kwargs):
+        """ Reads grid from the ``Sile`` using ``sile.read_grid``
+
+        Parameters
+        ----------
+        sile : Sile, str
+            a ``Sile`` object which will be used to read the grid
+            if it is a string it will create a new sile using ``get_sile``.
+        * : args passed directly to `read_grid(,**)`
+        """
+        # This only works because, they *must*
+        # have been imported previously
+        from sids.io import get_sile, BaseSile
+        if isinstance(sile,BaseSile):
+            return sile.read_grid(*args,**kwargs)
+        else:
+            return get_sile(sile).read_grid(*args,**kwargs)
 
     
     def write(self,sile):
@@ -400,12 +421,24 @@ class Grid(SuperCellChild):
         """ Returns a new grid with the addition of two grids
 
         Returns same size with same cell as the first"""
-        if self == other:
-            # We can return a new grid
-            grid = self.copy()
+        grid = self._compatible_copy(other,'they cannot be added')
+        if isinstance(other,Grid):
             grid.grid = self.grid + other.grid
-            return grid
-        raise ValueError('Grids are not compatible, they cannot be added.')
+        else:
+            grid.grid = self.grid + other
+        return grid
+        
+
+    def __iadd__(self,other):
+        """ Returns a new grid with the addition of two grids
+
+        Returns same size with same cell as the first"""
+        self._check_compatibility(other,'they cannot be added')
+        if isinstance(other,Grid):
+            self.grid += other.grid
+        else:
+            self.grid += other
+        return self
 
     
     def __sub__(self,other):
@@ -418,7 +451,19 @@ class Grid(SuperCellChild):
         else:
             grid.grid = self.grid - other
         return grid
-        
+
+
+    def __isub__(self,other):
+        """ Returns a same grid with the difference of two grids
+
+        Returns same size with same cell as the first"""
+        self._check_compatibility(other,'they cannot be subtracted')
+        if isinstance(other,Grid):
+            self.grid -= other.grid
+        else:
+            self.grid -= other
+        return self
+
 
     def __truediv__(self,other):
         grid = self._compatible_copy(other,'they cannot be divided')
@@ -428,6 +473,14 @@ class Grid(SuperCellChild):
             grid.grid = self.grid / other
         return grid
 
+    def __itruediv__(self,other):
+        self._check_compatibility(other,'they cannot be divided')
+        if isinstance(other,Grid):
+            self.grid /= other.grid
+        else:
+            self.grid /= other
+        return self
+
     
     def __mul__(self,other):
         grid = self._compatible_copy(other,'they cannot be multiplied')
@@ -436,6 +489,15 @@ class Grid(SuperCellChild):
         else:
             grid.grid = self.grid * other
         return grid
+
+
+    def __imul__(self,other):
+        self._check_compatibility(other,'they cannot be multiplied')
+        if isinstance(other,Grid):
+            self.grid *= other.grid
+        else:
+            self.grid *= other
+        return self
 
 
 if __name__ == "__main__":

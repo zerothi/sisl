@@ -1,0 +1,157 @@
+#!/usr/bin/env python
+"""
+Grid handler for different formats
+"""
+from __future__ import print_function, division
+
+import sys, os, os.path as osp
+import argparse as arg
+
+# Variable for python3 compliance
+is_3 = sys.version_info >= (3,0)
+
+import numpy as np
+
+import sids
+
+# For transforming a string to a range
+import re
+re_rng = re.compile('[,]?([0-9-]+)[,]?')
+
+# Function to change a string to a range of atoms
+def parse_rng(s):
+    """ Parses a string into a list of ranges 
+    
+    This range can be formatted like this:
+      1,2,3-6
+    in which case it will return:
+      [1,2,3,4,5,6]
+    """
+    rng = []
+    for la in re_rng.findall(s):
+        # We accumulate a list of integers
+        tmp = la.split('-')
+        if len(tmp) > 2: 
+            print('Error in parsing: "'+s+'".')
+        elif len(tmp) > 1:
+            bo, eo = tuple(map(int,tmp))
+            rng.extend(range(bo-1,eo))
+        else:
+            rng.append(int(tmp[0]-1))
+    return rng
+
+def file_idx(s):
+    """ Returns a tuple of file and index of variable in the file.
+
+    Example:
+
+       SIESTA.nc[Rho,1] returns the `Rho` variable at the spin-index 1.
+       SIESTA.nc[Rho] returns the `Rho` variable at the spin-index 0 (default).
+       SIESTA.nc errors unless only one grid exists in the file.
+    """
+
+    var = None
+    idx = 0
+    if '[' in s:
+        f, var_idx = s.replace(']','').split('[')
+        # Decide on var
+        if ',' in var_idx:
+            var, idx = var_idx.split(',')
+        else:
+            # If var_idx is integer, then idx, else var
+            try:
+                idx = int(var_idx)
+            except:
+                var = var_idx
+    else:
+        f = s
+
+    # Return tuple
+    return (f, var, idx)
+
+
+def run():
+
+    p = arg.ArgumentParser('Manipulates grid functions in commonly encounterd files.')
+
+    def dir_type(val,check_type):
+        if val in ['x','y','z','a','b','c']:
+            return 'xaybzc'.index(val) // 2
+        try:
+            return check_type(val)
+        except:
+            raise arg.ArgumentTypeError("Type: "+val+" not valid type "+str(check_type.__name__))
+
+    def dir_int(val): return dir_type(val,int)
+    def dir_float(val): return dir_type(val,float)
+    def dir_angle(val): 
+        if val in ['x','y','z','a','b','c']:
+            return 'xaybzc'.index(val) // 2
+        try:
+            val = val.replace('pi',np.pi)
+            if 'r' in val:
+                # Radians
+                tmp = eval(val.replace('r',''))
+            else:
+                tmp = eval(val.replace('d','').replace('a','')) / 180 * np.pi
+        except:
+            raise arg.ArgumentTypeError("Type: "+val+" not valid type float")
+        return tmp
+
+
+    # Associated geometry to the grid file
+    p.add_argument('-g','--geometry', type=str, default=None,
+                   help='Geometry associated with this grid.')
+
+    # Other files 
+    p.add_argument('-d','--diff', type=str, metavar='dir', default=None,
+                   help='Difference grid file.')
+
+    # Take the mean value in a direction
+    p.add_argument('-m','--mean','--average', type=dir_type, metavar='dir', default=None,
+                   help='Take the average value in the directions specified.')
+    p.add_argument('--sum', type=dir_type, metavar='dir', default=None,
+                   help='Sum grid in the directions specified.')
+
+    p.set_defaults(func=grid_action)
+    
+    p.add_argument('in_file',metavar='infile',type=str,
+                   help='Read grid from file, if NetCDF file INFILE[var,idx] denotes variable and index.')
+    p.add_argument('out_file',metavar='outfile',type=str,default='out.cube',
+                   help='Write grid to file, append for more out files.')
+
+    args = p.parse_args()
+    args.func(args)
+
+
+def grid_action(args):
+    """
+    sgrid $@
+    """
+    # Convert the in_file to the file, variable and index
+    f, var, idx = file_idx(args.in_file)
+    
+    # Read grid
+    g = sids.Grid.read(f, var, idx)
+
+    if args.diff:
+        f, var, idx = file_idx(args.diff)
+        g -= sids.Grid.read(f, var, idx)
+
+    if args.mean:
+        g = g.mean(args.mean)
+
+    if args.sum:
+        g = g.sum(args.sum)
+
+    if args.geometry:
+        # The user has requested to overwrite the geometry
+        geom = sids.Geometry.read(args.geometry)
+        g.set_geom(geom)
+
+    # Store grid
+    g.write(args.out_file)
+
+
+if __name__ == "__main__":
+    run()

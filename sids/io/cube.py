@@ -76,14 +76,12 @@ class CUBESile(Sile):
         # Write the grid
         np.savetxt(self.fh,grid.grid[:],fmt)
 
-        grid.grid.shape = g_size
-        return
-        # Write the actual grid
-        for ix in range(g_size[0]):
-            for iy in range(g_size[1]):
-                np.savetxt(self.fh,grid.grid[ix,iy,:],fmt)
-                
+        # Add a finishing line to ensure empty ending
+        self._write('\n')
 
+        grid.grid.shape = g_size
+
+    
     def read_sc(self,na=False):
         """ Returns `SuperCell` object from the CUBE file 
 
@@ -143,7 +141,30 @@ class CUBESile(Sile):
             with self:
                 return self.read_grid()
 
-        raise NotImplemented('Reading a CUBE file needs to be created accordingly')
+        geom = self.read_geom()
+
+        # Now seek behind to read grid sizes
+        self.fh.seek(0)
+
+        # Skip headers and origo
+        self.readline()
+        self.readline()
+        na = int(self.readline().split()[0])
+
+        ngrid = [0]*3
+        for i in [0,1,2]:
+            tmp = self.readline().split()
+            ngrid[i] = int(tmp[0])
+
+        # Read past the atoms
+        for i in range(na):
+            self.readline()
+
+        grid = Grid(ngrid,dtype=np.float32,geom=geom)
+        grid.grid = np.loadtxt(self.fh,dtype=grid.dtype)
+        grid.grid.shape = ngrid
+        
+        return grid
 
 if __name__ == "__main__":
     pass
