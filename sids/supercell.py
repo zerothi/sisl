@@ -229,7 +229,7 @@ class SuperCell(object):
         """ Returns center of the `SuperCell`, possibly with respect to an axis
         """
         if axis is None:
-            return np.mean(self.cell,axis=0)
+            return np.sum(self.cell,axis=0) / 2
         return self.cell[axis,:] / 2
 
     

@@ -713,17 +713,24 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        other : Geometry
+        other : Geometry/SuperCell
             Other geometry class which needs to be appended
+            If a SuperCell only the super cell will be extended
         axis  : int
             Cell direction to which the ``other`` geometry should be
             appended.
         """
-        xyz = np.append(self.xyz,
-                       self.cell[axis,:][None,:] + other.xyz,
-                       axis=0)
-        atoms = np.append(self.atoms,other.atoms)
-        sc = self.sc.append(other.sc,axis)
+        if isinstance(other,SuperCell):
+            # Only
+            xyz = np.copy(self.xyz)
+            atoms = np.copy(self.atoms)
+            sc = self.sc.append(other,axis)
+        else:
+            xyz = np.append(self.xyz,
+                            self.cell[axis,:][None,:] + other.xyz,
+                            axis=0)
+            atoms = np.append(self.atoms,other.atoms)
+            sc = self.sc.append(other.sc,axis)
         return self.__class__(xyz, atoms=atoms, sc=sc)
 
 
