@@ -232,8 +232,8 @@ class Grid(SuperCellChild):
         # Update cell size (the cell is smaller now)
         grid.set_sc(cell)
 
-        # Calculate sum
-        grid.grid[:,:,:] = np.sum(self.grid,axis=axis)
+        # Calculate sum (retain dimensions)
+        grid.grid[:,:,:] = np.sum(self.grid,axis=axis,keepdims=True)
         return grid
 
 
@@ -241,6 +241,30 @@ class Grid(SuperCellChild):
         """ Returns the average grid along direction `axis` """
         n = self.size[axis]
         return self.sum(axis) / float(n)
+
+
+    def part(self,idx,axis,above):
+        """ Retains certain indices from a specified axis.
+
+        Parameters
+        ----------
+        idx : array_like
+           the indices of the grid axis `axis` to be cut from
+           for `above=True` grid[idx:,...]
+           for `above=False` grid[:idx,...]
+        axis : int
+           the axis segment from which we retain the indices `idx`
+        above: bool
+           if `True` will cut the grid:
+              `grid[idx:,...]`
+           else it will be cut at:
+              `grid[:idx,...]`
+        """
+        if above:
+            sub = np.arange(idx,self.size[axis])
+        else:
+            sub = np.arange(0,idx)
+        return self.sub(sub,axis)
 
 
     def sub(self,idx,axis):
@@ -421,8 +445,8 @@ class Grid(SuperCellChild):
         """ Returns a new grid with the addition of two grids
 
         Returns same size with same cell as the first"""
-        grid = self._compatible_copy(other,'they cannot be added')
         if isinstance(other,Grid):
+            grid = self._compatible_copy(other,'they cannot be added')
             grid.grid = self.grid + other.grid
         else:
             grid.grid = self.grid + other
@@ -433,8 +457,8 @@ class Grid(SuperCellChild):
         """ Returns a new grid with the addition of two grids
 
         Returns same size with same cell as the first"""
-        self._check_compatibility(other,'they cannot be added')
         if isinstance(other,Grid):
+            self._check_compatibility(other,'they cannot be added')
             self.grid += other.grid
         else:
             self.grid += other
@@ -445,8 +469,8 @@ class Grid(SuperCellChild):
         """ Returns a new grid with the difference of two grids
 
         Returns same size with same cell as the first"""
-        grid = self._compatible_copy(other,'they cannot be subtracted')
         if isinstance(other,Grid):
+            grid = self._compatible_copy(other,'they cannot be subtracted')
             grid.grid = self.grid - other.grid
         else:
             grid.grid = self.grid - other
@@ -457,25 +481,30 @@ class Grid(SuperCellChild):
         """ Returns a same grid with the difference of two grids
 
         Returns same size with same cell as the first"""
-        self._check_compatibility(other,'they cannot be subtracted')
         if isinstance(other,Grid):
+            self._check_compatibility(other,'they cannot be subtracted')
             self.grid -= other.grid
         else:
             self.grid -= other
         return self
 
+    def __div__(self,other):
+        return self.__truediv__(other)
+
+    def __idiv__(self,other):
+        return self.__itruediv__(other)
 
     def __truediv__(self,other):
-        grid = self._compatible_copy(other,'they cannot be divided')
         if isinstance(other,Grid):
+            grid = self._compatible_copy(other,'they cannot be divided')
             grid.grid = self.grid / other.grid
         else:
             grid.grid = self.grid / other
         return grid
 
     def __itruediv__(self,other):
-        self._check_compatibility(other,'they cannot be divided')
         if isinstance(other,Grid):
+            self._check_compatibility(other,'they cannot be divided')
             self.grid /= other.grid
         else:
             self.grid /= other
@@ -483,8 +512,8 @@ class Grid(SuperCellChild):
 
     
     def __mul__(self,other):
-        grid = self._compatible_copy(other,'they cannot be multiplied')
         if isinstance(other,Grid):
+            grid = self._compatible_copy(other,'they cannot be multiplied')
             grid.grid = self.grid * other.grid
         else:
             grid.grid = self.grid * other
@@ -492,8 +521,8 @@ class Grid(SuperCellChild):
 
 
     def __imul__(self,other):
-        self._check_compatibility(other,'they cannot be multiplied')
         if isinstance(other,Grid):
+            self._check_compatibility(other,'they cannot be multiplied')
             self.grid *= other.grid
         else:
             self.grid *= other

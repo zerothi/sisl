@@ -45,15 +45,15 @@ def file_idx(s):
 
     Example:
 
-       SIESTA.nc[Rho,1] returns the `Rho` variable at the spin-index 1.
-       SIESTA.nc[Rho] returns the `Rho` variable at the spin-index 0 (default).
+       SIESTA.nc:Rho,1 returns the `Rho` variable at the spin-index 1.
+       SIESTA.nc:Rho returns the `Rho` variable at the spin-index 0 (default).
        SIESTA.nc errors unless only one grid exists in the file.
     """
 
     var = None
     idx = 0
-    if '[' in s:
-        f, var_idx = s.replace(']','').split('[')
+    if ':' in s:
+        f, var_idx = s.split(':')
         # Decide on var
         if ',' in var_idx:
             var, idx = var_idx.split(',')
@@ -75,7 +75,7 @@ def run():
     p = arg.ArgumentParser('Manipulates grid functions in commonly encounterd files.')
 
     def dir_type(val,check_type):
-        if val in ['x','y','z','a','b','c']:
+        if val in 'xyzabc':
             return 'xaybzc'.index(val) // 2
         try:
             return check_type(val)
@@ -85,7 +85,7 @@ def run():
     def dir_int(val): return dir_type(val,int)
     def dir_float(val): return dir_type(val,float)
     def dir_angle(val): 
-        if val in ['x','y','z','a','b','c']:
+        if val in 'xyzabc':
             return 'xaybzc'.index(val) // 2
         try:
             val = val.replace('pi',np.pi)
@@ -97,6 +97,14 @@ def run():
         except:
             raise arg.ArgumentTypeError("Type: "+val+" not valid type float")
         return tmp
+
+    def sub_check(sub):
+        """ Checks that the `sub` is either above(+)/below(-) """
+        valid_actions = ('below', 'above', '-', '+')
+        if sub not in valid_actions:
+            raise ValueError('Argument not one of '+' '.join(valid_actions))
+        # Returns -1,+1 for below/above
+        return (valid_actions.index(sub) % 2) * 2 - 1
 
 
     # Associated geometry to the grid file
@@ -110,9 +118,40 @@ def run():
     # Take the mean value in a direction
     p.add_argument('-m','--mean','--average', type=dir_type, metavar='dir', default=None,
                    help='Take the average value in the directions specified.')
-    p.add_argument('--sum', type=dir_type, metavar='dir', default=None,
+    p.add_argument('--sum', type=dir_int, metavar='dir', default=None,
                    help='Sum grid in the directions specified.')
 
+    
+    class ValidateGridPart(arg.Action):
+        def __call__(self, parser, args, values, option_string=None):
+            # print '{n} {v} {o}'.format(n=args, v=values, o=option_string)
+            action, dir, value = values
+            try:
+                action = sub_check(action)
+            except:
+                print("error: argument "+'/'.join(self.option_strings)+": invalid sub-part choice: {e!r}".format(e=action))
+                sys.exit(1)
+            try:
+                dir = dir_int(dir)
+            except:
+                print("error: argument "+'/'.join(self.option_strings)+": invalid direction choice: {e!r}".format(e=dir))
+                sys.exit(1)
+
+            a = getattr(args, self.dest)
+            if a:
+                a.append((action,dir,value))
+                # it must be a tuple
+                setattr(args, self.dest, a) 
+            else:
+                setattr(args, self.dest, [(action,dir,value)])
+
+    # We need a way to cut the cube file to a more managable size...
+    p.add_argument("-gp","--grid-part",nargs=3,metavar=('PART','dir','val'),
+                   dest="grid_part",action=ValidateGridPart,
+                   default=None,
+                   help="Enables to reduce the size of the cube file by cutting the grid. Multiple options are allowed. (above/+|below/-,xa|yb|zc,<pos>|<frac>f)")
+
+    
     p.set_defaults(func=grid_action)
     
     p.add_argument('in_file',metavar='infile',type=str,
@@ -122,6 +161,35 @@ def run():
 
     args = p.parse_args()
     args.func(args)
+
+def grid_reducing(grid,args):
+    """ Process all grid-reductions on the grid.
+
+    This is done as several grids can be read in and processed
+    and a standard routine to handle all of them is efficient.
+    """
+
+    # First reduce size
+    if args.grid_part: # tuple
+        for gp in args.grid_part:
+            ab, axis, val = gp
+            # Do grid cut
+            if 'f' in val:
+                coord = grid.cell[axis,:] * float(val.replace('f',''))
+            else:
+                coord = float(val)
+            idx = grid.index(coord,axis=axis)
+            # Reduce grid
+            grid = grid.part(idx,axis=axis,above=ab>0)
+            
+
+    if args.mean:
+        grid = grid.mean(args.mean)
+
+    if args.sum:
+        grid = grid.sum(args.sum)
+
+    return grid
 
 
 def grid_action(args):
@@ -134,20 +202,21 @@ def grid_action(args):
     # Read grid
     g = sids.Grid.read(f, var, idx)
 
-    if args.diff:
-        f, var, idx = file_idx(args.diff)
-        g -= sids.Grid.read(f, var, idx)
-
-    if args.mean:
-        g = g.mean(args.mean)
-
-    if args.sum:
-        g = g.sum(args.sum)
-
     if args.geometry:
         # The user has requested to overwrite the geometry
+        # We have to do this before we change the grid size
+        # by reduction, or averaging out one dimension
         geom = sids.Geometry.read(args.geometry)
         g.set_geom(geom)
+
+    # Reduce grid
+    g = grid_reducing(g, args)
+
+    if args.diff:
+        f, var, idx = file_idx(args.diff)
+        d = grid_reducing(sids.Grid.read(f, var, idx),args)
+        g -= d
+        del d
 
     # Store grid
     g.write(args.out_file)

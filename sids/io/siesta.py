@@ -178,6 +178,15 @@ class SIESTASile(NCSile):
         else:
             grid.grid = v[idx,:,:,:]
 
+        try:
+            u = v.unit
+            if u == 'Ry':
+                # Convert to ev
+                grid /= Ry
+        except:
+            # Simply, we have no units
+            pass
+
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
         grid = grid.swapaxes(0,2)
