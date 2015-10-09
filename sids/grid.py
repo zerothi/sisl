@@ -53,6 +53,11 @@ class Grid(SuperCellChild):
         # Create the atomic structure in the grid, if possible
         self.set_geom(geom)
 
+        # If the user sets the super-cell, that has precedence.
+        if sc is not None:
+            self.geom.set_sc(sc)
+            self.set_sc(sc)
+
 
     def __getitem__(self,key):
         """ Returns the grid contained """
@@ -169,7 +174,7 @@ class Grid(SuperCellChild):
         grid = self.__class__(s[idx], bc=self.bc[idx],
                               sc=self.sc.swapaxes(a,b),dtype=self.grid.dtype,
                               geom=self.geom.copy())
-        # We need to force the C-order or we loose the contiguoity
+        # We need to force the C-order or we loose the contiguity
         grid.grid = np.copy(np.swapaxes(self.grid,a,b),order='C')
         return grid
 
@@ -417,7 +422,9 @@ class Grid(SuperCellChild):
         if self == other:
             return True
         else:
-            raise ValueError('Grids are not compatible, '+msg)
+            s1 = repr(self)
+            s2 = repr(other)
+            raise ValueError('Grids are not compatible, '+s1+'-'+s2+'. ',msg)
 
 
     def _compatible_copy(self,other,*args,**kwargs):
