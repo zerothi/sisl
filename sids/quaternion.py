@@ -12,7 +12,7 @@ class Quaternion(object):
     """
     Quaternion object to enable easy rotational quantities.
     """
-    def __init__(self,angle=0.,v=_v,degree=False):
+    def __init__(self,angle=0.,v=_v,degree=True):
         """ Create quaternion object with angle and vector """
         if degree:
             half = angle / 180 * m.pi / 2
@@ -63,13 +63,13 @@ class Quaternion(object):
         s = np.copy(v.shape)
         # First "flatten"
         v.shape = (-1,3)
-        f = np.empty([v.shape[0],4],np.float64)
+        f = np.empty([v.shape[0],4],v.dtype)
         f[:,0] = v1[0]        - v1[1]*v[:,0] - v1[2]*v[:,1] - v1[3]*v[:,2]
         f[:,1] = v1[0]*v[:,0] + v1[1]        + v1[2]*v[:,2] - v1[3]*v[:,1]
         f[:,2] = v1[0]*v[:,1] - v1[1]*v[:,2] + v1[2]        + v1[3]*v[:,0]
         f[:,3] = v1[0]*v[:,2] + v1[1]*v[:,1] - v1[2]*v[:,0] + v1[3]
         # Create actual rotated array
-        nv = np.empty(v.shape,np.float64)
+        nv = np.empty(v.shape,v.dtype)
         nv[:,0] = f[:,0]*v2[1] + f[:,1]*v2[0] + f[:,2]*v2[3] - f[:,3]*v2[2]
         nv[:,1] = f[:,0]*v2[2] - f[:,1]*v2[3] + f[:,2]*v2[0] + f[:,3]*v2[1]
         nv[:,2] = f[:,0]*v2[3] + f[:,1]*v2[2] - f[:,2]*v2[1] + f[:,3]*v2[0]

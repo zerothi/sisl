@@ -247,22 +247,44 @@ class Grid(SuperCellChild):
         n = self.size[axis]
         return self.sum(axis) / float(n)
 
+    def remove_part(self,idx,axis,above):
+        """ Removes parts of the grid via above/below designations.
 
-    def part(self,idx,axis,above):
-        """ Retains certain indices from a specified axis.
+        Works exactly opposite to `sub_part`
 
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis `axis` to be cut from
+           the indices of the grid axis `axis` to be removed
+           for `above=True` grid[:idx,...]
+           for `above=False` grid[idx:,...]
+        axis : int
+           the axis segment from which we retain the indices `idx`
+        above: bool
+           if `True` will retain the grid:
+              `grid[:idx,...]`
+           else it will retain the grid:
+              `grid[idx:,...]`
+        """
+        return self.sub_part(idx,axis,not above)
+
+    def sub_part(self,idx,axis,above):
+        """ Retains parts of the grid via above/below designations.
+
+        Works exactly opposite to `remove_part`
+
+        Parameters
+        ----------
+        idx : array_like
+           the indices of the grid axis `axis` to be retained
            for `above=True` grid[idx:,...]
            for `above=False` grid[:idx,...]
         axis : int
            the axis segment from which we retain the indices `idx`
         above: bool
-           if `True` will cut the grid:
+           if `True` will retain the grid:
               `grid[idx:,...]`
-           else it will be cut at:
+           else it will retain the grid:
               `grid[:idx,...]`
         """
         if above:
@@ -274,6 +296,8 @@ class Grid(SuperCellChild):
 
     def sub(self,idx,axis):
         """ Retains certain indices from a specified axis.
+
+        Works exactly opposite to `remove`.
 
         Parameters
         ----------
@@ -315,6 +339,8 @@ class Grid(SuperCellChild):
         
     def remove(self,idx,axis):
         """ Removes certain indices from a specified axis.
+
+        Works exactly opposite to `sub`.
 
         Parameters
         ----------
