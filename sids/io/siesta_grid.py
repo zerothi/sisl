@@ -33,14 +33,14 @@ class SIESTAGridSile(NCSile):
         return SuperCell(cell)
 
 
-    def read_grid(self,idx=0):
+    def read_grid(self,name='gridfunc',idx=0,*args,**kwargs):
         """ Reads a grid in the current SIESTA.grid.nc file
 
         Enables the reading and processing of the grids created by SIESTA
         """
         if not hasattr(self,'fh'):
             with self:
-                return self.read_grid(idx=idx)
+                return self.read_grid(name,idx,*args,**kwargs)
 
         # Swap as we swap back in the end
         sc = self.read_sc().swapaxes(0,2)
@@ -50,7 +50,10 @@ class SIESTAGridSile(NCSile):
         ny = len(self.dimensions['n2'])
         nz = len(self.dimensions['n3'])
 
-        v = self.variables['gridfunc']
+        if name is None:
+            v = self.variables['gridfunc']
+        else:
+            v = self.variables[name]
 
         # Create the grid, SIESTA uses periodic, always
         grid = Grid([nz,ny,nx], bc=Grid.Periodic, sc=sc,
