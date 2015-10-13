@@ -612,13 +612,17 @@ class Geometry(SuperCellChild):
         """
         q = Quaternion(angle,v,degree=degree)
         q /= q.norm() # normalize the quaternion
+
         if 'cell' in only:
             sc = self.sc.rotate(angle,v,degree=degree)
         else:
             sc = self.sc.copy()
         
-        xyz = np.copy(self.xyz)
-        if 'xyz' in only: xyz = q.rotate(xyz)
+        if 'xyz' in only: 
+            xyz = q.rotate(self.xyz)
+        else:
+            xyz = np.copy(self.xyz)
+
         return self.__class__(xyz, atoms=self.atoms, sc=sc)
 
 

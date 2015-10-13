@@ -149,7 +149,12 @@ def run():
     p.add_argument("-gp","--grid-part",nargs=3,metavar=('PART','dir','val'),
                    dest="grid_part",action=ValidateGridPart,
                    default=None,
-                   help="Enables to reduce the size of the cube file by cutting the grid. Multiple options are allowed. (above/+|below/-,xa|yb|zc,<pos>|<frac>f)")
+                   help="Reduce the size of the grid by retaining the part specified. Multiple consecutive options are allowed (applied in order). (above/+|below/-,xa|yb|zc,<pos>|<frac>f)")
+
+    p.add_argument("-gr","--grid-remove",nargs=3,metavar=('PART','dir','val'),
+                   dest="grid_remove",action=ValidateGridPart,
+                   default=None,
+                   help="Removes parts of the grid. Multiple consecutive options are allowed (applied in order). (above/+|below/-,xa|yb|zc,<pos>|<frac>f)")
 
     
     p.set_defaults(func=grid_action)
@@ -171,16 +176,26 @@ def grid_reducing(grid,args):
 
     # First reduce size
     if args.grid_part: # tuple
-        for gp in args.grid_part:
-            ab, axis, val = gp
+        for ab, axis, val in args.grid_part:
             # Do grid cut
             if 'f' in val:
-                coord = grid.cell[axis,:] * float(val.replace('f',''))
+                coord = np.sum(grid.cell[:,axis]) * float(val.replace('f',''))
             else:
                 coord = float(val)
             idx = grid.index(coord,axis=axis)
             # Reduce grid
-            grid = grid.part(idx,axis=axis,above=ab>0)
+            grid = grid.sub_part(idx,axis=axis,above=ab>0)
+
+    if args.grid_remove: # tuple
+        for ab, axis, val in args.grid_remove:
+            # Do grid cut
+            if 'f' in val:
+                coord = np.sum(grid.cell[:,axis]) * float(val.replace('f',''))
+            else:
+                coord = float(val)
+            idx = grid.index(coord,axis=axis)
+            # Reduce grid
+            grid = grid.remove_part(idx,axis=axis,above=ab>0)
             
 
     if args.mean:
