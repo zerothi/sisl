@@ -493,7 +493,11 @@ class Geometry(SuperCellChild):
         # We need a double copy as we want to re-calculate after
         # enlarging cell
         sc = self.sc.copy()
-        sc.cell[axis,:] *= reps ; sc = sc.copy()
+        sc.cell[axis,:] *= reps
+        # Only reduce the size if it is larger than 5
+        if sc.nsc[axis] > 3 and reps > 1:
+            sc.nsc[axis] -= 2
+        sc = sc.copy()
         # Pre-allocate geometry
         # Our first repetition *must* be with
         # the later coordinate
@@ -560,7 +564,11 @@ class Geometry(SuperCellChild):
         """
         # Figure out the size
         sc = self.sc.copy()
-        sc.cell[axis,:] *= reps ; sc = sc.copy()
+        sc.cell[axis,:] *= reps
+        # Only reduce the size if it is larger than 5
+        if sc.nsc[axis] > 3 and reps > 1:
+            sc.nsc[axis] -= 2
+        sc = sc.copy()
         # Pre-allocate geometry
         na = self.na * reps
         xyz = np.zeros([na,3],np.float64)

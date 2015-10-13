@@ -311,6 +311,11 @@ class SuperCell(object):
         i_s = i_s and np.dot(cell[1,:],cell[2,:]) < 0.001
         return i_s
 
+    
+    def __repr__(self):
+        """ Returns a string representation of the object """
+        return 'SuperCell[{} {} {}]'.format(*self.nsc)
+
 
 
 class SuperCellChild(object):
