@@ -140,16 +140,23 @@ class SuperCell(object):
         rcell[2,:] = rcell[2,:] / np.sum(rcell[2,:] * cell[2,:])
         return rcell
 
-            
-    def rotate(self,angle,v,degree=True):
+
+    def rotatea(self,angle,only='abc',degree=True):
+        v = self.cell[0,:]/np.sum(self.cell[0,:]**2)**.5
+        return self.rotate(angle,v,only=only,degree=degree)
+    def rotateb(self,angle,only='abc',degree=True):
+        v = self.cell[1,:]/np.sum(self.cell[1,:]**2)**.5
+        return self.rotate(angle,v,only=only,degree=degree)
+    def rotatec(self,angle,only='abc',degree=True):
+        v = self.cell[2,:]/np.sum(self.cell[2,:]**2)**.5
+        return self.rotate(angle,v,only=only,degree=degree)
+
+    def rotate(self,angle,v,only='abc',degree=True):
         """ 
-        Rotates the geometry, in-place by the angle around the vector
+        Rotates the supercell, in-place by the angle around the vector
 
-        Per default will the entire geometry be rotated, such that everything
-        is aligned as before rotation.
-
-        However, by supplying ``only='cell|xyz'`` one can designate which
-        part of the geometry that will be rotated.
+        One can control which cell vectors are rotated by designating them
+        individually with ``only='[abc]'``.
         
         Parameters
         ----------
@@ -160,10 +167,18 @@ class SuperCell(object):
              v = [1,0,0] will rotate in the ``yz`` plane
         degree : bool
              Whether the angle is in radians (False) or in degrees (True, default)
+        only : ('abc'), str, optional
+             only rotate the designated cell vectors.
         """
         q = Quaternion(angle,v,degree=degree)
         q /= q.norm() # normalize the quaternion
-        cell = q.rotate( self.cell )
+        cell = np.copy(self.cell)
+        if 'a' in only:
+            cell[0,:] = q.rotate( self.cell[0,:] )
+        if 'b' in only:
+            cell[1,:] = q.rotate( self.cell[1,:] )
+        if 'c' in only:
+            cell[2,:] = q.rotate( self.cell[2,:] )
         return self.__class__(cell, nsc = np.copy(self.nsc))
 
 

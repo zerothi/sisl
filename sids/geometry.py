@@ -587,15 +587,24 @@ class Geometry(SuperCellChild):
         # Create the geometry and return it
         return self.__class__(xyz, atoms=atoms, sc=sc)
 
+    def rotatea(self,angle,only='abc+xyz',degree=True):
+        v = self.cell[0,:]/np.sum(self.cell[0,:]**2)**.5
+        return self.rotate(angle,v,only=only,degree=degree)
+    def rotateb(self,angle,only='abc+xyz',degree=True):
+        v = self.cell[1,:]/np.sum(self.cell[1,:]**2)**.5
+        return self.rotate(angle,v,only=only,degree=degree)
+    def rotatec(self,angle,only='abc+xyz',degree=True):
+        v = self.cell[2,:]/np.sum(self.cell[2,:]**2)**.5
+        return self.rotate(angle,v,only=only,degree=degree)
     
-    def rotate(self,angle,v,only='cell+xyz',degree=True):
+    def rotate(self,angle,v,only='abc+xyz',degree=True):
         """ 
         Rotates the geometry, in-place by the angle around the vector
 
         Per default will the entire geometry be rotated, such that everything
         is aligned as before rotation.
 
-        However, by supplying ``only='cell|xyz'`` one can designate which
+        However, by supplying ``only='abc|xyz'`` one can designate which
         part of the geometry that will be rotated.
         
         Parameters
@@ -605,18 +614,16 @@ class Geometry(SuperCellChild):
         v     : array_like [3]
              the vector around the rotation is going to happen
              v = [1,0,0] will rotate in the ``yz`` plane
-        only  : ('cell+xyz'), str, optional
+        only  : ('abc+xyz'), str, optional
              which coordinate subject should be rotated,
-             if ``cell`` is in this string the cell will be rotated
+             if ``abc`` is in this string the cell will be rotated
              if ``xyz`` is in this string the coordinates will be rotated
         """
         q = Quaternion(angle,v,degree=degree)
         q /= q.norm() # normalize the quaternion
 
-        if 'cell' in only:
-            sc = self.sc.rotate(angle,v,degree=degree)
-        else:
-            sc = self.sc.copy()
+        # Rotate by direct call
+        sc = self.sc.rotate(angle,v,degree=degree,only=only)
         
         if 'xyz' in only: 
             xyz = q.rotate(self.xyz)
