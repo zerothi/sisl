@@ -3,14 +3,21 @@
 Geometry and tight-binding setups using pure python.
 """
 
-# First load the units
+# Import version string and the major, minor, micro as well
+from .version import version as __version__
+from .version import major as __major__
+from .version import minor as __minor__
+from .version import micro as __micro__
+
+# load the units
 from .units import *
 
-# Here we load the most commonly, and basic classes
+# load the most commonly, and basic classes
 from .quaternion import *
-from .supercell import *
 
+from .supercell import *
 from .atom import *
+
 from .geometry import *
 from .grid import *
 

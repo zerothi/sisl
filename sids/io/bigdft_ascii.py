@@ -137,6 +137,11 @@ class BigDFTASCIISile(Sile):
         self._write(fmt_str.format(geom.cell[0,0],geom.cell[1,0],geom.cell[1,1]))
         self._write(fmt_str.format(*geom.cell[2,:]))
 
+        # This also denotes 
+        self._write('#keyword: angstroem\n')
+
+        self._write('# Geometry containing: '+str(len(geom))+' atoms\n')
+
         f1_str = '{{1:{0}}}  {{2:{0}}}  {{3:{0}}} {{0:2s}}\n'.format(fmt)
         f2_str = '{{2:{0}}}  {{3:{0}}}  {{4:{0}}} {{0:2s}} {{1:s}}\n'.format(fmt)
 

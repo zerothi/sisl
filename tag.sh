@@ -74,14 +74,19 @@ MSG="Releasing v$v"
 sed -i -e "s:\(MAJOR[[:space:]]*=\).*:\1 $MAJOR:" setup.py
 sed -i -e "s:\(MINOR[[:space:]]*=\).*:\1 $MINOR:" setup.py
 sed -i -e "s:\(MICRO[[:space:]]*=\).*:\1 $MICRO:" setup.py
+# Update release tag
+sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 True:" setup.py
 
 echo "Tagging with message:"
 echo " -m '$MSG'"
 
 # Tagging and releasing
 git add setup.py
-git commit -m "Prepping for release"
+git commit -s -m "Prepping for release"
 git tag -a "$v" -m "$MSG"
+# Revert release tag
+sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 False:" setup.py
+git commit -s -m "Reverting internal release"
 git push
 git push --tags
 
