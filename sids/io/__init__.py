@@ -9,6 +9,7 @@ from .sile import *
 
 # Import the different Sile objects
 # enabling the actual print-out
+from .bigdft_ascii import *
 from .cube import *
 from .fdf import *
 from .gulp import *
@@ -29,6 +30,7 @@ def extendall(mod):
     __all__.extend(sys.modules[mod].__dict__['__all__'])
 
 extendall('sids.io.sile')
+extendall('sids.io.bigdft_ascii')
 extendall('sids.io.cube')
 extendall('sids.io.fdf')
 extendall('sids.io.gulp')
@@ -88,6 +90,7 @@ def add_sile(ending,obj,case=True,gzip=False):
 
 
 # Sile's
+add_sile('ascii',BigDFTASCIISile,case=False,gzip=True)
 add_sile('cube',CUBESile,case=False,gzip=True)
 add_sile('fdf',FDFSile,case=False,gzip=True)
 add_sile('gout',GULPSile,gzip=True)

@@ -261,6 +261,7 @@ class SuperCell(object):
 
         If you supply 6 arguments it will be the same as the 
         cell parameters, a, b, c, alpha, beta, gamma.
+        The angles should be provided in degree (not radians).
         """
         # This is a diagonal unit-cell
         if len(args) == 3:

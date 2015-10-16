@@ -132,7 +132,7 @@ class FDFSile(Sile):
         if 'ang' in lc.lower():
             pass
         elif 'bohr' in lc.lower():
-            s *= Bohr
+            s /= Bohr
 
         # Read in cell
         cell = np.empty([3,3],np.float64)
@@ -165,7 +165,7 @@ class FDFSile(Sile):
         if 'ang' in lc.lower():
             pass
         elif 'bohr' in lc.lower():
-            s *= Bohr
+            s /= Bohr
 
         sc = self.read_sc(*args,**kwargs)
 

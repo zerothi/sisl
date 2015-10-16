@@ -13,6 +13,21 @@ class TestObject(object):
             assert_true( isinstance(get_sile('test.cube'),obj) )
             assert_true( isinstance(get_sile('test.CUBE'),obj) )
 
+    def test_cube_gz(self):
+        for obj in [BaseSile,Sile,CUBESile]:
+            assert_true( isinstance(get_sile('test.cube.gz'),obj) )
+            assert_true( isinstance(get_sile('test.CUBE.gz'),obj) )
+
+    def test_bigdft_ascii(self):
+        for obj in [BaseSile,Sile,BigDFTASCIISile]:
+            assert_true( isinstance(get_sile('test.ascii'),obj) )
+            assert_true( isinstance(get_sile('test.ascii'),obj) )
+
+    def test_bigdft_ascii_gz(self):
+        for obj in [BaseSile,Sile,BigDFTASCIISile]:
+            assert_true( isinstance(get_sile('test.ascii.gz'),obj) )
+            assert_true( isinstance(get_sile('test.ascii.gz'),obj) )
+
     def test_fdf(self):
         for obj in [BaseSile,Sile,FDFSile]:
             assert_true( isinstance(get_sile('test.fdf'),obj) )
