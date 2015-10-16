@@ -90,6 +90,8 @@ The hard-coded file formats are:
 6. ___fdf___, SIESTA native format
 7. ___XV___, SIESTA coordinate format with velocities
 8. ___POSCAR___/___CONTCAR___, VASP coordinate format, does _not_ contain species, i.e. returns Hydrogen geometry.
+9. ___ASCII___, BigDFT coordinate format
+
 
 All text files can also be read from their gzipped file formats with transparency.
 
