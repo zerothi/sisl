@@ -86,6 +86,7 @@ git commit -s -m "Prepping for release"
 git tag -a "$v" -m "$MSG"
 # Revert release tag
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 False:" setup.py
+git add setup.py
 git commit -s -m "Reverting internal release"
 git push
 git push --tags
