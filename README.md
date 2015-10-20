@@ -10,6 +10,8 @@ It provides easy interfaces for creating and calculating band-structures of
 simple tight-binding models as well as interfacing to more advanced DFT
 programs.
 
+sids also enables an easy interface for [ASE][ase].
+
 ## Usage ##
 
 ### Scripts ###
@@ -222,7 +224,7 @@ Links to external and internal sites.
 [issue]: https://github.com/zerothi/sids/issues
 [pr]: https://github.com/zerothi/sids/pulls
 [lgpl]: http://www.gnu.org/licenses/lgpl.html
-
+[ase]: https://wiki.fysik.dtu.dk/ase/
 
 <!---
 Local variables for emacs to turn on flyspell-mode

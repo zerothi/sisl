@@ -1165,6 +1165,23 @@ class Geometry(SuperCellChild):
         idx = np.where( o < self.no * np.arange(1,self.n_s+1) )[0][0]
         return self.sc.sc_off[idx,:]
 
+    
+    @classmethod
+    def ase(cls,aseg):
+        """ Returns geometry from an ASE object.
+
+        Parameters
+        ----------
+        aseg : ASE `Atoms` object which contains the following routines:
+            `get_atomic_numbers`, `get_positions`, `get_cell`.
+            From those methods a `sids` object will be created.
+        """
+        Z = aseg.get_atomic_numbers()
+        xyz = aseg.get_positions()
+        cell = aseg.get_cell()
+        # Convert to sids object
+        return cls(xyz,atoms=Z,sc=cell)
+
 
 if __name__ == '__main__':
     import math as m
