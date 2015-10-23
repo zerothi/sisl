@@ -194,7 +194,7 @@ class Geometry(SuperCellChild):
             return get_sile(sile).read_geom()
            
 
-    def write(self,sile):
+    def write(self,sile,*args,**kwargs):
         """ Writes geometry to the ``Sile`` using ``sile.write_geom``
 
         Parameters
@@ -202,15 +202,17 @@ class Geometry(SuperCellChild):
         sile : Sile, str
             a ``Sile`` object which will be used to write the geometry
             if it is a string it will create a new sile using ``get_sile``
+        *args, **kwargs: Any other args will be passed directly to the
+                         underlying routine
         """
 
         # This only works because, they *must*
         # have been imported previously
         from sids.io import get_sile, BaseSile
         if isinstance(sile,BaseSile):
-            sile.write_geom(self)
+            sile.write_geom(self,*args,**kwargs)
         else:
-            get_sile(sile,'w').write_geom(self)
+            get_sile(sile,'w').write_geom(self,*args,**kwargs)
 
 
     def __repr__(self):
@@ -984,7 +986,8 @@ class Geometry(SuperCellChild):
             idx, c, d = self.close(ia,dR=(0.1,10.),idx=algo,
                                    ret_coord=True,ret_dist=True)
             i = np.argmin(d[1])
-            idx = idx[1][i]
+            # Convert to unitcell atoms
+            idx = self.sc2uc(idx[1][i])
             c = c[1][i]
             d = d[1][i]
 
