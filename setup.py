@@ -28,8 +28,8 @@ Operating System :: MacOS
 
 MAJOR               = 0
 MINOR               = 3
-MICRO               = 8
-ISRELEASED          = False
+MICRO               = 9
+ISRELEASED          = True
 VERSION             = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 def generate_cython():
