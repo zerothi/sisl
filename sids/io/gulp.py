@@ -69,9 +69,9 @@ class GULPSile(Sile):
         xyz.shape = (-1,3)
         if 'fractional' in key.lower():
             # Correct for fractional coordinates
-            xyz[:,0] *= np.sum(cell[:,0])
-            xyz[:,1] *= np.sum(cell[:,1])
-            xyz[:,2] *= np.sum(cell[:,2])
+            xyz[:,0] *= np.sum(sc.cell[:,0])
+            xyz[:,1] *= np.sum(sc.cell[:,1])
+            xyz[:,2] *= np.sum(sc.cell[:,2])
             
         if len(Z) == 0 or len(xyz) == 0:
             raise ValueError('Could not read in cell information and/or coordinates')
