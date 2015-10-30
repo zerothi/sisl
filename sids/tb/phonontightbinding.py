@@ -37,7 +37,7 @@ class PhononTightBinding(TightBinding):
         d_sc, S_sc = self.tocsr()
         del S_sc
         d_sc = d_sc.tocoo()
-        d_uc = lil_matrix([self.no, self.no], dtype=d_sc.dtype)
+        d_uc = lil_matrix( (self.no, self.no), dtype=d_sc.dtype)
 
         # Convert SC to UC
         for j, i, d in zip(d_sc.row,d_sc.col,d_sc.data):
