@@ -169,9 +169,11 @@ class FDFSile(Sile):
 
         sc = self.read_sc(*args,**kwargs)
 
+        # No fractional coordinates
+        is_frac = False
+        
         # Read atom scaling
-        f, lc = self._read('AtomicCoordinatesFormat')
-        lc = lc.lower()
+        lc = self._read('AtomicCoordinatesFormat')[1].lower()
         if 'ang' in lc or 'notscaledcartesianang' in lc:
             s = 1.
             pass
@@ -180,6 +182,11 @@ class FDFSile(Sile):
         elif 'scaledcartesian' in lc:
             # the same scaling as the lattice-vectors
             pass
+        elif 'fractional' in lc or 'scaledbylatticevectors' in lc:
+            # no scaling of coordinates as that is entirely
+            # done by the latticevectors
+            s = 1.
+            is_frac = True
 
         # If the user requests a shifted geometry
         # we correct for this
@@ -190,6 +197,8 @@ class FDFSile(Sile):
             f, lor = self._read_block('AtomicCoordinatesOrigin')
             if f:
                 origo = np.fromstring(lor[0],count=3,sep=' ') * s
+        # Origo cannot be interpreted with fractional coordinates
+        # hence, it is not transformed.
 
         # Read number of atoms and block
         f, l = self._read('NumberOfAtoms')
@@ -209,6 +218,8 @@ class FDFSile(Sile):
             l = atms[ia].split()
             xyz[ia,:] = [float(k) for k in l[:3]]
             species[ia] = int(l[3]) - 1
+        if is_frac:
+            xyz = np.dot(xyz,sc.cell)
         xyz *= s
         xyz += origo
         

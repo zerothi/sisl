@@ -34,9 +34,10 @@ class PhononTightBinding(TightBinding):
         from scipy.sparse import lil_matrix
 
         # Create UC dynamical matrix
-        d_sc, S_sc = self.tocsr() ; del S_sc
+        d_sc, S_sc = self.tocsr()
+        del S_sc
         d_sc = d_sc.tocoo()
-        d_uc = lil_matrix( (self.no,self.no) , dtype=d_sc.dtype)
+        d_uc = lil_matrix([self.no, self.no], dtype=d_sc.dtype)
 
         # Convert SC to UC
         for j, i, d in zip(d_sc.row,d_sc.col,d_sc.data):
@@ -49,7 +50,6 @@ class PhononTightBinding(TightBinding):
         # action == re-action)
         om = np.sqrt(np.array([a.mass for a in self.atoms],np.float64))
         MM = np.empty([len(om)],np.float64)
-        r3 = range(3)
 
         for ja in self.geom:
 
@@ -58,10 +58,27 @@ class PhononTightBinding(TightBinding):
             MM[:] = om[:] / om[ja]
             jo = ja * 3
 
-            for j in r3:
-                for i in r3:
-                    D, S = self[jo+j,jo+i]
-                    self[jo+j,jo+i] = D - d_uc[jo+j,i::3].multiply(MM).sum(), S
+            # Unroll...
+            D, S = self[jo,jo]
+            self[jo,jo  ] = D - d_uc[jo  , ::3].multiply(MM).sum(), S
+            D, S = self[jo,jo+1]
+            self[jo,jo+1] = D - d_uc[jo  ,1::3].multiply(MM).sum(), S
+            D, S = self[jo,jo+2]
+            self[jo,jo+2] = D - d_uc[jo  ,2::3].multiply(MM).sum(), S
+
+            D, S = self[jo+1,jo]
+            self[jo+1,jo  ] = D - d_uc[jo+1, ::3].multiply(MM).sum(), S
+            D, S = self[jo+1,jo+1]
+            self[jo+1,jo+1] = D - d_uc[jo+1,1::3].multiply(MM).sum(), S
+            D, S = self[jo+1,jo+2]
+            self[jo+1,jo+2] = D - d_uc[jo+1,2::3].multiply(MM).sum(), S
+
+            D, S = self[jo+2,jo]
+            self[jo+2,jo  ] = D - d_uc[jo+2, ::3].multiply(MM).sum(), S
+            D, S = self[jo+2,jo+1]
+            self[jo+2,jo+1] = D - d_uc[jo+2,1::3].multiply(MM).sum(), S
+            D, S = self[jo+2,jo+2]
+            self[jo+2,jo+2] = D - d_uc[jo+2,2::3].multiply(MM).sum(), S
 
         del d_uc
 
