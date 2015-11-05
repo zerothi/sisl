@@ -30,7 +30,7 @@ before_install:
   - sudo ln -s /run/shm /dev/shm
 # Do actual package installations
   - conda info -a
-  - echo nose >> requirements.txt
+  - echo "nose" >> requirements.txt
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file requirements.txt
   - source activate test-environment
 
