@@ -112,6 +112,7 @@ class Geometry(SuperCellChild):
 
         self.__init_sc(sc)
 
+        
     def __init_sc(self,sc):
         """ Initializes the supercell by *calculating* the size if not supplied
 
@@ -309,6 +310,7 @@ class Geometry(SuperCellChild):
             
             # Take a random non-passed element
             all_true = np.where(not_passed)[0]
+            
             # Shuffle should increase the chance of hitting a
             # completely "fresh" segment, thus we take the most 
             # atoms at any single time.

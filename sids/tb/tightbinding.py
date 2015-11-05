@@ -205,6 +205,63 @@ class TightBinding(object):
         # NOTE, this is not zeroed!
         self._TB = np.empty([self.ptr[-1],2],dtype=dtype)
 
+    def construct(self,dR,param):
+        """ Automatically construct the tight-binding model based on `dR` and associated hopping integrals `param`.
+
+        Parameters
+        ----------
+        dR : array_like
+           radii parameters for tight-binding parameters.
+           Must have same length as `param` or one less.
+           If one less it will be extended with `dR[0]/100`
+        param : array_like
+           tight-binding parameters corresponding to the `dR` 
+           ranges. `param[0,:]` are the tight-binding parameter
+           for the all atoms within `dR[0]` of each atom.
+        """
+
+        if len(dR) + 1 == len(param):
+            R = np.hstack((dR[0]/100,dR))
+        elif len(dR) == len(param):
+            R = dR.copy()
+        else:
+            raise ValueError(("Length of `dR` and `param` must be the same "
+                              "or `dR` one shorter than `param`. "
+                              "One tight-binding parameter for each radii."))
+
+        if len(param[0]) != 2:
+            raise ValueError(("Number of parameters "
+                              "for each element is not 2. "
+                              "You must make len(param[0] == 2."))
+
+        if np.any(np.diff(self.geom.lasto) > 1):
+            warnings.warn(("Automatically setting a tight-binding model "
+                           "for systems with atoms having more than 1 "
+                           "orbital is not adviced. Please do it your-self."))
+        
+        # check how many atoms are within the standard 10 dR
+        # range of some random atom.
+        ia = np.random.randint(len(self.geom)-1)
+
+        # default block iterator
+        d = self.geom.dR
+        na = len(self.geom.close(ia, dR = d * 10))
+        
+        # Convert to 1000 atoms spherical radii
+        iR = int(4 / 3 * np.pi * d ** 3 / na * 1000)
+
+        # Do the loop
+        for ias, idxs in self.geom.iter_block(iR = iR):
+            # Loop the atoms inside
+            for ia in ias:
+                # Find atoms close to `ia`
+                idx = self.geom.close(ia, dR = R, idx = idxs)
+                for ix, h in zip(idx,param):
+                    # Set the tight-binding parameters
+                    self[ia,ix] = h
+
+        return self
+
         
     def finalize(self):
         """ Finalizes the tight-binding model
@@ -304,8 +361,8 @@ class TightBinding(object):
             s = (self.no,self.no)
 
             # Create k-space Hamiltonian
-            H = csr_matrix(s,dtype=np.complex)
-            S = csr_matrix(s,dtype=np.complex)
+            H = csr_matrix(s,dtype=np.complex128)
+            S = csr_matrix(s,dtype=np.complex128)
             
             # Get the reciprocal lattice vectors dotted with k
             rcell = self.rcell
@@ -450,6 +507,40 @@ class TightBinding(object):
 
         return tb
 
+
+    def tile(self,reps,axis):
+        """
+        Returns a repeated tight-binding model for this, much like the `Geometry`.
+
+        The already existing tight-binding parameters are extrapolated 
+        to the new supercell by repeating them in blocks like the coordinates.
+        
+        Parameters
+        ----------
+        reps  : number of tiles (repetitions)
+        axis  : direction of tiling 
+                  0, 1, 2 according to the cell-direction
+        """
+
+        # Create the new geometry
+        g = self.geom.tile(reps,axis)
+
+        # Get the Hamiltonian and overlap matrices
+        H, S = self.tocsr()
+
+        # Create new object
+        TB = self.__class__(g)
+
+        raise NotImplemented(('tiling a TightBinding model has not been '
+                              'fully implemented yet.'))
+
+    
+    def repeat(self,reps,axis):
+        """ Refer to ``self.tile`` instead """
+        raise NotImplemented(('repeating a TightBinding model has not been '
+                              'fully implemented yet, use tile instead.'))
+
+    
     @classmethod
     def sp2tb(cls,geom,H,S):
         """ Returns a tight-binding model from a preset H, S and Geometry """
