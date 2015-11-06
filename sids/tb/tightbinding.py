@@ -238,6 +238,18 @@ class TightBinding(object):
             warnings.warn(("Automatically setting a tight-binding model "
                            "for systems with atoms having more than 1 "
                            "orbital is not adviced. Please do it your-self."))
+
+        if len(self.geom) < 2000:
+            # there is no need to do anything complex
+            # for small systems
+            for ia in self.geom:
+                # Find atoms close to `ia`
+                idx = self.geom.close(ia, dR = R)
+                for ix, h in zip(idx,param):
+                    # Set the tight-binding parameters
+                    self[ia,ix] = h
+                    
+            return self
         
         # check how many atoms are within the standard 10 dR
         # range of some random atom.
