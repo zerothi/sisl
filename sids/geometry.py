@@ -623,7 +623,8 @@ class Geometry(SuperCellChild):
              if ``abc`` is in this string the cell will be rotated
              if ``xyz`` is in this string the coordinates will be rotated
         """
-        q = Quaternion(angle,v,degree=degree)
+        vn = np.sum(v**2) ** .5
+        q = Quaternion(angle,v / vn,degree=degree)
         q /= q.norm() # normalize the quaternion
 
         # Rotate by direct call

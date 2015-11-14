@@ -170,7 +170,8 @@ class SuperCell(object):
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
         """
-        q = Quaternion(angle,v,degree=degree)
+        vn = np.sum(v**2) ** .5
+        q = Quaternion(angle,v / vn,degree=degree)
         q /= q.norm() # normalize the quaternion
         cell = np.copy(self.cell)
         if 'a' in only:
