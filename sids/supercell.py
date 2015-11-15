@@ -142,14 +142,11 @@ class SuperCell(object):
 
 
     def rotatea(self,angle,only='abc',degree=True):
-        v = self.cell[0,:]/np.sum(self.cell[0,:]**2)**.5
-        return self.rotate(angle,v,only=only,degree=degree)
+        return self.rotate(angle,self.cell[0,:],only=only,degree=degree)
     def rotateb(self,angle,only='abc',degree=True):
-        v = self.cell[1,:]/np.sum(self.cell[1,:]**2)**.5
-        return self.rotate(angle,v,only=only,degree=degree)
+        return self.rotate(angle,self.cell[1,:],only=only,degree=degree)
     def rotatec(self,angle,only='abc',degree=True):
-        v = self.cell[2,:]/np.sum(self.cell[2,:]**2)**.5
-        return self.rotate(angle,v,only=only,degree=degree)
+        return self.rotate(angle,self.cell[2,:],only=only,degree=degree)
 
     def rotate(self,angle,v,only='abc',degree=True):
         """ 
@@ -170,8 +167,9 @@ class SuperCell(object):
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
         """
-        vn = np.sum(v**2) ** .5
-        q = Quaternion(angle,v / vn,degree=degree)
+        vn = np.asarray(v)[:]
+        vn /= np.sum(vn ** 2) ** .5
+        q = Quaternion(angle, vn, degree=degree)
         q /= q.norm() # normalize the quaternion
         cell = np.copy(self.cell)
         if 'a' in only:
@@ -180,7 +178,7 @@ class SuperCell(object):
             cell[1,:] = q.rotate( self.cell[1,:] )
         if 'c' in only:
             cell[2,:] = q.rotate( self.cell[2,:] )
-        return self.__class__(cell, nsc = np.copy(self.nsc))
+        return self.__class__(cell, nsc=np.copy(self.nsc))
 
 
     def offset(self,isc=[0,0,0]):

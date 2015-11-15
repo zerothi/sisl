@@ -592,14 +592,11 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atoms=atoms, sc=sc)
 
     def rotatea(self,angle,only='abc+xyz',degree=True):
-        v = self.cell[0,:]/np.sum(self.cell[0,:]**2)**.5
-        return self.rotate(angle,v,only=only,degree=degree)
+        return self.rotate(angle,self.cell[0,:],only=only,degree=degree)
     def rotateb(self,angle,only='abc+xyz',degree=True):
-        v = self.cell[1,:]/np.sum(self.cell[1,:]**2)**.5
-        return self.rotate(angle,v,only=only,degree=degree)
+        return self.rotate(angle,self.cell[1,:],only=only,degree=degree)
     def rotatec(self,angle,only='abc+xyz',degree=True):
-        v = self.cell[2,:]/np.sum(self.cell[2,:]**2)**.5
-        return self.rotate(angle,v,only=only,degree=degree)
+        return self.rotate(angle,self.cell[2,:],only=only,degree=degree)
     
     def rotate(self,angle,v,only='abc+xyz',degree=True):
         """ 
@@ -623,12 +620,13 @@ class Geometry(SuperCellChild):
              if ``abc`` is in this string the cell will be rotated
              if ``xyz`` is in this string the coordinates will be rotated
         """
-        vn = np.sum(v**2) ** .5
-        q = Quaternion(angle,v / vn,degree=degree)
+        vn = np.asarray(v)[:]
+        vn /= np.sum(vn ** 2) ** .5
+        q = Quaternion(angle, vn, degree=degree)
         q /= q.norm() # normalize the quaternion
 
         # Rotate by direct call
-        sc = self.sc.rotate(angle,v,degree=degree,only=only)
+        sc = self.sc.rotate(angle, vn, degree=degree, only=only)
         
         if 'xyz' in only: 
             xyz = q.rotate(self.xyz)
