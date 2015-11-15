@@ -482,6 +482,7 @@ class Grid(SuperCellChild):
             grid = self._compatible_copy(other,'they cannot be added')
             grid.grid = self.grid + other.grid
         else:
+            grid = self.copy()
             grid.grid = self.grid + other
         return grid
         
@@ -506,6 +507,7 @@ class Grid(SuperCellChild):
             grid = self._compatible_copy(other,'they cannot be subtracted')
             grid.grid = self.grid - other.grid
         else:
+            grid = self.copy()
             grid.grid = self.grid - other
         return grid
 
@@ -532,6 +534,7 @@ class Grid(SuperCellChild):
             grid = self._compatible_copy(other,'they cannot be divided')
             grid.grid = self.grid / other.grid
         else:
+            grid = self.copy()
             grid.grid = self.grid / other
         return grid
 
@@ -549,6 +552,7 @@ class Grid(SuperCellChild):
             grid = self._compatible_copy(other,'they cannot be multiplied')
             grid.grid = self.grid * other.grid
         else:
+            grid = self.copy()
             grid.grid = self.grid * other
         return grid
 
