@@ -167,7 +167,7 @@ class SuperCell(object):
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
         """
-        vn = np.asarray(v)[:]
+        vn = np.asarray(v,dtype=np.float64)[:]
         vn /= np.sum(vn ** 2) ** .5
         q = Quaternion(angle, vn, degree=degree)
         q /= q.norm() # normalize the quaternion
