@@ -183,10 +183,10 @@ class Grid(SuperCellChild):
     def dcell(self):
         """ Returns the delta-cell """
         # Calculate the grid-distribution
-        g_size = self.size
         dcell = np.empty([3,3],np.float64)
-        for ix in range(3):
-            dcell[ix,:] = self.cell[ix,:] / g_size[ix]
+        dcell[0,:] = self.cell[0,:] / self.size[0]
+        dcell[1,:] = self.cell[1,:] / self.size[1]
+        dcell[2,:] = self.cell[2,:] / self.size[2]
         return dcell
 
 
