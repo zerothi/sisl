@@ -245,7 +245,12 @@ class Grid(SuperCellChild):
     def mean(self,axis):
         """ Returns the average grid along direction `axis` """
         n = self.size[axis]
-        return self.sum(axis) / float(n)
+        g = self.sum(axis)
+        g /= float(n)
+        return g
+
+    # for compatibility
+    average = mean
 
     def remove_part(self,idx,axis,above):
         """ Removes parts of the grid via above/below designations.
