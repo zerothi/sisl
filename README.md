@@ -190,6 +190,7 @@ number such that `tb.geom.close(<any index>,dR = tb.geom.dR * iR)` is approximat
 
 Installing sids requires the following packages:
 
+   - __six__
    - __numpy__
    - __scipy__
    - __netCDF4__, this module is only required if you need interface to construct
