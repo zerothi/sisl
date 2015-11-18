@@ -189,10 +189,12 @@ class TightBinding(object):
             nc = self.geom.close(0)
             nc = max(5,len(nc) * 4)
 
+        self._no = self.geom.no
+
         # Reset the sparsity pattern
-        self.ncol = np.zeros([self.geom.no],np.int32)
+        self.ncol = np.zeros([self.no],np.int32)
         # Create the interstitial pointer for each orbital
-        self.ptr = np.cumsum(np.array([nc] * (self.geom.no+1),np.int32)) - nc
+        self.ptr = np.cumsum(np.array([nc] * (self.no+1),np.int32)) - nc
         self._nnzs = 0
         self.col = np.empty([self.ptr[-1]],np.int32)
         
@@ -204,6 +206,7 @@ class TightBinding(object):
         # Initialize TB size
         # NOTE, this is not zeroed!
         self._TB = np.empty([self.ptr[-1],2],dtype=dtype)
+
 
     def construct(self,dR,param):
         """ Automatically construct the tight-binding model based on `dR` and associated hopping integrals `param`.
@@ -290,7 +293,11 @@ class TightBinding(object):
         if np.unique(self.col[:ptr]).shape[0] != ptr:
             raise ValueError('You cannot have two hoppings between the same '+
                              'orbitals, something has went terribly wrong.')
-        
+
+        if self.no != self.geom.no:
+            raise ValueError(("You have changed the geometry in the TightBinding " 
+                              "object, this is not allowed."))
+
         if self.no > 1:
             # We truncate all the connections
             for io in range(1,self.no):
@@ -304,12 +311,13 @@ class TightBinding(object):
                 # we also assert no two connections
                 if np.unique(self.col[ptr:ptr+no]).shape[0] != no:
                     raise ValueError('You cannot have two hoppings between the same '+
-                                     'orbitals, something has went terribly wrong.')
+                                     'orbitals ({}), something has went terribly wrong.'.format(io))
                 ptr += no
         
         # Correcting the size of the pointer array
         self.ptr[self.no] = ptr
         if ptr != self._nnzs:
+            print(ptr,self._nnzs)
             raise ValueError('Final size in the tight-binding finalization '+
                              'went wrong.')
         
@@ -341,6 +349,12 @@ class TightBinding(object):
     def nnzs(self):
         """ Returns number of non-zero elements in the tight-binding model """
         return self._nnzs
+
+    @property
+    def no(self):
+        """ Returns number of orbitals as used when the object was created """
+        return self._no
+
 
     def tocsr(self,k=None):
         """ Returns ``scipy.sparse`` matrices for the tight-binding model
@@ -387,6 +401,7 @@ class TightBinding(object):
             del Hfull, Sfull
             return (H,S)
 
+
     def eigh(self,k=None,atoms=None,eigvals_only=True,overwrite_a=True,overwrite_b=True,*args,**kwargs):
         """ Returns the eigenvalues of the tight-binding model
 
@@ -407,7 +422,7 @@ class TightBinding(object):
                         overwrite_a=overwrite_a, overwrite_b=overwrite_b, **kwargs)
 
     
-    def cut(self,seps,axis):
+    def cut(self,seps,axis,*args,**kwargs):
         """ Cuts the tight-binding model into different parts.
 
         Creates a tight-binding model by retaining the parameters
@@ -420,18 +435,24 @@ class TightBinding(object):
         axis  : integer
            the axis that will be cut
         """
+        new_w = None
         # Create new geometry
         with warnings.catch_warnings(record=True) as w:
             # Cause all warnings to always be triggered.
             warnings.simplefilter("always")
             # Create new cut geometry
-            geom = self.geom.cut(seps,axis)
+            geom = self.geom.cut(seps,axis, *args, **kwargs)
             # Check whether the warning exists
             if len(w) > 0:
                 if issubclass(w[-1].category,UserWarning):
-                    raise ValueError('You cannot cut a tight-binding model '+
-                                     'if the structure cannot be recreated using tiling constructs.')
-        
+                    new_w = w[-1].message
+                    new_w += ("\n---\n"
+                              "The tight-binding model cannot be cut as the structure "
+                             "cannot be tiled accordingly. ANY use of the model has been "
+                             "relieved from sids.")
+        if new_w:
+            warnings.warn(new_w, UserWarning) 
+
         # Now we need to re-create the tight-binding model
         H, S = self.tocsr()
         # they are created similarly, hence the following
@@ -476,7 +497,7 @@ class TightBinding(object):
             nsc[axis] = isc[axis] * seps + i
             
             if out:
-                warnings.warn('Cut the connection at {0} in direction {1}.'.format(nsc[axis],axis), UserWarning) 
+                warnings.warn('Cut the connection at nsc={0} in direction {1}.'.format(nsc[axis],axis), UserWarning) 
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1

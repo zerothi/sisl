@@ -376,7 +376,7 @@ class Geometry(SuperCellChild):
                             atoms=[self.atoms[i] for i in atms], sc=cell)
 
 
-    def cut(self,seps,axis,seg=0):
+    def cut(self,seps,axis,seg=0,rtol=1e-4,atol=1e-4):
         """
         Returns a subset of atoms from the geometry by cutting the 
         geometry into ``seps`` parts along the direction ``axis``.
@@ -403,6 +403,8 @@ class Geometry(SuperCellChild):
             returns the i'th segment of the cut structure
             Currently the atomic coordinates are not translated,
             this may change in the future.
+        rtol : (tolerance for checking tiling, see ``numpy.allclose``)
+        atol : (tolerance for checking tiling, see ``numpy.allclose``)
         """
         if self.na % seps != 0:
             raise ValueError('The system cannot be cut into {0} different '+
@@ -415,8 +417,10 @@ class Geometry(SuperCellChild):
         n = self.na // seps
         off = n * lseg
         new = self.sub(np.arange(off,off+n), cell=sc)
-        if not np.allclose(new.tile(seps, axis).xyz, self.xyz):
-            warnings.warn('The cut structure cannot be re-created by tiling', UserWarning) 
+        if not np.allclose(new.tile(seps, axis).xyz, self.xyz, rtol=rtol, atol=atol):
+            st = 'The cut structure cannot be re-created by tiling'
+            st += '\nThe difference between the coordinates can be altered using rtol, atol'
+            warnings.warn(st, UserWarning) 
         return new
 
 
