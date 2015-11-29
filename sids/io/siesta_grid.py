@@ -55,7 +55,6 @@ class SIESTAGridSile(NCSile):
         else:
             v = self.variables[name]
 
-        
         # Create the grid, SIESTA uses periodic, always
         grid = Grid([nz,ny,nx], bc=Grid.Periodic, sc=sc,
                     dtype=v.dtype)
@@ -64,9 +63,6 @@ class SIESTAGridSile(NCSile):
             grid.grid = v[:,:,:]
         else:
             grid.grid = v[idx,:,:,:]
-
-        # re-scale the grid to get correct units
-        grid.grid *= Bohr ** 3 * grid.dvol
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2

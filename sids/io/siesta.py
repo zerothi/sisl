@@ -187,9 +187,6 @@ class SIESTASile(NCSile):
             # Simply, we have no units
             pass
 
-        # re-scale the grid to get correct units
-        grid.grid *= Bohr ** 3 * grid.dvol
-
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
         grid = grid.swapaxes(0,2)
