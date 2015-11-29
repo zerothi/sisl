@@ -46,3 +46,16 @@ class TestAtom(object):
         assert_true( Atom(Z=1,mass=12).mass == 12 )
         assert_true( Atom(Z=31,mass=12).mass == 12 )
         assert_true( Atom(Z=31,mass=12).Z == 31 )
+
+    def test_pickle(self):
+        import pickle as p
+        sC = p.dumps(self.C)
+        sAu = p.dumps(self.Au)
+        C = p.loads(sC)
+        Au = p.loads(sAu)
+        assert_false( Au == C )
+        assert_true( Au != C )
+        assert_true( C == self.C )
+        assert_false( C == self.Au )
+        assert_true( Au == self.Au )
+        assert_true( Au != self.C )

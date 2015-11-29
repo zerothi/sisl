@@ -331,6 +331,28 @@ class SuperCell(object):
         """ Returns a string representation of the object """
         return 'SuperCell[{} {} {}]'.format(*self.nsc)
 
+    
+    def __eq__(a,b):
+        """ Equality check """
+        if not isinstance(b,SuperCell):
+            return False
+        same = np.allclose(a.cell, b.cell)
+        same = same and np.all(a.nsc == b.nsc)
+        return same
+
+    
+    def __ne__(a,b):
+        return not (a == b)
+    
+    
+    # Create pickling routines
+    def __getstate__(self):
+        """ Returns the state of this object """
+        return {'cell':self.cell, 'nsc': self.nsc}
+
+    def __setstate__(self, d):
+        """ Re-create the state of this object """
+        self.__init__(d['cell'], d['nsc'])
 
 
 class SuperCellChild(object):

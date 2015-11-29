@@ -198,5 +198,15 @@ class TestGeometry(object):
         assert_false( np.allclose(g1.cell[2,:], g2.cell[2,:]) )
 
 
+    def test_pickle(self):
+        import pickle as p
+        s = p.dumps(self.g)
+        n = p.loads(s)
+        assert_true( n == self.g )
+        assert_false( n != self.g )
+
+        
+
+
 
 

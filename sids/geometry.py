@@ -1190,6 +1190,39 @@ class Geometry(SuperCellChild):
         # Convert to sids object
         return cls(xyz,atoms=Z,sc=cell)
 
+    # same method name
+    ASE = ase
+    toase = ase
+    toASE = ase
+
+    def __eq__(self,other):
+        if not isinstance(other,Geometry):
+            return False
+        same = self.sc == other.sc
+        same = same and np.allclose(self.xyz, other.xyz)
+        same = same and np.all(self.atoms == other.atoms)
+        return same
+
+    
+    def __ne__(self,other):
+        return not (self == other)
+
+
+    # Create pickling routines
+    def __getstate__(self):
+        """ Returns the state of this object """
+        d = self.sc.__getstate__()
+        d['xyz'] = self.xyz
+        d['atoms'] = self.atoms
+        return d
+
+    
+    def __setstate__(self, d):
+        """ Re-create the state of this object """
+        sc = SuperCell([1,1,1])
+        sc.__setstate__(d)
+        self.__init__(d['xyz'], d['atoms'],sc=sc)
+
 
 if __name__ == '__main__':
     import math as m

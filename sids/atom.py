@@ -956,6 +956,8 @@ class Atom(with_metaclass(AtomMeta,object)):
     # Check whether they are equal
     def __eq__(a,b):
         """ Returns true if the saved quantities are the same """
+        if not isinstance(b,Atom):
+            return False
         same = a.Z == b.Z
         same &= a.orbs == b.orbs
         same &= a.mass == b.mass
@@ -964,6 +966,24 @@ class Atom(with_metaclass(AtomMeta,object)):
         # different number of orbitals
         if same: same = np.allclose(a.R,b.R)
         return same
+
+    def __ne__(a,b):
+        return not (a == b)
+
+
+    # Create pickling routines
+    def __getstate__(self):
+        """ Returns the state of this object """
+        return {'Z': self.Z,
+                'orbs': self.orbs,
+                'mass': self.mass,
+                'tag' : self.tag,
+                'R' : self.R}
+
+    def __setstate__(self,d):
+        """ Re-create the state of this object """
+        self.__init__(d['Z'],R=d['R'],orbs=d['orbs'],mass=d['mass'],tag=d['tag'])
+
 
 
 if __name__ == "__main__":
