@@ -86,6 +86,26 @@ class Sile(BaseSile):
         return found, l
 
 
+    def step_either(self,keywords,case=True):
+        """ Steps the file-handle until the keyword is found in the input """
+        # If keyword is a list, it just matches one of the inputs
+        found = False
+        j = -1
+
+        while not found:
+            l = self.readline()
+            if l == '': return found,''
+            for i, keyword in enumerate(keywords):
+                found = self.line_has_key(l,keyword,case=case)
+                if found:
+                    j = i
+                    break
+            
+        # sometimes the line contains information, as a
+        # default we return the line found
+        return found, j, l
+
+
     def write(self,*args,**kwargs):
         """
         Wrapper for the file-handle write statement

@@ -86,11 +86,11 @@ class Geometry(SuperCellChild):
         # Correct the atoms input to Atom
         if isinstance(atoms, list):
             if isinstance(atoms[0],str):
-                A = np.array([Atom[a] for a in atoms])
+                A = np.array([Atom(a) for a in atoms])
             else:
                 A = np.array(atoms)
         elif isinstance(atoms, str):
-            A = np.array([Atom[atoms]])
+            A = np.array([Atom(atoms)])
         else:
             A = np.array([atoms]).flatten()
 

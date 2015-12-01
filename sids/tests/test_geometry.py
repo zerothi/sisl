@@ -205,8 +205,11 @@ class TestGeometry(object):
         assert_true( n == self.g )
         assert_false( n != self.g )
 
-        
 
-
-
-
+    def test_set_sc(self):
+        # Create new geometry with only the coordinates
+        # and atoms
+        s1 = SuperCell([2,2,2])
+        g1 = Geometry([[0,0,0],[1,1,1]],sc=[2,2,1])
+        g1.set_sc(s1)
+        assert_true( g1.sc == s1 )
