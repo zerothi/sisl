@@ -24,6 +24,8 @@ function _help {
     echo "  $0 M  => 1.0.0"
     echo "  $0 m  => 0.2.0"
     echo "  $0 u  => 0.1.4"
+    echo ""
+    echo "Current sids version is $MAJOR.$MINOR.$MICRO"
 }
 
 
