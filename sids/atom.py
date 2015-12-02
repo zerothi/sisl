@@ -1,5 +1,17 @@
-"""
-Class for retaining information about a single atom
+""" Atomic information
+
+Atomic information can be created and handled using either the
+`PeriodicTable` object or the `Atom` object.
+
+- The `PeriodicTable` enables a *lookup* table for generic information
+about the atomic species in the periodic table of elements.
+- The `Atom` enables creating atoms with associated information, such as
+  - Mass
+  - Specie
+  - Number of associated orbitals
+  - Radii of each associated orbital
+  - Custom tag
+
 """
 from __future__ import print_function, division
 
@@ -17,11 +29,38 @@ __all__ = ['PeriodicTable','Atom']
 
 
 class PeriodicTable(object):
-    """ 
-    Basic periodic table.
+    """ Periodic table for creating `Atom`'s via atomic numbers
 
-    It retains all periodic elements and allows easy conversion
-    from full names to the atomic number to their weights.
+    Enables *lookup* of atomic numbers/names/labels to get
+    the atomic number.
+
+    >>> 79 == PeriodicTable().Z_int('Au')
+    >>> 79 == PeriodicTable().Z('Au')
+    >>> 'Au' == PeriodicTable().Z_short(79)
+    >>> 'Au' == PeriodicTable().Z_label(79)
+    >>> 'Au' == PeriodicTable().Z_label('Gold')
+
+    Several quantities available to the atomic species are available 
+    from
+      https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)
+    
+    The following values are accesible:
+     - atomic mass
+     - empirical atomic radii (in Ang)
+     - calculated atomic radii (in Ang)
+     - van der Waals atomic radii (in Ang)
+
+    For certain species the above quantities are not available
+    and a negative number is returned.
+
+    >>> 12.0107 == PeriodicTable().atomic_mass('C')
+    >>> 12.0107 == PeriodicTable().atomic_mass(6)
+    >>> 12.0107 == PeriodicTable().atomic_mass('Carbon')
+    >>> .67 == PeriodicTable().radii('Carbon')
+    >>> .67 == PeriodicTable().radii(6,'calc')
+    >>> .7  == PeriodicTable().radii(6,'empirical')
+    >>> 1.7 == PeriodicTable().radii(6,'vdw')
+
     """
     _Z_int = {
         'Actinium' : 89 , 'Ac' : 89 , '89' : 89, 89 : 89,
@@ -748,9 +787,12 @@ class PeriodicTable(object):
         118 : -1,
         }
 
-    def Z_int(self,key):
-        """ Returns the atomic number
+    def Z(self,key):
+        """ Return the atomic number based on general input
+
         Return the atomic number corresponding to the `key` lookup.
+
+        @seealso `Z`
 
         Parameters
         ----------
@@ -758,20 +800,28 @@ class PeriodicTable(object):
             Uses value to lookup the atomic number in the `PeriodicTable`
             object.
 
-        Returns
-        -------
+        Return
+        ------
         Z : ndarray, int
             The atomic number corresponding to `key`, if `key` is array_like, so
             will the returned value be.
+        
+        Examples
+        -------
+
+        >>> 79 == PeriodicTable().Z_int('Au')
+        >>> 79 == PeriodicTable().Z('Au')
+        >>> 6 == PeriodicTable().Z('Carbon')
         """
         ak = np.asarray([key]).flatten()
         if len(ak) == 1: return self._Z_int[ak[0]]
         return np.array([self._Z_int[i] for i in ak],np.int32)
 
-    Z = Z_int
+    Z_int = Z
 
-    def Z_short(self,key):
-        """ Returns the atomic short name
+    def Z_label(self,key):
+        """ Return the atomic label name
+
         Return the atomic short name corresponding to the `key` lookup.
 
         Parameters
@@ -780,8 +830,8 @@ class PeriodicTable(object):
             Uses value to lookup the atomic short name in the 
             `PeriodicTable` object.
 
-        Returns
-        -------
+        Return
+        ------
         name : ndarray, str
             The atomic short name corresponding to `key`, if `key` is array_like, so
             will the returned value be.
@@ -790,8 +840,11 @@ class PeriodicTable(object):
         if len(ak) == 1: return self._Z_short[ak[0]]
         return np.array([self._Z_short[i] for i in ak],np.int32)
 
+    Z_short = Z_label
+
     def atomic_mass(self,key):
-        """ Returns the atomic mass
+        """ Return the atomic mass
+
         Return the atomic mass corresponding to the `key` lookup.
 
         Parameters
@@ -800,8 +853,8 @@ class PeriodicTable(object):
             Uses value to lookup the atomic mass in the 
             `PeriodicTable` object.
 
-        Returns
-        -------
+        Return
+        ------
         name : ndarray, float
             The atomic mass in atomic units corresponding to `key`, if `key` is array_like, so
             will the returned value be.
@@ -811,7 +864,8 @@ class PeriodicTable(object):
         return np.array([self._atomic_mass[i] for i in Z],np.float64)
 
     def radii(self,key,radii='calc'):
-        """ Returns the atomic radii
+        """ Return the atomic radii
+
         Return the atomic radii.
         
         Parameters
@@ -823,10 +877,10 @@ class PeriodicTable(object):
             There are 3 different radii stored:
              1) `calc`, the calculated
              2) `empirical`, the empirically found values
-             3) `vdw`, the van der Waals  found values
+             3) `vdw`, the van der Waals found values
 
-        Returns
-        -------
+        Return
+        ------
         radii : ndarray, float
             The atomic radii in `Ang`
         """
@@ -878,16 +932,17 @@ class AtomMeta(type):
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
 class Atom(with_metaclass(AtomMeta,object)):
-    """
+    """ Atomic information, mass, name number of orbitals and ranges
+
     Object to handle atomic mass, name, number of orbitals and 
     orbital range.
 
     The `Atom` object handles the atomic species with information
     such as
-    - atomic number
-    - mass
-    - number of orbitals
-    - radius of each orbital
+     - atomic number
+     - mass
+     - number of orbitals
+     - radius of each orbital
 
     Attributes
     ----------
@@ -955,7 +1010,7 @@ class Atom(with_metaclass(AtomMeta,object)):
 
     # Check whether they are equal
     def __eq__(a,b):
-        """ Returns true if the saved quantities are the same """
+        """ Return true if the saved quantities are the same """
         if not isinstance(b,Atom):
             return False
         same = a.Z == b.Z
@@ -973,7 +1028,7 @@ class Atom(with_metaclass(AtomMeta,object)):
 
     # Create pickling routines
     def __getstate__(self):
-        """ Returns the state of this object """
+        """ Return the state of this object """
         return {'Z': self.Z,
                 'orbs': self.orbs,
                 'mass': self.mass,
