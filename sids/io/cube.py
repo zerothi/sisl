@@ -21,8 +21,6 @@ _one = np.ones([3],np.float64)
 
 class CUBESile(Sile):
     """ CUBE file object """
-    # These are the comments
-    _comment = []
 
     def _setup(self):
         """ Setup the `CUBESile` after initialization """

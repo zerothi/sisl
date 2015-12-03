@@ -18,7 +18,6 @@ __all__ = ['BigDFTASCIISile']
 
 class BigDFTASCIISile(Sile):
     """ ASCII file object for BigDFT """
-    # These are the comments
 
     def _setup(self):
         """ Initialize for `BigDFTASCIISile` """

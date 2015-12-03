@@ -37,12 +37,13 @@ class Sile(BaseSile):
     """ Class to contain a file with easy access """
 
     def __init__(self,filename,mode=None):
-        self.file = filename
-        if mode:
-            self._mode = mode
 
         # Initialize
         self.__setup()
+
+        self.file = filename
+        if mode:
+            self._mode = mode
 
 
     def __setup(self):
@@ -161,14 +162,15 @@ class NCSile(BaseSile):
     The file format for this file is the NetCDF file format """
 
     def __init__(self,filename,mode=None,lvl=0):
+
+        # Must call setup-methods
+        self.__setup()
+
         self.file = filename
         if mode:
             self._mode = mode
         # Save compression internally
         self._lvl = lvl
-
-        # Must call setup-methods
-        self.__setup()
 
 
     def __setup(self):
