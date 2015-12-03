@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/zerothi/sids.svg?branch=master)](https://travis-ci.org/zerothi/sids)
 
+The [API documentation][sids-api] can be found [here][sids-api].
+
 The system incentive for dense simulation toolbox provides a simple
 toolbox for manipulating, constructing and creating tight-binding matrices 
 in a standard and uniform way.
@@ -221,7 +223,7 @@ The sids license is [LGPL][lgpl], please see the LICENSE file.
 Links to external and internal sites.
 -->
 [sids@git]: https://github.com/zerothi/sids
-[sids-doc]: http://github.com/zerothi/sids
+[sids-api]: http://zerothi.github.io/sids/index.html
 [issue]: https://github.com/zerothi/sids/issues
 [pr]: https://github.com/zerothi/sids/pulls
 [lgpl]: http://www.gnu.org/licenses/lgpl.html
