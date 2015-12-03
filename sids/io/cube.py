@@ -24,6 +24,11 @@ class CUBESile(Sile):
     # These are the comments
     _comment = []
 
+    def _setup(self):
+        """ Setup the `CUBESile` after initialization """
+        self._comment = []
+
+
     def write_geom(self,geom,size=_one,fmt='15.10e',origo=_zero,*args,**kwargs):
         """ Writes the `Geometry` object attached to this grid """
         sile_raise_write(self)

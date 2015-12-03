@@ -19,9 +19,12 @@ class POSCARSile(Sile):
     """ CAR file object 
     This file-object handles both POSCAR and CONTCAR files
     """
-    # These are the comments
-    _comment = []
-    _scale = 1.
+
+    def _setup(self):
+        """ Setup the `POSCARSile` after initialization """
+        self._comment = []
+        self._scale = 1.
+
 
     def write_geom(self,geom):
         """ Writes the geometry to the contained file """

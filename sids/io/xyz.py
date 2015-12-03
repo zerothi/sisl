@@ -17,8 +17,11 @@ __all__ = ['XYZSile']
 
 class XYZSile(Sile):
     """ XYZ file object """
-    # These are the comments
-    _comment = []
+
+    def _setup(self):
+        """ Setup the `XYZSile` after initialization """
+        self._comment = []
+
 
     def write_geom(self,geom,fmt='.5f'):
         """ Writes the geometry to the contained file """

@@ -11,20 +11,54 @@ __all__ = ['BaseSile','Sile','NCSile','SileError','sile_raise_write','sile_raise
 
 class BaseSile(object):
     """ Base class for the Siles """
-    pass
+
+    def _setup(self):
+        """ Setup the `Sile` after initialization
+        
+        Inherited method for setting up the sile.
+
+        This method can be overwritten.
+        """
+        pass
+
+
+    def __setup(self):
+        """ Setup the `Sile` after initialization
+        
+        Inherited method for setting up the sile.
+
+        This method **must** be overwritten *and*
+        end with ``self._setup()``.
+        """
+        self._setup()
 
 
 class Sile(BaseSile):
     """ Class to contain a file with easy access """
-    _mode = 'r'
-    _comment = ['#']
 
     def __init__(self,filename,mode=None):
         self.file = filename
         if mode:
             self._mode = mode
 
+        # Initialize
+        self.__setup()
+
+
+    def __setup(self):
+        """ Setup the `Sile` after initialization
         
+        Inherited method for setting up the sile.
+
+        This method must **never** be overwritten.
+        """
+        # Basic initialization of custom variables
+        self._mode = 'r'
+        self._comment = ['#']
+
+        self._setup()
+
+
     def __enter__(self):
         """ Opens the output file and returns it self """
         if self.file.endswith('gz'):
@@ -125,8 +159,6 @@ class Sile(BaseSile):
 class NCSile(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
-    _mode = 'r'
-    _lvl = 0
 
     def __init__(self,filename,mode=None,lvl=0):
         self.file = filename
@@ -135,7 +167,19 @@ class NCSile(BaseSile):
         # Save compression internally
         self._lvl = lvl
 
+        # Must call setup-methods
+        self.__setup()
 
+
+    def __setup(self):
+        """ Setup `NCSile` after initialization """
+        self._mode = 'r'
+        self._lvl = 0
+
+        self._setup()
+
+
+    @property
     def _cmp_args(self):
         """ Returns the compression arguments for the NetCDF file
 

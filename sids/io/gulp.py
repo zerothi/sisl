@@ -18,12 +18,15 @@ __all__ = ['GULPSile']
 class GULPSile(Sile):
     """ GULP file object """
 
-    # lookup keys for different segments of the file
-    _keys = {
-        'sc': 'Final Cartesian lattice vectors',
-        'geom': 'Final fractional coordinates',
-        'dyn' : 'Real Dynamical matrix',
-        }
+    def _setup(self):
+        """ Setup `GULPSile` after initialization """
+
+        self._keys = {        
+            'sc': 'Final Cartesian lattice vectors',
+            'geom': 'Final fractional coordinates',
+            'dyn' : 'Real Dynamical matrix',
+            }
+
 
     def set_key(self,segment,key):
         """ Sets the segment lookup key """

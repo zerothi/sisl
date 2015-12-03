@@ -18,8 +18,11 @@ __all__ = ['XVSile']
 
 class XVSile(Sile):
     """ XV file object """
-    # These are the comments
-    _comment = []
+
+    def _setup(self):
+        """ Setup the `XVSile` after initialization """
+        self._comment = []
+
 
     def write_geom(self,geom):
         """ Writes the geometry to the contained file """

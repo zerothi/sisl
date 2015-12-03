@@ -19,7 +19,11 @@ __all__ = ['BigDFTASCIISile']
 class BigDFTASCIISile(Sile):
     """ ASCII file object for BigDFT """
     # These are the comments
-    _comment = ['#','!']
+
+    def _setup(self):
+        """ Initialize for `BigDFTASCIISile` """
+        self._comment = ['#','!']
+
 
     def read_geom(self):
         """ Reads a supercell from the Sile """

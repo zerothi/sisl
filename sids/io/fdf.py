@@ -20,12 +20,6 @@ __all__ = ['FDFSile']
 
 class FDFSile(Sile):
     """ FDF file object """
-    # These are the comments
-    _comment = ['#','!',';']
-
-    # List of parent file-handles used while reading
-    _parent_fh = []
-    _directory = ''
 
     def __init__(self,filename,mode=None,base=None):
         """ Initialize an FDF file from the filename 
@@ -41,6 +35,16 @@ class FDFSile(Sile):
             self._directory = base
         if len(self._directory) == 0:
             self._directory = '.'
+
+
+    def _setup(self):
+        """ Setup the `FDFSile` after initialization """
+        # These are the comments
+        self._comment = ['#','!',';']
+        
+        # List of parent file-handles used while reading
+        self._parent_fh = []
+        self._directory = '.'
 
             
     def readline(self,comment=False):
@@ -101,8 +105,9 @@ class FDFSile(Sile):
         # Write out the cell
         self._write('LatticeConstant 1. Ang\n')
         self._write('%block LatticeVectors\n')
-        for i in range(3):
-            self._write(' {0} {1} {2}\n'.format(*geom.cell[i,:]))
+        self._write(' {0} {1} {2}\n'.format(*geom.cell[0,:]))
+        self._write(' {0} {1} {2}\n'.format(*geom.cell[1,:]))
+        self._write(' {0} {1} {2}\n'.format(*geom.cell[2,:]))
         self._write('%endblock LatticeVectors\n\n')
         self._write('NumberOfAtoms {0}\n'.format(geom.na))
         self._write('AtomicCoordinatesFormat Ang\n')
@@ -111,7 +116,7 @@ class FDFSile(Sile):
         fmt_str = ' {{2:{0}}} {{3:{0}}} {{4:{0}}} {{0}} # {{1}}\n'.format(fmt)
         # Count for the species
         spec = []
-        for ia,a,isp in geom.iter_species():
+        for ia, a, isp in geom.iter_species():
             self._write(fmt_str.format(isp+1,ia+1,*geom.xyz[ia,:]))
             if isp >= len(spec): spec.append(a)
         self._write('%endblock AtomicCoordinatesAndAtomicSpecies\n\n')
@@ -120,14 +125,14 @@ class FDFSile(Sile):
         # First swap key and value
         self._write('NumberOfSpecies {0}\n'.format(len(spec)))
         self._write('%block ChemicalSpeciesLabel\n')
-        for i,a in enumerate(spec):
+        for i, a in enumerate(spec):
             self._write(' {0} {1} {2}\n'.format(i+1,a.Z,a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
 
     def read_sc(self,*args,**kwargs):
         """ Returns `SuperCell` object from the FDF file """
-        f,lc = self._read('LatticeConstant')
+        f, lc = self._read('LatticeConstant')
         s = float(lc.split()[1])
         if 'ang' in lc.lower():
             pass
