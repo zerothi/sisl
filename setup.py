@@ -5,6 +5,11 @@ sids: Library to create/mingle/handle geometries and tight-binding sets in pytho
 
 from __future__ import print_function
 
+if __doc__ is None:
+    __doc__ = """sids: Creating and handling of geometries.
+
+Enables tight-binding models etc."""
+
 DOCLINES = __doc__.split("\n")
 
 import sys, subprocess
