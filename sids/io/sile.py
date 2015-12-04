@@ -113,7 +113,8 @@ class Sile(BaseSile):
 
         while not found:
             l = self.readline()
-            if l == '': return found,''
+            if l == '':
+                break
             found = self.line_has_key(l,keyword,case=case)
             
         # sometimes the line contains information, as a
@@ -129,7 +130,8 @@ class Sile(BaseSile):
 
         while not found:
             l = self.readline()
-            if l == '': return found,''
+            if l == '':
+                break
             for i, keyword in enumerate(keywords):
                 found = self.line_has_key(l,keyword,case=case)
                 if found:

@@ -38,6 +38,7 @@ class GULPSile(Sile):
         """ Overwrites internal key lookup value for the cell vectors """
         self.set_key('sc', key)
 
+
     def read_sc(self,key=None):
         """ Reads a `SuperCell` and creates the GULP cell """
         self.set_sc_key(key)
