@@ -296,7 +296,7 @@ class SIESTASile(NCSile):
         v.info = "Number of non-zero elements per row"
         v[:] = tb.ncol[:]
         v = self._crt_var(sp,'list_col','i4',('nnzs',),
-                          chunksizes=(len(tb.col),),**self._cmp_args())
+                          chunksizes=(len(tb.col),),**self._cmp_args)
         v.info = "Supercell column indices in the sparse format"
         v[:] = tb.col[:] + 1 # correct for fortran indices
         v = self._crt_var(sp,'isc_off','i4',('n_s','xyz'))
@@ -305,11 +305,11 @@ class SIESTASile(NCSile):
 
         # Save tight-binding parameters
         v = self._crt_var(sp,'S','f8',('nnzs',),
-                          chunksizes=(len(tb.col),),**self._cmp_args())
+                          chunksizes=(len(tb.col),),**self._cmp_args)
         v.info = "Overlap matrix"
         v[:] = tb._TB[:,1]
         v = self._crt_var(sp,'H','f8',('spin','nnzs'),
-                          chunksizes=(1,len(tb.col)),**self._cmp_args())
+                          chunksizes=(1,len(tb.col)),**self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"
         v[:] = tb._TB[:,0] * Ry ** tb._E_order
