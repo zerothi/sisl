@@ -27,25 +27,35 @@ _nsc = np.array([1]*3,np.int32)
 
 
 class Geometry(SuperCellChild):
-    """
-    Object for retaining a list of atoms.
+    """ Holds atomic information, coordinates, species, lattice vectors
 
-    Every geometry deals with this information:
-    - atomic coordinates
-    - atomic species
-    - unit cell 
+    The `Geometry` class holds information regarding atomic coordinates,
+    the atomic species, the corresponding lattice-vectors.
+    
+    It enables the interaction and conversion of atomic structures via
+    simple routine methods.
     
     All lengths are assumed to be in units of Angstrom, however, as
     long as units are kept same the exact units are irrespective.
 
     Examples
     --------
+
+    An atomic lattice consisting of Hydrogen atoms.
+    An atomic square lattice of Hydrogen atoms
+
+    >>> xyz = [[0, 0, 0],
+               [1, 1, 1]]
+    >>> sc = SuperCell([2,2,2])
+    >>> g = Geometry(xyz,Atom['H'],sc)
+
+    The following estimates the lattice vectors from the
+    atomic coordinates, although possible, it is not recommended
+    to be used.
+
     >>> xyz = [[0, 0, 0],
                [1, 1, 1]]
     >>> g = Geometry(xyz,Atom['H'])
-
-    >>> sc = SuperCell([2,2,2])
-    >>> g = Geometry(xyz,Atom['H'],sc)
 
     Attributes
     ----------
@@ -53,9 +63,9 @@ class Geometry(SuperCellChild):
         number of atoms, ``len(self)``
     xyz : ndarray
         atomic coordinates
-    atoms : array_like, ``Atom``
+    atoms : array_like, `Atom`
         the atomic objects associated with each atom
-    sc : ``SuperCell``
+    sc : `SuperCell`
         the supercell describing the periodicity of the 
         geometry
     no: int
@@ -69,11 +79,10 @@ class Geometry(SuperCellChild):
         atomic coordinates
         ``xyz[i,:]`` is the atomic coordinate of the i'th atom.
     atoms : array_like
-        atomic species retrieved from the ``PeriodicTable``
-    sc : ``SuperCell``
+        atomic species retrieved from the `PeriodicTable`
+    sc : `SuperCell`
         the unit-cell describing the atoms in a periodic
         super-cell
-
     """
 
     def __init__(self,xyz,atoms=_H,sc=None):
@@ -178,13 +187,13 @@ class Geometry(SuperCellChild):
 
     @staticmethod
     def read(sile):
-        """ Reads geometry from the ``Sile`` using ``sile.read_geom``
+        """ Reads geometry from the `Sile` using `Sile.read_geom`
 
         Parameters
         ----------
-        sile : Sile, str
-            a ``Sile`` object which will be used to read the geometry
-            if it is a string it will create a new sile using ``get_sile``.
+        sile : `Sile`, str
+            a `Sile` object which will be used to read the geometry
+            if it is a string it will create a new sile using `get_sile`.
         """
         # This only works because, they *must*
         # have been imported previously
@@ -196,13 +205,13 @@ class Geometry(SuperCellChild):
            
 
     def write(self,sile,*args,**kwargs):
-        """ Writes geometry to the ``Sile`` using ``sile.write_geom``
+        """ Writes geometry to the `Sile` using `sile.write_geom`
 
         Parameters
         ----------
         sile : Sile, str
-            a ``Sile`` object which will be used to write the geometry
-            if it is a string it will create a new sile using ``get_sile``
+            a `Sile` object which will be used to write the geometry
+            if it is a string it will create a new sile using `get_sile`
         *args, **kwargs: Any other args will be passed directly to the
                          underlying routine
         """
@@ -231,7 +240,7 @@ class Geometry(SuperCellChild):
         
          >>> for ia,a,idx_specie in self.iter_species():
 
-        with ``ia`` being the atomic index, ``a`` the ``Atom`` object, ``idx_specie``
+        with ``ia`` being the atomic index, ``a`` the `Atom` object, `idx_specie`
         is the index of the species
         """
         # Count for the species
@@ -365,7 +374,7 @@ class Geometry(SuperCellChild):
         ----------
         atoms  : array_like
             indices of all atoms to be removed.
-        cell   : (``self.cell`), array_like, optional
+        cell   : (``self.cell``), array_like, optional
             the new associated cell of the geometry
         """
         atms = np.asarray([atoms],np.int32).flatten()
@@ -538,10 +547,10 @@ class Geometry(SuperCellChild):
         tight-binding parameter sets for TBtrans.
 
         For geometries with a single atom this routine returns the same as
-        ``self.tile``.
+        `tile`.
 
         It is adviced to only use this for electrode Bloch's theorem
-        purposes as ``self.tile`` is faster.
+        purposes as `tile` is faster.
         
         Parameters
         ----------
@@ -701,7 +710,7 @@ class Geometry(SuperCellChild):
     def center(self,atoms=None,which='xyz'):
         """ Returns the center of the geometry 
         By specifying ``which`` one can control whether it should be:
-        ``xyz``|``position: Center of coordinates (default)
+        ``xyz|position``: Center of coordinates (default)
         ``mass``: Center of mass
         ``cell``: Center of cell
         """
@@ -716,7 +725,7 @@ class Geometry(SuperCellChild):
             mass = np.array([atm.mass for atm in g.atoms])
             return np.dot(mass,g.xyz) / np.sum(mass)
         if not ('xyz' in which or 'position' in which):
-            raise ValueError('Unknown ``which``, not one of [xyz,position,mass,cell]')
+            raise ValueError('Unknown which, not one of [xyz,position,mass,cell]')
         return np.mean(g.xyz,axis=0)
 
 
@@ -792,7 +801,7 @@ class Geometry(SuperCellChild):
     def insert(self,atom,other):
         """ Inserts other atoms right before index
 
-        We insert the `other` ``Geometry`` before obj
+        We insert the ``other`` `Geometry` before obj
         """
         xyz = np.insert(self.xyz,atom, other.xyz, axis=0)
         atoms = np.insert(self.atoms, atom, other.atoms)
@@ -848,7 +857,7 @@ class Geometry(SuperCellChild):
         xyz_ia    : coordinate/index
             Either a point in space or an index of an atom.
             If an index is passed it is the equivalent of passing
-            the atomic coordinate ``self.close_sc(self.xyz[xyz_ia,:])``.
+            the atomic coordinate ``close_sc(self.xyz[xyz_ia,:])``.
         isc       : ([0,0,0]), array_like, optional
             The super-cell which the coordinates are checked in.
         dR        : (None), float/tuple of float
@@ -1018,7 +1027,7 @@ class Geometry(SuperCellChild):
         """
         Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
 
-        This heavily relies on the ``self.close_sc`` method.
+        This heavily relies on the `close_sc` method.
 
         Note that if a connection is made in a neighbouring super-cell
         then the atomic index is shifted by the super-cell index times
@@ -1030,7 +1039,7 @@ class Geometry(SuperCellChild):
         xyz_ia  : coordinate/index
             Either a point in space or an index of an atom.
             If an index is passed it is the equivalent of passing
-            the atomic coordinate ``self.close_sc(self.xyz[xyz_ia,:])``.
+            the atomic coordinate `close_sc(self.xyz[xyz_ia,:])`.
         dR      : (None), float/tuple of float
             The radii parameter to where the atomic connections are found.
             If ``dR`` is an array it will return the indices:
@@ -1108,8 +1117,8 @@ class Geometry(SuperCellChild):
         ia : list, int
              Atomic indices
         all: False, bool
-             `False`, return only the first orbital corresponding to the atom,
-             `True`, returns list of the full atom
+             ``False``, return only the first orbital corresponding to the atom,
+             ``True``, returns list of the full atom
         """
         if not all:
             return self.lasto[ia % self.na] + (ia // self.na) * self.no
@@ -1175,13 +1184,13 @@ class Geometry(SuperCellChild):
 
     
     @classmethod
-    def ase(cls,aseg):
-        """ Returns geometry from an ASE object.
+    def ASE(cls,aseg):
+        """ Returns geometry from an `ASE <https://wiki.fysik.dtu.dk/ase/>` object.
 
         Parameters
         ----------
-        aseg : ASE `Atoms` object which contains the following routines:
-            `get_atomic_numbers`, `get_positions`, `get_cell`.
+        aseg : ASE ``Atoms`` object which contains the following routines:
+            ``get_atomic_numbers``, ``get_positions``, ``get_cell``.
             From those methods a `sids` object will be created.
         """
         Z = aseg.get_atomic_numbers()
@@ -1190,11 +1199,14 @@ class Geometry(SuperCellChild):
         # Convert to sids object
         return cls(xyz,atoms=Z,sc=cell)
 
-    # same method name
-    ASE = ase
-    toase = ase
-    toASE = ase
+    
+    def toASE(self):
+        """ Returns the geometry as an ASE ``Atoms`` object """
+        from ase import Atoms
+        return Atoms(symbols=self.atoms.tolist(), positions = self.xyz.tolist(),
+                     cell = self.cell.tolist())
 
+    
     def __eq__(self,other):
         if not isinstance(other,Geometry):
             return False

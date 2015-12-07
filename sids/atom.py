@@ -7,10 +7,10 @@ Atomic information can be created and handled using either the
 about the atomic species in the periodic table of elements.
 - The `Atom` enables creating atoms with associated information, such as
   - Mass
-  - Specie
+  - Species
   - Number of associated orbitals
   - Radii of each associated orbital
-  - Custom tag
+  - Custom tag (useful for denoting pseudo potentials)
 
 """
 from __future__ import print_function, division
@@ -29,23 +29,23 @@ __all__ = ['PeriodicTable','Atom']
 
 
 class PeriodicTable(object):
-    """ Periodic table for creating `Atom`'s via atomic numbers
+    """ Periodic table for creating an `Atom` via atomic numbers
 
     Enables *lookup* of atomic numbers/names/labels to get
     the atomic number.
 
-    >>> 79 == PeriodicTable().Z_int('Au')
     >>> 79 == PeriodicTable().Z('Au')
+    >>> 79 == PeriodicTable().Z_int('Au')
     >>> 'Au' == PeriodicTable().Z_short(79)
     >>> 'Au' == PeriodicTable().Z_label(79)
     >>> 'Au' == PeriodicTable().Z_label('Gold')
 
     Several quantities available to the atomic species are available 
     from
-      https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)
+      <https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)>
     
     The following values are accesible:
-     - atomic mass
+     - atomic mass (in atomic units)
      - empirical atomic radii (in Ang)
      - calculated atomic radii (in Ang)
      - van der Waals atomic radii (in Ang)
@@ -792,7 +792,7 @@ class PeriodicTable(object):
 
         Return the atomic number corresponding to the `key` lookup.
 
-        @seealso `Z`
+        @seealso `Z_int`
 
         Parameters
         ----------
@@ -820,9 +820,11 @@ class PeriodicTable(object):
     Z_int = Z
 
     def Z_label(self,key):
-        """ Return the atomic label name
+        """ Return the atomic label of the corresponding atom
 
         Return the atomic short name corresponding to the `key` lookup.
+
+        @seealso `Z_short`
 
         Parameters
         ----------
@@ -843,7 +845,7 @@ class PeriodicTable(object):
     Z_short = Z_label
 
     def atomic_mass(self,key):
-        """ Return the atomic mass
+        """ Return the atomic mass of the corresponding atom
 
         Return the atomic mass corresponding to the `key` lookup.
 
@@ -987,7 +989,7 @@ class Atom(with_metaclass(AtomMeta,object)):
             self.tag = tag
 
     def copy(self):
-        """ Return copy of this object. """
+        """ Return copy of this object """
         return self.__class__(self.Z,self.R,self.orbs,self.mass,self.tag)
 
     def radii(self,radii='calc'):
@@ -996,7 +998,7 @@ class Atom(with_metaclass(AtomMeta,object)):
 
     @property
     def symbol(self):
-        """ Return short atomic name. """
+        """ Return short atomic name (Au==79). """
         return _ptbl.Z_short(self.Z)
 
     @property
