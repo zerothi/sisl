@@ -44,18 +44,18 @@ class Geometry(SuperCellChild):
     An atomic lattice consisting of Hydrogen atoms.
     An atomic square lattice of Hydrogen atoms
 
-    >>> xyz = [[0, 0, 0],
-               [1, 1, 1]]
-    >>> sc = SuperCell([2,2,2])
-    >>> g = Geometry(xyz,Atom['H'],sc)
+     >>> xyz = [[0, 0, 0],
+                [1, 1, 1]]
+     >>> sc = SuperCell([2,2,2])
+     >>> g = Geometry(xyz,Atom['H'],sc)
 
     The following estimates the lattice vectors from the
     atomic coordinates, although possible, it is not recommended
     to be used.
 
-    >>> xyz = [[0, 0, 0],
-               [1, 1, 1]]
-    >>> g = Geometry(xyz,Atom['H'])
+     >>> xyz = [[0, 0, 0],
+                [1, 1, 1]]
+     >>> g = Geometry(xyz,Atom['H'])
 
     Attributes
     ----------
@@ -275,16 +275,6 @@ class Geometry(SuperCellChild):
     def iter_block(self,iR=10,dR=None):
         """ 
         Returns an iterator for performance critical looping.
-        
-        Parameters
-        ----------
-        iR  : (10) integer
-            the number of ``dR`` ranges taken into account when doing the iterator
-        dR  : (self.dR), float
-            enables overwriting the local dR quantity.
- 
-        Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that 
-        need searched.
 
         NOTE: This requires that dR has been set correctly as the maximum interaction range.
 
@@ -298,6 +288,16 @@ class Geometry(SuperCellChild):
 
         Remark that the iterator used is non-deterministic, i.e. any two iterators need
         not return the same atoms in any way.
+        
+        Parameters
+        ----------
+        iR  : (10) integer
+            the number of ``dR`` ranges taken into account when doing the iterator
+        dR  : (self.dR), float
+            enables overwriting the local dR quantity.
+ 
+        Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that 
+        need searched.
         """
 
         # We implement yields as we can then do nested iterators
@@ -709,10 +709,12 @@ class Geometry(SuperCellChild):
     
     def center(self,atoms=None,which='xyz'):
         """ Returns the center of the geometry 
+
         By specifying ``which`` one can control whether it should be:
-        ``xyz|position``: Center of coordinates (default)
-        ``mass``: Center of mass
-        ``cell``: Center of cell
+
+        - ``xyz|position``: Center of coordinates (default)
+        - ``mass``: Center of mass
+        - ``cell``: Center of cell
         """
         if 'cell' in which:
             return self.sc.center()
@@ -737,10 +739,10 @@ class Geometry(SuperCellChild):
 
         The basic algorithm is this:
         
-          >>> oxa = other.xyz + self.cell[axis,:][None,:]
-          >>> self.xyz = np.append(self.xyz,oxa)
-          >>> self.cell[axis,:] += other.cell[axis,:]
-          >>> self.lasto = np.append(self.lasto,other.lasto)
+         >>> oxa = other.xyz + self.cell[axis,:][None,:]
+         >>> self.xyz = np.append(self.xyz,oxa)
+         >>> self.cell[axis,:] += other.cell[axis,:]
+         >>> self.lasto = np.append(self.lasto,other.lasto)
 
         NOTE: The cell appended is only in the axis that
         is appended, which means that the other cell directions
@@ -748,9 +750,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        other : Geometry/SuperCell
+        other : `Geometry`/`SuperCell`
             Other geometry class which needs to be appended
-            If a SuperCell only the super cell will be extended
+            If a `SuperCell` only the super cell will be extended
         axis  : int
             Cell direction to which the ``other`` geometry should be
             appended.
@@ -850,7 +852,7 @@ class Geometry(SuperCellChild):
 
         If dR is a tuple/list/array it will return the indices:
         in the ranges:
-           ( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )
+        >>> ( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )
 
         Parameters
         ----------
