@@ -71,9 +71,9 @@ class FDFSile(Sile):
     def _read(self,key):
         """ Returns the arguments following the keyword in the FDF file """
         if hasattr(self,'fh'):
-            return self.step_to(key.lower(),case=False)
+            return self.step_to(key,case=False)
         with self:
-            return self.step_to(key.lower(),case=False)
+            return self.step_to(key,case=False)
 
     def _read_block(self,key,force=False):
         """ Returns the arguments following the keyword in the FDF file """
@@ -87,7 +87,7 @@ class FDFSile(Sile):
             li = []
             while True:
                 l = fh.readline()
-                if fh.line_has_key(l.lower(),k,case=False): return True,li
+                if fh.line_has_key(l.lower(),k,case=False): return True, li
                 # Append list
                 li.append(l)
         raise SileError('Error on reading block: '+str(key) + ' could not find start/end.')
@@ -165,7 +165,9 @@ class FDFSile(Sile):
         NOTE: Interaction range of the Atoms are currently not read.
         """
 
-        f,lc = self._read('LatticeConstant')
+        f, lc = self._read('LatticeConstant')
+        if not f:
+            raise ValueError('Could not find LatticeConstant in fdf file.')
         s = float(lc.split()[1])
         if 'ang' in lc.lower():
             pass
@@ -178,7 +180,10 @@ class FDFSile(Sile):
         is_frac = False
         
         # Read atom scaling
-        lc = self._read('AtomicCoordinatesFormat')[1].lower()
+        f, lc = self._read('AtomicCoordinatesFormat')
+        if not f:
+            raise ValueError('Could not find AtomicCoordinatesFormat in fdf file.')
+        lc = lc.lower()
         if 'ang' in lc or 'notscaledcartesianang' in lc:
             s = 1.
             pass
@@ -207,10 +212,14 @@ class FDFSile(Sile):
 
         # Read number of atoms and block
         f, l = self._read('NumberOfAtoms')
+        if not f:
+            raise ValueError('Could not find NumberOfAtoms in fdf file.')
         na = 0
         if f: na = int(l.split()[1])
         # Read atom block
         f, atms = self._read_block('AtomicCoordinatesAndAtomicSpecies',force=True)
+        if not f:
+            raise ValueError('Could not find AtomicCoordinatesAndAtomicSpecies in fdf file.')
 
         # Reduce space if number of atoms specified
         if na > 0: atms = atms[:na]
@@ -230,6 +239,9 @@ class FDFSile(Sile):
         
         # Now we read in the species
         f, l = self._read('NumberOfSpecies')
+        if not f:
+            raise ValueError('Could not find NumberOfSpecies in fdf file.')
+
         ns = 0
         if f: ns = int(l.split()[1])
 

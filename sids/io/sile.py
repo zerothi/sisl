@@ -75,27 +75,45 @@ class Sile(BaseSile):
         del self.fh
         return False
 
+    @staticmethod
+    def is_keys(keys):
+        """ Returns true if ``isinstance(keys,(list,np.ndarray))`` """
+        return isinstance(keys, (list,np.ndarray))
 
     @staticmethod
-    def line_has_key(line,keyword,case=True):
-        found = False
-        if isinstance(keyword,(list,np.ndarray)):
-            if not case: keyword = [k.lower() for k in keyword]
-            if not case: 
-                l = line.lower()
-            else:
-                l = line
-            for key in keyword:
-                found |= l.find(key) >= 0
-        else:
-            if not case: keyword = keyword.lower()
-            if not case: 
-                l = line.lower()
-            else:
-                l = line
-            found = l.find(keyword) >= 0
-        return found    
+    def key2case(key, case):
+        """ Converts str/list of keywords to proper case """
+        if case:
+            return key
+        return key.lower()
 
+    @staticmethod
+    def keys2case(keys, case):
+        """ Converts str/list of keywords to proper case """
+        if case:
+            return keys
+        return [k.lower() for k in keys]
+
+
+    @staticmethod
+    def line_has_key(line, key, case=True):
+        if case:
+            return line.find(key) >= 0
+        return line.lower().find(key) >= 0
+
+
+    @staticmethod
+    def line_has_keys(line, keys, case=True):
+        found = False
+        if case:
+            for key in keys:
+                found |= line.find(key) >= 0
+        else:
+            l = line.lower()
+            for key in keys:
+                found |= l.find(key) >= 0
+        return found
+                
 
     def readline(self,comment=False):
         """ Reads the next line of the file """
@@ -106,16 +124,25 @@ class Sile(BaseSile):
         return l
 
 
-    def step_to(self,keyword,case=True):
+    def step_to(self,keywords,case=True):
         """ Steps the file-handle until the keyword is found in the input """
         # If keyword is a list, it just matches one of the inputs
         found = False
+
+        # Do checking outside line checks
+        if self.is_keys(keywords):
+            line_has = self.line_has_keys
+            keys = self.keys2case(keywords,case)
+        else:
+            line_has = self.line_has_key
+            keys = self.key2case(keywords,case)
+
 
         while not found:
             l = self.readline()
             if l == '':
                 break
-            found = self.line_has_key(l,keyword,case=case)
+            found = line_has(l,keys,case=case)
             
         # sometimes the line contains information, as a
         # default we return the line found
@@ -125,6 +152,16 @@ class Sile(BaseSile):
     def step_either(self,keywords,case=True):
         """ Steps the file-handle until the keyword is found in the input """
         # If keyword is a list, it just matches one of the inputs
+
+        # Do checking outside line checks
+        if self.is_keys(keywords):
+            line_has = self.line_has_key
+            keys = self.keys2case(keywords,case)
+        else:
+            found, l = self.step_to(keywords,case)
+            return found, 0, l
+
+        # initialize
         found = False
         j = -1
 
@@ -132,8 +169,9 @@ class Sile(BaseSile):
             l = self.readline()
             if l == '':
                 break
-            for i, keyword in enumerate(keywords):
-                found = self.line_has_key(l,keyword,case=case)
+
+            for i, key in enumerate(keys):
+                found = line_has(l,key,case=case)
                 if found:
                     j = i
                     break

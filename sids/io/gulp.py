@@ -160,13 +160,15 @@ class GULPSile(Sile):
             with self:
                 return self.read_tb(**kwargs)
 
+        dtype = kwargs.get('dtype',np.float64)
+
         geom = self.read_geom(**kwargs)
 
         # Easier for creation of the sparsity pattern
         from scipy.sparse import lil_matrix, diags
 
-        dyn = lil_matrix( (geom.no,geom.no) ,dtype = kwargs.get('dtype',np.float64) )
-        
+        dyn = lil_matrix( (geom.no,geom.no) ,dtype = dtype )
+
         f, _ = self.step_to(self._keys['dyn'])
         if not f:
             raise ValueError(('GULPSile tries to lookup the Dynamical matrix '
@@ -176,28 +178,50 @@ class GULPSile(Sile):
 
         # skip 1 line
         self.readline()
-        
+
+        # default range
         no = geom.no
+        dat = np.empty([no], dtype=dtype)
         i = 0 
         j = 0
         while True:
-            l = self.readline()
-            if len(l.strip()) == 0: break
+            l = self.readline().strip()
+            if len(l) == 0: break
 
+            # convert to float list
             ls = map(float, l.split())
-            # add the values (12 values == 3*4)
-            for k in range(4):
-                dyn[i,j  ] = ls[k*3  ]
-                dyn[i,j+1] = ls[k*3+1]
-                dyn[i,j+2] = ls[k*3+2]
-                j += 3
+
+            if j + 12 <= no:
+                # Here the full line can fit for the same row
+                dat[j:j+12] = ls[:12]
+                j += 12
                 if j >= no: 
+                    dyn[i,:] = dat[:]
+                    # step row
                     i += 1
+                    # reset column
                     j = 0
                     if i >= no: break
+            else:
+                # add the values (12 values == 3*4)
+                # for atoms on each line
+                for k in range(4):
+                    dat[j:j+3] = ls[k*3:(k+1)*3]
+
+                    j += 3
+                    if j >= no:
+                        dyn[i,:] = dat[:]
+                        i += 1
+                        j = 0
+                        if i >= no: break
+
+        # clean-up for memory
+        del dat
+
+        # Convert to COO format
+        dyn = dyn.tocoo()
 
         # Convert the GULP data to standard units
-        dyn = dyn.tocoo()
         dyn.data[:] *= ( 521.469 * 1.23981e-4 ) ** 2
 
         # Create "fake" overlap matrix
