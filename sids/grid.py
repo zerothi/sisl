@@ -197,7 +197,7 @@ class Grid(SuperCellChild):
 
 
     def cross_section(self,idx,axis):
-        """ Takes a cross-section of the grid along axis `axis`
+        """ Takes a cross-section of the grid along axis ``axis``
 
         Remark: This API entry might change to handle arbitrary
         cuts via rotation of the axis """
@@ -225,7 +225,7 @@ class Grid(SuperCellChild):
 
 
     def sum(self,axis):
-        """ Returns the grid summed along axis `axis`. """
+        """ Returns the grid summed along axis ``axis``. """
         # First calculate the new size
         size = self.size
         cell = np.copy(self.cell)
@@ -243,7 +243,7 @@ class Grid(SuperCellChild):
 
 
     def mean(self,axis):
-        """ Returns the average grid along direction `axis` """
+        """ Returns the average grid along direction ``axis`` """
         n = self.size[axis]
         g = self.sum(axis)
         g /= float(n)
@@ -260,9 +260,9 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis `axis` to be removed
-           for `above=True` grid[:idx,...]
-           for `above=False` grid[idx:,...]
+           the indices of the grid axis ``axis`` to be removed
+           for ``above=True`` grid[:idx,...]
+           for ``above=False`` grid[idx:,...]
         axis : int
            the axis segment from which we retain the indices `idx`
         above: bool
@@ -281,16 +281,16 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis `axis` to be retained
-           for `above=True` grid[idx:,...]
-           for `above=False` grid[:idx,...]
+           the indices of the grid axis ``axis`` to be retained
+           for ``above=True`` grid[idx:,...]
+           for ``above=False`` grid[:idx,...]
         axis : int
-           the axis segment from which we retain the indices `idx`
+           the axis segment from which we retain the indices ``idx``
         above: bool
-           if `True` will retain the grid:
-              `grid[idx:,...]`
+           if ``True`` will retain the grid:
+              ``grid[idx:,...]``
            else it will retain the grid:
-              `grid[:idx,...]`
+              ``grid[:idx,...]``
         """
         if above:
             sub = np.arange(idx,self.size[axis])
@@ -307,9 +307,9 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis `axis` to be retained
+           the indices of the grid axis ``axis`` to be retained
         axis : int
-           the axis segment from which we retain the indices `idx`
+           the axis segment from which we retain the indices ``idx``
         """
         uidx = np.unique(np.clip(idx,0,self.size[axis]-1))
 
@@ -350,9 +350,9 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis `axis` to be removed
+           the indices of the grid axis ``axis`` to be removed
         axis : int
-           the axis segment from which we remove all indices `idx`
+           the axis segment from which we remove all indices ``idx``
         """
         uidx = np.unique(np.clip(idx,0,self.size[axis]-1))
         ret_idx = np.setdiff1d(np.arange(self.size[axis]), uidx, assume_unique=True)
@@ -360,7 +360,7 @@ class Grid(SuperCellChild):
 
 
     def index(self,coord,axis=None):
-        """ Returns the index along the axis `axis` where `coord` exists
+        """ Returns the index along the axis ``axis`` where ``coord`` exists
 
         Parameters
         ----------
@@ -406,14 +406,14 @@ class Grid(SuperCellChild):
     
     @staticmethod
     def read(sile,*args,**kwargs):
-        """ Reads grid from the ``Sile`` using ``sile.read_grid``
+        """ Reads grid from the `Sile` using `read_grid`
 
         Parameters
         ----------
         sile : Sile, str
-            a ``Sile`` object which will be used to read the grid
-            if it is a string it will create a new sile using ``get_sile``.
-        * : args passed directly to `read_grid(,**)`
+            a `Sile` object which will be used to read the grid
+            if it is a string it will create a new sile using `get_sile`.
+        * : args passed directly to ``read_grid(,**)``
         """
         # This only works because, they *must*
         # have been imported previously
@@ -425,13 +425,13 @@ class Grid(SuperCellChild):
 
     
     def write(self,sile):
-        """ Writes grid to the ``Sile`` using ``sile.write_grid``
+        """ Writes grid to the `Sile` using `write_grid`
 
         Parameters
         ----------
         sile : Sile, str
-            a ``Sile`` object which will be used to write the grid
-            if it is a string it will create a new sile using ``get_sile``
+            a `Sile` object which will be used to write the grid
+            if it is a string it will create a new sile using `get_sile`
         """
 
         # This only works because, they *must*

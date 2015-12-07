@@ -105,7 +105,7 @@ class SuperCell(object):
     def swapaxes(self,a,b):
         """ Returns `SuperCell` with swapped axis
         
-        If `swapaxes(0,1)` it returns the 0 in the 1 values.
+        If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
         """
         # Create index vector
         idx = np.arange(3)

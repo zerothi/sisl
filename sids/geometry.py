@@ -713,9 +713,9 @@ class Geometry(SuperCellChild):
 
         By specifying ``which`` one can control whether it should be:
 
-         - ``xyz|position``: Center of coordinates (default)
-         - ``mass``: Center of mass
-         - ``cell``: Center of cell
+        * ``xyz|position``: Center of coordinates (default)
+        * ``mass``: Center of mass
+        * ``cell``: Center of cell
 
         Parameters
         ----------
@@ -1056,11 +1056,11 @@ class Geometry(SuperCellChild):
             If ``dR`` is an array it will return the indices:
             in the ranges:
 
-             >>> ``( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )``
+            >>> ``( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )``
 
             If a single float it will return:
 
-             >>> ``x <= dR``
+            >>> ``x <= dR``
 
         idx     : (None), array_like
             List of indices for atoms that are to be considered

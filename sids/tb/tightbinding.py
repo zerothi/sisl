@@ -36,7 +36,7 @@ class TightBinding(object):
     def __init__(self,geom,*args,**kwargs):
         """Create tight-binding model from geometry
 
-        Initializes a tight-binding model using the ``geom`` object
+        Initializes a tight-binding model using the :code:`geom` object
         as the underlying geometry for the tight-binding parameters.
         """
         self.geom = geom
@@ -209,18 +209,18 @@ class TightBinding(object):
 
 
     def construct(self,dR,param):
-        """ Automatically construct the tight-binding model based on `dR` and associated hopping integrals `param`.
+        """ Automatically construct the tight-binding model based on ``dR`` and associated hopping integrals ``param``.
 
         Parameters
         ----------
         dR : array_like
            radii parameters for tight-binding parameters.
-           Must have same length as `param` or one less.
-           If one less it will be extended with `dR[0]/100`
+           Must have same length as ``param`` or one less.
+           If one less it will be extended with ``dR[0]/100``
         param : array_like
-           tight-binding parameters corresponding to the `dR` 
-           ranges. `param[0,:]` are the tight-binding parameter
-           for the all atoms within `dR[0]` of each atom.
+           tight-binding parameters corresponding to the ``dR``
+           ranges. ``param[0,:]`` are the tight-binding parameter
+           for the all atoms within ``dR[0]`` of each atom.
         """
 
         if len(dR) + 1 == len(param):
@@ -228,8 +228,8 @@ class TightBinding(object):
         elif len(dR) == len(param):
             R = dR.copy()
         else:
-            raise ValueError(("Length of `dR` and `param` must be the same "
-                              "or `dR` one shorter than `param`. "
+            raise ValueError(("Length of dR and param must be the same "
+                              "or dR one shorter than param. "
                               "One tight-binding parameter for each radii."))
 
         if len(param[0]) != 2:
@@ -246,7 +246,7 @@ class TightBinding(object):
             # there is no need to do anything complex
             # for small systems
             for ia in self.geom:
-                # Find atoms close to `ia`
+                # Find atoms close to 'ia'
                 idx = self.geom.close(ia, dR = R)
                 for ix, h in zip(idx,param):
                     # Set the tight-binding parameters
@@ -269,7 +269,7 @@ class TightBinding(object):
         for ias, idxs in self.geom.iter_block(iR = iR):
             # Loop the atoms inside
             for ia in ias:
-                # Find atoms close to `ia`
+                # Find atoms close to 'ia'
                 idx = self.geom.close(ia, dR = R, idx = idxs)
                 for ix, h in zip(idx,param):
                     # Set the tight-binding parameters
@@ -357,7 +357,7 @@ class TightBinding(object):
 
 
     def tocsr(self,k=None):
-        """ Returns ``scipy.sparse`` matrices for the tight-binding model
+        """ Returns :code:`scipy.sparse` matrices for the tight-binding model
 
         Returns a CSR sparse matrix for both the Hamiltonian
         and the overlap matrix using the scipy package.
@@ -409,7 +409,7 @@ class TightBinding(object):
         the given k-point, then reduce the space to the specified atoms
         and calculate the eigenvalues.
 
-        All subsequent arguments gets passed directly to ``scipy.linalg.eigh``
+        All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
         H, S = self.tocsr(k=k)
         # Reduce sparsity pattern
@@ -475,7 +475,7 @@ class TightBinding(object):
                 break
 
             # Figure out if the Hamiltonian has interactions
-            # to ``isc``
+            # to 'isc'
             sub = H[0:geom.no,idx*self.no:(idx+1)*self.no].indices[:]
             if len(sub) == 0: break
 
@@ -542,17 +542,16 @@ class TightBinding(object):
 
 
     def tile(self,reps,axis):
-        """
-        Returns a repeated tight-binding model for this, much like the `Geometry`.
+        """ Returns a repeated tight-binding model for this, much like the `Geometry`
 
         The already existing tight-binding parameters are extrapolated 
         to the new supercell by repeating them in blocks like the coordinates.
         
         Parameters
         ----------
-        reps  : number of tiles (repetitions)
-        axis  : direction of tiling 
-                  0, 1, 2 according to the cell-direction
+        reps : number of tiles (repetitions)
+        axis : direction of tiling 
+            0, 1, 2 according to the cell-direction
         """
 
         # Create the new geometry
@@ -569,7 +568,7 @@ class TightBinding(object):
 
     
     def repeat(self,reps,axis):
-        """ Refer to ``self.tile`` instead """
+        """ Refer to `tile` instead """
         raise NotImplemented(('repeating a TightBinding model has not been '
                               'fully implemented yet, use tile instead.'))
 
@@ -594,8 +593,7 @@ class TightBinding(object):
         return tb
 
     def write(self,sile,*args,**kwargs):
-        """ Writes a tight-binding model to the ``sile`` as implemented in the ``ObjSile.write_tb``
-        method """
+        """ Writes a tight-binding model to the `Sile` as implemented in the :code:`ObjSile.write_tb` method """
         self.finalize()
 
         # This only works because, they *must*

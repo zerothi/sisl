@@ -3,14 +3,14 @@
 Atomic information can be created and handled using either the
 `PeriodicTable` object or the `Atom` object.
 
-- The `PeriodicTable` enables a *lookup* table for generic information
+* The `PeriodicTable` enables a *lookup* table for generic information
 about the atomic species in the periodic table of elements.
-- The `Atom` enables creating atoms with associated information, such as
-  - Mass
-  - Species
-  - Number of associated orbitals
-  - Radii of each associated orbital
-  - Custom tag (useful for denoting pseudo potentials)
+* The `Atom` enables creating atoms with associated information, such as
+  * Mass
+  * Species
+  * Number of associated orbitals
+  * Radii of each associated orbital
+  * Custom tag (useful for denoting pseudo potentials)
 
 """
 from __future__ import print_function, division
@@ -46,10 +46,10 @@ class PeriodicTable(object):
     
     The following values are accesible:
 
-     - atomic mass (in atomic units)
-     - empirical atomic radii (in Ang)
-     - calculated atomic radii (in Ang)
-     - van der Waals atomic radii (in Ang)
+     * atomic mass (in atomic units)
+     * empirical atomic radii (in Ang)
+     * calculated atomic radii (in Ang)
+     * van der Waals atomic radii (in Ang)
 
     For certain species the above quantities are not available
     and a negative number is returned.
@@ -940,10 +940,10 @@ class Atom(with_metaclass(AtomMeta,object)):
     The `Atom` object handles the atomic species with information
     such as
 
-     - atomic number
-     - mass
-     - number of orbitals
-     - radius of each orbital
+     * atomic number
+     * mass
+     * number of orbitals
+     * radius of each orbital
 
     Attributes
     ----------
