@@ -1185,7 +1185,7 @@ class Geometry(SuperCellChild):
     
     @classmethod
     def ASE(cls,aseg):
-        """ Returns geometry from an `ASE <https://wiki.fysik.dtu.dk/ase/>` object.
+        """ Returns geometry from an ASE object.
 
         Parameters
         ----------
