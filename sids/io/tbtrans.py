@@ -19,7 +19,7 @@ class TBtransSile(NCSile):
     """ TBtrans file object """
 
     def read_sc(self):
-        """ Returns `SuperCell` object from a *.TBT.nc file """
+        """ Returns `SuperCell` object from a .TBT.nc file """
         if not hasattr(self,'fh'):
             with self:
                 return self.read_sc()
@@ -32,8 +32,7 @@ class TBtransSile(NCSile):
     
 
     def read_geom(self):
-        """ Returns Geometry object from a *.TBT.nc file 
-        """
+        """ Returns Geometry object from a .TBT.nc file """
         if not hasattr(self,'fh'):
             with self:
                 return self.read_geom()

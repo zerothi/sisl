@@ -399,7 +399,7 @@ class Geometry(SuperCellChild):
         cut out region are within the primary unit-cell.
 
         Doing ``geom.cut(2,1).tile(reps=2,axis=1)``, could for symmetric setups,
-        be equivalent to a no-op operation. A `UserWarning` will be issued
+        be equivalent to a no-op operation. A ``UserWarning`` will be issued
         if this is not the case.
 
         Parameters
@@ -537,11 +537,12 @@ class Geometry(SuperCellChild):
 
         The expansion of the atoms are basically performed using this
         algorithm:
-          ja = 0
-          for ia in range(self.na):
-              for id,r in args:
-                 for i in range(r):
-                    ja = ia + cell[id,:] * i
+
+         >>> ja = 0
+         >>> for ia in range(self.na):
+         >>>     for id,r in args:
+         >>>        for i in range(r):
+         >>>           ja = ia + cell[id,:] * i
 
         This method allows to utilise Bloch's theorem when creating
         tight-binding parameter sets for TBtrans.
@@ -712,9 +713,17 @@ class Geometry(SuperCellChild):
 
         By specifying ``which`` one can control whether it should be:
 
-        - ``xyz|position``: Center of coordinates (default)
-        - ``mass``: Center of mass
-        - ``cell``: Center of cell
+         - ``xyz|position``: Center of coordinates (default)
+         - ``mass``: Center of mass
+         - ``cell``: Center of cell
+
+        Parameters
+        ----------
+        atoms : list, ndarray
+            list of atomic indices to find center of
+        which : str
+            determine whether center should be of 'cell', mass-centered ('mass'),
+            or absolute center of the positions.
         """
         if 'cell' in which:
             return self.sc.center()
@@ -1038,7 +1047,7 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        xyz_ia  : coordinate/index
+        xyz_ia : coordinate/index
             Either a point in space or an index of an atom.
             If an index is passed it is the equivalent of passing
             the atomic coordinate `close_sc(self.xyz[xyz_ia,:])`.
@@ -1046,9 +1055,13 @@ class Geometry(SuperCellChild):
             The radii parameter to where the atomic connections are found.
             If ``dR`` is an array it will return the indices:
             in the ranges:
-               ``( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )``
+
+             >>> ``( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )``
+
             If a single float it will return:
-               ``x <= dR``
+
+             >>> ``x <= dR``
+
         idx     : (None), array_like
             List of indices for atoms that are to be considered
         ret_coord : (False), boolean

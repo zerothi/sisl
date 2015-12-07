@@ -68,7 +68,9 @@ def add_sile(ending,obj,case=True,gzip=False):
          This option should only be given to files with ASCII text
          output.
          It will automatically call:
-           `add_sile(ending+'.gz',...,gzip=False)`
+
+          >>> add_sile(ending+'.gz',...,gzip=False)
+
          to add the gzipped file to the list of possible files.
     """
     global _objs

@@ -45,6 +45,7 @@ class PeriodicTable(object):
       <https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)>
     
     The following values are accesible:
+
      - atomic mass (in atomic units)
      - empirical atomic radii (in Ang)
      - calculated atomic radii (in Ang)
@@ -53,13 +54,13 @@ class PeriodicTable(object):
     For certain species the above quantities are not available
     and a negative number is returned.
 
-    >>> 12.0107 == PeriodicTable().atomic_mass('C')
-    >>> 12.0107 == PeriodicTable().atomic_mass(6)
-    >>> 12.0107 == PeriodicTable().atomic_mass('Carbon')
-    >>> .67 == PeriodicTable().radii('Carbon')
-    >>> .67 == PeriodicTable().radii(6,'calc')
-    >>> .7  == PeriodicTable().radii(6,'empirical')
-    >>> 1.7 == PeriodicTable().radii(6,'vdw')
+     >>> 12.0107 == PeriodicTable().atomic_mass('C')
+     >>> 12.0107 == PeriodicTable().atomic_mass(6)
+     >>> 12.0107 == PeriodicTable().atomic_mass('Carbon')
+     >>> .67 == PeriodicTable().radii('Carbon')
+     >>> .67 == PeriodicTable().radii(6,'calc')
+     >>> .7  == PeriodicTable().radii(6,'empirical')
+     >>> 1.7 == PeriodicTable().radii(6,'vdw')
 
     """
     _Z_int = {
@@ -792,16 +793,14 @@ class PeriodicTable(object):
 
         Return the atomic number corresponding to the `key` lookup.
 
-        @seealso `Z_int`
-
         Parameters
         ----------
         key : array_like, str, int
             Uses value to lookup the atomic number in the `PeriodicTable`
             object.
 
-        Return
-        ------
+        Returns
+        -------
         Z : ndarray, int
             The atomic number corresponding to `key`, if `key` is array_like, so
             will the returned value be.
@@ -822,9 +821,7 @@ class PeriodicTable(object):
     def Z_label(self,key):
         """ Return the atomic label of the corresponding atom
 
-        Return the atomic short name corresponding to the `key` lookup.
-
-        @seealso `Z_short`
+        Return the atomic short name corresponding to the ``key`` lookup.
 
         Parameters
         ----------
@@ -832,11 +829,11 @@ class PeriodicTable(object):
             Uses value to lookup the atomic short name in the 
             `PeriodicTable` object.
 
-        Return
-        ------
+        Returns
+        -------
         name : ndarray, str
-            The atomic short name corresponding to `key`, if `key` is array_like, so
-            will the returned value be.
+            The atomic short name corresponding to ``key``, if ``key`` 
+            is array_like, so will the returned value be.
         """
         ak = np.asarray([key]).flatten()
         if len(ak) == 1: return self._Z_short[ak[0]]
@@ -847,7 +844,7 @@ class PeriodicTable(object):
     def atomic_mass(self,key):
         """ Return the atomic mass of the corresponding atom
 
-        Return the atomic mass corresponding to the `key` lookup.
+        Return the atomic mass corresponding to the ``key`` lookup.
 
         Parameters
         ----------
@@ -858,8 +855,8 @@ class PeriodicTable(object):
         Return
         ------
         name : ndarray, float
-            The atomic mass in atomic units corresponding to `key`, if `key` is array_like, so
-            will the returned value be.
+            The atomic mass in atomic units corresponding to ``key``, 
+            if ``key`` is array_like, so will the returned value be.
         """
         Z = self.Z_int(key)
         if isinstance(Z,Integral): return self._atomic_mass[Z]
@@ -877,12 +874,13 @@ class PeriodicTable(object):
             `PeriodicTable` object.
         radii : str
             There are 3 different radii stored:
-             1) `calc`, the calculated
-             2) `empirical`, the empirically found values
-             3) `vdw`, the van der Waals found values
 
-        Return
-        ------
+             1. ``calc``, the calculated
+             2. ``empirical``, the empirically found values
+             3. ``vdw``, the van der Waals found values
+
+        Returns
+        -------
         radii : ndarray, float
             The atomic radii in `Ang`
         """
@@ -941,6 +939,7 @@ class Atom(with_metaclass(AtomMeta,object)):
 
     The `Atom` object handles the atomic species with information
     such as
+
      - atomic number
      - mass
      - number of orbitals
