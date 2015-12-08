@@ -88,7 +88,7 @@ class Geometry(SuperCellChild):
     def __init__(self,xyz,atoms=_H,sc=None):
 
         # Create the geometry coordinate
-        self.xyz = np.asarray(xyz,dtype=np.float64)
+        self.xyz = np.copy(np.asarray(xyz,dtype=np.float64))
         self.xyz.shape = (-1, 3)
         self.na = len(self.xyz)
 
@@ -634,7 +634,7 @@ class Geometry(SuperCellChild):
              if ``abc`` is in this string the cell will be rotated
              if ``xyz`` is in this string the coordinates will be rotated
         """
-        vn = np.asarray(v,dtype=np.float64)[:]
+        vn = np.copy(np.asarray(v,dtype=np.float64)[:])
         vn /= np.sum(vn ** 2) ** .5
         q = Quaternion(angle, vn, degree=degree)
         q /= q.norm() # normalize the quaternion

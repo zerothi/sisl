@@ -167,7 +167,7 @@ class SuperCell(object):
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
         """
-        vn = np.asarray(v,dtype=np.float64)[:]
+        vn = np.copy(np.asarray(v,dtype=np.float64)[:])
         vn /= np.sum(vn ** 2) ** .5
         q = Quaternion(angle, vn, degree=degree)
         q /= q.norm() # normalize the quaternion
@@ -298,7 +298,7 @@ class SuperCell(object):
             raise ValueError("Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.")
 
         # There is only one argument, make array
-        tmp = np.asarray(args[0],dtype=np.float64)
+        tmp = np.copy(np.asarray(args[0],dtype=np.float64))
         if len(tmp.shape) == 2:
             return tmp
         elif len(tmp.shape) == 1:
@@ -318,8 +318,9 @@ class SuperCell(object):
         """ Returns true if the cell vectors are orthogonal """
         # Convert to unit-vector cell
         cell = np.copy(self.cell)
-        for i in range(3):
-            cell[i,:] = cell[i,:] / np.sum( cell[i,:]**2 ) ** .5
+        cell[0,:] = cell[0,:] / np.sum( cell[0,:]**2 ) ** .5
+        cell[1,:] = cell[1,:] / np.sum( cell[1,:]**2 ) ** .5
+        cell[2,:] = cell[2,:] / np.sum( cell[2,:]**2 ) ** .5
         i_s = True
         i_s = i_s and np.dot(cell[0,:],cell[1,:]) < 0.001
         i_s = i_s and np.dot(cell[0,:],cell[2,:]) < 0.001
