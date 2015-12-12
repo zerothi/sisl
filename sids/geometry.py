@@ -370,6 +370,8 @@ class Geometry(SuperCellChild):
 
         Indices passed *MUST* be unique.
 
+        Negative indices are wrapped and thus works.
+
         Parameters
         ----------
         atoms  : array_like
@@ -377,11 +379,11 @@ class Geometry(SuperCellChild):
         cell   : (``self.cell``), array_like, optional
             the new associated cell of the geometry
         """
-        atms = np.asarray([atoms],np.int32).flatten()
+        atms = np.asarray([atoms],np.int32).flatten() % self.na
         if cell is None: 
-            return self.__class__(self.xyz[atoms,:],
+            return self.__class__(self.xyz[atms,:],
                                   atoms=[self.atoms[i] for i in atms], sc=self.sc.copy())
-        return self.__class__(self.xyz[atoms,:],
+        return self.__class__(self.xyz[atms,:],
                             atoms=[self.atoms[i] for i in atms], sc=cell)
 
 
@@ -465,12 +467,15 @@ class Geometry(SuperCellChild):
 
         Indices passed *MUST* be unique.
 
+        Negative indices are wrapped and thus works.
+
         Parameters
         ----------
         atoms  : array_like
             indices of all atoms to be removed.
         """
-        idx = np.setdiff1d(np.arange(self.na),atoms,assume_unique=True)
+        atms = np.asarray([atoms], np.int32).flatten() % self.na
+        idx = np.setdiff1d(np.arange(self.na), atms, assume_unique=True)
         return self.sub(idx)
 
 

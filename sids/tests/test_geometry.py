@@ -81,6 +81,8 @@ class TestGeometry(object):
     def test_sub(self):
         assert_true( len(self.g.sub([0])) == 1 )
         assert_true( len(self.g.sub([0,1])) == 2 )
+        assert_true( len(self.g.sub([-1])) == 1 )
+
 
     def test_cut(self):
         assert_true( len(self.g.cut(1,1)) == 2 )
@@ -96,6 +98,9 @@ class TestGeometry(object):
     def test_remove(self):
         assert_true( len(self.g.remove([0])) == 1 )
         assert_true( len(self.g.remove([])) == 2 )
+        assert_true( len(self.g.remove([-1])) == 1 )
+        assert_true( len(self.g.remove([-0])) == 1 )
+
 
     def test_nsc1(self):
         nsc = np.copy(self.g.nsc)
@@ -213,3 +218,4 @@ class TestGeometry(object):
         g1 = Geometry([[0,0,0],[1,1,1]],sc=[2,2,1])
         g1.set_sc(s1)
         assert_true( g1.sc == s1 )
+
