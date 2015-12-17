@@ -445,7 +445,7 @@ class TightBinding(object):
             # Check whether the warning exists
             if len(w) > 0:
                 if issubclass(w[-1].category,UserWarning):
-                    new_w = w[-1].message
+                    new_w = str(w[-1].message)
                     new_w += ("\n---\n"
                               "The tight-binding model cannot be cut as the structure "
                              "cannot be tiled accordingly. ANY use of the model has been "
@@ -477,6 +477,7 @@ class TightBinding(object):
             # Figure out if the Hamiltonian has interactions
             # to 'isc'
             sub = H[0:geom.no,idx*self.no:(idx+1)*self.no].indices[:]
+            sub = np.unique(np.hstack((sub,S[0:geom.no,idx*self.no:(idx+1)*self.no].indices[:])))
             if len(sub) == 0: break
 
             c_max = np.amax(sub)
@@ -538,6 +539,17 @@ class TightBinding(object):
                 tb[jo,o+ofp] = iH, S[jo,io]
                 tb[o,jo+ofm] = iH, S[jo,io]
 
+            if np.any(sH.indices != sS.indices):
+
+                # Ensure that S is also cut
+                for io, iS in zip(sS.indices,sS.data):
+                    # Get the equivalent orbital in the smaller cell
+                    o, ofp, ofm = sco2sco(self.geom,io,tb.geom,seps,axis)
+                    if o is None: continue
+                    tb[jo,o+ofp] = H[jo,io], iS
+                    tb[o,jo+ofm] = H[jo,io], iS
+
+                
         return tb
 
 
@@ -575,20 +587,39 @@ class TightBinding(object):
     
     @classmethod
     def sp2tb(cls,geom,H,S):
-        """ Returns a tight-binding model from a preset H, S and Geometry """
+        """ Returns a tight-binding model from a preset H, S and Geometry 
+        
+        H and S are overwritten on exit
+        """
 
         # Calculate number of connections
         nc = 0
+        # Ensure csr format
         H = H.tocsr()
+        S = S.tocsr()
         for i in range(geom.no):
             nc = max(nc,H[i,:].getnnz())
-        H = H.tocoo()
+            nc = max(nc,S[i,:].getnnz())
         
         tb = cls(geom,nc=nc)
 
         # Copy data to the model
-        for jo,io,h in zip(H.row,H.col,H.data):
-            tb[jo,io] = (h,S[jo,io])
+        H = H.tocoo()
+        for jo, io, h in zip(H.row,H.col,H.data):
+            tb[jo,io] = (h, S[jo,io])
+
+        # Convert S to coo matrix
+        S = S.tocoo()
+        # If the Hamiltonian for one reason or the other
+        # is zero in the diagonal, then we *must* account for
+        # this as it isn't captured in the above loop.
+        skip_S = np.all(H.row == S.row)
+        skip_S = skip_S and np.all(H.col == S.col)
+        if not skip_S:
+            # Re-convert back to allow index retrieval
+            H = H.tocsr()
+            for jo, io, s in zip(S.row,S.col,S.data):
+                tb[jo,io] = (H[jo,io], s)
 
         return tb
 

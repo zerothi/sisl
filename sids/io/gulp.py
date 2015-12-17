@@ -225,8 +225,10 @@ class GULPSile(Sile):
         dyn.data[:] *= ( 521.469 * 1.23981e-4 ) ** 2
 
         # Create "fake" overlap matrix
-        S = diags([1.],[0],shape=dyn.shape)
+        ones = np.ones(dyn.shape[0], dtype=dtype)
+        S = diags(ones, 0, shape=dyn.shape)
         S = S.tocsr()
+        del ones
 
         return PhononTightBinding.sp2tb(geom,dyn,S)
 
