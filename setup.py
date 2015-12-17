@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-sids: Library to create/mingle/handle geometries and tight-binding sets in python.
+Library to create/handle geometries and tight-binding parameters in Python. Made with DFT in mind.
 """
 
 from __future__ import print_function
@@ -16,7 +16,7 @@ import sys, subprocess
 import os, os.path as osp
 
 CLASSIFIERS = """\
-Development Status :: 5 - Production
+Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
 License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
 Programming Language :: Python :: 2
@@ -57,6 +57,7 @@ metadata = dict(
     maintainer_email = "nickpapior@gmail.com",
     description = DOCLINES[0],
     long_description = "\n".join(DOCLINES[2:]),
+    url = "https://github.com/zerothi/sids",
     download_url = "https://github.com/zerothi/sids/releases",
     license = 'LGPLv3',
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
