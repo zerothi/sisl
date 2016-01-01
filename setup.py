@@ -36,6 +36,7 @@ MINOR               = 4
 MICRO               = 8
 ISRELEASED          = False
 VERSION             = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
+GIT_REVISION        = 'unknown'
 
 def generate_cython():
     cwd = osp.abspath(osp.dirname(__file__))
@@ -62,7 +63,7 @@ metadata = dict(
     license = 'LGPLv3',
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     platforms = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
-    test_suite='nose.collector',
+#    test_suite='nose.collector',
     scripts = scripts,
     )
 
@@ -95,6 +96,7 @@ if not ISRELEASED:
 # With credits from NUMPY developers we use this
 # routine to get the git-tag
 def git_version():
+    global GIT_REVISION
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
@@ -111,11 +113,12 @@ def git_version():
 
     try:
         out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
-        GIT_REVISION = out.strip().decode('ascii')
+        rev = out.strip().decode('ascii')
     except OSError:
-        GIT_REVISION = "Unknown"
+        # Retain the revision name
+        rev = GIT_REVISION
 
-    return GIT_REVISION
+    return rev
 
 
 def write_version_py(filename='sids/version.py'):
@@ -144,8 +147,12 @@ if not release:
     
 if __name__ == '__main__':
 
-    # Create version file
-    write_version_py()
+    try:
+        # Create version file
+        # if allowed
+        write_version_py()
+    except:
+        pass
     
     # Main setup of python modules
     setup(**metadata)

@@ -69,6 +69,9 @@ fi
 # Create version string
 v=$MAJOR.$MINOR.$MICRO
 
+# Git revision
+rev=`git rev-parse HEAD`
+
 # Message for release
 MSG="Releasing v$v"
 
@@ -76,8 +79,10 @@ MSG="Releasing v$v"
 sed -i -e "s:\(MAJOR[[:space:]]*=\).*:\1 $MAJOR:" setup.py
 sed -i -e "s:\(MINOR[[:space:]]*=\).*:\1 $MINOR:" setup.py
 sed -i -e "s:\(MICRO[[:space:]]*=\).*:\1 $MICRO:" setup.py
-# Update release tag
+# Update release tag and git revision
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 True:" setup.py
+sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 $rev:" setup.py
+
 
 echo "Tagging with message:"
 echo " -m '$MSG'"
