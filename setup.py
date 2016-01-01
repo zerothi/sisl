@@ -57,7 +57,7 @@ metadata = dict(
     maintainer = "Nick R. Papior",
     maintainer_email = "nickpapior@gmail.com",
     description = DOCLINES[0],
-    long_description = "\n".join(DOCLINES[2:]),
+    long_description = open("README.md",'r').read(),
     url = "https://github.com/zerothi/sids",
     download_url = "https://github.com/zerothi/sids/releases",
     license = 'LGPLv3',
@@ -108,7 +108,8 @@ def git_version():
         env['LANGUAGE'] = 'C'
         env['LANG'] = 'C'
         env['LC_ALL'] = 'C'
-        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
+        out = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, env=env).communicate()[0]
         return out
 
     try:
