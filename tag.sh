@@ -81,7 +81,7 @@ sed -i -e "s:\(MINOR[[:space:]]*=\).*:\1 $MINOR:" setup.py
 sed -i -e "s:\(MICRO[[:space:]]*=\).*:\1 $MICRO:" setup.py
 # Update release tag and git revision
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 True:" setup.py
-sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 $rev:" setup.py
+sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 \"$rev\":" setup.py
 
 
 echo "Tagging with message:"
