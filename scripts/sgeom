@@ -80,7 +80,7 @@ def run():
 
     # Rotation, translation
     p.add_argument('-R','--rotate',nargs=2,default=[],type=dir_angle,action='append',
-                   metavar=('angle','dir'),
+                   metavar=('dir','angle'),
                    help='Rotate geometry around given axis (add <angle>r to get radians), appends.')
     p.add_argument('-Rx','--rotate-x',type=dir_angle,default=None,metavar='angle',
                    help='Rotate geometry around the x-axis')
@@ -93,13 +93,13 @@ def run():
     p.add_argument('-s','--sub',type=str,default=None,action='append',
                    metavar='rng',
                    help='Removes the specified atoms, can be complex ranges. Appends.')
-    p.add_argument('--cut',nargs=2,type=dir_int,default=None,
-                   metavar=('seps','dir'),
+    p.add_argument('--cut',nargs=2,type=dir_int,default=None,action='append',
+                   metavar=('dir','seps'),
                    help='Cuts the geometry in pieces, saves the first cut.')
 
 
     p.add_argument('-r','--repeat',nargs=2,type=dir_int,default=None,action='append',
-                   metavar=('repeat','dir'),
+                   metavar=('dir','repeat'),
                    help='Repeats in the specified direction, appends.')
     p.add_argument('-rx','--repeat-x',type=int,default=1,metavar='repeat',
                    help='Repeats in the x-direction.')
@@ -109,7 +109,7 @@ def run():
                    help='Repeats in the z-direction.')
 
     p.add_argument('-t','--tile',nargs=2,type=dir_int,action='append',
-                   metavar=('tile','dir'),
+                   metavar=('dir','tile'),
                    help='Tiles in the specified direction, appends.')
     p.add_argument('-tx','--tile-x',type=int,default=1,metavar='tile',
                    help='Tiles in the x-direction.')
@@ -195,12 +195,12 @@ def geom_convert(args):
 
 
     if not args.repeat is None:
-        for r, d in args.repeat:
+        for d, r in args.repeat:
             g = g.repeat(r,d)
 
 
     if not args.tile is None:
-        for t, d in args.tile:
+        for d, t in args.tile:
             g = g.tile(t,d)
 
     g = g.repeat(args.repeat_x,0).repeat(args.repeat_y,1).repeat(args.repeat_z,2)
@@ -211,7 +211,7 @@ def geom_convert(args):
     if args.rotate_y: args.rotate.append( (args.rotate_y, 1) )
     if args.rotate_z: args.rotate.append( (args.rotate_z, 2) )
     if args.rotate:
-        for ang, d in args.rotate:
+        for d, ang in args.rotate:
             if d == 0:
                 v = [1,0,0]
             elif d == 1:
@@ -231,7 +231,8 @@ def geom_convert(args):
 
     # Cuts the geometry
     if args.cut:
-        g = g.cut(*args.cut)
+        for d, s in args.cut:
+            g = g.cut(s, d)
 
 
     # Store geometry
