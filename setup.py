@@ -34,7 +34,7 @@ Operating System :: MacOS
 MAJOR               = 0
 MINOR               = 5
 MICRO               = 1
-ISRELEASED          = True
+ISRELEASED          = False
 VERSION             = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 GIT_REVISION        = "8bfe94d9baeba1b93640dba591120d8d6a10f291"
 
