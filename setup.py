@@ -57,7 +57,12 @@ metadata = dict(
     maintainer = "Nick R. Papior",
     maintainer_email = "nickpapior@gmail.com",
     description = "Tight-binding models and interfacing the tight-binding transport calculator TBtrans",
-    long_description = open("README.md",'r').read(),
+    long_description = """Manipulating with SIESTA output files.
+
+Creation of geometries using simple IO interfaces with multiple formats.
+
+Tight-binding models and interfacing the tight-binding transport calculator TBtrans.
+""",
     url = "https://github.com/zerothi/sids",
     download_url = "https://github.com/zerothi/sids/releases",
     license = 'LGPLv3',
