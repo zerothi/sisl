@@ -24,4 +24,9 @@ from .grid import *
 from .io import *
 from .tb import *
 
+# Import the default geom structure
+# This enables:
+# import sids
+# sids.geom.graphene
+from . import geom
 
