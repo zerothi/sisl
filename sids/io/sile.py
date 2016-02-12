@@ -12,7 +12,7 @@ __all__ = ['BaseSile','Sile','NCSile','SileError','sile_raise_write','sile_raise
 class BaseSile(object):
     """ Base class for the Siles """
 
-    def _setup(self):
+    def _setup(self,*args,**kwargs):
         """ Setup the `Sile` after initialization
         
         Inherited method for setting up the sile.
@@ -22,7 +22,7 @@ class BaseSile(object):
         pass
 
 
-    def __setup(self):
+    def __setup(self,*args,**kwargs):
         """ Setup the `Sile` after initialization
         
         Inherited method for setting up the sile.
@@ -30,7 +30,7 @@ class BaseSile(object):
         This method **must** be overwritten *and*
         end with ``self._setup()``.
         """
-        self._setup()
+        self._setup(*args,**kwargs)
 
 
 class Sile(BaseSile):
@@ -201,10 +201,22 @@ class NCSile(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
 
-    def __init__(self,filename,mode=None,lvl=0):
+    def __init__(self,filename,mode=None,lvl=0,access=0):
+        """ Creates/Opens a NCSile
+
+        Opens a NCSile with `mode` and compression level `lvl`.
+        If `mode` is in read-mode (r) the compression level 
+        is ignored.
+
+        The final `access` parameter sets how the file should be
+        open and subsequently accessed.
+        
+        0) means direct file access for every variable read
+        1) means stores certain variables in the object.
+        """
 
         # Must call setup-methods
-        self.__setup()
+        self.__setup(access=access)
 
         self.file = filename
         if mode:
@@ -213,10 +225,11 @@ class NCSile(BaseSile):
         self._lvl = lvl
 
 
-    def __setup(self):
+    def __setup(self,access=0):
         """ Setup `NCSile` after initialization """
         self._mode = 'r'
         self._lvl = 0
+        self._access = access
 
         self._setup()
 
