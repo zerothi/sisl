@@ -168,6 +168,27 @@ class TightBinding(object):
 
     ############# DONE creating easy overrides #################
 
+    # Create iterations module
+    def iter_linear(self):
+        """ Iterations of the orbital space, two indices from loop
+
+        An iterator returning the current atomic index and the corresponding
+        orbital index.
+
+        >>> for ia, io in self:
+
+        In the above case `io` always belongs to atom `ia` and `ia` may be 
+        repeated according to the number of orbitals associated with 
+        the atom `ia`.
+        """
+        for ia in self.geom:
+            ia1, ia2 = self.geom.lasto[ia], self.geom.lasto[ia+1]
+            for io in range(ia1, ia2):
+                yield ia, io
+
+    __iter__ = iter_linear
+    
+
     def reset(self,nc=None,dtype=np.float64):
         """
         The sparsity pattern is cleaned and every thing 

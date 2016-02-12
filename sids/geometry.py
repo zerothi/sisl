@@ -269,6 +269,7 @@ class Geometry(SuperCellChild):
         for ia in range(len(self)):
             yield ia
 
+    # Default iteration module to loop over atoms
     __iter__ = iter_linear
 
 
