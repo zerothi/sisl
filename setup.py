@@ -52,6 +52,12 @@ scripts = ['sgeom','sgrid']
 
 scripts = [osp.join('scripts', script) for script in scripts]
 
+build_requires = []
+try:
+    import numpy
+except:
+    build_requires = ['numpy>=1.7']
+
 metadata = dict(
     name = 'sids',
     maintainer = "Nick R. Papior",
@@ -68,11 +74,10 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
     license = 'LGPLv3',
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     platforms = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
-#    test_suite='nose.collector',
     scripts = scripts,
-    )
-
-from numpy.distutils.core import setup
+    setup_requires = build_requires,
+    install_requires = build_requires,
+)
 
 cwd = osp.abspath(osp.dirname(__file__))
 if not osp.exists(osp.join(cwd, 'PKG-INFO')):
@@ -159,6 +164,14 @@ if __name__ == '__main__':
         write_version_py()
     except:
         pass
+
+    # From scipy:
+    if (len(sys.argv) >= 2 and sys.argv[1] == 'bdist_wheel') or (
+            'develop' in sys.argv):
+        # bdist_wheel needs setuptools
+        import setuptools
+
+    from numpy.distutils.core import setup
     
     # Main setup of python modules
     setup(**metadata)
