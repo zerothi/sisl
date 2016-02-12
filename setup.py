@@ -33,10 +33,10 @@ Operating System :: MacOS
 
 MAJOR               = 0
 MINOR               = 5
-MICRO               = 2
-ISRELEASED          = False
+MICRO               = 3
+ISRELEASED          = True
 VERSION             = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION        = "1a0cfbea81be501a2efc4d186c0dea42ac925e80"
+GIT_REVISION        = "13513ada1d96c6e85d7352debc5a62e912a74ac7"
 
 def generate_cython():
     cwd = osp.abspath(osp.dirname(__file__))
