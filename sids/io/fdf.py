@@ -87,7 +87,9 @@ class FDFSile(Sile):
             li = []
             while True:
                 l = fh.readline()
-                if fh.line_has_key(l.lower(),k,case=False): return True, li
+                if fh.line_has_key('%endblock',k,case=False) or \
+                   fh.line_has_key(l.lower(),k,case=False):
+                    return True, li
                 # Append list
                 li.append(l)
         raise SileError('Error on reading block: '+str(key) + ' could not find start/end.')
