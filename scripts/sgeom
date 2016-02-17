@@ -59,9 +59,9 @@ def run():
         if val in ['x','y','z','a','b','c']:
             return 'xaybzc'.index(val) // 2
         try:
-            val = val.replace('pi',np.pi)
             if 'r' in val:
                 # Radians
+                val = val.replace('pi', np.pi)
                 tmp = eval(val.replace('r',''))
             else:
                 tmp = eval(val.replace('d','').replace('a','')) / 180 * np.pi
@@ -207,9 +207,9 @@ def geom_convert(args):
     g = g.tile(args.tile_x,0).tile(args.tile_y,1).tile(args.tile_z,2)
 
     # Rotate geometry
-    if args.rotate_x: args.rotate.append( (args.rotate_x, 0) )
-    if args.rotate_y: args.rotate.append( (args.rotate_y, 1) )
-    if args.rotate_z: args.rotate.append( (args.rotate_z, 2) )
+    if args.rotate_x: args.rotate.append( (0, args.rotate_x) )
+    if args.rotate_y: args.rotate.append( (1, args.rotate_y) )
+    if args.rotate_z: args.rotate.append( (2, args.rotate_z) )
     if args.rotate:
         for d, ang in args.rotate:
             if d == 0:

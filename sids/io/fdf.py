@@ -86,9 +86,9 @@ class FDFSile(Sile):
             if not f: return False,[] # not found
             li = []
             while True:
-                l = fh.readline()
-                if fh.line_has_key('%endblock',k,case=False) or \
-                   fh.line_has_key(l.lower(),k,case=False):
+                l = fh.readline().lower()
+                if fh.line_has_key(l,'%endblock') or \
+                   fh.line_has_key(l,k,case=False):
                     return True, li
                 # Append list
                 li.append(l)
