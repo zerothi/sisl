@@ -264,7 +264,6 @@ class FDFSile(Sile):
                 ns = len(spcs)
             # Pre-allocate the species array
             sp = [None] * ns
-            import sys
             for spc in spcs:
                 #  index Z pseudo-tag
                 l = spc.split()
