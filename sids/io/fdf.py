@@ -79,7 +79,7 @@ class FDFSile(Sile):
         """ Returns the arguments following the keyword in the FDF file """
         k = key.lower()
         with self as fh:
-            f,lc = fh.step_to(k,case=False)
+            f, lc = fh.step_to(k,case=False)
             if force and not f:
                 # The user requests that the block *MUST* be found
                 raise SileError('Requested forced block could not be found: '+str(key) + '.',self)
@@ -161,7 +161,7 @@ class FDFSile(Sile):
         return SuperCell(cell)
 
 
-    def read_geom(self,*args,**kwargs):
+    def read_geom(self, *args, **kwargs):
         """ Returns Geometry object from the FDF file 
 
         NOTE: Interaction range of the Atoms are currently not read.
@@ -176,7 +176,7 @@ class FDFSile(Sile):
         elif 'bohr' in lc.lower():
             s /= Bohr
 
-        sc = self.read_sc(*args,**kwargs)
+        sc = self.read_sc(*args, **kwargs)
 
         # No fractional coordinates
         is_frac = False
@@ -202,7 +202,7 @@ class FDFSile(Sile):
 
         # If the user requests a shifted geometry
         # we correct for this
-        origo = np.zeros([3],np.float64)
+        origo = np.zeros([3], np.float64)
         run = 'origin' in kwargs
         if run: run = kwargs['origin']
         if run:
@@ -212,30 +212,38 @@ class FDFSile(Sile):
         # Origo cannot be interpreted with fractional coordinates
         # hence, it is not transformed.
 
-        # Read number of atoms and block
-        f, l = self._read('NumberOfAtoms')
-        if not f:
-            raise ValueError('Could not find NumberOfAtoms in fdf file.')
-        na = 0
-        if f: na = int(l.split()[1])
         # Read atom block
         f, atms = self._read_block('AtomicCoordinatesAndAtomicSpecies',force=True)
         if not f:
             raise ValueError('Could not find AtomicCoordinatesAndAtomicSpecies in fdf file.')
 
+        # Read number of atoms and block
+        f, l = self._read('NumberOfAtoms')
+        if not f:
+            # We default to the number of elements in the
+            # AtomicCoordinatesAndAtomicSpecies block
+            na = len(atms)
+        else:
+            na = int(l.split()[1])
+
         # Reduce space if number of atoms specified
-        if na > 0: atms = atms[:na]
-        na = len(atms)
+        if na != len(atms):
+            # align number of atoms and atms array
+            atms = atms[:na]
+
+        if na == 0:
+            raise ValueError('NumberOfAtoms has been determined to be zero, no atoms.')
+
 
         # Create array
-        xyz = np.empty([na,3],np.float64)
-        species = np.empty([na],np.int32)
+        xyz = np.empty([na,3], np.float64)
+        species = np.empty([na], np.int32)
         for ia in range(na):
             l = atms[ia].split()
             xyz[ia,:] = [float(k) for k in l[:3]]
             species[ia] = int(l[3]) - 1
         if is_frac:
-            xyz = np.dot(xyz,sc.cell)
+            xyz = np.dot(xyz, sc.cell)
         xyz *= s
         xyz += origo
         
@@ -250,25 +258,42 @@ class FDFSile(Sile):
         # Read the block (not strictly needed, if so we simply set all atoms to H)
         f, spcs = self._read_block('ChemicalSpeciesLabel')
         if f:
-            if ns > 0: spcs = spcs[:ns]
-            ns = len(spcs)
-            # Read the species
-            sp = []
+            # Initialize number of species to
+            # the length of the ChemicalSpeciesLabel block
+            if ns == 0:
+                ns = len(spcs)
+            # Pre-allocate the species array
+            sp = [None] * ns
             for spc in spcs:
                 l = spc.split()
-                # Create the atom
-                sp.append(Atom(Z=int(l[1]),tag=l[2]))
+                # Insert the atom
+                sp[int(l[1])-1] = Atom(Z=int(l[1]),tag=l[2])
+
+            if None in sp:
+                idx = sp.index(None) + 1 
+                raise ValueError(("Could not populate entire "
+                                  "species list. "
+                                  "Please ensure specie with index {} is present".format(idx)))
 
             # Create atoms array with species
-            atoms = [None]*na
+            atoms = [None] * na
             for ia in range(na):
                 atoms[ia] = sp[species[ia]]
+
+            if None in atoms:
+                idx = atoms.index(None) + 1 
+                raise ValueError(("Could not populate entire "
+                                  "atomic list list. "
+                                  "Please ensure atom with index {} is present".format(idx)))
+
         else:
             # Default atom (hydrogen)
             atoms = Atom(1)
+            # Force number of species to 1
+            ns = 1
 
         # Create and return geometry object
-        return Geometry(xyz,atoms=atoms,sc=sc)
+        return Geometry(xyz, atoms=atoms, sc=sc)
 
 
 if __name__ == "__main__":
