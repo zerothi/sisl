@@ -695,6 +695,19 @@ class Geometry(SuperCellChild):
             g.set_supercell(g.sc.translate(v))
         return g
 
+    def swap(self, a, b):
+        """ Returns a geometry with swapped atoms
+
+        This can be used to reorder elements of a geometry.
+        """
+        xyz = np.copy(self.xyz)
+        xyz[a,:] = self.xyz[b,:]
+        xyz[b,:] = self.xyz[a,:]
+        atoms = np.copy(self.atoms)
+        atoms[a,:] = self.atoms[b,:]
+        atoms[b,:] = self.atoms[a,:]
+        return self.__class__(xyz, atoms=atoms, sc=self.sc.copy())
+
 
     def swapaxes(self,a,b,swap='cell+xyz'):
         """ Returns geometry with swapped axis
