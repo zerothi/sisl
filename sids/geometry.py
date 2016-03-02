@@ -228,9 +228,9 @@ class Geometry(SuperCellChild):
     def __repr__(self):
         """ Representation of the object """
         spec = self._species_order()
-        s = '{{na: {0}, no: {1}, species:\n {{ n: {2},\n   '.format(self.na,self.no,len(spec))
+        s = '{{na: {0}, no: {1}, species:\n {{ n: {2},'.format(self.na,self.no,len(spec))
         for z in spec:
-            s += '[{0}], '.format(str(spec[z][1]))
+            s += '\n   [{0}], '.format(str(spec[z][1]))
         return s[:-2] + '\n }},\n nsc: [{1}, {2}, {3}], dR: {0}\n}}'.format(self.dR,*self.nsc)
 
     
