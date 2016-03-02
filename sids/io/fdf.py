@@ -264,10 +264,13 @@ class FDFSile(Sile):
                 ns = len(spcs)
             # Pre-allocate the species array
             sp = [None] * ns
+            import sys
             for spc in spcs:
+                #  index Z pseudo-tag
                 l = spc.split()
+                idx = int(l[0]) - 1
                 # Insert the atom
-                sp[int(l[1])-1] = Atom(Z=int(l[1]),tag=l[2])
+                sp[idx] = Atom(Z=int(l[1]), tag=l[2])
 
             if None in sp:
                 idx = sp.index(None) + 1 
