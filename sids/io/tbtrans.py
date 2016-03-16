@@ -26,7 +26,7 @@ class TBtransSile(NCSile):
         """
         if self._access > 0:
             return self.__data[name]
-        return self.variables[name]
+        return self.variables[name][:]
 
     def _setup(self):
         """ Setup the special object for data containing """
@@ -55,7 +55,7 @@ class TBtransSile(NCSile):
             with self:
                 return self.read_sc()
 
-        cell = np.copy(self.cell,dtype=np.float64)
+        cell = np.array(np.copy(self.cell), dtype=np.float64)
         cell.shape = (3,3)
 
         return SuperCell(cell)
@@ -73,11 +73,11 @@ class TBtransSile(NCSile):
 
         sc = self.read_sc()
 
-        xyz = np.copy(self.xa, dtype=np.float64)
+        xyz = np.array(np.copy(self.xa), dtype=np.float64)
         xyz.shape = (-1,3)
 
         # Create list with correct number of orbitals
-        lasto = np.copy(self.lasto, dtype=np.int32)
+        lasto = np.array(np.copy(self.lasto), dtype=np.int32)
         nos = np.append([lasto[0]], np.diff(lasto))
         nos = np.array(nos,np.int32)
 
