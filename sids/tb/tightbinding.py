@@ -119,6 +119,7 @@ class TightBinding(object):
             idx = []
             
         if len(idx) > 0:
+            where = np.where
             
             # Here we truncate jj to the "new" values,
             # this allows us to both overwrite and add new values to the
@@ -128,13 +129,13 @@ class TightBinding(object):
 
             # the values corresponding to idx already exists,
             # we overwrite that value
-            if isinstance(j,Integral):
-                ix = np.where(j == self.col[ptr:ptr+ncol])[0][0]
+            if isinstance(j, Integral):
+                ix = where(j == self.col[ptr:ptr+ncol])[0][0]
                 self._TB[ptr+ix,:] = v
             else:
                 # remember that idx is the intersection values
                 for ij in idx:
-                    ix = np.where(ij == self.col[ptr:ptr+ncol])[0][0]
+                    ix = where(ij == self.col[ptr:ptr+ncol])[0][0]
                     self._TB[ptr+ix,:] = v
 
             # if no new values are left we return immediately

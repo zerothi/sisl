@@ -197,6 +197,16 @@ class Sile(BaseSile):
         self.fh.write(*args,**kwargs)
 
 
+# Instead of importing netCDF4 on each invocation
+# of the __enter__ function (below), we make
+# a pass around it
+netCDF4 = None
+def import_netCDF4():
+    global netCDF4
+    if netCDF4 is None:
+        import netCDF4
+        
+        
 class NCSile(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
@@ -247,7 +257,7 @@ class NCSile(BaseSile):
     def __enter__(self):
         """ Opens the output file and returns it self """
         # We do the import here
-        import netCDF4
+        import_netCDF4
         self.fh = netCDF4.Dataset(self.file,self._mode,format='NETCDF4')
         return self
 

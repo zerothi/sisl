@@ -908,6 +908,9 @@ class Geometry(SuperCellChild):
             for each of the couplings.
         """
 
+        # Common numpy used functions (reduces function look-ups)
+        where = np.where
+
         if dR is None:
             ddR = np.array([self.dR],np.float64)
         else:
@@ -962,7 +965,7 @@ class Geometry(SuperCellChild):
         # We only do "one" heavy duty search,
         # then we immediately reduce search space to this subspace
         xaR = xaR[ix]
-        tidx = np.where(xaR <= ddR[0])[0]
+        tidx = where(xaR <= ddR[0])[0]
         if idx is None:
             ret = [ [ ensure_array(ix[tidx]) ] ]
         else:
@@ -981,7 +984,7 @@ class Geometry(SuperCellChild):
             # Notice that this sub-space reduction will never
             # allow the same indice to be in two ranges (due to
             # numerics)
-            tidx = np.where(np.logical_and(ddR[i-1] < xaR,xaR <= ddR[i]))[0]
+            tidx = where(np.logical_and(ddR[i-1] < xaR,xaR <= ddR[i]))[0]
             if idx is None:
                 ret[0].append( ensure_array(ix[tidx]) )
             else:
@@ -1091,6 +1094,12 @@ class Geometry(SuperCellChild):
             for each of the couplings.
         """
 
+        # Get global calls
+        # Is faster for many loops
+        append = np.append
+        vstack = np.vstack
+        hstack = np.hstack
+
         # Convert to actual array
         if isinstance(idx,Integral):
             idx = np.array([idx],np.int32)
@@ -1118,9 +1127,9 @@ class Geometry(SuperCellChild):
                     if ret_dist: ret[d] = sret[d]
                 else:
                     for i,x in enumerate(sret[0]):
-                        ret[0][i] = np.append(ret[0][i],x + na)
-                        if ret_coord: ret[c][i] = np.vstack((ret[c][i],sret[c][i]))
-                        if ret_dist: ret[d][i] = np.hstack((ret[d][i],sret[d][i]))
+                        ret[0][i] = append(ret[0][i],x + na)
+                        if ret_coord: ret[c][i] = vstack((ret[c][i],sret[c][i]))
+                        if ret_dist: ret[d][i] = hstack((ret[d][i],sret[d][i]))
             elif len(sret[0]) > 0:
                 # We can add it to the list
                 # We add the atomic offset for the supercell index
@@ -1129,9 +1138,9 @@ class Geometry(SuperCellChild):
                     if ret_coord: ret[c] = sret[c]
                     if ret_dist: ret[d] = sret[d]
                 else:
-                    ret[0] = np.append(ret[0],sret[0] + na)
-                    if ret_coord: ret[c] = np.vstack((ret[c],sret[c]))
-                    if ret_dist: ret[d] = np.hstack((ret[d],sret[d]))
+                    ret[0] = append(ret[0],sret[0] + na)
+                    if ret_coord: ret[c] = vstack((ret[c],sret[c]))
+                    if ret_dist: ret[d] = hstack((ret[d],sret[d]))
         if ret_special: return ret
         return ret[0]
 
