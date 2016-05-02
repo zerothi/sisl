@@ -211,8 +211,11 @@ class TBSile(Sile):
         Utilizing the Hermiticity we reduce the file-size by approximately
         50%.
 
-        tb : TightBinding model
-        hermitian : boolean
+        Parameters
+        ----------
+        tb : `TightBinding` model
+        hermitian : boolean=True
+            whether the stored data is halved using the Hermitian property
         
         """
         tb.finalize()

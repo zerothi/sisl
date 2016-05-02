@@ -264,7 +264,15 @@ class SIESTASile(NCSile):
 
 
     def write_tb(self,tb,**kwargs):
-        """ Writes tight-binding model to file """
+        """ Writes tight-binding model to file 
+
+        Parameters
+        ----------
+        tb : `TightBinding` model
+           the model to be saved in the NC file
+        Ef : double=0
+           the Fermi level of the electronic structure (in eV)
+        """
         # Ensure finalizations
         tb.finalize()
 
