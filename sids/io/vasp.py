@@ -94,10 +94,23 @@ class POSCARSile(Sile):
 
         sc = self.read_sc()
 
-        # Try and read number of atoms per species 
-        # This is one of the two next lines
-        nspecies = np.array(self.readline().split(),np.int32)
+        # First line is the species names/numbers
+        species = self.readline().split()
+        # Get number of each species in a list
+        species_count = map(int, self.readline().split())
+        if len(species) != len(species_count):
+            err = '\n'.join([
+                "POSTCAR format requires format:",
+                "  <Specie-1> <Specie-2>",
+                "  <#Specie-1> <#Specie-2>",
+                "on the 6th and 7th line."])
+            raise SileError(err)
 
+        # Create list of atoms to be used subsequently
+        atoms = [Atom[spec]
+                 for spec, nsp in zip(species, species_count)
+                 for i in range(nsp)]
+        
         # Read whether this is selective or direct
         opt = self.readline()
         direct = True
@@ -111,12 +124,11 @@ class POSCARSile(Sile):
         if opt[0] in 'CcKk':
             cart = True
 
-        # No matter, we only read the first coordinates
-        
         # Number of atoms
-        na = np.sum(nspecies)
+        na = len(atoms)
 
         xyz = np.empty([na,3],np.float64)
+        aoff = 0
         for ia in range(na):
             xyz[ia,:] = np.fromstring(self.readline(),dtype=float,count=3,sep = ' ')
         if cart:
@@ -126,7 +138,7 @@ class POSCARSile(Sile):
             xyz = np.dot(xyz,sc.cell.T)
 
         # The POT/CONT-CAR does not contain information on the atomic species
-        return Geometry(xyz=xyz,sc=sc)
+        return Geometry(xyz=xyz, atoms=atoms, sc=sc)
 
 
 if __name__ == "__main__":

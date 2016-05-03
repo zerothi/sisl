@@ -106,9 +106,6 @@ class Geometry(SuperCellChild):
         # Create atom objects
         self.atoms = array_fill_repeat(A, self.na, cls=Atom)
 
-        # Store maximum interaction range
-        self.dR = np.amax([a.dR for a in A])
-
         # Get total number of orbitals
         orbs = np.array([a.orbs for a in self.atoms], np.int32)
 
@@ -174,7 +171,17 @@ class Geometry(SuperCellChild):
         # Re-set the supercell to the newly found one
         self.set_supercell(sc_cart)
 
+
+    @property
+    def dR(self):
+        """ Returns the maximum orbital range of the atoms """
+        return np.amax([a.dR for a in A])
         
+    @property
+    def no_s(self):
+        """ Number of supercell orbitals """
+        return self.no * self.n_s
+  
     def __len__(self):
         """ Return number of atoms in this geometry """
         return self.na
@@ -309,8 +316,9 @@ class Geometry(SuperCellChild):
         not_passed_N = na
 
         if dR is None:
+            selfdR = self.dR
             # The boundaries (ensure complete overlap)
-            dr = ( self.dR * (iR - 1), self.dR * (iR+.1))
+            dr = ( selfdR * (iR - 1), selfdR * (iR+.1))
         else:
             dr = (      dR * (iR - 1),      dR * (iR+.1))
 
@@ -358,12 +366,6 @@ class Geometry(SuperCellChild):
         if np.any(not_passed):
             raise ValueError('Error on iterations. Not all atoms has been visited.')
     
-
-    @property
-    def no_s(self):
-        """ Number of supercell orbitals """
-        return self.no * self.n_s
-
 
     def sub(self,atoms,cell=None):
         """
