@@ -328,6 +328,25 @@ class SuperCell(object):
         return i_s
 
     
+    @staticmethod
+    def read(sile):
+        """ Reads SuperCell from the `Sile` using `Sile.read_sc`
+
+        Parameters
+        ----------
+        sile : `Sile`, str
+            a `Sile` object which will be used to read the supercell
+            if it is a string it will create a new sile using `get_sile`.
+        """
+        # This only works because, they *must*
+        # have been imported previously
+        from sids.io import get_sile, BaseSile
+        if isinstance(sile,BaseSile):
+            return sile.read_sc()
+        else:
+            return get_sile(sile).read_sc()
+
+    
     def __repr__(self):
         """ Returns a string representation of the object """
         return 'SuperCell[{} {} {}]'.format(*self.nsc)

@@ -102,17 +102,26 @@ All text files can also be read from their gzipped file formats with transparenc
 All file formats in sids are called a _Sile_ (sids file). This small difference
 prohibits name clashes with other implementations.
 
-To read a file one can do
+To read geometries from content you may do
+
+    import sids
+    geom = sids.Geometry.read('file.xyz')
+
+which will read the geometry in `file.xyz` and return a `Geometry` object.
+
+If you want to read several different objects from a single file you should
+use the specific `get_sile` routine to retrieve the `Sile` object:
 
     import sids
     fxyz = sids.get_sile('file.xyz')
 
-which returns an `XYZSile` file object that enables reading the information in
-`file.xyz`. To read the geometry and obtain a geometry object
+which returns an `XYZSile` file object that enables reading the geometry in
+`file.xyz`. Subsequently you may read the geometry and obtain a geometry object
+using
 
     geom = fxyz.read_geom()
 
-and now you can interact with that geometry at will. 
+The above two methods are equivalent.
 
 Even though these are hard coded you can easily extend your own file format
 
