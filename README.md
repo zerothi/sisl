@@ -4,8 +4,7 @@
 
 The [API documentation][sids-api] can be found [here][sids-api].
 
-The system incentive for dense simulation toolbox provides a simple
-toolbox for manipulating, constructing and creating tight-binding matrices 
+The sids toolbox provides a simple API for manipulating, constructing and creating tight-binding matrices 
 in a standard and uniform way.
 
 It provides easy interfaces for creating and calculating band-structures of
