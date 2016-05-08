@@ -995,6 +995,7 @@ class Atom(with_metaclass(AtomMeta,object)):
         """ Return the atomic radii of the atom (in Ang) """
         return _ptbl.radii(self.Z,radii)
 
+
     @property
     def symbol(self):
         """ Return short atomic name (Au==79). """
@@ -1009,6 +1010,10 @@ class Atom(with_metaclass(AtomMeta,object)):
         return self.tag + " orbs: "+str(self.orbs) \
             + " mass(au): "+str(self.mass)
 
+    def __len__(self):
+        """ Return number of orbitals in this atom """
+        return self.orbs
+    
     # Check whether they are equal
     def __eq__(a,b):
         """ Return true if the saved quantities are the same """
