@@ -211,7 +211,7 @@ class NCSile(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
 
-    def __init__(self,filename,mode=None,lvl=0,access=0):
+    def __init__(self,filename,mode=None,lvl=0,access=1):
         """ Creates/Opens a NCSile
 
         Opens a NCSile with `mode` and compression level `lvl`.
