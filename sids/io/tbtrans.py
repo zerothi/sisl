@@ -11,7 +11,7 @@ from sids import Geometry, Atom, SuperCell
 from sids import Bohr
 
 # The sparse matrix for the orbital/bond currents
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix, lil_matrix
 
 import numpy as np
 
@@ -94,41 +94,45 @@ class TBtransSile(NCSile):
         return data
 
 
-    def _data_idxE(self,name, tree=None, avg=False, idxE=None):
+    def _data_E(self,name, tree=None, avg=False, E=None):
         """ Local method for obtaining the data from the NCSile using an E index.
         
         """
-        if idxE is None:
+        if E is None:
             return self._data_avg(name, tree, avg)
 
+        # Ensure that it is an index
+        iE = self.E2idx(E)
+
         if self._access > 0:
-            raise RuntimeError("data_idxE is not allowed for access-contained items.")
+            raise RuntimeError("data_E is not allowed for access-contained items.")
 
         v = self._get_var(name, tree=tree)
         wkpt = self.wkpt
         
         # Perform normalization
         orig_shape = v.shape
+
             
         if isinstance(avg, bool):
             if avg:
                 nk = len(wkpt)
-                data = np.array(v[0,idxE,...]) * wkpt[0]
+                data = np.array(v[0,iE,...]) * wkpt[0]
                 for i in range(1, nk):
-                    data += v[i,idxE,...] * wkpt[i]
+                    data += v[i,iE,...] * wkpt[i]
                 data.shape = orig_shape[1:]
             else:
-                data = np.array(v[:,idxE,...])
+                data = np.array(v[:,iE,...])
             
         elif isinstance(avg, Integral):
-            data = np.array(v[avg,idxE,...]) * wkpt[avg]
+            data = np.array(v[avg,iE,...]) * wkpt[avg]
             data.shape = orig_shape[1:]
             
         else:
             # We assume avg is some kind of itterable
-            data = v[avg[0],idxE,...] * wkpt[avg[0]]
+            data = v[avg[0],iE,...] * wkpt[avg[0]]
             for i in range(1, len(avg)):
-                data += v[avg[i],idxE,...] * wkpt[avg[i]]
+                data += v[avg[i],iE,...] * wkpt[avg[i]]
             data.shape = orig_shape[1:]
 
         # Return data
@@ -305,6 +309,8 @@ class TBtransSile(NCSile):
 
     def E2idx(self, E):
         """ Return the closest energy index corresponding to the energy `E`"""
+        if isinstance(E, Integral):
+            return E
         RyE = E * Ry
         return np.abs(self._data('E') - RyE).argmin()
 
@@ -446,7 +452,7 @@ class TBtransSile(NCSile):
     BulkDOS = DOS_bulk
 
 
-    def orbital_current(self, elec, idxE = None, avg = True):
+    def orbital_current(self, elec, E = None, avg = True):
         """ Return the orbital current originating from `elec`.
 
         This will return a sparse matrix (`scipy.sparse.csr_matrix`).
@@ -457,13 +463,13 @@ class TBtransSile(NCSile):
         ==========
         elec: str
            the electrode of originating electrons
-        idxE: int (None)
+        E: int (None)
            the energy index of the orbital current
            If `None` two objects will be returned, 1) the csr_matrix of the orbital currents , 2) all the currents (J), you may do:
             >>> J, mat = orbital_current(elec)
-            >>> mat.data[:] = J[idxE,:]
+            >>> mat.data[:] = J[E,:]
            otherwise it will only return:
-            >>> mat.data[:] = J[idxE,:]
+            >>> mat.data[:] = J[E,:]
            which is (far) less memory consuming.
         avg: bool (True)
            whether the orbital currents are k-averaged
@@ -480,7 +486,7 @@ class TBtransSile(NCSile):
         ptr[1:] = tmp[:]
         del tmp
 
-        if idxE is None:
+        if E is None:
             # Return both the data and the corresponding
             # sparse matrix
             J = self._data_avg('J', elec, avg = avg)
@@ -490,16 +496,59 @@ class TBtransSile(NCSile):
                 mat = csr_matrix((J[0,0,:], col, ptr), shape=mat_size)
             return mat, J
 
-        elif isinstance(idxE, Integral):
-            J = self._data_idxE('J', elec, avg, idxE)
-
         else:
-            # The idxE is perhaps a true energy?
-            ixE = self.E2idx(idxE)
-            J = self._data_idxE('J', elec, avg, ixE)
+            J = self._data_E('J', elec, avg, E)
 
         return csr_matrix((J, col, ptr), shape=mat_size)
 
+
+    def bond_current(self, Jij, symmetry = True):
+        """ Return the bond-current between atoms (sum of orbital currents)
+
+        Parameters
+        ==========
+        Jij: scipy.sparse.csr_matrix 
+           the orbital currents as retrieved from `orbital_current`
+        symmetry: bool (True)
+           only return half of the bond currents (the upper triangle), otherwise return both
+        """
+
+        # We convert to atomic bond-currents
+        J = lil_matrix((self.na_u, self.na_u), dtype=mat.dtype)
+
+        # Create the iterator across the sparse pattern
+        tmp = Jij.tocoo()
+        it = np.nditer([self.o2a(tmp.row),self.o2a(tmp.col), tmp.data],
+                       flags=['external_loop','buffered'],
+                       op_flags=['readonly'])
+        
+        # Perform reduction
+        if symmetry:
+            for ja, ia, d in it:
+                if ia <= ja:
+                    continue
+                
+                J[ja,ia] += d
+        else:
+            for ja, ia, d in it:
+                if ia == ja:
+                    continue # it is zero anyway
+                
+                J[ja,ia] += d
+
+        # Delete iterator
+        del it
+
+        # Now we have the bond-currents
+        # convert and sort
+        mat = J.tocsr()
+        # Rescale to correct magnitude
+        J.data[:] *= .5
+        mat.sort_indices()
+
+        return mat
+
+    def atom_current(self, J, activity = True, 
         
 
 class PHtransSile(TBtransSile):
