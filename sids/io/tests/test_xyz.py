@@ -21,14 +21,12 @@ class TestXYZ(object):
     tearDown = tc.tearDown
 
     def test_tb1(self):
-        f = osp.join(self.d,'gr.tb')
-        self.g.write(XYZSile(f,'w'))
+        f = osp.join(self.d, 'gr.tb')
+        self.g.write(XYZSile(f, 'w'))
         g = XYZSile(f).read_geom()
 
         # Assert they are the same
-        assert_true( np.allclose(g.cell,self.g.cell) )
-        assert_true( np.allclose(g.xyz,self.g.xyz) )
+        assert_true(np.allclose(g.cell, self.g.cell))
+        assert_true(np.allclose(g.xyz, self.g.xyz))
         for ia in g:
-            assert_true( g.atoms[ia] == self.g.atoms[ia] )
-
-        
+            assert_true(g.atoms[ia] == self.g.atoms[ia])

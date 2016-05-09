@@ -21,14 +21,12 @@ class TestFDF(object):
     tearDown = tc.tearDown
 
     def test_fdf1(self):
-        f = osp.join(self.d,'gr.fdf')
-        self.g.write(FDFSile(f,'w'))
+        f = osp.join(self.d, 'gr.fdf')
+        self.g.write(FDFSile(f, 'w'))
         g = FDFSile(f).read_geom()
 
         # Assert they are the same
-        assert_true( np.allclose(g.cell,self.g.cell) )
-        assert_true( np.allclose(g.xyz,self.g.xyz) )
+        assert_true(np.allclose(g.cell, self.g.cell))
+        assert_true(np.allclose(g.xyz, self.g.xyz))
         for ia in g:
-            assert_true( g.atoms[ia] == self.g.atoms[ia] )
-
-        
+            assert_true(g.atoms[ia] == self.g.atoms[ia])

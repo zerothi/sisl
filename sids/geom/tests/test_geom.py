@@ -12,8 +12,8 @@ import numpy as np
 class Test(object):
 
     def test_basis(self):
-        a = bcc(2.52,Atom['Fe'])
-        a = fcc(2.52,Atom['Au'])
+        a = bcc(2.52, Atom['Fe'])
+        a = fcc(2.52, Atom['Au'])
 
     def test_flat(self):
         a = graphene()

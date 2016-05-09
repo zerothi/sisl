@@ -22,9 +22,11 @@ from .xyz import *
 from .xv import *
 
 # Default functions in this top module
-__all__ = ['add_sile','get_sile']
+__all__ = ['add_sile', 'get_sile']
 
 # Extend all by the sub-modules
+
+
 def extendall(mod):
     global __all__
     __all__.extend(sys.modules[mod].__dict__['__all__'])
@@ -43,10 +45,11 @@ extendall('sids.io.xyz')
 extendall('sids.io.xv')
 
 
-# This is a file chooser which from the file-ending tries to 
+# This is a file chooser which from the file-ending tries to
 # determine which kind of file we are dealing with.
 
 _objs = {}
+
 
 def add_sile(ending, obj, case=True, gzip=False):
     """
@@ -79,7 +82,7 @@ def add_sile(ending, obj, case=True, gzip=False):
     # In particular, if the obj is a `Sile`, we allow
     # such reading
     if gzip:
-        add_sile(ending+'.gz', obj, case=case)
+        add_sile(ending + '.gz', obj, case=case)
     if not case:
         add_sile(ending.lower(), obj, gzip=gzip)
         add_sile(ending.upper(), obj, gzip=gzip)
@@ -88,7 +91,7 @@ def add_sile(ending, obj, case=True, gzip=False):
     if ending[0] == '.':
         _objs[ending[1:]] = obj
     else:
-        _objs['.'+ending] = obj
+        _objs['.' + ending] = obj
 
 
 # Sile's
@@ -110,7 +113,7 @@ add_sile('PHT.nc', PHtransSile)
 
 
 def get_sile(file, *args, **kwargs):
-    """ 
+    """
     Guess the file handle for the input file and return
     and object with the file handle.
     """
@@ -142,31 +145,45 @@ def get_sile(file, *args, **kwargs):
         raise Exception('print fail')
     except Exception as e:
         print(e)
-        raise NotImplementedError(("File requested could not be found, possibly the file has ",
-                                   "not been implemented."))
+        raise NotImplementedError(
+            ("File requested could not be found, possibly the file has ",
+             "not been implemented."))
 
 
 if __name__ == "__main__":
-    
-    assert isinstance(get_sile('test.cube'),CUBESile),"Returning incorrect object"
-    assert isinstance(get_sile('test.CUBE'),CUBESile),"Returning incorrect object"
 
-    assert isinstance(get_sile('test.xyz'),XYZSile),"Returning incorrect object"
-    assert isinstance(get_sile('test.XYZ'),XYZSile),"Returning incorrect object"
+    assert isinstance(get_sile('test.cube'),
+                      CUBESile), "Returning incorrect object"
+    assert isinstance(get_sile('test.CUBE'),
+                      CUBESile), "Returning incorrect object"
+
+    assert isinstance(get_sile('test.xyz'),
+                      XYZSile), "Returning incorrect object"
+    assert isinstance(get_sile('test.XYZ'),
+                      XYZSile), "Returning incorrect object"
     try:
         io = get_sile('test.xz')
-        assert False,"Returning something which should not return"
-    except: pass
-    assert isinstance(get_sile('test.fdf'),FDFSile),"Returning incorrect object"
-    assert isinstance(get_sile('test.FDF'),FDFSile),"Returning incorrect object"
-    assert isinstance(get_sile('test.nc'),SIESTASile),"Returning incorrect object"
-    assert isinstance(get_sile('test.NC'),SIESTASile),"Returning incorrect object"
-    assert isinstance(get_sile('test.tb'),TBSile),"Returning incorrect object"
-    assert isinstance(get_sile('test.TB'),TBSile),"Returning incorrect object"
-    assert isinstance(get_sile('test.got'),GULPSile),"Returning incorrect object"
-    assert isinstance(get_sile('test.XV'),XVSile),"Returning incorrect object"
-    assert isinstance(get_sile('test.TBT.nc'),TBtransSile),"Returning incorrect object"
-    assert isinstance(get_sile('test.ueontsh.nc.XV'),XVSile),"Returning incorrect object"
+        assert False, "Returning something which should not return"
+    except:
+        pass
+    assert isinstance(get_sile('test.fdf'),
+                      FDFSile), "Returning incorrect object"
+    assert isinstance(get_sile('test.FDF'),
+                      FDFSile), "Returning incorrect object"
+    assert isinstance(get_sile('test.nc'),
+                      SIESTASile), "Returning incorrect object"
+    assert isinstance(get_sile('test.NC'),
+                      SIESTASile), "Returning incorrect object"
+    assert isinstance(get_sile('test.tb'),
+                      TBSile), "Returning incorrect object"
+    assert isinstance(get_sile('test.TB'),
+                      TBSile), "Returning incorrect object"
+    assert isinstance(get_sile('test.got'),
+                      GULPSile), "Returning incorrect object"
+    assert isinstance(get_sile('test.XV'),
+                      XVSile), "Returning incorrect object"
+    assert isinstance(get_sile('test.TBT.nc'),
+                      TBtransSile), "Returning incorrect object"
+    assert isinstance(get_sile('test.ueontsh.nc.XV'),
+                      XVSile), "Returning incorrect object"
     print('Finished tests successfully')
-
-

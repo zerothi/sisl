@@ -18,13 +18,12 @@ import numpy as np
 # Check against integers
 from numbers import Integral
 
-__all__ = ['TBtransSile','PHtransSile']
+__all__ = ['TBtransSile', 'PHtransSile']
 
 
 class TBtransSile(NCSile):
     """ TBtrans file object """
     _trans_type = 'TBT'
-
 
     def _get_var(self, name, tree=None):
         """ Local method to get the NetCDF variable """
@@ -40,11 +39,10 @@ class TBtransSile(NCSile):
 
         return g.variables[name]
 
-
     def _data(self, name, tree=None):
         """ Local method for obtaining the data from the NCSile.
-        
-        This method checks how the file is access, i.e. whether 
+
+        This method checks how the file is access, i.e. whether
         data is stored in the object or it should be read consequtively.
         """
         if self._access > 0:
@@ -53,11 +51,10 @@ class TBtransSile(NCSile):
 
         return self._get_var(name, tree=tree)[:]
 
-
     def _data_avg(self, name, tree=None, avg=False):
         """ Local method for obtaining the data from the NCSile.
-        
-        This method checks how the file is access, i.e. whether 
+
+        This method checks how the file is access, i.e. whether
         data is stored in the object or it should be read consequtively.
         """
         if self._access > 0:
@@ -72,31 +69,30 @@ class TBtransSile(NCSile):
         if isinstance(avg, bool):
             if avg:
                 nk = len(wkpt)
-                data = v[0,...] * wkpt[0]
+                data = v[0, ...] * wkpt[0]
                 for i in range(1, nk):
-                    data += v[i,:] * wkpt[i]
+                    data += v[i, :] * wkpt[i]
                 data.shape = orig_shape[1:]
             else:
                 data = v[:]
-                
+
         elif isinstance(avg, Integral):
-            data = v[avg,...] * wkpt[avg]
+            data = v[avg, ...] * wkpt[avg]
             data.shape = orig_shape[1:]
 
         else:
             # We assume avg is some kind of itterable
-            data = v[avg[0],...] * wkpt[avg[0]]
+            data = v[avg[0], ...] * wkpt[avg[0]]
             for i in range(1, len(avg)):
-                data += v[avg[i],...] * wkpt[avg[i]]
+                data += v[avg[i], ...] * wkpt[avg[i]]
             data.shape = orig_shape[1:]
 
         # Return data
         return data
 
-
-    def _data_E(self,name, tree=None, avg=False, E=None):
+    def _data_E(self, name, tree=None, avg=False, E=None):
         """ Local method for obtaining the data from the NCSile using an E index.
-        
+
         """
         if E is None:
             return self._data_avg(name, tree, avg)
@@ -105,39 +101,38 @@ class TBtransSile(NCSile):
         iE = self.E2idx(E)
 
         if self._access > 0:
-            raise RuntimeError("data_E is not allowed for access-contained items.")
+            raise RuntimeError(
+                "data_E is not allowed for access-contained items.")
 
         v = self._get_var(name, tree=tree)
         wkpt = self.wkpt
-        
+
         # Perform normalization
         orig_shape = v.shape
 
-            
         if isinstance(avg, bool):
             if avg:
                 nk = len(wkpt)
-                data = np.array(v[0,iE,...]) * wkpt[0]
+                data = np.array(v[0, iE, ...]) * wkpt[0]
                 for i in range(1, nk):
-                    data += v[i,iE,...] * wkpt[i]
+                    data += v[i, iE, ...] * wkpt[i]
                 data.shape = orig_shape[1:]
             else:
-                data = np.array(v[:,iE,...])
-            
+                data = np.array(v[:, iE, ...])
+
         elif isinstance(avg, Integral):
-            data = np.array(v[avg,iE,...]) * wkpt[avg]
+            data = np.array(v[avg, iE, ...]) * wkpt[avg]
             data.shape = orig_shape[1:]
-            
+
         else:
             # We assume avg is some kind of itterable
-            data = v[avg[0],iE,...] * wkpt[avg[0]]
+            data = v[avg[0], iE, ...] * wkpt[avg[0]]
             for i in range(1, len(avg)):
-                data += v[avg[i],iE,...] * wkpt[avg[i]]
+                data += v[avg[i], iE, ...] * wkpt[avg[i]]
             data.shape = orig_shape[1:]
 
         # Return data
         return data
-
 
     def _setup(self):
         """ Setup the special object for data containing """
@@ -153,7 +148,7 @@ class TBtransSile(NCSile):
             # be minimal on memory but allow for
             # fast access by the object.
             for d in ['cell', 'xa', 'lasto',
-                      'a_dev', 'pivot', 
+                      'a_dev', 'pivot',
                       'kpt', 'wkpt', 'E']:
                 self.__data[d] = self._data(d)
 
@@ -163,26 +158,24 @@ class TBtransSile(NCSile):
             # Reset the access pattern
             self._access = access
 
-
     def read_sc(self):
         """ Returns `SuperCell` object from a .TBT.nc file """
-        if not hasattr(self,'fh'):
+        if not hasattr(self, 'fh'):
             with self:
                 return self.read_sc()
 
         cell = np.array(np.copy(self.cell), dtype=np.float64)
-        cell.shape = (3,3)
+        cell.shape = (3, 3)
 
         return SuperCell(cell)
-    
 
     def read_geom(self):
         """ Returns Geometry object from a .TBT.nc file """
         # Quick access to the geometry object
         if self._access > 0 and '_geom' in self.__data:
             return self.__data['_geom']
-        
-        if not hasattr(self,'fh'):
+
+        if not hasattr(self, 'fh'):
             with self:
                 return self.read_geom()
 
@@ -200,54 +193,47 @@ class TBtransSile(NCSile):
         # This may be counterintuitive but there is no storage of the
         # actual species
         atms = [Atom(Z='H', orbs=o) for o in nos]
-        
+
         # Create and return geometry object
         geom = Geometry(xyz, atoms=atms, sc=sc)
-        
+
         return geom
 
-    
     def write_geom(self):
         """ This does not work """
-        raise ValueError(self.__class__.__name__+" can not write a geometry")
+        raise ValueError(self.__class__.__name__ + " can not write a geometry")
 
     # This class also contains all the important quantities elements of the
     # file.
-
 
     @property
     def geom(self):
         """ Returns the associated geometry from the TBT file """
         return self.read_geom()
-    
-    
+
     @property
     def cell(self):
         """ Unit cell in file """
         return self._data('cell') / Bohr
 
-    
     @property
     def na(self):
         """ Returns number of atoms in the cell """
         return int(len(self.dimensions['na_u']))
     na_u = na
 
-    
     @property
     def no(self):
         """ Returns number of orbitals in the cell """
         return int(len(self.dimensions['no_u']))
     no_u = no
 
-    
     @property
     def xa(self):
         """ Atomic coordinates in file """
         return self._data('xa') / Bohr
     xyz = xa
 
-    
     # Device atoms and other quantities
     @property
     def na_d(self):
@@ -255,57 +241,47 @@ class TBtransSile(NCSile):
         return len(self.dimensions['na_d'])
     na_dev = na_d
 
-    
     @property
     def a_d(self):
         """ Atomic indices (1-based) of device atoms """
         return self._data('a_dev')
     a_dev = a_d
 
-    
     @property
     def pivot(self):
         """ Pivot table of device orbitals to obtain input sorting """
         return self._data('pivot')
     pvt = pivot
 
-    
     @property
     def lasto(self):
         """ Last orbital of corresponding atom """
         return self._data('lasto')
 
-
-    
     @property
     def no_d(self):
         """ Number of orbitals in the device region """
         return int(len(self.dimensions['no_d']))
 
-    
     @property
     def kpt(self):
         """ Sampled k-points in file """
         return self._data('kpt')
 
-    
     @property
     def wkpt(self):
         """ Weights of k-points in file """
         return self._data('wkpt')
 
-    
     @property
     def nkpt(self):
         """ Number of k-points in file """
         return len(self.dimensions['nkpt'])
 
-    
     @property
     def E(self):
         """ Sampled energy-points in file """
         return self._data('E') / Ry
-
 
     def E2idx(self, E):
         """ Return the closest energy index corresponding to the energy `E`"""
@@ -314,27 +290,25 @@ class TBtransSile(NCSile):
         RyE = E * Ry
         return np.abs(self._data('E') - RyE).argmin()
 
-    
     @property
     def ne(self):
         """ Number of energy-points in file """
         return len(self.dimensions['ne'])
     nE = ne
 
-    
     @property
     def elecs(self):
         """ List of electrodes """
         elecs = self.groups.keys()
 
-        # in cases of not calculating all 
+        # in cases of not calculating all
         # electrode transmissions we must ensure that
         # we add the last one
         var = self.groups[elecs[0]].variables.keys()
         for tvar in var:
             if tvar.endswith('.T'):
                 tvar = tvar.split('.')[0]
-                if not tvar in elecs:
+                if tvar not in elecs:
                     elecs.append(tvar)
         return elecs
     electrodes = elecs
@@ -351,11 +325,10 @@ class TBtransSile(NCSile):
         return self._data('kT', elec)
     kT = electronic_temperature
 
-    
-    def transmission(self, elec_from, elec_to, avg = True):
+    def transmission(self, elec_from, elec_to, avg=True):
         """ Return the transmission from `from` to `to`.
 
-        The transmission between two electrodes may be retrieved 
+        The transmission between two electrodes may be retrieved
         from the `Sile`.
 
         Parameters
@@ -368,16 +341,16 @@ class TBtransSile(NCSile):
            whether the returned transmission is k-averaged
         """
         if elec_from == elec_to:
-            raise ValueError("Supplied elec_from and elec_to must not be the same.")
+            raise ValueError(
+                "Supplied elec_from and elec_to must not be the same.")
 
-        return self._data_avg(elec_to+'.T', elec_from, avg=kavg)
+        return self._data_avg(elec_to + '.T', elec_from, avg=kavg)
     T = transmission
 
-    
-    def transmission_eig(self, elec_from, elec_to, avg = True):
+    def transmission_eig(self, elec_from, elec_to, avg=True):
         """ Return the transmission eigenvalues from `from` to `to`.
 
-        The transmission eigenvalues between two electrodes may be retrieved 
+        The transmission eigenvalues between two electrodes may be retrieved
         from the `Sile`.
 
         Parameters
@@ -390,14 +363,14 @@ class TBtransSile(NCSile):
            whether the returned eigenvalues are k-averaged
         """
         if elec_from == elec_to:
-            raise ValueError("Supplied elec_from and elec_to must not be the same.")
+            raise ValueError(
+                "Supplied elec_from and elec_to must not be the same.")
 
-        return self._data_avg(elec_to+'.T.Eig', elec_from, avg=kavg)
+        return self._data_avg(elec_to + '.T.Eig', elec_from, avg=kavg)
     TEig = transmission_eig
     Teig = transmission_eig
 
-    
-    def transmission_bulk(self, elec, avg = True):
+    def transmission_bulk(self, elec, avg=True):
         """ Return the bulk transmission in the `elec` electrode
 
         Parameters
@@ -411,8 +384,7 @@ class TBtransSile(NCSile):
     TBulk = transmission_bulk
     Tbulk = transmission_bulk
 
-    
-    def DOS(self, avg = True):
+    def DOS(self, avg=True):
         """ Return the Green function DOS.
 
         Parameters
@@ -423,8 +395,7 @@ class TBtransSile(NCSile):
         return self._data_avg('DOS', avg=kavg)
     DOS_Gf = DOS
 
-    
-    def ADOS(self, elec, avg = True):
+    def ADOS(self, elec, avg=True):
         """ Return the DOS of the spectral function from `elec`.
 
         Parameters
@@ -437,8 +408,7 @@ class TBtransSile(NCSile):
         return self._data_avg('ADOS', elec, avg=kavg)
     DOS_A = ADOS
 
-    
-    def DOS_bulk(self, elec, avg = True):
+    def DOS_bulk(self, elec, avg=True):
         """ Return the bulk DOS of `elec`.
 
         Parameters
@@ -451,8 +421,7 @@ class TBtransSile(NCSile):
         return self._data_avg('DOS', elec, avg=kavg)
     BulkDOS = DOS_bulk
 
-
-    def orbital_current(self, elec, E = None, avg = True):
+    def orbital_current(self, elec, E=None, avg=True):
         """ Return the orbital current originating from `elec`.
 
         This will return a sparse matrix (`scipy.sparse.csr_matrix`).
@@ -480,7 +449,7 @@ class TBtransSile(NCSile):
         # Create row-pointer
         tmp = np.cumsum(self.variables['n_col'][:])
         size = len(tmp)
-        ptr = np.empty(size+1, np.int32)
+        ptr = np.empty(size + 1, np.int32)
         mat_size = (size, size)
         ptr[0] = 0
         ptr[1:] = tmp[:]
@@ -489,11 +458,11 @@ class TBtransSile(NCSile):
         if E is None:
             # Return both the data and the corresponding
             # sparse matrix
-            J = self._data_avg('J', elec, avg = avg)
+            J = self._data_avg('J', elec, avg=avg)
             if len(J.shape) == 2:
-                mat = csr_matrix((J[0,:], col, ptr), shape=mat_size)
+                mat = csr_matrix((J[0, :], col, ptr), shape=mat_size)
             else:
-                mat = csr_matrix((J[0,0,:], col, ptr), shape=mat_size)
+                mat = csr_matrix((J[0, 0, :], col, ptr), shape=mat_size)
             return mat, J
 
         else:
@@ -501,13 +470,12 @@ class TBtransSile(NCSile):
 
         return csr_matrix((J, col, ptr), shape=mat_size)
 
-
-    def bond_current(self, Jij, symmetry = True):
+    def bond_current(self, Jij, symmetry=True):
         """ Return the bond-current between atoms (sum of orbital currents)
 
         Parameters
         ==========
-        Jij: scipy.sparse.csr_matrix 
+        Jij: scipy.sparse.csr_matrix
            the orbital currents as retrieved from `orbital_current`
         symmetry: bool (True)
            only return half of the bond currents (the upper triangle), otherwise return both
@@ -518,23 +486,23 @@ class TBtransSile(NCSile):
 
         # Create the iterator across the sparse pattern
         tmp = Jij.tocoo()
-        it = np.nditer([self.o2a(tmp.row),self.o2a(tmp.col), tmp.data],
-                       flags=['external_loop','buffered'],
+        it = np.nditer([self.o2a(tmp.row), self.o2a(tmp.col), tmp.data],
+                       flags=['external_loop', 'buffered'],
                        op_flags=['readonly'])
-        
+
         # Perform reduction
         if symmetry:
             for ja, ia, d in it:
                 if ia <= ja:
                     continue
-                
-                J[ja,ia] += d
+
+                J[ja, ia] += d
         else:
             for ja, ia, d in it:
                 if ia == ja:
-                    continue # it is zero anyway
-                
-                J[ja,ia] += d
+                    continue  # it is zero anyway
+
+                J[ja, ia] += d
 
         # Delete iterator
         del it
@@ -548,8 +516,6 @@ class TBtransSile(NCSile):
 
         return mat
 
-    def atom_current(self, J, activity = True, 
-        
 
 class PHtransSile(TBtransSile):
     """ PHtrans file object """

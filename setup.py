@@ -12,8 +12,10 @@ Enables tight-binding models etc."""
 
 DOCLINES = __doc__.split("\n")
 
-import sys, subprocess
-import os, os.path as osp
+import sys
+import subprocess
+import os
+import os.path as osp
 
 CLASSIFIERS = """\
 Development Status :: 5 - Production/Stable
@@ -31,24 +33,25 @@ Operating System :: Unix
 Operating System :: MacOS
 """
 
-MAJOR               = 0
-MINOR               = 5
-MICRO               = 3
-ISRELEASED          = False
-VERSION             = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION        = "13513ada1d96c6e85d7352debc5a62e912a74ac7"
+MAJOR = 0
+MINOR = 5
+MICRO = 3
+ISRELEASED = False
+VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
+GIT_REVISION = "13513ada1d96c6e85d7352debc5a62e912a74ac7"
+
 
 def generate_cython():
     cwd = osp.abspath(osp.dirname(__file__))
     print("Cythonizing sources")
     p = subprocess.call([sys.executable,
-                          osp.join(cwd, 'tools', 'cythonize.py'),
-                          'sids'],
-                         cwd=cwd)
+                         osp.join(cwd, 'tools', 'cythonize.py'),
+                         'sids'],
+                        cwd=cwd)
     if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
-scripts = ['sgeom','sgrid']
+scripts = ['sgeom', 'sgrid']
 
 scripts = [osp.join('scripts', script) for script in scripts]
 
@@ -59,43 +62,51 @@ except:
     build_requires = ['numpy>=1.7']
 
 metadata = dict(
-    name = 'sids',
-    maintainer = "Nick R. Papior",
-    maintainer_email = "nickpapior@gmail.com",
-    description = "Tight-binding models and interfacing the tight-binding transport calculator TBtrans",
-    long_description = """Manipulating with SIESTA output files.
+    name='sids',
+    maintainer="Nick R. Papior",
+    maintainer_email="nickpapior@gmail.com",
+    description="Tight-binding models and interfacing the tight-binding transport calculator TBtrans",
+    long_description="""Manipulating with SIESTA output files.
 
 Creation of geometries using simple IO interfaces with multiple formats.
 
 Tight-binding models and interfacing the tight-binding transport calculator TBtrans.
 """,
-    url = "https://github.com/zerothi/sids",
-    download_url = "https://github.com/zerothi/sids/releases",
-    license = 'LGPLv3',
-    classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
-    platforms = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
-    scripts = scripts,
-    setup_requires = build_requires,
-    install_requires = build_requires,
+    url="https://github.com/zerothi/sids",
+    download_url="https://github.com/zerothi/sids/releases",
+    license='LGPLv3',
+    classifiers=[
+        _f for _f in CLASSIFIERS.split('\n') if _f],
+    platforms=[
+        "Windows",
+        "Linux",
+        "Solaris",
+        "Mac OS-X",
+        "Unix"],
+    scripts=scripts,
+    setup_requires=build_requires,
+    install_requires=build_requires,
 )
 
 cwd = osp.abspath(osp.dirname(__file__))
 if not osp.exists(osp.join(cwd, 'PKG-INFO')):
     # Generate Cython sources, unless building from source release
-    #generate_cython()
+    # generate_cython()
     pass
 
 # Generate configuration
-def configuration(parent_package='',top_path=None):
+
+
+def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     config = Configuration(None, parent_package, top_path)
     config.set_options(ignore_setup_xxx_py=True,
                        assume_default_configuration=True,
                        delegate_options_to_subpackages=True,
                        quiet=True)
-    
+
     config.add_subpackage('sids')
-    
+
     return config
 
 metadata['version'] = VERSION
@@ -105,8 +116,11 @@ if not ISRELEASED:
 
 # With credits from NUMPY developers we use this
 # routine to get the git-tag
+
+
 def git_version():
     global GIT_REVISION
+
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
@@ -118,8 +132,11 @@ def git_version():
         env['LANGUAGE'] = 'C'
         env['LANG'] = 'C'
         env['LC_ALL'] = 'C'
-        out = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, env=env).communicate()[0]
+        out = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=env).communicate()[0]
         return out
 
     try:
@@ -151,11 +168,11 @@ if not release:
     # git version as well
     GIT_REV = git_version()
 
-    with open(filename,'w') as fh:
-        fh.write(version_str.format(vrs=[MAJOR,MINOR,MICRO],
+    with open(filename, 'w') as fh:
+        fh.write(version_str.format(vrs=[MAJOR, MINOR, MICRO],
                                     release=str(ISRELEASED),
                                     git=GIT_REV))
-    
+
 if __name__ == '__main__':
 
     try:
@@ -172,6 +189,6 @@ if __name__ == '__main__':
         import setuptools
 
     from numpy.distutils.core import setup
-    
+
     # Main setup of python modules
     setup(**metadata)
