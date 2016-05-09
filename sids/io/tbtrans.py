@@ -25,28 +25,44 @@ class TBtransSile(NCSile):
     """ TBtrans file object """
     _trans_type = 'TBT'
 
+
     def _get_var(self, name, tree=None):
         """ Local method to get the NetCDF variable """
+        if tree is None:
+            return self.variables[name]
+
         g = self
-        if tree is not None:
-            if isinstance(tree, list):
-                for t in tree:
-                    g = g.groups[t]
-            else:
-                g = g.groups[tree]
+        if isinstance(tree, list):
+            for t in tree:
+                g = g.groups[t]
+        else:
+            g = g.groups[tree]
 
-        # Retrieve variable object
-        return g.variables[var]
-        
+        return g.variables[name]
 
-    def _data(self,name, tree=None, avg=False):
+
+    def _data(self, name, tree=None):
         """ Local method for obtaining the data from the NCSile.
         
         This method checks how the file is access, i.e. whether 
         data is stored in the object or it should be read consequtively.
         """
         if self._access > 0:
-            return self.__data[name]
+            if name in self.__data:
+                return self.__data[name]
+
+        return self._get_var(name, tree=tree)[:]
+
+
+    def _data_avg(self, name, tree=None, avg=False):
+        """ Local method for obtaining the data from the NCSile.
+        
+        This method checks how the file is access, i.e. whether 
+        data is stored in the object or it should be read consequtively.
+        """
+        if self._access > 0:
+            if name in self.__data:
+                return self.__data[name]
 
         v = self._get_var(name, tree=tree)
         wkpt = self.wkpt
@@ -83,7 +99,7 @@ class TBtransSile(NCSile):
         
         """
         if idxE is None:
-            return self._data(name, tree, avg)
+            return self._data_avg(name, tree, avg)
 
         if self._access > 0:
             raise RuntimeError("data_idxE is not allowed for access-contained items.")
@@ -121,9 +137,9 @@ class TBtransSile(NCSile):
 
     def _setup(self):
         """ Setup the special object for data containing """
+        self.__data = dict()
 
         if self._access > 0:
-            self.__data = dict()
 
             # Fake double calls
             access = self._access
@@ -132,17 +148,16 @@ class TBtransSile(NCSile):
             # There are certain elements which should
             # be minimal on memory but allow for
             # fast access by the object.
-            # These will 
-            # Create elements
             for d in ['cell', 'xa', 'lasto',
                       'a_dev', 'pivot', 
                       'kpt', 'wkpt', 'E']:
                 self.__data[d] = self._data(d)
 
-            self._access = access
-            
             # Create the geometry in the data file
             self.__data['_geom'] = self.read_geom()
+
+            # Reset the access pattern
+            self._access = access
 
 
     def read_sc(self):
@@ -160,8 +175,8 @@ class TBtransSile(NCSile):
     def read_geom(self):
         """ Returns Geometry object from a .TBT.nc file """
         # Quick access to the geometry object
-        if self._access > 0:
-            return self._data('_geom')
+        if self._access > 0 and '_geom' in self.__data:
+            return self.__data['_geom']
         
         if not hasattr(self,'fh'):
             with self:
@@ -170,7 +185,7 @@ class TBtransSile(NCSile):
         sc = self.read_sc()
 
         xyz = np.array(np.copy(self.xa), dtype=np.float64)
-        xyz.shape = (-1,3)
+        xyz.shape = (-1, 3)
 
         # Create list with correct number of orbitals
         lasto = np.array(np.copy(self.lasto), dtype=np.int32)
@@ -287,6 +302,12 @@ class TBtransSile(NCSile):
         """ Sampled energy-points in file """
         return self._data('E') / Ry
 
+
+    def E2idx(self, E):
+        """ Return the closest energy index corresponding to the energy `E`"""
+        RyE = E * Ry
+        return np.abs(self._data('E') - RyE).argmin()
+
     
     @property
     def ne(self):
@@ -343,7 +364,7 @@ class TBtransSile(NCSile):
         if elec_from == elec_to:
             raise ValueError("Supplied elec_from and elec_to must not be the same.")
 
-        return self._data(elec_to+'.T', elec_from, avg=kavg)
+        return self._data_avg(elec_to+'.T', elec_from, avg=kavg)
     T = transmission
 
     
@@ -365,7 +386,7 @@ class TBtransSile(NCSile):
         if elec_from == elec_to:
             raise ValueError("Supplied elec_from and elec_to must not be the same.")
 
-        return self._data(elec_to+'.T.Eig', elec_from, avg=kavg)
+        return self._data_avg(elec_to+'.T.Eig', elec_from, avg=kavg)
     TEig = transmission_eig
     Teig = transmission_eig
 
@@ -380,7 +401,7 @@ class TBtransSile(NCSile):
         avg: bool (True)
            whether the returned transmission is k-averaged
         """
-        return self._data('T', elec, avg=kavg)
+        return self._data_avg('T', elec, avg=kavg)
     TBulk = transmission_bulk
     Tbulk = transmission_bulk
 
@@ -393,7 +414,7 @@ class TBtransSile(NCSile):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._data('DOS', avg=kavg)
+        return self._data_avg('DOS', avg=kavg)
     DOS_Gf = DOS
 
     
@@ -407,7 +428,7 @@ class TBtransSile(NCSile):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._data('ADOS', elec, avg=kavg)
+        return self._data_avg('ADOS', elec, avg=kavg)
     DOS_A = ADOS
 
     
@@ -421,7 +442,7 @@ class TBtransSile(NCSile):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._data('DOS', elec, avg=kavg)
+        return self._data_avg('DOS', elec, avg=kavg)
     BulkDOS = DOS_bulk
 
 
@@ -451,7 +472,7 @@ class TBtransSile(NCSile):
         # Get column indices
         col = np.array(self.variables['list_col'][:], np.int32) - 1
         # Create row-pointer
-        tmp = np.cumsum(self.variables['n_col'][:])]
+        tmp = np.cumsum(self.variables['n_col'][:])
         size = len(tmp)
         ptr = np.empty(size+1, np.int32)
         mat_size = (size, size)
@@ -462,15 +483,22 @@ class TBtransSile(NCSile):
         if idxE is None:
             # Return both the data and the corresponding
             # sparse matrix
-            J = self._data('J', elec, avg = avg)
+            J = self._data_avg('J', elec, avg = avg)
             if len(J.shape) == 2:
-                mat = csr_matrix(J[0,:], col, ptr), shape=mat_size)
+                mat = csr_matrix((J[0,:], col, ptr), shape=mat_size)
             else:
-                mat = csr_matrix(J[0,0,:], col, ptr), shape=mat_size)
+                mat = csr_matrix((J[0,0,:], col, ptr), shape=mat_size)
             return mat, J
-        else:
+
+        elif isinstance(idxE, Integral):
             J = self._data_idxE('J', elec, avg, idxE)
-            return csr_matrix((J[:],col,ptr), shape=mat_size)
+
+        else:
+            # The idxE is perhaps a true energy?
+            ixE = self.E2idx(idxE)
+            J = self._data_idxE('J', elec, avg, ixE)
+
+        return csr_matrix((J, col, ptr), shape=mat_size)
 
         
 
