@@ -200,11 +200,11 @@ class Sile(BaseSile):
 # Instead of importing netCDF4 on each invocation
 # of the __enter__ function (below), we make
 # a pass around it
-netCDF4 = None
-def import_netCDF4():
-    global netCDF4
-    if netCDF4 is None:
-        import netCDF4
+_netCDF4 = None
+def _import_netCDF4():
+    global _netCDF4
+    if _netCDF4 is None:
+        import netCDF4 as _netCDF4
         
         
 class NCSile(BaseSile):
@@ -225,17 +225,17 @@ class NCSile(BaseSile):
         1) means stores certain variables in the object.
         """
 
-        # Must call setup-methods
-        self.__setup(access=access)
-
         self.file = filename
         if mode:
             self._mode = mode
         # Save compression internally
         self._lvl = lvl
 
+        # Must call setup-methods
+        self.__setup(access=access)
 
-    def __setup(self,access=0):
+
+    def __setup(self, access=1):
         """ Setup `NCSile` after initialization """
         self._mode = 'r'
         self._lvl = 0
@@ -251,20 +251,32 @@ class NCSile(BaseSile):
         Do
           >>> nc.createVariable(..., **self._cmp_args)
         """
-        return {'zlib':self._lvl>0,'complevel':self._lvl}
+        return {'zlib': self._lvl > 0, 'complevel': self._lvl}
 
         
     def __enter__(self):
         """ Opens the output file and returns it self """
         # We do the import here
-        import_netCDF4
-        self.fh = netCDF4.Dataset(self.file,self._mode,format='NETCDF4')
+        global _import_netCDF4
+        _import_netCDF4()
+        self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
+                                               format='NETCDF4')
         return self
 
 
-    def __getattr__(self,attr):
+    def __getattr__(self, attr):
         """ Bypass attributes to directly interact with the NetCDF model """
-        return getattr(self.fh,attr,None)
+        
+        if attr in self.__dict__:
+            return self.__dict__[attr]
+
+        # If we request the file handle for
+        # the NetCDF file, we must have it opened
+        if attr == 'fh':
+            with self:
+                return self.__dict__[attr]
+        
+        return getattr(self.fh, attr, None)
 
 
     def __exit__(self, type, value, traceback):

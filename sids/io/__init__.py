@@ -48,7 +48,7 @@ extendall('sids.io.xv')
 
 _objs = {}
 
-def add_sile(ending,obj,case=True,gzip=False):
+def add_sile(ending, obj, case=True, gzip=False):
     """
     Public for attaching lookup tables for allowing
     users to attach files for the IOSile function call
@@ -79,10 +79,10 @@ def add_sile(ending,obj,case=True,gzip=False):
     # In particular, if the obj is a `Sile`, we allow
     # such reading
     if gzip:
-        add_sile(ending+'.gz',obj,case=case)
+        add_sile(ending+'.gz', obj, case=case)
     if not case:
-        add_sile(ending.lower(),obj,gzip=gzip)
-        add_sile(ending.upper(),obj,gzip=gzip)
+        add_sile(ending.lower(), obj, gzip=gzip)
+        add_sile(ending.upper(), obj, gzip=gzip)
         return
     _objs[ending] = obj
     if ending[0] == '.':
@@ -92,24 +92,24 @@ def add_sile(ending,obj,case=True,gzip=False):
 
 
 # Sile's
-add_sile('ascii',BigDFTASCIISile,case=False,gzip=True)
-add_sile('cube',CUBESile,case=False,gzip=True)
-add_sile('fdf',FDFSile,case=False,gzip=True)
-add_sile('gout',GULPSile,gzip=True)
-add_sile('tb',TBSile,case=False,gzip=True)
-add_sile('xyz',XYZSile,case=False,gzip=True)
-add_sile('XV',XVSile,gzip=True)
-add_sile('CONTCAR',POSCARSile,gzip=True)
-add_sile('POSCAR',POSCARSile,gzip=True)
+add_sile('ascii', BigDFTASCIISile, case=False, gzip=True)
+add_sile('cube', CUBESile, case=False, gzip=True)
+add_sile('fdf', FDFSile, case=False, gzip=True)
+add_sile('gout', GULPSile, gzip=True)
+add_sile('tb', TBSile, case=False, gzip=True)
+add_sile('xyz', XYZSile, case=False, gzip=True)
+add_sile('XV', XVSile, gzip=True)
+add_sile('CONTCAR', POSCARSile, gzip=True)
+add_sile('POSCAR', POSCARSile, gzip=True)
 
 # NCSile's
-add_sile('nc',SIESTASile,case=False)
-add_sile('grid.nc',SIESTAGridSile,case=False)
-add_sile('TBT.nc',TBtransSile)
-add_sile('PHT.nc',PHtransSile)
+add_sile('nc', SIESTASile, case=False)
+add_sile('grid.nc', SIESTAGridSile, case=False)
+add_sile('TBT.nc', TBtransSile)
+add_sile('PHT.nc', PHtransSile)
 
 
-def get_sile(file,*args,**kwargs):
+def get_sile(file, *args, **kwargs):
     """ 
     Guess the file handle for the input file and return
     and object with the file handle.
@@ -117,26 +117,33 @@ def get_sile(file,*args,**kwargs):
     try:
         # Create list of endings on this file
         f = file
-        # We also check the entire file name (mainly for VASP)
-        end_list = [f]
+        end_list = []
         end = ''
-        lext = splitext(f)
+
         # Check for files without ending, or that they are directly zipped
+        lext = splitext(f)
         while len(lext[1]) > 0:
             end = lext[1] + end
             end_list.append(end)
             lext = splitext(lext[0])
 
+        # We also check the entire file name
+        #  (mainly for VASP)
+        end_list.append(f)
+
         while end_list:
             end = end_list.pop()
-            try:
-                return _objs[end](file,*args,**kwargs)
-            except:
-                pass
+
+            # Check for ending and possibly
+            # return object
+            if end in _objs:
+                return _objs[end](file, *args, **kwargs)
+
         raise Exception('print fail')
     except Exception as e:
-        raise NotImplementedError("File requested could not be found, possibly the file has "+
-                                  "not been implemented.")
+        print(e)
+        raise NotImplementedError(("File requested could not be found, possibly the file has ",
+                                   "not been implemented."))
 
 
 if __name__ == "__main__":

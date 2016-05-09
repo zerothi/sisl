@@ -10,8 +10,10 @@ class TestObject(object):
 
     def test_cube(self):
         for obj in [BaseSile,Sile,CUBESile]:
-            assert_true( isinstance(get_sile('test.cube'),obj) )
-            assert_true( isinstance(get_sile('test.CUBE'),obj) )
+            sile = get_sile('test.cube')
+            assert_true( isinstance(sile, obj) )
+            sile = get_sile('test.CUBE')
+            assert_true( isinstance(sile, obj) )
 
     def test_cube_gz(self):
         for obj in [BaseSile,Sile,CUBESile]:
@@ -48,11 +50,12 @@ class TestObject(object):
 
     def test_nc(self):
         for obj in [BaseSile,NCSile,SIESTASile]:
-            assert_true( isinstance(get_sile('test.nc'),obj) )
+            assert_true( isinstance(get_sile('test.nc', access=0),obj) )
 
     def test_grid_nc(self):
         for obj in [BaseSile,NCSile,SIESTAGridSile]:
-            assert_true( isinstance(get_sile('test.grid.nc'),obj) )
+            sile = get_sile('test.grid.nc', access=0)
+            assert_true( isinstance(sile, obj) )
 
     def test_tb(self):
         for obj in [BaseSile,Sile,TBSile]:
@@ -66,7 +69,13 @@ class TestObject(object):
 
     def test_tbtrans(self):
         for obj in [BaseSile,NCSile,TBtransSile]:
-            assert_true( isinstance(get_sile('test.TBT.nc'),obj) )
+            sile = get_sile('test.TBT.nc', access=0)
+            assert_true( isinstance(sile, obj) )
+
+    def test_phtrans(self):
+        for obj in [BaseSile,NCSile,PHtransSile]:
+            sile = get_sile('test.PHT.nc', access=0)
+            assert_true( isinstance(sile, obj) )
 
     def test_vasp(self):
         for obj in [BaseSile,Sile,POSCARSile]:
@@ -77,7 +86,6 @@ class TestObject(object):
         for obj in [BaseSile,Sile,POSCARSile]:
             assert_true( isinstance(get_sile('CONTCAR.gz'),obj) )
             assert_true( isinstance(get_sile('POSCAR.gz'),obj) )
-
 
     def test_xyz(self):
         for obj in [BaseSile,Sile,XYZSile]:
