@@ -182,13 +182,16 @@ if __name__ == '__main__':
     except:
         pass
 
+    # currently we do not rely on the distutils from numpy
+    from numpy.distutils.core import setup
+
     # From scipy:
     if (len(sys.argv) >= 2 and sys.argv[1] == 'bdist_wheel') or (
             'develop' in sys.argv):
         # bdist_wheel needs setuptools
         import setuptools
 
-    from numpy.distutils.core import setup
+    from setuptools import setup
 
     # Main setup of python modules
     setup(**metadata)
