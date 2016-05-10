@@ -35,10 +35,10 @@ Operating System :: MacOS
 
 MAJOR = 0
 MINOR = 6
-MICRO = 1
-ISRELEASED = False
+MICRO = 2
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION = "579bcc74a9abeefc81e211d7be2bc5ad0771f64c"
+GIT_REVISION = "8af21b53ede12e19cf157c3e0a2a8964047689ec"
 
 
 def generate_cython():
