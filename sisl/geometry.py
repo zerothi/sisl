@@ -173,7 +173,7 @@ class Geometry(SuperCellChild):
     @property
     def dR(self):
         """ Returns the maximum orbital range of the atoms """
-        return np.amax([a.dR for a in A])
+        return np.amax([a.dR for a in self.atoms])
 
     @property
     def no_s(self):
