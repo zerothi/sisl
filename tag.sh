@@ -92,7 +92,7 @@ git add setup.py
 git commit -s -m "Prepping for release"
 git tag -a "$v" -m "$MSG"
 # Publish on pypi
-python setup.py sdist upload
+python setup.py sdist bdist_wheel upload
 # Revert release tag
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 False:" setup.py
 git add setup.py
