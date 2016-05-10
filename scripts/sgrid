@@ -12,7 +12,7 @@ is_3 = sys.version_info >= (3,0)
 
 import numpy as np
 
-import sids
+import sisl
 
 # For transforming a string to a range
 import re
@@ -215,13 +215,13 @@ def grid_action(args):
     f, var, idx = file_idx(args.in_file)
     
     # Read grid
-    g = sids.Grid.read(f, var, idx)
+    g = sisl.Grid.read(f, var, idx)
 
     if args.geometry:
         # The user has requested to overwrite the geometry
         # We have to do this before we change the grid size
         # by reduction, or averaging out one dimension
-        geom = sids.Geometry.read(args.geometry)
+        geom = sisl.Geometry.read(args.geometry)
         g.set_geom(geom)
 
     # Reduce grid
@@ -229,7 +229,7 @@ def grid_action(args):
 
     if args.diff:
         f, var, idx = file_idx(args.diff)
-        d = grid_reducing(sids.Grid.read(f, var, idx),args)
+        d = grid_reducing(sisl.Grid.read(f, var, idx),args)
         g -= d
         del d
 

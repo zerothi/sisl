@@ -12,7 +12,7 @@ is_3 = sys.version_info >= (3,0)
 
 import numpy as np
 
-import sids
+import sisl
 
 # For transforming a string to a range
 import re
@@ -140,7 +140,7 @@ def geom_convert(args):
 
     if args.in_file:
         # Take geometry
-        g = sids.Geometry.read(args.in_file)
+        g = sisl.Geometry.read(args.in_file)
     else:
         # We will read in from the pipe
         cell = np.empty([3,3],np.float64)
@@ -159,9 +159,9 @@ def geom_convert(args):
             else:
                 xyz.append(l[:3])
                 if len(l) > 3:
-                    atoms.append(sids.Atom[int(l[3])])
+                    atoms.append(sisl.Atom[int(l[3])])
         xyz = np.array(xyz,np.float64)
-        g = sids.Geometry(xyz=xyz,atoms=atoms,sc=cell)
+        g = sisl.Geometry(xyz=xyz,atoms=atoms,sc=cell)
     
     
     if args.origin:
