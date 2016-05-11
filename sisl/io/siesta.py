@@ -197,6 +197,7 @@ class SIESTASile(NCSile):
         Creates the NetCDF file and writes the geometry information
         """
         sile_raise_write(self)
+
         if not hasattr(self, 'fh'):
             with self:
                 return self.write_geom(geom)

@@ -41,14 +41,15 @@ class BaseSile(object):
 class Sile(BaseSile):
     """ Class to contain a file with easy access """
 
-    def __init__(self, filename, mode=None):
+    def __init__(self, filename, mode='r', comment='#'):
+
+        self.file = filename
+        self._mode = mode
+        self._comment = [comment]
 
         # Initialize
         self.__setup()
 
-        self.file = filename
-        if mode:
-            self._mode = mode
 
     def __setup(self):
         """ Setup the `Sile` after initialization
@@ -57,11 +58,8 @@ class Sile(BaseSile):
 
         This method must **never** be overwritten.
         """
-        # Basic initialization of custom variables
-        self._mode = 'r'
-        self._comment = ['#']
-
         self._setup()
+
 
     def __enter__(self):
         """ Opens the output file and returns it self """
@@ -70,6 +68,7 @@ class Sile(BaseSile):
         else:
             self.fh = open(self.file, self._mode)
         return self
+
 
     def __exit__(self, type, value, traceback):
         self.fh.close()
@@ -208,7 +207,7 @@ class NCSile(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
 
-    def __init__(self, filename, mode=None, lvl=0, access=1):
+    def __init__(self, filename, mode='r', lvl=0, access=1):
         """ Creates/Opens a NCSile
 
         Opens a NCSile with `mode` and compression level `lvl`.
@@ -223,21 +222,20 @@ class NCSile(BaseSile):
         """
 
         self.file = filename
-        if mode:
-            self._mode = mode
+        # Open mode
+        self._mode = mode
         # Save compression internally
         self._lvl = lvl
-
-        # Must call setup-methods
-        self.__setup(access=access)
-
-    def __setup(self, access=1):
-        """ Setup `NCSile` after initialization """
-        self._mode = 'r'
-        self._lvl = 0
         self._access = access
 
+        # Must call setup-methods
+        self.__setup()
+
+
+    def __setup(self):
+        """ Setup `NCSile` after initialization """
         self._setup()
+
 
     @property
     def _cmp_args(self):
@@ -248,6 +246,7 @@ class NCSile(BaseSile):
         """
         return {'zlib': self._lvl > 0, 'complevel': self._lvl}
 
+
     def __enter__(self):
         """ Opens the output file and returns it self """
         # We do the import here
@@ -257,6 +256,7 @@ class NCSile(BaseSile):
                                                format='NETCDF4')
         return self
 
+
     def __getattr__(self, attr):
         """ Bypass attributes to directly interact with the NetCDF model """
 
@@ -264,18 +264,19 @@ class NCSile(BaseSile):
             return self.__dict__[attr]
 
         # If we request the file handle for
-        # the NetCDF file, we must have it opened
+        # the NetCDF file, we ensure that hasattr works (catches AttributeError)
         if attr == 'fh':
-            with self:
-                return self.__dict__[attr]
+            raise AttributeError("Sile is un-opened, the file-handle does not exist.")
 
         return getattr(self.fh, attr, None)
+
 
     def __exit__(self, type, value, traceback):
         self.fh.close()
         # clean-up so that it does not exist
-        del self.fh
+        del self.__dict__['fh']
         return False
+
 
     @staticmethod
     def _crt_grp(n, name):

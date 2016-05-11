@@ -21,7 +21,7 @@ __all__ = ['FDFSile']
 class FDFSile(Sile):
     """ FDF file object """
 
-    def __init__(self, filename, mode=None, base=None):
+    def __init__(self, filename, mode='r', base=None):
         """ Initialize an FDF file from the filename
 
         By supplying base you can reference files in other directories.
