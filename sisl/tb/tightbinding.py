@@ -442,8 +442,7 @@ class TightBinding(object):
             del Hfull, Sfull
             return (H, S)
 
-    def eigh(
-            self,
+    def eigh(self,
             k=None,
             atoms=None,
             eigvals_only=True,
@@ -677,6 +676,27 @@ class TightBinding(object):
                 tb[jo, io] = (H[jo, io], s)
 
         return tb
+
+
+    @staticmethod
+    def read(sile, *args, **kwargs):
+        """ Reads tight-binding model from `Sile` using `read_tb`.
+
+        Parameters
+        ----------
+        sile : Sile, str
+            a `Sile` object which will be used to read the Hamiltonian
+            if it is a string it will create a new sile using `get_sile`.
+        * : args passed directly to ``read_tb(,**)``
+        """
+        # This only works because, they *must*
+        # have been imported previously
+        from sisl.io import get_sile, BaseSile
+        if isinstance(sile, BaseSile):
+            return sile.read_tb(*args, **kwargs)
+        else:
+            return get_sile(sile).read_tb(*args, **kwargs)
+
 
     def write(self, sile, *args, **kwargs):
         """ Writes a tight-binding model to the `Sile` as implemented in the :code:`ObjSile.write_tb` method """

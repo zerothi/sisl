@@ -88,9 +88,8 @@ class SIESTASile(NCSile):
             with self:
                 return self.read_tb(**kwargs)
 
-        ispin = 0
-        if 'ispin' in kwargs:
-            ispin = kwargs['ispin']
+        # Get the default spin channel
+        ispin = kwargs.get('ispin', 0)
 
         # First read the geometry
         geom = self.read_geom()
