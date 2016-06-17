@@ -6,11 +6,16 @@ import gzip
 
 import numpy as np
 
+# Public used objects
 __all__ = [
     'BaseSile',
     'Sile',
     'NCSile',
     'SileError',
+    ]
+
+__all__ += [
+    'Sile_fh_open',
     'sile_raise_write',
     'sile_raise_read']
 
@@ -36,6 +41,24 @@ class BaseSile(object):
         end with ``self._setup()``.
         """
         self._setup(*args, **kwargs)
+
+
+    def __getattr__(self, name):
+        """ Override to check the handle """
+        return getattr(self.fh, name)
+
+        
+def Sile_fh_open(func):
+    """ Method decorator for objects to directly implement opening of the
+    file-handle upon entry (if it isn't already).
+    """
+    def pre_open(self, *args, **kwargs):
+        if hasattr(self, "fh"):
+            return getattr(self, func)(*args, **kwargs)
+        else:
+            with self:
+                return getattr(self, func)(*args, **kwargs)
+    return pre_open
 
 
 class Sile(BaseSile):
@@ -73,7 +96,7 @@ class Sile(BaseSile):
     def __exit__(self, type, value, traceback):
         self.fh.close()
         # clean-up so that it does not exist
-        del self.fh
+        delattr(self, 'fh')
         return False
 
     @staticmethod
@@ -203,6 +226,7 @@ def _import_netCDF4():
         import netCDF4 as _netCDF4
 
 
+
 class NCSile(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
@@ -232,6 +256,11 @@ class NCSile(BaseSile):
         self.__setup()
 
 
+    def _setup(self,*args, **kwargs):
+        """ Simple setup that needs to be overwritten """
+        pass
+
+
     def __setup(self):
         """ Setup `NCSile` after initialization """
         self._setup()
@@ -257,24 +286,11 @@ class NCSile(BaseSile):
         return self
 
 
-    def __getattr__(self, attr):
-        """ Bypass attributes to directly interact with the NetCDF model """
-
-        if attr in self.__dict__:
-            return self.__dict__[attr]
-
-        # If we request the file handle for
-        # the NetCDF file, we ensure that hasattr works (catches AttributeError)
-        if attr == 'fh':
-            raise AttributeError("Sile is un-opened, the file-handle does not exist.")
-
-        return getattr(self.fh, attr, None)
-
-
     def __exit__(self, type, value, traceback):
-        self.fh.close()
-        # clean-up so that it does not exist
-        del self.__dict__['fh']
+        if 'fh' in self.__dict__:
+            self.__dict__['fh'].close()
+            # clean-up so that it does not exist
+            del self.__dict__['fh']
         return False
 
 

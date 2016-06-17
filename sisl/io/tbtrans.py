@@ -48,9 +48,10 @@ class TBtransSile(NCSile):
         if self._access > 0:
             if name in self.__data:
                 return self.__data[name]
+        with self:
+            return self._get_var(name, tree=tree)[:]
 
-        return self._get_var(name, tree=tree)[:]
-
+    @Sile_fh_open
     def _data_avg(self, name, tree=None, avg=False):
         """ Local method for obtaining the data from the NCSile.
 
@@ -90,6 +91,8 @@ class TBtransSile(NCSile):
         # Return data
         return data
 
+    
+    @Sile_fh_open
     def _data_E(self, name, tree=None, avg=False, E=None):
         """ Local method for obtaining the data from the NCSile using an E index.
 
@@ -134,6 +137,7 @@ class TBtransSile(NCSile):
         # Return data
         return data
 
+    
     def _setup(self):
         """ Setup the special object for data containing """
         self.__data = dict()
@@ -158,27 +162,18 @@ class TBtransSile(NCSile):
             # Reset the access pattern
             self._access = access
 
+    @Sile_fh_open
     def read_sc(self):
         """ Returns `SuperCell` object from a .TBT.nc file """
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.read_sc()
-
         cell = np.array(np.copy(self.cell), dtype=np.float64)
         cell.shape = (3, 3)
 
         return SuperCell(cell)
 
+    
+    #@NCSile_fh_open("_geom")
     def read_geom(self):
         """ Returns Geometry object from a .TBT.nc file """
-        # Quick access to the geometry object
-        if self._access > 0 and '_geom' in self.__data:
-            return self.__data['_geom']
-
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.read_geom()
-
         sc = self.read_sc()
 
         xyz = np.array(np.copy(self.xa), dtype=np.float64)
@@ -367,7 +362,6 @@ class TBtransSile(NCSile):
                 "Supplied elec_from and elec_to must not be the same.")
 
         return self._data_avg(elec_to + '.T.Eig', elec_from, avg=kavg)
-    TEig = transmission_eig
     Teig = transmission_eig
 
     def transmission_bulk(self, elec, avg=True):
@@ -381,7 +375,6 @@ class TBtransSile(NCSile):
            whether the returned transmission is k-averaged
         """
         return self._data_avg('T', elec, avg=kavg)
-    TBulk = transmission_bulk
     Tbulk = transmission_bulk
 
     def DOS(self, avg=True):
@@ -421,10 +414,11 @@ class TBtransSile(NCSile):
         return self._data_avg('DOS', elec, avg=kavg)
     BulkDOS = DOS_bulk
 
+
     def orbital_current(self, elec, E=None, avg=True):
         """ Return the orbital current originating from `elec`.
 
-        This will return a sparse matrix (`scipy.sparse.csr_matrix`).
+        This will return a sparse matrix (``scipy.sparse.csr_matrix``).
         The sparse matrix may be interacted with like a normal
         matrix although it enables extremely big matrices.
 
@@ -434,14 +428,14 @@ class TBtransSile(NCSile):
            the electrode of originating electrons
         E: int (None)
            the energy index of the orbital current
-           If `None` two objects will be returned, 1) the csr_matrix of the orbital currents , 2) all the currents (J), you may do:
+           If `None` two objects will be returned, 1) the ``csr_matrix`` of the orbital currents , 2) all the currents (J), you may do:
             >>> J, mat = orbital_current(elec)
             >>> mat.data[:] = J[E,:]
            otherwise it will only return:
             >>> mat.data[:] = J[E,:]
            which is (far) less memory consuming.
         avg: bool (True)
-           whether the orbital currents are k-averaged
+           whether the orbital current returned is k-averaged
         """
 
         # Get column indices
@@ -449,8 +443,8 @@ class TBtransSile(NCSile):
         # Create row-pointer
         tmp = np.cumsum(self.variables['n_col'][:])
         size = len(tmp)
-        ptr = np.empty(size + 1, np.int32)
         mat_size = (size, size)
+        ptr = np.empty([size + 1], np.int32)
         ptr[0] = 0
         ptr[1:] = tmp[:]
         del tmp
@@ -460,61 +454,134 @@ class TBtransSile(NCSile):
             # sparse matrix
             J = self._data_avg('J', elec, avg=avg)
             if len(J.shape) == 2:
-                mat = csr_matrix((J[0, :], col, ptr), shape=mat_size)
+                mat = csr_matrix( (J[0, :], col, ptr), shape=mat_size)
             else:
-                mat = csr_matrix((J[0, 0, :], col, ptr), shape=mat_size)
+                mat = csr_matrix( (J[0, 0, :], col, ptr), shape=mat_size)
             return mat, J
 
         else:
             J = self._data_E('J', elec, avg, E)
 
-        return csr_matrix((J, col, ptr), shape=mat_size)
+        return csr_matrix( (J, col, ptr), shape=mat_size)
 
-    def bond_current(self, Jij, symmetry=True):
+
+    def bond_current(self, Jij, sum="+"):
         """ Return the bond-current between atoms (sum of orbital currents)
 
         Parameters
         ==========
-        Jij: scipy.sparse.csr_matrix
+        Jij: ``scipy.sparse.csr_matrix``
            the orbital currents as retrieved from `orbital_current`
-        symmetry: bool (True)
-           only return half of the bond currents (the upper triangle), otherwise return both
+        sum: str ("+")
+           this value may be "+"/"-"/"all"
+           If "+" is supplied only the positive orbital currents are used,
+           for "-", only the negatev orbital currents are used,
+           else return both.
         """
 
         # We convert to atomic bond-currents
-        J = lil_matrix((self.na_u, self.na_u), dtype=mat.dtype)
+        J = lil_matrix( (self.na_u, self.na_u), dtype=mat.dtype)
 
         # Create the iterator across the sparse pattern
         tmp = Jij.tocoo()
         it = np.nditer([self.o2a(tmp.row), self.o2a(tmp.col), tmp.data],
-                       flags=['external_loop', 'buffered'],
-                       op_flags=['readonly'])
+                       flags=['buffered'], op_flags=['readonly'])
 
         # Perform reduction
-        if symmetry:
+        if "+" in sum:
             for ja, ia, d in it:
-                if ia <= ja:
-                    continue
+                if d > 0:
+                    J[ja, ia] += d
 
-                J[ja, ia] += d
+        elif "-" in sum:
+            for ja, ia, d in it:
+                if d < 0:
+                    J[ja, ia] -= d
+
         else:
             for ja, ia, d in it:
-                if ia == ja:
-                    continue  # it is zero anyway
-
                 J[ja, ia] += d
 
         # Delete iterator
         del it
 
+        # Rescale to correct magnitude
+        J.data[:] *= .5
+
         # Now we have the bond-currents
         # convert and sort
         mat = J.tocsr()
-        # Rescale to correct magnitude
-        J.data[:] *= .5
         mat.sort_indices()
 
         return mat
+
+
+    def atom_current(self, Jij, activity=True):
+        r""" Return the atom-current of atoms
+
+        Parameters
+        ==========
+        Jij: ``scipy.sparse.csr_matrix``
+           the orbital currents as retrieved from `orbital_current`
+        activity: bool (True)
+           whether the activity current is returned.
+           This is defined using these two equations:
+
+           .. math::
+              J_I^{|a|} &=\frac{1}{2} \sum_J \big| \sum_{\nu\in I}\sum_{\mu\in J} J_{\nu\mu} \big|
+              J_I^{|o|} &=\frac{1}{2} \sum_J \sum_{\nu\in I}\sum_{\mu\in J} \big| J_{\nu\mu} \big|
+
+           If `activity = False` it returns
+
+           .. math::
+              J_I^{|a|}
+
+           and if `activity = True` it returns
+
+           .. math::
+              J_I^{\mathcal A} = \sqrt{ J_I^{|a|} J_I^{|o|} }
+
+        """
+        
+        # Convert to csr format (just ensure it)
+        tmp = Jij.tocsr()
+
+        # List of atomic currents
+        Ja = np.zeros([self.na_u], np.float64)
+        Jo = np.zeros([self.na_u], np.float64)
+
+        # We already know which atoms are the device atoms...
+        atoms = self.a_dev
+
+        # Create local lasto
+        lasto = np.append([0],self.geom.lasto)
+
+        # Faster function calls
+        nabs = np.abs
+        nsum = np.sum
+
+        # Calculate individual bond-currents between atoms
+        for ia in atoms:
+            for ja in atoms:
+                
+                # we also include ia == ja (that should be zero anyway)
+                t = tmp[lasto[ia-1]:lasto[ia],lasto[ja-1]:lasto[ja]].data
+                
+                # Calculate both the orbital and atomic normalized current
+                Jo[ia-1] += nsum(nabs(t))
+                Ja[ia-1] += nabs(nsum(t))
+
+        del t
+
+        # If it is the activity current, we return the geometric mean...
+        if activity:
+            Ja = np.sqrt( Ja * Jo )
+
+        # Scale correctly
+        Ja *= 0.5
+            
+        return Ja
+
 
 
 class PHtransSile(TBtransSile):
