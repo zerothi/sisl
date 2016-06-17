@@ -67,18 +67,44 @@ class FDFSile(Sile):
             return self.readline()
         return l
 
+    def get(self, key, unit=None, default=None):
+        """ Retrieve fdf-keyword from the file """
+        
+        found, fdf = self._read(key)
+        if not found:
+            return default
+
+        # The keyword is found...
+        if fdf.startswith('%block'):
+            return self._read_block(key)
+
+        # The keyword is correct and we now should possibly
+        # convert the unit...
+        return fdf.split()[1:]
+        
+
     def _read(self, key):
         """ Returns the arguments following the keyword in the FDF file """
         if hasattr(self, 'fh'):
-            return self.step_to(key, case=False)
-        with self:
-            return self.step_to(key, case=False)
+            found, fdf = self.step_to(key, case=False)
+
+            # Check whether the key is piped
+            if '<' in fdf:
+                # Create new fdf-file
+                sub_fdf = FDFSile(fdf.split('<')[1].replace('\n','').strip())
+                return sub_fdf._read(key)
+            
+            return found, fdf
+        
+        else:
+            with self:
+                return self._read(key)
 
     def _read_block(self, key, force=False):
         """ Returns the arguments following the keyword in the FDF file """
         k = key.lower()
         with self as fh:
-            f, lc = fh.step_to(k, case=False)
+            f, fdf = fh.step_to(k, case=False)
             if force and not f:
                 # The user requests that the block *MUST* be found
                 raise SileError(
@@ -88,6 +114,13 @@ class FDFSile(Sile):
                     self)
             if not f:
                 return False, []  # not found
+
+            # If the block is piped in from another file...
+            if '<' in fdf:
+                # Create new fdf-file
+                sub_fdf = FDFSile(fdf.split('<')[1].replace('\n','').strip())
+                return sub_fdf._read_block(key, force = force)
+            
             li = []
             while True:
                 l = fh.readline()
