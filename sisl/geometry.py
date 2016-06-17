@@ -798,6 +798,25 @@ class Geometry(SuperCellChild):
             sc = self.sc.append(other.sc, axis)
         return self.__class__(xyz, atoms=atoms, sc=sc)
 
+
+    def add(self, other):
+        """
+        Adds atoms (as is) from the ``other`` geometry.
+        This will not alter the residing cell vectors.
+
+        Parameters
+        ----------
+        other : `Geometry`
+            Other geometry class which is added
+        """
+        xyz = np.append(self.xyz,
+                        other.xyz,
+                        axis=0)
+        atoms = np.append(self.atoms, other.atoms)
+        sc = self.sc.copy()
+        return self.__class__(xyz, atoms=atoms, sc=sc)
+    
+
     def reverse(self, atoms=None):
         """ Returns a reversed geometry
 
