@@ -45,6 +45,8 @@ class BaseSile(object):
 
     def __getattr__(self, name):
         """ Override to check the handle """
+        if name == 'fh':
+            raise AttributeError("The filehandle has not been opened yet")
         return getattr(self.fh, name)
 
         
@@ -54,10 +56,10 @@ def Sile_fh_open(func):
     """
     def pre_open(self, *args, **kwargs):
         if hasattr(self, "fh"):
-            return getattr(self, func)(*args, **kwargs)
+            return func(self, *args, **kwargs)
         else:
             with self:
-                return getattr(self, func)(*args, **kwargs)
+                return func(self, *args, **kwargs)
     return pre_open
 
 

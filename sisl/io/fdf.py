@@ -36,6 +36,7 @@ class FDFSile(Sile):
         if len(self._directory) == 0:
             self._directory = '.'
 
+
     def _setup(self):
         """ Setup the `FDFSile` after initialization """
         # These are the comments
@@ -44,6 +45,7 @@ class FDFSile(Sile):
         # List of parent file-handles used while reading
         self._parent_fh = []
         self._directory = '.'
+
 
     def readline(self, comment=False):
         """ Reads the next line of the file """
@@ -67,6 +69,7 @@ class FDFSile(Sile):
             return self.readline()
         return l
 
+
     def get(self, key, unit=None, default=None):
         """ Retrieve fdf-keyword from the file """
         
@@ -81,68 +84,61 @@ class FDFSile(Sile):
         # The keyword is correct and we now should possibly
         # convert the unit...
         return fdf.split()[1:]
-        
 
+
+    @Sile_fh_open
     def _read(self, key):
         """ Returns the arguments following the keyword in the FDF file """
-        if hasattr(self, 'fh'):
-            found, fdf = self.step_to(key, case=False)
+        found, fdf = self.step_to(key, case=False)
 
-            # Check whether the key is piped
-            if '<' in fdf:
-                # Create new fdf-file
-                sub_fdf = FDFSile(fdf.split('<')[1].replace('\n','').strip())
-                return sub_fdf._read(key)
-            
-            return found, fdf
+        # Check whether the key is piped
+        if found and fdf.find('<') >= 0:
+            # Create new fdf-file
+            sub_fdf = FDFSile(fdf.split('<')[1].replace('\n','').strip())
+            return sub_fdf._read(key)
         
-        else:
-            with self:
-                return self._read(key)
+        return found, fdf
 
+
+    @Sile_fh_open
     def _read_block(self, key, force=False):
         """ Returns the arguments following the keyword in the FDF file """
         k = key.lower()
-        with self as fh:
-            f, fdf = fh.step_to(k, case=False)
-            if force and not f:
-                # The user requests that the block *MUST* be found
-                raise SileError(
-                    'Requested forced block could not be found: ' +
-                    str(key) +
-                    '.',
-                    self)
-            if not f:
-                return False, []  # not found
+        f, fdf = self.step_to(k, case=False)
+        if force and not f:
+            # The user requests that the block *MUST* be found
+            raise SileError(
+                'Requested forced block could not be found: ' +
+                str(key) +
+                '.',
+                self)
+        if not f:
+            return False, []  # not found
 
-            # If the block is piped in from another file...
-            if '<' in fdf:
-                # Create new fdf-file
-                sub_fdf = FDFSile(fdf.split('<')[1].replace('\n','').strip())
-                return sub_fdf._read_block(key, force = force)
-            
-            li = []
-            while True:
-                l = fh.readline()
-                if fh.line_has_key(l, '%endblock', case=False) or \
-                   fh.line_has_key(l, k, case=False):
-                    return True, li
-                # Append list
-                li.append(l)
+        # If the block is piped in from another file...
+        if '<' in fdf:
+            # Create new fdf-file
+            sub_fdf = FDFSile(fdf.split('<')[1].replace('\n','').strip())
+            return sub_fdf._read_block(key, force = force)
+        
+        li = []
+        while True:
+            l = self.readline()
+            if self.line_has_key(l, '%endblock', case=False) or \
+               self.line_has_key(l, k, case=False):
+                return True, li
+            # Append list
+            li.append(l)
         raise SileError(
             'Error on reading block: ' +
             str(key) +
             ' could not find start/end.')
 
+    @Sile_fh_open
     def write_geom(self, geom, fmt='.5f'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
-
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.write_geom(geom, fmt)
 
         # Write out the cell
         self._write('LatticeConstant 1. Ang\n')
@@ -172,9 +168,11 @@ class FDFSile(Sile):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
+
     def read_sc(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
         f, lc = self._read('LatticeConstant')
+
         s = float(lc.split()[1])
         if 'ang' in lc.lower():
             pass
@@ -200,6 +198,7 @@ class FDFSile(Sile):
         cell *= s
 
         return SuperCell(cell)
+
 
     def read_geom(self, *args, **kwargs):
         """ Returns Geometry object from the FDF file
@@ -293,9 +292,6 @@ class FDFSile(Sile):
 
         # Now we read in the species
         f, l = self._read('NumberOfSpecies')
-        if not f:
-            raise ValueError('Could not find NumberOfSpecies in fdf file.')
-
         ns = 0
         if f:
             ns = int(l.split()[1])
