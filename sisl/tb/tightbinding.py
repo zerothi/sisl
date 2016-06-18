@@ -257,25 +257,47 @@ class TightBinding(object):
            ranges. ``param[0,:]`` are the tight-binding parameter
            for the all atoms within ``dR[0]`` of each atom.
         """
+        # Ensure that we are dealing with a numpy array
+        param = np.array(param)
 
         if len(dR) + 1 == len(param):
-            R = np.hstack((dR[0] / 100, dR))
+            R = np.hstack((dR[0] / 100, np.asarray(dR)))
         elif len(dR) == len(param):
-            R = dR.copy()
+            R = np.asarray(dR).copy()
         else:
-            raise ValueError(("Length of dR and param must be the same "
-                              "or dR one shorter than param. "
-                              "One tight-binding parameter for each radii."))
+            raise ValueError("Length of dR and param must be the same "
+                             "or dR one shorter than param. "
+                             "One tight-binding parameter for each radii.")
 
         if len(param[0]) != 2:
-            raise ValueError(("Number of parameters "
-                              "for each element is not 2. "
-                              "You must make len(param[0] == 2."))
+            raise ValueError("Number of parameters "
+                             "for each element is not 2. "
+                             "You must make len(param[0] == 2.")
 
         if np.any(np.diff(self.geom.lasto) > 1):
-            warnings.warn(("Automatically setting a tight-binding model "
-                           "for systems with atoms having more than 1 "
-                           "orbital is not adviced. Please do it your-self."))
+            warnings.warn("Automatically setting a tight-binding model "
+                          "for systems with atoms having more than 1 "
+                          "orbital is not adviced. Please do it your-self.")
+
+        eq_atoms = []
+        def print_equal(eq_atoms):
+            if len(eq_atoms) > 0:
+                warnings.warn("The geometry has one or more atoms having the same "
+                              "atomic position. "
+                              "The atoms are within {} Ang"
+                              "of each other.".format(R[0]))
+                for ia, ja in eq_atoms:
+                    warnings.warn("  {0:7d} -- {1:7d}".format(ia, ja))
+
+        def append_equal(eq_atoms, ia, idx):
+            # Append to the list of equal atoms the atomic indices
+            if len(idx[0]) > 1:
+                tmp = list(idx[0])
+                # only add in "one" direction
+                for ja in tmp:
+                    if ja > ia:
+                        eq_atoms.append( (ia,ja) )
+
 
         if len(self.geom) < 2000:
             # there is no need to do anything complex
@@ -283,10 +305,13 @@ class TightBinding(object):
             for ia in self.geom:
                 # Find atoms close to 'ia'
                 idx = self.geom.close(ia, dR=R)
+                append_equal(eq_atoms, ia, idx)
+
                 for ix, h in zip(idx, param):
                     # Set the tight-binding parameters
                     self[ia, ix] = h
 
+            print_equal(eq_atoms)
             return self
 
         # check how many atoms are within the standard 10 dR
@@ -306,9 +331,13 @@ class TightBinding(object):
             for ia in ias:
                 # Find atoms close to 'ia'
                 idx = self.geom.close(ia, dR=R, idx=idxs)
+                append_equal(eq_atoms, ia, idx)
+
                 for ix, h in zip(idx, param):
                     # Set the tight-binding parameters
                     self[ia, ix] = h
+
+        print_equal(equal_atoms)
 
         return self
 
