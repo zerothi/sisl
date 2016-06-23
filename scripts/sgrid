@@ -74,7 +74,7 @@ def run():
 
     p = arg.ArgumentParser('Manipulates grid functions in commonly encounterd files.')
 
-    def dir_type(val,check_type):
+    def dir_type(val, check_type):
         if val in 'xyzabc':
             return 'xaybzc'.index(val) // 2
         try:
@@ -82,8 +82,10 @@ def run():
         except:
             raise arg.ArgumentTypeError("Type: "+val+" not valid type "+str(check_type.__name__))
 
-    def dir_int(val): return dir_type(val,int)
-    def dir_float(val): return dir_type(val,float)
+    def dir_int(val):
+        return dir_type(val, int)
+    def dir_float(val):
+        return dir_type(val, float)
     def dir_angle(val): 
         if val in 'xyzabc':
             return 'xaybzc'.index(val) // 2
@@ -116,10 +118,10 @@ def run():
                    help='Difference grid file.')
 
     # Take the mean value in a direction
-    p.add_argument('-m','--mean','--average', type=dir_type, metavar='dir', default=None,
-                   help='Take the average value in the directions specified.')
+    p.add_argument('-m','--mean','--average', type=dir_int, metavar='dir', default=None,
+                   help='Take the average value in the directions specified [xyzabc].')
     p.add_argument('--sum', type=dir_int, metavar='dir', default=None,
-                   help='Sum grid in the directions specified.')
+                   help='Sum grid in the directions specified [xyzabc].')
 
     
     class ValidateGridPart(arg.Action):
