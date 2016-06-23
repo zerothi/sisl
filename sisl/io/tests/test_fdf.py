@@ -23,8 +23,24 @@ class TestFDF(object):
     def test_fdf1(self):
         f = osp.join(self.d, 'gr.fdf')
         self.g.write(FDFSile(f, 'w'))
-        with open(f, 'r') as fh:
-            print(fh.readlines())
+
+        fdf = FDFSile(f)
+        with fdf:
+            
+            fdf.readline()
+            
+            # Be sure that we can read it in a loop
+            assert_true(fdf.get('LatticeConstant')[0])
+            assert_true(fdf.get('LatticeConstant')[0])
+            assert_true(fdf.get('LatticeConstant')[0])
+
+            fdf.read_sc()
+            fdf.read_geom()
+
+
+    def test_fdf2(self):
+        f = osp.join(self.d, 'gr.fdf')
+        self.g.write(FDFSile(f, 'w'))
         g = FDFSile(f).read_geom()
 
         # Assert they are the same

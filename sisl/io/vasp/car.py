@@ -135,8 +135,12 @@ class CARSile(SileVASP):
         return Geometry(xyz=xyz, atoms=atoms, sc=sc)
 
 
-POSCARSile = CARSile
-CONTCARSile = CARSile
+# Equivalent classes
+class POSCARSile(CARSile):
+    pass
+
+class CONTCARSile(CARSile):
+    pass
 
 
 add_sile('CAR', CARSile, gzip=True)
