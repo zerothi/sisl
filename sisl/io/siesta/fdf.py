@@ -28,7 +28,7 @@ class FDFSile(SileSIESTA):
         By supplying base you can reference files in other directories.
         By default the ``base`` is the directory given in the file name.
         """
-        super(self.__class__, self).__init__(filename, mode=mode)
+        super(FDFSile, self).__init__(filename, mode=mode)
         if base is None:
             # Extract from filename
             self._directory = dirname(filename)
