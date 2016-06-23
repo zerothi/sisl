@@ -3,28 +3,26 @@ Sile object for reading/writing SIESTA Grid files
 """
 from __future__ import print_function
 
+import numpy as np
+
 # Import sile objects
-from sisl.io.sile import *
+from .sile import NCSileSIESTA
+from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, SuperCell, Grid
 from sisl import Bohr
 
-import numpy as np
-
 __all__ = ['SIESTAGridSile']
 
 
-class SIESTAGridSile(NCSile):
+class SIESTAGridSile(NCSileSIESTA):
     """ SIESTA Grid file object """
 
+    @Sile_fh_open
     def read_sc(self):
         """ Returns a SuperCell object from a SIESTA.grid.nc file
         """
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.read_sc()
-
         cell = np.array(self.variables['cell'][:], np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell = cell / Bohr
@@ -32,15 +30,12 @@ class SIESTAGridSile(NCSile):
 
         return SuperCell(cell)
 
+    @Sile_fh_open
     def read_grid(self, name='gridfunc', idx=0, *args, **kwargs):
         """ Reads a grid in the current SIESTA.grid.nc file
 
         Enables the reading and processing of the grids created by SIESTA
         """
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.read_grid(name, idx, *args, **kwargs)
-
         # Swap as we swap back in the end
         sc = self.read_sc().swapaxes(0, 2)
 
@@ -68,5 +63,8 @@ class SIESTAGridSile(NCSile):
         return grid.swapaxes(0, 2)
 
 
+add_sile('grid.nc', SIESTAGridSile)
+
+    
 if __name__ == "__main__":
     pass

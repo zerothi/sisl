@@ -3,14 +3,15 @@ Sile object for reading/writing TB in/output
 """
 from __future__ import print_function, division
 
+import numpy as np
+
 # Import sile objects
-from sisl.io.sile import *
+from .sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl.tb import TightBinding
 
-import numpy as np
 
 __all__ = ['TBSile']
 
@@ -18,12 +19,9 @@ __all__ = ['TBSile']
 class TBSile(Sile):
     """ Tight-binding file object """
 
+    @Sile_fh_open
     def read_geom(self):
         """ Reading a geometry in regular TB format """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_geom()
 
         cell = np.zeros([3, 3], np.float64)
         Z = []
@@ -86,6 +84,8 @@ class TBSile(Sile):
 
         return geom
 
+
+    @Sile_fh_open
     def read_tb(self, hermitian=True, dtype=np.float64, **kwargs):
         """ Reads a tight-binding model (including the geometry)
 
@@ -151,6 +151,8 @@ class TBSile(Sile):
 
         return TightBinding.sp2tb(geom, H, S)
 
+
+    @Sile_fh_open
     def write_geom(self, geom, **kwargs):
         """
         Writes the geometry to the output file
@@ -160,11 +162,6 @@ class TBSile(Sile):
         geom: Geometry
               The geometry we wish to write
         """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self as fh:
-                fh.write_geom(geom, **kwargs)
-            return
 
         # The format of the geometry file is
         # for now, pretty stringent
@@ -206,6 +203,8 @@ class TBSile(Sile):
 
         self._write('end atoms\n')
 
+
+    @Sile_fh_open
     def write_tb(self, tb, hermitian=True, **kwargs):
         """ Writes the tight-binding model to the file
 
@@ -347,6 +346,9 @@ class TBSile(Sile):
                     else:
                         self._write(fmt2_str.format(jo, io, h, s))
             self._write('end matrix {0:d} {1:d} {2:d}\n'.format(*isc))
+
+
+add_sile('tb', TBSile, case=False, gzip=True)
 
 
 if __name__ == "__main__":

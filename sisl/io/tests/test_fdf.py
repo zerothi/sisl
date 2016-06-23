@@ -5,7 +5,7 @@ from nose.tools import *
 from tempfile import mkstemp, mkdtemp
 
 from sisl import Geometry, Atom
-from sisl.io.fdf import *
+from sisl.io import FDFSile
 
 import os.path as osp
 import math as m
@@ -23,6 +23,8 @@ class TestFDF(object):
     def test_fdf1(self):
         f = osp.join(self.d, 'gr.fdf')
         self.g.write(FDFSile(f, 'w'))
+        with open(f, 'r') as fh:
+            print(fh.readlines())
         g = FDFSile(f).read_geom()
 
         # Assert they are the same

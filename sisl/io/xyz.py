@@ -4,13 +4,14 @@ Sile object for reading/writing XYZ files
 
 from __future__ import print_function
 
+import numpy as np
+
 # Import sile objects
-from sisl.io.sile import *
+from .sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 
-import numpy as np
 
 __all__ = ['XYZSile']
 
@@ -22,15 +23,11 @@ class XYZSile(Sile):
         """ Setup the `XYZSile` after initialization """
         self._comment = []
 
+    @Sile_fh_open
     def write_geom(self, geom, fmt='.5f'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
-
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.write_geom(geom, fmt)
 
         # Write out the cell
         self._write('  ' + str(len(geom)) + '\n')
@@ -44,15 +41,13 @@ class XYZSile(Sile):
         # Add a single new line
         self._write('\n')
 
+
+    @Sile_fh_open
     def read_geom(self):
         """ Returns Geometry object from the XYZ file
 
         NOTE: Unit-cell is the Eucledian 3D space.
         """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_geom()
 
         cell = np.asarray(np.diagflat([1] * 3), np.float64)
         l = self.readline()
@@ -73,6 +68,9 @@ class XYZSile(Sile):
             xyz[ia, :] = [float(k) for k in l[:3]]
 
         return Geometry(xyz, atoms=sp, sc=SuperCell(cell))
+
+
+add_sile('xyz', XYZSile, case=False, gzip=True)
 
 
 if __name__ == "__main__":

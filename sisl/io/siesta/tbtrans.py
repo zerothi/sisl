@@ -3,25 +3,26 @@ Sile object for reading TBtrans binary files
 """
 from __future__ import print_function
 
+import numpy as np
+
+# The sparse matrix for the orbital/bond currents
+from scipy.sparse import csr_matrix, lil_matrix
+
+# Check against integers
+from numbers import Integral
+
 # Import sile objects
-from sisl.io.sile import *
+from .sile import NCSileSIESTA
+from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl import Bohr
 
-# The sparse matrix for the orbital/bond currents
-from scipy.sparse import csr_matrix, lil_matrix
-
-import numpy as np
-
-# Check against integers
-from numbers import Integral
-
 __all__ = ['TBtransSile', 'PHtransSile']
 
 
-class TBtransSile(NCSile):
+class TBtransSile(NCSileSIESTA):
     """ TBtrans file object """
     _trans_type = 'TBT'
 
@@ -39,6 +40,7 @@ class TBtransSile(NCSile):
 
         return g.variables[name]
 
+    @Sile_fh_open
     def _data(self, name, tree=None):
         """ Local method for obtaining the data from the NCSile.
 
@@ -162,6 +164,7 @@ class TBtransSile(NCSile):
             # Reset the access pattern
             self._access = access
 
+
     @Sile_fh_open
     def read_sc(self):
         """ Returns `SuperCell` object from a .TBT.nc file """
@@ -171,7 +174,7 @@ class TBtransSile(NCSile):
         return SuperCell(cell)
 
     
-    #@NCSile_fh_open("_geom")
+    @Sile_fh_open
     def read_geom(self):
         """ Returns Geometry object from a .TBT.nc file """
         sc = self.read_sc()
@@ -583,8 +586,11 @@ class TBtransSile(NCSile):
         return Ja
 
 
+add_sile('TBT.nc', TBtransSile)
 
 class PHtransSile(TBtransSile):
     """ PHtrans file object """
     _trans_type = 'PHT'
     pass
+
+add_sile('PHT.nc', PHtransSile)

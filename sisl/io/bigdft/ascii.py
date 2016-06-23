@@ -5,7 +5,8 @@ Sile object for reading/writing ascii files from BigDFT
 from __future__ import division, print_function
 
 # Import sile objects
-from sisl.io.sile import *
+from .sile import SileBigDFT
+from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
@@ -16,19 +17,17 @@ import numpy as np
 __all__ = ['BigDFTASCIISile']
 
 
-class BigDFTASCIISile(Sile):
+class BigDFTASCIISile(SileBigDFT):
     """ ASCII file object for BigDFT """
 
     def _setup(self):
         """ Initialize for `BigDFTASCIISile` """
         self._comment = ['#', '!']
 
+
+    @Sile_fh_open
     def read_geom(self):
         """ Reads a supercell from the Sile """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_geom()
 
         # 1st line is arbitrary
         self.readline(True)
@@ -123,15 +122,11 @@ class BigDFTASCIISile(Sile):
 
         return Geometry(xyz, atoms=spec, sc=sc)
 
+    @Sile_fh_open
     def write_geom(self, geom, fmt='.5f'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
-
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.write_geom(geom, fmt)
 
         # Write out the cell
         self._write('# Created by sisl\n')
@@ -161,6 +156,9 @@ class BigDFTASCIISile(Sile):
                 self._write(f1_str.format(a.symbol, *geom.xyz[ia, :]))
         # Add a single new line
         self._write('\n')
+
+
+add_sile('ascii', BigDFTASCIISile, case=False, gzip=True)
 
 
 if __name__ == "__main__":

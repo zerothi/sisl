@@ -5,7 +5,7 @@ from nose.tools import *
 from tempfile import mkstemp, mkdtemp
 
 from sisl import Geometry, Atom
-from sisl.io.xv import *
+from sisl.io.siesta.xv import *
 
 import os.path as osp
 import math as m

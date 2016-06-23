@@ -4,7 +4,8 @@ Sile object for reading/writing GULP in/output
 from __future__ import print_function
 
 # Import sile objects
-from sisl.io.sile import *
+from .sile import SileGULP
+from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
@@ -12,14 +13,14 @@ from sisl.tb import PhononTightBinding
 
 import numpy as np
 
-__all__ = ['GULPSile']
+__all__ = ['GULPgoutSile']
 
 
-class GULPSile(Sile):
-    """ GULP file object """
+class GULPgoutSile(SileGULP):
+    """ GULP output file object """
 
     def _setup(self):
-        """ Setup `GULPSile` after initialization """
+        """ Setup `GULPgoutSile` after initialization """
 
         self._keys = {
             'sc': 'Final Cartesian lattice vectors',
@@ -36,13 +37,10 @@ class GULPSile(Sile):
         """ Overwrites internal key lookup value for the cell vectors """
         self.set_key('sc', key)
 
+    @Sile_fh_open
     def read_sc(self, key=None):
         """ Reads a `SuperCell` and creates the GULP cell """
         self.set_sc_key(key)
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_sc(key)
 
         f, _ = self.step_to(self._keys['sc'])
         if not f:
@@ -67,14 +65,11 @@ class GULPSile(Sile):
         """ Overwrites internal key lookup value for the geometry vectors """
         self.set_key('geom', key)
 
+
+    @Sile_fh_open
     def read_geom(self, key=None):
         """ Reads a geometry and creates the GULP dynamical geometry """
         self.set_geom_key(key)
-
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_geom(key)
 
         # create default supercell
         sc = SuperCell([1, 1, 1])
@@ -148,18 +143,17 @@ class GULPSile(Sile):
         # Return the geometry
         return Geometry(xyz, atoms=Atom[Z], sc=sc)
 
+
     def set_dyn_key(self, key):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """
         self.set_key('dyn', key)
 
     set_tb_key = set_dyn_key
 
+
+    @Sile_fh_open
     def read_tb(self, **kwargs):
         """ Returns a GULP tight-binding model for the output of GULP """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_tb(**kwargs)
 
         dtype = kwargs.get('dtype', np.float64)
 
@@ -236,6 +230,9 @@ class GULPSile(Sile):
         del ones
 
         return PhononTightBinding.sp2tb(geom, dyn, S)
+
+
+add_sile('gout', GULPgoutSile, gzip=True)
 
 
 if __name__ == "__main__":

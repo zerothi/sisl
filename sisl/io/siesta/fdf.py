@@ -4,21 +4,22 @@ Sile object for reading/writing FDF files
 
 from __future__ import print_function, division
 
+from os.path import dirname, sep
+import numpy as np
+
 # Import sile objects
-from sisl.io.sile import *
+from .sile import SileSIESTA
+from ..sile import *
 from sisl.io._help import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl import Bohr
 
-from os.path import dirname, sep
-import numpy as np
-
 __all__ = ['FDFSile']
 
 
-class FDFSile(Sile):
+class FDFSile(SileSIESTA):
     """ FDF file object """
 
     def __init__(self, filename, mode='r', base=None):
@@ -49,11 +50,9 @@ class FDFSile(Sile):
 
     def readline(self, comment=False):
         """ Reads the next line of the file """
-        l = self.fh.readline()
-        if comment:
-            return l
-        while starts_with_list(l, self._comment):
-            l = self.fh.readline()
+        # Call the parent readline function
+        l = super(FDFSile, self).readline(comment=comment)
+        
         # In FDF files, %include marks files that progress
         # down in a tree structure
         if '%include' in l:
@@ -62,11 +61,13 @@ class FDFSile(Sile):
             self.fh = open(self._directory + sep + l.split()[1], self._mode)
             # Read the following line in the new file
             return self.readline()
+        
         if len(self._parent_fh) > 0 and l == '':
             # l == '' marks the end of the file
             self.fh.close()
             self.fh = self._parent_fh.pop()
             return self.readline()
+        
         return l
 
 
@@ -169,6 +170,7 @@ class FDFSile(Sile):
         self._write('%endblock ChemicalSpeciesLabel\n')
 
 
+    @Sile_fh_open
     def read_sc(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
         f, lc = self._read('LatticeConstant')
@@ -200,6 +202,7 @@ class FDFSile(Sile):
         return SuperCell(cell)
 
 
+    @Sile_fh_open
     def read_geom(self, *args, **kwargs):
         """ Returns Geometry object from the FDF file
 
@@ -341,6 +344,9 @@ class FDFSile(Sile):
         # Create and return geometry object
         return Geometry(xyz, atoms=atoms, sc=sc)
 
+
+add_sile('fdf', FDFSile, case=False, gzip=True)
+    
 
 if __name__ == "__main__":
     # Create geometry

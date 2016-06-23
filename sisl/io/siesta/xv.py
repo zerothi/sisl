@@ -4,34 +4,33 @@ Sile object for reading/writing XV files
 
 from __future__ import print_function
 
+import numpy as np
+
 # Import sile objects
-from sisl.io.sile import *
+from .sile import SileSIESTA
+from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl import Bohr
 
-import numpy as np
 
 __all__ = ['XVSile']
 
 
-class XVSile(Sile):
+class XVSile(SileSIESTA):
     """ XV file object """
 
     def _setup(self):
         """ Setup the `XVSile` after initialization """
         self._comment = []
 
+
+    @Sile_fh_open
     def write_geom(self, geom):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
-
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.write_geom(geom)
 
         # Write unit-cell
         tmp = np.zeros(6, np.float64)
@@ -47,12 +46,10 @@ class XVSile(Sile):
             tmp[0:3] = geom.xyz[ia, :] * Bohr
             self._write(fmt.format(ips + 1, a.Z, *tmp))
 
+
+    @Sile_fh_open
     def read_sc(self):
         """ Returns `SuperCell` object from the XV file """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_sc()
 
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
@@ -67,14 +64,11 @@ class XVSile(Sile):
 
         return SuperCell(cell)
 
+
+    @Sile_fh_open
     def read_geom(self):
         """ Returns Geometry object from the XV file
         """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_geom()
-
         sc = self.read_sc()
 
         # Read number of atoms
@@ -89,6 +83,9 @@ class XVSile(Sile):
         xyz /= Bohr
 
         return Geometry(xyz=xyz, atoms=atms, sc=sc)
+
+
+add_sile('XV', XVSile, gzip=True)
 
 
 if __name__ == "__main__":

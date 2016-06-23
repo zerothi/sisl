@@ -1,13 +1,21 @@
 from __future__ import print_function, division
 
-from sisl import Geometry
-from ._help import *
+from os.path import splitext, isfile
 import gzip
 
 import numpy as np
 
+from sisl import Geometry
+from ._help import *
+
+
 # Public used objects
 __all__ = [
+    'sile_objects', 
+    'add_sile',
+    'get_sile']
+
+__all__ += [
     'BaseSile',
     'Sile',
     'NCSile',
@@ -18,6 +26,87 @@ __all__ += [
     'Sile_fh_open',
     'sile_raise_write',
     'sile_raise_read']
+
+# Global container of all Sile rules
+sile_objects = {}
+
+def add_sile(ending, obj, case=True, gzip=False):
+    """
+    Public for attaching lookup tables for allowing
+    users to attach files for the IOSile function call
+
+    Parameters
+    ----------
+    ending : str
+         The file-name ending, it can be several file endings (.TBT.nc)
+    obj : `BaseSile` child
+         An object that is associated with the respective file.
+         It must be inherited from a `BaseSile`.
+    case : bool, (True)
+         Whether case sensitivity is applicable for determining
+         file.
+    gzip : bool, (False)
+         Whether files with `.gz` endings can be read.
+         This option should only be given to files with ASCII text
+         output.
+         It will automatically call:
+
+          >>> add_sile(ending+'.gz',...,gzip=False)
+
+         to add the gzipped file to the list of possible files.
+    """
+    global sile_objects
+    # If the gzip is none, we decide whether we can
+    # read gzipped files
+    # In particular, if the obj is a `Sile`, we allow
+    # such reading
+    if gzip:
+        add_sile(ending + '.gz', obj, case=case)
+    if not case:
+        add_sile(ending.lower(), obj, gzip=gzip)
+        add_sile(ending.upper(), obj, gzip=gzip)
+        return
+    sile_objects[ending] = obj
+    if ending[0] == '.':
+        sile_objects[ending[1:]] = obj
+    else:
+        sile_objects['.' + ending] = obj
+
+
+def get_sile(file, *args, **kwargs):
+    """
+    Guess the file handle for the input file and return
+    and object with the file handle.
+    """
+    try:
+        # Create list of endings on this file
+        f = file
+        end_list = []
+        end = ''
+
+        # Check for files without ending, or that they are directly zipped
+        lext = splitext(f)
+        while len(lext[1]) > 0:
+            end = lext[1] + end
+            end_list.append(end)
+            lext = splitext(lext[0])
+
+        # We also check the entire file name
+        #  (mainly for VASP)
+        end_list.append(f)
+
+        while end_list:
+            end = end_list.pop()
+
+            # Check for ending and possibly
+            # return object
+            if end in sile_objects:
+                return sile_objects[end](file, *args, **kwargs)
+
+        raise Exception('print fail')
+    except Exception as e:
+        print(e)
+    raise NotImplementedError("File requested could not be found, possibly the file has not been implemented.")
 
 
 class BaseSile(object):
@@ -46,7 +135,8 @@ class BaseSile(object):
     def __getattr__(self, name):
         """ Override to check the handle """
         if name == 'fh':
-            raise AttributeError("The filehandle has not been opened yet")
+            raise AttributeError("The filehandle has not been opened yet...")
+        print(name)
         return getattr(self.fh, name)
 
         
@@ -56,8 +146,10 @@ def Sile_fh_open(func):
     """
     def pre_open(self, *args, **kwargs):
         if hasattr(self, "fh"):
+            print('Already open...' + func.__name__)
             return func(self, *args, **kwargs)
         else:
+            print('Opening...' + func.__name__)
             with self:
                 return func(self, *args, **kwargs)
     return pre_open
@@ -71,6 +163,7 @@ class Sile(BaseSile):
         self.file = filename
         self._mode = mode
         self._comment = [comment]
+        self._line = 0
 
         # Initialize
         self.__setup()
@@ -85,13 +178,16 @@ class Sile(BaseSile):
         """
         self._setup()
 
-
-    def __enter__(self):
-        """ Opens the output file and returns it self """
+    def _open(self):
         if self.file.endswith('gz'):
             self.fh = gzip.open(self.file)
         else:
             self.fh = open(self.file, self._mode)
+        self._line = 0
+
+    def __enter__(self):
+        """ Opens the output file and returns it self """
+        self._open()
         return self
 
 
@@ -99,6 +195,7 @@ class Sile(BaseSile):
         self.fh.close()
         # clean-up so that it does not exist
         delattr(self, 'fh')
+        self._line = 0
         return False
 
     @staticmethod
@@ -140,18 +237,23 @@ class Sile(BaseSile):
 
     def readline(self, comment=False):
         """ Reads the next line of the file """
+        print('Reading line '+str(self._line))
         l = self.fh.readline()
+        self._line += 1
         if comment:
             return l
         while starts_with_list(l, self._comment):
             l = self.fh.readline()
+            self._line += 1
         return l
 
     def step_to(self, keywords, case=True):
         """ Steps the file-handle until the keyword is found in the input """
         # If keyword is a list, it just matches one of the inputs
         found = False
-
+        # The previously read line...
+        line = self._line
+        
         # Do checking outside line checks
         if self.is_keys(keywords):
             line_has = self.line_has_keys
@@ -166,6 +268,24 @@ class Sile(BaseSile):
                 break
             found = line_has(l, keys, case=case)
 
+        print(found,'A'+l+'A',line)
+        if not found and (l == '' and line > 0):
+            print('Re-reading')
+            # We may be in the case where the user request
+            # reading the same twice...
+            # So we need to re-read the file...
+            self.fh.close()
+            # Re-open the file...
+            self._open()
+            
+            # Try and read again
+            while not found and self._line <= line:
+                l = self.readline()
+                if l == '':
+                    break
+                found = line_has(l, keys, case=case)
+            
+            
         # sometimes the line contains information, as a
         # default we return the line found
         return found, l
@@ -252,7 +372,12 @@ class NCSile(BaseSile):
         self._mode = mode
         # Save compression internally
         self._lvl = lvl
-        self._access = access
+        if isfile(self.file):
+            self._access = access
+        else:
+            # If it has not been created we should not try
+            # and read anything, no matter what the user says
+            self._access = 0
 
         # Must call setup-methods
         self.__setup()

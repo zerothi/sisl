@@ -41,20 +41,20 @@ class TestObject(object):
             assert_true(isinstance(get_sile('test.FDF.gz'), obj))
 
     def test_gout(self):
-        for obj in [BaseSile, Sile, GULPSile]:
+        for obj in [BaseSile, Sile, GULPgoutSile]:
             assert_true(isinstance(get_sile('test.gout'), obj))
 
     def test_gout_gz(self):
-        for obj in [BaseSile, Sile, GULPSile]:
+        for obj in [BaseSile, Sile, GULPgoutSile]:
             assert_true(isinstance(get_sile('test.gout.gz'), obj))
 
     def test_nc(self):
         for obj in [BaseSile, NCSile, SIESTASile]:
-            assert_true(isinstance(get_sile('test.nc', access=0), obj))
+            assert_true(isinstance(get_sile('test.nc'), obj))
 
     def test_grid_nc(self):
         for obj in [BaseSile, NCSile, SIESTAGridSile]:
-            sile = get_sile('test.grid.nc', access=0)
+            sile = get_sile('test.grid.nc')
             assert_true(isinstance(sile, obj))
 
     def test_tb(self):
@@ -69,12 +69,12 @@ class TestObject(object):
 
     def test_tbtrans(self):
         for obj in [BaseSile, NCSile, TBtransSile]:
-            sile = get_sile('test.TBT.nc', access=0)
+            sile = get_sile('test.TBT.nc')
             assert_true(isinstance(sile, obj))
 
     def test_phtrans(self):
         for obj in [BaseSile, NCSile, PHtransSile]:
-            sile = get_sile('test.PHT.nc', access=0)
+            sile = get_sile('test.PHT.nc')
             assert_true(isinstance(sile, obj))
 
     def test_vasp(self):

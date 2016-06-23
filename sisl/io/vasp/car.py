@@ -4,18 +4,19 @@ Sile object for reading/writing CONTCAR/POSCAR files
 
 from __future__ import print_function
 
+import numpy as np
+
 # Import sile objects
-from sisl.io.sile import *
+from .sile import SileVASP
+from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 
-import numpy as np
-
-__all__ = ['POSCARSile']
+__all__ = ['CARSile', 'POSCARSile', 'CONTCARSile']
 
 
-class POSCARSile(Sile):
+class CARSile(SileVASP):
     """ CAR file object
     This file-object handles both POSCAR and CONTCAR files
     """
@@ -25,15 +26,11 @@ class POSCARSile(Sile):
         self._comment = []
         self._scale = 1.
 
+    @Sile_fh_open
     def write_geom(self, geom):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
-
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.write_geom(geom)
 
         # LABEL
         self._write('sisl output\n')
@@ -61,12 +58,9 @@ class POSCARSile(Sile):
         for ia in geom:
             self._write(fmt.format(*geom.xyz[ia, :]))
 
+    @Sile_fh_open
     def read_sc(self):
         """ Returns `SuperCell` object from the CONTCAR/POSCAR file """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_sc()
 
         # read first line
         self.readline()  # LABEL
@@ -87,14 +81,10 @@ class POSCARSile(Sile):
 
         return SuperCell(cell)
 
+    @Sile_fh_open
     def read_geom(self):
         """ Returns Geometry object from the CONTCAR/POSCAR file
         """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_geom()
-
         sc = self.read_sc()
 
         # First line is the species names/numbers
@@ -143,6 +133,15 @@ class POSCARSile(Sile):
 
         # The POT/CONT-CAR does not contain information on the atomic species
         return Geometry(xyz=xyz, atoms=atoms, sc=sc)
+
+
+POSCARSile = CARSile
+CONTCARSile = CARSile
+
+
+add_sile('CAR', CARSile, gzip=True)
+add_sile('POSCAR', POSCARSile, gzip=True)
+add_sile('CONTCAR', CONTCARSile, gzip=True)
 
 
 if __name__ == "__main__":

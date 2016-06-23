@@ -4,7 +4,8 @@ Sile object for reading/writing SIESTA binary files
 from __future__ import print_function
 
 # Import sile objects
-from sisl.io.sile import *
+from .sile import NCSileSIESTA
+from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell, Grid
@@ -16,16 +17,14 @@ import numpy as np
 __all__ = ['SIESTASile']
 
 
-class SIESTASile(NCSile):
+class SIESTASile(NCSileSIESTA):
     """ SIESTA file object """
 
+
+    @Sile_fh_open
     def read_sc(self):
         """ Returns a SuperCell object from a SIESTA.nc file
         """
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.read_sc()
-
         cell = np.array(self.variables['cell'][:], np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell = cell / Bohr
@@ -35,14 +34,13 @@ class SIESTASile(NCSile):
 
         return SuperCell(cell, nsc=nsc)
 
+
+    @Sile_fh_open
     def read_geom(self):
         """ Returns Geometry object from a SIESTA.nc file
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.read_geom()
 
         # Read supercell
         sc = self.read_sc()
@@ -82,11 +80,10 @@ class SIESTASile(NCSile):
         geom = Geometry(xyz, atoms=atoms, sc=sc)
         return geom
 
+
+    @Sile_fh_open
     def read_tb(self, **kwargs):
         """ Returns a tight-binding model from the underlying NetCDF file """
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.read_tb(**kwargs)
 
         # Get the default spin channel
         ispin = kwargs.get('ispin', 0)
@@ -132,11 +129,9 @@ class SIESTASile(NCSile):
 
         return tb
 
+    @Sile_fh_open
     def grids(self):
         """ Return a list of available grids in this file. """
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.grids()
 
         grids = []
         for g in self.groups['GRID'].variables:
@@ -144,15 +139,12 @@ class SIESTASile(NCSile):
 
         return grids
 
+    @Sile_fh_open
     def read_grid(self, name, idx=0):
         """ Reads a grid in the current SIESTA.nc file
 
         Enables the reading and processing of the grids created by SIESTA
         """
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.read_grid(name)
-
         # Swap as we swap back in the end
         geom = self.read_geom().swapaxes(0, 2)
 
@@ -191,15 +183,12 @@ class SIESTASile(NCSile):
 
         return grid
 
+    @Sile_fh_open
     def write_geom(self, geom):
         """
         Creates the NetCDF file and writes the geometry information
         """
         sile_raise_write(self)
-
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.write_geom(geom)
 
         # Create initial dimensions
         self._crt_dim(self, 'one', 1)
@@ -262,6 +251,8 @@ class SIESTASile(NCSile):
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = np.cumsum(orbs)
 
+
+    @Sile_fh_open
     def write_tb(self, tb, **kwargs):
         """ Writes tight-binding model to file
 
@@ -274,10 +265,6 @@ class SIESTASile(NCSile):
         """
         # Ensure finalizations
         tb.finalize()
-
-        if not hasattr(self, 'fh'):
-            with self:
-                return self.write_tb(tb, **kwargs)
 
         # Ensure that the geometry is written
         self.write_geom(tb.geom)
@@ -337,6 +324,9 @@ class SIESTASile(NCSile):
         v.unit = "b**-1"
         v[:] = np.zeros([3], np.float64)
 
+
+add_sile('nc', SIESTASile)
+        
 
 if __name__ == "__main__":
     # Create geometry
