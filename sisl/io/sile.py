@@ -136,7 +136,6 @@ class BaseSile(object):
         """ Override to check the handle """
         if name == 'fh':
             raise AttributeError("The filehandle has not been opened yet...")
-        print(name)
         return getattr(self.fh, name)
 
         
@@ -146,10 +145,8 @@ def Sile_fh_open(func):
     """
     def pre_open(self, *args, **kwargs):
         if hasattr(self, "fh"):
-            print('Already open...' + func.__name__)
             return func(self, *args, **kwargs)
         else:
-            print('Opening...' + func.__name__)
             with self:
                 return func(self, *args, **kwargs)
     return pre_open
@@ -237,7 +234,6 @@ class Sile(BaseSile):
 
     def readline(self, comment=False):
         """ Reads the next line of the file """
-        print('Reading line '+str(self._line))
         l = self.fh.readline()
         self._line += 1
         if comment:
@@ -268,9 +264,7 @@ class Sile(BaseSile):
                 break
             found = line_has(l, keys, case=case)
 
-        print(found,'A'+l+'A',line)
         if not found and (l == '' and line > 0):
-            print('Re-reading')
             # We may be in the case where the user request
             # reading the same twice...
             # So we need to re-read the file...
