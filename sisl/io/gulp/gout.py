@@ -37,8 +37,26 @@ class GULPgoutSile(SileGULP):
         """ Overwrites internal key lookup value for the cell vectors """
         self.set_key('sc', key)
 
+
     @Sile_fh_open
-    def read_sc(self, key=None):
+    def read_super(self, key=None):
+        """ Reads a `SuperCell` and creates the GULP cell """
+
+        f, l = self.step_to('Supercell dimensions')
+        if not f:
+            return np.array([1, 1, 1], np.int32)
+
+        # Read off the supercell dimensions
+        xyz = l.split('=')[1:]
+        
+        # Now read off the quantities...
+        sc = [int(i.split()[0]) for i in xyz]
+
+        return np.array(sc[:3], np.int32)
+
+
+    @Sile_fh_open
+    def read_sc(self, key=None, **kwargs):
         """ Reads a `SuperCell` and creates the GULP cell """
         self.set_sc_key(key)
 
@@ -67,7 +85,7 @@ class GULPgoutSile(SileGULP):
 
 
     @Sile_fh_open
-    def read_geom(self, key=None):
+    def read_geom(self, key=None, **kwargs):
         """ Reads a geometry and creates the GULP dynamical geometry """
         self.set_geom_key(key)
 
@@ -154,15 +172,53 @@ class GULPgoutSile(SileGULP):
     @Sile_fh_open
     def read_tb(self, **kwargs):
         """ Returns a GULP tight-binding model for the output of GULP """
+        from scipy.sparse import diags
 
         dtype = kwargs.get('dtype', np.float64)
 
         geom = self.read_geom(**kwargs)
 
-        # Easier for creation of the sparsity pattern
-        from scipy.sparse import lil_matrix, diags
+        hessian = kwargs.get('hessian', None)
+        if hessian is None:
+            dyn = self._read_dyn(geom.no, **kwargs)
+        else:
+            dyn = get_sile(hessian, 'r').read_tb(**kwargs)
 
-        dyn = lil_matrix((geom.no, geom.no), dtype=dtype)
+            if dyn.shape[0] != geom.no:
+                raise ValueError("Inconsistent Hessian file, number of atoms not correct")
+
+            # Perform mass scaling to retrieve the dynamical matrix
+            mass = [geom.atoms[ia].mass for ia in range(geom.na)]
+            
+            # Construct orbital mass
+            mass = np.array(mass, np.float64).repeat(3)
+
+            # Scale to get dynamical matrix
+            dyn.data[:] /= np.sqrt(mass[dyn.row] * mass[dyn.col])
+
+            # slower, less memory consuming...
+            #for I, ijd in enumerate(zip(dyn.row, dyn.col, dyn.data)):
+            #    dyn.data[I] = ijd[2] / sqrt(mass[ijd[0]] * mass[ijd[1]])
+
+            # clean-up
+            del mass
+
+        # Create "fake" overlap matrix
+        ones = np.ones(dyn.shape[0], dtype=dtype)
+        S = diags(ones, 0, shape=dyn.shape)
+        S = S.tocsr()
+        del ones
+
+        return PhononTightBinding.sp2tb(geom, dyn, S)
+
+    def _read_dyn(self, no, **kwargs):
+        """ In case the dynamical matrix is read from the file """
+        # Easier for creation of the sparsity pattern
+        from scipy.sparse import lil_matrix
+        
+        dtype = kwargs.get('dtype', np.float64)
+
+        dyn = lil_matrix((no, no), dtype=dtype)
 
         f, _ = self.step_to(self._keys['dyn'])
         if not f:
@@ -176,7 +232,6 @@ class GULPgoutSile(SileGULP):
         self.readline()
 
         # default range
-        no = geom.no
         dat = np.empty([no], dtype=dtype)
         i = 0
         j = 0
@@ -223,13 +278,8 @@ class GULPgoutSile(SileGULP):
         # Convert the GULP data to standard units
         dyn.data[:] *= (521.469 * 1.23981e-4) ** 2
 
-        # Create "fake" overlap matrix
-        ones = np.ones(dyn.shape[0], dtype=dtype)
-        S = diags(ones, 0, shape=dyn.shape)
-        S = S.tocsr()
-        del ones
+        return dyn
 
-        return PhononTightBinding.sp2tb(geom, dyn, S)
 
 
 add_sile('gout', GULPgoutSile, gzip=True)
