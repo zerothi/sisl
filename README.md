@@ -18,7 +18,7 @@ sisl also enables an easy interface for [ASE][ase].
 If used to produce scientific contributions, please use the DOI for citation,
 an example BibTeX entry will look like this:
 
-    @misc{nick_r_papior_2016_56323,
+    @misc{zerothi_sisl,
       author       = {Nick R. Papior},
       title        = {sisl: 0.7.0},
       month        = jun,
