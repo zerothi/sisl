@@ -1,6 +1,6 @@
 # sisl #
 
-[![Build Status](https://travis-ci.org/zerothi/sisl.svg?branch=master)](https://travis-ci.org/zerothi/sisl)
+[![Build Status](https://travis-ci.org/zerothi/sisl.svg?branch=master)](https://travis-ci.org/zerothi/sisl) [![DOI](https://zenodo.org/badge/19941/zerothi/sisl.svg)](https://zenodo.org/badge/latestdoi/19941/zerothi/sisl)
 
 The [API documentation][sisl-api] can be found [here][sisl-api].
 
@@ -14,6 +14,18 @@ programs.
 sisl also enables an easy interface for [ASE][ase].
 
 ## Usage ##
+
+If used to produce scientific contributions, please use the DOI for citation,
+an example BibTeX entry will look like this:
+
+    @misc{nick_r_papior_2016_56323,
+      author       = {Nick R. Papior},
+      title        = {sisl: 0.7.0},
+      month        = jun,
+      year         = 2016,
+      doi          = {10.5281/zenodo.56323},
+      url          = {http://dx.doi.org/10.5281/zenodo.56323}
+    }
 
 ### Scripts ###
 
