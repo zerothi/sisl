@@ -457,11 +457,3 @@ def sile_raise_write(self):
 def sile_raise_read(self):
     if not ('r' in self._mode or 'a' in self._mode):
         raise SileError('Reading a write-only file not possible', self)
-
-
-if __name__ == "__main__":
-    i1 = Sile('f.dat', 'a')
-    i2 = Sile('f.dat')
-
-    print(i1._mode)
-    print(i2._mode)

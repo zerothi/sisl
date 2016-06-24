@@ -326,33 +326,3 @@ class SIESTASile(NCSileSIESTA):
 
 
 add_sile('nc', SIESTASile)
-        
-
-if __name__ == "__main__":
-    # Create geometry
-    alat = 3.57
-    dist = alat * 3. ** .5 / 4
-    C = Atom(Z=6, R=dist * 1.01, orbs=2)
-    sc = SuperCell(np.array([[0, 1, 1],
-                             [1, 0, 1],
-                             [1, 1, 0]], np.float64) * alat / 2)
-    geom = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
-                    atoms=C, sc=sc)
-    # Write stuff
-    geom.write(SIESTASile('diamond.nc', 'w'))
-    geomr = SIESTASile('diamond.nc', 'r').read_geom()
-    print(geomr)
-    print(geomr.cell)
-    print(geomr.xyz)
-
-    # Create the tight-binding model
-    geom.set_supercell([3, 3, 3])
-    tb = TightBinding(geom, nc=1)
-    for ia in tb.geom:
-        idx = tb.close(ia, dR=(0.1, dist * 1.01))
-        tb[tb.a2o(ia), tb.a2o(idx[0])] = (0., 1.)
-        tb[tb.a2o(ia), tb.a2o(idx[1])] = (-.2, 0.)
-    print('Before', tb.tocsr()[0])
-    SIESTASile('diamond.nc', 'w').write_tb(tb)
-    tbr = SIESTASile('diamond.nc', 'r').read_tb()
-    print('After', tbr.tocsr()[0])

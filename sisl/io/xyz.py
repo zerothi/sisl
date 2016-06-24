@@ -71,22 +71,3 @@ class XYZSile(Sile):
 
 
 add_sile('xyz', XYZSile, case=False, gzip=True)
-
-
-if __name__ == "__main__":
-    # Create geometry
-    alat = 3.57
-    dist = alat * 3. ** .5 / 4
-    C = Atom(Z=6, R=dist * 1.01, orbs=2)
-    sc = SuperCell(np.array([[0, 1, 1],
-                             [1, 0, 1],
-                             [1, 1, 0]], np.float64) * alat / 2)
-    geom = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
-                    atoms=C, sc=sc)
-    # Write stuff
-    print(geom)
-    geom.write(XYZSile('diamond.xyz', 'w'))
-    geomr = XYZSile('diamond.xyz', 'r').read_geom()
-    print(geomr)
-    print(geomr.cell)
-    print(geomr.xyz)

@@ -174,7 +174,3 @@ class CUBESile(Sile):
 
 
 add_sile('cube', CUBESile, case=False, gzip=True)
-
-
-if __name__ == "__main__":
-    pass

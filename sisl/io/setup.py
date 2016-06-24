@@ -11,5 +11,4 @@ def configuration(parent_package='', top_path=None):
     return config
 
 if __name__ == '__main__':
-    from numpy.distutils.core import setup
-    setup(configuration=configuration)
+    print('This is the wrong setup.py file to run')

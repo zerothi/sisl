@@ -146,21 +146,3 @@ class CONTCARSile(CARSile):
 add_sile('CAR', CARSile, gzip=True)
 add_sile('POSCAR', POSCARSile, gzip=True)
 add_sile('CONTCAR', CONTCARSile, gzip=True)
-
-
-if __name__ == "__main__":
-    # Create geometry
-    alat = 3.57
-    dist = alat * 3. ** .5 / 4
-    C = Atom(Z=6, R=dist * 1.01, orbs=2)
-    geom = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
-                    atoms=C, sc=SuperCell(np.array([[0, 1, 1],
-                                                    [1, 0, 1],
-                                                    [1, 1, 0]], np.float64) * alat / 2))
-    # Write stuff
-    print(geom)
-    geom.write(POSCARSile('CONTCAR', 'w'))
-    geomr = POSCARSile('CONTCAR', 'r').read_geom()
-    print(geomr)
-    print(geomr.cell)
-    print(geomr.xyz)

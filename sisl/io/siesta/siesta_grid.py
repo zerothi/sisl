@@ -64,7 +64,3 @@ class SIESTAGridSile(NCSileSIESTA):
 
 
 add_sile('grid.nc', SIESTAGridSile)
-
-    
-if __name__ == "__main__":
-    pass

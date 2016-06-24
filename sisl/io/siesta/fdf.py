@@ -346,28 +346,3 @@ class FDFSile(SileSIESTA):
 
 
 add_sile('fdf', FDFSile, case=False, gzip=True)
-    
-
-if __name__ == "__main__":
-    # Create geometry
-    alat = 3.57
-    dist = alat * 3. ** .5 / 4
-    C = Atom(Z=6, R=dist * 1.01, orbs=2)
-    sc = SuperCell(np.array([[0, 1, 1],
-                             [1, 0, 1],
-                             [1, 1, 0]], np.float64) * alat / 2)
-    geom = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
-                    atoms=[C, Atom(Z=6, tag='C_pbe')], sc=sc)
-    # Write stuff
-    geom.write(FDFSile('diamond.fdf', 'w'))
-    geomr = FDFSile('diamond.fdf', 'r').read_geom()
-    print(geomr)
-    print(geomr.cell)
-    print(geomr.xyz)
-
-    with open('tree.fdf', 'w') as fh:
-        fh.write('%include diamond.fdf')
-    geomr = FDFSile('tree.fdf', 'r').read_geom()
-    print(geomr)
-    print(geomr.cell)
-    print(geomr.xyz)

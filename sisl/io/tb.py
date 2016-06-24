@@ -349,39 +349,3 @@ class TBSile(Sile):
 
 
 add_sile('tb', TBSile, case=False, gzip=True)
-
-
-if __name__ == "__main__":
-    # Create geometry
-    alat = 3.57
-    dist = alat * 3. ** .5 / 4
-    C = Atom(Z=6, R=dist * 1.01, orbs=1)
-    geom = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
-                    atoms=C, sc=SuperCell(np.array([[0, 1, 1],
-                                                    [1, 0, 1],
-                                                    [1, 1, 0]], np.float64) * alat / 2))
-    # Write stuff
-    print('Writing TBSile')
-    geom.write(TBSile('diamond.tb', 'w'))
-    print('Reading TBSile')
-    geomr = TBSile('diamond.tb', 'r').read_geom()
-    print(geomr)
-    print(geomr.cell)
-    print(geomr.xyz)
-
-    # Create the tight-binding model
-    geom.set_supercell([3, 3, 3])
-    tb = TightBinding(geom, nc=1)
-    for ia in tb.geom:
-        idx = tb.close(ia, dR=(0.1, dist * 1.01))
-        tb[ia, idx[0]] = (0., 1.)
-        tb[ia, idx[1]] = (-.2, 0.)
-    print('Before', tb.tocsr()[0])
-    TBSile('diamond.tb', 'w').write_tb(tb)
-    tbr = TBSile('diamond.tb', 'r').read_tb()
-    print('After', tbr.tocsr()[0])
-
-    print('Before', tb.tocsr()[0])
-    TBSile('diamondh.tb', 'w').write_tb(tb, hermitian=False)
-    tbr = TBSile('diamondh.tb', 'r').read_tb(hermitian=False)
-    print('After', tbr.tocsr()[0])
