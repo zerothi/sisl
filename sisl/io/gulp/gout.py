@@ -233,6 +233,7 @@ class GULPgoutSile(SileGULP):
 
 
 add_sile('gout', GULPgoutSile, gzip=True)
+add_sile('got', GULPgoutSile, gzip=True)
 
 
 if __name__ == "__main__":
