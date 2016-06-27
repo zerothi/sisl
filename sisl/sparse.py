@@ -164,6 +164,31 @@ class SparseCSR(object):
         self._finalized = False
 
 
+        
+    def empty(self, keep=False):
+        """ Delete all sparse information from the sparsity pattern
+
+        Essentially this deletes all entries.
+        
+        Parameters
+        ==========
+        keep: boolean, False
+           if `True` it will keep the sparse elements _as is_.
+           I.e. it will merely set the stored sparse elements as zero.
+           This may be advantagegous when re-constructing a new sparse 
+           matrix from an old sparse matrix
+        """
+        self._D[:,:] = 0.
+        
+        if not keep:
+            # The user does not wish to retain the
+            # sparse pattern
+            self.ncol = 0
+            self._nnz = 0
+            # We do not mess with the other arrays
+            # they may be obscure data any-way.
+    
+
     @property
     def shape(self):
         """ Return shape of the sparse matrix """
@@ -187,7 +212,13 @@ class SparseCSR(object):
         return self.nnz
 
 
-    
+
+    @property
+    def finalized(self):
+        """ Whether the contained data is finalized and non-used elements have been removed """
+        return self._finalized
+
+
     def finalize(self, sort=True):
         """ Finalizes the sparse matrix by removing all non-set elements
 
@@ -201,7 +232,7 @@ class SparseCSR(object):
         sort: bool, True
            sort the column indices for each row
         """
-        if self._finalized:
+        if self.finalized:
             return
 
         # Fast reference

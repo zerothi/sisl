@@ -32,3 +32,24 @@ class TestSIESTAnc(object):
         assert_true(np.allclose(tb._data._D, ntb._data._D))
         for ia in ntb.geom:
             assert_true(self.g.atoms[ia] == ntb.atoms[ia])
+
+
+            
+    def test_nc2(self):
+        f = osp.join(self.d, 'gr.dH.nc')
+        H = Hamiltonian(self.gtb)
+        H.construct(self.dR, self.t)
+
+        # annoyingly this has to be performed like this...
+        sile = TBtransdHSile(f, 'w')
+        H.geom.write(sile)
+        sile = TBtransdHSile(f, 'a')
+
+        # Write to level-1
+        H.write(sile)
+        # Write to level-2
+        H.write(sile, k=[0,0,.5])
+        # Write to level-3
+        H.write(sile, E=0.1)
+        # Write to level-4
+        H.write(sile, k=[0,0,.5], E=0.1)

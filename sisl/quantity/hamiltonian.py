@@ -93,7 +93,13 @@ class Hamiltonian(object):
         self._def_dim = -1
 
 
+    def empty(self, keep=False):
+        """ See `SparseCSR.empty` for specifics """
+        self._data.empty(keep)
+
+
     ######### Definitions of overrides ############
+    @property
     def spin(self):
         """ Return number of spin-components in Hamiltonian """
         return self._spin
@@ -283,6 +289,12 @@ class Hamiltonian(object):
                     self[ia, ix] = h
 
         print_equal(equal_atoms)
+
+
+    @property
+    def finalized(self):
+        """ Whether the contained data is finalized and non-used elements have been removed """
+        return self._data.finalized
 
 
     def finalize(self):

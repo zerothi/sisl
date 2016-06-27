@@ -3,6 +3,7 @@ Sile object for reading TBtrans binary files
 """
 from __future__ import print_function
 
+import warnings
 import numpy as np
 
 # The sparse matrix for the orbital/bond currents
@@ -17,9 +18,11 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl import Bohr
+from sisl import Ry, Bohr
 
 __all__ = ['TBtransSile', 'PHtransSile']
+
+__all__ += ['TBtransdHSile']
 
 
 class TBtransSile(NCSileSIESTA):
@@ -594,3 +597,256 @@ class PHtransSile(TBtransSile):
     pass
 
 add_sile('PHT.nc', PHtransSile)
+
+
+# The deltaH nc file
+class TBtransdHSile(NCSileSIESTA):
+    """ TBtrans delta-H file object """
+
+    @Sile_fh_open
+    def write_geom(self, geom):
+        """
+        Creates the NetCDF file and writes the geometry information
+        """
+        sile_raise_write(self)
+
+        # Create initial dimensions
+        self._crt_dim(self, 'one', 1)
+        self._crt_dim(self, 'n_s', np.prod(geom.nsc))
+        self._crt_dim(self, 'xyz', 3)
+        self._crt_dim(self, 'no_s', np.prod(geom.nsc) * geom.no)
+        self._crt_dim(self, 'no_u', geom.no)
+        self._crt_dim(self, 'na_u', geom.na)
+
+        # Create initial geometry
+        v = self._crt_var(self, 'nsc', 'i4', ('xyz',))
+        v.info = 'Number of supercells in each unit-cell direction'
+        v = self._crt_var(self, 'lasto', 'i4', ('na_u',))
+        v.info = 'Last orbital of equivalent atom'
+        v = self._crt_var(self, 'xa', 'f8', ('na_u', 'xyz'))
+        v.info = 'Atomic coordinates'
+        v.unit = 'Bohr'
+        v = self._crt_var(self, 'cell', 'f8', ('xyz', 'xyz'))
+        v.info = 'Unit cell'
+        v.unit = 'Bohr'
+
+        # Create designation of the creation
+        self.method = 'sisl'
+
+        # Save stuff
+        self.variables['nsc'][:] = geom.nsc
+        self.variables['xa'][:] = geom.xyz * Bohr
+        self.variables['cell'][:] = geom.cell * Bohr
+
+        bs = self._crt_grp(self, 'BASIS')
+        b = self._crt_var(bs, 'basis', 'i4', ('na_u',))
+        b.info = "Basis of each atom by ID"
+
+        orbs = np.empty([geom.na], np.int32)
+
+        for ia, a, isp in geom.iter_species():
+            b[ia] = isp + 1
+            orbs[ia] = a.orbs
+            if a.tag in bs.groups:
+                # Assert the file sizes
+                if bs.groups[a.tag].Number_of_orbitals != a.orbs:
+                    raise ValueError(
+                        'File ' +
+                        self.file +
+                        ' has erroneous data in regards of ' +
+                        'of the already stored dimensions.')
+            else:
+                ba = bs.createGroup(a.tag)
+                ba.ID = np.int32(isp + 1)
+                ba.Atomic_number = np.int32(a.Z)
+                ba.Mass = a.mass
+                ba.Label = a.tag
+                ba.Element = a.symbol
+                ba.Number_of_orbitals = np.int32(a.orbs)
+
+        # Store the lasto variable as the remaining thing to do
+        self.variables['lasto'][:] = np.cumsum(orbs)
+
+
+    def _add_lvl(self, ilvl):
+        """
+        Simply adds and returns a group if it does not
+        exist it will be created
+        """
+        slvl = 'LEVEL-'+str(ilvl)
+        if slvl in self.groups:
+            lvl = self._crt_grp(self, slvl)
+        else:
+            lvl = self._crt_grp(self, slvl)
+            if ilvl in [2, 4]:
+                self._crt_dim(lvl, 'nkpt', None)
+                v = self._crt_var(lvl, 'kpt', 'f8', ('nkpt','xyz'),
+                                  attr = {'info' :'k-points for dH values',
+                                          'unit' : 'b**-1'})
+            if ilvl in [3, 4]: 
+                self._crt_dim(lvl, 'ne', None)
+                v = self._crt_var(lvl, 'E', 'f8', ('ne',),
+                                  attr = {'info' :'Energy points for dH values',
+                                          'unit' : 'Ry'})
+            
+        return lvl
+
+
+    @Sile_fh_open
+    def write_es(self, ham, **kwargs):
+        """ Writes Hamiltonian model to file
+
+        Parameters
+        ----------
+        ham : `Hamiltonian` model
+           the model to be saved in the NC file
+        spin : int, 0
+           the spin-index of the Hamiltonian object that is stored.
+        """
+        # Ensure finalizations
+        ham.finalize()
+
+        # Ensure that the geometry is written
+        self.write_geom(ham.geom)
+
+        self._crt_dim(self, 'spin', ham._spin)
+
+
+        # Determine the type of dH we are storing...
+        k = kwargs.get('k', None)
+        E = kwargs.get('E', None)
+        
+        if (k is None) and (E is None):
+            ilvl = 1
+        elif (k is not None) and (E is None):
+            ilvl = 2
+        elif (k is None) and (E is not None):
+            ilvl = 3
+        elif (k is not None) and (E is not None):
+            ilvl = 4
+        else:
+            print(k,E)
+            raise ValueError("This is wrongly implemented!!!")
+
+        lvl = self._add_lvl(ilvl)
+
+        # Append the sparsity pattern
+        # Create basis group
+        if 'n_col' in lvl.variables:
+            if len(lvl.dimensions['nnzs']) != ham.nnz:
+                raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
+                                 "all dH entries [nnz].")
+            if np.any(lvl.variables['n_col'][:] != ham._data.ncol[:]):
+                raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
+                                 "all dH entries [n_col].")
+            if np.any(lvl.variables['list_col'][:] != ham._data.col[:]+1):
+                raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
+                                 "all dH entries [list_col].")
+        else:
+            self._crt_dim(lvl, 'nnzs', ham._data.col.shape[0])
+            v = self._crt_var(lvl, 'n_col', 'i4', ('no_u',))
+            v.info = "Number of non-zero elements per row"
+            v[:] = ham._data.ncol[:]
+            v = self._crt_var(lvl, 'list_col', 'i4', ('nnzs',),
+                              chunksizes=(len(ham._data.col),), **self._cmp_args)
+            v.info = "Supercell column indices in the sparse format"
+            v[:] = ham._data.col[:] + 1  # correct for fortran indices
+            v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
+            v.info = "Index of supercell coordinates"
+            v[:] = ham.geom.sc.sc_off[:, :]
+
+
+        warn_E = True
+        if ilvl in [3,4]:
+            Es = np.array(lvl.variables['E'][:]) * Ry
+
+            iE = 0
+            if len(Es) > 0:
+                iE = np.argmin(np.abs(Es - E))
+                if abs(Es[iE] - E) > 0.0001:
+                    # accuracy of 0.1 meV
+
+                    # create a new entry
+                    iE = len(Es)
+                    lvl.variables['E'][iE] = E / Ry
+                    warn_E = False
+
+        warn_k = True
+        if ilvl in [2,4]:
+            kpt = np.array(lvl.variables['kpt'][:])
+
+            ik = 0
+            if len(kpt) > 0:
+                ik = np.argmin(np.sum(np.abs(kpt - k[None,:]), axis=1))
+                if np.allclose(kpt[ik,:], k, atol=0.0001):
+                    # accuracy of 0.0001 
+
+                    # create a new entry
+                    ik = len(kpt)
+                    lvl.variables['kpt'][ik, :] = k
+                    warn_k = False
+
+
+        if ilvl == 4 and warn_k and warn_E and False:
+            # As soon as we have put the second k-point and the first energy
+            # point, this warning will proceed...
+            # I.e. even though the variable has not been set, it will WARN
+            # Hence we out-comment this for now...
+            warnings.warn('Overwriting k-point {0} and energy point {1} correction.'.format(ik,iE), UserWarning) 
+        elif ilvl == 3 and warn_E:
+            warnings.warn('Overwriting energy point {0} correction.'.format(iE), UserWarning) 
+        elif ilvl == 2 and warn_k:
+            warnings.warn('Overwriting k-point {0} correction.'.format(ik), UserWarning)
+
+        if ilvl == 1:
+            dim = ('spin', 'nnzs')
+            sl = [slice(None)] * 2
+            csize = [1] * 2
+        elif ilvl == 2:
+            dim = ('nkpt', 'spin', 'nnzs')
+            sl = [slice(None)] * 3
+            sl[0] = ik
+            csize = [1] * 3
+        elif ilvl == 3:
+            dim = ('ne', 'spin', 'nnzs')
+            sl = [slice(None)] * 3
+            sl[0] = iE
+            csize = [1] * 3
+        elif ilvl == 4:
+            dim = ('nkpt', 'ne', 'spin', 'nnzs')
+            sl = [slice(None)] * 4
+            sl[0] = ik
+            sl[1] = iE
+            csize = [1] * 4
+
+        # Number of non-zero elements
+        csize[-1] = ham.nnz
+
+        if ham._data._D.dtype.kind == 'c':
+            v1 = self._crt_var(lvl, 'RedH', 'f8', dim,
+                               chunksizes=csize, 
+                               attr = {'info' : "Real part of dH",
+                                       'unit' : "Ry"}, **self._cmp_args)
+            for i in range(ham.spin):
+                v1[i, :] = ham._data._D[:, i].real * Ry ** ham._E_order
+
+            v2 = self._crt_var(lvl, 'ImdH', 'f8', dim,
+                               chunksizes=csize, 
+                               attr = {'info' : "Imaginary part of dH",
+                                       'unit' : "Ry"}, **self._cmp_args)
+            for i in range(ham.spin):
+                sl[-2] = i
+                v2[sl] = ham._data._D[:, i].imag * Ry ** ham._E_order
+
+        else:
+            v = self._crt_var(lvl, 'dH', 'f8', dim,
+                              chunksizes=csize, 
+                              attr = {'info' : "dH",
+                                      'unit' : "Ry"},  **self._cmp_args)
+            for i in range(ham.spin):
+                sl[-2] = i
+                v[sl] = ham._data._D[:, i] * Ry ** ham._E_order
+
+
+add_sile('dH.nc', TBtransdHSile)
+

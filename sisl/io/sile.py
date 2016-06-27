@@ -402,7 +402,7 @@ class NCSile(BaseSile):
         # We do the import here
         global _import_netCDF4
         _import_netCDF4()
-        self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
+        self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode, 
                                                format='NETCDF4')
         return self
 
@@ -431,7 +431,15 @@ class NCSile(BaseSile):
     def _crt_var(n, name, *args, **kwargs):
         if name in n.variables:
             return n.variables[name]
-        return n.createVariable(name, *args, **kwargs)
+        
+        attr = None
+        if 'attr' in kwargs:
+            attr = kwargs.pop('attr')
+        v = n.createVariable(name, *args, **kwargs)
+        if attr is not None:
+            for name in attr:
+                setattr(v, name, attr[name])
+        return v
 
 
 class SileError(IOError):
