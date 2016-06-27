@@ -225,12 +225,14 @@ class Hamiltonian(object):
         eq_atoms = []
         def print_equal(eq_atoms):
             if len(eq_atoms) > 0:
-                warnings.warn("The geometry has one or more atoms having the same "
-                              "atomic position. "
-                              "The atoms are within {} Ang"
-                              "of each other.".format(R[0]))
+                s = ("The geometry has one or more atoms having the same "
+                     "atomic position. "
+                     "The atoms are within {} Ang "
+                     "of each other.\n".format(R[0]))
+                
                 for ia, ja in eq_atoms:
-                    warnings.warn("  {0:7d} -- {1:7d}".format(ia, ja))
+                    s += "  {0:7d} -- {1:7d}\n".format(ia, ja)
+                warnings.warn(s)
 
         def append_equal(eq_atoms, ia, idx):
             # Append to the list of equal atoms the atomic indices
@@ -328,6 +330,8 @@ class Hamiltonian(object):
         ==========
         k: float*3
            k-point 
+        spin: int, 0
+           the spin-index of the Hamiltonian
         """
         # Create csr sparse formats.
         # We import here as the user might not want to
@@ -440,7 +444,10 @@ class Hamiltonian(object):
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
+        
+        # We always request the smallest eigenvalues... 
         kwargs.update(kwargs.get('which', 'SM'))
+        
         H = self.Hk(k=k)
         # Check that the overlap matrix is orthogonal
         is_ortho = nint(np.abs(np.sum(self._data._D[:, self.S_idx]))) == self.no
