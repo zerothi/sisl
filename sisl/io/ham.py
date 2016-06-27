@@ -10,18 +10,18 @@ from .sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl.tb import TightBinding
+from sisl.quantity import Hamiltonian
 
 
-__all__ = ['TBSile']
+__all__ = ['HamiltonianSile']
 
 
-class TBSile(Sile):
-    """ Tight-binding file object """
+class HamiltonianSile(Sile):
+    """ Hamiltonian file object """
 
     @Sile_fh_open
     def read_geom(self):
-        """ Reading a geometry in regular TB format """
+        """ Reading a geometry in regular Hamiltonian format """
 
         cell = np.zeros([3, 3], np.float64)
         Z = []
@@ -86,15 +86,15 @@ class TBSile(Sile):
 
 
     @Sile_fh_open
-    def read_tb(self, hermitian=True, dtype=np.float64, **kwargs):
-        """ Reads a tight-binding model (including the geometry)
+    def read_es(self, hermitian=True, dtype=np.float64, **kwargs):
+        """ Reads a Hamiltonian (including the geometry)
 
-        Reads the tight-binding model
+        Reads the Hamiltonian model
         """
         if not hasattr(self, 'fh'):
             # The file-handle has not been opened
             with self:
-                return self.read_tb(hermitian=hermitian, dtype=dtype, **kwargs)
+                return self.read_es(hermitian=hermitian, dtype=dtype, **kwargs)
 
         # Read the geometry in this file
         geom = self.read_geom()
@@ -149,7 +149,7 @@ class TBSile(Sile):
                     H[io, jo + off2] = h
                 l = self.readline()
 
-        return TightBinding.sp2tb(geom, H, S)
+        return Hamiltonian.sp2tb(geom, H, S)
 
 
     @Sile_fh_open
@@ -205,10 +205,10 @@ class TBSile(Sile):
 
 
     @Sile_fh_open
-    def write_tb(self, tb, hermitian=True, **kwargs):
-        """ Writes the tight-binding model to the file
+    def write_es(self, ham, hermitian=True, **kwargs):
+        """ Writes the Hamiltonian model to the file
 
-        Writes a tight-binding model to the tight-binding file.
+        Writes a Hamiltonian model to the intrinsic Hamiltonian file format.
         The file can be constructed by the implict force of Hermiticity,
         or without.
 
@@ -217,24 +217,19 @@ class TBSile(Sile):
 
         Parameters
         ----------
-        tb : `TightBinding` model
+        ham : `Hamiltonian` model
         hermitian : boolean=True
             whether the stored data is halved using the Hermitian property
 
         """
-        tb.finalize()
-
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.write_tb(tb, hermitian=hermitian, **kwargs)
+        ham.finalize()
 
         # We use the upper-triangular form of the Hamiltonian
         # and the overlap matrix
         if hermitian:
             from scipy.sparse import triu
 
-        geom = tb.geom
+        geom = ham.geom
 
         # First write the geometry
         self.write_geom(geom)
@@ -242,7 +237,7 @@ class TBSile(Sile):
         # We default to the advanced layuot if we have more than one
         # orbital on any one atom
         advanced = kwargs.get('advanced', np.any(
-            np.array([a.orbs for a in tb.atoms], np.int32) > 1))
+            np.array([a.orbs for a in ham.atoms], np.int32) > 1))
 
         fmt = kwargs.get('fmt', 'g')
         if advanced:
@@ -257,7 +252,9 @@ class TBSile(Sile):
         # We currently force the model to be finalized
         # before we can write it
         # This should be easily circumvented
-        H, S = tb.tocsr()
+        H = ham.tocsr(0)
+        S = ham.tocsr(ham.S_idx)
+
         # If the model is Hermitian we can
         # do with writing out half the entries
         if hermitian:
@@ -348,4 +345,4 @@ class TBSile(Sile):
             self._write('end matrix {0:d} {1:d} {2:d}\n'.format(*isc))
 
 
-add_sile('tb', TBSile, case=False, gzip=True)
+add_sile('ham', HamiltonianSile, case=False, gzip=True)

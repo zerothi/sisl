@@ -20,8 +20,8 @@ class TestXYZ(object):
     setUp = tc.setUp
     tearDown = tc.tearDown
 
-    def test_tb1(self):
-        f = osp.join(self.d, 'gr.tb')
+    def test_xyz1(self):
+        f = osp.join(self.d, 'gr.xyz')
         self.g.write(XYZSile(f, 'w'))
         g = XYZSile(f).read_geom()
 

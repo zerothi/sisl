@@ -13,7 +13,7 @@ from .bigdft import *
 from .cube import *
 from .gulp import *
 from .siesta import *
-from .tb import *
+from .ham import *
 from .vasp import *
 from .xyz import *
 
@@ -25,7 +25,7 @@ extendall(__all__, 'sisl.io.sile')
 extendall(__all__, 'sisl.io.bigdft')
 extendall(__all__, 'sisl.io.cube')
 extendall(__all__, 'sisl.io.gulp')
-extendall(__all__, 'sisl.io.tb')
+extendall(__all__, 'sisl.io.ham')
 extendall(__all__, 'sisl.io.siesta')
 extendall(__all__, 'sisl.io.vasp')
 extendall(__all__, 'sisl.io.xyz')

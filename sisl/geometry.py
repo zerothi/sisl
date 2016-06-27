@@ -1295,6 +1295,13 @@ class Geometry(SuperCellChild):
         return Atoms(symbols=self.atoms.tolist(), positions=self.xyz.tolist(),
                      cell=self.cell.tolist())
 
+
+    @property
+    def mass(self):
+        """ Returns the mass of all atoms as an array """
+        return np.array([a.mass for a in self.atoms], np.float64)
+
+
     def __eq__(self, other):
         if not isinstance(other, Geometry):
             return False

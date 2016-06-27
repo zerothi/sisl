@@ -9,7 +9,7 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl.tb import PhononTightBinding
+from sisl.quantity import DynamicalMatrix
 
 import numpy as np
 
@@ -166,12 +166,12 @@ class GULPgoutSile(SileGULP):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """
         self.set_key('dyn', key)
 
-    set_tb_key = set_dyn_key
+    set_es_key = set_dyn_key
 
 
     @Sile_fh_open
-    def read_tb(self, **kwargs):
-        """ Returns a GULP tight-binding model for the output of GULP """
+    def read_dynmat(self, **kwargs):
+        """ Returns a GULP dynamical matrix model for the output of GULP """
         from scipy.sparse import diags
 
         dtype = kwargs.get('dtype', np.float64)
@@ -182,7 +182,7 @@ class GULPgoutSile(SileGULP):
         if hessian is None:
             dyn = self._read_dyn(geom.no, **kwargs)
         else:
-            dyn = get_sile(hessian, 'r').read_tb(**kwargs)
+            dyn = get_sile(hessian, 'r').read_es(**kwargs)
 
             if dyn.shape[0] != geom.no:
                 raise ValueError("Inconsistent Hessian file, number of atoms not correct")
@@ -209,7 +209,9 @@ class GULPgoutSile(SileGULP):
         S = S.tocsr()
         del ones
 
-        return PhononTightBinding.sp2tb(geom, dyn, S)
+        return DynamicalMatrix.sp2tb(geom, dyn, S)
+
+    read_es = read_dynmat
 
     def _read_dyn(self, no, **kwargs):
         """ In case the dynamical matrix is read from the file """

@@ -69,17 +69,17 @@ class TestObject(object):
         for obj in [BaseSile, NCSile, NCSileSIESTA, SIESTAGridSile]:
             assert_true(isinstance(sile, obj))
 
-    def test_tb(self):
-        sile1 = gs('test.tb')
-        sile2 = gs('test.TB')
-        for obj in [BaseSile, Sile, TBSile]:
+    def test_ham(self):
+        sile1 = gs('test.ham')
+        sile2 = gs('test.HAM')
+        for obj in [BaseSile, Sile, HamiltonianSile]:
             assert_true(isinstance(sile1, obj))
             assert_true(isinstance(sile2, obj))
 
-    def test_tb_gz(self):
-        sile1 = gs('test.tb.gz')
-        sile2 = gs('test.TB.gz')
-        for obj in [BaseSile, Sile, TBSile]:
+    def test_ham_gz(self):
+        sile1 = gs('test.ham.gz')
+        sile2 = gs('test.HAM.gz')
+        for obj in [BaseSile, Sile, HamiltonianSile]:
             assert_true(isinstance(sile1, obj))
             assert_true(isinstance(sile2, obj))
 

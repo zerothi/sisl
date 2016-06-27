@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 from nose.tools import *
 
-from sisl import Geometry, Atom, TightBinding
+from sisl import Geometry, Atom, Hamiltonian
 from sisl.io.siesta import *
 
 import os.path as osp
@@ -20,15 +20,15 @@ class TestSIESTAnc(object):
 
     def test_nc1(self):
         f = osp.join(self.d, 'gr.nc')
-        tb = TightBinding(self.gtb)
+        tb = Hamiltonian(self.gtb)
         tb.construct(self.dR, self.t)
         tb.write(SIESTASile(f, 'w'))
 
-        ntb = SIESTASile(f).read_tb()
+        ntb = SIESTASile(f).read_es()
 
         # Assert they are the same
         assert_true(np.allclose(tb.cell, ntb.cell))
         assert_true(np.allclose(tb.xyz, ntb.xyz))
-        assert_true(np.allclose(tb._TB, ntb._TB))
+        assert_true(np.allclose(tb._data._D, ntb._data._D))
         for ia in ntb.geom:
             assert_true(self.g.atoms[ia] == ntb.atoms[ia])

@@ -8,24 +8,31 @@ from numbers import Integral
 
 import numpy as np
 import scipy.linalg as sli
+import scipy.sparse.linalg as ssli
+
+from sisl.sparse import SparseCSR
 
 
-from sisl import Atom, Geometry, Quaternion
-
-__all__ = ['TightBinding']
+__all__ = ['Hamiltonian', 'TightBinding']
 
 
-class TightBinding(object):
-    """
-    The defining tight-binding model for constructing models
-    in python for easy manipulation in tbtrans.
+class Hamiltonian(object):
+    """ Hamiltonian object containing the coupling constants between orbitals.
 
-    This class allows the creation of sparse tight-binding
-    models on extreme scales.
+    The Hamiltonian object contains information regarding the 
+     - geometry
+     - coupling constants between orbitals
 
-    Any tight-binding model has an underlying geometry which
-    is a requirement for the construction of a full tight-binding
-    parameter set.
+    It contains an intrinsic sparse matrix of the Hamiltonian elements.
+    
+    Assigning or changing Hamiltonian elements is as easy as with
+    standard ``numpy`` assignments:
+      
+    >>> ham = Hamiltonian(...)
+    >>> ham.H[1,2] = 0.1
+    
+    which assigns 0.1 as the coupling constant between orbital 2 and 3.
+    (remember that Python is 0-based elements).
     """
 
     # The order of the Energy
@@ -33,7 +40,7 @@ class TightBinding(object):
     # This conversion is made: [eV] ** _E_order
     _E_order = 1
 
-    def __init__(self, geom, *args, **kwargs):
+    def __init__(self, geom, nnzpr=None, spin=1, dtype=None, *args, **kwargs):
         """Create tight-binding model from geometry
 
         Initializes a tight-binding model using the :code:`geom` object
@@ -41,41 +48,65 @@ class TightBinding(object):
         """
         self.geom = geom
 
-        self.reset(**kwargs)
+        # Initialize the sparsity pattern
+        self.reset(nnzpr=nnzpr, spin=spin, dtype=dtype)
+
+    def reset(self, nnzpr=None, spin=1, dtype=None):
+        """
+        The sparsity pattern is cleaned and every thing
+        is reset.
+
+        The object will be the same as if it had been
+        initialized with the same geometry as it were
+        created with.
+        """
+        # I know that this is not the most efficient way to
+        # access a C-array, however, for constructing a
+        # sparse pattern, it should be faster if memory elements
+        # are closer...
+        # Hence, this choice of having H and S like this
+
+        # We check the first atom and its neighbours, we then
+        # select max(5,len(nc) * 4)
+        if nnzpr is None:
+            nnzpr = self.geom.close(0)
+            if nnzpr is None: nnzpr = [0,0]
+            nnzpr = max(5, len(nnzpr) * 4)
+
+        # Reset the sparsity pattern
+        self._data = SparseCSR((self.no, self.no_s, spin+1), nnzpr=nnzpr, dtype=None)
+
+        self._spin = spin
+
+        if spin == 1:
+            self.UP = 0
+            self.DOWN = 0
+            self.S_idx = 1
+        elif spin == 2:
+            self.UP = 0
+            self.DOWN = 1
+            self.S_idx = 2
+        else:
+            raise ValueError("Currently the Hamiltonian has only been implemented with up to collinear spin.")
+
+        # Denote that one *must* specify all details of the elements
+        self._def_dim = -1
+
 
     ######### Definitions of overrides ############
+    def spin(self):
+        """ Return number of spin-components in Hamiltonian """
+        return self._spin
+
+
     def __len__(self):
         """ Returns number of non-zero elements in the model """
-        return self._nnzs
+        return len(self._data)
 
     def __repr__(self):
         """ Representation of the tight-binding model """
         s = self.geom.__repr__()
         return s + '\nNumber of non-zero elements {0}'.format(len(self))
-
-    def __getitem__(self, key):
-        """ Return tight-binding parameters for the index
-
-        Returns the tight-binding parameters for the index.
-        """
-        if isinstance(key, Integral):
-            # We allow the retrieval of the full row
-            i = key
-            ind = self.ptr[i]
-            n = self.ncol[i]
-            return self.col[ind:ind + n], self._TB[ind:ind + n, :]
-
-        # It must be both row and column
-        i, j = key
-        ind = np.where(
-            self.col[
-                self.ptr[i]:self.ptr[i] +
-                self.ncol[i]] == j)[0]
-        if len(ind) > 0:
-            return self._TB[self.ptr[i] + ind[0], :]
-        else:
-            # this is a zero element
-            return np.array([0., 0.], self._TB.dtype)
 
     def __getattr__(self, attr):
         """ Returns the attributes from the underlying geometry
@@ -85,104 +116,54 @@ class TightBinding(object):
         """
         return getattr(self.geom, attr)
 
+
+    def __getitem__(self, key):
+        """ Return Hamiltonian coupling elements for the index(s) """
+        dd = self._def_dim
+        if dd >= 0:
+            key = key + (dd,)
+        d = self._data[key]
+        self._def_dim = -1
+        return d
+
+
     def __setitem__(self, key, val):
-        """ Sparse creation of the sparsity pattern
+        """ Set or create couplings between orbitals in the Hamiltonian
 
         Override set item for slicing operations and enables easy
         setting of tight-binding parameters in a sparse matrix
-
-        It does allow fancy slicing in both dimensions with limited usability
-
-        Ok, it is not pretty, it is not fast, but it works!
         """
-        # unpack index
-        i, j = key
-        # Copy over the values of the tight-binding model
-        v = np.array([val], self._TB.dtype).flatten()
-        if not isinstance(i, Integral):
-            # Recursively handle index,index = val
-            # designators.
-            if len(i) > 1:
-                for ii in i:
-                    self[ii, j] = val
-                return
-            i = int(i[0])
+        dd = self._def_dim
+        if dd >= 0:
+            key = tuple(key) + (dd,)
+        self._data[key] = val
+        self._def_dim = -1
 
-        # step pointer of all above this
-        ptr = self.ptr[i]
-        ncol = self.ncol[i]
-        # Create the column indices in a strict manner
-        jj = np.array([j], np.int32).flatten()
-        lj = jj.shape[0]
-        if ncol > 0:
-            # Checks whether any values in either array exists
-            # if so we remove those from the jj
-            idx = np.intersect1d(
-                jj,
-                self.col[
-                    ptr:ptr +
-                    ncol],
-                assume_unique=True)
-        else:
-            idx = []
 
-        if len(idx) > 0:
-            where = np.where
+    def __get_H(self):
+        self._def_dim = self.UP
+        return self
+    _get_H = __get_H
 
-            # Here we truncate jj to the "new" values,
-            # this allows us to both overwrite and add new values to the
-            # sparsity pattern (simultaneously)
-            jj = np.setdiff1d(jj, idx, assume_unique=True)
-            lj = jj.shape[0]
+    def __set_H(self, key, value):
+        self._def_dim = self.UP
+        self[key] = value
+    _set_H = __set_H
 
-            # the values corresponding to idx already exists,
-            # we overwrite that value
-            if isinstance(j, Integral):
-                ix = where(j == self.col[ptr:ptr + ncol])[0][0]
-                self._TB[ptr + ix, :] = v
-            else:
-                # remember that idx is the intersection values
-                for ij in idx:
-                    ix = where(ij == self.col[ptr:ptr + ncol])[0][0]
-                    self._TB[ptr + ix, :] = v
+    H = property(__get_H, __set_H)
 
-            # if no new values are left we return immediately
-            if lj == 0:
-                return
+    def __get_S(self):
+        self._def_dim = self.S_idx
+        return self
+    _get_S = __get_S
 
-        while self.ptr[i + 1] - ptr < ncol + lj:
-            # Ensure that it is not-set as finalized
-            # There is no need to set it all the time.
-            # Simply because the first call to finalize
-            # will reduce the sparsity pattern, which
-            # on first expansion calls this part.
-            self._finalized = False
+    def __set_S(self, key, value):
+        self._def_dim = self.S_idx
+        self[key] = value
+    _set_S = __set_S
 
-            # Expand size of the sparsity pattern
-            # We add 10 new elements on each extension
-            # This may be too reductionists, however,
-            # it should happen rarely
-            self.ptr[i + 1:] += 10
-            self.col = np.insert(
-                self.col,
-                ptr + ncol,
-                np.empty(
-                    [10],
-                    self.col.dtype))
-            self._TB = np.insert(self._TB, ptr +
-                                 ncol, np.empty([10, 2], self._TB.dtype), axis=0)
+    S = property(__get_S, __set_S)
 
-        # Step to the placement of the new values
-        ptr += ncol
-        # set current value
-        self.col[ptr:ptr + lj] = jj
-        self._TB[ptr:ptr + lj, :] = v
-        # Append the new columns
-        self.ncol[i] += lj
-        # Increment number of non-zero elements
-        self._nnzs += lj
-
-    ############# DONE creating easy overrides #################
 
     # Create iterations module
     def iter_linear(self):
@@ -204,47 +185,9 @@ class TightBinding(object):
 
     __iter__ = iter_linear
 
-    def reset(self, nc=None, dtype=np.float64):
-        """
-        The sparsity pattern is cleaned and every thing
-        is reset.
-
-        The object will be the same as if it had been
-        initialized with the same geometry as it were
-        created with.
-        """
-        # I know that this is not the most efficient way to
-        # access a C-array, however, for constructing a
-        # sparse pattern, it should be faster if memory elements
-        # are closer...
-        # Hence, this choice of having H and S like this
-
-        # We check the first atom and its neighbours, we then
-        # select max(5,len(nc) * 4)
-        if nc is None:
-            nc = self.geom.close(0)
-            nc = max(5, len(nc) * 4)
-
-        self._no = self.geom.no
-
-        # Reset the sparsity pattern
-        self.ncol = np.zeros([self.no], np.int32)
-        # Create the interstitial pointer for each orbital
-        self.ptr = np.cumsum(np.array([nc] * (self.no + 1), np.int32)) - nc
-        self._nnzs = 0
-        self.col = np.empty([self.ptr[-1]], np.int32)
-
-        # Denote the tight-binding model as _not_ finalized
-        # Before saving, or anything being done, it _has_ to be
-        # finalized.
-        self._finalized = False
-
-        # Initialize TB size
-        # NOTE, this is not zeroed!
-        self._TB = np.empty([self.ptr[-1], 2], dtype=dtype)
 
     def construct(self, dR, param):
-        """ Automatically construct the tight-binding model based on ``dR`` and associated hopping integrals ``param``.
+        """ Automatically construct the Hamiltonian model based on ``dR`` and associated hopping integrals ``param``.
 
         Parameters
         ----------
@@ -253,7 +196,7 @@ class TightBinding(object):
            Must have same length as ``param`` or one less.
            If one less it will be extended with ``dR[0]/100``
         param : array_like
-           tight-binding parameters corresponding to the ``dR``
+           coupling constants corresponding to the ``dR``
            ranges. ``param[0,:]`` are the tight-binding parameter
            for the all atoms within ``dR[0]`` of each atom.
         """
@@ -272,7 +215,7 @@ class TightBinding(object):
         if len(param[0]) != 2:
             raise ValueError("Number of parameters "
                              "for each element is not 2. "
-                             "You must make len(param[0] == 2.")
+                             "You must make len(param[0] == 2).")
 
         if np.any(np.diff(self.geom.lasto) > 1):
             warnings.warn("Automatically setting a tight-binding model "
@@ -339,7 +282,6 @@ class TightBinding(object):
 
         print_equal(equal_atoms)
 
-        return self
 
     def finalize(self):
         """ Finalizes the tight-binding model
@@ -349,127 +291,105 @@ class TightBinding(object):
 
         Sparse elements can still be changed.
         """
-        if self._finalized:
-            return
+        self._data.finalize()
 
-        self._finalized = True
-        ptr = self.ncol[0]
-        if np.unique(self.col[:ptr]).shape[0] != ptr:
-            raise ValueError('You cannot have two hoppings between the same ' +
-                             'orbitals, something has went terribly wrong.')
+        # Get the folded Hamiltonian at the Gamma point
+        Hk = self.Hk()
 
-        if self.no != self.geom.no:
-            raise ValueError(
-                ("You have changed the geometry in the TightBinding "
-                 "object, this is not allowed."))
-
-        if self.no > 1:
-            # We truncate all the connections
-            for io in range(1, self.no):
-                cptr = self.ptr[io]
-                # Update actual pointer position
-                self.ptr[io] = ptr
-                no = self.ncol[io]
-                if no == 0:
-                    continue  # no non-assigned elements
-                self.col[ptr:ptr + no] = self.col[cptr:cptr + no]
-                self._TB[ptr:ptr + no, :] = self._TB[cptr:cptr + no, :]
-                # we also assert no two connections
-                if np.unique(self.col[ptr:ptr + no]).shape[0] != no:
-                    raise ValueError(
-                        'You cannot have two hoppings between the same ' +
-                        'orbitals ({}), something has went terribly wrong.'.format(io))
-                ptr += no
-
-        # Correcting the size of the pointer array
-        self.ptr[self.no] = ptr
-        if ptr != self._nnzs:
-            print(ptr, self._nnzs)
-            raise ValueError('Final size in the tight-binding finalization ' +
-                             'went wrong.')
-
-        # Truncate values to correct size
-        self._TB = self._TB[:self._nnzs, :]
-        self.col = self.col[:self._nnzs]
-
-        # Sort the indices, this is not strictly required, but
-        # it should speed up things.
-        for io in range(self.no):
-            ptr = self.ptr[io]
-            no = self.ncol[io]
-            if no == 0:
-                continue
-            # Sort the indices
-            si = np.argsort(self.col[ptr:ptr + no])
-            self.col[ptr:ptr + no] = self.col[ptr + si]
-            self._TB[ptr:ptr + no, :] = self._TB[ptr + si, :]
-
-        # Check that the couplings are symmetric
-        TB = self.tocsr(k=[0, 0, 0])[0]
-        t1 = TB.nnz
-        t2 = (TB + TB.T).nnz
-        if t1 != t2:
+        nzs = Hk.nnz
+        
+        if nzs != (Hk + Hk.T).nnz:
             warnings.warn(
-                'Tight-binding model does not retain symmetric couplings, this might be problematic: nnz(H) = {}, nnz(H+H^T) = {}.'.format(
-                    t1,
-                    t2),
-                UserWarning)
-        del TB
+                'Hamiltonian does not retain symmetric couplings, this might be problematic.')
+
 
     @property
-    def nnzs(self):
+    def nnz(self):
         """ Returns number of non-zero elements in the tight-binding model """
-        return self._nnzs
+        return self._data.nnz
+
 
     @property
     def no(self):
         """ Returns number of orbitals as used when the object was created """
-        return self._no
+        return self._data.nr
 
-    def tocsr(self, k=None):
-        """ Returns :code:`scipy.sparse` matrices for the tight-binding model
 
-        Returns a CSR sparse matrix for both the Hamiltonian
-        and the overlap matrix using the scipy package.
-
-        This method depends on scipy.
+    def tocsr(self, index):
+        """ Return a ``scipy.sparse.csr_matrix`` from the specified index
         """
-        # Ensure completeness
-        self.finalize()
+        return self._data.tocsr(index)
+        
 
+    def Hk(self, k=(0, 0, 0), spin=0):
+        """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
+
+        Parameters
+        ==========
+        k: float*3
+           k-point 
+        """
         # Create csr sparse formats.
         # We import here as the user might not want to
         # rely on this feature.
         from scipy.sparse import csr_matrix
 
-        if k is None:
-            kw = {'shape': (self.no, self.no_s),
-                  'dtype': self._TB.dtype}
-            if self._TB.shape[1] == 1:
-                return csr_matrix((self._TB[:, 0], self.col, self.ptr), **kw)
-            return (csr_matrix((self._TB[:, 0], self.col, self.ptr), **kw),
-                    csr_matrix((self._TB[:, 1], self.col, self.ptr), **kw))
-        else:
-            k = np.asarray(k, np.float64)
-            # Setup the Hamiltonian for this k-point
-            Hfull, Sfull = self.tocsr()
+        dot = np.dot
 
-            s = (self.no, self.no)
+        k = np.asarray(k, np.float64)
+        
+        # Setup the Hamiltonian for this k-point
+        Hf = self.tocsr(spin)
 
-            # Create k-space Hamiltonian
-            H = csr_matrix(s, dtype=np.complex128)
-            S = csr_matrix(s, dtype=np.complex128)
+        s = (self.no, self.no)
+        H = csr_matrix(s, dtype=np.complex128)
 
-            # Get the reciprocal lattice vectors dotted with k
-            rcell = self.rcell
-            kr = np.dot(rcell, np.asarray(k)) * np.pi * 2.
-            for si in range(self.sc.n_s):
-                isc = self.sc_off[si, :]
-                phase = np.exp(-1j * np.dot(kr, np.dot(self.cell, isc)))
-                H += Hfull[:, si * self.no:(si + 1) * self.no] * phase
-                S += Sfull[:, si * self.no:(si + 1) * self.no] * phase
-            del Hfull, Sfull
-            return (H, S)
+        # Get the reciprocal lattice vectors dotted with k
+        rcell = self.rcell
+        kr = dot(rcell, k) * np.pi * 2.
+        for si in range(self.sc.n_s):
+            isc = self.sc_off[si, :]
+            phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))
+            H += Hf[:, si * self.no:(si + 1) * self.no] * phase
+            
+        del Hf
+        
+        return H
+
+
+    def Sk(self, k=(0, 0, 0), spin=0):
+        """ Return the overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
+
+        Parameters
+        ==========
+        k: float*3
+           k-point 
+        """
+        # Create csr sparse formats.
+        # We import here as the user might not want to
+        # rely on this feature.
+        from scipy.sparse import csr_matrix
+
+        k = np.asarray(k, np.float64)
+        
+        # Setup the Hamiltonian for this k-point
+        Sf = self.tocsr(self.S_idx)
+
+        s = (self.no, self.no)
+        S = csr_matrix(s, dtype=np.complex128)
+
+        # Get the reciprocal lattice vectors dotted with k
+        rcell = self.rcell
+        kr = np.dot(rcell, k) * np.pi * 2.
+        for si in range(self.sc.n_s):
+            isc = self.sc_off[si, :]
+            phase = np.exp(-1j * np.dot(kr, np.dot(self.cell, isc)))
+            S += Sf[:, si * self.no:(si + 1) * self.no] * phase
+            
+        del Sf
+        
+        return S
+
 
     def eigh(self,
             k=None,
@@ -487,7 +407,8 @@ class TightBinding(object):
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
-        H, S = self.tocsr(k=k)
+        H = self.Hk(k=k)
+        S = self.Sk(k=k)
         # Reduce sparsity pattern
         if not atoms is None:
             orbs = self.a2o(atoms)
@@ -502,6 +423,40 @@ class TightBinding(object):
             overwrite_a=overwrite_a,
             overwrite_b=overwrite_b,
             **kwargs)
+
+
+    def eigsh(self,
+            k=None,
+            n=10,
+            atoms=None,
+            eigvals_only=True,
+            *args,
+            **kwargs):
+        """ Returns the eigenvalues of the tight-binding model
+
+        Setup the Hamiltonian and overlap matrix with respect to
+        the given k-point, then reduce the space to the specified atoms
+        and calculate the eigenvalues.
+
+        All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
+        """
+        kwargs.update(kwargs.get('which', 'SM'))
+        H = self.Hk(k=k)
+        # Check that the overlap matrix is orthogonal
+        is_ortho = nint(np.abs(np.sum(self._data._D[:, self.S_idx]))) == self.no
+        if not is_ortho:
+            raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
+        
+        # Reduce sparsity pattern
+        if not atoms is None:
+            orbs = self.a2o(atoms)
+            # Reduce space
+            H = H[orbs, orbs]
+
+        return ssli.eigsh(H, k=n,
+                          *args,
+                          return_eigenvectors=not eigvals_only,
+                          **kwargs)
 
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the tight-binding model into different parts.
@@ -535,7 +490,8 @@ class TightBinding(object):
             warnings.warn(new_w, UserWarning)
 
         # Now we need to re-create the tight-binding model
-        H, S = self.tocsr()
+        H = self.Hk()
+        S = self.Sk()
         # they are created similarly, hence the following
         # should keep their order
 
@@ -592,7 +548,7 @@ class TightBinding(object):
         # Now we have a correct geometry, and
         # we are now ready to create the sparsity pattern
         # Reduce the sparsity pattern, first create the new one
-        tb = self.__class__(geom, nc=np.amax(self.ncol))
+        ham = self.__class__(geom, nc=np.amax(self.ncol), spin=self.spin)
 
         def sco2sco(M, o, m, seps, axis):
             # Converts an o from M to m
@@ -619,24 +575,24 @@ class TightBinding(object):
 
             for io, iH in zip(sH.indices, sH.data):
                 # Get the equivalent orbital in the smaller cell
-                o, ofp, ofm = sco2sco(self.geom, io, tb.geom, seps, axis)
+                o, ofp, ofm = sco2sco(self.geom, io, ham.geom, seps, axis)
                 if o is None:
                     continue
-                tb[jo, o + ofp] = iH, S[jo, io]
-                tb[o, jo + ofm] = iH, S[jo, io]
+                ham[jo, o + ofp] = iH, S[jo, io]
+                ham[o, jo + ofm] = iH, S[jo, io]
 
             if np.any(sH.indices != sS.indices):
 
                 # Ensure that S is also cut
                 for io, iS in zip(sS.indices, sS.data):
                     # Get the equivalent orbital in the smaller cell
-                    o, ofp, ofm = sco2sco(self.geom, io, tb.geom, seps, axis)
+                    o, ofp, ofm = sco2sco(self.geom, io, ham.geom, seps, axis)
                     if o is None:
                         continue
-                    tb[jo, o + ofp] = H[jo, io], iS
-                    tb[o, jo + ofm] = H[jo, io], iS
+                    ham[jo, o + ofp] = H[jo, io], iS
+                    ham[o, jo + ofm] = H[jo, io], iS
 
-        return tb
+        return ham
 
     def tile(self, reps, axis):
         """ Returns a repeated tight-binding model for this, much like the `Geometry`
@@ -654,29 +610,24 @@ class TightBinding(object):
         # Create the new geometry
         g = self.geom.tile(reps, axis)
 
-        # Get the Hamiltonian and overlap matrices
-        H, S = self.tocsr()
-
-        # Create new object
-        TB = self.__class__(g)
-
-        raise NotImplemented(('tiling a TightBinding model has not been '
+        raise NotImplemented(('tiling a Hamiltonian model has not been '
                               'fully implemented yet.'))
 
     def repeat(self, reps, axis):
         """ Refer to `tile` instead """
-        raise NotImplemented(('repeating a TightBinding model has not been '
+        # Create the new geometry
+        g = self.geom.repeat(reps, axis)
+        
+        raise NotImplemented(('repeating a Hamiltonian model has not been '
                               'fully implemented yet, use tile instead.'))
 
     @classmethod
-    def sp2tb(cls, geom, H, S):
+    def sp2HS(cls, geom, H, S):
         """ Returns a tight-binding model from a preset H, S and Geometry
-
-        H and S are overwritten on exit
         """
-
         # Calculate number of connections
         nc = 0
+        
         # Ensure csr format
         H = H.tocsr()
         S = S.tocsr()
@@ -684,12 +635,12 @@ class TightBinding(object):
             nc = max(nc, H[i, :].getnnz())
             nc = max(nc, S[i, :].getnnz())
 
-        tb = cls(geom, nc=nc)
+        ham = cls(geom, nc=nc)
 
         # Copy data to the model
         H = H.tocoo()
         for jo, io, h in zip(H.row, H.col, H.data):
-            tb[jo, io] = (h, S[jo, io])
+            ham[jo, io] = (h, S[jo, io])
 
         # Convert S to coo matrix
         S = S.tocoo()
@@ -702,87 +653,45 @@ class TightBinding(object):
             # Re-convert back to allow index retrieval
             H = H.tocsr()
             for jo, io, s in zip(S.row, S.col, S.data):
-                tb[jo, io] = (H[jo, io], s)
+                ham[jo, io] = (H[jo, io], s)
 
-        return tb
+        return ham
 
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads tight-binding model from `Sile` using `read_tb`.
+        """ Reads Hamiltonian from `Sile` using `read_H`.
 
         Parameters
         ----------
         sile : Sile, str
             a `Sile` object which will be used to read the Hamiltonian
+            and the overlap matrix (if any)
             if it is a string it will create a new sile using `get_sile`.
-        * : args passed directly to ``read_tb(,**)``
+        * : args passed directly to ``read_es(,**)``
         """
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            return sile.read_tb(*args, **kwargs)
+            return sile.read_es(*args, **kwargs)
         else:
-            return get_sile(sile).read_tb(*args, **kwargs)
+            return get_sile(sile).read_es(*args, **kwargs)
 
 
     def write(self, sile, *args, **kwargs):
-        """ Writes a tight-binding model to the `Sile` as implemented in the :code:`ObjSile.write_tb` method """
+        """ Writes a tight-binding model to the `Sile` as implemented in the :code:`ObjSile.write_es` method """
         self.finalize()
 
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            sile.write_tb(self, *args, **kwargs)
+            sile.write_es(self, *args, **kwargs)
         else:
-            get_sile(sile, 'w').write_tb(self, *args, **kwargs)
+            get_sile(sile, 'w').write_es(self, *args, **kwargs)
 
 
-if __name__ == "__main__":
-    import datetime
-    from sisl.geom import graphene
-
-    # Create graphene unit-cell
-    gr = graphene()
-    gr.sc.set_nsc([3, 3, 1])
-
-    # Create nearest-neighbour tight-binding
-    # graphene lattice constant 1.42
-    dR = (0.1, 1.5)
-    on = (0., 1.)
-    nn = (-0.5, 0.)
-
-    tb = TightBinding(gr)
-    for ia in tb.geom:
-        idx_a = tb.geom.close(ia, dR=dR)
-        tb[ia, idx_a[0]] = on
-        tb[ia, idx_a[1]] = nn
-    print(len(tb))
-    tb.finalize()
-    print('H\n', tb.tocsr()[0])
-    print('H\n', tb.tocsr(k=[.25, .25, 0])[0])
-    print('eig\n', tb.eigh(k=[3. / 4, .5, 0], eigvals_only=True))
-
-    print('\nCheck expansion')
-    tb = TightBinding(gr)
-    tb.reset(1)  # force only one connection (this should force expansion)
-    for ia in tb.geom:
-        idx_a = tb.geom.close(ia, dR=dR)
-        tb[ia, idx_a[0]] = on
-        tb[ia, idx_a[1]] = nn
-    print(len(tb))
-    print('H\n', tb.tocsr()[0])
-    print('H\n', tb.tocsr(k=[.25, .25, 0])[0])
-
-    # Lets try and create a huge sample
-    print('\n\nStarting time... ' + str(datetime.datetime.now().time()))
-    tb = TightBinding(gr.tile(41, 0).tile(41, 1))
-    for ias, idxs in tb.iter_block(13):
-        for ia in ias:
-            idx_a = tb.geom.close(ia, dR=dR)
-            tb[ia, idx_a[0]] = on
-            tb[ia, idx_a[1]] = nn
-    print(len(tb))
-    print('Ending time... ' + str(datetime.datetime.now().time()))
+# For backwards compatibility we also use TightBinding
+# NOTE: that this is not sub-classed...
+TightBinding = Hamiltonian

@@ -10,7 +10,7 @@ from ..sile import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl import Bohr, Ry
-from sisl.tb import TightBinding, PhononTightBinding
+from sisl.quantity import Hamiltonian
 
 import numpy as np
 
@@ -82,11 +82,14 @@ class SIESTASile(NCSileSIESTA):
 
 
     @Sile_fh_open
-    def read_tb(self, **kwargs):
+    def read_es(self, **kwargs):
         """ Returns a tight-binding model from the underlying NetCDF file """
 
         # Get the default spin channel
-        ispin = kwargs.get('ispin', 0)
+        ispin = kwargs.get('ispin', -1)
+        spin = 1
+        if ispin == -1:
+            spin = len(self.dimensions['spin'])
 
         # First read the geometry
         geom = self.read_geom()
@@ -100,34 +103,49 @@ class SIESTASile(NCSileSIESTA):
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
-        tb = TightBinding(geom, nc=1)
+        ham = Hamiltonian(geom, nnzpr=1, spin=spin)
 
         # Use Ef to move H to Ef = 0
-        Ef = float(self.variables['Ef'][0]) / Ry ** tb._E_order
-
+        Ef = float(self.variables['Ef'][0]) / Ry ** ham._E_order
         S = np.array(sp.variables['S'][:], np.float64)
-        H = np.array(sp.variables['H'][ispin, :],
-                     np.float64) / Ry ** tb._E_order
 
-        # Correct for the Fermi-level, Ef == 0
-        H -= Ef * S[:]
         ncol = np.array(sp.variables['n_col'][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)
         ptr = np.append(np.array(0, np.int32), np.cumsum(ncol)).flatten()
-
         col = np.array(sp.variables['list_col'][:], np.int32) - 1
 
         # Copy information over
-        tb.ncol = ncol
-        tb.ptr = ptr
-        tb.col = col
-        tb._nnzs = len(col)
+        ham._data.ncol = ncol
+        ham._data.ptr = ptr
+        ham._data.col = col
+        ham._nnz = len(col)
+        
         # Create new container
-        tb._TB = np.empty([len(tb), 2], np.float64)
-        tb._TB[:, 0] = H[:]
-        tb._TB[:, 1] = S[:]
+        H = np.array(sp.variables['H'][ispin, :],
+                     np.float64) / Ry ** ham._E_order
+        # Correct for the Fermi-level, Ef == 0
+        H -= Ef * S[:]
+        
+        ham._data._D = np.empty([ham._data.ptr[-1], spin+1], np.float64)
+        if ispin == -1:
+            for i in range(spin):
+                # Create new container
+                H = np.array(sp.variables['H'][i, :],
+                             np.float64) / Ry ** ham._E_order
+                # Correct for the Fermi-level, Ef == 0
+                H -= Ef * S[:]
+                ham._data._D[:, i] = H[:]
+        else:
+            # Create new container
+            H = np.array(sp.variables['H'][ispin, :],
+                         np.float64) / Ry ** ham._E_order
+            # Correct for the Fermi-level, Ef == 0
+            H -= Ef * S[:]
+            ham._data._D[:, 0] = H[:]
+        ham._data._D[:, ham.S_idx] = S[:]
 
-        return tb
+        return ham
+
 
     @Sile_fh_open
     def grids(self):
@@ -196,7 +214,6 @@ class SIESTASile(NCSileSIESTA):
         self._crt_dim(self, 'xyz', 3)
         self._crt_dim(self, 'no_s', np.prod(geom.nsc) * geom.no)
         self._crt_dim(self, 'no_u', geom.no)
-        self._crt_dim(self, 'spin', 1)
         self._crt_dim(self, 'na_u', geom.na)
 
         # Create initial geometry
@@ -212,7 +229,7 @@ class SIESTASile(NCSileSIESTA):
         v.unit = 'Bohr'
 
         # Create designation of the creation
-        self.method = 'python'
+        self.method = 'sisl'
 
         # Save stuff
         self.variables['nsc'][:] = geom.nsc
@@ -253,28 +270,31 @@ class SIESTASile(NCSileSIESTA):
 
 
     @Sile_fh_open
-    def write_tb(self, tb, **kwargs):
-        """ Writes tight-binding model to file
+    def write_es(self, ham, **kwargs):
+        """ Writes Hamiltonian model to file
 
         Parameters
         ----------
-        tb : `TightBinding` model
+        ham : `Hamiltonian` model
            the model to be saved in the NC file
         Ef : double=0
            the Fermi level of the electronic structure (in eV)
         """
         # Ensure finalizations
-        tb.finalize()
+        ham.finalize()
 
         # Ensure that the geometry is written
-        self.write_geom(tb.geom)
+        self.write_geom(ham.geom)
+
+        self._crt_dim(self, 'spin', ham._spin)
+
 
         v = self._crt_var(self, 'Ef', 'f8', ('one',))
         v.info = 'Fermi level'
         v.unit = 'Ry'
         v[:] = 0.
         if 'Ef' in kwargs:
-            v[:] = kwargs['Ef'] * Ry ** tb._E_order
+            v[:] = kwargs['Ef'] * Ry ** ham._E_order
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
         v[:] = 0.
@@ -287,28 +307,29 @@ class SIESTASile(NCSileSIESTA):
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
 
-        self._crt_dim(sp, 'nnzs', tb.col.shape[0])
+        self._crt_dim(sp, 'nnzs', ham._data.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
         v.info = "Number of non-zero elements per row"
-        v[:] = tb.ncol[:]
+        v[:] = ham._data.ncol[:]
         v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(tb.col),), **self._cmp_args)
+                          chunksizes=(len(ham._data.col),), **self._cmp_args)
         v.info = "Supercell column indices in the sparse format"
-        v[:] = tb.col[:] + 1  # correct for fortran indices
+        v[:] = ham._data.col[:] + 1  # correct for fortran indices
         v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = tb.geom.sc.sc_off[:, :]
+        v[:] = ham.geom.sc.sc_off[:, :]
 
         # Save tight-binding parameters
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(tb.col),), **self._cmp_args)
+                          chunksizes=(len(ham._data.col),), **self._cmp_args)
         v.info = "Overlap matrix"
-        v[:] = tb._TB[:, 1]
+        v[:] = ham._data._D[:, ham.S_idx]
         v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(tb.col)), **self._cmp_args)
+                          chunksizes=(1, len(ham._data.col)), **self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"
-        v[:] = tb._TB[:, 0] * Ry ** tb._E_order
+        for i in range(ham._spin):
+            v[i, :] = ham._data._D[:, i] * Ry ** ham._E_order
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')

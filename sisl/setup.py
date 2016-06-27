@@ -6,7 +6,7 @@ def configuration(parent_package='', top_path=None):
     config = Configuration('sisl', parent_package, top_path)
     config.add_subpackage('geom')
     config.add_subpackage('io')
-    config.add_subpackage('tb')
+    config.add_subpackage('quantity')
     config.make_config_py()  # installs __config__.py
     config.add_data_dir('tests')
     return config

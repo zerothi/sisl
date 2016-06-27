@@ -22,7 +22,10 @@ from .geometry import *
 from .grid import *
 
 from .io import *
-from .tb import *
+
+# Hamiltonian and phonon structures
+from .quantity import *
+
 
 # Import the default geom structure
 # This enables:
