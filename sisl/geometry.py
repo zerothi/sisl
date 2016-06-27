@@ -1274,7 +1274,7 @@ class Geometry(SuperCellChild):
         return self.sc.sc_off[idx, :]
 
     @classmethod
-    def ASE(cls, aseg):
+    def fromASE(cls, aseg):
         """ Returns geometry from an ASE object.
 
         Parameters
@@ -1312,6 +1312,7 @@ class Geometry(SuperCellChild):
 
     def __ne__(self, other):
         return not (self == other)
+
 
     # Create pickling routines
     def __getstate__(self):
