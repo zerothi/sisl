@@ -199,6 +199,7 @@ class SparseCSR(object):
         self._D[:,:] = 0.
         
         if not keep:
+            self._finalized = False
             # The user does not wish to retain the
             # sparse pattern
             self.ncol = 0
