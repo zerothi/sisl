@@ -36,7 +36,7 @@ class SparseCSR(object):
     """
 
     def __init__(self, arg1, dim=1, dtype=None,
-                 nnzpr=None,nnz=None,
+                 nnzpr=20,nnz=None,
                  **kwargs):
         """ Initialize a new sparse CSR matrix
 
@@ -103,9 +103,9 @@ class SparseCSR(object):
 
             # Create sparse matrix (with only one entry per
             # row, we overwrite it immediately afterward)
-            self = self.__class__(arg1.shape, nnz=1, nnzpr=1,
-                                dim=dim, dtype=arg1.dtype)
-
+            self = self.__class__(arg1.shape, nnz=1, 
+                                  dim=dim, dtype=arg1.dtype)
+            
             self.ptr = arg1.indptr
             self.ncol = np.diff(self.ptr)
             self.col = arg1.indices
@@ -149,6 +149,10 @@ class SparseCSR(object):
             # number of non-zero elements is give AND larger
             # than the provided non-zero elements per row
             nnzpr = nnz // M
+
+        # Correct input in case very few elements are requested
+        nnzpr = max(nnzpr, 1)
+        nnz = max(nnz, nnzpr * M)
             
         # step size in sparse elements
         # If there isn't enough room for adding
