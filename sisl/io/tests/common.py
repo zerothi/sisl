@@ -28,8 +28,9 @@ def setUp(self):
                       atoms=C, sc=sc)
 
     self.dR = np.array([0.1, 1.5])
-    self.t = np.array([(0. , 1. ),
-                       (2.7, 0. )])
+    self.t = np.array([0. , 2.7])
+    self.tS = np.array([(0., 1.0),
+                        (2.7, 0.)])
     C = Atom(Z=6, orbs=1, R=max(self.dR))
     sc = SuperCell(np.array([[1.5, sq3h, 0.],
                              [1.5, -sq3h, 0.],

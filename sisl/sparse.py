@@ -217,7 +217,13 @@ class SparseCSR(object):
     def dim(self):
         """ Return extra dimensionality of the sparse matrix """
         return self.shape[2]
-    
+
+
+    @property
+    def dtype(self):
+        """ Return the data-type in the sparse matrix """
+        return self._D.dtype
+
 
     @property
     def nnz(self):
@@ -574,7 +580,7 @@ class SparseCSR(object):
 
         # Create correct input
         dim = len(dims)
-        shape = self.shape[:]
+        shape = list(self.shape[:])
         shape[2] = dim
 
         new = self.__class__(shape, nnz=self.nnz, nnzpr=1,

@@ -86,7 +86,7 @@ class Hamiltonian(object):
             if nnzpr is None: nnzpr = [0,0]
             nnzpr = max(5, len(nnzpr) * 4)
 
-        self._ortho
+        self._ortho = ortho
 
         # Reset the sparsity pattern
         if not ortho:
@@ -248,10 +248,11 @@ class Hamiltonian(object):
                              "or dR one shorter than param. "
                              "One tight-binding parameter for each radii.")
 
-        if len(param[0]) != 2:
-            raise ValueError("Number of parameters "
-                             "for each element is not 2. "
-                             "You must make len(param[0] == 2).")
+        if not self.orthogonal:
+            if len(param[0]) != 2:
+                raise ValueError("Number of parameters "
+                                 "for each element is not 2. "
+                                 "You must make len(param[0] == 2) for non-orthogonal Hamiltonians.")
 
         if np.any(np.diff(self.geom.lasto) > 1):
             warnings.warn("Automatically setting a tight-binding model "
