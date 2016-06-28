@@ -828,7 +828,8 @@ class TBtransdHSile(NCSileSIESTA):
                                attr = {'info' : "Real part of dH",
                                        'unit' : "Ry"}, **self._cmp_args)
             for i in range(ham.spin):
-                v1[i, :] = ham._data._D[:, i].real * Ry ** ham._E_order
+                sl[-2] = i
+                v1[sl] = ham._data._D[:, i].real * Ry ** ham._E_order
 
             v2 = self._crt_var(lvl, 'ImdH', 'f8', dim,
                                chunksizes=csize, 
