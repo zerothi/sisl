@@ -15,17 +15,12 @@ sisl also enables an easy interface for [ASE][ase].
 
 ## Usage ##
 
-If used to produce scientific contributions, please use the DOI for citation,
-an example BibTeX entry will look like this:
+If used to produce scientific contributions, please use the DOI for citation.
+Press the DOI link at the top of this page and select
 
-    @misc{zerothi_sisl,
-      author       = {Nick R. Papior},
-      title        = {sisl: 0.7.0},
-      month        = jun,
-      year         = 2016,
-      doi          = {10.5281/zenodo.56323},
-      url          = {http://dx.doi.org/10.5281/zenodo.56323}
-    }
+    Cite as 
+
+in the right side of the zenodo webpage. Select your citation style.
 
 ### Scripts ###
 
