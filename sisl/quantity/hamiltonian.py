@@ -90,9 +90,9 @@ class Hamiltonian(object):
 
         # Reset the sparsity pattern
         if not ortho:
-            self._data = SparseCSR((self.no, self.no_s, spin+1), nnzpr=nnzpr, dtype=None)
+            self._data = SparseCSR((self.no, self.no_s, spin+1), nnzpr=nnzpr, dtype=dtype)
         else:
-            self._data = SparseCSR((self.no, self.no_s, spin), nnzpr=nnzpr, dtype=None)
+            self._data = SparseCSR((self.no, self.no_s, spin), nnzpr=nnzpr, dtype=dtype)
 
 
         self._spin = spin

@@ -67,12 +67,10 @@ class SparseCSR(object):
         ----------
         nnzpr : int, 20
            initial number of non-zero elements per row.
-           If `nnz` is supplied it will set:
-           `nnzpr = max(nnzpr, nnz // M)`
+           Only used if `nnz` is not supplied
         nnz : int
            initial total number of non-zero elements
-           If `nnzpr` is supplied it will set:
-           `nnzpr = max(nnzpr, nnz // M)`
+           This quantity has precedence over `nnzpr`
         dim : int, 1
            number of elements stored per sparse element
         dtype : numpy data type, `numpy.float64`
@@ -147,16 +145,11 @@ class SparseCSR(object):
             # number of non-zero elements is NOT given
             nnz = M * nnzpr
             
-        elif nnz > M * nnzpr:
+        else:
             # number of non-zero elements is give AND larger
             # than the provided non-zero elements per row
             nnzpr = nnz // M
             
-        else:
-            # number of non-zero elements per row is larger
-            # than the provided number of total non-zero elements
-            nnz = M * nnzpr
-
         # step size in sparse elements
         # If there isn't enough room for adding
         # a non-zero element, the # of elements
@@ -169,14 +162,14 @@ class SparseCSR(object):
         # Create pointer array
         self.ptr = np.cumsum(np.array([nnzpr] * (M+1), np.int32)) - nnzpr
         # Create column array
-        self.col = np.empty(self.ptr[-1], np.int32)
+        self.col = np.empty(nnz, np.int32)
         # Store current number of non-zero elements
         self._nnz = 0
 
         # Important that this is zero
         # For instance one may set one dimension at a time
         # thus automatically zeroing the other dimensions.
-        self._D = np.zeros([self.ptr[-1], K], dtype)
+        self._D = np.zeros([nnz, K], dtype)
 
         # Denote that this sparsity pattern hasn't been finalized
         self._finalized = False
@@ -582,8 +575,9 @@ class SparseCSR(object):
         shape = list(self.shape[:])
         shape[2] = dim
 
-        new = self.__class__(shape, nnz=self.nnz, nnzpr=1,
+        new = self.__class__(shape, nnz=self.nnz, 
                              dim=dim, dtype=self.dtype)
+
         new.ptr[:] = self.ptr[:]
         new.ncol[:] = self.ncol[:]
         new.col[:] = self.col[:]
