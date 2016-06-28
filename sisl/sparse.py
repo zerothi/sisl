@@ -264,12 +264,6 @@ class SparseCSR(object):
         ncol = self.ncol
         col = self.col
         D = self._D
-
-        # Check that all column indices are within the expected
-        # shape
-        if np.any(col >= self.shape[1]):
-            warnings.warn("Sparse matrix contains column indices outside the shape "
-                          "of the matrix. Data may not represent what you had expected")
             
 
         # We truncate all the connections
@@ -320,9 +314,13 @@ class SparseCSR(object):
         self._D = self._D[:self.nnz, :]
         self.col = self.col[:self.nnz]
 
+        # Check that all column indices are within the expected shape
+        if np.any(self.shape[1] <= self.col):
+            warnings.warn("Sparse matrix contains column indices outside the shape "
+                          "of the matrix. Data may not represent what you had expected")
+
         # Signal that we indeed have finalized the data
         self._finalized = True
-
 
 
     def _extend(self, i, j):
