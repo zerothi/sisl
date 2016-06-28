@@ -103,7 +103,7 @@ class SIESTASile(NCSileSIESTA):
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
-        ham = Hamiltonian(geom, nnzpr=1, spin=spin)
+        ham = Hamiltonian(geom, nnzpr=1, ortho=False, spin=spin)
 
         # Use Ef to move H to Ef = 0
         Ef = float(self.variables['Ef'][0]) / Ry ** ham._E_order
@@ -323,7 +323,16 @@ class SIESTASile(NCSileSIESTA):
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
                           chunksizes=(len(ham._data.col),), **self._cmp_args)
         v.info = "Overlap matrix"
-        v[:] = ham._data._D[:, ham.S_idx]
+        if ham.orthogonal:
+            # We need to create the orthogonal pattern
+            tmp = ham._data.copy(dims=[0])
+            tmp.empty(keep=True)
+            for i in range(tmp.shape[0]):
+                tmp[i,i] = 1.
+            v[:] = tmp._D[:, 0]
+            del tmp
+        else:
+            v[:] = ham._data._D[:, ham.S_idx]
         v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
                           chunksizes=(1, len(ham._data.col)), **self._cmp_args)
         v.info = "Hamiltonian"

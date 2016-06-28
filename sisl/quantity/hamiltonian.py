@@ -40,7 +40,8 @@ class Hamiltonian(object):
     # This conversion is made: [eV] ** _E_order
     _E_order = 1
 
-    def __init__(self, geom, nnzpr=None, spin=1, dtype=None, *args, **kwargs):
+    def __init__(self, geom, nnzpr=None, ortho=True, spin=1,
+                 dtype=None, *args, **kwargs):
         """Create tight-binding model from geometry
 
         Initializes a tight-binding model using the :code:`geom` object
@@ -49,9 +50,9 @@ class Hamiltonian(object):
         self.geom = geom
 
         # Initialize the sparsity pattern
-        self.reset(nnzpr=nnzpr, spin=spin, dtype=dtype)
+        self.reset(nnzpr=nnzpr, ortho=ortho, spin=spin, dtype=dtype)
 
-    def reset(self, nnzpr=None, spin=1, dtype=None):
+    def reset(self, nnzpr=None, ortho=True, spin=1, dtype=None):
         """
         The sparsity pattern is cleaned and every thing
         is reset.
@@ -59,6 +60,18 @@ class Hamiltonian(object):
         The object will be the same as if it had been
         initialized with the same geometry as it were
         created with.
+        
+        Parameters
+        ==========
+        nnzpr: int
+           number of non-zero elements per row
+        ortho: boolean, True
+           if there is an overlap matrix associated with the
+           Hamiltonian
+        spin: int, 1
+           number of spin-components
+        dtype: ``numpy.dtype``, `numpy.float64`
+           the datatype of the Hamiltonian
         """
         # I know that this is not the most efficient way to
         # access a C-array, however, for constructing a
@@ -73,8 +86,14 @@ class Hamiltonian(object):
             if nnzpr is None: nnzpr = [0,0]
             nnzpr = max(5, len(nnzpr) * 4)
 
+        self._ortho
+
         # Reset the sparsity pattern
-        self._data = SparseCSR((self.no, self.no_s, spin+1), nnzpr=nnzpr, dtype=None)
+        if not ortho:
+            self._data = SparseCSR((self.no, self.no_s, spin+1), nnzpr=nnzpr, dtype=None)
+        else:
+            self._data = SparseCSR((self.no, self.no_s, spin), nnzpr=nnzpr, dtype=None)
+
 
         self._spin = spin
 
@@ -88,6 +107,9 @@ class Hamiltonian(object):
             self.S_idx = 2
         else:
             raise ValueError("Currently the Hamiltonian has only been implemented with up to collinear spin.")
+
+        if not ortho:
+            self.S_idx = -1
 
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
@@ -104,6 +126,10 @@ class Hamiltonian(object):
         """ Return number of spin-components in Hamiltonian """
         return self._spin
 
+    @property
+    def orthogonal(self):
+        """ Return whether the Hamiltonian is orthogonal """
+        return self._ortho
 
     def __len__(self):
         """ Returns number of non-zero elements in the model """
@@ -159,11 +185,15 @@ class Hamiltonian(object):
     H = property(__get_H, __set_H)
 
     def __get_S(self):
+        if self.orthogonal:
+            return None
         self._def_dim = self.S_idx
         return self
     _get_S = __get_S
 
     def __set_S(self, key, value):
+        if self.orthogonal:
+            return None
         self._def_dim = self.S_idx
         self[key] = value
     _set_S = __set_S
@@ -381,6 +411,9 @@ class Hamiltonian(object):
         k: float*3
            k-point 
         """
+        if self.orthogonal:
+            return None
+
         # Create csr sparse formats.
         # We import here as the user might not want to
         # rely on this feature.
@@ -461,9 +494,7 @@ class Hamiltonian(object):
         kwargs.update(kwargs.get('which', 'SM'))
         
         H = self.Hk(k=k)
-        # Check that the overlap matrix is orthogonal
-        is_ortho = nint(np.abs(np.sum(self._data._D[:, self.S_idx]))) == self.no
-        if not is_ortho:
+        if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
         
         # Reduce sparsity pattern

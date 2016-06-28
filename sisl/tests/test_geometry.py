@@ -12,14 +12,14 @@ class TestGeometry(object):
     # Base test class for MaskedArrays.
 
     def setUp(self):
-        alat = 1.42
+        bond = 1.42
         sq3h = 3.**.5 * 0.5
         self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
                                       [1.5, -sq3h, 0.],
-                                      [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
-        C = Atom(Z=6, R=alat * 1.01, orbs=2)
+                                      [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+        C = Atom(Z=6, R=bond * 1.01, orbs=2)
         self.g = Geometry(np.array([[0., 0., 0.],
-                                    [1., 0., 0.]], np.float64) * alat,
+                                    [1., 0., 0.]], np.float64) * bond,
                           atoms=C, sc=self.sc)
 
     def tearDown(self):
@@ -29,12 +29,23 @@ class TestGeometry(object):
     def test_objects(self):
         assert_true(len(self.g) == 2)
         assert_true(len(self.g.xyz) == 2)
+        assert_true(np.allclose(self.g[0,:], np.zeros([3]) ))
 
         i = 0
         for ia in self.g:
             i += 1
         assert_true(i == len(self.g))
         assert_true(self.g.no_s == 2 * len(self.g) * np.prod(self.g.sc.nsc))
+
+    def test_iter1(self):
+        i = 0
+        for ia in self.g:
+            i += 1
+        assert_true(i == 2)
+
+    def test_iter2(self):
+        for ia in self.g:
+            assert_true(np.allclose(self.g[ia,:], self.g.xyz[ia,:]))
 
     def test_tile1(self):
         cell = np.copy(self.g.sc.cell)
@@ -99,6 +110,9 @@ class TestGeometry(object):
         assert_true(len(self.g.remove([-1])) == 1)
         assert_true(len(self.g.remove([-0])) == 1)
 
+    def test_copy(self):
+        assert_true(self.g == self.g.copy())
+
     def test_nsc1(self):
         nsc = np.copy(self.g.nsc)
         self.g.sc.set_nsc([5, 5, 0])
@@ -155,6 +169,17 @@ class TestGeometry(object):
         rot = rot.rotate(180, [0, 0, 1], only='xyz')
         assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(rot.xyz, self.g.xyz))
+
+    def test_translate(self):
+        t = self.g.translate([0, 0, 1])
+        assert_true(np.allclose(self.g[:,0], t[:,0]))
+        assert_true(np.allclose(self.g[:,1], t[:,1]))
+        assert_true(np.allclose(self.g[:,2] + 1, t[:,2]))
+
+    def test_swap(self):
+        s = self.g.swap(0, 1)
+        for i in [0, 1, 2]:
+            assert_true(np.allclose(self.g[::-1,i], s[:,i]))
 
     def test_bond_correct(self):
         # Create ribbon

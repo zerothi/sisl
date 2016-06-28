@@ -552,7 +552,3 @@ class Grid(SuperCellChild):
         else:
             self.grid *= other
         return self
-
-
-if __name__ == "__main__":
-    pass

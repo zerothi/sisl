@@ -954,6 +954,8 @@ class Atom(with_metaclass(AtomMeta, object)):
      * number of orbitals
      * radius of each orbital
 
+    The `Atom` object is `pickle`-able.
+
     Attributes
     ----------
     Z : int
@@ -1063,15 +1065,3 @@ class Atom(with_metaclass(AtomMeta, object)):
             orbs=d['orbs'],
             mass=d['mass'],
             tag=d['tag'])
-
-
-if __name__ == "__main__":
-    # Create C
-    C = Atom('C', R=[1., 2.])
-    print('Default: \n\t' + str(C))
-
-    H = Atom['H']
-    print('Default: \n\t' + str(H))
-
-    D = Atom[{'Z': 'H', 'mass': 2.001, 'tag': 'Deuterium'}]
-    print('Default: \n\t' + str(D))

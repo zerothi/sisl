@@ -451,7 +451,3 @@ class SuperCellChild(object):
     def is_orthogonal(self):
         """ Return true if all cell vectors are linearly independent"""
         return self.sc.is_orthogonal()
-
-
-if __name__ == "__main__":
-    pass

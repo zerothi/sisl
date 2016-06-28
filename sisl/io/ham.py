@@ -91,11 +91,6 @@ class HamiltonianSile(Sile):
 
         Reads the Hamiltonian model
         """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_es(hermitian=hermitian, dtype=dtype, **kwargs)
-
         # Read the geometry in this file
         geom = self.read_geom()
 
@@ -253,7 +248,8 @@ class HamiltonianSile(Sile):
         # before we can write it
         # This should be easily circumvented
         H = ham.tocsr(0)
-        S = ham.tocsr(ham.S_idx)
+        if not ham.orthogonal:
+            S = ham.tocsr(ham.S_idx)
 
         # If the model is Hermitian we can
         # do with writing out half the entries
@@ -290,8 +286,9 @@ class HamiltonianSile(Sile):
                     for j in range(geom.no):
                         H[j, o:o + geom.no] = 0.
                         H.eliminate_zeros()
-                        S[j, o:o + geom.no] = 0.
-                        S.eliminate_zeros()
+                        if not ham.orthogonal:
+                            S[j, o:o + geom.no] = 0.
+                            S.eliminate_zeros()
             o = geom.sc_index(np.zeros([3], np.int32))
             # Get upper-triangular matrix of the unit-cell H and S
             ut = triu(H[:, o:o + geom.no], k=0).tocsr()
@@ -300,10 +297,11 @@ class HamiltonianSile(Sile):
                 H[j, o:o + geom.no] = ut[j, :]
                 H.eliminate_zeros()
             ut = triu(S[:, o:o + geom.no], k=0).tocsr()
-            for j in range(geom.no):
-                S[j, o:o + geom.no] = 0.
-                S[j, o:o + geom.no] = ut[j, :]
-                S.eliminate_zeros()
+            if not ham.orthogonal:
+                for j in range(geom.no):
+                    S[j, o:o + geom.no] = 0.
+                    S[j, o:o + geom.no] = ut[j, :]
+                    S.eliminate_zeros()
             del ut
 
             # Ensure that S and H have the same sparsity pattern
@@ -318,14 +316,20 @@ class HamiltonianSile(Sile):
             # Check that we have any contributions in this
             # sub-section
             Hsub = H[:, i * geom.no:(i + 1) * geom.no].tocoo()
-            Ssub = S[:, i * geom.no:(i + 1) * geom.no]
+            if not ham.orthogonal:
+                Ssub = S[:, i * geom.no:(i + 1) * geom.no]
             if Hsub.getnnz() == 0:
                 continue
             # We have a contribution, write out the information
             self._write('\nbegin matrix {0:d} {1:d} {2:d}\n'.format(*isc))
             if advanced:
                 for jo, io, h in zip(Hsub.row, Hsub.col, Hsub.data):
-                    s = Ssub[jo, io]
+                    if not ham.orthogonal:
+                        s = Ssub[jo, io]
+                    elif jo == io:
+                        s = 1.
+                    else:
+                        s = 0.
                     o = np.array([jo, io], np.int32)
                     a = geom.o2a(o)
                     o = o - geom.a2o(a)
@@ -337,7 +341,12 @@ class HamiltonianSile(Sile):
                                 a[0], o[0], a[1], o[1], h, s))
             else:
                 for jo, io, h in zip(Hsub.row, Hsub.col, Hsub.data):
-                    s = Ssub[jo, io]
+                    if not ham.orthogonal:
+                        s = Ssub[jo, io]
+                    elif jo == io:
+                        s = 1.
+                    else:
+                        s = 0.
                     if s == 0.:
                         self._write(fmt1_str.format(jo, io, h))
                     else:

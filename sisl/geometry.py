@@ -186,7 +186,7 @@ class Geometry(SuperCellChild):
 
     def __getitem__(self, key):
         """ Returns geometry coordinates """
-        return self.xa[key]
+        return self.xyz[key]
 
     @staticmethod
     def read(sile):
@@ -706,8 +706,8 @@ class Geometry(SuperCellChild):
         xyz[a, :] = self.xyz[b, :]
         xyz[b, :] = self.xyz[a, :]
         atoms = np.copy(self.atoms)
-        atoms[a, :] = self.atoms[b, :]
-        atoms[b, :] = self.atoms[a, :]
+        atoms[a] = self.atoms[b]
+        atoms[b] = self.atoms[a]
         return self.__class__(xyz, atoms=atoms, sc=self.sc.copy())
 
     def swapaxes(self, a, b, swap='cell+xyz'):
@@ -1327,88 +1327,3 @@ class Geometry(SuperCellChild):
         sc = SuperCell([1, 1, 1])
         sc.__setstate__(d)
         self.__init__(d['xyz'], d['atoms'], sc=sc)
-
-
-if __name__ == '__main__':
-    import math as m
-    from .geom.default import diamond
-
-    # Get a diamond
-    dia = diamond()
-
-    # Print all closest atoms
-    print('Atom')
-    for sc in [1, 3]:
-        dia.sc.set_nsc(nsc=[sc] * 3)
-        print(dia.close(0, dia.dR))
-
-    # Print all closest atoms and distances
-    print('\nAtom and distance')
-    for sc in [1, 3]:
-        dia.sc.set_nsc(nsc=[sc] * 3)
-        print(dia.close(0, dia.dR, ret_dist=True))
-
-    # Print all closest atoms and coords
-    print('\nAtom and coords')
-    for sc in [1, 3]:
-        dia.sc.set_nsc(nsc=[sc] * 3)
-        print(dia.close(0, dia.dR, ret_coord=True))
-
-    # Print all closest atoms, coords and distances
-    print('\nAtom and coords and distances')
-    for sc in [1, 3]:
-        dia.sc.set_nsc(nsc=[sc] * 3)
-        print(dia.close(0, dia.dR, ret_coord=True, ret_dist=True))
-    print("\n")
-
-    print('\nOrbital indices')
-    print(dia.a2o(0))
-    print(dia.a2o(1))
-
-    # Lets try and create a big one and cut it
-    big = dia.tile(3, 1).tile(3, axis=0)
-    print('\nBig stuff')
-    print(big)
-    half = big.cut(3, axis=0)
-    print('\nSmall stuff')
-    print(half)
-
-    big = dia.tile(10, 1).tile(10, 0)
-    print('\nIterable loop: ' + str(len(big)))
-    na = 0
-    for ia in big:
-        na += 1
-    print('Completed with: ' + str(na))
-
-    big = dia.tile(10, 1).tile(10, 0)
-    print('\nIterable loop: ' + str(len(big)))
-    na = 0
-    for ias, idxs in big.iter_block(5):
-        na += len(ias)
-    print('Completed with: ' + str(na))
-
-    # Try the rotation
-    rot = dia.copy()
-    print(rot.cell, rot.xyz)
-    rot = rot.rotate(m.pi / 4, [1, 0, 0])
-    print(rot.cell, rot.xyz)
-
-    # Try the rotation
-    rot = dia.copy()
-    print(rot.cell, rot.xyz)
-    rot = rot.rotate(m.pi / 4, [1, 0, 0], only='cell')
-    print(rot.cell, rot.xyz)
-
-    # Try and align Miller indices
-    fcc = Geometry(np.zeros([3]), atoms=Atom['Fe'],
-                   sc=SuperCell([[0.5, 0.5, 0.5],
-                                 [0.5, -0.5, 0.5],
-                                 [0.5, 0.5, -0.5]]))
-    print(fcc.atoms)
-    print(fcc.cell)
-    rot = fcc.rotate_miller([1, 1, 1], [0, 0, 1]).swapaxes(0, 2)
-    print(rot.cell)
-
-    # Try the passing of an actual SuperCell
-    new = Geometry(np.zeros([3]), atoms=Atom['Fe'], sc=fcc.sc)
-    print(new)

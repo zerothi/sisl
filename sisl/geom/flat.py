@@ -41,8 +41,3 @@ def graphene(bond=1.42, atom=None, square=False):
     if atom is None:
         return honeycomb(bond, Atom(Z=6, R=bond * 1.01), square)
     return honeycomb(bond, atom, square)
-
-
-if __name__ == "__main__":
-    g = graphene()
-    g = graphene(square=True)

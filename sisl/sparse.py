@@ -77,6 +77,24 @@ class SparseCSR(object):
            number of elements stored per sparse element
         dtype : numpy data type, `numpy.float64`
            data type of the matrix
+
+        Attributes
+        ==========
+        ncol: int-array, `self.shape[0]`
+           number of entries per row
+        ptr: int-array, `self.shape[0]+1`
+           pointer index in the 1D column indices of the corresponding row
+        col: int-array, 
+           column indices of the sparse elements
+        dim: int
+           the extra dimension of the sparse matrix
+        nnz: int
+           number of contained sparse elements
+        shape: tuple, 3*(,)
+           size of contained matrix, M, N, K
+        finalized: boolean
+           whether the sparse matrix is finalized and non-set elements
+           are removed
         """
 
         if isspmatrix(arg1):
@@ -240,6 +258,13 @@ class SparseCSR(object):
         ncol = self.ncol
         col = self.col
         D = self._D
+
+        # Check that all column indices are within the expected
+        # shape
+        if np.any(col >= self.shape[1]):
+            warnings.warn("Sparse matrix contains column indices outside the shape "
+                          "of the matrix. Data may not represent what you had expected")
+            
 
         # We truncate all the connections
         iptr = 0
@@ -534,6 +559,37 @@ class SparseCSR(object):
                 self._D[index, :] = data[:,:]
 
 
+    def copy(self, dims=None):
+        """ Returns an exact copy of the sparse matrix
+
+        Parameters
+        ==========
+        dims: array-like, (all)
+           which dimensions to store in the copy
+        """
+        # Create sparse matrix (with only one entry per
+        # row, we overwrite it immediately afterward)
+        if dims is None:
+            dims = range(self.dim)
+
+        # Create correct input
+        dim = len(dims)
+        shape = self.shape[:]
+        shape[2] = dim
+
+        new = self.__class__(shape, nnz=self.nnz, nnzpr=1,
+                             dim=dim, dtype=self.dtype)
+        new.ptr[:] = self.ptr[:]
+        new.ncol[:] = self.ncol[:]
+        new.col[:] = self.col[:]
+        new._nnz = self.nnz
+
+        for dim in dims:
+            new._D[:,dims] = self._D[:,dims]
+        
+        return new
+
+                
     @staticmethod
     def fromcsr(self, csr, dim=1):
         """ Return a new ``SparseData`` object from a csr matrix """

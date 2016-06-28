@@ -24,7 +24,3 @@ def diamond(alat=3.57, atom=None):
     dia = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
                    atoms=atom, sc=sc)
     return dia
-
-
-if __name__ == "__main__":
-    g = diamond()

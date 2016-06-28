@@ -104,7 +104,3 @@ def hcp(a, atom, coa=1.63333, square=False):
         g = Geometry(
             [[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]], atoms=atom, sc=sc)
     return g
-
-
-if __name__ == "__main__":
-    pass

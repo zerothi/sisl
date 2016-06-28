@@ -171,7 +171,3 @@ class Quaternion(object):
         a._v /= b
         return a
     __itruediv__ = __idiv__
-
-
-if __name__ == "__main__":
-    pass

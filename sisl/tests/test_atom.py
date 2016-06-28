@@ -12,6 +12,7 @@ class TestAtom(object):
 
     def setUp(self):
         self.C = Atom['C']
+        self.C3 = Atom('C', orbs=3)
         self.Au = Atom['Au']
 
     def tearDown(self):
@@ -46,16 +47,25 @@ class TestAtom(object):
         assert_true(Atom(Z=1, mass=12).mass == 12)
         assert_true(Atom(Z=31, mass=12).mass == 12)
         assert_true(Atom(Z=31, mass=12).Z == 31)
+        
+    def test6(self):
+        assert_true(Atom(Z=1, orbs=3).orbs == 3)
+        assert_true(Atom(Z=1, R=1.4).R == 1.4)
+        assert_true(Atom(Z=1, R=1.4).dR == 1.4)
+        assert_true(Atom(Z=1, R=[1.4,1.8]).orbs == 2)
 
     def test_pickle(self):
         import pickle as p
         sC = p.dumps(self.C)
+        sC3 = p.dumps(self.C3)
         sAu = p.dumps(self.Au)
         C = p.loads(sC)
+        C3 = p.loads(sC3)
         Au = p.loads(sAu)
         assert_false(Au == C)
         assert_true(Au != C)
         assert_true(C == self.C)
+        assert_true(C3 == self.C3)
         assert_false(C == self.Au)
         assert_true(Au == self.Au)
         assert_true(Au != self.C)
