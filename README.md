@@ -151,7 +151,7 @@ which disregards the ending check.
 
 ### Tight-binding ###
 
-To create a tight-binding model you _extend_ a geometry to a `TightBinding` class which
+To create a tight-binding model you _extend_ a geometry to a `Hamiltonian` class which
 contains the required sparse pattern.
 
 To create the nearest neighbour tight-binding model for graphene you simply do
