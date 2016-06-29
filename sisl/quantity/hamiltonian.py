@@ -273,8 +273,8 @@ class Hamiltonian(object):
 
         def append_equal(eq_atoms, ia, idx):
             # Append to the list of equal atoms the atomic indices
-            if len(idx[0]) > 1:
-                tmp = list(idx[0])
+            if len(idx) > 1:
+                tmp = list(idx)
                 # only add in "one" direction
                 for ja in tmp:
                     if ja > ia:
@@ -287,7 +287,7 @@ class Hamiltonian(object):
             for ia in self.geom:
                 # Find atoms close to 'ia'
                 idx = self.geom.close(ia, dR=R)
-                append_equal(eq_atoms, ia, idx)
+                append_equal(eq_atoms, ia, idx[0])
 
                 for ix, h in zip(idx, param):
                     # Set the tight-binding parameters
@@ -313,13 +313,13 @@ class Hamiltonian(object):
             for ia in ias:
                 # Find atoms close to 'ia'
                 idx = self.geom.close(ia, dR=R, idx=idxs)
-                append_equal(eq_atoms, ia, idx)
+                append_equal(eq_atoms, ia, idx[0])
 
                 for ix, h in zip(idx, param):
                     # Set the tight-binding parameters
                     self[ia, ix] = h
 
-        print_equal(equal_atoms)
+        print_equal(eq_atoms)
 
 
     @property
