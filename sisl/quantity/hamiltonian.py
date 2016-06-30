@@ -108,7 +108,8 @@ class Hamiltonian(object):
         else:
             raise ValueError("Currently the Hamiltonian has only been implemented with up to collinear spin.")
 
-        if not ortho:
+        if ortho:
+            # There is no overlap matrix
             self.S_idx = -1
 
         # Denote that one *must* specify all details of the elements
