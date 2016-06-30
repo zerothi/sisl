@@ -16,14 +16,6 @@ from .geometry import Geometry
 __all__ = ['Grid']
 
 
-# Default nsc variable
-_nsc = np.array([1] * 3, np.int32)
-_size = np.array([0] * 3, np.int32)
-_origo = np.array([0] * 3, np.float64)
-_bc = 1  # Periodic (Grid.Periodic)
-_dtype = np.float64
-
-
 class Grid(SuperCellChild):
     """ Object to retain grid information
 
@@ -37,16 +29,26 @@ class Grid(SuperCellChild):
     Neumann = 2
     Dirichlet = 3
 
-    def __init__(self, size=_size, bc=_bc, sc=None, dtype=_dtype, geom=None):
+    def __init__(self, shape=None, bc=None, sc=None, dtype=None, geom=None):
         """ Initialize a `Grid` object.
 
         Initialize a `Grid` object.
+
+        Parameters
+        ----------
+        shape : int*3
+           the size of each grid dimension
+        bc : the 
         """
+        if shape is None:
+            shape = [1, 1, 1]
+        if bc is None:
+            bc = self.Periodic
 
         self.set_supercell(sc)
 
         # Create the grid
-        self.set_grid(size, dtype=dtype)
+        self.set_grid(shape, dtype=dtype)
 
         # Create the grid boundary conditions
         self.set_bc(bc)
@@ -112,12 +114,24 @@ class Grid(SuperCellChild):
     @property
     def size(self):
         """ Returns size of the grid """
-        return np.asarray(self.grid.shape, np.int32)
+        return np.prod(self.grid.shape)
 
-    def set_grid(self, size, dtype=_dtype):
+    @property
+    def shape(self):
+        """ Returns the shape of the grid """
+        return self.grid.shape
+
+    @property
+    def dtype(self):
+        """ Returns the data-type of the grid """
+        return self.grid.dtype
+
+    def set_grid(self, shape, dtype=None):
         """ Create the internal grid of certain size.
         """
-        self.grid = np.empty(size, dtype=dtype)
+        if dtype is None:
+            dtype = np.float64
+        self.grid = np.zeros(shape, dtype=dtype)
 
     def set_bc(self, boundary=None, a=None, b=None, c=None):
         """ Set the boundary conditions on the grid
@@ -150,8 +164,8 @@ class Grid(SuperCellChild):
         """
         Returns a copy of the object.
         """
-        grid = self.__class__(np.copy(self.size), bc=np.copy(self.bc),
-                              dtype=self.grid.dtype,
+        grid = self.__class__(np.copy(self.shape), bc=np.copy(self.bc),
+                              dtype=self.dtype,
                               geom=self.geom.copy())
         grid.grid[:, :, :] = self.grid[:, :, :]
         return grid
@@ -165,9 +179,9 @@ class Grid(SuperCellChild):
         idx = np.arange(3)
         idx[b] = a
         idx[a] = b
-        s = np.copy(self.size)
+        s = np.copy(self.shape)
         grid = self.__class__(s[idx], bc=self.bc[idx],
-                              sc=self.sc.swapaxes(a, b), dtype=self.grid.dtype,
+                              sc=self.sc.swapaxes(a, b), dtype=self.dtype,
                               geom=self.geom.copy())
         # We need to force the C-order or we loose the contiguity
         grid.grid = np.copy(np.swapaxes(self.grid, a, b), order='C')
@@ -178,15 +192,16 @@ class Grid(SuperCellChild):
         """ Returns the delta-cell """
         # Calculate the grid-distribution
         dcell = np.empty([3, 3], np.float64)
-        dcell[0, :] = self.cell[0, :] / self.size[0]
-        dcell[1, :] = self.cell[1, :] / self.size[1]
-        dcell[2, :] = self.cell[2, :] / self.size[2]
+        shape = self.shape
+        dcell[0, :] = self.cell[0, :] / shape[0]
+        dcell[1, :] = self.cell[1, :] / shape[1]
+        dcell[2, :] = self.cell[2, :] / shape[2]
         return dcell
 
     @property
     def dvol(self):
         """ Returns the delta-volume """
-        return self.sc.vol / np.prod(self.size)
+        return self.sc.vol / self.size
 
     def cross_section(self, idx, axis):
         """ Takes a cross-section of the grid along axis ``axis``
@@ -194,14 +209,14 @@ class Grid(SuperCellChild):
         Remark: This API entry might change to handle arbitrary
         cuts via rotation of the axis """
 
-        # First calculate the new size
-        size = self.size
+        # First calculate the new shape
+        shape = self.shape
         cell = np.copy(self.cell)
         # Down-scale cell
-        cell[axis, :] /= size[axis]
-        size[axis] = 1
-        grid = self.__class__(size, bc=np.copy(self.bc), geom=self.geom.copy())
-        # Update cell size (the cell is smaller now)
+        cell[axis, :] /= shape[axis]
+        shape[axis] = 1
+        grid = self.__class__(shape, bc=np.copy(self.bc), geom=self.geom.copy())
+        # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
         if axis == 0:
@@ -217,15 +232,15 @@ class Grid(SuperCellChild):
 
     def sum(self, axis):
         """ Returns the grid summed along axis ``axis``. """
-        # First calculate the new size
-        size = self.size
+        # First calculate the new shape
+        shape = list(self.shape)
         cell = np.copy(self.cell)
         # Down-scale cell
-        cell[axis, :] /= size[axis]
-        size[axis] = 1
+        cell[axis, :] /= shape[axis]
+        shape[axis] = 1
 
-        grid = self.__class__(size, bc=np.copy(self.bc), geom=self.geom.copy())
-        # Update cell size (the cell is smaller now)
+        grid = self.__class__(shape, bc=np.copy(self.bc), geom=self.geom.copy())
+        # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
         # Calculate sum (retain dimensions)
@@ -234,7 +249,7 @@ class Grid(SuperCellChild):
 
     def mean(self, axis):
         """ Returns the average grid along direction ``axis`` """
-        n = self.size[axis]
+        n = self.shape[axis]
         g = self.sum(axis)
         g /= float(n)
         return g
@@ -283,7 +298,7 @@ class Grid(SuperCellChild):
               ``grid[:idx,...]``
         """
         if above:
-            sub = np.arange(idx, self.size[axis])
+            sub = np.arange(idx, self.shape[axis])
         else:
             sub = np.arange(0, idx)
         return self.sub(sub, axis)
@@ -300,23 +315,23 @@ class Grid(SuperCellChild):
         axis : int
            the axis segment from which we retain the indices ``idx``
         """
-        uidx = np.unique(np.clip(idx, 0, self.size[axis] - 1))
+        uidx = np.unique(np.clip(idx, 0, self.shape[axis] - 1))
 
-        # Calculate new size
-        size = self.size
+        # Calculate new shape
+        shape = self.shape
         cell = np.copy(self.cell)
-        old_N = size[axis]
+        old_N = shape[axis]
 
-        # Calculate new size
-        size[axis] = len(idx)
-        if size[axis] < 1:
+        # Calculate new shape
+        shape[axis] = len(idx)
+        if shape[axis] < 1:
             raise ValueError('You cannot retain no indices.')
 
         # Down-scale cell
-        cell[axis, :] = cell[axis, :] / old_N * size[axis]
+        cell[axis, :] = cell[axis, :] / old_N * shape[axis]
 
-        grid = self.__class__(size, bc=np.copy(self.bc), geom=self.geom.copy())
-        # Update cell size (the cell is smaller now)
+        grid = self.__class__(shape, bc=np.copy(self.bc), geom=self.geom.copy())
+        # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
         # Remove the indices
@@ -342,10 +357,10 @@ class Grid(SuperCellChild):
         axis : int
            the axis segment from which we remove all indices ``idx``
         """
-        uidx = np.unique(np.clip(idx, 0, self.size[axis] - 1))
+        uidx = np.unique(np.clip(idx, 0, self.shape[axis] - 1))
         ret_idx = np.setdiff1d(
             np.arange(
-                self.size[axis]),
+                self.shape[axis]),
             uidx,
             assume_unique=True)
         return self.sub(ret_idx, axis)
@@ -388,9 +403,9 @@ class Grid(SuperCellChild):
         """ Appends other `Grid` to this grid along axis
 
         """
-        size = np.copy(self.size)
-        size[axis] += other.size[axis]
-        return self.__class__(size, bc=np.copy(self.bc),
+        shape = np.copy(self.shape)
+        shape[axis] += other.shape[axis]
+        return self.__class__(shape, bc=np.copy(self.bc),
                               geom=self.geom.append(other.geom, axis))
 
     @staticmethod
@@ -432,7 +447,7 @@ class Grid(SuperCellChild):
 
     def __repr__(self):
         """ Representation of object """
-        return 'Grid[{} {} {}]'.format(*self.size)
+        return 'Grid[{} {} {}]'.format(*self.shape)
 
     def _check_compatibility(self, other, msg):
         """ Internal check for asserting two grids are commensurable """
@@ -461,16 +476,16 @@ class Grid(SuperCellChild):
         """ Returns true if the two grids are commensurable
 
         There will be no check of the values _on_ the grid. """
-        return bool(np.all(self.size == other.size))
+        return bool(np.all(self.shape == other.shape))
 
     def __ne__(self, other):
-        """ Returns whether two grids have the same size """
+        """ Returns whether two grids have the same shape """
         return not (self == other)
 
     def __add__(self, other):
         """ Returns a new grid with the addition of two grids
 
-        Returns same size with same cell as the first"""
+        Returns same shape with same cell as the first"""
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be added')
             grid.grid = self.grid + other.grid
@@ -482,7 +497,7 @@ class Grid(SuperCellChild):
     def __iadd__(self, other):
         """ Returns a new grid with the addition of two grids
 
-        Returns same size with same cell as the first"""
+        Returns same shape with same cell as the first"""
         if isinstance(other, Grid):
             self._check_compatibility(other, 'they cannot be added')
             self.grid += other.grid
@@ -493,7 +508,7 @@ class Grid(SuperCellChild):
     def __sub__(self, other):
         """ Returns a new grid with the difference of two grids
 
-        Returns same size with same cell as the first"""
+        Returns same shape with same cell as the first"""
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be subtracted')
             grid.grid = self.grid - other.grid
@@ -505,7 +520,7 @@ class Grid(SuperCellChild):
     def __isub__(self, other):
         """ Returns a same grid with the difference of two grids
 
-        Returns same size with same cell as the first"""
+        Returns same shape with same cell as the first"""
         if isinstance(other, Grid):
             self._check_compatibility(other, 'they cannot be subtracted')
             self.grid -= other.grid

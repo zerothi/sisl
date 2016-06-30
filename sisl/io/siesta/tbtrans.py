@@ -333,7 +333,7 @@ class TBtransSile(NCSileSIESTA):
         from the `Sile`.
 
         Parameters
-        ==========
+        ----------
         elec_from: str
            the originating electrode
         elec_to: str
@@ -355,7 +355,7 @@ class TBtransSile(NCSileSIESTA):
         from the `Sile`.
 
         Parameters
-        ==========
+        ----------
         elec_from: str
            the originating electrode
         elec_to: str
@@ -374,7 +374,7 @@ class TBtransSile(NCSileSIESTA):
         """ Return the bulk transmission in the `elec` electrode
 
         Parameters
-        ==========
+        ----------
         elec: str
            the bulk electrode
         avg: bool (True)
@@ -387,7 +387,7 @@ class TBtransSile(NCSileSIESTA):
         """ Return the Green function DOS.
 
         Parameters
-        ==========
+        ----------
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
@@ -398,7 +398,7 @@ class TBtransSile(NCSileSIESTA):
         """ Return the DOS of the spectral function from `elec`.
 
         Parameters
-        ==========
+        ----------
         elec: str
            electrode originating spectral function
         avg: bool (True)
@@ -411,7 +411,7 @@ class TBtransSile(NCSileSIESTA):
         """ Return the bulk DOS of `elec`.
 
         Parameters
-        ==========
+        ----------
         elec: str
            electrode where the bulk DOS is returned
         avg: bool (True)
@@ -429,7 +429,7 @@ class TBtransSile(NCSileSIESTA):
         matrix although it enables extremely big matrices.
 
         Parameters
-        ==========
+        ----------
         elec: str
            the electrode of originating electrons
         E: int (None)
@@ -475,7 +475,7 @@ class TBtransSile(NCSileSIESTA):
         """ Return the bond-current between atoms (sum of orbital currents)
 
         Parameters
-        ==========
+        ----------
         Jij: ``scipy.sparse.csr_matrix``
            the orbital currents as retrieved from `orbital_current`
         sum: str ("+")
@@ -526,7 +526,7 @@ class TBtransSile(NCSileSIESTA):
         r""" Return the atom-current of atoms
 
         Parameters
-        ==========
+        ----------
         Jij: ``scipy.sparse.csr_matrix``
            the orbital currents as retrieved from `orbital_current`
         activity: bool (True)
@@ -770,6 +770,8 @@ class TBtransdHSile(NCSileSIESTA):
                     iE = len(Es)
                     lvl.variables['E'][iE] = E / Ry
                     warn_E = False
+            else:
+                warn_E = False
 
         warn_k = True
         if ilvl in [2,4]:
@@ -785,6 +787,8 @@ class TBtransdHSile(NCSileSIESTA):
                     ik = len(kpt)
                     lvl.variables['kpt'][ik, :] = k
                     warn_k = False
+            else:
+                warn_k = False
 
 
         if ilvl == 4 and warn_k and warn_E and False:

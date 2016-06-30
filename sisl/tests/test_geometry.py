@@ -176,10 +176,34 @@ class TestGeometry(object):
         assert_true(np.allclose(self.g[:,1], t[:,1]))
         assert_true(np.allclose(self.g[:,2] + 1, t[:,2]))
 
+    def test_iter(self):
+        for i, iaaspec in enumerate(self.g.iter_species()):
+            ia, a, spec = iaaspec
+            assert_true(i == ia)
+            assert_true(self.g.atoms[ia] == a)
+        for ia in self.g:
+            assert_true(ia >= 0)
+        i = 0
+        for ias, idx in self.g.iter_block():
+            for ia in ias:
+                i += 1
+        assert_true(i == len(self.g))
+
     def test_swap(self):
         s = self.g.swap(0, 1)
         for i in [0, 1, 2]:
             assert_true(np.allclose(self.g[::-1,i], s[:,i]))
+
+    def test_swapaxes(self):
+        s = self.g.swapaxes(0, 1)
+        assert_true(np.allclose(self.g[:,0], s[:,1]))
+        assert_true(np.allclose(self.g[:,1], s[:,0]))
+        assert_true(np.allclose(self.g.cell[0,:], s.cell[1,:]))
+        assert_true(np.allclose(self.g.cell[1,:], s.cell[0,:]))
+
+    def test_center(self):
+        one = self.g.center(atoms=[0])
+        assert_true(np.allclose(self.g[0,:], one))
 
     def test_bond_correct(self):
         # Create ribbon

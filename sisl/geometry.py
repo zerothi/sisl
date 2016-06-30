@@ -715,12 +715,24 @@ class Geometry(SuperCellChild):
 
         If ``swapaxes(0,1)`` it returns the 0 and 1 values
         swapped in the ``cell`` variable.
+
+        Parameters
+        ----------
+        a : int
+           axes 1, swaps with ``b``
+        b : int
+           axes 2, swaps with ``a``
+        swap : str, "cell+xyz"
+           decide what to swap, if `"cell"` is in `swap` then
+           the cell axis are swapped.
+           if `"xyz"` is in `swap` then
+           the xyz (Cartesian) axis are swapped.
+           Both may be in `swap`.
         """
         xyz = np.copy(self.xyz)
         if 'xyz' in swap:
             xyz[:, a] = self.xyz[:, b]
             xyz[:, b] = self.xyz[:, a]
-        cell = np.copy(self.cell)
         if 'cell' in swap:
             sc = self.sc.swapaxes(a, b)
         else:
@@ -751,8 +763,7 @@ class Geometry(SuperCellChild):
         else:
             g = self.sub(atoms)
         if 'mass' in which:
-            # Create list of masses
-            mass = np.array([atm.mass for atm in g.atoms])
+            mass = self.mass
             return np.dot(mass, g.xyz) / np.sum(mass)
         if not ('xyz' in which or 'position' in which):
             raise ValueError(
@@ -844,10 +855,18 @@ class Geometry(SuperCellChild):
             g.xyz[:, 1] *= -1
         return self.__class__(g.xyz, atoms=g.atoms, sc=self.sc.copy())
 
-    def insert(self, atom, other):
+    def insert(self, atom, geom):
         """ Inserts other atoms right before index
 
-        We insert the ``other`` `Geometry` before obj
+        We insert the ``geom`` `Geometry` before `atom`.
+        Note that this will not change the unit cell.
+        
+        Parameters
+        ----------
+        atom : int
+           the index at which atom the other geometry is inserted
+        geom : `Geometry`
+           the other geometry to be inserted
         """
         xyz = np.insert(self.xyz, atom, other.xyz, axis=0)
         atoms = np.insert(self.atoms, atom, other.atoms)
@@ -883,13 +902,8 @@ class Geometry(SuperCellChild):
     def axyzsc(self, ia):
         return self.coords(self.a2isc(ia), self.sc2uc(ia))
 
-    def close_sc(
-            self,
-            xyz_ia,
-            isc=[
-                0,
-                0,
-                0],
+    def close_sc(self, xyz_ia,
+            isc=[0, 0, 0],
             dR=None,
             idx=None,
             ret_coord=False,
@@ -1084,9 +1098,7 @@ class Geometry(SuperCellChild):
             raise NotImplemented(
                 'Changing bond-length dependent on several lacks implementation.')
 
-    def close(
-            self,
-            xyz_ia,
+    def close(self, xyz_ia,
             dR=None,
             idx=None,
             ret_coord=False,

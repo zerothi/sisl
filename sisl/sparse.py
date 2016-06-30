@@ -77,7 +77,7 @@ class SparseCSR(object):
            data type of the matrix
 
         Attributes
-        ==========
+        ----------
         ncol: int-array, `self.shape[0]`
            number of entries per row
         ptr: int-array, `self.shape[0]+1`
@@ -186,7 +186,7 @@ class SparseCSR(object):
         Essentially this deletes all entries.
         
         Parameters
-        ==========
+        ----------
         keep: boolean, False
            if `True` it will keep the sparse elements _as is_.
            I.e. it will merely set the stored sparse elements as zero.
@@ -250,7 +250,7 @@ class SparseCSR(object):
         when converting to ``scipy.sparse.csr_matrix``
 
         Parameters
-        ==========
+        ----------
         sort: bool, True
            sort the column indices for each row
         """
@@ -565,7 +565,7 @@ class SparseCSR(object):
         """ Returns an exact copy of the sparse matrix
 
         Parameters
-        ==========
+        ----------
         dims: array-like, (all)
            which dimensions to store in the copy
         """
@@ -616,7 +616,7 @@ class SparseCSR(object):
         """ Return the data in ``scipy.sparse.csr_matrix`` format
 
         Parameters
-        ==========
+        ----------
         dim: int
            the dimension of the data to create the sparse matrix
         """

@@ -32,3 +32,27 @@ class TestGrid(object):
 
     def test_size(self):
         assert_true(np.allclose(self.g.grid.shape, [10, 10, 100]))
+        
+    def test_item(self):
+        assert_true(np.allclose(self.g[1:2, 1:2, 2:3], self.g.grid[1:2, 1:2, 2:3]))
+
+    def test_shape(self):
+        assert_true(np.all(self.g.shape == self.g.grid.shape))
+
+    def test_dtype(self):
+        assert_true(self.g.dtype == self.g.grid.dtype)
+
+    def test_swapaxes(self):
+        g = self.g.swapaxes(0, 1)
+        assert_true(np.allclose(self.g.cell[0,:], g.cell[1,:]))
+        assert_true(np.allclose(self.g.cell[1,:], g.cell[0,:]))
+
+    def test_sum(self):
+        for i in range(3):
+            assert_true(self.g.sum(i).shape[i] == 1)
+
+    def test_mean(self):
+        for i in range(3):
+            assert_true(self.g.mean(i).shape[i] == 1)
+
+    

@@ -17,7 +17,7 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
     This routine is implemented as in ``ASE`` with few changes.
     
     Parameters
-    ==========
+    ----------
     bond: float
        length between atoms in nano-tube
     atom: Atom(6)

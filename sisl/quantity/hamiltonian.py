@@ -62,7 +62,7 @@ class Hamiltonian(object):
         created with.
         
         Parameters
-        ==========
+        ----------
         nnzpr: int
            number of non-zero elements per row
         ortho: boolean, True
@@ -132,8 +132,8 @@ class Hamiltonian(object):
         return self._ortho
 
     def __len__(self):
-        """ Returns number of non-zero elements in the model """
-        return len(self._data)
+        """ Returns number of rows in the Hamiltonian """
+        return self.geom.no
 
     def __repr__(self):
         """ Representation of the tight-binding model """
@@ -370,7 +370,7 @@ class Hamiltonian(object):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
-        ==========
+        ----------
         k: float*3
            k-point 
         spin: int, 0
@@ -408,7 +408,7 @@ class Hamiltonian(object):
         """ Return the overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
-        ==========
+        ----------
         k: float*3
            k-point 
         """
@@ -458,16 +458,23 @@ class Hamiltonian(object):
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
         H = self.Hk(k=k)
-        S = self.Sk(k=k)
+        if not self.orthogonal:
+            S = self.Sk(k=k)
         # Reduce sparsity pattern
         if not atoms is None:
             orbs = self.a2o(atoms)
             # Reduce space
             H = H[orbs, orbs]
-            S = S[orbs, orbs]
-        return sli.eigh(
-            H.todense(),
-            S.todense(),
+            if not self.orthogonal:
+                S = S[orbs, orbs]
+        if self.orthogonal:
+            return sli.eigh(H.todense(),
+                *args,
+                eigvals_only=eigvals_only,
+                overwrite_a=overwrite_a,
+                **kwargs)
+        
+        return sli.eigh(H.todense(), S.todense(),
             *args,
             eigvals_only=eigvals_only,
             overwrite_a=overwrite_a,
