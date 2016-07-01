@@ -199,7 +199,7 @@ class SparseCSR(object):
             self._finalized = False
             # The user does not wish to retain the
             # sparse pattern
-            self.ncol = 0
+            self.ncol[:] = 0
             self._nnz = 0
             # We do not mess with the other arrays
             # they may be obscure data any-way.

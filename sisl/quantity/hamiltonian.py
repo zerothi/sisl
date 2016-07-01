@@ -128,6 +128,11 @@ class Hamiltonian(object):
         return self._spin
 
     @property
+    def dtype(self):
+        """ Return data type of Hamiltonian (and overlap matrix) """
+        return self._data.dtype
+
+    @property
     def orthogonal(self):
         """ Return whether the Hamiltonian is orthogonal """
         return self._ortho
@@ -442,12 +447,9 @@ class Hamiltonian(object):
         return S
 
 
-    def eigh(self,
-            k=None,
-            atoms=None,
-            eigvals_only=True,
-            overwrite_a=True,
-            overwrite_b=True,
+    def eigh(self,k=None,
+            atoms=None, eigvals_only=True,
+            overwrite_a=True, overwrite_b=True,
             *args,
             **kwargs):
         """ Returns the eigenvalues of the tight-binding model
@@ -483,11 +485,8 @@ class Hamiltonian(object):
             **kwargs)
 
 
-    def eigsh(self,
-            k=None,
-            n=10,
-            atoms=None,
-            eigvals_only=True,
+    def eigsh(self, k=None, n=10,
+            atoms=None, eigvals_only=True,
             *args,
             **kwargs):
         """ Returns the eigenvalues of the tight-binding model

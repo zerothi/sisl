@@ -36,11 +36,20 @@ class TestGrid(object):
     def test_item(self):
         assert_true(np.allclose(self.g[1:2, 1:2, 2:3], self.g.grid[1:2, 1:2, 2:3]))
 
+    def test_dcell(self):
+        assert_true(np.all(self.g.dcell*self.g.cell >= 0))
+
+    def test_dvol(self):
+        assert_true(self.g.dvol > 0)
+
     def test_shape(self):
         assert_true(np.all(self.g.shape == self.g.grid.shape))
 
     def test_dtype(self):
         assert_true(self.g.dtype == self.g.grid.dtype)
+
+    def test_copy(self):
+        assert_true(self.g.copy() == self.g)
 
     def test_swapaxes(self):
         g = self.g.swapaxes(0, 1)
@@ -55,4 +64,26 @@ class TestGrid(object):
         for i in range(3):
             assert_true(self.g.mean(i).shape[i] == 1)
 
-    
+    def test_cross_section(self):
+        for i in range(3):
+            assert_true(self.g.cross_section(1, i).shape[i] == 1)
+
+    def test_remove_part(self):
+        for i in range(3):
+            assert_true(self.g.remove_part(1, i, above=True).shape[i] == 1)
+
+    def test_sub_part(self):
+        for i in range(3):
+            assert_true(self.g.sub_part(1, i, above=False).shape[i] == 1)
+
+    def test_sub(self):
+        for i in range(3):
+            assert_true(self.g.sub(1, i).shape[i] == 1)
+        for i in range(3):
+            assert_true(self.g.sub([1,2], i).shape[i] == 2)
+
+    def test_remove(self):
+        for i in range(3):
+            assert_true(self.g.remove(1, i).shape[i] == self.g.shape[i]-1)
+        for i in range(3):
+            assert_true(self.g.remove([1,2], i).shape[i] == self.g.shape[i]-2)

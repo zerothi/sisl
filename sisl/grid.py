@@ -208,9 +208,9 @@ class Grid(SuperCellChild):
 
         Remark: This API entry might change to handle arbitrary
         cuts via rotation of the axis """
-
+        idx = np.array(idx, np.int32).flatten()
         # First calculate the new shape
-        shape = self.shape
+        shape = list(self.shape)
         cell = np.copy(self.cell)
         # Down-scale cell
         cell[axis, :] /= shape[axis]
@@ -315,10 +315,11 @@ class Grid(SuperCellChild):
         axis : int
            the axis segment from which we retain the indices ``idx``
         """
+        idx = np.array([idx], np.int32).flatten()
         uidx = np.unique(np.clip(idx, 0, self.shape[axis] - 1))
 
         # Calculate new shape
-        shape = self.shape
+        shape = list(self.shape)
         cell = np.copy(self.cell)
         old_N = shape[axis]
 
@@ -359,10 +360,8 @@ class Grid(SuperCellChild):
         """
         uidx = np.unique(np.clip(idx, 0, self.shape[axis] - 1))
         ret_idx = np.setdiff1d(
-            np.arange(
-                self.shape[axis]),
-            uidx,
-            assume_unique=True)
+            np.arange(self.shape[axis]),
+            uidx, assume_unique=True)
         return self.sub(ret_idx, axis)
 
     def index(self, coord, axis=None):
@@ -403,7 +402,7 @@ class Grid(SuperCellChild):
         """ Appends other `Grid` to this grid along axis
 
         """
-        shape = np.copy(self.shape)
+        shape = list(self.shape)
         shape[axis] += other.shape[axis]
         return self.__class__(shape, bc=np.copy(self.bc),
                               geom=self.geom.append(other.geom, axis))
@@ -453,30 +452,24 @@ class Grid(SuperCellChild):
         """ Internal check for asserting two grids are commensurable """
         if self == other:
             return True
-        else:
-            s1 = repr(self)
-            s2 = repr(other)
-            raise ValueError(
-                'Grids are not compatible, ' +
-                s1 +
-                '-' +
-                s2 +
-                '. ',
-                msg)
+        s1 = repr(self)
+        s2 = repr(other)
+        raise ValueError('Grids are not compatible, ' +
+                         s1 + '-' + s2 + '. ', msg)
 
     def _compatible_copy(self, other, *args, **kwargs):
         """ Returns a copy of self with an additional check of commensurable """
         if isinstance(other, Grid):
             if self._check_compatibility(other, *args, **kwargs):
-                return self.copy()
-        else:
-            return self.copy()
+                pass
+        return self.copy()
 
     def __eq__(self, other):
         """ Returns true if the two grids are commensurable
 
         There will be no check of the values _on_ the grid. """
-        return bool(np.all(self.shape == other.shape))
+        a = np.array
+        return bool(np.all(a(self.shape, np.int32) == a(other.shape, np.int32)))
 
     def __ne__(self, other):
         """ Returns whether two grids have the same shape """
