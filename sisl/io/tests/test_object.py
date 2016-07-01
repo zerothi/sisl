@@ -90,7 +90,7 @@ class TestObject(object):
 
     def test_phtrans(self):
         sile = gs('test.PHT.nc')
-        for obj in [BaseSile, NCSile, NCSileSIESTA, PHtransSile]:
+        for obj in [BaseSile, NCSile, NCSileSIESTA, TBtransSile, PHtransSile]:
             assert_true(isinstance(sile, obj))
 
     def test_vasp_contcar(self):

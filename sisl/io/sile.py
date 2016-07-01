@@ -28,9 +28,17 @@ __all__ += [
     'sile_raise_read']
 
 # Global container of all Sile rules
-sile_objects = {}
+# This list of tuples is formed as
+#  [('fdf', FDFSile, FDFSile),
+#   ('fdf', SIESTASile, FDFSile)]
+# [0] is the file-endding
+# [1] is the base class that may be queried
+# [2] is the actual class the file represents
+# This enables one to add several files with the
+# same extension and query it based on a sub-class
+sile_objects = []
 
-def add_sile(ending, obj, case=True, gzip=False):
+def add_sile(ending, obj, case=True, gzip=False, _parent_obj=None):
     """
     Public for attaching lookup tables for allowing
     users to attach files for the IOSile function call
@@ -56,28 +64,88 @@ def add_sile(ending, obj, case=True, gzip=False):
          to add the gzipped file to the list of possible files.
     """
     global sile_objects
+
+    # The parent_obj is the actual class used to construct
+    # the output file
+    if _parent_obj is None:
+        _parent_obj = obj
+
+    def_obj = [object, BaseSile, Sile, NCSile]
+    
+    # First we find the base-class
+    # This base class must not be
+    #  BaseSile
+    #  Sile
+    #  NCSile
+    def get_children(obj):
+        # List all childern
+        children = list(obj.__bases__)
+        for child in children:
+            cchildren = get_children(child)
+            for cchild in cchildren:
+                if cchild not in children:
+                    children.append(cchild)
+        remove_obj(children, def_obj)
+        return children
+    
+    def remove_obj(l, objs):
+        for cobj in objs:
+            if cobj in l:
+                l.remove(cobj)
+
+    # Finally we append the child objects
+    inherited = get_children(obj)
+    
+    # Now we should remove all objects which are descendants from
+    # another object in the list
+    # We also default this base-class to be removed
+    rem = [object, obj]
+    for cobj in inherited:
+        inh = get_children(cobj)
+        for ccobj in inh:
+            if ccobj in inherited:
+                rem.append(ccobj)
+    remove_obj(inherited, rem)
+
+    # Now, we finally have a list of objects which
+    # are a single sub-class of the actual class.
+    for cobj in inherited:
+        add_sile(ending, cobj, case=case, gzip=gzip, _parent_obj=_parent_obj)
+    
     # If the gzip is none, we decide whether we can
     # read gzipped files
     # In particular, if the obj is a `Sile`, we allow
     # such reading
     if gzip:
-        add_sile(ending + '.gz', obj, case=case)
+        add_sile(ending + '.gz', obj, case=case, _parent_obj=_parent_obj)
     if not case:
-        add_sile(ending.lower(), obj, gzip=gzip)
-        add_sile(ending.upper(), obj, gzip=gzip)
+        add_sile(ending.lower(), obj, gzip=gzip, _parent_obj=_parent_obj)
+        add_sile(ending.upper(), obj, gzip=gzip, _parent_obj=_parent_obj)
         return
-    sile_objects[ending] = obj
+
+    sile_objects.append( (ending, obj, _parent_obj) )
     if ending[0] == '.':
-        sile_objects[ending[1:]] = obj
+        sile_objects.append( (ending[1:], obj, _parent_obj) )
     else:
-        sile_objects['.' + ending] = obj
+        sile_objects.append( ('.' + ending, obj, _parent_obj) )
 
 
 def get_sile(file, *args, **kwargs):
     """
     Guess the file handle for the input file and return
     and object with the file handle.
+    
+    Parameters
+    ----------
+    file : str
+       the file to be quried for a correct `Sile` object.
+    obj : class
+       In case there are several files with similar file-suffixes
+       you may query the exact base-class that should be chosen.
+       If there are several `Sile`s with similar file-endings this
+       function returns a random one.
     """
+    obj = kwargs.pop('obj', None)
     try:
         # Create list of endings on this file
         f = file
@@ -100,8 +168,13 @@ def get_sile(file, *args, **kwargs):
 
             # Check for ending and possibly
             # return object
-            if end in sile_objects:
-                return sile_objects[end](file, *args, **kwargs)
+            for suf, base, fobj in sile_objects:
+                if end != suf:
+                    continue
+                if obj is None:
+                    return fobj(file, *args, **kwargs)
+                elif obj == base:
+                    return fobj(file, *args, **kwargs)
 
         raise Exception('print fail')
     except Exception as e:
