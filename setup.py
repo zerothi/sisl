@@ -55,11 +55,7 @@ scripts = ['sgeom', 'sgrid']
 
 scripts = [osp.join('scripts', script) for script in scripts]
 
-build_requires = []
-try:
-    import numpy
-except:
-    build_requires = ['numpy>=1.7']
+build_requires = ['six', 'numpy>=1.7', 'scipy', 'netCDF4']
 
 metadata = dict(
     name='sisl',
@@ -84,7 +80,6 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
         "Mac OS-X",
         "Unix"],
     scripts=scripts,
-    setup_requires=build_requires,
     install_requires=build_requires,
 )
 
@@ -181,13 +176,6 @@ if __name__ == '__main__':
         write_version()
     except:
         pass
-
-    # From scipy:
-    if (len(sys.argv) >= 2 and sys.argv[1] == 'bdist_wheel') or (
-            'develop' in sys.argv):
-        # bdist_wheel needs setuptools
-        import setuptools
-
 
     if 'bdist_wheel' not in sys.argv:
         # currently we do not rely on the distutils from numpy
