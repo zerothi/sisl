@@ -1,4 +1,4 @@
 six
-numpy>1.6
+numpy>1.7
 scipy
 netCDF4
