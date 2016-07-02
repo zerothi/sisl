@@ -136,3 +136,8 @@ class TestObject(object):
         sile = gs('test.XV.gz')
         for obj in [BaseSile, Sile, SileSIESTA, XVSile]:
             assert_true(isinstance(sile, obj))
+
+    def test_siesta(self):
+        sile = gs('test.XV', obj=SileSIESTA)
+        for obj in [BaseSile, Sile, SileSIESTA, XVSile]:
+            assert_true(isinstance(sile, obj))
