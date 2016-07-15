@@ -94,7 +94,7 @@ class W90SeedSile(SileWannier90):
         Reads the Hamiltonian model
         """
 
-        cutoff = kwargs.get('cutoff', 0.)
+        cutoff = kwargs.get('cutoff', 0.00001)
 
         # Rewind to ensure we can read the entire matrix structure
         self.fh.seek(0)
@@ -181,8 +181,8 @@ class W90SeedSile(SileWannier90):
         
         Parameters
         ----------
-        cutoff: (float, None)
-           the cutoff value for the Hamiltonian elements
+        cutoff: (float, 0.00001)
+           the cutoff value for the zero Hamiltonian elements
         """
 
         # Retrieve the geometry...
