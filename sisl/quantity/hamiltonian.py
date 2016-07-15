@@ -680,38 +680,51 @@ class Hamiltonian(object):
                               'fully implemented yet, use tile instead.'))
 
     @classmethod
-    def sp2HS(cls, geom, H, S):
+    def sp2HS(cls, geom, H, S=None):
         """ Returns a tight-binding model from a preset H, S and Geometry
         """
         # Calculate number of connections
         nc = 0
+
+        has_S = not S is None
         
         # Ensure csr format
         H = H.tocsr()
-        S = S.tocsr()
+        if has_S:
+            S = S.tocsr()
         for i in range(geom.no):
             nc = max(nc, H[i, :].getnnz())
-            nc = max(nc, S[i, :].getnnz())
+            if has_S:
+                nc = max(nc, S[i, :].getnnz())
 
-        ham = cls(geom, nc=nc)
+        if has_S:
+            ham = cls(geom, nnzpr=nc,
+                      ortho=False, dtype=H.dtype)
+        else:
+            ham = cls(geom, nnzpr=nc, dtype=H.dtype)
 
         # Copy data to the model
         H = H.tocoo()
-        for jo, io, h in zip(H.row, H.col, H.data):
-            ham[jo, io] = (h, S[jo, io])
+        if has_S:
+            for jo, io, h in zip(H.row, H.col, H.data):
+                ham[jo, io] = (h, S[jo, io])
 
-        # Convert S to coo matrix
-        S = S.tocoo()
-        # If the Hamiltonian for one reason or the other
-        # is zero in the diagonal, then we *must* account for
-        # this as it isn't captured in the above loop.
-        skip_S = np.all(H.row == S.row)
-        skip_S = skip_S and np.all(H.col == S.col)
-        if not skip_S:
-            # Re-convert back to allow index retrieval
-            H = H.tocsr()
-            for jo, io, s in zip(S.row, S.col, S.data):
-                ham[jo, io] = (H[jo, io], s)
+            # Convert S to coo matrix
+            S = S.tocoo()
+            # If the Hamiltonian for one reason or the other
+            # is zero in the diagonal, then we *must* account for
+            # this as it isn't captured in the above loop.
+            skip_S = np.all(H.row == S.row)
+            skip_S = skip_S and np.all(H.col == S.col)
+            if not skip_S:
+                # Re-convert back to allow index retrieval
+                H = H.tocsr()
+                for jo, io, s in zip(S.row, S.col, S.data):
+                    ham[jo, io] = (H[jo, io], s)
+
+        else:
+            for jo, io, h in zip(H.row, H.col, H.data):
+                ham[jo, io] = h
 
         return ham
 

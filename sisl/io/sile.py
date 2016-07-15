@@ -305,6 +305,7 @@ class Sile(BaseSile):
                 found |= l.find(key) >= 0
         return found
 
+   
     def readline(self, comment=False):
         """ Reads the next line of the file """
         l = self.fh.readline()
@@ -315,6 +316,7 @@ class Sile(BaseSile):
             l = self.fh.readline()
             self._line += 1
         return l
+
 
     def step_to(self, keywords, case=True):
         """ Steps the file-handle until the keyword is found in the input """

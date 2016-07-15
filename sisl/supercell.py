@@ -25,12 +25,16 @@ class SuperCell(object):
     # We limit the scope of this SuperCell object.
     __slots__ = ['cell', 'vol', 'nsc', 'n_s', 'sc_off']
 
-    def __init__(self, cell, nsc=_nsc):
+    def __init__(self, cell, nsc=None):
         """ Initialize a `SuperCell` object from initial quantities
 
         Initialize a `SuperCell` object with cell information
         and number of supercells in each direction.
         """
+        if nsc is None:
+            nsc = [1, 1, 1]
+
+        
         # If the length of cell is 6 it must be cell-parameters, not
         # actual cell coordinates
         self.cell = self.tocell(cell)

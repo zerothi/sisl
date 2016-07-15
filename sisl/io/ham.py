@@ -144,7 +144,7 @@ class HamiltonianSile(Sile):
                     H[io, jo + off2] = h
                 l = self.readline()
 
-        return Hamiltonian.sp2tb(geom, H, S)
+        return Hamiltonian.sp2HS(geom, H, S)
 
 
     @Sile_fh_open
@@ -296,19 +296,21 @@ class HamiltonianSile(Sile):
                 H[j, o:o + geom.no] = 0.
                 H[j, o:o + geom.no] = ut[j, :]
                 H.eliminate_zeros()
-            ut = triu(S[:, o:o + geom.no], k=0).tocsr()
             if not ham.orthogonal:
+                ut = triu(S[:, o:o + geom.no], k=0).tocsr()
                 for j in range(geom.no):
                     S[j, o:o + geom.no] = 0.
                     S[j, o:o + geom.no] = ut[j, :]
                     S.eliminate_zeros()
+
+                # Ensure that S and H have the same sparsity pattern
+                S = S.tocoo()
+                for jo, io, s in zip(S.row, S.col, S.data):
+                    H[jo, io] = H[jo, io]
+                S = S.tocsr()
+            
             del ut
 
-            # Ensure that S and H have the same sparsity pattern
-            S = S.tocoo()
-            for jo, io, s in zip(S.row, S.col, S.data):
-                H[jo, io] = H[jo, io]
-            S = S.tocsr()
 
         # Start writing of the model
         # We loop on all super-cells

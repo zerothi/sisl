@@ -15,6 +15,7 @@ from .gulp import *
 from .siesta import *
 from .ham import *
 from .vasp import *
+from .wannier import *
 from .xyz import *
 
 # Default functions in this top module
@@ -28,4 +29,5 @@ extendall(__all__, 'sisl.io.gulp')
 extendall(__all__, 'sisl.io.ham')
 extendall(__all__, 'sisl.io.siesta')
 extendall(__all__, 'sisl.io.vasp')
+extendall(__all__, 'sisl.io.wannier')
 extendall(__all__, 'sisl.io.xyz')
