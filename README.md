@@ -101,6 +101,7 @@ The hard-coded file formats are:
 7. ___XV___, SIESTA coordinate format with velocities
 8. ___POSCAR___/___CONTCAR___, VASP coordinate format
 9. ___ASCII___, BigDFT coordinate format
+10. ___win___, Wannier90 Hamiltonian and Wannier centres
 
 
 All text files can also be read from their gzipped file formats with transparency.
