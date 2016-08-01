@@ -63,14 +63,14 @@ class Geometry(SuperCellChild):
         number of atoms, ``len(self)``
     xyz : ndarray
         atomic coordinates
-    atoms : array_like, `Atom`
+    atom : array_like, `Atom`
         the atomic objects associated with each atom
     sc : `SuperCell`
         the supercell describing the periodicity of the
         geometry
     no: int
         total number of orbitals in the geometry
-    dR : float np.max([a.dR for a in self.atoms])
+    dR : float np.max([a.dR for a in self.atom])
         maximum orbital range
 
     Parameters
@@ -104,10 +104,10 @@ class Geometry(SuperCellChild):
             A = np.array([atoms]).flatten()
 
         # Create atom objects
-        self.atoms = array_fill_repeat(A, self.na, cls=Atom)
+        self.atom = array_fill_repeat(A, self.na, cls=Atom)
 
         # Get total number of orbitals
-        orbs = np.array([a.orbs for a in self.atoms], np.int32)
+        orbs = np.array([a.orbs for a in self.atom], np.int32)
 
         # Get total number of orbitals
         self.no = np.sum(orbs)
@@ -173,7 +173,12 @@ class Geometry(SuperCellChild):
     @property
     def dR(self):
         """ Returns the maximum orbital range of the atoms """
-        return np.amax([a.dR for a in self.atoms])
+        return np.amax([a.dR for a in self.atom])
+
+    @property
+    def atoms(self):
+        """ Returns the atoms (mainly for backwards compatibility) """
+        return self.atom
 
     @property
     def no_s(self):
@@ -247,7 +252,7 @@ class Geometry(SuperCellChild):
         """
         # Count for the species
         spec = []
-        for ia, a in enumerate(self.atoms):
+        for ia, a in enumerate(self.atom):
             if a.tag not in spec:
                 spec.append(a.tag)
                 yield ia, a, len(spec) - 1
@@ -384,9 +389,9 @@ class Geometry(SuperCellChild):
             return self.__class__(
                 self.xyz[
                     atms, :], atoms=[
-                    self.atoms[i] for i in atms], sc=self.sc.copy())
+                    self.atom[i] for i in atms], sc=self.sc.copy())
         return self.__class__(self.xyz[atms, :],
-                              atoms=[self.atoms[i] for i in atms], sc=cell)
+                              atoms=[self.atom[i] for i in atms], sc=cell)
 
     def cut(self, seps, axis, seg=0, rtol=1e-4, atol=1e-4):
         """
@@ -449,7 +454,7 @@ class Geometry(SuperCellChild):
         # Count for the species
         spec = {}
         ispec = 0
-        for a in self.atoms:
+        for a in self.atom:
             if not a.tag is None:
                 if a.tag not in spec:
                     ispec += 1
@@ -464,7 +469,7 @@ class Geometry(SuperCellChild):
         Returns a copy of the object.
         """
         return self.__class__(np.copy(self.xyz),
-                              atoms=self.atoms, sc=self.sc.copy())
+                              atoms=self.atom, sc=self.sc.copy())
 
     def remove(self, atoms):
         """
@@ -535,7 +540,7 @@ class Geometry(SuperCellChild):
         xyz[0:self.na * reps, :] += np.repeat(dx, self.na, axis=0)
         # Create the geometry and return it (note the smaller atoms array
         # will also expand via tiling)
-        return self.__class__(xyz, atoms=self.atoms, sc=sc)
+        return self.__class__(xyz, atoms=self.atom, sc=sc)
 
     def repeat(self, reps, axis):
         """
@@ -608,7 +613,7 @@ class Geometry(SuperCellChild):
             # then add displacement for each repetition.
             xyz[ja:ja + reps, :] = self.xyz[ia, :][None, :] + dx[:, :]
             for i in range(reps):
-                atoms[ja + i] = self.atoms[ia]
+                atoms[ja + i] = self.atom[ia]
             ja += reps
         # Create the geometry and return it
         return self.__class__(xyz, atoms=atoms, sc=sc)
@@ -657,7 +662,7 @@ class Geometry(SuperCellChild):
         else:
             xyz = np.copy(self.xyz)
 
-        return self.__class__(xyz, atoms=self.atoms, sc=sc)
+        return self.__class__(xyz, atoms=self.atom, sc=sc)
 
     def rotate_miller(self, m, v):
         """ Align Miller direction along ``v``
@@ -705,9 +710,9 @@ class Geometry(SuperCellChild):
         xyz = np.copy(self.xyz)
         xyz[a, :] = self.xyz[b, :]
         xyz[b, :] = self.xyz[a, :]
-        atoms = np.copy(self.atoms)
-        atoms[a] = self.atoms[b]
-        atoms[b] = self.atoms[a]
+        atoms = np.copy(self.atom)
+        atoms[a] = self.atom[b]
+        atoms[b] = self.atom[a]
         return self.__class__(xyz, atoms=atoms, sc=self.sc.copy())
 
     def swapaxes(self, a, b, swap='cell+xyz'):
@@ -737,7 +742,7 @@ class Geometry(SuperCellChild):
             sc = self.sc.swapaxes(a, b)
         else:
             sc = self.sc.copy()
-        return self.__class__(xyz, atoms=np.copy(self.atoms), sc=sc)
+        return self.__class__(xyz, atoms=np.copy(self.atom), sc=sc)
 
     def center(self, atoms=None, which='xyz'):
         """ Returns the center of the geometry
@@ -799,13 +804,13 @@ class Geometry(SuperCellChild):
         if isinstance(other, SuperCell):
             # Only
             xyz = np.copy(self.xyz)
-            atoms = np.copy(self.atoms)
+            atoms = np.copy(self.atom)
             sc = self.sc.append(other, axis)
         else:
             xyz = np.append(self.xyz,
                             self.cell[axis, :][None, :] + other.xyz,
                             axis=0)
-            atoms = np.append(self.atoms, other.atoms)
+            atoms = np.append(self.atom, other.atom)
             sc = self.sc.append(other.sc, axis)
         return self.__class__(xyz, atoms=atoms, sc=sc)
 
@@ -823,7 +828,7 @@ class Geometry(SuperCellChild):
         xyz = np.append(self.xyz,
                         other.xyz,
                         axis=0)
-        atoms = np.append(self.atoms, other.atoms)
+        atoms = np.append(self.atom, other.atom)
         sc = self.sc.copy()
         return self.__class__(xyz, atoms=atoms, sc=sc)
     
@@ -835,11 +840,11 @@ class Geometry(SuperCellChild):
         """
         if atoms is None:
             xyz = self.xyz[::-1, :]
-            atms = self.atoms[::-1]
+            atms = self.atom[::-1]
         else:
             xyz = np.copy(self.xyz)
             xyz[atoms, :] = self.xyz[atoms[::-1], :]
-            atms = np.copy(self.atoms)
+            atms = np.copy(self.atom)
             atms[atoms] = atms[atoms][::-1]
         return self.__class__(xyz, atoms=atms, sc=self.sc.copy())
 
@@ -853,7 +858,7 @@ class Geometry(SuperCellChild):
             g.xyz[:, 0] *= -1
         elif lplane == 'xz':
             g.xyz[:, 1] *= -1
-        return self.__class__(g.xyz, atoms=g.atoms, sc=self.sc.copy())
+        return self.__class__(g.xyz, atoms=g.atom, sc=self.sc.copy())
 
     def insert(self, atom, geom):
         """ Inserts other atoms right before index
@@ -869,7 +874,7 @@ class Geometry(SuperCellChild):
            the other geometry to be inserted
         """
         xyz = np.insert(self.xyz, atom, other.xyz, axis=0)
-        atoms = np.insert(self.atoms, atom, other.atoms)
+        atoms = np.insert(self.atom, atom, other.atom)
         return self.__class__(xyz, atoms=atoms, sc=self.sc.copy())
 
     def coords(self, isc=[0, 0, 0], idx=None):
@@ -1088,8 +1093,8 @@ class Geometry(SuperCellChild):
                 rad = float(radii)
             except:
                 # get radii
-                rad = (self.atoms[idx].radii(radii=radii) +
-                       self.atoms[ia].radii(radii=radii))
+                rad = (self.atom[idx].radii(radii=radii) +
+                       self.atom[ia].radii(radii=radii))
 
             # Update the coordinate
             self.xyz[ia, :] = c + bv / d * rad
@@ -1304,14 +1309,14 @@ class Geometry(SuperCellChild):
     def toASE(self):
         """ Returns the geometry as an ASE ``Atoms`` object """
         from ase import Atoms
-        return Atoms(symbols=self.atoms.tolist(), positions=self.xyz.tolist(),
+        return Atoms(symbols=self.atom.tolist(), positions=self.xyz.tolist(),
                      cell=self.cell.tolist())
 
 
     @property
     def mass(self):
         """ Returns the mass of all atoms as an array """
-        return np.array([a.mass for a in self.atoms], np.float64)
+        return np.array([a.mass for a in self.atom], np.float64)
 
 
     def __eq__(self, other):
@@ -1319,7 +1324,7 @@ class Geometry(SuperCellChild):
             return False
         same = self.sc == other.sc
         same = same and np.allclose(self.xyz, other.xyz)
-        same = same and np.all(self.atoms == other.atoms)
+        same = same and np.all(self.atom == other.atom)
         return same
 
     def __ne__(self, other):
@@ -1331,11 +1336,11 @@ class Geometry(SuperCellChild):
         """ Returns the state of this object """
         d = self.sc.__getstate__()
         d['xyz'] = self.xyz
-        d['atoms'] = self.atoms
+        d['atom'] = self.atom
         return d
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
         sc = SuperCell([1, 1, 1])
         sc.__setstate__(d)
-        self.__init__(d['xyz'], d['atoms'], sc=sc)
+        self.__init__(d['xyz'], d['atom'], sc=sc)
