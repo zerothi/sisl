@@ -165,8 +165,7 @@ class SuperCell(object):
         return self.rotate(angle, self.cell[2, :], only=only, degree=degree)
 
     def rotate(self, angle, v, only='abc', degree=True):
-        """
-        Rotates the supercell, in-place by the angle around the vector
+        """ Rotates the supercell, in-place by the angle around the vector
 
         One can control which cell vectors are rotated by designating them
         individually with ``only='[abc]'``.
@@ -213,13 +212,6 @@ class SuperCell(object):
                sc_off[1] == self.sc_off[i, 1] and \
                sc_off[2] == self.sc_off[i, 2]:
                 return i
-        #idx = np.where(self.sc_off[:,0] == sc_off[0])[0]
-        # if len(idx) > 0:
-        #    idx = idx[np.where(self.sc_off[idx,1] == sc_off[1])[0]]
-        # if len(idx) > 0:
-        #    idx = idx[np.where(self.sc_off[idx,2] == sc_off[2])[0]]
-        # if len(idx) == 1:
-        #    return idx[0]
         raise Exception(
             'Could not find supercell index, number of super-cells not big enough')
 
@@ -272,13 +264,20 @@ class SuperCell(object):
         cell parameters, a, b, c, alpha, beta, gamma.
         The angles should be provided in degree (not radians).
         """
-        # This is a diagonal unit-cell
-        if len(args) == 3:
-            return np.asarray(np.diag(args), np.float64)
+        # Convert into true array (flattened)
+        args = np.asarray(args, np.float64).flatten()
+        nargs = len(args)
 
-        # This is a cell parameter unit-cell
-        if len(args) == 6:
-            # Create cell
+        # A square-box
+        if nargs == 1:
+            return np.diag([args[0]] * 3)
+
+        # Diagonal components
+        if nargs == 3:
+            return np.diag(args)
+
+        # Cell parameters
+        if nargs == 6:
             cell = np.zeros([3, 3], np.float64)
             a = args[0]
             b = args[1]
@@ -303,27 +302,14 @@ class SuperCell(object):
             cell[2, 2] = c * np.sqrt(sb**2 - d**2)
             return cell
 
-        # The length has to be 1
-        if len(args) != 1:
-            raise ValueError(
-                "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.")
+        # A complete cell
+        if nargs == 9:
+            args.shape = (3,3)
+            return np.copy(args)
 
-        # There is only one argument, make array
-        tmp = np.copy(np.asarray(args[0], dtype=np.float64))
-        if len(tmp.shape) == 2:
-            return tmp
-        elif len(tmp.shape) == 1:
-            # Check whether it is cell-parametrs
-            if len(tmp) == 6:
-                return cls.tocell(*tmp)
-            elif len(tmp) == 1:
-                # A square unit-cell with one lattice parameter
-                return np.asarray(np.diag([tmp[0]] * 3), np.float64)
-            return np.asarray(np.diag(tmp), np.float64)
-
-        # Reaching this point is erroneous
         raise ValueError(
-            "Could not decipher the arguments for the cell creation")
+            "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.")
+
 
     def is_orthogonal(self):
         """ Returns true if the cell vectors are orthogonal """
@@ -338,8 +324,9 @@ class SuperCell(object):
         i_s = i_s and np.dot(cell[1, :], cell[2, :]) < 0.001
         return i_s
 
+
     @staticmethod
-    def read(sile):
+    def read(sile, *args, **kwargs):
         """ Reads SuperCell from the `Sile` using `Sile.read_sc`
 
         Parameters
@@ -352,13 +339,15 @@ class SuperCell(object):
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            return sile.read_sc()
+            return sile.read_sc(*args, **kwargs)
         else:
-            return get_sile(sile).read_sc()
+            return get_sile(sile).read_sc(*args, **kwargs)
+
 
     def __repr__(self):
         """ Returns a string representation of the object """
         return 'SuperCell[{} {} {}]'.format(*self.nsc)
+
 
     def __eq__(a, b):
         """ Equality check """

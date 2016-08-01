@@ -365,7 +365,7 @@ class Grid(SuperCellChild):
         return self.sub(ret_idx, axis)
 
     def index(self, coord, axis=None):
-        """ Returns the index along the axis ``axis`` where ``coord`` exists
+        """ Returns the index along axis ``axis`` where ``coord`` exists
 
         Parameters
         ----------
@@ -397,6 +397,7 @@ class Grid(SuperCellChild):
         # Calculate how many indices are required to fulfil
         # the correct line cut
         return int(np.rint((np.sum(ac ** 2) / np.sum(dax ** 2)) ** .5))
+
 
     def append(self, other, axis):
         """ Appends other `Grid` to this grid along axis
