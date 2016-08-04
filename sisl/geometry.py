@@ -20,11 +20,6 @@ from ._help import array_fill_repeat, ensure_array
 __all__ = ['Geometry']
 
 
-# Local default variables for the __init__ of the
-# Geometry class
-_H = Atom['H']
-_nsc = np.array([1] * 3, np.int32)
-
 
 class Geometry(SuperCellChild):
     """ Holds atomic information, coordinates, species, lattice vectors
@@ -85,12 +80,16 @@ class Geometry(SuperCellChild):
         super-cell
     """
 
-    def __init__(self, xyz, atoms=_H, sc=None):
+    def __init__(self, xyz, atoms=None, sc=None):
 
         # Create the geometry coordinate
         self.xyz = np.copy(np.asarray(xyz, dtype=np.float64))
         self.xyz.shape = (-1, 3)
         self.na = len(self.xyz)
+
+        # Default value
+        if atoms is None:
+            atoms = Atom('H')
 
         # Correct the atoms input to Atom
         if isinstance(atoms, list):
