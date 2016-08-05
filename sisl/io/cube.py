@@ -59,7 +59,7 @@ class CUBESile(Sile):
         tmp = ' {:' + fmt + '}'
         _fmt = '{:d} 0.0' + tmp + tmp + tmp + '\n'
         for ia in geom:
-            self._write(_fmt.format(geom.atoms[ia].Z, *geom.xyz[ia, :] * Bohr))
+            self._write(_fmt.format(geom.atom[ia].Z, *geom.xyz[ia, :] * Bohr))
 
     def write_grid(self, grid, fmt='%.5e', *args, **kwargs):
         """ Writes the geometry to the contained file """
@@ -128,17 +128,17 @@ class CUBESile(Sile):
 
         # Start reading the geometry
         xyz = np.empty([na, 3], np.float64)
-        atoms = []
+        atom = []
         for ia in range(na):
             tmp = self.readline().split()
-            atoms.append(Atom[int(tmp[0])])
+            atom.append(Atom[int(tmp[0])])
             xyz[ia, 0] = float(tmp[1])
             xyz[ia, 1] = float(tmp[2])
             xyz[ia, 2] = float(tmp[3])
 
         xyz = xyz / Bohr
 
-        return Geometry(xyz, atoms, sc=sc)
+        return Geometry(xyz, atom, sc=sc)
 
     def read_grid(self):
         """ Returns `Grid` object from the CUBE file """

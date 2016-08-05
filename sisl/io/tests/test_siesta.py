@@ -31,7 +31,7 @@ class TestSIESTAnc(object):
         assert_true(np.allclose(tb.xyz, ntb.xyz))
         assert_true(np.allclose(tb._data._D[:,0], ntb._data._D[:,0]))
         for ia in ntb.geom:
-            assert_true(self.g.atoms[ia] == ntb.atoms[ia])
+            assert_true(self.g.atom[ia] == ntb.atom[ia])
 
 
             
@@ -68,6 +68,6 @@ class TestSIESTAnc(object):
         assert_true(np.allclose(tb.xyz, ntb.xyz))
         assert_true(np.allclose(tb._data._D, ntb._data._D))
         for ia in ntb.geom:
-            assert_true(self.g.atoms[ia] == ntb.atoms[ia])
+            assert_true(self.g.atom[ia] == ntb.atom[ia])
 
 

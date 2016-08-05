@@ -324,12 +324,12 @@ class FDFSile(SileSIESTA):
                      "Please ensure specie with index {} is present".format(idx)))
 
             # Create atoms array with species
-            atoms = [None] * na
+            atom = [None] * na
             for ia in range(na):
-                atoms[ia] = sp[species[ia]]
+                atom[ia] = sp[species[ia]]
 
-            if None in atoms:
-                idx = atoms.index(None) + 1
+            if None in atom:
+                idx = atom.index(None) + 1
                 raise ValueError(
                     ("Could not populate entire "
                      "atomic list list. "
@@ -337,12 +337,12 @@ class FDFSile(SileSIESTA):
 
         else:
             # Default atom (hydrogen)
-            atoms = Atom(1)
+            atom = Atom(1)
             # Force number of species to 1
             ns = 1
 
         # Create and return geometry object
-        return Geometry(xyz, atoms=atoms, sc=sc)
+        return Geometry(xyz, atom=atom, sc=sc)
 
 
 add_sile('fdf', FDFSile, case=False, gzip=True)

@@ -67,7 +67,7 @@ class XYZSile(Sile):
             sp[ia] = l.pop(0)
             xyz[ia, :] = [float(k) for k in l[:3]]
 
-        return Geometry(xyz, atoms=sp, sc=SuperCell(cell))
+        return Geometry(xyz, atom=sp, sc=SuperCell(cell))
 
 
 add_sile('xyz', XYZSile, case=False, gzip=True)

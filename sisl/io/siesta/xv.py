@@ -82,7 +82,7 @@ class XVSile(SileSIESTA):
             xyz[ia, :] = line[2:5]
         xyz /= Bohr
 
-        return Geometry(xyz=xyz, atoms=atms, sc=sc)
+        return Geometry(xyz, atms, sc=sc)
 
 
 add_sile('XV', XVSile, gzip=True)

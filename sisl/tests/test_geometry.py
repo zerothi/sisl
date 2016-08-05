@@ -20,7 +20,7 @@ class TestGeometry(object):
         C = Atom(Z=6, R=bond * 1.01, orbs=2)
         self.g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                          atoms=C, sc=self.sc)
+                          atom=C, sc=self.sc)
 
     def tearDown(self):
         del self.g
@@ -85,7 +85,7 @@ class TestGeometry(object):
 
     def test_a2o1(self):
         assert_true(0 == self.g.a2o(0))
-        assert_true(self.g.atoms[0].orbs == self.g.a2o(1))
+        assert_true(self.g.atom[0].orbs == self.g.a2o(1))
         assert_true(self.g.no == self.g.a2o(self.g.na))
 
     def test_sub(self):
@@ -180,7 +180,7 @@ class TestGeometry(object):
         for i, iaaspec in enumerate(self.g.iter_species()):
             ia, a, spec = iaaspec
             assert_true(i == ia)
-            assert_true(self.g.atoms[ia] == a)
+            assert_true(self.g.atom[ia] == a)
         for ia in self.g:
             assert_true(ia >= 0)
         i = 0
@@ -202,14 +202,14 @@ class TestGeometry(object):
         assert_true(np.allclose(self.g.cell[1,:], s.cell[0,:]))
 
     def test_center(self):
-        one = self.g.center(atoms=[0])
+        one = self.g.center(atom=[0])
         assert_true(np.allclose(self.g[0,:], one))
 
     def test_bond_correct(self):
         # Create ribbon
         rib = self.g.tile(2, 1)
         # Convert the last atom to an H atom
-        rib.atoms[-1] = Atom[1]
+        rib.atom[-1] = Atom[1]
         ia = len(rib) - 1
         # Get bond-length
         idx, d = rib.close(ia, dR=(.1, 1000), ret_dist=True)

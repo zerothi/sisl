@@ -29,7 +29,7 @@ def sc(alat, atom):
                              [0, 1, 0],
                              [0, 0, 1]], np.float64) * alat,
                    nsc=[3, 3, 3])
-    g = Geometry([0, 0, 0], atoms=atom, sc=sc)
+    g = Geometry([0, 0, 0], atom, sc=sc)
     return g
 
 
@@ -43,13 +43,13 @@ def bcc(alat, atom, square=False):
                                  [0, 0, 1]], np.float64) * alat,
                        nsc=[3, 3, 3])
         ah = alat / 2
-        g = Geometry([[0, 0, 0], [ah, ah, ah]], atoms=atom, sc=sc)
+        g = Geometry([[0, 0, 0], [ah, ah, ah]], atom, sc=sc)
     else:
         sc = SuperCell(np.array([[1, 1, 1],
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2,
                        nsc=[3, 3, 3])
-        g = Geometry([0, 0, 0], atoms=atom, sc=sc)
+        g = Geometry([0, 0, 0], atom, sc=sc)
     return g
 
 
@@ -64,13 +64,13 @@ def fcc(alat, atom, square=False):
                        nsc=[3, 3, 3])
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, 0],
-                      [ah, 0, ah], [0, ah, ah]], atoms=atom, sc=sc)
+                      [ah, 0, ah], [0, ah, ah]], atom, sc=sc)
     else:
         sc = SuperCell(np.array([[0, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 0]], np.float64) * alat / 2,
                        nsc=[3, 3, 3])
-        g = Geometry([0, 0, 0], atoms=atom, sc=sc)
+        g = Geometry([0, 0, 0], atom, sc=sc)
     return g
 
 
@@ -88,7 +88,7 @@ def hcp(a, atom, coa=1.63333, square=False):
         gt = Geometry([[0, 0, 0],
                        [a, 0, 0],
                        [a * _s30, a * _c30, 0],
-                       [a * (1 + _s30), a * _c30, 0]], atoms=atom, sc=sc)
+                       [a * (1 + _s30), a * _c30, 0]], atom, sc=sc)
         # Create the rotated one on top
         gr = gt.copy()
         # mirror structure
@@ -102,5 +102,5 @@ def hcp(a, atom, coa=1.63333, square=False):
         sc = SuperCell([a, a, c, 90, 90, 60],
                        nsc=[3, 3, 3])
         g = Geometry(
-            [[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]], atoms=atom, sc=sc)
+            [[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]], atom, sc=sc)
     return g

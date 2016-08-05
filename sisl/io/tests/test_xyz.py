@@ -29,4 +29,4 @@ class TestXYZ(object):
         assert_true(np.allclose(g.cell, self.g.cell))
         assert_true(np.allclose(g.xyz, self.g.xyz))
         for ia in g:
-            assert_true(g.atoms[ia] == self.g.atoms[ia])
+            assert_true(g.atom[ia] == self.g.atom[ia])

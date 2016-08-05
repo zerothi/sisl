@@ -68,16 +68,16 @@ class SIESTASile(NCSileSIESTA):
                 atm['tag'] = basis
                 atm['orbs'] = int(bg.groups[basis].Number_of_orbitals)
                 spc[ID - 1] = Atom[atm]
-            atoms = [None] * len(xyz)
+            atom = [None] * len(xyz)
             for ia in range(len(xyz)):
-                atoms[ia] = spc[b_idx[ia] - 1]
+                atom[ia] = spc[b_idx[ia] - 1]
         else:
-            atoms = Atom[1]
+            atom = Atom[1]
 
         xyz /= Bohr
 
         # Create and return geometry object
-        geom = Geometry(xyz, atoms=atoms, sc=sc)
+        geom = Geometry(xyz, atom, sc=sc)
         return geom
 
 

@@ -25,7 +25,7 @@ def setUp(self):
                    nsc=[3, 3, 1])
     self.g = Geometry(np.array([[0., 0., 0.],
                                 [1., 0., 0.]], np.float64) * alat,
-                      atoms=C, sc=sc)
+                      atom=C, sc=sc)
 
     self.dR = np.array([0.1, 1.5])
     self.t = np.array([0. , 2.7])
@@ -38,7 +38,7 @@ def setUp(self):
                    nsc=[3, 3, 1])
     self.gtb = Geometry(np.array([[0., 0., 0.],
                                 [1., 0., 0.]], np.float64) * alat,
-                      atoms=C, sc=sc)
+                      atom=C, sc=sc)
 
 
 def tearDown(self):

@@ -100,9 +100,9 @@ class CARSile(SileVASP):
             raise SileError(err)
 
         # Create list of atoms to be used subsequently
-        atoms = [Atom[spec]
-                 for spec, nsp in zip(species, species_count)
-                 for i in range(nsp)]
+        atom = [Atom[spec]
+                for spec, nsp in zip(species, species_count)
+                for i in range(nsp)]
 
         # Read whether this is selective or direct
         opt = self.readline()
@@ -118,7 +118,7 @@ class CARSile(SileVASP):
             cart = True
 
         # Number of atoms
-        na = len(atoms)
+        na = len(atom)
 
         xyz = np.empty([na, 3], np.float64)
         aoff = 0
@@ -132,7 +132,7 @@ class CARSile(SileVASP):
             xyz = np.dot(xyz, sc.cell.T)
 
         # The POT/CONT-CAR does not contain information on the atomic species
-        return Geometry(xyz=xyz, atoms=atoms, sc=sc)
+        return Geometry(xyz=xyz, atom=atom, sc=sc)
 
 
 # Equivalent classes

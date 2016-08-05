@@ -120,7 +120,7 @@ class BigDFTASCIISile(SileBigDFT):
             # correct unit
             xyz /= Bohr
 
-        return Geometry(xyz, atoms=spec, sc=sc)
+        return Geometry(xyz, spec, sc=sc)
 
     @Sile_fh_open
     def write_geom(self, geom, fmt='.5f'):

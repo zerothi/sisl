@@ -23,14 +23,14 @@ def honeycomb(bond, atom, square=False):
                                [0.5, sq3h, 0.],
                                [1.5, sq3h, 0.],
                                [2., 0., 0.]], np.float64) * bond,
-                     atoms=atom, sc=sc)
+                     atom, sc=sc)
     else:
         sc = SuperCell(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=atom, sc=sc)
+                     atom, sc=sc)
     return g
 
 

@@ -70,7 +70,7 @@ class W90SeedSile(SileWannier90):
                 na = ia + 1
             xyz[ia, :] = [float(k) for k in l[:3]]
 
-        return Geometry(xyz[:na,:], atoms='H')
+        return Geometry(xyz[:na,:], atom='H')
         
             
     def read_geom(self, *args, **kwargs):

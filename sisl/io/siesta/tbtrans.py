@@ -196,7 +196,7 @@ class TBtransSile(NCSileSIESTA):
         atms = [Atom(Z='H', orbs=o) for o in nos]
 
         # Create and return geometry object
-        geom = Geometry(xyz, atoms=atms, sc=sc)
+        geom = Geometry(xyz, atms, sc=sc)
 
         return geom
 
@@ -557,7 +557,7 @@ class TBtransSile(NCSileSIESTA):
         Jo = np.zeros([self.na_u], np.float64)
 
         # We already know which atoms are the device atoms...
-        atoms = self.a_dev
+        atom = self.a_dev
 
         # Create local lasto
         lasto = np.append([0],self.geom.lasto)
@@ -567,8 +567,8 @@ class TBtransSile(NCSileSIESTA):
         nsum = np.sum
 
         # Calculate individual bond-currents between atoms
-        for ia in atoms:
-            for ja in atoms:
+        for ia in atom:
+            for ja in atom:
                 
                 # we also include ia == ja (that should be zero anyway)
                 t = tmp[lasto[ia-1]:lasto[ia],lasto[ja-1]:lasto[ja]].data

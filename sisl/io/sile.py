@@ -38,7 +38,7 @@ __all__ += [
 # same extension and query it based on a sub-class
 sile_objects = []
 
-def add_sile(ending, obj, case=True, gzip=False, _parent_obj=None):
+def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
     """
     Public for attaching lookup tables for allowing
     users to attach files for the IOSile function call
@@ -47,7 +47,7 @@ def add_sile(ending, obj, case=True, gzip=False, _parent_obj=None):
     ----------
     ending : str
          The file-name ending, it can be several file endings (.TBT.nc)
-    obj : `BaseSile` child
+    cls : `BaseSile` child
          An object that is associated with the respective file.
          It must be inherited from a `BaseSile`.
     case : bool, (True)
@@ -67,67 +67,67 @@ def add_sile(ending, obj, case=True, gzip=False, _parent_obj=None):
 
     # The parent_obj is the actual class used to construct
     # the output file
-    if _parent_obj is None:
-        _parent_obj = obj
+    if _parent_cls is None:
+        _parent_cls = cls
 
-    def_obj = [object, BaseSile, Sile, NCSile]
+    def_cls = [object, BaseSile, Sile, NCSile]
     
     # First we find the base-class
     # This base class must not be
     #  BaseSile
     #  Sile
     #  NCSile
-    def get_children(obj):
+    def get_children(cls):
         # List all childern
-        children = list(obj.__bases__)
+        children = list(cls.__bases__)
         for child in children:
             cchildren = get_children(child)
             for cchild in cchildren:
                 if cchild not in children:
                     children.append(cchild)
-        remove_obj(children, def_obj)
+        remove_cls(children, def_cls)
         return children
     
-    def remove_obj(l, objs):
-        for cobj in objs:
-            if cobj in l:
-                l.remove(cobj)
+    def remove_cls(l, clss):
+        for ccls in clss:
+            if ccls in l:
+                l.remove(ccls)
 
     # Finally we append the child objects
-    inherited = get_children(obj)
+    inherited = get_children(cls)
     
     # Now we should remove all objects which are descendants from
     # another object in the list
     # We also default this base-class to be removed
-    rem = [object, obj]
-    for cobj in inherited:
-        inh = get_children(cobj)
-        for ccobj in inh:
-            if ccobj in inherited:
-                rem.append(ccobj)
-    remove_obj(inherited, rem)
+    rem = [object, cls]
+    for ccls in inherited:
+        inh = get_children(ccls)
+        for cccls in inh:
+            if cccls in inherited:
+                rem.append(cccls)
+    remove_cls(inherited, rem)
 
-    # Now, we finally have a list of objects which
+    # Now, we finally have a list of clsects which
     # are a single sub-class of the actual class.
-    for cobj in inherited:
-        add_sile(ending, cobj, case=case, gzip=gzip, _parent_obj=_parent_obj)
+    for ccls in inherited:
+        add_sile(ending, ccls, case=case, gzip=gzip, _parent_cls=_parent_cls)
     
     # If the gzip is none, we decide whether we can
     # read gzipped files
-    # In particular, if the obj is a `Sile`, we allow
+    # In particular, if the cls is a `Sile`, we allow
     # such reading
     if gzip:
-        add_sile(ending + '.gz', obj, case=case, _parent_obj=_parent_obj)
+        add_sile(ending + '.gz', cls, case=case, _parent_cls=_parent_cls)
     if not case:
-        add_sile(ending.lower(), obj, gzip=gzip, _parent_obj=_parent_obj)
-        add_sile(ending.upper(), obj, gzip=gzip, _parent_obj=_parent_obj)
+        add_sile(ending.lower(), cls, gzip=gzip, _parent_cls=_parent_cls)
+        add_sile(ending.upper(), cls, gzip=gzip, _parent_cls=_parent_cls)
         return
 
-    sile_objects.append( (ending, obj, _parent_obj) )
+    sile_objects.append( (ending, cls, _parent_cls) )
     if ending[0] == '.':
-        sile_objects.append( (ending[1:], obj, _parent_obj) )
+        sile_objects.append( (ending[1:], cls, _parent_cls) )
     else:
-        sile_objects.append( ('.' + ending, obj, _parent_obj) )
+        sile_objects.append( ('.' + ending, cls, _parent_cls) )
 
 
 def get_sile(file, *args, **kwargs):
@@ -139,13 +139,13 @@ def get_sile(file, *args, **kwargs):
     ----------
     file : str
        the file to be quried for a correct `Sile` object.
-    obj : class
+    cls : class
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.
        If there are several `Sile`s with similar file-endings this
        function returns a random one.
     """
-    obj = kwargs.pop('obj', None)
+    cls = kwargs.pop('cls', None)
     try:
         # Create list of endings on this file
         f = file
@@ -171,9 +171,9 @@ def get_sile(file, *args, **kwargs):
             for suf, base, fobj in sile_objects:
                 if end != suf:
                     continue
-                if obj is None:
+                if cls is None:
                     return fobj(file, *args, **kwargs)
-                elif obj == base:
+                elif cls == base:
                     return fobj(file, *args, **kwargs)
 
         raise Exception('print fail')

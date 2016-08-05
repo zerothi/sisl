@@ -159,7 +159,7 @@ class GULPgoutSile(SileGULP):
             xyz[:, 2] *= np.sum(sc.cell[:, 2])
 
         # Return the geometry
-        return Geometry(xyz, atoms=Atom[Z], sc=sc)
+        return Geometry(xyz, Atom[Z], sc=sc)
 
 
     def set_dyn_key(self, key):
@@ -188,7 +188,7 @@ class GULPgoutSile(SileGULP):
                 raise ValueError("Inconsistent Hessian file, number of atoms not correct")
 
             # Perform mass scaling to retrieve the dynamical matrix
-            mass = [geom.atoms[ia].mass for ia in range(geom.na)]
+            mass = [geom.atom[ia].mass for ia in range(geom.na)]
             
             # Construct orbital mass
             mass = np.array(mass, np.float64).repeat(3)

@@ -138,11 +138,11 @@ class TestObject(object):
             assert_true(isinstance(sile, obj))
 
     def test_siesta(self):
-        sile = gs('test.XV', obj=SileSIESTA)
+        sile = gs('test.XV', cls=SileSIESTA)
         for obj in [BaseSile, Sile, SileSIESTA, XVSile]:
             assert_true(isinstance(sile, obj))
 
     def test_wannier90_seed(self):
-        sile = gs('test.win', obj=SileWannier90)
+        sile = gs('test.win', cls=SileWannier90)
         for obj in [BaseSile, Sile, SileWannier90, W90SeedSile]:
             assert_true(isinstance(sile, obj))

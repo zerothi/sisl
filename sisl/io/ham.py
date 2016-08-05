@@ -39,7 +39,7 @@ class HamiltonianSile(Sile):
                 return int(j[0]), int(j[1])
 
         # The format of the geometry file is
-        keys = ['atoms', 'cell', 'supercell', 'nsc']
+        keys = ['atom', 'cell', 'supercell', 'nsc']
         for _ in range(len(keys)):
             f, l = self.step_to(keys, case=False)
             l = l.strip()
@@ -62,7 +62,7 @@ class HamiltonianSile(Sile):
                     for i in range(3):
                         cell[i, i] = float(l[i])
                     # TODO incorporate rotations
-            elif 'atoms' in l.lower():
+            elif 'atom' in l.lower():
                 l = self.readline()
                 while not l.startswith('end'):
                     ls = l.split()
@@ -80,7 +80,7 @@ class HamiltonianSile(Sile):
 
         # Return the geometry
         # Create list of atoms
-        geom = Geometry(xyz, atoms=Atom[Z], sc=SuperCell(cell, nsc))
+        geom = Geometry(xyz, atom=Atom[Z], sc=SuperCell(cell, nsc))
 
         return geom
 
@@ -183,20 +183,20 @@ class HamiltonianSile(Sile):
         self._write('\nsupercell {0:d} {1:d} {2:d}\n'.format(*geom.nsc))
 
         # Write all atomic positions along with the specie type
-        self._write('\nbegin atoms\n')
+        self._write('\nbegin atom\n')
         fmt1_str = '  {{0:d}} {{1:{0}}} {{2:{0}}} {{3:{0}}}\n'.format(xyz_fmt)
         fmt2_str = '  {{0:d}}[{{1:d}}] {{2:{0}}} {{3:{0}}} {{4:{0}}}\n'.format(
             xyz_fmt)
 
         for ia in geom:
-            Z = geom.atoms[ia].Z
-            no = geom.atoms[ia].orbs
+            Z = geom.atom[ia].Z
+            no = geom.atom[ia].orbs
             if no == 1:
                 self._write(fmt1_str.format(Z, *geom.xyz[ia, :]))
             else:
                 self._write(fmt2_str.format(Z, no, *geom.xyz[ia, :]))
 
-        self._write('end atoms\n')
+        self._write('end atom\n')
 
 
     @Sile_fh_open
@@ -232,7 +232,7 @@ class HamiltonianSile(Sile):
         # We default to the advanced layuot if we have more than one
         # orbital on any one atom
         advanced = kwargs.get('advanced', np.any(
-            np.array([a.orbs for a in ham.atoms], np.int32) > 1))
+            np.array([a.orbs for a in ham.atom], np.int32) > 1))
 
         fmt = kwargs.get('fmt', 'g')
         if advanced:

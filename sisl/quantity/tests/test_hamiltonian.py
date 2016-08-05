@@ -21,14 +21,14 @@ class TestHamiltonian(object):
         C = Atom(Z=6, R=bond * 1.01, orbs=1)
         self.g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                          atoms=C, sc=self.sc)
+                          atom=C, sc=self.sc)
         self.H = Hamiltonian(self.g)
         self.HS = Hamiltonian(self.g, ortho = False)
 
         C = Atom(Z=6, R=bond * 1.01, orbs=2)
         self.g2 = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                          atoms=C, sc=self.sc)
+                          atom=C, sc=self.sc)
         self.H2 = Hamiltonian(self.g2)
         self.HS2 = Hamiltonian(self.g2, ortho = False)
 
