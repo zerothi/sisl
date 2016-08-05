@@ -2,14 +2,14 @@
 Define a common GULP Sile
 """
 
-from ..sile import Sile, NCSile
+from ..sile import Sile, SileCDF
 
-__all__ = ['SileGULP', 'NCSileGULP']
+__all__ = ['SileGULP', 'SileCDFGULP']
 
 class SileGULP(Sile):
     pass
 
-class NCSileGULP(NCSile):
+class SileCDFGULP(SileCDF):
     pass
 
 

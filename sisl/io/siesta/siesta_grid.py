@@ -6,7 +6,7 @@ from __future__ import print_function
 import numpy as np
 
 # Import sile objects
-from .sile import NCSileSIESTA
+from .sile import SileCDFSIESTA
 from ..sile import *
 
 # Import the geometry object
@@ -16,7 +16,7 @@ from sisl import Bohr
 __all__ = ['SIESTAGridSile']
 
 
-class SIESTAGridSile(NCSileSIESTA):
+class SIESTAGridSile(SileCDFSIESTA):
     """ SIESTA Grid file object """
 
     @Sile_fh_open

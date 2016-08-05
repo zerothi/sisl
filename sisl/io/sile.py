@@ -11,14 +11,15 @@ from ._help import *
 
 # Public used objects
 __all__ = [
-    'sile_objects', 
+    'sile_objects',
     'add_sile',
     'get_sile']
 
 __all__ += [
     'BaseSile',
     'Sile',
-    'NCSile',
+    'SileCDF',
+    'SileBin',
     'SileError',
     ]
 
@@ -70,13 +71,13 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
     if _parent_cls is None:
         _parent_cls = cls
 
-    def_cls = [object, BaseSile, Sile, NCSile]
+    def_cls = [object, BaseSile, Sile, SileCDF]
     
     # First we find the base-class
     # This base class must not be
     #  BaseSile
     #  Sile
-    #  NCSile
+    #  SileCDF
     def get_children(cls):
         # List all childern
         children = list(cls.__bases__)
@@ -418,14 +419,14 @@ def _import_netCDF4():
 
 
 
-class NCSile(BaseSile):
+class SileCDF(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
 
     def __init__(self, filename, mode='r', lvl=0, access=1):
-        """ Creates/Opens a NCSile
+        """ Creates/Opens a SileCDF
 
-        Opens a NCSile with `mode` and compression level `lvl`.
+        Opens a SileCDF with `mode` and compression level `lvl`.
         If `mode` is in read-mode (r) the compression level
         is ignored.
 
@@ -458,7 +459,7 @@ class NCSile(BaseSile):
 
 
     def __setup(self):
-        """ Setup `NCSile` after initialization """
+        """ Setup `SileCDF` after initialization """
         self._setup()
 
 
@@ -515,6 +516,46 @@ class NCSile(BaseSile):
             for name in attr:
                 setattr(v, name, attr[name])
         return v
+
+
+class SileBin(BaseSile):
+    """ Class to contain a file with easy access
+    The file format for this file is a binary format.
+    """
+
+    def __init__(self, filename, mode='r'):
+        """ Creates/Opens a SileBin
+
+        Opens a SileBin with `mode` (b).
+        If `mode` is in read-mode (r).
+        """
+
+        self.file = filename
+        # Open mode
+        self._mode = mode.replace('b','') + 'b'
+
+        # Must call setup-methods
+        self.__setup()
+
+
+    def _setup(self,*args, **kwargs):
+        """ Simple setup that needs to be overwritten """
+        pass
+
+
+    def __setup(self):
+        """ Setup `SileBin` after initialization """
+        self._setup()
+
+
+    def __enter__(self):
+        """ Opens the output file and returns it self """
+        return self
+
+
+    def __exit__(self, type, value, traceback):
+        return False
+
 
 
 class SileError(IOError):

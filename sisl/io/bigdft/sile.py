@@ -2,14 +2,14 @@
 Define a common BigDFT Sile
 """
 
-from ..sile import Sile, NCSile
+from ..sile import Sile, SileCDF
 
-__all__ = ['SileBigDFT', 'NCSileBigDFT']
+__all__ = ['SileBigDFT', 'SileCDFBigDFT']
 
 class SileBigDFT(Sile):
     pass
 
-class NCSileBigDFT(NCSile):
+class SileCDFBigDFT(SileCDF):
     pass
 
 

@@ -61,12 +61,12 @@ class TestObject(object):
 
     def test_nc(self):
         sile = gs('test.nc')
-        for obj in [BaseSile, NCSile, NCSileSIESTA, SIESTASile]:
+        for obj in [BaseSile, SileCDF, SileCDFSIESTA, SIESTASile]:
             assert_true(isinstance(gs('test.nc'), obj))
 
     def test_grid_nc(self):
         sile = gs('test.grid.nc')
-        for obj in [BaseSile, NCSile, NCSileSIESTA, SIESTAGridSile]:
+        for obj in [BaseSile, SileCDF, SileCDFSIESTA, SIESTAGridSile]:
             assert_true(isinstance(sile, obj))
 
     def test_ham(self):
@@ -85,12 +85,12 @@ class TestObject(object):
 
     def test_tbtrans(self):
         sile = gs('test.TBT.nc')
-        for obj in [BaseSile, NCSile, NCSileSIESTA, TBtransSile]:
+        for obj in [BaseSile, SileCDF, SileCDFSIESTA, TBtransSile]:
             assert_true(isinstance(sile, obj))
 
     def test_phtrans(self):
         sile = gs('test.PHT.nc')
-        for obj in [BaseSile, NCSile, NCSileSIESTA, TBtransSile, PHtransSile]:
+        for obj in [BaseSile, SileCDF, SileCDFSIESTA, TBtransSile, PHtransSile]:
             assert_true(isinstance(sile, obj))
 
     def test_vasp_contcar(self):

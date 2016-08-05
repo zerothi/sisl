@@ -4,7 +4,7 @@ Sile object for reading/writing SIESTA binary files
 from __future__ import print_function
 
 # Import sile objects
-from .sile import NCSileSIESTA
+from .sile import SileCDFSIESTA
 from ..sile import *
 
 # Import the geometry object
@@ -17,7 +17,7 @@ import numpy as np
 __all__ = ['SIESTASile']
 
 
-class SIESTASile(NCSileSIESTA):
+class SIESTASile(SileCDFSIESTA):
     """ SIESTA file object """
 
 

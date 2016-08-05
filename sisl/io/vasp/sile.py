@@ -2,14 +2,14 @@
 Define a common VASP Sile
 """
 
-from ..sile import Sile, NCSile
+from ..sile import Sile, SileCDF
 
-__all__ = ['SileVASP', 'NCSileVASP']
+__all__ = ['SileVASP', 'SileCDFVASP']
 
 class SileVASP(Sile):
     pass
 
-class NCSileVASP(NCSile):
+class SileCDFVASP(SileCDF):
     pass
 
 

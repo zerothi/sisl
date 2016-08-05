@@ -13,7 +13,7 @@ from scipy.sparse import csr_matrix, lil_matrix
 from numbers import Integral
 
 # Import sile objects
-from .sile import NCSileSIESTA
+from .sile import SileCDFSIESTA
 from ..sile import *
 
 # Import the geometry object
@@ -25,7 +25,7 @@ __all__ = ['TBtransSile', 'PHtransSile']
 __all__ += ['TBtransdHSile']
 
 
-class TBtransSile(NCSileSIESTA):
+class TBtransSile(SileCDFSIESTA):
     """ TBtrans file object """
     _trans_type = 'TBT'
 
@@ -45,7 +45,7 @@ class TBtransSile(NCSileSIESTA):
 
     @Sile_fh_open
     def _data(self, name, tree=None):
-        """ Local method for obtaining the data from the NCSile.
+        """ Local method for obtaining the data from the SileCDF.
 
         This method checks how the file is access, i.e. whether
         data is stored in the object or it should be read consequtively.
@@ -58,7 +58,7 @@ class TBtransSile(NCSileSIESTA):
 
     @Sile_fh_open
     def _data_avg(self, name, tree=None, avg=False):
-        """ Local method for obtaining the data from the NCSile.
+        """ Local method for obtaining the data from the SileCDF.
 
         This method checks how the file is access, i.e. whether
         data is stored in the object or it should be read consequtively.
@@ -99,7 +99,7 @@ class TBtransSile(NCSileSIESTA):
     
     @Sile_fh_open
     def _data_E(self, name, tree=None, avg=False, E=None):
-        """ Local method for obtaining the data from the NCSile using an E index.
+        """ Local method for obtaining the data from the SileCDF using an E index.
 
         """
         if E is None:
@@ -600,7 +600,7 @@ add_sile('PHT.nc', PHtransSile)
 
 
 # The deltaH nc file
-class TBtransdHSile(NCSileSIESTA):
+class TBtransdHSile(SileCDFSIESTA):
     """ TBtrans delta-H file object """
 
     @Sile_fh_open
