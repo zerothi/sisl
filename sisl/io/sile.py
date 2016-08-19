@@ -180,7 +180,7 @@ def get_sile(file, *args, **kwargs):
         raise Exception('print fail')
     except Exception as e:
         print(e)
-    raise NotImplementedError("File requested could not be found, possibly the file has not been implemented.")
+    raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
 
 
 class BaseSile(object):

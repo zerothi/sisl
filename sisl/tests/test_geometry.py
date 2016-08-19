@@ -131,7 +131,7 @@ class TestGeometry(object):
         assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(-rot.xyz, self.g.xyz))
 
-        rot = self.g.rotate(np.pi, [0, 0, 1], degree=False)
+        rot = self.g.rotate(np.pi, [0, 0, 1], radians=True)
         rot.sc.cell[2, 2] *= -1
         assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(-rot.xyz, self.g.xyz))
@@ -147,7 +147,7 @@ class TestGeometry(object):
         assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(rot.xyz, self.g.xyz))
 
-        rot = self.g.rotate(np.pi, [0, 0, 1], degree=False, only='abc')
+        rot = self.g.rotate(np.pi, [0, 0, 1], radians=True, only='abc')
         rot.sc.cell[2, 2] *= -1
         assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(rot.xyz, self.g.xyz))
@@ -162,7 +162,7 @@ class TestGeometry(object):
         assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(-rot.xyz, self.g.xyz))
 
-        rot = self.g.rotate(np.pi, [0, 0, 1], degree=False, only='xyz')
+        rot = self.g.rotate(np.pi, [0, 0, 1], radians=True, only='xyz')
         assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(-rot.xyz, self.g.xyz))
 

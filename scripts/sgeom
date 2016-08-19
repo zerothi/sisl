@@ -4,252 +4,87 @@ Geometry handler for different formats
 """
 from __future__ import print_function, division
 
-import sys, os, os.path as osp
+import sys, os.path as osp
 import argparse as arg
 
-# Variable for python3 compliance
-is_3 = sys.version_info >= (3,0)
-
-import numpy as np
-
 import sisl
-
-# For transforming a string to a range
-import re
-re_rng = re.compile('[,]?([0-9-]+)[,]?')
-
-# Function to change a string to a range of atoms
-def parse_rng(s):
-    """ Parses a string into a list of ranges 
-    
-    This range can be formatted like this:
-      1,2,3-6
-    in which case it will return:
-      [1,2,3,4,5,6]
-    """
-    rng = []
-    for la in re_rng.findall(s):
-        # We accumulate a list of integers
-        tmp = la.split('-')
-        if len(tmp) > 2: 
-            print('Error in parsing: "'+s+'".')
-        elif len(tmp) > 1:
-            bo, eo = tuple(map(int,tmp))
-            rng.extend(range(bo-1,eo))
-        else:
-            rng.append(int(tmp[0]-1))
-    return rng
 
 
 def run():
 
-    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files. Piping is allowed to do complex corrections to geometries.')
+    # The file *MUST* be the first argument
+    # (except --help|-h)
 
-    def dir_type(val,check_type):
-        if val in ['x','y','z','a','b','c']:
-            return 'xaybzc'.index(val) // 2
-        try:
-            return check_type(val)
-        except:
-            raise arg.ArgumentTypeError("Type: "+val+" not valid type "+str(check_type.__name__))
+    # We cannot create a separate ArgumentParser to retrieve a positional arguments
+    # as that will grab the first argument for an option!
 
-    def dir_int(val): return dir_type(val,int)
-    def dir_float(val): return dir_type(val,float)
-    def dir_angle(val): 
-        if val in ['x','y','z','a','b','c']:
-            return 'xaybzc'.index(val) // 2
-        try:
-            if 'r' in val:
-                # Radians
-                val = val.replace('pi', np.pi)
-                tmp = eval(val.replace('r',''))
-            else:
-                tmp = eval(val.replace('d','').replace('a','')) / 180 * np.pi
-        except:
-            raise arg.ArgumentTypeError("Type: "+val+" not valid type float")
-        return tmp
+    # Start creating the command-line utilities that are the actual ones.
+    description = """
+This manipulation utility is highly advanced and one should note that the ORDER of
+options is determining the final structure. For instance:
 
+   {0} geom.xyz --repeat x 2 --repeat y 2
 
-    # Moving of atoms
-    p.add_argument('-O','--origin', action='store_true', default=False,
-                   help='Will push the coordinates to the origin.')
-    p.add_argument('-co','--center-of', choices=['mass','xyz','position','cell'], default=None,
-                   help='Will move the coordinates to the center of the designated choice.')
-    p.add_argument('-uc','--unit-cell', choices=['translate','tr','t','mod'], default=None,
-                   help='Moves the coordinates into the unit-cell by translation or the mod-operator')
+is NOT equivalent to:
 
-    # Rotation, translation
-    p.add_argument('-R','--rotate',nargs=2,default=[],type=dir_angle,action='append',
-                   metavar=('dir','angle'),
-                   help='Rotate geometry around given axis (add <angle>r to get radians), appends.')
-    p.add_argument('-Rx','--rotate-x',type=dir_angle,default=None,metavar='angle',
-                   help='Rotate geometry around the x-axis')
-    p.add_argument('-Ry','--rotate-y',type=dir_angle,default=None,metavar='angle',
-                   help='Rotate geometry around the y-axis')
-    p.add_argument('-Rz','--rotate-z',type=dir_angle,default=None,metavar='angle',
-                   help='Rotate geometry around the z-axis')
+   {0} geom.xyz --repeat y 2 --repeat x 2
 
-    # Removes atoms
-    p.add_argument('-s','--sub',type=str,default=None,action='append',
-                   metavar='rng',
-                   help='Removes the specified atoms, can be complex ranges. Appends.')
-    p.add_argument('--cut',nargs=2,type=dir_int,default=None,action='append',
-                   metavar=('dir','seps'),
-                   help='Cuts the geometry in pieces, saves the first cut.')
+This may be unexpected but enables one to do advanced manipulations.
 
+Additionally, in between arguments, one may store the current state of the geometry
+by writing to a standard file.
 
-    p.add_argument('-r','--repeat',nargs=2,type=dir_int,default=None,action='append',
-                   metavar=('dir','repeat'),
-                   help='Repeats in the specified direction, appends.')
-    p.add_argument('-rx','--repeat-x',type=int,default=1,metavar='repeat',
-                   help='Repeats in the x-direction.')
-    p.add_argument('-ry','--repeat-y',type=int,default=1,metavar='repeat',
-                   help='Repeats in the y-direction.')
-    p.add_argument('-rz','--repeat-z',type=int,default=1,metavar='repeat',
-                   help='Repeats in the z-direction.')
+   {0} geom.xyz --repeat y 2 geom_repy.xyz --repeat x 2 geom_repy_repx.xyz
 
-    p.add_argument('-t','--tile',nargs=2,type=dir_int,action='append',
-                   metavar=('dir','tile'),
-                   help='Tiles in the specified direction, appends.')
-    p.add_argument('-tx','--tile-x',type=int,default=1,metavar='tile',
-                   help='Tiles in the x-direction.')
-    p.add_argument('-ty','--tile-y',type=int,default=1,metavar='tile',
-                   help='Tiles in the y-direction.')
-    p.add_argument('-tz','--tile-z',type=int,default=1,metavar='tile',
-                   help='Tiles in the z-direction.')
+will create two files:
+   geom_repy.xyz
+will only be repeated 2 times along the second lattice vector, while:
+   geom_repy_repx.xyz
+will be repeated 2 times along the second lattice vector, and then the first
+lattice vector.
+    """.format(osp.basename(sys.argv[0]))
 
-    p.set_defaults(func=geom_convert)
+    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files.',
+                           formatter_class=arg.RawDescriptionHelpFormatter,
+                           description=description)
+
+    argv = sys.argv[1:]
     
-    p.add_argument('-o','--out',metavar='outfile',dest='opt_out_file',
-                   action='append',type=str,default=[],
-                   help='Write geometry to file. This is useful while piping geometries. Appends.')
-    
-    p.add_argument('in_file',metavar='infile',nargs='?',type=str,
-                   help='Read geometry from file.')
-    p.add_argument('out_file',metavar='outfile',nargs='*',type=str,default=[],
-                   help='Write geometry to file, append for more out files.')
+    if len(argv) >= 1:
+        # Get the file
+        geom_file = argv[0]
 
-    args = p.parse_args()
-    args.func(args)
+        is_file = osp.isfile(geom_file)
+        if is_file:
+            geom = sisl.Geometry.read(geom_file)
+            argv.pop(0)
+        elif ('-h' in argv) or ('--help' in argv):
+            # Fake help...
+            geom = sisl.Geometry([0,0,0])
+        else:
+            # The file that the user request, does not exist
+            raise ValueError("File: '"+geom_file+"' cannot be found. Please supply a readable file!")
 
+    # We are good to go!!!
 
-def geom_convert(args):
-    """
-    sgeom $@
-    """
+    # Append the geometry arguments from the object
+    namespace = geom.ArgumentParser(p, limit_arguments=False, short=True, positional_out=True)
 
-    if args.in_file:
-        # Take geometry
-        g = sisl.Geometry.read(args.in_file)
-    else:
-        # We will read in from the pipe
-        cell = np.empty([3,3],np.float64)
-        ic = 0
-        ix = 0
-        xyz = []
-        atoms = []
-        for i, line in enumerate(sys.stdin):
-            try:
-                l = np.array(line.split(),np.float64)
-            except:
-                continue
-            if ic < 3:
-                cell[ic,:] = l
-                ic += 1
-            else:
-                xyz.append(l[:3])
-                if len(l) > 3:
-                    atoms.append(sisl.Atom[int(l[3])])
-        xyz = np.array(xyz,np.float64)
-        g = sisl.Geometry(xyz=xyz,atoms=atoms,sc=cell)
-    
-    
-    if args.origin:
-        g.xyz[:,:] -= np.amin(g.xyz,axis=0)[None,:]
-        
-    
-    if args.unit_cell:
-        if args.unit_cell in ['translate','tr','t']:
-            # Simple translation
-            tmp = np.amin(g.xyz,axis=0)
-            # Find the smallest distance from the first
-            # atom
-            _, d = g.close(0,dR=(0.1,20.),ret_dist=True)
-            d = np.amin(d[1]) / 2
-            g = g.translate(-tmp + np.array([d,d,d]))
-        elif args.unit_cell in ['mod']:
-            # Change all coordinates using the reciprocal
-            # cell
-            rcell = g.rcell
-            idx = np.abs(np.array(np.dot(g.xyz,rcell),np.int32))
-            # change supercell
-            nsc = np.amax(idx * 2 + 1,axis=0)
-            g.set_nsc(nsc)
-            # Change the coordinates
-            for ia in g:
-                g.xyz[ia,:] = g.coords(isc=idx[ia,:],idx=ia)
+    args = p.parse_args(argv, namespace=namespace)
+    g = args._G
 
-
-    if not args.center_of is None:
-        g = g.translate(-g.center(which=args.center_of))
-
-
-    if not args.repeat is None:
-        for d, r in args.repeat:
-            g = g.repeat(r,d)
-
-
-    if not args.tile is None:
-        for d, t in args.tile:
-            g = g.tile(t,d)
-
-    g = g.repeat(args.repeat_x,0).repeat(args.repeat_y,1).repeat(args.repeat_z,2)
-    g = g.tile(args.tile_x,0).tile(args.tile_y,1).tile(args.tile_z,2)
-
-    # Rotate geometry
-    if args.rotate_x: args.rotate.append( (0, args.rotate_x) )
-    if args.rotate_y: args.rotate.append( (1, args.rotate_y) )
-    if args.rotate_z: args.rotate.append( (2, args.rotate_z) )
-    if args.rotate:
-        for d, ang in args.rotate:
-            if d == 0:
-                v = [1,0,0]
-            elif d == 1:
-                v = [0,1,0]
-            elif d == 2:
-                v = [0,0,1]
-            g = g.rotate(ang,v)
-
-
-    # Make cuts to geometry
-    if args.sub:
-        for sub in args.sub:
-            # Parse sub-string to correct format
-            srng = parse_rng(sub)
-            g = g.sub(srng)
-
-
-    # Cuts the geometry
-    if args.cut:
-        for d, s in args.cut:
-            g = g.cut(s, d)
-
-
-    # Store geometry
-    args.out_file.extend(args.opt_out_file)
-    if args.out_file:
-        for f in args.out_file:
-            g.write(f)
-    else:
-        # We simply print it to the screen
+    if not args.geometry_stored:
+        # We should write out the information to the stdout
+        # This is merely for testing purposes and may not be used for anything.
         print('Cell:')
         for i in range(3):
-            print('  {0:10.4f} {1:10.4f} {2:10.4f}'.format(*g.cell[i,:]))
+            print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i,:]))
+        print('SuperCell:')
+        print('  {0:d} {1:d} {2:d}'.format(*g.nsc))
         print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x','y','z','Z'))
         for ia in g:
-            print(' {1:10.4f} {2:10.4f} {3:10.4f}  {0:3d}'.format(g.atoms[ia].Z,
+            print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atom[ia].Z,
                                                                   *g.xyz[ia,:]))
-
 
 if __name__ == "__main__":
     run()

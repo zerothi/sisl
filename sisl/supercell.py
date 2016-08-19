@@ -155,16 +155,16 @@ class SuperCell(object):
         rcell[2, :] = rcell[2, :] / np.sum(rcell[2, :] * cell[2, :])
         return rcell
 
-    def rotatea(self, angle, only='abc', degree=True):
-        return self.rotate(angle, self.cell[0, :], only=only, degree=degree)
+    def rotatea(self, angle, only='abc', radians=False):
+        return self.rotate(angle, self.cell[0, :], only=only, radians=radians)
 
-    def rotateb(self, angle, only='abc', degree=True):
-        return self.rotate(angle, self.cell[1, :], only=only, degree=degree)
+    def rotateb(self, angle, only='abc', radians=False):
+        return self.rotate(angle, self.cell[1, :], only=only, radians=radians)
 
-    def rotatec(self, angle, only='abc', degree=True):
-        return self.rotate(angle, self.cell[2, :], only=only, degree=degree)
+    def rotatec(self, angle, only='abc', radians=False):
+        return self.rotate(angle, self.cell[2, :], only=only, radians=radians)
 
-    def rotate(self, angle, v, only='abc', degree=True):
+    def rotate(self, angle, v, only='abc', radians=False):
         """ Rotates the supercell, in-place by the angle around the vector
 
         One can control which cell vectors are rotated by designating them
@@ -173,18 +173,18 @@ class SuperCell(object):
         Parameters
         ----------
         angle : float
-             the angle in radians of which the geometry should be rotated
+             the angle of which the geometry should be rotated
         v     : array_like [3]
              the vector around the rotation is going to happen
              v = [1,0,0] will rotate in the ``yz`` plane
-        degree : bool
-             Whether the angle is in radians (False) or in degrees (True, default)
+        radians : bool, False
+             Whether the angle is in radians (True) or in degrees (False)
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
         """
         vn = np.copy(np.asarray(v, dtype=np.float64)[:])
         vn /= np.sum(vn ** 2) ** .5
-        q = Quaternion(angle, vn, degree=degree)
+        q = Quaternion(angle, vn, radians=radians)
         q /= q.norm()  # normalize the quaternion
         cell = np.copy(self.cell)
         if 'a' in only:

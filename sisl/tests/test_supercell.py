@@ -38,7 +38,7 @@ class TestSuperCell(object):
         rot.cell[2, 2] *= -1
         assert_true(np.allclose(-rot.cell, self.sc.cell))
 
-        rot = self.sc.rotate(m.pi, [0, 0, 1], degree=False)
+        rot = self.sc.rotate(m.pi, [0, 0, 1], radians=True)
         rot.cell[2, 2] *= -1
         assert_true(np.allclose(-rot.cell, self.sc.cell))
 
