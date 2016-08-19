@@ -70,7 +70,29 @@ class FDFSile(SileSIESTA):
         
         return l
 
+    def type(self, key):
+        """ Return the type of the fdf-keyword """
+        found, fdf = self._read(key)
+        if not found:
+            return None
 
+        if fdf.startswith('%block'):
+            return 'B'
+
+        # Grab the entire line (beside the key)
+        fdf = fdf.split()[1:]
+        if len(fdf) == 1:
+            fdf = fdf[0].lower()
+            if fdf in ['.true.','.false.','true','false','yes','no','y','n','t','f']:
+                return 'b'
+
+            if '.' in fdf:
+                return 'r'
+            return 'i'
+
+        return 'n'
+
+            
     def get(self, key, unit=None, default=None):
         """ Retrieve fdf-keyword from the file """
         
@@ -80,11 +102,20 @@ class FDFSile(SileSIESTA):
 
         # The keyword is found...
         if fdf.startswith('%block'):
-            return self._read_block(key)
+            found, fdf = self._read_block(key)
+            if not found:
+                return default
+            else:
+                return fdf
 
         # The keyword is correct and we now should possibly
         # convert the unit...
-        return fdf.split()[1:]
+        return fdf.split()
+
+
+    def set(self, key, value):
+        """ Add the key and value to the FDF file """
+        raise NotImplementedError("Setting a fdf key is not yet implemented")
 
 
     @Sile_fh_open
@@ -343,6 +374,69 @@ class FDFSile(SileSIESTA):
 
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
+
+
+    
+    def ArgumentParser(self, parser=None, *args, **kwargs):
+        """ Returns the arguments that is available for this Sile """
+        import argparse as arg
+
+        try:
+            geom = self.read_geom()
+            p, namespace = geom.ArgumentParser(parser=parser, *args, **kwargs)
+        except:
+            # In case the fdf does not hold the geometry, we allow the
+            # 
+            # Create the parser and the custom namespace
+            if parser is None:
+                p = arg.ArgumentParser("Manipulate a FDF file.")
+            else:
+                p = parser
+            class CustomNamespace(object):
+                pass
+            namespace = CustomNamespace()
+
+        namespace._FDF = self
+        namespace._first_fdf = True
+
+        # As the fdf may provide additional stuff, we do not add EVERYTHING from
+        # the Geometry class.
+        class FDFAdd(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                key = values[0]
+                val = values[1]
+                if ns._first_fdf:
+                    # Append to the end of the file
+                    with ns._FDF as fd:
+                        fd.write('\n\n# SISL added keywords\n')
+                    setattr(ns, '_first_fdf', False)
+                ns._FDF.set(key, val)
+        #p.add_argument('--fdf-add', nargs=2, metavar=('KEY', 'VALUE'),
+        #               action=FDFAdd,
+        #               help='Add a key to the FDF file. If it already exists it will be overwritten')
+
+        class FDFGet(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                val = ns._FDF.get(value[0])
+                if val is None:
+                    print('# {} is currently not in the FDF file '.format(value[0]))
+                    return
+                    
+                # if the value has any new-values
+                has_nl = False
+                for v in val:
+                    if '\n' in v:
+                        has_nl = True
+                        break
+                if not has_nl:
+                    print('{} {}'.format(val[0], ' '.join(val[1:])) )
+                else:
+                    print('{}\n'.format(val[0]) + ' '.join(val[1:]) )
+        p.add_argument('--fdf', nargs=1, metavar='KEY',
+                       action=FDFGet,
+                       help='Print (to stdout) the value of the key in the FDF file.')
+        
+        return p, namespace
 
 
 add_sile('fdf', FDFSile, case=False, gzip=True)

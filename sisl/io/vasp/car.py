@@ -134,6 +134,12 @@ class CARSile(SileVASP):
         # The POT/CONT-CAR does not contain information on the atomic species
         return Geometry(xyz=xyz, atom=atom, sc=sc)
 
+    def ArgumentParser(self, *args, **kwargs):
+        """ Returns the arguments that is available for this Sile """
+        newkw = Geometry._ArgumentParser_args_single()
+        newkw.update(kwargs)
+        return self.read_geom().ArgumentParser(*args, **newkw)
+
 
 # Equivalent classes
 class POSCARSile(CARSile):

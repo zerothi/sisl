@@ -589,6 +589,13 @@ class TBtransSile(SileCDFSIESTA):
         return Ja
 
 
+    def ArgumentParser(self, *args, **kwargs):
+        """ Returns the arguments that is available for this Sile """
+        newkw = Geometry._ArgumentParser_args_single()
+        newkw.update(kwargs)
+        return self.read_geom().ArgumentParser(*args, **newkw)
+
+
 add_sile('TBT.nc', TBtransSile)
 
 class PHtransSile(TBtransSile):

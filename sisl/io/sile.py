@@ -212,6 +212,22 @@ class BaseSile(object):
             raise AttributeError("The filehandle has not been opened yet...")
         return getattr(self.fh, name)
 
+    @classmethod
+    def _ArgumentParser_args_single(cls):
+        """ Default arguments for the Sile """
+        return {}
+
+    # Define the custom ArgumentParser
+    def ArgumentParser(self, parser=None, *args, **kwargs):
+        """ Returns the arguments that may be available for this Sile
+
+        Parameters
+        ----------
+        parser: ArgumentParser
+           the argument parser to add the arguments to.
+        """
+        raise NotImplementedError("The ArgumentParser of '"+self.__class__.__name__+"' has not been implemented yet.")
+
         
 def Sile_fh_open(func):
     """ Method decorator for objects to directly implement opening of the

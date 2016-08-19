@@ -84,5 +84,11 @@ class XVSile(SileSIESTA):
 
         return Geometry(xyz, atms, sc=sc)
 
+    def ArgumentParser(self, *args, **kwargs):
+        """ Returns the arguments that is available for this Sile """
+        newkw = Geometry._ArgumentParser_args_single()
+        newkw.update(kwargs)
+        return self.read_geom().ArgumentParser(*args, **newkw)
+
 
 add_sile('XV', XVSile, gzip=True)

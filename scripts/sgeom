@@ -44,10 +44,6 @@ will be repeated 2 times along the second lattice vector, and then the first
 lattice vector.
     """.format(osp.basename(sys.argv[0]))
 
-    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files.',
-                           formatter_class=arg.RawDescriptionHelpFormatter,
-                           description=description)
-
     argv = sys.argv[1:]
     
     if len(argv) >= 1:
@@ -65,10 +61,14 @@ lattice vector.
             # The file that the user request, does not exist
             raise ValueError("File: '"+geom_file+"' cannot be found. Please supply a readable file!")
 
+    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files.',
+                           formatter_class=arg.RawDescriptionHelpFormatter,
+                           description=description)
+
     # We are good to go!!!
 
     # Append the geometry arguments from the object
-    namespace = geom.ArgumentParser(p, limit_arguments=False, short=True, positional_out=True)
+    p, namespace = geom.ArgumentParser(p, **sisl.Geometry._ArgumentParser_args_single())
 
     args = p.parse_args(argv, namespace=namespace)
     g = args._G
@@ -85,6 +85,7 @@ lattice vector.
         for ia in g:
             print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atom[ia].Z,
                                                                   *g.xyz[ia,:]))
+
 
 if __name__ == "__main__":
     run()

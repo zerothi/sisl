@@ -355,4 +355,11 @@ class SIESTASile(SileCDFSIESTA):
         v[:] = np.zeros([3], np.float64)
 
 
+    def ArgumentParser(self, *args, **kwargs):
+        """ Returns the arguments that is available for this Sile """
+        newkw = Geometry._ArgumentParser_args_single()
+        newkw.update(kwargs)
+        return self.read_geom().ArgumentParser(*args, **newkw)
+
+    
 add_sile('nc', SIESTASile)

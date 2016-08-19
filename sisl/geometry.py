@@ -1345,7 +1345,14 @@ class Geometry(SuperCellChild):
         self.__init__(d['xyz'], d['atom'], sc=sc)
 
 
-    #
+    @classmethod
+    def _ArgumentParser_args_single(cls):
+        """ Returns the options for `Geometry.ArgumentParser` in case they are the only options """
+        return {'limit_arguments' : False,
+                'short'           : True,
+                'positional_out'  : True,
+            }
+
     # Hook into the Geometry class to create
     # an automatic ArgumentParser which makes actions
     # as the options are read.
@@ -1503,6 +1510,16 @@ class Geometry(SuperCellChild):
                        action=ReduceCut,
                        help='Cuts the geometry into `seps` parts along the unit-cell direction `dir`.')
 
+        # Add an atom
+        class AtomAdd(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                # Create an atom from the input
+                g = Geometry(map(float, values[0].split(',')), atom=Atom(values[1]))
+                ns._G = ns._G.add(g)
+        p.add_argument(*opts('--add'),nargs=2,metavar=('COORD','Z'),
+                       action=AtomAdd,
+                       help='Adds an atom, coordinate is comma separated (in Ang). Z is the atomic number.')
+
 
         # Periodicly increase the structure
         class PeriodRepeat(arg.Action):
@@ -1588,7 +1605,4 @@ class Geometry(SuperCellChild):
                            help='Store the geometry (at its current invocation) to the out file.')
             
         # We have now created all arguments
-        if parser is None:
-            return p, CNs
-        else:
-            return CNs
+        return p, CNs

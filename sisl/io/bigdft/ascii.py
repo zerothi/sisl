@@ -146,8 +146,7 @@ class BigDFTASCIISile(SileBigDFT):
         self._write('# Geometry containing: ' + str(len(geom)) + ' atoms\n')
 
         f1_str = '{{1:{0}}}  {{2:{0}}}  {{3:{0}}} {{0:2s}}\n'.format(fmt)
-        f2_str = '{{2:{0}}}  {{3:{0}}}  {{4:{0}}} {{0:2s}} {{1:s}}\n'.format(
-            fmt)
+        f2_str = '{{2:{0}}}  {{3:{0}}}  {{4:{0}}} {{0:2s}} {{1:s}}\n'.format(fmt)
 
         for ia, a, isp in geom.iter_species():
             if a.symbol != a.tag:
@@ -156,6 +155,13 @@ class BigDFTASCIISile(SileBigDFT):
                 self._write(f1_str.format(a.symbol, *geom.xyz[ia, :]))
         # Add a single new line
         self._write('\n')
+
+
+    def ArgumentParser(self, *args, **kwargs):
+        """ Returns the arguments that is available for this Sile """
+        newkw = Geometry._ArgumentParser_args_single()
+        newkw.update(kwargs)
+        return self.read_geom().ArgumentParser(*args, **newkw)
 
 
 add_sile('ascii', BigDFTASCIISile, case=False, gzip=True)

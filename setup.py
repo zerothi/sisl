@@ -51,7 +51,7 @@ def generate_cython():
     if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
-scripts = ['sgeom', 'sgrid']
+scripts = ['sgeom', 'sgrid', 'sdata']
 
 scripts = [osp.join('scripts', script) for script in scripts]
 

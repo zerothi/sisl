@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+"""
+Easy conversion of data from different formats to other formats.
+"""
+from __future__ import print_function, division
+
+import sys, os, os.path as osp
+import argparse as arg
+
+import sisl
+
+def run():
+
+    # The file *MUST* be the first argument
+    # (except --help|-h)
+
+    # We cannot create a separate ArgumentParser to retrieve a positional arguments
+    # as that will grab the first argument for an option!
+
+    # Start creating the command-line utilities that are the actual ones.
+    description = """
+This manipulation utility can handle nearly all files in the sisl code in
+changing ways. It handles files dependent on type AND content.
+    """.format(osp.basename(sys.argv[0]))
+
+    argv = sys.argv[1:]
+    
+    if len(argv) >= 1:
+        # Get the file
+        input_file = argv[0]
+
+        is_file = osp.isfile(input_file)
+        if is_file:
+            obj = sisl.get_sile(input_file)
+            argv.pop(0)
+        elif ('-h' in argv) or ('--help' in argv):
+            # Fake help...
+            description += """
+
+One *must* supply a file before a help menu can be generated.
+The help menu depends on the type of Sile that is specified.
+"""
+        else:
+            # The file that the user request, does not exist
+            raise ValueError("File: '"+input_file+"' cannot be found. Please supply a readable file!")
+
+    p = arg.ArgumentParser("Manipulates sisl Sile's for manipulation.",
+                           formatter_class=arg.RawDescriptionHelpFormatter,
+                           description=description)
+
+    # We are good to go!!!
+
+    # Append the geometry arguments from the object
+    p, namespace = obj.ArgumentParser(p, **obj._ArgumentParser_args_single())
+
+    args = p.parse_args(argv, namespace=namespace)
+
+
+if __name__ == "__main__":
+    run()
