@@ -6,6 +6,7 @@ import gzip
 import numpy as np
 
 from sisl import Geometry
+from sisl.utils.misc import name_spec
 from ._help import *
 
 
@@ -172,19 +173,11 @@ def get_sile(file, *args, **kwargs):
     global __sile_rules, __siles
     
     cls = kwargs.pop('cls', None)
-    # First figure out if the class is specified in the
-    fcls = file.split('{')
-    if len(fcls) > 1:
-        # There *must* be more than one clas
-        fcls = fcls[-1].split('}')
-        if len(fcls) == 2:
-            # this should then be:
-            #   fcl[0] == class-name
-            fcls = fcls[0]
-        else:
-            fcls = None
-    else:
-        fcls = None
+    
+    # Split filename into proper file name and
+    # the specification of the type
+    tmp_file, fcls = name_spec(file)
+
     if cls is None and not fcls is None:
         # cls has not been set, and fcls is found
         # Figure out if fcls is a valid sile, if not
@@ -195,7 +188,7 @@ def get_sile(file, *args, **kwargs):
                 cls = sile
                 # Make sure that {class-name} is
                 # removed from the file name
-                file = '{'.join(file.split('{')[:-1])
+                file = tmp_file
                 break
 
     try:
@@ -217,8 +210,10 @@ def get_sile(file, *args, **kwargs):
         # We also check the entire file name
         #  (mainly for VASP)
         end_list.append(f)
-        end_list = reversed(end_list)
-
+        # Reverse to start by the longest extension
+        # (allows grid.nc extensions, etc.)
+        end_list = list(reversed(end_list))
+        
         # First we check for class AND file ending
         for end in end_list:
             for suf, base, fobj in __sile_rules:
@@ -233,13 +228,9 @@ def get_sile(file, *args, **kwargs):
         # now only the base-class is necessary.
         for end in end_list:
 
-            # Check for ending and possibly
-            # return object
+            # Check for object
             for suf, base, fobj in __sile_rules:
-                if cls is None:
-                    if end == suf:
-                        return fobj(file, *args, **kwargs)
-                elif cls == base:
+                if cls == base:
                     return fobj(file, *args, **kwargs)
 
         del end_list

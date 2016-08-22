@@ -27,6 +27,28 @@ def merge_instances(*args, **kwargs):
     return m
 
 
+def name_spec(name):
+    """ Checks whether `s` ends with `{..}`. Returns the split instances.
+    
+    Parameters
+    ----------
+    name: str
+       string to split into proper `name` and specification
+
+    Examples
+    --------
+    >>> name_spec('hello')
+    'hello', None
+    >>> name_spec('hello{TEST}')
+    'hello', 'TEST'
+    """
+    if not name.endswith('}'):
+        return name, None
+
+    lname = name[:-1].split('{')
+    return '{'.join(lname[:-1]), lname[-1] 
+
+
 # Transform a string to a Cartesian direction
 def dir2dir(d):
     """ Return the index of the direction that the input represents

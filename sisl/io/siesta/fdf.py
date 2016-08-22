@@ -15,6 +15,8 @@ from sisl.io._help import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 
+from sisl.utils.misc import name_spec
+
 from sisl.units import unit_default, unit_group
 from sisl.units.siesta import unit_convert
 
@@ -114,6 +116,11 @@ class FDFSile(SileSIESTA):
     def get(self, key, unit=None, default=None, with_unit=False):
         """ Retrieve fdf-keyword from the file """
 
+        # First split into specification and key
+        key, tmp_unit = name_spec(key)
+        if unit is None:
+            unit = tmp_unit
+
         found, fdf = self._read(key)
         if not found:
             return default
@@ -144,15 +151,19 @@ class FDFSile(SileSIESTA):
         # It is something different.
         # Try and figure out what it is
         if len(fdfl) == 3:
-            if with_unit:
-                return ' '.join(fdfl[1:])
-            
             # We expect it to be a unit
             if unit is None:
                 # Get group of unit
                 group = unit_group(fdfl[2])
                 # return in default sisl units
                 unit = unit_default(group)
+
+            if with_unit and tmp_unit is not None:
+                # The user has specifically requested the unit
+                return '{0:.4f} {1}'.format(float(fdfl[1]) * unit_convert(fdfl[2], unit), unit)
+            elif with_unit:
+                return ' '.join(fdfl[1:])
+            
             return float(fdfl[1]) * unit_convert(fdfl[2], unit)
         return ' '.join(fdfl[1:])
 
