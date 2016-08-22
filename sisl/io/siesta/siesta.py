@@ -9,13 +9,15 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell, Grid
-from sisl import Bohr, Ry
+from sisl.units.siesta import unit_convert
 from sisl.quantity import Hamiltonian
 
 import numpy as np
 
 __all__ = ['SIESTASile']
 
+Bohr2Ang = unit_convert('Bohr', 'Ang')
+Ry2eV = unit_convert('Ry', 'eV')
 
 class SIESTASile(SileCDFSIESTA):
     """ SIESTA file object """
@@ -27,7 +29,7 @@ class SIESTASile(SileCDFSIESTA):
         """
         cell = np.array(self.variables['cell'][:], np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
-        cell = cell / Bohr
+        cell *= Bohr2Ang
         cell.shape = (3, 3)
 
         nsc = np.array(self.variables['nsc'][:], np.int32)
@@ -74,7 +76,7 @@ class SIESTASile(SileCDFSIESTA):
         else:
             atom = Atom[1]
 
-        xyz /= Bohr
+        xyz *= Bohr2Ang
 
         # Create and return geometry object
         geom = Geometry(xyz, atom, sc=sc)
@@ -106,7 +108,7 @@ class SIESTASile(SileCDFSIESTA):
         ham = Hamiltonian(geom, nnzpr=1, ortho=False, spin=spin)
 
         # Use Ef to move H to Ef = 0
-        Ef = float(self.variables['Ef'][0]) / Ry ** ham._E_order
+        Ef = float(self.variables['Ef'][0]) * Ry2eV ** ham._E_order
         S = np.array(sp.variables['S'][:], np.float64)
 
         ncol = np.array(sp.variables['n_col'][:], np.int32)
@@ -122,7 +124,7 @@ class SIESTASile(SileCDFSIESTA):
         
         # Create new container
         H = np.array(sp.variables['H'][ispin, :],
-                     np.float64) / Ry ** ham._E_order
+                     np.float64) * Ry2eV ** ham._E_order
         # Correct for the Fermi-level, Ef == 0
         H -= Ef * S[:]
         
@@ -131,14 +133,14 @@ class SIESTASile(SileCDFSIESTA):
             for i in range(spin):
                 # Create new container
                 H = np.array(sp.variables['H'][i, :],
-                             np.float64) / Ry ** ham._E_order
+                             np.float64) * Ry2eV ** ham._E_order
                 # Correct for the Fermi-level, Ef == 0
                 H -= Ef * S[:]
                 ham._data._D[:, i] = H[:]
         else:
             # Create new container
             H = np.array(sp.variables['H'][ispin, :],
-                         np.float64) / Ry ** ham._E_order
+                         np.float64) * Ry2eV ** ham._E_order
             # Correct for the Fermi-level, Ef == 0
             H -= Ef * S[:]
             ham._data._D[:, 0] = H[:]
@@ -189,7 +191,7 @@ class SIESTASile(SileCDFSIESTA):
             u = v.unit
             if u == 'Ry':
                 # Convert to ev
-                grid /= Ry
+                grid *= Ry2eV
         except:
             # Simply, we have no units
             pass
@@ -233,8 +235,8 @@ class SIESTASile(SileCDFSIESTA):
 
         # Save stuff
         self.variables['nsc'][:] = geom.nsc
-        self.variables['xa'][:] = geom.xyz * Bohr
-        self.variables['cell'][:] = geom.cell * Bohr
+        self.variables['xa'][:] = geom.xyz / Bohr2Ang
+        self.variables['cell'][:] = geom.cell / Bohr2Ang
 
         # Create basis group
         bs = self._crt_grp(self, 'BASIS')
@@ -294,7 +296,7 @@ class SIESTASile(SileCDFSIESTA):
         v.unit = 'Ry'
         v[:] = 0.
         if 'Ef' in kwargs:
-            v[:] = kwargs['Ef'] * Ry ** ham._E_order
+            v[:] = kwargs['Ef'] / Ry2eV ** ham._E_order
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
         v[:] = 0.
@@ -338,14 +340,14 @@ class SIESTASile(SileCDFSIESTA):
         v.info = "Hamiltonian"
         v.unit = "Ry"
         for i in range(ham._spin):
-            v[i, :] = ham._data._D[:, i] * Ry ** ham._E_order
+            v[i, :] = ham._data._D[:, i] / Ry2eV ** ham._E_order
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')
         v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
         v.info = "Electronic temperature used for smearing DOS"
         v.unit = "Ry"
-        v[:] = 0.025 * Ry
+        v[:] = 0.025 / Ry2eV
         v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
         v.info = "Grid used for the Brillouin zone integration"
         v[:] = np.identity(3) * 2

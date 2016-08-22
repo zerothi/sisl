@@ -10,11 +10,13 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl import Bohr
+from sisl.units import unit_convert
 
 import numpy as np
 
 __all__ = ['BigDFTASCIISile']
+
+Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class BigDFTASCIISile(SileBigDFT):
@@ -91,13 +93,13 @@ class BigDFTASCIISile(SileBigDFT):
             pass
 
         if is_bohr:
-            dxx /= Bohr
-            dyx /= Bohr
-            dyy /= Bohr
+            dxx *= Bohr2Ang
+            dyx *= Bohr2Ang
+            dyy *= Bohr2Ang
             if not is_angdeg:
-                dzx /= Bohr
-                dzy /= Bohr
-                dzz /= Bohr
+                dzx *= Bohr2Ang
+                dzy *= Bohr2Ang
+                dzz *= Bohr2Ang
 
         # Create the supercell
         if is_angdeg:
@@ -118,7 +120,7 @@ class BigDFTASCIISile(SileBigDFT):
             # Not when fractional coordinates are used
             # the supercell conversion takes care of
             # correct unit
-            xyz /= Bohr
+            xyz *= Bohr2Ang
 
         return Geometry(xyz, spec, sc=sc)
 

@@ -447,6 +447,7 @@ class Grid(SuperCellChild):
 
     def __repr__(self):
         """ Representation of object """
+        
         return 'Grid[{} {} {}]'.format(*self.shape)
 
     def _check_compatibility(self, other, msg):
@@ -561,3 +562,128 @@ class Grid(SuperCellChild):
         else:
             self.grid *= other
         return self
+
+
+    @classmethod
+    def _ArgumentParser_args_single(cls):
+        """ Returns the options for `Grid.ArgumentParser` in case they are the only options """
+        return {'limit_arguments' : False,
+                'short'           : True,
+                'positional_out'  : True,
+            }
+
+    # Hook into the Grid class to create
+    # an automatic ArgumentParser which makes actions
+    # as the options are read.
+    def ArgumentParser(self, parser=None, *args, **kwargs):
+        """ Create and return a group of argument parsers which manipulates it self `Grid`. 
+
+        Parameters
+        ----------
+        parser: ArgumentParser, None
+           in case the arguments should be added to a specific parser. It defaults
+           to create a new.
+        limit_arguments: bool, True
+           If `False` additional options will be created which are similar to other options.
+           For instance `--repeat-x` which is equivalent to `--repeat x`.
+        short: bool, False
+           Create short options for a selected range of options
+        positional_out: bool, False
+           If `True`, adds a positional argument which acts as --out. This may be handy if only the geometry is in the argument list.
+        """
+
+        limit_args = kwargs.get('limit_arguments', True)
+        short = kwargs.get('short', False)
+
+        def opts(*args):
+            if short:
+                return args
+            return [args[0]]
+        
+        # We limit the import to occur here
+        import argparse as arg
+
+        if parser is None:
+            p = arg.ArgumentParser("Manipulate a Grid object in sisl.")
+        else:
+            p = parser
+
+        # The first thing we do is adding the Grid to the NameSpace of the
+        # parser.
+        # This will enable custom actions to interact with the grid in a
+        # straight forward manner.
+        class CustomNamespace(object):
+            pass
+        namespace = CustomNamespace()
+        # We act on a copy of it-self.
+        # This is because some options change the geometry
+        # in-line, while others makes a new copy.
+        # So might as well limit to only a copy.
+        namespace._grid = self.copy()
+        # This may be used to check whether any --out has been issued.
+        namespace.grid_stored = False
+
+        # Define actions
+        class SetGeometry(arg.action):
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._grid.set_geom(Geometry.read(value))
+        p.add_argument(*opts('--geometry','-G'), action=SetGeometry, nargs=1,
+                   help='Define the geometry attached to the Grid.')
+
+        # Define size of grid
+        class InterpGrid(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                ns._grid = ns._grid.interp(map(int, values))
+        p.add_argument(*opts('--interp'), nargs=3,
+                       action=InterpGrid,
+                       help='Interpolate the grid.')
+
+
+        # substract another grid
+        # They *MUST* be conmensurate.
+        class DiffGrid(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                grid = Grid.read(value)
+                ns._grid -= grid
+        p.add_argument(*opts('--diff','-d'), nargs=1,
+                       action=DiffGrid,
+                       help='Subtract another grid.')
+
+
+        class AverageGrid(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._grid = ns._grid.average(dir2dir(value))
+        p.add_argument(*opts('--average'), nargs=1, metavar='DIR',
+                       action=AverageGrid,
+                       help='Take the average of the grid along DIR.')
+
+        
+        
+        # Define size of grid
+        class PrintInfo(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                print(ns._grid)
+        p.add_argument(*opts('--info'), nargs=0,
+                       action=PrintInfo,
+                       help='Print, to stdout, some regular information about the grid.')
+
+        class Out(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                if value is None:
+                    return
+                if len(value) == 0:
+                    return
+                ns._grid.write(value[0])
+                # Issue to the namespace that the geometry has been written, at least once.
+                setattr(ns, 'grid_stored', True)
+        p.add_argument(*opts('--out','-o'), nargs=1, action=Out,
+                       help='Store the grid (at its current invocation) to the out file.')
+
+        # If the user requests positional out arguments, we also add that.
+        if kwargs.get('positional_out', False):
+            p.add_argument('out', nargs='*',default=None,
+                           action=Out,
+                           help='Store the grid (at its current invocation) to the out file.')
+            
+        # We have now created all arguments
+        return p, namespace

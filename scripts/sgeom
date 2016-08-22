@@ -44,15 +44,26 @@ will be repeated 2 times along the second lattice vector, and then the first
 lattice vector.
     """.format(osp.basename(sys.argv[0]))
 
-    argv = sys.argv[1:]
+    if len(sys.argv) == 1:
+        # no arguments
+        # fake a help
+        argv = ['--help']
+    else:
+        argv = sys.argv[1:]
+
     
     if len(argv) >= 1:
         # Get the file
         geom_file = argv[0]
+        try:
+            geom_sile = sisl.get_sile(geom_file)
+            is_file = True
+        except:
+            geom_sile = geom_file
+            is_file = osp.isfile(geom_file)
 
-        is_file = osp.isfile(geom_file)
         if is_file:
-            geom = sisl.Geometry.read(geom_file)
+            geom = sisl.Geometry.read(geom_sile)
             argv.pop(0)
         elif ('-h' in argv) or ('--help' in argv):
             # Fake help...
@@ -71,7 +82,7 @@ lattice vector.
     p, namespace = geom.ArgumentParser(p, **sisl.Geometry._ArgumentParser_args_single())
 
     args = p.parse_args(argv, namespace=namespace)
-    g = args._G
+    g = args._geometry
 
     if not args.geometry_stored:
         # We should write out the information to the stdout

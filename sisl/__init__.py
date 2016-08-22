@@ -9,10 +9,10 @@ from .version import major as __major__
 from .version import minor as __minor__
 from .version import micro as __micro__
 
-# load the units
-from .units import *
-
 # load the most commonly, and basic classes
+# The units contain the SI standard conversions using
+# all digits (not program specific)
+from .units import *
 from .quaternion import *
 
 from .supercell import *

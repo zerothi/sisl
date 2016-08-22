@@ -9,11 +9,14 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl import Ry, Bohr
+from sisl.units import unit_convert
 
 import numpy as np
 
 __all__ = ['GULPHessianSile']
+
+eV2Ry = unit_convert('eV', 'Ry')
+Ang2Bohr = unit_convert('Ang', 'Bohr')
 
 
 class GULPHessianSile(SileGULP):
@@ -68,7 +71,7 @@ class GULPHessianSile(SileGULP):
         dyn = dyn.tocoo()
         
         # Convert the 2ND data to standard units
-        dyn.data[:] /= Ry / Bohr ** 2
+        dyn.data[:] /= eV2Ry / Ang2Bohr ** 2
 
         return dyn
 

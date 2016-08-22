@@ -18,11 +18,14 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl import Ry, Bohr
+from sisl.units.siesta import unit_convert
 
 __all__ = ['TBtransSile', 'PHtransSile']
 
 __all__ += ['TBtransdHSile']
+
+Bohr2Ang = unit_convert('Bohr', 'Ang')
+Ry2eV = unit_convert('Ry', 'eV')
 
 
 class TBtransSile(SileCDFSIESTA):
@@ -215,7 +218,7 @@ class TBtransSile(SileCDFSIESTA):
     @property
     def cell(self):
         """ Unit cell in file """
-        return self._data('cell') / Bohr
+        return self._data('cell') * Bohr2Ang
 
     @property
     def na(self):
@@ -232,7 +235,7 @@ class TBtransSile(SileCDFSIESTA):
     @property
     def xa(self):
         """ Atomic coordinates in file """
-        return self._data('xa') / Bohr
+        return self._data('xa') * Bohr2Ang
     xyz = xa
 
     # Device atoms and other quantities
@@ -282,14 +285,13 @@ class TBtransSile(SileCDFSIESTA):
     @property
     def E(self):
         """ Sampled energy-points in file """
-        return self._data('E') / Ry
+        return self._data('E') * Ry2eV
 
     def E2idx(self, E):
         """ Return the closest energy index corresponding to the energy `E`"""
         if isinstance(E, Integral):
             return E
-        RyE = E * Ry
-        return np.abs(self._data('E') - RyE).argmin()
+        return np.abs(self._data('E') - E / Ry2eV).argmin()
 
     @property
     def ne(self):
@@ -642,8 +644,8 @@ class TBtransdHSile(SileCDFSIESTA):
 
         # Save stuff
         self.variables['nsc'][:] = geom.nsc
-        self.variables['xa'][:] = geom.xyz * Bohr
-        self.variables['cell'][:] = geom.cell * Bohr
+        self.variables['xa'][:] = geom.xyz / Bohr2Ang
+        self.variables['cell'][:] = geom.cell / Bohr2Ang
 
         bs = self._crt_grp(self, 'BASIS')
         b = self._crt_var(bs, 'basis', 'i4', ('na_u',))
@@ -765,7 +767,7 @@ class TBtransdHSile(SileCDFSIESTA):
 
         warn_E = True
         if ilvl in [3,4]:
-            Es = np.array(lvl.variables['E'][:]) * Ry
+            Es = np.array(lvl.variables['E'][:]) / Ry2eV
 
             iE = 0
             if len(Es) > 0:
@@ -775,7 +777,7 @@ class TBtransdHSile(SileCDFSIESTA):
 
                     # create a new entry
                     iE = len(Es)
-                    lvl.variables['E'][iE] = E / Ry
+                    lvl.variables['E'][iE] = E * Ry2eV
                     warn_E = False
             else:
                 warn_E = False
@@ -840,7 +842,7 @@ class TBtransdHSile(SileCDFSIESTA):
                                        'unit' : "Ry"}, **self._cmp_args)
             for i in range(ham.spin):
                 sl[-2] = i
-                v1[sl] = ham._data._D[:, i].real * Ry ** ham._E_order
+                v1[sl] = ham._data._D[:, i].real / Ry2eV ** ham._E_order
 
             v2 = self._crt_var(lvl, 'ImdH', 'f8', dim,
                                chunksizes=csize, 
@@ -848,7 +850,7 @@ class TBtransdHSile(SileCDFSIESTA):
                                        'unit' : "Ry"}, **self._cmp_args)
             for i in range(ham.spin):
                 sl[-2] = i
-                v2[sl] = ham._data._D[:, i].imag * Ry ** ham._E_order
+                v2[sl] = ham._data._D[:, i].imag / Ry2eV ** ham._E_order
 
         else:
             v = self._crt_var(lvl, 'dH', 'f8', dim,
@@ -857,7 +859,7 @@ class TBtransdHSile(SileCDFSIESTA):
                                       'unit' : "Ry"},  **self._cmp_args)
             for i in range(ham.spin):
                 sl[-2] = i
-                v[sl] = ham._data._D[:, i] * Ry ** ham._E_order
+                v[sl] = ham._data._D[:, i] / Ry2eV ** ham._E_order
 
 
 add_sile('dH.nc', TBtransdHSile)

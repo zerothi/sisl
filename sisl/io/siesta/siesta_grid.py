@@ -11,9 +11,11 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, SuperCell, Grid
-from sisl import Bohr
+from sisl.units.siesta import unit_convert
 
 __all__ = ['SIESTAGridSile']
+
+Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class SIESTAGridSile(SileCDFSIESTA):
@@ -25,7 +27,7 @@ class SIESTAGridSile(SileCDFSIESTA):
         """
         cell = np.array(self.variables['cell'][:], np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
-        cell = cell / Bohr
+        cell *= Bohr2Ang
         cell.shape = (3, 3)
 
         return SuperCell(cell)

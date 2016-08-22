@@ -14,9 +14,18 @@ from sisl.io._help import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl import Bohr
+
+from sisl.units import unit_default, unit_group
+from sisl.units.siesta import unit_convert
 
 __all__ = ['FDFSile']
+
+
+_LOGICAL_TRUE  = ['.true.','true','yes','y','t']
+_LOGICAL_FALSE = ['.false.','false','no','n','f']
+_LOGICAL = _LOGICAL_FALSE + _LOGICAL_TRUE
+
+Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class FDFSile(SileSIESTA):
@@ -83,7 +92,7 @@ class FDFSile(SileSIESTA):
         fdf = fdf.split()[1:]
         if len(fdf) == 1:
             fdf = fdf[0].lower()
-            if fdf in ['.true.','.false.','true','false','yes','no','y','n','t','f']:
+            if fdf in __LOGICAL:
                 return 'b'
 
             if '.' in fdf:
@@ -92,10 +101,19 @@ class FDFSile(SileSIESTA):
 
         return 'n'
 
-            
-    def get(self, key, unit=None, default=None):
-        """ Retrieve fdf-keyword from the file """
+    
+    def key(self, key):
+        """ Return the key as written in the fdf-file. If not found, returns `None`. """
+        found, fdf = self._read(key)
+        if found:
+            return fdf.split()[0]
+        else:
+            return None
+
         
+    def get(self, key, unit=None, default=None, with_unit=False):
+        """ Retrieve fdf-keyword from the file """
+
         found, fdf = self._read(key)
         if not found:
             return default
@@ -108,9 +126,35 @@ class FDFSile(SileSIESTA):
             else:
                 return fdf
 
-        # The keyword is correct and we now should possibly
-        # convert the unit...
-        return fdf.split()
+        # We need to process the returned value further.
+        fdfl = fdf.split()
+        if len(fdfl) == 1:
+            # This *MUST* be a boolean
+            #   SCF.Converge.H
+            # defaults to .true.
+            return True
+
+        # Check whether this is a logical
+        # flag
+        if fdfl[1] in _LOGICAL_TRUE:
+            return True
+        elif fdfl[1] in _LOGICAL_FALSE:
+            return False
+        
+        # It is something different.
+        # Try and figure out what it is
+        if len(fdfl) == 3:
+            if with_unit:
+                return ' '.join(fdfl[1:])
+            
+            # We expect it to be a unit
+            if unit is None:
+                # Get group of unit
+                group = unit_group(fdfl[2])
+                # return in default sisl units
+                unit = unit_default(group)
+            return float(fdfl[1]) * unit_convert(fdfl[2], unit)
+        return ' '.join(fdfl[1:])
 
 
     def set(self, key, value):
@@ -210,7 +254,7 @@ class FDFSile(SileSIESTA):
         if 'ang' in lc.lower():
             pass
         elif 'bohr' in lc.lower():
-            s /= Bohr
+            s *= Bohr2Ang
 
         # Read in cell
         cell = np.empty([3, 3], np.float64)
@@ -247,7 +291,7 @@ class FDFSile(SileSIESTA):
         if 'ang' in lc.lower():
             pass
         elif 'bohr' in lc.lower():
-            s /= Bohr
+            s *= Bohr2Ang
 
         sc = self.read_sc(*args, **kwargs)
 
@@ -264,7 +308,7 @@ class FDFSile(SileSIESTA):
             s = 1.
             pass
         elif 'bohr' in lc or 'notscaledcartesianbohr' in lc:
-            s = Bohr
+            s = Bohr2Ang
         elif 'scaledcartesian' in lc:
             # the same scaling as the lattice-vectors
             pass
@@ -417,21 +461,27 @@ class FDFSile(SileSIESTA):
 
         class FDFGet(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                val = ns._FDF.get(value[0])
+                # Retrieve the value in standard units
+                # Currently, we write out the unit "as-is"
+                val = ns._FDF.get(value[0], with_unit = True)
                 if val is None:
                     print('# {} is currently not in the FDF file '.format(value[0]))
                     return
-                    
-                # if the value has any new-values
-                has_nl = False
-                for v in val:
-                    if '\n' in v:
-                        has_nl = True
-                        break
-                if not has_nl:
-                    print('{} {}'.format(val[0], ' '.join(val[1:])) )
+
+                if isinstance(val, list):
+                    # if the value has any new-values
+                    has_nl = False
+                    for v in val:
+                        if '\n' in v:
+                            has_nl = True
+                            break
+                    if not has_nl:
+                        print('{} {}'.format(val[0], ' '.join(val[1:])) )
+                    else:
+                        print('{}\n'.format(val[0]) + '\n'.join(val[1:]) )
                 else:
-                    print('{}\n'.format(val[0]) + ' '.join(val[1:]) )
+                    print('{}'.format(val))
+
         p.add_argument('--fdf', nargs=1, metavar='KEY',
                        action=FDFGet,
                        help='Print (to stdout) the value of the key in the FDF file.')

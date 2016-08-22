@@ -23,14 +23,19 @@ This manipulation utility can handle nearly all files in the sisl code in
 changing ways. It handles files dependent on type AND content.
     """.format(osp.basename(sys.argv[0]))
 
-    argv = sys.argv[1:]
+    if len(sys.argv) == 1:
+        # no arguments
+        # fake a help
+        argv = ['--help']
+    else:
+        argv = sys.argv[1:]
+
     
     if len(argv) >= 1:
         # Get the file
         input_file = argv[0]
 
-        is_file = osp.isfile(input_file)
-        if is_file:
+        if osp.isfile(input_file):
             obj = sisl.get_sile(input_file)
             argv.pop(0)
         elif ('-h' in argv) or ('--help' in argv):

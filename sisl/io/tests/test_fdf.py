@@ -30,9 +30,9 @@ class TestFDF(object):
             fdf.readline()
             
             # Be sure that we can read it in a loop
-            assert_true(fdf.get('LatticeConstant')[0])
-            assert_true(fdf.get('LatticeConstant')[0])
-            assert_true(fdf.get('LatticeConstant')[0])
+            assert_true(fdf.get('LatticeConstant') > 0.)
+            assert_true(fdf.get('LatticeConstant') > 0.)
+            assert_true(fdf.get('LatticeConstant') > 0.)
 
             fdf.read_sc()
             fdf.read_geom()

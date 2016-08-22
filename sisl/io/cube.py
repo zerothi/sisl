@@ -11,13 +11,11 @@ from sisl.io.sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell, Grid
-from sisl import Bohr
+from sisl.units import unit_convert
 
 __all__ = ['CUBESile']
 
-
-_zero = np.zeros([3], np.float64)
-_one = np.ones([3], np.float64)
+Ang2Bohr = unit_convert('Ang', 'Bohr')
 
 
 class CUBESile(Sile):
@@ -27,31 +25,32 @@ class CUBESile(Sile):
         """ Setup the `CUBESile` after initialization """
         self._comment = []
 
+    @Sile_fh_open
     def write_geom(
             self,
             geom,
-            size=_one,
+            size=None,
             fmt='15.10e',
-            origo=_zero,
+            origo=None,
             *args,
             **kwargs):
         """ Writes the `Geometry` object attached to this grid """
         sile_raise_write(self)
 
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.write_geom(geom, size, fmt, origo, *args, **kwargs)
-
+        if size is None:
+            size = np.ones([3], np.float64)
+        if origo is None:
+            origo = np.zeros([3], np.float64)
+            
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
         # Add #-of atoms and origo
-        self._write(_fmt.format(len(geom), *origo * Bohr))
+        self._write(_fmt.format(len(geom), *origo * Ang2Bohr))
 
         # Write the cell and voxels
         dcell = np.empty([3, 3], np.float64)
         for ix in range(3):
-            dcell[ix, :] = geom.cell[ix, :] / size[ix] * Bohr
+            dcell[ix, :] = geom.cell[ix, :] / size[ix] * Ang2Bohr
         self._write(_fmt.format(size[0], *dcell[0, :]))
         self._write(_fmt.format(size[1], *dcell[1, :]))
         self._write(_fmt.format(size[2], *dcell[2, :]))
@@ -59,17 +58,13 @@ class CUBESile(Sile):
         tmp = ' {:' + fmt + '}'
         _fmt = '{:d} 0.0' + tmp + tmp + tmp + '\n'
         for ia in geom:
-            self._write(_fmt.format(geom.atom[ia].Z, *geom.xyz[ia, :] * Bohr))
+            self._write(_fmt.format(geom.atom[ia].Z, *geom.xyz[ia, :] * Ang2Bohr))
 
+    @Sile_fh_open
     def write_grid(self, grid, fmt='%.5e', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
-
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.write_grid(grid, fmt)
 
         # Write header
         self._write('\n')
@@ -90,15 +85,12 @@ class CUBESile(Sile):
 
         grid.grid.shape = g_size
 
+    @Sile_fh_open
     def read_sc(self, na=False):
         """ Returns `SuperCell` object from the CUBE file
 
         If `na=True` it will return a tuple (na,SuperCell)
         """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_sc()
 
         self.readline()  # header 1
         self.readline()  # header 2
@@ -112,18 +104,14 @@ class CUBESile(Sile):
             for j in [0, 1, 2]:
                 cell[i, j] = float(tmp[j + 1]) * s
 
-        cell = cell / Bohr
+        cell = cell / Ang2Bohr
         if na:
             return na, SuperCell(cell)
         return SuperCell(cell)
 
+    @Sile_fh_open
     def read_geom(self):
         """ Returns `Geometry` object from the CUBE file """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_geom()
-
         na, sc = self.read_sc(na=True)
 
         # Start reading the geometry
@@ -136,17 +124,13 @@ class CUBESile(Sile):
             xyz[ia, 1] = float(tmp[2])
             xyz[ia, 2] = float(tmp[3])
 
-        xyz = xyz / Bohr
+        xyz /= Ang2Bohr
 
         return Geometry(xyz, atom, sc=sc)
 
+    @Sile_fh_open
     def read_grid(self):
         """ Returns `Grid` object from the CUBE file """
-        if not hasattr(self, 'fh'):
-            # The file-handle has not been opened
-            with self:
-                return self.read_grid()
-
         geom = self.read_geom()
 
         # Now seek behind to read grid sizes

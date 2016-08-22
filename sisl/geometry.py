@@ -1395,29 +1395,27 @@ class Geometry(SuperCellChild):
         # straight forward manner.
         class CustomNamespace(object):
             pass
-        CNs = CustomNamespace()
+        namespace = CustomNamespace()
         # We act on a copy of it-self.
         # This is because some options change the geometry
         # in-line, while others makes a new copy.
         # So might as well limit to only a copy.
-        CNs._G = self.copy()
+        namespace._geometry = self.copy()
         # This may be used to check whether any --out has been issued.
-        CNs.geometry_stored = False
+        namespace.geometry_stored = False
 
         # Create actions
         class MoveOrigin(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                ns._G.xyz[:,:] -= np.amin(ns._G.xyz, axis=0)[None,:]
+                ns._geometry.xyz[:,:] -= np.amin(ns._geometry.xyz, axis=0)[None,:]
         p.add_argument(*opts('--origin','-O'), action=MoveOrigin, nargs=0,
                    help='Move all atoms such that one atom will be at the origin.')
         
         class MoveCenterOf(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                if value is None:
-                    return
-                xyz = ns._G.center(which='xyz')
-                ns._G = ns._G.translate(ns._G.center(which=value) - xyz)
-        p.add_argument(*opts('--center-of', '-co'), choices=['mass','xyz','position','cell'], default=None,
+                xyz = ns._geometry.center(which='xyz')
+                ns._geometry = ns._geometry.translate(ns._geometry.center(which=value) - xyz)
+        p.add_argument(*opts('--center-of', '-co'), choices=['mass','xyz','position','cell'], 
                        action=MoveCenterOf,
                        help='Move coordinates to the center of the designated choice.')
 
@@ -1425,21 +1423,21 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, value, option_string=None):
                 if value in ['translate','tr','t']:
                     # Simple translation
-                    tmp = np.amin(ns._G.xyz, axis=0)
+                    tmp = np.amin(ns._geometry.xyz, axis=0)
                     # Find the smallest distance from the first atom
-                    _, d = ns._G.close(0, dR=(0.1,20.), ret_dist=True)
+                    _, d = ns._geometry.close(0, dR=(0.1,20.), ret_dist=True)
                     d = np.amin(d[1]) / 2
-                    ns._G = ns._G.translate(-tmp + np.array([d,d,d]))
+                    ns._geometry = ns._geometry.translate(-tmp + np.array([d,d,d]))
                 elif args.unit_cell in ['mod']:
                     # Change all coordinates using the reciprocal cell
-                    rcell = ns._G.rcell
-                    idx = np.abs(np.array(np.dot(ns._G.xyz, rcell),np.int32))
+                    rcell = ns._geometry.rcell
+                    idx = np.abs(np.array(np.dot(ns._geometry.xyz, rcell),np.int32))
                     # change supercell
                     nsc = np.amax(idx * 2 + 1,axis=0)
-                    ns._G.set_nsc(nsc)
+                    ns._geometry.set_nsc(nsc)
                     # Change the coordinates
-                    for ia in ns._G:
-                        ns._G.xyz[ia,:] = ns._G.coords(isc=idx[ia,:], idx=ia)
+                    for ia in ns._geometry:
+                        ns._geometry.xyz[ia,:] = ns._geometry.coords(isc=idx[ia,:], idx=ia)
         p.add_argument(*opts('--unit-cell', '-uc'), choices=['translate','tr','t','mod'],
                        action=MoveUnitCell,
                        help='Moves the coordinates into the unit-cell by translation or the mod-operator')
@@ -1457,7 +1455,7 @@ class Geometry(SuperCellChild):
                     v = [0,1,0]
                 elif d == 2:
                     v = [0,0,1]
-                ns._G = ns._G.rotate(ang, v)
+                ns._geometry = ns._geometry.rotate(ang, v)
         p.add_argument(*opts('--rotate', '-R'), nargs=2, metavar=('DIR','ANGLE'),
                        action=Rotation,
                        help='Rotate geometry around given axis. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
@@ -1467,7 +1465,7 @@ class Geometry(SuperCellChild):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects radians
                     ang = str2angle(value + 'r', in_radians=False)
-                    ns._G = ns._G.rotate(ang, [1,0,0])
+                    ns._geometry = ns._geometry.rotate(ang, [1,0,0])
             p.add_argument(*opts('--rotate-x', '-Rx'), nargs=1, metavar='ANGLE',
                            action=RotationX,
                            help='Rotate geometry around first cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
@@ -1476,7 +1474,7 @@ class Geometry(SuperCellChild):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects radians
                     ang = str2angle(value + 'r', in_radians=False)
-                    ns._G = ns._G.rotate(ang, [0,1,0])
+                    ns._geometry = ns._geometry.rotate(ang, [0,1,0])
             p.add_argument(*opts('--rotate-y', '-Ry'), nargs=1, metavar='ANGLE',
                            action=RotationY,
                            help='Rotate geometry around second cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
@@ -1485,7 +1483,7 @@ class Geometry(SuperCellChild):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects radians
                     ang = str2angle(value + 'r', in_radians=False)
-                    ns._G = ns._G.rotate(ang, [0,0,1])
+                    ns._geometry = ns._geometry.rotate(ang, [0,0,1])
             p.add_argument(*opts('--rotate-z', '-Rz'), nargs=1, metavar='ANGLE',
                            action=RotationZ,
                            help='Rotate geometry around third cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
@@ -1496,7 +1494,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, value, option_string=None):
                 # Get atomic indices
                 rng = str2range(value)
-                ns._G = ns._G.sub(rng)
+                ns._geometry = ns._geometry.sub(rng)
         p.add_argument(*opts('--sub','-s'),metavar='RNG',
                        action=ReduceSub,
                        help='Removes specified atoms, can be complex ranges.')
@@ -1505,7 +1503,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, values, option_string=None):
                 d = str2direction(values[0])
                 s = int(values[1])
-                ns._G = ns._G.cut(s, d)
+                ns._geometry = ns._geometry.cut(s, d)
         p.add_argument(*opts('--cut','-c'),nargs=2, metavar=('DIR', 'SEPS'),
                        action=ReduceCut,
                        help='Cuts the geometry into `seps` parts along the unit-cell direction `dir`.')
@@ -1515,7 +1513,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, values, option_string=None):
                 # Create an atom from the input
                 g = Geometry(map(float, values[0].split(',')), atom=Atom(values[1]))
-                ns._G = ns._G.add(g)
+                ns._geometry = ns._geometry.add(g)
         p.add_argument(*opts('--add'),nargs=2,metavar=('COORD','Z'),
                        action=AtomAdd,
                        help='Adds an atom, coordinate is comma separated (in Ang). Z is the atomic number.')
@@ -1526,7 +1524,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, values, option_string=None):
                 d = str2direction(values[0])
                 r = int(values[1])
-                ns._G = ns._G.repeat(r, d)
+                ns._geometry = ns._geometry.repeat(r, d)
         p.add_argument(*opts('--repeat','-r'),nargs=2, metavar=('DIR', 'TIMES'),
                        action=PeriodRepeat,
                        help='Repeats the geometry in the specified direction.')
@@ -1534,21 +1532,21 @@ class Geometry(SuperCellChild):
         if not limit_args:
             class PeriodRepeatX(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    ns._G = ns._G.repeat(int(value), 0)
+                    ns._geometry = ns._geometry.repeat(int(value), 0)
             p.add_argument(*opts('--repeat-x','-rx'),nargs=1, metavar='TIMES',
                            action=PeriodRepeatX,
                            help='Repeats the geometry along the first cell vector.')
             
             class PeriodRepeatY(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    ns._G = ns._G.repeat(int(value), 1)
+                    ns._geometry = ns._geometry.repeat(int(value), 1)
             p.add_argument(*opts('--repeat-y','-ry'),nargs=1, metavar='TIMES',
                            action=PeriodRepeatY,
                            help='Repeats the geometry along the second cell vector.')
 
             class PeriodRepeatZ(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    ns._G = ns._G.repeat(int(value), 2)
+                    ns._geometry = ns._geometry.repeat(int(value), 2)
             p.add_argument(*opts('--repeat-z','-rz'),nargs=1, metavar='TIMES',
                            action=PeriodRepeatZ,
                            help='Repeats the geometry along the third cell vector.')
@@ -1558,7 +1556,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, values, option_string=None):
                 d = str2direction(values[0])
                 r = int(values[1])
-                ns._G = ns._G.tile(r, d)
+                ns._geometry = ns._geometry.tile(r, d)
         p.add_argument(*opts('--tile','-t'),nargs=2, metavar=('DIR', 'TIMES'),
                        action=PeriodTile,
                        help='Tiles the geometry in the specified direction.')
@@ -1566,24 +1564,33 @@ class Geometry(SuperCellChild):
         if not limit_args:
             class PeriodTileX(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    ns._G = ns._G.tile(int(value), 0)
+                    ns._geometry = ns._geometry.tile(int(value), 0)
             p.add_argument(*opts('--tile-x','-tx'),nargs=1, metavar='TIMES',
                            action=PeriodTileX,
                            help='Tiles the geometry along the first cell vector.')
 
             class PeriodTileY(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    ns._G = ns._G.tile(int(value), 1)
+                    ns._geometry = ns._geometry.tile(int(value), 1)
             p.add_argument(*opts('--tile-y','-ty'),nargs=1, metavar='TIMES',
                            action=PeriodTileY,
                            help='Tiles the geometry along the second cell vector.')
 
             class PeriodTileZ(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    ns._G = ns._G.tile(int(value), 2)
+                    ns._geometry = ns._geometry.tile(int(value), 2)
             p.add_argument(*opts('--tile-z','-tz'),nargs=1, metavar='TIMES',
                            action=PeriodTileX,
                            help='Tiles the geometry along the third cell vector.')
+
+        # Print some common information about the
+        # geometry (to stdout)
+        class PrintInfo(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                print(ns._geometry)
+        p.add_argument(*opts('--info'), nargs=0,
+                       action=PrintInfo,
+                       help='Print, to stdout, some regular information about the geometry.')
 
             
         class Out(arg.Action):
@@ -1592,7 +1599,7 @@ class Geometry(SuperCellChild):
                     return
                 if len(value) == 0:
                     return
-                ns._G.write(value[0])
+                ns._geometry.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
                 setattr(ns, 'geometry_stored', True)
         p.add_argument(*opts('--out','-o'), nargs=1, action=Out,
@@ -1605,4 +1612,4 @@ class Geometry(SuperCellChild):
                            help='Store the geometry (at its current invocation) to the out file.')
             
         # We have now created all arguments
-        return p, CNs
+        return p, namespace
