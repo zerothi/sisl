@@ -127,6 +127,20 @@ class TestObject(object):
             assert_true(isinstance(sile1, obj))
             assert_true(isinstance(sile2, obj))
 
+    def test_xsf(self):
+        sile1 = gs('test.xsf')
+        sile2 = gs('test.XSF')
+        for obj in [BaseSile, Sile, XSFSile]:
+            assert_true(isinstance(sile1, obj))
+            assert_true(isinstance(sile2, obj))
+
+    def test_xsf_gz(self):
+        sile1 = gs('test.xsf.gz')
+        sile2 = gs('test.XSF.gz')
+        for obj in [BaseSile, Sile, XSFSile]:
+            assert_true(isinstance(sile1, obj))
+            assert_true(isinstance(sile2, obj))
+
     def test_xv(self):
         sile = gs('test.XV')
         for obj in [BaseSile, Sile, SileSIESTA, XVSile]:
