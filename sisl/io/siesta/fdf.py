@@ -135,19 +135,17 @@ class FDFSile(SileSIESTA):
 
         # We need to process the returned value further.
         fdfl = fdf.split()
+        # Check whether this is a logical flag
         if len(fdfl) == 1:
             # This *MUST* be a boolean
             #   SCF.Converge.H
             # defaults to .true.
             return True
-
-        # Check whether this is a logical
-        # flag
-        if fdfl[1] in _LOGICAL_TRUE:
+        elif fdfl[1] in _LOGICAL_TRUE:
             return True
         elif fdfl[1] in _LOGICAL_FALSE:
             return False
-        
+
         # It is something different.
         # Try and figure out what it is
         if len(fdfl) == 3:
@@ -159,12 +157,12 @@ class FDFSile(SileSIESTA):
                 unit = unit_default(group)
 
             if with_unit and tmp_unit is not None:
-                # The user has specifically requested the unit
+                # The user has specifically requested the unit:
+                #  key{unit}
                 return '{0:.4f} {1}'.format(float(fdfl[1]) * unit_convert(fdfl[2], unit), unit)
-            elif with_unit:
-                return ' '.join(fdfl[1:])
-            
-            return float(fdfl[1]) * unit_convert(fdfl[2], unit)
+            elif not with_unit:
+                return float(fdfl[1]) * unit_convert(fdfl[2], unit)
+        
         return ' '.join(fdfl[1:])
 
 
