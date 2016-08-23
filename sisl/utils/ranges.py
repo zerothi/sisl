@@ -3,66 +3,120 @@ Basic functionality of creating ranges from text-input and/or other types of inf
 """
 from __future__ import print_function, division
 
-__all__ = ['str2range', 'fileindex']
+__all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'fileindex']
 
 import numpy as np
 
 import re
+_eEfg = r'[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?'
+_re_eEfg = re.compile(_eEfg)
+_re_segment = re.compile(r'(.+)\[(.+)\]|(.+)')
+_re_irng = re.compile(r'\d+-\d+|\d+')
+
 # This reg-exp matches:
 #   0, 1, 3, 3-9, etc.
-re_ints = re.compile('[,]?([0-9-]+)[,]?')
+_re_ints = re.compile('[,]?([0-9-]+)[,]?')
 # This reg-exp matches:
 #   0, 1[0-1], 3, 3-9, etc.
-re_sub  = re.compile('[,]?([0-9-]+\[[0-9,-]+\]|[0-9-]+)[,]?')
+_re_sub  = re.compile('[,]?([0-9-]+)\[([\[0-9,-\]]+)\]|([0-9-]+)[,]?')
+
 
 # Function to change a string to a range of atoms
-def str2range(s, sub=False):
-    """ Parses a string into a list of ranges 
-    
-    This range can be formatted like this:
-      1,2,3-6
-    in which case it will return:
-      [1,2,3,4,5,6]
+def strmap(func, s, recursive=True, sep=':'):
+    """ Parse a string and map all entries using `func`.
+
+    This parses a string and converts all `,`-separated to entries
+    in the list.
     """
-    if sub:
-        # We parse according to
-        #   re_sub
-        rng = []
-        for la in re_sub.findall(s):
-            # We accumulate a list of ranges with sub-ranges
 
-            # First we split in []
-            if '[' in la:
-                # There are sub-ranges 
-                t = la.split('[')
-                # get the top-ranges
-                cur = str2range(t[0])
-                # get the sub-ranges
-                sub = str2range(t[1].split(']')[0])
-            else:
-                cur = str2range(la)
-                sub = str2range("")
+    # Create list
+    l = []
 
-            # Now append to the range
-            for i in cur:
-                rng.append([i, sub])
-
-        return rng
-
-    # This is regular ranges
-    rng = []
-    for la in re_ints.findall(s):
-        # We accumulate a list of integers
-        tmp = la.split('-')
-        if len(tmp) > 2: 
-            raise ValueError("Could not parse: '"+s+"' successfully.")
-        elif len(tmp) == 2:
-            bi, ei = tuple( map(int,tmp) )
-            rng.extend( range(bi, ei+1) )
+    commas = s.split(',')
+    i = 0
+    while True:
+        if i >= len(commas) - 1:
+            break
+        if commas[i].count('[') == commas[i].count(']'):
+            i = i + 1
         else:
-            rng.append( int(tmp[0]) )
-    return np.asarray(rng)
+            # there must be more [ than ]
+            commas[i] = commas[i] + "," + commas[i+1]
+            del commas[i+1]
+    i = len(commas) - 1
+    if commas[i].count('[') != commas[i].count(']'):
+        raise ValueError("Unbalanced string: not enough [ and ]")
 
+    # Now we have the comma-separated list
+    for seg in commas:
+        # Split it in two parts
+        m = _re_segment.findall(seg)[0]
+        if len(m[2]) > 0:
+            # the match is the last group
+            l.append( strseq(func, m[2]) )
+        elif recursive:
+            l.append( (strseq(func, m[0]), strmap(func, m[1], sep=sep) ) )
+
+    return l
+
+def strseq(func, s):
+    """ Accepts strings and returns tuples of content based on ranges.
+    
+    Parameters
+    ----------
+    func: function
+       parser of the individual elements
+    s: str
+       string with content
+
+    Examples
+    --------
+    >>> strseq(int, '3')
+    3
+    >>> strseq(int, '3-6')
+    (3, 6)
+    >>> strseq(float, '3.2:6.3')
+    (3.2, 6.3)
+    """
+    if ':' in s:
+        return tuple(map(func, s.split(':')))
+    elif '-' in s:
+        return tuple(map(func, s.split('-')))
+    return func(s)
+
+def erange(i1, i2):
+    """ Returns the range with both ends includede """
+    return range(i1, i2+1)
+
+def lstranges(lst, func=erange):
+    """ Convert a `strmap` list into expanded ranges """
+    l = []
+    # If an entry is a tuple, it means it is either
+    # a range 0-1 == tuple(0, 1), or
+    # a sub-range
+    #   0[0-1], 0-1[0-1]
+    if isinstance(lst, tuple):
+        head = lstranges(lst[0], func)
+        bot = lstranges(lst[1], func)
+        if isinstance(head, list):
+            for el in head:
+                l.append([el, bot])
+        elif isinstance(bot, list):
+            l.append([head, bot])
+        else:
+            l.extend(erange(head, bot))
+
+    elif isinstance(lst, list):
+        for lt in lst:
+            ls = lstranges(lt, func)
+            if isinstance(ls, list):
+                l.extend(ls)
+            else:
+                l.append(ls)
+    else:
+        return lst
+    return l
+        
 
 # Function to retrieve an optional index from the
 # filename

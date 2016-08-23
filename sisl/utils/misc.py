@@ -6,7 +6,7 @@ from __future__ import division
 from numbers import Integral
 from math import pi
 
-__all__ = ['merge_instances', 'dir2dir', 'str2angle']
+__all__ = ['merge_instances', 'name_spec', 'direction', 'angle']
 
 
 def merge_instances(*args, **kwargs):
@@ -50,7 +50,7 @@ def name_spec(name):
 
 
 # Transform a string to a Cartesian direction
-def dir2dir(d):
+def direction(d):
     """ Return the index of the direction that the input represents
 
     Parameter
@@ -71,7 +71,7 @@ def dir2dir(d):
 
 
 # Transform an input to an angle
-def str2angle(s, radians=True, in_radians=True):
+def angle(s, radians=True, in_radians=True):
     """ Convert the input string to an angle.
 
     Parameter

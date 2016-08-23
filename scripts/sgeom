@@ -84,7 +84,7 @@ lattice vector.
     args = p.parse_args(argv, namespace=namespace)
     g = args._geometry
 
-    if not args.geometry_stored:
+    if not args._stored_geometry:
         # We should write out the information to the stdout
         # This is merely for testing purposes and may not be used for anything.
         print('Cell:')

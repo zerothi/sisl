@@ -1402,7 +1402,7 @@ class Geometry(SuperCellChild):
         # So might as well limit to only a copy.
         namespace._geometry = self.copy()
         # This may be used to check whether any --out has been issued.
-        namespace.geometry_stored = False
+        namespace._stored_geometry = False
 
         # Create actions
         class MoveOrigin(arg.Action):
@@ -1446,9 +1446,9 @@ class Geometry(SuperCellChild):
         class Rotation(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 # Convert value[0] to the direction
-                d = str2direction(values[0])
+                d = direction(values[0])
                 # The rotate function expects radians
-                ang = str2angle(values[1] + 'r', in_radians=False)
+                ang = angle(values[1] + 'r', in_radians=False)
                 if d == 0:
                     v = [1,0,0]
                 elif d == 1:
@@ -1464,7 +1464,7 @@ class Geometry(SuperCellChild):
             class RotationX(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects radians
-                    ang = str2angle(value + 'r', in_radians=False)
+                    ang = angle(value + 'r', in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [1,0,0])
             p.add_argument(*opts('--rotate-x', '-Rx'), nargs=1, metavar='ANGLE',
                            action=RotationX,
@@ -1473,7 +1473,7 @@ class Geometry(SuperCellChild):
             class RotationY(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects radians
-                    ang = str2angle(value + 'r', in_radians=False)
+                    ang = angle(value + 'r', in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [0,1,0])
             p.add_argument(*opts('--rotate-y', '-Ry'), nargs=1, metavar='ANGLE',
                            action=RotationY,
@@ -1482,7 +1482,7 @@ class Geometry(SuperCellChild):
             class RotationZ(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects radians
-                    ang = str2angle(value + 'r', in_radians=False)
+                    ang = angle(value + 'r', in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [0,0,1])
             p.add_argument(*opts('--rotate-z', '-Rz'), nargs=1, metavar='ANGLE',
                            action=RotationZ,
@@ -1493,7 +1493,7 @@ class Geometry(SuperCellChild):
         class ReduceSub(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 # Get atomic indices
-                rng = str2range(value)
+                rng = lstranges(strmap(int, value, sep='-'))
                 ns._geometry = ns._geometry.sub(rng)
         p.add_argument(*opts('--sub','-s'),metavar='RNG',
                        action=ReduceSub,
@@ -1501,7 +1501,7 @@ class Geometry(SuperCellChild):
 
         class ReduceCut(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
-                d = str2direction(values[0])
+                d = direction(values[0])
                 s = int(values[1])
                 ns._geometry = ns._geometry.cut(s, d)
         p.add_argument(*opts('--cut','-c'),nargs=2, metavar=('DIR', 'SEPS'),
@@ -1522,7 +1522,7 @@ class Geometry(SuperCellChild):
         # Periodicly increase the structure
         class PeriodRepeat(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
-                d = str2direction(values[0])
+                d = direction(values[0])
                 r = int(values[1])
                 ns._geometry = ns._geometry.repeat(r, d)
         p.add_argument(*opts('--repeat','-r'),nargs=2, metavar=('DIR', 'TIMES'),
@@ -1554,7 +1554,7 @@ class Geometry(SuperCellChild):
 
         class PeriodTile(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
-                d = str2direction(values[0])
+                d = direction(values[0])
                 r = int(values[1])
                 ns._geometry = ns._geometry.tile(r, d)
         p.add_argument(*opts('--tile','-t'),nargs=2, metavar=('DIR', 'TIMES'),
@@ -1601,7 +1601,7 @@ class Geometry(SuperCellChild):
                     return
                 ns._geometry.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
-                setattr(ns, 'geometry_stored', True)
+                setattr(ns, '_stored_geometry', True)
         p.add_argument(*opts('--out','-o'), nargs=1, action=Out,
                        help='Store the geometry (at its current invocation) to the out file.')
 

@@ -247,7 +247,7 @@ class Grid(SuperCellChild):
         grid.grid[:, :, :] = np.sum(self.grid, axis=axis, keepdims=True)
         return grid
 
-    def mean(self, axis):
+    def average(self, axis):
         """ Returns the average grid along direction ``axis`` """
         n = self.shape[axis]
         g = self.sum(axis)
@@ -255,7 +255,7 @@ class Grid(SuperCellChild):
         return g
 
     # for compatibility
-    average = mean
+    mean = average
 
     def remove_part(self, idx, axis, above):
         """ Removes parts of the grid via above/below designations.
@@ -621,14 +621,15 @@ class Grid(SuperCellChild):
         # So might as well limit to only a copy.
         namespace._grid = self.copy()
         # This may be used to check whether any --out has been issued.
-        namespace.grid_stored = False
+        namespace._stored_grid = False
 
         # Define actions
-        class SetGeometry(arg.action):
+        class SetGeometry(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                ns._grid.set_geom(Geometry.read(value))
+                ns._geometry = Geometry.read(value)
+                ns._grid.set_geom(ns._geometry)
         p.add_argument(*opts('--geometry','-G'), action=SetGeometry, nargs=1,
-                   help='Define the geometry attached to the Grid.')
+                       help='Define the geometry attached to the Grid.')
 
         # Define size of grid
         class InterpGrid(arg.Action):
@@ -645,20 +646,78 @@ class Grid(SuperCellChild):
             def __call__(self, parser, ns, value, option_string=None):
                 grid = Grid.read(value)
                 ns._grid -= grid
+                del grid
         p.add_argument(*opts('--diff','-d'), nargs=1,
                        action=DiffGrid,
-                       help='Subtract another grid.')
+                       help='Subtract another grid (they must be commensurate).')
 
 
         class AverageGrid(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                ns._grid = ns._grid.average(dir2dir(value))
+                ns._grid = ns._grid.average(direction(value))
         p.add_argument(*opts('--average'), nargs=1, metavar='DIR',
                        action=AverageGrid,
                        help='Take the average of the grid along DIR.')
 
-        
-        
+
+        # Create-subsets of the grid
+        class SubDirectionGrid(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                # The unit-cell direction
+                axis = direction(values[0])
+                # Figure out whether this is a fractional or
+                # distance in Ang
+                is_frac = 'f' in values[1]
+                rng = strseq(float, values[1].replace('f',''))
+                if isinstance(rng, tuple):
+                    if is_frac:
+                        t = [ns._grid.cell[axis,:] * r for r in rng]
+                        rng = tuple(rng)
+                    # we have bounds
+                    idx1 = ns._grid.index(rng[0], axis=axis)
+                    idx2 = ns._grid.index(rng[1], axis=axis)
+                    ns._grid = ns._grid.sub(range(idx1, idx2+1), d)
+                    return
+                elif rng < 0.:
+                    if is_frac:
+                        rng = ns._grid.cell[axis,:] * abs(rng)
+                    b = False
+                else:
+                    if is_frac:
+                        rng = ns._grid.cell[axis,:] * rng
+                    b = True
+                idx = ns._grid.index(rng, axis=axis)
+                ns._grid = ns._grid.sub_part(idx, axis, b)
+        p.add_argument(*opts('--sub'), nargs=2, metavar=('DIR','COORD'),
+                       action=SubDirectionGrid,
+                       help='Reduce the grid by taking a subset of the grid (along DIR).')
+
+        # Create-subsets of the grid
+        class RemoveDirectionGrid(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                # The unit-cell direction
+                axis = direction(values[0])
+                # Figure out whether this is a fractional or
+                # distance in Ang
+                is_frac = 'f' in values[1]
+                rng = strseq(float, values[1].replace('f',''))
+                if isinstance(rng, tuple):
+                    raise NotImplemented('Can not figure out how to apply mid-removal of grids.')
+                elif rng < 0.:
+                    if is_frac:
+                        rng = ns._grid.cell[axis,:] * abs(rng)
+                    b = True
+                else:
+                    if is_frac:
+                        rng = ns._grid.cell[axis,:] * rng
+                    b = False
+                idx = ns._grid.index(rng, axis=axis)
+                ns._grid = ns._grid.sub_part(idx, axis, b)
+        p.add_argument(*opts('--remove'), nargs=2, metavar=('DIR','COORD'),
+                       action=RemoveDirectionGrid,
+                       help='Reduce the grid by removing a subset of the grid (along DIR).')
+
+
         # Define size of grid
         class PrintInfo(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
@@ -675,7 +734,7 @@ class Grid(SuperCellChild):
                     return
                 ns._grid.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
-                setattr(ns, 'grid_stored', True)
+                ns._stored_grid = True
         p.add_argument(*opts('--out','-o'), nargs=1, action=Out,
                        help='Store the grid (at its current invocation) to the out file.')
 
