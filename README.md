@@ -103,6 +103,7 @@ The hard-coded file formats are:
 8. ___POSCAR___/___CONTCAR___, VASP coordinate format
 9. ___ASCII___, BigDFT coordinate format
 10. ___win___, Wannier90 Hamiltonian and Wannier centres
+11. ___xsf___, XCrySDen file format
 
 
 All text files can also be read from their gzipped file formats with transparency.
