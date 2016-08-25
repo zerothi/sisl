@@ -14,13 +14,14 @@ from .cube import *
 from .gulp import *
 from .siesta import *
 from .ham import *
+from .table import *
 from .vasp import *
 from .wannier import *
 from .xsf import *
 from .xyz import *
 
 # Default functions in this top module
-__all__ = ['add_sile', 'get_sile']
+__all__ = []
 
 extendall(__all__, 'sisl.io.sile')
 
@@ -29,6 +30,7 @@ extendall(__all__, 'sisl.io.cube')
 extendall(__all__, 'sisl.io.gulp')
 extendall(__all__, 'sisl.io.ham')
 extendall(__all__, 'sisl.io.siesta')
+extendall(__all__, 'sisl.io.table')
 extendall(__all__, 'sisl.io.vasp')
 extendall(__all__, 'sisl.io.wannier')
 extendall(__all__, 'sisl.io.xsf')

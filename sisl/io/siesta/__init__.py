@@ -5,6 +5,7 @@ SIESTA I/O Siles
 from .._help import extendall
 
 from .sile import *
+from .bands import *
 from .fdf import *
 from .siesta import *
 from .siesta_grid import *
@@ -15,6 +16,7 @@ __all__ = []
 
 extendall(__all__, 'sisl.io.siesta.sile')
 
+extendall(__all__, 'sisl.io.siesta.bands')
 extendall(__all__, 'sisl.io.siesta.fdf')
 extendall(__all__, 'sisl.io.siesta.siesta')
 extendall(__all__, 'sisl.io.siesta.siesta_grid')
