@@ -30,7 +30,8 @@ changing ways. It handles files dependent on type AND content.
     else:
         argv = sys.argv[1:]
 
-    
+
+    obj = None
     if len(argv) >= 1:
         # Get the file
         input_file = argv[0]
@@ -56,7 +57,10 @@ The help menu depends on the type of Sile that is specified.
     # We are good to go!!!
 
     # Append the geometry arguments from the object
-    p, namespace = obj.ArgumentParser(p, **obj._ArgumentParser_args_single())
+    if not obj is None:
+        p, namespace = obj.ArgumentParser(p, **obj._ArgumentParser_args_single())
+    else:
+        namespace = None
 
     args = p.parse_args(argv, namespace=namespace)
 

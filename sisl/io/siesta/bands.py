@@ -7,6 +7,8 @@ from __future__ import print_function
 import numpy as np
 
 # Import sile objects
+from sisl.utils import strmap
+from sisl.utils.cmd import *
 from ..sile import add_sile, Sile_fh_open
 from .sile import *
 
@@ -58,7 +60,7 @@ class BandsSIESTASile(SileSIESTA):
                     l.extend(map(float, self.readline().split()))
                 l = np.array(l, np.float64)
                 l.shape = (ns, no)
-                b[ik,:,:] = l[:,:]
+                b[ik,:,:] = l[:,:] - Ef
             # Now we need to read the labels for the points
             xlabels = []
             labels = []
@@ -66,8 +68,9 @@ class BandsSIESTASile(SileSIESTA):
             for il in range(nl):
                 l = self.readline().split()
                 xlabels.append(float(l[0]))
-                labels.append(' '.join(l[1:]))
+                labels.append((' '.join(l[1:])).replace("'",''))
             vals = (xlabels, labels), k, b
+            
         else:
             k = np.empty([nk, 3], np.float64)
             for ik in range(nk):
@@ -81,11 +84,12 @@ class BandsSIESTASile(SileSIESTA):
                     l.extend(map(float, self.readline().split()))
                 l = np.array(l, np.float64)
                 l.shape = (ns, no)
-                b[ik,:,:] = l[:,:]
+                b[ik,:,:] = l[:,:] - Ef
             vals = k, b
         return vals
 
-    def ArgumentParser(self, parser=None, *args, **kwargs):
+    @dec_default_AP("Manipulate bands file in sisl.")
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         limit_args = kwargs.get('limit_arguments', True)
         short = kwargs.get('short', False)
@@ -98,52 +102,61 @@ class BandsSIESTASile(SileSIESTA):
         # We limit the import to occur here
         import argparse as arg
 
-        if parser is None:
-            p = arg.ArgumentParser("Manipulate a bands file in sisl.")
-        else:
-            p = parser
-
         # The first thing we do is adding the geometry to the NameSpace of the
         # parser.
         # This will enable custom actions to interact with the geometry in a
         # straight forward manner.
-        class CustomNamespace(object):
-            pass
-        namespace = CustomNamespace()
-        namespace._data = self.read_data()
+        d = {
+            "_bands": self.read_data(),
+            "_Emap" : None,
+        }
+        namespace = default_namespace(**d)
 
-        # Create actions
+        # Ensure the namespace is populated
+        ensure_namespace(p, namespace)
+
+        # Energy grabs
+        class ERange(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._Emap = strmap(float, value, recursive=False, sep=':')[0]
+        p.add_argument('--energy', '-E', 
+                       action=ERange,
+                       help='Denote the sub-section of energies that are plotted: "-1:0,1:2" [eV]')
+        
         class BandsPlot(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 import matplotlib.pyplot as plt
                 # Decide whether this is BandLines or BandPoints
-                if len(ns._data) == 2:
+                if len(ns._bands) == 2:
                     # We do not plot "points"
                     raise ValueError("The bands file only contains points in the BZ, not a bandstructure.")
-                lbls, k, b = ns._data
+                lbls, k, b = ns._bands
                 b = b.T
-                def myplot(title, x, y):
+                def myplot(title, x, y, E):
                     plt.figure()
                     plt.title(title)
                     for ib in range(y.shape[0]):
                         plt.plot(x, y[ib,:])
                     plt.xlabel('k-path [1/Bohr]')
-                    plt.ylabel('Energy [eV]')
+                    plt.ylabel('E-Ef [eV]')
                     plt.xticks(xlbls, lbls, rotation=45)
                     plt.xlim(x.min(), x.max())
+                    if not E is None:
+                        plt.ylim(E[0], E[1])
                     
                 xlbls, lbls = lbls
                 if b.shape[1] == 2:
                     # We must plot spin-up/down separately
                     for i, ud in [(0, 'UP'), (1, 'DOWN')]:
-                        myplot('Bandstructure SPIN-'+ud,
-                               k, b[:,i,:])
+                        myplot('Bandstructure SPIN-'+ud, k, b[:,i,:], ns._Emap)
                 else:
-                    myplot('Bandstructure', 
-                           k, b[:,0,:])
-                plt.show()
-        p.add_argument(*opts('--plot','-p'), action=BandsPlot, nargs=0,
-                   help='Plot the bandstructure from the .bands file.')
+                    myplot('Bandstructure', k, b[:,0,:], ns._Emap)
+                if value is None:
+                    plt.show()
+                else:
+                    plt.savefig(value)
+        p.add_argument(*opts('--plot','-p'), action=BandsPlot, nargs='?', metavar='FILE',
+                       help='Plot the bandstructure from the .bands file, possibly saving to a file.')
 
         return p, namespace
 

@@ -171,7 +171,9 @@ def get_sile(file, *args, **kwargs):
        function returns a random one.
     """
     global __sile_rules, __siles
-    
+
+    # This ensures that the first argument
+    # need not be cls
     cls = kwargs.pop('cls', None)
     
     # Split filename into proper file name and

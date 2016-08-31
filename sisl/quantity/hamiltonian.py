@@ -668,7 +668,7 @@ class Hamiltonian(object):
         # Create the new geometry
         g = self.geom.tile(reps, axis)
 
-        raise NotImplemented(('tiling a Hamiltonian model has not been '
+        raise NotImplementedError(('tiling a Hamiltonian model has not been '
                               'fully implemented yet.'))
 
     def repeat(self, reps, axis):
@@ -676,7 +676,7 @@ class Hamiltonian(object):
         # Create the new geometry
         g = self.geom.repeat(reps, axis)
         
-        raise NotImplemented(('repeating a Hamiltonian model has not been '
+        raise NotImplementedError(('repeating a Hamiltonian model has not been '
                               'fully implemented yet, use tile instead.'))
 
     @classmethod

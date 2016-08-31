@@ -12,8 +12,8 @@ from .sile import *
 from .bigdft import *
 from .cube import *
 from .gulp import *
-from .siesta import *
 from .ham import *
+from .siesta import *
 from .table import *
 from .vasp import *
 from .wannier import *

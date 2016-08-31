@@ -702,7 +702,7 @@ class Grid(SuperCellChild):
                 is_frac = 'f' in values[1]
                 rng = strseq(float, values[1].replace('f',''))
                 if isinstance(rng, tuple):
-                    raise NotImplemented('Can not figure out how to apply mid-removal of grids.')
+                    raise NotImplementedError('Can not figure out how to apply mid-removal of grids.')
                 elif rng < 0.:
                     if is_frac:
                         rng = ns._grid.cell[axis,:] * abs(rng)

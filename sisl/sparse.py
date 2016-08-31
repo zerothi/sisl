@@ -487,8 +487,7 @@ class SparseCSR(object):
         index = self._get(key[0], key[1])
 
         # When deleting, we should remove them from the sparse matrix
-
-        raise NotImplemented("Deletion of a sparse element is not implemented yet.")
+        raise NotImplementedError("Deletion of a sparse element is not implemented yet.")
 
 
     def __getitem__(self, key):

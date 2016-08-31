@@ -59,6 +59,16 @@ class TestObject(object):
         for obj in [BaseSile, Sile, SileGULP, GULPgoutSile]:
             assert_true(isinstance(sile, obj))
 
+    def test_out(self):
+        sile = gs('test.out')
+        for obj in [BaseSile, Sile, SileSIESTA, OutSIESTASile]:
+            assert_true(isinstance(sile, obj))
+
+    def test_out_gz(self):
+        sile = gs('test.out.gz')
+        for obj in [BaseSile, Sile, SileSIESTA, OutSIESTASile]:
+            assert_true(isinstance(sile, obj))
+
     def test_nc(self):
         sile = gs('test.nc')
         for obj in [BaseSile, SileCDF, SileCDFSIESTA, SIESTASile]:

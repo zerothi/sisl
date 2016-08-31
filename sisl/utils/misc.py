@@ -18,7 +18,8 @@ def merge_instances(*args, **kwargs):
        name of class
     """
     name = kwargs.get('name', 'MergedClass')
-    cls = type(name)
+    # We must make a new-type class
+    cls = type(name, (object,), {})
     # Create holder of class
     # We could have 
     m = cls()

@@ -4,8 +4,9 @@ Sile object for reading/writing FDF files
 
 from __future__ import print_function, division
 
-from os.path import dirname, sep
+import os.path as osp
 import numpy as np
+import warnings as warn
 
 # Import sile objects
 from .sile import SileSIESTA
@@ -13,9 +14,10 @@ from ..sile import *
 from sisl.io._help import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, SuperCell, Grid
 
-from sisl.utils.misc import name_spec
+from sisl.utils.cmd import *
+from sisl.utils.misc import merge_instances, name_spec
 
 from sisl.units import unit_default, unit_group
 from sisl.units.siesta import unit_convert
@@ -42,7 +44,7 @@ class FDFSile(SileSIESTA):
         super(FDFSile, self).__init__(filename, mode=mode)
         if base is None:
             # Extract from filename
-            self._directory = dirname(filename)
+            self._directory = osp.dirname(filename)
         else:
             self._directory = base
         if len(self._directory) == 0:
@@ -69,7 +71,7 @@ class FDFSile(SileSIESTA):
         if '%include' in l:
             # Split for reading tree file
             self._parent_fh.append(self.fh)
-            self.fh = open(self._directory + sep + l.split()[1], self._mode)
+            self.fh = open(self._directory + osp.sep + l.split()[1], self._mode)
             # Read the following line in the new file
             return self.readline()
         
@@ -429,50 +431,58 @@ class FDFSile(SileSIESTA):
         return Geometry(xyz, atom=atom, sc=sc)
 
 
+
     
-    def ArgumentParser(self, parser=None, *args, **kwargs):
+    @dec_default_AP("Manipulate a FDF file.")
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         import argparse as arg
 
-        try:
-            geom = self.read_geom()
-            p, namespace = geom.ArgumentParser(parser=parser, *args, **kwargs)
-        except:
-            # In case the fdf does not hold the geometry, we allow the
-            # 
-            # Create the parser and the custom namespace
-            if parser is None:
-                p = arg.ArgumentParser("Manipulate a FDF file.")
-            else:
-                p = parser
-            class CustomNamespace(object):
-                pass
-            namespace = CustomNamespace()
+        # We must by-pass this fdf-file
+        import sisl.io.siesta as sis
 
-        namespace._FDF = self
-        namespace._first_fdf = True
 
+        # The fdf parser is more complicated
+        
+        # It is based on different settings based on the
+
+        sp = p.add_subparsers(help="Determine which part of the fdf-file that should be processed.")
+
+        # Get the label which retains all the sub-modules
+        label = self.get('SystemLabel', default='siesta')
+
+        # The default on all sub-parsers are the retrieval and setting
+
+        d = {
+            '_fdf' : self,
+            '_fdf_first' : True,
+        }
+        namespace = default_namespace(**d)
+
+        ep = sp.add_parser('edit',
+                           help='Change or read and print data from the fdf file')
+        
         # As the fdf may provide additional stuff, we do not add EVERYTHING from
         # the Geometry class.
         class FDFAdd(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 key = values[0]
                 val = values[1]
-                if ns._first_fdf:
+                if ns._fdf_first:
                     # Append to the end of the file
-                    with ns._FDF as fd:
+                    with ns._fdf as fd:
                         fd.write('\n\n# SISL added keywords\n')
-                    setattr(ns, '_first_fdf', False)
-                ns._FDF.set(key, val)
-        #p.add_argument('--fdf-add', nargs=2, metavar=('KEY', 'VALUE'),
-        #               action=FDFAdd,
-        #               help='Add a key to the FDF file. If it already exists it will be overwritten')
+                    setattr(ns, '_fdf_first', False)
+                ns._fdf.set(key, val)
+        ep.add_argument('--set', nargs=2, metavar=('KEY', 'VALUE'),
+                        action=FDFAdd,
+                        help='Add a key to the FDF file. If it already exists it will be overwritten')
 
         class FDFGet(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 # Retrieve the value in standard units
                 # Currently, we write out the unit "as-is"
-                val = ns._FDF.get(value[0], with_unit = True)
+                val = ns._fdf.get(value[0], with_unit = True)
                 if val is None:
                     print('# {} is currently not in the FDF file '.format(value[0]))
                     return
@@ -491,10 +501,51 @@ class FDFSile(SileSIESTA):
                 else:
                     print('{}'.format(val))
 
-        p.add_argument('--fdf', nargs=1, metavar='KEY',
-                       action=FDFGet,
-                       help='Print (to stdout) the value of the key in the FDF file.')
+        ep.add_argument('--get', nargs=1, metavar='KEY',
+                        action=FDFGet,
+                        help='Print (to stdout) the value of the key in the FDF file.')
+
+        # If the XV file exists, it has precedence
+        # of the contained geometry (we will issue
+        # a warning in that case)
+        f = label + '.XV'
+        try:
+            if osp.isfile(f):
+                geom = sis.XVSile(f).read_geom()
+                warn.warn("Reading geometry from the XV file instead of the fdf-file!")
+            else:
+                geom = self.read_geom()
+
+            tmp_p = sp.add_parser('geom',
+                                  help="Edit the contained geometry in the file")
+            tmp_p, tmp_ns = geom.ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+        except:
+            pass
+
+        f = label + '.bands'
+        if osp.isfile(f):
+            tmp_p = sp.add_parser('band',
+                                  help="Manipulate the bands file from the SIESTA simulation")
+            tmp_p, tmp_ns = sis.BandsSIESTASile(f).ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+
+        f = label + '.TBT.nc'
+        if osp.isfile(f):
+            tmp_p = sp.add_parser('tbt',
+                                  help="Manipulate the tbtrans output file")
+            tmp_p, tmp_ns = sis.TBtransSile(f).ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+
+        f = label + '.nc'
+        if osp.isfile(f):
+            tmp_p = sp.add_parser('nc',
+                                  help="Manipulate the SIESTA output file")
+            tmp_p, tmp_ns = sis.SIESTASile(f).ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+
         
+
         return p, namespace
 
 

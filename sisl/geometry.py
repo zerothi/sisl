@@ -11,7 +11,7 @@ import warnings
 
 import numpy as np
 
-
+from .utils import *
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
@@ -1099,7 +1099,7 @@ class Geometry(SuperCellChild):
             self.xyz[ia, :] = c + bv / d * rad
 
         else:
-            raise NotImplemented(
+            raise NotImplementedError(
                 'Changing bond-length dependent on several lacks implementation.')
 
     def close(self, xyz_ia,
@@ -1232,13 +1232,19 @@ class Geometry(SuperCellChild):
         """
         if not all:
             return self.lasto[ia % self.na] + (ia // self.na) * self.no
+        ia = np.asarray(ia, np.int32)
         ob = self.a2o(ia)
-        oe = self.a2o(np.asarray(ia, np.int32) + 1)
+        oe = self.a2o(ia + 1)
+        arange = np.arange
         # Create ranges
+        if isinstance(ob, Integral):
+            return arange(ob, oe, dtype=np.int32)
+
+        # Several ranges
         o = np.empty([np.sum(oe - ob)], np.int32)
         n = 0
         for i in range(len(ob)):
-            o[n:n + oe[i] - ob[i]] = np.arange(ob[i], oe[i], np.int32)
+            o[n:n + oe[i] - ob[i]] = arange(ob[i], oe[i], dtype=np.int32)
             n += oe[i] - ob[i]
         return o
 
@@ -1356,7 +1362,8 @@ class Geometry(SuperCellChild):
     # Hook into the Geometry class to create
     # an automatic ArgumentParser which makes actions
     # as the options are read.
-    def ArgumentParser(self, parser=None, *args, **kwargs):
+    @dec_default_AP("Manipulate a Geometry object in sisl.")
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Create and return a group of argument parsers which manipulates it self `Geometry`. 
 
         Parameters
@@ -1372,7 +1379,6 @@ class Geometry(SuperCellChild):
         positional_out: bool, False
            If `True`, adds a positional argument which acts as --out. This may be handy if only the geometry is in the argument list.
         """
-
         limit_args = kwargs.get('limit_arguments', True)
         short = kwargs.get('short', False)
 
@@ -1384,25 +1390,15 @@ class Geometry(SuperCellChild):
         # We limit the import to occur here
         import argparse as arg
 
-        if parser is None:
-            p = arg.ArgumentParser("Manipulate a Geometry object in sisl.")
-        else:
-            p = parser
-
         # The first thing we do is adding the geometry to the NameSpace of the
         # parser.
         # This will enable custom actions to interact with the geometry in a
         # straight forward manner.
-        class CustomNamespace(object):
-            pass
-        namespace = CustomNamespace()
-        # We act on a copy of it-self.
-        # This is because some options change the geometry
-        # in-line, while others makes a new copy.
-        # So might as well limit to only a copy.
-        namespace._geometry = self.copy()
-        # This may be used to check whether any --out has been issued.
-        namespace._stored_geometry = False
+        d = {
+            "_geometry"        : self.copy(),
+            "_stored_geometry" : False,
+        }
+        namespace = default_namespace(**d)
 
         # Create actions
         class MoveOrigin(arg.Action):
@@ -1580,7 +1576,7 @@ class Geometry(SuperCellChild):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 2)
             p.add_argument(*opts('--tile-z','-tz'),nargs=1, metavar='TIMES',
-                           action=PeriodTileX,
+                           action=PeriodTileZ,
                            help='Tiles the geometry along the third cell vector.')
 
         # Print some common information about the
@@ -1592,6 +1588,15 @@ class Geometry(SuperCellChild):
                        action=PrintInfo,
                        help='Print, to stdout, some regular information about the geometry.')
 
+        # We will add the vector data
+        class Vectors(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                raise NotImplementedError
+        #p.add_argument(*opts('--vector','-v'),metavar='DATA',
+        #               choices=['force', 'moment'],
+        #               action=Vectors,
+        #               help='Adds vector arrows for each atomRemoves specified atoms, can be complex ranges.')
+
             
         class Out(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
@@ -1601,7 +1606,7 @@ class Geometry(SuperCellChild):
                     return
                 ns._geometry.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
-                setattr(ns, '_stored_geometry', True)
+                ns._stored_geometry = True
         p.add_argument(*opts('--out','-o'), nargs=1, action=Out,
                        help='Store the geometry (at its current invocation) to the out file.')
 

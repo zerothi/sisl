@@ -15,6 +15,7 @@ from numbers import Integral
 # Import sile objects
 from .sile import SileCDFSIESTA
 from ..sile import *
+from sisl.utils import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
@@ -287,7 +288,7 @@ class TBtransSile(SileCDFSIESTA):
         """ Sampled energy-points in file """
         return self._data('E') * Ry2eV
 
-    def E2idx(self, E):
+    def Eindex(self, E):
         """ Return the closest energy index corresponding to the energy `E`"""
         if isinstance(E, Integral):
             return E
@@ -300,6 +301,7 @@ class TBtransSile(SileCDFSIESTA):
     nE = ne
 
     @property
+    @Sile_fh_open
     def elecs(self):
         """ List of electrodes """
         elecs = self.groups.keys()
@@ -347,7 +349,7 @@ class TBtransSile(SileCDFSIESTA):
             raise ValueError(
                 "Supplied elec_from and elec_to must not be the same.")
 
-        return self._data_avg(elec_to + '.T', elec_from, avg=kavg)
+        return self._data_avg(elec_to + '.T', elec_from, avg=avg)
     T = transmission
 
     def transmission_eig(self, elec_from, elec_to, avg=True):
@@ -369,7 +371,7 @@ class TBtransSile(SileCDFSIESTA):
             raise ValueError(
                 "Supplied elec_from and elec_to must not be the same.")
 
-        return self._data_avg(elec_to + '.T.Eig', elec_from, avg=kavg)
+        return self._data_avg(elec_to + '.T.Eig', elec_from, avg=avg)
     Teig = transmission_eig
 
     def transmission_bulk(self, elec, avg=True):
@@ -382,7 +384,7 @@ class TBtransSile(SileCDFSIESTA):
         avg: bool (True)
            whether the returned transmission is k-averaged
         """
-        return self._data_avg('T', elec, avg=kavg)
+        return self._data_avg('T', elec, avg=avg)
     Tbulk = transmission_bulk
 
     def DOS(self, avg=True):
@@ -393,7 +395,7 @@ class TBtransSile(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._data_avg('DOS', avg=kavg)
+        return self._data_avg('DOS', avg=avg)
     DOS_Gf = DOS
 
     def ADOS(self, elec, avg=True):
@@ -406,7 +408,7 @@ class TBtransSile(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._data_avg('ADOS', elec, avg=kavg)
+        return self._data_avg('ADOS', elec, avg=avg)
     DOS_A = ADOS
 
     def DOS_bulk(self, elec, avg=True):
@@ -419,7 +421,7 @@ class TBtransSile(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._data_avg('DOS', elec, avg=kavg)
+        return self._data_avg('DOS', elec, avg=avg)
     BulkDOS = DOS_bulk
 
 
@@ -591,11 +593,209 @@ class TBtransSile(SileCDFSIESTA):
         return Ja
 
 
-    def ArgumentParser(self, *args, **kwargs):
+    @dec_default_AP("Extract data from a TBT.nc file")
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
-        newkw = Geometry._ArgumentParser_args_single()
-        newkw.update(kwargs)
-        return self.read_geom().ArgumentParser(*args, **newkw)
+
+        # We limit the import to occur here
+        import argparse as arg
+
+        d = {
+            "_tbt": self,
+            "_data_header" : [],
+            "_data" : [],
+            "_Arng" : None,
+            "_Ascale" : 1. / len(self.pivot), 
+            "_Erng" : None,
+            "_krng" : None,
+        }
+        namespace = default_namespace(**d)
+
+        # Ensure the namespace is populated
+        ensure_namespace(p, namespace)
+
+
+        def dec_ensure_E(func):
+            """ This decorater ensures that E is the first element in the _data container """
+            def assign_E(self, *args, **kwargs):
+                for arg in args:
+                    if not isinstance(arg, TBTNamespace):
+                        continue
+                    ns = arg
+                    break
+                if len(ns._data) == 0:
+                    # We immediately extract the energies
+                    if ns._Erng is None:
+                        ns._data.append(ns._tbt.E[:])
+                    else:
+                        ns._data.append(ns._tbt.E[ns._Erng])
+                    ns._data_header.append('Energy[eV]')
+                return func(self, *args, **kwargs)
+            return assign_E
+
+        # Energy grabs
+        class ERange(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                Emap = strmap(float, value, recursive=False, sep=':')
+                # Convert to actual indices
+                E = []
+                for begin, end in Emap:
+                    E.append(range(ns._tbt.Eindex(begin), ns._tbt.Eindex(end)+1))
+                ns._Erng = np.array(E, np.int32).flatten()
+        p.add_argument('--energy', '-E',
+                       action=ERange,
+                       help='Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]')
+
+        # k-range
+        class kRange(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._krng = lstranges(strmap(int, value, recursive=False, sep='-'))
+        p.add_argument('--kpoint', '-k',
+                       action=kRange,
+                       help='Denote the sub-section of k-indices that are extracted.')
+
+        # Try and add the atomic specification
+        class AtomRange(arg.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                # Immediately convert to proper indices
+                geom = ns._tbt.read_geom()
+                ranges = lstranges(strmap(int, value, sep='-'))
+                # we have only a subset of the orbitals
+                orbs = []
+                no = 0
+                asarray = np.asarray
+                for atoms in ranges:
+                    if isinstance(atoms, list):
+                        # Get atoms
+                        ia = asarray(atoms[0], np.int32)
+                        ob = geom.a2o(ia - 1, True)
+                        no += len(ob)
+                        ob = ob[asarray(atoms[1], np.int32) - 1]
+                    else:
+                        ia = asarray(atoms[0], np.int32)
+                        ob = geom.a2o(ia - 1, True)
+                        no += len(ob)
+                    orbs.append(ob)
+                # Add one to make the c-index equivalent to the f-index
+                orbs = np.array(orbs, np.int32).flatten() + 1
+                pivot = np.where(np.in1d(ns._tbt.pivot, orbs))[0]
+
+                if len(orbs) != len(pivot):
+                    print('Device atoms:')
+                    tmp = ns._tbt.a_dev[:]
+                    tmp.sort()
+                    print(tmp[:])
+                    raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
+                ns._Arng = pivot
+                # Correct the scale to the correct number of orbitals
+                ns._Ascale = 1. / no
+
+        p.add_argument('--atom', '-a',
+                       action=AtomRange,
+                       help='Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed.')
+
+
+        class DataT(arg.Action):
+            @dec_collect_actions
+            @dec_ensure_E
+            def __call__(self, parser, ns, values, option_string=None):
+                e1 = values[0]
+                if e1 not in ns._tbt.elecs:
+                    raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
+                e2 = values[1]
+                if e2 not in ns._tbt.elecs:
+                    raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
+
+                # Grab the information
+                if ns._krng is None:
+                    data = ns._tbt.transmission(e1, e2, avg=True)
+                else:
+                    data = ns._tbt.transmission(e1, e2, avg=ns._krng)
+                ns._data.append(data[ns._Erng,...])
+                ns._data_header.append('T:{}-{}[G]'.format(e1, e2))
+        p.add_argument('--transmission', '-T',nargs=2, metavar=('ELEC1','ELEC2'),
+                       action=DataT,
+                       help='Store the transmission between two electrodes.')
+
+        class DataDOS(arg.Action):
+            @dec_collect_actions
+            @dec_ensure_E
+            def __call__(self, parser, ns, value, option_string=None):
+                if not value is None:
+                    # we are storing the spectral DOS
+                    e = value
+                    if e not in ns._tbt.elecs:
+                        raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
+                    # Grab the information
+                    if ns._krng is None:
+                        data = ns._tbt.ADOS(e, avg=True)
+                    else:
+                        data = ns._tbt.ADOS(e, avg=ns._krng)
+                    ns._data_header.append('ADOS:{}[1/eV]'.format(e))
+                else:
+                    if ns._krng is None:
+                        data = ns._tbt.DOS(avg=True)
+                    else:
+                        data = ns._tbt.DOS(avg=ns._krng)
+                    ns._data_header.append('DOS[1/eV]')
+                # Grab out the atomic ranges
+                if not ns._Arng is None:
+                    orig_shape = data.shape
+                    data = data[...,ns._Arng]
+                # Select the energies, even if _Erng is None, this will work!
+                data = np.sum(data[ns._Erng,...], axis=-1).flatten()
+                ns._data.append(data * ns._Ascale)
+        p.add_argument('--dos', '-D', nargs='?', metavar='ELEC',
+                       action=DataDOS, default=None,
+                       help="""Store the DOS. If no electrode is specified, it is Green function, else it is the spectral function.""")
+        p.add_argument('--ados', '-AD', nargs=1, metavar='ELEC',
+                       action=DataDOS, default=None,
+                       help="""Store the spectral DOS, same as --dos.""")
+
+        class DataTEig(arg.Action):
+            @dec_collect_actions
+            @dec_ensure_E
+            def __call__(self, parser, ns, values, option_string=None):
+                e1 = values[0]
+                if e1 not in ns._tbt.elecs:
+                    raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
+                e2 = values[1]
+                if e2 not in ns._tbt.elecs:
+                    raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
+
+                # Grab the information
+                if ns._krng is None:
+                    data = ns._tbt.transmission_eig(e1, e2, avg=True)
+                else:
+                    data = ns._tbt.transmission_eig(e1, e2, avg=ns._krng)
+                # The shape is: k, E, neig
+                neig = data.shape[-1]
+                for eig in range(neig):
+                    ns._data.append(data[ns._Erng,eig])
+                    ns._data_header.append('Teig({}):{}-{}[G]'.format(eig+1, e1, e2))
+        p.add_argument('--transmission-eig', '-Teig',nargs=2, metavar=('ELEC1','ELEC2'),
+                       action=DataTEig,
+                       help='Store the transmission eigenvalues between two electrodes.')
+
+        class Out(arg.Action):
+            @dec_run_actions
+            def __call__(self, parser, ns, value, option_string=None):
+                from sisl.io import TableSile
+                out = value[0]
+                TableSile(out).write(np.array(ns._data), header=ns._data_header)
+
+                # Clean all data
+                ns._data_header = []
+                ns._data = []
+                # These are expert options
+                ns._Arng = None
+                ns._Ascale = 1. / len(ns._tbt.pivot)
+                ns._Erng = None
+                ns._krng = None
+        p.add_argument('--out','-o', nargs=1, action=Out,
+                       help='Store the currently collected information (at its current invocation) to the out file.')
+
+        return p, namespace
 
 
 add_sile('TBT.nc', TBtransSile)

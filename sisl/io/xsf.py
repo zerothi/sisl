@@ -24,11 +24,15 @@ class XSFSile(Sile):
         self._comment = ['#']
 
     @Sile_fh_open
-    def write_geom(self, geom, fmt='.8f'):
+    def write_geom(self, geom, fmt='.8f', data=None):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
 
+        has_data = not data is None
+        if has_data:
+            data.shape = (-1, 3)
+        
         # The current geometry is currently only a single
         # one, and does not write the convvec
         # Is it a necessity?
@@ -59,16 +63,27 @@ class XSFSile(Sile):
         self._write('PRIMCOORD\n')
         self._write('{} {}\n'.format(len(geom), 1))
 
-        fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
-        for ia in geom:
-            self._write(fmt_str.format(geom.atom[ia].Z, *geom.xyz[ia, :]))
+        if has_data:
+            fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}   {{4:{0}}}  {{5:{0}}}  {{6:{0}}}\n'.format(fmt)
+            for ia in geom:
+                tmp = np.append(geom.xyz[ia, :], data[ia,:])
+                self._write(fmt_str.format(geom.atom[ia].Z, *tmp))
+        else:
+            fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
+            for ia in geom:
+                self._write(fmt_str.format(geom.atom[ia].Z, *geom.xyz[ia, :]))
         # Add a single new line
         self._write('\n')
 
 
     @Sile_fh_open
-    def read_geom(self):
+    def read_geom(self, data=False):
         """ Returns Geometry object from the XSF file
+
+        Parameters
+        ----------
+        data: bool, False
+           in case the XSF file has forces or additional coordinate information, return that as well.
         """
         # Prepare containers...
         cell = np.zeros([3, 3], np.float64)
@@ -105,7 +120,17 @@ class XSFSile(Sile):
                     atom.append(int(line[0]))
                     xyz.append(map(float, line[1:]))
 
-        return Geometry(xyz, atom=atom, sc=SuperCell(cell))
+        xyz = np.array(xyz, np.float64)
+        if data:
+            dat = None
+        if xyz.shape[1] == 6:
+            dat = xyz[:,3:]
+            xyz = xyz[:,:3]
+            
+        geom = Geometry(xyz, atom=atom, sc=SuperCell(cell))
+        if data:
+            return geom, dat
+        return geom
 
 
     def ArgumentParser(self, *args, **kwargs):

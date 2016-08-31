@@ -116,7 +116,7 @@ def lstranges(lst, func=erange):
     else:
         return lst
     return l
-        
+
 
 # Function to retrieve an optional index from the
 # filename
