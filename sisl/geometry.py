@@ -405,16 +405,16 @@ class Geometry(SuperCellChild):
         REMARK: You need to ensure that all atoms within the first
         cut out region are within the primary unit-cell.
 
-        Doing ``geom.cut(2,1).tile(reps=2,axis=1)``, could for symmetric setups,
+        Doing ``geom.cut(2,1).tile(seps=2,axis=1)``, could for symmetric setups,
         be equivalent to a no-op operation. A ``UserWarning`` will be issued
         if this is not the case.
 
         Parameters
         ----------
-        axis  : int
-            the axis that will be cut
         seps  : int
             number of times the structure will be cut.
+        axis  : int
+            the axis that will be cut
         seg : int, optional (0)
             returns the i'th segment of the cut structure
             Currently the atomic coordinates are not translated,
