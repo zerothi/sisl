@@ -906,6 +906,7 @@ class Geometry(SuperCellChild):
     def axyzsc(self, ia):
         return self.coords(self.a2isc(ia), self.sc2uc(ia))
 
+
     def close_sc(self, xyz_ia,
             isc=[0, 0, 0],
             dR=None,
@@ -951,11 +952,14 @@ class Geometry(SuperCellChild):
 
         # Common numpy used functions (reduces function look-ups)
         where = np.where
+        log_and = np.logical_and
 
         if dR is None:
             ddR = np.array([self.dR], np.float64)
         else:
             ddR = np.array([dR], np.float64).flatten()
+        # Maximum distance queried
+        max_dR = ddR[-1]
 
         # Convert to actual array
         if idx is not None:
@@ -963,14 +967,49 @@ class Geometry(SuperCellChild):
 
         if isinstance(xyz_ia, Integral):
             off = self.xyz[xyz_ia, :]
-            # Get atomic coordinate in principal cell
-            dxa = self.coords(isc=isc, idx=idx) - off[None, :]
         else:
             off = xyz_ia
-            # The user has passed a coordinate
-            dxa = self.coords(isc=isc, idx=idx) - off[None, :]
+        # Get atomic coordinate in principal cell
+        dxa = self.coords(isc=isc, idx=idx) - off[None, :]
 
-        ret_special = ret_coord or ret_dist
+        # Immediately downscale by easy checking
+        # This will reduce the computation of the vector-norm
+        # which is the main culprit of the time-consumption
+        # This abstraction will _only_ help very large
+        # systems.
+        # For smaller ones this will actually be a slower
+        # method...
+        # TODO should we abstract the methods dependent on size?
+        ix = log_and(log_and(dxa[:, 0] <= max_dR,
+                             dxa[:, 1] <= max_dR),
+                     dxa[:, 2] <= max_dR)
+        if idx is None:
+            # This is because of the pre-check of the
+            # distance checks
+            idx = where(ix)[0]
+        else:
+            idx = idx[ix]
+        dxa = dxa[ix, :]
+
+        # Create default return
+        ret = [[]]*len(ddR)
+        i = 0
+        if ret_coord:
+            i += 1
+            rc = i
+            ret.append([[]]*len(ddR))
+        if ret_dist:
+            i += 1
+            rc = i
+            ret.append([[]]*len(ddR))
+        
+        if len(dxa) == 0:
+            # Quick return if there are
+            # no entries...
+            if ret_coord or ret_dist:
+                return ret
+            return ret[0]
+
 
         # Retrieve all atomic indices which are closer
         # than our delta-R
@@ -978,7 +1017,7 @@ class Geometry(SuperCellChild):
         # has a lot of checks, hence we do it manually
         #xaR = np.linalg.norm(dxa,axis=-1)
         xaR = (dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2) ** .5
-        ix = ensure_array(np.where(xaR <= ddR[-1])[0])
+        ix = where(xaR <= max_dR)[0]
         if ret_coord:
             xa = dxa[ix, :] + off[None, :]
         if ret_dist:
@@ -988,15 +1027,12 @@ class Geometry(SuperCellChild):
         # Check whether we only have one range to check.
         # If so, we need not reduce the index space
         if len(ddR) == 1:
-            if idx is None:
-                ret = [ix]
-            else:
-                ret = [idx[ix]]
+            ret = [idx[ix]]
             if ret_coord:
                 ret.append(xa)
             if ret_dist:
-                ret.append(d,)
-            if ret_special:
+                ret.append(d)
+            if ret_coord or ret_dist:
                 return ret
             return ret[0]
 
@@ -1010,10 +1046,7 @@ class Geometry(SuperCellChild):
         # then we immediately reduce search space to this subspace
         xaR = xaR[ix]
         tidx = where(xaR <= ddR[0])[0]
-        if idx is None:
-            ret = [[ensure_array(ix[tidx])]]
-        else:
-            ret = [[ensure_array(idx[ix[tidx]])]]
+        ret = [[ensure_array(idx[ix[tidx]])]]
         i = 0
         if ret_coord:
             rc = i + 1
@@ -1028,16 +1061,13 @@ class Geometry(SuperCellChild):
             # Notice that this sub-space reduction will never
             # allow the same indice to be in two ranges (due to
             # numerics)
-            tidx = where(np.logical_and(ddR[i - 1] < xaR, xaR <= ddR[i]))[0]
-            if idx is None:
-                ret[0].append(ensure_array(ix[tidx]))
-            else:
-                ret[0].append(ensure_array(idx[ix[tidx]]))
+            tidx = where(log_and(ddR[i - 1] < xaR, xaR <= ddR[i]))[0]
+            ret[0].append(ensure_array(idx[ix[tidx]]))
             if ret_coord:
                 ret[rc].append(xa[tidx])
             if ret_dist:
                 ret[rd].append(d[tidx])
-        if ret_special:
+        if ret_coord or ret_dist:
             return ret
         return ret[0]
 
@@ -1169,19 +1199,17 @@ class Geometry(SuperCellChild):
             na = self.na * s
             sret = self.close_sc(
                 xyz_ia,
-                self.sc.sc_off[
-                    s,
-                    :],
+                self.sc.sc_off[s, :],
                 dR=dR,
                 idx=idx,
                 ret_coord=ret_coord,
                 ret_dist=ret_dist)
             if not ret_special:
-                sret = (sret,)
+                sret = [sret]
             if isinstance(sret[0], list):
                 # we have a list of arrays
                 if ret[0] is None:
-                    ret[0] = [x + na for x in sret[0]]
+                    ret[0] = (np.array(sret[0]) + na).tolist()
                     if ret_coord:
                         ret[c] = sret[c]
                     if ret_dist:
