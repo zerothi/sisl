@@ -14,12 +14,12 @@ from sisl.quantity import Hamiltonian
 
 import numpy as np
 
-__all__ = ['SIESTASile']
+__all__ = ['ncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
-class SIESTASile(SileCDFSIESTA):
+class ncSileSiesta(SileCDFSIESTA):
     """ SIESTA file object """
 
 
@@ -364,4 +364,4 @@ class SIESTASile(SileCDFSIESTA):
         return self.read_geom().ArgumentParser(*args, **newkw)
 
     
-add_sile('nc', SIESTASile)
+add_sile('nc', ncSileSiesta)

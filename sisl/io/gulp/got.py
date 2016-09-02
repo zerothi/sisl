@@ -13,10 +13,10 @@ from sisl.quantity import DynamicalMatrix
 
 import numpy as np
 
-__all__ = ['GULPgotSile']
+__all__ = ['gotSileGULP']
 
 
-class GULPgotSile(SileGULP):
+class gotSileGULP(SileGULP):
     """ GULP output file object """
 
     def _setup(self):
@@ -280,5 +280,5 @@ class GULPgotSile(SileGULP):
 
 
 # Old-style GULP output
-add_sile('gout', GULPgotSile, gzip=True)
-add_sile('got', GULPgotSile, gzip=True)
+add_sile('gout', gotSileGULP, gzip=True)
+add_sile('got', gotSileGULP, gzip=True)

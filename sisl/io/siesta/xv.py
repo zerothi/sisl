@@ -7,7 +7,7 @@ from __future__ import print_function
 import numpy as np
 
 # Import sile objects
-from .sile import SileSIESTA
+from .sile import SileSiesta
 from ..sile import *
 
 # Import the geometry object
@@ -16,14 +16,14 @@ from sisl.units.siesta import unit_convert
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
-__all__ = ['XVSile']
+__all__ = ['XVSileSiesta']
 
 
-class XVSile(SileSIESTA):
+class XVSileSiesta(SileSiesta):
     """ XV file object """
 
     def _setup(self):
-        """ Setup the `XVSile` after initialization """
+        """ Setup the `XVSileSiesta` after initialization """
         self._comment = []
 
 
@@ -92,4 +92,4 @@ class XVSile(SileSIESTA):
         return self.read_geom().ArgumentParser(*args, **newkw)
 
 
-add_sile('XV', XVSile, gzip=True)
+add_sile('XV', XVSileSiesta, gzip=True)

@@ -13,13 +13,13 @@ from sisl.units import unit_convert
 
 import numpy as np
 
-__all__ = ['GULPHessianSile']
+__all__ = ['HessianSileGULP']
 
 eV2Ry = unit_convert('eV', 'Ry')
 Ang2Bohr = unit_convert('Ang', 'Bohr')
 
 
-class GULPHessianSile(SileGULP):
+class HessianSileGULP(SileGULP):
     """ GULP output file object """
 
     @Sile_fh_open
@@ -76,4 +76,4 @@ class GULPHessianSile(SileGULP):
         return dyn
 
 
-add_sile('FORCE_CONSTANTS_2ND', GULPHessianSile, gzip=True)
+add_sile('FORCE_CONSTANTS_2ND', HessianSileGULP, gzip=True)

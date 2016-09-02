@@ -13,10 +13,10 @@ from ..sile import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 
-__all__ = ['CARSile', 'POSCARSile', 'CONTCARSile']
+__all__ = ['CARSileVASP', 'POSCARSileVASP', 'CONTCARSileVASP']
 
 
-class CARSile(SileVASP):
+class CARSileVASP(SileVASP):
     """ CAR file object
     This file-object handles both POSCAR and CONTCAR files
     """
@@ -142,13 +142,13 @@ class CARSile(SileVASP):
 
 
 # Equivalent classes
-class POSCARSile(CARSile):
+class POSCARSileVASP(CARSileVASP):
     pass
 
-class CONTCARSile(CARSile):
+class CONTCARSileVASP(CARSileVASP):
     pass
 
 
-add_sile('CAR', CARSile, gzip=True)
-add_sile('POSCAR', POSCARSile, gzip=True)
-add_sile('CONTCAR', CONTCARSile, gzip=True)
+add_sile('CAR', CARSileVASP, gzip=True)
+add_sile('POSCAR', POSCARSileVASP, gzip=True)
+add_sile('CONTCAR', CONTCARSileVASP, gzip=True)

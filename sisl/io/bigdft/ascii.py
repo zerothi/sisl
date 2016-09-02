@@ -14,16 +14,16 @@ from sisl.units import unit_convert
 
 import numpy as np
 
-__all__ = ['BigDFTASCIISile']
+__all__ = ['ASCIISileBigDFT']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
-class BigDFTASCIISile(SileBigDFT):
+class ASCIISileBigDFT(SileBigDFT):
     """ ASCII file object for BigDFT """
 
     def _setup(self):
-        """ Initialize for `BigDFTASCIISile` """
+        """ Initialize for `ASCIISileBigDFT` """
         self._comment = ['#', '!']
 
 
@@ -166,4 +166,4 @@ class BigDFTASCIISile(SileBigDFT):
         return self.read_geom().ArgumentParser(*args, **newkw)
 
 
-add_sile('ascii', BigDFTASCIISile, case=False, gzip=True)
+add_sile('ascii', ASCIISileBigDFT, case=False, gzip=True)

@@ -1,4 +1,4 @@
-"""Tests suite for XVSile
+"""Tests suite for XVSileSiesta
 """
 from __future__ import print_function, division
 

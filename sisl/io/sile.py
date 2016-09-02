@@ -30,8 +30,8 @@ __all__ += [
 
 # Global container of all Sile rules
 # This list of tuples is formed as
-#  [('fdf', FDFSile, FDFSile),
-#   ('fdf', SIESTASile, FDFSile)]
+#  [('fdf', fdfSileSiesta, fdfSileSiesta),
+#   ('fdf', ncSileSiesta, fdfSileSiesta)]
 # [0] is the file-endding
 # [1] is the base class that may be queried
 # [2] is the actual class the file represents

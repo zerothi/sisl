@@ -9,7 +9,7 @@ import numpy as np
 import warnings as warn
 
 # Import sile objects
-from .sile import SileSIESTA
+from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
@@ -22,7 +22,7 @@ from sisl.utils.misc import merge_instances, name_spec
 from sisl.units import unit_default, unit_group
 from sisl.units.siesta import unit_convert
 
-__all__ = ['FDFSile']
+__all__ = ['fdfSileSiesta']
 
 
 _LOGICAL_TRUE  = ['.true.','true','yes','y','t']
@@ -32,7 +32,7 @@ _LOGICAL = _LOGICAL_FALSE + _LOGICAL_TRUE
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
-class FDFSile(SileSIESTA):
+class fdfSileSiesta(SileSiesta):
     """ FDF file object """
 
     def __init__(self, filename, mode='r', base=None):
@@ -41,7 +41,7 @@ class FDFSile(SileSIESTA):
         By supplying base you can reference files in other directories.
         By default the ``base`` is the directory given in the file name.
         """
-        super(FDFSile, self).__init__(filename, mode=mode)
+        super(fdfSileSiesta, self).__init__(filename, mode=mode)
         if base is None:
             # Extract from filename
             self._directory = osp.dirname(filename)
@@ -52,7 +52,7 @@ class FDFSile(SileSIESTA):
 
 
     def _setup(self):
-        """ Setup the `FDFSile` after initialization """
+        """ Setup the `fdfSileSiesta` after initialization """
         # These are the comments
         self._comment = ['#', '!', ';']
 
@@ -64,7 +64,7 @@ class FDFSile(SileSIESTA):
     def readline(self, comment=False):
         """ Reads the next line of the file """
         # Call the parent readline function
-        l = super(FDFSile, self).readline(comment=comment)
+        l = super(fdfSileSiesta, self).readline(comment=comment)
         
         # In FDF files, %include marks files that progress
         # down in a tree structure
@@ -181,7 +181,7 @@ class FDFSile(SileSIESTA):
         # Check whether the key is piped
         if found and fdf.find('<') >= 0:
             # Create new fdf-file
-            sub_fdf = FDFSile(fdf.split('<')[1].replace('\n','').strip())
+            sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n','').strip())
             return sub_fdf._read(key)
         
         return found, fdf
@@ -205,7 +205,7 @@ class FDFSile(SileSIESTA):
         # If the block is piped in from another file...
         if '<' in fdf:
             # Create new fdf-file
-            sub_fdf = FDFSile(fdf.split('<')[1].replace('\n','').strip())
+            sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n','').strip())
             return sub_fdf._read_block(key, force = force)
         
         li = []
@@ -511,7 +511,7 @@ class FDFSile(SileSIESTA):
         f = label + '.XV'
         try:
             if osp.isfile(f):
-                geom = sis.XVSile(f).read_geom()
+                geom = sis.XVSileSiesta(f).read_geom()
                 warn.warn("Reading geometry from the XV file instead of the fdf-file!")
             else:
                 geom = self.read_geom()
@@ -527,21 +527,21 @@ class FDFSile(SileSIESTA):
         if osp.isfile(f):
             tmp_p = sp.add_parser('band',
                                   help="Manipulate the bands file from the SIESTA simulation")
-            tmp_p, tmp_ns = sis.BandsSIESTASile(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = sis.BandsncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.TBT.nc'
         if osp.isfile(f):
             tmp_p = sp.add_parser('tbt',
                                   help="Manipulate the tbtrans output file")
-            tmp_p, tmp_ns = sis.TBtransSile(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = sis.tbtncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.nc'
         if osp.isfile(f):
             tmp_p = sp.add_parser('nc',
                                   help="Manipulate the SIESTA output file")
-            tmp_p, tmp_ns = sis.SIESTASile(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = sis.ncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         
@@ -549,4 +549,4 @@ class FDFSile(SileSIESTA):
         return p, namespace
 
 
-add_sile('fdf', FDFSile, case=False, gzip=True)
+add_sile('fdf', fdfSileSiesta, case=False, gzip=True)

@@ -22,9 +22,9 @@ class TestSIESTAnc(object):
         f = osp.join(self.d, 'gr.nc')
         tb = Hamiltonian(self.gtb)
         tb.construct(self.dR, self.t)
-        tb.write(SIESTASile(f, 'w'))
+        tb.write(ncSileSiesta(f, 'w'))
 
-        ntb = SIESTASile(f).read_es()
+        ntb = ncSileSiesta(f).read_es()
 
         # Assert they are the same
         assert_true(np.allclose(tb.cell, ntb.cell))
@@ -41,9 +41,9 @@ class TestSIESTAnc(object):
         H.construct(self.dR, self.t)
 
         # annoyingly this has to be performed like this...
-        sile = TBtransdHSile(f, 'w')
+        sile = dHncSileSiesta(f, 'w')
         H.geom.write(sile)
-        sile = TBtransdHSile(f, 'a')
+        sile = dHncSileSiesta(f, 'a')
 
         # Write to level-1
         H.write(sile)
@@ -59,9 +59,9 @@ class TestSIESTAnc(object):
         f = osp.join(self.d, 'grS.nc')
         tb = Hamiltonian(self.gtb, ortho=False)
         tb.construct(self.dR, self.tS)
-        tb.write(SIESTASile(f, 'w'))
+        tb.write(ncSileSiesta(f, 'w'))
 
-        ntb = SIESTASile(f).read_es()
+        ntb = ncSileSiesta(f).read_es()
 
         # Assert they are the same
         assert_true(np.allclose(tb.cell, ntb.cell))

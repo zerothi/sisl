@@ -22,8 +22,8 @@ class TestXV(object):
 
     def test_xv1(self):
         f = osp.join(self.d, 'gr.XV')
-        self.g.write(XVSile(f, 'w'))
-        g = XVSile(f).read_geom()
+        self.g.write(XVSileSiesta(f, 'w'))
+        g = XVSileSiesta(f).read_geom()
 
         # Assert they are the same
         assert_true(np.allclose(g.cell, self.g.cell))

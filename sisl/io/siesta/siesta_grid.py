@@ -13,12 +13,12 @@ from ..sile import *
 from sisl import Geometry, SuperCell, Grid
 from sisl.units.siesta import unit_convert
 
-__all__ = ['SIESTAGridSile']
+__all__ = ['gridncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
-class SIESTAGridSile(SileCDFSIESTA):
+class gridncSileSiesta(SileCDFSIESTA):
     """ SIESTA Grid file object """
 
     @Sile_fh_open
@@ -65,4 +65,4 @@ class SIESTAGridSile(SileCDFSIESTA):
         return grid.swapaxes(0, 2)
 
 
-add_sile('grid.nc', SIESTAGridSile)
+add_sile('grid.nc', gridncSileSiesta)

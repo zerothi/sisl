@@ -4,7 +4,7 @@ Sile object for reading/writing Wannier90 in/output
 from __future__ import print_function
 
 # Import sile objects
-from .sile import SileWannier90
+from .sile import SileW90
 from ..sile import *
 
 # Import the geometry object
@@ -13,14 +13,14 @@ from sisl.quantity import Hamiltonian
 
 import numpy as np
 
-__all__ = ['W90SeedSile']
+__all__ = ['winSileW90']
 
 
-class W90SeedSile(SileWannier90):
+class winSileW90(SileW90):
     """ Wannier seedname output file object """
 
     def _setup(self):
-        """ Setup `W90SeedSile` after initialization """
+        """ Setup `winSileW90` after initialization """
         self._seed = self.file.replace('.win', '')
 
 
@@ -200,4 +200,4 @@ class W90SeedSile(SileWannier90):
         return self.read_geom().ArgumentParser(*args, **newkw)
 
 
-add_sile('win', W90SeedSile, gzip=True)
+add_sile('win', winSileW90, gzip=True)

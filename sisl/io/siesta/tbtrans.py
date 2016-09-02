@@ -21,15 +21,15 @@ from sisl.utils import *
 from sisl import Geometry, Atom, SuperCell
 from sisl.units.siesta import unit_convert
 
-__all__ = ['TBtransSile', 'PHtransSile']
+__all__ = ['tbtncSileSiesta', 'phtncSileSiesta']
 
-__all__ += ['TBtransdHSile']
+__all__ += ['dHncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
 
-class TBtransSile(SileCDFSIESTA):
+class tbtncSileSiesta(SileCDFSIESTA):
     """ TBtrans file object """
     _trans_type = 'TBT'
 
@@ -798,18 +798,18 @@ class TBtransSile(SileCDFSIESTA):
         return p, namespace
 
 
-add_sile('TBT.nc', TBtransSile)
+add_sile('TBT.nc', tbtncSileSiesta)
 
-class PHtransSile(TBtransSile):
+class phtncSileSiesta(tbtncSileSiesta):
     """ PHtrans file object """
     _trans_type = 'PHT'
     pass
 
-add_sile('PHT.nc', PHtransSile)
+add_sile('PHT.nc', phtncSileSiesta)
 
 
 # The deltaH nc file
-class TBtransdHSile(SileCDFSIESTA):
+class dHncSileSiesta(SileCDFSIESTA):
     """ TBtrans delta-H file object """
 
     @Sile_fh_open
@@ -1062,5 +1062,5 @@ class TBtransdHSile(SileCDFSIESTA):
                 v[sl] = ham._data._D[:, i] / Ry2eV ** ham._E_order
 
 
-add_sile('dH.nc', TBtransdHSile)
+add_sile('dH.nc', dHncSileSiesta)
 

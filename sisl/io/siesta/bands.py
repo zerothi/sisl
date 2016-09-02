@@ -13,10 +13,10 @@ from ..sile import add_sile, Sile_fh_open
 from .sile import *
 
 
-__all__ = ['BandsSIESTASile']
+__all__ = ['bandsSileSiesta']
 
 
-class BandsSIESTASile(SileSIESTA):
+class bandsSileSiesta(SileSiesta):
     """ bands SIESTA file object """
 
     def _setup(self):
@@ -161,4 +161,4 @@ class BandsSIESTASile(SileSIESTA):
         return p, namespace
 
 
-add_sile('bands', BandsSIESTASile, case=False, gzip=True)
+add_sile('bands', bandsSileSiesta, case=False, gzip=True)

@@ -25,58 +25,58 @@ class TestObject(object):
 
     def test_bigdft_ascii(self):
         sile = gs('test.ascii')
-        for obj in [BaseSile, Sile, SileBigDFT, BigDFTASCIISile]:
+        for obj in [BaseSile, Sile, SileBigDFT, ASCIISileBigDFT]:
             assert_true(isinstance(sile, obj))
             assert_true(isinstance(sile, obj))
 
     def test_bigdft_ascii_gz(self):
         sile = gs('test.ascii.gz')
-        for obj in [BaseSile, Sile, SileBigDFT, BigDFTASCIISile]:
+        for obj in [BaseSile, Sile, SileBigDFT, ASCIISileBigDFT]:
             assert_true(isinstance(sile, obj))
             assert_true(isinstance(sile, obj))
 
     def test_fdf(self):
         sile1 = gs('test.fdf')
         sile2 = gs('test.FDF')
-        for obj in [BaseSile, Sile, SileSIESTA, FDFSile]:
+        for obj in [BaseSile, Sile, SileSiesta, fdfSileSiesta]:
             assert_true(isinstance(sile1, obj))
             assert_true(isinstance(sile2, obj))
 
     def test_fdf_gz(self):
         sile1 = gs('test.fdf.gz')
         sile2 = gs('test.FDF.gz')
-        for obj in [BaseSile, Sile, SileSIESTA, FDFSile]:
+        for obj in [BaseSile, Sile, SileSiesta, fdfSileSiesta]:
             assert_true(isinstance(sile1, obj))
             assert_true(isinstance(sile2, obj))
 
     def test_gout(self):
         sile = gs('test.gout')
-        for obj in [BaseSile, Sile, SileGULP, GULPgotSile]:
+        for obj in [BaseSile, Sile, SileGULP, gotSileGULP]:
             assert_true(isinstance(sile, obj))
 
     def test_gout_gz(self):
         sile = gs('test.gout.gz')
-        for obj in [BaseSile, Sile, SileGULP, GULPgotSile]:
+        for obj in [BaseSile, Sile, SileGULP, gotSileGULP]:
             assert_true(isinstance(sile, obj))
 
     def test_out(self):
         sile = gs('test.out')
-        for obj in [BaseSile, Sile, SileSIESTA, OutSIESTASile]:
+        for obj in [BaseSile, Sile, SileSiesta, outSileSiesta]:
             assert_true(isinstance(sile, obj))
 
     def test_out_gz(self):
         sile = gs('test.out.gz')
-        for obj in [BaseSile, Sile, SileSIESTA, OutSIESTASile]:
+        for obj in [BaseSile, Sile, SileSiesta, outSileSiesta]:
             assert_true(isinstance(sile, obj))
 
     def test_nc(self):
         sile = gs('test.nc')
-        for obj in [BaseSile, SileCDF, SileCDFSIESTA, SIESTASile]:
+        for obj in [BaseSile, SileCDF, SileCDFSIESTA, ncSileSiesta]:
             assert_true(isinstance(gs('test.nc'), obj))
 
     def test_grid_nc(self):
         sile = gs('test.grid.nc')
-        for obj in [BaseSile, SileCDF, SileCDFSIESTA, SIESTAGridSile]:
+        for obj in [BaseSile, SileCDF, SileCDFSIESTA, gridncSileSiesta]:
             assert_true(isinstance(sile, obj))
 
     def test_ham(self):
@@ -95,32 +95,32 @@ class TestObject(object):
 
     def test_tbtrans(self):
         sile = gs('test.TBT.nc')
-        for obj in [BaseSile, SileCDF, SileCDFSIESTA, TBtransSile]:
+        for obj in [BaseSile, SileCDF, SileCDFSIESTA, tbtncSileSiesta]:
             assert_true(isinstance(sile, obj))
 
     def test_phtrans(self):
         sile = gs('test.PHT.nc')
-        for obj in [BaseSile, SileCDF, SileCDFSIESTA, TBtransSile, PHtransSile]:
+        for obj in [BaseSile, SileCDF, SileCDFSIESTA, tbtncSileSiesta, phtncSileSiesta]:
             assert_true(isinstance(sile, obj))
 
     def test_vasp_contcar(self):
         sile = gs('CONTCAR')
-        for obj in [BaseSile, Sile, SileVASP, CARSile, CONTCARSile]:
+        for obj in [BaseSile, Sile, SileVASP, CARSileVASP, CONTCARSileVASP]:
             assert_true(isinstance(sile, obj))
 
     def test_vasp_poscar(self):
         sile = gs('POSCAR')
-        for obj in [BaseSile, Sile, SileVASP, CARSile, POSCARSile]:
+        for obj in [BaseSile, Sile, SileVASP, CARSileVASP, POSCARSileVASP]:
             assert_true(isinstance(sile, obj))
 
     def test_vasp_contcar_gz(self):
         sile = gs('CONTCAR.gz')
-        for obj in [BaseSile, Sile, SileVASP, CARSile, CONTCARSile]:
+        for obj in [BaseSile, Sile, SileVASP, CARSileVASP, CONTCARSileVASP]:
             assert_true(isinstance(sile, obj))
 
     def test_vasp_poscar_gz(self):
         sile = gs('POSCAR.gz')
-        for obj in [BaseSile, Sile, SileVASP, CARSile, POSCARSile]:
+        for obj in [BaseSile, Sile, SileVASP, CARSileVASP, POSCARSileVASP]:
             assert_true(isinstance(sile, obj))
 
     def test_xyz(self):
@@ -153,20 +153,20 @@ class TestObject(object):
 
     def test_xv(self):
         sile = gs('test.XV')
-        for obj in [BaseSile, Sile, SileSIESTA, XVSile]:
+        for obj in [BaseSile, Sile, SileSiesta, XVSileSiesta]:
             assert_true(isinstance(sile, obj))
             
     def test_xv_gz(self):
         sile = gs('test.XV.gz')
-        for obj in [BaseSile, Sile, SileSIESTA, XVSile]:
+        for obj in [BaseSile, Sile, SileSiesta, XVSileSiesta]:
             assert_true(isinstance(sile, obj))
 
     def test_siesta(self):
-        sile = gs('test.XV', cls=SileSIESTA)
-        for obj in [BaseSile, Sile, SileSIESTA, XVSile]:
+        sile = gs('test.XV', cls=SileSiesta)
+        for obj in [BaseSile, Sile, SileSiesta, XVSileSiesta]:
             assert_true(isinstance(sile, obj))
 
     def test_wannier90_seed(self):
-        sile = gs('test.win', cls=SileWannier90)
-        for obj in [BaseSile, Sile, SileWannier90, W90SeedSile]:
+        sile = gs('test.win', cls=SileW90)
+        for obj in [BaseSile, Sile, SileW90, winSileW90]:
             assert_true(isinstance(sile, obj))

@@ -9,7 +9,7 @@ import numpy as np
 import warnings as warn
 
 # Import sile objects
-from .sile import SileSIESTA
+from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
@@ -22,13 +22,13 @@ from sisl.utils.misc import merge_instances, name_spec
 from sisl.units import unit_default, unit_group
 from sisl.units.siesta import unit_convert
 
-__all__ = ['OutSIESTASile']
+__all__ = ['outSileSiesta']
 
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
-class OutSIESTASile(SileSIESTA):
+class outSileSiesta(SileSiesta):
     """ SIESTA output file object 
     
     This enables reading the output quantities from the SIESTA output.
@@ -243,11 +243,11 @@ class OutSIESTASile(SileSIESTA):
         Parameters
         ----------
         geom: bool
-           return the last geometry in the `OutSIESTASile`
+           return the last geometry in the `outSileSiesta`
         force: bool
-           return the last force in the `OutSIESTASile`
+           return the last force in the `outSileSiesta`
         moment: bool
-           return the last moments in the `OutSIESTASile` (only for spin-orbit coupling calculations)
+           return the last moments in the `outSileSiesta` (only for spin-orbit coupling calculations)
         """
         val = []
         for kw in kwargs:
@@ -269,5 +269,5 @@ class OutSIESTASile(SileSIESTA):
         
         
 
-add_sile('out', OutSIESTASile, case=False, gzip=True)
+add_sile('out', outSileSiesta, case=False, gzip=True)
 

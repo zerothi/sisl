@@ -5,7 +5,7 @@ from nose.tools import *
 from tempfile import mkstemp, mkdtemp
 
 from sisl import Geometry, Atom
-from sisl.io import FDFSile
+from sisl.io import fdfSileSiesta
 
 import os.path as osp
 import math as m
@@ -22,9 +22,9 @@ class TestFDF(object):
 
     def test_fdf1(self):
         f = osp.join(self.d, 'gr.fdf')
-        self.g.write(FDFSile(f, 'w'))
+        self.g.write(fdfSileSiesta(f, 'w'))
 
-        fdf = FDFSile(f)
+        fdf = fdfSileSiesta(f)
         with fdf:
             
             fdf.readline()
@@ -40,8 +40,8 @@ class TestFDF(object):
 
     def test_fdf2(self):
         f = osp.join(self.d, 'gr.fdf')
-        self.g.write(FDFSile(f, 'w'))
-        g = FDFSile(f).read_geom()
+        self.g.write(fdfSileSiesta(f, 'w'))
+        g = fdfSileSiesta(f).read_geom()
 
         # Assert they are the same
         assert_true(np.allclose(g.cell, self.g.cell))
