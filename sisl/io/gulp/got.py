@@ -13,10 +13,10 @@ from sisl.quantity import DynamicalMatrix
 
 import numpy as np
 
-__all__ = ['GULPgoutSile']
+__all__ = ['GULPgotSile']
 
 
-class GULPgoutSile(SileGULP):
+class GULPgotSile(SileGULP):
     """ GULP output file object """
 
     def _setup(self):
@@ -73,9 +73,7 @@ class GULPgoutSile(SileGULP):
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
             l = self.readline().split()
-            cell[i, 0] = float(l[0])
-            cell[i, 1] = float(l[1])
-            cell[i, 2] = float(l[2])
+            cell[i, :] = map(float, l[:3])
 
         return SuperCell(cell)
 
@@ -154,9 +152,7 @@ class GULPgoutSile(SileGULP):
         # to wait until here to convert from fractional
         if 'fractional' in self._keys['geom'].lower():
             # Correct for fractional coordinates
-            xyz[:, 0] *= np.sum(sc.cell[:, 0])
-            xyz[:, 1] *= np.sum(sc.cell[:, 1])
-            xyz[:, 2] *= np.sum(sc.cell[:, 2])
+            xyz = np.dot(xyz, sc.cell)
 
         # Return the geometry
         return Geometry(xyz, Atom[Z], sc=sc)
@@ -283,5 +279,6 @@ class GULPgoutSile(SileGULP):
         return dyn
 
 
-add_sile('gout', GULPgoutSile, gzip=True)
-add_sile('got', GULPgoutSile, gzip=True)
+# Old-style GULP output
+add_sile('gout', GULPgotSile, gzip=True)
+add_sile('got', GULPgotSile, gzip=True)

@@ -51,12 +51,12 @@ class TestObject(object):
 
     def test_gout(self):
         sile = gs('test.gout')
-        for obj in [BaseSile, Sile, SileGULP, GULPgoutSile]:
+        for obj in [BaseSile, Sile, SileGULP, GULPgotSile]:
             assert_true(isinstance(sile, obj))
 
     def test_gout_gz(self):
         sile = gs('test.gout.gz')
-        for obj in [BaseSile, Sile, SileGULP, GULPgoutSile]:
+        for obj in [BaseSile, Sile, SileGULP, GULPgotSile]:
             assert_true(isinstance(sile, obj))
 
     def test_out(self):
