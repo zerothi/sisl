@@ -29,6 +29,9 @@ install:
 script:
   - nosetests --exe sisl
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 
 #
 # These are setup scripts:
