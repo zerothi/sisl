@@ -24,6 +24,7 @@ matrix:
      env: PYTHONOPTIMIZE=2
 
 install:
+  - pip install coverage
   - python setup.py install
 
 script:
