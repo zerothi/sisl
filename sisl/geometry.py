@@ -1538,7 +1538,7 @@ class Geometry(SuperCellChild):
         class AtomAdd(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 # Create an atom from the input
-                g = Geometry(map(float, values[0].split(',')), atom=Atom(values[1]))
+                g = Geometry([float(x) for x in values[0].split(',')], atom=Atom(values[1]))
                 ns._geometry = ns._geometry.add(g)
         p.add_argument(*opts('--add'), nargs=2, metavar=('COORD','Z'),
                        action=AtomAdd,

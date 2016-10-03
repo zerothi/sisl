@@ -66,7 +66,7 @@ class HessianSileGULP(SileGULP):
 
                 # Read data
                 for o in [0, 1, 2]:
-                    dat[:] = map(float, rl().split())
+                    dat[:] = [float(x) for x in rl().split()]
                     
                     # Assign data...
                     if dat[0] >= cutoff:

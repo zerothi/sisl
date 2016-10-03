@@ -74,7 +74,7 @@ class gotSileGULP(SileGULP):
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
             l = self.readline().split()
-            cell[i, :] = map(float, l[:3])
+            cell[i, :] = [float(x) for x in l[:3]]
 
         return SuperCell(cell)
 
@@ -132,7 +132,7 @@ class gotSileGULP(SileGULP):
 
                     ls = l.split()
                     Z.append({'Z': ls[1], 'orbs': 3})
-                    xyz.append(map(float, ls[3:6]))
+                    xyz.append([float(x) for x in ls[3:6]])
 
                 # Convert to array and correct size
                 xyz = np.array(xyz, np.float64)
@@ -251,7 +251,7 @@ class gotSileGULP(SileGULP):
                 break
 
             # convert to float list
-            ls = map(float, l.split())
+            ls = [float(x) for x in l.split()]
 
             if j + 12 <= no:
                 # Here the full line can fit for the same row

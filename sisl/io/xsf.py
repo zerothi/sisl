@@ -101,13 +101,13 @@ class XSFSile(Sile):
             if line.startswith('CONVVEC') and not cell_set:
                 for i in [0, 1, 2]:
                     line = self.readline()
-                    cell[i,:] = map(float, line.split())
+                    cell[i,:] = [float(x) for x in line.split()]
 
             elif line.startswith('PRIMVEC'):
                 cell_set = True
                 for i in [0, 1, 2]:
                     line = self.readline()
-                    cell[i,:] = map(float, line.split())
+                    cell[i,:] = [float(x) for x in line.split()]
 
             elif line.startswith('PRIMCOORD'):
                 # First read # of atoms
@@ -118,7 +118,7 @@ class XSFSile(Sile):
                 for i in range(na):
                     line = self.readline().split()
                     atom.append(int(line[0]))
-                    xyz.append(map(float, line[1:]))
+                    xyz.append([float(x) for x in line[1:]])
 
         xyz = np.array(xyz, np.float64)
         if data:

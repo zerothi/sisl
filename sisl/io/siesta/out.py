@@ -66,7 +66,7 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
-            xyz.append( list(map(float, line[:3])) )
+            xyz.append( [float(x) for x in line[:3]] )
             atom.append(line[3])
             line = self.readline()
 
@@ -82,7 +82,7 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
-            cell.append( list(map(float, line[:3])) )
+            cell.append( [float(x) for x in line[:3]] )
             line = self.readline()
             
         cell = np.array(cell, np.float64)
@@ -133,7 +133,7 @@ class outSileSiesta(SileSiesta):
         F = []
         line = self.readline()
         while not line.startswith('--'):
-            F.append(map(float, line.split()[1:]))
+            F.append( [float(x) for x in line.split()[1:]] )
             line = self.readline()
 
         F = np.array(F)
@@ -201,16 +201,16 @@ class outSileSiesta(SileSiesta):
                     # Track maximum number of atoms
                     na = max(ia, na)
                     if quantity == 'S':
-                        atom.append( map(float, line[4:7]) )
+                        atom.append( [float(x) for x in line[4:7]] )
                     elif quantity == 'L':
-                        atom.append( map(float, line[7:10]) )
+                        atom.append( [float(x) for x in line[7:10]] )
                 line = self.readline().split() # Total ...
                 if not orbital:
                     ia = int(line[0])
                     if quantity == 'S':
-                        atom = map(float, line[4:7])
+                        atom.append( [float(x) for x in line[4:7]] )
                     elif quantity == 'L':
-                        atom = map(float, line[8:11])
+                        atom.append( [float(x) for x in line[8:11]] )
                 tbl.append( (ia, atom) )
             if line.startswith('--'):
                 break

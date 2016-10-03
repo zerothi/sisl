@@ -39,7 +39,7 @@ class winSileW90(SileW90):
         # Create the cell
         cell = np.empty([3,3], np.float64)
         for i in [0,1,2]:
-            cell[i,:] = map(float, self.readline().split())
+            cell[i,:] = [float(x) for x in self.readline().split()]
 
         return SuperCell(cell)
         
@@ -115,7 +115,7 @@ class winSileW90(SileW90):
         
         ws = []
         for i in range(nlines // 15):
-            ws.extend(map(int, self.readline().split()))
+            ws.extend([int(x) for x in self.readline().split()])
         
         # Convert to numpy array
         nws = np.array(ws, np.int32).flatten()
@@ -129,7 +129,7 @@ class winSileW90(SileW90):
             if l == '':
                 break
 
-            isc = map(int, l.split()[:3])
+            isc = [int(x) for x in l.split()[:3]]
             nsc[0] = max(nsc[0], abs(isc[0]))
             nsc[1] = max(nsc[1], abs(isc[1]))
             nsc[2] = max(nsc[2], abs(isc[2]))
@@ -157,7 +157,7 @@ class winSileW90(SileW90):
             # Get supercell and wannier functions
             # isc = idx[:3]
             # Hij = idx[3:5]
-            idx = map(int, ls[:5])
+            idx = [int(x) for x in ls[:5]]
 
             hr = float(ls[5])
             hi = float(ls[6])

@@ -95,7 +95,7 @@ class CUBESile(Sile):
         self.readline()  # header 1
         self.readline()  # header 2
         tmp = self.readline().split()  # origo
-        origo = map(float, tmp[1:4])
+        origo = [float(x) for x in tmp[1:4]]
         na = int(tmp[0])
 
         cell = np.empty([3, 3], np.float64)

@@ -634,7 +634,7 @@ class Grid(SuperCellChild):
         # Define size of grid
         class InterpGrid(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
-                ns._grid = ns._grid.interp(map(int, values))
+                ns._grid = ns._grid.interp([int(x) for x in values])
         p.add_argument(*opts('--interp'), nargs=3,
                        action=InterpGrid,
                        help='Interpolate the grid.')

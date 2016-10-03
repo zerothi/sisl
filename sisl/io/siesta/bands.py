@@ -52,12 +52,12 @@ class bandsSileSiesta(SileSiesta):
         if band_lines:
             k = np.empty([nk], np.float64)
             for ik in range(nk):
-                l = map(float, self.readline().split())
+                l = [float(x) for x in self.readline().split()]
                 k[ik] = l[0]
                 del l[0]
                 # Now populate the eigenvalues
                 while len(l) < ns * no:
-                    l.extend(map(float, self.readline().split()))
+                    l.extend([float(x) for x in self.readline().split()])
                 l = np.array(l, np.float64)
                 l.shape = (ns, no)
                 b[ik,:,:] = l[:,:] - Ef
@@ -74,14 +74,14 @@ class bandsSileSiesta(SileSiesta):
         else:
             k = np.empty([nk, 3], np.float64)
             for ik in range(nk):
-                l = map(float, self.readline().split())
+                l = [float(x) for x in self.readline().split()]
                 k[ik,:] = l[0:2]
                 del l[2]
                 del l[1]
                 del l[0]
                 # Now populate the eigenvalues
                 while len(l) < ns * no:
-                    l.extend(map(float, self.readline().split()))
+                    l.extend([float(x) for x in self.readline().split()])
                 l = np.array(l, np.float64)
                 l.shape = (ns, no)
                 b[ik,:,:] = l[:,:] - Ef

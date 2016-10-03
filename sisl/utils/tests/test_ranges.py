@@ -30,5 +30,4 @@ class TestRanges(object):
                       [6, [1,2,3]],
                       9,10])
 
-
         

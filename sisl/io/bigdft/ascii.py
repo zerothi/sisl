@@ -81,7 +81,7 @@ class ASCIISileBigDFT(SileBigDFT):
                     continue
 
                 # The first three are the coordinates
-                xyz.append( list(map(float, ls[:3])) )
+                xyz.append( [float(x) for x in ls[:3]] )
                 # The 4th is the specie, [5th is tag]
                 s = ls[3]
                 t = s

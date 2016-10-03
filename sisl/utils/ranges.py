@@ -84,9 +84,11 @@ def strseq(func, s):
         return tuple(map(func, s.split('-')))
     return func(s)
 
-def erange(i1, i2):
+def erange(*args):
     """ Returns the range with both ends includede """
-    return range(i1, i2+1)
+    if len(args) == 3:
+        return range(args[0], args[2]+1, args[1])
+    return range(args[0], args[1]+1)
 
 def lstranges(lst, func=erange):
     """ Convert a `strmap` list into expanded ranges """
