@@ -1528,7 +1528,7 @@ class Geometry(SuperCellChild):
                 d = direction(values[0])
                 s = int(values[1])
                 ns._geometry = ns._geometry.cut(s, d)
-        p.add_argument(*opts('--cut','-c'),nargs=2, metavar=('DIR', 'SEPS'),
+        p.add_argument(*opts('--cut','-c'), nargs=2, metavar=('DIR', 'SEPS'),
                        action=ReduceCut,
                        help='Cuts the geometry into `seps` parts along the unit-cell direction `dir`.')
 
@@ -1538,7 +1538,7 @@ class Geometry(SuperCellChild):
                 # Create an atom from the input
                 g = Geometry(map(float, values[0].split(',')), atom=Atom(values[1]))
                 ns._geometry = ns._geometry.add(g)
-        p.add_argument(*opts('--add'),nargs=2,metavar=('COORD','Z'),
+        p.add_argument(*opts('--add'), nargs=2, metavar=('COORD','Z'),
                        action=AtomAdd,
                        help='Adds an atom, coordinate is comma separated (in Ang). Z is the atomic number.')
 
@@ -1549,7 +1549,7 @@ class Geometry(SuperCellChild):
                 d = direction(values[0])
                 r = int(values[1])
                 ns._geometry = ns._geometry.repeat(r, d)
-        p.add_argument(*opts('--repeat','-r'),nargs=2, metavar=('DIR', 'TIMES'),
+        p.add_argument(*opts('--repeat','-r'), nargs=2, metavar=('DIR', 'TIMES'),
                        action=PeriodRepeat,
                        help='Repeats the geometry in the specified direction.')
         
@@ -1581,7 +1581,7 @@ class Geometry(SuperCellChild):
                 d = direction(values[0])
                 r = int(values[1])
                 ns._geometry = ns._geometry.tile(r, d)
-        p.add_argument(*opts('--tile','-t'),nargs=2, metavar=('DIR', 'TIMES'),
+        p.add_argument(*opts('--tile','-t'), nargs=2, metavar=('DIR', 'TIMES'),
                        action=PeriodTile,
                        help='Tiles the geometry in the specified direction.')
 
@@ -1589,23 +1589,50 @@ class Geometry(SuperCellChild):
             class PeriodTileX(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 0)
-            p.add_argument(*opts('--tile-x','-tx'),nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--tile-x','-tx'), nargs=1, metavar='TIMES',
                            action=PeriodTileX,
                            help='Tiles the geometry along the first cell vector.')
 
             class PeriodTileY(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 1)
-            p.add_argument(*opts('--tile-y','-ty'),nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--tile-y','-ty'), nargs=1, metavar='TIMES',
                            action=PeriodTileY,
                            help='Tiles the geometry along the second cell vector.')
 
             class PeriodTileZ(arg.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 2)
-            p.add_argument(*opts('--tile-z','-tz'),nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--tile-z','-tz'), nargs=1, metavar='TIMES',
                            action=PeriodTileZ,
                            help='Tiles the geometry along the third cell vector.')
+
+        # We will add the vector data
+        class Vectors(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                print(values)
+                if len(values) == 1:
+                    # the vectors should be read from the input stuff...
+                    input_file = getattr(ns, '_input_file', None)
+                else:
+                    input_file = values[1]
+                # Quick return if there is no input-file...
+                if input_file is None:
+                    return
+                # Try and read the vector
+                from sisl.io import get_sile
+                vector = getattr(get_sile(input_file), 'read_{}'.format(values[0]))()
+                if vector is None:
+                    raise ValueError('{} could not be read from file: {}.'.format(values[0].title(), input_file))
+
+                if len(vector) != len(ns._geometry):
+                    raise ValueError('{} could read from file: {}, does not conform to read geometry.'.format(values[0].title(), input_file))
+                setattr(ns, '_vector', vector)
+        p.add_argument(*opts('--vector','-v'),metavar='DATA',nargs='+',
+                       action=Vectors,
+                       help='''Adds vector arrows for each atom, first argument is type (force, moment, ...).
+                       If the current input file contains the vectors no second argument is necessary, else the file containing the data is required as a second input.
+                       ''')
 
         # Print some common information about the
         # geometry (to stdout)
@@ -1616,15 +1643,6 @@ class Geometry(SuperCellChild):
                        action=PrintInfo,
                        help='Print, to stdout, some regular information about the geometry.')
 
-        # We will add the vector data
-        class Vectors(arg.Action):
-            def __call__(self, parser, ns, value, option_string=None):
-                raise NotImplementedError
-        #p.add_argument(*opts('--vector','-v'),metavar='DATA',
-        #               choices=['force', 'moment'],
-        #               action=Vectors,
-        #               help='Adds vector arrows for each atomRemoves specified atoms, can be complex ranges.')
-
             
         class Out(arg.Action):
             def __call__(self, parser, ns, value, option_string=None):
@@ -1632,7 +1650,11 @@ class Geometry(SuperCellChild):
                     return
                 if len(value) == 0:
                     return
-                ns._geometry.write(value[0])
+                # If the vector, exists, we should write it
+                if hasattr(ns, '_vector'):
+                    ns._geometry.write(value[0], data=getattr(ns, '_vector', None))
+                else:
+                    ns._geometry.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
                 ns._stored_geometry = True
         p.add_argument(*opts('--out','-o'), nargs=1, action=Out,

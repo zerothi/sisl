@@ -51,8 +51,8 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while not 'outcoor' in line:
             line = self.readline()
-        if line == '':
-            return None
+            if line == '':
+                return None
 
         # Now we have outcoor
         scaled = 'scaled' in line
@@ -127,8 +127,8 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while not 'siesta: Atomic forces' in line:
             line = self.readline()
-        if line == '':
-            return None
+            if line == '':
+                return None
 
         F = []
         line = self.readline()
@@ -169,8 +169,8 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while not 'moments: Atomic' in line:
             line = self.readline()
-        if line == '':
-            return None
+            if line == '':
+                return None
 
         # The moments are printed in SPECIES list
         self.readline() # empty

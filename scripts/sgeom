@@ -80,6 +80,7 @@ lattice vector.
 
     # Append the geometry arguments from the object
     p, namespace = geom.ArgumentParser(p, **sisl.Geometry._ArgumentParser_args_single())
+    setattr(namespace, '_input_file', geom_file)
 
     args = p.parse_args(argv, namespace=namespace)
     g = args._geometry
