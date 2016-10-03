@@ -13,7 +13,7 @@ import numpy as np
 
 # To speed up the extension algorithm we limit
 # the lookup table
-from numpy import where, insert
+from numpy import where, insert, diff
 from numpy import array, asarray, empty, zeros
 from numpy import intersect1d, setdiff1d
 from numpy import argsort, unique
@@ -107,7 +107,7 @@ class SparseCSR(object):
                                   dim=dim, dtype=arg1.dtype)
             
             self.ptr = arg1.indptr
-            self.ncol = np.diff(self.ptr)
+            self.ncol = diff(self.ptr)
             self.col = arg1.indices
             # total number of sparse elements
             self._nnz = arg1.getnnz()
@@ -594,7 +594,7 @@ class SparseCSR(object):
                 
     @staticmethod
     def fromcsr(self, csr, dim=1):
-        """ Return a new ``SparseData`` object from a csr matrix """
+        """ Return a new ``SparseCSR`` object from a csr matrix """
 
         # Initialize a new matrix...
         sd = self.__class__(csr.shape, nnzpr=1, nnz=csr.getnnz(), dim=dim, dtype=csr.dtype)
@@ -602,7 +602,7 @@ class SparseCSR(object):
         # Copy data...
         sd.ptr[:] = csr.indptr[:]
         # Create our own additional information in the CSR format
-        sd.ncol[:] = np.diff(sd.ptr)
+        sd.ncol[:] = diff(sd.ptr)
         sd.col[:] = csr.indices[:]
         
         # The data is only 1D
