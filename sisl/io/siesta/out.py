@@ -85,8 +85,8 @@ class outSileSiesta(SileSiesta):
             cell.append(map(float, line[:3]))
             line = self.readline()
             
-        cell = np.array(cell)
-        xyz = np.array(xyz)
+        cell = np.fromiter(cell)
+        xyz = np.fromiter(xyz)
 
         # Now create the geometry
         if scaled:
