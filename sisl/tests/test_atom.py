@@ -74,6 +74,8 @@ class TestAtom(object):
         assert_true(len(a) == 2)
         assert_true(a[0] == 'H')
         assert_true(a[1] == 'He')
+        a = self.PT.Z_label(1)
+        assert_true(a == 'H')
         
     def test_pickle(self):
         import pickle as p

@@ -2,12 +2,20 @@ from __future__ import print_function, division
 
 from nose.tools import *
 
+import numpy as np
+
+from tempfile import mkstemp
 from sisl.io import *
+from sisl import Geometry
+
+import common as tc
 
 gs = get_sile
 
 class TestObject(object):
     # Base test class for MaskedArrays.
+    setUp = tc.setUp
+    tearDown = tc.tearDown
 
     def test_cube(self):
         sile1 = gs('test.cube')
@@ -170,3 +178,28 @@ class TestObject(object):
         sile = gs('test.win', cls=SileW90)
         for obj in [BaseSile, Sile, SileW90, winSileW90]:
             assert_true(isinstance(sile, obj))
+
+
+    def test_read_write(self):
+        G = self.g.rotatec(-30)
+        G.set_nsc([1,1,1])
+        f = mkstemp(dir=self.d)[1]
+        read_geom = get_siles(['read_geom'])
+        for sile in get_siles(['write_geom']):
+            if not sile in read_geom:
+                continue
+            #if sile is CUBESile:
+            #    continue
+            if sile is HamiltonianSile:
+                continue
+            if sile in [tbtncSileSiesta, phtncSileSiesta, dHncSileSiesta]:
+                continue
+            # Write
+            s = sile(f, mode='w').write_geom(G)
+            # Read
+            g = sile(f).read_geom()
+            # Assert
+            assert_equal(g, G, sile)
+
+
+        

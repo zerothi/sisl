@@ -37,8 +37,12 @@ class CUBESile(Sile):
         """ Writes the `Geometry` object attached to this grid """
         sile_raise_write(self)
 
+        # Write header
+        self._write('\n')
+        self._write('sisl --- CUBE file\n')
+
         if size is None:
-            size = np.ones([3], np.float64)
+            size = np.ones([3], np.int32)
         if origo is None:
             origo = np.zeros([3], np.float64)
             
@@ -66,10 +70,6 @@ class CUBESile(Sile):
         # Check that we can write to the file
         sile_raise_write(self)
 
-        # Write header
-        self._write('\n')
-        self._write('sisl --- CUBE file\n')
-
         # Write the geometry
         self.write_geom(grid.geom, size=grid.grid.shape, *args, **kwargs)
 
@@ -95,14 +95,16 @@ class CUBESile(Sile):
         self.readline()  # header 1
         self.readline()  # header 2
         tmp = self.readline().split()  # origo
+        origo = map(float, tmp[1:4])
         na = int(tmp[0])
 
         cell = np.empty([3, 3], np.float64)
         for i in [0, 1, 2]:
             tmp = self.readline().split()
             s = int(tmp[0])
+            tmp = tmp[1:]
             for j in [0, 1, 2]:
-                cell[i, j] = float(tmp[j + 1]) * s
+                cell[i, j] = float(tmp[j]) * s
 
         cell = cell / Ang2Bohr
         if na:
@@ -119,13 +121,12 @@ class CUBESile(Sile):
         atom = []
         for ia in range(na):
             tmp = self.readline().split()
-            atom.append(Atom[int(tmp[0])])
-            xyz[ia, 0] = float(tmp[1])
-            xyz[ia, 1] = float(tmp[2])
-            xyz[ia, 2] = float(tmp[3])
+            atom.append( Atom( int(tmp[0]) ) )
+            xyz[ia, 0] = float(tmp[2])
+            xyz[ia, 1] = float(tmp[3])
+            xyz[ia, 2] = float(tmp[4])
 
         xyz /= Ang2Bohr
-
         return Geometry(xyz, atom, sc=sc)
 
     @Sile_fh_open

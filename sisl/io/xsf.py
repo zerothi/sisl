@@ -93,7 +93,7 @@ class XSFSile(Sile):
         na = 0
 
         line = ' '
-        while True:
+        while line != '':
             # skip comments
             line = self.readline()
 
@@ -126,8 +126,12 @@ class XSFSile(Sile):
         if xyz.shape[1] == 6:
             dat = xyz[:,3:]
             xyz = xyz[:,:3]
-            
-        geom = Geometry(xyz, atom=atom, sc=SuperCell(cell))
+
+        if len(atom) == 0:
+            geom = Geometry(xyz, sc=SuperCell(cell))
+        else:
+            geom = Geometry(xyz, atom=atom, sc=SuperCell(cell))
+
         if data:
             return geom, dat
         return geom

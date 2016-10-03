@@ -11,7 +11,7 @@ from .sile import SileVASP
 from ..sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, PeriodicTable, Atom, SuperCell
 
 __all__ = ['CARSileVASP', 'POSCARSileVASP', 'CONTCARSileVASP']
 
@@ -40,16 +40,22 @@ class CARSileVASP(SileVASP):
 
         # Write unit-cell
         fmt = ('   ' + '{:18.9f}' * 3) * 2 + '\n'
+        tmp = np.zeros([6], np.float64)
         for i in range(3):
-            tmp[0:3] = geom.cell[i, :]
-            self._write(fmt.format(*geom.cell[i, :]))
+            tmp[:3] = geom.cell[i,:]
+            self._write(fmt.format(*tmp))
 
         # Figure out how many species
+        pt = PeriodicTable()
+        s = []
         d = []
         for ia, a, idx_specie in geom.iter_species():
-            if idx_specie > len(d):
+            if idx_specie >= len(d):
                 d.append(0)
+                s.append(pt.Z_label(a.Z))
             d[idx_specie] += + 1
+        fmt = ' ' + '{:s}' * len(d) + '\n'
+        self._write(fmt.format(*s))
         fmt = ' ' + '{:d}' * len(d) + '\n'
         self._write(fmt.format(*d))
         self._write('Cartesian\n')
@@ -70,9 +76,7 @@ class CARSileVASP(SileVASP):
         # Read cell vectors
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
-            cell[
-                i,
-                :] = np.fromstring(
+            cell[i, :] = np.fromstring(
                 self.readline(),
                 dtype=float,
                 count=3,
@@ -87,16 +91,24 @@ class CARSileVASP(SileVASP):
         """
         sc = self.read_sc()
 
-        # First line is the species names/numbers
-        species = self.readline().split()
-        # Get number of each species in a list
-        species_count = map(int, self.readline().split())
+        # The species labels are not always included in *CAR
+        line1 = self.readline().split()
+        opt = self.readline()
+        try:
+            species = line1
+            species_count = np.array(opt.split(),np.int32)
+        except:
+            species_count = np.array(line1,np.int32)
+            # We have no species
+            species = []
+
         if len(species) != len(species_count):
             err = '\n'.join([
                 "POSTCAR format requires format:",
                 "  <Specie-1> <Specie-2>",
                 "  <#Specie-1> <#Specie-2>",
                 "on the 6th and 7th line."])
+            # We should issue a warning instead...
             raise SileError(err)
 
         # Create list of atoms to be used subsequently

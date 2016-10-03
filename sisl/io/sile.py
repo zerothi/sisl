@@ -13,7 +13,8 @@ from ._help import *
 # Public used objects
 __all__ = [
     'add_sile',
-    'get_sile']
+    'get_sile',
+    'get_siles']
 
 __all__ += [
     'BaseSile',
@@ -242,6 +243,29 @@ def get_sile(file, *args, **kwargs):
         raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
     raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
 
+
+def get_siles(attrs=[None]):
+    """ Returns all siles with a specific attribute (or all)
+
+    Parameters
+    ----------
+    attrs : list of attribute names
+       limits the returned sile-objects to those that have
+       the given attributes `hasattr(sile, attrs)`
+    """
+    global __siles
+
+    if len(attrs) == 1 and attrs[0] is None:
+        return list(__siles)
+
+    siles = []
+    for sile in __siles:
+        for attr in attrs:
+            if hasattr(sile, attr):
+                siles.append(sile)
+                break
+    
+    return siles
 
 class BaseSile(object):
     """ Base class for the Siles """

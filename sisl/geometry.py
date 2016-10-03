@@ -93,10 +93,12 @@ class Geometry(SuperCellChild):
 
         # Correct the atoms input to Atom
         if isinstance(atom, list):
-            if isinstance(atom[0], str):
+            if isinstance(atom[0], (str, Integral)):
                 A = np.array([Atom(a) for a in atom])
-            else:
+            elif isinstance(atom[0], Atom):
                 A = np.array(atom)
+            else:
+                raise ValueError('atom keyword was wrong input')
         elif isinstance(atom, str):
             A = np.array([Atom(atom)])
         else:
@@ -1610,7 +1612,6 @@ class Geometry(SuperCellChild):
         # We will add the vector data
         class Vectors(arg.Action):
             def __call__(self, parser, ns, values, option_string=None):
-                print(values)
                 if len(values) == 1:
                     # the vectors should be read from the input stuff...
                     input_file = getattr(ns, '_input_file', None)

@@ -154,9 +154,6 @@ class TestSuperCell(object):
         s = p.dumps(self.sc)
         n = p.loads(s)
         assert_true(self.sc == n)
-        print(self.sc == n)
-        print(self.sc != n)
-
         assert_false(self.sc != n)
         s = SuperCell([1, 1, 1])
         assert_false(self.sc == s)

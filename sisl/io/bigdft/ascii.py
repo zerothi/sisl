@@ -77,6 +77,8 @@ class ASCIISileBigDFT(SileBigDFT):
 
                 # Read atomic coordinates
                 ls = l.split()
+                if len(ls) < 3:
+                    continue
 
                 # The first three are the coordinates
                 xyz.append(map(float, ls[:3]))
@@ -106,7 +108,7 @@ class ASCIISileBigDFT(SileBigDFT):
             # The input is in skewed axis
             sc = SuperCell([dxx, dyx, dyy, dzx, dzy, dzz])
         else:
-            sc = SuperCell([[dxx, 0, 0], [dyx, dyy, 0], [dzx, dzy, dzz]])
+            sc = SuperCell([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
 
         # Now create the geometry
         xyz = np.array(xyz, np.float64)
@@ -124,6 +126,7 @@ class ASCIISileBigDFT(SileBigDFT):
 
         return Geometry(xyz, spec, sc=sc)
 
+    
     @Sile_fh_open
     def write_geom(self, geom, fmt='.5f'):
         """ Writes the geometry to the contained file """
@@ -136,10 +139,7 @@ class ASCIISileBigDFT(SileBigDFT):
         fmt_str = '{{:{0}}} '.format(fmt) * 3 + '\n'
         self._write(
             fmt_str.format(
-                geom.cell[
-                    0, 0], geom.cell[
-                    1, 0], geom.cell[
-                    1, 1]))
+                geom.cell[0, 0], geom.cell[1, 0], geom.cell[1, 1]))
         self._write(fmt_str.format(*geom.cell[2, :]))
 
         # This also denotes
