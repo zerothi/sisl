@@ -801,7 +801,7 @@ class Geometry(SuperCellChild):
             appended.
         """
         if isinstance(other, SuperCell):
-            # Only
+            # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atom = np.copy(self.atom)
             sc = self.sc.append(other, axis)

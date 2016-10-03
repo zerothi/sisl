@@ -205,6 +205,12 @@ class TestGeometry(object):
         one = self.g.center(atom=[0])
         assert_true(np.allclose(self.g[0,:], one))
 
+    def test_reverse(self):
+        rev = self.g.reverse()
+        assert_true(len(rev) == 2)
+        assert_true(np.allclose(rev.xyz[::-1,:], self.g.xyz))
+
+
     def test_bond_correct(self):
         # Create ribbon
         rib = self.g.tile(2, 1)
@@ -242,7 +248,7 @@ class TestGeometry(object):
 
         # Assert that it correctly calculates the bond-length in the
         # directions of actual distance
-        g1 = Geometry([[0, 0, 0], [1, 1, 0]], sc=s1)
+        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atom='H', sc=s1)
         g2 = Geometry(np.copy(g1.xyz))
         for i in range(2):
             assert_true(np.allclose(g1.cell[i, :], g2.cell[i, :]))
