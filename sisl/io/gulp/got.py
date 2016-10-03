@@ -12,6 +12,7 @@ from sisl import Geometry, Atom, SuperCell
 from sisl.quantity import DynamicalMatrix
 
 import numpy as np
+from numpy import where
 
 __all__ = ['gotSileGULP']
 
@@ -167,7 +168,15 @@ class gotSileGULP(SileGULP):
 
     @Sile_fh_open
     def read_dynmat(self, **kwargs):
-        """ Returns a GULP dynamical matrix model for the output of GULP """
+        """ Returns a GULP dynamical matrix model for the output of GULP 
+
+        Parameters
+        ----------
+        cutoff: float (0.001 eV/Ang**2)
+           the cutoff of the force-constant matrix for adding to the matrix
+        dtype: np.dtype (np.float64)
+           default data-type of the matrix
+        """
         from scipy.sparse import diags
 
         dtype = kwargs.get('dtype', np.float64)
@@ -213,7 +222,10 @@ class gotSileGULP(SileGULP):
         """ In case the dynamical matrix is read from the file """
         # Easier for creation of the sparsity pattern
         from scipy.sparse import lil_matrix
-        
+
+        # Default cutoff
+        cutoff = kwargs.get('cutoff', 0.001)
+
         dtype = kwargs.get('dtype', np.float64)
 
         dyn = lil_matrix((no, no), dtype=dtype)
@@ -261,7 +273,10 @@ class gotSileGULP(SileGULP):
 
                     j += 3
                     if j >= no:
-                        dyn[i, :] = dat[:]
+                        # Clear those below the cutoff
+                        dyn[i, :] = where(np.abs(dat[:]) >= cutoff,
+                                          dat, 0.)
+                                             
                         i += 1
                         j = 0
                         if i >= no:

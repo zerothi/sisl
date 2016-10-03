@@ -15,9 +15,6 @@ import numpy as np
 
 __all__ = ['HessianSileGULP']
 
-eV2Ry = unit_convert('eV', 'Ry')
-Ang2Bohr = unit_convert('Ang', 'Bohr')
-
 
 class HessianSileGULP(SileGULP):
     """ GULP output file object """
@@ -25,7 +22,19 @@ class HessianSileGULP(SileGULP):
     @Sile_fh_open
     def read_dynmat(self, **kwargs):
         """ Returns a sparse matrix in coo format which contains the GULP
-        Hessian matrix. """
+        Hessian matrix. 
+
+        This routine expects the units to be in eV/Ang**2.
+
+        Parameters
+        ----------
+        cutoff: float (0.001 eV/Ang**2)
+           the cutoff of the force-constant matrix for adding to the matrix
+        dtype: np.dtype (np.float64)
+           default data-type of the matrix
+        """
+        # Default cutoff
+        cutoff = kwargs.get('cutoff', 0.001)
 
         dtype = kwargs.get('dtype', np.float64)
 
@@ -60,18 +69,18 @@ class HessianSileGULP(SileGULP):
                     dat[:] = map(float, rl().split())
                     
                     # Assign data...
-                    dyn[i+o, j  ] = dat[0]
-                    dyn[i+o, j+1] = dat[1]
-                    dyn[i+o, j+2] = dat[2]
+                    if dat[0] >= cutoff:
+                        dyn[i+o, j  ] = dat[0]
+                    if dat[1] >= cutoff:
+                        dyn[i+o, j+1] = dat[1]
+                    if dat[2] >= cutoff:
+                        dyn[i+o, j+2] = dat[2]
 
                 j += 3
             i += 3
 
         # Convert to COO format
         dyn = dyn.tocoo()
-        
-        # Convert the 2ND data to standard units
-        dyn.data[:] /= eV2Ry / Ang2Bohr ** 2
 
         return dyn
 
