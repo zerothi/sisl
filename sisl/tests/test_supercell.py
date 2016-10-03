@@ -22,16 +22,34 @@ class TestSuperCell(object):
         del self.sc
 
     def test_nsc1(self):
-        nsc = np.copy(self.sc.nsc)
-        self.sc.set_nsc([5, 5, 0])
-        assert_true(np.allclose([5, 5, 1], self.sc.nsc))
-        assert_true(len(self.sc.sc_off) == np.prod(self.sc.nsc))
+        sc = self.sc.copy()
+        sc.set_nsc([5, 5, 0])
+        assert_true(np.allclose([5, 5, 1], sc.nsc))
+        assert_true(len(sc.sc_off) == np.prod(sc.nsc))
 
     def test_nsc2(self):
-        nsc = np.copy(self.sc.nsc)
-        self.sc.set_nsc([0, 1, 0])
-        assert_true(np.allclose([1, 1, 1], self.sc.nsc))
-        assert_true(len(self.sc.sc_off) == np.prod(self.sc.nsc))
+        sc = self.sc.copy()
+        sc.set_nsc([0, 1, 0])
+        assert_true(np.allclose([1, 1, 1], sc.nsc))
+        assert_true(len(sc.sc_off) == np.prod(sc.nsc))
+        sc.set_nsc(a=3)
+        assert_true(np.allclose([3, 1, 1], sc.nsc))
+        assert_true(len(sc.sc_off) == np.prod(sc.nsc))
+        sc.set_nsc(b=3)
+        assert_true(np.allclose([3, 3, 1], sc.nsc))
+        assert_true(len(sc.sc_off) == np.prod(sc.nsc))
+        sc.set_nsc(c=5)
+        assert_true(np.allclose([3, 3, 5], sc.nsc))
+        assert_true(len(sc.sc_off) == np.prod(sc.nsc))
+
+    def test_nsc3(self):
+        assert_raises(ValueError, self.sc.set_nsc, a=2)
+        assert_raises(ValueError, self.sc.set_nsc, b=2)
+        assert_raises(ValueError, self.sc.set_nsc, c=2)
+        assert_raises(ValueError, self.sc.set_nsc, [1,2,3])
+
+    def test_nsc4(self):
+        assert_true(self.sc.sc_index([0,0,0]) == 0)
 
     def test_rotation1(self):
         rot = self.sc.rotate(180, [0, 0, 1])
@@ -43,6 +61,19 @@ class TestSuperCell(object):
         assert_true(np.allclose(-rot.cell, self.sc.cell))
 
         rot = rot.rotate(180, [0, 0, 1])
+        rot.cell[2, 2] *= -1
+        assert_true(np.allclose(rot.cell, self.sc.cell))
+
+    def test_rotation2(self):
+        rot = self.sc.rotatec(180)
+        rot.cell[2, 2] *= -1
+        assert_true(np.allclose(-rot.cell, self.sc.cell))
+
+        rot = self.sc.rotatec(m.pi, radians=True)
+        rot.cell[2, 2] *= -1
+        assert_true(np.allclose(-rot.cell, self.sc.cell))
+
+        rot = rot.rotatec(180)
         rot.cell[2, 2] *= -1
         assert_true(np.allclose(rot.cell, self.sc.cell))
 
@@ -96,11 +127,27 @@ class TestSuperCell(object):
         assert_true(np.allclose(tmp1.cell, tmp3.cell))
         assert_true(np.allclose(tmp1.cell, tmp4.cell))
 
+    def test_creation3(self):
+        assert_raises(ValueError, self.sc.tocell, [3,6])
+        assert_raises(ValueError, self.sc.tocell, [3,4,5,6])
+        assert_raises(ValueError, self.sc.tocell, [3,4,5,6,7])
+        assert_raises(ValueError, self.sc.tocell, [3,4,5,6,7,6,7])
+
     def test_rcell(self):
         # LAPACK inverse algorithm implicitly does
         # a transpose.
         rcell = sli.inv(self.sc.cell)
         assert_true(np.allclose(rcell.T, self.sc.rcell))
+
+    def test_translate1(self):
+        sc = self.sc.translate([0,0,10])
+        assert_true(np.allclose(sc.cell[2,:2], self.sc.cell[2,:2]))
+        assert_true(np.allclose(sc.cell[2,2], self.sc.cell[2,2]+10))
+
+    def test_center1(self):
+        assert_true(np.allclose(self.sc.center(), np.sum(self.sc.cell, axis=0) / 2))
+        for i in [0,1,2]:
+            assert_true(np.allclose(self.sc.center(i), self.sc.cell[i,:] / 2))
 
     def test_pickle(self):
         import pickle as p

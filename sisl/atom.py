@@ -839,7 +839,7 @@ class PeriodicTable(object):
         ak = np.asarray([key]).flatten()
         if len(ak) == 1:
             return self._Z_short[ak[0]]
-        return np.array([self._Z_short[i] for i in ak], np.int32)
+        return [self._Z_short[i] for i in ak]
 
     Z_short = Z_label
 
