@@ -111,7 +111,8 @@ class ASCIISileBigDFT(SileBigDFT):
             sc = SuperCell([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
 
         # Now create the geometry
-        xyz = np.array(xyz, np.float64)
+        print(xyz)
+        xyz = np.asarray(xyz, np.float64)
 
         if is_frac:
             # Transform from fractional to actual
