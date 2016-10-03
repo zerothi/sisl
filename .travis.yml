@@ -13,6 +13,7 @@ python:
   - 2.7
   - 3.4
   - 3.5
+    env: COVERAGE=true
 
 matrix:
   include:
@@ -31,7 +32,7 @@ script:
   - nosetests --with-coverage --exe sisl
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - if [[ ${COVERAGE:-false} != false ]]; then bash <(curl -s https://codecov.io/bash) ; fi
 
 
 #
