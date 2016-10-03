@@ -254,12 +254,8 @@ class TestGeometry(object):
             assert_true(np.allclose(g1.cell[i, :], g2.cell[i, :]))
         assert_false(np.allclose(g1.cell[2, :], g2.cell[2, :]))
 
-    def test_pickle(self):
-        import pickle as p
-        s = p.dumps(self.g)
-        n = p.loads(s)
-        assert_true(n == self.g)
-        assert_false(n != self.g)
+    def test_argumentparser(self):
+        self.g.ArgumentParser()
 
     def test_set_sc(self):
         # Create new geometry with only the coordinates
@@ -268,3 +264,12 @@ class TestGeometry(object):
         g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=[2, 2, 1])
         g1.set_sc(s1)
         assert_true(g1.sc == s1)
+
+    def test_pickle(self):
+        import pickle as p
+        s = p.dumps(self.g)
+        n = p.loads(s)
+        assert_true(n == self.g)
+        assert_false(n != self.g)
+
+        
