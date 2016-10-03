@@ -66,7 +66,7 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
-            xyz.append(map(float, line[:3]))
+            xyz.append( list(map(float, line[:3])) )
             atom.append(line[3])
             line = self.readline()
 
@@ -82,11 +82,11 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
-            cell.append(map(float, line[:3]))
+            cell.append( list(map(float, line[:3])) )
             line = self.readline()
             
-        cell = np.fromiter(cell)
-        xyz = np.fromiter(xyz)
+        cell = np.array(cell, np.float64)
+        xyz = np.array(xyz, np.float64)
 
         # Now create the geometry
         if scaled:

@@ -81,7 +81,7 @@ class ASCIISileBigDFT(SileBigDFT):
                     continue
 
                 # The first three are the coordinates
-                xyz.append(map(float, ls[:3]))
+                xyz.append( list(map(float, ls[:3])) )
                 # The 4th is the specie, [5th is tag]
                 s = ls[3]
                 t = s
@@ -111,7 +111,7 @@ class ASCIISileBigDFT(SileBigDFT):
             sc = SuperCell([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
 
         # Now create the geometry
-        xyz = np.fromiter(xyz, np.float64)
+        xyz = np.array(xyz, np.float64)
 
         if is_frac:
             # Transform from fractional to actual
