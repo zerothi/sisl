@@ -75,6 +75,8 @@ def strseq(func, s):
     3
     >>> strseq(int, '3-6')
     (3, 6)
+    >>> strseq(int, '3:2:7')
+    (3, 2, 7)
     >>> strseq(float, '3.2:6.3')
     (3.2, 6.3)
     """
@@ -98,15 +100,18 @@ def lstranges(lst, func=erange):
     # a sub-range
     #   0[0-1], 0-1[0-1]
     if isinstance(lst, tuple):
-        head = lstranges(lst[0], func)
-        bot = lstranges(lst[1], func)
-        if isinstance(head, list):
-            for el in head:
-                l.append([el, bot])
-        elif isinstance(bot, list):
-            l.append([head, bot])
+        if len(lst) == 3:
+            l.extend(func(*lst))
         else:
-            l.extend(erange(head, bot))
+            head = lstranges(lst[0], func)
+            bot = lstranges(lst[1], func)
+            if isinstance(head, list):
+                for el in head:
+                    l.append([el, bot])
+            elif isinstance(bot, list):
+                l.append([head, bot])
+            else:
+                l.extend(func(head, bot))
 
     elif isinstance(lst, list):
         for lt in lst:
