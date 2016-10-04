@@ -56,6 +56,18 @@ class TestGrid(object):
         assert_true(np.allclose(self.g.cell[0,:], g.cell[1,:]))
         assert_true(np.allclose(self.g.cell[1,:], g.cell[0,:]))
 
+    def test_interp(self):
+        shape = np.array(self.g.shape, np.int32)
+        g = self.g.interp(shape * 2)
+        g1 = g.interp(shape)
+        assert_true(np.allclose(self.g.grid, g1.grid))
+
+    def test_index1(self):
+        mid = np.array(self.g.shape, np.int32) // 2
+        idx = self.g.index(self.sc.center())
+        print(mid, idx)
+        assert_true(np.all(mid == idx))
+
     def test_sum(self):
         for i in range(3):
             assert_true(self.g.sum(i).shape[i] == 1)

@@ -84,30 +84,44 @@ class Grid(SuperCellChild):
             self.geom = geom
             self.set_sc(geom.sc)
 
-    def interp(self, size, *args, **kwargs):
+    def interp(self, shape, *args, **kwargs):
         """ Returns an interpolated version of the grid
 
         Parameters
         ----------
-        size : int, array_like
-            the new size of the grid
+        shape : int, array_like
+            the new shape of the grid
         *args, **kwargs :
             optional arguments passed to the interpolation algorithm
             The interpolation routine is `scipy.interpolate.interpn`
         """
-        # Get grid spacing
-        dold = []
-        dnew = []
-        for i in range(3):
-            dold.append(np.linspace(0, 1, self.size[i]))
-            dnew.append(np.linspace(0, 1, size[i]))
+        # Get current grid spacing
+        dold = (
+            np.linspace(0, 1, self.shape[0]),
+            np.linspace(0, 1, self.shape[1]),
+            np.linspace(0, 1, self.shape[2])
+        )
 
         # Interpolate
         from scipy.interpolate import interpn
 
         # Create new grid
-        grid = self.__class__(size, bc=np.copy(self.bc), sc=self.sc.copy())
+        grid = self.__class__(shape, bc=np.copy(self.bc), sc=self.sc.copy())
+        # Clean-up to reduce memory
+        del grid.grid
+        
+        # Create new mesh-grid
+        dnew = np.vstack(np.meshgrid(
+            np.linspace(0, 1, shape[0]),
+            np.linspace(0, 1, shape[1]),
+            np.linspace(0, 1, shape[2])))
+        dnew.shape = (-1, 3)
+   
         grid.grid = interpn(dold, self.grid, dnew, *args, **kwargs)
+        # immediately delete the dnew (which is VERY large)
+        del dold, dnew
+        # Ensure that the grid has the correct shape
+        grid.grid.shape = tuple(shape)
 
         return grid
 
@@ -380,10 +394,8 @@ class Grid(SuperCellChild):
             # Loop over each direction
             idx = np.empty([3], np.int32)
             for i in [0, 1, 2]:
-                # Normalize cell vector
-                ca = self.cell[i, :] / np.sum(self.cell[i, :]**2)**.5
                 # get the coordinate along the direction of the cell vector
-                c = np.dot(self.cell[i, :], coord) * coord
+                c = np.dot(self.rcell[i, :], coord) * self.cell[i,:]
                 # Calculate the index corresponding to this placement
                 idx[i] = self.index(c, i)
             return idx

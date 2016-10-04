@@ -131,7 +131,7 @@ class SuperCell(object):
 
     @property
     def rcell(self):
-        """ Returns the reciprocal cell for the `SuperCell`
+        """ Returns the reciprocal cell for the `SuperCell` without `2*np.pi`
 
         Note: The returned vectors are still in [0,:] format
         and not as returned by an inverse LAPACK algorithm.
