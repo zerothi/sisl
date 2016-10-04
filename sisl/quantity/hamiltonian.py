@@ -428,21 +428,25 @@ class Hamiltonian(object):
         # rely on this feature.
         from scipy.sparse import csr_matrix
 
+        dot = np.dot
+
         k = np.asarray(k, np.float64)
+        k.shape = (-1,)
         
         # Setup the Hamiltonian for this k-point
         Sf = self.tocsr(self.S_idx)
 
-        s = (self.no, self.no)
+        no = self.no
+        s = (no, no)
         S = csr_matrix(s, dtype=np.complex128)
 
         # Get the reciprocal lattice vectors dotted with k
         rcell = self.rcell
-        kr = np.dot(rcell, k) * np.pi * 2.
+        kr = dot(rcell, k) * np.pi * 2.
         for si in range(self.sc.n_s):
             isc = self.sc_off[si, :]
-            phase = np.exp(-1j * np.dot(kr, np.dot(self.cell, isc)))
-            S += Sf[:, si * self.no:(si + 1) * self.no] * phase
+            phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))
+            S += Sf[:, si * no:(si + 1) * no] * phase
             
         del Sf
         
