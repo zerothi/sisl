@@ -198,8 +198,9 @@ class TestObject(object):
             s = sile(f, mode='w').write_geom(G)
             # Read
             g = sile(f).read_geom()
+            # Easy fix to run the ArgumentParser code...
+            if hasattr(g, 'ArgumentParser'):
+                g.ArgumentParser()
             # Assert
             assert_equal(g, G, sile)
 
-
-        

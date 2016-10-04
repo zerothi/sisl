@@ -99,3 +99,6 @@ class TestGrid(object):
             assert_true(self.g.remove(1, i).shape[i] == self.g.shape[i]-1)
         for i in range(3):
             assert_true(self.g.remove([1,2], i).shape[i] == self.g.shape[i]-2)
+
+    def test_argumentparser(self):
+        self.g.ArgumentParser()
