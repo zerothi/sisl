@@ -5,6 +5,7 @@ Sile object for reading/writing CONTCAR/POSCAR files
 from __future__ import print_function
 
 import numpy as np
+import warnings as warn
 
 # Import sile objects
 from .sile import SileVASP
@@ -47,12 +48,11 @@ class CARSileVASP(SileVASP):
 
         # Figure out how many species
         pt = PeriodicTable()
-        s = []
-        d = []
+        s, d = [], []
         for ia, a, idx_specie in geom.iter_species():
             if idx_specie >= len(d):
-                d.append(0)
                 s.append(pt.Z_label(a.Z))
+                d.append(0)
             d[idx_specie] += + 1
         fmt = ' ' + '{:s}' * len(d) + '\n'
         self._write(fmt.format(*s))
@@ -99,17 +99,16 @@ class CARSileVASP(SileVASP):
             species_count = np.array(opt.split(),np.int32)
         except:
             species_count = np.array(line1,np.int32)
-            # We have no species
-            species = []
-
-        if len(species) != len(species_count):
+            # We have no species...
+            # We default to consecutive elements in the
+            # periodic table.
+            species = [i+1 for i in range(len(species_count))]
             err = '\n'.join([
-                "POSTCAR format requires format:",
+                "POSCAR best format:",
                 "  <Specie-1> <Specie-2>",
                 "  <#Specie-1> <#Specie-2>",
-                "on the 6th and 7th line."])
-            # We should issue a warning instead...
-            raise SileError(err)
+                "Format not found, the species are defaulted to the first elements of the periodic table."])
+            warn.warn(err)
 
         # Create list of atoms to be used subsequently
         atom = [Atom[spec]

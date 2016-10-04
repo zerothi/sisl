@@ -57,6 +57,8 @@ class fdfSileSiesta(SileSiesta):
         self._comment = ['#', '!', ';']
 
         # List of parent file-handles used while reading
+        # This is because fdf enables including other
+        # files
         self._parent_fh = []
         self._directory = '.'
 
@@ -430,8 +432,6 @@ class fdfSileSiesta(SileSiesta):
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
 
-
-
     
     @dec_default_AP("Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):
@@ -545,7 +545,6 @@ class fdfSileSiesta(SileSiesta):
             namespace = merge_instances(namespace, tmp_ns)
 
         
-
         return p, namespace
 
 
