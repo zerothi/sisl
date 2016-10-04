@@ -27,6 +27,8 @@ class TestGeometry(object):
         del self.sc
 
     def test_objects(self):
+        # just make sure __repr__ works
+        print(self.g)
         assert_true(len(self.g) == 2)
         assert_true(len(self.g.xyz) == 2)
         assert_true(np.allclose(self.g[0,:], np.zeros([3]) ))
@@ -204,6 +206,26 @@ class TestGeometry(object):
     def test_center(self):
         one = self.g.center(atom=[0])
         assert_true(np.allclose(self.g[0,:], one))
+        al = self.g.center()
+        assert_true(np.allclose(np.mean(self.g.xyz, axis=0), al))
+
+    def test_add(self):
+        double = self.g.add(self.g)
+        assert_equal(len(double), len(self.g) * 2)
+        assert_true(np.allclose(self.g.cell, double.cell))
+
+    def test_insert(self):
+        double = self.g.insert(0, self.g)
+        assert_equal(len(double), len(self.g) * 2)
+        assert_true(np.allclose(self.g.cell, double.cell))
+
+    def test_a2o(self):
+        # There are 2 orbitals per C atom
+        assert_equal(self.g.a2o(1), self.g.atom[0].orbs)
+
+    def test_o2a(self):
+        # There are 2 orbitals per C atom
+        assert_equal(self.g.o2a(2), 1)
 
     def test_reverse(self):
         rev = self.g.reverse()

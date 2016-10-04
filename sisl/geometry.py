@@ -874,8 +874,8 @@ class Geometry(SuperCellChild):
         geom : `Geometry`
            the other geometry to be inserted
         """
-        xyz = np.insert(self.xyz, atom, other.xyz, axis=0)
-        atoms = np.insert(self.atom, atom, other.atom)
+        xyz = np.insert(self.xyz, atom, geom.xyz, axis=0)
+        atoms = np.insert(self.atom, atom, geom.atom)
         return self.__class__(xyz, atom=atoms, sc=self.sc.copy())
 
     def coords(self, isc=[0, 0, 0], idx=None):
