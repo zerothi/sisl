@@ -159,9 +159,9 @@ class Hamiltonian(object):
         """ Return Hamiltonian coupling elements for the index(s) """
         dd = self._def_dim
         if dd >= 0:
-            key = key + (dd,)
+            key = tuple(key) + (dd,)
+            self._def_dim = -1
         d = self._data[key]
-        self._def_dim = -1
         return d
 
 
@@ -174,8 +174,8 @@ class Hamiltonian(object):
         dd = self._def_dim
         if dd >= 0:
             key = tuple(key) + (dd,)
+            self._def_dim = -1
         self._data[key] = val
-        self._def_dim = -1
 
 
     def __get_H(self):
@@ -287,7 +287,7 @@ class Hamiltonian(object):
                         eq_atoms.append( (ia,ja) )
 
 
-        if len(self.geom) < 2000:
+        if len(self.geom) < 1501:
             # there is no need to do anything complex
             # for small systems
             for ia in self.geom:
@@ -390,11 +390,13 @@ class Hamiltonian(object):
         dot = np.dot
 
         k = np.asarray(k, np.float64)
+        k.shape = (-1,)
         
         # Setup the Hamiltonian for this k-point
         Hf = self.tocsr(spin)
 
-        s = (self.no, self.no)
+        no = self.no
+        s = (no, no)
         H = csr_matrix(s, dtype=np.complex128)
 
         # Get the reciprocal lattice vectors dotted with k
@@ -403,7 +405,7 @@ class Hamiltonian(object):
         for si in range(self.sc.n_s):
             isc = self.sc_off[si, :]
             phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))
-            H += Hf[:, si * self.no:(si + 1) * self.no] * phase
+            H += Hf[:, si * no:(si + 1) * no] * phase
             
         del Hf
         
@@ -447,7 +449,7 @@ class Hamiltonian(object):
         return S
 
 
-    def eigh(self,k=None,
+    def eigh(self,k=(0,0,0),
             atoms=None, eigvals_only=True,
             overwrite_a=True, overwrite_b=True,
             *args,
@@ -485,7 +487,7 @@ class Hamiltonian(object):
             **kwargs)
 
 
-    def eigsh(self, k=None, n=10,
+    def eigsh(self, k=(0,0,0), n=10,
             atoms=None, eigvals_only=True,
             *args,
             **kwargs):
@@ -499,7 +501,7 @@ class Hamiltonian(object):
         """
         
         # We always request the smallest eigenvalues... 
-        kwargs.update(kwargs.get('which', 'SM'))
+        kwargs.update({'which':kwargs.get('which', 'SM')})
         
         H = self.Hk(k=k)
         if not self.orthogonal:
