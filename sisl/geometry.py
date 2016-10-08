@@ -878,13 +878,13 @@ class Geometry(SuperCellChild):
         atoms = np.insert(self.atom, atom, geom.atom)
         return self.__class__(xyz, atom=atoms, sc=self.sc.copy())
 
-    def coords(self, isc=[0, 0, 0], idx=None):
+    def coords(self, isc=None, idx=None):
         """
         Returns the coordinates of a given super-cell index
 
         Parameters
         ----------
-        isc   : array_like
+        isc   : array_like, ([0,0,0])
             Returns the atomic coordinates shifted according to the integer
             parts of the cell.
         idx   : int/array_like
@@ -910,11 +910,11 @@ class Geometry(SuperCellChild):
 
 
     def close_sc(self, xyz_ia,
-            isc=[0, 0, 0],
-            dR=None,
-            idx=None,
-            ret_coord=False,
-            ret_dist=False):
+                 isc=None,
+                 dR=None,
+                 idx=None,
+                 ret_coord=False,
+                 ret_dist=False):
         """
         Calculates which atoms are close to some atom or point
         in space, only returns so relative to a super-cell.

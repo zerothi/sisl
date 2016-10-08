@@ -195,9 +195,11 @@ class SuperCell(object):
             cell[2, :] = q.rotate(self.cell[2, :])
         return self.__class__(cell, nsc=np.copy(self.nsc))
 
-    def offset(self, isc=[0, 0, 0]):
+    def offset(self, isc=None):
         """ Returns the supercell offset of the supercell index
         """
+        if isc is None:
+            isc = [0, 0, 0]
         return self.cell[0, :] * isc[0] + \
             self.cell[1, :] * isc[1] + \
             self.cell[2, :] * isc[2]
