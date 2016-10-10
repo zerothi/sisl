@@ -51,7 +51,7 @@ class ncSileSiesta(SileCDFSIESTA):
         if 'BASIS' in self.groups:
             bg = self.groups['BASIS']
             # We can actually read the exact basis-information
-            b_idx = np.array(bg._value('basis'), np.int32)
+            b_idx = np.array(bg.variables['basis'][:], np.int32)
 
             # Get number of different species
             n_b = len(bg.groups)

@@ -78,12 +78,12 @@ class TestObject(object):
             assert_true(isinstance(sile, obj))
 
     def test_nc(self):
-        sile = gs('test.nc')
+        sile = gs('test.nc', _open=False)
         for obj in [BaseSile, SileCDF, SileCDFSIESTA, ncSileSiesta]:
-            assert_true(isinstance(gs('test.nc'), obj))
+            assert_true(isinstance(gs('test.nc', _open=False), obj))
 
     def test_grid_nc(self):
-        sile = gs('test.grid.nc')
+        sile = gs('test.grid.nc', _open=False)
         for obj in [BaseSile, SileCDF, SileCDFSIESTA, gridncSileSiesta]:
             assert_true(isinstance(sile, obj))
 
@@ -102,12 +102,12 @@ class TestObject(object):
             assert_true(isinstance(sile2, obj))
 
     def test_tbtrans(self):
-        sile = gs('test.TBT.nc')
+        sile = gs('test.TBT.nc', _open=False)
         for obj in [BaseSile, SileCDF, SileCDFSIESTA, tbtncSileSiesta]:
             assert_true(isinstance(sile, obj))
 
     def test_phtrans(self):
-        sile = gs('test.PHT.nc')
+        sile = gs('test.PHT.nc', _open=False)
         for obj in [BaseSile, SileCDF, SileCDFSIESTA, tbtncSileSiesta, phtncSileSiesta]:
             assert_true(isinstance(sile, obj))
 

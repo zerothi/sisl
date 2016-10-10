@@ -524,7 +524,7 @@ class SileCDF(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
 
-    def __init__(self, filename, mode='r', lvl=0, access=1):
+    def __init__(self, filename, mode='r', lvl=0, access=1, _open=True):
         """ Creates/Opens a SileCDF
 
         Opens a SileCDF with `mode` and compression level `lvl`.
@@ -553,10 +553,11 @@ class SileCDF(BaseSile):
             self._access = 0
 
         # The CDF file can easily open the file
-        global _import_netCDF4
-        _import_netCDF4()
-        self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
-                                              format='NETCDF4')
+        if _open:
+            global _import_netCDF4
+            _import_netCDF4()
+            self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
+                                                   format='NETCDF4')
         
         # Must call setup-methods
         self.__setup()
