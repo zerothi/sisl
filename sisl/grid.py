@@ -391,11 +391,12 @@ class Grid(SuperCellChild):
 
         # if the axis is none, we do this for all axes
         if axis is None:
+            rcell = self.rcell / ( 2. * np.pi )
             # Loop over each direction
             idx = np.empty([3], np.int32)
             for i in [0, 1, 2]:
                 # get the coordinate along the direction of the cell vector
-                c = np.dot(self.rcell[i, :], coord) * self.cell[i,:]
+                c = np.dot(rcell[i, :], coord) * self.cell[i,:]
                 # Calculate the index corresponding to this placement
                 idx[i] = self.index(c, i)
             return idx

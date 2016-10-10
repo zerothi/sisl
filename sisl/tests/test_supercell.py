@@ -136,7 +136,7 @@ class TestSuperCell(object):
     def test_rcell(self):
         # LAPACK inverse algorithm implicitly does
         # a transpose.
-        rcell = sli.inv(self.sc.cell)
+        rcell = sli.inv(self.sc.cell) * 2. * np.pi
         assert_true(np.allclose(rcell.T, self.sc.rcell))
 
     def test_translate1(self):

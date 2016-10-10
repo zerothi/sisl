@@ -240,6 +240,7 @@ def get_sile(file, *args, **kwargs):
         
         raise Exception('sile not implemented')
     except Exception as e:
+        print(e)
         raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
     raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
 
@@ -542,6 +543,8 @@ class SileCDF(BaseSile):
         self._mode = mode
         # Save compression internally
         self._lvl = lvl
+        # Initialize the _data dictionary for access == 1
+        self._data = dict()
         if isfile(self.file):
             self._access = access
         else:
@@ -549,12 +552,18 @@ class SileCDF(BaseSile):
             # and read anything, no matter what the user says
             self._access = 0
 
+        # The CDF file can easily open the file
+        global _import_netCDF4
+        _import_netCDF4()
+        self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
+                                              format='NETCDF4')
+        
         # Must call setup-methods
         self.__setup()
 
 
     def _setup(self,*args, **kwargs):
-        """ Simple setup that needs to be overwritten """
+        """ Simple setup that needs to be overloaded """
         pass
 
 
@@ -576,19 +585,61 @@ class SileCDF(BaseSile):
     def __enter__(self):
         """ Opens the output file and returns it self """
         # We do the import here
-        global _import_netCDF4
-        _import_netCDF4()
-        self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode, 
-                                               format='NETCDF4')
         return self
 
-
     def __exit__(self, type, value, traceback):
-        if 'fh' in self.__dict__:
-            self.__dict__['fh'].close()
-            # clean-up so that it does not exist
-            del self.__dict__['fh']
         return False
+
+    def _dimension(self, name, tree=None):
+        """ Local method for obtaing the dimension in a certain tree """
+        return self._dimensions(self, name, tree)
+
+    @staticmethod
+    def _dimensions(n, name, tree=None):
+        """ Retrieve  method to get the NetCDF variable """
+        if tree is None:
+            return n.dimensions[name]
+        
+        g = n
+        if isinstance(tree, list):
+            for t in tree:
+                g = g.groups[t]
+        else:
+            g = g.groups[tree]
+
+        return g.dimensions[name]
+
+    def _variable(self, name, tree=None):
+        """ Local method for obtaining the data from the SileCDF.
+
+        This method returns the variable as-is.
+        """
+        if self._access > 0:
+            if name in self._data:
+                return self._data[name]
+        return self._variables(self, name, tree=tree)[:]
+    
+    def _value(self, name, tree=None):
+        """ Local method for obtaining the data from the SileCDF.
+
+        This method returns the value of the variable.
+        """
+        return self._variable(name, tree)[:]
+    
+    @staticmethod
+    def _variables(n, name, tree=None):
+        """ Retrieve  method to get the NetCDF variable """
+        if tree is None:
+            return n.variables[name]
+        
+        g = n
+        if isinstance(tree, list):
+            for t in tree:
+                g = g.groups[t]
+        else:
+            g = g.groups[tree]
+
+        return g.variables[name]
 
 
     @staticmethod

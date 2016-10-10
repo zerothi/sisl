@@ -83,12 +83,12 @@ class SuperCell(object):
 
         n = self.nsc
         # We define the following ones like this:
-        i = n[0] // 2
-        x = range(-i, i + 1)
-        i = n[1] // 2
-        y = range(-i, i + 1)
-        i = n[2] // 2
-        z = range(-i, i + 1)
+        def ret_range(val):
+            i = val // 2
+            return range(-i, i+1)
+        x = ret_range(n[0])
+        y = ret_range(n[1])
+        z = ret_range(n[2])
         i = 0
         for iz in z:
             for iy in y:
@@ -153,7 +153,7 @@ class SuperCell(object):
         rcell[0, :] = rcell[0, :] / np.sum(rcell[0, :] * cell[0, :])
         rcell[1, :] = rcell[1, :] / np.sum(rcell[1, :] * cell[1, :])
         rcell[2, :] = rcell[2, :] / np.sum(rcell[2, :] * cell[2, :])
-        return rcell
+        return rcell * 2. * np.pi
 
     def rotatea(self, angle, only='abc', radians=False):
         return self.rotate(angle, self.cell[0, :], only=only, radians=radians)
@@ -209,32 +209,36 @@ class SuperCell(object):
 
         Returns the integer for the supercell
         """
+        if sc_off[0] is not None and sc_off[1] is not None and sc_off[2] is not None:
+            for i in range(self.n_s):
+                if (sc_off[0] == self.sc_off[i, 0] or sc_off[0] is None) and \
+                   (sc_off[1] == self.sc_off[i, 1] or sc_off[1] is None) and \
+                   (sc_off[2] == self.sc_off[i, 2] or sc_off[2] is None):
+                    return i
+            raise Exception(
+                'Could not find supercell index, number of super-cells not big enough')
+        idx = []
         for i in range(self.n_s):
-            if sc_off[0] == self.sc_off[i, 0] and \
-               sc_off[1] == self.sc_off[i, 1] and \
-               sc_off[2] == self.sc_off[i, 2]:
-                return i
-        raise Exception(
-            'Could not find supercell index, number of super-cells not big enough')
+            if (sc_off[0] == self.sc_off[i, 0] or sc_off[0] is None) and \
+               (sc_off[1] == self.sc_off[i, 1] or sc_off[1] is None) and \
+               (sc_off[2] == self.sc_off[i, 2] or sc_off[2] is None):
+                idx.append( i )
+        return idx
 
     def cut(self, seps, axis):
-        """ Cuts the cell into several different sections.
-        """
+        """ Cuts the cell into several different sections. """
         cell = np.copy(self.cell)
         cell[axis, :] /= seps
         return self.__class__(cell, np.copy(self.nsc))
 
     def append(self, other, axis):
-        """ Appends other `SuperCell` to this grid along axis
-
-        """
+        """ Appends other `SuperCell` to this grid along axis """
         cell = np.copy(self.cell)
         cell[axis, :] += other.cell[axis, :]
         return self.__class__(cell, nsc=np.copy(self.nsc))
 
     def translate(self, v):
-        """ Appends additional space in the SuperCell object
-        """
+        """ Appends additional space in the SuperCell object """
         # check which cell vector resembles v the most,
         # use that
         cell = np.copy(self.cell)

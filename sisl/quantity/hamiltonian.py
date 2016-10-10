@@ -400,8 +400,7 @@ class Hamiltonian(object):
         H = csr_matrix(s, dtype=np.complex128)
 
         # Get the reciprocal lattice vectors dotted with k
-        rcell = self.rcell
-        kr = dot(rcell, k) * np.pi * 2.
+        kr = dot(self.rcell, k)
         for si in range(self.sc.n_s):
             isc = self.sc_off[si, :]
             phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))
@@ -441,8 +440,7 @@ class Hamiltonian(object):
         S = csr_matrix(s, dtype=np.complex128)
 
         # Get the reciprocal lattice vectors dotted with k
-        rcell = self.rcell
-        kr = dot(rcell, k) * np.pi * 2.
+        kr = dot(self.rcell, k)
         for si in range(self.sc.n_s):
             isc = self.sc_off[si, :]
             phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))

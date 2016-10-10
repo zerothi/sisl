@@ -401,8 +401,8 @@ class Geometry(SuperCellChild):
         It will then _only_ return the first cut.
 
         This will effectively change the unit-cell in the ``axis`` as-well
-        as removing ``self.na_u/seps`` atoms.
-        It requires that ``self.na_u % seps == 0``.
+        as removing ``self.na/seps`` atoms.
+        It requires that ``self.na % seps == 0``.
 
         REMARK: You need to ensure that all atoms within the first
         cut out region are within the primary unit-cell.
@@ -1252,29 +1252,32 @@ class Geometry(SuperCellChild):
         This is particularly handy if you want to create
         TB models with more than one orbital per atom.
 
+        Note that this will preserve the super-cell offsets.
+
         Parameters
         ----------
-        ia : list, int
+        ia : `list` of `int`
              Atomic indices
-        all: False, bool
-             ``False``, return only the first orbital corresponding to the atom,
-             ``True``, returns list of the full atom
+        all : `bool = False`
+             `False`, return only the first orbital corresponding to the atom,
+             `True`, returns list of the full atom
         """
         if not all:
             return self.lasto[ia % self.na] + (ia // self.na) * self.no
         ia = np.asarray(ia, np.int32)
         ob = self.a2o(ia)
         oe = self.a2o(ia + 1)
-        arange = np.arange
+        
         # Create ranges
         if isinstance(ob, Integral):
-            return arange(ob, oe, dtype=np.int32)
+            return np.arange(ob, oe, dtype=np.int32)
 
         # Several ranges
         o = np.empty([np.sum(oe - ob)], np.int32)
         n = 0
+        narange = np.arange
         for i in range(len(ob)):
-            o[n:n + oe[i] - ob[i]] = arange(ob[i], oe[i], dtype=np.int32)
+            o[n:n + oe[i] - ob[i]] = narange(ob[i], oe[i], dtype=np.int32)
             n += oe[i] - ob[i]
         return o
 
@@ -1282,11 +1285,13 @@ class Geometry(SuperCellChild):
         """
         Returns an atomic index corresponding to the orbital indicies.
 
-        This is a particurlaly slow algorithm.
+        This is a particurlaly slow algorithm due to for-loops.
+
+        Note that this will preserve the super-cell offsets.
 
         Parameters
         ----------
-        io: list, int
+        io: `list` of `int`
              List of indices to return the atoms for
         """
         rlasto = self.lasto[::-1]
@@ -1456,7 +1461,7 @@ class Geometry(SuperCellChild):
                     ns._geometry = ns._geometry.translate(-tmp + np.array([d,d,d]))
                 elif args.unit_cell in ['mod']:
                     # Change all coordinates using the reciprocal cell
-                    rcell = ns._geometry.rcell
+                    rcell = ns._geometry.rcell / ( 2. * np.pi )
                     idx = np.abs(np.array(np.dot(ns._geometry.xyz, rcell),np.int32))
                     # change supercell
                     nsc = np.amax(idx * 2 + 1,axis=0)

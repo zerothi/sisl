@@ -23,21 +23,19 @@ class ncSileSiesta(SileCDFSIESTA):
     """ SIESTA file object """
 
 
-    @Sile_fh_open
     def read_sc(self):
         """ Returns a SuperCell object from a SIESTA.nc file
         """
-        cell = np.array(self.variables['cell'][:], np.float64)
+        cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
         cell.shape = (3, 3)
 
-        nsc = np.array(self.variables['nsc'][:], np.int32)
+        nsc = np.array(self._value('nsc'), np.int32)
 
         return SuperCell(cell, nsc=nsc)
 
 
-    @Sile_fh_open
     def read_geom(self):
         """ Returns Geometry object from a SIESTA.nc file
 
@@ -47,13 +45,13 @@ class ncSileSiesta(SileCDFSIESTA):
         # Read supercell
         sc = self.read_sc()
 
-        xyz = np.array(self.variables['xa'][:], np.float64)
+        xyz = np.array(self._value('xa'), np.float64)
         xyz.shape = (-1, 3)
 
         if 'BASIS' in self.groups:
             bg = self.groups['BASIS']
             # We can actually read the exact basis-information
-            b_idx = np.array(bg.variables['basis'][:], np.int32)
+            b_idx = np.array(bg._value('basis'), np.int32)
 
             # Get number of different species
             n_b = len(bg.groups)
@@ -83,7 +81,6 @@ class ncSileSiesta(SileCDFSIESTA):
         return geom
 
 
-    @Sile_fh_open
     def read_es(self, **kwargs):
         """ Returns a tight-binding model from the underlying NetCDF file """
 
@@ -91,7 +88,7 @@ class ncSileSiesta(SileCDFSIESTA):
         ispin = kwargs.get('ispin', -1)
         spin = 1
         if ispin == -1:
-            spin = len(self.dimensions['spin'])
+            spin = len(self._dimension('spin'))
 
         # First read the geometry
         geom = self.read_geom()
@@ -108,7 +105,7 @@ class ncSileSiesta(SileCDFSIESTA):
         ham = Hamiltonian(geom, nnzpr=1, ortho=False, spin=spin)
 
         # Use Ef to move H to Ef = 0
-        Ef = float(self.variables['Ef'][0]) * Ry2eV ** ham._E_order
+        Ef = float(self._value('Ef')[0]) * Ry2eV ** ham._E_order
         S = np.array(sp.variables['S'][:], np.float64)
 
         ncol = np.array(sp.variables['n_col'][:], np.int32)
@@ -149,7 +146,6 @@ class ncSileSiesta(SileCDFSIESTA):
         return ham
 
 
-    @Sile_fh_open
     def grids(self):
         """ Return a list of available grids in this file. """
 
@@ -159,7 +155,6 @@ class ncSileSiesta(SileCDFSIESTA):
 
         return grids
 
-    @Sile_fh_open
     def read_grid(self, name, idx=0):
         """ Reads a grid in the current SIESTA.nc file
 
@@ -203,7 +198,6 @@ class ncSileSiesta(SileCDFSIESTA):
 
         return grid
 
-    @Sile_fh_open
     def write_geom(self, geom):
         """
         Creates the NetCDF file and writes the geometry information
@@ -271,7 +265,6 @@ class ncSileSiesta(SileCDFSIESTA):
         self.variables['lasto'][:] = np.cumsum(orbs)
 
 
-    @Sile_fh_open
     def write_es(self, ham, **kwargs):
         """ Writes Hamiltonian model to file
 
