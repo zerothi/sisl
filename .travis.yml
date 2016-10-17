@@ -18,7 +18,6 @@ matrix:
      env: PYTHONOPTIMIZE=1
    - python: 2.7
      env: PYTHONOPTIMIZE=2
-   - python: 3.4
    - python: 3.5
      env: COVERAGE=true
    
