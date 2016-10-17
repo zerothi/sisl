@@ -144,4 +144,47 @@ class XSFSile(Sile):
         return self.read_geom().ArgumentParser(*args, **newkw)
 
 
+    def ArgumentParser_out(self, p, *args, **kwargs):
+        """ Adds arguments only if this file is an output file 
+        
+        Parameters
+        ----------
+        p : ``argparse.ArgumentParser``
+           the parser which gets amended the additional output options.
+        """
+
+        # We will add the vector data
+        class Vectors(arg.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                if len(values) == 1:
+                    # the vectors should be read from the input stuff...
+                    input_file = getattr(ns, '_input_file', None)
+                else:
+                    input_file = values[1]
+                
+                # Quick return if there is no input-file...
+                if input_file is None:
+                    return
+                
+                # Try and read the vector
+                from sisl.io import get_sile
+                vector = getattr(get_sile(input_file), 'read_{}'.format(values[0]))()
+                if vector is None:
+                    # Try the read_data function
+                    vector = get_sile(input_file).read_data(values[0])
+                    
+                if vector is None:
+                    # Use title to capitalize
+                    raise ValueError('{} could not be read from file: {}.'.format(values[0].title(), input_file))
+
+                if len(vector) != len(ns._geometry):
+                    raise ValueError('{} could read from file: {}, does not conform to read geometry.'.format(values[0].title(), input_file))
+                setattr(ns, '_vector', vector)
+        p.add_argument('--vector','-v',metavar='DATA',nargs='+',
+                       action=Vectors,
+                       help='''Adds vector arrows for each atom, first argument is type (force, moment, ...).
+                       If the current input file contains the vectors no second argument is necessary, else the file containing the data is required as a second input.
+                       ''')
+
+
 add_sile('xsf', XSFSile, case=False, gzip=True)

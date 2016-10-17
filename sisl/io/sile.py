@@ -313,6 +313,16 @@ class BaseSile(object):
         """
         raise NotImplementedError("The ArgumentParser of '"+self.__class__.__name__+"' has not been implemented yet.")
 
+    def ArgumentParser_out(self, parser=None, *args, **kwargs):
+        """ Appends additional arguments based on the output of the file
+
+        Parameters
+        ----------
+        parser: ArgumentParser
+           the argument parser to add the arguments to.
+        """
+        pass
+
         
 def Sile_fh_open(func):
     """ Method decorator for objects to directly implement opening of the

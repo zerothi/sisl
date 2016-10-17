@@ -79,27 +79,6 @@ changing ways. It handles files dependent on type AND content.
     else:
         argv = sys.argv[1:]
 
-
-    obj = None
-    input_file = None
-    if len(argv) >= 1:
-        # Get the file
-        input_file = argv[0]
-
-        if osp.isfile(input_file):
-            obj = sisl.get_sile(input_file)
-            argv.pop(0)
-        elif ('-h' in argv) or ('--help' in argv):
-            # Fake help...
-            description += """
-
-One *must* supply a file before a help menu can be generated.
-The help menu depends on the type of Sile that is specified.
-"""
-        else:
-            # The file that the user request, does not exist
-            raise ValueError("File: '"+input_file+"' cannot be found. Please supply a readable file!")
-
     p = arg.ArgumentParser("Manipulates sisl Sile's for manipulation.",
                            formatter_class=arg.RawDescriptionHelpFormatter,
                            description=description)
@@ -107,18 +86,31 @@ The help menu depends on the type of Sile that is specified.
     # Patch the parser to allow namespace passing in subparsers...
     argparse_patch(p)
 
+    # Now try and figure out the actual arguments
+    p, ns, argv = sisl.utils.cmd.collect_arguments(argv, input=True,
+                                                   argumentparser=p)
+
+    # Now the arguments should have been populated
+    # and we will sort out if the input options
+    # is only a help option.
+    if not hasattr(ns, '_input_file'):
+        # Then there are no input files...
+        # It is difficult to create an adaptable script
+        # with no adaptee... ;)
+        if not (('--help' in argv) or ('-h' in argv)):
+            # Re-create the argument parser with the help description
+            argv = ['--help']
+        description += """
+
+One *must* supply a file before a help menu can be generated.
+The help menu depends on the type of Sile that is specified.
+        """
+        p = arg.ArgumentParser("Manipulates sisl Sile's for manipulation.",
+                               formatter_class=arg.RawDescriptionHelpFormatter,
+                               description=description)
+
     # We are good to go!!!
-
-    # Append the geometry arguments from the object
-    if not obj is None:
-        p, namespace = obj.ArgumentParser(p, **obj._ArgumentParser_args_single())
-    else:
-        namespace = sisl.utils.default_namespace()
-    
-    # Be sure to add the input file
-    setattr(namespace, '_input_file', input_file)
-
-    args = p.parse_args(argv, namespace=namespace)
+    p.parse_args(argv, namespace=ns)
 
 
 if __name__ == "__main__":
