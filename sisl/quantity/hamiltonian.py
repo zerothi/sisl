@@ -47,7 +47,7 @@ class Hamiltonian(object):
         Initializes a tight-binding model using the :code:`geom` object
         as the underlying geometry for the tight-binding parameters.
         """
-        self.geom = geom
+        self._geom = geom
 
         # Initialize the sparsity pattern
         self.reset(nnzpr=nnzpr, ortho=ortho, spin=spin, dtype=dtype)
@@ -122,6 +122,11 @@ class Hamiltonian(object):
 
 
     ######### Definitions of overrides ############
+    @property
+    def geom(self):
+        """ Return the attached geometry """
+        return self._geom
+
     @property
     def spin(self):
         """ Return number of spin-components in Hamiltonian """
