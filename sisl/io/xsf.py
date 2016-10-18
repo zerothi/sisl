@@ -4,6 +4,7 @@ Sile object for reading/writing XSF (XCrySDen) files
 
 from __future__ import print_function
 
+import os.path as osp
 import numpy as np
 
 # Import sile objects
@@ -152,39 +153,75 @@ class XSFSile(Sile):
         p : ``argparse.ArgumentParser``
            the parser which gets amended the additional output options.
         """
+        import argparse
 
         # We will add the vector data
-        class Vectors(arg.Action):
+        class Vectors(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
-                if len(values) == 1:
-                    # the vectors should be read from the input stuff...
-                    input_file = getattr(ns, '_input_file', None)
-                else:
-                    input_file = values[1]
+                routine = values.pop(0)
                 
+                # Default input file
+                input_file = getattr(ns, '_input_file', None)
+                
+                # Figure out which of the segments are a file
+                for i, val in enumerate(values):
+                    if osp.isfile(val):
+                        input_file = values.pop(i)
+                        break
+                                
                 # Quick return if there is no input-file...
                 if input_file is None:
                     return
                 
                 # Try and read the vector
                 from sisl.io import get_sile
-                vector = getattr(get_sile(input_file), 'read_{}'.format(values[0]))()
-                if vector is None:
-                    # Try the read_data function
-                    vector = get_sile(input_file).read_data(values[0])
+                input_sile = get_sile(input_file, mode='r')
+
+                vector = None
+                if hasattr(input_sile, 'read_{}'.format(routine)):
+                    vector = getattr(input_sile, 'read_{}'.format(routine))()
                     
                 if vector is None:
+                    # Try the read_data function
+                    d = dict()
+                    d[routine] = True
+                    vector = input_sile.read_data(*values, **d)
+
+                # Clean the sile
+                del input_sile
+                
+                if vector is None:
                     # Use title to capitalize
-                    raise ValueError('{} could not be read from file: {}.'.format(values[0].title(), input_file))
+                    raise ValueError('{} could not be read from file: {}.'.format(routine.title(), input_file))
 
                 if len(vector) != len(ns._geometry):
-                    raise ValueError('{} could read from file: {}, does not conform to read geometry.'.format(values[0].title(), input_file))
+                    raise ValueError('{} could read from file: {}, does not conform to read geometry.'.format(routine.title(), input_file))
                 setattr(ns, '_vector', vector)
-        p.add_argument('--vector','-v',metavar='DATA',nargs='+',
+        p.add_argument('--vector','-v',metavar=('DATA','*ARGS, FILE'),nargs='+',
                        action=Vectors,
                        help='''Adds vector arrows for each atom, first argument is type (force, moment, ...).
-                       If the current input file contains the vectors no second argument is necessary, else the file containing the data is required as a second input.
+If the current input file contains the vectors no second argument is necessary, else 
+the file containing the data is required as the last input.
+
+Any arguments inbetween are passed to the `read_data` function (in order).
                        ''')
+
+        class Out(argparse.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                if value is None:
+                    return
+                if len(value) == 0:
+                    return
+                # If the vector, exists, we should write it
+                if hasattr(ns, '_vector'):
+                    ns._geometry.write(value[0], data=getattr(ns, '_vector', None))
+                else:
+                    ns._geometry.write(value[0])
+                # Issue to the namespace that the geometry has been written, at least once.
+                ns._stored_geometry = True
+        p.add_argument('--out','-o', nargs=1, action=Out,
+                       help='Store the geometry (plus any vector fields) the out file.')
+
 
 
 add_sile('xsf', XSFSile, case=False, gzip=True)

@@ -79,7 +79,7 @@ def collect_arguments(argv, input=False,
         
     # Grap output-file
     p = arg.ArgumentParser('Parser for output file', add_help=False)
-    p.add_argument('--out','-o',nargs=1)
+    p.add_argument('--out','-o',nargs=1, default=None)
 
     # Parse the passed args to sort out the input file and
     # the output file
@@ -98,8 +98,8 @@ def collect_arguments(argv, input=False,
     
     if args.out is not None:
         try:
-            obj = sisl.get_sile(args.out)
-            argumentparser, namespace = obj.ArgumentParser_out(argumentparser, namespace=namespace)
+            obj = sisl.get_sile(args.out[0], 'r')
+            obj.ArgumentParser_out(argumentparser, namespace=namespace)
         except: pass
     
     return argumentparser, namespace, argv
@@ -135,7 +135,7 @@ def dec_collect_actions(func):
         if args[1]._actions_run:
             return func(self, *args, **kwargs)
         # Else we append the actions to be performed
-        namespace._actions.append( (self, args, kwargs) )
+        args[1]._actions.append( (self, args, kwargs) )
         return None
     return collect
 

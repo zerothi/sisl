@@ -614,10 +614,10 @@ class Grid(SuperCellChild):
             return [args[0]]
         
         # We limit the import to occur here
-        import argparse as arg
+        import argparse
 
         if parser is None:
-            p = arg.ArgumentParser("Manipulate a Grid object in sisl.")
+            p = argparse.ArgumentParser("Manipulate a Grid object in sisl.")
         else:
             p = parser
 
@@ -637,7 +637,7 @@ class Grid(SuperCellChild):
         namespace._stored_grid = False
 
         # Define actions
-        class SetGeometry(arg.Action):
+        class SetGeometry(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 ns._geometry = Geometry.read(value)
                 ns._grid.set_geom(ns._geometry)
@@ -645,7 +645,7 @@ class Grid(SuperCellChild):
                        help='Define the geometry attached to the Grid.')
 
         # Define size of grid
-        class InterpGrid(arg.Action):
+        class InterpGrid(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 ns._grid = ns._grid.interp([int(x) for x in values])
         p.add_argument(*opts('--interp'), nargs=3,
@@ -655,7 +655,7 @@ class Grid(SuperCellChild):
 
         # substract another grid
         # They *MUST* be conmensurate.
-        class DiffGrid(arg.Action):
+        class DiffGrid(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 grid = Grid.read(value)
                 ns._grid -= grid
@@ -665,7 +665,7 @@ class Grid(SuperCellChild):
                        help='Subtract another grid (they must be commensurate).')
 
 
-        class AverageGrid(arg.Action):
+        class AverageGrid(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 ns._grid = ns._grid.average(direction(value))
         p.add_argument(*opts('--average'), nargs=1, metavar='DIR',
@@ -674,7 +674,7 @@ class Grid(SuperCellChild):
 
 
         # Create-subsets of the grid
-        class SubDirectionGrid(arg.Action):
+        class SubDirectionGrid(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 # The unit-cell direction
                 axis = direction(values[0])
@@ -706,7 +706,7 @@ class Grid(SuperCellChild):
                        help='Reduce the grid by taking a subset of the grid (along DIR).')
 
         # Create-subsets of the grid
-        class RemoveDirectionGrid(arg.Action):
+        class RemoveDirectionGrid(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 # The unit-cell direction
                 axis = direction(values[0])
@@ -732,14 +732,14 @@ class Grid(SuperCellChild):
 
 
         # Define size of grid
-        class PrintInfo(arg.Action):
+        class PrintInfo(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 print(ns._grid)
         p.add_argument(*opts('--info'), nargs=0,
                        action=PrintInfo,
                        help='Print, to stdout, some regular information about the grid.')
 
-        class Out(arg.Action):
+        class Out(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 if value is None:
                     return

@@ -81,7 +81,7 @@ changing ways. It handles files dependent on type AND content.
 
     p = arg.ArgumentParser("Manipulates sisl Sile's for manipulation.",
                            formatter_class=arg.RawDescriptionHelpFormatter,
-                           description=description)
+                           description=description,conflict_handler='resolve')
     
     # Patch the parser to allow namespace passing in subparsers...
     argparse_patch(p)

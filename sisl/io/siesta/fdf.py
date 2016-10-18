@@ -436,7 +436,7 @@ class fdfSileSiesta(SileSiesta):
     @dec_default_AP("Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
-        import argparse as arg
+        import argparse
 
         # We must by-pass this fdf-file
         import sisl.io.siesta as sis
@@ -464,7 +464,7 @@ class fdfSileSiesta(SileSiesta):
         
         # As the fdf may provide additional stuff, we do not add EVERYTHING from
         # the Geometry class.
-        class FDFAdd(arg.Action):
+        class FDFAdd(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 key = values[0]
                 val = values[1]
@@ -478,7 +478,7 @@ class fdfSileSiesta(SileSiesta):
                         action=FDFAdd,
                         help='Add a key to the FDF file. If it already exists it will be overwritten')
 
-        class FDFGet(arg.Action):
+        class FDFGet(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 # Retrieve the value in standard units
                 # Currently, we write out the unit "as-is"

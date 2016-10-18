@@ -100,7 +100,7 @@ class bandsSileSiesta(SileSiesta):
             return [args[0]]
         
         # We limit the import to occur here
-        import argparse as arg
+        import argparse
 
         # The first thing we do is adding the geometry to the NameSpace of the
         # parser.
@@ -116,14 +116,14 @@ class bandsSileSiesta(SileSiesta):
         ensure_namespace(p, namespace)
 
         # Energy grabs
-        class ERange(arg.Action):
+        class ERange(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 ns._Emap = strmap(float, value, recursive=False, sep=':')[0]
         p.add_argument('--energy', '-E', 
                        action=ERange,
                        help='Denote the sub-section of energies that are plotted: "-1:0,1:2" [eV]')
         
-        class BandsPlot(arg.Action):
+        class BandsPlot(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 import matplotlib.pyplot as plt
                 # Decide whether this is BandLines or BandPoints

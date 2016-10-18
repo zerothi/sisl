@@ -323,6 +323,11 @@ class BaseSile(object):
         """
         pass
 
+
+    def __repr__(self):
+        """ Return a representation of the `Sile` """
+        return ''.join([self.__class__.__name__, '(', self.file, ')'])
+        
         
 def Sile_fh_open(func):
     """ Method decorator for objects to directly implement opening of the

@@ -252,14 +252,17 @@ class outSileSiesta(SileSiesta):
         val = []
         for kw in kwargs:
 
-            if kw == 'geom' and kwargs[kw]:
-                val.append(self.read_geom())
+            if kw == 'geom':
+                if kwargs[kw]:
+                    val.append(self.read_geom())
 
-            if kw == 'force' and kwargs[kw]:
-                val.append(self.read_force())
+            if kw == 'force':
+                if kwargs[kw]:
+                    val.append(self.read_force())
             
-            if kw == 'moment' and kwargs[kw]:
-                val.append(self.read_moment())
+            if kw == 'moment':
+                if kwargs[kw]:
+                    val.append(self.read_moment())
 
         if len(val) == 0:
             val = None

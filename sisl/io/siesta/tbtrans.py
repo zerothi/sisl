@@ -20,6 +20,7 @@ from sisl.utils import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
+from sisl._help import _str
 from sisl.units.siesta import unit_convert
 
 __all__ = ['tbtncSileSiesta', 'phtncSileSiesta']
@@ -278,6 +279,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
         """ Return the closest energy index corresponding to the energy `E`"""
         if isinstance(E, Integral):
             return E
+        elif isinstance(E, _str):
+            # This will always be converted to a float
+            E = float(E)
         return np.abs(self.E - E).argmin()
 
     @property
@@ -781,7 +785,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         tmp = Jij.tocsr()
 
         # vector currents
-        Ja = np.zeros([geom.na_u, 3], np.float64)
+        Ja = np.zeros([geom.na, 3], np.float64)
 
         # We already know which atoms are the device atoms...
         atom = self.a_dev - 1
@@ -795,6 +799,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Calculate individual bond-currents between atoms
         for ia in atom:
             for ja in atom:
+                if ia == ja:
+                    # If we are on the same atom there is no direction
+                    continue
                 t = tmp[lasto[ia]:lasto[ia+1],lasto[ja]:lasto[ja+1]].data
                 # calculate the vector between atom `ia` and `ja`
                 v = geom.xyz[ja+1, :] - geom.xyz[ia+1, :]
@@ -834,24 +841,28 @@ class tbtncSileSiesta(SileCDFSIESTA):
         Parameters
         ----------
         geom: bool
-           return the last geometry in the `outSileSiesta`
-        force: bool
-           return the last force in the `outSileSiesta`
-        moment: bool
-           return the last moments in the `outSileSiesta` (only for spin-orbit coupling calculations)
+           return the geometry
+        atom_current: bool
+           return the atomic current flowing through an atom (the *activity* current)
+        vector_current: bool
+           return the orbital currents as vectors
         """
         val = []
         for kw in kwargs:
 
-            if kw == 'geom' and kwargs[kw]:
-                val.append(self.read_geom())
+            if kw == 'geom':
+                if kwargs[kw]:
+                    val.append(self.read_geom())
 
-            if kw == 'atom_current' and kwargs[kw]:
-                # TODO we need some way of handling arguments.
-                val.append(self.atom_current())
+            if kw == 'atom_current':
+                if kwargs[kw]:
+                    # TODO we need some way of handling arguments.
+                    val.append(self.atom_current(*args))
 
-            if kw == 'vector_current' and kwargs[kw]:
-                val.append(self.vector_current())
+            if kw == 'vector_current':
+                if kwargs[kw]:
+                    # TODO we need some way of handling arguments.
+                    val.append(self.vector_current(*args))
 
         if len(val) == 0:
             val = None
@@ -865,10 +876,11 @@ class tbtncSileSiesta(SileCDFSIESTA):
         """ Returns the arguments that is available for this Sile """
 
         # We limit the import to occur here
-        import argparse as arg
+        import argparse
 
         d = {
             "_tbt": self,
+            "_geometry": self.geom,
             "_data_header" : [],
             "_data" : [],
             "_Arng" : None,
@@ -877,10 +889,6 @@ class tbtncSileSiesta(SileCDFSIESTA):
             "_krng" : None,
         }
         namespace = default_namespace(**d)
-
-        # Ensure the namespace is populated
-        ensure_namespace(p, namespace)
-
 
         def dec_ensure_E(func):
             """ This decorater ensures that E is the first element in the _data container """
@@ -901,7 +909,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             return assign_E
 
         # Energy grabs
-        class ERange(arg.Action):
+        class ERange(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 Emap = strmap(float, value, recursive=False, sep=':')
                 # Convert to actual indices
@@ -914,7 +922,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        help='Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]')
 
         # k-range
-        class kRange(arg.Action):
+        class kRange(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 ns._krng = lstranges(strmap(int, value, recursive=False, sep='-'))
         p.add_argument('--kpoint', '-k',
@@ -922,7 +930,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        help='Denote the sub-section of k-indices that are extracted.')
 
         # Try and add the atomic specification
-        class AtomRange(arg.Action):
+        class AtomRange(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 # Immediately convert to proper indices
                 geom = ns._tbt.read_geom()
@@ -962,7 +970,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        help='Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed.')
 
 
-        class DataT(arg.Action):
+        class DataT(argparse.Action):
             @dec_collect_actions
             @dec_ensure_E
             def __call__(self, parser, ns, values, option_string=None):
@@ -984,7 +992,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        action=DataT,
                        help='Store the transmission between two electrodes.')
 
-        class DataDOS(arg.Action):
+        class DataDOS(argparse.Action):
             @dec_collect_actions
             @dec_ensure_E
             def __call__(self, parser, ns, value, option_string=None):
@@ -1019,7 +1027,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        action=DataDOS, default=None,
                        help="""Store the spectral DOS, same as --dos.""")
 
-        class DataTEig(arg.Action):
+        class DataTEig(argparse.Action):
             @dec_collect_actions
             @dec_ensure_E
             def __call__(self, parser, ns, values, option_string=None):
@@ -1044,7 +1052,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        action=DataTEig,
                        help='Store the transmission eigenvalues between two electrodes.')
 
-        class Out(arg.Action):
+        class Out(argparse.Action):
             @dec_run_actions
             def __call__(self, parser, ns, value, option_string=None):
                 from sisl.io import TableSile
