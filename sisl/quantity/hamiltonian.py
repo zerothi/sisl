@@ -144,7 +144,7 @@ class Hamiltonian(object):
     def __repr__(self):
         """ Representation of the tight-binding model """
         s = self.geom.__repr__()
-        return s + '\nNumber of non-zero elements {0}'.format(len(self))
+        return s + '\nNumber of non-zero elements {0}'.format(self.nnz)
 
     def __getattr__(self, attr):
         """ Returns the attributes from the underlying geometry
