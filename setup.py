@@ -71,6 +71,7 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
     url="https://github.com/zerothi/sisl",
     download_url="https://github.com/zerothi/sisl/releases",
     license='LGPLv3',
+    packages=['sisl'],
     classifiers=[
         _f for _f in CLASSIFIERS.split('\n') if _f],
     platforms=[
