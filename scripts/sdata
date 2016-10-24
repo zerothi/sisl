@@ -5,7 +5,7 @@ Easy conversion of data from different formats to other formats.
 from __future__ import print_function, division
 
 import sys, os, os.path as osp
-import argparse as arg
+import argparse
 
 import sisl
 
@@ -21,7 +21,7 @@ def argparse_patch(parser):
     parser: ArgumentParser
        parser to be patched
     """
-    class MySubParsersAction(arg._SubParsersAction):
+    class MySubParsersAction(argparse._SubParsersAction):
         def __call__(self, parser, namespace, values, option_string=None):
             parser_name = values[0]
             arg_strings = values[1:]
@@ -79,12 +79,13 @@ changing ways. It handles files dependent on type AND content.
     else:
         argv = sys.argv[1:]
 
-    p = arg.ArgumentParser("Manipulates sisl Sile's for manipulation.",
-                           formatter_class=arg.RawDescriptionHelpFormatter,
-                           description=description,conflict_handler='resolve')
+    p = argparse.ArgumentParser("Manipulates sisl Sile's for manipulation.",
+                                formatter_class=argparse.RawDescriptionHelpFormatter,
+                                description=description,conflict_handler='resolve')
     
     # Patch the parser to allow namespace passing in subparsers...
     argparse_patch(p)
+
 
     # Now try and figure out the actual arguments
     p, ns, argv = sisl.utils.cmd.collect_arguments(argv, input=True,
@@ -105,9 +106,9 @@ changing ways. It handles files dependent on type AND content.
 One *must* supply a file before a help menu can be generated.
 The help menu depends on the type of Sile that is specified.
         """
-        p = arg.ArgumentParser("Manipulates sisl Sile's for manipulation.",
-                               formatter_class=arg.RawDescriptionHelpFormatter,
-                               description=description)
+        p = argparse.ArgumentParser("Manipulates sisl Sile's for manipulation.",
+                                    formatter_class=argparse.RawDescriptionHelpFormatter,
+                                    description=description)
 
     # We are good to go!!!
     p.parse_args(argv, namespace=ns)

@@ -29,10 +29,13 @@ class XYZSile(Sile):
         # Check that we can write to the file
         sile_raise_write(self)
 
-        # Write out the cell
-        self._write('  ' + str(len(geom)) + '\n')
-        # We write the cell coordinates as the cell coordinates
-        fmt_str = '{{:{0}}} '.format(fmt) * 9 + '\n'
+        # Write the number of atoms in the geometry
+        self._write('   {}\n'.format(len(geom)))
+
+        # Write out the cell information in the comment field
+        # This contains the cell vectors in a single vector (3 + 3 + 3)
+        # quantities, plus the number of supercells (3 ints)
+        fmt_str = 'cell= ' + '{{:{0}}} '.format(fmt) * 9 + ' nsc= {} {} {}\n'.format(*geom.nsc[:])
         self._write(fmt_str.format(*geom.cell.flatten()))
 
         fmt_str = '{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
@@ -50,6 +53,7 @@ class XYZSile(Sile):
         """
 
         cell = np.asarray(np.diagflat([1] * 3), np.float64)
+        nsc = [1,1,1]
         l = self.readline()
         na = int(l)
         l = self.readline()
@@ -60,6 +64,18 @@ class XYZSile(Sile):
             for i, il in enumerate(l):
                 cell[i] = float(il)
             cell.shape = (3, 3)
+        elif len(l) > 9:
+            # We may have the latest version of sisl xyz coordinates
+            try:
+                cell.shape = (9,)
+                for i, il in enumerate(l[1:10]):
+                    cell[i] = float(il)
+                # Try and read the nsc
+                for i, il in enumerate(l[11:14]):
+                    nsc[i] = int(il)
+            finally:
+                cell.shape = (3, 3)
+
         sp = [None] * na
         xyz = np.empty([na, 3], np.float64)
         for ia in range(na):
@@ -67,7 +83,7 @@ class XYZSile(Sile):
             sp[ia] = l.pop(0)
             xyz[ia, :] = [float(k) for k in l[:3]]
 
-        return Geometry(xyz, atom=sp, sc=SuperCell(cell))
+        return Geometry(xyz, atom=sp, sc=SuperCell(cell, nsc=nsc))
 
 
     def ArgumentParser(self, *args, **kwargs):

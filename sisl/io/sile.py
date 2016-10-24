@@ -238,9 +238,8 @@ def get_sile(file, *args, **kwargs):
 
         del end_list
         
-        raise Exception('sile not implemented')
+        raise Exception('sile not implemented: {}'.format(file))
     except Exception as e:
-        print(e)
         raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
     raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
 

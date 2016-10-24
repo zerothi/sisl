@@ -29,6 +29,25 @@ def ensure_namespace(p, ns):
     p.parse_known_args = parse_known_args
 
 
+def collect_input(argv):
+    """ Function for returning the input file
+
+    This simply creates a shortcut input file and returns
+    it.
+    """
+    import argparse
+    
+    # Grap input-file
+    p = argparse.ArgumentParser('Parser for input file', add_help=False)
+    # Now add the input and output file
+    p.add_argument('input_file',nargs='?',default=None)
+    # Retrieve the input file
+    # (return the remaining options)
+    args, argv = p.parse_known_args(argv)
+    
+    return argv, args.input_file
+    
+
 def collect_arguments(argv, input=False,
                       argumentparser=None,
                       namespace=None):
@@ -55,7 +74,7 @@ def collect_arguments(argv, input=False,
     """
 
     # First we figure out the input file, and the output file
-    import argparse as arg
+    import argparse
     import sisl
     import sys, os, os.path as osp
 
@@ -66,7 +85,7 @@ def collect_arguments(argv, input=False,
 
     if input:
         # Grap input-file
-        p = arg.ArgumentParser('Parser for input file', add_help=False)
+        p = argparse.ArgumentParser('Parser for input file', add_help=False)
         # Now add the input and output file
         p.add_argument('input_file',nargs='?',default=None)
         # Retrieve the input file
@@ -78,7 +97,7 @@ def collect_arguments(argv, input=False,
 
         
     # Grap output-file
-    p = arg.ArgumentParser('Parser for output file', add_help=False)
+    p = argparse.ArgumentParser('Parser for output file', add_help=False)
     p.add_argument('--out','-o',nargs=1, default=None)
 
     # Parse the passed args to sort out the input file and
@@ -92,15 +111,17 @@ def collect_arguments(argv, input=False,
                                                            **obj._ArgumentParser_args_single())
             # Be sure to add the input file
             setattr(namespace, '_input_file', input_file)
-        except:
+        except Exception as e:
+            print(e)
             raise ValueError("File: '"+input_file+"' cannot be found. Please supply a readable file!")
 
-    
+
     if args.out is not None:
         try:
-            obj = sisl.get_sile(args.out[0], 'r')
+            obj = sisl.get_sile(args.out[0], mode='r')
             obj.ArgumentParser_out(argumentparser, namespace=namespace)
-        except: pass
+        except Exception as e:
+            pass
     
     return argumentparser, namespace, argv
 

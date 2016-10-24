@@ -258,7 +258,6 @@ class fdfSileSiesta(SileSiesta):
         self._write('%endblock ChemicalSpeciesLabel\n')
 
 
-    @Sile_fh_open
     def read_sc(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
         f, lc = self._read('LatticeConstant')
@@ -278,8 +277,8 @@ class fdfSileSiesta(SileSiesta):
                 cell[i, :] = [float(k) for k in lc[i].split()[:3]]
         else:
             f, lc = self._read_block('LatticeParameters')
-            tmp = [float(k) for k in lc[0].split()[:6]]
             if f:
+                tmp = [float(k) for k in lc[0].split()[:6]]
                 cell = SuperCell.tocell(*tmp)
         if not f:
             # the fdf file contains neither the latticevectors or parameters
@@ -290,7 +289,6 @@ class fdfSileSiesta(SileSiesta):
         return SuperCell(cell)
 
 
-    @Sile_fh_open
     def read_geom(self, *args, **kwargs):
         """ Returns Geometry object from the FDF file
 
@@ -390,6 +388,9 @@ class fdfSileSiesta(SileSiesta):
         # Read the block (not strictly needed, if so we simply set all atoms to
         # H)
         f, spcs = self._read_block('ChemicalSpeciesLabel')
+        if not f:
+            f, spcs = self._read_block('Chemical_Species_Label')
+
         if f:
             # Initialize number of species to
             # the length of the ChemicalSpeciesLabel block

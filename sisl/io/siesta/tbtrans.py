@@ -129,9 +129,18 @@ class tbtncSileSiesta(SileCDFSIESTA):
             # be minimal on memory but allow for
             # fast access by the object.
             for d in ['cell', 'xa', 'lasto',
-                      'a_dev', 'pivot',
-                      'kpt', 'wkpt', 'E']:
+                      'a_dev', 'pivot', 'E']:
                 self._data[d] = self._value(d)
+            # tbtrans does not store the k-points and weights
+            # if the Gamma-point is used.
+            try:
+                self._data['kpt'] = self._value('kpt')
+            except:
+                self._data['kpt'] = np.zeros([3], dtype=np.float64)
+            try:
+                self._data['wkpt'] = self._value('wkpt')
+            except:
+                self._data['wkpt'] = np.zeros([1], dtype=np.float64)
 
             # Create the geometry in the data file
             self._data['_geom'] = self.read_geom()
@@ -400,7 +409,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         return self._value_avg('ADOS', elec, avg=avg)
     DOS_A = ADOS
 
-    def DOS_bulk(self, elec, avg=True):
+    def BDOS(self, elec, avg=True):
         """ Return the bulk DOS of `elec`.
 
         Parameters
@@ -411,7 +420,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
            whether the returned DOS is k-averaged
         """
         return self._value_avg('DOS', elec, avg=avg)
-    BulkDOS = DOS_bulk
+    DOS_bulk = BDOS
+    BulkDOS = BDOS
 
 
     def current(self, elec_from, elec_to, avg=True):
@@ -883,8 +893,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
             "_geometry": self.geom,
             "_data_header" : [],
             "_data" : [],
-            "_Arng" : None,
-            "_Ascale" : 1. / len(self.pivot), 
+            "_Orng" : None,
+            "_Oscale" : 1. / len(self.pivot), 
             "_Erng" : None,
             "_krng" : None,
         }
@@ -893,11 +903,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         def dec_ensure_E(func):
             """ This decorater ensures that E is the first element in the _data container """
             def assign_E(self, *args, **kwargs):
-                for arg in args:
-                    if not isinstance(arg, TBTNamespace):
-                        continue
-                    ns = arg
-                    break
+                ns = args[1]
                 if len(ns._data) == 0:
                     # We immediately extract the energies
                     if ns._Erng is None:
@@ -933,7 +939,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         class AtomRange(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 # Immediately convert to proper indices
-                geom = ns._tbt.read_geom()
+                geom = ns._geometry
                 ranges = lstranges(strmap(int, value, sep='-'))
                 # we have only a subset of the orbitals
                 orbs = []
@@ -941,14 +947,14 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 asarray = np.asarray
                 for atoms in ranges:
                     if isinstance(atoms, list):
-                        # Get atoms
-                        ia = asarray(atoms[0], np.int32)
-                        ob = geom.a2o(ia - 1, True)
+                        # Get atoms and orbitals
+                        ob = []
+                        for ia in atoms[0]:
+                            ob1 = geom.a2o(ia - 1, True)
+                            ob.extend(ob1[asarray(atoms[1], np.int32) - 1])
                         no += len(ob)
-                        ob = ob[asarray(atoms[1], np.int32) - 1]
                     else:
-                        ia = asarray(atoms[0], np.int32)
-                        ob = geom.a2o(ia - 1, True)
+                        ob = geom.a2o(atoms - 1, True)
                         no += len(ob)
                     orbs.append(ob)
                 # Add one to make the c-index equivalent to the f-index
@@ -961,9 +967,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     tmp.sort()
                     print(tmp[:])
                     raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
-                ns._Arng = pivot
+                ns._Orng = pivot
                 # Correct the scale to the correct number of orbitals
-                ns._Ascale = 1. / no
+                ns._Oscale = 1. / no
 
         p.add_argument('--atom', '-a',
                        action=AtomRange,
@@ -996,11 +1002,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
             @dec_collect_actions
             @dec_ensure_E
             def __call__(self, parser, ns, value, option_string=None):
+                
                 if not value is None:
                     # we are storing the spectral DOS
-                    e = value
+                    e = value[0]
                     if e not in ns._tbt.elecs:
-                        raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
+                        raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                     # Grab the information
                     if ns._krng is None:
                         data = ns._tbt.ADOS(e, avg=True)
@@ -1013,19 +1020,41 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     else:
                         data = ns._tbt.DOS(avg=ns._krng)
                     ns._data_header.append('DOS[1/eV]')
-                # Grab out the atomic ranges
-                if not ns._Arng is None:
+                # Grab out the orbital ranges
+                if not ns._Orng is None:
                     orig_shape = data.shape
-                    data = data[...,ns._Arng]
+                    data = data[...,ns._Orng]
                 # Select the energies, even if _Erng is None, this will work!
                 data = np.sum(data[ns._Erng,...], axis=-1).flatten()
-                ns._data.append(data * ns._Ascale)
+                ns._data.append(data * ns._Oscale)
         p.add_argument('--dos', '-D', nargs='?', metavar='ELEC',
                        action=DataDOS, default=None,
                        help="""Store the DOS. If no electrode is specified, it is Green function, else it is the spectral function.""")
         p.add_argument('--ados', '-AD', nargs=1, metavar='ELEC',
                        action=DataDOS, default=None,
-                       help="""Store the spectral DOS, same as --dos.""")
+                       help="""Store the spectral DOS, same as --dos but requires an electrode-argument.""")
+
+        class DataDOSBulk(argparse.Action):
+            @dec_collect_actions
+            @dec_ensure_E
+            def __call__(self, parser, ns, value, option_string=None):
+                
+                # we are storing the Bulk DOS
+                e = value[0]
+                if e not in ns._tbt.elecs:
+                    raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
+                # Grab the information
+                if ns._krng is None:
+                    data = ns._tbt.BDOS(e, avg=True)
+                else:
+                    data = ns._tbt.BDOS(e, avg=ns._krng)
+                ns._data_header.append('BDOS:{}[1/eV]'.format(e))
+                # Select the energies, even if _Erng is None, this will work!
+                data = np.mean(data[ns._Erng,...], axis=-1).flatten()
+                ns._data.append(data)
+        p.add_argument('--bulk-dos', '-BD', nargs=1, metavar='ELEC',
+                       action=DataDOSBulk, default=None,
+                       help="""Store the bulk DOS of an electrode.""")
 
         class DataTEig(argparse.Action):
             @dec_collect_actions
@@ -1055,16 +1084,33 @@ class tbtncSileSiesta(SileCDFSIESTA):
         class Out(argparse.Action):
             @dec_run_actions
             def __call__(self, parser, ns, value, option_string=None):
-                from sisl.io import TableSile
+
                 out = value[0]
-                TableSile(out).write(np.array(ns._data), header=ns._data_header)
+
+                from sisl.io import get_sile, TableSile
+                try:
+                    # We figure out if the user wants to write
+                    # to a geometry
+                    obj = get_sile(out, mode='w')
+                    if hasattr(obj, 'write_geom'):
+                        obj.write_geom(ns._geometry)
+                        return
+                    raise NotImplementedError
+                except:
+                    pass
+                    
+                if len(ns._data) == 0:
+                    # do nothing if data has not been collected
+                    return
+                
+                TableSile(out, mode='w').write(np.array(ns._data), header=ns._data_header)
 
                 # Clean all data
                 ns._data_header = []
                 ns._data = []
                 # These are expert options
-                ns._Arng = None
-                ns._Ascale = 1. / len(ns._tbt.pivot)
+                ns._Orng = None
+                ns._Oscale = 1. / len(ns._tbt.pivot)
                 ns._Erng = None
                 ns._krng = None
         p.add_argument('--out','-o', nargs=1, action=Out,
@@ -1137,7 +1183,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                         'File ' +
                         self.file +
                         ' has erroneous data in regards of ' +
-                        'of the already stored dimensions.')
+                        'of the alreay stored dimensions.')
             else:
                 ba = bs.createGroup(a.tag)
                 ba.ID = np.int32(isp + 1)

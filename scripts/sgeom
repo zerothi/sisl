@@ -5,7 +5,7 @@ Geometry handler for different formats
 from __future__ import print_function, division
 
 import sys, os.path as osp
-import argparse as arg
+import argparse
 
 import sisl
 
@@ -51,21 +51,30 @@ lattice vector.
     else:
         argv = sys.argv[1:]
 
+    p = argparse.ArgumentParser('Manipulates geometries from any Sile.',
+                                formatter_class=argparse.RawDescriptionHelpFormatter,
+                                description=description)
 
-    p = arg.ArgumentParser('Manipulates geometries in commonly encounterd files.',
-                           formatter_class=arg.RawDescriptionHelpFormatter,
-                           description=description)
-    
-    # Now try and figure out the actual arguments
-    p, ns, argv = sisl.utils.cmd.collect_arguments(argv, input=True,
-                                                   argumentparser=p)
+    # First read the input "Sile"
+    argv, input_file = sisl.utils.cmd.collect_input(argv)
+    try:
+        input_sile = sisl.get_sile(input_file)
+        geom = input_sile.read_geom()
+    except Exception as E:
+        geom = sisl.Geometry([0,0,0])
+    p, ns = geom.ArgumentParser(p, **geom._ArgumentParser_args_single())
 
     # Now the arguments should have been populated
     # and we will sort out if the input options
     # is only a help option.
     if not hasattr(ns, '_input_file'):
-        geom = sisl.Geometry([0,0,0])
-        p, ns = geom.ArgumentParser(p, **sisl.Geometry._ArgumentParser_args_single())
+        setattr(ns, '_input_file', input_file)
+    
+    # Now try and figure out the actual arguments
+    p, ns, argv = sisl.utils.cmd.collect_arguments(argv, input=False,
+                                                   argumentparser=p,
+                                                   namespace=ns)
+
 
     # We are good to go!!!
     args = p.parse_args(argv, namespace=ns)
