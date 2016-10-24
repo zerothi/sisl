@@ -140,7 +140,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             try:
                 self._data['wkpt'] = self._value('wkpt')
             except:
-                self._data['wkpt'] = np.zeros([1], dtype=np.float64)
+                self._data['wkpt'] = np.ones([1], dtype=np.float64)
 
             # Create the geometry in the data file
             self._data['_geom'] = self.read_geom()
