@@ -57,7 +57,7 @@ class TestSIESTAnc(object):
 
     def test_nc3(self):
         f = osp.join(self.d, 'grS.nc')
-        tb = Hamiltonian(self.gtb, ortho=False)
+        tb = Hamiltonian(self.gtb, orthogonal=False)
         tb.construct(self.dR, self.tS)
         tb.write(ncSileSiesta(f, 'w'))
 

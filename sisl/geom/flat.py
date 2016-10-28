@@ -10,12 +10,12 @@ from sisl import Atom, Geometry, SuperCell
 __all__ = ['honeycomb', 'graphene']
 
 
-def honeycomb(bond, atom, ortho=False):
+def honeycomb(bond, atom, orthogonal=False):
     """
     Returns a honeycomb geometry with the graphene unit-cell (2 atoms)
     """
     sq3h = 3.**.5 * 0.5
-    if ortho:
+    if orthogonal:
         sc = SuperCell(np.array([[3., 0., 0.],
                                  [0., 2 * sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
@@ -34,10 +34,10 @@ def honeycomb(bond, atom, ortho=False):
     return g
 
 
-def graphene(bond=1.42, atom=None, ortho=False):
+def graphene(bond=1.42, atom=None, orthogonal=False):
     """
     Returns a geometry with the graphene unit-cell (2 atoms)
     """
     if atom is None:
-        return honeycomb(bond, Atom(Z=6, R=bond * 1.01), ortho)
-    return honeycomb(bond, atom, ortho)
+        return honeycomb(bond, Atom(Z=6, R=bond * 1.01), orthogonal)
+    return honeycomb(bond, atom, orthogonal)

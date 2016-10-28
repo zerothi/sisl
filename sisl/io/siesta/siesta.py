@@ -102,7 +102,7 @@ class ncSileSiesta(SileCDFSIESTA):
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
-        ham = Hamiltonian(geom, nnzpr=1, ortho=False, spin=spin)
+        ham = Hamiltonian(geom, nnzpr=1, orthogonal=False, spin=spin)
 
         # Use Ef to move H to Ef = 0
         Ef = float(self._value('Ef')[0]) * Ry2eV ** ham._E_order

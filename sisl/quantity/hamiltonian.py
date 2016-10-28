@@ -40,7 +40,7 @@ class Hamiltonian(object):
     # This conversion is made: [eV] ** _E_order
     _E_order = 1
 
-    def __init__(self, geom, nnzpr=None, ortho=True, spin=1,
+    def __init__(self, geom, nnzpr=None, orthogonal=True, spin=1,
                  dtype=None, *args, **kwargs):
         """Create tight-binding model from geometry
 
@@ -50,9 +50,9 @@ class Hamiltonian(object):
         self._geom = geom
 
         # Initialize the sparsity pattern
-        self.reset(nnzpr=nnzpr, ortho=ortho, spin=spin, dtype=dtype)
+        self.reset(nnzpr=nnzpr, orthogonal=orthogonal, spin=spin, dtype=dtype)
 
-    def reset(self, nnzpr=None, ortho=True, spin=1, dtype=None):
+    def reset(self, nnzpr=None, orthogonal=True, spin=1, dtype=None):
         """
         The sparsity pattern is cleaned and every thing
         is reset.
@@ -65,7 +65,7 @@ class Hamiltonian(object):
         ----------
         nnzpr: int
            number of non-zero elements per row
-        ortho: boolean, True
+        orthogonal: boolean, True
            if there is an overlap matrix associated with the
            Hamiltonian
         spin: int, 1
@@ -86,10 +86,10 @@ class Hamiltonian(object):
             if nnzpr is None: nnzpr = [0,0]
             nnzpr = max(5, len(nnzpr) * 4)
 
-        self._ortho = ortho
+        self._orthogonal = orthogonal
 
         # Reset the sparsity pattern
-        if not ortho:
+        if not orthogonal:
             self._data = SparseCSR((self.no, self.no_s, spin+1), nnzpr=nnzpr, dtype=dtype)
         else:
             self._data = SparseCSR((self.no, self.no_s, spin), nnzpr=nnzpr, dtype=dtype)
@@ -108,7 +108,7 @@ class Hamiltonian(object):
         else:
             raise ValueError("Currently the Hamiltonian has only been implemented with up to collinear spin.")
 
-        if ortho:
+        if orthogonal:
             # There is no overlap matrix
             self.S_idx = -1
 
@@ -140,12 +140,7 @@ class Hamiltonian(object):
     @property
     def orthogonal(self):
         """ Return whether the Hamiltonian is orthogonal """
-        return self._ortho
-
-    @property
-    def ortho(self):
-        """ Return whether the Hamiltonian is orthogonal """
-        return self._ortho
+        return self._orthogonal
 
     def __len__(self):
         """ Returns number of rows in the Hamiltonian """
@@ -713,7 +708,7 @@ class Hamiltonian(object):
 
         if has_S:
             ham = cls(geom, nnzpr=nc,
-                      ortho=False, dtype=H.dtype)
+                      orthogonal=False, dtype=H.dtype)
         else:
             ham = cls(geom, nnzpr=nc, dtype=H.dtype)
 

@@ -14,16 +14,16 @@ class Test(object):
     def test_basis(self):
         a = sc(2.52, Atom['Fe'])
         a = bcc(2.52, Atom['Fe'])
-        a = bcc(2.52, Atom['Fe'], ortho=True)
+        a = bcc(2.52, Atom['Fe'], orthogonal=True)
         a = fcc(2.52, Atom['Au'])
-        a = fcc(2.52, Atom['Au'], ortho=True)
+        a = fcc(2.52, Atom['Au'], orthogonal=True)
         a = hcp(2.52, Atom['Au'])
-        a = hcp(2.52, Atom['Au'], ortho=True)
+        a = hcp(2.52, Atom['Au'], orthogonal=True)
 
     def test_flat(self):
         a = graphene()
         a = graphene(atom='C')
-        a = graphene(ortho=True)
+        a = graphene(orthogonal=True)
 
     def test_nanotube(self):
         a = nanotube(1.42)
