@@ -33,15 +33,6 @@ To convert a SIESTA FDF file to `xyz` _and_ an `XV` file one does
 
     sgeom siesta.fdf geom.xyz geom.XV
 
-When doing complex geometry complexes one can use piping to do consecutive
-manipulations of the geometry, for instance to first repeat, then rotate
-a structure one could do:
-
-    sgeom -rx 2 siesta.fdf | sgeom -Rx 90a -o rep_rot.fdf
-
-Note that `-o` is needed as `sgeom` otherwise does not now the difference
-between piping and input-file names.
-
 Try `sgeom -h` for additional features such as repeating the structure.
 
 
@@ -60,7 +51,7 @@ For instance to create a huge graphene flake
                              nsc=[3,3,1])
     gr = Geometry(np.array([[ 0., 0., 0.],
                             [ 1., 0., 0.]],np.float64) * 1.42,
-                  atoms=Atom(Z=6, R=1.42), sc=sc)
+                  atom=Atom(Z=6, R=1.42), sc=sc)
     huge = gr.tile(100, axis=0).tile(100, axis=1)
 
 Which results in a 20000 atom big graphene flake.
@@ -81,9 +72,9 @@ Several basic geometries are intrinsically available
     g = hcp(<lattice constant>, <Atom>)
 
 The `Graphene`, `BCC`, `FCC` and `HCP` structures can be created in
-a square unit-cell by adding the flag `square=True` in the call:
+an orthogonal unit-cell by adding the flag `ortho=True` in the call:
 
-    g = graphene(square=True)
+    g = graphene(ortho=True)
 
 #### IO-manipulation ####
 
