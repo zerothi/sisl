@@ -1,4 +1,1 @@
-six
-numpy>1.8
-scipy
-netCDF4
+.

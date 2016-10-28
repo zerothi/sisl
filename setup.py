@@ -51,11 +51,12 @@ def generate_cython():
     if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
-scripts = ['sgeom', 'sgrid', 'sdata']
+build_requires = ['six', 'numpy>=1.9', 'scipy', 'netCDF4']
 
+scripts = ['sgeom', 'sgrid', 'sdata']
 scripts = [osp.join('scripts', script) for script in scripts]
 
-build_requires = ['six', 'numpy>=1.7', 'scipy', 'netCDF4']
+packages = ['sisl']
 
 metadata = dict(
     name='sisl',
@@ -71,16 +72,15 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
     url="https://github.com/zerothi/sisl",
     download_url="https://github.com/zerothi/sisl/releases",
     license='LGPLv3',
-    packages=['sisl'],
-    classifiers=[
-        _f for _f in CLASSIFIERS.split('\n') if _f],
+    packages=packages,
+    scripts=scripts,
+    classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     platforms=[
         "Windows",
         "Linux",
         "Solaris",
         "Mac OS-X",
         "Unix"],
-    scripts=scripts,
     install_requires=build_requires,
 )
 
@@ -90,9 +90,8 @@ if not osp.exists(osp.join(cwd, 'PKG-INFO')):
     # generate_cython()
     pass
 
+
 # Generate configuration
-
-
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     config = Configuration(None, parent_package, top_path)
@@ -104,6 +103,7 @@ def configuration(parent_package='', top_path=None):
     config.add_subpackage('sisl')
 
     return config
+
 
 metadata['version'] = VERSION
 metadata['configuration'] = configuration
