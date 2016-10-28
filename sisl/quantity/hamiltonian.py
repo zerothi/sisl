@@ -142,6 +142,11 @@ class Hamiltonian(object):
         """ Return whether the Hamiltonian is orthogonal """
         return self._ortho
 
+    @property
+    def ortho(self):
+        """ Return whether the Hamiltonian is orthogonal """
+        return self._ortho
+
     def __len__(self):
         """ Returns number of rows in the Hamiltonian """
         return self.geom.no

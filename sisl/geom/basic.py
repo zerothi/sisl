@@ -33,11 +33,11 @@ def sc(alat, atom):
     return g
 
 
-def bcc(alat, atom, square=False):
+def bcc(alat, atom, ortho=False):
     """
     Returns a BCC lattice (1 atom)
     """
-    if square:
+    if ortho:
         sc = SuperCell(np.array([[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat,
@@ -53,11 +53,11 @@ def bcc(alat, atom, square=False):
     return g
 
 
-def fcc(alat, atom, square=False):
+def fcc(alat, atom, ortho=False):
     """
     Returns a geometry with the FCC crystal structure (1 atom)
     """
-    if square:
+    if ortho:
         sc = SuperCell(np.array([[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat,
@@ -74,14 +74,14 @@ def fcc(alat, atom, square=False):
     return g
 
 
-def hcp(a, atom, coa=1.63333, square=False):
+def hcp(a, atom, coa=1.63333, ortho=False):
     """
     Returns a geometry with the FCC crystal structure (1 atom)
     """
     # height of hcp structure
     c = a * coa
     a2sq = a / 2 ** .5
-    if square:
+    if ortho:
         sc = SuperCell([[a + a * _c60 * 2, 0, 0],
                         [0, a * _c30 * 2, 0],
                         [0, 0, c / 2]])
