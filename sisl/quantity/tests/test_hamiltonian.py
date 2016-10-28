@@ -23,14 +23,14 @@ class TestHamiltonian(object):
                                     [1., 0., 0.]], np.float64) * bond,
                           atom=C, sc=self.sc)
         self.H = Hamiltonian(self.g)
-        self.HS = Hamiltonian(self.g, ortho = False)
+        self.HS = Hamiltonian(self.g, orthogonal=False)
 
         C = Atom(Z=6, R=bond * 1.01, orbs=2)
         self.g2 = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
                           atom=C, sc=self.sc)
         self.H2 = Hamiltonian(self.g2)
-        self.HS2 = Hamiltonian(self.g2, ortho = False)
+        self.HS2 = Hamiltonian(self.g2, orthogonal=False)
 
 
     def tearDown(self):
