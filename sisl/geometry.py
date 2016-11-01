@@ -687,7 +687,7 @@ class Geometry(SuperCellChild):
         a = acos(np.sum(lm * lv))
         return self.rotate(a, cp)
 
-    def translate(self, v, atom=None, cell=False):
+    def move(self, v, atom=None, cell=False):
         """ Translates the geometry by ``v``
 
         One can translate a subset of the atoms by supplying ``atom``.
@@ -702,6 +702,7 @@ class Geometry(SuperCellChild):
         if cell:
             g.set_supercell(g.sc.translate(v))
         return g
+    translate = move
 
     def swap(self, a, b):
         """ Returns a geometry with swapped atoms

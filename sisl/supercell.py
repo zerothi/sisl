@@ -237,7 +237,7 @@ class SuperCell(object):
         cell[axis, :] += other.cell[axis, :]
         return self.__class__(cell, nsc=np.copy(self.nsc))
 
-    def translate(self, v):
+    def move(self, v):
         """ Appends additional space in the SuperCell object """
         # check which cell vector resembles v the most,
         # use that
@@ -247,7 +247,8 @@ class SuperCell(object):
             p[i] = abs(np.sum(cell[i, :] * v)) / np.sum(cell[i, :]**2)**.5
         cell[np.argmax(p), :] += v
         return self.__class__(cell, np.copy(self.nsc))
-
+    translate = move
+    
     def center(self, axis=None):
         """ Returns center of the `SuperCell`, possibly with respect to an axis
         """
