@@ -802,9 +802,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         # Create local lasto
         lasto = np.append([0],geom.lasto)
-
-        # Faster function calls
-        nsum = np.sum
+        xyz = geom.xyz
 
         # Calculate individual bond-currents between atoms
         for ia in atom:
@@ -812,11 +810,11 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 if ia == ja:
                     # If we are on the same atom there is no direction
                     continue
-                t = tmp[lasto[ia]:lasto[ia+1],lasto[ja]:lasto[ja+1]].data
+                t = tmp[lasto[ia]:lasto[ia+1],lasto[ja]:lasto[ja+1]].data.sum()
                 # calculate the vector between atom `ia` and `ja`
-                v = geom.xyz[ja+1, :] - geom.xyz[ia+1, :]
+                v = xyz[ja, :] - xyz[ia, :]
                 # multiply by normalized vector
-                Ja[ia, :] += nsum(t) * v / (v[0]**2 + v[1]**2 + v[2]**2)**.5
+                Ja[ia, :] += t * v / (v[0]**2 + v[1]**2 + v[2]**2)**.5
         del t
 
         # Scale correctly
