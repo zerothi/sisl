@@ -146,7 +146,7 @@ def dec_default_AP(*A_args, **A_kwargs):
     return default_AP
 
 
-def dec_collect_actions(func):
+def dec_collect_action(func):
     """
     Decorator for collecting actions until the namespace `_actions_run` is `True`.
 
@@ -158,6 +158,20 @@ def dec_collect_actions(func):
         # Else we append the actions to be performed
         args[1]._actions.append( (self, args, kwargs) )
         return None
+    return collect
+
+
+def dec_collect_and_run_action(func):
+    """
+    Decorator for collecting actions and running.
+
+    Note that the `Namespace` object is the 2nd argument.
+    """
+    def collect(self, *args, **kwargs):
+        if args[1]._actions_run:
+            return func(self, *args, **kwargs)
+        args[1]._actions.append( (self, args, kwargs) )
+        return func(self, *args, **kwargs)
     return collect
 
 

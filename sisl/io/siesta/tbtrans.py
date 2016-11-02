@@ -1,7 +1,7 @@
 """
 Sile object for reading TBtrans binary files
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 import warnings
 import numpy as np
@@ -17,6 +17,7 @@ from numbers import Integral
 from .sile import SileCDFSIESTA
 from ..sile import *
 from sisl.utils import *
+
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
@@ -935,6 +936,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         # Try and add the atomic specification
         class AtomRange(argparse.Action):
+            @dec_collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 # Immediately convert to proper indices
                 geom = ns._geometry
@@ -949,14 +951,19 @@ class tbtncSileSiesta(SileCDFSIESTA):
                         ob = []
                         for ia in atoms[0]:
                             ob1 = geom.a2o(ia - 1, True)
+                            # We normalize for the total number of orbitals
+                            # on the requested atoms.
+                            # In this way the user can compare directly the DOS
+                            # for same atoms with different sets of orbitals and the
+                            # total will add up.
+                            no += len(ob1)
                             ob.extend(ob1[asarray(atoms[1], np.int32) - 1])
-                        no += len(ob)
                     else:
                         ob = geom.a2o(atoms - 1, True)
                         no += len(ob)
                     orbs.append(ob)
                 # Add one to make the c-index equivalent to the f-index
-                orbs = np.array(orbs, np.int32).flatten() + 1
+                orbs = asarray(orbs, np.int32).flatten() + 1
                 pivot = np.where(np.in1d(ns._tbt.pivot, orbs))[0]
 
                 if len(orbs) != len(pivot):
@@ -970,6 +977,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._Orng = pivot
                 # Correct the scale to the correct number of orbitals
                 ns._Oscale = 1. / no
+                #print('Updating Orng and Oscale: ',ns._Orng, ns._Oscale)
 
         p.add_argument('--atom', '-a',
                        action=AtomRange,
@@ -977,7 +985,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
 
         class DataT(argparse.Action):
-            @dec_collect_actions
+            @dec_collect_action
             @dec_ensure_E
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = values[0]
@@ -999,7 +1007,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        help='Store the transmission between two electrodes.')
 
         class DataDOS(argparse.Action):
-            @dec_collect_actions
+            @dec_collect_action
             @dec_ensure_E
             def __call__(self, parser, ns, value, option_string=None):
                 
@@ -1035,7 +1043,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        help="""Store the spectral DOS, same as --dos but requires an electrode-argument.""")
 
         class DataDOSBulk(argparse.Action):
-            @dec_collect_actions
+            @dec_collect_action
             @dec_ensure_E
             def __call__(self, parser, ns, value, option_string=None):
                 
@@ -1057,7 +1065,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        help="""Store the bulk DOS of an electrode.""")
 
         class DataTEig(argparse.Action):
-            @dec_collect_actions
+            @dec_collect_action
             @dec_ensure_E
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = values[0]
