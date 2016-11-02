@@ -248,8 +248,8 @@ class TestGeometry(object):
         i = np.argmin(d2[1])
         d2 = d2[1][i]
         assert_false(d == d2)
-        # Calculate actual radii
-        assert_true(d2 == (Atom[1].radii() + Atom[6].radii()))
+        # Calculate actual radius
+        assert_true(d2 == (Atom[1].radius() + Atom[6].radius()))
 
     def test_unit_cell_estimation1(self):
         # Create new geometry with only the coordinates

@@ -4,7 +4,8 @@ Geometry class to retain the atomic structure.
 from __future__ import print_function, division
 
 # To check for integers
-from numbers import Integral
+from numbers import Integral, Real
+from six import string_types
 from math import acos, pi
 import sys
 import warnings
@@ -833,6 +834,62 @@ class Geometry(SuperCellChild):
         atom = np.append(self.atom, other.atom)
         sc = self.sc.copy()
         return self.__class__(xyz, atom=atom, sc=sc)
+
+
+    def attach(self, s_idx, other, o_idx, dist='calc', axis=None):
+        """ Attaches another ``Geometry`` at the `s_idx` index with respect to `o_idx` using different methods.
+
+        Parameters
+        ----------
+        dist : `arraylike`/`float`/`str`, `'calc'`
+           the distance (in `Ang`) between the attached coordinates. 
+           If `dist` is `arraylike it should be the vector between
+           the atoms;
+           if `dist` is `float` the argument `axis` is required
+           and the vector will be calculated along the corresponding latticevector;
+           else if `dist` is `str` this will correspond to the
+           `method` argument of the ``Atom.radius`` class of the two 
+           atoms. Here `axis` is also required. 
+        axis : `int`
+           specify the direction of the lattice vectors used.
+           Not used if `dist` is an array-like argument.
+        """
+        if isinstance(dist, Real):
+            # We have a single rational number
+            if axis is None:
+                raise ValueError("Argument `axis` has not been specified, please specify the axis when using a distance")
+
+            # Now calculate the vector that we should have
+            # between the atoms
+            v = self.cell[axis,:]
+            v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * dist
+            
+        elif isinstance(dist, string_types):
+            # We have a single rational number
+            if axis is None:
+                raise ValueError("Argument `axis` has not been specified, please specify the axis when using a distance")
+
+            # This is the empirical distance between the atoms
+            d = self.atom[s_idx].radius(dist) + other.atom[o_idx].radius(dist)
+            if isinstance(axis, Integral):
+                v = self.cell[axis,:]
+            else:
+                v = np.array(axis)
+            
+            v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * d
+            
+        else:
+            # The user *must* have supplied a vector
+            v = np.array(dist)
+
+        # Now create a copy of the other geometry
+        # so that we move it...
+        # Translate to origo, then back to position in new cell
+        o = other.translate(-other.xyz[o_idx] + self.xyz[s_idx] + v)
+
+        # We do not know how to handle the lattice-vectors,
+        # so we will do nothing...
+        return self.add(o)
     
 
     def reverse(self, atom=None):
@@ -1074,11 +1131,11 @@ class Geometry(SuperCellChild):
             return ret
         return ret[0]
 
-    def bond_correct(self, ia, atom, radii='calc'):
+    def bond_correct(self, ia, atom, radius='calc'):
         """ Corrects the bond between `ia` and the `atom`.
 
         Corrects the bond-length between atom `ia` and `atom` in such
-        a way that the atomic radii is preserved.
+        a way that the atomic radius is preserved.
         I.e. the sum of the bond-lengths minimizes the distance matrix.
 
         Only atom `ia` is moved.
@@ -1086,11 +1143,11 @@ class Geometry(SuperCellChild):
         Parameters
         ----------
         ia : int
-            The atom to be displaced according to the atomic radii
+            The atom to be displaced according to the atomic radius
         atom : int, array_like
-            The atom(s) from which the radii should be reduced.
-        radii : str/float
-            If str will use that as lookup in `Atom.radii`.
+            The atom(s) from which the radius should be reduced.
+        radius : str/float
+            If str will use that as lookup in `Atom.radius`.
             Else it will be the new bond-length.
         """
 
@@ -1122,11 +1179,11 @@ class Geometry(SuperCellChild):
 
             try:
                 # If it is a number, we use that.
-                rad = float(radii)
+                rad = float(radius)
             except:
-                # get radii
-                rad = (self.atom[idx].radii(radii=radii) +
-                       self.atom[ia].radii(radii=radii))
+                # get radius
+                rad = (self.atom[idx].radius(radius) +
+                       self.atom[ia].radius(radius))
 
             # Update the coordinate
             self.xyz[ia, :] = c + bv / d * rad

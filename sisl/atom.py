@@ -865,7 +865,7 @@ class PeriodicTable(object):
             return self._atomic_mass[Z]
         return np.array([self._atomic_mass[i] for i in Z], np.float64)
 
-    def radii(self, key, radii='calc'):
+    def radius(self, key, method='calc'):
         """ Return the atomic radii
 
         Return the atomic radii.
@@ -875,36 +875,36 @@ class PeriodicTable(object):
         key : array_like, str, int
             Uses value to lookup the atomic mass in the
             `PeriodicTable` object.
-        radii : str
+        method : str
             There are 3 different radii stored:
 
              1. ``calc``, the calculated
              2. ``empirical``, the empirically found values
-             3. ``vdw``, the van der Waals found values
+             3. ``vdw``, the van-der-Waals found values
 
         Returns
         -------
-        radii : ndarray, float
-            The atomic radii in `Ang`
+        radius : ndarray, float
+            The atomic radius in `Ang`
         """
         Z = self.Z_int(key)
-        if radii == 'calc':
+        if method == 'calc':
             if isinstance(Z, Integral):
                 return self._radius_calc[Z] / 100
             return np.array([self._radius_calc[i]
                              for i in Z], np.float64) / 100
-        elif radii == 'empirical':
+        elif method == 'empirical':
             if isinstance(Z, Integral):
                 return self._radius_empirical[Z] / 100
             return np.array([self._radius_empirical[i]
                              for i in Z], np.float64) / 100
-        elif radii == 'vdw':
+        elif method == 'vdw':
             if isinstance(Z, Integral):
                 return self._radius_vdw[Z] / 100
             return np.array([self._radius_vdw[i] for i in Z], np.float64) / 100
         raise ValueError(
-            'Radii option could not be deciphered [calc|empirical|vdw].')
-
+            'Method option could not be deciphered [calc|empirical|vdw].')
+    radii = radius
 
 # Create a local instance of the periodic table to
 # faster look up
@@ -1008,10 +1008,16 @@ class Atom(with_metaclass(AtomMeta, object)):
         """ Return copy of this object """
         return self.__class__(self.Z, self.R, self.orbs, self.mass, self.tag)
 
-    def radii(self, radii='calc'):
-        """ Return the atomic radii of the atom (in Ang) """
-        return _ptbl.radii(self.Z, radii)
 
+    def radius(self, method='calc'):
+        """ Return the atomic radii of the atom (in Ang) 
+        
+        See ``PeriodicTable.radius`` for details on the argument.
+        """
+        return _ptbl.radius(self.Z, method)
+    radii = radius
+
+    
     @property
     def symbol(self):
         """ Return short atomic name (Au==79). """

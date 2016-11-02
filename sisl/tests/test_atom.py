@@ -60,7 +60,7 @@ class TestAtom(object):
         assert_true(Atom(Z=1, R=[1.4,1.8]).orbs == 2)
 
     def test7(self):
-        assert_true(Atom(Z=1, orbs=3).radii() > 0.)
+        assert_true(Atom(Z=1, orbs=3).radius() > 0.)
         assert_true(len(str(Atom(Z=1, orbs=3))))
 
     def test8(self):
