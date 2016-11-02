@@ -964,6 +964,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     tmp = ns._tbt.a_dev[:]
                     tmp.sort()
                     print(tmp[:])
+                    print('Input atoms:')
+                    print(value)
                     raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
                 ns._Orng = pivot
                 # Correct the scale to the correct number of orbitals
