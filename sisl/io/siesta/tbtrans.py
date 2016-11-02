@@ -302,7 +302,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
     @property
     def elecs(self):
         """ List of electrodes """
-        elecs = self.groups.keys()
+        elecs = list(self.groups.keys())
 
         # in cases of not calculating all
         # electrode transmissions we must ensure that
