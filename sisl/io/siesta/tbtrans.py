@@ -891,6 +891,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             "_tbt": self,
             "_geometry": self.geom,
             "_data_header" : [],
+            "_data_footer" : [],
             "_data" : [],
             "_Orng" : None,
             "_Oscale" : 1. / len(self.pivot), 
@@ -974,6 +975,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     print('Input atoms:')
                     print(value)
                     raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
+                ns._Ovalue = value
                 ns._Orng = pivot
                 # Correct the scale to the correct number of orbitals
                 ns._Oscale = 1. / no
@@ -1035,6 +1037,11 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 # Select the energies, even if _Erng is None, this will work!
                 data = np.sum(data[ns._Erng,...], axis=-1).flatten()
                 ns._data.append(data * ns._Oscale)
+                if ns._Orng is None:
+                    ns._data_footer.append(' Column [{}] is sum of all device atoms+orbitals with normalization 1/'.format(len(ns._data), int(1/ns._Oscale)))
+                else:
+                    ns._data_footer.append(' Column [{}] is atoms[orbs] {} with normalization 1/{}'.format(len(ns._data), ns._Ovalue, int(1/ns._Oscale)))
+
         p.add_argument('--dos', '-D', nargs='?', metavar='ELEC',
                        action=DataDOS, default=None,
                        help="""Store the DOS. If no electrode is specified, it is Green function, else it is the spectral function.""")
@@ -1058,8 +1065,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     data = ns._tbt.BDOS(e, avg=ns._krng)
                 ns._data_header.append('BDOS:{}[1/eV]'.format(e))
                 # Select the energies, even if _Erng is None, this will work!
+                no = data.shape[-1]
                 data = np.mean(data[ns._Erng,...], axis=-1).flatten()
                 ns._data.append(data)
+                ns._data_footer.append('Column [{}] is sum of all electrode[{}] atoms+orbitals with normalization 1/{}'.format(len(ns._data), e, no))
         p.add_argument('--bulk-dos', '-BD', nargs=1, metavar='ELEC',
                        action=DataDOSBulk, default=None,
                        help="""Store the bulk DOS of an electrode.""")
@@ -1111,12 +1120,14 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     # do nothing if data has not been collected
                     return
                 
-                TableSile(out, mode='w').write(np.array(ns._data), header=ns._data_header)
-
+                TableSile(out, mode='w').write(np.array(ns._data),
+                                               header=ns._data_header, footer=ns._data_footer)
                 # Clean all data
                 ns._data_header = []
+                ns._data_footer = []
                 ns._data = []
                 # These are expert options
+                ns._Ovalue = ''
                 ns._Orng = None
                 ns._Oscale = 1. / len(ns._tbt.pivot)
                 ns._Erng = None
