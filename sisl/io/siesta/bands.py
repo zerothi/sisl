@@ -112,9 +112,6 @@ class bandsSileSiesta(SileSiesta):
         }
         namespace = default_namespace(**d)
 
-        # Ensure the namespace is populated
-        ensure_namespace(p, namespace)
-
         # Energy grabs
         class ERange(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
