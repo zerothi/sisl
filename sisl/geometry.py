@@ -1131,7 +1131,7 @@ class Geometry(SuperCellChild):
             return ret
         return ret[0]
 
-    def bond_correct(self, ia, atom, radius='calc'):
+    def bond_correct(self, ia, atom, method='calc'):
         """ Corrects the bond between `ia` and the `atom`.
 
         Corrects the bond-length between atom `ia` and `atom` in such
@@ -1146,7 +1146,7 @@ class Geometry(SuperCellChild):
             The atom to be displaced according to the atomic radius
         atom : int, array_like
             The atom(s) from which the radius should be reduced.
-        radius : str/float
+        method : str/float
             If str will use that as lookup in `Atom.radius`.
             Else it will be the new bond-length.
         """
@@ -1179,11 +1179,11 @@ class Geometry(SuperCellChild):
 
             try:
                 # If it is a number, we use that.
-                rad = float(radius)
+                rad = float(method)
             except:
                 # get radius
-                rad = (self.atom[idx].radius(radius) +
-                       self.atom[ia].radius(radius))
+                rad = (self.atom[idx].radius(method) +
+                       self.atom[ia].radius(method))
 
             # Update the coordinate
             self.xyz[ia, :] = c + bv / d * rad
