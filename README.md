@@ -72,9 +72,9 @@ Several basic geometries are intrinsically available
     g = hcp(<lattice constant>, <Atom>)
 
 The `Graphene`, `BCC`, `FCC` and `HCP` structures can be created in
-an orthogonal unit-cell by adding the flag `ortho=True` in the call:
+an orthogonal unit-cell by adding the flag `orthogonal=True` in the call:
 
-    g = graphene(ortho=True)
+    g = graphene(orthogonal=True)
 
 #### IO-manipulation ####
 
@@ -206,7 +206,7 @@ explicit overlap matrix the following procedure is necessary:
     on = ( 0. , 1.)
     nn = (-0.5, 0.) # still orthogonal (but with fake overlap)
 
-    tb = Hamiltonian(gr, ortho=False)
+    tb = Hamiltonian(gr, orthogonal=False)
     for ia in tb.geom:
         idx_a = tb.close(ia, dR=dR)
         tb[ia,idx_a[0]] = on
