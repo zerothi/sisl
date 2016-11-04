@@ -92,10 +92,14 @@ class TestGeometry(object):
         assert_true(self.g.atom[0].orbs == self.g.a2o(1))
         assert_true(self.g.no == self.g.a2o(self.g.na))
 
-    def test_sub(self):
+    def test_sub1(self):
         assert_true(len(self.g.sub([0])) == 1)
         assert_true(len(self.g.sub([0, 1])) == 2)
         assert_true(len(self.g.sub([-1])) == 1)
+        
+    def test_sub2(self):
+        assert_true(len(self.g.sub(range(1))) == 1)
+        assert_true(len(self.g.sub(range(2))) == 2)
 
     def test_cut(self):
         assert_true(len(self.g.cut(1, 1)) == 2)
@@ -108,11 +112,15 @@ class TestGeometry(object):
         assert_true(np.allclose(c1.xyz[0, :], self.g.xyz[0, :]))
         assert_true(np.allclose(c2.xyz[0, :], self.g.xyz[1, :]))
 
-    def test_remove(self):
+    def test_remove1(self):
         assert_true(len(self.g.remove([0])) == 1)
         assert_true(len(self.g.remove([])) == 2)
         assert_true(len(self.g.remove([-1])) == 1)
         assert_true(len(self.g.remove([-0])) == 1)
+        
+    def test_remove2(self):
+        assert_true(len(self.g.remove(range(1))) == 1)
+        assert_true(len(self.g.remove(range(0))) == 2)
 
     def test_copy(self):
         assert_true(self.g == self.g.copy())
@@ -256,7 +264,7 @@ class TestGeometry(object):
     def test_bond_correct(self):
         # Create ribbon
         rib = self.g.tile(2, 1)
-        # Convert the last atom to an H atom
+        # Convert the last atom to a H atom
         rib.atom[-1] = Atom[1]
         ia = len(rib) - 1
         # Get bond-length

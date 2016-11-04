@@ -16,7 +16,8 @@ from .utils import *
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
-from ._help import array_fill_repeat, ensure_array
+from ._help import _str
+from ._help import array_fill_repeat, ensure_array, isiterable
 
 __all__ = ['Geometry']
 
@@ -94,14 +95,19 @@ class Geometry(SuperCellChild):
 
         # Correct the atoms input to Atom
         if isinstance(atom, list):
-            if isinstance(atom[0], (str, Integral)):
+            if isinstance(atom[0], (_str, Integral)):
                 A = np.array([Atom(a) for a in atom])
             elif isinstance(atom[0], Atom):
                 A = np.array(atom)
             else:
                 raise ValueError('atom keyword was wrong input')
-        elif isinstance(atom, str):
+        elif isinstance(atom, _str):
             A = np.array([Atom(atom)])
+        elif isiterable(atom):
+            if isinstance(atom[0], Atom):
+                A = atom
+            else:
+                A = np.array([Atom(a) for a in atom])
         else:
             A = np.array([atom]).flatten()
 
@@ -386,12 +392,11 @@ class Geometry(SuperCellChild):
         cell   : (``self.cell``), array_like, optional
             the new associated cell of the geometry
         """
-        atms = np.asarray([atom], np.int32).flatten() % self.na
+        atms = ensure_array(atom).flatten() % self.na
         if cell is None:
             return self.__class__(
-                self.xyz[
-                    atms, :], atom=[
-                    self.atom[i] for i in atms], sc=self.sc.copy())
+                self.xyz[atms, :],
+                atom=[self.atom[i] for i in atms], sc=self.sc.copy())
         return self.__class__(self.xyz[atms, :],
                               atom=[self.atom[i] for i in atms], sc=cell)
 
@@ -438,9 +443,7 @@ class Geometry(SuperCellChild):
         off = n * lseg
         new = self.sub(np.arange(off, off + n), cell=sc)
         if not np.allclose(
-                new.tile(
-                    seps,
-                    axis).xyz,
+                new.tile(seps, axis).xyz,
                 self.xyz,
                 rtol=rtol,
                 atol=atol):
@@ -486,7 +489,7 @@ class Geometry(SuperCellChild):
         atom  : array_like
             indices of all atoms to be removed.
         """
-        atms = np.asarray([atom], np.int32).flatten() % self.na
+        atms = ensure_array(atom).flatten() % self.na
         idx = np.setdiff1d(np.arange(self.na), atms, assume_unique=True)
         return self.sub(idx)
 
@@ -699,7 +702,7 @@ class Geometry(SuperCellChild):
         if atom is None:
             g.xyz[:, :] += np.asarray(v, g.xyz.dtype)[None, :]
         else:
-            g.xyz[atom, :] += np.asarray(v, g.xyz.dtype)[None, :]
+            g.xyz[ensure_array(atom), :] += np.asarray(v, g.xyz.dtype)[None, :]
         if cell:
             g.set_supercell(g.sc.translate(v))
         return g
@@ -710,6 +713,8 @@ class Geometry(SuperCellChild):
 
         This can be used to reorder elements of a geometry.
         """
+        a = ensure_array(a)
+        b = ensure_array(b)
         xyz = np.copy(self.xyz)
         xyz[a, :] = self.xyz[b, :]
         xyz[b, :] = self.xyz[a, :]
@@ -769,7 +774,7 @@ class Geometry(SuperCellChild):
         if atom is None:
             g = self
         else:
-            g = self.sub(atom)
+            g = self.sub(ensure_array(atom))
         if 'mass' in which:
             mass = self.mass
             return np.dot(mass, g.xyz) / np.sum(mass)
@@ -901,6 +906,7 @@ class Geometry(SuperCellChild):
             xyz = self.xyz[::-1, :]
             atms = self.atom[::-1]
         else:
+            atom = ensure_array(atom)
             xyz = np.copy(self.xyz)
             xyz[atom, :] = self.xyz[atom[::-1], :]
             atms = np.copy(self.atom)
@@ -1169,8 +1175,8 @@ class Geometry(SuperCellChild):
             idx, c, d = self.close(ia, dR=(0.1, 10.), idx=algo,
                                    ret_coord=True, ret_dist=True)
             i = np.argmin(d[1])
-            # Convert to unitcell atoms
-            idx = self.sc2uc(idx[1][i])
+            # Convert to unitcell atom (and get the one atom)
+            idx = self.sc2uc(idx[1][i])[0]
             c = c[1][i]
             d = d[1][i]
 
@@ -1182,8 +1188,8 @@ class Geometry(SuperCellChild):
                 rad = float(method)
             except:
                 # get radius
-                rad = (self.atom[idx].radius(method) +
-                       self.atom[ia].radius(method))
+                rad = self.atom[idx].radius(method) \
+                      + self.atom[ia].radius(method)
 
             # Update the coordinate
             self.xyz[ia, :] = c + bv / d * rad
@@ -1241,8 +1247,8 @@ class Geometry(SuperCellChild):
         hstack = np.hstack
 
         # Convert to actual array
-        if isinstance(idx, Integral):
-            idx = np.array([idx], np.int32)
+        if idx is not None:
+            idx = ensure_array(idx)
 
         ret = [None]
         i = 0
@@ -1320,6 +1326,7 @@ class Geometry(SuperCellChild):
              `False`, return only the first orbital corresponding to the atom,
              `True`, returns list of the full atom
         """
+        ia = ensure_array(ia)
         if not all:
             return self.lasto[ia % self.na] + (ia // self.na) * self.no
         ia = np.asarray(ia, np.int32)
@@ -1352,6 +1359,7 @@ class Geometry(SuperCellChild):
         io: `list` of `int`
              List of indices to return the atoms for
         """
+        io = ensure_array(io)
         rlasto = self.lasto[::-1]
         iio = np.asarray([io % self.no]).flatten()
         a = [self.na - np.argmax(rlasto <= i) for i in iio]
@@ -1359,6 +1367,7 @@ class Geometry(SuperCellChild):
 
     def sc2uc(self, atom, uniq=False):
         """ Returns atom from super-cell indices to unit-cell indices, possibly removing dublicates """
+        atom = ensure_array(atom)
         if uniq:
             return np.unique(atom % self.na)
         return atom % self.na
@@ -1366,6 +1375,7 @@ class Geometry(SuperCellChild):
 
     def osc2uc(self, orbs, uniq=False):
         """ Returns orbitals from super-cell indices to unit-cell indices, possibly removing dublicates """
+        orbs = ensure_array(orbs)
         if uniq:
             return np.unique(orbs % self.no)
         return orbs % self.no
@@ -1376,6 +1386,7 @@ class Geometry(SuperCellChild):
 
         Hence one can easily figure out the supercell
         """
+        a = ensure_array(a)
         idx = np.where(a < self.na * np.arange(1, self.n_s + 1))[0][0]
         return self.sc.sc_off[idx, :]
 
@@ -1385,6 +1396,7 @@ class Geometry(SuperCellChild):
 
         Hence one can easily figure out the supercell
         """
+        o = ensure_array(o)
         idx = np.where(o < self.no * np.arange(1, self.n_s + 1))[0][0]
         return self.sc.sc_off[idx, :]
 

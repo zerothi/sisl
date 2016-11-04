@@ -6,7 +6,7 @@ import collections
 
 import numpy as np
 
-__all__ = ['array_fill_repeat', '_str', 'ensure_array']
+__all__ = ['array_fill_repeat', '_str', 'isiterable', 'ensure_array']
 
 
 # Base-class for string object checks
@@ -42,6 +42,9 @@ def array_fill_repeat(array, size, cls=None):
             return np.tile(np.array(array, dtype=cls), reps)
         return np.array(array, dtype=cls)
 
+def isiterable(obj):
+    """ Returns whether the object is an iterable or not """
+    return isinstance(obj, collections.Iterable)
 
 def ensure_array(arr, dtype=np.int32):
     """ Casts a number, list, tuple to a 1D array
@@ -67,6 +70,6 @@ def ensure_array(arr, dtype=np.int32):
         comp = Complex
     if isinstance(arr, comp):
         return np.array([arr], dtype)
-    elif isinstance(arr, collections.Iterable):
+    elif isiterable(arr):
         return np.fromiter(arr, dtype)
     return np.asarray(arr, dtype)
