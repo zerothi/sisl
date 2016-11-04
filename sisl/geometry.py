@@ -1248,6 +1248,8 @@ class Geometry(SuperCellChild):
             If true this method will return the distances from the ``xyz_ia``
             for each of the couplings.
         """
+        if dR is None:
+            dR = self.dR
         dR = ensure_array(dR, np.float64)
 
         # Get global calls
