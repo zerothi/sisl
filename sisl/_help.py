@@ -1,8 +1,10 @@
 from __future__ import print_function, division
 
-import numpy as np
 import sys
 from numbers import Integral, Real, Complex
+import collections
+
+import numpy as np
 
 __all__ = ['array_fill_repeat', '_str', 'ensure_array']
 
@@ -42,6 +44,21 @@ def array_fill_repeat(array, size, cls=None):
 
 
 def ensure_array(arr, dtype=np.int32):
+    """ Casts a number, list, tuple to a 1D array
+
+    This will check which kind of argument `arr` is
+    and will convert the value to the corresponding
+    1D-array type.
+
+    Parameters
+    ----------
+    arr : number/array_like/iterator
+       if this is a number an array of `len() == 1` will
+       be returned. Else, the array will be assured
+       to be a ``numpy.ndarray``.
+    dtype : ``numpy.dtype``
+       the data-type of the array
+    """
     if np.issubdtype(dtype, np.integer):
         comp = Integral
     elif np.issubdtype(dtype, np.float):
@@ -50,6 +67,6 @@ def ensure_array(arr, dtype=np.int32):
         comp = Complex
     if isinstance(arr, comp):
         return np.array([arr], dtype)
-    elif isinstance(arr, (list, tuple)):
-        return np.array(arr, dtype)
-    return arr
+    elif isinstance(arr, collections.Iterable):
+        return np.fromiter(arr, dtype)
+    return np.asarray(arr, dtype)
