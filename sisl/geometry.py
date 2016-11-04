@@ -1024,7 +1024,7 @@ class Geometry(SuperCellChild):
         # Convert to actual array
         if idx is not None:
             idx = ensure_array(idx)
-
+            
         if isinstance(xyz_ia, Integral):
             off = self.xyz[xyz_ia, :]
         else:
@@ -1052,16 +1052,16 @@ class Geometry(SuperCellChild):
         dxa = dxa[ix, :]
 
         # Create default return
-        ret = [[]]*len(ddR)
+        ret = [[]] * len(ddR)
         i = 0
         if ret_coord:
             i += 1
             rc = i
-            ret.append([[]]*len(ddR))
+            ret.append([[]] * len(ddR))
         if ret_dist:
             i += 1
             rc = i
-            ret.append([[]]*len(ddR))
+            ret.append([[]] * len(ddR))
         
         if len(dxa) == 0:
             # Quick return if there are

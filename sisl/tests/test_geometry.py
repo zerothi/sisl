@@ -1,12 +1,12 @@
 from __future__ import print_function, division
 
 from nose.tools import *
-
-from sisl import Geometry, Atom, SuperCell
+from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np
 
+from sisl import Geometry, Atom, SuperCell
 
 class TestGeometry(object):
     # Base test class for MaskedArrays.
@@ -21,6 +21,8 @@ class TestGeometry(object):
         self.g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
                           atom=C, sc=self.sc)
+
+        self.mol = Geometry([[i,0,0] for i in range(10)])
 
     def tearDown(self):
         del self.g
@@ -231,6 +233,24 @@ class TestGeometry(object):
         rev = self.g.reverse()
         assert_true(len(rev) == 2)
         assert_true(np.allclose(rev.xyz[::-1,:], self.g.xyz))
+
+    def test_close(self):
+        three = range(3)
+        for ia in self.mol:
+            i = self.mol.close(ia, dR=(0.1,1.1), idx=three)
+            if ia < 3:
+                assert_equal(len(i[0]), 1)
+            else:
+                assert_equal(len(i[0]), 0)
+            # Will only return results from [0,1,2]
+            # but the fourth atom connects to
+            # the third
+            if ia in [0, 2, 3]:
+                assert_equal(len(i[1]), 1)
+            elif ia == 1:
+                assert_equal(len(i[1]), 2)
+            else:
+                assert_equal(len(i[1]), 0)
 
 
     def test_bond_correct(self):

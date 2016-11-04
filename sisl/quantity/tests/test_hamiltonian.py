@@ -1,11 +1,12 @@
 from __future__ import print_function, division
 
 from nose.tools import *
-
-from sisl import Geometry, Atom, SuperCell, Hamiltonian
+from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np
+
+from sisl import Geometry, Atom, SuperCell, Hamiltonian
 
 
 class TestHamiltonian(object):
@@ -121,6 +122,7 @@ class TestHamiltonian(object):
         assert_true(self.H.nnz == len(self.H) * 4)
         self.H.empty()
 
+    @attr('slow')
     def test_set5(self):
         # Test of HUGE construct
         g = self.g.tile(10, 0).tile(10, 1).tile(10, 2)

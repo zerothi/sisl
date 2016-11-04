@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import numpy as np
 import sys
-from numbers import Integral
+from numbers import Integral, Real, Complex
 
 __all__ = ['array_fill_repeat', '_str', 'ensure_array']
 
@@ -42,6 +42,14 @@ def array_fill_repeat(array, size, cls=None):
 
 
 def ensure_array(arr, dtype=np.int32):
-    if isinstance(arr, Integral):
+    if np.issubdtype(dtype, np.integer):
+        comp = Integral
+    elif np.issubdtype(dtype, np.float):
+        comp = Real
+    elif np.issubdtype(dtype, np.complex):
+        comp = Complex
+    if isinstance(arr, comp):
         return np.array([arr], dtype)
+    elif isinstance(arr, (list, tuple)):
+        return np.array(arr, dtype)
     return arr
