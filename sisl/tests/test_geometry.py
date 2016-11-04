@@ -22,7 +22,7 @@ class TestGeometry(object):
                                     [1., 0., 0.]], np.float64) * bond,
                           atom=C, sc=self.sc)
 
-        self.mol = Geometry([[i,0,0] for i in range(10)])
+        self.mol = Geometry([[i,0,0] for i in range(10)],sc=[50])
 
     def tearDown(self):
         del self.g
@@ -242,7 +242,7 @@ class TestGeometry(object):
         assert_true(len(rev) == 2)
         assert_true(np.allclose(rev.xyz[::-1,:], self.g.xyz))
 
-    def test_close(self):
+    def test_close1(self):
         three = range(3)
         for ia in self.mol:
             i = self.mol.close(ia, dR=(0.1,1.1), idx=three)
@@ -259,6 +259,177 @@ class TestGeometry(object):
                 assert_equal(len(i[1]), 2)
             else:
                 assert_equal(len(i[1]), 0)
+
+
+    def test_close2(self):
+        mol = range(3,5)
+        for ia in self.mol:
+            i = self.mol.close(ia, dR=(0.1,1.1), idx=mol)
+            assert_equal(len(i), 2)
+
+
+    def test_close_sizes(self):
+        point = 0
+        
+        # Return index
+        idx = self.mol.close(point, dR=.1)
+        assert_equal(len(idx), 1)
+        # Return index of two things
+        idx = self.mol.close(point, dR=(.1,1.1))
+        assert_equal(len(idx), 2)
+        assert_equal(len(idx[0]), 1)
+        assert_false(isinstance(idx[0], list))
+        # Longer
+        idx = self.mol.close(point, dR=(.1,1.1,2.1))
+        assert_equal(len(idx), 3)
+        assert_equal(len(idx[0]), 1)
+
+        # Return index
+        idx = self.mol.close(point, dR=.1, ret_coord=True)
+        assert_equal(len(idx), 2)
+        assert_equal(len(idx[0]), 1)
+        assert_equal(len(idx[1]), 1)
+        assert_equal(idx[1].shape[0], 1) # equivalent to above
+        assert_equal(idx[1].shape[1], 3)
+
+        # Return index of two things
+        idx = self.mol.close(point, dR=(.1,1.1), ret_coord=True)
+        # [[idx-1, idx-2], [coord-1, coord-2]]
+        assert_equal(len(idx), 2)
+        assert_equal(len(idx[0]), 2)
+        assert_equal(len(idx[1]), 2)
+        # idx-1
+        assert_equal(len(idx[0][0].shape), 1)
+        assert_equal(idx[0][0].shape[0], 1)
+        # idx-2
+        assert_equal(idx[0][1].shape[0], 1)
+        # coord-1
+        assert_equal(len(idx[1][0].shape), 2)
+        assert_equal(idx[1][0].shape[1], 3)
+        # coord-2
+        assert_equal(idx[1][1].shape[1], 3)
+
+        # Return index of two things
+        idx = self.mol.close(point, dR=(.1,1.1), ret_coord=True, ret_dist=True)
+        # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
+        assert_equal(len(idx), 3)
+        assert_equal(len(idx[0]), 2)
+        assert_equal(len(idx[1]), 2)
+        # idx-1
+        assert_equal(len(idx[0][0].shape), 1)
+        assert_equal(idx[0][0].shape[0], 1)
+        # idx-2
+        assert_equal(idx[0][1].shape[0], 1)
+        # coord-1
+        assert_equal(len(idx[1][0].shape), 2)
+        assert_equal(idx[1][0].shape[1], 3)
+        # coord-2
+        assert_equal(idx[1][1].shape[1], 3)
+        # dist-1
+        assert_equal(len(idx[2][0].shape), 1)
+        assert_equal(idx[2][0].shape[0], 1)
+        # dist-2
+        assert_equal(idx[2][1].shape[0], 1)
+
+        # Return index of two things
+        idx = self.mol.close(point, dR=(.1,1.1), ret_dist=True)
+        # [[idx-1, idx-2], [dist-1, dist-2]]
+        assert_equal(len(idx), 2)
+        assert_equal(len(idx[0]), 2)
+        assert_equal(len(idx[1]), 2)
+        # idx-1
+        assert_equal(len(idx[0][0].shape), 1)
+        assert_equal(idx[0][0].shape[0], 1)
+        # idx-2
+        assert_equal(idx[0][1].shape[0], 1)
+        # dist-1
+        assert_equal(len(idx[1][0].shape), 1)
+        assert_equal(idx[1][0].shape[0], 1)
+        # dist-2
+        assert_equal(idx[1][1].shape[0], 1)
+
+
+    def test_close_sizes_none(self):
+        point = [100.,100.,100.]
+        
+        # Return index
+        idx = self.mol.close(point, dR=.1)
+        assert_equal(len(idx), 0)
+        # Return index of two things
+        idx = self.mol.close(point, dR=(.1,1.1))
+        assert_equal(len(idx), 2)
+        assert_equal(len(idx[0]), 0)
+        assert_false(isinstance(idx[0], list))
+        # Longer
+        idx = self.mol.close(point, dR=(.1,1.1,2.1))
+        assert_equal(len(idx), 3)
+        assert_equal(len(idx[0]), 0)
+
+        # Return index
+        idx = self.mol.close(point, dR=.1, ret_coord=True)
+        assert_equal(len(idx), 2)
+        assert_equal(len(idx[0]), 0)
+        assert_equal(len(idx[1]), 0)
+        assert_equal(idx[1].shape[0], 0) # equivalent to above
+        assert_equal(idx[1].shape[1], 3)
+
+        # Return index of two things
+        idx = self.mol.close(point, dR=(.1,1.1), ret_coord=True)
+        # [[idx-1, idx-2], [coord-1, coord-2]]
+        assert_equal(len(idx), 2)
+        assert_equal(len(idx[0]), 2)
+        assert_equal(len(idx[1]), 2)
+        # idx-1
+        assert_equal(len(idx[0][0].shape), 1)
+        assert_equal(idx[0][0].shape[0], 0)
+        # idx-2
+        assert_equal(idx[0][1].shape[0], 0)
+        # coord-1
+        assert_equal(len(idx[1][0].shape), 2)
+        assert_equal(idx[1][0].shape[1], 3)
+        # coord-2
+        assert_equal(idx[1][1].shape[1], 3)
+
+        # Return index of two things
+        idx = self.mol.close(point, dR=(.1,1.1), ret_coord=True, ret_dist=True)
+        # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
+        assert_equal(len(idx), 3)
+        assert_equal(len(idx[0]), 2)
+        assert_equal(len(idx[1]), 2)
+        # idx-1
+        assert_equal(len(idx[0][0].shape), 1)
+        assert_equal(idx[0][0].shape[0], 0)
+        # idx-2
+        assert_equal(idx[0][1].shape[0], 0)
+        # coord-1
+        assert_equal(len(idx[1][0].shape), 2)
+        assert_equal(idx[1][0].shape[0], 0)
+        assert_equal(idx[1][0].shape[1], 3)
+        # coord-2
+        assert_equal(idx[1][1].shape[0], 0)
+        assert_equal(idx[1][1].shape[1], 3)
+        # dist-1
+        assert_equal(len(idx[2][0].shape), 1)
+        assert_equal(idx[2][0].shape[0], 0)
+        # dist-2
+        assert_equal(idx[2][1].shape[0], 0)
+
+        # Return index of two things
+        idx = self.mol.close(point, dR=(.1,1.1), ret_dist=True)
+        # [[idx-1, idx-2], [dist-1, dist-2]]
+        assert_equal(len(idx), 2)
+        assert_equal(len(idx[0]), 2)
+        assert_equal(len(idx[1]), 2)
+        # idx-1
+        assert_equal(len(idx[0][0].shape), 1)
+        assert_equal(idx[0][0].shape[0], 0)
+        # idx-2
+        assert_equal(idx[0][1].shape[0], 0)
+        # dist-1
+        assert_equal(len(idx[1][0].shape), 1)
+        assert_equal(idx[1][0].shape[0], 0)
+        # dist-2
+        assert_equal(idx[1][1].shape[0], 0)
 
 
     def test_bond_correct(self):

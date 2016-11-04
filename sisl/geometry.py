@@ -1021,11 +1021,12 @@ class Geometry(SuperCellChild):
         log_and = np.logical_and
 
         if dR is None:
-            ddR = np.array([self.dR], np.float64)
+            dR = np.array([self.dR], np.float64)
         else:
-            ddR = np.array([dR], np.float64).flatten()
+            dR = ensure_array(dR, np.float64)
+
         # Maximum distance queried
-        max_dR = ddR[-1]
+        max_dR = dR[-1]
 
         # Convert to actual array
         if idx is not None:
@@ -1034,7 +1035,8 @@ class Geometry(SuperCellChild):
         if isinstance(xyz_ia, Integral):
             off = self.xyz[xyz_ia, :]
         else:
-            off = xyz_ia
+            off = ensure_array(xyz_ia, np.float64)
+
         # Get atomic coordinate in principal cell
         dxa = self.coords(isc=isc, idx=idx) - off[None, :]
 
@@ -1058,24 +1060,29 @@ class Geometry(SuperCellChild):
         dxa = dxa[ix, :]
 
         # Create default return
-        ret = [[]] * len(ddR)
+        ret = [[np.empty([0], np.int32)] * len(dR)]
         i = 0
         if ret_coord:
             i += 1
             rc = i
-            ret.append([[]] * len(ddR))
+            ret.append([np.empty([0,3], np.float64)] * len(dR))
         if ret_dist:
             i += 1
             rc = i
-            ret.append([[]] * len(ddR))
-        
+            ret.append([np.empty([0], np.float64)] * len(dR))
+
         if len(dxa) == 0:
             # Quick return if there are
             # no entries...
+            if len(dR) == 1:
+                if ret_coord and ret_dist:
+                    return [ret[0][0], ret[1][0], ret[2][0]]
+                elif ret_coord or ret_dist:
+                    return [ret[0][0], ret[1][0]]
+                return ret[0][0]
             if ret_coord or ret_dist:
                 return ret
             return ret[0]
-
 
         # Retrieve all atomic indices which are closer
         # than our delta-R
@@ -1092,7 +1099,7 @@ class Geometry(SuperCellChild):
 
         # Check whether we only have one range to check.
         # If so, we need not reduce the index space
-        if len(ddR) == 1:
+        if len(dR) == 1:
             ret = [idx[ix]]
             if ret_coord:
                 ret.append(xa)
@@ -1102,7 +1109,7 @@ class Geometry(SuperCellChild):
                 return ret
             return ret[0]
 
-        if np.any(np.diff(ddR) < 0.):
+        if np.any(np.diff(dR) < 0.):
             raise ValueError('Proximity checks for several quantities ' +
                              'at a time requires ascending dR values.')
 
@@ -1111,7 +1118,7 @@ class Geometry(SuperCellChild):
         # We only do "one" heavy duty search,
         # then we immediately reduce search space to this subspace
         xaR = xaR[ix]
-        tidx = where(xaR <= ddR[0])[0]
+        tidx = where(xaR <= dR[0])[0]
         ret = [[ensure_array(idx[ix[tidx]])]]
         i = 0
         if ret_coord:
@@ -1122,20 +1129,22 @@ class Geometry(SuperCellChild):
             rd = i + 1
             i += 1
             ret.append([d[tidx]])
-        for i in range(1, len(ddR)):
+        for i in range(1, len(dR)):
             # Search in the sub-space
             # Notice that this sub-space reduction will never
             # allow the same indice to be in two ranges (due to
             # numerics)
-            tidx = where(log_and(ddR[i - 1] < xaR, xaR <= ddR[i]))[0]
+            tidx = where(log_and(dR[i - 1] < xaR, xaR <= dR[i]))[0]
             ret[0].append(ensure_array(idx[ix[tidx]]))
             if ret_coord:
                 ret[rc].append(xa[tidx])
             if ret_dist:
                 ret[rd].append(d[tidx])
+
         if ret_coord or ret_dist:
             return ret
         return ret[0]
+        
 
     def bond_correct(self, ia, atom, method='calc'):
         """ Corrects the bond between `ia` and the `atom`.
@@ -1239,6 +1248,7 @@ class Geometry(SuperCellChild):
             If true this method will return the distances from the ``xyz_ia``
             for each of the couplings.
         """
+        dR = ensure_array(dR, np.float64)
 
         # Get global calls
         # Is faster for many loops
@@ -1250,17 +1260,19 @@ class Geometry(SuperCellChild):
         if idx is not None:
             idx = ensure_array(idx)
 
-        ret = [None]
+        ret = [[np.empty([0], np.int32)] * len(dR)]
         i = 0
         if ret_coord:
             c = i + 1
             i += 1
-            ret.append(None)
+            ret.append([np.empty([0,3], np.float64)] * len(dR))
         if ret_dist:
             d = i + 1
             i += 1
-            ret.append(None)
+            ret.append([np.empty([0], np.float64)] * len(dR))
+
         ret_special = ret_coord or ret_dist
+
         for s in range(self.n_s):
             na = self.na * s
             sret = self.close_sc(
@@ -1270,40 +1282,39 @@ class Geometry(SuperCellChild):
                 idx=idx,
                 ret_coord=ret_coord,
                 ret_dist=ret_dist)
+            
             if not ret_special:
+                # This is to "fake" the return
+                # of a list (we will do indexing!)
                 sret = [sret]
+                
             if isinstance(sret[0], list):
-                # we have a list of arrays
-                if ret[0] is None:
-                    ret[0] = (np.array(sret[0]) + na).tolist()
+                # we have a list of arrays (len(dR) > 1)
+                for i, x in enumerate(sret[0]):
+                    ret[0][i] = append(ret[0][i], x + na)
                     if ret_coord:
-                        ret[c] = sret[c]
+                        ret[c][i] = vstack((ret[c][i], sret[c][i]))
                     if ret_dist:
-                        ret[d] = sret[d]
-                else:
-                    for i, x in enumerate(sret[0]):
-                        ret[0][i] = append(ret[0][i], x + na)
-                        if ret_coord:
-                            ret[c][i] = vstack((ret[c][i], sret[c][i]))
-                        if ret_dist:
-                            ret[d][i] = hstack((ret[d][i], sret[d][i]))
+                        ret[d][i] = hstack((ret[d][i], sret[d][i]))
             elif len(sret[0]) > 0:
-                # We can add it to the list
+                # We can add it to the list (len(dR) == 1)
                 # We add the atomic offset for the supercell index
-                if ret[0] is None:
-                    ret[0] = sret[0] + na
-                    if ret_coord:
-                        ret[c] = sret[c]
-                    if ret_dist:
-                        ret[d] = sret[d]
-                else:
-                    ret[0] = append(ret[0], sret[0] + na)
-                    if ret_coord:
-                        ret[c] = vstack((ret[c], sret[c]))
-                    if ret_dist:
-                        ret[d] = hstack((ret[d], sret[d]))
+                ret[0][0] = append(ret[0][0], sret[0] + na)
+                if ret_coord:
+                    ret[c][0] = vstack((ret[c][0], sret[c]))
+                if ret_dist:
+                    ret[d][0] = hstack((ret[d][0], sret[d]))
+
+        if len(dR) == 1:
+            if ret_coord and ret_dist:
+                return [ret[0][0], ret[1][0], ret[2][0]]
+            elif ret_coord or ret_dist:
+                return [ret[0][0], ret[1][0]]
+            return ret[0][0]
+        
         if ret_special:
             return ret
+        
         return ret[0]
 
     # Hence ``close_all`` has exact meaning
