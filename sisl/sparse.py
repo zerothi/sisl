@@ -18,6 +18,8 @@ from numpy import array, asarray, empty, zeros
 from numpy import intersect1d, setdiff1d
 from numpy import argsort, unique
 
+from sisl._help import ensure_array
+
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
 
@@ -72,7 +74,7 @@ class SparseCSR(object):
            initial total number of non-zero elements
            This quantity has precedence over `nnzpr`
         dim : int, 1
-           number of elements stored per sparse element
+           number of elements stored per sparse element, only used if (M,N) is passed
         dtype : numpy data type, `numpy.float64`
            data type of the matrix
 
@@ -84,6 +86,8 @@ class SparseCSR(object):
            pointer index in the 1D column indices of the corresponding row
         col: int-array, 
            column indices of the sparse elements
+        data: 
+           the data in the sparse matrix
         dim: int
            the extra dimension of the sparse matrix
         nnz: int
@@ -204,36 +208,34 @@ class SparseCSR(object):
             # We do not mess with the other arrays
             # they may be obscure data any-way.
     
-
     @property
     def shape(self):
         """ Return shape of the sparse matrix """
         return self._shape
-
 
     @property
     def dim(self):
         """ Return extra dimensionality of the sparse matrix """
         return self.shape[2]
 
+    @property
+    def data(self):
+        """ Return data contained in the sparse matrix """
+        return self._D
 
     @property
     def dtype(self):
         """ Return the data-type in the sparse matrix """
         return self._D.dtype
 
-
     @property
     def nnz(self):
         """ Return number of non-zero elements in the sparsity pattern """
         return self._nnz
 
-
     def __len__(self):
         """ Return number of non-zero elements in the sparse pattern """
         return self.nnz
-
-
 
     @property
     def finalized(self):
@@ -349,7 +351,9 @@ class SparseCSR(object):
         col = self.col
         
         # Ensure flattened array...
-        j = asarray(j, np.int32).flatten()
+        j = ensure_array(j)
+        if len(j) == 0:
+            return np.array([], np.int32)
 
         # To create the indices for the sparse elements
         # we first find which values are _not_ in the sparse
@@ -579,13 +583,17 @@ class SparseCSR(object):
         shape[2] = dim
 
         new = self.__class__(shape, nnz=self.nnz, 
-                             dim=dim, dtype=self.dtype)
+                             dtype=self.dtype)
 
-        new.ptr[:] = self.ptr[:]
-        new.ncol[:] = self.ncol[:]
-        new.col[:] = self.col[:]
+        # The default sizes are not passed
+        # Hence we *must* copy the arrays
+        # directly
+        new.ptr = np.array(self.ptr, np.int32)
+        new.ncol = np.array(self.ncol, np.int32)
+        new.col = np.array(self.col, np.int32)
         new._nnz = self.nnz
 
+        new._D = np.array(self._D)
         for dim in dims:
             new._D[:,dims] = self._D[:,dims]
         
@@ -624,3 +632,156 @@ class SparseCSR(object):
 
         shape = self.shape[:2]
         return csr_matrix((self._D[:, dim], self.col, self.ptr), shape=shape, **kwargs)
+
+
+
+    ###############################
+    # Overload of math operations #
+    ###############################
+    def __sub__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy()
+            c._D -= b
+        elif isinstance(b, SparseCSR):
+            c = b.copy()
+            c._D = a - c._D
+        return c
+
+    def __isub__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        if isinstance(a, SparseCSR):
+            a._D -= b
+            return a
+        raise TypeError('First argument is not SparseCSR')
+
+    def __add__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy()
+            c._D += b
+        elif isinstance(b, SparseCSR):
+            c = b.copy()
+            c._D = a + c._D
+        return c
+
+    def __iadd__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        if isinstance(a, SparseCSR):
+            a._D += b
+            return a
+        raise TypeError('First argument is not SparseCSR')
+
+    def __mul__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy()
+            c._D *= b
+        elif isinstance(b, SparseCSR):
+            c = b.copy()
+            c._D *= a
+        return c
+
+    def __imul__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        if isinstance(a, SparseCSR):
+            a._D *= b
+            return a
+        raise TypeError('First argument is not SparseCSR')
+
+    def __div__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy()
+            c._D /= b
+        elif isinstance(b, SparseCSR):
+            c = b.copy()
+            c._D = a / c._D
+        return c
+
+    def __idiv__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        if isinstance(a, SparseCSR):
+            a._D /= b
+            return a
+        raise TypeError('First argument is not SparseCSR')
+
+    def __truediv__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy()
+            c._D /= b
+        elif isinstance(b, SparseCSR):
+            c = b.copy()
+            c._D = a / c._D
+        return c
+
+    def __itruediv__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        if isinstance(a, SparseCSR):
+            a._D /= b
+            return a
+        raise TypeError('First argument is not SparseCSR')
+
+    def __pow__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy()
+            c._D **= b
+        elif isinstance(b, SparseCSR):
+            c = b.copy()
+            c._D = a ** c._D
+        return c
+
+    def __ipow__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        if isinstance(a, SparseCSR):
+            a._D **= b
+            return a
+        raise TypeError('First argument is not SparseCSR')
+
+
+    @classmethod
+    def register_math(cls, var, routines=None):
+        """ Register math operators on the `cls` class using `var` as attribute `getattr(cls, var)` 
+
+        Parameters
+        ----------
+        cls : class
+           class which gets registered overloaded math operators
+        var : `str`
+           name of attribute that is `SparseCSR` object in `cls`
+        routines : list of str
+           names of routines that gets overloaded, defaults to:
+            ['__sub__', '__add__', '__mul__', '__div__', 
+             '__truediv__', '__pow__']
+        """
+
+        if routines is None:
+            routines = ['__sub__', '__add__', '__mul__', '__div__', 
+                        '__truediv__', '__pow__']
+
+        # What we want is something like this:
+        # def func(a, b):
+        #   if isinstance(a, cls):
+        #       setattr(a, var, getattr(a, var) OP b)
+        #   if isinstance(b, cls):
+        #       setattr(b, var, a OP getattr(b, var))
+        # setattr(cls,__ROUTINE__, func):
+
+        # Now register all things
+        for r in routines:
+            pass
+        

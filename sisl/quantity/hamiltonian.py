@@ -744,7 +744,7 @@ class Hamiltonian(object):
 
         Parameters
         ----------
-        sile : Sile, str
+        sile : `Sile`, str
             a `Sile` object which will be used to read the Hamiltonian
             and the overlap matrix (if any)
             if it is a string it will create a new sile using `get_sile`.
@@ -760,7 +760,7 @@ class Hamiltonian(object):
 
 
     def write(self, sile, *args, **kwargs):
-        """ Writes a tight-binding model to the `Sile` as implemented in the :code:`ObjSile.write_es` method """
+        """ Writes a tight-binding model to the `Sile` as implemented in the :code:`Sile.write_es` method """
         self.finalize()
 
         # This only works because, they *must*

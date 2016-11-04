@@ -9,7 +9,6 @@ import numpy as np
 from sisl import Geometry, Atom, SuperCell
 
 class TestGeometry(object):
-    # Base test class for MaskedArrays.
 
     def setUp(self):
         bond = 1.42
