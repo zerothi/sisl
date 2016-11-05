@@ -90,23 +90,18 @@ class TestSparseCSR(object):
                 assert_equal(self.s1[0, jj], i*2)
                 assert_equal(self.s1[1, jj], 0)
 
-            # /
-            # This is truedivision which
-            # does not allow the returned value
-            # to be integer, 
-            #self.s1 /= 2
-            #for jj in j:
-            #    assert_equal(self.s1[0, jj], i)
-            #    assert_equal(self.s1[1, jj], 0)
+            # //
+            self.s1 //= 2
+            for jj in j:
+                assert_equal(self.s1[0, jj], i)
+                assert_equal(self.s1[1, jj], 0)
 
             # i**
             self.s1 **= 2
             for jj in j:
-                assert_equal(self.s1[0, jj], 4*i**2)
+                assert_equal(self.s1[0, jj], i**2)
                 assert_equal(self.s1[1, jj], 0)
 
-
-    @attr('only')
     def test_op2(self):
         for i in range(10):
             j = range(i*4, i*4+3)
@@ -133,15 +128,12 @@ class TestSparseCSR(object):
                 assert_equal(self.s1[0, jj], i)
                 assert_equal(s[1, jj], 0)
 
-            # /
-            # This is truedivision which
-            # does not allow the returned value
-            # to be integer, 
-            #s = self.s1 / 2
-            #for jj in j:
-            #    assert_equal(s[0, jj], i*2)
-            #    assert_equal(self.s1[0, jj], i)
-            #    assert_equal(s[1, jj], 0)
+            # //
+            s = s // 2
+            for jj in j:
+                assert_equal(s[0, jj], i)
+                assert_equal(self.s1[0, jj], i)
+                assert_equal(s[1, jj], 0)
 
             # **
             s = self.s1 ** 2

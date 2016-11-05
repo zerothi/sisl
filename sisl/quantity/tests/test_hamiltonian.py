@@ -138,6 +138,85 @@ class TestHamiltonian(object):
         assert_true(H.nnz == len(H) * 4)
         del H
 
+    def test_op1(self):
+        g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        H = Hamiltonian(g, dtype=np.int32)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H[0, j] = i
+
+            # i+
+            H += 1
+            for jj in j:
+                assert_equal(H[0, jj], i+1)
+                assert_equal(H[1, jj], 0)
+
+            # i-
+            H -= 1
+            for jj in j:
+                assert_equal(H[0, jj], i)
+                assert_equal(H[1, jj], 0)
+
+            # i*
+            H *= 2
+            for jj in j:
+                assert_equal(H[0, jj], i*2)
+                assert_equal(H[1, jj], 0)
+
+            # //
+            H //= 2
+            for jj in j:
+                assert_equal(H[0, jj], i)
+                assert_equal(H[1, jj], 0)
+
+            # i**
+            H **= 2
+            for jj in j:
+                assert_equal(H[0, jj], i**2)
+                assert_equal(H[1, jj], 0)
+
+    def test_op2(self):
+        g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        H = Hamiltonian(g, dtype=np.int32)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H[0, j] = i
+
+            # +
+            s = H + 1
+            for jj in j:
+                assert_equal(s[0, jj], i+1)
+                assert_equal(H[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
+            # -
+            s = H - 1
+            for jj in j:
+                assert_equal(s[0, jj], i-1)
+                assert_equal(H[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
+            # *
+            s = H * 2
+            for jj in j:
+                assert_equal(s[0, jj], i*2)
+                assert_equal(H[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
+            # //
+            s = s // 2
+            for jj in j:
+                assert_equal(s[0, jj], i)
+                assert_equal(H[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
+            # **
+            s = H ** 2
+            for jj in j:
+                assert_equal(s[0, jj], i**2)
+                assert_equal(H[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
     def test_eig1(self):
         # Test of eigenvalues
         g = self.g.tile(2, 0).tile(2, 1).tile(2, 2)

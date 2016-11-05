@@ -120,6 +120,13 @@ class Hamiltonian(object):
         """ See `SparseCSR.empty` for specifics """
         self._data.empty(keep)
 
+    def copy(self):
+        """ Return a copy of the `Hamiltonian` object """
+        H = self.__class__(self.geom, orthogonal=self.orthogonal,
+                           spin=self.spin, dtype=self.dtype)
+        # Be sure to copy the content of the SparseCSR object
+        H._data = self._data.copy()
+        return H
 
     ######### Definitions of overrides ############
     @property
@@ -771,6 +778,140 @@ class Hamiltonian(object):
         else:
             get_sile(sile, 'w').write_es(self, *args, **kwargs)
 
+    ###############################
+    # Overload of math operations #
+    ###############################
+    def __sub__(a, b):
+        if isinstance(a, Hamiltonian):
+            if isinstance(b, Hamiltonian):
+                raise NotImplementedError
+            c = a.copy()
+            c -= b
+        elif isinstance(b, Hamiltonian):
+            c = b * (-1) + a
+        return c
+
+    def __isub__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        if isinstance(a, Hamiltonian):
+            a._data -= b
+            return a
+        raise TypeError('First argument is not Hamiltonian')
+
+    def __add__(a, b):
+        if isinstance(a, Hamiltonian):
+            if isinstance(b, Hamiltonian):
+                raise NotImplementedError
+            c = a.copy()
+            c += b
+        elif isinstance(b, Hamiltonian):
+            c = b.copy()
+            c += a
+        return c
+
+    def __iadd__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        if isinstance(a, Hamiltonian):
+            a._data += b
+            return a
+        raise TypeError('First argument is not Hamiltonian')
+
+    def __mul__(a, b):
+        if isinstance(a, Hamiltonian):
+            if isinstance(b, Hamiltonian):
+                raise NotImplementedError
+            c = a.copy()
+            c *= b
+        elif isinstance(b, Hamiltonian):
+            c = b.copy()
+            c *= a
+        return c
+
+    def __imul__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        if isinstance(a, Hamiltonian):
+            a._data *= b
+            return a
+        raise TypeError('First argument is not Hamiltonian')
+
+    def __div__(a, b):
+        if isinstance(a, Hamiltonian):
+            if isinstance(b, Hamiltonian):
+                raise NotImplementedError
+            c = a.copy()
+            c /= b
+        elif isinstance(b, Hamiltonian):
+            c = b.copy()
+            c._data = a / c._data
+        return c
+
+    def __idiv__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        if isinstance(a, Hamiltonian):
+            a._data /= b
+            return a
+        raise TypeError('First argument is not Hamiltonian')
+
+    def __floordiv__(a, b):
+        if isinstance(a, Hamiltonian):
+            if isinstance(b, Hamiltonian):
+                raise NotImplementedError
+            c = a.copy()
+            c //= b
+        elif isinstance(b, Hamiltonian):
+            c = b.copy()
+            c._data = a // c._data
+        return c
+
+    def __ifloordiv__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        if isinstance(a, Hamiltonian):
+            a._data //= b
+            return a
+        raise TypeError('First argument is not Hamiltonian')
+
+    def __truediv__(a, b):
+        if isinstance(a, Hamiltonian):
+            if isinstance(b, Hamiltonian):
+                raise NotImplementedError
+            c = a.copy()
+            c /= b
+        elif isinstance(b, Hamiltonian):
+            c = b.copy()
+            c._data = a / c._data
+        return c
+
+    def __itruediv__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        if isinstance(a, Hamiltonian):
+            a._data /= b
+            return a
+        raise TypeError('First argument is not Hamiltonian')
+
+    def __pow__(a, b):
+        if isinstance(a, Hamiltonian):
+            if isinstance(b, Hamiltonian):
+                raise NotImplementedError
+            c = a.copy()
+            c **= b
+        elif isinstance(b, Hamiltonian):
+            c = b.copy()
+            c._data = a ** c._data
+        return c
+
+    def __ipow__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        if isinstance(a, Hamiltonian):
+            a._data **= b
+            return a
+        raise TypeError('First argument is not Hamiltonian')
 
 # For backwards compatibility we also use TightBinding
 # NOTE: that this is not sub-classed...

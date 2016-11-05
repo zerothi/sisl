@@ -714,6 +714,25 @@ class SparseCSR(object):
             return a
         raise TypeError('First argument is not SparseCSR')
 
+    def __floordiv__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy()
+            c._D //= b
+        elif isinstance(b, SparseCSR):
+            c = b.copy()
+            c._D = a // c._D
+        return c
+
+    def __ifloordiv__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        if isinstance(a, SparseCSR):
+            a._D //= b
+            return a
+        raise TypeError('First argument is not SparseCSR')
+
     def __truediv__(a, b):
         if isinstance(a, SparseCSR):
             if isinstance(b, SparseCSR):
