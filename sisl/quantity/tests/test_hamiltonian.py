@@ -196,6 +196,13 @@ class TestHamiltonian(object):
                 assert_equal(H[0, jj], i)
                 assert_equal(s[1, jj], 0)
 
+            # -
+            s = 1 - H
+            for jj in j:
+                assert_equal(s[0, jj], 1-i)
+                assert_equal(H[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
             # *
             s = H * 2
             for jj in j:
@@ -214,6 +221,13 @@ class TestHamiltonian(object):
             s = H ** 2
             for jj in j:
                 assert_equal(s[0, jj], i**2)
+                assert_equal(H[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
+            # ** (r)
+            s = 2 ** H
+            for jj in j:
+                assert_equal(s[0, jj], 2 ** H[0, jj])
                 assert_equal(H[0, jj], i)
                 assert_equal(s[1, jj], 0)
 
@@ -256,6 +270,42 @@ class TestHamiltonian(object):
             if op != 'pow':
                 h = func(1.j)
                 assert_equal(h.dtype, np.complex128)
+
+    def test_op4(self):
+        g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        H = Hamiltonian(g, dtype=np.int32)
+        # Create initial stuff
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H[0, j] = i
+
+        h = 1 + H
+        assert_equal(h.dtype, np.int32)
+        h = 1. + H
+        assert_equal(h.dtype, np.float64)
+        h = 1.j + H
+        assert_equal(h.dtype, np.complex128)
+
+        h = 1 - H
+        assert_equal(h.dtype, np.int32)
+        h = 1. - H
+        assert_equal(h.dtype, np.float64)
+        h = 1.j - H
+        assert_equal(h.dtype, np.complex128)
+        
+        h = 1 * H
+        assert_equal(h.dtype, np.int32)
+        h = 1. * H
+        assert_equal(h.dtype, np.float64)
+        h = 1.j * H
+        assert_equal(h.dtype, np.complex128)
+
+        h = 1 ** H
+        assert_equal(h.dtype, np.int32)
+        h = 1. ** H
+        assert_equal(h.dtype, np.float64)
+        h = 1.j ** H
+        assert_equal(h.dtype, np.complex128)
 
     def test_eig1(self):
         # Test of eigenvalues

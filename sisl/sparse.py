@@ -668,158 +668,110 @@ class SparseCSR(object):
     # Overload of math operations #
     ###############################
     def __add__(a, b):
-        print('called')
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            print(c.dtype)
-            c._D += b
-        elif isinstance(b, SparseCSR):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._D = a + c._D
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._D += b
         return c
     __radd__ = __add__
 
     def __iadd__(a, b):
         if isinstance(b, SparseCSR):
             raise NotImplementedError
-        if isinstance(a, SparseCSR):
-            a._D += b
-            return a
-        raise TypeError('First argument is not SparseCSR')
+        a._D += b
+        return a
 
     def __sub__(a, b):
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c._D -= b
-        elif isinstance(b, SparseCSR):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._D = a - c._D
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._D -= b
         return c
-    __rsub__ = __sub__
+
+    def __rsub__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = b + (-1) * a
+        return c
 
     def __isub__(a, b):
         if isinstance(b, SparseCSR):
             raise NotImplementedError
-        if isinstance(a, SparseCSR):
-            a._D -= b
-            return a
-        raise TypeError('First argument is not SparseCSR')
+        a._D -= b
+        return a
 
     def __mul__(a, b):
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c._D *= b
-        elif isinstance(b, SparseCSR):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._D *= a
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._D *= b
         return c
     __rmul__ = __mul__
-
-    def __rmul__(a, b):
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c._D *= b
-        elif isinstance(b, SparseCSR):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._D *= a
-        return c
 
     def __imul__(a, b):
         if isinstance(b, SparseCSR):
             raise NotImplementedError
-        if isinstance(a, SparseCSR):
-            a._D *= b
-            return a
-        raise TypeError('First argument is not SparseCSR')
+        a._D *= b
+        return a
 
     def __div__(a, b):
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c._D /= b
-        elif isinstance(b, SparseCSR):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._D = a / c._D
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._D /= b
         return c
-    __rdiv__ = __div__
 
     def __idiv__(a, b):
         if isinstance(b, SparseCSR):
             raise NotImplementedError
-        if isinstance(a, SparseCSR):
-            a._D /= b
-            return a
-        raise TypeError('First argument is not SparseCSR')
+        a._D /= b
+        return a
 
     def __floordiv__(a, b):
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c._D //= b
-        elif isinstance(b, SparseCSR):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._D = a // c._D
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._D //= b
         return c
-    __rfloordiv__ = __floordiv__
 
     def __ifloordiv__(a, b):
         if isinstance(b, SparseCSR):
             raise NotImplementedError
-        if isinstance(a, SparseCSR):
-            a._D //= b
-            return a
-        raise TypeError('First argument is not SparseCSR')
+        a._D //= b
+        return a
 
     def __truediv__(a, b):
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c._D /= b
-        elif isinstance(b, SparseCSR):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._D = a / c._D
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._D /= b
         return c
-    __rtruediv__ = __truediv__
 
     def __itruediv__(a, b):
         if isinstance(b, SparseCSR):
             raise NotImplementedError
-        if isinstance(a, SparseCSR):
-            a._D /= b
-            return a
-        raise TypeError('First argument is not SparseCSR')
+        a._D /= b
+        return a
 
     def __pow__(a, b):
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c._D **= b
-        elif isinstance(b, SparseCSR):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._D = a ** c._D
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._D **= b
         return c
-    __rpow__ = __pow__
+
+    def __rpow__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._D[...] = b ** c._D[...]
+        return c
 
     def __ipow__(a, b):
         if isinstance(b, SparseCSR):
             raise NotImplementedError
-        if isinstance(a, SparseCSR):
-            a._D **= b
-            return a
-        raise TypeError('First argument is not SparseCSR')
-
+        a._D **= b
+        return a
 
     @classmethod
     def register_math(cls, var, routines=None):

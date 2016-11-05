@@ -784,63 +784,51 @@ class Hamiltonian(object):
     # Overload of math operations #
     ###############################
     def __add__(a, b):
-        if isinstance(a, Hamiltonian):
-            if isinstance(b, Hamiltonian):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c += b
-        elif isinstance(b, Hamiltonian):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c += a
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c += b
         return c
     __radd__ = __add__
 
     def __iadd__(a, b):
         if isinstance(b, Hamiltonian):
             raise NotImplementedError
-        if isinstance(a, Hamiltonian):
-            a._data += b
-            return a
-        raise TypeError('First argument is not Hamiltonian')
+        a._data += b
+        return a
 
     def __sub__(a, b):
-        if isinstance(a, Hamiltonian):
-            if isinstance(b, Hamiltonian):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c -= b
-        elif isinstance(b, Hamiltonian):
-            c = b * (-1) + a
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c -= b
         return c
-    __rsub__ = __sub__
+
+    def __rsub__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        c = b + (-1) * a
+        return c
 
     def __isub__(a, b):
         if isinstance(b, Hamiltonian):
             raise NotImplementedError
-        if isinstance(a, Hamiltonian):
-            a._data -= b
-            return a
-        raise TypeError('First argument is not Hamiltonian')
+        a._data -= b
+        return a
 
     def __mul__(a, b):
-        if isinstance(a, Hamiltonian):
-            if isinstance(b, Hamiltonian):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c *= b
-        elif isinstance(b, Hamiltonian):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c *= a
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c *= b
         return c
     __rmul__ = __mul__
 
     def __imul__(a, b):
         if isinstance(b, Hamiltonian):
             raise NotImplementedError
-        if isinstance(a, Hamiltonian):
-            a._data *= b
-            return a
-        raise TypeError('First argument is not Hamiltonian')
+        a._data *= b
+        return a
 
     def __div__(a, b):
         if isinstance(a, Hamiltonian):
@@ -852,75 +840,58 @@ class Hamiltonian(object):
             c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._data = a / c._data
         return c
-    __rdiv__ = __div__
 
     def __idiv__(a, b):
         if isinstance(b, Hamiltonian):
             raise NotImplementedError
-        if isinstance(a, Hamiltonian):
-            a._data /= b
-            return a
-        raise TypeError('First argument is not Hamiltonian')
+        a._data /= b
+        return a
 
     def __floordiv__(a, b):
-        if isinstance(a, Hamiltonian):
-            if isinstance(b, Hamiltonian):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c //= b
-        elif isinstance(b, Hamiltonian):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._data = a // c._data
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c //= b
         return c
-    __rfloordiv__ = __floordiv__
 
     def __ifloordiv__(a, b):
         if isinstance(b, Hamiltonian):
             raise NotImplementedError
-        if isinstance(a, Hamiltonian):
-            a._data //= b
-            return a
-        raise TypeError('First argument is not Hamiltonian')
+        a._data //= b
+        return a
 
     def __truediv__(a, b):
-        if isinstance(a, Hamiltonian):
-            if isinstance(b, Hamiltonian):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c /= b
-        elif isinstance(b, Hamiltonian):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._data = a / c._data
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c /= b
         return c
-    __rtruediv__ = __truediv__
 
     def __itruediv__(a, b):
         if isinstance(b, Hamiltonian):
             raise NotImplementedError
-        if isinstance(a, Hamiltonian):
-            a._data /= b
-            return a
-        raise TypeError('First argument is not Hamiltonian')
+        a._data /= b
+        return a
 
     def __pow__(a, b):
-        if isinstance(a, Hamiltonian):
-            if isinstance(b, Hamiltonian):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c **= b
-        elif isinstance(b, Hamiltonian):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._data = a ** c._data
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c **= b
         return c
-    __rpow__ = __pow__
+
+    def __rpow__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c._data = b ** c._data
+        return c
 
     def __ipow__(a, b):
         if isinstance(b, Hamiltonian):
             raise NotImplementedError
-        if isinstance(a, Hamiltonian):
-            a._data **= b
-            return a
-        raise TypeError('First argument is not Hamiltonian')
+        a._data **= b
+        return a
 
 # For backwards compatibility we also use TightBinding
 # NOTE: that this is not sub-classed...

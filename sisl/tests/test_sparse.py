@@ -133,6 +133,13 @@ class TestSparseCSR(object):
                 assert_equal(self.s1[0, jj], i)
                 assert_equal(s[1, jj], 0)
 
+            # - (r)
+            s = 1 - self.s1
+            for jj in j:
+                assert_equal(s[0, jj], 1 - i)
+                assert_equal(self.s1[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
             # *
             s = self.s1 * 2
             for jj in j:
@@ -151,6 +158,13 @@ class TestSparseCSR(object):
             s = self.s1 ** 2
             for jj in j:
                 assert_equal(s[0, jj], i**2)
+                assert_equal(self.s1[0, jj], i)
+                assert_equal(s[1, jj], 0)
+
+            # ** (r)
+            s = 2 ** self.s1
+            for jj in j:
+                assert_equal(s[0, jj], 2 ** self.s1[0, jj])
                 assert_equal(self.s1[0, jj], i)
                 assert_equal(s[1, jj], 0)
 
@@ -192,3 +206,38 @@ class TestSparseCSR(object):
             if op != 'pow':
                 s = func(1.j)
                 assert_equal(s.dtype, np.complex128)
+
+    def test_op4(self):
+        S = SparseCSR((10,100), dtype=np.int32)
+        # Create initial stuff
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            S[0, j] = i
+
+        s = 1 + S
+        assert_equal(s.dtype, np.int32)
+        s = 1. + S
+        assert_equal(s.dtype, np.float64)
+        s = 1.j + S
+        assert_equal(s.dtype, np.complex128)
+
+        s = 1 - S
+        assert_equal(s.dtype, np.int32)
+        s = 1. - S
+        assert_equal(s.dtype, np.float64)
+        s = 1.j - S
+        assert_equal(s.dtype, np.complex128)
+        
+        s = 1 * S
+        assert_equal(s.dtype, np.int32)
+        s = 1. * S
+        assert_equal(s.dtype, np.float64)
+        s = 1.j * S
+        assert_equal(s.dtype, np.complex128)
+
+        s = 1 ** S
+        assert_equal(s.dtype, np.int32)
+        s = 1. ** S
+        assert_equal(s.dtype, np.float64)
+        s = 1.j ** S
+        assert_equal(s.dtype, np.complex128)
