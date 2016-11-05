@@ -4,7 +4,7 @@ Sparsity pattern used to express matrices in concise manners.
 from __future__ import print_function, division
 
 import warnings
-from numbers import Integral
+from numbers import Integral, Real, Complex
 
 from scipy.sparse import isspmatrix
 
@@ -18,7 +18,7 @@ from numpy import array, asarray, empty, zeros
 from numpy import intersect1d, setdiff1d
 from numpy import argsort, unique
 
-from sisl._help import ensure_array
+from sisl._help import ensure_array, get_dtype
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
@@ -540,11 +540,34 @@ class SparseCSR(object):
 
         It will only allow to set the data in the sparse
         matrix if the dimensions match.
+        
+        If the `data` parameter is `None` or an array
+        only with `None` then the data will not be stored.
         """
-        index = self._extend(key[0], key[1])
-
         # Ensure data type... possible casting...
+        if data is None:
+            return
+
+        # Sadly, converting integers with None
+        # will NOT produce nan's.
+        # Hence, this will only work with floats, etc.
+        # TODO we need some way to reduce these things
+        # for integer stuff.
         data = asarray(data, self._D.dtype)
+        isnan = np.isnan(data)
+        if np.all(isnan):
+            # If the entries are nan's
+            # then we return without adding the
+            # entry.
+            return
+        else:
+            # Places where there are nan will be set
+            # to zero
+            data[isnan] = 0
+            del isnan
+
+        # Retrieve indices in the 1D data-structure
+        index = self._extend(key[0], key[1])
 
         if len(key) > 2:
             # Explicit data of certain dimension
@@ -564,13 +587,16 @@ class SparseCSR(object):
                 self._D[index, :] = data[:,:]
 
 
-    def copy(self, dims=None):
+    def copy(self, dims=None, dtype=None):
         """ Returns an exact copy of the sparse matrix
 
         Parameters
         ----------
         dims: array-like, (all)
            which dimensions to store in the copy
+        dtype : `numpy.dtype`
+           this defaults to the dtype of the object, 
+           but one may change it if supplied.
         """
         # Create sparse matrix (with only one entry per
         # row, we overwrite it immediately afterward)
@@ -582,8 +608,11 @@ class SparseCSR(object):
         shape = list(self.shape[:])
         shape[2] = dim
 
+        if dtype is None:
+            dtype = self.dtype
+
         new = self.__class__(shape, nnz=self.nnz, 
-                             dtype=self.dtype)
+                             dtype=dtype)
 
         # The default sizes are not passed
         # Hence we *must* copy the arrays
@@ -593,7 +622,7 @@ class SparseCSR(object):
         new.col = np.array(self.col, np.int32)
         new._nnz = self.nnz
 
-        new._D = np.array(self._D)
+        new._D = np.array(self._D, dtype=dtype)
         for dim in dims:
             new._D[:,dims] = self._D[:,dims]
         
@@ -638,35 +667,19 @@ class SparseCSR(object):
     ###############################
     # Overload of math operations #
     ###############################
-    def __sub__(a, b):
-        if isinstance(a, SparseCSR):
-            if isinstance(b, SparseCSR):
-                raise NotImplementedError
-            c = a.copy()
-            c._D -= b
-        elif isinstance(b, SparseCSR):
-            c = b.copy()
-            c._D = a - c._D
-        return c
-
-    def __isub__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        if isinstance(a, SparseCSR):
-            a._D -= b
-            return a
-        raise TypeError('First argument is not SparseCSR')
-
     def __add__(a, b):
+        print('called')
         if isinstance(a, SparseCSR):
             if isinstance(b, SparseCSR):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
+            print(c.dtype)
             c._D += b
         elif isinstance(b, SparseCSR):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._D = a + c._D
         return c
+    __radd__ = __add__
 
     def __iadd__(a, b):
         if isinstance(b, SparseCSR):
@@ -676,14 +689,46 @@ class SparseCSR(object):
             return a
         raise TypeError('First argument is not SparseCSR')
 
+    def __sub__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
+            c._D -= b
+        elif isinstance(b, SparseCSR):
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
+            c._D = a - c._D
+        return c
+    __rsub__ = __sub__
+
+    def __isub__(a, b):
+        if isinstance(b, SparseCSR):
+            raise NotImplementedError
+        if isinstance(a, SparseCSR):
+            a._D -= b
+            return a
+        raise TypeError('First argument is not SparseCSR')
+
     def __mul__(a, b):
         if isinstance(a, SparseCSR):
             if isinstance(b, SparseCSR):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c._D *= b
         elif isinstance(b, SparseCSR):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
+            c._D *= a
+        return c
+    __rmul__ = __mul__
+
+    def __rmul__(a, b):
+        if isinstance(a, SparseCSR):
+            if isinstance(b, SparseCSR):
+                raise NotImplementedError
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
+            c._D *= b
+        elif isinstance(b, SparseCSR):
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._D *= a
         return c
 
@@ -699,12 +744,13 @@ class SparseCSR(object):
         if isinstance(a, SparseCSR):
             if isinstance(b, SparseCSR):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c._D /= b
         elif isinstance(b, SparseCSR):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._D = a / c._D
         return c
+    __rdiv__ = __div__
 
     def __idiv__(a, b):
         if isinstance(b, SparseCSR):
@@ -718,12 +764,13 @@ class SparseCSR(object):
         if isinstance(a, SparseCSR):
             if isinstance(b, SparseCSR):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c._D //= b
         elif isinstance(b, SparseCSR):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._D = a // c._D
         return c
+    __rfloordiv__ = __floordiv__
 
     def __ifloordiv__(a, b):
         if isinstance(b, SparseCSR):
@@ -737,12 +784,13 @@ class SparseCSR(object):
         if isinstance(a, SparseCSR):
             if isinstance(b, SparseCSR):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c._D /= b
         elif isinstance(b, SparseCSR):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._D = a / c._D
         return c
+    __rtruediv__ = __truediv__
 
     def __itruediv__(a, b):
         if isinstance(b, SparseCSR):
@@ -756,12 +804,13 @@ class SparseCSR(object):
         if isinstance(a, SparseCSR):
             if isinstance(b, SparseCSR):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c._D **= b
         elif isinstance(b, SparseCSR):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._D = a ** c._D
         return c
+    __rpow__ = __pow__
 
     def __ipow__(a, b):
         if isinstance(b, SparseCSR):

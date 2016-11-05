@@ -7,6 +7,7 @@ import collections
 import numpy as np
 
 __all__ = ['array_fill_repeat', '_str', 'isiterable', 'ensure_array']
+__all__ += ['get_dtype']
 
 
 # Base-class for string object checks
@@ -73,3 +74,50 @@ def ensure_array(arr, dtype=np.int32):
     elif isiterable(arr):
         return np.fromiter(arr, dtype)
     return np.asarray(arr, dtype)
+
+
+def get_dtype(var, int=None, other=None):
+    """ Returns the `numpy.dtype` equivalent of `var`.
+
+    Parameters
+    ----------
+    var : object
+       the variable that will be tried to be cast into
+       a `numpy.dtype`.
+    int : `numpy.dtype` of `np.int*`
+       whether an integer would be allowed to be cast to 
+       the int64 equivalent.
+       Because default integers in Python are of infinite
+       precision, but `numpy` is limited to long, `numpy` will
+       always select `np.int64` when an integer is tried
+       to be converted.
+       This will prohibit this conversion and will revert to int32.
+    other : `numpy.dtype`
+       If supplied the returned value will be extracted from:
+       >>> numpy.result_type(dtype(var)(1), other(1))
+       such that one can select the highest among `var` and
+       the input `other`.
+       For instance:
+       >>> get_dtype(1., other=numpy.complex128) == np.complex128
+       >>> get_dtype(1., other=numpy.int32) == np.float64
+       >>> get_dtype(1, other=numpy.int32) == np.int32
+    """
+    if int is None:
+        int = np.int32
+
+    dtype = np.result_type(var)
+    if dtype == np.int64:
+        dtype = int
+    try:
+        dtype(1)
+    except:
+        dtype = dtype.type
+
+    if other is not None:
+        try:
+            other(1)
+        except:
+            other = other.type
+        return np.result_type(dtype(1), other(1))
+    
+    return dtype

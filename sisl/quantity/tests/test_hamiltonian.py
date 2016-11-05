@@ -217,6 +217,46 @@ class TestHamiltonian(object):
                 assert_equal(H[0, jj], i)
                 assert_equal(s[1, jj], 0)
 
+    def test_op3(self):
+        g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        H = Hamiltonian(g, dtype=np.int32)
+        # Create initial stuff
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H[0, j] = i
+
+        for op in ['add', 'sub', 'mul', 'pow']:
+            func = getattr(H, '__{}__'.format(op))
+            h = func(1)
+            assert_equal(h.dtype, np.int32)
+            h = func(1.)
+            assert_equal(h.dtype, np.float64)
+            if op != 'pow':
+                h = func(1.j)
+                assert_equal(h.dtype, np.complex128)
+
+        H = H.copy(dtype=np.float64)
+        for op in ['add', 'sub', 'mul', 'pow']:
+            func = getattr(H, '__{}__'.format(op))
+            h = func(1)
+            assert_equal(h.dtype, np.float64)
+            h = func(1.)
+            assert_equal(h.dtype, np.float64)
+            if op != 'pow':
+                h = func(1.j)
+                assert_equal(h.dtype, np.complex128)
+
+        H = H.copy(dtype=np.complex128)
+        for op in ['add', 'sub', 'mul', 'pow']:
+            func = getattr(H, '__{}__'.format(op))
+            h = func(1)
+            assert_equal(h.dtype, np.complex128)
+            h = func(1.)
+            assert_equal(h.dtype, np.complex128)
+            if op != 'pow':
+                h = func(1.j)
+                assert_equal(h.dtype, np.complex128)
+
     def test_eig1(self):
         # Test of eigenvalues
         g = self.g.tile(2, 0).tile(2, 1).tile(2, 2)

@@ -56,6 +56,18 @@ class TestSparseCSR(object):
                 assert_equal(self.s1[1, jj], 0)
         self.s1.empty()
 
+    def test_create3(self):
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            self.s1[0, j] = i
+            assert_equal(len(self.s1), (i+1)*3)
+            self.s1[0, range((i+1)*4, (i+1)*4+3)] = None
+            assert_equal(len(self.s1), (i+1)*3)
+            for jj in j:
+                assert_equal(self.s1[0, jj], i)
+                assert_equal(self.s1[1, jj], 0)
+        self.s1.empty()
+
     def test_finalize1(self):
         self.s1[0,[1,2,3]] = 1.
         self.s1[2,[1,2,3]] = 1.
@@ -141,3 +153,42 @@ class TestSparseCSR(object):
                 assert_equal(s[0, jj], i**2)
                 assert_equal(self.s1[0, jj], i)
                 assert_equal(s[1, jj], 0)
+
+    def test_op3(self):
+        S = SparseCSR((10,100), dtype=np.int32)
+        # Create initial stuff
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            S[0, j] = i
+
+        for op in ['add', 'sub', 'mul', 'pow']:
+            func = getattr(S, '__{}__'.format(op))
+            s = func(1)
+            assert_equal(s.dtype, np.int32)
+            s = func(1.)
+            assert_equal(s.dtype, np.float64)
+            if op != 'pow':
+                s = func(1.j)
+                assert_equal(s.dtype, np.complex128)
+
+        S = S.copy(dtype=np.float64)
+        for op in ['add', 'sub', 'mul', 'pow']:
+            func = getattr(S, '__{}__'.format(op))
+            s = func(1)
+            assert_equal(s.dtype, np.float64)
+            s = func(1.)
+            assert_equal(s.dtype, np.float64)
+            if op != 'pow':
+                s = func(1.j)
+                assert_equal(s.dtype, np.complex128)
+
+        S = S.copy(dtype=np.complex128)
+        for op in ['add', 'sub', 'mul', 'pow']:
+            func = getattr(S, '__{}__'.format(op))
+            s = func(1)
+            assert_equal(s.dtype, np.complex128)
+            s = func(1.)
+            assert_equal(s.dtype, np.complex128)
+            if op != 'pow':
+                s = func(1.j)
+                assert_equal(s.dtype, np.complex128)

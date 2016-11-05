@@ -10,8 +10,8 @@ import numpy as np
 import scipy.linalg as sli
 import scipy.sparse.linalg as ssli
 
+from sisl._help import get_dtype
 from sisl.sparse import SparseCSR
-
 
 __all__ = ['Hamiltonian', 'TightBinding']
 
@@ -120,12 +120,14 @@ class Hamiltonian(object):
         """ See `SparseCSR.empty` for specifics """
         self._data.empty(keep)
 
-    def copy(self):
+    def copy(self, dtype=None):
         """ Return a copy of the `Hamiltonian` object """
+        if dtype is None:
+            dtype = self.dtype
         H = self.__class__(self.geom, orthogonal=self.orthogonal,
-                           spin=self.spin, dtype=self.dtype)
+                           spin=self.spin, dtype=dtype)
         # Be sure to copy the content of the SparseCSR object
-        H._data = self._data.copy()
+        H._data = self._data.copy(dtype=dtype)
         return H
 
     ######### Definitions of overrides ############
@@ -781,34 +783,17 @@ class Hamiltonian(object):
     ###############################
     # Overload of math operations #
     ###############################
-    def __sub__(a, b):
-        if isinstance(a, Hamiltonian):
-            if isinstance(b, Hamiltonian):
-                raise NotImplementedError
-            c = a.copy()
-            c -= b
-        elif isinstance(b, Hamiltonian):
-            c = b * (-1) + a
-        return c
-
-    def __isub__(a, b):
-        if isinstance(b, Hamiltonian):
-            raise NotImplementedError
-        if isinstance(a, Hamiltonian):
-            a._data -= b
-            return a
-        raise TypeError('First argument is not Hamiltonian')
-
     def __add__(a, b):
         if isinstance(a, Hamiltonian):
             if isinstance(b, Hamiltonian):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c += b
         elif isinstance(b, Hamiltonian):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c += a
         return c
+    __radd__ = __add__
 
     def __iadd__(a, b):
         if isinstance(b, Hamiltonian):
@@ -818,16 +803,36 @@ class Hamiltonian(object):
             return a
         raise TypeError('First argument is not Hamiltonian')
 
+    def __sub__(a, b):
+        if isinstance(a, Hamiltonian):
+            if isinstance(b, Hamiltonian):
+                raise NotImplementedError
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
+            c -= b
+        elif isinstance(b, Hamiltonian):
+            c = b * (-1) + a
+        return c
+    __rsub__ = __sub__
+
+    def __isub__(a, b):
+        if isinstance(b, Hamiltonian):
+            raise NotImplementedError
+        if isinstance(a, Hamiltonian):
+            a._data -= b
+            return a
+        raise TypeError('First argument is not Hamiltonian')
+
     def __mul__(a, b):
         if isinstance(a, Hamiltonian):
             if isinstance(b, Hamiltonian):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c *= b
         elif isinstance(b, Hamiltonian):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c *= a
         return c
+    __rmul__ = __mul__
 
     def __imul__(a, b):
         if isinstance(b, Hamiltonian):
@@ -841,12 +846,13 @@ class Hamiltonian(object):
         if isinstance(a, Hamiltonian):
             if isinstance(b, Hamiltonian):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c /= b
         elif isinstance(b, Hamiltonian):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._data = a / c._data
         return c
+    __rdiv__ = __div__
 
     def __idiv__(a, b):
         if isinstance(b, Hamiltonian):
@@ -860,12 +866,13 @@ class Hamiltonian(object):
         if isinstance(a, Hamiltonian):
             if isinstance(b, Hamiltonian):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c //= b
         elif isinstance(b, Hamiltonian):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._data = a // c._data
         return c
+    __rfloordiv__ = __floordiv__
 
     def __ifloordiv__(a, b):
         if isinstance(b, Hamiltonian):
@@ -879,12 +886,13 @@ class Hamiltonian(object):
         if isinstance(a, Hamiltonian):
             if isinstance(b, Hamiltonian):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c /= b
         elif isinstance(b, Hamiltonian):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._data = a / c._data
         return c
+    __rtruediv__ = __truediv__
 
     def __itruediv__(a, b):
         if isinstance(b, Hamiltonian):
@@ -898,12 +906,13 @@ class Hamiltonian(object):
         if isinstance(a, Hamiltonian):
             if isinstance(b, Hamiltonian):
                 raise NotImplementedError
-            c = a.copy()
+            c = a.copy(dtype=get_dtype(b, other=a.dtype))
             c **= b
         elif isinstance(b, Hamiltonian):
-            c = b.copy()
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._data = a ** c._data
         return c
+    __rpow__ = __pow__
 
     def __ipow__(a, b):
         if isinstance(b, Hamiltonian):
