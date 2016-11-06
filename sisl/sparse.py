@@ -484,9 +484,7 @@ class SparseCSR(object):
 
 
     def __delitem__(self, key):
-        """ Set items to zero
-        """
-        
+        """ Remove items from the sparse patterns """
         # Get indices of sparse data (-1 if non-existing)
         index = self._get(key[0], key[1])
 
