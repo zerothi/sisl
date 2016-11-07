@@ -69,18 +69,13 @@ Creation of geometries using simple IO interfaces with multiple formats.
 
 Tight-binding models and interfacing the tight-binding transport calculator TBtrans.
 """,
-    url="https://github.com/zerothi/sisl",
-    download_url="https://github.com/zerothi/sisl/releases",
+    url="http://github.com/zerothi/sisl",
+    download_url="http://github.com/zerothi/sisl/releases",
     license='LGPLv3',
     packages=packages,
     scripts=scripts,
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
-    platforms=[
-        "Windows",
-        "Linux",
-        "Solaris",
-        "Mac OS-X",
-        "Unix"],
+    platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
     install_requires=build_requires,
 )
 
@@ -177,6 +172,13 @@ if __name__ == '__main__':
         write_version()
     except:
         pass
+
+    # The MANIFEST should be updated (which it only is
+    # if it does not exist...)
+    # So we try and delete it...
+    if os.path.exists('MANIFEST'):
+        os.remove('MANIFEST')
+
 
     if 'bdist_wheel' not in sys.argv:
         # currently we do not rely on the distutils from numpy
