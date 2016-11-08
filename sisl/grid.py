@@ -8,6 +8,7 @@ from numbers import Integral
 
 import numpy as np
 
+from .utils import *
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
@@ -625,23 +626,18 @@ class Grid(SuperCellChild):
         # parser.
         # This will enable custom actions to interact with the grid in a
         # straight forward manner.
-        class CustomNamespace(object):
-            pass
-        namespace = CustomNamespace()
-        # We act on a copy of it-self.
-        # This is because some options change the geometry
-        # in-line, while others makes a new copy.
-        # So might as well limit to only a copy.
-        namespace._grid = self.copy()
-        # This may be used to check whether any --out has been issued.
-        namespace._stored_grid = False
+        d = {
+            "_grid"        : self.copy(),
+            "_stored_grid" : False,
+        }
+        namespace = default_namespace(**d)
 
         # Define actions
         class SetGeometry(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                ns._geometry = Geometry.read(value)
+                ns._geometry = Geometry.read(value[0])
                 ns._grid.set_geom(ns._geometry)
-        p.add_argument(*opts('--geometry','-G'), action=SetGeometry, nargs=1,
+        p.add_argument(*opts('--geometry','-G'), nargs=1, action=SetGeometry, 
                        help='Define the geometry attached to the Grid.')
 
         # Define size of grid
@@ -657,7 +653,7 @@ class Grid(SuperCellChild):
         # They *MUST* be conmensurate.
         class DiffGrid(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                grid = Grid.read(value)
+                grid = Grid.read(value[0])
                 ns._grid -= grid
                 del grid
         p.add_argument(*opts('--diff','-d'), nargs=1,
@@ -667,7 +663,7 @@ class Grid(SuperCellChild):
 
         class AverageGrid(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                ns._grid = ns._grid.average(direction(value))
+                ns._grid = ns._grid.average(direction(value[0]))
         p.add_argument(*opts('--average'), nargs=1, metavar='DIR',
                        action=AverageGrid,
                        help='Take the average of the grid along DIR.')

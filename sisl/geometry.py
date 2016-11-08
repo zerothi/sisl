@@ -12,12 +12,12 @@ import warnings
 
 import numpy as np
 
+from ._help import _str
+from ._help import array_fill_repeat, ensure_array, isiterable
 from .utils import *
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
-from ._help import _str
-from ._help import array_fill_repeat, ensure_array, isiterable
 
 __all__ = ['Geometry']
 
