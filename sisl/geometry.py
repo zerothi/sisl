@@ -1580,7 +1580,7 @@ class Geometry(SuperCellChild):
                     # The rotate function expects radians
                     ang = angle(value + 'r', in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [1,0,0])
-            p.add_argument(*opts('--rotate-x', '-Rx'), nargs=1, metavar='ANGLE',
+            p.add_argument(*opts('--rotate-x', '-Rx'), metavar='ANGLE',
                            action=RotationX,
                            help='Rotate geometry around first cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
             
@@ -1589,7 +1589,7 @@ class Geometry(SuperCellChild):
                     # The rotate function expects radians
                     ang = angle(value + 'r', in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [0,1,0])
-            p.add_argument(*opts('--rotate-y', '-Ry'), nargs=1, metavar='ANGLE',
+            p.add_argument(*opts('--rotate-y', '-Ry'), metavar='ANGLE',
                            action=RotationY,
                            help='Rotate geometry around second cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
             
@@ -1598,7 +1598,7 @@ class Geometry(SuperCellChild):
                     # The rotate function expects radians
                     ang = angle(value + 'r', in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [0,0,1])
-            p.add_argument(*opts('--rotate-z', '-Rz'), nargs=1, metavar='ANGLE',
+            p.add_argument(*opts('--rotate-z', '-Rz'), metavar='ANGLE',
                            action=RotationZ,
                            help='Rotate geometry around third cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
             
@@ -1647,21 +1647,21 @@ class Geometry(SuperCellChild):
             class PeriodRepeatX(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.repeat(int(value), 0)
-            p.add_argument(*opts('--repeat-x','-rx'),nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--repeat-x','-rx'), metavar='TIMES',
                            action=PeriodRepeatX,
                            help='Repeats the geometry along the first cell vector.')
             
             class PeriodRepeatY(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.repeat(int(value), 1)
-            p.add_argument(*opts('--repeat-y','-ry'),nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--repeat-y','-ry'), metavar='TIMES',
                            action=PeriodRepeatY,
                            help='Repeats the geometry along the second cell vector.')
 
             class PeriodRepeatZ(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.repeat(int(value), 2)
-            p.add_argument(*opts('--repeat-z','-rz'),nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--repeat-z','-rz'), metavar='TIMES',
                            action=PeriodRepeatZ,
                            help='Repeats the geometry along the third cell vector.')
 
@@ -1679,21 +1679,21 @@ class Geometry(SuperCellChild):
             class PeriodTileX(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 0)
-            p.add_argument(*opts('--tile-x','-tx'), nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--tile-x','-tx'), metavar='TIMES',
                            action=PeriodTileX,
                            help='Tiles the geometry along the first cell vector.')
 
             class PeriodTileY(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 1)
-            p.add_argument(*opts('--tile-y','-ty'), nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--tile-y','-ty'), metavar='TIMES',
                            action=PeriodTileY,
                            help='Tiles the geometry along the second cell vector.')
 
             class PeriodTileZ(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 2)
-            p.add_argument(*opts('--tile-z','-tz'), nargs=1, metavar='TIMES',
+            p.add_argument(*opts('--tile-z','-tz'), metavar='TIMES',
                            action=PeriodTileZ,
                            help='Tiles the geometry along the third cell vector.')
 

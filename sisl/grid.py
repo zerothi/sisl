@@ -635,9 +635,9 @@ class Grid(SuperCellChild):
         # Define actions
         class SetGeometry(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                ns._geometry = Geometry.read(value[0])
+                ns._geometry = Geometry.read(value)
                 ns._grid.set_geom(ns._geometry)
-        p.add_argument(*opts('--geometry','-G'), nargs=1, action=SetGeometry, 
+        p.add_argument(*opts('--geometry','-G'), action=SetGeometry, 
                        help='Define the geometry attached to the Grid.')
 
         # Define size of grid
@@ -653,18 +653,17 @@ class Grid(SuperCellChild):
         # They *MUST* be conmensurate.
         class DiffGrid(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                grid = Grid.read(value[0])
+                grid = Grid.read(value)
                 ns._grid -= grid
                 del grid
-        p.add_argument(*opts('--diff','-d'), nargs=1,
-                       action=DiffGrid,
+        p.add_argument(*opts('--diff','-d'), action=DiffGrid,
                        help='Subtract another grid (they must be commensurate).')
 
 
         class AverageGrid(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                ns._grid = ns._grid.average(direction(value[0]))
-        p.add_argument(*opts('--average'), nargs=1, metavar='DIR',
+                ns._grid = ns._grid.average(direction(value))
+        p.add_argument(*opts('--average'), metavar='DIR',
                        action=AverageGrid,
                        help='Take the average of the grid along DIR.')
 
