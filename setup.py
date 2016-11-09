@@ -56,7 +56,8 @@ build_requires = ['six', 'numpy>=1.9', 'scipy', 'netCDF4']
 scripts = ['sgeom', 'sgrid', 'sdata']
 scripts = [osp.join('scripts', script) for script in scripts]
 
-packages = ['sisl']
+packages = []
+package_dir = {'' : 'sisl'}
 
 metadata = dict(
     name='sisl',
@@ -73,6 +74,7 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
     download_url="http://github.com/zerothi/sisl/releases",
     license='LGPLv3',
     packages=packages,
+    package_dir=package_dir,
     scripts=scripts,
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
