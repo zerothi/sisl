@@ -35,10 +35,10 @@ Operating System :: MacOS
 
 MAJOR = 0
 MINOR = 7
-MICRO = 12
-ISRELEASED = False
+MICRO = 13
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION = "53a4361f70a354276d2a1fc6d88d84a5cfbbd497"
+GIT_REVISION = "b75012f6438afcb731bb7e868a76bfde1168f1a1"
 
 # The MANIFEST should be updated (which it only is
 # if it does not exist...)
