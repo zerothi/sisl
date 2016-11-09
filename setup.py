@@ -40,6 +40,11 @@ ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 GIT_REVISION = "53a4361f70a354276d2a1fc6d88d84a5cfbbd497"
 
+# The MANIFEST should be updated (which it only is
+# if it does not exist...)
+# So we try and delete it...
+if os.path.exists('MANIFEST'):
+    os.remove('MANIFEST')
 
 def generate_cython():
     cwd = osp.abspath(osp.dirname(__file__))
@@ -174,13 +179,7 @@ if __name__ == '__main__':
         write_version()
     except:
         pass
-
-    # The MANIFEST should be updated (which it only is
-    # if it does not exist...)
-    # So we try and delete it...
-    if os.path.exists('MANIFEST'):
-        os.remove('MANIFEST')
-
+    
 
     if 'bdist_wheel' not in sys.argv:
         # currently we do not rely on the distutils from numpy
