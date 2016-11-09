@@ -37,6 +37,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Figure out what to step
+no_commit=0
 while [ $# -gt 0 ]; do
     opt=$1 ; shift
     case $opt in
@@ -44,6 +45,9 @@ while [ $# -gt 0 ]; do
 	    _help
 	    exit 0
 	    ;;
+    -no-commit|-nc)
+        no_commit=1
+        ;;
 	a|A|M|major|ma)
 	    let MAJOR++
 	    MINOR=0
@@ -83,6 +87,11 @@ sed -i -e "s:\(MICRO[[:space:]]*=\).*:\1 $MICRO:" setup.py
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 True:" setup.py
 sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 \"$rev\":" setup.py
 
+if [ $no_commit -eq 1 ]; then
+    python setup.py sdist bdist_wheel
+    git checkout setup.py
+    exit 0
+fi
 
 echo "Tagging with message:"
 echo " -m '$MSG'"
