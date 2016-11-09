@@ -61,8 +61,14 @@ build_requires = ['six', 'numpy>=1.9', 'scipy', 'netCDF4']
 scripts = ['sgeom', 'sgrid', 'sdata']
 scripts = [osp.join('scripts', script) for script in scripts]
 
+# Create list of all sub-directories with
+#   __init__.py files...
 packages = ['sisl']
-package_dir = {}
+for subdir, dirs, files in os.walk('sisl'):
+    if '__init__.py' in files:
+        packages.append(subdir.replace(os.sep, '.'))
+        if 'tests' in 'dirs':
+            packages.append(subdir.replace(os.sep, '.') + '.tests')
 
 metadata = dict(
     name='sisl',
@@ -79,7 +85,6 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
     download_url="http://github.com/zerothi/sisl/releases",
     license='LGPLv3',
     packages=packages,
-    package_dir=package_dir,
     scripts=scripts,
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
@@ -180,12 +185,12 @@ if __name__ == '__main__':
     except:
         pass
     
+    # Be sure to import this before numpy setup
+    from setuptools import setup
 
-    if 'bdist_wheel' not in sys.argv:
+    if 'install' not in sys.argv:
         # currently we do not rely on the distutils from numpy
         from numpy.distutils.core import setup
-    else:
-        from setuptools import setup
 
     # Main setup of python modules
     setup(**metadata)
