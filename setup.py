@@ -61,8 +61,8 @@ build_requires = ['six', 'numpy>=1.9', 'scipy', 'netCDF4']
 scripts = ['sgeom', 'sgrid', 'sdata']
 scripts = [osp.join('scripts', script) for script in scripts]
 
-packages = []
-package_dir = {'' : 'sisl'}
+packages = ['sisl']
+package_dir = {}
 
 metadata = dict(
     name='sisl',
