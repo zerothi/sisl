@@ -188,7 +188,7 @@ if __name__ == '__main__':
     # Be sure to import this before numpy setup
     from setuptools import setup
 
-    if 'install' not in sys.argv:
+    if 'bdist_wheel' not in sys.argv:
         # currently we do not rely on the distutils from numpy
         from numpy.distutils.core import setup
 
