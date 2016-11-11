@@ -939,6 +939,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         class AtomRange(argparse.Action):
             @dec_collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
+                value = ','.join(value)
                 # Immediately convert to proper indices
                 geom = ns._geometry
                 ranges = lstranges(strmap(int, value, sep='-'))
@@ -948,17 +949,19 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 asarray = np.asarray
                 for atoms in ranges:
                     if isinstance(atoms, list):
+                        # this will be
+                        #  atoms[0] == atom
+                        #  atoms[1] == list of orbitals on the atom
+                        
                         # Get atoms and orbitals
-                        ob = []
-                        for ia in atoms[0]:
-                            ob1 = geom.a2o(ia - 1, True)
-                            # We normalize for the total number of orbitals
-                            # on the requested atoms.
-                            # In this way the user can compare directly the DOS
-                            # for same atoms with different sets of orbitals and the
-                            # total will add up.
-                            no += len(ob1)
-                            ob.extend(ob1[asarray(atoms[1], np.int32) - 1])
+                        ob = geom.a2o(atoms[0] - 1, True)
+                        # We normalize for the total number of orbitals
+                        # on the requested atoms.
+                        # In this way the user can compare directly the DOS
+                        # for same atoms with different sets of orbitals and the
+                        # total will add up.
+                        no += len(ob)
+                        ob = ob[asarray(atoms[1], np.int32) - 1]
                     else:
                         ob = geom.a2o(atoms - 1, True)
                         no += len(ob)
@@ -981,8 +984,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._Oscale = 1. / no
                 #print('Updating Orng and Oscale: ',ns._Orng, ns._Oscale)
 
-        p.add_argument('--atom', '-a',
-                       action=AtomRange,
+        p.add_argument('--atom', '-a', nargs='+', type=str, action=AtomRange,
                        help='Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed.')
 
 
