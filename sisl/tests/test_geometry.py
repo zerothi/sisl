@@ -186,6 +186,10 @@ class TestGeometry(object):
         assert_true(np.allclose(self.g[:,0], t[:,0]))
         assert_true(np.allclose(self.g[:,1], t[:,1]))
         assert_true(np.allclose(self.g[:,2] + 1, t[:,2]))
+        t = self.g.move([0, 0, 1])
+        assert_true(np.allclose(self.g[:,0], t[:,0]))
+        assert_true(np.allclose(self.g[:,1], t[:,1]))
+        assert_true(np.allclose(self.g[:,2] + 1, t[:,2]))
 
     def test_iter(self):
         for i, iaaspec in enumerate(self.g.iter_species()):
@@ -240,6 +244,9 @@ class TestGeometry(object):
         rev = self.g.reverse()
         assert_true(len(rev) == 2)
         assert_true(np.allclose(rev.xyz[::-1,:], self.g.xyz))
+        rev = self.g.reverse(atom=list(range(len(self.g))))
+        assert_true(len(rev) == 2)
+        assert_true(np.allclose(rev.xyz[::-1,:], self.g.xyz))
 
     def test_close1(self):
         three = range(3)
@@ -259,12 +266,19 @@ class TestGeometry(object):
             else:
                 assert_equal(len(i[1]), 0)
 
-
     def test_close2(self):
         mol = range(3,5)
         for ia in self.mol:
             i = self.mol.close(ia, dR=(0.1,1.1), idx=mol)
             assert_equal(len(i), 2)
+        i = self.mol.close([100,100,100], dR=0.1)
+        assert_equal(len(i), 0)
+        i = self.mol.close([100,100,100], dR=0.1, ret_dist=True)
+        for el in i:
+            assert_equal(len(el), 0)
+        i = self.mol.close([100,100,100], dR=0.1, ret_dist=True, ret_coord=True)
+        for el in i:
+            assert_equal(len(el), 0)
 
 
     def test_close_sizes(self):
@@ -484,6 +498,15 @@ class TestGeometry(object):
         g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=[2, 2, 1])
         g1.set_sc(s1)
         assert_true(g1.sc == s1)
+
+    def test_attach1(self):
+        g = self.g.attach(0, self.mol, 0, dist=1.42, axis=2)
+        g = self.g.attach(0, self.mol, 0, dist='calc', axis=2)
+        g = self.g.attach(0, self.mol, 0, dist=[0, 0, 1.42])
+
+    def test_mirror1(self):
+        for plane in ['xy', 'xz', 'yz']:
+            self.g.mirror(plane)
 
     def test_pickle(self):
         import pickle as p
