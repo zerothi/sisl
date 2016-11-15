@@ -4,8 +4,9 @@ Geometry handler for different formats
 """
 from __future__ import print_function, division
 
-import sys, os.path as osp
-import argparse as arg
+import sys
+import os.path as osp
+import argparse
 
 import sisl
 
@@ -66,8 +67,8 @@ This may be unexpected but enables one to do advanced manipulations.
             # The file that the user request, does not exist
             raise ValueError("File: '"+grid_file+"' cannot be found. Please supply a readable file!")
 
-    p = arg.ArgumentParser('Manipulates real-space grids in commonly encounterd files.',
-                           formatter_class=arg.RawDescriptionHelpFormatter,
+    p = argparse.ArgumentParser('Manipulates real-space grids in commonly encounterd files.',
+                           formatter_class=argparse.RawDescriptionHelpFormatter,
                            description=description)
 
     # We are good to go!!!

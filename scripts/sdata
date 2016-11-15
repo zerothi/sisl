@@ -4,7 +4,9 @@ Easy conversion of data from different formats to other formats.
 """
 from __future__ import print_function, division
 
-import sys, os, os.path as osp
+import sys
+import os
+import os.path as osp
 import argparse
 
 import sisl

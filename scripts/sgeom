@@ -4,7 +4,8 @@ Geometry handler for different formats
 """
 from __future__ import print_function, division
 
-import sys, os.path as osp
+import sys
+import os.path as osp
 import argparse
 
 import sisl
@@ -99,7 +100,7 @@ lattice vector.
         for ia in g:
             print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atom[ia].Z,
                                                                   *g.xyz[ia,:]))
-
+    return 0
 
 if __name__ == "__main__":
-    run()
+    sys.exit(run())
