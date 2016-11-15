@@ -56,7 +56,7 @@ def generate_cython():
     if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
-build_requires = ['six', 'numpy>=1.9', 'scipy', 'netCDF4']
+build_requires = ['six', 'setuptools', 'numpy>=1.9', 'scipy', 'netCDF4']
 
 scripts = ['sgeom', 'sgrid', 'sdata']
 scripts = [osp.join('scripts', script) for script in scripts]

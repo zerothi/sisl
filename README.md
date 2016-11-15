@@ -226,6 +226,7 @@ Installing sisl requires the following packages:
    - __scipy__
    - __netCDF4__, this module is only required if you need interface to construct
     the transport tight-binding model for `TBtrans`
+   - __setuptools__ (for installation)
 
 Installing sisl is as any simple Python package
 
