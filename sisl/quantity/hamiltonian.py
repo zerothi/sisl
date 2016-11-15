@@ -198,7 +198,8 @@ class Hamiltonian(object):
     _get_H = __get_H
 
     def __set_H(self, key, value):
-        self._def_dim = self.UP
+        if len(key) == 2:
+            self._def_dim = self.UP
         self[key] = value
     _set_H = __set_H
 

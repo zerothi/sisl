@@ -323,6 +323,14 @@ class TestHamiltonian(object):
         self.HS.eigh()
         self.HS.empty()
 
+    def test_spin2(self):
+        g = Geometry([[i, 0,0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        H = Hamiltonian(g, dtype=np.int32, spin=2)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H[0, j] = (i, i*2)
+
+
     def test_finalized(self):
         assert_false(self.H.finalized)
         self.H.H[0,0] = 1.

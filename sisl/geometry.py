@@ -112,7 +112,7 @@ class Geometry(SuperCellChild):
             A = np.array([atom]).flatten()
 
         # Create atom objects
-        self.atom = array_fill_repeat(A, self.na, cls=Atom)
+        self._atom = array_fill_repeat(A, self.na, cls=Atom)
 
         # Get total number of orbitals
         orbs = np.array([a.orbs for a in self.atom], np.int32)
@@ -186,7 +186,12 @@ class Geometry(SuperCellChild):
     @property
     def atoms(self):
         """ Returns the atoms (mainly for backwards compatibility) """
-        return self.atom
+        return self._atom
+
+    @property
+    def atom(self):
+        """ Returns the atomic species """
+        return self._atom
 
     @property
     def no_s(self):
