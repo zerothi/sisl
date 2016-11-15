@@ -58,7 +58,7 @@ def argparse_patch(parser):
     parser.register('action', 'parsers', MySubParsersAction)
 
 
-def run():
+def run(argv=None, sile=None):
 
     # The file *MUST* be the first argument
     # (except --help|-h)
@@ -72,12 +72,20 @@ This manipulation utility can handle nearly all files in the sisl code in
 changing ways. It handles files dependent on type AND content.
     """.format(osp.basename(sys.argv[0]))
 
-    if len(sys.argv) == 1:
+    if argv is not None:
+        # We keep the arguments
+        pass
+    elif len(sys.argv) == 1:
         # no arguments
         # fake a help
         argv = ['--help']
     else:
         argv = sys.argv[1:]
+
+
+    # Ensure that the arguments have pre-pended spaces
+    argv = sisl.utils.cmd.argv_negative_fix(argv)
+
 
     p = argparse.ArgumentParser("Manipulates sisl Sile's for manipulation.",
                                 formatter_class=argparse.RawDescriptionHelpFormatter,

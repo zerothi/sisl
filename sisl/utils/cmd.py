@@ -3,6 +3,22 @@ Generic utility to create commonly used ArgumentParser
 options etc.
 """
 
+from sisl.utils.ranges import strmap, strseq
+
+def argv_negative_fix(argv):
+    """ Fixes the `argv` list by adding a space for input that may be float's """
+    rgv = []
+    for a in argv:
+        try:
+            strseq(complex, a)
+            strmap(complex, a)
+        except:
+            rgv.append(a)
+        else:
+            rgv.append(' ' + a)
+    return rgv
+
+
 def default_namespace(*args, **kwargs):
     class CustomNamespace(object):
         pass

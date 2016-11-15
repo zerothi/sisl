@@ -890,8 +890,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
         d = {
             "_tbt": self,
             "_geometry": self.geom,
+            "_data_description" : [],
             "_data_header" : [],
-            "_data_footer" : [],
             "_data" : [],
             "_Orng" : None,
             "_Oscale" : 1. / len(self.pivot), 
@@ -917,7 +917,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Energy grabs
         class ERange(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                Emap = strmap(float, value, recursive=False, sep=':')
+                Emap = strmap(float, value)
                 # Convert to actual indices
                 E = []
                 for begin, end in Emap:
@@ -930,7 +930,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # k-range
         class kRange(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                ns._krng = lstranges(strmap(int, value, recursive=False, sep='-'))
+                ns._krng = lstranges(strmap(int, value))
         p.add_argument('--kpoint', '-k',
                        action=kRange,
                        help='Denote the sub-section of k-indices that are extracted.')
@@ -939,10 +939,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
         class AtomRange(argparse.Action):
             @dec_collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
-                value = ','.join(value)
+                value = value.replace(' ','')
                 # Immediately convert to proper indices
                 geom = ns._geometry
-                ranges = lstranges(strmap(int, value, sep='-'))
+                ranges = lstranges(strmap(int, value))
                 # we have only a subset of the orbitals
                 orbs = []
                 no = 0
@@ -966,8 +966,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
                         ob = geom.a2o(atoms - 1, True)
                         no += len(ob)
                     orbs.append(ob)
+                
                 # Add one to make the c-index equivalent to the f-index
-                orbs = asarray(orbs, np.int32).flatten() + 1
+                orbs = np.concatenate(orbs).flatten() + 1
                 pivot = np.where(np.in1d(ns._tbt.pivot, orbs))[0]
 
                 if len(orbs) != len(pivot):
@@ -984,7 +985,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._Oscale = 1. / no
                 #print('Updating Orng and Oscale: ',ns._Orng, ns._Oscale)
 
-        p.add_argument('--atom', '-a', nargs='+', type=str, action=AtomRange,
+        p.add_argument('--atom', '-a', type=str, action=AtomRange,
                        help='Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed.')
 
 
@@ -1040,9 +1041,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 data = np.sum(data[ns._Erng,...], axis=-1).flatten()
                 ns._data.append(data * ns._Oscale)
                 if ns._Orng is None:
-                    ns._data_footer.append(' Column [{}] is sum of all device atoms+orbitals with normalization 1/'.format(len(ns._data), int(1/ns._Oscale)))
+                    ns._data_description.append('Column {} is sum of all device atoms+orbitals with normalization 1/'.format(len(ns._data), int(1/ns._Oscale)))
                 else:
-                    ns._data_footer.append(' Column [{}] is atoms[orbs] {} with normalization 1/{}'.format(len(ns._data), ns._Ovalue, int(1/ns._Oscale)))
+                    ns._data_description.append('Column {} is atoms[orbs] {} with normalization 1/{}'.format(len(ns._data), ns._Ovalue, int(1/ns._Oscale)))
 
         p.add_argument('--dos', '-D', nargs='?', metavar='ELEC',
                        action=DataDOS, default=None,
@@ -1070,7 +1071,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 no = data.shape[-1]
                 data = np.mean(data[ns._Erng,...], axis=-1).flatten()
                 ns._data.append(data)
-                ns._data_footer.append('Column [{}] is sum of all electrode[{}] atoms+orbitals with normalization 1/{}'.format(len(ns._data), e, no))
+                ns._data_description.append('Column {} is sum of all electrode[{}] atoms+orbitals with normalization 1/{}'.format(len(ns._data), e, no))
         p.add_argument('--bulk-dos', '-BD', nargs=1, metavar='ELEC',
                        action=DataDOSBulk, default=None,
                        help="""Store the bulk DOS of an electrode.""")
@@ -1123,10 +1124,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     return
                 
                 TableSile(out, mode='w').write(np.array(ns._data),
-                                               header=ns._data_header, footer=ns._data_footer)
+                                               comment=ns._data_description, header=ns._data_header)
                 # Clean all data
+                ns._data_description = []
                 ns._data_header = []
-                ns._data_footer = []
                 ns._data = []
                 # These are expert options
                 ns._Ovalue = ''

@@ -3,88 +3,107 @@ Basic functionality of creating ranges from text-input and/or other types of inf
 """
 from __future__ import print_function, division
 
-__all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'fileindex']
+import re
 
 import numpy as np
 
-import re
-_eEfg = r'[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?'
-_re_eEfg = re.compile(_eEfg)
-_re_segment = re.compile(r'(.+)\[(.+)\]|(.+)')
-_re_irng = re.compile(r'\d+-\d+|\d+')
+__all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'fileindex']
 
-# This reg-exp matches:
-#   0, 1, 3, 3-9, etc.
-_re_ints = re.compile('[,]?([0-9-]+)[,]?')
-# This reg-exp matches:
-#   0, 1[0-1], 3, 3-9, etc.
-_re_sub  = re.compile('[,]?([0-9-]+)\[([\[0-9,-\]]+)\]|([0-9-]+)[,]?')
+
+_re_segment = re.compile(r'\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)')
 
 
 # Function to change a string to a range of atoms
-def strmap(func, s, recursive=True, sep=':'):
-    """ Parse a string and map all entries using `func`.
+def strmap(func, s):
+    """ Parse a string as though it was a slice and map all entries using `cast`.
 
-    This parses a string and converts all `,`-separated to entries
-    in the list.
+    This parses the string but allows relatively simple slices:
+    >>> strmap('1')
+    [func('1')]
+    >>> strmap('1-2')
+    [func('1-2')]
+    >>> strmap('1-10[2-3]')
+    [( func('1-10'), func('2-3'))]
+
+    Parameters
+    ----------
+    func : function
+       function to parse every match with
+    s    : str
+       the string that should be parsed
     """
 
     # Create list
     l = []
 
-    commas = s.split(',')
+    commas = s.replace(' ','').split(',')
+
+    # Collect all the comma separated quantities that
+    # may be selected by [..,..]
     i = 0
-    while True:
-        if i >= len(commas) - 1:
-            break
+    while i < len(commas) - 1:
         if commas[i].count('[') == commas[i].count(']'):
             i = i + 1
         else:
             # there must be more [ than ]
             commas[i] = commas[i] + "," + commas[i+1]
             del commas[i+1]
+
+    # Check the last input...
     i = len(commas) - 1
     if commas[i].count('[') != commas[i].count(']'):
         raise ValueError("Unbalanced string: not enough [ and ]")
 
-    # Now we have the comma-separated list
+    # Now we have a comma-separated list
+    # with collected brackets. 
     for seg in commas:
-        # Split it in two parts
+
+        # Split it in groups of reg-exps
         m = _re_segment.findall(seg)[0]
-        if len(m[2]) > 0:
-            # the match is the last group
-            l.append( strseq(func, m[2]) )
-        elif recursive:
-            l.append( (strseq(func, m[0]), strmap(func, m[1], sep=sep) ) )
+        
+        if len(m[0]) > 0:
+            # this is: [..][..]
+            rhs = strmap(func, m[1])
+            for el in strmap(func, m[0]):
+                l.append( (el, rhs) )
+                
+        elif len(m[2]) > 0:
+            # this is: ..[..]
+            l.append( ( strseq(func, m[2]), strmap(func, m[3]) ) )
+            
+        elif len(m[4]) > 0:
+            l.append( strseq(func, m[4]) )
 
     return l
 
-def strseq(func, s):
-    """ Accepts strings and returns tuples of content based on ranges.
+
+def strseq(cast, s):
+    """ Accept a string and return the casted tuples of content based on ranges.
     
     Parameters
     ----------
-    func: function
+    cast: function
        parser of the individual elements
     s: str
        string with content
 
     Examples
     --------
-    >>> strseq(int, '3')
+    >>> strmap(int, '3')
     3
-    >>> strseq(int, '3-6')
+    >>> strmap(int, '3-6')
     (3, 6)
-    >>> strseq(int, '3:2:7')
+    >>> strmap(int, '3:2:7')
     (3, 2, 7)
-    >>> strseq(float, '3.2:6.3')
+    >>> strmap(float, '3.2:6.3')
     (3.2, 6.3)
     """
     if ':' in s:
-        return tuple(map(func, s.split(':')))
+        return tuple(map(cast, s.split(':')))
     elif '-' in s:
-        return tuple(map(func, s.split('-')))
-    return func(s)
+        return tuple(map(cast, s.split('-')))
+    return cast(s)
+
 
 def erange(*args):
     """ Returns the range with both ends includede """
@@ -92,7 +111,8 @@ def erange(*args):
         return range(args[0], args[2]+1, args[1])
     return range(args[0], args[1]+1)
 
-def lstranges(lst, func=erange):
+
+def lstranges(lst, cast=erange):
     """ Convert a `strmap` list into expanded ranges """
     l = []
     # If an entry is a tuple, it means it is either
@@ -101,21 +121,21 @@ def lstranges(lst, func=erange):
     #   0[0-1], 0-1[0-1]
     if isinstance(lst, tuple):
         if len(lst) == 3:
-            l.extend(func(*lst))
+            l.extend(cast(*lst))
         else:
-            head = lstranges(lst[0], func)
-            bot = lstranges(lst[1], func)
+            head = lstranges(lst[0], cast)
+            bot = lstranges(lst[1], cast)
             if isinstance(head, list):
                 for el in head:
                     l.append([el, bot])
             elif isinstance(bot, list):
                 l.append([head, bot])
             else:
-                l.extend(func(head, bot))
+                l.extend(cast(head, bot))
 
     elif isinstance(lst, list):
         for lt in lst:
-            ls = lstranges(lt, func)
+            ls = lstranges(lt, cast)
             if isinstance(ls, list):
                 l.extend(ls)
             else:
@@ -142,7 +162,7 @@ def fileindex(f):
       file, [1,2,3,4,5,6]
     """
 
-    if not '[' in f:
+    if '[' not in f:
         return f, None
 
     f = f.split('[')

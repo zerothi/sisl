@@ -1607,7 +1607,7 @@ class Geometry(SuperCellChild):
         class ReduceSub(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 # Get atomic indices
-                rng = lstranges(strmap(int, value, sep='-'))
+                rng = lstranges(strmap(int, value))
                 ns._geometry = ns._geometry.sub(rng)
         p.add_argument(*opts('--sub','-s'),metavar='RNG',
                        action=ReduceSub,
