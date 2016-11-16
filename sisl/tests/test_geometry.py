@@ -26,6 +26,7 @@ class TestGeometry(object):
     def tearDown(self):
         del self.g
         del self.sc
+        del self.mol
 
     def test_objects(self):
         # just make sure __repr__ works

@@ -1566,8 +1566,8 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, values, option_string=None):
                 # Convert value[0] to the direction
                 d = direction(values[0])
-                # The rotate function expects radians
-                ang = angle(values[1] + 'r', in_radians=False)
+                # The rotate function expects degree
+                ang = angle(values[1], radians=False, in_radians=False)
                 if d == 0:
                     v = [1,0,0]
                 elif d == 1:
@@ -1582,8 +1582,8 @@ class Geometry(SuperCellChild):
         if not limit_args:
             class RotationX(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    # The rotate function expects radians
-                    ang = angle(value + 'r', in_radians=False)
+                    # The rotate function expects degree
+                    ang = angle(value, radians=False, in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [1,0,0])
             p.add_argument(*opts('--rotate-x', '-Rx'), metavar='ANGLE',
                            action=RotationX,
@@ -1591,8 +1591,8 @@ class Geometry(SuperCellChild):
             
             class RotationY(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    # The rotate function expects radians
-                    ang = angle(value + 'r', in_radians=False)
+                    # The rotate function expects degree
+                    ang = angle(value, radians=False, in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [0,1,0])
             p.add_argument(*opts('--rotate-y', '-Ry'), metavar='ANGLE',
                            action=RotationY,
@@ -1600,8 +1600,8 @@ class Geometry(SuperCellChild):
             
             class RotationZ(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
-                    # The rotate function expects radians
-                    ang = angle(value + 'r', in_radians=False)
+                    # The rotate function expects degree
+                    ang = angle(value, radians=False, in_radians=False)
                     ns._geometry = ns._geometry.rotate(ang, [0,0,1])
             p.add_argument(*opts('--rotate-z', '-Rz'), metavar='ANGLE',
                            action=RotationZ,
@@ -1617,7 +1617,7 @@ class Geometry(SuperCellChild):
         p.add_argument(*opts('--sub','-s'),metavar='RNG',
                        action=ReduceSub,
                        help='Removes specified atoms, can be complex ranges.')
-
+        
         class ReduceCut(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 d = direction(values[0])
@@ -1626,6 +1626,19 @@ class Geometry(SuperCellChild):
         p.add_argument(*opts('--cut','-c'), nargs=2, metavar=('DIR', 'SEPS'),
                        action=ReduceCut,
                        help='Cuts the geometry into `seps` parts along the unit-cell direction `dir`.')
+
+        # Swaps atoms
+        class AtomSwap(argparse.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                # Get atomic indices
+                a = lstranges(strmap(int, value[0]))
+                b = lstranges(strmap(int, value[1]))
+                if len(a) != len(b):
+                    raise ValueError('swapping atoms requires equal number of LHS and RHS atomic ranges')
+                ns._geometry = ns._geometry.swap(a, b)
+        p.add_argument(*opts('--swap'),metavar=('A', 'B'), nargs=2,
+                       action=AtomSwap,
+                       help='Swaps groups of atoms (can be complex ranges). The groups must be of equal length.')
 
         # Add an atom
         class AtomAdd(argparse.Action):
@@ -1739,23 +1752,27 @@ class Geometry(SuperCellChild):
         # We have now created all arguments
         return p, namespace
 
-def sgeom(argv=None, sile=None):
+
+def sgeom(geom=None, argv=None, ret_geometry=False):
     """ Main script for sgeom script. 
 
     This routine may be called with `argv` and/or a `Sile` which is the geometry at hand.
     
     Parameters
     ----------
+    geom : `Geometry`/`BaseSile`
+       this may either be the geometry, as-is, or a `Sile` which contains
+       the geometry.
     argv : `list of str`
        the arguments passed to sgeom
-    sile : `BaseSile`
-       which contains the geometry to be read
+    ret_geometry : `bool` (`False`)
+       whether the function should return the geometry
     """
     import sys
     import os.path as osp
     import argparse
 
-    from sisl.io import get_sile
+    from sisl.io import get_sile, BaseSile
 
     # The geometry-file *MUST* be the first argument
     # (except --help|-h)
@@ -1803,31 +1820,48 @@ lattice vector.
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-    
     p = argparse.ArgumentParser('Manipulates geometries from any Sile.',
                                 formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description=description)
 
     # First read the input "Sile"
-    argv, input_file = cmd.collect_input(argv)
-    try:
-        input_sile = get_sile(input_file)
-        geom = input_sile.read_geom()
-    except Exception as E:
-        geom = Geometry([0,0,0])
+    if geom is None:
+        argv, input_file = cmd.collect_input(argv)
+        try:
+            geom = get_sile(input_file).read_geom()
+        except:
+            pass
+
+    elif isinstance(geom, Geometry):
+        # Do nothing, the geometry is already created
+        argv = ['fake.xyz'] + argv
+        pass
+
+    elif isinstance(geom, BaseSile):
+        try:
+            geom = sile.read_geom()
+            # Store the input file...
+            input_file = geom.file
+        except Exception as E:
+            geom = Geometry([0,0,0])
+        argv = ['fake.xyz'] + argv
+
+    # Do the argument parser
     p, ns = geom.ArgumentParser(p, **geom._ArgumentParser_args_single())
 
     # Now the arguments should have been populated
     # and we will sort out if the input options
     # is only a help option.
-    if not hasattr(ns, '_input_file'):
-        setattr(ns, '_input_file', input_file)
-    
+    try:
+        if not hasattr(ns, '_input_file'):
+            setattr(ns, '_input_file', input_file)
+    except:
+        pass
+            
     # Now try and figure out the actual arguments
     p, ns, argv = cmd.collect_arguments(argv, input=False,
                                         argumentparser=p,
                                         namespace=ns)
-
 
     # We are good to go!!!
     args = p.parse_args(argv, namespace=ns)
@@ -1846,4 +1880,6 @@ lattice vector.
             print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atom[ia].Z,
                                                                   *g.xyz[ia,:]))
 
+    if ret_geometry:
+        return g
     return 0
