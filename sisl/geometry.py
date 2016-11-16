@@ -19,7 +19,7 @@ from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
 
-__all__ = ['Geometry']
+__all__ = ['Geometry', 'sgeom']
 
 
 
@@ -1706,6 +1706,8 @@ class Geometry(SuperCellChild):
         # geometry (to stdout)
         class PrintInfo(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
+                # We fake that it has been stored...
+                ns._stored_geometry = True
                 print(ns._geometry)
         p.add_argument(*opts('--info'), nargs=0,
                        action=PrintInfo,
@@ -1752,6 +1754,8 @@ def sgeom(argv=None, sile=None):
     import sys
     import os.path as osp
     import argparse
+
+    from sisl.io import get_sile
 
     # The geometry-file *MUST* be the first argument
     # (except --help|-h)
@@ -1807,10 +1811,10 @@ lattice vector.
     # First read the input "Sile"
     argv, input_file = cmd.collect_input(argv)
     try:
-        input_sile = sisl.get_sile(input_file)
+        input_sile = get_sile(input_file)
         geom = input_sile.read_geom()
     except Exception as E:
-        geom = sisl.Geometry([0,0,0])
+        geom = Geometry([0,0,0])
     p, ns = geom.ArgumentParser(p, **geom._ArgumentParser_args_single())
 
     # Now the arguments should have been populated
@@ -1842,4 +1846,4 @@ lattice vector.
             print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atom[ia].Z,
                                                                   *g.xyz[ia,:]))
 
-    return g
+    return 0
