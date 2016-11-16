@@ -1736,3 +1736,110 @@ class Geometry(SuperCellChild):
             
         # We have now created all arguments
         return p, namespace
+
+def sgeom(argv=None, sile=None):
+    """ Main script for sgeom script. 
+
+    This routine may be called with `argv` and/or a `Sile` which is the geometry at hand.
+    
+    Parameters
+    ----------
+    argv : `list of str`
+       the arguments passed to sgeom
+    sile : `BaseSile`
+       which contains the geometry to be read
+    """
+    import sys
+    import os.path as osp
+    import argparse
+
+    # The geometry-file *MUST* be the first argument
+    # (except --help|-h)
+    
+    # We cannot create a separate ArgumentParser to retrieve a positional arguments
+    # as that will grab the first argument for an option!
+    
+    # Start creating the command-line utilities that are the actual ones.
+    description = """
+This manipulation utility is highly advanced and one should note that the ORDER of
+options is determining the final structure. For instance:
+
+   {0} geom.xyz --repeat x 2 --repeat y 2
+
+is NOT equivalent to:
+
+   {0} geom.xyz --repeat y 2 --repeat x 2
+
+This may be unexpected but enables one to do advanced manipulations.
+
+Additionally, in between arguments, one may store the current state of the geometry
+by writing to a standard file.
+
+   {0} geom.xyz --repeat y 2 geom_repy.xyz --repeat x 2 geom_repy_repx.xyz
+
+will create two files:
+   geom_repy.xyz
+will only be repeated 2 times along the second lattice vector, while:
+   geom_repy_repx.xyz
+will be repeated 2 times along the second lattice vector, and then the first
+lattice vector.
+    """.format(osp.basename(sys.argv[0]))
+
+    if argv is not None:
+        if len(argv) == 0:
+            argv = ['--help']
+    elif len(sys.argv) == 1:
+        # no arguments
+        # fake a help
+        argv = ['--help']
+    else:
+        argv = sys.argv[1:]
+
+        
+    # Ensure that the arguments have pre-pended spaces
+    argv = cmd.argv_negative_fix(argv)
+
+    
+    p = argparse.ArgumentParser('Manipulates geometries from any Sile.',
+                                formatter_class=argparse.RawDescriptionHelpFormatter,
+                                description=description)
+
+    # First read the input "Sile"
+    argv, input_file = cmd.collect_input(argv)
+    try:
+        input_sile = sisl.get_sile(input_file)
+        geom = input_sile.read_geom()
+    except Exception as E:
+        geom = sisl.Geometry([0,0,0])
+    p, ns = geom.ArgumentParser(p, **geom._ArgumentParser_args_single())
+
+    # Now the arguments should have been populated
+    # and we will sort out if the input options
+    # is only a help option.
+    if not hasattr(ns, '_input_file'):
+        setattr(ns, '_input_file', input_file)
+    
+    # Now try and figure out the actual arguments
+    p, ns, argv = cmd.collect_arguments(argv, input=False,
+                                        argumentparser=p,
+                                        namespace=ns)
+
+
+    # We are good to go!!!
+    args = p.parse_args(argv, namespace=ns)
+    g = args._geometry
+
+    if not args._stored_geometry:
+        # We should write out the information to the stdout
+        # This is merely for testing purposes and may not be used for anything.
+        print('Cell:')
+        for i in range(3):
+            print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i,:]))
+        print('SuperCell:')
+        print('  {0:d} {1:d} {2:d}'.format(*g.nsc))
+        print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x','y','z','Z'))
+        for ia in g:
+            print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atom[ia].Z,
+                                                                  *g.xyz[ia,:]))
+
+    return g
