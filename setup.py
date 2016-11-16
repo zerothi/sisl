@@ -58,7 +58,7 @@ def generate_cython():
 
 build_requires = ['six', 'setuptools', 'numpy>=1.9', 'scipy', 'netCDF4']
 
-scripts = ['sgrid', 'sdata']
+scripts = ['sdata']
 scripts = [osp.join('scripts', script) for script in scripts]
 
 # Create list of all sub-directories with
@@ -87,7 +87,8 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
     packages=packages,
     entry_points={
         'console_scripts' :
-        ['sgeom = sisl.geometry:sgeom']
+        ['sgeom = sisl.geometry:sgeom',
+         'sgrid = sisl.grid:sgrid']
     },
     scripts=scripts,
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],

@@ -14,7 +14,7 @@ from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
 
-__all__ = ['Grid']
+__all__ = ['Grid', 'sgrid']
 
 
 class Grid(SuperCellChild):
@@ -754,3 +754,113 @@ class Grid(SuperCellChild):
             
         # We have now created all arguments
         return p, namespace
+
+def sgrid(grid=None, argv=None, ret_grid=False):
+    """ Main script for sgrid script. 
+
+    This routine may be called with `argv` and/or a `Sile` which is the grid at hand.
+    
+    Parameters
+    ----------
+    grid : `Grid`/`BaseSile`
+       this may either be the grid, as-is, or a `Sile` which contains
+       the grid.
+    argv : `list of str`
+       the arguments passed to sgeom
+    ret_grid : `bool` (`False`)
+       whether the function should return the grid
+    """
+    import sys
+    import os.path as osp
+    import argparse
+
+    from sisl.io import get_sile, BaseSile
+
+    # The file *MUST* be the first argument
+    # (except --help|-h)
+
+    # We cannot create a separate ArgumentParser to retrieve a positional arguments
+    # as that will grab the first argument for an option!
+
+    # Start creating the command-line utilities that are the actual ones.
+    description = """
+This manipulation utility is highly advanced and one should note that the ORDER of
+options is determining the final structure. For instance:
+
+   {0} ElectrostaticPotential.grid.nc --diff Other.grid.nc --sub z 0.:0.2f
+
+is NOT equivalent to:
+
+   {0} ElectrostaticPotential.grid.nc --sub z 0.:0.2f --diff Other.grid.nc
+
+This may be unexpected but enables one to do advanced manipulations.
+    """.format(osp.basename(sys.argv[0]))
+
+    if argv is not None:
+        if len(argv) == 0:
+            argv = ['--help']
+    elif len(sys.argv) == 1:
+        # no arguments
+        # fake a help
+        argv = ['--help']
+    else:
+        argv = sys.argv[1:]
+
+    # Ensure that the arguments have pre-pended spaces
+    argv = cmd.argv_negative_fix(argv)
+
+    p = argparse.ArgumentParser('Manipulates real-space grids in commonly encounterd files.',
+                           formatter_class=argparse.RawDescriptionHelpFormatter,
+                           description=description)
+
+    # First read the input "Sile"
+    if grid is None:
+        argv, input_file = cmd.collect_input(argv)
+        try:
+            grid = get_sile(input_file).read_grid()
+        except:
+            grid = Grid([10,10,10])
+
+    elif isinstance(grid, Grid):
+        # Do nothing, the geometry is already created
+        argv = ['fake.grid.nc'] + argv
+        pass
+
+    elif isinstance(grid, BaseSile):
+        try:
+            grid = sile.read_grid()
+            # Store the input file...
+            input_file = grid.file
+        except Exception as E:
+            grid = Grid([10,10,10])
+        argv = ['fake.grid.nc'] + argv
+
+    # Do the argument parser
+    p, ns = grid.ArgumentParser(p, **grid._ArgumentParser_args_single())
+
+    # Now the arguments should have been populated
+    # and we will sort out if the input options
+    # is only a help option.
+    try:
+        if not hasattr(ns, '_input_file'):
+            setattr(ns, '_input_file', input_file)
+    except:
+        pass
+
+    # Now try and figure out the actual arguments
+    p, ns, argv = cmd.collect_arguments(argv, input=False,
+                                        argumentparser=p,
+                                        namespace=ns)
+
+    # We are good to go!!!
+    args = p.parse_args(argv, namespace=ns)
+    g = args._grid
+
+    if not args._stored_grid:
+        # We should write out the information to the stdout
+        # This is merely for testing purposes and may not be used for anything.
+        print(g)
+
+    if ret_grid:
+        return g
+    return 0

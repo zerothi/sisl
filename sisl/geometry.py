@@ -1830,7 +1830,7 @@ lattice vector.
         try:
             geom = get_sile(input_file).read_geom()
         except:
-            pass
+            geom = Geometry([0,0,0])
 
     elif isinstance(geom, Geometry):
         # Do nothing, the geometry is already created
