@@ -1,13 +1,13 @@
 from __future__ import print_function, division
 
 from nose.tools import *
-
-from sisl import SuperCell, SuperCellChild
+from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np
 import scipy.linalg as sli
 
+from sisl import SuperCell, SuperCellChild
 
 class TestSuperCell(object):
 
@@ -20,6 +20,10 @@ class TestSuperCell(object):
 
     def tearDown(self):
         del self.sc
+
+    def test_repr(self):
+        print(self.sc)
+        assert_false(self.sc == 'Not a SuperCell')
 
     def test_nsc1(self):
         sc = self.sc.copy()
@@ -77,6 +81,15 @@ class TestSuperCell(object):
         rot.cell[2, 2] *= -1
         assert_true(np.allclose(rot.cell, self.sc.cell))
 
+    def test_rotation3(self):
+        rot = self.sc.rotatea(180)
+        assert_true(np.allclose(rot.cell[0,:], self.sc.cell[0,:]))
+        assert_true(np.allclose(-rot.cell[2,2], self.sc.cell[2,2]))
+
+        rot = self.sc.rotateb(m.pi, radians=True)
+        assert_true(np.allclose(rot.cell[1,:], self.sc.cell[1,:]))
+        assert_true(np.allclose(-rot.cell[2,2], self.sc.cell[2,2]))
+
     def test_swapaxes1(self):
         sab = self.sc.swapaxes(0, 1)
         assert_true(np.allclose(sab.cell[0, :], self.sc.cell[1, :]))
@@ -92,6 +105,20 @@ class TestSuperCell(object):
         assert_true(np.allclose(sab.cell[1, :], self.sc.cell[2, :]))
         assert_true(np.allclose(sab.cell[2, :], self.sc.cell[1, :]))
 
+    def test_offset1(self):
+        off = self.sc.offset()
+        assert_true(np.allclose(off, [0,0,0]))
+        off = self.sc.offset([1,1,1])
+        cell = self.sc.cell[:,:]
+        assert_true(np.allclose(off, cell[0, :] + cell[1,:] + cell[2,:]))
+
+    def test_sc_index1(self):
+        sc_index = self.sc.sc_index([0,0,0])
+        assert_equal(sc_index, 0)
+        assert_raises(Exception, self.sc.sc_index, [100, 100, 100])
+        sc_index = self.sc.sc_index([0,0,None])
+        assert_equal(len(sc_index), self.sc.nsc[2])
+        
     def test_cut1(self):
         cut = self.sc.cut(2, 0)
         assert_true(np.allclose(cut.cell[0, :] * 2, self.sc.cell[0, :]))
