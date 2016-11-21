@@ -9,7 +9,8 @@ import os
 import os.path as osp
 import argparse
 
-import sisl
+__all__ = ['sdata']
+
 
 def argparse_patch(parser):
     """ Patch the argparse module such that one may process the Namespace in subparsers
@@ -60,7 +61,9 @@ def argparse_patch(parser):
     parser.register('action', 'parsers', MySubParsersAction)
 
 
-def run(argv=None, sile=None):
+def sdata(argv=None, sile=None):
+
+    from . import cmd
 
     # The file *MUST* be the first argument
     # (except --help|-h)
@@ -86,7 +89,7 @@ changing ways. It handles files dependent on type AND content.
 
 
     # Ensure that the arguments have pre-pended spaces
-    argv = sisl.utils.cmd.argv_negative_fix(argv)
+    argv = cmd.argv_negative_fix(argv)
 
 
     p = argparse.ArgumentParser("Manipulates sisl Sile's for manipulation.",
@@ -96,10 +99,9 @@ changing ways. It handles files dependent on type AND content.
     # Patch the parser to allow namespace passing in subparsers...
     argparse_patch(p)
 
-
     # Now try and figure out the actual arguments
-    p, ns, argv = sisl.utils.cmd.collect_arguments(argv, input=True,
-                                                   argumentparser=p)
+    p, ns, argv = cmd.collect_arguments(argv, input=True,
+                                        argumentparser=p)
 
     # Now the arguments should have been populated
     # and we will sort out if the input options
@@ -123,6 +125,4 @@ The help menu depends on the type of Sile that is specified.
     # We are good to go!!!
     p.parse_args(argv, namespace=ns)
 
-
-if __name__ == "__main__":
-    run()
+    return 0
