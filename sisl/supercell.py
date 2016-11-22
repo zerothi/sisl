@@ -237,6 +237,15 @@ class SuperCell(object):
         cell[axis, :] += other.cell[axis, :]
         return self.__class__(cell, nsc=np.copy(self.nsc))
 
+    def prepend(self, other, axis):
+        """ Prepends other `SuperCell` to this grid along axis 
+        
+        For a `SuperCell` object this is equivalent to `append`.
+        """
+        cell = np.copy(self.cell)
+        cell[axis, :] += other.cell[axis, :]
+        return self.__class__(cell, nsc=np.copy(self.nsc))
+
     def move(self, v):
         """ Appends additional space in the SuperCell object """
         # check which cell vector resembles v the most,

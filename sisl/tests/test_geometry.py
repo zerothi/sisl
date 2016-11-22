@@ -210,6 +210,25 @@ class TestGeometry(object):
         for i in [0, 1, 2]:
             assert_true(np.allclose(self.g[::-1,i], s[:,i]))
 
+    def test_append1(self):
+        for axis in [0, 1, 2]:
+            s = self.g.append(self.g, axis)
+            assert_equal(len(s), len(self.g) * 2)
+            assert_true(np.allclose(s.cell[axis,:], self.g.cell[axis, :]* 2))
+            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
+            s = self.g.prepend(self.g, axis)
+            assert_equal(len(s), len(self.g) * 2)
+            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
+            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
+            s = self.g.append(self.g.sc, axis)
+            assert_equal(len(s), len(self.g))
+            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
+            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
+            s = self.g.prepend(self.g.sc, axis)
+            assert_equal(len(s), len(self.g))
+            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
+            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
+
     def test_swapaxes(self):
         s = self.g.swapaxes(0, 1)
         assert_true(np.allclose(self.g[:,0], s[:,1]))

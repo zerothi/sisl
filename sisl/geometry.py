@@ -827,6 +827,45 @@ class Geometry(SuperCellChild):
             sc = self.sc.append(other.sc, axis)
         return self.__class__(xyz, atom=atom, sc=sc)
 
+    def prepend(self, other, axis):
+        """
+        Prepends structure along ``axis``. This will automatically
+        add the ``self.cell[axis,:]`` to all atomic coordiates in the
+        ``other`` structure before prepending.
+
+        The basic algorithm is this:
+
+         >>> oxa = other.xyz
+         >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:])
+         >>> self.cell[axis,:] += other.cell[axis,:]
+         >>> self.lasto = np.append(other.lasto, self.lasto)
+
+        NOTE: The cell prepended is only in the axis that
+        is prependend, which means that the other cell directions
+        need not conform.
+
+        Parameters
+        ----------
+        other : `Geometry`/`SuperCell`
+            Other geometry class which needs to be prepended
+            If a `SuperCell` only the super cell will be extended
+        axis  : int
+            Cell direction to which the ``other`` geometry should be
+            prepended
+        """
+        if isinstance(other, SuperCell):
+            # Only extend the supercell.
+            xyz = np.copy(self.xyz)
+            atom = np.copy(self.atom)
+            sc = self.sc.prepend(other, axis)
+        else:
+            xyz = np.append(other.xyz,
+                            self.xyz + other.cell[axis, :][None, :],
+                            axis=0)
+            atom = np.append(other.atom, self.atom)
+            sc = self.sc.append(other.sc, axis)
+        return self.__class__(xyz, atom=atom, sc=sc)
+
 
     def add(self, other):
         """
