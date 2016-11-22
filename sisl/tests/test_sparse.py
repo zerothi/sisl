@@ -5,6 +5,7 @@ from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np
+import scipy as sc
 
 from sisl.sparse import SparseCSR
 
@@ -17,6 +18,8 @@ class TestSparseCSR(object):
     def test_init1(self):
         assert_equal(self.s1.dtype, np.int32)
         assert_equal(self.s2.dtype, np.float64)
+        assert_true(np.allclose(self.s1.data, self.s1.data))
+        assert_true(np.allclose(self.s2.data, self.s2.data))
 
     def test_init2(self):
         SparseCSR((10,100))
@@ -36,10 +39,19 @@ class TestSparseCSR(object):
                 assert_equal(s.shape, (10, 100, 3))
                 assert_equal(s.dim, 3)
 
+    def test_init3(self):
+        csr = sc.sparse.csr_matrix( (10,10), dtype=np.int32)
+        csr[0, 1] = 1
+        csr[0, 2] = 2
+        sp = SparseCSR(csr)
+        assert_equal(len(sp), 2)
+        assert_equal(sp[0, 1], 1)
+        assert_equal(sp[0, 2], 2)
+
     def test_create1(self):
-        self.s1[0,[1,2,3]] = 1.
+        self.s1[0,[1,2,3]] = 1
         assert_equal(self.s1.nnz, 3)
-        self.s1[2,[1,2,3]] = 1.
+        self.s1[2,[1,2,3]] = 1
         assert_equal(self.s1.nnz, 6)
         self.s1.empty(keep=True)
         assert_equal(self.s1.nnz, 6)
@@ -69,7 +81,7 @@ class TestSparseCSR(object):
         self.s1.empty()
 
     def test_finalize1(self):
-        self.s1[0,[1,2,3]] = 1.
+        self.s1[0,[1,2,3]] = 1
         self.s1[2,[1,2,3]] = 1.
         assert_false(self.s1.finalized)
         self.s1.finalize()
@@ -78,6 +90,22 @@ class TestSparseCSR(object):
         assert_true(self.s1.finalized)
         self.s1.empty()
         assert_false(self.s1.finalized)
+
+    def test_delitem1(self):
+        self.s1[0,[1,2,3]] = 1
+        assert_equal(len(self.s1), 3)
+        del self.s1[0,1]
+        assert_equal(len(self.s1), 2)
+        assert_equal(self.s1[0,1], 0)
+        assert_equal(self.s1[0,2], 1)
+        assert_equal(self.s1[0,3], 1)
+        self.s1[0,[1,2,3]] = 1
+        del self.s1[0,[1,3]]
+        assert_equal(len(self.s1), 1)
+        assert_equal(self.s1[0,1], 0)
+        assert_equal(self.s1[0,2], 1)
+        assert_equal(self.s1[0,3], 0)
+        self.s1.empty()
 
     def test_op1(self):
         for i in range(10):

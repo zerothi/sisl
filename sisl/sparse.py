@@ -14,9 +14,9 @@ import numpy as np
 # To speed up the extension algorithm we limit
 # the lookup table
 from numpy import where, insert, diff
-from numpy import array, asarray, empty, zeros
+from numpy import array, asarray, empty, zeros, arange
 from numpy import intersect1d, setdiff1d
-from numpy import argsort, unique
+from numpy import argsort, unique, in1d
 
 from sisl._help import ensure_array, get_dtype
 
@@ -105,21 +105,25 @@ class SparseCSR(object):
             # input sparse matrix.
             arg1 = arg1.tocsr()
 
+            if dtype is None:
+                dtype = arg1.dtype
+
             # Create sparse matrix (with only one entry per
             # row, we overwrite it immediately afterward)
-            self = self.__class__(arg1.shape, nnz=1, 
-                                  dim=dim, dtype=arg1.dtype)
-            
+            self.__init__(arg1.shape, nnz=1, dim=dim, dtype=dtype)
+
             self.ptr = arg1.indptr
             self.ncol = diff(self.ptr)
             self.col = arg1.indices
             # total number of sparse elements
             self._nnz = arg1.getnnz()
-            self._D = arg1.data
+            self._D = np.array(arg1.data, dtype=dtype)
             self._D.shape = (-1, 1)
 
             # This should also sort the entries...
             self.finalize()
+
+            return
 
         elif isinstance(arg1, tuple):
 
@@ -486,10 +490,42 @@ class SparseCSR(object):
     def __delitem__(self, key):
         """ Remove items from the sparse patterns """
         # Get indices of sparse data (-1 if non-existing)
-        index = self._get(key[0], key[1])
+        i = key[0]
+        index = self._get(i, key[1])
 
-        # When deleting, we should remove them from the sparse matrix
-        raise NotImplementedError("Deletion of a sparse element is not implemented yet.")
+        # First remove all negative indices.
+        # The element isn't there anyway...
+        index.sort()
+        index = index[index >= 0]
+        
+        if len(index) == 0:
+            # There are no elements to delete...
+            return
+
+        # Get short-hand
+        ptr = self.ptr
+        ncol = self.ncol
+        
+        # Get original values
+        oC = self.col[ptr[i]:ptr[i]+ncol[i]]
+        oD = self._D[ptr[i]:ptr[i]+ncol[i], :]
+
+        # Now create the compressed data...
+        index -= ptr[i]
+        keep = in1d(arange(ncol[i]), index, invert=True)
+
+        # Update new count of the number of
+        # non-zero elements
+        self.ncol[i] -= len(index)
+
+        # Now update the column indices and the data
+        self.col[ptr[i]:ptr[i]+self.ncol[i]] = oC[keep]
+        self._D[ptr[i]:ptr[i]+self.ncol[i], :] = oD[keep, :]
+        
+        # Once we remove some things, it is NOT
+        # finalized...
+        self._finalized = False
+        self._nnz -= len(index)
 
 
     def __getitem__(self, key):
@@ -627,25 +663,6 @@ class SparseCSR(object):
         return new
 
                 
-    @staticmethod
-    def fromcsr(self, csr, dim=1):
-        """ Return a new ``SparseCSR`` object from a csr matrix """
-
-        # Initialize a new matrix...
-        sd = self.__class__(csr.shape, nnzpr=1, nnz=csr.getnnz(), dim=dim, dtype=csr.dtype)
-
-        # Copy data...
-        sd.ptr[:] = csr.indptr[:]
-        # Create our own additional information in the CSR format
-        sd.ncol[:] = diff(sd.ptr)
-        sd.col[:] = csr.indices[:]
-        
-        # The data is only 1D
-        sd._D[:, 0] = csr.data[:]
-
-        return sd
-
-
     def tocsr(self, dim=0, **kwargs):
         """ Return the data in ``scipy.sparse.csr_matrix`` format
 
