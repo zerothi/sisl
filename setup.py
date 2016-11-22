@@ -115,7 +115,6 @@ def configuration(parent_package='', top_path=None):
 
 
 metadata['version'] = VERSION
-metadata['configuration'] = configuration
 if not ISRELEASED:
     metadata['version'] = VERSION + '-dev'
 
@@ -189,6 +188,10 @@ if __name__ == '__main__':
     
     # Be sure to import this before numpy setup
     from setuptools import setup
+
+    # Now we import numpy distutils for installation.
+    from numpy.distutils.core import setup
+    metadata['configuration'] = configuration
 
     # Main setup of python modules
     setup(**metadata)

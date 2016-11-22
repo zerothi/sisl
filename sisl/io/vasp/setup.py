@@ -8,4 +8,5 @@ def configuration(parent_package='', top_path=None):
     return config
 
 if __name__ == '__main__':
-    print('This is the wrong setup.py file to run')
+    from numpy.distutils.core import setup
+    setup(**configuration(top_path='').todict())
