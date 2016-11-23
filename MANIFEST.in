@@ -1,4 +1,3 @@
-recursive-include sisl *.py
-graft scripts
+recursive-include sisl *.py *.f90
 include LICENSE
 include requirements.txt setup.cfg README.md
