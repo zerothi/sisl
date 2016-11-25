@@ -9,15 +9,18 @@ def configuration(parent_package='', top_path=None):
     config = Configuration('siesta', parent_package, top_path)
     
     all_info = get_info('ALL')
-    sources = ['write_hsx.f90',
-               'read_hsx_header.f90',
-               'read_hsx.f90',
-               'read_hs_header.f90',
-               'read_hs.f90',
-               'read_tshs_header.f90',
-               'read_tshs.f90',
-               'read_tshs_header_extra.f90',
-               'read_tshs_extra.f90',
+    sources = [
+        'free_unit.f90',
+        'write_hsx.f90',
+        'read_hsx_header.f90',
+        'read_hsx.f90',
+        'read_hs_header.f90',
+        'read_hs.f90',
+        'read_tshs_sizes.f90',
+        'read_tshs_geom.f90',
+        'read_tshs_cell.f90',
+        'read_tshs_es.f90',
+        'read_tshs_version.f90',
     ]
     config.add_extension('_siesta',
                          sources = [osp_join('src', s) for s in sources],

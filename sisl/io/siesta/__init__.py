@@ -6,6 +6,7 @@ from .._help import extendall
 
 from .sile import *
 from .bands import *
+from .binaries import *
 from .fdf import *
 from .out import *
 from .siesta import *
@@ -18,6 +19,7 @@ __all__ = []
 extendall(__all__, 'sisl.io.siesta.sile')
 
 extendall(__all__, 'sisl.io.siesta.bands')
+extendall(__all__, 'sisl.io.siesta.binaries')
 extendall(__all__, 'sisl.io.siesta.fdf')
 extendall(__all__, 'sisl.io.siesta.out')
 extendall(__all__, 'sisl.io.siesta.siesta')
