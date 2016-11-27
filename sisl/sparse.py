@@ -99,41 +99,68 @@ class SparseCSR(object):
            are removed
         """
 
+        # step size in sparse elements
+        # If there isn't enough room for adding
+        # a non-zero element, the # of elements
+        # for the insert row is increased at least by this number
+        self._ns = 10
+
         if isspmatrix(arg1):
             # This is a sparse matrix
             # The data-type is infered from the
             # input sparse matrix.
             arg1 = arg1.tocsr()
+            self.__init__((arg1.data, arg1.indices, arg1.indptr),
+                          dim=dim, dtype=dtype, **kwargs)
 
-            if dtype is None:
-                dtype = arg1.dtype
+        elif isinstance(arg1, (tuple, list)):
 
-            # Create sparse matrix (with only one entry per
-            # row, we overwrite it immediately afterward)
-            self.__init__(arg1.shape, nnz=1, dim=dim, dtype=dtype)
+            if isinstance(arg1[0], Integral):
+                self.__init_shape(arg1, dim=dim, dtype=dtype,
+                                  nnzpr=nnzpr, nnz=nnz,
+                                  **kwargs)
 
-            self.ptr = arg1.indptr
-            self.ncol = diff(self.ptr)
-            self.col = arg1.indices
-            # total number of sparse elements
-            self._nnz = arg1.getnnz()
-            self._D = np.array(arg1.data, dtype=dtype)
-            self._D.shape = (-1, 1)
-
-            # This should also sort the entries...
-            self.finalize()
-
-            return
-
-        elif isinstance(arg1, tuple):
-
-            # The shape of the data...
-            if len(arg1) == 2:
-                # extend to extra dimension
-                arg1 = arg1 + (dim,)
             elif len(arg1) != 3:
-                raise ValueError("unrecognized shape input, either a 2-tuple or 3-tuple is required")
+                raise ValueError(('The sparse array *must* be created '
+                                  'with data, indices, indptr'))
+            else:
 
+                if dtype is None:
+                    # The first element is the data
+                    dtype = arg1[0].dtype
+                    
+                # The first *must* be some sort of array
+                if 'shape' in kwargs:
+                    shape = kwargs['shape']
+                else:
+                    M = len(arg1[2])-1
+                    N = ( (np.amax(arg1[1]) // M) + 1) * M
+                    shape = (M, N)
+
+                self.__init_shape(shape, dim=dim, dtype=dtype,
+                                  nnz=1,
+                                  **kwargs)
+                
+                # Copy data to the arrays
+                self.ptr = arg1[2]
+                self.ncol = diff(self.ptr)
+                self.col = arg1[1]
+                self._nnz = len(self.col)
+                self._D = np.empty([len(arg1[1]), self.shape[-1]], dtype=self.dtype)
+                self._D[:, 0] = arg1[0]
+                
+                self.finalize()
+
+    def __init_shape(self, arg1, dim=1, dtype=None,
+                     nnzpr=20, nnz=None,
+                     **kwargs):
+
+        # The shape of the data...
+        if len(arg1) == 2:
+            # extend to extra dimension
+            arg1 = arg1 + (dim,)
+        elif len(arg1) != 3:
+            raise ValueError("unrecognized shape input, either a 2-tuple or 3-tuple is required")
 
         # Set default dtype
         if dtype is None:
@@ -162,12 +189,6 @@ class SparseCSR(object):
         nnzpr = max(nnzpr, 1)
         nnz = max(nnz, nnzpr * M)
             
-        # step size in sparse elements
-        # If there isn't enough room for adding
-        # a non-zero element, the # of elements
-        # for the insert row is increased at least by this number
-        self._ns = 10
-
         # Store number of columns currently hold
         # in the sparsity pattern
         self.ncol = np.zeros([M], np.int32)
@@ -187,7 +208,6 @@ class SparseCSR(object):
         self._finalized = False
 
 
-        
     def empty(self, keep=False):
         """ Delete all sparse information from the sparsity pattern
 

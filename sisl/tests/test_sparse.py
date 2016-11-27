@@ -44,6 +44,32 @@ class TestSparseCSR(object):
         csr[0, 1] = 1
         csr[0, 2] = 2
         sp = SparseCSR(csr)
+        assert_equal(sp.dtype, np.int32)
+        assert_equal(sp.shape, (10, 10, 1))
+        assert_equal(len(sp), 2)
+        assert_equal(sp[0, 1], 1)
+        assert_equal(sp[0, 2], 2)
+        sp = SparseCSR(csr, dtype=np.float64)
+        assert_equal(sp.shape, (10, 10, 1))
+        assert_equal(sp.dtype, np.float64)
+        assert_equal(len(sp), 2)
+        assert_equal(sp[0, 1], 1)
+        assert_equal(sp[0, 2], 2)
+
+    def test_init4(self):
+        csr = sc.sparse.csr_matrix( (10,10), dtype=np.int32)
+        csr[0, 1] = 1
+        csr[0, 2] = 2
+        print(csr.indices, csr.indptr)
+        sp = SparseCSR((csr.data, csr.indices, csr.indptr))
+        assert_equal(sp.dtype, np.int32)
+        assert_equal(sp.shape, (10, 10, 1))
+        assert_equal(len(sp), 2)
+        assert_equal(sp[0, 1], 1)
+        assert_equal(sp[0, 2], 2)
+        sp = SparseCSR((csr.data, csr.indices, csr.indptr), dtype=np.float64)
+        assert_equal(sp.shape, (10, 10, 1))
+        assert_equal(sp.dtype, np.float64)
         assert_equal(len(sp), 2)
         assert_equal(sp[0, 1], 1)
         assert_equal(sp[0, 2], 2)
