@@ -103,6 +103,17 @@ git tag -a "$v" -m "$MSG"
 # Publish on pypi
 python setup.py sdist bdist_wheel
 twine upload dist/sisl-$v*
+
+# In case conda works
+which conda
+if [ $? -eq 0 ]; then
+    conda config --set anaconda_upload no
+    mkdir -p dist-conda
+    ln -s conda.yaml meta.yaml
+    conda build --output-folder dist-conda .
+    rm meta.yaml
+fi
+
 # Revert release tag
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 False:" setup.py
 git add setup.py
