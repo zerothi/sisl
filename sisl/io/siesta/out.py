@@ -62,12 +62,17 @@ class outSileSiesta(SileSiesta):
 
         # Read in data
         xyz = []
+        spec = []
         atom = []
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
             xyz.append( [float(x) for x in line[:3]] )
-            atom.append(line[3])
+            spec.append(line[3])
+            try:
+                atom.append(line[5])
+            except:
+                pass
             line = self.readline()
 
         # Now we have the atomic coordinates
@@ -101,7 +106,11 @@ class outSileSiesta(SileSiesta):
         elif not Ang:
             xyz *= Bohr2Ang
 
-        geom = Geometry(xyz, atom, sc=cell)
+        try:
+            geom = Geometry(xyz, atom, sc=cell)
+        except:
+            geom = Geometry(xyz, spec, sc=cell)
+
         if all:
             tmp = self.read_geom(last, all)
             if tmp is None:
