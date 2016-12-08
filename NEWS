@@ -1,0 +1,49 @@
+0.8.0
+=====
+
+This release introduces many API changes and a much more stream-lined
+interface for interacting with sisl.
+
+You are heavily encouraged to update your distribution.
+
+Here is a compressed list of changes:
+
+- sdata is now an input AND output dependent command.
+  It first reads the input and output files, in a first run, then
+  it determines the options for the given set of files.
+  Secondly, the sdata command uses "position dependent" options.
+  This means that changing the order of options may change the output.
+- tbtncSile
+  * Correct vector currents (for xsf files)
+  * bug-fix for Gamma-only calculations
+  * returned DOS is now correctly in 1/eV (older versions returned 1/Ry)
+  * fixed sdata atomic[orbital] ranges such that, e.g. `--atom [1-2][3-5]`
+    (for atom 1 and 2 and only orbitals 3, 4 and 5 on those atoms.)
+  * DOS queries now has an extra argument (E) which returns only for the
+    given energy.
+  * When storing tables in sdata this now adds information regarding
+    each column at the top (instead of at the bottom).
+    Furthermore, the information is more descriptive
+- Changed all `square` named arguments to `orthogonal`
+- Added nsc field to xyz files (to retain number of supercells)
+- Added `move` function for geometry (same as translate)
+- Added `prepend` function, equivalent to `append`, but adding the
+  atoms in the beginning instead of the end
+- Fixed many bugs related to the use of Python-ranges (as opposed to numpy ranges)
+- SparseCSR now enables operations:
+    a = SparseCSR(...)
+    a = a * 2 + 2
+  is now viable. This enables easy scaling, translation etc. using the
+  sparse matrix format (very handy for magnetic fields).
+- Enabled `del` for SparseCSR, i.e. `del SparseCSR(..)[0, 1]` will
+  remove the element, completely.
+- Enabled reading of the TSHS file from SIESTA 4.1, now we may easily interact
+  with SIESTA.
+- Moved version.py to info.py
+- Moved scripts to `entry_points`, this makes scripts intrinsic in the module
+  and one may import and use the commands as their command-line equivalents.
+- Added many more tests, thus further stabilizing sisl
+
+  I would really like help with creating more tests!
+  Please help if you can!
+
