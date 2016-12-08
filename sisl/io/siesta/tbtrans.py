@@ -387,7 +387,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
     Tbulk = transmission_bulk
 
     def DOS(self, E=None, avg=True):
-        """ Return the Green function DOS.
+        """ Return the Green function DOS (1/eV).
 
         Parameters
         ----------
@@ -396,11 +396,11 @@ class tbtncSileSiesta(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_E('DOS', avg=avg, E=E)
+        return self._value_E('DOS', avg=avg, E=E) / Ry2eV
     DOS_Gf = DOS
 
     def ADOS(self, elec, E=None, avg=True):
-        """ Return the DOS of the spectral function from `elec`.
+        """ Return the DOS of the spectral function from `elec` (1/eV).
 
         Parameters
         ----------
@@ -411,11 +411,11 @@ class tbtncSileSiesta(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_E('ADOS', elec, avg=avg, E=E)
+        return self._value_E('ADOS', elec, avg=avg, E=E) / Ry2eV
     DOS_A = ADOS
 
     def BDOS(self, elec, E=None, avg=True):
-        """ Return the bulk DOS of `elec`.
+        """ Return the bulk DOS of `elec` (1/eV).
 
         Parameters
         ----------
@@ -426,7 +426,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_E('DOS', elec, avg=avg, E=E)
+        return self._value_E('DOS', elec, avg=avg, E=E) / Ry2eV
     DOS_bulk = BDOS
     BulkDOS = BDOS
 
