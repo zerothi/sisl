@@ -386,41 +386,47 @@ class tbtncSileSiesta(SileCDFSIESTA):
         return self._value_avg('T', elec, avg=avg)
     Tbulk = transmission_bulk
 
-    def DOS(self, avg=True):
+    def DOS(self, E=None, avg=True):
         """ Return the Green function DOS.
 
         Parameters
         ----------
+        E : int (None)
+           optionally only return the DOS of atoms at a given energy point
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_avg('DOS', avg=avg)
+        return self._value_E('DOS', avg=avg, E=E)
     DOS_Gf = DOS
 
-    def ADOS(self, elec, avg=True):
+    def ADOS(self, elec, E=None, avg=True):
         """ Return the DOS of the spectral function from `elec`.
 
         Parameters
         ----------
         elec: str
            electrode originating spectral function
+        E : int (None)
+           optionally only return the DOS of atoms at a given energy point
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_avg('ADOS', elec, avg=avg)
+        return self._value_E('ADOS', elec, avg=avg, E=E)
     DOS_A = ADOS
 
-    def BDOS(self, elec, avg=True):
+    def BDOS(self, elec, E=None, avg=True):
         """ Return the bulk DOS of `elec`.
 
         Parameters
         ----------
         elec: str
            electrode where the bulk DOS is returned
+        E : int (None)
+           optionally only return the DOS of atoms at a given energy point
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_avg('DOS', elec, avg=avg)
+        return self._value_E('DOS', elec, avg=avg, E=E)
     DOS_bulk = BDOS
     BulkDOS = BDOS
 
