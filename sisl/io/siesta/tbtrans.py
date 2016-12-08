@@ -29,6 +29,7 @@ __all__ += ['dHncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
+eV2Ry = unit_convert('eV', 'Ry')
 
 
 class tbtncSileSiesta(SileCDFSIESTA):
@@ -321,12 +322,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
     def chemical_potential(self, elec):
         """ Return the chemical potential associated with the electrode `elec` """
-        return self._value('mu', elec)
+        return self._value('mu', elec) * Ry2eV
     mu = chemical_potential
 
     def electronic_temperature(self, elec):
         """ Return temperature of the electrode electronic distribution """
-        return self._value('kT', elec)
+        return self._value('kT', elec) * Ry2eV
     kT = electronic_temperature
 
     def transmission(self, elec_from, elec_to, avg=True):
@@ -396,7 +397,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_E('DOS', avg=avg, E=E) / Ry2eV
+        return self._value_E('DOS', avg=avg, E=E) * eV2Ry
     DOS_Gf = DOS
 
     def ADOS(self, elec, E=None, avg=True):
@@ -411,7 +412,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_E('ADOS', elec, avg=avg, E=E) / Ry2eV
+        return self._value_E('ADOS', elec, avg=avg, E=E) * eV2Ry
     DOS_A = ADOS
 
     def BDOS(self, elec, E=None, avg=True):
@@ -426,7 +427,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         avg: bool (True)
            whether the returned DOS is k-averaged
         """
-        return self._value_E('DOS', elec, avg=avg, E=E) / Ry2eV
+        return self._value_E('DOS', elec, avg=avg, E=E) * eV2Ry
     DOS_bulk = BDOS
     BulkDOS = BDOS
 
@@ -1314,7 +1315,7 @@ class dHncSileSiesta(SileCDFSIESTA):
 
         warn_E = True
         if ilvl in [3,4]:
-            Es = np.array(lvl.variables['E'][:]) / Ry2eV
+            Es = np.array(lvl.variables['E'][:]) * eV2Ry
 
             iE = 0
             if len(Es) > 0:
@@ -1389,7 +1390,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                                        'unit' : "Ry"}, **self._cmp_args)
             for i in range(ham.spin):
                 sl[-2] = i
-                v1[sl] = ham._data._D[:, i].real / Ry2eV ** ham._E_order
+                v1[sl] = ham._data._D[:, i].real * eV2Ry ** ham._E_order
 
             v2 = self._crt_var(lvl, 'ImdH', 'f8', dim,
                                chunksizes=csize, 
@@ -1397,7 +1398,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                                        'unit' : "Ry"}, **self._cmp_args)
             for i in range(ham.spin):
                 sl[-2] = i
-                v2[sl] = ham._data._D[:, i].imag / Ry2eV ** ham._E_order
+                v2[sl] = ham._data._D[:, i].imag * eV2Ry ** ham._E_order
 
         else:
             v = self._crt_var(lvl, 'dH', 'f8', dim,
@@ -1406,7 +1407,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                                       'unit' : "Ry"},  **self._cmp_args)
             for i in range(ham.spin):
                 sl[-2] = i
-                v[sl] = ham._data._D[:, i] / Ry2eV ** ham._E_order
+                v[sl] = ham._data._D[:, i] * eV2Ry ** ham._E_order
 
 
 add_sile('dH.nc', dHncSileSiesta)
