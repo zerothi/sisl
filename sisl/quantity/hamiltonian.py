@@ -243,7 +243,7 @@ class Hamiltonian(object):
     __iter__ = iter_linear
 
 
-    def construct(self, dR, param):
+    def construct(self, dR, param, eta=False):
         """ Automatically construct the Hamiltonian model based on ``dR`` and associated hopping integrals ``param``.
 
         Parameters
@@ -256,6 +256,8 @@ class Hamiltonian(object):
            coupling constants corresponding to the ``dR``
            ranges. ``param[0,:]`` are the tight-binding parameter
            for the all atoms within ``dR[0]`` of each atom.
+        eta : `bool` (`False`)
+           whether an ETA will be printed...
         """
         # Ensure that we are dealing with a numpy array
         param = np.array(param)
@@ -328,6 +330,14 @@ class Hamiltonian(object):
         # Convert to 1000 atoms spherical radii
         iR = int(4 / 3 * np.pi * d ** 3 / na * 1000)
 
+        # Get number of atoms
+        na = len(self.geom)
+        na_run = 0
+
+        from time import time
+        from sys import stdout
+        t0 = time()
+
         # Do the loop
         for ias, idxs in self.geom.iter_block(iR=iR):
             # Loop the atoms inside
@@ -339,6 +349,16 @@ class Hamiltonian(object):
                 for ix, h in zip(idx, param):
                     # Set the tight-binding parameters
                     self[ia, ix] = h
+
+            if eta:
+                na_run += len(ias)
+                na -= len(ias)
+                t1 = time()
+                # calculate hours, minutes, seconds
+                m, s = divmod( float(t1-t0)/na_run * na, 60)
+                h, m = divmod(m, 60)
+                stdout.write("Hamiltonian.construct() ETA = {0:d}h {1:d}m {2:.2f}s\r".format(int(h), int(m), s))
+                stdout.flush()
 
         print_equal(eq_atoms)
 
