@@ -184,14 +184,11 @@ class Geometry(SuperCellChild):
         return np.amax([a.dR for a in self.atom])
 
     @property
-    def atoms(self):
-        """ Returns the atoms (mainly for backwards compatibility) """
-        return self._atom
-
-    @property
     def atom(self):
         """ Returns the atomic species """
         return self._atom
+    # Backwards compatability (do not use)
+    atoms = atom
 
     @property
     def no_s(self):
@@ -251,8 +248,7 @@ class Geometry(SuperCellChild):
             self.na, self.no, len(spec))
         for z in spec:
             s += '\n   [{0}], '.format(str(spec[z][1]))
-        return s[
-            :-2] + '\n }},\n nsc: [{1}, {2}, {3}], dR: {0}\n}}'.format(self.dR, *self.nsc)
+        return s[:-2] + '\n }},\n nsc: [{1}, {2}, {3}], dR: {0}\n}}'.format(self.dR, *self.nsc)
 
     def iter_species(self):
         """
