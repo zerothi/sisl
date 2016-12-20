@@ -53,10 +53,10 @@ class gridncSileSiesta(SileCDFSIESTA):
         grid = Grid([nz, ny, nx], bc=Grid.Periodic, sc=sc,
                     dtype=v.dtype)
 
-        if len(v[:].shape) == 3:
-            grid.grid = v[:, :, :]
+        if len(v.shape) == 3:
+            grid.grid[:,:,:] = v[:, :, :]
         else:
-            grid.grid = v[idx, :, :, :]
+            grid.grid[:,:,:] = v[idx, :, :, :]
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2

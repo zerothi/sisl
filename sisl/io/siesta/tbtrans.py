@@ -46,7 +46,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             if name in self._data:
                 return self._data[name]
 
-        v = self._variable(name, tree=tree)
+        v = self._variable(self, name, tree=tree)
         wkpt = self.wkpt
 
         # Perform normalization

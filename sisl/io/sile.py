@@ -632,7 +632,7 @@ class SileCDF(BaseSile):
         if self._access > 0:
             if name in self._data:
                 return self._data[name]
-        return self._variables(self, name, tree=tree)[:]
+        return self._variables(self, name, tree=tree)
     
     def _value(self, name, tree=None):
         """ Local method for obtaining the data from the SileCDF.
