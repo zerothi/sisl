@@ -46,7 +46,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             if name in self._data:
                 return self._data[name]
 
-        v = self._variable(self, name, tree=tree)
+        v = self._variable(name, tree=tree)
         wkpt = self.wkpt
 
         # Perform normalization
@@ -1009,14 +1009,35 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 # Grab the information
                 if ns._krng is None:
-                    data = ns._tbt.transmission(e1, e2, avg=True)
+                    data = ns._tbt.transmission(e1, e2, avg=True)[ns._Erng]
                 else:
-                    data = ns._tbt.transmission(e1, e2, avg=ns._krng)
-                ns._data.append(data[ns._Erng,...])
+                    data = ns._tbt.transmission(e1, e2, avg=ns._krng)[ns._Erng]
+                data.shape = (-1,)
+                ns._data.append(data)
                 ns._data_header.append('T:{}-{}[G]'.format(e1, e2))
-        p.add_argument('--transmission', '-T',nargs=2, metavar=('ELEC1','ELEC2'),
+        p.add_argument('-T','--transmission',nargs=2, metavar=('ELEC1','ELEC2'),
                        action=DataT,
                        help='Store the transmission between two electrodes.')
+
+        class DataBT(argparse.Action):
+            @dec_collect_action
+            @dec_ensure_E
+            def __call__(self, parser, ns, value, option_string=None):
+                e = value[0]
+                if e not in ns._tbt.elecs:
+                    raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
+
+                # Grab the information
+                if ns._krng is None:
+                    data = ns._tbt.transmission_bulk(e, avg=True)[ns._Erng]
+                else:
+                    data = ns._tbt.transmission_bulk(e, avg=ns._krng)[ns._Erng]
+                data.shape = (-1,)
+                ns._data.append(data)
+                ns._data_header.append('BT:{}[G]'.format(e))
+        p.add_argument('-BT','--transmission-bulk', nargs=1, metavar='ELEC',
+                       action=DataBT,
+                       help='Store the bulk transmission of an electrode.')
 
         class DataDOS(argparse.Action):
             @dec_collect_action
