@@ -1005,6 +1005,14 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
                 e2 = values[1]
                 if e2 not in ns._tbt.elecs:
+                    if e2.strip() == '.':
+                        for e2 in ns._tbt.elecs:
+                            if e2 != e1:
+                                try: # catches if T isn't calculated
+                                    self(parser, ns, [e1, e2], option_string)
+                                except:
+                                    pass
+                        return
                     raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
 
                 # Grab the information
@@ -1025,6 +1033,13 @@ class tbtncSileSiesta(SileCDFSIESTA):
             def __call__(self, parser, ns, value, option_string=None):
                 e = value[0]
                 if e not in ns._tbt.elecs:
+                    if e.strip() == '.':
+                        for e in ns._tbt.elecs:
+                            try: # catches if B isn't calculated
+                                self(parser, ns, [e], option_string)
+                            except:
+                                pass
+                        return
                     raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
 
                 # Grab the information
@@ -1048,6 +1063,13 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     # we are storing the spectral DOS
                     e = value[0]
                     if e not in ns._tbt.elecs:
+                        if e.strip() == '.':
+                            for e in ns._tbt.elecs:
+                                try: # catches if DOS isn't calculated
+                                    self(parser, ns, [e], option_string)
+                                except:
+                                    pass
+                            return
                         raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                     # Grab the information
                     if ns._krng is None:
@@ -1088,6 +1110,13 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 # we are storing the Bulk DOS
                 e = value[0]
                 if e not in ns._tbt.elecs:
+                    if e.strip() == '.':
+                        for e in ns._tbt.elecs:
+                            try: # catches if BDOS isn't calculated
+                                self(parser, ns, [e], option_string)
+                            except:
+                                pass
+                        return
                     raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                 # Grab the information
                 if ns._krng is None:
@@ -1113,6 +1142,14 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
                 e2 = values[1]
                 if e2 not in ns._tbt.elecs:
+                    if e2.strip() == '.':
+                        for e2 in ns._tbt.elecs:
+                            if e1 != e2:
+                                try: # catches if T-eig isn't calculated
+                                    self(parser, ns, [e1, e2], option_string)
+                                except:
+                                    pass
+                        return
                     raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
 
                 # Grab the information
