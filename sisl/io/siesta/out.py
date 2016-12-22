@@ -34,31 +34,72 @@ class outSileSiesta(SileSiesta):
     This enables reading the output quantities from the SIESTA output.
     """
 
-    @Sile_fh_open
-    def read_geom(self, last=True, all=False):
-        """ Reads the geometry from the SIESTA output file
+    def _ensure_species(self, species):
+        """ Ensures that the species list is a list with entries (converts `None` to a list). """
+        if species is None:
+            return [Atom(i) for i in range(150)]
+        return species
 
-        Parameters
-        ----------
-        last: bool, True
-           only read the last geometry 
-        all: bool, False
-           return a list of all geometries (like an MD)
-           If `True` `last` is ignored
+
+    @Sile_fh_open
+    def read_species(self):
+        """ Reads the species from the top of the output file.
+
+        If wanting the species this HAS to be the first routine called.
+
+        It returns an array of `Atom` objects which may easily be indexed.
         """
 
-        # Read until outcoor is found
         line = self.readline()
-        while not 'outcoor' in line:
+        while not 'Species number:' in line:
             line = self.readline()
             if line == '':
+                # We fake the species by direct atomic number
                 return None
+
+        atom = []
+        while 'Species number:' in line:
+            ls = line.split()
+            atom.append(Atom(int(ls[5]), tag=ls[7]))
+            line = self.readline()
+
+        return atom
+    
+
+    def _read_sc_outcell(self):
+        """ Wrapper for reading the unit-cell from the outcoor block """
+
+        # Read until outcell is found
+        line = self.readline()
+        while not 'outcell: Unit cell vectors' in line:
+            line = self.readline()
+
+        Ang = 'Ang' in line
+
+        # We read the unit-cell vectors (in Ang)
+        cell = []
+        line = self.readline()
+        while len(line.strip()) > 0:
+            line = line.split()
+            cell.append( [float(x) for x in line[:3]] )
+            line = self.readline()
+
+        cell = np.array(cell, np.float64)
+
+        if not Ang:
+            cell *= Bohr2Ang
+
+        return SuperCell(cell)
+            
+
+    def _read_geom_outcoor(self, line, last, all, species=None):
+        """ Wrapper for reading the geometry as in the outcoor output """
+        species = self._ensure_species(species)
 
         # Now we have outcoor
         scaled = 'scaled' in line
         fractional = 'fractional' in line
         Ang = 'Ang' in line
-        # Else it must be in Bohr
 
         # Read in data
         xyz = []
@@ -75,22 +116,7 @@ class outSileSiesta(SileSiesta):
                 pass
             line = self.readline()
 
-        # Now we have the atomic coordinates
-        # read in the unit-cell
-        # Read until outcell is found
-        line = self.readline()
-        while not 'outcell: Unit cell vectors' in line:
-            line = self.readline()
-
-        # We read the unit-cell vectors (in Ang)
-        cell = []
-        line = self.readline()
-        while len(line.strip()) > 0:
-            line = line.split()
-            cell.append( [float(x) for x in line[:3]] )
-            line = self.readline()
-            
-        cell = np.array(cell, np.float64)
+        cell = self._read_sc_outcell()
         xyz = np.array(xyz, np.float64)
 
         # Now create the geometry
@@ -109,15 +135,89 @@ class outSileSiesta(SileSiesta):
         try:
             geom = Geometry(xyz, atom, sc=cell)
         except:
-            geom = Geometry(xyz, spec, sc=cell)
+            geom = Geometry(xyz, [species[int(i)-1] for i in spec], sc=cell)
 
         if all:
-            tmp = self.read_geom(last, all)
+            tmp = self._read_geom_outcoor(last, all, species)
             if tmp is None:
                 return [geom]
             return tmp.extend([geom])
+        
+        return geom
+        
+    def _read_geom_atomic(self, line, species=None):
+        """ Wrapper for reading the geometry as in the outcoor output """
+        species = self._ensure_species(species)
+
+        # Now we have outcoor
+        Ang = 'Ang' in line
+
+        # Read in data
+        xyz = []
+        atom = []
+        line = self.readline()
+        while len(line.strip()) > 0:
+            line = line.split()
+            xyz.append( [float(x) for x in line[1:4]] )
+            atom.append(species[ int(line[4])-1 ])
+            line = self.readline()
+
+        # Retrieve the unit-cell
+        cell = self._read_sc_outcell()
+        # Convert xyz
+        xyz = np.array(xyz, np.float64)
+        if not Ang:
+            xyz *= Bohr2Ang
+
+        geom = Geometry(xyz, atom, sc=cell)
+
         return geom
 
+
+    @Sile_fh_open
+    def read_geom(self, last=True, all=False):
+        """ Reads the geometry from the SIESTA output file
+
+        Parameters
+        ----------
+        last: bool, True
+           only read the last geometry 
+        all: bool, False
+           return a list of all geometries (like an MD)
+           If `True` `last` is ignored
+        """
+
+        # The first thing we do is reading the species.
+        # Sadly, if this routine is called AFTER some other
+        # reading process, it may fail...
+        # Perhaps we should rewind to ensure this...
+        # But...
+        species = self.read_species()
+
+        def type_coord(line):
+            if 'outcoor' in line:
+                return 1
+            elif 'siesta: Atomic coordinates' in line:
+                return 2
+            # Signal not found
+            return 0
+
+        # Read until a coordinate block is found
+        line = self.readline()
+        while type_coord(line) == 0:
+            line = self.readline()
+            if line == '':
+                break
+
+        coord = type_coord(line)
+
+        if coord == 1:
+            return self._read_geom_outcoor(line, last, all, species)
+        elif coord == 2:
+            return self._read_geom_atomic(line, species)
+
+        # Signal not found
+        return None
 
     @Sile_fh_open
     def read_force(self, last=True, all=False):
