@@ -432,9 +432,24 @@ class tbtncSileSiesta(SileCDFSIESTA):
     BulkDOS = BDOS
 
 
+    def _E_T_sorted(self, avg=True):
+        """ Internal routine for returning energies and transmission in a sorted array """
+        E = self.E
+        idx_sort = np.argsort(E)
+        # Get transmission
+        T = self.transmission(elec_from, elec_to, avg)
+        return E[idx_sort], T[idx_sort]
+        
     def current(self, elec_from, elec_to, avg=True):
         """ Return the current from `from` to `to` using the weights in the file. """
-        #T = self.transmission(elec_from, elec_to, avg)
+        # Get energies
+        E, T = self._E_T_sorted(avg)
+
+        # Get chemical potentials
+        mu_f = self.chemical_potential(elec_from)
+        mu_t = self.chemical_potential(elec_to)
+
+        # Calculate the current
         return NotImplemented
     
 
