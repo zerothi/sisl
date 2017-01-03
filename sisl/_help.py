@@ -8,10 +8,12 @@ import numpy as np
 
 __all__ = ['array_fill_repeat', '_str', 'isiterable', 'ensure_array']
 __all__ += ['get_dtype']
+__all__ += ['is_python3']
 
 
 # Base-class for string object checks
-if sys.version_info >= (3, 0):
+is_python3 = sys.version_info >= (3, 0)
+if is_python3:
     _str = str
 else:
     _str = basestring

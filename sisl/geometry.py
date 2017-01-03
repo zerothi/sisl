@@ -287,6 +287,29 @@ class Geometry(SuperCellChild):
     # Default iteration module to loop over atoms
     __iter__ = iter_linear
 
+    def iR(self, na=1000, iR=20):
+        """ Return an integer number of maximum radii (`self.dR`) which holds approximately `na` atoms
+
+        Parameters
+        ----------
+        na : int
+           number of atoms within the radius
+        iR : int
+           initial `iR` value, which the sphere is estitametd from
+        """
+        ia = np.random.randint(len(self) - 1)
+
+        # default block iterator
+        d = self.dR
+        # Number of atoms in within 20 * dR
+        naiR = len(self.close(ia, dR=d * iR))
+
+        # Convert to na atoms spherical radii
+        iR = int(4 / 3 * np.pi * d ** 3 / naiR * na)
+
+        return iR
+
+
     def iter_block(self, iR=10, dR=None):
         """
         Returns an iterator for performance critical looping.
@@ -361,8 +384,7 @@ class Geometry(SuperCellChild):
             # Only select those who have not been runned yet
             all_idx[0] = all_idx[0][np.where(not_passed[all_idx[0]])[0]]
             if len(all_idx[0]) == 0:
-                raise ValueError(
-                    'Internal error, please report to the developers')
+                raise ValueError('Internal error, please report to the developers')
 
             # Tell the next loop to skip those passed
             not_passed[all_idx[0]] = False

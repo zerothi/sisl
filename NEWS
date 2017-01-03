@@ -42,6 +42,13 @@ Here is a compressed list of changes:
 - Moved version.py to info.py
 - Moved scripts to `entry_points`, this makes scripts intrinsic in the module
   and one may import and use the commands as their command-line equivalents.
+- Hamiltonian.construct now takes a single argument which is the function
+  for the inner loop.
+  The old behaviour may be achieved by doing either:
+  >>> func = Hamiltonian.create_construct(dR, param)
+  >>> Hamiltonian.construct(func)
+  or
+  >>> Hamiltonian.construct((dR, param))
 - Added many more tests, thus further stabilizing sisl
 
   I would really like help with creating more tests!

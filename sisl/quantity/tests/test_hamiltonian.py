@@ -90,14 +90,14 @@ class TestHamiltonian(object):
         self.HS.empty()
 
     def test_set2(self):
-        self.H.construct((0.1,1.5), (1.,0.1))
+        self.H.construct([(0.1,1.5), (1.,0.1)])
         assert_true(self.H[0,0] == 1.)
         assert_true(self.H[1,0] == 0.1)
         assert_true(self.H[0,1] == 0.1)
         self.H.empty()
 
     def test_set3(self):
-        self.HS.construct((0.1, 1.5), ((1., 2.), (0.1, 0.2)))
+        self.HS.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
         assert_true(self.HS.H[0,0] == 1.)
         assert_true(self.HS.S[0,0] == 2.)
         assert_true(self.HS.H[1,1] == 1.)
@@ -127,7 +127,7 @@ class TestHamiltonian(object):
         # Test of HUGE construct
         g = self.g.tile(10, 0).tile(10, 1).tile(10, 2)
         H = Hamiltonian(g)
-        H.construct( (0.1, 1.5), (1., 0.1) )
+        H.construct([(0.1, 1.5), (1., 0.1)])
         assert_true(H.H[0,0] == 1.)
         assert_true(H.H[1,1] == 1.)
         assert_true(H.H[1,0] == 0.1)
@@ -311,7 +311,7 @@ class TestHamiltonian(object):
         # Test of eigenvalues
         g = self.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
-        H.construct((0.1,1.5), (1.,0.1))
+        H.construct([(0.1,1.5), (1.,0.1)])
         H.eigh()
         H.eigsh(n=4)
         H.empty()
@@ -319,7 +319,7 @@ class TestHamiltonian(object):
 
     def test_eig2(self):
         # Test of eigenvalues
-        self.HS.construct((0.1,1.5), ((1.,1.), (0.1,0.1)))
+        self.HS.construct([(0.1,1.5), ((1.,1.), (0.1,0.1))])
         self.HS.eigh()
         self.HS.empty()
 

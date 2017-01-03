@@ -10,7 +10,7 @@ import numpy as np
 import scipy.linalg as sli
 import scipy.sparse.linalg as ssli
 
-from sisl._help import get_dtype
+from sisl._help import get_dtype, is_python3
 from sisl.sparse import SparseCSR
 
 __all__ = ['Hamiltonian', 'TightBinding']
@@ -243,8 +243,22 @@ class Hamiltonian(object):
     __iter__ = iter_linear
 
 
-    def construct(self, dR, param, eta=False):
-        """ Automatically construct the Hamiltonian model based on ``dR`` and associated hopping integrals ``param``.
+    def create_construct(self, dR, param):
+        """ Returns a simple function for passing to the `construct` function.
+
+        This is simply to leviate the creation of simplistic
+        functions needed for setting up the Hamiltonian.
+
+        Basically this returns a function:
+        >>> def func(self, ia, idxs):
+        >>>     idx = self.geom.close(ia, dR=dR, idx=idxs)
+        >>>     for ix, p in zip(idx, param):
+        >>>         self[ia, ix] = p
+
+        Note
+        ----
+        This function only works for geometries with one orbital
+        per atom.
 
         Parameters
         ----------
@@ -256,79 +270,68 @@ class Hamiltonian(object):
            coupling constants corresponding to the ``dR``
            ranges. ``param[0,:]`` are the tight-binding parameter
            for the all atoms within ``dR[0]`` of each atom.
-        eta : `bool` (`False`)
-           whether an ETA will be printed...
         """
-        # Ensure that we are dealing with a numpy array
-        param = np.array(param)
-
-        if len(dR) + 1 == len(param):
-            R = np.hstack((dR[0] / 100, np.asarray(dR)))
-        elif len(dR) == len(param):
-            R = np.asarray(dR).copy()
-        else:
-            raise ValueError("Length of dR and param must be the same "
-                             "or dR one shorter than param. "
-                             "One tight-binding parameter for each radii.")
-
-        if not self.orthogonal:
-            if len(param[0]) != 2:
-                raise ValueError("Number of parameters "
-                                 "for each element is not 2. "
-                                 "You must make len(param[0] == 2) for non-orthogonal Hamiltonians.")
-
-        if np.any(np.diff(self.geom.lasto) > 1):
-            warnings.warn("Automatically setting a tight-binding model "
-                          "for systems with atoms having more than 1 "
-                          "orbital is not adviced. Please do it your-self.")
-
-        eq_atoms = []
-        def print_equal(eq_atoms):
-            if len(eq_atoms) > 0:
-                s = ("The geometry has one or more atoms having the same "
-                     "atomic position. "
-                     "The atoms are within {} Ang "
-                     "of each other.\n".format(R[0]))
-                
-                for ia, ja in eq_atoms:
-                    s += "  {0:7d} -- {1:7d}\n".format(ia, ja)
-                warnings.warn(s)
-
-        def append_equal(eq_atoms, ia, idx):
-            # Append to the list of equal atoms the atomic indices
-            if len(idx) > 1:
-                tmp = list(idx)
-                # only add in "one" direction
-                for ja in tmp:
-                    if ja > ia:
-                        eq_atoms.append( (ia,ja) )
+        if not is_python3:
+            from itertools import izip as zip
+        def func(self, ia, idxs):
+            idx = self.geom.close(ia, dR=dR, idx=idxs)
+            for ix, p in zip(idx, param):
+                self[ia, ix] = p
+        return func
 
 
-        if len(self.geom) < 1501:
-            # there is no need to do anything complex
-            # for small systems
-            for ia in self.geom:
-                # Find atoms close to 'ia'
-                idx = self.geom.close(ia, dR=R)
-                append_equal(eq_atoms, ia, idx[0])
+    def construct(self, func, na_iR=1000, eta=False):
+        """ Automatically construct the Hamiltonian model based on a function that does the setting up of the Hamiltonian
 
-                for ix, h in zip(idx, param):
-                    # Set the tight-binding parameters
-                    self[ia, ix] = h
+        This may be called in two variants.
 
-            print_equal(eq_atoms)
-            return self
+        1. Pass a function (``func``), see e.g. ``create_construct`` 
+           which does the setting up.
+        2. Pass a tuple/list in ``func`` which consists of two 
+           elements, one is ``dR`` the radii parameters for
+           the corresponding tight-binding parameters.
+           The second is the tight-binding parameters
+           corresponding to the ``dR[i]`` elements.
+           In this second case all atoms must only have
+           one orbital.
 
-        # check how many atoms are within the standard 10 dR
-        # range of some random atom.
-        ia = np.random.randint(len(self.geom) - 1)
+        Parameters
+        ----------
+        func: `callable` or `tuple/list`
+           this function *must* take 3 arguments.
+           `func(self, ia, idxs)` where `self` is the
+           `Hamiltonian` object, `ia` is the currently
+           running atom and `idxs` is all atoms such
+           that we can limit the `close` function.
+           Inside this function one can do whatever
+           one wishes.
+           An example `func` could be:
+           
+           >>> def func(self, ia, idxs):
+           >>>     idx = self.geom.close(ia, dR=[0.1, 1.44], idx=idxs)
+           >>>     self.H[ia, idx[0]] = 0.   # on-site
+           >>>     self.H[ia, idx[1]] = -2.7 # nearest-neighbour
+        na_iR : `int=1000`
+           number of atoms within the sphere for speeding
+           up the `iter_block` loop.
+        eta: `bool=False`
+           whether an ETA will be printed
+        """
 
-        # default block iterator
-        d = self.geom.dR
-        na = len(self.geom.close(ia, dR=d * 10))
+        if not callable(func):
+            if not isinstance(func, (tuple, list)):
+                raise ValueError('Passed `func` which is not a function, nor tuple/list of `dR, param`')
 
-        # Convert to 1000 atoms spherical radii
-        iR = int(4 / 3 * np.pi * d ** 3 / na * 1000)
+            if np.any(np.diff(self.geom.lasto) > 1):
+                raise ValueError("Automatically setting a tight-binding model "
+                              "for systems with atoms having more than 1 "
+                              "orbital *must* be done by your-self. You have to define a corresponding `func`.")
+
+            # Convert to a proper function
+            func = self.create_construct(func[0], func[1])
+            
+        
+        iR = self.geom.iR(na_iR)
 
         # Get number of atoms
         na = len(self.geom)
@@ -342,27 +345,24 @@ class Hamiltonian(object):
         for ias, idxs in self.geom.iter_block(iR=iR):
             # Loop the atoms inside
             for ia in ias:
-                # Find atoms close to 'ia'
-                idx = self.geom.close(ia, dR=R, idx=idxs)
-                append_equal(eq_atoms, ia, idx[0])
-
-                for ix, h in zip(idx, param):
-                    # Set the tight-binding parameters
-                    self[ia, ix] = h
+                func(self, ia, idxs)
 
             if eta:
+                # calculate the remaining atoms to process
                 na_run += len(ias)
                 na -= len(ias)
                 t1 = time()
                 # calculate hours, minutes, seconds
                 m, s = divmod( float(t1-t0)/na_run * na, 60)
                 h, m = divmod(m, 60)
-                stdout.write("Hamiltonian.construct() ETA = {0:d}h {1:d}m {2:.2f}s\r".format(int(h), int(m), s))
+                stdout.write("Hamiltonian.construct() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
 
-        print_equal(eq_atoms)
+        if eta:
+            stdout.write('\n')
+            stdout.flush()
 
-
+            
     @property
     def finalized(self):
         """ Whether the contained data is finalized and non-used elements have been removed """
