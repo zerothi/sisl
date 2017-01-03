@@ -1386,7 +1386,7 @@ class Geometry(SuperCellChild):
                     if ret_coord:
                         ret[c][i] = concat((ret[c][i], sret[c][i]), axis=0)
                     if ret_dist:
-                        ret[d][i] = concat((ret[d][i], sret[d][i]), axis=1)
+                        ret[d][i] = concat((ret[d][i], sret[d][i]), axis=0)
             elif len(sret[0]) > 0:
                 # We can add it to the list (len(dR) == 1)
                 # We add the atomic offset for the supercell index
@@ -1394,7 +1394,7 @@ class Geometry(SuperCellChild):
                 if ret_coord:
                     ret[c][0] = concat((ret[c][0], sret[c]), axis=0)
                 if ret_dist:
-                    ret[d][0] = concat((ret[d][0], sret[d]), axis=1)
+                    ret[d][0] = concat((ret[d][0], sret[d]), axis=0)
 
         if len(dR) == 1:
             if ret_coord and ret_dist:

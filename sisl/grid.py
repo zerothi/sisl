@@ -112,7 +112,7 @@ class Grid(SuperCellChild):
         del grid.grid
         
         # Create new mesh-grid
-        dnew = np.concat(np.meshgrid(
+        dnew = np.concatenate(np.meshgrid(
             np.linspace(0, 1, shape[0]),
             np.linspace(0, 1, shape[1]),
             np.linspace(0, 1, shape[2])), axis=0)
