@@ -16,6 +16,10 @@ from sisl.sparse import SparseCSR
 __all__ = ['Hamiltonian', 'TightBinding']
 
 
+if not is_python3:
+    from itertools import izip as zip
+
+
 class Hamiltonian(object):
     """ Hamiltonian object containing the coupling constants between orbitals.
 
@@ -271,8 +275,6 @@ class Hamiltonian(object):
            ranges. ``param[0,:]`` are the tight-binding parameter
            for the all atoms within ``dR[0]`` of each atom.
         """
-        if not is_python3:
-            from itertools import izip as zip
         def func(self, ia, idxs):
             idx = self.geom.close(ia, dR=dR, idx=idxs)
             for ix, p in zip(idx, param):
@@ -568,9 +570,6 @@ class Hamiltonian(object):
         axis  : integer
            the axis that will be cut
         """
-        if not is_python3:
-            from itertools import izip as zip
-
         new_w = None
         # Create new geometry
         with warnings.catch_warnings(record=True) as w:
@@ -725,9 +724,6 @@ class Hamiltonian(object):
     def sp2HS(cls, geom, H, S=None):
         """ Returns a tight-binding model from a preset H, S and Geometry
         """
-        if not is_python3:
-            from itertools import izip as zip
-
         # Calculate number of connections
         nc = 0
 

@@ -7,8 +7,7 @@ import collections
 import numpy as np
 
 __all__ = ['array_fill_repeat', '_str', 'isiterable', 'ensure_array']
-__all__ += ['get_dtype']
-__all__ += ['is_python3']
+__all__ += ['get_dtype', 'is_python3']
 
 
 # Base-class for string object checks
