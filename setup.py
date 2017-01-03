@@ -166,7 +166,7 @@ git_revision = '{git}'
 git_revision_short = git_revision[:7]
 
 if not release:
-    version = version + '-' + git_revision_short
+    version = version + '-' + git_revision
 """
     # If we are in git we try and fetch the
     # git version as well
