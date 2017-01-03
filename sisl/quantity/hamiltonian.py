@@ -254,7 +254,7 @@ class Hamiltonian(object):
         functions needed for setting up the Hamiltonian.
 
         Basically this returns a function:
-        >>> def func(self, ia, idxs):
+        >>> def func(self, ia, idxs, idxs_xyz=None):
         >>>     idx = self.geom.close(ia, dR=dR, idx=idxs)
         >>>     for ix, p in zip(idx, param):
         >>>         self[ia, ix] = p
@@ -263,6 +263,8 @@ class Hamiltonian(object):
         ----
         This function only works for geometries with one orbital
         per atom.
+        If you have more than one orbital on any atom, you should 
+        define your own function.
 
         Parameters
         ----------
@@ -275,8 +277,8 @@ class Hamiltonian(object):
            ranges. ``param[0,:]`` are the tight-binding parameter
            for the all atoms within ``dR[0]`` of each atom.
         """
-        def func(self, ia, idxs):
-            idx = self.geom.close(ia, dR=dR, idx=idxs)
+        def func(self, ia, idxs, idxs_xyz=None):
+            idx = self.geom.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz)
             for ix, p in zip(idx, param):
                 self[ia, ix] = p
         return func
@@ -300,17 +302,15 @@ class Hamiltonian(object):
         Parameters
         ----------
         func: `callable` or `tuple/list`
-           this function *must* take 3 arguments.
-           `func(self, ia, idxs)` where `self` is the
-           `Hamiltonian` object, `ia` is the currently
-           running atom and `idxs` is all atoms such
-           that we can limit the `close` function.
-           Inside this function one can do whatever
-           one wishes.
+           this function *must* take 4 arguments.
+           1. Is the Hamiltonian object it-self (`self`)
+           2. Is the currently examined atom (`ia`)
+           3. Is the currently bounded indices (`idxs`)
+           4. Is the currently bounded indices atomic coordinates (`idxs_xyz`)
            An example `func` could be:
            
-           >>> def func(self, ia, idxs):
-           >>>     idx = self.geom.close(ia, dR=[0.1, 1.44], idx=idxs)
+           >>> def func(self, ia, idxs, idxs_xyz=None):
+           >>>     idx = self.geom.close(ia, dR=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz)
            >>>     self.H[ia, idx[0]] = 0.   # on-site
            >>>     self.H[ia, idx[1]] = -2.7 # nearest-neighbour
         na_iR : `int=1000`
@@ -345,9 +345,15 @@ class Hamiltonian(object):
 
         # Do the loop
         for ias, idxs in self.geom.iter_block(iR=iR):
+            
+            # Get all the indexed atoms...
+            # This speeds up the searching for
+            # coordinates...
+            idxs_xyz = self.geom.coords(idx=idxs)
+            
             # Loop the atoms inside
             for ia in ias:
-                func(self, ia, idxs)
+                func(self, ia, idxs, idxs_xyz)
 
             if eta:
                 # calculate the remaining atoms to process
@@ -355,13 +361,13 @@ class Hamiltonian(object):
                 na -= len(ias)
                 t1 = time()
                 # calculate hours, minutes, seconds
-                m, s = divmod( float(t1-t0)/na_run * na, 60)
+                m, s = divmod(float(t1-t0)/na_run * na, 60)
                 h, m = divmod(m, 60)
                 stdout.write("Hamiltonian.construct() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
 
         if eta:
-            stdout.write('\n')
+            stdout.write("Hamiltonian.construct() {0:23s}\n".format('DONE'))
             stdout.flush()
 
             
@@ -613,8 +619,8 @@ class Hamiltonian(object):
             # Figure out if the Hamiltonian has interactions
             # to 'isc'
             sub = H[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:]
-            sub = np.unique(np.hstack(
-                (sub, S[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:])))
+            sub = np.unique(np.concatenate(
+                (sub, S[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:]), axis=1))
             if len(sub) == 0:
                 break
 

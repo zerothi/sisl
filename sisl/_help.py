@@ -6,7 +6,8 @@ import collections
 
 import numpy as np
 
-__all__ = ['array_fill_repeat', '_str', 'isiterable', 'ensure_array']
+__all__ = ['array_fill_repeat', '_str', 'ensure_array']
+__all__ += ['isndarray', 'isiterable']
 __all__ += ['get_dtype', 'is_python3']
 
 
@@ -51,6 +52,10 @@ def isiterable(obj):
     """ Returns whether the object is an iterable or not """
     return isinstance(obj, _Iterable)
 
+
+def isndarray(arr):
+    """ Returns ``True`` if the input object is a ``numpy.ndarray`` object """
+    return isinstance(arr, _ndarray)
 
 # Private variables for speeding up ensure_array
 _fromiter = np.fromiter

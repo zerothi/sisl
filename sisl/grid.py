@@ -112,10 +112,10 @@ class Grid(SuperCellChild):
         del grid.grid
         
         # Create new mesh-grid
-        dnew = np.vstack(np.meshgrid(
+        dnew = np.concat(np.meshgrid(
             np.linspace(0, 1, shape[0]),
             np.linspace(0, 1, shape[1]),
-            np.linspace(0, 1, shape[2])))
+            np.linspace(0, 1, shape[2])), axis=0)
         dnew.shape = (-1, 3)
    
         grid.grid = interpn(dold, self.grid, dnew, *args, **kwargs)

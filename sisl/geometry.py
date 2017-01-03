@@ -13,7 +13,8 @@ import warnings
 import numpy as np
 
 from ._help import _str, is_python3
-from ._help import array_fill_repeat, ensure_array, isiterable
+from ._help import array_fill_repeat, ensure_array
+from ._help import isiterable, isndarray
 from .utils import *
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
@@ -397,7 +398,7 @@ class Geometry(SuperCellChild):
             # Now we want to yield the stuff revealed
             # all_idx[0] contains the elements that should be looped
             # all_idx[1] contains the indices that can be searched
-            yield ensure_array(all_idx[0]), ensure_array(all_idx[1])
+            yield all_idx[0], all_idx[1]
 
         if np.any(not_passed):
             raise ValueError(
@@ -1043,6 +1044,7 @@ class Geometry(SuperCellChild):
                  isc=None,
                  dR=None,
                  idx=None,
+                 idx_xyz=None,
                  ret_coord=False,
                  ret_dist=False):
         """
@@ -1074,6 +1076,8 @@ class Geometry(SuperCellChild):
         idx       : (None), array_like
             List of atoms that will be considered. This can
             be used to only take out a certain atoms.
+        idx_xyz : (None), array_like
+            The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
         ret_coord : (False), boolean
             If true this method will return the coordinates
             for each of the couplings.
@@ -1089,7 +1093,7 @@ class Geometry(SuperCellChild):
 
         if dR is None:
             dR = np.array([self.dR], np.float64)
-        else:
+        elif not isndarray(dR):
             dR = ensure_array(dR, np.float64)
 
         # Maximum distance queried
@@ -1097,15 +1101,30 @@ class Geometry(SuperCellChild):
 
         # Convert to actual array
         if idx is not None:
-            idx = ensure_array(idx)
-            
+            if not isndarray(idx):
+                idx = ensure_array(idx)
+        else:
+            # If idx is None, then idx_xyz cannot be used!
+            idx_xyz = None
+
         if isinstance(xyz_ia, Integral):
             off = self.xyz[xyz_ia, :]
-        else:
+        elif not isndarray(xyz_ia):
             off = ensure_array(xyz_ia, np.float64)
+        else:
+            off = xyz_ia
+
+        # Calculate the complete offset
+        foff = self.sc.offset(isc)[:] - off[:]
 
         # Get atomic coordinate in principal cell
-        dxa = self.coords(isc=isc, idx=idx)
+        if idx_xyz is None:
+            dxa = self.coords(idx=idx) + foff[None, :]
+        else:
+            # For extremely large systems re-using the
+            # idx_xyz is faster than indexing
+            # a very large array
+            dxa = idx_xyz[:, :] + foff[None, :]
 
         # Immediately downscale by easy checking
         # This will reduce the computation of the vector-norm
@@ -1115,16 +1134,17 @@ class Geometry(SuperCellChild):
         # For smaller ones this will actually be a slower
         # method...
         # TODO should we abstract the methods dependent on size?
-        ix = log_and(log_and(fabs(dxa[:, 0] - off[0]) <= max_dR,
-                             fabs(dxa[:, 1] - off[1]) <= max_dR),
-                     fabs(dxa[:, 2] - off[2]) <= max_dR)
+        ix = log_and(log_and(fabs(dxa[:, 0]) <= max_dR,
+                             fabs(dxa[:, 1]) <= max_dR),
+                     fabs(dxa[:, 2]) <= max_dR)
+
         if idx is None:
             # This is because of the pre-check of the
             # distance checks
             idx = where(ix)[0]
         else:
             idx = idx[ix]
-        dxa = dxa[ix, :] - off[None, :]
+        dxa = dxa[ix, :]
 
         # Create default return
         ret = [[np.empty([0], np.int32)] * len(dR)]
@@ -1277,9 +1297,11 @@ class Geometry(SuperCellChild):
             raise NotImplementedError(
                 'Changing bond-length dependent on several lacks implementation.')
 
+
     def close(self, xyz_ia,
             dR=None,
             idx=None,
+            idx_xyz=None,
             ret_coord=False,
             ret_dist=False):
         """
@@ -1311,6 +1333,8 @@ class Geometry(SuperCellChild):
 
         idx     : (None), array_like
             List of indices for atoms that are to be considered
+        idx_xyz : (None), array_like
+            The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
         ret_coord : (False), boolean
             If true this method will return the coordinates
             for each of the couplings.
@@ -1324,13 +1348,7 @@ class Geometry(SuperCellChild):
 
         # Get global calls
         # Is faster for many loops
-        append = np.append
-        vstack = np.vstack
-        hstack = np.hstack
-
-        # Convert to actual array
-        if idx is not None:
-            idx = ensure_array(idx)
+        concat = np.concatenate
 
         ret = [[np.empty([0], np.int32)] * len(dR)]
         i = 0
@@ -1352,6 +1370,7 @@ class Geometry(SuperCellChild):
                 self.sc.sc_off[s, :],
                 dR=dR,
                 idx=idx,
+                idx_xyz=idx_xyz,
                 ret_coord=ret_coord,
                 ret_dist=ret_dist)
             
@@ -1363,19 +1382,19 @@ class Geometry(SuperCellChild):
             if isinstance(sret[0], list):
                 # we have a list of arrays (len(dR) > 1)
                 for i, x in enumerate(sret[0]):
-                    ret[0][i] = append(ret[0][i], x + na)
+                    ret[0][i] = concat((ret[0][i], x + na), axis=0)
                     if ret_coord:
-                        ret[c][i] = vstack((ret[c][i], sret[c][i]))
+                        ret[c][i] = concat((ret[c][i], sret[c][i]), axis=0)
                     if ret_dist:
-                        ret[d][i] = hstack((ret[d][i], sret[d][i]))
+                        ret[d][i] = concat((ret[d][i], sret[d][i]), axis=1)
             elif len(sret[0]) > 0:
                 # We can add it to the list (len(dR) == 1)
                 # We add the atomic offset for the supercell index
-                ret[0][0] = append(ret[0][0], sret[0] + na)
+                ret[0][0] = concat((ret[0][0], sret[0] + na), axis=0)
                 if ret_coord:
-                    ret[c][0] = vstack((ret[c][0], sret[c]))
+                    ret[c][0] = concat((ret[c][0], sret[c]), axis=0)
                 if ret_dist:
-                    ret[d][0] = hstack((ret[d][0], sret[d]))
+                    ret[d][0] = concat((ret[d][0], sret[d]), axis=1)
 
         if len(dR) == 1:
             if ret_coord and ret_dist:
