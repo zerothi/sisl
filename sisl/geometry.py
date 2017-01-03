@@ -1081,6 +1081,7 @@ class Geometry(SuperCellChild):
         # Common numpy used functions (reduces function look-ups)
         where = np.where
         log_and = np.logical_and
+        fabs = np.fabs
 
         if dR is None:
             dR = np.array([self.dR], np.float64)
@@ -1110,9 +1111,9 @@ class Geometry(SuperCellChild):
         # For smaller ones this will actually be a slower
         # method...
         # TODO should we abstract the methods dependent on size?
-        ix = log_and(log_and(dxa[:, 0] <= max_dR,
-                             dxa[:, 1] <= max_dR),
-                     dxa[:, 2] <= max_dR)
+        ix = log_and(log_and(fabs(dxa[:, 0]) <= max_dR,
+                             fabs(dxa[:, 1]) <= max_dR),
+                     fabs(dxa[:, 2]) <= max_dR)
         if idx is None:
             # This is because of the pre-check of the
             # distance checks
@@ -1151,13 +1152,18 @@ class Geometry(SuperCellChild):
         # The linear algebra norm function could be used, but it
         # has a lot of checks, hence we do it manually
         #xaR = np.linalg.norm(dxa,axis=-1)
-        xaR = (dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2) ** .5
+        # It is faster to do a single multiplacation than
+        # a sqrt of MANY values
+        # After having reduced the dxa array, we may then
+        # take the sqrt
+        max_dR = max_dR * max_dR
+        xaR = dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2
         ix = where(xaR <= max_dR)[0]
+        # Reduce search space
+        d = xaR[ix] ** .5
         if ret_coord:
             xa = dxa[ix, :] + off[None, :]
-        if ret_dist:
-            d = xaR[ix]
-        del dxa  # just because these arrays could be very big...
+        del xaR, dxa  # just because these arrays could be very big...
 
         # Check whether we only have one range to check.
         # If so, we need not reduce the index space
@@ -1172,15 +1178,13 @@ class Geometry(SuperCellChild):
             return ret[0]
 
         if np.any(np.diff(dR) < 0.):
-            raise ValueError('Proximity checks for several quantities ' +
-                             'at a time requires ascending dR values.')
+            raise ValueError(('Proximity checks for several quantities '
+                              'at a time requires ascending dR values.'))
 
-        # Reduce search space!
         # The more neigbours you wish to find the faster this becomes
         # We only do "one" heavy duty search,
         # then we immediately reduce search space to this subspace
-        xaR = xaR[ix]
-        tidx = where(xaR <= dR[0])[0]
+        tidx = where(d <= dR[0])[0]
         ret = [[ensure_array(idx[ix[tidx]])]]
         i = 0
         if ret_coord:
@@ -1196,7 +1200,7 @@ class Geometry(SuperCellChild):
             # Notice that this sub-space reduction will never
             # allow the same indice to be in two ranges (due to
             # numerics)
-            tidx = where(log_and(dR[i - 1] < xaR, xaR <= dR[i]))[0]
+            tidx = where(log_and(dR[i - 1] < d, d <= dR[i]))[0]
             ret[0].append(ensure_array(idx[ix[tidx]]))
             if ret_coord:
                 ret[rc].append(xa[tidx])

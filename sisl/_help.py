@@ -45,9 +45,19 @@ def array_fill_repeat(array, size, cls=None):
             return np.tile(np.array(array, dtype=cls), reps)
         return np.array(array, dtype=cls)
 
+# To speed up isiterable
+_Iterable = collections.Iterable
+
 def isiterable(obj):
     """ Returns whether the object is an iterable or not """
-    return isinstance(obj, collections.Iterable)
+    return isinstance(obj, _Iterable)
+
+
+# Private variables for speeding up ensure_array
+_fromiter = np.fromiter
+_ndarray = np.ndarray
+_array = np.array
+_asarray = np.asarray
 
 def ensure_array(arr, dtype=np.int32):
     """ Casts a number, list, tuple to a 1D array
@@ -65,17 +75,19 @@ def ensure_array(arr, dtype=np.int32):
     dtype : ``numpy.dtype``
        the data-type of the array
     """
-    if np.issubdtype(dtype, np.integer):
-        comp = Integral
-    elif np.issubdtype(dtype, np.float):
-        comp = Real
-    elif np.issubdtype(dtype, np.complex):
-        comp = Complex
-    if isinstance(arr, comp):
-        return np.array([arr], dtype)
+    # Complex is the highest common type
+    # Real, Integer inherit from Complex
+    # So basically this checks whether it is a single
+    # number
+    if isinstance(arr, Complex):
+        return _array([arr], dtype)
+    elif isinstance(arr, _ndarray):
+        return _asarray(arr, dtype)
     elif isiterable(arr):
-        return np.fromiter(arr, dtype)
-    return np.asarray(arr, dtype)
+        # a numpy.ndarray is also iterable
+        # hence we *MUST* check that before...
+        return _fromiter(arr, dtype)
+    return _asarray(arr, dtype)
 
 
 def get_dtype(var, int=None, other=None):
