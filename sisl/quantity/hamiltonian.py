@@ -568,6 +568,9 @@ class Hamiltonian(object):
         axis  : integer
            the axis that will be cut
         """
+        if not is_python3:
+            from itertools import izip as zip
+
         new_w = None
         # Create new geometry
         with warnings.catch_warnings(record=True) as w:
@@ -722,6 +725,9 @@ class Hamiltonian(object):
     def sp2HS(cls, geom, H, S=None):
         """ Returns a tight-binding model from a preset H, S and Geometry
         """
+        if not is_python3:
+            from itertools import izip as zip
+
         # Calculate number of connections
         nc = 0
 
