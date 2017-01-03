@@ -78,10 +78,10 @@ def ensure_array(arr, dtype=np.int32):
     # Real, Integer inherit from Complex
     # So basically this checks whether it is a single
     # number
-    if isinstance(arr, Complex):
-        return _array([arr], dtype)
-    elif isinstance(arr, _ndarray):
+    if isinstance(arr, _ndarray):
         return _asarray(arr, dtype)
+    elif isinstance(arr, Complex):
+        return _array([arr], dtype)
     elif isiterable(arr):
         # a numpy.ndarray is also iterable
         # hence we *MUST* check that before...

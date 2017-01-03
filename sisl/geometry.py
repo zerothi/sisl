@@ -12,7 +12,7 @@ import warnings
 
 import numpy as np
 
-from ._help import _str
+from ._help import _str, is_python3
 from ._help import array_fill_repeat, ensure_array, isiterable
 from .utils import *
 from .quaternion import Quaternion
@@ -21,6 +21,9 @@ from .atom import Atom
 
 __all__ = ['Geometry', 'sgeom']
 
+if not is_python3:
+    # Make range an iterator...
+    range = xrange
 
 
 class Geometry(SuperCellChild):
@@ -281,8 +284,7 @@ class Geometry(SuperCellChild):
           >>> for ia in self:
           >>>    <do something>
         """
-        for ia in range(len(self)):
-            yield ia
+        return range(len(self))
 
     # Default iteration module to loop over atoms
     __iter__ = iter_linear
@@ -394,7 +396,7 @@ class Geometry(SuperCellChild):
             # Now we want to yield the stuff revealed
             # all_idx[0] contains the elements that should be looped
             # all_idx[1] contains the indices that can be searched
-            yield all_idx[0], all_idx[1]
+            yield ensure_array(all_idx[0]), ensure_array(all_idx[1])
 
         if np.any(not_passed):
             raise ValueError(
@@ -631,7 +633,7 @@ class Geometry(SuperCellChild):
         # Pre-allocate geometry
         na = self.na * reps
         xyz = np.zeros([na, 3], np.float64)
-        atom = [None for i in range(na)]
+        atom = [None] * na
         dx = np.dot(np.arange(reps)[:, None], self.cell[axis, :][None, :])
         # Start the repetition
         ja = 0
@@ -1035,6 +1037,7 @@ class Geometry(SuperCellChild):
         return self.coords(self.a2isc(ia), self.sc2uc(ia))
 
 
+#    @profile
     def close_sc(self, xyz_ia,
                  isc=None,
                  dR=None,
@@ -1101,7 +1104,7 @@ class Geometry(SuperCellChild):
             off = ensure_array(xyz_ia, np.float64)
 
         # Get atomic coordinate in principal cell
-        dxa = self.coords(isc=isc, idx=idx) - off[None, :]
+        dxa = self.coords(isc=isc, idx=idx)
 
         # Immediately downscale by easy checking
         # This will reduce the computation of the vector-norm
@@ -1111,16 +1114,16 @@ class Geometry(SuperCellChild):
         # For smaller ones this will actually be a slower
         # method...
         # TODO should we abstract the methods dependent on size?
-        ix = log_and(log_and(fabs(dxa[:, 0]) <= max_dR,
-                             fabs(dxa[:, 1]) <= max_dR),
-                     fabs(dxa[:, 2]) <= max_dR)
+        ix = log_and(log_and(fabs(dxa[:, 0] - off[0]) <= max_dR,
+                             fabs(dxa[:, 1] - off[1]) <= max_dR),
+                     fabs(dxa[:, 2] - off[2]) <= max_dR)
         if idx is None:
             # This is because of the pre-check of the
             # distance checks
             idx = where(ix)[0]
         else:
             idx = idx[ix]
-        dxa = dxa[ix, :]
+        dxa = dxa[ix, :] - off[None, :]
 
         # Create default return
         ret = [[np.empty([0], np.int32)] * len(dR)]
@@ -1159,7 +1162,7 @@ class Geometry(SuperCellChild):
         max_dR = max_dR * max_dR
         xaR = dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2
         ix = where(xaR <= max_dR)[0]
-        # Reduce search space
+        # Reduce search space and correct distances
         d = xaR[ix] ** .5
         if ret_coord:
             xa = dxa[ix, :] + off[None, :]

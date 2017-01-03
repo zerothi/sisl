@@ -199,10 +199,8 @@ class SuperCell(object):
         """ Returns the supercell offset of the supercell index
         """
         if isc is None:
-            isc = [0, 0, 0]
-        return self.cell[0, :] * isc[0] + \
-            self.cell[1, :] * isc[1] + \
-            self.cell[2, :] * isc[2]
+            return np.array([0,0,0], np.float64)
+        return np.dot(isc, self.cell)
 
     def sc_index(self, sc_off):
         """ Returns the integer index in the sc_off list that corresponds to `sc_off`
