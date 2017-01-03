@@ -6,8 +6,13 @@ from __future__ import print_function, division
 import numpy as np
 
 from sisl.quantity import Hamiltonian
+from sisl._help import is_python3
 
 __all__ = ['DynamicalMatrix']
+
+
+if not is_python3:
+    from itertools import izip as zip
 
 
 class DynamicalMatrix(Hamiltonian):

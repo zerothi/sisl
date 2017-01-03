@@ -11,9 +11,14 @@ from .sile import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl.quantity import Hamiltonian
+from sisl._help import is_python3
 
 
 __all__ = ['HamiltonianSile']
+
+
+if not is_python3:
+    from itertools import izip as zip
 
 
 class HamiltonianSile(Sile):
