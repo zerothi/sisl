@@ -1034,11 +1034,11 @@ class Geometry(SuperCellChild):
         else:
             return self.xyz[idx, :] + offset[None, :]
 
+
     def axyzsc(self, ia):
         return self.coords(self.a2isc(ia), self.sc2uc(ia))
 
 
-#    @profile
     def close_sc(self, xyz_ia,
                  isc=None,
                  dR=None,
