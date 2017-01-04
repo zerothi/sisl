@@ -28,6 +28,7 @@ class Test(object):
     def test_nanotube(self):
         a = nanotube(1.42)
         a = nanotube(1.42, chirality=(3,5))
+        a = nanotube(1.42, chirality=(6,-3))
 
     def test_diamond(self):
         a = diamond()

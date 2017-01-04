@@ -595,8 +595,10 @@ class Hamiltonian(object):
             warnings.warn(new_w, UserWarning)
 
         # Now we need to re-create the tight-binding model
-        H = self.Hk()
-        S = self.Sk()
+        H = self.tocsr(0)
+        has_S = self.S_idx > 0
+        if has_S:
+            S = self.tocsr(self.S_idx)
         # they are created similarly, hence the following
         # should keep their order
 
@@ -619,8 +621,9 @@ class Hamiltonian(object):
             # Figure out if the Hamiltonian has interactions
             # to 'isc'
             sub = H[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:]
-            sub = np.unique(np.concatenate(
-                (sub, S[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:]), axis=1))
+            if has_S:
+                sub = np.unique(np.concatenate(
+                    (sub, S[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:]), axis=1))
             if len(sub) == 0:
                 break
 
@@ -653,7 +656,7 @@ class Hamiltonian(object):
         # Now we have a correct geometry, and
         # we are now ready to create the sparsity pattern
         # Reduce the sparsity pattern, first create the new one
-        ham = self.__class__(geom, nc=np.amax(self.ncol), spin=self.spin)
+        ham = self.__class__(geom, nnzpr=np.amax(self._data.ncol), spin=self.spin, orthogonal=self.orthogonal)
 
         def sco2sco(M, o, m, seps, axis):
             # Converts an o from M to m
@@ -672,30 +675,43 @@ class Hamiltonian(object):
                 return None, None, None
 
         # Copy elements
-        for jo in range(geom.no):
+        if has_S:
+            for jo in range(geom.no):
+                
+                # make smaller cut
+                sH = H[jo, :]
+                sS = S[jo, :]
 
-            # make smaller cut
-            sH = H[jo, :]
-            sS = S[jo, :]
-
-            for io, iH in zip(sH.indices, sH.data):
-                # Get the equivalent orbital in the smaller cell
-                o, ofp, ofm = sco2sco(self.geom, io, ham.geom, seps, axis)
-                if o is None:
-                    continue
-                ham[jo, o + ofp] = iH, S[jo, io]
-                ham[o, jo + ofm] = iH, S[jo, io]
-
-            if np.any(sH.indices != sS.indices):
-
-                # Ensure that S is also cut
-                for io, iS in zip(sS.indices, sS.data):
+                for io, iH in zip(sH.indices, sH.data):
                     # Get the equivalent orbital in the smaller cell
                     o, ofp, ofm = sco2sco(self.geom, io, ham.geom, seps, axis)
                     if o is None:
                         continue
-                    ham[jo, o + ofp] = H[jo, io], iS
-                    ham[o, jo + ofm] = H[jo, io], iS
+                    ham[jo, o + ofp] = iH, S[jo, io]
+                    ham[o, jo + ofm] = iH, S[jo, io]
+
+                if np.any(sH.indices != sS.indices):
+
+                    # Ensure that S is also cut
+                    for io, iS in zip(sS.indices, sS.data):
+                        # Get the equivalent orbital in the smaller cell
+                        o, ofp, ofm = sco2sco(self.geom, io, ham.geom, seps, axis)
+                        if o is None:
+                            continue
+                        ham[jo, o + ofp] = H[jo, io], iS
+                        ham[o, jo + ofm] = H[jo, io], iS
+
+        else:
+            for jo in range(geom.no):
+                sH = H[jo, :]
+
+                for io, iH in zip(sH.indices, sH.data):
+                    # Get the equivalent orbital in the smaller cell
+                    o, ofp, ofm = sco2sco(self.geom, io, ham.geom, seps, axis)
+                    if o is None:
+                        continue
+                    ham[jo, o + ofp] = iH
+                    ham[o, jo + ofm] = iH
 
         return ham
 

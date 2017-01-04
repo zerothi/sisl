@@ -138,6 +138,12 @@ class TestHamiltonian(object):
         assert_true(H.nnz == len(H) * 4)
         del H
 
+    @raises(ValueError)
+    def test_construct_raise(self):
+        # Test that construct fails with more than one
+        # orbital
+        self.H2.construct([(0.1, 1.5), (1., 0.1)])
+
     def test_op1(self):
         g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32)
@@ -234,6 +240,9 @@ class TestHamiltonian(object):
     def test_op3(self):
         g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32)
+        Hc = H.copy()
+        del Hc
+
         # Create initial stuff
         for i in range(10):
             j = range(i*4, i*4+3)
@@ -307,11 +316,31 @@ class TestHamiltonian(object):
         h = 1.j ** H
         assert_equal(h.dtype, np.complex128)
 
+    def test_cut1(self):
+        # Test of eigenvalues using a cut
+        # Hamiltonian
+        dR, param = [0.1, 1.5], [1., 0.1]
+
+        # Create reference
+        Hg = Hamiltonian(self.g)
+        Hg.construct([dR, param])
+        
+        g = self.g.tile(2, 0).tile(2, 1)
+        H = Hamiltonian(g)
+        H.construct([dR, param])
+        # Create cut Hamiltonian
+        Hc = H.cut(2, 1).cut(2, 0)
+        eigc = Hc.eigh()
+        eigg = Hg.eigh()
+        assert_true(np.allclose(Hg.eigh(), Hc.eigh()))
+        del Hc, H
+        
     def test_eig1(self):
         # Test of eigenvalues
+        dR, param = [0.1, 1.5], [1., 0.1]
         g = self.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
-        H.construct([(0.1,1.5), (1.,0.1)])
+        H.construct((dR, param), eta=True)
         H.eigh()
         H.eigsh(n=4)
         H.empty()

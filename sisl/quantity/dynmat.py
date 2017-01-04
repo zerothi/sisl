@@ -38,7 +38,7 @@ class DynamicalMatrix(Hamiltonian):
 
         # Create UC dynamical matrix
         dyn_sc = self.tocsr(0)
-        d_sc = d_sc.tocoo()
+        d_sc = dyn_sc.tocoo()
         d_uc = lil_matrix((self.no, self.no), dtype=d_sc.dtype)
 
         # Convert SC to UC

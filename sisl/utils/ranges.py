@@ -153,7 +153,7 @@ def lstranges(lst, cast=erange):
 #     file, None
 #   file[0-1] returns
 #     file, [0,1]
-def fileindex(f):
+def fileindex(f, cast=int):
     """ Parses a filename string into the filename and the indices.
     
     This range can be formatted like this:
@@ -165,10 +165,15 @@ def fileindex(f):
     if '[' not in f:
         return f, None
 
+    # Grab the filename
     f = f.split('[')
     fname = f.pop(0)
-    f = ''.join(f.split(']'))
-    rng = str2range(f)
+    # Re-join and remove the last ']'
+    f = '['.join(f)
+    if f[-1] == ']':
+        f = f[:-1]
+    ranges = strmap(cast, f)
+    rng = lstranges(ranges)
     if len(rng) == 1:
         return fname, rng[0]
     return fname, rng

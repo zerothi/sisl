@@ -80,5 +80,11 @@ class TestRanges(object):
         ranges = strmap(int, '1-2-5')
         assert_equal(lstranges(ranges), [1,3,5])
 
+    def test_fileindex1(self):
+        fname = 'hello[1]'
+        assert_equal(fileindex('hehlo')[1], None)
+        assert_equal(fileindex(fname)[1], 1)
+        assert_equal(fileindex('hehlo[1,2]')[1], [1,2])
+        assert_equal(fileindex('hehlo[1-2]')[1], [1,2])
+        assert_equal(fileindex('hehlo[1[1],2]')[1], [[1, [1]],2])
 
-        
