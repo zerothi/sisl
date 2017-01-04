@@ -623,7 +623,7 @@ class Hamiltonian(object):
             sub = H[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:]
             if has_S:
                 sub = np.unique(np.concatenate(
-                    (sub, S[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:]), axis=1))
+                    (sub, S[0:geom.no, idx * self.no:(idx + 1) * self.no].indices[:]), axis=0))
             if len(sub) == 0:
                 break
 

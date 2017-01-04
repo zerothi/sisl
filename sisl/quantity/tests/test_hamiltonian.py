@@ -334,7 +334,26 @@ class TestHamiltonian(object):
         eigg = Hg.eigh()
         assert_true(np.allclose(Hg.eigh(), Hc.eigh()))
         del Hc, H
+
+    def test_cut2(self):
+        # Test of eigenvalues using a cut
+        # Hamiltonian
+        dR, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+
+        # Create reference
+        Hg = Hamiltonian(self.g, orthogonal=False)
+        Hg.construct([dR, param])
         
+        g = self.g.tile(2, 0).tile(2, 1)
+        H = Hamiltonian(g, orthogonal=False)
+        H.construct([dR, param])
+        # Create cut Hamiltonian
+        Hc = H.cut(2, 1).cut(2, 0)
+        eigc = Hc.eigh()
+        eigg = Hg.eigh()
+        assert_true(np.allclose(Hg.eigh(), Hc.eigh()))
+        del Hc, H
+
     def test_eig1(self):
         # Test of eigenvalues
         dR, param = [0.1, 1.5], [1., 0.1]
