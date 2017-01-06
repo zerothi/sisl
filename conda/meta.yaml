@@ -1,0 +1,39 @@
+package:
+  name: sisl
+
+source:
+  git_url: ../
+  git_depth: 5
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - python
+    - six
+    - setuptools
+    - numpy >=1.9
+    - scipy
+    - netcdf4
+  run:
+    - python
+    - six
+    - numpy >=1.9
+    - scipy
+    - netcdf4
+
+test:
+  requires:
+    - nose
+  commands:
+    - sgeom -h
+    - sgrid -h
+    - sdata -h
+  imports:
+    - sisl
+    
+about:
+  home: https://zerothi.github.io/sisl/
+  license: LGPL-3.0
+  summary: 'Manipulating input/output files of DFT codes and simple tight-binding Hamiltonians.'

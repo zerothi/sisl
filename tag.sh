@@ -109,9 +109,7 @@ which conda
 if [ $? -eq 0 ]; then
     conda config --set anaconda_upload no
     mkdir -p dist-conda
-    ln -s conda.yaml meta.yaml
-    conda build --output-folder dist-conda .
-    rm meta.yaml
+    conda build --output-folder dist-conda conda
 fi
 
 # Revert release tag
