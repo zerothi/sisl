@@ -106,14 +106,26 @@ python setup.py sdist bdist_wheel
 twine upload dist/sisl-$v*
 
 # Publish on conda
-which conda
-if [ $? -eq 0 ]; then
+function run_conda {
     conda config --set anaconda_upload no
     rm -rf dist-conda
     conda build --output-folder dist-conda conda --python 2.7
     conda build --output-folder dist-conda conda --python 3.5
-fi
+}
 
+# Default to not have conda installed..
+has_conda=0
+which conda
+[ $? -eq 0 ] && has_conda=1
+if [ $has_conda -eq 0 ]; then
+    module purge
+    module load conda
+    which conda
+    [ $? -eq 0 ] && has_conda=1
+fi
+$has_conda -eq 1 ] && run_conda
+
+		    
 # Revert release tag
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 False:" setup.py
 git add setup.py
