@@ -195,6 +195,10 @@ class Hamiltonian(object):
             self._def_dim = -1
         self._data[key] = val
 
+        if not self.orthogonal:
+            warnings.warn(('Hamiltonian specification of both H and S simultaneously is deprecated. '
+                           'This functionality will be removed in a future release.'))
+
 
     def __get_H(self):
         self._def_dim = self.UP
