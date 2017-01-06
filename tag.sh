@@ -98,18 +98,20 @@ echo " -m '$MSG'"
 
 # Tagging and releasing
 git add setup.py
-git commit -s -m "Prepping for release"
+git commit -s -m "sisl release: $v"
 git tag -a "$v" -m "$MSG"
+
 # Publish on pypi
 python setup.py sdist bdist_wheel
 twine upload dist/sisl-$v*
 
-# In case conda works
+# Publish on conda
 which conda
 if [ $? -eq 0 ]; then
     conda config --set anaconda_upload no
-    mkdir -p dist-conda
-    conda build --output-folder dist-conda conda
+    rm -rf dist-conda
+    conda build --output-folder dist-conda conda --python 2.7
+    conda build --output-folder dist-conda conda --python 3.5
 fi
 
 # Revert release tag
