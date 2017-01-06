@@ -760,17 +760,15 @@ class Hamiltonian(object):
             if has_S:
                 nc = max(nc, S[i, :].getnnz())
 
-        if has_S:
-            ham = cls(geom, nnzpr=nc,
-                      orthogonal=False, dtype=H.dtype)
-        else:
-            ham = cls(geom, nnzpr=nc, dtype=H.dtype)
+        # Create the Hamiltonian
+        ham = cls(geom, nnzpr=nc,
+                  orthogonal=not has_S, dtype=H.dtype)
 
         # Copy data to the model
         H = H.tocoo()
         if has_S:
             for jo, io, h in zip(H.row, H.col, H.data):
-                ham[jo, io] = (h, S[jo, io])
+                ham.S[jo, io] = S[jo, io]
 
             # Convert S to coo matrix
             S = S.tocoo()

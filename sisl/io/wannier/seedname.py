@@ -88,7 +88,7 @@ class winSileW90(SileW90):
 
 
     @Sile_fh_open
-    def _read_es(self, geom, dtype=np.float64, **kwargs):
+    def _read_es(self, geom, dtype=np.complex128, **kwargs):
         """ Reads a Hamiltonian
 
         Reads the Hamiltonian model
@@ -114,12 +114,13 @@ class winSileW90(SileW90):
             nlines = nrpts + 15 - nrpts % 15
         
         ws = []
+        wextend = ws.extend
         for i in range(nlines // 15):
-            ws.extend([int(x) for x in self.readline().split()])
-        
+            wextend(map(int, self.readline().split()))
+            
         # Convert to numpy array
         nws = np.array(ws, np.int32).flatten()
-        del ws
+        del ws, wextend
 
         # Figure out the number of supercells
         nsc = [0, 0, 0]
@@ -129,7 +130,7 @@ class winSileW90(SileW90):
             if l == '':
                 break
 
-            isc = [int(x) for x in l.split()[:3]]
+            isc = [int(x) for x in l.split(None, 4)[:3]]
             nsc[0] = max(nsc[0], abs(isc[0]))
             nsc[1] = max(nsc[1], abs(isc[1]))
             nsc[2] = max(nsc[2], abs(isc[2]))
@@ -143,6 +144,7 @@ class winSileW90(SileW90):
         Hi = lil_matrix((geom.no, geom.no_s), dtype=dtype)
         
         self.fh.seek(0)
+        # Skip lines with wx
         for i in range(nlines // 15 + 3):
             self.readline()
         
@@ -157,21 +159,25 @@ class winSileW90(SileW90):
             # Get supercell and wannier functions
             # isc = idx[:3]
             # Hij = idx[3:5]
-            idx = [int(x) for x in ls[:5]]
+            idx = map(int, ls[:5])
+            i = idx[3] - 1
 
             hr = float(ls[5])
             hi = float(ls[6])
 
             # Get the offset
             off = geom.sc_index(idx[:3]) * geom.no
+            j = idx[4] - 1 + off
             
             if abs(hr) > cutoff:
-                Hr[idx[3]-1, idx[4]-1 + off] = hr
+                Hr[i, j] = hr
             if abs(hi) > cutoff:
-                Hi[idx[3]-1, idx[4]-1 + off] = hi
+                Hi[i, j] = hi
 
         if np.dtype(dtype).kind == 'c':
-            Hr.data[:] = Hr.data[:] + 1j*Hi.data[:]
+            Hr = Hr.tocsr()
+            Hi = Hi.tocsr()
+            Hr = Hr + 1j*Hi
 
         return Hamiltonian.sp2HS(geom, Hr)
 
