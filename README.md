@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/zerothi/sisl.svg?branch=master)](https://travis-ci.org/zerothi/sisl)
 [![DOI](https://zenodo.org/badge/19941/zerothi/sisl.svg)](https://zenodo.org/badge/latestdoi/19941/zerothi/sisl)
 [![codecov](https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
-[![conda](https://anaconda.org/zerothi/sisl/badges/downloads.svg)(https://anaconda.org/zerothi/sisl)
+[![conda](https://anaconda.org/zerothi/sisl/badges/installer/conda.svg)](https://anaconda.org/zerothi/sisl)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NGNU2AA3JXX94&lc=DK&item_name=Papior%2dCodes&item_number=codes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
 
 The [API documentation][sisl-api] can be found [here][sisl-api].
