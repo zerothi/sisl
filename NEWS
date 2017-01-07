@@ -1,7 +1,10 @@
 0.8.X
 =====
 
-
+- `Atoms` overhauled with a lot of the utility routines
+  inherent to the `Geometry` object.
+  It is now much faster to perform operations on this
+  object.
 
 
 0.8.0

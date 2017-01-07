@@ -22,7 +22,7 @@ from numbers import Integral
 
 import numpy as np
 
-from ._help import array_fill_repeat, _str
+from ._help import array_fill_repeat, ensure_array, _str
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
@@ -1093,6 +1093,8 @@ class Atoms(object):
         a list of unique specie indices
     """
 
+    __slots__ = ['_atom', '_specie']
+
     def __init__(self, atom=None, na=None):
 
         # Default value of the atom object
@@ -1139,12 +1141,14 @@ class Atoms(object):
         elif isinstance(atom, Atom):
             uatom = [atom]
             specie = [0]
+
         elif isinstance(atom, Atoms):
             # Ensure we make a copy to not operate
             # on the same data.
             catom = atom.copy()
             uatom = catom.atom[:]
             specie = catom.specie[:]
+
         else:
             raise ValueError('atom keyword was wrong input')
 
@@ -1154,11 +1158,15 @@ class Atoms(object):
 
         # Create atom and species objects
         self._atom = list(uatom)
+
         self._specie = array_fill_repeat(specie, na, cls=np.int16)
 
     def copy(self):
         """ Return a copy of this atom """
-        return self.__class__(self[:])
+        atoms = Atoms()
+        atoms._atom = [a.copy() for a in self._atom]
+        atoms._specie = np.copy(self._specie)
+        return atoms
 
     @property
     def atom(self):
@@ -1170,12 +1178,64 @@ class Atoms(object):
         """ Return the specie list """
         return self._specie
 
+    @property
+    def dR(self):
+        """ Return an array of masses of the contained objects """
+        udR = np.array([a.dR for a in self.atom], np.float64)
+        return udR[self.specie[:]]
+
+    @property
+    def mass(self):
+        """ Return an array of masses of the contained objects """
+        umass = np.array([a.mass for a in self.atom], np.float64)
+        return umass[self.specie[:]]
+
     def index(self, atom):
         """ Return the species index of the atom object """
         for i, a in enumerate(self._atom):
             if a == atom:
                 return i
         return -1
+
+    def reduce(self):
+        """ Remove all unique atoms not part of the species list """
+        atom = self._atom[:]
+        specie = self._specie[:]
+
+        rem = []
+        for i in range(len(self.atom)):
+            if len(np.where(specie == i)[0]) == 0:
+                rem.append(i)
+
+        # Remove the atoms
+        for i in rem[::-1]:
+            atom.pop(i)
+            specie = np.where(specie > i, specie - 1, specie)
+
+        self._atom = atom
+        self._specie = specie
+
+    def sub(self, atom):
+        """ Return a subset of the list """
+        atom = ensure_array(atom).flatten()
+        atoms = Atoms()
+        atoms._atom = self._atom[:]
+        atoms._specie = self._specie[atom]
+        return atoms
+
+    def cut(self, seps, axis):
+        """ Return a subset of the list """
+        atom = ensure_array(atom).flatten()
+        atoms = Atoms()
+        atoms._atom = self._atom[:]
+        atoms._specie = self._specie[atom]
+        return atoms
+
+    def remove(self, atom):
+        """ Remove a set of atoms """
+        atms = ensure_array(atom).flatten()
+        idx = np.setdiff1d(np.arange(len(self)), atms, assume_unique=True)
+        return self.sub(idx)
 
     def tile(self, reps):
         """ Tile this atom object """
@@ -1189,23 +1249,74 @@ class Atoms(object):
         atoms._specie = np.repeat(atoms._specie, reps)
         return atoms
 
-    def insert(self, index, other):
-        """ Insert other atoms into the list of atoms at index """
-        if isinstance(other, Atom):
-            other = Atoms(other)
-        # insert the list
-        atoms = self[:]
-        for o in other[::-1]:
-            atoms.insert(index, o)
-        self = self.__class__(atoms)
+    def swap(self, a, b):
+        """ Swaps atoms """
+        a = ensure_array(a)
+        b = ensure_array(b)
+        atoms = self.copy()
+        spec = np.copy(atoms._specie)
+        atoms._specie[a] = spec[b]
+        atoms._specie[b] = spec[a]
+        return atoms
 
     def append(self, other):
         """ Append ``other`` to this list of atoms """
         if not isinstance(other, Atoms):
             other = Atoms(other)
-        atoms = self[:]
-        atoms.extend(other[:])
-        return self.__class__(atoms)
+        else:
+            other = other.copy()
+
+        atoms = self.copy()
+        spec = np.copy(other._specie)
+        for i, atom in enumerate(other.atom):
+            if atom not in atoms:
+                s = len(atoms.atom)
+                atoms._atom.append(atom)
+            else:
+                s = atoms.index(atom)
+            spec = np.where(spec == i, s, spec)
+        atoms._specie = np.concatenate((atoms._specie, spec))
+        return atoms
+
+    add = append
+
+    def prepend(self, other):
+        if not isinstance(other, Atoms):
+            other = Atoms(other)
+        return other.append(self)
+
+    def reverse(self, atom=None):
+        """ Returns a reversed geometry
+
+        Also enables reversing a subset of the atoms.
+        """
+        atoms = self.copy()
+        if atom is None:
+            atoms._specie = atoms._specie[::-1]
+        else:
+            atoms._specie[atom] = atoms._specie[atom[::-1]]
+        return atoms
+
+    def insert(self, index, other):
+        """ Insert other atoms into the list of atoms at index """
+        if isinstance(other, Atom):
+            other = Atoms(other)
+        else:
+            other = other.copy()
+
+        # Create a copy for insertion
+        atoms = self.copy()
+
+        spec = other._specie[:]
+        for i, atom in enumerate(other.atom):
+            if atom not in atoms:
+                s = len(atoms.atom)
+                atoms._atom.append(atom)
+            else:
+                s = atoms.index(atom)
+            spec = np.where(spec == i, s, spec)
+        atoms._specie = np.insert(atoms._specie, index, spec)
+        return atoms
 
     def __repr__(self):
         """ Return the ``Atoms`` representation """
@@ -1261,7 +1372,7 @@ class Atoms(object):
 
         # Now the unique atom list also contains the new atoms
         # We need to re-create the species list
-        if isinstance(key, (list, np.ndarray, tuple)):
+        if isinstance(key, (list, tuple, np.ndarray)):
             for i, j in enumerate(key):
                 self._specie[i] = self.index(atoms[j])
         else:
@@ -1273,3 +1384,15 @@ class Atoms(object):
             if atom not in b:
                 return False
         return True
+
+    # Create pickling routines
+    def __getstate__(self):
+        """ Return the state of this object """
+        return {'atoms': self.atom,
+                'species': self.specie}
+
+    def __setstate__(self, d):
+        """ Re-create the state of this object """
+        self.__init__()
+        self._atom = d['atoms']
+        self._specie = d['species']
