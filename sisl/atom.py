@@ -1167,8 +1167,18 @@ class Atoms(object):
                 return i
 
     def __len__(self):
-        """ Return number of atoms in the object """
+        """ Return number of unique atoms in the object """
         return len(self._specie)
+
+    def __iter__(self):
+        """ Loop on all atoms with the same specie in order
+
+        This iterator returns two values:
+        1. The `Atom` object of the specie
+        2. A list of indices with all atoms being that specie
+        """
+        for s, atom in enumerate(self._atom):
+            yield atom, np.where(self.specie == s)[0]
     
     def __contains__(self, key):
         """ Determine whether the ``key`` is in the unique atoms list """

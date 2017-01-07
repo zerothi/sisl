@@ -148,3 +148,21 @@ class TestAtoms(object):
         assert_true(Atom[6] in atom)
         assert_false(Atom[1] in atom)
 
+    def test_iter1(self):
+        # Add new atoms to the set
+        atom = Atoms(['C', 'C'])
+        for a, idx in atom:
+            assert_true(a == Atom[6])
+            assert_true(len(idx) == 2)
+
+        atom = Atoms(['C', 'Au', 'C', 'Au'])
+        for i, aidx in enumerate(atom):
+            a, idx = aidx
+            if i == 0:
+                assert_true(a == Atom[6])
+                assert_true((idx == [0, 2]).all())
+            elif i == 1:
+                assert_true(a == Atom['Au'])
+                assert_true((idx == [1, 3]).all())
+            assert_true(len(idx) == 2)
+
