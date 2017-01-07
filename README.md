@@ -17,6 +17,29 @@ programs.
 
 sisl also enables an easy interface for [ASE][ase].
 
+## Downloading and installation ##
+
+Installing sisl using PyPi or Conda is the easiest:
+
+   pip install sisl
+   # or
+   conda install -c zerothi sisl
+
+If performing a manual installation, these packages are required:
+
+   - __six__
+   - __numpy__
+   - __scipy__
+   - __netCDF4__, this module is only required if you need interface to construct
+    the transport tight-binding model for `TBtrans`
+   - __setuptools__
+   - A fortran compiler
+
+Installing sisl can be performed using this command:
+
+    python setup.py install --prefix=<prefix>
+
+
 ## Usage ##
 
 If used to produce scientific contributions, please use the DOI for citation.
@@ -218,22 +241,6 @@ explicit overlap matrix the following procedure is necessary:
     Sk = tb.Sk(k=[0.,0.5,0])
     eigs = sli.eigh(Hk.todense(), Sk.todense(), eigvals_only=True)
 
-
-
-## Downloading and installation ##
-
-Installing sisl requires the following packages:
-
-   - __six__
-   - __numpy__
-   - __scipy__
-   - __netCDF4__, this module is only required if you need interface to construct
-    the transport tight-binding model for `TBtrans`
-   - __setuptools__ (for installation)
-
-Installing sisl is as any simple Python package
-
-    python setup.py install --prefix=<prefix>
 
 
 ## Contributions, issues and bugs ##
