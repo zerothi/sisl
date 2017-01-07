@@ -109,6 +109,11 @@ class TestAtoms(object):
         assert_true(atom2 == atom3)
         assert_true(atom2 == atom4)
 
+    def test_create2(self):
+        atom = Atoms(Atom(6, R=1.45), na=2)
+        atom = Atoms(atom, na=4)
+        assert_true(atom[0].dR == 1.45)
+
     def test_len(self):
         atom = Atoms([self.C, self.C3, self.Au])
         assert_true(len(atom) == 3)

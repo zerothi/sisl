@@ -982,9 +982,14 @@ class Atom(with_metaclass(AtomMeta, object)):
         different settings
     """
 
-    def __init__(self, Z, R=-1., orbs=1, mass=None, tag=None):
+    def __init__(self, Z, R=None, orbs=None, mass=None, tag=None):
         if isinstance(Z, Atom):
             Z = Z.Z
+        if R is None:
+            R = -1.
+        if orbs is None:
+            orbs = 1
+            
         self.Z = _ptbl.Z_int(Z)
         self.orbs = orbs
         try:
@@ -1030,8 +1035,7 @@ class Atom(with_metaclass(AtomMeta, object)):
         return np.amax(self.R)
 
     def __repr__(self):
-        return self.tag + " orbs: " + str(self.orbs) \
-            + " mass(au): " + str(self.mass)
+        return '{0}, Z: {1:d}, orbs: {2:d}, mass(au): {3:.5f}, dR: {4:.5f}'.format(self.tag, self.Z, self.orbs, self.mass, self.dR)
 
     def __len__(self):
         """ Return number of orbitals in this atom """
@@ -1104,9 +1108,8 @@ class Atoms(object):
             # And we want the same order, always...
             uatom = []
             specie = [0] * len(atom)
-            if isinstance(atom[0], (_str, Integral)):
+            if isinstance(atom[0], Atom):
                 for i, a in enumerate(atom):
-                    a = Atom(a)
                     try:
                         s = uatom.index(a)
                     except:
@@ -1116,7 +1119,7 @@ class Atoms(object):
                         uatom.append(a)
                     specie[i] = s
 
-            elif isinstance(atom[0], Atom):
+            elif isinstance(atom[0], (_str, Integral)):
                 for i, a in enumerate(atom):
                     a = Atom(a)
                     try:
@@ -1138,34 +1141,81 @@ class Atoms(object):
         elif isinstance(atom, Atom):
             uatom = [atom]
             specie = [0]
+        elif isinstance(atom, Atoms):
+            # Ensure we make a copy to not operate
+            # on the same data.
+            catom = atom.copy()
+            uatom = catom.atom[:]
+            specie = catom.specie[:]
+        else:
+            raise ValueError('atom keyword was wrong input')
 
         # Default for number of atoms
         if na is None:
             na = len(specie)
 
-        uatom = uatom
-        specie = np.array(specie, np.int16)
-
         # Create atom and species objects
         self._atom = list(uatom)
         self._specie = array_fill_repeat(specie, na, cls=np.int16)
-
-    @property
-    def specie(self):
-        """ Return the specie list """
-        return self._specie
+        
+    def copy(self):
+        """ Return a copy of this atom """
+        return self.__class__(self[:])
 
     @property
     def atom(self):
         """ Return the unique atoms list """
         return self._atom
 
+    @property
+    def specie(self):
+        """ Return the specie list """
+        return self._specie
+
     def index(self, atom):
         """ Return the species index of the atom object """
         for i, a in enumerate(self._atom):
             if a == atom:
                 return i
+        return -1
 
+    def tile(self, reps):
+        """ Tile this atom object """
+        atoms = self.copy()
+        atoms._specie = np.tile(atoms._specie, reps)
+        return atoms
+
+    def repeat(self, reps):
+        """ Repeat this atom object """
+        atoms = self.copy()
+        atoms._specie = np.repeat(atoms._specie, reps)
+        return atoms
+
+    def insert(self, index, other):
+        """ Insert other atoms into the list of atoms at index """
+        if isinstance(other, Atom):
+            other = Atoms(other)
+        # insert the list
+        atoms = self[:]
+        for o in other[::-1]:
+            atoms.insert(index, o)
+        self = self.__class__(atoms)
+        
+    def append(self, other):
+        """ Append ``other`` to this list of atoms """
+        if not isinstance(other, Atoms):
+            other = Atoms(other)
+        atoms = self[:]
+        atoms.extend(other[:])
+        return self.__class__(atoms)
+
+    def __repr__(self):
+        """ Return the ``Atoms`` representation """
+        s = '{{Atoms({0}):\n'.format(len(self._atom))
+        for a, idx in self:
+            s += '  ({0}) == [{1}], \n'.format(len(idx), a)
+        return s + '}\n'
+            
     def __len__(self):
         """ Return number of unique atoms in the object """
         return len(self._specie)
@@ -1187,7 +1237,10 @@ class Atoms(object):
     def __getitem__(self, key):
         """ Return an ``Atom`` object corresponding to the key(s) """
         if isinstance(key, slice):
-            nkey = slice(key.start or 0, key.stop or len(self), key.step or 1)
+            if key.step is None:
+                nkey = slice(key.start or 0, key.stop or len(self), key.step or 1)
+            elif key.step < 0:
+                nkey = slice(key.stop or len(self)-1, key.start or -1, key.step)
             return [self.atom[self._specie[s]] for s in range(nkey.start, nkey.stop, nkey.step)]
         elif isinstance(key, (list, tuple, np.ndarray)):
             return [self.atom[self._specie[s]] for s in key]
@@ -1204,7 +1257,7 @@ class Atoms(object):
             atoms = Atoms(value)
 
         # Append the new Atom objects
-        for atom in atoms:
+        for atom, idx in atoms:
             if atom not in self:
                 self._atom.append(atom)
 

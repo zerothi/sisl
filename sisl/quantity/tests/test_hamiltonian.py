@@ -324,7 +324,6 @@ class TestHamiltonian(object):
         # Create reference
         Hg = Hamiltonian(self.g)
         Hg.construct([dR, param])
-        
         g = self.g.tile(2, 0).tile(2, 1)
         H = Hamiltonian(g)
         H.construct([dR, param])
