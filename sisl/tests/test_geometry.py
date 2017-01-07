@@ -101,6 +101,10 @@ class TestGeometry(object):
         assert_true(len(self.g.sub(range(1))) == 1)
         assert_true(len(self.g.sub(range(2))) == 2)
 
+    def test_fxyz(self):
+        assert_true(np.allclose(self.g.fxyz, [[   0,    0, 0],
+                                              [1./3, 1./3, 0]]))
+
     def test_cut(self):
         assert_true(len(self.g.cut(1, 1)) == 2)
         assert_true(len(self.g.cut(2, 1)) == 1)

@@ -207,6 +207,11 @@ class Geometry(SuperCellChild):
         """ Returns geometry coordinates """
         return self.xyz[key]
 
+    @property
+    def fxyz(self):
+        """ Returns geometry coordinates in fractional coordinates """
+        return np.linalg.solve(self.cell.T, self.xyz.T).T
+
     @staticmethod
     def read(sile):
         """ Reads geometry from the `Sile` using `Sile.read_geom`
