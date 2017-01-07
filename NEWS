@@ -49,6 +49,9 @@ Here is a compressed list of changes:
   >>> Hamiltonian.construct(func)
   or
   >>> Hamiltonian.construct((dR, param))
+- The atoms contained in the Geometry are now not duplicated in case of many
+  similar Atom objects. This should reduce overhead and increase throughput.
+  However, the efficiency is not optimal yet. 
 - Added many more tests, thus further stabilizing sisl
 
   I would really like help with creating more tests!
