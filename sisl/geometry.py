@@ -103,7 +103,7 @@ class Geometry(SuperCellChild):
         # Get total number of orbitals
         def get_orb(a):
             return a.orbs
-        orbs = np.array(map(get_orb, self._atoms[:]), np.int32)
+        orbs = ensure_array(map(get_orb, self._atoms[:]), np.int32)
 
         # Get total number of orbitals
         self.no = np.sum(orbs)
