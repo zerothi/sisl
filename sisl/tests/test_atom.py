@@ -1,11 +1,12 @@
 from __future__ import print_function, division
 
 from nose.tools import *
-
-from sisl import Atom, PeriodicTable
+from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np
+
+from sisl import Atom, Atoms, PeriodicTable
 
 
 class TestAtom(object):
@@ -92,3 +93,58 @@ class TestAtom(object):
         assert_false(C == self.Au)
         assert_true(Au == self.Au)
         assert_true(Au != self.C)
+
+class TestAtoms(object):
+
+    def setUp(self):
+        self.C = Atom['C']
+        self.C3 = Atom('C', orbs=3)
+        self.Au = Atom['Au']
+
+    def test_create1(self):
+        atom1 = Atoms([self.C, self.C3, self.Au])
+        atom2 = Atoms(['C', 'C', 'Au'])
+        atom3 = Atoms(['C', 6, 'Au'])
+        atom4 = Atoms(['Au', 6, 'C'])
+        assert_true(atom2 == atom3)
+        assert_true(atom2 == atom4)
+
+    def test_len(self):
+        atom = Atoms([self.C, self.C3, self.Au])
+        assert_true(len(atom) == 3)
+
+    def test_get1(self):
+        atoms = Atoms(['C', 'C', 'Au'])
+        assert_true(atoms[2] == Atom('Au'))
+        assert_true(atoms[0] == Atom('C'))
+        assert_true(atoms[1] == Atom('C'))
+        assert_true(atoms[0:2] == [Atom('C')]*2)
+        assert_true(atoms[1:] == [Atom('C'), Atom('Au')])
+
+    def test_set1(self):
+        # Add new atoms to the set
+        atom = Atoms(['C', 'C'])
+        assert_true(atom[0] == Atom('C'))
+        assert_true(atom[1] == Atom('C'))
+        atom[1] = Atom('Au')
+        assert_true(atom[0] == Atom('C'))
+        assert_true(atom[1] == Atom('Au'))
+
+    def test_set2(self):
+        # Add new atoms to the set
+        atom = Atoms(['C', 'C'])
+        assert_true(atom[0] == Atom('C'))
+        assert_true(atom[1] == Atom('C'))
+        assert_true(len(atom.atom) == 1)
+        atom[1] = Atom('Au', orbs=2)
+        assert_true(atom[0] == Atom('C'))
+        assert_false(atom[1] == Atom('Au'))
+        assert_true(atom[1] == Atom('Au', orbs=2))
+        assert_true(len(atom.atom) == 2)
+
+    def test_in1(self):
+        # Add new atoms to the set
+        atom = Atoms(['C', 'C'])
+        assert_true(Atom[6] in atom)
+        assert_false(Atom[1] in atom)
+

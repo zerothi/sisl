@@ -22,10 +22,9 @@ from numbers import Integral
 
 import numpy as np
 
+from ._help import array_fill_repeat, _str
 
-from ._help import array_fill_repeat
-
-__all__ = ['PeriodicTable', 'Atom']
+__all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
 
 class PeriodicTable(object):
@@ -984,6 +983,8 @@ class Atom(with_metaclass(AtomMeta, object)):
     """
 
     def __init__(self, Z, R=-1., orbs=1, mass=None, tag=None):
+        if isinstance(Z, Atom):
+            Z = Z.Z
         self.Z = _ptbl.Z_int(Z)
         self.orbs = orbs
         try:
@@ -1071,3 +1072,143 @@ class Atom(with_metaclass(AtomMeta, object)):
             orbs=d['orbs'],
             mass=d['mass'],
             tag=d['tag'])
+
+
+class Atoms(object):
+    """ A list-like object to contain a list of different atoms with minimum
+    data duplication.
+
+    This holds multiple ``Atom`` objects which are indexed via a species
+    index.
+    This is convenient when having geometries with millions of atoms
+    because it will not duplicate the ``Atom`` object, only a list index.
+
+    Attributes
+    ----------
+    atom : ``list(Atom)``
+        a list of unique atoms in this object
+    specie : ndarray(int16)
+        a list of unique specie indices
+    """
+
+    def __init__(self, atom=None, na=None):
+        
+        # Default value of the atom object
+        if atom is None:
+            atom = Atom('H')
+
+        # Correct the atoms input to Atom
+        if isinstance(atom, (np.ndarray, list, tuple)):
+            # Convert to a list of unique elements
+            # We can not use set because that is unordered
+            # And we want the same order, always...
+            uatom = []
+            specie = [0] * len(atom)
+            if isinstance(atom[0], (_str, Integral)):
+                for i, a in enumerate(atom):
+                    a = Atom(a)
+                    try:
+                        s = uatom.index(a)
+                    except:
+                        s = -1
+                    if s < 0:
+                        s = len(uatom)
+                        uatom.append(a)
+                    specie[i] = s
+
+            elif isinstance(atom[0], Atom):
+                for i, a in enumerate(atom):
+                    a = Atom(a)
+                    try:
+                        s = uatom.index(a)
+                    except:
+                        s = -1
+                    if s < 0:
+                        s = len(uatom)
+                        uatom.append(a)
+                    specie[i] = s
+
+            else:
+                raise ValueError('atom keyword was wrong input')
+            
+        elif isinstance(atom, (_str, Integral)):
+            uatom = [Atom(atom)]
+            specie = [0]
+
+        elif isinstance(atom, Atom):
+            uatom = [atom]
+            specie = [0]
+
+        # Default for number of atoms
+        if na is None:
+            na = len(specie)
+
+        uatom = uatom
+        specie = np.array(specie, np.int16)
+
+        # Create atom and species objects
+        self._atom = list(uatom)
+        self._specie = array_fill_repeat(specie, na, cls=np.int16)
+
+    @property
+    def specie(self):
+        """ Return the specie list """
+        return self._specie
+
+    @property
+    def atom(self):
+        """ Return the unique atoms list """
+        return self._atom
+
+    def index(self, atom):
+        """ Return the species index of the atom object """
+        for i, a in enumerate(self._atom):
+            if a == atom:
+                return i
+
+    def __len__(self):
+        """ Return number of atoms in the object """
+        return len(self._specie)
+    
+    def __contains__(self, key):
+        """ Determine whether the ``key`` is in the unique atoms list """
+        return key in self.atom
+    
+    def __getitem__(self, key):
+        """ Return an ``Atom`` object corresponding to the key(s) """
+        if isinstance(key, slice):
+            nkey = slice(key.start or 0, key.stop or len(self), key.step or 1)
+            return [self.atom[self._specie[s]] for s in range(nkey.start, nkey.stop, nkey.step)]
+        elif isinstance(key, (list, tuple, np.ndarray)):
+            return [self.atom[self._specie[s]] for s in key]
+        else:
+            return self.atom[self._specie[key]]
+
+    def __setitem__(self, key, value):
+        """ Overwrite an ``Atom`` object corresponding to the key(s) """
+
+        # First we figure out if this is a new atom
+        if isinstance(key, (list, np.ndarray, tuple)):
+            atoms = Atoms(value, na=len(key))
+        else:
+            atoms = Atoms(value)
+
+        # Append the new Atom objects
+        for atom in atoms:
+            if atom not in self:
+                self._atom.append(atom)
+
+        # Now the unique atom list also contains the new atoms
+        # We need to re-create the species list
+        if isinstance(key, (list, np.ndarray, tuple)):
+            for i, j in enumerate(key):
+                self._specie[i] = self.index(atoms[j])
+        else:
+            self._specie[key] = self.index(atoms[0])
+
+    def __eq__(a, b):
+        """ Returns true if the contained atoms are the same """
+        for atom in a.atom:
+            if atom not in b:
+                return False
+        return True
