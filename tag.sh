@@ -103,13 +103,15 @@ git tag -a "$v" -m "$MSG"
 
 # Publish on pypi
 python setup.py sdist bdist_wheel
-twine upload dist/sisl-$v*
+twine upload dist/sisl-$v*.tar.gz
+twine upload dist/sisl-$v*.whl
 
 # Publish on conda
 function run_conda {
     conda config --set anaconda_upload no
     rm -rf dist-conda
     conda build --output-folder dist-conda conda --python 2.7
+    source activate python3
     conda build --output-folder dist-conda conda --python 3.5
 }
 
