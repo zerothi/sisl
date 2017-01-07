@@ -27,7 +27,6 @@ __all__ = ['TSHSSileSiesta']
 class TSHSSileSiesta(SileBinSIESTA):
     """ TranSIESTA file object """
 
-
     def read_sc(self):
         """ Returns a SuperCell object from a siesta.TSHS file
         """
@@ -43,7 +42,6 @@ class TSHSSileSiesta(SileBinSIESTA):
         SC = SuperCell(cell, nsc=nsc)
         SC.sc_off = np.dot(sc.T, cell.T)
         return SC
-
 
     def read_geom(self):
         """ Returns Geometry object from a siesta.TSHS file """
@@ -81,9 +79,8 @@ class TSHSSileSiesta(SileBinSIESTA):
 
         # Create and return geometry object
         geom = Geometry(xyz, atom, sc=sc)
-        
-        return geom
 
+        return geom
 
     def read_es(self, **kwargs):
         """ Returns the electronic structure from the siesta.TSHS file """
@@ -109,10 +106,10 @@ class TSHSSileSiesta(SileBinSIESTA):
         # Correct fortran indices
         H._data.col = np.array(col, np.int32) - 1
         H._data._nnz = len(col)
-        
+
         H._data._D = np.empty([nnz, spin+1], np.float64)
         for i in range(spin):
-            H._data._D[:, i] = dH[:,i]
+            H._data._D[:, i] = dH[:, i]
         H._data._D[:, spin] = dS[:]
 
         return H

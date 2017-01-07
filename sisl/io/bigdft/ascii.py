@@ -26,7 +26,6 @@ class ASCIISileBigDFT(SileBigDFT):
         """ Initialize for `ASCIISileBigDFT` """
         self._comment = ['#', '!']
 
-
     @Sile_fh_open
     def read_geom(self):
         """ Reads a supercell from the Sile """
@@ -81,7 +80,7 @@ class ASCIISileBigDFT(SileBigDFT):
                     continue
 
                 # The first three are the coordinates
-                xyz.append( [float(x) for x in ls[:3]] )
+                xyz.append([float(x) for x in ls[:3]])
                 # The 4th is the specie, [5th is tag]
                 s = ls[3]
                 t = s
@@ -126,7 +125,6 @@ class ASCIISileBigDFT(SileBigDFT):
 
         return Geometry(xyz, spec, sc=sc)
 
-    
     @Sile_fh_open
     def write_geom(self, geom, fmt='.5f'):
         """ Writes the geometry to the contained file """
@@ -157,7 +155,6 @@ class ASCIISileBigDFT(SileBigDFT):
                 self._write(f1_str.format(a.symbol, *geom.xyz[ia, :]))
         # Add a single new line
         self._write('\n')
-
 
     def ArgumentParser(self, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

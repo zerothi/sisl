@@ -12,6 +12,7 @@ import common as tc
 
 gs = get_sile
 
+
 class TestObject(object):
     # Base test class for MaskedArrays.
     setUp = tc.setUp
@@ -177,7 +178,7 @@ class TestObject(object):
         sile = gs('test.XV')
         for obj in [BaseSile, Sile, SileSiesta, XVSileSiesta]:
             assert_true(isinstance(sile, obj))
-            
+
     def test_xv_gz(self):
         sile = gs('test.XV.gz')
         for obj in [BaseSile, Sile, SileSiesta, XVSileSiesta]:
@@ -193,10 +194,9 @@ class TestObject(object):
         for obj in [BaseSile, Sile, SileW90, winSileW90]:
             assert_true(isinstance(sile, obj))
 
-
     def test_read_write(self):
         G = self.g.rotatec(-30)
-        G.set_nsc([1,1,1])
+        G.set_nsc([1, 1, 1])
         f = mkstemp(dir=self.d)[1]
         read_geom = get_siles(['read_geom'])
         for sile in get_siles(['write_geom']):
@@ -217,4 +217,3 @@ class TestObject(object):
                 g.ArgumentParser()
             # Assert
             assert_equal(g, G, sile)
-

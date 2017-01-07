@@ -12,5 +12,3 @@ __all__ = []
 extendall(__all__, 'sisl.io.bigdft.sile')
 
 extendall(__all__, 'sisl.io.bigdft.ascii')
-
-

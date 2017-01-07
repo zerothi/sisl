@@ -45,7 +45,7 @@ class CUBESile(Sile):
             size = np.ones([3], np.int32)
         if origo is None:
             origo = np.zeros([3], np.float64)
-            
+
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
         # Add #-of atoms and origo
@@ -121,7 +121,7 @@ class CUBESile(Sile):
         atom = []
         for ia in range(na):
             tmp = self.readline().split()
-            atom.append( Atom( int(tmp[0]) ) )
+            atom.append(Atom(int(tmp[0])))
             xyz[ia, 0] = float(tmp[2])
             xyz[ia, 1] = float(tmp[3])
             xyz[ia, 2] = float(tmp[4])

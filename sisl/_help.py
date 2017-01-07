@@ -48,6 +48,7 @@ def array_fill_repeat(array, size, cls=None):
 # To speed up isiterable
 _Iterable = collections.Iterable
 
+
 def isiterable(obj):
     """ Returns whether the object is an iterable or not """
     return isinstance(obj, _Iterable)
@@ -62,6 +63,7 @@ _fromiter = np.fromiter
 _ndarray = np.ndarray
 _array = np.array
 _asarray = np.asarray
+
 
 def ensure_array(arr, dtype=np.int32):
     """ Casts a number, list, tuple to a 1D array
@@ -137,5 +139,5 @@ def get_dtype(var, int=None, other=None):
         except:
             other = other.type
         return np.result_type(dtype(1), other(1))
-    
+
     return dtype

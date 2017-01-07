@@ -19,9 +19,9 @@ __all__ = ['ncSileSiesta']
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
+
 class ncSileSiesta(SileCDFSIESTA):
     """ SIESTA file object """
-
 
     def read_sc(self):
         """ Returns a SuperCell object from a SIESTA.nc file
@@ -34,7 +34,6 @@ class ncSileSiesta(SileCDFSIESTA):
         nsc = np.array(self._value('nsc'), np.int32)
 
         return SuperCell(cell, nsc=nsc)
-
 
     def read_geom(self):
         """ Returns Geometry object from a SIESTA.nc file
@@ -80,7 +79,6 @@ class ncSileSiesta(SileCDFSIESTA):
         geom = Geometry(xyz, atom, sc=sc)
         return geom
 
-
     def read_es(self, **kwargs):
         """ Returns a tight-binding model from the underlying NetCDF file """
 
@@ -118,13 +116,13 @@ class ncSileSiesta(SileCDFSIESTA):
         ham._data.ptr = ptr
         ham._data.col = col
         ham._nnz = len(col)
-        
+
         # Create new container
         H = np.array(sp.variables['H'][ispin, :],
                      np.float64) * Ry2eV ** ham._E_order
         # Correct for the Fermi-level, Ef == 0
         H -= Ef * S[:]
-        
+
         ham._data._D = np.empty([ham._data.ptr[-1], spin+1], np.float64)
         if ispin == -1:
             for i in range(spin):
@@ -144,7 +142,6 @@ class ncSileSiesta(SileCDFSIESTA):
         ham._data._D[:, ham.S_idx] = S[:]
 
         return ham
-
 
     def grids(self):
         """ Return a list of available grids in this file. """
@@ -264,7 +261,6 @@ class ncSileSiesta(SileCDFSIESTA):
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = np.cumsum(orbs)
 
-
     def write_es(self, ham, **kwargs):
         """ Writes Hamiltonian model to file
 
@@ -282,7 +278,6 @@ class ncSileSiesta(SileCDFSIESTA):
         self.write_geom(ham.geom)
 
         self._crt_dim(self, 'spin', ham._spin)
-
 
         v = self._crt_var(self, 'Ef', 'f8', ('one',))
         v.info = 'Fermi level'
@@ -323,7 +318,7 @@ class ncSileSiesta(SileCDFSIESTA):
             tmp = ham._data.copy(dims=[0])
             tmp.empty(keep=True)
             for i in range(tmp.shape[0]):
-                tmp[i,i] = 1.
+                tmp[i, i] = 1.
             v[:] = tmp._D[:, 0]
             del tmp
         else:
@@ -349,12 +344,11 @@ class ncSileSiesta(SileCDFSIESTA):
         v.unit = "b**-1"
         v[:] = np.zeros([3], np.float64)
 
-
     def ArgumentParser(self, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geom().ArgumentParser(*args, **newkw)
 
-    
+
 add_sile('nc', ncSileSiesta)

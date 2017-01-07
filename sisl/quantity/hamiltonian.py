@@ -28,13 +28,13 @@ class Hamiltonian(object):
      - coupling constants between orbitals
 
     It contains an intrinsic sparse matrix of the Hamiltonian elements.
-    
+
     Assigning or changing Hamiltonian elements is as easy as with
     standard ``numpy`` assignments:
-      
+
     >>> ham = Hamiltonian(...)
     >>> ham.H[1,2] = 0.1
-    
+
     which assigns 0.1 as the coupling constant between orbital 2 and 3.
     (remember that Python is 0-based elements).
     """
@@ -64,7 +64,7 @@ class Hamiltonian(object):
         The object will be the same as if it had been
         initialized with the same geometry as it were
         created with.
-        
+
         Parameters
         ----------
         nnzpr: int
@@ -87,7 +87,7 @@ class Hamiltonian(object):
         # select max(5,len(nc) * 4)
         if nnzpr is None:
             nnzpr = self.geom.close(0)
-            if nnzpr is None: nnzpr = [0,0]
+            if nnzpr is None: nnzpr = [0, 0]
             nnzpr = max(5, len(nnzpr) * 4)
 
         self._orthogonal = orthogonal
@@ -97,7 +97,6 @@ class Hamiltonian(object):
             self._data = SparseCSR((self.no, self.no_s, spin+1), nnzpr=nnzpr, dtype=dtype)
         else:
             self._data = SparseCSR((self.no, self.no_s, spin), nnzpr=nnzpr, dtype=dtype)
-
 
         self._spin = spin
 
@@ -118,7 +117,6 @@ class Hamiltonian(object):
 
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
-
 
     def empty(self, keep=False):
         """ See `SparseCSR.empty` for specifics """
@@ -172,7 +170,6 @@ class Hamiltonian(object):
         """
         return getattr(self.geom, attr)
 
-
     def __getitem__(self, key):
         """ Return Hamiltonian coupling elements for the index(s) """
         dd = self._def_dim
@@ -181,7 +178,6 @@ class Hamiltonian(object):
             self._def_dim = -1
         d = self._data[key]
         return d
-
 
     def __setitem__(self, key, val):
         """ Set or create couplings between orbitals in the Hamiltonian
@@ -198,7 +194,6 @@ class Hamiltonian(object):
         if not self.orthogonal:
             warnings.warn(('Hamiltonian specification of both H and S simultaneously is deprecated. '
                            'This functionality will be removed in a future release.'))
-
 
     def __get_H(self):
         self._def_dim = self.UP
@@ -229,7 +224,6 @@ class Hamiltonian(object):
 
     S = property(__get_S, __set_S)
 
-
     # Create iterations module
     def iter_linear(self):
         """ Iterations of the orbital space, two indices from loop
@@ -249,7 +243,6 @@ class Hamiltonian(object):
                 yield ia, io
 
     __iter__ = iter_linear
-
 
     def create_construct(self, dR, param):
         """ Returns a simple function for passing to the `construct` function.
@@ -281,12 +274,12 @@ class Hamiltonian(object):
            ranges. ``param[0,:]`` are the tight-binding parameter
            for the all atoms within ``dR[0]`` of each atom.
         """
+
         def func(self, ia, idxs, idxs_xyz=None):
             idx = self.geom.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz)
             for ix, p in zip(idx, param):
                 self[ia, ix] = p
         return func
-
 
     def construct(self, func, na_iR=1000, eta=False):
         """ Automatically construct the Hamiltonian model based on a function that does the setting up of the Hamiltonian
@@ -312,7 +305,7 @@ class Hamiltonian(object):
            3. Is the currently bounded indices (`idxs`)
            4. Is the currently bounded indices atomic coordinates (`idxs_xyz`)
            An example `func` could be:
-           
+
            >>> def func(self, ia, idxs, idxs_xyz=None):
            >>>     idx = self.geom.close(ia, dR=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz)
            >>>     self.H[ia, idx[0]] = 0.   # on-site
@@ -335,8 +328,7 @@ class Hamiltonian(object):
 
             # Convert to a proper function
             func = self.create_construct(func[0], func[1])
-            
-        
+
         iR = self.geom.iR(na_iR)
 
         # Get number of atoms
@@ -349,12 +341,12 @@ class Hamiltonian(object):
 
         # Do the loop
         for ias, idxs in self.geom.iter_block(iR=iR):
-            
+
             # Get all the indexed atoms...
             # This speeds up the searching for
             # coordinates...
             idxs_xyz = self.geom.coords(idx=idxs)
-            
+
             # Loop the atoms inside
             for ia in ias:
                 func(self, ia, idxs, idxs_xyz)
@@ -374,12 +366,10 @@ class Hamiltonian(object):
             stdout.write("Hamiltonian.construct() {0:23s}\n".format('DONE'))
             stdout.flush()
 
-            
     @property
     def finalized(self):
         """ Whether the contained data is finalized and non-used elements have been removed """
         return self._data.finalized
-
 
     def finalize(self):
         """ Finalizes the tight-binding model
@@ -395,29 +385,25 @@ class Hamiltonian(object):
         Hk = self.Hk()
 
         nzs = Hk.nnz
-        
+
         if nzs != (Hk + Hk.T).nnz:
             warnings.warn(
                 'Hamiltonian does not retain symmetric couplings, this might be problematic.')
-
 
     @property
     def nnz(self):
         """ Returns number of non-zero elements in the tight-binding model """
         return self._data.nnz
 
-
     @property
     def no(self):
         """ Returns number of orbitals as used when the object was created """
         return self._data.nr
 
-
     def tocsr(self, index):
         """ Return a ``scipy.sparse.csr_matrix`` from the specified index
         """
         return self._data.tocsr(index)
-        
 
     def Hk(self, k=(0, 0, 0), spin=0):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
@@ -438,7 +424,7 @@ class Hamiltonian(object):
 
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
-        
+
         # Setup the Hamiltonian for this k-point
         Hf = self.tocsr(spin)
 
@@ -452,11 +438,10 @@ class Hamiltonian(object):
             isc = self.sc_off[si, :]
             phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))
             H += Hf[:, si * no:(si + 1) * no] * phase
-            
-        del Hf
-        
-        return H
 
+        del Hf
+
+        return H
 
     def Sk(self, k=(0, 0, 0), spin=0):
         """ Return the overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
@@ -478,7 +463,7 @@ class Hamiltonian(object):
 
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
-        
+
         # Setup the Hamiltonian for this k-point
         Sf = self.tocsr(self.S_idx)
 
@@ -492,13 +477,12 @@ class Hamiltonian(object):
             isc = self.sc_off[si, :]
             phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))
             S += Sf[:, si * no:(si + 1) * no] * phase
-            
+
         del Sf
-        
+
         return S
 
-
-    def eigh(self,k=(0,0,0),
+    def eigh(self, k=(0, 0, 0),
             atoms=None, eigvals_only=True,
             overwrite_a=True, overwrite_b=True,
             *args,
@@ -527,7 +511,7 @@ class Hamiltonian(object):
                 eigvals_only=eigvals_only,
                 overwrite_a=overwrite_a,
                 **kwargs)
-        
+
         return sli.eigh(H.todense(), S.todense(),
             *args,
             eigvals_only=eigvals_only,
@@ -535,8 +519,7 @@ class Hamiltonian(object):
             overwrite_b=overwrite_b,
             **kwargs)
 
-
-    def eigsh(self, k=(0,0,0), n=10,
+    def eigsh(self, k=(0, 0, 0), n=10,
             atoms=None, eigvals_only=True,
             *args,
             **kwargs):
@@ -548,14 +531,14 @@ class Hamiltonian(object):
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
-        
-        # We always request the smallest eigenvalues... 
-        kwargs.update({'which':kwargs.get('which', 'SM')})
-        
+
+        # We always request the smallest eigenvalues...
+        kwargs.update({'which': kwargs.get('which', 'SM')})
+
         H = self.Hk(k=k)
         if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
-        
+
         # Reduce sparsity pattern
         if not atoms is None:
             orbs = self.a2o(atoms)
@@ -681,7 +664,7 @@ class Hamiltonian(object):
         # Copy elements
         if has_S:
             for jo in range(geom.no):
-                
+
                 # make smaller cut
                 sH = H[jo, :]
                 sS = S[jo, :]
@@ -742,7 +725,7 @@ class Hamiltonian(object):
         """ Refer to `tile` instead """
         # Create the new geometry
         g = self.geom.repeat(reps, axis)
-        
+
         raise NotImplementedError(('repeating a Hamiltonian model has not been '
                               'fully implemented yet, use tile instead.'))
 
@@ -754,7 +737,7 @@ class Hamiltonian(object):
         nc = 0
 
         has_S = not S is None
-        
+
         # Ensure csr format
         H = H.tocsr()
         if has_S:
@@ -793,7 +776,6 @@ class Hamiltonian(object):
 
         return ham
 
-
     @staticmethod
     def read(sile, *args, **kwargs):
         """ Reads Hamiltonian from `Sile` using `read_H`.
@@ -813,7 +795,6 @@ class Hamiltonian(object):
             return sile.read_es(*args, **kwargs)
         else:
             return get_sile(sile).read_es(*args, **kwargs)
-
 
     def write(self, sile, *args, **kwargs):
         """ Writes a tight-binding model to the `Sile` as implemented in the :code:`Sile.write_es` method """

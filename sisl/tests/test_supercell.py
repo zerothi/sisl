@@ -9,6 +9,7 @@ import scipy.linalg as sli
 
 from sisl import SuperCell, SuperCellChild
 
+
 class TestSuperCell(object):
 
     def setUp(self):
@@ -50,10 +51,10 @@ class TestSuperCell(object):
         assert_raises(ValueError, self.sc.set_nsc, a=2)
         assert_raises(ValueError, self.sc.set_nsc, b=2)
         assert_raises(ValueError, self.sc.set_nsc, c=2)
-        assert_raises(ValueError, self.sc.set_nsc, [1,2,3])
+        assert_raises(ValueError, self.sc.set_nsc, [1, 2, 3])
 
     def test_nsc4(self):
-        assert_true(self.sc.sc_index([0,0,0]) == 0)
+        assert_true(self.sc.sc_index([0, 0, 0]) == 0)
 
     def test_rotation1(self):
         rot = self.sc.rotate(180, [0, 0, 1])
@@ -83,12 +84,12 @@ class TestSuperCell(object):
 
     def test_rotation3(self):
         rot = self.sc.rotatea(180)
-        assert_true(np.allclose(rot.cell[0,:], self.sc.cell[0,:]))
-        assert_true(np.allclose(-rot.cell[2,2], self.sc.cell[2,2]))
+        assert_true(np.allclose(rot.cell[0, :], self.sc.cell[0, :]))
+        assert_true(np.allclose(-rot.cell[2, 2], self.sc.cell[2, 2]))
 
         rot = self.sc.rotateb(m.pi, radians=True)
-        assert_true(np.allclose(rot.cell[1,:], self.sc.cell[1,:]))
-        assert_true(np.allclose(-rot.cell[2,2], self.sc.cell[2,2]))
+        assert_true(np.allclose(rot.cell[1, :], self.sc.cell[1, :]))
+        assert_true(np.allclose(-rot.cell[2, 2], self.sc.cell[2, 2]))
 
     def test_swapaxes1(self):
         sab = self.sc.swapaxes(0, 1)
@@ -107,18 +108,18 @@ class TestSuperCell(object):
 
     def test_offset1(self):
         off = self.sc.offset()
-        assert_true(np.allclose(off, [0,0,0]))
-        off = self.sc.offset([1,1,1])
-        cell = self.sc.cell[:,:]
-        assert_true(np.allclose(off, cell[0, :] + cell[1,:] + cell[2,:]))
+        assert_true(np.allclose(off, [0, 0, 0]))
+        off = self.sc.offset([1, 1, 1])
+        cell = self.sc.cell[:, :]
+        assert_true(np.allclose(off, cell[0, :] + cell[1, :] + cell[2, :]))
 
     def test_sc_index1(self):
-        sc_index = self.sc.sc_index([0,0,0])
+        sc_index = self.sc.sc_index([0, 0, 0])
         assert_equal(sc_index, 0)
         assert_raises(Exception, self.sc.sc_index, [100, 100, 100])
-        sc_index = self.sc.sc_index([0,0,None])
+        sc_index = self.sc.sc_index([0, 0, None])
         assert_equal(len(sc_index), self.sc.nsc[2])
-        
+
     def test_cut1(self):
         cut = self.sc.cut(2, 0)
         assert_true(np.allclose(cut.cell[0, :] * 2, self.sc.cell[0, :]))
@@ -155,10 +156,10 @@ class TestSuperCell(object):
         assert_true(np.allclose(tmp1.cell, tmp4.cell))
 
     def test_creation3(self):
-        assert_raises(ValueError, self.sc.tocell, [3,6])
-        assert_raises(ValueError, self.sc.tocell, [3,4,5,6])
-        assert_raises(ValueError, self.sc.tocell, [3,4,5,6,7])
-        assert_raises(ValueError, self.sc.tocell, [3,4,5,6,7,6,7])
+        assert_raises(ValueError, self.sc.tocell, [3, 6])
+        assert_raises(ValueError, self.sc.tocell, [3, 4, 5, 6])
+        assert_raises(ValueError, self.sc.tocell, [3, 4, 5, 6, 7])
+        assert_raises(ValueError, self.sc.tocell, [3, 4, 5, 6, 7, 6, 7])
 
     def test_rcell(self):
         # LAPACK inverse algorithm implicitly does
@@ -167,14 +168,14 @@ class TestSuperCell(object):
         assert_true(np.allclose(rcell.T, self.sc.rcell))
 
     def test_translate1(self):
-        sc = self.sc.translate([0,0,10])
-        assert_true(np.allclose(sc.cell[2,:2], self.sc.cell[2,:2]))
-        assert_true(np.allclose(sc.cell[2,2], self.sc.cell[2,2]+10))
+        sc = self.sc.translate([0, 0, 10])
+        assert_true(np.allclose(sc.cell[2, :2], self.sc.cell[2, :2]))
+        assert_true(np.allclose(sc.cell[2, 2], self.sc.cell[2, 2]+10))
 
     def test_center1(self):
         assert_true(np.allclose(self.sc.center(), np.sum(self.sc.cell, axis=0) / 2))
-        for i in [0,1,2]:
-            assert_true(np.allclose(self.sc.center(i), self.sc.cell[i,:] / 2))
+        for i in [0, 1, 2]:
+            assert_true(np.allclose(self.sc.center(i), self.sc.cell[i, :] / 2))
 
     def test_pickle(self):
         import pickle as p

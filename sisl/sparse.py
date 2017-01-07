@@ -29,7 +29,7 @@ __all__ = ['SparseCSR']
 class SparseCSR(object):
     """
     A compressed sparse row matrix, slightly different than ``scipy.sparse.csr_matrix``.
-    
+
     This class holds all required information regarding the CSR matrix format.
 
     Note that this sparse matrix of data does not retain the number of columns
@@ -38,17 +38,17 @@ class SparseCSR(object):
     """
 
     def __init__(self, arg1, dim=1, dtype=None,
-                 nnzpr=20,nnz=None,
+                 nnzpr=20, nnz=None,
                  **kwargs):
         """ Initialize a new sparse CSR matrix
 
         This sparse matrix class tries to resemble the
         ``scipy.sparse.csr_matrix`` as much as possible with
         the difference of this class being multi-dimensional.
-        
+
         Creating a new sparse matrix is much similar to the 
         ``scipy`` equivalent.
-        
+
         `nzs` is only used if `nzs > nr * nzsr`.
 
         This class may be instantiated by verious means.
@@ -128,19 +128,19 @@ class SparseCSR(object):
                 if dtype is None:
                     # The first element is the data
                     dtype = arg1[0].dtype
-                    
+
                 # The first *must* be some sort of array
                 if 'shape' in kwargs:
                     shape = kwargs['shape']
                 else:
                     M = len(arg1[2])-1
-                    N = ( (np.amax(arg1[1]) // M) + 1) * M
+                    N = ((np.amax(arg1[1]) // M) + 1) * M
                     shape = (M, N)
 
                 self.__init_shape(shape, dim=dim, dtype=dtype,
                                   nnz=1,
                                   **kwargs)
-                
+
                 # Copy data to the arrays
                 self.ptr = arg1[2]
                 self.ncol = diff(self.ptr)
@@ -148,7 +148,7 @@ class SparseCSR(object):
                 self._nnz = len(self.col)
                 self._D = np.empty([len(arg1[1]), self.shape[-1]], dtype=self.dtype)
                 self._D[:, 0] = arg1[0]
-                
+
                 self.finalize()
 
     def __init_shape(self, arg1, dim=1, dtype=None,
@@ -174,12 +174,12 @@ class SparseCSR(object):
 
         # Check default construction of sparse matrix
         nnzpr = max(nnzpr, 1)
-        
+
         # Re-create options
         if nnz is None:
             # number of non-zero elements is NOT given
             nnz = M * nnzpr
-            
+
         else:
             # number of non-zero elements is give AND larger
             # than the provided non-zero elements per row
@@ -188,7 +188,7 @@ class SparseCSR(object):
         # Correct input in case very few elements are requested
         nnzpr = max(nnzpr, 1)
         nnz = max(nnz, nnzpr * M)
-            
+
         # Store number of columns currently hold
         # in the sparsity pattern
         self.ncol = np.zeros([M], np.int32)
@@ -207,12 +207,11 @@ class SparseCSR(object):
         # Denote that this sparsity pattern hasn't been finalized
         self._finalized = False
 
-
     def empty(self, keep=False):
         """ Delete all sparse information from the sparsity pattern
 
         Essentially this deletes all entries.
-        
+
         Parameters
         ----------
         keep: boolean, False
@@ -221,8 +220,8 @@ class SparseCSR(object):
            This may be advantagegous when re-constructing a new sparse 
            matrix from an old sparse matrix
         """
-        self._D[:,:] = 0.
-        
+        self._D[:, :] = 0.
+
         if not keep:
             self._finalized = False
             # The user does not wish to retain the
@@ -231,7 +230,7 @@ class SparseCSR(object):
             self._nnz = 0
             # We do not mess with the other arrays
             # they may be obscure data any-way.
-    
+
     @property
     def shape(self):
         """ Return shape of the sparse matrix """
@@ -266,7 +265,6 @@ class SparseCSR(object):
         """ Whether the contained data is finalized and non-used elements have been removed """
         return self._finalized
 
-
     def finalize(self, sort=True):
         """ Finalizes the sparse matrix by removing all non-set elements
 
@@ -288,7 +286,6 @@ class SparseCSR(object):
         ncol = self.ncol
         col = self.col
         D = self._D
-            
 
         # We truncate all the connections
         iptr = 0
@@ -296,7 +293,7 @@ class SparseCSR(object):
 
             # number of elements in this row
             nor = ncol[r]
-            
+
             # Starting pointer index
             sptr = ptr[r]
             eptr = sptr + nor
@@ -328,7 +325,7 @@ class SparseCSR(object):
 
         # Correcting the size of the pointer array
         ptr[self.shape[0]] = iptr
-        
+
         if iptr != self.nnz:
             print(iptr, self.nnz)
             raise ValueError('Final size in the sparse matrix finalization '
@@ -345,7 +342,6 @@ class SparseCSR(object):
 
         # Signal that we indeed have finalized the data
         self._finalized = True
-
 
     def _extend(self, i, j):
         """ Extends the sparsity pattern to retain elements `j` in row `i`
@@ -368,12 +364,12 @@ class SparseCSR(object):
         #    raise ValueError("Retrieving/Setting elements in a sparse matrix"
         #                     " must only be performed at one row-element at a time.\n"
         #                     "However, multiple columns at a time are allowed.")
-        
+
         # fast reference
         ptr = self.ptr
         ncol = self.ncol
         col = self.col
-        
+
         # Ensure flattened array...
         j = ensure_array(j)
         if len(j) == 0:
@@ -411,7 +407,7 @@ class SparseCSR(object):
 
             # Get how much larger we wish to create the sparse matrix...
             ns = max(self._ns, new_nnz)
-            
+
             # ...expand size of the sparsity pattern...
 
             # First shift all pointers above this row
@@ -419,15 +415,15 @@ class SparseCSR(object):
 
             # Insert pointer of new data
             iptr = ptr[i] + ncol[i]
-            
+
             # Insert new empty elements in the column index
             # after the column
             self.col = insert(self.col, iptr,
                               empty(ns, self.col.dtype))
-            
+
             # update reference
             col = self.col
-            
+
             # Insert zero data in the data array
             # We use `zeros` as then one may set each dimension
             # individually...
@@ -453,7 +449,7 @@ class SparseCSR(object):
 
         # Now we have extended the sparse matrix to hold all
         # information that is required...
-        
+
         # lets retrieve the indices...
 
         # preallocate the indices
@@ -465,10 +461,9 @@ class SparseCSR(object):
         # We probably should change this to something faster...
         for ii, jj in enumerate(j):
             index[ii] = where(col == jj)[0]
-        
+
         # Correct index by the pointer offset and return
         return ptr[i] + index
-
 
     def _get(self, i, j):
         """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return -1
@@ -485,7 +480,7 @@ class SparseCSR(object):
         index : array-like
            the indicies of the existing elements. 
         """
-        
+
         # Ensure flattened array...
         j = asarray(j, np.int32).flatten()
 
@@ -503,9 +498,8 @@ class SparseCSR(object):
                 index[ii] = -1
             else:
                 index[ii] += w
-        
-        return index
 
+        return index
 
     def __delitem__(self, key):
         """ Remove items from the sparse patterns """
@@ -517,7 +511,7 @@ class SparseCSR(object):
         # The element isn't there anyway...
         index.sort()
         index = index[index >= 0]
-        
+
         if len(index) == 0:
             # There are no elements to delete...
             return
@@ -525,7 +519,7 @@ class SparseCSR(object):
         # Get short-hand
         ptr = self.ptr
         ncol = self.ncol
-        
+
         # Get original values
         oC = self.col[ptr[i]:ptr[i]+ncol[i]]
         oD = self._D[ptr[i]:ptr[i]+ncol[i], :]
@@ -541,25 +535,24 @@ class SparseCSR(object):
         # Now update the column indices and the data
         self.col[ptr[i]:ptr[i]+self.ncol[i]] = oC[keep]
         self._D[ptr[i]:ptr[i]+self.ncol[i], :] = oD[keep, :]
-        
+
         # Once we remove some things, it is NOT
         # finalized...
         self._finalized = False
         self._nnz -= len(index)
 
-
     def __getitem__(self, key):
         """ Intrinsic sparse matrix retrieval of a non-zero element
         """
-        
+
         # Get indices of sparse data (-1 if non-existing)
         index = self._get(key[0], key[1])
 
         # Check which data to retrieve
         if len(key) > 2:
-            
+
             # user requests a specific element
-            
+
             data = empty(len(index), self._D.dtype)
 
             # get dimension retrieved
@@ -571,30 +564,29 @@ class SparseCSR(object):
                     data[i] = 0.
                 else:
                     data[i] = self._D[j, d]
-                
+
         else:
 
             # user request all stored data
-            
+
             data = empty([len(index), self.shape[2]], self._D.dtype)
 
             # Copy data over
             for i, j in enumerate(index):
                 if j < 0:
-                    data[i,:] = 0.
+                    data[i, :] = 0.
                 else:
-                    data[i,:] = self._D[j, :]
-        
-        # Return data
-        return data            
+                    data[i, :] = self._D[j, :]
 
-            
+        # Return data
+        return data
+
     def __setitem__(self, key, data):
         """ Intrinsic sparse matrix assignment of the item. 
 
         It will only allow to set the data in the sparse
         matrix if the dimensions match.
-        
+
         If the `data` parameter is `None` or an array
         only with `None` then the data will not be stored.
         """
@@ -629,17 +621,16 @@ class SparseCSR(object):
 
         else:
             # Ensure correct shape
-            data.shape = (-1,self.shape[2])
+            data.shape = (-1, self.shape[2])
 
             # Now there are two cases
             if data.shape[0] == 1:
                 # we copy all elements
-                self._D[index, :] = data[None,:]
-                
+                self._D[index, :] = data[None, :]
+
             else:
                 # each element have different data
-                self._D[index, :] = data[:,:]
-
+                self._D[index, :] = data[:, :]
 
     def copy(self, dims=None, dtype=None):
         """ Returns an exact copy of the sparse matrix
@@ -665,7 +656,7 @@ class SparseCSR(object):
         if dtype is None:
             dtype = self.dtype
 
-        new = self.__class__(shape, nnz=self.nnz, 
+        new = self.__class__(shape, nnz=self.nnz,
                              dtype=dtype)
 
         # The default sizes are not passed
@@ -678,11 +669,10 @@ class SparseCSR(object):
 
         new._D = np.array(self._D, dtype=dtype)
         for dim in dims:
-            new._D[:,dims] = self._D[:,dims]
-        
+            new._D[:, dims] = self._D[:, dims]
+
         return new
 
-                
     def tocsr(self, dim=0, **kwargs):
         """ Return the data in ``scipy.sparse.csr_matrix`` format
 
@@ -696,8 +686,6 @@ class SparseCSR(object):
 
         shape = self.shape[:2]
         return csr_matrix((self._D[:, dim], self.col, self.ptr), shape=shape, **kwargs)
-
-
 
     ###############################
     # Overload of math operations #
@@ -825,7 +813,7 @@ class SparseCSR(object):
         """
 
         if routines is None:
-            routines = ['__sub__', '__add__', '__mul__', '__div__', 
+            routines = ['__sub__', '__add__', '__mul__', '__div__',
                         '__truediv__', '__pow__']
 
         # What we want is something like this:
@@ -839,4 +827,3 @@ class SparseCSR(object):
         # Now register all things
         for r in routines:
             pass
-        

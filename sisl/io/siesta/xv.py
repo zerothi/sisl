@@ -26,7 +26,6 @@ class XVSileSiesta(SileSiesta):
         """ Setup the `XVSileSiesta` after initialization """
         self._comment = []
 
-
     @Sile_fh_open
     def write_geom(self, geom):
         """ Writes the geometry to the contained file """
@@ -47,7 +46,6 @@ class XVSileSiesta(SileSiesta):
             tmp[0:3] = geom.xyz[ia, :] / Bohr2Ang
             self._write(fmt.format(ips + 1, a.Z, *tmp))
 
-
     @Sile_fh_open
     def read_sc(self):
         """ Returns `SuperCell` object from the XV file """
@@ -64,7 +62,6 @@ class XVSileSiesta(SileSiesta):
         cell *= Bohr2Ang
 
         return SuperCell(cell)
-
 
     @Sile_fh_open
     def read_geom(self):

@@ -11,12 +11,12 @@ import numpy as np
 class TestQuaternion(object):
 
     def setUp(self):
-        self.qx = Quaternion(90, [1,0,0])
-        self.qy = Quaternion(90, [0,1,0])
-        self.qz = Quaternion(90, [0,0,1])
-        self.Qx = Quaternion(90, [2,0,0])
-        self.Qy = Quaternion(90, [0,2,0])
-        self.Qz = Quaternion(90, [0,0,2])
+        self.qx = Quaternion(90, [1, 0, 0])
+        self.qy = Quaternion(90, [0, 1, 0])
+        self.qz = Quaternion(90, [0, 0, 1])
+        self.Qx = Quaternion(90, [2, 0, 0])
+        self.Qy = Quaternion(90, [0, 2, 0])
+        self.Qz = Quaternion(90, [0, 0, 2])
 
     def tearDown(self):
         del self.qx

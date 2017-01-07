@@ -26,9 +26,9 @@ class TestFDF(object):
 
         fdf = fdfSileSiesta(f)
         with fdf:
-            
+
             fdf.readline()
-            
+
             # Be sure that we can read it in a loop
             assert_true(fdf.get('LatticeConstant') > 0.)
             assert_true(fdf.get('LatticeConstant') > 0.)
@@ -36,7 +36,6 @@ class TestFDF(object):
 
             fdf.read_sc()
             fdf.read_geom()
-
 
     def test_fdf2(self):
         f = osp.join(self.d, 'gr.fdf')

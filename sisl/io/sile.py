@@ -41,6 +41,7 @@ __all__ += [
 __sile_rules = []
 __siles = []
 
+
 def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
     """
     Public for attaching lookup tables for allowing
@@ -73,7 +74,6 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
         add_sile(ending[1:], cls, case=case, gzip=gzip, _parent_cls=_parent_cls)
         return
 
-
     # The parent_obj is the actual class used to construct
     # the output file
     if _parent_cls is None:
@@ -93,7 +93,7 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
     # In that case should:
     #  def_cls = [object, BaseSile]
     def_cls = [object, BaseSile, Sile, SileBin, SileCDF]
-    
+
     # First we find the base-class
     # This base class must not be
     #  BaseSile
@@ -110,7 +110,7 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
                     children.append(cchild)
         remove_cls(children, def_cls)
         return children
-    
+
     def remove_cls(l, clss):
         for ccls in clss:
             if ccls in l:
@@ -118,7 +118,7 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
 
     # Finally we append the child objects
     inherited = get_children(cls)
-    
+
     # Now we should remove all objects which are descendants from
     # another object in the list
     # We also default this base-class to be removed
@@ -145,17 +145,16 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
 
     else:
         # Add the rule of the sile to the list of rules.
-        __sile_rules.append( (ending, cls, _parent_cls) )
+        __sile_rules.append((ending, cls, _parent_cls))
         if gzip:
             add_sile(ending + '.gz', cls, case=case, _parent_cls=_parent_cls)
-
 
 
 def get_sile(file, *args, **kwargs):
     """
     Guess the file handle for the input file and return
     and object with the file handle.
-    
+
     Parameters
     ----------
     file : str
@@ -176,7 +175,7 @@ def get_sile(file, *args, **kwargs):
     # This ensures that the first argument
     # need not be cls
     cls = kwargs.pop('cls', None)
-    
+
     # Split filename into proper file name and
     # the specification of the type
     tmp_file, fcls = name_spec(file)
@@ -216,7 +215,7 @@ def get_sile(file, *args, **kwargs):
         # Reverse to start by the longest extension
         # (allows grid.nc extensions, etc.)
         end_list = list(reversed(end_list))
-        
+
         # First we check for class AND file ending
         for end in end_list:
             for suf, base, fobj in __sile_rules:
@@ -237,7 +236,7 @@ def get_sile(file, *args, **kwargs):
                     return fobj(file, *args, **kwargs)
 
         del end_list
-        
+
         raise Exception('sile not implemented: {}'.format(file))
     except Exception as e:
         raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
@@ -264,8 +263,9 @@ def get_siles(attrs=[None]):
             if hasattr(sile, attr):
                 siles.append(sile)
                 break
-    
+
     return siles
+
 
 class BaseSile(object):
     """ Base class for the Siles """
@@ -288,7 +288,6 @@ class BaseSile(object):
         end with ``self._setup()``.
         """
         self._setup(*args, **kwargs)
-
 
     def __getattr__(self, name):
         """ Override to check the handle """
@@ -322,16 +321,16 @@ class BaseSile(object):
         """
         pass
 
-
     def __repr__(self):
         """ Return a representation of the `Sile` """
         return ''.join([self.__class__.__name__, '(', self.file, ')'])
-        
-        
+
+
 def Sile_fh_open(func):
     """ Method decorator for objects to directly implement opening of the
     file-handle upon entry (if it isn't already).
     """
+
     def pre_open(self, *args, **kwargs):
         if hasattr(self, "fh"):
             return func(self, *args, **kwargs)
@@ -354,7 +353,6 @@ class Sile(BaseSile):
         # Initialize
         self.__setup()
 
-
     def __setup(self):
         """ Setup the `Sile` after initialization
 
@@ -375,7 +373,6 @@ class Sile(BaseSile):
         """ Opens the output file and returns it self """
         self._open()
         return self
-
 
     def __exit__(self, type, value, traceback):
         self.fh.close()
@@ -421,7 +418,6 @@ class Sile(BaseSile):
                 found |= l.find(key) >= 0
         return found
 
-   
     def readline(self, comment=False):
         """ Reads the next line of the file """
         l = self.fh.readline()
@@ -433,14 +429,13 @@ class Sile(BaseSile):
             self._line += 1
         return l
 
-
     def step_to(self, keywords, case=True):
         """ Steps the file-handle until the keyword is found in the input """
         # If keyword is a list, it just matches one of the inputs
         found = False
         # The previously read line...
         line = self._line
-        
+
         # Do checking outside line checks
         if self.is_keys(keywords):
             line_has = self.line_has_keys
@@ -462,15 +457,14 @@ class Sile(BaseSile):
             self.fh.close()
             # Re-open the file...
             self._open()
-            
+
             # Try and read again
             while not found and self._line <= line:
                 l = self.readline()
                 if l == '':
                     break
                 found = line_has(l, keys, case=case)
-            
-            
+
         # sometimes the line contains information, as a
         # default we return the line found
         return found, l
@@ -533,7 +527,6 @@ def _import_netCDF4():
         import netCDF4 as _netCDF4
 
 
-
 class SileCDF(BaseSile):
     """ Class to contain a file with easy access
     The file format for this file is the NetCDF file format """
@@ -572,20 +565,17 @@ class SileCDF(BaseSile):
             _import_netCDF4()
             self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
                                                    format='NETCDF4')
-        
+
         # Must call setup-methods
         self.__setup()
 
-
-    def _setup(self,*args, **kwargs):
+    def _setup(self, *args, **kwargs):
         """ Simple setup that needs to be overloaded """
         pass
-
 
     def __setup(self):
         """ Setup `SileCDF` after initialization """
         self._setup()
-
 
     @property
     def _cmp_args(self):
@@ -595,7 +585,6 @@ class SileCDF(BaseSile):
           >>> nc.createVariable(..., **self._cmp_args)
         """
         return {'zlib': self._lvl > 0, 'complevel': self._lvl}
-
 
     def __enter__(self):
         """ Opens the output file and returns it self """
@@ -614,7 +603,7 @@ class SileCDF(BaseSile):
         """ Retrieve  method to get the NetCDF variable """
         if tree is None:
             return n.dimensions[name]
-        
+
         g = n
         if isinstance(tree, list):
             for t in tree:
@@ -633,20 +622,20 @@ class SileCDF(BaseSile):
             if name in self._data:
                 return self._data[name]
         return self._variables(self, name, tree=tree)
-    
+
     def _value(self, name, tree=None):
         """ Local method for obtaining the data from the SileCDF.
 
         This method returns the value of the variable.
         """
         return self._variable(name, tree)[:]
-    
+
     @staticmethod
     def _variables(n, name, tree=None):
         """ Retrieve  method to get the NetCDF variable """
         if tree is None:
             return n.variables[name]
-        
+
         g = n
         if isinstance(tree, list):
             for t in tree:
@@ -655,7 +644,6 @@ class SileCDF(BaseSile):
             g = g.groups[tree]
 
         return g.variables[name]
-
 
     @staticmethod
     def _crt_grp(n, name):
@@ -673,7 +661,7 @@ class SileCDF(BaseSile):
     def _crt_var(n, name, *args, **kwargs):
         if name in n.variables:
             return n.variables[name]
-        
+
         attr = None
         if 'attr' in kwargs:
             attr = kwargs.pop('attr')
@@ -698,30 +686,25 @@ class SileBin(BaseSile):
 
         self.file = filename
         # Open mode
-        self._mode = mode.replace('b','') + 'b'
+        self._mode = mode.replace('b', '') + 'b'
 
         # Must call setup-methods
         self.__setup()
 
-
-    def _setup(self,*args, **kwargs):
+    def _setup(self, *args, **kwargs):
         """ Simple setup that needs to be overwritten """
         pass
-
 
     def __setup(self):
         """ Setup `SileBin` after initialization """
         self._setup()
 
-
     def __enter__(self):
         """ Opens the output file and returns it self """
         return self
 
-
     def __exit__(self, type, value, traceback):
         return False
-
 
 
 class SileError(IOError):

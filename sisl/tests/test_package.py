@@ -8,6 +8,7 @@ import numpy as np
 
 import sisl
 
+
 class TestVersion(object):
 
     def test_version(self):
@@ -22,5 +23,3 @@ class TestVersion(object):
         print(sisl.info.release)
         print(sisl.info.git_revision)
         print(sisl.info.git_revision_short)
-
-        

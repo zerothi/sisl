@@ -46,6 +46,7 @@ GIT_REVISION = "b75012f6438afcb731bb7e868a76bfde1168f1a1"
 if os.path.exists('MANIFEST'):
     os.remove('MANIFEST')
 
+
 def generate_cython():
     cwd = osp.abspath(osp.dirname(__file__))
     print("Cythonizing sources")
@@ -83,7 +84,7 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
     license='LGPLv3',
     packages=packages,
     entry_points={
-        'console_scripts' :
+        'console_scripts':
         ['sgeom = sisl.geometry:sgeom',
          'sgrid = sisl.grid:sgrid',
          'sdata = sisl.utils.sdata:sdata']
@@ -185,7 +186,7 @@ if __name__ == '__main__':
         write_version()
     except:
         pass
-    
+
     # Be sure to import this before numpy setup
     from setuptools import setup
 

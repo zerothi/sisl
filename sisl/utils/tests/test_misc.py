@@ -46,5 +46,3 @@ class TestMisc(object):
         assert_almost_equal(angle('a2pi/2a', True, False), 180)
         assert_almost_equal(angle('a2pi/2a', False, True), 180)
         assert_almost_equal(angle('a2pi/2a', False, False), 180)
-
-        

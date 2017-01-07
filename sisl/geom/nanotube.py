@@ -15,7 +15,7 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
     Create a nano-tube geometry
 
     This routine is implemented as in ``ASE`` with few changes.
-    
+
     Parameters
     ----------
     bond: float
@@ -103,17 +103,17 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
     xyz = np.empty([nn*2, 3], np.float64)
     for i in range(nn):
         ix = i * 2
-        
+
         k = np.floor(i * abs(r) / h1)
-        xyz[ix,0] = rs * np.cos(i * q4)
-        xyz[ix,1] = rs * np.sin(i * q4)
+        xyz[ix, 0] = rs * np.cos(i * q4)
+        xyz[ix, 1] = rs * np.sin(i * q4)
         z = (i * abs(r) - k * h1) * np.sin(q3)
         kk2 = abs(np.floor((z + 0.0001) / t))
         if z >= t - 0.0001:
             z -= t * kk2
         elif z < 0:
             z += t * kk2
-        xyz[ix,2] = z * sign
+        xyz[ix, 2] = z * sign
 
         # Next
         ix += 1
@@ -121,7 +121,7 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
         xyz[ix, 1] = rs * np.sin(i * q4 + q5)
         z = (i * abs(r) - k * h1) * np.sin(q3) - h2
         if z >= 0 and z < t:
-            pass 
+            pass
         else:
             z -= h1 * np.sin(q3)
             kk = abs(np.floor(z / t))
@@ -132,10 +132,10 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
         xyz[ix, 2] = z * sign
 
     # Sort the atomic coordinates according to z
-    idx = np.argsort(xyz[:,2])
-    xyz = xyz[idx,:]
+    idx = np.argsort(xyz[:, 2])
+    xyz = xyz[idx, :]
 
-    sc = SuperCell([rs * 4, rs * 4, t], nsc=[1,1,3])
+    sc = SuperCell([rs * 4, rs * 4, t], nsc=[1, 1, 3])
 
     geom = Geometry(xyz, atom, sc=sc)
     # Return a geometry with the first atom at (0,0,0)

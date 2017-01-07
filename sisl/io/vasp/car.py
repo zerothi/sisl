@@ -43,7 +43,7 @@ class CARSileVASP(SileVASP):
         fmt = ('   ' + '{:18.9f}' * 3) * 2 + '\n'
         tmp = np.zeros([6], np.float64)
         for i in range(3):
-            tmp[:3] = geom.cell[i,:]
+            tmp[:3] = geom.cell[i, :]
             self._write(fmt.format(*tmp))
 
         # Figure out how many species
@@ -96,9 +96,9 @@ class CARSileVASP(SileVASP):
         opt = self.readline()
         try:
             species = line1
-            species_count = np.array(opt.split(),np.int32)
+            species_count = np.array(opt.split(), np.int32)
         except:
-            species_count = np.array(line1,np.int32)
+            species_count = np.array(line1, np.int32)
             # We have no species...
             # We default to consecutive elements in the
             # periodic table.
@@ -155,6 +155,7 @@ class CARSileVASP(SileVASP):
 # Equivalent classes
 class POSCARSileVASP(CARSileVASP):
     pass
+
 
 class CONTCARSileVASP(CARSileVASP):
     pass

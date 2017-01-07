@@ -44,7 +44,6 @@ class XYZSile(Sile):
         # Add a single new line
         self._write('\n')
 
-
     @Sile_fh_open
     def read_geom(self):
         """ Returns Geometry object from the XYZ file
@@ -53,7 +52,7 @@ class XYZSile(Sile):
         """
 
         cell = np.asarray(np.diagflat([1] * 3), np.float64)
-        nsc = [1,1,1]
+        nsc = [1, 1, 1]
         l = self.readline()
         na = int(l)
         l = self.readline()
@@ -84,7 +83,6 @@ class XYZSile(Sile):
             xyz[ia, :] = [float(k) for k in l[:3]]
 
         return Geometry(xyz, atom=sp, sc=SuperCell(cell, nsc=nsc))
-
 
     def ArgumentParser(self, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

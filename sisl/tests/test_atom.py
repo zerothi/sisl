@@ -52,20 +52,20 @@ class TestAtom(object):
         assert_true(Atom(Z=1, mass=12).mass == 12)
         assert_true(Atom(Z=31, mass=12).mass == 12)
         assert_true(Atom(Z=31, mass=12).Z == 31)
-        
+
     def test6(self):
         assert_true(Atom(Z=1, orbs=3).orbs == 3)
         assert_true(len(Atom(Z=1, orbs=3)) == 3)
         assert_true(Atom(Z=1, R=1.4).R == 1.4)
         assert_true(Atom(Z=1, R=1.4).dR == 1.4)
-        assert_true(Atom(Z=1, R=[1.4,1.8]).orbs == 2)
+        assert_true(Atom(Z=1, R=[1.4, 1.8]).orbs == 2)
 
     def test7(self):
         assert_true(Atom(Z=1, orbs=3).radius() > 0.)
         assert_true(len(str(Atom(Z=1, orbs=3))))
 
     def test8(self):
-        a = self.PT.Z([1,2])
+        a = self.PT.Z([1, 2])
         assert_true(len(a) == 2)
         assert_true(a[0] == 1)
         assert_true(a[1] == 2)
@@ -77,7 +77,7 @@ class TestAtom(object):
         assert_true(a[1] == 'He')
         a = self.PT.Z_label(1)
         assert_true(a == 'H')
-        
+
     def test_pickle(self):
         import pickle as p
         sC = p.dumps(self.C)
@@ -93,6 +93,7 @@ class TestAtom(object):
         assert_false(C == self.Au)
         assert_true(Au == self.Au)
         assert_true(Au != self.C)
+
 
 class TestAtoms(object):
 
@@ -170,4 +171,3 @@ class TestAtoms(object):
                 assert_true(a == Atom['Au'])
                 assert_true((idx == [1, 3]).all())
             assert_true(len(idx) == 2)
-

@@ -30,7 +30,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 class outSileSiesta(SileSiesta):
     """ SIESTA output file object 
-    
+
     This enables reading the output quantities from the SIESTA output.
     """
 
@@ -39,7 +39,6 @@ class outSileSiesta(SileSiesta):
         if species is None:
             return [Atom(i) for i in range(150)]
         return species
-
 
     @Sile_fh_open
     def read_species(self):
@@ -64,7 +63,6 @@ class outSileSiesta(SileSiesta):
             line = self.readline()
 
         return atom
-    
 
     def _read_sc_outcell(self):
         """ Wrapper for reading the unit-cell from the outcoor block """
@@ -81,7 +79,7 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
-            cell.append( [float(x) for x in line[:3]] )
+            cell.append([float(x) for x in line[:3]])
             line = self.readline()
 
         cell = np.array(cell, np.float64)
@@ -90,7 +88,6 @@ class outSileSiesta(SileSiesta):
             cell *= Bohr2Ang
 
         return SuperCell(cell)
-            
 
     def _read_geom_outcoor(self, line, last, all, species=None):
         """ Wrapper for reading the geometry as in the outcoor output """
@@ -108,7 +105,7 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
-            xyz.append( [float(x) for x in line[:3]] )
+            xyz.append([float(x) for x in line[:3]])
             spec.append(line[3])
             try:
                 atom.append(line[5])
@@ -126,9 +123,9 @@ class outSileSiesta(SileSiesta):
             # So... :(
             raise ValueError("Could not read the lattice-constant for the scaled geometry")
         elif fractional:
-            xyz = xyz[:, 0] * cell[0,:][None,:] + \
-                  xyz[:, 1] * cell[1,:][None,:] + \
-                  xyz[:, 2] * cell[2,:][None,:]
+            xyz = xyz[:, 0] * cell[0, :][None, :] + \
+                  xyz[:, 1] * cell[1, :][None, :] + \
+                  xyz[:, 2] * cell[2, :][None, :]
         elif not Ang:
             xyz *= Bohr2Ang
 
@@ -142,9 +139,9 @@ class outSileSiesta(SileSiesta):
             if tmp is None:
                 return [geom]
             return tmp.extend([geom])
-        
+
         return geom
-        
+
     def _read_geom_atomic(self, line, species=None):
         """ Wrapper for reading the geometry as in the outcoor output """
         species = self._ensure_species(species)
@@ -158,8 +155,8 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
-            xyz.append( [float(x) for x in line[1:4]] )
-            atom.append(species[ int(line[4])-1 ])
+            xyz.append([float(x) for x in line[1:4]])
+            atom.append(species[int(line[4])-1])
             line = self.readline()
 
         # Retrieve the unit-cell
@@ -172,7 +169,6 @@ class outSileSiesta(SileSiesta):
         geom = Geometry(xyz, atom, sc=cell)
 
         return geom
-
 
     @Sile_fh_open
     def read_geom(self, last=True, all=False):
@@ -242,18 +238,17 @@ class outSileSiesta(SileSiesta):
         F = []
         line = self.readline()
         while not line.startswith('--'):
-            F.append( [float(x) for x in line.split()[1:]] )
+            F.append([float(x) for x in line.split()[1:]])
             line = self.readline()
 
         F = np.array(F)
-        
+
         if all:
             tmp = self.read_force(last, all)
             if tmp is None:
                 return []
             return tmp.extend([F])
         return F
-
 
     @Sile_fh_open
     def read_moment(self, orbital=False, quantity='S', last=True, all=False):
@@ -310,17 +305,17 @@ class outSileSiesta(SileSiesta):
                     # Track maximum number of atoms
                     na = max(ia, na)
                     if quantity == 'S':
-                        atom.append( [float(x) for x in line[4:7]] )
+                        atom.append([float(x) for x in line[4:7]])
                     elif quantity == 'L':
-                        atom.append( [float(x) for x in line[7:10]] )
+                        atom.append([float(x) for x in line[7:10]])
                 line = self.readline().split() # Total ...
                 if not orbital:
                     ia = int(line[0])
                     if quantity == 'S':
-                        atom.append( [float(x) for x in line[4:7]] )
+                        atom.append([float(x) for x in line[4:7]])
                     elif quantity == 'L':
-                        atom.append( [float(x) for x in line[8:11]] )
-                tbl.append( (ia, atom) )
+                        atom.append([float(x) for x in line[8:11]])
+                tbl.append((ia, atom))
             if line.startswith('--'):
                 break
 
@@ -335,7 +330,6 @@ class outSileSiesta(SileSiesta):
             return np.array(moments)
         return moments
 
-
     def read_data(self, *args, **kwargs):
         """ Read specific content in the SIESTA out file 
 
@@ -348,7 +342,7 @@ class outSileSiesta(SileSiesta):
         <geom>, <forces>
         >>> read_data(force=True,geometry=True)
         <forces>, <geom>
-       
+
         Parameters
         ----------
         geom: bool
@@ -368,7 +362,7 @@ class outSileSiesta(SileSiesta):
             if kw == 'force':
                 if kwargs[kw]:
                     val.append(self.read_force())
-            
+
             if kw == 'moment':
                 if kwargs[kw]:
                     val.append(self.read_moment())
@@ -376,10 +370,8 @@ class outSileSiesta(SileSiesta):
         if len(val) == 0:
             val = None
         elif len(val) == 1:
-            val = val[0]    
+            val = val[0]
         return val
-        
-        
+
 
 add_sile('out', outSileSiesta, case=False, gzip=True)
-

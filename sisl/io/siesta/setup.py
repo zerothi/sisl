@@ -5,9 +5,9 @@ def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     from numpy.distutils.system_info import get_info
     from os.path import join as osp_join
-    
+
     config = Configuration('siesta', parent_package, top_path)
-    
+
     all_info = get_info('ALL')
     sources = [
         'free_unit.f90',

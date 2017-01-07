@@ -33,7 +33,6 @@ class TestHamiltonian(object):
         self.H2 = Hamiltonian(self.g2)
         self.HS2 = Hamiltonian(self.g2, orthogonal=False)
 
-
     def tearDown(self):
         del self.sc
         del self.g
@@ -66,59 +65,59 @@ class TestHamiltonian(object):
         assert_false(self.HS.orthogonal)
 
     def test_set1(self):
-        self.H.H[0,0] = 1.
-        assert_true(self.H[0,0] == 1.)
-        assert_true(self.H[1,0] == 0.)
+        self.H.H[0, 0] = 1.
+        assert_true(self.H[0, 0] == 1.)
+        assert_true(self.H[1, 0] == 0.)
         self.H.empty()
 
-        self.HS.H[0,0] = 1.
-        assert_true(self.HS.H[0,0] == 1.)
-        assert_true(self.HS.H[1,0] == 0.)
-        assert_true(self.HS.S[0,0] == 0.)
-        assert_true(self.HS.S[1,0] == 0.)
-        self.HS.S[0,0] = 1.
-        assert_true(self.HS.H[0,0] == 1.)
-        assert_true(self.HS.H[1,0] == 0.)
-        assert_true(self.HS.S[0,0] == 1.)
-        assert_true(self.HS.S[1,0] == 0.)
+        self.HS.H[0, 0] = 1.
+        assert_true(self.HS.H[0, 0] == 1.)
+        assert_true(self.HS.H[1, 0] == 0.)
+        assert_true(self.HS.S[0, 0] == 0.)
+        assert_true(self.HS.S[1, 0] == 0.)
+        self.HS.S[0, 0] = 1.
+        assert_true(self.HS.H[0, 0] == 1.)
+        assert_true(self.HS.H[1, 0] == 0.)
+        assert_true(self.HS.S[0, 0] == 1.)
+        assert_true(self.HS.S[1, 0] == 0.)
 
         # delete before creating the same content
         self.HS.empty()
-        self.HS[0,0] = 1., 1.
-        assert_true(self.HS.H[0,0] == 1.)
-        assert_true(self.HS.S[0,0] == 1.)
+        self.HS[0, 0] = 1., 1.
+        assert_true(self.HS.H[0, 0] == 1.)
+        assert_true(self.HS.S[0, 0] == 1.)
         self.HS.empty()
 
     def test_set2(self):
-        self.H.construct([(0.1,1.5), (1.,0.1)])
-        assert_true(self.H[0,0] == 1.)
-        assert_true(self.H[1,0] == 0.1)
-        assert_true(self.H[0,1] == 0.1)
+        self.H.construct([(0.1, 1.5), (1., 0.1)])
+        assert_true(self.H[0, 0] == 1.)
+        assert_true(self.H[1, 0] == 0.1)
+        assert_true(self.H[0, 1] == 0.1)
         self.H.empty()
 
     def test_set3(self):
         self.HS.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        assert_true(self.HS.H[0,0] == 1.)
-        assert_true(self.HS.S[0,0] == 2.)
-        assert_true(self.HS.H[1,1] == 1.)
-        assert_true(self.HS.S[1,1] == 2.)
-        assert_true(self.HS.H[1,0] == 0.1)
-        assert_true(self.HS.H[0,1] == 0.1)
-        assert_true(self.HS.S[1,0] == 0.2)
-        assert_true(self.HS.S[0,1] == 0.2)
+        assert_true(self.HS.H[0, 0] == 1.)
+        assert_true(self.HS.S[0, 0] == 2.)
+        assert_true(self.HS.H[1, 1] == 1.)
+        assert_true(self.HS.S[1, 1] == 2.)
+        assert_true(self.HS.H[1, 0] == 0.1)
+        assert_true(self.HS.H[0, 1] == 0.1)
+        assert_true(self.HS.S[1, 0] == 0.2)
+        assert_true(self.HS.S[0, 1] == 0.2)
         assert_true(self.HS.nnz == len(self.HS) * 4)
         self.HS.empty()
 
     def test_set4(self):
         for ia, io in self.H:
             # Find atoms close to 'ia'
-            idx = self.H.geom.close(ia, dR=(0.1, 1.5) )
+            idx = self.H.geom.close(ia, dR=(0.1, 1.5))
             self.H[io, idx[0]] = 1.
             self.H[io, idx[1]] = 0.1
-        assert_true(self.H.H[0,0] == 1.)
-        assert_true(self.H.H[1,1] == 1.)
-        assert_true(self.H.H[1,0] == 0.1)
-        assert_true(self.H.H[0,1] == 0.1)
+        assert_true(self.H.H[0, 0] == 1.)
+        assert_true(self.H.H[1, 1] == 1.)
+        assert_true(self.H.H[1, 0] == 0.1)
+        assert_true(self.H.H[0, 1] == 0.1)
         assert_true(self.H.nnz == len(self.H) * 4)
         self.H.empty()
 
@@ -128,10 +127,10 @@ class TestHamiltonian(object):
         g = self.g.tile(10, 0).tile(10, 1).tile(10, 2)
         H = Hamiltonian(g)
         H.construct([(0.1, 1.5), (1., 0.1)])
-        assert_true(H.H[0,0] == 1.)
-        assert_true(H.H[1,1] == 1.)
-        assert_true(H.H[1,0] == 0.1)
-        assert_true(H.H[0,1] == 0.1)
+        assert_true(H.H[0, 0] == 1.)
+        assert_true(H.H[1, 1] == 1.)
+        assert_true(H.H[1, 0] == 0.1)
+        assert_true(H.H[0, 1] == 0.1)
         # This is graphene
         # on-site == len(H)
         # nn == 3 * len(H)
@@ -145,7 +144,7 @@ class TestHamiltonian(object):
         self.H2.construct([(0.1, 1.5), (1., 0.1)])
 
     def test_op1(self):
-        g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32)
         for i in range(10):
             j = range(i*4, i*4+3)
@@ -182,7 +181,7 @@ class TestHamiltonian(object):
                 assert_equal(H[1, jj], 0)
 
     def test_op2(self):
-        g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32)
         for i in range(10):
             j = range(i*4, i*4+3)
@@ -238,7 +237,7 @@ class TestHamiltonian(object):
                 assert_equal(s[1, jj], 0)
 
     def test_op3(self):
-        g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32)
         Hc = H.copy()
         del Hc
@@ -281,7 +280,7 @@ class TestHamiltonian(object):
                 assert_equal(h.dtype, np.complex128)
 
     def test_op4(self):
-        g = Geometry([[i, 0,0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32)
         # Create initial stuff
         for i in range(10):
@@ -301,7 +300,7 @@ class TestHamiltonian(object):
         assert_equal(h.dtype, np.float64)
         h = 1.j - H
         assert_equal(h.dtype, np.complex128)
-        
+
         h = 1 * H
         assert_equal(h.dtype, np.int32)
         h = 1. * H
@@ -342,7 +341,7 @@ class TestHamiltonian(object):
         # Create reference
         Hg = Hamiltonian(self.g, orthogonal=False)
         Hg.construct([dR, param])
-        
+
         g = self.g.tile(2, 0).tile(2, 1)
         H = Hamiltonian(g, orthogonal=False)
         H.construct([dR, param])
@@ -366,31 +365,27 @@ class TestHamiltonian(object):
 
     def test_eig2(self):
         # Test of eigenvalues
-        self.HS.construct([(0.1,1.5), ((1.,1.), (0.1,0.1))])
+        self.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
         self.HS.eigh()
         self.HS.empty()
 
     def test_spin2(self):
-        g = Geometry([[i, 0,0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32, spin=2)
         for i in range(10):
             j = range(i*4, i*4+3)
             H[0, j] = (i, i*2)
 
-
     def test_finalized(self):
         assert_false(self.H.finalized)
-        self.H.H[0,0] = 1.
+        self.H.H[0, 0] = 1.
         self.H.finalize()
         assert_true(self.H.finalized)
         assert_true(self.H.nnz == 1)
         self.H.empty()
         assert_false(self.HS.finalized)
-        self.HS[0,0] = 1., 1.
+        self.HS[0, 0] = 1., 1.
         self.HS.finalize()
         assert_true(self.HS.finalized)
         assert_true(self.HS.nnz == 1)
         self.HS.empty()
-        
-
-        

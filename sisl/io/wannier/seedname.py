@@ -23,10 +23,8 @@ class winSileW90(SileW90):
         """ Setup `winSileW90` after initialization """
         self._seed = self.file.replace('.win', '')
 
-
     def _set_file(self, suffix):
         self.file = self._seed + suffix
-
 
     @Sile_fh_open
     def _read_sc(self):
@@ -37,19 +35,17 @@ class winSileW90(SileW90):
             raise ValueError("The unit-cell vectors could not be found in the seed-file.")
 
         # Create the cell
-        cell = np.empty([3,3], np.float64)
-        for i in [0,1,2]:
-            cell[i,:] = [float(x) for x in self.readline().split()]
+        cell = np.empty([3, 3], np.float64)
+        for i in [0, 1, 2]:
+            cell[i, :] = [float(x) for x in self.readline().split()]
 
         return SuperCell(cell)
-        
-        
+
     def read_sc(self):
         """ Reads a `SuperCell` and creates the Wannier90 cell """
         self._set_file('.win')
 
         return self._read_sc()
-
 
     @Sile_fh_open
     def _read_geom(self):
@@ -70,22 +66,20 @@ class winSileW90(SileW90):
                 na = ia + 1
             xyz[ia, :] = [float(k) for k in l[:3]]
 
-        return Geometry(xyz[:na,:], atom='H')
-        
-            
+        return Geometry(xyz[:na, :], atom='H')
+
     def read_geom(self, *args, **kwargs):
         """ Reads a `Geometry` and creates the Wannier90 cell """
 
         # Read in the super-cell
         sc = self.read_sc()
-        
+
         self._set_file('_centres.xyz')
 
         geom = self._read_geom()
         geom.set_sc(sc)
-        
-        return geom
 
+        return geom
 
     @Sile_fh_open
     def _read_es(self, geom, dtype=np.complex128, **kwargs):
@@ -112,19 +106,19 @@ class winSileW90(SileW90):
             nlines = nrpts
         else:
             nlines = nrpts + 15 - nrpts % 15
-        
+
         ws = []
         wextend = ws.extend
         for i in range(nlines // 15):
             wextend(map(int, self.readline().split()))
-            
+
         # Convert to numpy array
         nws = np.array(ws, np.int32).flatten()
         del ws, wextend
 
         # Figure out the number of supercells
         nsc = [0, 0, 0]
-        
+
         while True:
             l = self.readline()
             if l == '':
@@ -136,26 +130,25 @@ class winSileW90(SileW90):
             nsc[2] = max(nsc[2], abs(isc[2]))
 
         geom.set_nsc(np.array(nsc, np.int32)*2+1)
-        
+
         # With the geometry in place we can read in the entire matrix
         # Create a new sparse matrix
         from scipy.sparse import lil_matrix
         Hr = lil_matrix((geom.no, geom.no_s), dtype=dtype)
         Hi = lil_matrix((geom.no, geom.no_s), dtype=dtype)
-        
+
         self.fh.seek(0)
         # Skip lines with wx
         for i in range(nlines // 15 + 3):
             self.readline()
-        
-        
+
         while True:
             l = self.readline()
             if l == '':
                 break
 
             ls = l.split()
-            
+
             # Get supercell and wannier functions
             # isc = idx[:3]
             # Hij = idx[3:5]
@@ -168,7 +161,7 @@ class winSileW90(SileW90):
             # Get the offset
             off = geom.sc_index(idx[:3]) * geom.no
             j = idx[4] - 1 + off
-            
+
             if abs(hr) > cutoff:
                 Hr[i, j] = hr
             if abs(hi) > cutoff:
@@ -181,10 +174,9 @@ class winSileW90(SileW90):
 
         return Hamiltonian.sp2HS(geom, Hr)
 
-    
     def read_es(self, *args, **kwargs):
         """ Read the electronic structure of the Wannier90 output 
-        
+
         Parameters
         ----------
         cutoff: (float, 0.00001)
@@ -198,7 +190,7 @@ class winSileW90(SileW90):
         self._set_file('_hr.dat')
 
         return self._read_es(geom, *args, **kwargs)
-        
+
     def ArgumentParser(self, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()

@@ -89,7 +89,6 @@ class HamiltonianSile(Sile):
 
         return geom
 
-
     @Sile_fh_open
     def read_es(self, hermitian=True, dtype=np.float64, **kwargs):
         """ Reads a Hamiltonian (including the geometry)
@@ -151,7 +150,6 @@ class HamiltonianSile(Sile):
 
         return Hamiltonian.sp2HS(geom, H, S)
 
-
     @Sile_fh_open
     def write_geom(self, geom, **kwargs):
         """
@@ -202,7 +200,6 @@ class HamiltonianSile(Sile):
                 self._write(fmt2_str.format(Z, no, *geom.xyz[ia, :]))
 
         self._write('end atom\n')
-
 
     @Sile_fh_open
     def write_es(self, ham, hermitian=True, **kwargs):
@@ -313,9 +310,8 @@ class HamiltonianSile(Sile):
                 for jo, io, s in zip(S.row, S.col, S.data):
                     H[jo, io] = H[jo, io]
                 S = S.tocsr()
-            
-            del ut
 
+            del ut
 
         # Start writing of the model
         # We loop on all super-cells

@@ -60,7 +60,7 @@ class bandsSileSiesta(SileSiesta):
                     l.extend([float(x) for x in self.readline().split()])
                 l = np.array(l, np.float64)
                 l.shape = (ns, no)
-                b[ik,:,:] = l[:,:] - Ef
+                b[ik, :, :] = l[:, :] - Ef
             # Now we need to read the labels for the points
             xlabels = []
             labels = []
@@ -68,14 +68,14 @@ class bandsSileSiesta(SileSiesta):
             for il in range(nl):
                 l = self.readline().split()
                 xlabels.append(float(l[0]))
-                labels.append((' '.join(l[1:])).replace("'",''))
+                labels.append((' '.join(l[1:])).replace("'", ''))
             vals = (xlabels, labels), k, b
-            
+
         else:
             k = np.empty([nk, 3], np.float64)
             for ik in range(nk):
                 l = [float(x) for x in self.readline().split()]
-                k[ik,:] = l[0:2]
+                k[ik, :] = l[0:2]
                 del l[2]
                 del l[1]
                 del l[0]
@@ -84,7 +84,7 @@ class bandsSileSiesta(SileSiesta):
                     l.extend([float(x) for x in self.readline().split()])
                 l = np.array(l, np.float64)
                 l.shape = (ns, no)
-                b[ik,:,:] = l[:,:] - Ef
+                b[ik, :, :] = l[:, :] - Ef
             vals = k, b
         return vals
 
@@ -98,7 +98,7 @@ class bandsSileSiesta(SileSiesta):
             if short:
                 return args
             return [args[0]]
-        
+
         # We limit the import to occur here
         import argparse
 
@@ -108,19 +108,21 @@ class bandsSileSiesta(SileSiesta):
         # straight forward manner.
         d = {
             "_bands": self.read_data(),
-            "_Emap" : None,
+            "_Emap": None,
         }
         namespace = default_namespace(**d)
 
         # Energy grabs
         class ERange(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 ns._Emap = strmap(float, value)[0]
-        p.add_argument('--energy', '-E', 
+        p.add_argument('--energy', '-E',
                        action=ERange,
                        help='Denote the sub-section of energies that are plotted: "-1:0,1:2" [eV]')
-        
+
         class BandsPlot(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 import matplotlib.pyplot as plt
                 # Decide whether this is BandLines or BandPoints
@@ -129,30 +131,31 @@ class bandsSileSiesta(SileSiesta):
                     raise ValueError("The bands file only contains points in the BZ, not a bandstructure.")
                 lbls, k, b = ns._bands
                 b = b.T
+
                 def myplot(title, x, y, E):
                     plt.figure()
                     plt.title(title)
                     for ib in range(y.shape[0]):
-                        plt.plot(x, y[ib,:])
+                        plt.plot(x, y[ib, :])
                     plt.xlabel('k-path [1/Bohr]')
                     plt.ylabel('E-Ef [eV]')
                     plt.xticks(xlbls, lbls, rotation=45)
                     plt.xlim(x.min(), x.max())
                     if not E is None:
                         plt.ylim(E[0], E[1])
-                    
+
                 xlbls, lbls = lbls
                 if b.shape[1] == 2:
                     # We must plot spin-up/down separately
                     for i, ud in [(0, 'UP'), (1, 'DOWN')]:
-                        myplot('Bandstructure SPIN-'+ud, k, b[:,i,:], ns._Emap)
+                        myplot('Bandstructure SPIN-'+ud, k, b[:, i, :], ns._Emap)
                 else:
-                    myplot('Bandstructure', k, b[:,0,:], ns._Emap)
+                    myplot('Bandstructure', k, b[:, 0, :], ns._Emap)
                 if value is None:
                     plt.show()
                 else:
                     plt.savefig(value)
-        p.add_argument(*opts('--plot','-p'), action=BandsPlot, nargs='?', metavar='FILE',
+        p.add_argument(*opts('--plot', '-p'), action=BandsPlot, nargs='?', metavar='FILE',
                        help='Plot the bandstructure from the .bands file, possibly saving to a file.')
 
         return p, namespace

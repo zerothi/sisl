@@ -28,7 +28,7 @@ def setUp(self):
                       atom=C, sc=sc)
 
     self.dR = np.array([0.1, 1.5])
-    self.t = np.array([0. , 2.7])
+    self.t = np.array([0., 2.7])
     self.tS = np.array([(0., 1.0),
                         (2.7, 0.)])
     C = Atom(Z=6, orbs=1, R=max(self.dR))

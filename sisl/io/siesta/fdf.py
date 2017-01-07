@@ -25,8 +25,8 @@ from sisl.units.siesta import unit_convert
 __all__ = ['fdfSileSiesta']
 
 
-_LOGICAL_TRUE  = ['.true.','true','yes','y','t']
-_LOGICAL_FALSE = ['.false.','false','no','n','f']
+_LOGICAL_TRUE  = ['.true.', 'true', 'yes', 'y', 't']
+_LOGICAL_FALSE = ['.false.', 'false', 'no', 'n', 'f']
 _LOGICAL = _LOGICAL_FALSE + _LOGICAL_TRUE
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
@@ -50,7 +50,6 @@ class fdfSileSiesta(SileSiesta):
         if len(self._directory) == 0:
             self._directory = '.'
 
-
     def _setup(self):
         """ Setup the `fdfSileSiesta` after initialization """
         # These are the comments
@@ -62,12 +61,11 @@ class fdfSileSiesta(SileSiesta):
         self._parent_fh = []
         self._directory = '.'
 
-
     def readline(self, comment=False):
         """ Reads the next line of the file """
         # Call the parent readline function
         l = super(fdfSileSiesta, self).readline(comment=comment)
-        
+
         # In FDF files, %include marks files that progress
         # down in a tree structure
         if '%include' in l:
@@ -76,13 +74,13 @@ class fdfSileSiesta(SileSiesta):
             self.fh = open(self._directory + osp.sep + l.split()[1], self._mode)
             # Read the following line in the new file
             return self.readline()
-        
+
         if len(self._parent_fh) > 0 and l == '':
             # l == '' marks the end of the file
             self.fh.close()
             self.fh = self._parent_fh.pop()
             return self.readline()
-        
+
         return l
 
     def type(self, key):
@@ -107,7 +105,6 @@ class fdfSileSiesta(SileSiesta):
 
         return 'n'
 
-    
     def key(self, key):
         """ Return the key as written in the fdf-file. If not found, returns `None`. """
         found, fdf = self._read(key)
@@ -116,7 +113,6 @@ class fdfSileSiesta(SileSiesta):
         else:
             return None
 
-        
     def get(self, key, unit=None, default=None, with_unit=False):
         """ Retrieve fdf-keyword from the file """
 
@@ -166,14 +162,12 @@ class fdfSileSiesta(SileSiesta):
                 return '{0:.4f} {1}'.format(float(fdfl[1]) * unit_convert(fdfl[2], unit), unit)
             elif not with_unit:
                 return float(fdfl[1]) * unit_convert(fdfl[2], unit)
-        
-        return ' '.join(fdfl[1:])
 
+        return ' '.join(fdfl[1:])
 
     def set(self, key, value):
         """ Add the key and value to the FDF file """
         raise NotImplementedError("Setting a fdf key is not yet implemented")
-
 
     @Sile_fh_open
     def _read(self, key):
@@ -183,11 +177,10 @@ class fdfSileSiesta(SileSiesta):
         # Check whether the key is piped
         if found and fdf.find('<') >= 0:
             # Create new fdf-file
-            sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n','').strip())
+            sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n', '').strip())
             return sub_fdf._read(key)
-        
-        return found, fdf
 
+        return found, fdf
 
     @Sile_fh_open
     def _read_block(self, key, force=False):
@@ -207,9 +200,9 @@ class fdfSileSiesta(SileSiesta):
         # If the block is piped in from another file...
         if '<' in fdf:
             # Create new fdf-file
-            sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n','').strip())
+            sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n', '').strip())
             return sub_fdf._read_block(key, force = force)
-        
+
         li = []
         while True:
             l = self.readline()
@@ -257,7 +250,6 @@ class fdfSileSiesta(SileSiesta):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
-
     def read_sc(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
         f, lc = self._read('LatticeConstant')
@@ -287,7 +279,6 @@ class fdfSileSiesta(SileSiesta):
         cell *= s
 
         return SuperCell(cell)
-
 
     def read_geom(self, *args, **kwargs):
         """ Returns Geometry object from the FDF file
@@ -433,7 +424,6 @@ class fdfSileSiesta(SileSiesta):
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
 
-    
     @dec_default_AP("Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
@@ -442,9 +432,8 @@ class fdfSileSiesta(SileSiesta):
         # We must by-pass this fdf-file
         import sisl.io.siesta as sis
 
-
         # The fdf parser is more complicated
-        
+
         # It is based on different settings based on the
 
         sp = p.add_subparsers(help="Determine which part of the fdf-file that should be processed.")
@@ -455,17 +444,18 @@ class fdfSileSiesta(SileSiesta):
         # The default on all sub-parsers are the retrieval and setting
 
         d = {
-            '_fdf' : self,
-            '_fdf_first' : True,
+            '_fdf': self,
+            '_fdf_first': True,
         }
         namespace = default_namespace(**d)
 
         ep = sp.add_parser('edit',
                            help='Change or read and print data from the fdf file')
-        
+
         # As the fdf may provide additional stuff, we do not add EVERYTHING from
         # the Geometry class.
         class FDFAdd(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 key = values[0]
                 val = values[1]
@@ -480,6 +470,7 @@ class fdfSileSiesta(SileSiesta):
                         help='Add a key to the FDF file. If it already exists it will be overwritten')
 
         class FDFGet(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 # Retrieve the value in standard units
                 # Currently, we write out the unit "as-is"
@@ -496,9 +487,9 @@ class fdfSileSiesta(SileSiesta):
                             has_nl = True
                             break
                     if not has_nl:
-                        print('{} {}'.format(val[0], ' '.join(val[1:])) )
+                        print('{} {}'.format(val[0], ' '.join(val[1:])))
                     else:
-                        print('{}\n'.format(val[0]) + '\n'.join(val[1:]) )
+                        print('{}\n'.format(val[0]) + '\n'.join(val[1:]))
                 else:
                     print('{}'.format(val))
 
@@ -545,7 +536,6 @@ class fdfSileSiesta(SileSiesta):
             tmp_p, tmp_ns = sis.ncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
-        
         return p, namespace
 
 

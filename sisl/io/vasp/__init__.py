@@ -12,6 +12,3 @@ __all__ = []
 extendall(__all__, 'sisl.io.vasp.sile')
 
 extendall(__all__, 'sisl.io.vasp.car')
-
-
-

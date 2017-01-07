@@ -989,7 +989,7 @@ class Atom(with_metaclass(AtomMeta, object)):
             R = -1.
         if orbs is None:
             orbs = 1
-            
+
         self.Z = _ptbl.Z_int(Z)
         self.orbs = orbs
         try:
@@ -1014,16 +1014,14 @@ class Atom(with_metaclass(AtomMeta, object)):
         """ Return copy of this object """
         return self.__class__(self.Z, self.R, self.orbs, self.mass, self.tag)
 
-
     def radius(self, method='calc'):
         """ Return the atomic radii of the atom (in Ang) 
-        
+
         See ``PeriodicTable.radius`` for details on the argument.
         """
         return _ptbl.radius(self.Z, method)
     radii = radius
 
-    
     @property
     def symbol(self):
         """ Return short atomic name (Au==79). """
@@ -1096,7 +1094,7 @@ class Atoms(object):
     """
 
     def __init__(self, atom=None, na=None):
-        
+
         # Default value of the atom object
         if atom is None:
             atom = Atom('H')
@@ -1133,7 +1131,7 @@ class Atoms(object):
 
             else:
                 raise ValueError('atom keyword was wrong input')
-            
+
         elif isinstance(atom, (_str, Integral)):
             uatom = [Atom(atom)]
             specie = [0]
@@ -1157,7 +1155,7 @@ class Atoms(object):
         # Create atom and species objects
         self._atom = list(uatom)
         self._specie = array_fill_repeat(specie, na, cls=np.int16)
-        
+
     def copy(self):
         """ Return a copy of this atom """
         return self.__class__(self[:])
@@ -1200,7 +1198,7 @@ class Atoms(object):
         for o in other[::-1]:
             atoms.insert(index, o)
         self = self.__class__(atoms)
-        
+
     def append(self, other):
         """ Append ``other`` to this list of atoms """
         if not isinstance(other, Atoms):
@@ -1215,7 +1213,7 @@ class Atoms(object):
         for a, idx in self:
             s += '  ({0}) == [{1}], \n'.format(len(idx), a)
         return s + '}\n'
-            
+
     def __len__(self):
         """ Return number of unique atoms in the object """
         return len(self._specie)
@@ -1229,11 +1227,11 @@ class Atoms(object):
         """
         for s, atom in enumerate(self._atom):
             yield atom, np.where(self.specie == s)[0]
-    
+
     def __contains__(self, key):
         """ Determine whether the ``key`` is in the unique atoms list """
         return key in self.atom
-    
+
     def __getitem__(self, key):
         """ Return an ``Atom`` object corresponding to the key(s) """
         if isinstance(key, slice):

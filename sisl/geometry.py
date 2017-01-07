@@ -297,7 +297,6 @@ class Geometry(SuperCellChild):
 
         return iR
 
-
     def iter_block(self, iR=10, dR=None):
         """
         Returns an iterator for performance critical looping.
@@ -856,7 +855,6 @@ class Geometry(SuperCellChild):
             sc = self.sc.append(other.sc, axis)
         return self.__class__(xyz, atom=atom, sc=sc)
 
-
     def add(self, other):
         """
         Adds atoms (as is) from the ``other`` geometry.
@@ -873,7 +871,6 @@ class Geometry(SuperCellChild):
         atom = self.atom.append(other.atom)
         sc = self.sc.copy()
         return self.__class__(xyz, atom=atom, sc=sc)
-
 
     def attach(self, s_idx, other, o_idx, dist='calc', axis=None):
         """ Attaches another ``Geometry`` at the `s_idx` index with respect to `o_idx` using different methods.
@@ -900,9 +897,9 @@ class Geometry(SuperCellChild):
 
             # Now calculate the vector that we should have
             # between the atoms
-            v = self.cell[axis,:]
+            v = self.cell[axis, :]
             v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * dist
-            
+
         elif isinstance(dist, string_types):
             # We have a single rational number
             if axis is None:
@@ -911,12 +908,12 @@ class Geometry(SuperCellChild):
             # This is the empirical distance between the atoms
             d = self.atom[s_idx].radius(dist) + other.atom[o_idx].radius(dist)
             if isinstance(axis, Integral):
-                v = self.cell[axis,:]
+                v = self.cell[axis, :]
             else:
                 v = np.array(axis)
-            
+
             v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * d
-            
+
         else:
             # The user *must* have supplied a vector
             v = np.array(dist)
@@ -929,7 +926,6 @@ class Geometry(SuperCellChild):
         # We do not know how to handle the lattice-vectors,
         # so we will do nothing...
         return self.add(o)
-    
 
     def reverse(self, atom=None):
         """ Returns a reversed geometry
@@ -967,7 +963,7 @@ class Geometry(SuperCellChild):
 
         We insert the ``geom`` `Geometry` before `atom`.
         Note that this will not change the unit cell.
-        
+
         Parameters
         ----------
         atom : int
@@ -1007,10 +1003,8 @@ class Geometry(SuperCellChild):
         else:
             return self.xyz[idx, :] + offset[None, :]
 
-
     def axyzsc(self, ia):
         return self.coords(self.a2isc(ia), self.sc2uc(ia))
-
 
     def close_sc(self, xyz_ia,
                  isc=None,
@@ -1124,7 +1118,7 @@ class Geometry(SuperCellChild):
         if ret_coord:
             i += 1
             rc = i
-            ret.append([np.empty([0,3], np.float64)] * len(dR))
+            ret.append([np.empty([0, 3], np.float64)] * len(dR))
         if ret_dist:
             i += 1
             rc = i
@@ -1206,7 +1200,6 @@ class Geometry(SuperCellChild):
         if ret_coord or ret_dist:
             return ret
         return ret[0]
-        
 
     def bond_correct(self, ia, atom, method='calc'):
         """ Corrects the bond between `ia` and the `atom`.
@@ -1269,7 +1262,6 @@ class Geometry(SuperCellChild):
             raise NotImplementedError(
                 'Changing bond-length dependent on several lacks implementation.')
 
-
     def close(self, xyz_ia,
             dR=None,
             idx=None,
@@ -1327,7 +1319,7 @@ class Geometry(SuperCellChild):
         if ret_coord:
             c = i + 1
             i += 1
-            ret.append([np.empty([0,3], np.float64)] * len(dR))
+            ret.append([np.empty([0, 3], np.float64)] * len(dR))
         if ret_dist:
             d = i + 1
             i += 1
@@ -1345,12 +1337,12 @@ class Geometry(SuperCellChild):
                 idx_xyz=idx_xyz,
                 ret_coord=ret_coord,
                 ret_dist=ret_dist)
-            
+
             if not ret_special:
                 # This is to "fake" the return
                 # of a list (we will do indexing!)
                 sret = [sret]
-                
+
             if isinstance(sret[0], list):
                 # we have a list of arrays (len(dR) > 1)
                 for i, x in enumerate(sret[0]):
@@ -1374,10 +1366,10 @@ class Geometry(SuperCellChild):
             elif ret_coord or ret_dist:
                 return [ret[0][0], ret[1][0]]
             return ret[0][0]
-        
+
         if ret_special:
             return ret
-        
+
         return ret[0]
 
     # Hence ``close_all`` has exact meaning
@@ -1406,7 +1398,7 @@ class Geometry(SuperCellChild):
         ia = np.asarray(ia, np.int32)
         ob = self.a2o(ia)
         oe = self.a2o(ia + 1)
-        
+
         # Create ranges
         if isinstance(ob, Integral):
             return np.arange(ob, oe, dtype=np.int32)
@@ -1496,12 +1488,10 @@ class Geometry(SuperCellChild):
         return Atoms(symbols=self.atom.tolist(), positions=self.xyz.tolist(),
                      cell=self.cell.tolist())
 
-
     @property
     def mass(self):
         """ Returns the mass of all atoms as an array """
         return np.array([a.mass for a in self.atom[:]], np.float64)
-
 
     def __eq__(self, other):
         if not isinstance(other, Geometry):
@@ -1513,7 +1503,6 @@ class Geometry(SuperCellChild):
 
     def __ne__(self, other):
         return not (self == other)
-
 
     # Create pickling routines
     def __getstate__(self):
@@ -1529,13 +1518,12 @@ class Geometry(SuperCellChild):
         sc.__setstate__(d)
         self.__init__(d['xyz'], d['atom'], sc=sc)
 
-
     @classmethod
     def _ArgumentParser_args_single(cls):
         """ Returns the options for `Geometry.ArgumentParser` in case they are the only options """
-        return {'limit_arguments' : False,
-                'short'           : True,
-                'positional_out'  : True,
+        return {'limit_arguments': False,
+                'short': True,
+                'positional_out': True,
             }
 
     # Hook into the Geometry class to create
@@ -1565,7 +1553,7 @@ class Geometry(SuperCellChild):
             if short:
                 return args
             return [args[0]]
-        
+
         # We limit the import to occur here
         import argparse
 
@@ -1574,117 +1562,126 @@ class Geometry(SuperCellChild):
         # This will enable custom actions to interact with the geometry in a
         # straight forward manner.
         d = {
-            "_geometry"        : self.copy(),
-            "_stored_geometry" : False,
+            "_geometry": self.copy(),
+            "_stored_geometry": False,
         }
         namespace = default_namespace(**d)
 
         # Create actions
         class MoveOrigin(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
-                ns._geometry.xyz[:,:] -= np.amin(ns._geometry.xyz, axis=0)[None,:]
-        p.add_argument(*opts('--origin','-O'), action=MoveOrigin, nargs=0,
+                ns._geometry.xyz[:, :] -= np.amin(ns._geometry.xyz, axis=0)[None, :]
+        p.add_argument(*opts('--origin', '-O'), action=MoveOrigin, nargs=0,
                    help='Move all atoms such that one atom will be at the origin.')
-        
+
         class MoveCenterOf(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 xyz = ns._geometry.center(which='xyz')
                 ns._geometry = ns._geometry.translate(ns._geometry.center(which=value) - xyz)
-        p.add_argument(*opts('--center-of', '-co'), choices=['mass','xyz','position','cell'], 
+        p.add_argument(*opts('--center-of', '-co'), choices=['mass', 'xyz', 'position', 'cell'],
                        action=MoveCenterOf,
                        help='Move coordinates to the center of the designated choice.')
 
         class MoveUnitCell(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
-                if value in ['translate','tr','t']:
+                if value in ['translate', 'tr', 't']:
                     # Simple translation
                     tmp = np.amin(ns._geometry.xyz, axis=0)
                     # Find the smallest distance from the first atom
-                    _, d = ns._geometry.close(0, dR=(0.1,20.), ret_dist=True)
+                    _, d = ns._geometry.close(0, dR=(0.1, 20.), ret_dist=True)
                     d = np.amin(d[1]) / 2
-                    ns._geometry = ns._geometry.translate(-tmp + np.array([d,d,d]))
+                    ns._geometry = ns._geometry.translate(-tmp + np.array([d, d, d]))
                 elif args.unit_cell in ['mod']:
                     # Change all coordinates using the reciprocal cell
-                    rcell = ns._geometry.rcell / ( 2. * np.pi )
-                    idx = np.abs(np.array(np.dot(ns._geometry.xyz, rcell),np.int32))
+                    rcell = ns._geometry.rcell / (2. * np.pi)
+                    idx = np.abs(np.array(np.dot(ns._geometry.xyz, rcell), np.int32))
                     # change supercell
-                    nsc = np.amax(idx * 2 + 1,axis=0)
+                    nsc = np.amax(idx * 2 + 1, axis=0)
                     ns._geometry.set_nsc(nsc)
                     # Change the coordinates
                     for ia in ns._geometry:
-                        ns._geometry.xyz[ia,:] = ns._geometry.coords(isc=idx[ia,:], idx=ia)
-        p.add_argument(*opts('--unit-cell', '-uc'), choices=['translate','tr','t','mod'],
+                        ns._geometry.xyz[ia, :] = ns._geometry.coords(isc=idx[ia, :], idx=ia)
+        p.add_argument(*opts('--unit-cell', '-uc'), choices=['translate', 'tr', 't', 'mod'],
                        action=MoveUnitCell,
                        help='Moves the coordinates into the unit-cell by translation or the mod-operator')
 
         # Rotation
         class Rotation(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 # Convert value[0] to the direction
                 d = direction(values[0])
                 # The rotate function expects degree
                 ang = angle(values[1], radians=False, in_radians=False)
                 if d == 0:
-                    v = [1,0,0]
+                    v = [1, 0, 0]
                 elif d == 1:
-                    v = [0,1,0]
+                    v = [0, 1, 0]
                 elif d == 2:
-                    v = [0,0,1]
+                    v = [0, 0, 1]
                 ns._geometry = ns._geometry.rotate(ang, v)
-        p.add_argument(*opts('--rotate', '-R'), nargs=2, metavar=('DIR','ANGLE'),
+        p.add_argument(*opts('--rotate', '-R'), nargs=2, metavar=('DIR', 'ANGLE'),
                        action=Rotation,
                        help='Rotate geometry around given axis. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
-        
+
         if not limit_args:
             class RotationX(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, radians=False, in_radians=False)
-                    ns._geometry = ns._geometry.rotate(ang, [1,0,0])
+                    ns._geometry = ns._geometry.rotate(ang, [1, 0, 0])
             p.add_argument(*opts('--rotate-x', '-Rx'), metavar='ANGLE',
                            action=RotationX,
                            help='Rotate geometry around first cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
-            
+
             class RotationY(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, radians=False, in_radians=False)
-                    ns._geometry = ns._geometry.rotate(ang, [0,1,0])
+                    ns._geometry = ns._geometry.rotate(ang, [0, 1, 0])
             p.add_argument(*opts('--rotate-y', '-Ry'), metavar='ANGLE',
                            action=RotationY,
                            help='Rotate geometry around second cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
-            
+
             class RotationZ(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, radians=False, in_radians=False)
-                    ns._geometry = ns._geometry.rotate(ang, [0,0,1])
+                    ns._geometry = ns._geometry.rotate(ang, [0, 0, 1])
             p.add_argument(*opts('--rotate-z', '-Rz'), metavar='ANGLE',
                            action=RotationZ,
                            help='Rotate geometry around third cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
-            
 
         # Reduce size of geometry
         class ReduceSub(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 # Get atomic indices
                 rng = lstranges(strmap(int, value))
                 ns._geometry = ns._geometry.sub(rng)
-        p.add_argument(*opts('--sub','-s'),metavar='RNG',
+        p.add_argument(*opts('--sub', '-s'), metavar='RNG',
                        action=ReduceSub,
                        help='Removes specified atoms, can be complex ranges.')
-        
+
         class ReduceCut(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 d = direction(values[0])
                 s = int(values[1])
                 ns._geometry = ns._geometry.cut(s, d)
-        p.add_argument(*opts('--cut','-c'), nargs=2, metavar=('DIR', 'SEPS'),
+        p.add_argument(*opts('--cut', '-c'), nargs=2, metavar=('DIR', 'SEPS'),
                        action=ReduceCut,
                        help='Cuts the geometry into `seps` parts along the unit-cell direction `dir`.')
 
         # Swaps atoms
         class AtomSwap(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 # Get atomic indices
                 a = lstranges(strmap(int, value[0]))
@@ -1692,88 +1689,96 @@ class Geometry(SuperCellChild):
                 if len(a) != len(b):
                     raise ValueError('swapping atoms requires equal number of LHS and RHS atomic ranges')
                 ns._geometry = ns._geometry.swap(a, b)
-        p.add_argument(*opts('--swap'),metavar=('A', 'B'), nargs=2,
+        p.add_argument(*opts('--swap'), metavar=('A', 'B'), nargs=2,
                        action=AtomSwap,
                        help='Swaps groups of atoms (can be complex ranges). The groups must be of equal length.')
 
         # Add an atom
         class AtomAdd(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 # Create an atom from the input
                 g = Geometry([float(x) for x in values[0].split(',')], atom=Atom(values[1]))
                 ns._geometry = ns._geometry.add(g)
-        p.add_argument(*opts('--add'), nargs=2, metavar=('COORD','Z'),
+        p.add_argument(*opts('--add'), nargs=2, metavar=('COORD', 'Z'),
                        action=AtomAdd,
                        help='Adds an atom, coordinate is comma separated (in Ang). Z is the atomic number.')
 
-
         # Periodicly increase the structure
         class PeriodRepeat(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 d = direction(values[0])
                 r = int(values[1])
                 ns._geometry = ns._geometry.repeat(r, d)
-        p.add_argument(*opts('--repeat','-r'), nargs=2, metavar=('DIR', 'TIMES'),
+        p.add_argument(*opts('--repeat', '-r'), nargs=2, metavar=('DIR', 'TIMES'),
                        action=PeriodRepeat,
                        help='Repeats the geometry in the specified direction.')
-        
+
         if not limit_args:
             class PeriodRepeatX(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.repeat(int(value), 0)
-            p.add_argument(*opts('--repeat-x','-rx'), metavar='TIMES',
+            p.add_argument(*opts('--repeat-x', '-rx'), metavar='TIMES',
                            action=PeriodRepeatX,
                            help='Repeats the geometry along the first cell vector.')
-            
+
             class PeriodRepeatY(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.repeat(int(value), 1)
-            p.add_argument(*opts('--repeat-y','-ry'), metavar='TIMES',
+            p.add_argument(*opts('--repeat-y', '-ry'), metavar='TIMES',
                            action=PeriodRepeatY,
                            help='Repeats the geometry along the second cell vector.')
 
             class PeriodRepeatZ(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.repeat(int(value), 2)
-            p.add_argument(*opts('--repeat-z','-rz'), metavar='TIMES',
+            p.add_argument(*opts('--repeat-z', '-rz'), metavar='TIMES',
                            action=PeriodRepeatZ,
                            help='Repeats the geometry along the third cell vector.')
 
-
         class PeriodTile(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 d = direction(values[0])
                 r = int(values[1])
                 ns._geometry = ns._geometry.tile(r, d)
-        p.add_argument(*opts('--tile','-t'), nargs=2, metavar=('DIR', 'TIMES'),
+        p.add_argument(*opts('--tile', '-t'), nargs=2, metavar=('DIR', 'TIMES'),
                        action=PeriodTile,
                        help='Tiles the geometry in the specified direction.')
 
         if not limit_args:
             class PeriodTileX(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 0)
-            p.add_argument(*opts('--tile-x','-tx'), metavar='TIMES',
+            p.add_argument(*opts('--tile-x', '-tx'), metavar='TIMES',
                            action=PeriodTileX,
                            help='Tiles the geometry along the first cell vector.')
 
             class PeriodTileY(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 1)
-            p.add_argument(*opts('--tile-y','-ty'), metavar='TIMES',
+            p.add_argument(*opts('--tile-y', '-ty'), metavar='TIMES',
                            action=PeriodTileY,
                            help='Tiles the geometry along the second cell vector.')
 
             class PeriodTileZ(argparse.Action):
+
                 def __call__(self, parser, ns, value, option_string=None):
                     ns._geometry = ns._geometry.tile(int(value), 2)
-            p.add_argument(*opts('--tile-z','-tz'), metavar='TIMES',
+            p.add_argument(*opts('--tile-z', '-tz'), metavar='TIMES',
                            action=PeriodTileZ,
                            help='Tiles the geometry along the third cell vector.')
 
         # Print some common information about the
         # geometry (to stdout)
         class PrintInfo(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 # We fake that it has been stored...
                 ns._stored_geometry = True
@@ -1782,8 +1787,8 @@ class Geometry(SuperCellChild):
                        action=PrintInfo,
                        help='Print, to stdout, some regular information about the geometry.')
 
-            
         class Out(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 if value is None:
                     return
@@ -1796,15 +1801,15 @@ class Geometry(SuperCellChild):
                     ns._geometry.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
                 ns._stored_geometry = True
-        p.add_argument(*opts('--out','-o'), nargs=1, action=Out,
+        p.add_argument(*opts('--out', '-o'), nargs=1, action=Out,
                        help='Store the geometry (at its current invocation) to the out file.')
 
         # If the user requests positional out arguments, we also add that.
         if kwargs.get('positional_out', False):
-            p.add_argument('out', nargs='*',default=None,
+            p.add_argument('out', nargs='*', default=None,
                            action=Out,
                            help='Store the geometry (at its current invocation) to the out file.')
-            
+
         # We have now created all arguments
         return p, namespace
 
@@ -1813,7 +1818,7 @@ def sgeom(geom=None, argv=None, ret_geometry=False):
     """ Main script for sgeom script. 
 
     This routine may be called with `argv` and/or a `Sile` which is the geometry at hand.
-    
+
     Parameters
     ----------
     geom : `Geometry`/`BaseSile`
@@ -1832,10 +1837,10 @@ def sgeom(geom=None, argv=None, ret_geometry=False):
 
     # The geometry-file *MUST* be the first argument
     # (except --help|-h)
-    
+
     # We cannot create a separate ArgumentParser to retrieve a positional arguments
     # as that will grab the first argument for an option!
-    
+
     # Start creating the command-line utilities that are the actual ones.
     description = """
 This manipulation utility is highly advanced and one should note that the ORDER of
@@ -1872,7 +1877,6 @@ lattice vector.
     else:
         argv = sys.argv[1:]
 
-        
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
@@ -1886,7 +1890,7 @@ lattice vector.
         try:
             geom = get_sile(input_file).read_geom()
         except:
-            geom = Geometry([0,0,0])
+            geom = Geometry([0, 0, 0])
 
     elif isinstance(geom, Geometry):
         # Do nothing, the geometry is already created
@@ -1899,7 +1903,7 @@ lattice vector.
             # Store the input file...
             input_file = geom.file
         except Exception as E:
-            geom = Geometry([0,0,0])
+            geom = Geometry([0, 0, 0])
         argv = ['fake.xyz'] + argv
 
     # Do the argument parser
@@ -1913,7 +1917,7 @@ lattice vector.
             setattr(ns, '_input_file', input_file)
     except:
         pass
-            
+
     # Now try and figure out the actual arguments
     p, ns, argv = cmd.collect_arguments(argv, input=False,
                                         argumentparser=p,
@@ -1928,13 +1932,13 @@ lattice vector.
         # This is merely for testing purposes and may not be used for anything.
         print('Cell:')
         for i in range(3):
-            print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i,:]))
+            print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i, :]))
         print('SuperCell:')
         print('  {0:d} {1:d} {2:d}'.format(*g.nsc))
-        print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x','y','z','Z'))
+        print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x', 'y', 'z', 'Z'))
         for ia in g:
             print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atom[ia].Z,
-                                                                  *g.xyz[ia,:]))
+                                                                  *g.xyz[ia, :]))
 
     if ret_geometry:
         return g

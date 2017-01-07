@@ -32,7 +32,7 @@ class TestGrid(object):
 
     def test_size(self):
         assert_true(np.allclose(self.g.grid.shape, [10, 10, 100]))
-        
+
     def test_item(self):
         assert_true(np.allclose(self.g[1:2, 1:2, 2:3], self.g.grid[1:2, 1:2, 2:3]))
 
@@ -53,8 +53,8 @@ class TestGrid(object):
 
     def test_swapaxes(self):
         g = self.g.swapaxes(0, 1)
-        assert_true(np.allclose(self.g.cell[0,:], g.cell[1,:]))
-        assert_true(np.allclose(self.g.cell[1,:], g.cell[0,:]))
+        assert_true(np.allclose(self.g.cell[0, :], g.cell[1, :]))
+        assert_true(np.allclose(self.g.cell[1, :], g.cell[0, :]))
 
     def test_interp(self):
         shape = np.array(self.g.shape, np.int32)
@@ -92,13 +92,13 @@ class TestGrid(object):
         for i in range(3):
             assert_true(self.g.sub(1, i).shape[i] == 1)
         for i in range(3):
-            assert_true(self.g.sub([1,2], i).shape[i] == 2)
+            assert_true(self.g.sub([1, 2], i).shape[i] == 2)
 
     def test_remove(self):
         for i in range(3):
             assert_true(self.g.remove(1, i).shape[i] == self.g.shape[i]-1)
         for i in range(3):
-            assert_true(self.g.remove([1,2], i).shape[i] == self.g.shape[i]-2)
+            assert_true(self.g.remove([1, 2], i).shape[i] == self.g.shape[i]-2)
 
     def test_argumentparser(self):
         self.g.ArgumentParser()

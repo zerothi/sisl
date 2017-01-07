@@ -33,7 +33,7 @@ class XSFSile(Sile):
         has_data = not data is None
         if has_data:
             data.shape = (-1, 3)
-        
+
         # The current geometry is currently only a single
         # one, and does not write the convvec
         # Is it a necessity?
@@ -48,7 +48,7 @@ class XSFSile(Sile):
         # We write the cell coordinates as the cell coordinates
         fmt_str = '{{:{0}}} '.format(fmt) * 3 + '\n'
         for i in [0, 1, 2]:
-            self._write(fmt_str.format(*geom.cell[i,:]))
+            self._write(fmt_str.format(*geom.cell[i, :]))
 
         # Currently not written (we should convert the geometry
         # to a conventional cell (90-90-90))
@@ -56,7 +56,7 @@ class XSFSile(Sile):
         # the same file.
         #self._write('\n# Conventional lattice vectors:\n\n')
         #self._write('CONVVEC\n')
-        #convcell = 
+        #convcell =
         #for i in [0, 1, 2]:
         #    self._write(fmt_str.format(*convcell[i,:]))
 
@@ -67,7 +67,7 @@ class XSFSile(Sile):
         if has_data:
             fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}   {{4:{0}}}  {{5:{0}}}  {{6:{0}}}\n'.format(fmt)
             for ia in geom:
-                tmp = np.append(geom.xyz[ia, :], data[ia,:])
+                tmp = np.append(geom.xyz[ia, :], data[ia, :])
                 self._write(fmt_str.format(geom.atom[ia].Z, *tmp))
         else:
             fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
@@ -75,7 +75,6 @@ class XSFSile(Sile):
                 self._write(fmt_str.format(geom.atom[ia].Z, *geom.xyz[ia, :]))
         # Add a single new line
         self._write('\n')
-
 
     @Sile_fh_open
     def read_geom(self, data=False):
@@ -98,23 +97,23 @@ class XSFSile(Sile):
             # skip comments
             line = self.readline()
 
-            # We prefer the 
+            # We prefer the
             if line.startswith('CONVVEC') and not cell_set:
                 for i in [0, 1, 2]:
                     line = self.readline()
-                    cell[i,:] = [float(x) for x in line.split()]
+                    cell[i, :] = [float(x) for x in line.split()]
 
             elif line.startswith('PRIMVEC'):
                 cell_set = True
                 for i in [0, 1, 2]:
                     line = self.readline()
-                    cell[i,:] = [float(x) for x in line.split()]
+                    cell[i, :] = [float(x) for x in line.split()]
 
             elif line.startswith('PRIMCOORD'):
                 # First read # of atoms
                 line = self.readline().split()
                 na = int(line[0])
-                
+
                 # currently line[1] is unused!
                 for i in range(na):
                     line = self.readline().split()
@@ -125,8 +124,8 @@ class XSFSile(Sile):
         if data:
             dat = None
         if xyz.shape[1] == 6:
-            dat = xyz[:,3:]
-            xyz = xyz[:,:3]
+            dat = xyz[:, 3:]
+            xyz = xyz[:, :3]
 
         if len(atom) == 0:
             geom = Geometry(xyz, sc=SuperCell(cell))
@@ -137,17 +136,15 @@ class XSFSile(Sile):
             return geom, dat
         return geom
 
-
     def ArgumentParser(self, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geom().ArgumentParser(*args, **newkw)
 
-
     def ArgumentParser_out(self, p, *args, **kwargs):
         """ Adds arguments only if this file is an output file 
-        
+
         Parameters
         ----------
         p : ``argparse.ArgumentParser``
@@ -157,22 +154,23 @@ class XSFSile(Sile):
 
         # We will add the vector data
         class Vectors(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 routine = values.pop(0)
-                
+
                 # Default input file
                 input_file = getattr(ns, '_input_file', None)
-                
+
                 # Figure out which of the segments are a file
                 for i, val in enumerate(values):
                     if osp.isfile(val):
                         input_file = values.pop(i)
                         break
-                                
+
                 # Quick return if there is no input-file...
                 if input_file is None:
                     return
-                
+
                 # Try and read the vector
                 from sisl.io import get_sile
                 input_sile = get_sile(input_file, mode='r')
@@ -180,7 +178,7 @@ class XSFSile(Sile):
                 vector = None
                 if hasattr(input_sile, 'read_{}'.format(routine)):
                     vector = getattr(input_sile, 'read_{}'.format(routine))()
-                    
+
                 if vector is None:
                     # Try the read_data function
                     d = dict()
@@ -189,7 +187,7 @@ class XSFSile(Sile):
 
                 # Clean the sile
                 del input_sile
-                
+
                 if vector is None:
                     # Use title to capitalize
                     raise ValueError('{} could not be read from file: {}.'.format(routine.title(), input_file))
@@ -197,7 +195,7 @@ class XSFSile(Sile):
                 if len(vector) != len(ns._geometry):
                     raise ValueError('{} could read from file: {}, does not conform to read geometry.'.format(routine.title(), input_file))
                 setattr(ns, '_vector', vector)
-        p.add_argument('--vector','-v',metavar=('DATA','*ARGS, FILE'),nargs='+',
+        p.add_argument('--vector', '-v', metavar=('DATA', '*ARGS, FILE'), nargs='+',
                        action=Vectors,
                        help='''Adds vector arrows for each atom, first argument is type (force, moment, ...).
 If the current input file contains the vectors no second argument is necessary, else 
@@ -207,6 +205,7 @@ Any arguments inbetween are passed to the `read_data` function (in order).
                        ''')
 
         class Out(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 if value is None:
                     return
@@ -219,9 +218,8 @@ Any arguments inbetween are passed to the `read_data` function (in order).
                     ns._geometry.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
                 ns._stored_geometry = True
-        p.add_argument('--out','-o', nargs=1, action=Out,
+        p.add_argument('--out', '-o', nargs=1, action=Out,
                        help='Store the geometry (plus any vector fields) the out file.')
-
 
 
 add_sile('xsf', XSFSile, case=False, gzip=True)

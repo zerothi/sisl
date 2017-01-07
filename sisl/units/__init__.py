@@ -14,42 +14,42 @@ __all__ = ['unit_group', 'unit_convert', 'unit_default']
 # please with non-standard conversion factors.
 
 _unit_table = {
-    'mass' : {
-        'DEFAULT' : 'amu',
-        'kg' : 1.,
-        'g'  : 1.e-3,
+    'mass': {
+        'DEFAULT': 'amu',
+        'kg': 1.,
+        'g': 1.e-3,
         'amu': 1.66054e-27,
-        }, 
-    'length' : {
-        'DEFAULT' : 'Ang',
-        'm'    : 1., 
-        'cm'   : 0.01, 
-        'nm'   : 1.e-9, 
-        'Ang'  : 1.e-10, 
-        'Bohr' : 5.29177249e-11,
-        }, 
-    'time' : {
-        'DEFAULT' : 'fs',
-        's'  : 1. ,
-        'fs' : 1.e-15 ,
-        'ps' : 1.e-12 ,
-        'ns' : 1.e-9 ,
         },
-    'energy' : {
-        'DEFAULT' : 'eV',
-        'J'       : 1., 
-        'erg'     : 1.e-7, 
-        'eV'      : 1.60217733e-19,
-        'meV'     : 1.60217733e-16,
-        'Ry'      : 2.1798741e-18,
-        'Ha'      : 4.3597482e-18,
-        'Hartree' : 4.3597482e-18,
-        'K'       : 1.380648780669e-23,
+    'length': {
+        'DEFAULT': 'Ang',
+        'm': 1.,
+        'cm': 0.01,
+        'nm': 1.e-9,
+        'Ang': 1.e-10,
+        'Bohr': 5.29177249e-11,
         },
-    'force' : {
-        'DEFAULT' : 'eV/Ang',
-        'N'       : 1.,
-        'eV/Ang'  : 1.60217733e-9,
+    'time': {
+        'DEFAULT': 'fs',
+        's': 1.,
+        'fs': 1.e-15,
+        'ps': 1.e-12,
+        'ns': 1.e-9,
+        },
+    'energy': {
+        'DEFAULT': 'eV',
+        'J': 1.,
+        'erg': 1.e-7,
+        'eV': 1.60217733e-19,
+        'meV': 1.60217733e-16,
+        'Ry': 2.1798741e-18,
+        'Ha': 4.3597482e-18,
+        'Hartree': 4.3597482e-18,
+        'K': 1.380648780669e-23,
+        },
+    'force': {
+        'DEFAULT': 'eV/Ang',
+        'N': 1.,
+        'eV/Ang': 1.60217733e-9,
         }
     }
 
@@ -99,7 +99,7 @@ def unit_default(group, tbl=None):
             return tbl[k]['DEFAULT']
 
     raise UnitError('The unit-group does not exist!')
-    
+
 
 def unit_convert(fr, to, opts={}, tbl=None):
     """
@@ -130,8 +130,8 @@ def unit_convert(fr, to, opts={}, tbl=None):
     frV = None
     toU = 'ToNotFound'
     toV = None
-    
-    # Check that the unit types live in the same 
+
+    # Check that the unit types live in the same
     # space
     # TODO this currently does not handle if powers are taken into
     # consideration.
@@ -148,18 +148,17 @@ def unit_convert(fr, to, opts={}, tbl=None):
 
     # Calculate conversion factor
     val = frV / toV
-    for opt in ['^','power','p']:
+    for opt in ['^', 'power', 'p']:
         if opt in opts:
             val = val ** opts[opt]
-    for opt in ['*','factor','fac']:
+    for opt in ['*', 'factor', 'fac']:
         if opt in opts:
             val = val * opts[opt]
-    for opt in ['/','divide','div']:
+    for opt in ['/', 'divide', 'div']:
         if opt in opts:
             val = val / opts[opt]
 
     return val
-
 
 
 # # These are older implementations which allows
@@ -189,12 +188,12 @@ def unit_convert(fr, to, opts={}, tbl=None):
 #                 obj.unit = args[1].unit
 #             else:
 #                 obj.unit = args[1]
-        
+
 #         # We need to handle some type of operator definitions
 #         # But how to handle them?
 #         for op in ['**','^','/','*']:
 #             pass
-        
+
 #         return obj
 
 #     def type(self):
@@ -230,7 +229,7 @@ def unit_convert(fr, to, opts={}, tbl=None):
 
 #     def __copy__(self):
 #         return Unit(copy(self.variable),copy(self.unit))
-    
+
 #     def __deepcopy__(self, memo):
 #         return Unit(deepcopy(self.variable),deepcopy(self.unit))
 
@@ -312,7 +311,7 @@ def unit_convert(fr, to, opts={}, tbl=None):
 #             if u.variable == unit.variable:
 #                 return True
 #         return False
-    
+
 #     def __repr__(self):
 #         """ Return the unit in string format (XML type-like)"""
 #         tmp = '<Units>'
@@ -332,7 +331,7 @@ def unit_convert(fr, to, opts={}, tbl=None):
 #             if self._units[i].variable == variable:
 #                 del self._units[i]
 #                 return
-                
+
 #     # We need to overwrite the copy mechanisms.
 #     # It really is a pain in the ass, but it works.
 #     # Luckily all copying need only be refered in the Unit-object.
@@ -341,7 +340,7 @@ def unit_convert(fr, to, opts={}, tbl=None):
 #         for unit in self:
 #             units.append(copy(unit))
 #         return units
-    
+
 #     def __deepcopy__(self, memo):
 #         units = Units()
 #         for unit in self:
@@ -379,7 +378,7 @@ def unit_convert(fr, to, opts={}, tbl=None):
 #                 for self_u in self._units:
 #                     if self_u.type() == u.type():
 #                         self.__dict__[self_u.variable] *= self_u.convert(u)
-                        
+
 #         # Now convert the specific requested units.
 #         for unit in units:
 #             u = Unit(unit)
@@ -400,8 +399,8 @@ def unit_convert(fr, to, opts={}, tbl=None):
 # class Variable_ndarray(_np.ndarray):
 #     """
 #     Numpy array with automatic unit conversion.
-    
-#     When two arrays are multiplied we can automatically 
+
+#     When two arrays are multiplied we can automatically
 #     detect units and convert to the correct units.
 
 #     Creating a variable with Variable_ndarray we gain access
@@ -415,16 +414,16 @@ def unit_convert(fr, to, opts={}, tbl=None):
 #         # Go back in the units variable does not exist.
 #         if not '_units' in self.__dict__: return
 
-#         # If it is a Units object, 
+#         # If it is a Units object,
 #         # we can simply loop and do the recursive conversion.
 #         if isinstance(unit,Units):
-#             for u in unit: 
+#             for u in unit:
 #                 self.convert(u)
 #             return
 
 #         # Ensure that unit is a Unit
 #         u = Unit(unit)
-        
+
 #         # Loop over all variables in this object.
 #         # It only has one
 #         for i in self._units:
@@ -433,7 +432,7 @@ def unit_convert(fr, to, opts={}, tbl=None):
 
 #     def add_unit(self,var,unit):
 #         """ Adds a unit to a variable beloning to the object """
-        
+
 
 #     def unit(self,variable='self'):
 #         """ Returns the unit that is associated with the variable """

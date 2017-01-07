@@ -34,7 +34,6 @@ class SuperCell(object):
         if nsc is None:
             nsc = [1, 1, 1]
 
-        
         # If the length of cell is 6 it must be cell-parameters, not
         # actual cell coordinates
         self.cell = self.tocell(cell)
@@ -83,6 +82,7 @@ class SuperCell(object):
 
         n = self.nsc
         # We define the following ones like this:
+
         def ret_range(val):
             i = val // 2
             return range(-i, i+1)
@@ -199,7 +199,7 @@ class SuperCell(object):
         """ Returns the supercell offset of the supercell index
         """
         if isc is None:
-            return np.array([0,0,0], np.float64)
+            return np.array([0, 0, 0], np.float64)
         return np.dot(isc, self.cell)
 
     def sc_index(self, sc_off):
@@ -220,7 +220,7 @@ class SuperCell(object):
             if (sc_off[0] == self.sc_off[i, 0] or sc_off[0] is None) and \
                (sc_off[1] == self.sc_off[i, 1] or sc_off[1] is None) and \
                (sc_off[2] == self.sc_off[i, 2] or sc_off[2] is None):
-                idx.append( i )
+                idx.append(i)
         return idx
 
     def cut(self, seps, axis):
@@ -237,7 +237,7 @@ class SuperCell(object):
 
     def prepend(self, other, axis):
         """ Prepends other `SuperCell` to this grid along axis 
-        
+
         For a `SuperCell` object this is equivalent to `append`.
         """
         cell = np.copy(self.cell)
@@ -255,7 +255,7 @@ class SuperCell(object):
         cell[np.argmax(p), :] += v
         return self.__class__(cell, np.copy(self.nsc))
     translate = move
-    
+
     def center(self, axis=None):
         """ Returns center of the `SuperCell`, possibly with respect to an axis
         """
@@ -318,12 +318,11 @@ class SuperCell(object):
 
         # A complete cell
         if nargs == 9:
-            args.shape = (3,3)
+            args.shape = (3, 3)
             return np.copy(args)
 
         raise ValueError(
             "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.")
-
 
     def is_orthogonal(self):
         """ Returns true if the cell vectors are orthogonal """
@@ -337,7 +336,6 @@ class SuperCell(object):
         i_s = i_s and np.dot(cell[0, :], cell[2, :]) < 0.001
         i_s = i_s and np.dot(cell[1, :], cell[2, :]) < 0.001
         return i_s
-
 
     @staticmethod
     def read(sile, *args, **kwargs):
@@ -357,11 +355,9 @@ class SuperCell(object):
         else:
             return get_sile(sile).read_sc(*args, **kwargs)
 
-
     def __repr__(self):
         """ Returns a string representation of the object """
         return 'SuperCell[{} {} {}]'.format(*self.nsc)
-
 
     def __eq__(a, b):
         """ Equality check """

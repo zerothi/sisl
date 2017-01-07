@@ -24,6 +24,7 @@ class TestHamiltonian(object):
                                     [1., 0., 0.]], np.float64) * bond,
                           atom=C, sc=self.sc)
         self.D = DynamicalMatrix(self.g)
+
         def func(D, ia, idxs, idxs_xyz):
             idx = D.geom.close(ia, dR=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
             ia = ia * 3
@@ -50,10 +51,10 @@ class TestHamiltonian(object):
 
             D.D[ia, i1+1] = p
             D.D[ia, i1+2] = p
-            
+
             D.D[ia+1, i1] = p
             D.D[ia+1, i1+2] = p
-            
+
             D.D[ia+2, i1] = p
             D.D[ia+2, i1+1] = p
 
@@ -76,18 +77,15 @@ class TestHamiltonian(object):
         assert_true(self.D.orthogonal)
 
     def test_set1(self):
-        self.D.D[0,0] = 1.
-        assert_true(self.D[0,0] == 1.)
-        assert_true(self.D[1,0] == 0.)
+        self.D.D[0, 0] = 1.
+        assert_true(self.D[0, 0] == 1.)
+        assert_true(self.D[1, 0] == 0.)
         self.D.empty()
 
     def test_correct_newton(self):
         self.D.construct(self.func)
-        assert_true(self.D[0,0] == 1.)
-        assert_true(self.D[1,0] == 0.1)
-        assert_true(self.D[0,1] == 0.1)
+        assert_true(self.D[0, 0] == 1.)
+        assert_true(self.D[1, 0] == 0.1)
+        assert_true(self.D[0, 1] == 0.1)
         self.D.correct_Newton()
         self.D.empty()
-
-
-        

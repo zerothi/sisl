@@ -21,7 +21,7 @@ def merge_instances(*args, **kwargs):
     # We must make a new-type class
     cls = type(name, (object,), {})
     # Create holder of class
-    # We could have 
+    # We could have
     m = cls()
     for arg in args:
         m.__dict__.update(arg.__dict__)
@@ -30,7 +30,7 @@ def merge_instances(*args, **kwargs):
 
 def name_spec(name):
     """ Checks whether `s` ends with `{..}`. Returns the split instances.
-    
+
     Parameters
     ----------
     name: str
@@ -47,7 +47,7 @@ def name_spec(name):
         return name, None
 
     lname = name[:-1].split('{')
-    return '{'.join(lname[:-1]), lname[-1] 
+    return '{'.join(lname[:-1]), lname[-1]
 
 
 # Transform a string to a Cartesian direction
@@ -94,7 +94,7 @@ def angle(s, radians=True, in_radians=True):
        Note than an 'r' at the beginning of `s` has precedence.
     """
     s = s.lower()
-    
+
     if s.startswith('r'):
         in_radians = True
     elif s.startswith('a'):
@@ -130,7 +130,7 @@ def angle(s, radians=True, in_radians=True):
             Pi = pi
         else:
             Pi = 180.
-        
+
         s = ('{}'.format(Pi)).join(spi)
 
     # We have now transformed all values

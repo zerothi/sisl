@@ -25,6 +25,7 @@ def argparse_patch(parser):
        parser to be patched
     """
     class MySubParsersAction(argparse._SubParsersAction):
+
         def __call__(self, parser, namespace, values, option_string=None):
             parser_name = values[0]
             arg_strings = values[1:]
@@ -87,15 +88,13 @@ changing ways. It handles files dependent on type AND content.
     else:
         argv = sys.argv[1:]
 
-
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-
     p = argparse.ArgumentParser("Manipulates sisl Sile's for manipulation.",
                                 formatter_class=argparse.RawDescriptionHelpFormatter,
-                                description=description,conflict_handler='resolve')
-    
+                                description=description, conflict_handler='resolve')
+
     # Patch the parser to allow namespace passing in subparsers...
     argparse_patch(p)
 

@@ -57,7 +57,7 @@ class HessianSileGULP(SileGULP):
         for ia in range(na):
             j = 0
             for ja in range(na):
-                
+
                 # read line that should contain:
                 #  ia ja
                 I, J = map(int, rl().split())
@@ -67,10 +67,10 @@ class HessianSileGULP(SileGULP):
                 # Read data
                 for o in [0, 1, 2]:
                     dat[:] = [float(x) for x in rl().split()]
-                    
+
                     # Assign data...
                     if dat[0] >= cutoff:
-                        dyn[i+o, j  ] = dat[0]
+                        dyn[i+o, j] = dat[0]
                     if dat[1] >= cutoff:
                         dyn[i+o, j+1] = dat[1]
                     if dat[2] >= cutoff:

@@ -36,7 +36,7 @@ def strmap(func, s):
     # Create list
     l = []
 
-    commas = s.replace(' ','').split(',')
+    commas = s.replace(' ', '').split(',')
 
     # Collect all the comma separated quantities that
     # may be selected by [..,..]
@@ -55,31 +55,31 @@ def strmap(func, s):
         raise ValueError("Unbalanced string: not enough [ and ]")
 
     # Now we have a comma-separated list
-    # with collected brackets. 
+    # with collected brackets.
     for seg in commas:
 
         # Split it in groups of reg-exps
         m = _re_segment.findall(seg)[0]
-        
+
         if len(m[0]) > 0:
             # this is: [..][..]
             rhs = strmap(func, m[1])
             for el in strmap(func, m[0]):
-                l.append( (el, rhs) )
-                
+                l.append((el, rhs))
+
         elif len(m[2]) > 0:
             # this is: ..[..]
-            l.append( ( strseq(func, m[2]), strmap(func, m[3]) ) )
-            
+            l.append((strseq(func, m[2]), strmap(func, m[3])))
+
         elif len(m[4]) > 0:
-            l.append( strseq(func, m[4]) )
+            l.append(strseq(func, m[4]))
 
     return l
 
 
 def strseq(cast, s):
     """ Accept a string and return the casted tuples of content based on ranges.
-    
+
     Parameters
     ----------
     cast: function
@@ -155,7 +155,7 @@ def lstranges(lst, cast=erange):
 #     file, [0,1]
 def fileindex(f, cast=int):
     """ Parses a filename string into the filename and the indices.
-    
+
     This range can be formatted like this:
       file[1,2,3-6]
     in which case it will return:

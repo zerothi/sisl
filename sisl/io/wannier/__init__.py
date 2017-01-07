@@ -12,6 +12,3 @@ __all__ = []
 extendall(__all__, 'sisl.io.wannier.sile')
 
 extendall(__all__, 'sisl.io.wannier.seedname')
-
-
-

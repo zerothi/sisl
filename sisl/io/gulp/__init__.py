@@ -14,6 +14,3 @@ extendall(__all__, 'sisl.io.gulp.sile')
 
 extendall(__all__, 'sisl.io.gulp.got')
 extendall(__all__, 'sisl.io.gulp.hessian')
-
-
-

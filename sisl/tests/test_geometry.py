@@ -8,6 +8,7 @@ import numpy as np
 
 from sisl import Geometry, Atom, SuperCell
 
+
 class TestGeometry(object):
 
     def setUp(self):
@@ -21,7 +22,7 @@ class TestGeometry(object):
                                     [1., 0., 0.]], np.float64) * bond,
                           atom=C, sc=self.sc)
 
-        self.mol = Geometry([[i,0,0] for i in range(10)],sc=[50])
+        self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
 
     def tearDown(self):
         del self.g
@@ -33,7 +34,7 @@ class TestGeometry(object):
         print(self.g)
         assert_true(len(self.g) == 2)
         assert_true(len(self.g.xyz) == 2)
-        assert_true(np.allclose(self.g[0,:], np.zeros([3]) ))
+        assert_true(np.allclose(self.g[0, :], np.zeros([3])))
 
         i = 0
         for ia in self.g:
@@ -49,7 +50,7 @@ class TestGeometry(object):
 
     def test_iter2(self):
         for ia in self.g:
-            assert_true(np.allclose(self.g[ia,:], self.g.xyz[ia,:]))
+            assert_true(np.allclose(self.g[ia, :], self.g.xyz[ia, :]))
 
     def test_tile1(self):
         cell = np.copy(self.g.sc.cell)
@@ -96,13 +97,13 @@ class TestGeometry(object):
         assert_true(len(self.g.sub([0])) == 1)
         assert_true(len(self.g.sub([0, 1])) == 2)
         assert_true(len(self.g.sub([-1])) == 1)
-        
+
     def test_sub2(self):
         assert_true(len(self.g.sub(range(1))) == 1)
         assert_true(len(self.g.sub(range(2))) == 2)
 
     def test_fxyz(self):
-        assert_true(np.allclose(self.g.fxyz, [[   0,    0, 0],
+        assert_true(np.allclose(self.g.fxyz, [[0,    0, 0],
                                               [1./3, 1./3, 0]]))
 
     def test_cut(self):
@@ -121,7 +122,7 @@ class TestGeometry(object):
         assert_true(len(self.g.remove([])) == 2)
         assert_true(len(self.g.remove([-1])) == 1)
         assert_true(len(self.g.remove([-0])) == 1)
-        
+
     def test_remove2(self):
         assert_true(len(self.g.remove(range(1))) == 1)
         assert_true(len(self.g.remove(range(0))) == 2)
@@ -188,13 +189,13 @@ class TestGeometry(object):
 
     def test_translate(self):
         t = self.g.translate([0, 0, 1])
-        assert_true(np.allclose(self.g[:,0], t[:,0]))
-        assert_true(np.allclose(self.g[:,1], t[:,1]))
-        assert_true(np.allclose(self.g[:,2] + 1, t[:,2]))
+        assert_true(np.allclose(self.g[:, 0], t[:, 0]))
+        assert_true(np.allclose(self.g[:, 1], t[:, 1]))
+        assert_true(np.allclose(self.g[:, 2] + 1, t[:, 2]))
         t = self.g.move([0, 0, 1])
-        assert_true(np.allclose(self.g[:,0], t[:,0]))
-        assert_true(np.allclose(self.g[:,1], t[:,1]))
-        assert_true(np.allclose(self.g[:,2] + 1, t[:,2]))
+        assert_true(np.allclose(self.g[:, 0], t[:, 0]))
+        assert_true(np.allclose(self.g[:, 1], t[:, 1]))
+        assert_true(np.allclose(self.g[:, 2] + 1, t[:, 2]))
 
     def test_iter(self):
         for i, iaaspec in enumerate(self.g.iter_species()):
@@ -212,13 +213,13 @@ class TestGeometry(object):
     def test_swap(self):
         s = self.g.swap(0, 1)
         for i in [0, 1, 2]:
-            assert_true(np.allclose(self.g[::-1,i], s[:,i]))
+            assert_true(np.allclose(self.g[::-1, i], s[:, i]))
 
     def test_append1(self):
         for axis in [0, 1, 2]:
             s = self.g.append(self.g, axis)
             assert_equal(len(s), len(self.g) * 2)
-            assert_true(np.allclose(s.cell[axis,:], self.g.cell[axis, :]* 2))
+            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
             assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
             s = self.g.prepend(self.g, axis)
             assert_equal(len(s), len(self.g) * 2)
@@ -235,14 +236,14 @@ class TestGeometry(object):
 
     def test_swapaxes(self):
         s = self.g.swapaxes(0, 1)
-        assert_true(np.allclose(self.g[:,0], s[:,1]))
-        assert_true(np.allclose(self.g[:,1], s[:,0]))
-        assert_true(np.allclose(self.g.cell[0,:], s.cell[1,:]))
-        assert_true(np.allclose(self.g.cell[1,:], s.cell[0,:]))
+        assert_true(np.allclose(self.g[:, 0], s[:, 1]))
+        assert_true(np.allclose(self.g[:, 1], s[:, 0]))
+        assert_true(np.allclose(self.g.cell[0, :], s.cell[1, :]))
+        assert_true(np.allclose(self.g.cell[1, :], s.cell[0, :]))
 
     def test_center(self):
         one = self.g.center(atom=[0])
-        assert_true(np.allclose(self.g[0,:], one))
+        assert_true(np.allclose(self.g[0, :], one))
         al = self.g.center()
         assert_true(np.allclose(np.mean(self.g.xyz, axis=0), al))
 
@@ -267,15 +268,15 @@ class TestGeometry(object):
     def test_reverse(self):
         rev = self.g.reverse()
         assert_true(len(rev) == 2)
-        assert_true(np.allclose(rev.xyz[::-1,:], self.g.xyz))
+        assert_true(np.allclose(rev.xyz[::-1, :], self.g.xyz))
         rev = self.g.reverse(atom=list(range(len(self.g))))
         assert_true(len(rev) == 2)
-        assert_true(np.allclose(rev.xyz[::-1,:], self.g.xyz))
+        assert_true(np.allclose(rev.xyz[::-1, :], self.g.xyz))
 
     def test_close1(self):
         three = range(3)
         for ia in self.mol:
-            i = self.mol.close(ia, dR=(0.1,1.1), idx=three)
+            i = self.mol.close(ia, dR=(0.1, 1.1), idx=three)
             if ia < 3:
                 assert_equal(len(i[0]), 1)
             else:
@@ -291,33 +292,32 @@ class TestGeometry(object):
                 assert_equal(len(i[1]), 0)
 
     def test_close2(self):
-        mol = range(3,5)
+        mol = range(3, 5)
         for ia in self.mol:
-            i = self.mol.close(ia, dR=(0.1,1.1), idx=mol)
+            i = self.mol.close(ia, dR=(0.1, 1.1), idx=mol)
             assert_equal(len(i), 2)
-        i = self.mol.close([100,100,100], dR=0.1)
+        i = self.mol.close([100, 100, 100], dR=0.1)
         assert_equal(len(i), 0)
-        i = self.mol.close([100,100,100], dR=0.1, ret_dist=True)
+        i = self.mol.close([100, 100, 100], dR=0.1, ret_dist=True)
         for el in i:
             assert_equal(len(el), 0)
-        i = self.mol.close([100,100,100], dR=0.1, ret_dist=True, ret_coord=True)
+        i = self.mol.close([100, 100, 100], dR=0.1, ret_dist=True, ret_coord=True)
         for el in i:
             assert_equal(len(el), 0)
-
 
     def test_close_sizes(self):
         point = 0
-        
+
         # Return index
         idx = self.mol.close(point, dR=.1)
         assert_equal(len(idx), 1)
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1,1.1))
+        idx = self.mol.close(point, dR=(.1, 1.1))
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 1)
         assert_false(isinstance(idx[0], list))
         # Longer
-        idx = self.mol.close(point, dR=(.1,1.1,2.1))
+        idx = self.mol.close(point, dR=(.1, 1.1, 2.1))
         assert_equal(len(idx), 3)
         assert_equal(len(idx[0]), 1)
 
@@ -330,7 +330,7 @@ class TestGeometry(object):
         assert_equal(idx[1].shape[1], 3)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1,1.1), ret_coord=True)
+        idx = self.mol.close(point, dR=(.1, 1.1), ret_coord=True)
         # [[idx-1, idx-2], [coord-1, coord-2]]
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 2)
@@ -347,7 +347,7 @@ class TestGeometry(object):
         assert_equal(idx[1][1].shape[1], 3)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1,1.1), ret_coord=True, ret_dist=True)
+        idx = self.mol.close(point, dR=(.1, 1.1), ret_coord=True, ret_dist=True)
         # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
         assert_equal(len(idx), 3)
         assert_equal(len(idx[0]), 2)
@@ -369,7 +369,7 @@ class TestGeometry(object):
         assert_equal(idx[2][1].shape[0], 1)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1,1.1), ret_dist=True)
+        idx = self.mol.close(point, dR=(.1, 1.1), ret_dist=True)
         # [[idx-1, idx-2], [dist-1, dist-2]]
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 2)
@@ -385,20 +385,19 @@ class TestGeometry(object):
         # dist-2
         assert_equal(idx[1][1].shape[0], 1)
 
-
     def test_close_sizes_none(self):
-        point = [100.,100.,100.]
-        
+        point = [100., 100., 100.]
+
         # Return index
         idx = self.mol.close(point, dR=.1)
         assert_equal(len(idx), 0)
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1,1.1))
+        idx = self.mol.close(point, dR=(.1, 1.1))
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 0)
         assert_false(isinstance(idx[0], list))
         # Longer
-        idx = self.mol.close(point, dR=(.1,1.1,2.1))
+        idx = self.mol.close(point, dR=(.1, 1.1, 2.1))
         assert_equal(len(idx), 3)
         assert_equal(len(idx[0]), 0)
 
@@ -411,7 +410,7 @@ class TestGeometry(object):
         assert_equal(idx[1].shape[1], 3)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1,1.1), ret_coord=True)
+        idx = self.mol.close(point, dR=(.1, 1.1), ret_coord=True)
         # [[idx-1, idx-2], [coord-1, coord-2]]
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 2)
@@ -428,7 +427,7 @@ class TestGeometry(object):
         assert_equal(idx[1][1].shape[1], 3)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1,1.1), ret_coord=True, ret_dist=True)
+        idx = self.mol.close(point, dR=(.1, 1.1), ret_coord=True, ret_dist=True)
         # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
         assert_equal(len(idx), 3)
         assert_equal(len(idx[0]), 2)
@@ -452,7 +451,7 @@ class TestGeometry(object):
         assert_equal(idx[2][1].shape[0], 0)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1,1.1), ret_dist=True)
+        idx = self.mol.close(point, dR=(.1, 1.1), ret_dist=True)
         # [[idx-1, idx-2], [dist-1, dist-2]]
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 2)
@@ -467,7 +466,6 @@ class TestGeometry(object):
         assert_equal(idx[1][0].shape[0], 0)
         # dist-2
         assert_equal(idx[1][1].shape[0], 0)
-
 
     def test_bond_correct(self):
         # Create ribbon
@@ -538,5 +536,3 @@ class TestGeometry(object):
         n = p.loads(s)
         assert_true(n == self.g)
         assert_false(n != self.g)
-
-        

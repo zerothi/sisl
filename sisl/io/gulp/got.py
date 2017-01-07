@@ -38,7 +38,6 @@ class gotSileGULP(SileGULP):
         """ Overwrites internal key lookup value for the cell vectors """
         self.set_key('sc', key)
 
-
     @Sile_fh_open
     def read_super(self, key=None):
         """ Reads a `SuperCell` and creates the GULP cell """
@@ -49,12 +48,11 @@ class gotSileGULP(SileGULP):
 
         # Read off the supercell dimensions
         xyz = l.split('=')[1:]
-        
+
         # Now read off the quantities...
         sc = [int(i.split()[0]) for i in xyz]
 
         return np.array(sc[:3], np.int32)
-
 
     @Sile_fh_open
     def read_sc(self, key=None, **kwargs):
@@ -81,7 +79,6 @@ class gotSileGULP(SileGULP):
     def set_geom_key(self, key):
         """ Overwrites internal key lookup value for the geometry vectors """
         self.set_key('geom', key)
-
 
     @Sile_fh_open
     def read_geom(self, key=None, **kwargs):
@@ -158,13 +155,11 @@ class gotSileGULP(SileGULP):
         # Return the geometry
         return Geometry(xyz, Atom[Z], sc=sc)
 
-
     def set_dyn_key(self, key):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """
         self.set_key('dyn', key)
 
     set_es_key = set_dyn_key
-
 
     @Sile_fh_open
     def read_dynmat(self, **kwargs):
@@ -194,7 +189,7 @@ class gotSileGULP(SileGULP):
 
             # Perform mass scaling to retrieve the dynamical matrix
             mass = [geom.atom[ia].mass for ia in range(geom.na)]
-            
+
             # Construct orbital mass
             mass = np.array(mass, np.float64).repeat(3)
 
@@ -276,7 +271,7 @@ class gotSileGULP(SileGULP):
                         # Clear those below the cutoff
                         dyn[i, :] = where(np.abs(dat[:]) >= cutoff,
                                           dat, 0.)
-                                             
+
                         i += 1
                         j = 0
                         if i >= no:

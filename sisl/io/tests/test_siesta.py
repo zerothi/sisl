@@ -29,12 +29,10 @@ class TestSIESTAnc(object):
         # Assert they are the same
         assert_true(np.allclose(tb.cell, ntb.cell))
         assert_true(np.allclose(tb.xyz, ntb.xyz))
-        assert_true(np.allclose(tb._data._D[:,0], ntb._data._D[:,0]))
+        assert_true(np.allclose(tb._data._D[:, 0], ntb._data._D[:, 0]))
         for ia in ntb.geom:
             assert_true(self.g.atom[ia] == ntb.atom[ia])
 
-
-            
     def test_nc2(self):
         f = osp.join(self.d, 'gr.dH.nc')
         H = Hamiltonian(self.gtb)
@@ -48,12 +46,11 @@ class TestSIESTAnc(object):
         # Write to level-1
         H.write(sile)
         # Write to level-2
-        H.write(sile, k=[0,0,.5])
+        H.write(sile, k=[0, 0, .5])
         # Write to level-3
         H.write(sile, E=0.1)
         # Write to level-4
-        H.write(sile, k=[0,0,.5], E=0.1)
-
+        H.write(sile, k=[0, 0, .5], E=0.1)
 
     def test_nc3(self):
         f = osp.join(self.d, 'grS.nc')
@@ -69,5 +66,3 @@ class TestSIESTAnc(object):
         assert_true(np.allclose(tb._data._D, ntb._data._D))
         for ia in ntb.geom:
             assert_true(self.g.atom[ia] == ntb.atom[ia])
-
-

@@ -110,14 +110,14 @@ class Grid(SuperCellChild):
         grid = self.__class__(shape, bc=np.copy(self.bc), sc=self.sc.copy())
         # Clean-up to reduce memory
         del grid.grid
-        
+
         # Create new mesh-grid
         dnew = np.concatenate(np.meshgrid(
             np.linspace(0, 1, shape[0]),
             np.linspace(0, 1, shape[1]),
             np.linspace(0, 1, shape[2])), axis=0)
         dnew.shape = (-1, 3)
-   
+
         grid.grid = interpn(dold, self.grid, dnew, *args, **kwargs)
         # immediately delete the dnew (which is VERY large)
         del dold, dnew
@@ -392,12 +392,12 @@ class Grid(SuperCellChild):
 
         # if the axis is none, we do this for all axes
         if axis is None:
-            rcell = self.rcell / ( 2. * np.pi )
+            rcell = self.rcell / (2. * np.pi)
             # Loop over each direction
             idx = np.empty([3], np.int32)
             for i in [0, 1, 2]:
                 # get the coordinate along the direction of the cell vector
-                c = np.dot(rcell[i, :], coord) * self.cell[i,:]
+                c = np.dot(rcell[i, :], coord) * self.cell[i, :]
                 # Calculate the index corresponding to this placement
                 idx[i] = self.index(c, i)
             return idx
@@ -411,7 +411,6 @@ class Grid(SuperCellChild):
         # Calculate how many indices are required to fulfil
         # the correct line cut
         return int(np.rint((np.sum(ac ** 2) / np.sum(dax ** 2)) ** .5))
-
 
     def append(self, other, axis):
         """ Appends other `Grid` to this grid along axis
@@ -461,7 +460,7 @@ class Grid(SuperCellChild):
 
     def __repr__(self):
         """ Representation of object """
-        
+
         return 'Grid[{} {} {}]'.format(*self.shape)
 
     def _check_compatibility(self, other, msg):
@@ -577,13 +576,12 @@ class Grid(SuperCellChild):
             self.grid *= other
         return self
 
-
     @classmethod
     def _ArgumentParser_args_single(cls):
         """ Returns the options for `Grid.ArgumentParser` in case they are the only options """
-        return {'limit_arguments' : False,
-                'short'           : True,
-                'positional_out'  : True,
+        return {'limit_arguments': False,
+                'short': True,
+                'positional_out': True,
             }
 
     # Hook into the Grid class to create
@@ -613,7 +611,7 @@ class Grid(SuperCellChild):
             if short:
                 return args
             return [args[0]]
-        
+
         # We limit the import to occur here
         import argparse
 
@@ -627,59 +625,61 @@ class Grid(SuperCellChild):
         # This will enable custom actions to interact with the grid in a
         # straight forward manner.
         d = {
-            "_grid"        : self.copy(),
-            "_stored_grid" : False,
+            "_grid": self.copy(),
+            "_stored_grid": False,
         }
         namespace = default_namespace(**d)
 
         # Define actions
         class SetGeometry(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 ns._geometry = Geometry.read(value)
                 ns._grid.set_geom(ns._geometry)
-        p.add_argument(*opts('--geometry','-G'), action=SetGeometry, 
+        p.add_argument(*opts('--geometry', '-G'), action=SetGeometry,
                        help='Define the geometry attached to the Grid.')
 
         # Define size of grid
         class InterpGrid(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 ns._grid = ns._grid.interp([int(x) for x in values])
         p.add_argument(*opts('--interp'), nargs=3,
                        action=InterpGrid,
                        help='Interpolate the grid.')
 
-
         # substract another grid
         # They *MUST* be conmensurate.
         class DiffGrid(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 grid = Grid.read(value)
                 ns._grid -= grid
                 del grid
-        p.add_argument(*opts('--diff','-d'), action=DiffGrid,
+        p.add_argument(*opts('--diff', '-d'), action=DiffGrid,
                        help='Subtract another grid (they must be commensurate).')
 
-
         class AverageGrid(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 ns._grid = ns._grid.average(direction(value))
         p.add_argument(*opts('--average'), metavar='DIR',
                        action=AverageGrid,
                        help='Take the average of the grid along DIR.')
 
-
         # Create-subsets of the grid
         class SubDirectionGrid(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 # The unit-cell direction
                 axis = direction(values[0])
                 # Figure out whether this is a fractional or
                 # distance in Ang
                 is_frac = 'f' in values[1]
-                rng = strseq(float, values[1].replace('f',''))
+                rng = strseq(float, values[1].replace('f', ''))
                 if isinstance(rng, tuple):
                     if is_frac:
-                        t = [ns._grid.cell[axis,:] * r for r in rng]
+                        t = [ns._grid.cell[axis, :] * r for r in rng]
                         rng = tuple(rng)
                     # we have bounds
                     idx1 = ns._grid.index(rng[0], axis=axis)
@@ -688,46 +688,47 @@ class Grid(SuperCellChild):
                     return
                 elif rng < 0.:
                     if is_frac:
-                        rng = ns._grid.cell[axis,:] * abs(rng)
+                        rng = ns._grid.cell[axis, :] * abs(rng)
                     b = False
                 else:
                     if is_frac:
-                        rng = ns._grid.cell[axis,:] * rng
+                        rng = ns._grid.cell[axis, :] * rng
                     b = True
                 idx = ns._grid.index(rng, axis=axis)
                 ns._grid = ns._grid.sub_part(idx, axis, b)
-        p.add_argument(*opts('--sub'), nargs=2, metavar=('DIR','COORD'),
+        p.add_argument(*opts('--sub'), nargs=2, metavar=('DIR', 'COORD'),
                        action=SubDirectionGrid,
                        help='Reduce the grid by taking a subset of the grid (along DIR).')
 
         # Create-subsets of the grid
         class RemoveDirectionGrid(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 # The unit-cell direction
                 axis = direction(values[0])
                 # Figure out whether this is a fractional or
                 # distance in Ang
                 is_frac = 'f' in values[1]
-                rng = strseq(float, values[1].replace('f',''))
+                rng = strseq(float, values[1].replace('f', ''))
                 if isinstance(rng, tuple):
                     raise NotImplementedError('Can not figure out how to apply mid-removal of grids.')
                 elif rng < 0.:
                     if is_frac:
-                        rng = ns._grid.cell[axis,:] * abs(rng)
+                        rng = ns._grid.cell[axis, :] * abs(rng)
                     b = True
                 else:
                     if is_frac:
-                        rng = ns._grid.cell[axis,:] * rng
+                        rng = ns._grid.cell[axis, :] * rng
                     b = False
                 idx = ns._grid.index(rng, axis=axis)
                 ns._grid = ns._grid.sub_part(idx, axis, b)
-        p.add_argument(*opts('--remove'), nargs=2, metavar=('DIR','COORD'),
+        p.add_argument(*opts('--remove'), nargs=2, metavar=('DIR', 'COORD'),
                        action=RemoveDirectionGrid,
                        help='Reduce the grid by removing a subset of the grid (along DIR).')
 
-
         # Define size of grid
         class PrintInfo(argparse.Action):
+
             def __call__(self, parser, ns, values, option_string=None):
                 print(ns._grid)
         p.add_argument(*opts('--info'), nargs=0,
@@ -735,6 +736,7 @@ class Grid(SuperCellChild):
                        help='Print, to stdout, some regular information about the grid.')
 
         class Out(argparse.Action):
+
             def __call__(self, parser, ns, value, option_string=None):
                 if value is None:
                     return
@@ -743,23 +745,24 @@ class Grid(SuperCellChild):
                 ns._grid.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
                 ns._stored_grid = True
-        p.add_argument(*opts('--out','-o'), nargs=1, action=Out,
+        p.add_argument(*opts('--out', '-o'), nargs=1, action=Out,
                        help='Store the grid (at its current invocation) to the out file.')
 
         # If the user requests positional out arguments, we also add that.
         if kwargs.get('positional_out', False):
-            p.add_argument('out', nargs='*',default=None,
+            p.add_argument('out', nargs='*', default=None,
                            action=Out,
                            help='Store the grid (at its current invocation) to the out file.')
-            
+
         # We have now created all arguments
         return p, namespace
+
 
 def sgrid(grid=None, argv=None, ret_grid=False):
     """ Main script for sgrid script. 
 
     This routine may be called with `argv` and/or a `Sile` which is the grid at hand.
-    
+
     Parameters
     ----------
     grid : `Grid`/`BaseSile`
@@ -819,7 +822,7 @@ This may be unexpected but enables one to do advanced manipulations.
         try:
             grid = get_sile(input_file).read_grid()
         except:
-            grid = Grid([10,10,10])
+            grid = Grid([10, 10, 10])
 
     elif isinstance(grid, Grid):
         # Do nothing, the geometry is already created
@@ -832,7 +835,7 @@ This may be unexpected but enables one to do advanced manipulations.
             # Store the input file...
             input_file = grid.file
         except Exception as E:
-            grid = Grid([10,10,10])
+            grid = Grid([10, 10, 10])
         argv = ['fake.grid.nc'] + argv
 
     # Do the argument parser

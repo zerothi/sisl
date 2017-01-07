@@ -4,6 +4,7 @@ from nose.tools import *
 
 from sisl.units.siesta import *
 
+
 class TestUnits(object):
 
     def test_group(self):
@@ -20,4 +21,3 @@ class TestUnits(object):
         assert_equal(unit_default('mass'), 'amu')
         assert_equal(unit_default('energy'), 'Ry')
         assert_equal(unit_default('force'), 'Ry/Bohr')
-

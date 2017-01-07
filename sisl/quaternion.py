@@ -87,7 +87,7 @@ class Quaternion(object):
     def __eq__(a, b):
         """ Returns whether two Quaternions are equal """
         return np.allclose(a._v, b._v)
-        
+
     def __neg__(a):
         """ Returns the negative quaternion """
         q = a.copy()
