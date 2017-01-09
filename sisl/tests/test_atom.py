@@ -171,3 +171,19 @@ class TestAtoms(object):
                 assert_true(a == Atom['Au'])
                 assert_true((idx == [1, 3]).all())
             assert_true(len(idx) == 2)
+
+    def test_reduce1(self):
+        atom = Atoms(['C', 'Au'])
+        atom = atom.sub(0)
+        atom = atom.reduce()
+        assert_true(atom[0] == Atom[6])
+        assert_true(len(atom) == 1)
+        assert_true(len(atom.atom) == 1)
+
+    def test_reorder1(self):
+        atom = Atoms(['C', 'Au'])
+        atom = atom.sub(1)
+        atom = atom.reorder()
+        assert_true(atom[0] == Atom['Au'])
+        assert_true(len(atom) == 1)
+        assert_true(len(atom.atom) == 2)

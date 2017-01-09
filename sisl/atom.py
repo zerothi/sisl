@@ -1,7 +1,8 @@
-""" Atomic information
+""" Atomic information in different object containers.
 
-Atomic information can be created and handled using either the
-`PeriodicTable` object or the `Atom` object.
+Atomic information can be created and handled using the
+`PeriodicTable` object or the `Atom` object, or lastly the combined
+object `Atoms`.
 
 * The `PeriodicTable` enables a *lookup* table for generic information
 about the atomic species in the periodic table of elements.
@@ -11,6 +12,12 @@ about the atomic species in the periodic table of elements.
   * Number of associated orbitals
   * Radii of each associated orbital
   * Custom tag (useful for denoting pseudo potentials)
+* The `Atoms` object is a sorted, unique list of `Atom` such that one
+  can contain a list of atoms. Instead of storing all `Atom` objects
+  which may have *many* dublicates, the `Atoms` object has a unique
+  list of `Atom` objects and an index list (`Atoms.specie`).
+  This object enables a fast lookup of atoms without having
+  to duplicate too much memory.
 
 """
 from __future__ import print_function, division
@@ -1093,6 +1100,7 @@ class Atoms(object):
         a list of unique specie indices
     """
 
+    # Using the slots should make this routine slightly faster.
     __slots__ = ['_atom', '_specie']
 
     def __init__(self, atom=None, na=None):
@@ -1179,6 +1187,12 @@ class Atoms(object):
         return self._specie
 
     @property
+    def orbitals(self):
+        """ Return an array of orbitals of the contained objects """
+        uorbs = np.array([a.orbs for a in self.atom], np.int32)
+        return uorbs[self.specie[:]]
+
+    @property
     def dR(self):
         """ Return an array of masses of the contained objects """
         udR = np.array([a.dR for a in self.atom], np.float64)
@@ -1197,10 +1211,37 @@ class Atoms(object):
                 return i
         return -1
 
+    def reorder(self):
+        """ Reorders the atoms and species index so that they are ascending """
+        smin = np.zeros(len(self.atom), np.int32)
+        for i in range(len(self.atom)):
+            lst = np.where(self.specie == i)[0]
+            if len(lst) == 0:
+                # means it is not in use
+                smin[i] = len(self.specie)
+            else:
+                smin[i] = lst[0]
+
+        # Now swap indices into correct place
+        isort = np.argsort(smin)
+        if np.all(np.diff(isort) == 0):
+            # No swaps required
+            return self.copy()
+
+        # We need to swap something
+        atoms = self.copy()
+        for os, ns in zip(range(len(isort)), isort):
+            # Reorder the atom array as well.
+            atoms._atom[ns] = self._atom[os].copy()
+            atoms._specie[self.specie == os] = ns
+
+        return atoms
+
     def reduce(self):
-        """ Remove all unique atoms not part of the species list """
-        atom = self._atom[:]
-        specie = self._specie[:]
+        """ Returns a new `Atoms` object by removing non-used atoms """
+        atoms = self.copy()
+        atom = atoms._atom
+        specie = atoms._specie
 
         rem = []
         for i in range(len(self.atom)):
@@ -1212,8 +1253,10 @@ class Atoms(object):
             atom.pop(i)
             specie = np.where(specie > i, specie - 1, specie)
 
-        self._atom = atom
-        self._specie = specie
+        atoms._atom = atom
+        atoms._specie = specie
+
+        return atoms
 
     def sub(self, atom):
         """ Return a subset of the list """
@@ -1260,7 +1303,7 @@ class Atoms(object):
         return atoms
 
     def append(self, other):
-        """ Append ``other`` to this list of atoms """
+        """ Append ``other`` to this list of atoms and return the appended version """
         if not isinstance(other, Atoms):
             other = Atoms(other)
         else:
@@ -1326,7 +1369,7 @@ class Atoms(object):
         return s + '}\n'
 
     def __len__(self):
-        """ Return number of unique atoms in the object """
+        """ Return number of atoms in the object """
         return len(self._specie)
 
     def __iter__(self):
@@ -1388,11 +1431,11 @@ class Atoms(object):
     # Create pickling routines
     def __getstate__(self):
         """ Return the state of this object """
-        return {'atoms': self.atom,
-                'species': self.specie}
+        return {'atom': self.atom,
+                'specie': self.specie}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
         self.__init__()
-        self._atom = d['atoms']
-        self._specie = d['species']
+        self._atom = d['atom']
+        self._specie = d['specie']

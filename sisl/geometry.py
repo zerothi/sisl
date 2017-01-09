@@ -98,12 +98,10 @@ class Geometry(SuperCellChild):
             atom = Atom('H')
 
         # Create the local Atoms object
-        self._atoms = Atoms(atom, na=self.na)
+        self._atom = Atoms(atom, na=self.na)
 
         # Get total number of orbitals
-        def get_orb(a):
-            return a.orbs
-        orbs = ensure_array(map(get_orb, self._atoms[:]), np.int32)
+        orbs = self.atom.orbitals
 
         # Get total number of orbitals
         self.no = np.sum(orbs)
@@ -173,8 +171,8 @@ class Geometry(SuperCellChild):
 
     @property
     def atom(self):
-        """ Retrieve the atoms for the geometry """
-        return self._atoms
+        """ Retrieve the atoms for the geometry (`Atoms` object) """
+        return self._atom
 
     # Backwards compatability (do not use)
     atoms = atom
