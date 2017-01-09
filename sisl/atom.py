@@ -1415,9 +1415,9 @@ class Atoms(object):
 
         # Now the unique atom list also contains the new atoms
         # We need to re-create the species list
-        if isinstance(key, (list, tuple, np.ndarray)):
+        if isinstance(key, (list, np.ndarray, tuple)):
             for i, j in enumerate(key):
-                self._specie[i] = self.index(atoms[j])
+                self._specie[j] = self.index(atoms[i])
         else:
             self._specie[key] = self.index(atoms[0])
 

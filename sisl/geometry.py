@@ -165,17 +165,17 @@ class Geometry(SuperCellChild):
         self.set_supercell(sc_cart)
 
     @property
-    def dR(self):
-        """ Returns the maximum orbital range of the atoms """
-        return np.amax(self.atom.dR)
-
-    @property
     def atom(self):
         """ Retrieve the atoms for the geometry (`Atoms` object) """
         return self._atom
 
     # Backwards compatability (do not use)
     atoms = atom
+
+    @property
+    def dR(self):
+        """ Returns the maximum orbital range of the atoms """
+        return np.amax(self.atom.dR)
 
     @property
     def no_s(self):
