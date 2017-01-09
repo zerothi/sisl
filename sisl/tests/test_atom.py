@@ -148,6 +148,18 @@ class TestAtoms(object):
         assert_true(atom[1] == Atom('Au', orbs=2))
         assert_true(len(atom.atom) == 2)
 
+    def test_set2(self):
+        # Add new atoms to the set
+        atom = Atoms(['C'] * 10)
+        assert_true(atom[0] == Atom('C'))
+        assert_true(atom[1] == Atom('C'))
+        assert_true(len(atom.atom) == 1)
+        atom[range(1, 4)] = Atom('Au', orbs=2)
+        assert_true(atom[0] == Atom('C'))
+        assert_false(atom[1] == Atom('Au'))
+        assert_true(atom[1] == Atom('Au', orbs=2))
+        assert_true(len(atom.atom) == 2)
+
     def test_in1(self):
         # Add new atoms to the set
         atom = Atoms(['C', 'C'])
