@@ -21,9 +21,9 @@ sisl also enables an easy interface for [ASE][ase].
 
 Installing sisl using PyPi or Conda is the easiest:
 
-   pip install sisl
-   # or
-   conda install -c zerothi sisl
+    pip install sisl
+    # or
+    conda install -c zerothi sisl
 
 If performing a manual installation, these packages are required:
 
