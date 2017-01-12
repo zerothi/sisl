@@ -9,13 +9,15 @@
 The [API documentation][sisl-api] can be found [here][sisl-api].
 
 The sisl toolbox provides a simple API for manipulating, constructing and creating tight-binding matrices 
-in a standard and uniform way.
+in a standard and uniform way.  
+Secondly it provides easy interfaces for creating and calculating band-structures of
+simple tight-binding models as well as interfacing to more advanced DFT utilities.
 
-It provides easy interfaces for creating and calculating band-structures of
-simple tight-binding models as well as interfacing to more advanced DFT
-programs.
+sisl may also be used together with the [ASE][ase] environment.
 
-sisl also enables an easy interface for [ASE][ase].
+sisl provides an interface to [TBtrans][tbtrans] and thus enables the calculation of
+transport using the Green function method and easily allows calculation of tight-binding
+systems of more than 500,000 atoms.
 
 ## Downloading and installation ##
 
@@ -265,6 +267,7 @@ Links to external and internal sites.
 [sisl@git]: https://github.com/zerothi/sisl
 [sisl-api]: http://zerothi.github.io/sisl/index.html
 [issue]: https://github.com/zerothi/sisl/issues
+[tbtrans]: https://launchpad.net/siesta
 [pr]: https://github.com/zerothi/sisl/pulls
 [lgpl]: http://www.gnu.org/licenses/lgpl.html
 [ase]: https://wiki.fysik.dtu.dk/ase/
