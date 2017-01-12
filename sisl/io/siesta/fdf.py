@@ -9,6 +9,7 @@ import numpy as np
 import warnings as warn
 
 # Import sile objects
+from sisl._help import _str
 from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
@@ -42,6 +43,8 @@ class fdfSileSiesta(SileSiesta):
         By default the ``base`` is the directory given in the file name.
         """
         super(fdfSileSiesta, self).__init__(filename, mode=mode)
+        # This is necessary to retain the information about the top file
+        self._file = filename
         if base is None:
             # Extract from filename
             self._directory = osp.dirname(filename)
@@ -50,16 +53,42 @@ class fdfSileSiesta(SileSiesta):
         if len(self._directory) == 0:
             self._directory = '.'
 
+    @property
+    def file(self):
+        """ Return the current file name (without the directory prefix) """
+        if self._directory == '.':
+            drep = 'THISSHOULDNEVEREXISTANYWHERE'
+        else:
+            drep = self._directory
+        if len(self._parent_fh) > 0:
+            return self._parent_fh[-1].name.replace(drep, '')
+
+        return self._file.replace(drep, '')
+
     def _setup(self):
         """ Setup the `fdfSileSiesta` after initialization """
         # These are the comments
         self._comment = ['#', '!', ';']
 
         # List of parent file-handles used while reading
-        # This is because fdf enables including other
-        # files
+        # This is because fdf enables inclusion of other files
         self._parent_fh = []
         self._directory = '.'
+
+    @Sile_fh_open
+    def includes(self):
+        """ Return a list of all include files """
+
+        includes = [self.fh.name]
+        l = self.readline()
+        while l != '':
+            for inc in self._parent_fh:
+                if inc.name not in includes:
+                    includes.append(inc.name)
+
+        # Now remove prefixes make it smaller
+        includes = [inc.replace(self._directory, '') for inc in includes]
+        return includes
 
     def readline(self, comment=False):
         """ Reads the next line of the file """
@@ -73,13 +102,13 @@ class fdfSileSiesta(SileSiesta):
             self._parent_fh.append(self.fh)
             self.fh = open(self._directory + osp.sep + l.split()[1], self._mode)
             # Read the following line in the new file
-            return self.readline()
+            return self.readline(comment)
 
         if len(self._parent_fh) > 0 and l == '':
             # l == '' marks the end of the file
             self.fh.close()
             self.fh = self._parent_fh.pop()
-            return self.readline()
+            return self.readline(comment)
 
         return l
 
@@ -165,9 +194,87 @@ class fdfSileSiesta(SileSiesta):
 
         return ' '.join(fdfl[1:])
 
-    def set(self, key, value):
-        """ Add the key and value to the FDF file """
-        raise NotImplementedError("Setting a fdf key is not yet implemented")
+    def set(self, key, value, keep=True):
+        """ Add the key and value to the FDF file 
+
+        Parameters
+        ----------
+        key : `str`
+           the fdf-key value to be set in the fdf file
+        value : `str`/`list`
+           the value of the string. If a `str` is passed a regular
+           fdf-key is used, if a `list` it will be a %block.
+        keep : `bool`
+           whether old flags will be kept in the fdf file.
+        """
+
+        # To set a key we first need to figure out if it is
+        # already present, if so, we will add the new key, just above
+        # the already present key.
+
+        # 1. find the old value, and thus the file in which it is found
+        with self:
+            old_value = self.get(key)
+            # Get the file of the containing data
+            top_file = self.file
+
+        try:
+            while len(self._parent_fh) > 0:
+                self.fh.close()
+                self.fh = self._parent_fh.pop()
+            self.fh.close()
+        except:
+            pass
+
+        # Now we should re-read and edit the file
+        lines = open(top_file, 'r').readlines()
+
+        def write(fh, value):
+            if value is None:
+                return
+            if isinstance(value, _str):
+                fh.write(' '.join([key, value]))
+                if '\n' not in value:
+                    fh.write('\n')
+            else:
+                fh.write('%block ' + key + '\n')
+                fh.write(''.join(value))
+                fh.write('%endblock ' + key + '\n')
+
+        # Now loop, write and edit
+        do_write = True
+        with open(top_file, 'w') as fh:
+            for line in lines:
+                if self.line_has_key(line, key, case=False) and do_write:
+                    write(fh, value)
+                    if keep:
+                        fh.write('# Old value\n')
+                        fh.write(line)
+                    do_write = False
+                else:
+                    fh.write(line)
+
+    @staticmethod
+    def print(key, value):
+        """ Return a string which is pretty-printing the key+value """
+        if isinstance(value, list):
+            s = '%block ' + key
+            # if the value has any new-values
+            has_nl = False
+            for v in value:
+                if '\n' in v:
+                    has_nl = True
+                    break
+            if has_nl:
+                # do not skip to next line in next segment
+                value[-1].replace('\n', '')
+                s += '\n{}'.format(''.join(value))
+            else:
+                s += '\n{} {}'.format(value[0], '\n'.join(value[1:]))
+            s += '%endblock ' + key
+        else:
+            s = '{} {}'.format(key, value)
+        return s
 
     @Sile_fh_open
     def _read(self, key):
@@ -189,11 +296,8 @@ class fdfSileSiesta(SileSiesta):
         f, fdf = self.step_to(k, case=False)
         if force and not f:
             # The user requests that the block *MUST* be found
-            raise SileError(
-                'Requested forced block could not be found: ' +
-                str(key) +
-                '.',
-                self)
+            raise SileError(('Requested forced block could not be found: ' +
+                             str(key) + '.'), self)
         if not f:
             return False, []  # not found
 
@@ -211,10 +315,8 @@ class fdfSileSiesta(SileSiesta):
                 return True, li
             # Append list
             li.append(l)
-        raise SileError(
-            'Error on reading block: ' +
-            str(key) +
-            ' could not find start/end.')
+        raise SileError(('Error on reading block: ' + str(key) +
+                         ' could not find start/end.'))
 
     @Sile_fh_open
     def write_geom(self, geom, fmt='.5f'):
@@ -355,8 +457,7 @@ class fdfSileSiesta(SileSiesta):
             atms = atms[:na]
 
         if na == 0:
-            raise ValueError(
-                'NumberOfAtoms has been determined to be zero, no atoms.')
+            raise ValueError('NumberOfAtoms has been determined to be zero, no atoms.')
 
         # Create array
         xyz = np.empty([na, 3], np.float64)
@@ -399,8 +500,7 @@ class fdfSileSiesta(SileSiesta):
             if None in sp:
                 idx = sp.index(None) + 1
                 raise ValueError(
-                    ("Could not populate entire "
-                     "species list. "
+                    ("Could not populate entire species list. "
                      "Please ensure specie with index {} is present".format(idx)))
 
             # Create atoms array with species
@@ -411,8 +511,7 @@ class fdfSileSiesta(SileSiesta):
             if None in atom:
                 idx = atom.index(None) + 1
                 raise ValueError(
-                    ("Could not populate entire "
-                     "atomic list list. "
+                    ("Could not populate entire atomic list list. "
                      "Please ensure atom with index {} is present".format(idx)))
 
         else:
@@ -465,7 +564,7 @@ class fdfSileSiesta(SileSiesta):
                         fd.write('\n\n# SISL added keywords\n')
                     setattr(ns, '_fdf_first', False)
                 ns._fdf.set(key, val)
-        ep.add_argument('--set', nargs=2, metavar=('KEY', 'VALUE'),
+        ep.add_argument('--set', '-s', nargs=2, metavar=('KEY', 'VALUE'),
                         action=FDFAdd,
                         help='Add a key to the FDF file. If it already exists it will be overwritten')
 
@@ -474,26 +573,17 @@ class fdfSileSiesta(SileSiesta):
             def __call__(self, parser, ns, value, option_string=None):
                 # Retrieve the value in standard units
                 # Currently, we write out the unit "as-is"
-                val = ns._fdf.get(value[0], with_unit = True)
+                try:
+                    val = ns._fdf.get(value[0], with_unit = True)
+                except:
+                    val = ns._fdf.get(value[0])
                 if val is None:
                     print('# {} is currently not in the FDF file '.format(value[0]))
                     return
 
-                if isinstance(val, list):
-                    # if the value has any new-values
-                    has_nl = False
-                    for v in val:
-                        if '\n' in v:
-                            has_nl = True
-                            break
-                    if not has_nl:
-                        print('{} {}'.format(val[0], ' '.join(val[1:])))
-                    else:
-                        print('{}\n'.format(val[0]) + '\n'.join(val[1:]))
-                else:
-                    print('{}'.format(val))
+                print(ns._fdf.print(value[0], val))
 
-        ep.add_argument('--get', nargs=1, metavar='KEY',
+        ep.add_argument('--get', '-g', nargs=1, metavar='KEY',
                         action=FDFGet,
                         help='Print (to stdout) the value of the key in the FDF file.')
 

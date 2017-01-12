@@ -237,10 +237,14 @@ def get_sile(file, *args, **kwargs):
 
         del end_list
 
-        raise Exception('sile not implemented: {}'.format(file))
+        raise NotImplementedError('sile not implemented: {}'.format(file))
+    except NotImplementedError as e:
+        pass
     except Exception as e:
-        raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
-    raise NotImplementedError("File '"+ file + "' requested could not be found, possibly the file has not been implemented.")
+        import traceback as t
+        t.print_exc()
+        raise e
+    raise NotImplementedError("Sile for file '"+ file + "' could not be found, possibly the file has not been implemented.")
 
 
 def get_siles(attrs=[None]):
@@ -345,13 +349,21 @@ class Sile(BaseSile):
 
     def __init__(self, filename, mode='r', comment='#'):
 
-        self.file = filename
+        self._file = filename
         self._mode = mode
-        self._comment = [comment]
+        if isinstance(comment, (list, tuple)):
+            self._comment = list(comment)
+        else:
+            self._comment = [comment]
         self._line = 0
 
         # Initialize
         self.__setup()
+
+    @property
+    def file(self):
+        """ File of the current `Sile` """
+        return self._file
 
     def __setup(self):
         """ Setup the `Sile` after initialization
@@ -545,7 +557,7 @@ class SileCDF(BaseSile):
         1) means stores certain variables in the object.
         """
 
-        self.file = filename
+        self._file = filename
         # Open mode
         self._mode = mode
         # Save compression internally
@@ -568,6 +580,11 @@ class SileCDF(BaseSile):
 
         # Must call setup-methods
         self.__setup()
+
+    @property
+    def file(self):
+        """ File of the current `Sile` """
+        return self._file
 
     def _setup(self, *args, **kwargs):
         """ Simple setup that needs to be overloaded """
@@ -684,12 +701,17 @@ class SileBin(BaseSile):
         If `mode` is in read-mode (r).
         """
 
-        self.file = filename
+        self._file = filename
         # Open mode
         self._mode = mode.replace('b', '') + 'b'
 
         # Must call setup-methods
         self.__setup()
+
+    @property
+    def file(self):
+        """ File of the current `Sile` """
+        return self._file
 
     def _setup(self, *args, **kwargs):
         """ Simple setup that needs to be overwritten """
