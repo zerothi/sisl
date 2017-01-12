@@ -43,8 +43,6 @@ class fdfSileSiesta(SileSiesta):
         By default the ``base`` is the directory given in the file name.
         """
         super(fdfSileSiesta, self).__init__(filename, mode=mode)
-        # This is necessary to retain the information about the top file
-        self._file = filename
         if base is None:
             # Extract from filename
             self._directory = osp.dirname(filename)
@@ -56,14 +54,7 @@ class fdfSileSiesta(SileSiesta):
     @property
     def file(self):
         """ Return the current file name (without the directory prefix) """
-        if self._directory == '.':
-            drep = 'THISSHOULDNEVEREXISTANYWHERE'
-        else:
-            drep = self._directory
-        if len(self._parent_fh) > 0:
-            return self._parent_fh[-1].name.replace(drep, '')
-
-        return self._file.replace(drep, '')
+        return self._file
 
     def _setup(self):
         """ Setup the `fdfSileSiesta` after initialization """
