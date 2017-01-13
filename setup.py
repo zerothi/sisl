@@ -27,10 +27,7 @@ Topic :: Software Development
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Physics
 Topic :: Utilities
-Operating System :: Microsoft :: Windows
-Operating System :: POSIX
-Operating System :: Unix
-Operating System :: MacOS
+Operating System :: OS Independent
 """
 
 MAJOR = 0
