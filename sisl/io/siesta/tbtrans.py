@@ -1216,6 +1216,36 @@ class tbtncSileSiesta(SileCDFSIESTA):
         p.add_argument('--out', '-o', nargs=1, action=Out,
                        help='Store the currently collected information (at its current invocation) to the out file.')
 
+        class Plot(argparse.Action):
+
+            @dec_run_actions
+            def __call__(self, parser, ns, value, option_string=None):
+
+                if len(ns._data) == 0:
+                    # do nothing if data has not been collected
+                    return
+
+                from matplotlib import pyplot as plt
+
+                for i in range(1, len(ns._data)):
+                    plt.plot(ns._data[0], ns._data[i], label=ns._data_header[i])
+
+                plt.legend(loc=8, ncol=3, bbox_to_anchor=(0.5, 1.0))
+                plt.show()
+
+                # Clean all data
+                ns._data_description = []
+                ns._data_header = []
+                ns._data = []
+                # These are expert options
+                ns._Ovalue = ''
+                ns._Orng = None
+                ns._Oscale = 1. / len(ns._tbt.pivot)
+                ns._Erng = None
+                ns._krng = None
+        p.add_argument('--plot', '-p', nargs=0, action=Plot,
+                       help='Plot the currently collected information (at its current invocation).')
+
         return p, namespace
 
 
