@@ -14,6 +14,7 @@ from .info import micro as __micro__
 # all digits (not program specific)
 from .units import *
 from .quaternion import *
+from .shape import *
 
 from .supercell import *
 from .atom import *

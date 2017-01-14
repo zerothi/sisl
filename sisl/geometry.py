@@ -4,11 +4,11 @@ Geometry class to retain the atomic structure.
 from __future__ import print_function, division
 
 # To check for integers
+import warnings
 from numbers import Integral, Real
+from collections import deque
 from six import string_types
 from math import acos, pi
-import sys
-import warnings
 
 import numpy as np
 
@@ -19,6 +19,7 @@ from .utils import *
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
+from .shape import Shape, Sphere
 
 __all__ = ['Geometry', 'sgeom']
 
@@ -296,40 +297,21 @@ class Geometry(SuperCellChild):
 
         return iR
 
-    def iter_block(self, iR=10, dR=None):
-        """
-        Returns an iterator for performance critical looping.
-
-        NOTE: This requires that dR has been set correctly as the maximum interaction range.
-
-        I.e. the loop would look like this:
-
-        >>> for ias, idxs in Geometry.iter_block():
-        >>>    for ia in ias:
-        >>>        idx_a = dev.close(ia, dR = dR, idx = idxs)
-
-        This iterator is intended for systems with more than 1000 atoms.
-
-        Remark that the iterator used is non-deterministic, i.e. any two iterators need
-        not return the same atoms in any way.
-
-        Parameters
-        ----------
-        iR  : (10) integer
-            the number of ``dR`` ranges taken into account when doing the iterator
-        dR  : (self.dR), float
-            enables overwriting the local dR quantity.
-
-        Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that
-        need searched.
-        """
+    def iter_block_rand(self, atom=None, iR=10, dR=None):
+        """ Perform the *random* block-iteration by randomly selecting the next center of block """
 
         # We implement yields as we can then do nested iterators
         # create a boolean array
         na = len(self)
         not_passed = np.empty(na, dtype='b')
         not_passed[:] = True
-        not_passed_N = na
+        if atom is not None:
+            # Reverse the values
+            not_passed[:] = False
+            not_passed[atom] = True
+
+        # Figure out how many we need to loop on
+        not_passed_N = np.sum(not_passed)
 
         if dR is None:
             selfdR = self.dR
@@ -361,11 +343,68 @@ class Geometry(SuperCellChild):
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0], uniq=True)
             # First extend the search-space (before reducing)
-            all_idx[1] = self.sc2uc(
-                np.append(
-                    all_idx[1],
-                    all_idx[0]),
-                uniq=True)
+            all_idx[1] = self.sc2uc(np.append(all_idx[1], all_idx[0]), uniq=True)
+
+            # Only select those who have not been runned yet
+            all_idx[0] = all_idx[0][np.where(not_passed[all_idx[0]])[0]]
+            if len(all_idx[0]) == 0:
+                raise ValueError('Internal error, please report to the developers')
+
+            # Tell the next loop to skip those passed
+            not_passed[all_idx[0]] = False
+            # Update looped variables
+            not_passed_N -= len(all_idx[0])
+
+            # Now we want to yield the stuff revealed
+            # all_idx[0] contains the elements that should be looped
+            # all_idx[1] contains the indices that can be searched
+            yield all_idx[0], all_idx[1]
+
+        if np.any(not_passed):
+            raise ValueError('Error on iterations. Not all atoms has been visited.')
+
+    def iter_block_grid(self, atom=None, iR=10, dR=None):
+        """ Perform the *grid* block-iteration by looping a grid """
+
+        # We implement yields as we can then do nested iterators
+        # create a boolean array
+        na = len(self)
+        not_passed = np.empty(na, dtype='b')
+        not_passed[:] = True
+        if atom is not None:
+            # Reverse the values
+            not_passed[:] = False
+            not_passed[atom] = True
+
+        # Figure out how many we need to loop on
+        not_passed_N = np.count(not_passed)
+
+        if dR is None:
+            selfdR = self.dR
+            # The boundaries (ensure complete overlap)
+            dr = (selfdR * (iR - 1), selfdR * (iR + .1))
+        else:
+            dr = (dR * (iR - 1), dR * (iR + .1))
+
+        # Now create the Grid
+        # convert the radius to a square Grid
+        # We do this by examining the x, y, z coordinates
+        xyz_m = np.min(self.xyz, axis=0)
+        xyz_M = np.max(self.xyz, axis=0)
+        dxyz = xyz_M - xyz_m
+
+        # Create the dcell
+
+        # loop until all passed are true
+        while not_passed_N > 0:
+
+            # get all elements within two radii
+            all_idx = self.close(idx, dR=dr)
+
+            # Get unit-cell atoms
+            all_idx[0] = self.sc2uc(all_idx[0], uniq=True)
+            # First extend the search-space (before reducing)
+            all_idx[1] = self.sc2uc(np.append(all_idx[1], all_idx[0]), uniq=True)
 
             # Only select those who have not been runned yet
             all_idx[0] = all_idx[0][np.where(not_passed[all_idx[0]])[0]]
@@ -385,6 +424,45 @@ class Geometry(SuperCellChild):
         if np.any(not_passed):
             raise ValueError(
                 'Error on iterations. Not all atoms has been visited.')
+
+    def iter_block(self, atom=None, iR=10, dR=None, method='rand'):
+        """
+        Returns an iterator for performance critical looping.
+
+        NOTE: This requires that dR has been set correctly as the maximum interaction range.
+
+        I.e. the loop would look like this:
+
+        >>> for ias, idxs in Geometry.iter_block():
+        >>>    for ia in ias:
+        >>>        idx_a = dev.close(ia, dR = dR, idx = idxs)
+
+        This iterator is intended for systems with more than 1000 atoms.
+
+        Remark that the iterator used is non-deterministic, i.e. any two iterators need
+        not return the same atoms in any way.
+
+        Parameters
+        ----------
+        atom : `list, np.ndarray`
+            enables only effectively looping a subset of the full geometry
+        iR  : `int` (`10`)
+            the number of ``dR`` ranges taken into account when doing the iterator
+        dR  : `float`, (`self.dR`)
+            enables overwriting the local dR quantity.
+        method : `str` (`'rand'`)
+            select the method by which the block iteration is performed. 
+            Possible values are:
+             `rand`: a spherical object is constructed with a random center according 
+                     to the internal atoms
+             `grid`: a grid object is constructed and rigorously looped
+
+        Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that
+        need searched.
+        """
+        if method == 'rand':
+            for ias, idxs in self.iter_block_rand(atom, iR, dR):
+                yield ias, idxs
 
     def copy(self):
         """
@@ -987,13 +1065,162 @@ class Geometry(SuperCellChild):
     def axyzsc(self, ia):
         return self.coords(self.a2isc(ia), self.sc2uc(ia))
 
-    def close_sc(self, xyz_ia,
-                 isc=None,
+    def within_sc(self, shapes, isc=None,
+                  idx=None, idx_xyz=None,
+                  ret_coord=False, ret_dist=False):
+        """
+        Calculates which atoms are close to some atom or point
+        in space, only returns so relative to a super-cell.
+
+        This returns a set of atomic indices which are within a
+        sphere of radius ``dR``.
+
+        If dR is a tuple/list/array it will return the indices:
+        in the ranges:
+        >>> ( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )
+
+        Parameters
+        ----------
+        shapes  : `Shape`/`list of Shape`
+            A list of increasing shapes that define the extend of the geometric
+            volume that is searched.
+            It is vital that:
+               shapes[0] in shapes[1] in shapes[2] ...
+        isc       : ([0,0,0]), array_like, optional
+            The super-cell which the coordinates are checked in.
+        idx       : (None), array_like
+            List of atoms that will be considered. This can
+            be used to only take out a certain atoms.
+        idx_xyz : (None), array_like
+            The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
+        ret_coord : (False), boolean
+            If true this method will return the coordinates
+            for each of the couplings.
+        ret_dist : (False), boolean
+            If true this method will return the distance
+            for each of the couplings.
+        """
+
+        # Ensure that `shapes` is a list
+        if isinstance(shapes, Shape):
+            shapes = [shapes]
+        nshapes = len(shapes)
+
+        # Convert to actual array
+        if idx is not None:
+            if not isndarray(idx):
+                idx = ensure_array(idx)
+        else:
+            # If idx is None, then idx_xyz cannot be used!
+            # So we force it to None
+            idx_xyz = None
+
+        # Get shape centers
+        off = shapes[-1].center[:]
+        # Get the supercell offset
+        soff = self.sc.offset(isc)[:]
+
+        # Get atomic coordinate in principal cell
+        if idx_xyz is None:
+            xa = self.coords(idx=idx)[:, :] + soff[None, :]
+        else:
+            # For extremely large systems re-using the
+            # idx_xyz is faster than indexing
+            # a very large array
+            # However, this idx_xyz should not
+            # be offset by any supercell
+            xa = idx_xyz[:, :] + soff[None, :]
+
+        # Get indices and coordinates of the largest shape
+        # The largest part of the calculation are to calculate
+        # the content in the largest shape.
+        ix, xa = shapes[-1].iwithin(xa, return_sub=True)
+
+        if idx is None:
+            # This is because of the pre-check of the distance checks
+            idx = ix
+        else:
+            idx = idx[ix]
+
+        if len(xa) == 0:
+            # Quick return if there are no entries...
+
+            ret = [[np.empty([0], np.int32)] * nshapes]
+            rc = 0
+            if ret_coord:
+                rc = rc + 1
+                ret.append([np.empty([0, 3], np.float64)] * nshapes)
+            if ret_dist:
+                rd = rc + 1
+                ret.append([np.empty([0], np.float64)] * nshapes)
+
+            if nshapes == 1:
+                if ret_coord and ret_dist:
+                    return [ret[0][0], ret[1][0], ret[2][0]]
+                elif ret_coord or ret_dist:
+                    return [ret[0][0], ret[1][0]]
+                return ret[0][0]
+            if ret_coord or ret_dist:
+                return ret
+            return ret[0]
+
+        # Calculate distance
+        if ret_dist:
+            d = np.sum((xa - off[None, :]) ** 2, axis=1) ** .5
+
+        # Create the initial lists that we will build up
+        # Then finally, we will return the reversed lists
+
+        # Quick return
+        if nshapes == 1:
+            ret = [[idx]]
+            if ret_coord:
+                ret.append([xa])
+            if ret_dist:
+                ret.append([d])
+            if ret_coord or ret_dist:
+                return ret
+            return ret[0]
+
+        # TODO Check that all shapes coincide with the following shapes
+
+        # Now we create a list of indices which coincide
+        # in each of the shapes
+        # Do a reduction on each of the list elements
+        ixS = []
+        cum = np.array([], idx.dtype)
+        for i, s in enumerate(shapes):
+            x = s.iwithin(xa)
+            if i > 0:
+                x = np.setdiff1d(x, cum, assume_unique=True)
+            # Update elements to remove in next loop
+            cum = np.append(cum, x)
+            ixS.append(x)
+
+        # Do for the first shape
+        ret = [[ensure_array(idx[ixS[0]])]]
+        rc = 0
+        if ret_coord:
+            rc = rc + 1
+            ret.append([xa[ixS[0], :]])
+        if ret_dist:
+            rd = rc + 1
+            ret.append([d[ixS[0]]])
+        for i in range(1, nshapes):
+            ret[0].append(ensure_array(idx[ixS[i]]))
+            if ret_coord:
+                ret[rc].append(xa[ixS[i], :])
+            if ret_dist:
+                ret[rd].append(d[ixS[i]])
+
+        if ret_coord or ret_dist:
+            return ret
+        return ret[0]
+
+    def close_sc(self, xyz_ia, isc=None,
                  dR=None,
-                 idx=None,
-                 idx_xyz=None,
-                 ret_coord=False,
-                 ret_dist=False):
+                 idx=None, idx_xyz=None,
+                 ret_coord=False, ret_dist=False):
         """
         Calculates which atoms are close to some atom or point
         in space, only returns so relative to a super-cell.
@@ -1081,9 +1308,7 @@ class Geometry(SuperCellChild):
         # For smaller ones this will actually be a slower
         # method...
         # TODO should we abstract the methods dependent on size?
-        ix = log_and(log_and(fabs(dxa[:, 0]) <= max_dR,
-                             fabs(dxa[:, 1]) <= max_dR),
-                     fabs(dxa[:, 2]) <= max_dR)
+        ix = log_and.reduce(fabs(dxa[:, :]) <= max_dR, axis=1)
 
         if idx is None:
             # This is because of the pre-check of the
@@ -1129,7 +1354,8 @@ class Geometry(SuperCellChild):
         # take the sqrt
         max_dR = max_dR * max_dR
         xaR = dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2
-        ix = where(xaR <= max_dR)[0]
+        ix = np.where(xaR <= max_dR)[0]
+
         # Reduce search space and correct distances
         d = xaR[ix] ** .5
         if ret_coord:
@@ -1243,12 +1469,99 @@ class Geometry(SuperCellChild):
             raise NotImplementedError(
                 'Changing bond-length dependent on several lacks implementation.')
 
-    def close(self, xyz_ia,
-            dR=None,
-            idx=None,
-            idx_xyz=None,
-            ret_coord=False,
-            ret_dist=False):
+    def within(self, shapes,
+            idx=None, idx_xyz=None,
+            ret_coord=False, ret_dist=False):
+        """
+        Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
+
+        This heavily relies on the `close_sc` method.
+
+        Note that if a connection is made in a neighbouring super-cell
+        then the atomic index is shifted by the super-cell index times
+        number of atoms.
+        This allows one to decipher super-cell atoms from unit-cell atoms.
+
+        Parameters
+        ----------
+        shapes : `Shape`/`list of Shape`
+        idx     : (None), array_like
+            List of indices for atoms that are to be considered
+        idx_xyz : (None), array_like
+            The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
+        ret_coord : (False), boolean
+            If true this method will return the coordinates
+            for each of the couplings.
+        ret_dist : (False), boolean
+            If true this method will return the distances from the ``xyz_ia``
+            for each of the couplings.
+        """
+
+        # Ensure that `shapes` is a list
+        if isinstance(shapes, Shape):
+            shapes = [shapes]
+        nshapes = len(shapes)
+
+        # Get global calls
+        # Is faster for many loops
+        concat = np.concatenate
+
+        ret = [[np.empty([0], np.int32)] * nshapes]
+        i = 0
+        if ret_coord:
+            c = i + 1
+            i += 1
+            ret.append([np.empty([0, 3], np.float64)] * nshapes)
+        if ret_dist:
+            d = i + 1
+            i += 1
+            ret.append([np.empty([0], np.float64)] * nshapes)
+
+        ret_special = ret_coord or ret_dist
+
+        for s in range(self.n_s):
+            na = self.na * s
+            sret = self.within_sc(shapes, self.sc.sc_off[s, :],
+                                  idx=idx, idx_xyz=idx_xyz,
+                                  ret_coord=ret_coord, ret_dist=ret_dist)
+            print('sret', sret, self.sc.sc_off[s, :])
+            if not ret_special:
+                # This is to "fake" the return
+                # of a list (we will do indexing!)
+                sret = [sret]
+
+            if isinstance(sret[0], list):
+                # we have a list of arrays (nshapes > 1)
+                for i, x in enumerate(sret[0]):
+                    ret[0][i] = concat((ret[0][i], x + na), axis=0)
+                    if ret_coord:
+                        ret[c][i] = concat((ret[c][i], sret[c][i]), axis=0)
+                    if ret_dist:
+                        ret[d][i] = concat((ret[d][i], sret[d][i]), axis=0)
+            elif len(sret[0]) > 0:
+                # We can add it to the list (nshapes == 1)
+                # We add the atomic offset for the supercell index
+                ret[0][0] = concat((ret[0][0], sret[0] + na), axis=0)
+                if ret_coord:
+                    ret[c][0] = concat((ret[c][0], sret[c]), axis=0)
+                if ret_dist:
+                    ret[d][0] = concat((ret[d][0], sret[d]), axis=0)
+
+        if nshapes == 1:
+            if ret_coord and ret_dist:
+                return [ret[0][0], ret[1][0], ret[2][0]]
+            elif ret_coord or ret_dist:
+                return [ret[0][0], ret[1][0]]
+            return ret[0][0]
+
+        if ret_special:
+            return ret
+
+        return ret[0]
+
+    def close(self, xyz_ia, dR=None,
+            idx=None, idx_xyz=None,
+            ret_coord=False, ret_dist=False):
         """
         Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
 
@@ -1310,14 +1623,11 @@ class Geometry(SuperCellChild):
 
         for s in range(self.n_s):
             na = self.na * s
-            sret = self.close_sc(
-                xyz_ia,
-                self.sc.sc_off[s, :],
-                dR=dR,
-                idx=idx,
-                idx_xyz=idx_xyz,
-                ret_coord=ret_coord,
-                ret_dist=ret_dist)
+            sret = self.close_sc(xyz_ia,
+                self.sc.sc_off[s, :], dR=dR,
+                idx=idx, idx_xyz=idx_xyz,
+                ret_coord=ret_coord, ret_dist=ret_dist)
+            print('sret', sret, self.sc.sc_off[s, :])
 
             if not ret_special:
                 # This is to "fake" the return

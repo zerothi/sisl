@@ -6,9 +6,11 @@ from nose.plugins.attrib import attr
 import math as m
 import numpy as np
 
+from sisl import Sphere
 from sisl import Geometry, Atom, SuperCell
 
 
+@attr('geometry')
 class TestGeometry(object):
 
     def setUp(self):
@@ -304,6 +306,39 @@ class TestGeometry(object):
         i = self.mol.close([100, 100, 100], dR=0.1, ret_dist=True, ret_coord=True)
         for el in i:
             assert_equal(len(el), 0)
+
+    def test_close_within1(self):
+        three = range(3)
+        for ia in self.mol:
+            shapes = [Sphere(0.1, self.mol[ia]),
+                      Sphere(1.1, self.mol[ia])]
+            i = self.mol.close(ia, dR=(0.1, 1.1), idx=three)
+            ii = self.mol.within(shapes, idx=three)
+            assert_true(np.all(i[0] == ii[0]))
+            assert_true(np.all(i[1] == ii[1]))
+
+    def test_close_within2(self):
+        g = self.g.repeat(6, 0).repeat(6, 1)
+        for ia in g:
+            shapes = [Sphere(0.1, g[ia, :]),
+                      Sphere(1.5, g[ia, :])]
+            i = g.close(ia, dR=(0.1, 1.5))
+            ii = g.within(shapes)
+            assert_true(np.all(i[0] == ii[0]))
+            assert_true(np.all(i[1] == ii[1]))
+
+    def test_close_within3(self):
+        g = self.g.repeat(6, 0).repeat(6, 1)
+        args = {'ret_coord': True, 'ret_dist': True}
+        for ia in g:
+            shapes = [Sphere(0.1, g[ia, :]),
+                      Sphere(1.5, g[ia, :])]
+            i, xa, d = g.close(ia, dR=(0.1, 1.5), **args)
+            ii, xai, di = g.within(shapes, **args)
+            for j in [0, 1]:
+                assert_true(np.all(i[j] == ii[j]))
+                assert_true(np.allclose(xa[j], xai[j]))
+                assert_true(np.allclose(d[j], di[j]))
 
     def test_close_sizes(self):
         point = 0
