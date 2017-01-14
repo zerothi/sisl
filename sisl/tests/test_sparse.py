@@ -10,6 +10,7 @@ import scipy as sc
 from sisl.sparse import SparseCSR
 
 
+@attr('sparse')
 class TestSparseCSR(object):
 
     def setUp(self):

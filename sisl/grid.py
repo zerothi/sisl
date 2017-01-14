@@ -37,9 +37,12 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        shape : int*3
+        shape : `list of ints`
            the size of each grid dimension
-        bc : the 
+        bc : `int`
+           the boundary condition (`Grid.Periodic/Grid.Neumann/Grid.Dirichlet`)
+        sc : `SuperCell/list`
+           the associated supercell (
         """
         if shape is None:
             shape = [1, 1, 1]

@@ -1,13 +1,15 @@
 from __future__ import print_function, division
 
 from nose.tools import *
-
-from sisl import Quaternion
+from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np
 
+from sisl import Quaternion
 
+
+@attr('quaternion')
 class TestQuaternion(object):
 
     def setUp(self):

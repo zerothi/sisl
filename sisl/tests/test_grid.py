@@ -1,13 +1,15 @@
 from __future__ import print_function, division
 
 from nose.tools import *
-
-from sisl import Grid, SuperCell
+from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np
 
+from sisl import Grid, SuperCell
 
+
+@attr('grid')
 class TestGrid(object):
 
     def setUp(self):

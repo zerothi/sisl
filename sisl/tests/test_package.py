@@ -9,6 +9,7 @@ import numpy as np
 import sisl
 
 
+@attr('version')
 class TestVersion(object):
 
     def test_version(self):

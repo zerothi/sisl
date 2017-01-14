@@ -9,6 +9,7 @@ import numpy as np
 from sisl import Atom, Atoms, PeriodicTable
 
 
+@attr('atom')
 class TestAtom(object):
 
     def setUp(self):
