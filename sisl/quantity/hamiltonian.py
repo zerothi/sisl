@@ -281,7 +281,7 @@ class Hamiltonian(object):
                 self[ia, ix] = p
         return func
 
-    def construct(self, func, na_iR=1000, eta=False):
+    def construct(self, func, na_iR=1000, method='rand', eta=False):
         """ Automatically construct the Hamiltonian model based on a function that does the setting up of the Hamiltonian
 
         This may be called in two variants.
@@ -330,6 +330,7 @@ class Hamiltonian(object):
             func = self.create_construct(func[0], func[1])
 
         iR = self.geom.iR(na_iR)
+        print('iR = ', iR)
 
         # Get number of atoms
         na = len(self.geom)
@@ -340,7 +341,7 @@ class Hamiltonian(object):
         t0 = time()
 
         # Do the loop
-        for ias, idxs in self.geom.iter_block(iR=iR):
+        for ias, idxs in self.geom.iter_block(iR=iR, method=method):
 
             # Get all the indexed atoms...
             # This speeds up the searching for

@@ -21,6 +21,9 @@ class Shape(object):
       return the geometric center of the shape
     - volume
       return the volume of the shape.
+    - internal_radius
+      return the largest radius such that a sphere of that radius is 
+      fully contained in the shape
     - within
       Enables to check if coordinates, or other things
       are contained in this shape
@@ -48,7 +51,7 @@ class Shape(object):
         if center is None:
             self._center = np.zeros(3, np.float64)
         else:
-            self._center = center
+            self._center = np.array(center, np.float64)
 
     def __call__(self, *args, **kwargs):
         """ Re-initialize the Shape """

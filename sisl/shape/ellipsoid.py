@@ -35,13 +35,18 @@ class Ellipsoid(Shape):
         return self._radius
 
     @property
+    def internal_radius(self):
+        """ Return the radius of the Ellipsoid such that one can displace with this radius"""
+        return np.min(self.radius) * 0.5 ** 0.5
+
+    @property
     def volume(self):
         """ Return the volume of the shape """
         r = self.radius
         return 4. / 3. * pi * r[0] * r[1] * r[2]
 
-    def extend(self, length):
-        """ Return a new shape with a largerthe volume of the shape """
+    def expand(self, length):
+        """ Return a new shape with a larger corresponding to `length` """
         r = self.radius + length
         return self(*r, center=self.center)
 
@@ -61,13 +66,11 @@ class Ellipsoid(Shape):
 
             # First check
             fabs = np.fabs
-            land = np.logical_and
+            landr = np.logical_and.reduce
             center = self.center
             radius = self.radius
             tmp = other - center[None, :]
-            within = land(land(fabs(tmp[:, 0]) <= radius[0],
-                               fabs(tmp[:, 1]) <= radius[1]),
-                          fabs(tmp[:, 2]) <= radius[2])
+            within = landr(fabs(tmp[:, :]) <= radius[0], axis=1)
 
             # Now only check exactly on those that are possible
             # candidates
@@ -99,16 +102,14 @@ class Ellipsoid(Shape):
         # First check
         where = np.where
         fabs = np.fabs
-        land = np.logical_and
+        landr = np.logical_and.reduce
         center = self.center
         radius = self.radius[0]
         tmp = other[:, :] - center[None, :]
 
         # Get indices where we should do the more
         # expensive exact check of being inside shape
-        within = where(land(land(fabs(tmp[:, 0]) <= radius,
-                                    fabs(tmp[:, 1]) <= radius),
-                               fabs(tmp[:, 2]) <= radius))[0]
+        within = where(landr(fabs(tmp[:, :]) <= radius, axis=1))[0]
 
         # Now only check exactly on those that are possible candidates
         tmp = tmp[within, :]
@@ -156,6 +157,10 @@ class Sphere(Spheroid):
     def __init__(self, radius, center=None):
         super(Sphere, self).__init__(radius, radius, center=center)
 
+    def set_center(self, center):
+        """ Change the center of the object """
+        self.__init__(self.radius[0], center=center)
+
     def within(self, other, return_sub=False):
         """ Return whether the points are within the shape """
 
@@ -169,14 +174,12 @@ class Sphere(Spheroid):
             # First check
             where = np.where
             fabs = np.fabs
-            land = np.logical_and
+            land = np.logical_and.reduce
             center = self.center
             radius = self.radius[0]
             tmp = other[:, :] - center[None, :]
 
-            within = land(land(fabs(tmp[:, 0]) <= radius,
-                               fabs(tmp[:, 1]) <= radius),
-                          fabs(tmp[:, 2]) <= radius)
+            within = landr(fabs(tmp[:, :]) <= radius, axis=1)
 
             # Now only check exactly on those that are possible
             # candidates

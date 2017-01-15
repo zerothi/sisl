@@ -23,8 +23,13 @@ class Cuboid(Shape):
         self._edge_length = np.copy(edge_length, np.float64)
 
     @property
+    def internal_radius(self):
+        """ Return the radius of the Cuboid """
+        return np.min(self.edge_length)
+
+    @property
     def volume(self):
-        """ Return the edge-length of the Cube """
+        """ Return the edge-length of the Cuboid """
         return np.product(self.edge_length)
 
     @property
@@ -38,14 +43,14 @@ class Cuboid(Shape):
 
     @property
     def edge_length(self):
-        """ Return the edge-length of the Cube """
+        """ Return the edge-length of the Cuboid """
         return self._edge_length
 
-    def enlarge(self, length):
-        """ Return a new Cuboid with an increased length """
-        return self(self.edge_length + length, self.center)
+    def expand(self, length):
+        """ Return a new shape with a larger corresponding to `length` """
+        return self(self.edge_length + length, center=self.center)
 
-    def within(self, other):
+    def within(self, other, return_sub=False):
         """ Return a `True/False` value of whether the `other` object is contained in this shape
 
         Parameters
@@ -77,14 +82,18 @@ class Cuboid(Shape):
             within = la.solve(voxel, tmp[ix, :].T).T
 
             # Reduce to check if they are within
+            wtmp = land.reduce(land(0. <= within, within <=1), axis=1)
+            ix[np.where(ix)[0]] = wtmp
+            if return_sub:
+                tmp = tmp[wtmp, :] + self.origo[None, :]
 
-            ix[np.where(ix)[0]] = land.reduce(land(0. <= within, within <=1), axis=1)
-
+            if return_sub:
+                return ix, tmp
             return ix
 
         raise NotImplementedError('within could not determine the extend of the `other` object')
 
-    def iwithin(self, other):
+    def iwithin(self, other, return_sub=False):
         """ Return indices of the `other` object which are contained in the shape
 
         Parameters
@@ -115,10 +124,11 @@ class Cuboid(Shape):
         within = la.solve(voxel, tmp[ix, :].T).T
 
         # Reduce to check if they are within
-        within = land.reduce(land(0. <= within, within <=1), axis=1)
-        ix = ix[np.where(within)[0]]
+        within = ix[land.reduce(land(0. <= within, within <=1), axis=1)]
 
-        return ix
+        if return_sub:
+            return within, other[within, :]
+        return within
 
 
 class Cube(Cuboid):

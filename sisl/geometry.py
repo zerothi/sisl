@@ -9,6 +9,7 @@ from numbers import Integral, Real
 from collections import deque
 from six import string_types
 from math import acos, pi
+from itertools import product
 
 import numpy as np
 
@@ -19,7 +20,7 @@ from .utils import *
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
-from .shape import Shape, Sphere
+from .shape import Shape, Sphere, Cube
 
 __all__ = ['Geometry', 'sgeom']
 
@@ -297,28 +298,27 @@ class Geometry(SuperCellChild):
 
         return iR
 
-    def iter_block_rand(self, atom=None, iR=10, dR=None):
+    def iter_block_rand(self, iR=10, dR=None, atom=None):
         """ Perform the *random* block-iteration by randomly selecting the next center of block """
 
         # We implement yields as we can then do nested iterators
         # create a boolean array
         na = len(self)
         not_passed = np.empty(na, dtype='b')
-        not_passed[:] = True
         if atom is not None:
             # Reverse the values
             not_passed[:] = False
             not_passed[atom] = True
+        else:
+            not_passed[:] = True
 
         # Figure out how many we need to loop on
         not_passed_N = np.sum(not_passed)
 
         if dR is None:
-            selfdR = self.dR
-            # The boundaries (ensure complete overlap)
-            dr = (selfdR * (iR - 1), selfdR * (iR + .1))
-        else:
-            dr = (dR * (iR - 1), dR * (iR + .1))
+            dR = self.dR
+        # The boundaries (ensure complete overlap)
+        dR = np.array([iR - 0.975, iR + .025]) * dR
 
         # loop until all passed are true
         while not_passed_N > 0:
@@ -338,7 +338,7 @@ class Geometry(SuperCellChild):
             # we want to create the index based stuff on
 
             # get all elements within two radii
-            all_idx = self.close(idx, dR=dr)
+            all_idx = self.close(idx, dR=dR)
 
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0], uniq=True)
@@ -363,28 +363,34 @@ class Geometry(SuperCellChild):
         if np.any(not_passed):
             raise ValueError('Error on iterations. Not all atoms has been visited.')
 
-    def iter_block_grid(self, atom=None, iR=10, dR=None):
+    def iter_block_shape(self, shape=None, iR=10, atom=None):
         """ Perform the *grid* block-iteration by looping a grid """
 
         # We implement yields as we can then do nested iterators
         # create a boolean array
         na = len(self)
         not_passed = np.empty(na, dtype='b')
-        not_passed[:] = True
         if atom is not None:
             # Reverse the values
             not_passed[:] = False
             not_passed[atom] = True
+        else:
+            not_passed[:] = True
 
         # Figure out how many we need to loop on
-        not_passed_N = np.count(not_passed)
+        not_passed_N = np.sum(not_passed)
 
-        if dR is None:
-            selfdR = self.dR
-            # The boundaries (ensure complete overlap)
-            dr = (selfdR * (iR - 1), selfdR * (iR + .1))
+        dR = self.dR
+        if shape is None:
+            # we default to the Cube shapes
+            dS = (Cube(dR * (iR - 0.975)),
+                  Cube(dR * (iR + 0.025)))
         else:
-            dr = (dR * (iR - 1), dR * (iR + .1))
+            dS = tuple(shape)
+            if len(dS) == 1:
+                dS += dS[0].expand(dR)
+        if len(dS) != 2:
+            raise ValueError('Number of Shapes *must* be one or two')
 
         # Now create the Grid
         # convert the radius to a square Grid
@@ -393,13 +399,32 @@ class Geometry(SuperCellChild):
         xyz_M = np.max(self.xyz, axis=0)
         dxyz = xyz_M - xyz_m
 
-        # Create the dcell
+        # Retrieve the internal radius
+        ir = dS[0].internal_radius
 
-        # loop until all passed are true
-        while not_passed_N > 0:
+        # Figure out number of segments in each iteration
+        ixyz = np.array(np.ceil(dxyz / ir), np.int32)
 
+        # Calculate the steps required for each iteration
+        for i in [0, 1, 2]:
+            if ixyz[i] > 0:
+                dxyz[i] = dxyz[i] / ixyz[i]
+                xyz_m[i] += ir
+            ixyz[i] += 1
+
+        # Now we loop in each direction
+        for x, y, z in product(range(ixyz[0]),
+                               range(ixyz[1]),
+                               range(ixyz[2])):
+
+            # Create the new center
+            center = xyz_m + [x * dxyz[0], y * dxyz[1], z * dxyz[2]]
+            dS[0].set_center(center[:])
+            dS[1].set_center(center[:])
+
+            # Now perform the iteration
             # get all elements within two radii
-            all_idx = self.close(idx, dR=dr)
+            all_idx = self.within(dS)
 
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0], uniq=True)
@@ -409,7 +434,7 @@ class Geometry(SuperCellChild):
             # Only select those who have not been runned yet
             all_idx[0] = all_idx[0][np.where(not_passed[all_idx[0]])[0]]
             if len(all_idx[0]) == 0:
-                raise ValueError('Internal error, please report to the developers')
+                continue
 
             # Tell the next loop to skip those passed
             not_passed[all_idx[0]] = False
@@ -422,10 +447,11 @@ class Geometry(SuperCellChild):
             yield all_idx[0], all_idx[1]
 
         if np.any(not_passed):
-            raise ValueError(
-                'Error on iterations. Not all atoms has been visited.')
+            print(np.where(not_passed)[0])
+            print(np.sum(not_passed), len(self))
+            raise ValueError('Error on iterations. Not all atoms has been visited.')
 
-    def iter_block(self, atom=None, iR=10, dR=None, method='rand'):
+    def iter_block(self, iR=10, dR=None, atom=None, method='rand'):
         """
         Returns an iterator for performance critical looping.
 
@@ -460,8 +486,24 @@ class Geometry(SuperCellChild):
         Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that
         need searched.
         """
-        if method == 'rand':
-            for ias, idxs in self.iter_block_rand(atom, iR, dR):
+        method = method.lower()
+        if method == 'rand' or method == 'random':
+            for ias, idxs in self.iter_block_rand(iR, dR, atom):
+                yield ias, idxs
+        else:
+            if dR is None:
+                dR = self.dR
+
+            # Create shapes
+            if method == 'sphere':
+                dS = (Sphere(dR * (iR - 0.975)),
+                      Sphere(dR * (iR + 0.025)))
+            elif method == 'cube':
+                dS = (Cube(dR * (2 * iR - 0.975)),
+                      Cube(dR * (2 * iR + 0.025)))
+
+            for ias, idxs in self.iter_block_shape(dS):
+                print(len(ias))
                 yield ias, idxs
 
     def copy(self):
@@ -1524,7 +1566,6 @@ class Geometry(SuperCellChild):
             sret = self.within_sc(shapes, self.sc.sc_off[s, :],
                                   idx=idx, idx_xyz=idx_xyz,
                                   ret_coord=ret_coord, ret_dist=ret_dist)
-            print('sret', sret, self.sc.sc_off[s, :])
             if not ret_special:
                 # This is to "fake" the return
                 # of a list (we will do indexing!)
@@ -1627,7 +1668,6 @@ class Geometry(SuperCellChild):
                 self.sc.sc_off[s, :], dR=dR,
                 idx=idx, idx_xyz=idx_xyz,
                 ret_coord=ret_coord, ret_dist=ret_dist)
-            print('sret', sret, self.sc.sc_off[s, :])
 
             if not ret_special:
                 # This is to "fake" the return
