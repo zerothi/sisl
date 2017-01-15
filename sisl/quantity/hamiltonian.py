@@ -330,7 +330,6 @@ class Hamiltonian(object):
             func = self.create_construct(func[0], func[1])
 
         iR = self.geom.iR(na_iR)
-        print('iR = ', iR)
 
         # Get number of atoms
         na = len(self.geom)

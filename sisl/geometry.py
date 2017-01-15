@@ -399,8 +399,8 @@ class Geometry(SuperCellChild):
         xyz_M = np.max(self.xyz, axis=0)
         dxyz = xyz_M - xyz_m
 
-        # Retrieve the internal radius
-        ir = dS[0].internal_radius
+        # Retrieve the internal diameter
+        ir = dS[0].displacement
 
         # Figure out number of segments in each iteration
         ixyz = np.array(np.ceil(dxyz / ir), np.int32)
@@ -409,8 +409,9 @@ class Geometry(SuperCellChild):
         for i in [0, 1, 2]:
             if ixyz[i] > 0:
                 dxyz[i] = dxyz[i] / ixyz[i]
-                xyz_m[i] += ir
-            ixyz[i] += 1
+                xyz_m[i] += min(dxyz[i], ir[i])
+            else:
+                ixyz[i] += 1
 
         # Now we loop in each direction
         for x, y, z in product(range(ixyz[0]),
@@ -503,7 +504,6 @@ class Geometry(SuperCellChild):
                       Cube(dR * (2 * iR + 0.025)))
 
             for ias, idxs in self.iter_block_shape(dS):
-                print(len(ias))
                 yield ias, idxs
 
     def copy(self):

@@ -35,9 +35,9 @@ class Ellipsoid(Shape):
         return self._radius
 
     @property
-    def internal_radius(self):
-        """ Return the radius of the Ellipsoid such that one can displace with this radius"""
-        return np.min(self.radius) * 0.5 ** 0.5
+    def displacement(self):
+        """ Return the displacement vector of the Ellipsoid """
+        return self.radius * 0.5 ** 0.5 * 2
 
     @property
     def volume(self):
@@ -174,7 +174,7 @@ class Sphere(Spheroid):
             # First check
             where = np.where
             fabs = np.fabs
-            land = np.logical_and.reduce
+            landr = np.logical_and.reduce
             center = self.center
             radius = self.radius[0]
             tmp = other[:, :] - center[None, :]

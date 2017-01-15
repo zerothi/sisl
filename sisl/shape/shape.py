@@ -21,9 +21,9 @@ class Shape(object):
       return the geometric center of the shape
     - volume
       return the volume of the shape.
-    - internal_radius
-      return the largest radius such that a sphere of that radius is 
-      fully contained in the shape
+    - displacement
+      return a vector that is the largest displacement vector such that
+      a grid of the Shape will fully contian all space
     - within
       Enables to check if coordinates, or other things
       are contained in this shape
@@ -61,6 +61,11 @@ class Shape(object):
     def center(self):
         """ Return the geometric center of the shape """
         return self._center
+
+    @property
+    def displacement(self):
+        """ Return a displacement vector for full containment """
+        raise NotImplementedError('displacement has not been implemented in: '+self.__class__.__name__)
 
     @property
     def volume(self):

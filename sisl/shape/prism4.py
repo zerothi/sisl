@@ -23,9 +23,9 @@ class Cuboid(Shape):
         self._edge_length = np.copy(edge_length, np.float64)
 
     @property
-    def internal_radius(self):
-        """ Return the radius of the Cuboid """
-        return np.min(self.edge_length)
+    def displacement(self):
+        """ Return the displacement vector of the Cuboid """
+        return self.edge_length
 
     @property
     def volume(self):
