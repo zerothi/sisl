@@ -108,6 +108,8 @@ class Cuboid(Shape):
         if not isinstance(other, np.ndarray):
             raise ValueError('Could not index the other list')
 
+        other.shape = (-1, 3)
+
         # Offset origo
         tmp = other[:, :] - self.origo[None, :]
 

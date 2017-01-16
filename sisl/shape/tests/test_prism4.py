@@ -34,3 +34,11 @@ class TestPrism4(object):
         assert_true(cube.within([[-1.]*3,
                                  [-1., 0.5, 0.2],
                                  [.1, 0.5, 0.2]]).any())
+
+    def test_iwithin1(self):
+        cube = Cuboid([1.0]*3)
+        assert_false(cube.iwithin([-1.]*3) == [0])
+        assert_false(cube.iwithin([[-1.]*3, [-1., 0.5, 0.2]]) == [0, 1])
+        assert_true((cube.iwithin([[-1.]*3,
+                                   [-1., 0.5, 0.2],
+                                   [.1, 0.5, 0.2]]) == [0, 1, 2]).any())
