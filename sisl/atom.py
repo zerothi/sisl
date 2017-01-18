@@ -1004,9 +1004,7 @@ class Atom(with_metaclass(AtomMeta, object)):
         except:
             pass
         self.R = array_fill_repeat(
-            np.asarray(
-                [R],
-                np.float64).flatten(),
+            np.asarray([R], np.float64).flatten(),
             self.orbs)
         # Save the mass
         self.mass = mass
