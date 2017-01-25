@@ -2036,6 +2036,20 @@ class Geometry(SuperCellChild):
         p.add_argument(*opts('--add'), nargs=2, metavar=('COORD', 'Z'),
                        action=AtomAdd,
                        help='Adds an atom, coordinate is comma separated (in Ang). Z is the atomic number.')
+        
+        # Translate
+        class Translate(argparse.Action):
+
+            def __call__(self, parser, ns, values, option_string=None):
+                # Create an atom from the input
+                if ',' in values[0]:
+                    xyz = [float(x) for x in values[0].split(',')]
+                else:
+                    xyz = [float(x) for x in values[0].split()]
+                ns._geometry = ns._geometry.translate(xyz)
+        p.add_argument(*opts('--translate', '-t'), nargs=1, metavar='COORD',
+                       action=Translate,
+                       help='Translates the coordinates via a comma separated list (in Ang).')
 
         # Periodicly increase the structure
         class PeriodRepeat(argparse.Action):
@@ -2079,7 +2093,7 @@ class Geometry(SuperCellChild):
                 d = direction(values[0])
                 r = int(values[1])
                 ns._geometry = ns._geometry.tile(r, d)
-        p.add_argument(*opts('--tile', '-t'), nargs=2, metavar=('DIR', 'TIMES'),
+        p.add_argument(*opts('--tile'), nargs=2, metavar=('DIR', 'TIMES'),
                        action=PeriodTile,
                        help='Tiles the geometry in the specified direction.')
 
