@@ -2036,7 +2036,7 @@ class Geometry(SuperCellChild):
         p.add_argument(*opts('--add'), nargs=2, metavar=('COORD', 'Z'),
                        action=AtomAdd,
                        help='Adds an atom, coordinate is comma separated (in Ang). Z is the atomic number.')
-        
+
         # Translate
         class Translate(argparse.Action):
 
