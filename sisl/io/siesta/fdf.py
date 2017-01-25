@@ -296,7 +296,13 @@ class fdfSileSiesta(SileSiesta):
         if '<' in fdf:
             # Create new fdf-file
             sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n', '').strip())
-            return sub_fdf._read_block(key, force = force)
+            with sub_fdf:
+                li = []
+                line = sub_fdf.readline()
+                while line != '':
+                    li.append(line.replace('\n', ''))
+                    line = sub_fdf.readline()
+            return True, li
 
         li = []
         while True:
