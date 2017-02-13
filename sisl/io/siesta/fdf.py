@@ -316,7 +316,7 @@ class fdfSileSiesta(SileSiesta):
                          ' could not find start/end.'))
 
     @Sile_fh_open
-    def write_geom(self, geom, fmt='.5f', *args, **kwargs):
+    def write_geom(self, geom, fmt='.8f', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)

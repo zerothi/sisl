@@ -35,7 +35,7 @@ class MoldenSile(Sile):
         # Sadly, MOLDEN does not read this information...
 
     @Sile_fh_open
-    def write_geom(self, geom, fmt='.7f'):
+    def write_geom(self, geom, fmt='.8f'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)

@@ -1901,6 +1901,13 @@ class Geometry(SuperCellChild):
         namespace = default_namespace(**d)
 
         # Create actions
+        class Format(argparse.Action):
+
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._geom_fmt = value[0]
+        p.add_argument(*opts('--format'), action=Format, nargs=1, default='.8f',
+                   help='Specify output format for coordinates.')
+
         class MoveOrigin(argparse.Action):
 
             def __call__(self, parser, ns, value, option_string=None):
@@ -2142,10 +2149,12 @@ class Geometry(SuperCellChild):
                 if len(value) == 0:
                     return
                 # If the vector, exists, we should write it
+                kwargs = {}
+                if hasattr(ns, '_geom_fmt'):
+                    kwargs['fmt'] = ns._geom_fmt
                 if hasattr(ns, '_vector'):
-                    ns._geometry.write(value[0], data=getattr(ns, '_vector', None))
-                else:
-                    ns._geometry.write(value[0])
+                    kwargs['data'] = ns._vector
+                ns._geometry.write(value[0], **kwargs)
                 # Issue to the namespace that the geometry has been written, at least once.
                 ns._stored_geometry = True
         p.add_argument(*opts('--out', '-o'), nargs=1, action=Out,

@@ -518,9 +518,9 @@ class Sile(BaseSile):
         """
         for arg in args:
             if isinstance(arg, Geometry):
-                self.write_geom(arg)
+                self.write_geom(arg, *args, **kwargs)
         if 'geom' in kwargs:
-            self.write_geom(kwargs['geom'])
+            self.write_geom(kwargs['geom'], *args, **kwargs)
 
     def _write(self, *args, **kwargs):
         """ Wrapper to default the write statements """

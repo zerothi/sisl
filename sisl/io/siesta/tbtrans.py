@@ -198,7 +198,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         return geom
 
-    def write_geom(self):
+    def write_geom(self, *args, **kwargs):
         """ This does not work """
         raise ValueError(self.__class__.__name__ + " can not write a geometry")
 

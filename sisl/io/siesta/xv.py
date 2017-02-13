@@ -27,24 +27,28 @@ class XVSileSiesta(SileSiesta):
         self._comment = []
 
     @Sile_fh_open
-    def write_geom(self, geom):
+    def write_geom(self, geom, fmt='.8f'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
 
         # Write unit-cell
         tmp = np.zeros(6, np.float64)
-        fmt = ('   ' + '{:18.9f}' * 3) * 2 + '\n'
+
+        # Create format string for the cell-parameters
+        fmt_str = ('   ' + ('{:' + fmt + '} ') * 3) * 2 + '\n'
         for i in range(3):
             tmp[0:3] = geom.cell[i, :] / Bohr2Ang
-            self._write(fmt.format(*tmp))
+            self._write(fmt_str.format(*tmp))
         self._write('{:12d}\n'.format(geom.na))
-        fmt = '{:3d}{:6d}'
-        fmt += '{:18.9f}' * 3 + '   ' + '{:18.9f}' * 3
-        fmt += '\n'
+
+        # Create format string for the atomic coordinates
+        fmt_str = '{:3d}{:4d} '
+        fmt_str += ('{:' + fmt + '} ') * 3 + '   '
+        fmt_str += ('{:' + fmt + '} ') * 3 + '\n'
         for ia, a, ips in geom.iter_species():
             tmp[0:3] = geom.xyz[ia, :] / Bohr2Ang
-            self._write(fmt.format(ips + 1, a.Z, *tmp))
+            self._write(fmt_str.format(ips + 1, a.Z, *tmp))
 
     @Sile_fh_open
     def read_sc(self):
@@ -52,13 +56,8 @@ class XVSileSiesta(SileSiesta):
 
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
-            cell[
-                i,
-                :] = np.fromstring(
-                self.readline(),
-                dtype=float,
-                sep=' ')[
-                0:3]
+            cell[i, :] = np.fromstring(self.readline(),
+                                       dtype=float, sep=' ')[0:3]
         cell *= Bohr2Ang
 
         return SuperCell(cell)

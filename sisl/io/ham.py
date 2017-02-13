@@ -151,7 +151,7 @@ class HamiltonianSile(Sile):
         return Hamiltonian.sp2HS(geom, H, S)
 
     @Sile_fh_open
-    def write_geom(self, geom, **kwargs):
+    def write_geom(self, geom, fmt='.8f', **kwargs):
         """
         Writes the geometry to the output file
 
@@ -164,16 +164,10 @@ class HamiltonianSile(Sile):
         # The format of the geometry file is
         # for now, pretty stringent
         # Get cell_fmt
-        cell_fmt = '.5f'
-        if 'fmt' in kwargs:
-            cell_fmt = kwargs['fmt']
+        cell_fmt = fmt
         if 'cell_fmt' in kwargs:
             cell_fmt = kwargs['cell_fmt']
-        xyz_fmt = '.4e'
-        if 'fmt' in kwargs:
-            xyz_fmt = kwargs['fmt']
-        if 'xyz_fmt' in kwargs:
-            xyz_fmt = kwargs['xyz_fmt']
+        xyz_fmt = fmt
 
         self._write('begin cell\n')
         # Write the cell
@@ -229,7 +223,7 @@ class HamiltonianSile(Sile):
         geom = ham.geom
 
         # First write the geometry
-        self.write_geom(geom)
+        self.write_geom(geom, **kwargs)
 
         # We default to the advanced layuot if we have more than one
         # orbital on any one atom
