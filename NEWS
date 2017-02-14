@@ -6,6 +6,21 @@
   It is now much faster to perform operations on this
   object.
 
+- The FDF sile now allows setting and retrieving variables
+  from the fdf file. Hence one may now set specific
+  fdf flags via:
+
+       sdata RUN.fdf --set SolutionMethod Transiesta
+
+- Changed default output precision for TXT files to .8f.
+  Additionally one may use flag `--format` in `sgeom` to
+  define the precision.
+
+- `Shape`s have been added. There are now several Shapes
+  which may be used to easily find atoms within a given Shape.
+  This should in principle allow construction of very complex Shapes
+  and easier construction of complex Hamiltonians
+
 
 0.8.0
 =====
