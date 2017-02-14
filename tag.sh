@@ -99,7 +99,7 @@ echo " -m '$MSG'"
 # Tagging and releasing
 git add setup.py
 git commit -s -m "sisl release: $v"
-git tag -a "$v" -m "$MSG"
+git tag -a "v$v" -m "$MSG"
 
 # Publish on pypi
 python setup.py sdist bdist_wheel
@@ -125,7 +125,7 @@ if [ $has_conda -eq 0 ]; then
     which conda
     [ $? -eq 0 ] && has_conda=1
 fi
-$has_conda -eq 1 ] && run_conda
+[ $has_conda -eq 1 ] && run_conda
 
 		    
 # Revert release tag
@@ -133,6 +133,6 @@ sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 False:" setup.py
 git add setup.py
 git commit -s -m "Reverting internal release"
 git push
-git push --tags
+git push --follow-tags
 
 
