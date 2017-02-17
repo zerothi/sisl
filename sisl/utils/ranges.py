@@ -4,10 +4,11 @@ Basic functionality of creating ranges from text-input and/or other types of inf
 from __future__ import print_function, division
 
 import re
+from itertools import groupby
 
 import numpy as np
 
-__all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'fileindex']
+__all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
 
 
 _re_segment = re.compile(r'\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)')
@@ -143,6 +144,35 @@ def lstranges(lst, cast=erange):
     else:
         return lst
     return l
+
+
+def list2range(lst):
+    """ Convert a list of elements into a string of ranges
+
+    Examples
+    --------
+    >>> list2range([2, 4, 5, 6])
+    2, 4-6
+    >>> list2range([2, 4, 5, 6, 8, 9])
+    2, 4-6, 8-9
+    """
+    lst = lst[:]
+    lst.sort()
+    # Create positions
+    pos = [j - i for i, j in enumerate(lst)]
+    t = 0
+    rng = ''
+    for i, els in groupby(pos):
+        ln = len(list(els))
+        el = lst[t]
+        if t > 0:
+            rng += ', '
+        t += ln
+        if ln == 1:
+            rng += str(el)
+        else:
+            rng += '{}-{}'.format(el, el+ln-1)
+    return rng
 
 
 # Function to retrieve an optional index from the

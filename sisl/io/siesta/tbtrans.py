@@ -29,6 +29,7 @@ __all__ += ['dHncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
+Ry2K = unit_convert('Ry', 'K')
 eV2Ry = unit_convert('eV', 'Ry')
 
 
@@ -318,13 +319,16 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
     def chemical_potential(self, elec):
         """ Return the chemical potential associated with the electrode `elec` """
-        return self._value('mu', elec) * Ry2eV
+        return self._value('mu', elec)[0] * Ry2eV
     mu = chemical_potential
 
     def electronic_temperature(self, elec):
-        """ Return temperature of the electrode electronic distribution """
-        return self._value('kT', elec) * Ry2eV
-    kT = electronic_temperature
+        """ Return temperature of the electrode electronic distribution in Kelvin """
+        return self._value('kT', elec)[0] * Ry2K
+    
+    def kT(self, elec):
+        """ Return temperature of the electrode electronic distribution in eV """
+        return self._value('kT', elec)[0] * Ry2eV
 
     def transmission(self, elec_from, elec_to, avg=True):
         """ Return the transmission from `from` to `to`.
@@ -1178,6 +1182,57 @@ class tbtncSileSiesta(SileCDFSIESTA):
                        action=DataTEig,
                        help='Store the transmission eigenvalues between two electrodes.')
 
+        class Info(argparse.Action):
+            """ Action to print information contained in the TBT.nc file, helpful before performing actions """
+
+            def __call__(self, parser, ns, value, option_string=None):
+                # First short-hand the file
+                tbt = ns._tbt
+
+                def truefalse(bol, string):
+                    if bol:
+                        print("  " + string + ": true")
+                    else:
+                        print("  " + string + ": false")
+
+                
+                # Retrieve the device atoms 
+                dev_rng = list2range(tbt.a_dev)
+                print("Device information:")
+                print("  - number of kpoints: " + str(tbt.nkpt))
+                print("  - energy range:")
+                print("    {:.5f} -- {:.5f} eV".format(np.amin(tbt.E), np.amax(tbt.E)))
+                print("  - atoms with DOS:")
+                print("    " + dev_rng)
+                truefalse('DOS' in tbt.variables, "- DOS, Green function")
+                print()
+                print("Electrodes (*=DOS/ADOS not possible):")
+                for elec in tbt.elecs:
+                    if elec in tbt.groups:
+                        print("   " + elec)
+                    else:
+                        print("  *" + elec)
+                # Print out information for each electrode
+                for elec in tbt.groups:
+                    print() # new-line
+                    print("Electrode: " + elec)
+                    gelec = tbt.groups[elec]
+                    print("  - chemical potential: {:.4f} eV".format(tbt.mu(elec)))
+                    print("  - electronic temperature: {:.2f} K".format(tbt.electronic_temperature(elec)))
+                    truefalse('DOS' in gelec.variables, "- DOS, bulk")
+                    truefalse('ADOS' in gelec.variables, "- DOS, spectral")
+                    truefalse('T' in gelec.variables, "- transmission, bulk")
+                    truefalse(elec + '.T' in gelec.variables, "- transmission, out")
+                    truefalse(elec + '.C' in gelec.variables, "- transmission, out correction")
+                    for elec2 in tbt.elecs:
+                        # Skip it self
+                        if elec2 == elec: continue
+                        truefalse(elec2 + '.T' in gelec.variables, "- transmission, -> " + elec2)
+
+
+        p.add_argument('--info', action=Info, nargs=0,
+                       help='Print out what information is contained in the TBT.nc file.')
+                
         class Out(argparse.Action):
 
             @dec_run_actions
@@ -1250,6 +1305,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
 
 add_sile('TBT.nc', tbtncSileSiesta)
+# Add spin-dependent files
+add_sile('TBT_DN.nc', tbtncSileSiesta)
+add_sile('TBT_UP.nc', tbtncSileSiesta)
+
 
 
 class phtncSileSiesta(tbtncSileSiesta):

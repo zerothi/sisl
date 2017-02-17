@@ -87,3 +87,9 @@ class TestRanges(object):
         assert_equal(fileindex('hehlo[1,2]')[1], [1, 2])
         assert_equal(fileindex('hehlo[1-2]')[1], [1, 2])
         assert_equal(fileindex('hehlo[1[1],2]')[1], [[1, [1]], 2])
+
+    def test_list2range(self):
+        a = list2range([2, 4, 5, 6])
+        assert_equal(a, "2, 4-6")
+        a = list2range([2, 4, 5, 6, 8, 9])
+        assert_equal(a, "2, 4-6, 8-9")
