@@ -11,11 +11,8 @@ import numpy as np
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
 
 
-_re_segment = re.compile(r'\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)')
-
-
 # Function to change a string to a range of atoms
-def strmap(func, s):
+def strmap(func, s, sep='b'):
     """ Parse a string as though it was a slice and map all entries using `cast`.
 
     This parses the string but allows relatively simple slices:
@@ -32,7 +29,19 @@ def strmap(func, s):
        function to parse every match with
     s    : str
        the string that should be parsed
+    sep  : str ('b', 'c', '*'/'s')
+       optional separator used, 'b' is square brackets, 'c', curly braces, and '*'/'s' is the star
     """
+
+    if sep == 'b':
+        segment = re.compile(r'\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)')
+        sep1, sep2 = '[', ']'
+    elif sep == '*' or sep == 's':
+        segment = re.compile(r'\*(.+)\*\*(.+)\*|(.+)\*(.+)\*|(.+)')
+        sep1, sep2 = '*', '*'
+    elif sep == 'c':
+        segment = re.compile(r'\{(.+)\}\{(.+)\}|(.+)\{(.+)\}|(.+)')
+        sep1, sep2 = '{', '}'
 
     # Create list
     l = []
@@ -43,7 +52,7 @@ def strmap(func, s):
     # may be selected by [..,..]
     i = 0
     while i < len(commas) - 1:
-        if commas[i].count('[') == commas[i].count(']'):
+        if commas[i].count(sep1) == commas[i].count(sep2):
             i = i + 1
         else:
             # there must be more [ than ]
@@ -52,15 +61,15 @@ def strmap(func, s):
 
     # Check the last input...
     i = len(commas) - 1
-    if commas[i].count('[') != commas[i].count(']'):
-        raise ValueError("Unbalanced string: not enough [ and ]")
+    if commas[i].count(sep1) != commas[i].count(sep2):
+        raise ValueError("Unbalanced string: not enough {} and {}".format(sep1, sep2))
 
     # Now we have a comma-separated list
     # with collected brackets.
     for seg in commas:
 
         # Split it in groups of reg-exps
-        m = _re_segment.findall(seg)[0]
+        m = segment.findall(seg)[0]
 
         if len(m[0]) > 0:
             # this is: [..][..]

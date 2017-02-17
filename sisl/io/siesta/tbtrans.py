@@ -325,7 +325,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
     def electronic_temperature(self, elec):
         """ Return temperature of the electrode electronic distribution in Kelvin """
         return self._value('kT', elec)[0] * Ry2K
-    
+
     def kT(self, elec):
         """ Return temperature of the electrode electronic distribution in eV """
         return self._value('kT', elec)[0] * Ry2eV
@@ -961,7 +961,26 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 value = value.replace(' ', '')
                 # Immediately convert to proper indices
                 geom = ns._geometry
-                ranges = lstranges(strmap(int, value))
+
+                # Sadly many shell interpreters does not
+                # allow simple [] because they are expansion tokens
+                # in the shell.
+                # We bypass this by allowing *, [, {
+                # * will "only" fail if files are named accordingly, else
+                # it will be passed as-is.
+                #       {    [    *
+                sep = ['c', 'b', '*']
+                failed = True
+                while failed and len(sep) > 0:
+                    try:
+                        ranges = lstranges(strmap(int, value, sep.pop()))
+                        failed = False
+                    except:
+                        pass
+                if failed:
+                    print(value)
+                    raise ValueError("Could not parse the atomic/orbital ranges")
+
                 # we have only a subset of the orbitals
                 orbs = []
                 no = 0
@@ -998,6 +1017,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     print('Input atoms:')
                     print(value)
                     raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
+
                 ns._Ovalue = value
                 ns._Orng = pivot
                 # Correct the scale to the correct number of orbitals
@@ -1005,7 +1025,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 #print('Updating Orng and Oscale: ',ns._Orng, ns._Oscale)
 
         p.add_argument('--atom', '-a', type=str, action=AtomRange,
-                       help='Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed.')
+                       help='Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters. ')
 
         class DataT(argparse.Action):
 
@@ -1072,10 +1092,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
             @dec_collect_action
             @dec_ensure_E
             def __call__(self, parser, ns, value, option_string=None):
-
                 if not value is None:
                     # we are storing the spectral DOS
-                    e = value[0]
+                    e = value
                     if e not in ns._tbt.elecs:
                         if e.strip() == '.':
                             for e in ns._tbt.elecs:
@@ -1097,6 +1116,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     else:
                         data = ns._tbt.DOS(avg=ns._krng)
                     ns._data_header.append('DOS[1/eV]')
+
                 # Grab out the orbital ranges
                 if not ns._Orng is None:
                     orig_shape = data.shape
@@ -1112,7 +1132,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         p.add_argument('--dos', '-D', nargs='?', metavar='ELEC',
                        action=DataDOS, default=None,
                        help="""Store the DOS. If no electrode is specified, it is Green function, else it is the spectral function.""")
-        p.add_argument('--ados', '-AD', nargs=1, metavar='ELEC',
+        p.add_argument('--ados', '-AD', metavar='ELEC',
                        action=DataDOS, default=None,
                        help="""Store the spectral DOS, same as --dos but requires an electrode-argument.""")
 
@@ -1195,8 +1215,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     else:
                         print("  " + string + ": false")
 
-                
-                # Retrieve the device atoms 
+                # Retrieve the device atoms
                 dev_rng = list2range(tbt.a_dev)
                 print("Device information:")
                 print("  - number of kpoints: " + str(tbt.nkpt))
@@ -1229,10 +1248,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
                         if elec2 == elec: continue
                         truefalse(elec2 + '.T' in gelec.variables, "- transmission, -> " + elec2)
 
-
         p.add_argument('--info', action=Info, nargs=0,
                        help='Print out what information is contained in the TBT.nc file.')
-                
+
         class Out(argparse.Action):
 
             @dec_run_actions
@@ -1308,7 +1326,6 @@ add_sile('TBT.nc', tbtncSileSiesta)
 # Add spin-dependent files
 add_sile('TBT_DN.nc', tbtncSileSiesta)
 add_sile('TBT_UP.nc', tbtncSileSiesta)
-
 
 
 class phtncSileSiesta(tbtncSileSiesta):
