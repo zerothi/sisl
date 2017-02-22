@@ -19,10 +19,12 @@ import os.path as osp
 
 CLASSIFIERS = """\
 Development Status :: 5 - Production/Stable
+Intended Audience :: Developers
 Intended Audience :: Science/Research
 License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
-Programming Language :: Python :: 2
-Programming Language :: Python :: 3
+Programming Language :: Python :: 2.7
+Programming Language :: Python :: 3.5
+Programming Language :: Python :: 3.6
 Topic :: Software Development
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Physics
