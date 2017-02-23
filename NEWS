@@ -1,4 +1,7 @@
-0.8.X
+0.8.2
+=====
+
+0.8.1
 =====
 
 - Fix a bug when reading non-Gamma TSHS files, now the
