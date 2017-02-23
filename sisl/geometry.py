@@ -1779,23 +1779,35 @@ class Geometry(SuperCellChild):
 
     def a2isc(self, a):
         """
-        Returns the super-cell index for a specific atom
+        Returns the super-cell index for a specific/list atom
 
-        Hence one can easily figure out the supercell
+        Returns a vector of 3 numbers with integers.
         """
         a = ensure_array(a)
         idx = np.where(a < self.na * np.arange(1, self.n_s + 1))[0][0]
         return self.sc.sc_off[idx, :]
 
+    def a2sc(self, a):
+        """
+        Returns the super-cell offset for a specific atom
+        """
+        return self.sc_offset(self.sc.sc_off[self.a2isc(a), :])
+
     def o2isc(self, o):
         """
         Returns the super-cell index for a specific orbital.
 
-        Hence one can easily figure out the supercell
+        Returns a vector of 3 numbers with integers.
         """
         o = ensure_array(o)
         idx = np.where(o < self.no * np.arange(1, self.n_s + 1))[0][0]
         return self.sc.sc_off[idx, :]
+
+    def o2sc(self, o):
+        """
+        Returns the super-cell offset for a specific orbital.
+        """
+        return self.sc_offset(self.sc.sc_off[self.o2isc(o), :])
 
     @classmethod
     def fromASE(cls, aseg):

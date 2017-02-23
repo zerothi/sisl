@@ -1,6 +1,9 @@
 0.8.X
 =====
 
+- Fix a bug when reading non-Gamma TSHS files, now the
+  supercell information is correct.
+
 - tbtncSileSiesta now distinguishes between:
     electronic_temperature [K]
   and

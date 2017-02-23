@@ -33,14 +33,14 @@ class TSHSSileSiesta(SileBinSIESTA):
 
         n_s = _siesta.read_tshs_sizes(self.file)[3]
         arr = _siesta.read_tshs_cell(self.file, n_s)
-        nsc = np.array(arr[0], np.int32)
-        cell = np.array(arr[1], np.float64)
+        nsc = np.array(arr[0].T, np.int32)
+        cell = np.array(arr[1].T, np.float64)
         cell.shape = (3, 3)
-        isc = np.array(arr[2], np.int32)
-        sc = np.array(arr[2], np.float64)
+        isc = np.array(arr[2].T, np.int32)
+        isc.shape = (-1, 3)
 
         SC = SuperCell(cell, nsc=nsc)
-        SC.sc_off = np.dot(sc.T, cell.T)
+        SC.sc_off = isc
         return SC
 
     def read_geom(self):
@@ -109,6 +109,7 @@ class TSHSSileSiesta(SileBinSIESTA):
 
         H._data._D = np.empty([nnz, spin+1], np.float64)
         for i in range(spin):
+            # this is because of the F-ordering
             H._data._D[:, i] = dH[:, i]
         H._data._D[:, spin] = dS[:]
 

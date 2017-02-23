@@ -196,8 +196,7 @@ class SuperCell(object):
         return self.__class__(cell, nsc=np.copy(self.nsc))
 
     def offset(self, isc=None):
-        """ Returns the supercell offset of the supercell index
-        """
+        """ Returns the supercell offset of the supercell index """
         if isc is None:
             return np.array([0, 0, 0], np.float64)
         return np.dot(isc, self.cell)
