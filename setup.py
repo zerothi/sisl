@@ -34,10 +34,10 @@ Operating System :: OS Independent
 
 MAJOR = 0
 MINOR = 8
-MICRO = 0
-ISRELEASED = False
+MICRO = 1
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION = "d21c2d9dc34e3cdd51c44772fbbd52a558db139a"
+GIT_REVISION = "8f843e12584399cdf7004504e94381f48fdb8d2c"
 
 # The MANIFEST should be updated (which it only is
 # if it does not exist...)
