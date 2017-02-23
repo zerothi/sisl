@@ -35,7 +35,7 @@ Operating System :: OS Independent
 MAJOR = 0
 MINOR = 8
 MICRO = 1
-ISRELEASED = True
+ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 GIT_REVISION = "8f843e12584399cdf7004504e94381f48fdb8d2c"
 
