@@ -23,6 +23,7 @@ matrix:
    
 
 install:
+  - conda install hdf4 libnetcdf
   - pip install coverage
   - python setup.py install
 
@@ -60,6 +61,5 @@ before_install:
 # Do actual package installations
   - conda info -a
   - echo "nose" >> requirements.txt
-  - conda install libnetcdf
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file requirements.txt
   - source activate test-environment
