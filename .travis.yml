@@ -41,8 +41,8 @@ addons:
   apt:
     packages: &common_packages
       - gfortran
-      - libhdf5-serial-dev 
-      - libnetcdf-dev
+#      - libhdf5-serial-dev 
+#      - libnetcdf-dev
       # Speedup builds, particularly when USE_CHROOT=1
       - eatmydata
 
@@ -60,5 +60,6 @@ before_install:
 # Do actual package installations
   - conda info -a
   - echo "nose" >> requirements.txt
+  - conda install libnetcdf
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file requirements.txt
   - source activate test-environment
