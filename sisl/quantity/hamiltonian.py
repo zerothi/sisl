@@ -191,7 +191,7 @@ class Hamiltonian(object):
             self._def_dim = -1
         self._data[key] = val
 
-        if not self.orthogonal:
+        if dd < 0 and not self.orthogonal:
             warnings.warn(('Hamiltonian specification of both H and S simultaneously is deprecated. '
                            'This functionality will be removed in a future release.'))
 
@@ -275,10 +275,18 @@ class Hamiltonian(object):
            for the all atoms within ``dR[0]`` of each atom.
         """
 
-        def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geom.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz)
-            for ix, p in zip(idx, param):
-                self[ia, ix] = p
+        if self.orthogonal:
+            def func(self, ia, idxs, idxs_xyz=None):
+                idx = self.geom.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz)
+                for ix, p in zip(idx, param):
+                    self[ia, ix] = p
+        else:
+            def func(self, ia, idxs, idxs_xyz=None):
+                idx = self.geom.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz)
+                for ix, p in zip(idx, param):
+                    self.H[ia, ix] = p[:-1]
+                    self.S[ia, ix] = p[-1]
+
         return func
 
     def construct(self, func, na_iR=1000, method='rand', eta=False):
@@ -674,8 +682,10 @@ class Hamiltonian(object):
                     o, ofp, ofm = sco2sco(self.geom, io, ham.geom, seps, axis)
                     if o is None:
                         continue
-                    ham[jo, o + ofp] = iH, S[jo, io]
-                    ham[o, jo + ofm] = iH, S[jo, io]
+                    ham.H[jo, o + ofp] = iH
+                    ham.S[jo, o + ofp] = S[jo, io]
+                    ham.H[o, jo + ofm] = iH
+                    ham.S[o, jo + ofm] = S[jo, io]
 
                 if np.any(sH.indices != sS.indices):
 
@@ -685,8 +695,10 @@ class Hamiltonian(object):
                         o, ofp, ofm = sco2sco(self.geom, io, ham.geom, seps, axis)
                         if o is None:
                             continue
-                        ham[jo, o + ofp] = H[jo, io], iS
-                        ham[o, jo + ofm] = H[jo, io], iS
+                        ham.H[jo, o + ofp] = H[jo, io]
+                        ham.S[jo, o + ofp] = iS
+                        ham.H[o, jo + ofm] = H[jo, io]
+                        ham.S[o, jo + ofm] = iS
 
         else:
             for jo in range(geom.no):

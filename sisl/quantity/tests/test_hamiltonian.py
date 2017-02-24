@@ -83,7 +83,11 @@ class TestHamiltonian(object):
 
         # delete before creating the same content
         self.HS.empty()
-        self.HS[0, 0] = 1., 1.
+        # THIS IS A CHECK FOR BACK_WARD COMPATIBILITY!
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            self.HS[0, 0] = 1., 1.
         assert_true(self.HS.H[0, 0] == 1.)
         assert_true(self.HS.S[0, 0] == 1.)
         self.HS.empty()
@@ -384,7 +388,8 @@ class TestHamiltonian(object):
         assert_true(self.H.nnz == 1)
         self.H.empty()
         assert_false(self.HS.finalized)
-        self.HS[0, 0] = 1., 1.
+        self.HS.H[0, 0] = 1.
+        self.HS.S[0, 0] = 1.
         self.HS.finalize()
         assert_true(self.HS.finalized)
         assert_true(self.HS.nnz == 1)
