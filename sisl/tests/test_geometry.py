@@ -44,6 +44,14 @@ class TestGeometry(object):
         assert_true(i == len(self.g))
         assert_true(self.g.no_s == 2 * len(self.g) * np.prod(self.g.sc.nsc))
 
+    def test_properties(self):
+        assert_true(2 == len(self.g))
+        assert_true(2 == self.g.na)
+        assert_true(3*3 == self.g.n_s)
+        assert_true(2*3*3 == self.g.na_s)
+        assert_true(2*2 == self.g.no)
+        assert_true(2*2*3*3 == self.g.no_s)
+
     def test_iter1(self):
         i = 0
         for ia in self.g:
@@ -199,7 +207,7 @@ class TestGeometry(object):
         assert_true(np.allclose(self.g[:, 1], t[:, 1]))
         assert_true(np.allclose(self.g[:, 2] + 1, t[:, 2]))
 
-    def test_iter(self):
+    def test_iter_block1(self):
         for i, iaaspec in enumerate(self.g.iter_species()):
             ia, a, spec = iaaspec
             assert_true(i == ia)
@@ -211,6 +219,36 @@ class TestGeometry(object):
             for ia in ias:
                 i += 1
         assert_true(i == len(self.g))
+
+    @attr('slow')
+    def test_iter_block2(self):
+        g = self.g.tile(30, 0).tile(30, 1)
+        i = 0
+        for ias, idx in g.iter_block():
+            i += len(ias)
+        assert_true(i == len(g))
+
+    def test_iter_shape1(self):
+        i = 0
+        for ias, idx in self.g.iter_block(method='sphere'):
+            i += len(ias)
+        assert_true(i == len(self.g))
+        i = 0
+        for ias, idx in self.g.iter_block(method='cube'):
+            i += len(ias)
+        assert_true(i == len(self.g))
+
+    @attr('slow')
+    def test_iter_shape2(self):
+        g = self.g.tile(30, 0).tile(30, 1)
+        i = 0
+        for ias, idx in g.iter_block(method='sphere'):
+            i += len(ias)
+        assert_true(i == len(g))
+        i = 0
+        for ias, idx in g.iter_block(method='cube'):
+            i += len(ias)
+        assert_true(i == len(g))
 
     def test_swap(self):
         s = self.g.swap(0, 1)

@@ -179,6 +179,12 @@ class Geometry(SuperCellChild):
         """ Returns the maximum orbital range of the atoms """
         return np.amax(self.atom.dR)
 
+    # Size of the system
+    @property
+    def na_s(self):
+        """ Number of supercell atoms """
+        return self.na * self.n_s
+
     @property
     def no_s(self):
         """ Number of supercell orbitals """
@@ -482,7 +488,8 @@ class Geometry(SuperCellChild):
             Possible values are:
              `rand`: a spherical object is constructed with a random center according 
                      to the internal atoms
-             `grid`: a grid object is constructed and rigorously looped
+             `sphere`: a spherical equispaced shape is constructed and looped
+             `cube`: a cube shape is constructed and looped
 
         Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that
         need searched.
