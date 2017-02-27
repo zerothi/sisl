@@ -47,5 +47,4 @@ class phtprojncSileSiesta(tbtprojncSileSiesta):
     """ PHtrans projection file object """
     _trans_type = 'PHT.Proj'
 
-add_sile('PHT.nc', phtncSileSiesta)
 add_sile('PHT.Proj.nc', phtprojncSileSiesta)
