@@ -14,7 +14,7 @@ from scipy.sparse import csr_matrix, lil_matrix
 from numbers import Integral
 
 # Import sile objects
-from .tbtrans import tbtbncSileSiesta
+from .tbtrans import tbtncSileSiesta
 from ..sile import *
 from sisl.utils import *
 
