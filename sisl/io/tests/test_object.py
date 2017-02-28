@@ -202,9 +202,8 @@ class TestObject(object):
         for sile in get_siles(['write_geom']):
             if not sile in read_geom:
                 continue
-            #if sile is CUBESile:
-            #    continue
-            if isinstance(sile, (HamiltonianSile, tbtncSileSiesta, dHncSileSiesta)):
+            # It is not yet an instance, hence issubclass
+            if issubclass(sile, (HamiltonianSile, tbtncSileSiesta, dHncSileSiesta)):
                 continue
             # Write
             s = sile(f, mode='w').write_geom(G)
