@@ -204,9 +204,7 @@ class TestObject(object):
                 continue
             #if sile is CUBESile:
             #    continue
-            if sile is HamiltonianSile:
-                continue
-            if sile in [tbtncSileSiesta, phtncSileSiesta, dHncSileSiesta]:
+            if isinstance(sile, (HamiltonianSile, tbtncSileSiesta, dHncSileSiesta)):
                 continue
             # Write
             s = sile(f, mode='w').write_geom(G)
