@@ -1792,6 +1792,8 @@ class Geometry(SuperCellChild):
         """
         ia = ensure_array(ia)
         idx = ia // self.na
+        if len(idx) == 1:
+            return self.sc.sc_off[idx[0], :]
         return self.sc.sc_off[idx, :]
 
     # This function is a bit weird, it returns a real array,
@@ -1811,6 +1813,8 @@ class Geometry(SuperCellChild):
         """
         io = ensure_array(io)
         idx = io // self.no
+        if len(idx) == 1:
+            return self.sc.sc_off[idx[0], :]
         return self.sc.sc_off[idx, :]
 
     def o2sc(self, o):
