@@ -197,6 +197,11 @@ class TestGeometry(object):
         assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(rot.xyz, self.g.xyz))
 
+    def test_rotation4(self):
+        rot = self.g.rotatea(180, only='xyz')
+        rot = self.g.rotateb(180, only='xyz')
+        rot = self.g.rotatec(180, only='xyz')
+
     def test_translate(self):
         t = self.g.translate([0, 0, 1])
         assert_true(np.allclose(self.g[:, 0], t[:, 0]))
@@ -300,10 +305,41 @@ class TestGeometry(object):
     def test_a2o(self):
         # There are 2 orbitals per C atom
         assert_equal(self.g.a2o(1), self.g.atom[0].orbs)
+        assert_true(np.all(self.g.a2o(1, True) == [2, 3]))
 
     def test_o2a(self):
         # There are 2 orbitals per C atom
         assert_equal(self.g.o2a(2), 1)
+
+    def test_2uc(self):
+        # functions for any-thing to UC
+        assert_equal(self.g.sc2uc(2), 0)
+        assert_true(np.all(self.g.sc2uc([2, 3]) == [0, 1]))
+        assert_equal(self.g.asc2uc(2), 0)
+        assert_true(np.all(self.g.asc2uc([2, 3]) == [0, 1]))
+        assert_equal(self.g.osc2uc(4), 0)
+        assert_equal(self.g.osc2uc(5), 1)
+        assert_true(np.all(self.g.osc2uc([4, 5]) == [0, 1]))
+
+    def test_2sc(self):
+        # functions for any-thing to SC
+        c = self.g.cell
+
+        # check indices
+        assert_true(np.all(self.g.a2isc([1, 2]) == [[0,  0, 0],
+                                                    [-1, -1, 0]]))
+        assert_true(np.all(self.g.a2isc(2) == [-1, -1, 0]))
+        assert_true(np.allclose(self.g.a2sc(2), -c[0, :] - c[1, :]))
+        assert_true(np.all(self.g.o2isc([1, 5]) == [[0,  0, 0],
+                                                    [-1, -1, 0]]))
+        assert_true(np.all(self.g.o2isc(5) == [-1, -1, 0]))
+        assert_true(np.allclose(self.g.o2sc(5), -c[0, :] - c[1, :]))
+
+        # Check off-sets
+        assert_true(np.allclose(self.g.a2sc([1, 2]), [[0.,  0., 0.],
+                                                      -c[0, :] - c[1, :]]))
+        assert_true(np.allclose(self.g.o2sc([1, 5]), [[0.,  0., 0.],
+                                                      -c[0, :] - c[1, :]]))
 
     def test_reverse(self):
         rev = self.g.reverse()

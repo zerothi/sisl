@@ -48,3 +48,19 @@ class TestQuaternion(object):
         rx = self.qx.radians
         ry = self.qy.radians
         assert_equal(rx, ry)
+
+    def test_op1(self):
+        rx = -self.qx
+        assert_equal(-rx, self.qx)
+
+        rxy = self.qx + self.qy
+        self.qx += self.qy
+        assert_equal(rxy, self.qx)
+        self.qx -= self.qy
+        assert_equal(-rx, self.qx)
+
+        rxy = self.qx - self.qy
+        self.qx -= self.qy
+        assert_equal(rxy, self.qx)
+        self.qx += self.qy
+        assert_equal(-rx, self.qx)

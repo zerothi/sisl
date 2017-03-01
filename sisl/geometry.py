@@ -1784,37 +1784,40 @@ class Geometry(SuperCellChild):
             return np.unique(orbs % self.no)
         return orbs % self.no
 
-    def a2isc(self, a):
+    def a2isc(self, ia):
         """
         Returns the super-cell index for a specific/list atom
 
         Returns a vector of 3 numbers with integers.
         """
-        a = ensure_array(a)
-        idx = np.where(a < self.na * np.arange(1, self.n_s + 1))[0][0]
+        ia = ensure_array(ia)
+        idx = ia // self.na
         return self.sc.sc_off[idx, :]
 
+    # This function is a bit weird, it returns a real array,
+    # however, there should be no ambiguity as it corresponds to th
+    # offset and "what else" is there to query?
     def a2sc(self, a):
         """
         Returns the super-cell offset for a specific atom
         """
-        return self.sc_offset(self.sc.sc_off[self.a2isc(a), :])
+        return self.sc.offset(self.a2isc(a))
 
-    def o2isc(self, o):
+    def o2isc(self, io):
         """
         Returns the super-cell index for a specific orbital.
 
         Returns a vector of 3 numbers with integers.
         """
-        o = ensure_array(o)
-        idx = np.where(o < self.no * np.arange(1, self.n_s + 1))[0][0]
+        io = ensure_array(io)
+        idx = io // self.no
         return self.sc.sc_off[idx, :]
 
     def o2sc(self, o):
         """
         Returns the super-cell offset for a specific orbital.
         """
-        return self.sc_offset(self.sc.sc_off[self.o2isc(o), :])
+        return self.sc.offset(self.o2isc(o))
 
     @classmethod
     def fromASE(cls, aseg):
