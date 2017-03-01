@@ -76,6 +76,17 @@ class TestSparseCSR(object):
         assert_equal(sp[0, 1], 1)
         assert_equal(sp[0, 2], 2)
 
+    def test_extend1(self):
+        csr = SparseCSR((10, 10), nnzpr=1, dtype=np.int32)
+        csr[1, 1] = 3
+        csr[2, 2] = 4
+        csr[0, 1] = 1
+        csr[0, 2] = 2
+        assert_equal(csr[0, 1], 1)
+        assert_equal(csr[0, 2], 2)
+        assert_equal(csr[1, 1], 3)
+        assert_equal(csr[2, 2], 4)
+
     def test_create1(self):
         self.s1[0, [1, 2, 3]] = 1
         assert_equal(self.s1.nnz, 3)

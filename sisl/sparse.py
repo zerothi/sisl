@@ -410,9 +410,6 @@ class SparseCSR(object):
 
             # ...expand size of the sparsity pattern...
 
-            # First shift all pointers above this row
-            ptr[i + 1:] += ns
-
             # Insert pointer of new data
             iptr = ptr[i] + ncol[i]
 
@@ -429,6 +426,10 @@ class SparseCSR(object):
             # individually...
             self._D = insert(self._D, ptr[i+1],
                              zeros([ns, self.shape[2]], self._D.dtype), axis=0)
+
+            # Lastly, shift all pointers above this row to account for the
+            # new non-zero elements
+            ptr[i + 1:] += ns
 
         if new_n > 0:
             # Ensure that we write the new elements to the matrix...

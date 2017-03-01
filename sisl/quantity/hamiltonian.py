@@ -87,8 +87,10 @@ class Hamiltonian(object):
         # select max(5,len(nc) * 4)
         if nnzpr is None:
             nnzpr = self.geom.close(0)
-            if nnzpr is None: nnzpr = [0, 0]
-            nnzpr = max(5, len(nnzpr) * 4)
+            if nnzpr is None:
+                nnzpr = 8
+            else:
+                nnzpr = max(5, len(nnzpr) * 4)
 
         self._orthogonal = orthogonal
 
