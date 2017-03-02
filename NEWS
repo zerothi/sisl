@@ -3,6 +3,41 @@
 
 - Initial template for TBT.Proj files for sdata processing
 
+- Geometry:
+
+  * Geometry[..] is now calling axyz if `..` is pure indices, if it is
+    a `slice` it does not work with super-cell indices
+
+  * Added `rij` functions to the Geometry for retrieving distances
+    between two atoms (`orij` for orbitals)
+
+  * Renamed iter_linear to iter
+
+  * Added argument to iter_species for only looping certain atomic indices
+
+  * Added iter_orbitals which returns an iterator with atomic _and_ associated
+    orbitals.
+    The orbitals are with respect to the local orbital indices on the given atom
+
+    ```
+    >>> for ia, io in Geometry.iter_orbitals():
+    >>>     Geometry.atom[ia].R[io]
+    ```
+
+    works, while
+
+    ```
+    >>> for ia, io in Geometry.iter_orbitals(local=False):
+    >>>     Geometry.atom[ia].R[io]
+    ```
+    
+    does not work because `io` is globally defined.
+
+  * Changed argument name for `coords`, `atom` instead of the
+    old `idx`.
+
+  * Renamed function `axyzsc` to `axyz`
+
 0.8.1
 =====
 

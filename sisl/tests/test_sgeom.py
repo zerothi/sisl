@@ -133,4 +133,4 @@ class TestGeometry(object):
     def test_swap(self):
         s = self.sg_g(argv='--swap 0 1'.split())
         for i in [0, 1, 2]:
-            assert_true(np.allclose(self.g[::-1, i], s[:, i]))
+            assert_true(np.allclose(self.g.xyz[::-1, i], s.xyz[:, i]))

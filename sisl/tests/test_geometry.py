@@ -36,7 +36,7 @@ class TestGeometry(object):
         print(self.g)
         assert_true(len(self.g) == 2)
         assert_true(len(self.g.xyz) == 2)
-        assert_true(np.allclose(self.g[0, :], np.zeros([3])))
+        assert_true(np.allclose(self.g[0], np.zeros([3])))
 
         i = 0
         for ia in self.g:
@@ -60,7 +60,25 @@ class TestGeometry(object):
 
     def test_iter2(self):
         for ia in self.g:
-            assert_true(np.allclose(self.g[ia, :], self.g.xyz[ia, :]))
+            assert_true(np.allclose(self.g[ia], self.g.xyz[ia, :]))
+
+    def test_iter3(self):
+        i = 0
+        for ia, io in self.g.iter_orbitals(0):
+            assert_equal(ia, 0)
+            assert_true(io < 2)
+            i += 1
+        for ia, io in self.g.iter_orbitals(1):
+            assert_equal(ia, 1)
+            assert_true(io < 2)
+            i += 1
+        assert_true(i == 4)
+        i = 0
+        for ia, io in self.g.iter_orbitals():
+            assert_true(ia in [0, 1])
+            assert_true(io < 2)
+            i += 1
+        assert_true(i == 4)
 
     def test_tile1(self):
         cell = np.copy(self.g.sc.cell)
@@ -115,6 +133,22 @@ class TestGeometry(object):
     def test_fxyz(self):
         assert_true(np.allclose(self.g.fxyz, [[0,    0, 0],
                                               [1./3, 1./3, 0]]))
+
+    def test_axyz(self):
+        assert_true(np.allclose(self.g[:], self.g.xyz[:]))
+        assert_true(np.allclose(self.g[0], self.g.xyz[0, :]))
+        assert_true(np.allclose(self.g[2], self.g.axyz(2)))
+        isc = self.g.a2isc(2)
+        off = self.g.sc.offset(isc)
+        assert_true(np.allclose(self.g.xyz[0] + off, self.g.axyz(2)))
+
+    def test_rij1(self):
+        assert_true(np.allclose(self.g.rij(0, 1), 1.42))
+        assert_true(np.allclose(self.g.rij(0, [0, 1]), [0., 1.42]))
+
+    def test_orij1(self):
+        assert_true(np.allclose(self.g.orij(0, 2), 1.42))
+        assert_true(np.allclose(self.g.orij(0, [0, 2]), [0., 1.42]))
 
     def test_cut(self):
         assert_true(len(self.g.cut(1, 1)) == 2)
@@ -204,13 +238,13 @@ class TestGeometry(object):
 
     def test_translate(self):
         t = self.g.translate([0, 0, 1])
-        assert_true(np.allclose(self.g[:, 0], t[:, 0]))
-        assert_true(np.allclose(self.g[:, 1], t[:, 1]))
-        assert_true(np.allclose(self.g[:, 2] + 1, t[:, 2]))
+        assert_true(np.allclose(self.g.xyz[:, 0], t.xyz[:, 0]))
+        assert_true(np.allclose(self.g.xyz[:, 1], t.xyz[:, 1]))
+        assert_true(np.allclose(self.g.xyz[:, 2] + 1, t.xyz[:, 2]))
         t = self.g.move([0, 0, 1])
-        assert_true(np.allclose(self.g[:, 0], t[:, 0]))
-        assert_true(np.allclose(self.g[:, 1], t[:, 1]))
-        assert_true(np.allclose(self.g[:, 2] + 1, t[:, 2]))
+        assert_true(np.allclose(self.g.xyz[:, 0], t.xyz[:, 0]))
+        assert_true(np.allclose(self.g.xyz[:, 1], t.xyz[:, 1]))
+        assert_true(np.allclose(self.g.xyz[:, 2] + 1, t.xyz[:, 2]))
 
     def test_iter_block1(self):
         for i, iaaspec in enumerate(self.g.iter_species()):
@@ -258,7 +292,7 @@ class TestGeometry(object):
     def test_swap(self):
         s = self.g.swap(0, 1)
         for i in [0, 1, 2]:
-            assert_true(np.allclose(self.g[::-1, i], s[:, i]))
+            assert_true(np.allclose(self.g.xyz[::-1, i], s.xyz[:, i]))
 
     def test_append1(self):
         for axis in [0, 1, 2]:
@@ -281,14 +315,14 @@ class TestGeometry(object):
 
     def test_swapaxes(self):
         s = self.g.swapaxes(0, 1)
-        assert_true(np.allclose(self.g[:, 0], s[:, 1]))
-        assert_true(np.allclose(self.g[:, 1], s[:, 0]))
+        assert_true(np.allclose(self.g.xyz[:, 0], s.xyz[:, 1]))
+        assert_true(np.allclose(self.g.xyz[:, 1], s.xyz[:, 0]))
         assert_true(np.allclose(self.g.cell[0, :], s.cell[1, :]))
         assert_true(np.allclose(self.g.cell[1, :], s.cell[0, :]))
 
     def test_center(self):
         one = self.g.center(atom=[0])
-        assert_true(np.allclose(self.g[0, :], one))
+        assert_true(np.allclose(self.g[0], one))
         al = self.g.center()
         assert_true(np.allclose(np.mean(self.g.xyz, axis=0), al))
 
@@ -394,8 +428,8 @@ class TestGeometry(object):
     def test_close_within2(self):
         g = self.g.repeat(6, 0).repeat(6, 1)
         for ia in g:
-            shapes = [Sphere(0.1, g[ia, :]),
-                      Sphere(1.5, g[ia, :])]
+            shapes = [Sphere(0.1, g[ia]),
+                      Sphere(1.5, g[ia])]
             i = g.close(ia, dR=(0.1, 1.5))
             ii = g.within(shapes)
             assert_true(np.all(i[0] == ii[0]))
@@ -405,8 +439,8 @@ class TestGeometry(object):
         g = self.g.repeat(6, 0).repeat(6, 1)
         args = {'ret_coord': True, 'ret_dist': True}
         for ia in g:
-            shapes = [Sphere(0.1, g[ia, :]),
-                      Sphere(1.5, g[ia, :])]
+            shapes = [Sphere(0.1, g[ia]),
+                      Sphere(1.5, g[ia])]
             i, xa, d = g.close(ia, dR=(0.1, 1.5), **args)
             ii, xai, di = g.within(shapes, **args)
             for j in [0, 1]:
