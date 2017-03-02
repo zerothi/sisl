@@ -130,6 +130,21 @@ class TestSparseCSR(object):
         self.s1.empty()
         assert_false(self.s1.finalized)
 
+    def test_iterator1(self):
+        self.s1[0, [1, 2, 3]] = 1
+        self.s1[2, [1, 2, 4]] = 1.
+        e = [[1, 2, 3], [], [1, 2, 4]]
+        for i, j in self.s1:
+            assert_true(j in e[i])
+
+        for i, j in self.s1.iter_nnz(0):
+            assert_equal(i, 0)
+            assert_true(j in e[0])
+        for i, j in self.s1.iter_nnz(2):
+            assert_equal(i, 2)
+            assert_true(j in e[2])
+
+
     def test_delitem1(self):
         self.s1[0, [1, 2, 3]] = 1
         assert_equal(len(self.s1), 3)

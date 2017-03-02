@@ -18,12 +18,16 @@ from numpy import array, asarray, empty, zeros, arange
 from numpy import intersect1d, setdiff1d
 from numpy import argsort, unique, in1d
 
-from sisl._help import ensure_array, get_dtype
+from sisl._help import ensure_array, get_dtype, is_python3
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
 
 __all__ = ['SparseCSR']
+
+
+if not is_python3:
+    range = xrange
 
 
 class SparseCSR(object):
@@ -343,6 +347,48 @@ class SparseCSR(object):
         # Signal that we indeed have finalized the data
         self._finalized = True
 
+    def iter_nnz(self, i=None):
+        """ Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements
+
+        An iterator returning the current row index and the corresponding column index.
+
+        >>> for i, j in self:
+
+        In the above case `i` and `j` are elements such that
+
+        >>> self[i,j] 
+
+        returns the non-zero element of the sparse matrix.
+
+        Parameters
+        ----------
+        i : `int=<all>`, `array_like`
+           only loop on the given row(s) default to all rows
+        """
+        if i is None:
+            # loop on rows
+            for i in range(self.shape[0]):
+                n = self.ncol[i]
+                # quick step if no elements exists
+                if n == 0:
+                    continue
+                ptr = self.ptr[i]
+                for j in self.col[ptr:ptr+n]:
+                    yield i, j
+        else:
+            i = ensure_array(i)
+            for ii in i:
+                n = self.ncol[ii]
+                # quick step if no elements exists
+                if n == 0:
+                    continue
+                ptr = self.ptr[ii]
+                for j in self.col[ptr:ptr+n]:
+                    yield ii, j
+
+    # Define default iterator
+    __iter__ = iter_nnz
+
     def _extend(self, i, j):
         """ Extends the sparsity pattern to retain elements `j` in row `i`
 
@@ -647,7 +693,7 @@ class SparseCSR(object):
         # Create sparse matrix (with only one entry per
         # row, we overwrite it immediately afterward)
         if dims is None:
-            dims = range(self.dim)
+            dims = list(range(self.dim))
 
         # Create correct input
         dim = len(dims)

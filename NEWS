@@ -38,6 +38,16 @@
 
   * Renamed function `axyzsc` to `axyz`
 
+- SparseCSR:
+
+  * Added `iter_nnz(i=None)` which loops on sparse elements connecting to
+    row `i` (or default to loop on all rows and columns).
+
+- Hamiltonian:
+
+  * Added `iter_nnz` which is the `Hamiltonian` equivalent of `SparseCSR.iter_nnz`.
+    It enables explicit looping on atomic couplings, or orbital couplings.
+
 0.8.1
 =====
 

@@ -140,6 +140,28 @@ class TestHamiltonian(object):
         # nn == 3 * len(H)
         assert_true(H.nnz == len(H) * 4)
         del H
+        
+    def test_iter1(self):
+        self.HS.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
+        nnz = 0
+        for io, jo in self.HS.iter_nnz():
+            nnz = nnz + 1
+        assert_equal(nnz, self.HS.nnz)
+        nnz = 0
+        for io, jo in self.HS.iter_nnz(0):
+            nnz = nnz + 1
+        # 3 nn and 1 onsite
+        assert_equal(nnz, 4)
+        self.HS.empty()
+
+    def test_iter2(self):
+        self.HS.H[0, 0] = 1.
+        nnz = 0
+        for io, jo in self.HS.iter_nnz():
+            nnz = nnz + 1
+        assert_equal(nnz, self.HS.nnz)
+        assert_equal(nnz, 1)
+        self.HS.empty()
 
     @raises(ValueError)
     def test_construct_raise(self):

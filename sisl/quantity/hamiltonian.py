@@ -226,9 +226,9 @@ class Hamiltonian(object):
 
     S = property(__get_S, __set_S)
 
-    # Create iterations module
-    def iter_linear(self):
-        """ Iterations of the orbital space, two indices from loop
+    # Create iterations on entire set of orbitals
+    def iter(self, local=False):
+        """ Iterations of the orbital space in the geometry, two indices from loop
 
         An iterator returning the current atomic index and the corresponding
         orbital index.
@@ -238,13 +238,67 @@ class Hamiltonian(object):
         In the above case `io` always belongs to atom `ia` and `ia` may be
         repeated according to the number of orbitals associated with
         the atom `ia`.
-        """
-        for ia in self.geom:
-            ia1, ia2 = self.geom.lasto[ia], self.geom.lasto[ia + 1]
-            for io in range(ia1, ia2):
-                yield ia, io
 
-    __iter__ = iter_linear
+        Parameters
+        ----------
+        local : `bool=False`
+           whether the orbital index is the global index, or the local index relative to 
+           the atom it resides on.
+        """
+        for ia, io in self.geom.iter_orbitals(local=local):
+            yield ia, io
+
+    __iter__ = iter
+    
+    # Create iterations on the non-zero elements
+    def iter_nnz(self, atom=None, orbital=None):
+        """ Iterations of the non-zero elements, returns a tuple of orbital and coupling orbital
+
+        An iterator returning the current orbital index and the corresponding
+        connected orbital where a non-zero is defined
+
+        >>> for io, jo in self.iter_nnz():
+
+        In the above case `io` and `jo` are orbitals such that:
+        
+        >>> self.H[io,jo] 
+        
+        returns the non-zero element of the Hamiltonian.
+
+        One may reduce the iterated space by either requesting a specific set of atoms,
+        or orbitals, _not_ both simultaneously.
+        
+        Examples
+        --------
+        Looping only on one or more atoms:
+
+        >>> for io, jo in self.iter_nnz(atom=[2, 3]):
+        >>>     # loop on all orbitals on atom 3 and 4 (0 indexing)
+
+        >>> for io, jo in self.iter_nnz(orbital=[2, 3]):
+        >>>     # loop on orbitals 3 and 4 (0 indexing)
+
+
+        Parameters
+        ----------
+        atom : ``int``/``array_like``
+           iterate on couplings to the set of atoms (not compatible with `orbital`)
+        orbital : ``int``/``array_like``
+           iterate on couplings to the set of orbitals (not compatible with `atom`)
+        """
+        if atom is not None and orbital is not None:
+            raise ValueError("iter_nnz: both atom and orbital has been passed, only one allowed.")
+
+        if atom is not None:
+            orbs = self.geom.a2o(atom, all=True)
+            for io, jo in self._data.iter_nnz(orbs):
+                yield io, jo
+        elif orbital is not None:
+            for io, jo in self._data.iter_nnz(orbital):
+                yield io, jo
+        else:
+            for io, jo in self._data:
+                yield io, jo
 
     def create_construct(self, dR, param):
         """ Returns a simple function for passing to the `construct` function.
@@ -355,7 +409,7 @@ class Hamiltonian(object):
             # Get all the indexed atoms...
             # This speeds up the searching for
             # coordinates...
-            idxs_xyz = self.geom.coords(idx=idxs)
+            idxs_xyz = self.geom.coords(atom=idxs)
 
             # Loop the atoms inside
             for ia in ias:
