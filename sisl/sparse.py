@@ -7,6 +7,7 @@ import warnings
 from numbers import Integral, Real, Complex
 
 from scipy.sparse import isspmatrix
+from scipy.sparse import csr_matrix
 
 # Other functions may be retrieved from np.
 import numpy as np
@@ -23,7 +24,7 @@ from sisl._help import ensure_array, get_dtype, is_python3
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
 
-__all__ = ['SparseCSR']
+__all__ = ['SparseCSR', 'iter_csr']
 
 
 if not is_python3:
@@ -727,9 +728,10 @@ class SparseCSR(object):
         ----------
         dim: int
            the dimension of the data to create the sparse matrix
+        **kwargs:
+           arguments passed to the ``scipy.sparse.csr_matrix`` routine
         """
         self.finalize()
-        from scipy.sparse import csr_matrix
 
         shape = self.shape[:2]
         return csr_matrix((self._D[:, dim], self.col, self.ptr), shape=shape, **kwargs)
@@ -874,3 +876,11 @@ class SparseCSR(object):
         # Now register all things
         for r in routines:
             pass
+
+
+def iter_csr(csr):
+    """ Iterator for iterating the elements in a sparse csr_matrix """
+    for r in range(csr.shape[0]):
+        for ind in range(csr.indptr[r], csr.indptr[r+1]):
+            yield r, csr.indices[ind], csr.data[ind]
+

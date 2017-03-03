@@ -402,6 +402,23 @@ class TestHamiltonian(object):
             j = range(i*4, i*4+3)
             H[0, j] = (i, i*2)
 
+    def test_non_collinear1(self):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        H = Hamiltonian(g, dtype=np.float64, spin=4)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H[i, i, 0] = 0.
+            H[i, i, 1] = 0.
+            H[i, i, 2] = 0.1
+            H[i, i, 3] = 0.1
+            if i > 0:
+                H[i, i-1, 0] = 1.
+                H[i, i-1, 1] = 1.
+            if i < 9:
+                H[i, i+1, 0] = 1.
+                H[i, i+1, 1] = 1.
+        assert_true(len(H.eigh()) == len(H) * 2)
+
     def test_finalized(self):
         assert_false(self.H.finalized)
         self.H.H[0, 0] = 1.

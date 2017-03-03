@@ -8,10 +8,11 @@ from numbers import Integral
 
 import numpy as np
 import scipy.linalg as sli
+from scipy.sparse import csr_matrix
 import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype, is_python3
-from sisl.sparse import SparseCSR
+from sisl.sparse import SparseCSR, iter_csr
 
 __all__ = ['Hamiltonian', 'TightBinding']
 
@@ -106,16 +107,34 @@ class Hamiltonian(object):
             self.UP = 0
             self.DOWN = 0
             self.S_idx = 1
+            self.Hk = self._Hk_unpolarized
+            self.Sk = self._Sk
         elif spin == 2:
             self.UP = 0
             self.DOWN = 1
             self.S_idx = 2
-        else:
-            raise ValueError("Currently the Hamiltonian has only been implemented with up to collinear spin.")
+            self.Hk = self._Hk_polarized
+            self.Sk = self._Sk
+        elif spin == 4:
+            self.Hk = self._Hk_non_collinear
+            self.Sk = self._Sk_non_collinear
+        elif spin == 8:
+            self.Hk = self._Hk_spin_orbit
+            self.Sk = self._Sk_non_collinear
+            raise ValueError("Currently the Hamiltonian has only been implemented with up to non-collinear spin.")
 
         if orthogonal:
             # There is no overlap matrix
             self.S_idx = -1
+            def diagonal_Sk(self, k, dtype=None):
+                """ For an orthogonal case we always return the identity matrix """
+                if dtype is None:
+                    dtype = np.float64
+                no = self.no
+                S = csr_matrix((no, no), dtype=dtype)
+                S.setdiag(1.)
+                return S
+            self.Sk = diagonal_Sk
 
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
@@ -464,83 +483,191 @@ class Hamiltonian(object):
         """ Returns number of orbitals as used when the object was created """
         return self._data.nr
 
-    def tocsr(self, index):
+    def tocsr(self, index, isc=None):
         """ Return a ``scipy.sparse.csr_matrix`` from the specified index
+
+        Parameters
+        ----------
+        index : ``int``
+           the index in the sparse matrix (for non-orthogonal cases the last
+           dimension is the overlap matrix)
+        isc : ``int``, `None`
+           the supercell index (or all)
         """
+        if isc is not None:
+            raise NotImplementedError("Requesting sub-Hamiltonian has not been implemented yet")
         return self._data.tocsr(index)
 
-    def Hk(self, k=(0, 0, 0), spin=0):
+    def _Hk_unpolarized(self, k=(0, 0, 0), dtype=None):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
         ----------
-        k: float*3
+        k: ``array_like``, `[0,0,0]`
            k-point 
-        spin: int, 0
-           the spin-index of the Hamiltonian
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
         """
-        # Create csr sparse formats.
-        # We import here as the user might not want to
-        # rely on this feature.
-        from scipy.sparse import csr_matrix
+        return self._Hk_polarized(k, dtype=dtype)
 
+    def _Hk_polarized(self, k=(0, 0, 0), spin=0, dtype=None):
+        """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k` for a polarized calculation
+
+        Parameters
+        ----------
+        k: ``array_like``, `[0,0,0]`
+           k-point 
+        spin: ``int``, `0`
+           the spin-index of the Hamiltonian
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
+        """
+        if dtype is None:
+            dtype = np.complex128
+
+        exp = np.exp
         dot = np.dot
 
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
+
+        if not np.allclose(k, 0.):
+            if np.dtype(dtype).kind != 'c':
+                raise ValueError("Hamiltonian setup at k different from Gamma requires a complex matrix")
 
         # Setup the Hamiltonian for this k-point
         Hf = self.tocsr(spin)
 
         no = self.no
         s = (no, no)
-        H = csr_matrix(s, dtype=np.complex128)
+        H = csr_matrix(s, dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
         for si in range(self.sc.n_s):
             isc = self.sc_off[si, :]
-            phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))
+            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
             H += Hf[:, si * no:(si + 1) * no] * phase
 
         del Hf
 
         return H
-
-    def Sk(self, k=(0, 0, 0), spin=0):
-        """ Return the overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
+    
+    def _Hk_non_collinear(self, k=(0, 0, 0), dtype=None):
+        """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k` for a non-collinear
+        Hamiltonian.
 
         Parameters
         ----------
-        k: float*3
+        k: ``array_like``, `[0,0,0]`
            k-point 
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
         """
-        if self.orthogonal:
-            return None
+        if dtype is None:
+            dtype = np.complex128
 
-        # Create csr sparse formats.
-        # We import here as the user might not want to
-        # rely on this feature.
-        from scipy.sparse import csr_matrix
+        if np.dtype(dtype).kind != 'c':
+            raise ValueError("Non-collinear Hamiltonian setup requires a complex matrix")
 
+        exp = np.exp
         dot = np.dot
 
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
 
-        # Setup the Hamiltonian for this k-point
-        Sf = self.tocsr(self.S_idx)
-
-        no = self.no
+        no = self.no * 2
         s = (no, no)
-        S = csr_matrix(s, dtype=np.complex128)
+        H = csr_matrix(s, dtype=dtype)
+
+        # get back-dimension of the intrinsic sparse matrix
+        no = self.no
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
         for si in range(self.sc.n_s):
             isc = self.sc_off[si, :]
-            phase = np.exp(-1j * dot(kr, dot(self.cell, isc)))
-            S += Sf[:, si * no:(si + 1) * no] * phase
+            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
+            
+            # diagonal elements
+            Hf1 = self.tocsr(0)[:, si*no:(si+1)*no] * phase
+            for i, j, h in iter_csr(Hf1):
+                H[i*2, j*2] += h
+            Hf1 = self.tocsr(1)[:, si*no:(si+1)*no] * phase
+            for i, j, h in iter_csr(Hf1):
+                H[1+i*2, 1+j*2] += h
+                
+            # off-diagonal elements
+            Hf1 = self.tocsr(2)[:, si*no:(si+1)*no]
+            Hf2 = self.tocsr(3)[:, si*no:(si+1)*no]
+            # We expect Hf1 and Hf2 to be aligned equivalently!
+            # TODO CHECK
+            for i, j, hr in iter_csr(Hf1):
+                # get value for the imaginary part
+                hi = Hf2[i,j]
+                H[i*2,1+j*2] += (hr - 1j * hi) * phase
+                H[1+i*2,j*2] += (hr + 1j * hi) * phase
+
+        del Hf1, Hf2
+
+        return H
+
+    def _Sk(self, k=(0, 0, 0), dtype=None):
+        """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
+
+        Parameters
+        ----------
+        k: ``array_like``, `[0,0,0]`
+           k-point 
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
+        """
+        # we forward it to Hk_polarized (same thing for S)
+        return self._Hk_polarized(k, spin=self.S_idx, dtype=dtype)
+
+    def _Sk_non_collinear(self, k=(0, 0, 0), dtype=None):
+        """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
+
+        Parameters
+        ----------
+        k: ``array_like``, `[0,0,0]`
+           k-point 
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
+        """
+        if dtype is None:
+            dtype = np.complex128
+
+        if not np.allclose(k, 0.):
+            if np.dtype(dtype).kind != 'c':
+                raise ValueError("Hamiltonian setup at k different from Gamma requires a complex matrix")
+
+        exp = np.exp
+        dot = np.dot
+
+        k = np.asarray(k, np.float64)
+        k.shape = (-1,)
+
+        # Get the overlap matrix
+        Sf = self.tocsr(self.S_idx)
+
+        no = self.no * 2
+        s = (no, no)
+        S = csr_matrix(s, dtype=dtype)
+
+        # Get back dimensionality of the intrinsic orbitals
+        no = self.no
+
+        # Get the reciprocal lattice vectors dotted with k
+        kr = dot(self.rcell, k)
+        for si in range(self.sc.n_s):
+            isc = self.sc_off[si, :]
+            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
+            # Setup the overlap for this k-point
+            sf = Sf[:, si*no:(si+1)*no]
+            for i, j, s in iter_csr(sf):
+                S[  i*2,   j*2] += s
+                S[1+i*2, 1+j*2] += s
 
         del Sf
 
@@ -551,7 +678,7 @@ class Hamiltonian(object):
             overwrite_a=True, overwrite_b=True,
             *args,
             **kwargs):
-        """ Returns the eigenvalues of the tight-binding model
+        """ Returns the eigenvalues of the Hamiltonian
 
         Setup the Hamiltonian and overlap matrix with respect to
         the given k-point, then reduce the space to the specified atoms
@@ -587,7 +714,7 @@ class Hamiltonian(object):
             atoms=None, eigvals_only=True,
             *args,
             **kwargs):
-        """ Returns the eigenvalues of the tight-binding model
+        """ Returns the eigenvalues of the Hamiltonian
 
         Setup the Hamiltonian and overlap matrix with respect to
         the given k-point, then reduce the space to the specified atoms

@@ -24,7 +24,8 @@ class DynamicalMatrix(Hamiltonian):
     _E_order = 2
 
     D = property(Hamiltonian._get_H, Hamiltonian._set_H)
-    Dk = Hamiltonian.Hk
+    # The dynamical matrix is equivalent to the unpolarized case
+    Dk = Hamiltonian._Hk_unpolarized
 
     def correct_Newton(self):
         """
@@ -42,8 +43,8 @@ class DynamicalMatrix(Hamiltonian):
         d_uc = lil_matrix((self.no, self.no), dtype=d_sc.dtype)
 
         # Convert SC to UC
-        for j, i, d in zip(d_sc.row, d_sc.col, d_sc.data):
-            d_uc[j, i % self.no] += d
+        for j, i, d in zip(d_sc.row, d_sc.col % self.no, d_sc.data):
+            d_uc[j, i] += d
         del d_sc
         d_uc = d_uc.tocsc()
 

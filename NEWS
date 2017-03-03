@@ -43,10 +43,15 @@
   * Added `iter_nnz(i=None)` which loops on sparse elements connecting to
     row `i` (or default to loop on all rows and columns).
 
+  * `iter_csr` to iterate through a `scipy.sparse.csr_matrix`, not for the
+    `SparseCSR`, though.
+
 - Hamiltonian:
 
   * Added `iter_nnz` which is the `Hamiltonian` equivalent of `SparseCSR.iter_nnz`.
     It enables explicit looping on atomic couplings, or orbital couplings.
+
+  * Preliminary implementation of the non-collinear spin-case. Needs testing.
 
 0.8.1
 =====
