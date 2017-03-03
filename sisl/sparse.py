@@ -883,4 +883,3 @@ def iter_csr(csr):
     for r in range(csr.shape[0]):
         for ind in range(csr.indptr[r], csr.indptr[r+1]):
             yield r, csr.indices[ind], csr.data[ind]
-

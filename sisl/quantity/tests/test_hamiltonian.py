@@ -140,7 +140,7 @@ class TestHamiltonian(object):
         # nn == 3 * len(H)
         assert_true(H.nnz == len(H) * 4)
         del H
-        
+
     def test_iter1(self):
         self.HS.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
         nnz = 0

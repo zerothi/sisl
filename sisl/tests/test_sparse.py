@@ -144,7 +144,6 @@ class TestSparseCSR(object):
             assert_equal(i, 2)
             assert_true(j in e[2])
 
-
     def test_delitem1(self):
         self.s1[0, [1, 2, 3]] = 1
         assert_equal(len(self.s1), 3)

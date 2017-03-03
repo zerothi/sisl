@@ -126,6 +126,7 @@ class Hamiltonian(object):
         if orthogonal:
             # There is no overlap matrix
             self.S_idx = -1
+
             def diagonal_Sk(self, k, dtype=None):
                 """ For an orthogonal case we always return the identity matrix """
                 if dtype is None:
@@ -268,7 +269,7 @@ class Hamiltonian(object):
             yield ia, io
 
     __iter__ = iter
-    
+
     # Create iterations on the non-zero elements
     def iter_nnz(self, atom=None, orbital=None):
         """ Iterations of the non-zero elements, returns a tuple of orbital and coupling orbital
@@ -279,14 +280,14 @@ class Hamiltonian(object):
         >>> for io, jo in self.iter_nnz():
 
         In the above case `io` and `jo` are orbitals such that:
-        
+
         >>> self.H[io,jo] 
-        
+
         returns the non-zero element of the Hamiltonian.
 
         One may reduce the iterated space by either requesting a specific set of atoms,
         or orbitals, _not_ both simultaneously.
-        
+
         Examples
         --------
         Looping only on one or more atoms:
@@ -552,7 +553,7 @@ class Hamiltonian(object):
         del Hf
 
         return H
-    
+
     def _Hk_non_collinear(self, k=(0, 0, 0), dtype=None):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k` for a non-collinear
         Hamiltonian.
@@ -588,7 +589,7 @@ class Hamiltonian(object):
         for si in range(self.sc.n_s):
             isc = self.sc_off[si, :]
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
-            
+
             # diagonal elements
             Hf1 = self.tocsr(0)[:, si*no:(si+1)*no] * phase
             for i, j, h in iter_csr(Hf1):
@@ -596,7 +597,7 @@ class Hamiltonian(object):
             Hf1 = self.tocsr(1)[:, si*no:(si+1)*no] * phase
             for i, j, h in iter_csr(Hf1):
                 H[1+i*2, 1+j*2] += h
-                
+
             # off-diagonal elements
             Hf1 = self.tocsr(2)[:, si*no:(si+1)*no]
             Hf2 = self.tocsr(3)[:, si*no:(si+1)*no]
@@ -604,9 +605,9 @@ class Hamiltonian(object):
             # TODO CHECK
             for i, j, hr in iter_csr(Hf1):
                 # get value for the imaginary part
-                hi = Hf2[i,j]
-                H[i*2,1+j*2] += (hr - 1j * hi) * phase
-                H[1+i*2,j*2] += (hr + 1j * hi) * phase
+                hi = Hf2[i, j]
+                H[i*2, 1+j*2] += (hr - 1j * hi) * phase
+                H[1+i*2, j*2] += (hr + 1j * hi) * phase
 
         del Hf1, Hf2
 
@@ -666,7 +667,7 @@ class Hamiltonian(object):
             # Setup the overlap for this k-point
             sf = Sf[:, si*no:(si+1)*no]
             for i, j, s in iter_csr(sf):
-                S[  i*2,   j*2] += s
+                S[i*2,   j*2] += s
                 S[1+i*2, 1+j*2] += s
 
         del Sf

@@ -209,7 +209,7 @@ class Geometry(SuperCellChild):
         """ Return distance between atom ``ia`` and ``ja``, atoms are expected to be in super-cell indices
 
         Returns the distance between two atoms:
-        
+
         .. math ::
             r\\_{ij} = |r\\_j - r\\_i|
 
@@ -227,14 +227,14 @@ class Geometry(SuperCellChild):
         xi = self[ia]
         xj = self[ja]
         if isinstance(ja, Integral):
-            return np.sqrt( np.sum( (xj - xi) ** 2.))
-        return np.sqrt( np.sum( (xj - xi[None, :]) ** 2., axis=1))
+            return np.sqrt(np.sum((xj - xi) ** 2.))
+        return np.sqrt(np.sum((xj - xi[None, :]) ** 2., axis=1))
 
     def orij(self, io, jo):
         """ Return distance between orbital ``io`` and ``jo``, orbitals are expected to be in super-cell indices
 
         Returns the distance between two orbitals:
-        
+
         .. math ::
             r\\_{ij} = |r\\_j - r\\_i|
 
@@ -313,7 +313,7 @@ class Geometry(SuperCellChild):
             yield ia
 
     __iter__ = iter
-    
+
     def iter_species(self, atom=None):
         """
         Returns an iterator over all atoms and species as a tuple in this geometry
@@ -334,7 +334,6 @@ class Geometry(SuperCellChild):
         else:
             for ia in ensure_array(atom):
                 yield ia, self.atom[ia], self.atom.specie[ia]
-
 
     def iter_orbitals(self, atom=None, local=True):
         """
@@ -1214,7 +1213,7 @@ class Geometry(SuperCellChild):
 
     def axyz(self, atom):
         """ Return the atomic coordinates in the supercell of a given atom.
-       
+
         Parameters
         ----------
         atom : ``int``,``array_like``
