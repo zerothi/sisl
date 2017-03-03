@@ -10,7 +10,6 @@ from sisl import Geometry, Atom, SuperCell, Hamiltonian
 
 
 class TestHamiltonian(object):
-    # Base test class for MaskedArrays.
 
     def setUp(self):
         bond = 1.42

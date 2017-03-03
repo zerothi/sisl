@@ -5,7 +5,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from sisl.quantity import Hamiltonian
+from sisl.quantity.hamiltonian import Hamiltonian
 from sisl._help import is_python3
 
 __all__ = ['DynamicalMatrix']

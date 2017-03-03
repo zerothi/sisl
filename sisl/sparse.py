@@ -7,9 +7,10 @@ import warnings
 from numbers import Integral, Real, Complex
 
 from scipy.sparse import isspmatrix
-from scipy.sparse import csr_matrix
+from scipy.sparse import coo_matrix, isspmatrix_coo
+from scipy.sparse import csr_matrix, isspmatrix_csr
+from scipy.sparse import csc_matrix, isspmatrix_csc
 
-# Other functions may be retrieved from np.
 import numpy as np
 
 # To speed up the extension algorithm we limit
@@ -24,11 +25,12 @@ from sisl._help import ensure_array, get_dtype, is_python3
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
 
-__all__ = ['SparseCSR', 'iter_csr']
+__all__ = ['SparseCSR', 'iter_spmatrix']
 
 
 if not is_python3:
     range = xrange
+    from itertools import izip as zip
 
 
 class SparseCSR(object):
@@ -878,8 +880,35 @@ class SparseCSR(object):
             pass
 
 
-def iter_csr(csr):
-    """ Iterator for iterating the elements in a sparse csr_matrix """
-    for r in range(csr.shape[0]):
-        for ind in range(csr.indptr[r], csr.indptr[r+1]):
-            yield r, csr.indices[ind], csr.data[ind]
+# Local variables for checking the sparse matrix format
+def iter_spmatrix(matrix):
+    """ Iterator for iterating the elements in a ``scipy.sparse.*_matrix`` 
+
+    This will always return:
+    >>> (row, column, matrix-element)
+
+    Parameters
+    ----------
+    matrix : ``scipy.sparse.sp_matrix``
+      the sparse matrix to iterate non-zero elements
+    """
+    if isspmatrix_coo(matrix):
+        for r, c, m in zip(matrix.row, matrix.col, matrix.data):
+            yield r, c, m
+
+    elif isspmatrix_csc(matrix):
+        for c in range(matrix.shape[1]):
+            for ind in range(matrix.indptr[c], matrix.indptr[c+1]):
+                yield matrix.indices[ind], c, matrix.data[ind]
+
+    elif isspmatrix_csr(matrix):
+        for r in range(matrix.shape[0]):
+            for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
+                yield r, matrix.indices[ind], matrix.data[ind]
+
+    elif isinstance(matrix, SparseCSR):
+        for r, c in matrix:
+            yield r, c, matrix[r, c]
+
+    else:
+        raise NotImplementedError("The iterator for this sparse matrix has not been implemented")

@@ -12,7 +12,7 @@ from scipy.sparse import csr_matrix
 import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype, is_python3
-from sisl.sparse import SparseCSR, iter_csr
+from sisl.sparse import SparseCSR, iter_spmatrix
 
 __all__ = ['Hamiltonian', 'TightBinding']
 
@@ -141,11 +141,11 @@ class Hamiltonian(object):
         self._def_dim = -1
 
     def empty(self, keep=False):
-        """ See `SparseCSR.empty` for specifics """
+        """ See `SparseCSR.empty` for details """
         self._data.empty(keep)
 
     def copy(self, dtype=None):
-        """ Return a copy of the `Hamiltonian` object """
+        """ Return a copy of the ``Hamiltonian`` object """
         if dtype is None:
             dtype = self.dtype
         H = self.__class__(self.geom, orthogonal=self.orthogonal,
@@ -187,7 +187,7 @@ class Hamiltonian(object):
     def __getattr__(self, attr):
         """ Returns the attributes from the underlying geometry
 
-        Any attribute not found in the tight-binding model will
+        Any attribute not found in the Hamiltonian class will
         be looked up in the underlying geometry.
         """
         return getattr(self.geom, attr)
@@ -592,10 +592,10 @@ class Hamiltonian(object):
 
             # diagonal elements
             Hf1 = self.tocsr(0)[:, si*no:(si+1)*no] * phase
-            for i, j, h in iter_csr(Hf1):
+            for i, j, h in iter_spmatrix(Hf1):
                 H[i*2, j*2] += h
             Hf1 = self.tocsr(1)[:, si*no:(si+1)*no] * phase
-            for i, j, h in iter_csr(Hf1):
+            for i, j, h in iter_spmatrix(Hf1):
                 H[1+i*2, 1+j*2] += h
 
             # off-diagonal elements
@@ -603,7 +603,7 @@ class Hamiltonian(object):
             Hf2 = self.tocsr(3)[:, si*no:(si+1)*no]
             # We expect Hf1 and Hf2 to be aligned equivalently!
             # TODO CHECK
-            for i, j, hr in iter_csr(Hf1):
+            for i, j, hr in iter_spmatrix(Hf1):
                 # get value for the imaginary part
                 hi = Hf2[i, j]
                 H[i*2, 1+j*2] += (hr - 1j * hi) * phase
@@ -666,7 +666,7 @@ class Hamiltonian(object):
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
             # Setup the overlap for this k-point
             sf = Sf[:, si*no:(si+1)*no]
-            for i, j, s in iter_csr(sf):
+            for i, j, s in iter_spmatrix(sf):
                 S[i*2,   j*2] += s
                 S[1+i*2, 1+j*2] += s
 

@@ -24,7 +24,7 @@ from .grid import *
 
 from .io import *
 
-# Hamiltonian and phonon structures
+# Hamiltonian etc.
 from .quantity import *
 
 
