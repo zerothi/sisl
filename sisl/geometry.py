@@ -190,6 +190,11 @@ class Geometry(SuperCellChild):
         """ Number of supercell orbitals """
         return self.no * self.n_s
 
+    @property
+    def firsto(self):
+        """ The first orbital on the corresponding atom """
+        return self.lasto[:self.na]
+
     def __len__(self):
         """ Return number of atoms in this geometry """
         return self.na
@@ -224,8 +229,8 @@ class Geometry(SuperCellChild):
             if len(ia) > 1:
                 raise ValueError('rij: ia *must* be an integer, please correct input')
             ia = ia[0]
-        xi = self[ia]
-        xj = self[ja]
+        xi = self.axyz(ia)
+        xj = self.axyz(ja)
         if isinstance(ja, Integral):
             return np.sqrt(np.sum((xj - xi) ** 2.))
         return np.sqrt(np.sum((xj - xi[None, :]) ** 2., axis=1))
@@ -247,10 +252,6 @@ class Geometry(SuperCellChild):
         """
         i = self.o2a(io)
         j = self.o2a(jo)
-        if isinstance(io, Integral):
-            i = i[0]
-        if isinstance(jo, Integral):
-            j = j[0]
         return self.rij(i, j)
 
     @staticmethod
@@ -1841,9 +1842,10 @@ class Geometry(SuperCellChild):
              `False`, return only the first orbital corresponding to the atom,
              `True`, returns list of the full atom
         """
-        ia = ensure_array(ia)
         if not all:
-            return self.lasto[ia % self.na] + (ia // self.na) * self.no
+            ia = np.asarray(ia)
+            return self.lasto[ia % self.na] + \
+                (ia // self.na) * self.no
         ia = np.asarray(ia, np.int32)
         ob = self.a2o(ia)
         oe = self.a2o(ia + 1)
@@ -1871,14 +1873,14 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        io: `list` of `int`
+        io: ``array_like`` of `int`
              List of indices to return the atoms for
         """
-        io = ensure_array(io)
-        rlasto = self.lasto[::-1]
-        iio = np.asarray([io % self.no]).flatten()
-        a = [self.na - np.argmax(rlasto <= i) for i in iio]
-        return np.asarray(a) + (io // self.no) * self.na
+        if isinstance(io, Integral):
+            return np.argmax(io % self.no < self.firsto) + 1 + (io // self.no ) * self.na
+        iio = np.asarray(io) % self.no
+        a = np.array([np.argmax(i < self.firsto) for i in iio], np.int32) + 1
+        return a + (io // self.no) * self.na
 
     def sc2uc(self, atom, uniq=False):
         """ Returns atom from super-cell indices to unit-cell indices, possibly removing dublicates """
