@@ -156,9 +156,10 @@ class Hamiltonian(object):
 
     ######### Definitions of overrides ############
     @property
-    def geom(self):
+    def geometry(self):
         """ Return the attached geometry """
         return self._geom
+    geom = geometry
 
     @property
     def spin(self):
@@ -429,7 +430,7 @@ class Hamiltonian(object):
             # Get all the indexed atoms...
             # This speeds up the searching for
             # coordinates...
-            idxs_xyz = self.geom.coords(atom=idxs)
+            idxs_xyz = self.geom[idxs, :]
 
             # Loop the atoms inside
             for ia in ias:

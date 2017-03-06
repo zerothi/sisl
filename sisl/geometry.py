@@ -108,9 +108,9 @@ class Geometry(SuperCellChild):
         # Get total number of orbitals
         self.no = np.sum(orbs)
 
-        # Create local lasto
-        lasto = np.append(np.array(0, np.int32), orbs)
-        self.lasto = np.cumsum(lasto)
+        # Create local first
+        firsto = np.append(np.array(0, np.int32), orbs)
+        self.firsto = np.cumsum(firsto)
 
         self.__init_sc(sc)
 
@@ -186,29 +186,56 @@ class Geometry(SuperCellChild):
         return self.na * self.n_s
 
     @property
+    def atoms(self):
+        """ Number of atoms """
+        return self.na
+
+    @property
     def no_s(self):
         """ Number of supercell orbitals """
         return self.no * self.n_s
 
     @property
-    def firsto(self):
+    def orbitalss(self):
+        """ Number of orbitals """
+        return self.no
+
+    @property
+    def lasto(self):
         """ The first orbital on the corresponding atom """
-        return self.lasto[:self.na]
+        return self.firsto[1:] - 1
 
     def __len__(self):
         """ Return number of atoms in this geometry """
         return self.na
 
-    def __getitem__(self, key):
+    def __getitem__(self, atom):
         """ Returns geometry coordinates (allows supercell indices)"""
-        if isinstance(key, slice):
-            return self.xyz[key]
-        return self.axyz(key)
+        if isinstance(atom, Integral):
+            return self.axyz(atom)
+        
+        elif isinstance(atom, slice):
+            if atom is None:
+                return self.axyz()
+            if atom.start is None or atom.stop is None:
+                atom = atom.indices(self.na)
+            else:
+                atom = atom.indices(self.na_s)
+            return self.axyz(np.arange(atom[0], atom[1], atom[2]))
+        
+        elif atom is None:
+            return self.axyz()
+        
+        elif isinstance(atom[0], slice):
+            return self[atom[0]][:, atom[1]]
+        
+        elif atom[0] is None:
+            return self.axyz()[:, atom[1]]
 
-    @property
-    def fxyz(self):
-        """ Returns geometry coordinates in fractional coordinates """
-        return np.linalg.solve(self.cell.T, self.xyz.T).T
+        elif isinstance(atom, tuple):
+            return self.axyz(atom[0])[:, atom[1]]
+
+        return self.axyz(atom)
 
     def rij(self, ia, ja):
         """ Return distance between atom ``ia`` and ``ja``, atoms are expected to be in super-cell indices
@@ -319,10 +346,10 @@ class Geometry(SuperCellChild):
         """
         Returns an iterator over all atoms and species as a tuple in this geometry
 
-         >>> for ia, a, idx_specie in self.iter_species():
+        >>> for ia, a, idx_specie in self.iter_species():
 
         with ``ia`` being the atomic index, ``a`` the `Atom` object, `idx_specie`
-        is the index of the species
+        is the index of the specie
 
         Parameters
         ----------
@@ -355,8 +382,8 @@ class Geometry(SuperCellChild):
         """
         if atom is None:
             for ia in self:
-                ia1 = self.lasto[ia]
-                ia2 = self.lasto[ia + 1]
+                ia1 = self.firsto[ia]
+                ia2 = self.lasto[ia] + 1
                 for io in range(ia2 - ia1):
                     if local:
                         yield ia, io
@@ -364,8 +391,8 @@ class Geometry(SuperCellChild):
                         yield ia, io + ia1
         else:
             for ia in ensure_array(atom):
-                ia1 = self.lasto[ia]
-                ia2 = self.lasto[ia + 1]
+                ia1 = self.firsto[ia]
+                ia2 = self.lasto[ia] + 1
                 for io in range(ia2 - ia1):
                     if local:
                         yield ia, io
@@ -462,6 +489,7 @@ class Geometry(SuperCellChild):
 
         if np.any(not_passed):
             raise ValueError('Error on iterations. Not all atoms has been visited.')
+
 
     def iter_block_shape(self, shape=None, iR=10, atom=None):
         """ Perform the *grid* block-iteration by looping a grid """
@@ -713,9 +741,10 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        reps  : number of tiles (repetitions)
-        axis  : direction of tiling
-                  0, 1, 2 according to the cell-direction
+        reps  : ``int``
+           number of tiles (repetitions)
+        axis  : ``int``
+           direction of tiling, 0, 1, 2 according to the cell-direction
 
         Examples
         --------
@@ -768,14 +797,14 @@ class Geometry(SuperCellChild):
         The expansion of the atoms are basically performed using this
         algorithm:
 
-         >>> ja = 0
-         >>> for ia in range(self.na):
-         >>>     for id,r in args:
-         >>>        for i in range(r):
-         >>>           ja = ia + cell[id,:] * i
+        >>> ja = 0
+        >>> for ia in range(self.na):
+        >>>     for id,r in args:
+        >>>        for i in range(r):
+        >>>           ja = ia + cell[id,:] * i
 
         This method allows to utilise Bloch's theorem when creating
-        tight-binding parameter sets for TBtrans.
+        Hamiltonian parameter sets for TBtrans.
 
         For geometries with a single atom this routine returns the same as
         `tile`.
@@ -785,9 +814,10 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        reps  : number of repetitions
-        axis  : direction of repetition
-                  0, 1, 2 according to the cell-direction
+        reps  : ``int``
+           number of repetitions
+        axis  : ``int``
+           direction of repetition, 0, 1, 2 according to the cell-direction
 
         Examples
         --------
@@ -833,12 +863,15 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atom=self.atom.repeat(reps), sc=sc)
 
     def rotatea(self, angle, only='abc+xyz', radians=False):
+        """ Rotate around first lattice vector, see ``rotate`` """
         return self.rotate(angle, self.cell[0, :], only=only, radians=radians)
 
     def rotateb(self, angle, only='abc+xyz', radians=False):
+        """ Rotate around second lattice vector, see ``rotate`` """
         return self.rotate(angle, self.cell[1, :], only=only, radians=radians)
 
     def rotatec(self, angle, only='abc+xyz', radians=False):
+        """ Rotate around third lattice vector, see ``rotate`` """
         return self.rotate(angle, self.cell[2, :], only=only, radians=radians)
 
     def rotate(self, angle, v, only='abc+xyz', radians=False):
@@ -853,9 +886,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        angle : float
+        angle : ``float``
              the angle in radians of which the geometry should be rotated
-        v     : array_like [3]
+        v     : ``array_like`` [3]
              the vector around the rotation is going to happen
              v = [1,0,0] will rotate in the ``yz`` plane
         only  : ('abc+xyz'), str, optional
@@ -997,10 +1030,9 @@ class Geometry(SuperCellChild):
 
         The basic algorithm is this:
 
-         >>> oxa = other.xyz + self.cell[axis,:][None,:]
-         >>> self.xyz = np.append(self.xyz,oxa)
-         >>> self.cell[axis,:] += other.cell[axis,:]
-         >>> self.lasto = np.append(self.lasto,other.lasto)
+        >>> oxa = other.xyz + self.cell[axis,:][None,:]
+        >>> self.xyz = np.append(self.xyz,oxa)
+        >>> self.cell[axis,:] += other.cell[axis,:]
 
         NOTE: The cell appended is only in the axis that
         is appended, which means that the other cell directions
@@ -1036,10 +1068,9 @@ class Geometry(SuperCellChild):
 
         The basic algorithm is this:
 
-         >>> oxa = other.xyz
-         >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:])
-         >>> self.cell[axis,:] += other.cell[axis,:]
-         >>> self.lasto = np.append(other.lasto, self.lasto)
+        >>> oxa = other.xyz
+        >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:])
+        >>> self.cell[axis,:] += other.cell[axis,:]
 
         NOTE: The cell prepended is only in the axis that
         is prependend, which means that the other cell directions
@@ -1070,11 +1101,11 @@ class Geometry(SuperCellChild):
     def add(self, other):
         """
         Adds atoms (as is) from the ``other`` geometry.
-        This will not alter the residing cell vectors.
+        This will not alter the cell vectors.
 
         Parameters
         ----------
-        other : `Geometry`
+        other : ``Geometry``
             Other geometry class which is added
         """
         xyz = np.append(self.xyz, other.xyz, axis=0)
@@ -1178,53 +1209,54 @@ class Geometry(SuperCellChild):
         atoms = self.atom.insert(atom, geom.atom)
         return self.__class__(xyz, atom=atoms, sc=self.sc.copy())
 
-    def coords(self, isc=None, atom=None):
-        """
-        Returns the coordinates of a given super-cell index
+    @property
+    def fxyz(self):
+        """ Returns geometry coordinates in fractional coordinates """
+        return np.linalg.solve(self.cell.T, self.xyz.T).T
 
-        Parameters
-        ----------
-        isc   : ``array_like``, ``[0,0,0]``
-            Returns the atomic coordinates shifted according to the integer
-            parts of the cell.
-        atom   : ``int``/``array_like``
-            Only return the coordinates of these indices
+    def axyz(self, atom=None, isc=None):
+        """ Return the atomic coordinates in the supercell of a given atom.
+
+        The `Geometry[...]` slicing is calling this function with appropriate options.
 
         Examples
         --------
 
-        >>> geom = Geometry(cell=[[1.,0,0],[0,1.,0.],[0,0,1.]],xyz=[[0,0,0],[0.5,0,0]])
-        >>> print(geom.coords(isc=[1,0,0])
+        >>> geom = Geometry(cell=1., xyz=[[0,0,0],[0.5,0,0]])
+        >>> print(geom.axyz(isc=[1,0,0])
         [[ 1.   0.   0. ]
          [ 1.5  0.   0. ]]
 
-        """
-        offset = self.sc.offset(isc)
-        if len(offset.shape) == 1:
-            if atom is None:
-                return self.xyz + offset[None, :]
-            else:
-                return self.xyz[atom, :] + offset[None, :]
-        # It is now the responsibility of the user that the
-        # shapes match
-        if atom is None:
-            return self.xyz + offset
-        else:
-            return self.xyz[atom, :] + offset[:, :]
-
-    def axyz(self, atom):
-        """ Return the atomic coordinates in the supercell of a given atom.
-
         Parameters
         ----------
-        atom : ``int``,``array_like``
+        atom : ``int``, ``array_like``
           atom(s) from which we should return the coordinates, the atomic indices
           may be in supercell format.
+        isc   : ``array_like``, ``[0,0,0]``
+            Returns the atomic coordinates shifted according to the integer
+            parts of the cell.
         """
-        ret = self.coords(self.a2isc(atom), self.sc2uc(atom))
+        if atom is None and isc is None:
+            return self.xyz
+
+        # If only atom has been specified
+        if isc is None:
+            # get offsets from atomic indices (note that this will be per atom)
+            print(atom)
+            isc = self.a2isc(atom)
+            offset = self.sc.offset(isc)
+            return self.xyz[np.asarray(atom) % self.na, :] + offset
+
+        elif atom is None:
+            offset = self.sc.offset(isc)
+            return self.xyz[:, :] + offset[None, :]
+
+        # Neither of atom, or isc are `None`, we add the offset to all coordinates
+        offset = self.sc.offset(isc)
         if isinstance(atom, Integral):
-            return ret[0]
-        return ret
+            return self.axyz(atom) + offset
+        
+        return self.axyz(atom) + offset[None, :]
 
     def within_sc(self, shapes, isc=None,
                   idx=None, idx_xyz=None,
@@ -1283,7 +1315,8 @@ class Geometry(SuperCellChild):
 
         # Get atomic coordinate in principal cell
         if idx_xyz is None:
-            xa = self.coords(atom=idx)[:, :] + soff[None, :]
+            print(idx)
+            xa = self[idx, :] + soff[None, :]
         else:
             # For extremely large systems re-using the
             # idx_xyz is faster than indexing
@@ -1454,7 +1487,8 @@ class Geometry(SuperCellChild):
 
         # Get atomic coordinate in principal cell
         if idx_xyz is None:
-            dxa = self.coords(atom=idx) + foff[None, :]
+            print(idx, len(self))
+            dxa = self[idx, :] + foff[None, :]
         else:
             # For extremely large systems re-using the
             # idx_xyz is faster than indexing
@@ -1844,8 +1878,7 @@ class Geometry(SuperCellChild):
         """
         if not all:
             ia = np.asarray(ia)
-            return self.lasto[ia % self.na] + \
-                (ia // self.na) * self.no
+            return self.firsto[ia % self.na] + (ia // self.na) * self.no
         ia = np.asarray(ia, np.int32)
         ob = self.a2o(ia)
         oe = self.a2o(ia + 1)
@@ -1877,10 +1910,10 @@ class Geometry(SuperCellChild):
              List of indices to return the atoms for
         """
         if isinstance(io, Integral):
-            return np.argmax(io % self.no < self.firsto) + 1 + (io // self.no ) * self.na
+            return np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na
         iio = np.asarray(io) % self.no
-        a = np.array([np.argmax(i < self.firsto) for i in iio], np.int32) + 1
-        return a + (io // self.no) * self.na
+        a = np.array([np.argmax(i <= self.lasto) for i in iio], np.int32)
+        return a + (iio // self.no) * self.na
 
     def sc2uc(self, atom, uniq=False):
         """ Returns atom from super-cell indices to unit-cell indices, possibly removing dublicates """
@@ -2082,7 +2115,7 @@ class Geometry(SuperCellChild):
                     ns._geometry.set_nsc(nsc)
                     # Change the coordinates
                     for ia in ns._geometry:
-                        ns._geometry.xyz[ia, :] = ns._geometry.coords(isc=idx[ia, :], atom=ia)
+                        ns._geometry.xyz[ia, :] = ns._geometry.axyz(isc=idx[ia, :], atom=ia)
         p.add_argument(*opts('--unit-cell', '-uc'), choices=['translate', 'tr', 't', 'mod'],
                        action=MoveUnitCell,
                        help='Moves the coordinates into the unit-cell by translation or the mod-operator')
