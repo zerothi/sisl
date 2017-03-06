@@ -7,7 +7,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
-from sisl.sparse import SparseCSR
+from sisl.sparse import SparseCSR, iter_spmatrix
 
 
 @attr('sparse')
@@ -143,6 +143,17 @@ class TestSparseCSR(object):
         for i, j in self.s1.iter_nnz(2):
             assert_equal(i, 2)
             assert_true(j in e[2])
+
+    def test_iterator2(self):
+        e = [[1, 2, 3], [], [1, 2, 4]]
+        self.s1[0, [1, 2, 3]] = 1
+        self.s1[2, [1, 2, 4]] = 1.
+        a = self.s1.tocsr()
+        for func in ['csr', 'csc', 'coo', 'lil']:
+            a = getattr(a, 'to' + func)()
+            for r, c, d in iter_spmatrix(a):
+                assert_true(r in [0, 2])
+                assert_true(c in e[r])
 
     def test_delitem1(self):
         self.s1[0, [1, 2, 3]] = 1

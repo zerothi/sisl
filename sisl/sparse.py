@@ -10,6 +10,7 @@ from scipy.sparse import isspmatrix
 from scipy.sparse import coo_matrix, isspmatrix_coo
 from scipy.sparse import csr_matrix, isspmatrix_csr
 from scipy.sparse import csc_matrix, isspmatrix_csc
+from scipy.sparse import lil_matrix, isspmatrix_lil
 
 import numpy as np
 
@@ -905,6 +906,11 @@ def iter_spmatrix(matrix):
         for r in range(matrix.shape[0]):
             for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
                 yield r, matrix.indices[ind], matrix.data[ind]
+
+    elif isspmatrix_lil(matrix):
+        for r in range(matrix.shape[0]):
+            for c, d in zip(matrix.rows[r], matrix.data[r]):
+                yield r, c, d
 
     elif isinstance(matrix, SparseCSR):
         for r, c in matrix:
