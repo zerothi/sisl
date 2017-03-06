@@ -118,9 +118,11 @@ class Hamiltonian(object):
         elif spin == 4:
             self.Hk = self._Hk_non_collinear
             self.Sk = self._Sk_non_collinear
+            self.S_idx = 4
         elif spin == 8:
             self.Hk = self._Hk_spin_orbit
             self.Sk = self._Sk_non_collinear
+            self.S_idx = 8
             raise ValueError("Currently the Hamiltonian has only been implemented with up to non-collinear spin.")
 
         if orthogonal:
@@ -183,7 +185,7 @@ class Hamiltonian(object):
     def __repr__(self):
         """ Representation of the tight-binding model """
         s = self.geom.__repr__()
-        return s + '\nNumber of non-zero elements {0}'.format(self.nnz)
+        return s + '\nNumber of spin / non-zero elements {0} / {1} '.format(self.spin, self.nnz)
 
     def __getattr__(self, attr):
         """ Returns the attributes from the underlying geometry
