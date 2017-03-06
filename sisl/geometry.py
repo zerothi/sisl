@@ -213,7 +213,7 @@ class Geometry(SuperCellChild):
         """ Returns geometry coordinates (allows supercell indices)"""
         if isinstance(atom, Integral):
             return self.axyz(atom)
-        
+
         elif isinstance(atom, slice):
             if atom is None:
                 return self.axyz()
@@ -222,13 +222,13 @@ class Geometry(SuperCellChild):
             else:
                 atom = atom.indices(self.na_s)
             return self.axyz(np.arange(atom[0], atom[1], atom[2]))
-        
+
         elif atom is None:
             return self.axyz()
-        
+
         elif isinstance(atom[0], slice):
             return self[atom[0]][:, atom[1]]
-        
+
         elif atom[0] is None:
             return self.axyz()[:, atom[1]]
 
@@ -489,7 +489,6 @@ class Geometry(SuperCellChild):
 
         if np.any(not_passed):
             raise ValueError('Error on iterations. Not all atoms has been visited.')
-
 
     def iter_block_shape(self, shape=None, iR=10, atom=None):
         """ Perform the *grid* block-iteration by looping a grid """
@@ -1255,7 +1254,7 @@ class Geometry(SuperCellChild):
         offset = self.sc.offset(isc)
         if isinstance(atom, Integral):
             return self.axyz(atom) + offset
-        
+
         return self.axyz(atom) + offset[None, :]
 
     def within_sc(self, shapes, isc=None,

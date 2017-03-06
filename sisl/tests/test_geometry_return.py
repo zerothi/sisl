@@ -29,7 +29,6 @@ class TestGeometryReturn(object):
                                      [1., 0., 0.]], np.float64) * bond,
                            atom=C, sc=self.sc)
 
-
     def tearDown(self):
         del self.g
         del self.sc
@@ -72,13 +71,13 @@ class TestGeometryReturn(object):
         assert_true(d.shape == (2, 3))
         d = self.g[2:4]
         assert_true(d.shape == (2, 3))
-        
+
         d = self.g[2:4, 1]
         assert_true(d.shape == (2,))
         d = self.g[2:4, 1:3]
-        assert_true(d.shape == (2,2))
+        assert_true(d.shape == (2, 2))
         d = self.g[2:10:2, 1:3]
-        assert_true(d.shape == (4,2))
+        assert_true(d.shape == (4, 2))
         d = self.g[2:10:2, 2]
         assert_true(d.shape == (4,))
 
@@ -101,5 +100,4 @@ class TestGeometryReturn(object):
         d = self.g.axyz(1)
         assert_true(len(d) == 3)
         d = self.g.axyz([0, 1])
-        assert_true(d.shape == (2,3))
-        
+        assert_true(d.shape == (2, 3))

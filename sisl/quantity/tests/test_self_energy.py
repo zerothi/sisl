@@ -10,7 +10,6 @@ from sisl import Geometry, Atom, SuperCell, Hamiltonian
 from sisl import SelfEnergy, SemiInfinite
 
 
-
 class TestSelfEnergy(object):
 
     def setUp(self):
@@ -40,7 +39,7 @@ class TestSelfEnergy(object):
     @raises(ValueError)
     def test_error1(self):
         SE = SemiInfinite(self.H, '+C')
-        
+
     @raises(ValueError)
     def test_error2(self):
         SE = SemiInfinite(self.H, '-C')
@@ -56,4 +55,3 @@ class TestSelfEnergy(object):
 
     def test_sancho1(self):
         SE = SemiInfinite(self.H, '+A')
-        
