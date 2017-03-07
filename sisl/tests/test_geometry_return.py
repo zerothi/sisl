@@ -89,6 +89,19 @@ class TestGeometryReturn(object):
         assert_true(isinstance(d, Integral))
         d = self.g.a2o([0, 1])
         assert_true(len(d) == 2)
+        d = self.g2.a2o(1)
+        assert_true(isinstance(d, Integral))
+        d = self.g2.a2o([0, 1])
+        assert_true(len(d) == 2)
+
+        d = self.g.a2o(1, True)
+        assert_true(len(d) == 1)
+        d = self.g.a2o([0, 1], True)
+        assert_true(len(d) == 2)
+        d = self.g2.a2o(1, True)
+        assert_true(len(d) == 2)
+        d = self.g2.a2o([0, 1], True)
+        assert_true(len(d) == 4)
 
     def test_o2a(self):
         d = self.g.o2a(1)
