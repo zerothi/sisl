@@ -260,9 +260,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
         Parameter
         ---------
         atom : ``array_like``, ``int``
-           atomic indices (1-based)
+           atomic indices (0-based)
         """
-        orbs = self.geom.a2o(atom - 1, True)
+        orbs = self.geom.a2o(atom, True)
         return self.o2p(orbs)
 
     def o2p(self, orbital):
@@ -271,9 +271,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
         Parameter
         ---------
         orbital : ``array_like``, ``int``
-           orbital indices (1-based)
+           orbital indices (0-based)
         """
-        return np.where(np.in1d(self.pvt, orbital + 1))[0]
+        return np.where(np.in1d(self.pvt - 1, orbital))[0]
 
     @property
     def lasto(self):
@@ -439,7 +439,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         avg: ``bool`` (`True`)
            whether the returned DOS is k-averaged
         atom : ``array_like``, ``int`` (_all_)
-           only return for a given set of atoms
+           only return for a given set of atoms (Python based indices)
         """
         return self._DOS_atom_sum(self._value_E('DOS', avg=avg, E=E), atom) * eV2Ry
     DOS_Gf = DOS
@@ -456,7 +456,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         avg: ``bool`` (`True`)
            whether the returned DOS is k-averaged
         atom : ``array_like``, ``int`` (_all_)
-           only return for a given set of atoms
+           only return for a given set of atoms (Python based indices)
         """
         return self._DOS_atom_sum(self._value_E('ADOS', elec, avg=avg, E=E), atom) * eV2Ry
     DOS_A = ADOS
@@ -680,7 +680,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 J[ja, ia] += b
 
         # Rescale to correct magnitude
-        J *= .5
+        J *= 0.5
 
         # Now we have the bond-currents convert and sort
         mat = J.tocsr()
@@ -765,7 +765,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
         atom = self.a_dev - 1
 
         # Create local lasto
-        lasto = np.append([0], self.geom.lasto)
+        firsto = self.geom.firsto
+        lasto = self.geom.lasto
 
         # Faster function calls
         nabs = np.abs
@@ -777,7 +778,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             for ia, ja, i in itertools.product(atom, atom, no*np.arange(n_s)):
 
                 # we also include ia == ja (that should be zero anyway)
-                t = Jij[lasto[ia]:lasto[ia+1], i+lasto[ja]:i+lasto[ja+1]].data
+                t = Jij[firsto[ia]:lasto[ia]+1, i+firsto[ja]:i+lasto[ja]+1].data
 
                 # Calculate both the orbital and atomic normalized current
                 Jo[ia] += nsum(nabs(t))
@@ -787,7 +788,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             Ja = np.sqrt(Ja * Jo)
         else:
             for ia, ja, i in itertools.product(atom, atom, no*np.arange(n_s)):
-                t = Jij[lasto[ia]:lasto[ia+1], i+lasto[ja]:i+lasto[ja+1]].data
+                t = Jij[firsto[ia]:lasto[ia]+1, i+firsto[ja]:i+lasto[ja]+1].data
                 Ja[ia] += nabs(nsum(t))
         del t
 
@@ -854,7 +855,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
         atom = self.a_dev - 1
 
         # Create local lasto
-        lasto = np.append([0], geom.lasto)
+        firsto = geom.firsto
+        lasto = geom.lasto
         xyz = geom.xyz
 
         # Calculate individual bond-currents between atoms
@@ -863,7 +865,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 if ia == ja:
                     # If we are on the same atom there is no direction
                     continue
-                t = Jij[lasto[ia]:lasto[ia+1], lasto[ja]:lasto[ja+1]].data.sum()
+                t = Jij[firsto[ia]:lasto[ia]+1, firsto[ja]:lasto[ja]+1].data.sum()
                 # calculate the vector between atom `ia` and `ja`
                 v = xyz[ja, :] - xyz[ia, :]
                 # multiply by normalized vector
