@@ -414,7 +414,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         
         # Now we should sum per atom an retain the order...
         if isinstance(atom, Integral):
-        return np.sum(DOS[..., self.a2p(atom)], axis=-1)
+            return np.sum(DOS[..., self.a2p(atom)], axis=-1)
 
         # Create return array
         shp = list(DOS.shape)
