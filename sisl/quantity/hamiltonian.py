@@ -951,26 +951,24 @@ class Hamiltonian(object):
                   orthogonal=not has_S, dtype=H.dtype)
 
         # Copy data to the model
-        H = H.tocoo()
         if has_S:
-            for jo, io, h in zip(H.row, H.col, H.data):
+            for jo, io, h in iter_spmatrix(H):
                 ham.S[jo, io] = S[jo, io]
 
-            # Convert S to coo matrix
-            S = S.tocoo()
             # If the Hamiltonian for one reason or the other
             # is zero in the diagonal, then we *must* account for
             # this as it isn't captured in the above loop.
             skip_S = np.all(H.row == S.row)
             skip_S = skip_S and np.all(H.col == S.col)
+            skip_S = False
             if not skip_S:
                 # Re-convert back to allow index retrieval
                 H = H.tocsr()
-                for jo, io, s in zip(S.row, S.col, S.data):
+                for jo, io, s in iter_spmatrix(S):
                     ham[jo, io] = (H[jo, io], s)
 
         else:
-            for jo, io, h in zip(H.row, H.col, H.data):
+            for jo, io, h in iter_spmatrix(H):
                 ham[jo, io] = h
 
         return ham

@@ -893,7 +893,22 @@ def iter_spmatrix(matrix):
     matrix : ``scipy.sparse.sp_matrix``
       the sparse matrix to iterate non-zero elements
     """
-    if isspmatrix_coo(matrix):
+
+    # Consider using the numpy nditer function for buffered iterations
+    #it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
+    #               flags=['buffered'], op_flags=['readonly'])
+
+    if isspmatrix_csr(matrix):
+        for r in range(matrix.shape[0]):
+            for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
+                yield r, matrix.indices[ind], matrix.data[ind]
+
+    elif isspmatrix_lil(matrix):
+        for r in range(matrix.shape[0]):
+            for c, m in zip(matrix.rows[r], matrix.data[r]):
+                yield r, c, m
+
+    elif isspmatrix_coo(matrix):
         for r, c, m in zip(matrix.row, matrix.col, matrix.data):
             yield r, c, m
 
@@ -901,16 +916,6 @@ def iter_spmatrix(matrix):
         for c in range(matrix.shape[1]):
             for ind in range(matrix.indptr[c], matrix.indptr[c+1]):
                 yield matrix.indices[ind], c, matrix.data[ind]
-
-    elif isspmatrix_csr(matrix):
-        for r in range(matrix.shape[0]):
-            for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
-                yield r, matrix.indices[ind], matrix.data[ind]
-
-    elif isspmatrix_lil(matrix):
-        for r in range(matrix.shape[0]):
-            for c, d in zip(matrix.rows[r], matrix.data[r]):
-                yield r, c, d
 
     elif isinstance(matrix, SparseCSR):
         for r, c in matrix:
