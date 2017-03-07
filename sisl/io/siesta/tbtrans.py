@@ -411,7 +411,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
     def _DOS_atom_sum(self, DOS, atom):
         if atom is None:
             return DOS
-        
+
         # Now we should sum per atom an retain the order...
         if isinstance(atom, Integral):
             return np.sum(DOS[..., self.a2p(atom)], axis=-1)
@@ -425,7 +425,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         for i, a in enumerate(atom):
             nDOS[..., i] = np.sum(DOS[..., self.a2p(a)], axis=-1)
 
-        return nDOS / n
+        return nDOS
 
     def DOS(self, E=None, avg=True, atom=None):
         """ Return the Green function DOS (1/eV).
