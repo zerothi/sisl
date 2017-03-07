@@ -300,10 +300,8 @@ class HamiltonianSile(Sile):
                     S.eliminate_zeros()
 
                 # Ensure that S and H have the same sparsity pattern
-                S = S.tocoo()
-                for jo, io, s in zip(S.row, S.col, S.data):
+                for jo, io, s in iter_spmatrix(S):
                     H[jo, io] = H[jo, io]
-                S = S.tocsr()
 
             del ut
 
@@ -312,7 +310,7 @@ class HamiltonianSile(Sile):
         for i, isc in enumerate(geom.sc.sc_off):
             # Check that we have any contributions in this
             # sub-section
-            Hsub = H[:, i * geom.no:(i + 1) * geom.no].tocoo()
+            Hsub = H[:, i * geom.no:(i + 1) * geom.no]
             if not ham.orthogonal:
                 Ssub = S[:, i * geom.no:(i + 1) * geom.no]
             if Hsub.getnnz() == 0:
@@ -320,7 +318,7 @@ class HamiltonianSile(Sile):
             # We have a contribution, write out the information
             self._write('\nbegin matrix {0:d} {1:d} {2:d}\n'.format(*isc))
             if advanced:
-                for jo, io, h in zip(Hsub.row, Hsub.col, Hsub.data):
+                for jo, io, h in iter_spmatrix(Hsub):
                     if not ham.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:
@@ -337,7 +335,7 @@ class HamiltonianSile(Sile):
                             fmt2_str.format(
                                 a[0], o[0], a[1], o[1], h, s))
             else:
-                for jo, io, h in zip(Hsub.row, Hsub.col, Hsub.data):
+                for jo, io, h in iter_spmatrix(Hsub):
                     if not ham.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:

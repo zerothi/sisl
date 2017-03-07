@@ -203,13 +203,7 @@ class gotSileGULP(SileGULP):
             # clean-up
             del mass
 
-        # Create "fake" overlap matrix
-        ones = np.ones(dyn.shape[0], dtype=dtype)
-        S = diags(ones, 0, shape=dyn.shape)
-        S = S.tocsr()
-        del ones
-
-        return DynamicalMatrix.sp2tb(geom, dyn, S)
+        return DynamicalMatrix.sp2HS(geom, dyn)
 
     read_es = read_dynmat
 
@@ -280,11 +274,8 @@ class gotSileGULP(SileGULP):
         # clean-up for memory
         del dat
 
-        # Convert to COO format
-        dyn = dyn.tocoo()
-
         # Convert the GULP data to standard units
-        dyn.data[:] *= (521.469 * 1.23981e-4) ** 2
+        dyn.data *= (521.469 * 1.23981e-4) ** 2
 
         return dyn
 
