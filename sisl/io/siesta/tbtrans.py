@@ -35,7 +35,20 @@ eV2Ry = unit_convert('eV', 'Ry')
 
 
 class tbtncSileSiesta(SileCDFSIESTA):
-    """ TBtrans file object """
+    """ TBtrans file object 
+    
+    This `SileCDF` implements the TBtrans output `*.TBT.nc` sile which contains
+    calculated quantities related to the NEGF code TBtrans.
+
+    Although the TBtrans code is in fortran and the resulting NetCDF file variables
+    are in fortran indexing (1-based), everything is returned as Python indexing (0-based)
+    when scripting.
+
+    This is vital when using this `Sile`.
+
+    Note that when using the command-line utility ``sdata`` the indexing is fortran based 
+    because the data handlers are meant for _easy_ use.
+    """
     _trans_type = 'TBT'
 
     def _value_avg(self, name, tree=None, avg=False):
@@ -176,7 +189,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         xyz.shape = (-1, 3)
 
         # Create list with correct number of orbitals
-        lasto = np.array(np.copy(self.lasto), dtype=np.int32)
+        lasto = np.array(np.copy(self.lasto) + 1, dtype=np.int32)
         nos = np.append([lasto[0]], np.diff(lasto))
         nos = np.array(nos, np.int32)
 
@@ -245,13 +258,13 @@ class tbtncSileSiesta(SileCDFSIESTA):
     @property
     def a_d(self):
         """ Atomic indices (1-based) of device atoms """
-        return self._value('a_dev')
+        return self._value('a_dev') - 1
     a_dev = a_d
 
     @property
     def pivot(self):
         """ Pivot table of device orbitals to obtain input sorting """
-        return self._value('pivot')
+        return self._value('pivot') - 1
     pvt = pivot
 
     def a2p(self, atom):
@@ -273,12 +286,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
         orbital : ``array_like``, ``int``
            orbital indices (0-based)
         """
-        return np.where(np.in1d(self.pvt - 1, orbital))[0]
+        return np.where(np.in1d(self.pivot, orbital))[0]
 
     @property
     def lasto(self):
         """ Last orbital of corresponding atom """
-        return self._value('lasto')
+        return self._value('lasto') - 1
 
     @property
     def no_d(self):
@@ -424,7 +437,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Sum for new return stuff
         for i, a in enumerate(atom):
             pvt = self.a2p(a)
-            if len(pvt) == 0: continue
+            if len(pvt) == 0:
+                continue
             nDOS[..., i] = np.sum(DOS[..., pvt], axis=-1)
 
         return nDOS
@@ -762,9 +776,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
         Ja = np.zeros([self.na_u], np.float64)
 
         # We already know which atoms are the device atoms...
-        atom = self.a_dev - 1
+        atom = self.a_dev
 
-        # Create local lasto
+        # Create local orbital pointers
         firsto = self.geom.firsto
         lasto = self.geom.lasto
 
@@ -852,9 +866,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
         Ja = np.zeros([geom.na, 3], np.float64)
 
         # We already know which atoms are the device atoms...
-        atom = self.a_dev - 1
+        atom = self.a_dev
 
-        # Create local lasto
+        # Create local orbital look-up
         firsto = geom.firsto
         lasto = geom.lasto
         xyz = geom.xyz
@@ -1043,12 +1057,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     orbs.append(ob)
 
                 # Add one to make the c-index equivalent to the f-index
-                orbs = np.concatenate(orbs).flatten() + 1
+                orbs = np.concatenate(orbs).flatten()
                 pivot = np.where(np.in1d(ns._tbt.pivot, orbs))[0]
 
                 if len(orbs) != len(pivot):
                     print('Device atoms:')
-                    tmp = ns._tbt.a_dev[:]
+                    tmp = ns._tbt.a_dev[:] + 1
                     tmp.sort()
                     print(tmp[:])
                     print('Input atoms:')
@@ -1253,12 +1267,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
                         print("  - " + string + ": false")
 
                 # Retrieve the device atoms
-                dev_rng = list2range(tbt.a_dev)
+                dev_rng = list2range(tbt.a_dev + 1)
                 print("Device information:")
                 print("  - number of kpoints: " + str(tbt.nkpt))
                 print("  - energy range:")
                 print("    {:.5f} -- {:.5f} eV".format(np.amin(tbt.E), np.amax(tbt.E)))
-                print("  - atoms with DOS:")
+                print("  - atoms with DOS (fortran index):")
                 print("    " + dev_rng)
                 truefalse('DOS' in tbt.variables, "DOS, Green function")
                 print()
