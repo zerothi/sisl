@@ -881,8 +881,13 @@ class SparseCSR(object):
             pass
 
 
+def _map_row(r):
+    return r
+def _map_col(c):
+    return c
+        
 # Local variables for checking the sparse matrix format
-def iter_spmatrix(matrix):
+def iter_spmatrix(matrix, map_row=None, map_col=None):
     """ Iterator for iterating the elements in a ``scipy.sparse.*_matrix`` 
 
     This will always return:
@@ -892,7 +897,16 @@ def iter_spmatrix(matrix):
     ----------
     matrix : ``scipy.sparse.sp_matrix``
       the sparse matrix to iterate non-zero elements
+    map_row : ``func`` (`None`)
+      map each row entry through the function `map_row`
+    map_col : ``func`` (`None`)
+      map each column entry through the function `map_col`
     """
+
+    if map_row is None:
+        map_row = _map_row
+    if map_col is None:
+        map_col = _map_col
 
     # Consider using the numpy nditer function for buffered iterations
     #it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
@@ -900,26 +914,29 @@ def iter_spmatrix(matrix):
 
     if isspmatrix_csr(matrix):
         for r in range(matrix.shape[0]):
+            rr = map_row(r)
             for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
-                yield r, matrix.indices[ind], matrix.data[ind]
+                yield rr, map_col(matrix.indices[ind]), matrix.data[ind]
 
     elif isspmatrix_lil(matrix):
         for r in range(matrix.shape[0]):
-            for c, m in zip(matrix.rows[r], matrix.data[r]):
-                yield r, c, m
+            rr = map_row(r)
+            for c, m in zip(map_col(matrix.rows[r]), matrix.data[r]):
+                yield rr, c, m
 
     elif isspmatrix_coo(matrix):
-        for r, c, m in zip(matrix.row, matrix.col, matrix.data):
+        for r, c, m in zip(map_row(matrix.row), map_col(matrix.col), matrix.data):
             yield r, c, m
 
     elif isspmatrix_csc(matrix):
         for c in range(matrix.shape[1]):
+            cc = map_col(c)
             for ind in range(matrix.indptr[c], matrix.indptr[c+1]):
-                yield matrix.indices[ind], c, matrix.data[ind]
+                yield map_row(matrix.indices[ind]), cc, matrix.data[ind]
 
     elif isinstance(matrix, SparseCSR):
         for r, c in matrix:
-            yield r, c, matrix[r, c]
+            yield map_row(r), map_col(c), matrix[r, c]
 
     else:
         raise NotImplementedError("The iterator for this sparse matrix has not been implemented")

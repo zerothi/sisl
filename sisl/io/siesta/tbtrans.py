@@ -645,31 +645,40 @@ class tbtncSileSiesta(SileCDFSIESTA):
            One may figure out the connections via `Geometry.sc_index`.
         """
         geom = self.geom
+        o2a = geom.o2a
 
         # We convert to atomic bond-currents
         if uc:
-            J = lil_matrix((geom.na, geom.na), dtype=Jij.dtype)
+            na = geom.na
+            J = lil_matrix((na, na), dtype=Jij.dtype)
 
+            map_row = o2a
+            def map_col(c):
+                return o2a(c) % na
+            
         else:
             J = lil_matrix((geom.na, geom.na * geom.n_s), dtype=Jij.dtype)
 
+            map_row = o2a
+            map_col = o2a
+
         # Perform reduction
         if "+" in sum:
-            for ja, ia, b in iter_spmatrix(Jij):
-                if d > 0:
+            for ja, ia, b in iter_spmatrix(Jij, map_row, map_col):
+                if b > 0:
                     J[ja, ia] += b
-
+                    
         elif "-" in sum:
-            for ja, ia, b in iter_spmatrix(Jij):
-                if d < 0:
+            for ja, ia, b in iter_spmatrix(Jij, map_row, map_col):
+                if b < 0:
                     J[ja, ia] -= b
-
+                    
         else:
-            for ja, ia, b in iter_spmatrix(Jij):
+            for ja, ia, b in iter_spmatrix(Jij, map_row, map_col):
                 J[ja, ia] += b
 
         # Rescale to correct magnitude
-        J.data *= .5
+        J *= .5
 
         # Now we have the bond-currents convert and sort
         mat = J.tocsr()
