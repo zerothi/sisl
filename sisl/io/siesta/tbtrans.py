@@ -419,11 +419,13 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Create return array
         shp = list(DOS.shape)
         shp[-1] = len(atom)
-        nDOS = np.empty(shp, np.float64)
+        nDOS = np.zeros(shp, np.float64)
 
         # Sum for new return stuff
         for i, a in enumerate(atom):
-            nDOS[..., i] = np.sum(DOS[..., self.a2p(a)], axis=-1)
+            pvt = self.a2p(a)
+            if len(pvt) == 0: continue
+            nDOS[..., i] = np.sum(DOS[..., pvt], axis=-1)
 
         return nDOS
 
