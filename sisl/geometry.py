@@ -1884,8 +1884,6 @@ class Geometry(SuperCellChild):
 
         # Create ranges
         if isinstance(ob, Integral):
-            if ob == oe - 1:
-                return ob
             return np.arange(ob, oe, dtype=np.int32)
 
         # Several ranges
@@ -1895,8 +1893,6 @@ class Geometry(SuperCellChild):
         for i in range(len(ob)):
             o[n:n + oe[i] - ob[i]] = narange(ob[i], oe[i], dtype=np.int32)
             n += oe[i] - ob[i]
-        if len(o) == 1 and isinstance(ia, Integral):
-            return o[0]
         return o
 
     def o2a(self, io):
