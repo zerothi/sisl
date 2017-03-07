@@ -1,6 +1,19 @@
 0.8.2
 =====
 
+- Easier script data-extraction from TBT.nc files due to easier conversion
+  between atomic indices and pivoting orbitals.
+
+  For this:
+  * a2p
+    returns the pivoting indices for the given atoms (complete set)
+  * o2p
+    returns the pivoting indices for the given orbitals
+
+  * Added `atom` keyword for retrieving DOS for a given set of atoms
+
+- Faster bond-current algorithms (faster iterator)
+
 - Initial template for TBT.Proj files for sdata processing
 
 - Geometry:
