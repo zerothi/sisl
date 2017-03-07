@@ -36,7 +36,7 @@ eV2Ry = unit_convert('eV', 'Ry')
 
 class tbtncSileSiesta(SileCDFSIESTA):
     """ TBtrans file object 
-    
+
     This `SileCDF` implements the TBtrans output `*.TBT.nc` sile which contains
     calculated quantities related to the NEGF code TBtrans.
 
@@ -545,11 +545,15 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Get column indices
         col = self._value('list_col') - 1
 
+        # Default matrix size
+        mat_size = (geom.no, geom.no_s)
+
         # Figure out the super-cell indices that are requested
         # First we figure out the indices, then
         # we build the array of allowed columns
         if isc is None:
             isc = [0, 0, 0]
+
         if isc[0] is None and isc[1] is None and isc[2] is None:
             all_col = None
 
@@ -597,7 +601,6 @@ class tbtncSileSiesta(SileCDFSIESTA):
             rptr = np.cumsum(tmp)
             del tmp
 
-        mat_size = (geom.no, geom.no_s)
         ptr = np.empty([geom.no + 1], np.int32)
         ptr[0] = 0
         ptr[1:] = rptr[:]
@@ -641,7 +644,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         return csr_matrix((J, col, ptr), shape=mat_size)
 
-    def bond_current_from_orbital(self, Jij, sum='+', uc=False):
+    def bond_current_from_orbital(self, Jij, sum='+', uc=None):
         """ Return the bond-current between atoms (sum of orbital currents) by passing the orbital
         currents.
 
@@ -654,7 +657,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return both.
-        uc : `bool` (`False`)
+        uc : `bool` (`Jij.shape[0] == Jij.shape[1]`)
            whether the returned bond-currents are only in the unit-cell.
            If `True` this will return a sparse matrix of `.shape = (self.na, self.na)`,
            else, it will return a sparse matrix of `.shape = (self.na, self.na * self.n_s)`.
@@ -663,15 +666,20 @@ class tbtncSileSiesta(SileCDFSIESTA):
         geom = self.geom
         o2a = geom.o2a
 
+        if uc is None:
+            # Default UC shape
+            uc = Jij.shape[0] == Jij.shape[1]
+
         # We convert to atomic bond-currents
         if uc:
             na = geom.na
             J = lil_matrix((na, na), dtype=Jij.dtype)
 
             map_row = o2a
+
             def map_col(c):
                 return o2a(c) % na
-            
+
         else:
             J = lil_matrix((geom.na, geom.na * geom.n_s), dtype=Jij.dtype)
 
@@ -683,12 +691,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
             for ja, ia, b in iter_spmatrix(Jij, map_row, map_col):
                 if b > 0:
                     J[ja, ia] += b
-                    
+
         elif "-" in sum:
             for ja, ia, b in iter_spmatrix(Jij, map_row, map_col):
                 if b < 0:
                     J[ja, ia] -= b
-                    
+
         else:
             for ja, ia, b in iter_spmatrix(Jij, map_row, map_col):
                 J[ja, ia] += b

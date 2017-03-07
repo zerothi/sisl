@@ -883,10 +883,14 @@ class SparseCSR(object):
 
 def _map_row(r):
     return r
+
+
 def _map_col(c):
     return c
-        
+
 # Local variables for checking the sparse matrix format
+
+
 def iter_spmatrix(matrix, map_row=None, map_col=None):
     """ Iterator for iterating the elements in a ``scipy.sparse.*_matrix`` 
 
