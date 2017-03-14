@@ -11,14 +11,11 @@ import scipy.linalg as sli
 from scipy.sparse import csr_matrix
 import scipy.sparse.linalg as ssli
 
-from sisl._help import get_dtype, is_python3
+from sisl._help import get_dtype
+from sisl._help import _zip as zip
 from sisl.sparse import SparseCSR, iter_spmatrix
 
 __all__ = ['Hamiltonian', 'TightBinding']
-
-
-if not is_python3:
-    from itertools import izip as zip
 
 
 class Hamiltonian(object):
