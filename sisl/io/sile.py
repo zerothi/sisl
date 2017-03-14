@@ -296,12 +296,36 @@ class BaseSile(object):
     """ Base class for the Siles """
 
     def read(self, *args, **kwargs):
-        """ Generic read method which should be overloaded in child-classes """
-        pass
+        """ Generic read method which should be overloaded in child-classes 
+
+        Parameters
+        ----------
+        **kwargs :
+          keyword arguments will try and search for the attribute `read_<>`
+          and call it with the remaining ``**kwargs`` as arguments.
+        """
+        for key in kwargs.keys():
+            # Loop all keys and try to read the quantities
+            if hasattr(self, "read_" + key):
+                func = getattr(self, "read_" + key)
+                # Call read
+                return func(kwargs[key], **kwargs)
 
     def write(self, *args, **kwargs):
-        """ Generic write method which should be overloaded in child-classes """
-        pass
+        """ Generic write method which should be overloaded in child-classes
+
+        Parameters
+        ----------
+        **kwargs :
+          keyword arguments will try and search for the attribute `write_<>`
+          and call it with the remaining ``**kwargs`` as arguments.
+        """
+        for key in kwargs.keys():
+            # Loop all keys and try to write the quantities
+            if hasattr(self, "write_" + key):
+                func = getattr(self, "write_" + key)
+                # Call write
+                func(kwargs[key], **kwargs)
 
     def _setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization
