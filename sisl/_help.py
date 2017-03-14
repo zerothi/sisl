@@ -6,17 +6,26 @@ import collections
 
 import numpy as np
 
-__all__ = ['array_fill_repeat', '_str', 'ensure_array']
+__all__ = ['array_fill_repeat', 'ensure_array']
 __all__ += ['isndarray', 'isiterable']
-__all__ += ['get_dtype', 'is_python3']
+__all__ += ['get_dtype']
+
+# Wrappers typically used
+__all__ += ['_str', '_range', '_zip']
+__all__ += ['is_python2', 'is_python3']
 
 
 # Base-class for string object checks
 is_python3 = sys.version_info >= (3, 0)
+is_python2 = not is_python3
 if is_python3:
     _str = str
+    _range = range
+    _zip = zip
 else:
     _str = basestring
+    _range = xrange
+    from itertools import izip as _zip
 
 
 def array_fill_repeat(array, size, cls=None):

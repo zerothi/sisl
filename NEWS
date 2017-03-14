@@ -1,6 +1,22 @@
 0.8.2
 =====
 
+- Added the TBT.AV.nc file which is meant to be created by `sisl` from
+  the TBT.nc files (i.e. create the k-averaged output).
+  This enables users to run tbtrans, create the k-averaged output, and
+  then delete the old file to heavily reduce disk-usage.
+
+  An example:
+
+      tbtrans RUN.fdf > TBT.out
+      sdata siesta.TBT.nc --tbt-av
+      rm siesta.TBT.nc
+
+  after this `siesta.TBT.AV.nc` exists will all k-averaged quantites.
+  If one is not interested in k-resolved quantities this may be very interesting.
+
+- Updated the TBT.nc sile for improved readability.
+
 - Easier script data-extraction from TBT.nc files due to easier conversion
   between atomic indices and pivoting orbitals.
 
@@ -11,6 +27,9 @@
     returns the pivoting indices for the given orbitals
 
   * Added `atom` keyword for retrieving DOS for a given set of atoms
+
+  * `sdata` and `TBT.nc` files now enable the creation of the TBT.AV.nc file
+    which is the k-averaged file of TBT.nc
 
 - Faster bond-current algorithms (faster iterator)
 
@@ -43,7 +62,7 @@
     >>> for ia, io in Geometry.iter_orbitals(local=False):
     >>>     Geometry.atom[ia].R[io]
     ```
-    
+
     does not work because `io` is globally defined.
 
   * Changed argument name for `coords`, `atom` instead of the

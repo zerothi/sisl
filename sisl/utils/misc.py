@@ -6,7 +6,10 @@ from __future__ import division
 from numbers import Integral
 from math import pi
 
+from sisl._help import _range as range
+
 __all__ = ['merge_instances', 'name_spec', 'direction', 'angle']
+__all__ += ['iter_shape']
 
 
 def merge_instances(*args, **kwargs):
@@ -26,6 +29,46 @@ def merge_instances(*args, **kwargs):
     for arg in args:
         m.__dict__.update(arg.__dict__)
     return m
+
+
+def iter_shape(shape):
+    """ Generator for iterating a shp by returning consecutive slices 
+
+    Parameters
+    ----------
+    shape : ``array_like``
+      the shape of the iterator
+
+    Examples
+    --------
+
+    >>> for slc in iter_shape([2, 1, 3]):
+    >>>    print(slc)
+    [0, 0, 0]
+    [0, 0, 1]
+    [0, 0, 2]
+    [1, 0, 0]
+    [1, 0, 1]
+    [1, 0, 2]
+    """
+    shape1 = [i-1 for i in shape]
+    ns = len(shape)
+    ns1 = ns - 1
+    # Create list for iterating
+    # we require a list because tuple's are immutable
+    slc = [0] * ns
+
+    while slc[0] < shape[0]:
+        for i in range(shape[ns1]):
+            slc[ns1] = i
+            yield slc
+
+        # Increment the previous shape indices
+        for i in range(ns1, 0, -1):
+            if slc[i] >= shape1[i]:
+                slc[i] = 0
+                if i > 0:
+                    slc[i-1] += 1
 
 
 def name_spec(name):

@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 from nose.tools import *
+from nose.plugins.attrib import attr
 
 from sisl.utils.misc import *
 
@@ -46,3 +47,21 @@ class TestMisc(object):
         assert_almost_equal(angle('a2pi/2a', True, False), 180)
         assert_almost_equal(angle('a2pi/2a', False, True), 180)
         assert_almost_equal(angle('a2pi/2a', False, False), 180)
+
+    def test_iter1(self):
+        for i, slc in enumerate(iter_shape([2, 1, 3])):
+            if i == 0:
+                assert_true(slc == [0, 0, 0])
+            elif i == 1:
+                assert_true(slc == [0, 0, 1])
+            elif i == 2:
+                assert_true(slc == [0, 0, 2])
+            elif i == 3:
+                assert_true(slc == [1, 0, 0])
+            elif i == 4:
+                assert_true(slc == [1, 0, 1])
+            elif i == 5:
+                assert_true(slc == [1, 0, 2])
+            else:
+                # if this is reached, something is wrong
+                assert_true(False)

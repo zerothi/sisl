@@ -11,4 +11,4 @@ select="$select,E711,E712"
 autopep8 --select "$select" --in-place -r .
 
 # Non-Python files
-autopep8 --select "W291,W293" --in-place NEWS README.md
+autopep8 --select "W291,W293" --in-place NEWS

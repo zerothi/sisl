@@ -50,6 +50,16 @@ class tbtncSileSiesta(SileCDFSIESTA):
     because the data handlers are meant for _easy_ use.
     """
     _trans_type = 'TBT'
+    _k_avg = False
+
+    def write_tbtav(self):
+        """ Write the TBT.AV.nc equivalent of this TBtrans output
+
+        This will create/overwrite the file with the ending TBT.AV.nc and thus
+        will not take notice of any older files.
+        """
+        from .tbtrans_av import tbtavncSileSiesta as TBTAV
+        TBTAV(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(self)
 
     def _value_avg(self, name, tree=None, avg=False):
         """ Local method for obtaining the data from the SileCDF.
@@ -62,6 +72,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 return self._data[name]
 
         v = self._variable(name, tree=tree)
+        if self._k_avg:
+            return v[:]
+
         wkpt = self.wkpt
 
         # Perform normalization
@@ -81,7 +94,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             data.shape = orig_shape[1:]
 
         else:
-            # We assume avg is some kind of itterable
+            # We assume avg is some kind of iterable
             data = v[avg[0], ...] * wkpt[avg[0]]
             for i in range(1, len(avg)):
                 data += v[avg[i], ...] * wkpt[avg[i]]
@@ -101,6 +114,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
         iE = self.Eindex(E)
 
         v = self._variable(name, tree=tree)
+        if self._k_avg:
+            return v[iE, ...]
+
         wkpt = self.wkpt
 
         # Perform normalization
@@ -213,8 +229,33 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         return geom
 
+    # Overload the write statement
+    def write(self, *args, **kwargs):
+        """ Write to a specific file """
+        # First try and call the super write function
+        super(tbtncSileSiesta, self).write(*args, **kwargs)
+
+        # Now check whether any of the arguments are a
+        #  a string, or a
+        #  tbtavncSileSiesta
+        from .tbtrans_av import tbtavncSileSiesta
+
+        for arg in args:
+            if isinstance(arg, _str):
+                try:
+                    sile = get_sile_class(arg)
+                    if issubclass(sile, tbtavncSileSiesta):
+                        arg = sile(arg, mode='w', access=0)
+                        print(arg)
+                except:
+                    continue
+
+            # In case the user requests writing an average sile
+            if isinstance(arg, tbtavncSileSiesta):
+                arg.write(self)
+
     def write_geom(self, *args, **kwargs):
-        """ This does not work """
+        """ This is not meant to be used """
         raise ValueError(self.__class__.__name__ + " can not write a geometry")
 
     # This class also contains all the important quantities elements of the
@@ -970,7 +1011,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             "_Orng": None,
             "_Oscale": 1. / len(self.pivot),
             "_Erng": None,
-            "_krng": None,
+            "_krng": True,
         }
         namespace = default_namespace(**d)
 
@@ -1008,9 +1049,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
             def __call__(self, parser, ns, value, option_string=None):
                 ns._krng = lstranges(strmap(int, value))
-        p.add_argument('--kpoint', '-k',
-                       action=kRange,
-                       help='Denote the sub-section of k-indices that are extracted.')
+        if not self._k_avg:
+            p.add_argument('--kpoint', '-k',
+                           action=kRange,
+                           help='Denote the sub-section of k-indices that are extracted.')
 
         # Try and add the atomic specification
         class AtomRange(argparse.Action):
@@ -1107,10 +1149,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
 
                 # Grab the information
-                if ns._krng is None:
-                    data = ns._tbt.transmission(e1, e2, avg=True)[ns._Erng]
-                else:
-                    data = ns._tbt.transmission(e1, e2, avg=ns._krng)[ns._Erng]
+                data = ns._tbt.transmission(e1, e2, avg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
                 ns._data_header.append('T:{}-{}[G]'.format(e1, e2))
@@ -1135,10 +1174,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
 
                 # Grab the information
-                if ns._krng is None:
-                    data = ns._tbt.transmission_bulk(e, avg=True)[ns._Erng]
-                else:
-                    data = ns._tbt.transmission_bulk(e, avg=ns._krng)[ns._Erng]
+                data = ns._tbt.transmission_bulk(e, avg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
                 ns._data_header.append('BT:{}[G]'.format(e))
@@ -1164,16 +1200,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
                             return
                         raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                     # Grab the information
-                    if ns._krng is None:
-                        data = ns._tbt.ADOS(e, avg=True)
-                    else:
-                        data = ns._tbt.ADOS(e, avg=ns._krng)
+                    data = ns._tbt.ADOS(e, avg=ns._krng)
                     ns._data_header.append('ADOS:{}[1/eV]'.format(e))
                 else:
-                    if ns._krng is None:
-                        data = ns._tbt.DOS(avg=True)
-                    else:
-                        data = ns._tbt.DOS(avg=ns._krng)
+                    data = ns._tbt.DOS(avg=ns._krng)
                     ns._data_header.append('DOS[1/eV]')
 
                 # Grab out the orbital ranges
@@ -1213,10 +1243,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                         return
                     raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                 # Grab the information
-                if ns._krng is None:
-                    data = ns._tbt.BDOS(e, avg=True)
-                else:
-                    data = ns._tbt.BDOS(e, avg=ns._krng)
+                data = ns._tbt.BDOS(e, avg=ns._krng)
                 ns._data_header.append('BDOS:{}[1/eV]'.format(e))
                 # Select the energies, even if _Erng is None, this will work!
                 no = data.shape[-1]
@@ -1248,10 +1275,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
 
                 # Grab the information
-                if ns._krng is None:
-                    data = ns._tbt.transmission_eig(e1, e2, avg=True)
-                else:
-                    data = ns._tbt.transmission_eig(e1, e2, avg=ns._krng)
+                data = ns._tbt.transmission_eig(e1, e2, avg=ns._krng)
                 # The shape is: k, E, neig
                 neig = data.shape[-1]
                 for eig in range(neig):
@@ -1277,7 +1301,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 # Retrieve the device atoms
                 dev_rng = list2range(tbt.a_dev + 1)
                 print("Device information:")
-                print("  - number of kpoints: " + str(tbt.nkpt))
+                if tbt._k_avg:
+                    print("  - all data is k-averaged")
+                else:
+                    print("  - number of kpoints: " + str(tbt.nkpt))
                 print("  - energy range:")
                 print("    {:.5f} -- {:.5f} eV".format(np.amin(tbt.E), np.amax(tbt.E)))
                 print("  - atoms with DOS (fortran index):")
@@ -1345,9 +1372,16 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._Orng = None
                 ns._Oscale = 1. / len(ns._tbt.pivot)
                 ns._Erng = None
-                ns._krng = None
+                ns._krng = True
         p.add_argument('--out', '-o', nargs=1, action=Out,
                        help='Store the currently collected information (at its current invocation) to the out file.')
+
+        class AVOut(argparse.Action):
+
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._tbt.write_tbtav()
+        p.add_argument('--tbt-av', action=AVOut, nargs=0,
+                       help='Create "{0}" with the k-averaged quantities of this file.'.format(self.file.replace('TBT.nc', 'TBT.AV.nc')))
 
         class Plot(argparse.Action):
 
@@ -1375,7 +1409,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._Orng = None
                 ns._Oscale = 1. / len(ns._tbt.pivot)
                 ns._Erng = None
-                ns._krng = None
+                ns._krng = True
         p.add_argument('--plot', '-p', nargs=0, action=Plot,
                        help='Plot the currently collected information (at its current invocation).')
 

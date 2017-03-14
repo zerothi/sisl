@@ -13,6 +13,7 @@ from ._help import *
 # Public used objects
 __all__ = [
     'add_sile',
+    'get_sile_class',
     'get_sile',
     'get_siles']
 
@@ -150,10 +151,8 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
             add_sile(ending + '.gz', cls, case=case, _parent_cls=_parent_cls)
 
 
-def get_sile(file, *args, **kwargs):
-    """
-    Guess the file handle for the input file and return
-    and object with the file handle.
+def get_sile_class(file, *args, **kwargs):
+    """ Guess the ``Sile`` class corresponding to the input file and return the class
 
     Parameters
     ----------
@@ -162,18 +161,17 @@ def get_sile(file, *args, **kwargs):
        This file name may contain {<class-name>} which sets
        `cls` in case `cls` is not set.
        For instance:
-          water.dat{XYZSile}
-       will read the file water.dat as an `XYZSile`.
+          water.xyz
+       will return an ``XYZSile``. 
     cls : class
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.
-       If there are several `Sile`s with similar file-endings this
+       If there are several ``Sile``s with similar file-endings this
        function returns a random one.
     """
     global __sile_rules, __siles
 
-    # This ensures that the first argument
-    # need not be cls
+    # This ensures that the first argument need not be cls
     cls = kwargs.pop('cls', None)
 
     # Split filename into proper file name and
@@ -222,9 +220,9 @@ def get_sile(file, *args, **kwargs):
                 if end != suf:
                     continue
                 if cls is None:
-                    return fobj(file, *args, **kwargs)
+                    return fobj
                 elif cls == base:
-                    return fobj(file, *args, **kwargs)
+                    return fobj
 
         # Now we skip the limitation of the suffix,
         # now only the base-class is necessary.
@@ -233,7 +231,7 @@ def get_sile(file, *args, **kwargs):
             # Check for object
             for suf, base, fobj in __sile_rules:
                 if cls == base:
-                    return fobj(file, *args, **kwargs)
+                    return fobj
 
         del end_list
 
@@ -245,6 +243,29 @@ def get_sile(file, *args, **kwargs):
         t.print_exc()
         raise e
     raise NotImplementedError("Sile for file '"+ file + "' could not be found, possibly the file has not been implemented.")
+
+
+def get_sile(file, *args, **kwargs):
+    """ Guess the ``Sile`` corresponding to the input file and return an open object of the corresponding ``Sile``
+
+    Parameters
+    ----------
+    file : str
+       the file to be quried for a correct `Sile` object.
+       This file name may contain {<class-name>} which sets
+       `cls` in case `cls` is not set.
+       For instance:
+          water.dat{XYZSile}
+       will read the file water.dat as an `XYZSile`.
+    cls : class
+       In case there are several files with similar file-suffixes
+       you may query the exact base-class that should be chosen.
+       If there are several `Sile`s with similar file-endings this
+       function returns a random one.
+    """
+    cls = kwargs.pop('cls', None)
+    sile = get_sile_class(file, *args, cls=cls, **kwargs)
+    return sile(file, *args, **kwargs)
 
 
 def get_siles(attrs=[None]):
@@ -273,6 +294,14 @@ def get_siles(attrs=[None]):
 
 class BaseSile(object):
     """ Base class for the Siles """
+
+    def read(self, *args, **kwargs):
+        """ Generic read method which should be overloaded in child-classes """
+        pass
+
+    def write(self, *args, **kwargs):
+        """ Generic write method which should be overloaded in child-classes """
+        pass
 
     def _setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization
@@ -528,7 +557,7 @@ class Sile(BaseSile):
 
 
 # Instead of importing netCDF4 on each invocation
-# of the __enter__ function (below), we make
+# of the __enter__ functioon (below), we make
 # a pass around it
 _netCDF4 = None
 
@@ -583,7 +612,7 @@ class SileCDF(BaseSile):
 
     @property
     def file(self):
-        """ File of the current `Sile` """
+        """ Filename of the current `Sile` """
         return self._file
 
     def _setup(self, *args, **kwargs):
@@ -664,6 +693,14 @@ class SileCDF(BaseSile):
 
     @staticmethod
     def _crt_grp(n, name):
+        if '/' in name:
+            groups = name.split('/')
+            grp = n
+            for group in groups:
+                if len(group) > 0:
+                    grp = _crt_grp(grp, group)
+            return grp
+
         if name in n.groups:
             return n.groups[name]
         return n.createGroup(name)
@@ -687,6 +724,108 @@ class SileCDF(BaseSile):
             for name in attr:
                 setattr(v, name, attr[name])
         return v
+
+    @classmethod
+    def isDimension(cls, obj):
+        """ Return true if ``obj`` is an instance of the NetCDF4 ``Dimension`` type
+
+        This is just a wrapper for ``isinstance(obj, netCDF4.Dimension)``.
+        """
+        return isinstance(obj, _netCDF4.Dimension)
+
+    @classmethod
+    def isVariable(cls, obj):
+        """ Return true if ``obj`` is an instance of the NetCDF4 ``Variable`` type
+
+        This is just a wrapper for ``isinstance(obj, netCDF4.Variable)``.
+        """
+        return isinstance(obj, _netCDF4.Variable)
+
+    @classmethod
+    def isGroup(cls, obj):
+        """ Return true if ``obj`` is an instance of the NetCDF4 ``Group`` type
+
+        This is just a wrapper for ``isinstance(obj, netCDF4.Group)``.
+        """
+        return isinstance(obj, _netCDF4.Group)
+
+    @classmethod
+    def isDataset(cls, obj):
+        """ Return true if ``obj`` is an instance of the NetCDF4 ``Dataset`` type
+
+        This is just a wrapper for ``isinstance(obj, netCDF4.Dataset)``.
+        """
+        return isinstance(obj, _netCDF4.Dataset)
+    isRoot = isDataset
+
+    def iter(self, group=True, dimension=True, variable=True, levels=-1, root=None):
+        """ Iterator on all groups, variables and dimensions.
+
+        This iterator iterates through all groups, variables and dimensions in the ``Dataset``
+
+        The generator sequence will _always_ be:
+
+          1. Group
+          2. Dimensions in group
+          3. Variables in group
+
+        As the dimensions are generated before the variables it is possible to copy
+        groups, dimensions, and then variables such that one always ensures correct
+        dependencies in the generation of a new ``SileCDF``.
+
+        Parameters
+        ----------
+        group : ``bool`` (`True`)
+           whether the iterator yields `Group` instances
+        dimension : ``bool`` (`True`)
+           whether the iterator yields `Dimension` instances
+        variable : ``bool`` (`True`)
+           whether the iterator yields `Variable` instances
+        levels : ``int`` (`-1`)
+           number of levels to traverse, with respect to ``root`` variable, i.e. number of 
+           sub-groups this iterator will return.
+        root : ``str`` (`None`)
+           the base root to start iterating from.
+
+        Example
+        -------
+
+        Script for looping and checking each instance.
+        >>> for gv in self.iter():
+        >>>     if self.isGroup(gv):
+        >>>         # is group
+        >>>     elif self.isDimension(gv):
+        >>>         # is dimension
+        >>>     elif self.isVariable(gv):
+        >>>         # is variable
+
+        """
+        if root is None:
+            head = self.fh
+        else:
+            head = self.fh[root]
+
+        # Start by returning the root group
+        if group:
+            yield head
+
+        if dimension:
+            for dim in head.dimensions.values():
+                yield dim
+        if variable:
+            for var in head.variables.values():
+                yield var
+
+        if levels == 0:
+            # Stop the iterator
+            return
+
+        for grp in head.groups.values():
+            for dvg in self.iter(group, dimension, variable,
+                                 levels=levels-1, root=grp.path):
+                yield dvg
+
+    __iter__ = iter
 
 
 class SileBin(BaseSile):
