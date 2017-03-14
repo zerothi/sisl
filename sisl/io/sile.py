@@ -25,6 +25,7 @@ __all__ += [
     'SileError',
     ]
 
+# Decorators or sile-specific functions
 __all__ += [
     'Sile_fh_open',
     'sile_raise_write',
@@ -325,7 +326,7 @@ class BaseSile(object):
             if hasattr(self, "write_" + key):
                 func = getattr(self, "write_" + key)
                 # Call write
-                func(kwargs[key], **kwargs)
+                return func(kwargs[key], **kwargs)
 
     def _setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization
@@ -564,16 +565,6 @@ class Sile(BaseSile):
         # sometimes the line contains information, as a
         # default we return the line found
         return found, j, l
-
-    def write(self, *args, **kwargs):
-        """
-        Wrapper for the file-handle write statement
-        """
-        for arg in args:
-            if isinstance(arg, Geometry):
-                self.write_geom(arg, *args, **kwargs)
-        if 'geom' in kwargs:
-            self.write_geom(kwargs['geom'], *args, **kwargs)
 
     def _write(self, *args, **kwargs):
         """ Wrapper to default the write statements """

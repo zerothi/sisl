@@ -55,23 +55,24 @@ class tbtavncSileSiesta(tbtncSileSiesta):
         """ Always return 1, this is to signal other routines """
         return 1
 
-    def write(self, *args, **kwargs):
-        super(tbtavncSileSiesta, self).write(*args, **kwargs)
-
-        for arg in args:
-            if isinstance(arg, tbtncSileSiesta):
-                self.write_tbtav(arg, **kwargs)
-
-    def write_tbtav(self, tbt, *args, **kwargs):
+    def write_tbtav(self, *args, **kwargs):
         """ Wrapper for writing the k-averaged TBT.AV.nc file. 
 
-        This write _requires_ the TBT.nc `Sile` object passed as the first argument.
+        This write _requires_ the TBT.nc `Sile` object passed as the first argument,
+        or as the keyword `from=tbt` argument.
 
         Parameters
         ----------
-        tbt : ``tbtncSileSiesta``
+        from : ``tbtncSileSiesta``
           the TBT.nc file object that has the k-sampled quantities.
         """
+
+        if 'from' in kwargs:
+            tbt = kwargs['from']
+        elif len(args) > 0:
+            tbt = args[0]
+        else:
+            raise ValueError("tbtncSileSiesta has not been passed to write the averaged file")
 
         if not isinstance(tbt, tbtncSileSiesta):
             raise ValueError('first argument of tbtavncSileSiesta.write *must* be a tbtncSileSiesta object')

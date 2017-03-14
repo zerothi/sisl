@@ -52,14 +52,14 @@ class tbtncSileSiesta(SileCDFSIESTA):
     _trans_type = 'TBT'
     _k_avg = False
 
-    def write_tbtav(self):
+    def write_tbtav(self, **kwargs):
         """ Write the TBT.AV.nc equivalent of this TBtrans output
 
         This will create/overwrite the file with the ending TBT.AV.nc and thus
         will not take notice of any older files.
         """
         from .tbtrans_av import tbtavncSileSiesta as TBTAV
-        TBTAV(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(self)
+        TBTAV(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(tbtav=self)
 
     def _value_avg(self, name, tree=None, avg=False):
         """ Local method for obtaining the data from the SileCDF.
@@ -228,31 +228,6 @@ class tbtncSileSiesta(SileCDFSIESTA):
         geom = Geometry(xyz, atms, sc=sc)
 
         return geom
-
-    # Overload the write statement
-    def write(self, *args, **kwargs):
-        """ Write to a specific file """
-        # First try and call the super write function
-        super(tbtncSileSiesta, self).write(*args, **kwargs)
-
-        # Now check whether any of the arguments are a
-        #  a string, or a
-        #  tbtavncSileSiesta
-        from .tbtrans_av import tbtavncSileSiesta
-
-        for arg in args:
-            if isinstance(arg, _str):
-                try:
-                    sile = get_sile_class(arg)
-                    if issubclass(sile, tbtavncSileSiesta):
-                        arg = sile(arg, mode='w', access=0)
-                        print(arg)
-                except:
-                    continue
-
-            # In case the user requests writing an average sile
-            if isinstance(arg, tbtavncSileSiesta):
-                arg.write(self)
 
     def write_geom(self, *args, **kwargs):
         """ This is not meant to be used """
