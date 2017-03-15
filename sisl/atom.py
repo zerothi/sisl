@@ -860,8 +860,8 @@ class PeriodicTable(object):
             Uses value to lookup the atomic mass in the
             `PeriodicTable` object.
 
-        Return
-        ------
+        Returns
+        -------
         name : ndarray, float
             The atomic mass in atomic units corresponding to ``key``,
             if ``key`` is array_like, so will the returned value be.
