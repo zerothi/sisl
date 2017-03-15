@@ -19,9 +19,6 @@ class TableSile(Sile):
         """ Setup the `TableSile` after initialization """
         self._comment = ['#']
 
-    # Specify the default write function
-    __write_default = write_data
-
     def write_data(self, data, header=None, footer=None, newline='\n', fmt='%.5e', comment=None, delimiter='\t'):
         """ Write tabular data to the file with optional header. """
         C = self._comment[0]
@@ -47,6 +44,9 @@ class TableSile(Sile):
         # Use numpy to store the txt data
         np.savetxt(self.file, data.T, header=header, footer=footer,
                    fmt=fmt, delimiter=delimiter)
+
+    # Specify the default write function
+    __write_default = write_data
 
 
 add_sile('table', TableSile, case=False, gzip=True)
