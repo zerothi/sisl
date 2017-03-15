@@ -802,8 +802,8 @@ class SileCDF(BaseSile):
         root : ``str`` (`None`)
            the base root to start iterating from.
 
-        Example
-        -------
+        Examples
+        --------
 
         Script for looping and checking each instance.
         >>> for gv in self.iter():

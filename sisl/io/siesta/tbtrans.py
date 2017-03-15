@@ -286,8 +286,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
     def a2p(self, atom):
         """ Return the pivoting indices (0-based) for the atoms 
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         atom : ``array_like``, ``int``
            atomic indices (0-based)
         """
@@ -297,8 +297,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
     def o2p(self, orbital):
         """ Return the pivoting indices (0-based) for the orbitals
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         orbital : ``array_like``, ``int``
            orbital indices (0-based)
         """

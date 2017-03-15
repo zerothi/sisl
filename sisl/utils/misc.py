@@ -97,8 +97,8 @@ def name_spec(name):
 def direction(d):
     """ Return the index of the direction that the input represents
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     d: str, int
        If one of 'XYZ' or 'xyz' or 'ABC' or 'abc' it will return 012. If it is an integer, it is returned "as is"
     """
@@ -118,8 +118,8 @@ def direction(d):
 def angle(s, radians=True, in_radians=True):
     """ Convert the input string to an angle.
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     s: str
        If `s` starts with 'r' it is interpreted as radians [0:2pi].
        If `s` starts with 'a' it is interpreted as a regular angle [0:360].
