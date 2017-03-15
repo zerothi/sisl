@@ -37,14 +37,14 @@ eV2Ry = unit_convert('eV', 'Ry')
 class tbtncSileSiesta(SileCDFSIESTA):
     """ TBtrans file object 
 
-    This `SileCDF` implements the TBtrans output `*.TBT.nc` sile which contains
+    This ``SileCDF`` implements the TBtrans output `*.TBT.nc` sile which contains
     calculated quantities related to the NEGF code TBtrans.
 
     Although the TBtrans code is in fortran and the resulting NetCDF file variables
     are in fortran indexing (1-based), everything is returned as Python indexing (0-based)
     when scripting.
 
-    This is vital when using this `Sile`.
+    This is vital when using this ``Sile``.
 
     Note that when using the command-line utility ``sdata`` the indexing is fortran based 
     because the data handlers are meant for _easy_ use.
