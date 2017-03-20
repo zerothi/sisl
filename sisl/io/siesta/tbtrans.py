@@ -1128,6 +1128,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 data.shape = (-1,)
                 ns._data.append(data)
                 ns._data_header.append('T:{}-{}[G]'.format(e1, e2))
+                ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('-T', '--transmission', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataT,
                        help='Store the transmission between two electrodes.')
@@ -1153,6 +1154,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 data.shape = (-1,)
                 ns._data.append(data)
                 ns._data_header.append('BT:{}[G]'.format(e))
+                ns._data_description.append('Column {} is bulk-transmission'.format(len(ns._data)))
         p.add_argument('-BT', '--transmission-bulk', nargs=1, metavar='ELEC',
                        action=DataBT,
                        help='Store the bulk transmission of an electrode.')
@@ -1256,6 +1258,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 for eig in range(neig):
                     ns._data.append(data[ns._Erng, eig])
                     ns._data_header.append('Teig({}):{}-{}[G]'.format(eig+1, e1, e2))
+                    ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('--transmission-eig', '-Teig', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataTEig,
                        help='Store the transmission eigenvalues between two electrodes.')
