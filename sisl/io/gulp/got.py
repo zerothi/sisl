@@ -3,16 +3,18 @@ Sile object for reading/writing GULP in/output
 """
 from __future__ import print_function
 
+import numpy as np
+from numpy import where
+
 # Import sile objects
 from .sile import SileGULP
 from ..sile import *
 
+from sisl._help import _range as range
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl.quantity import DynamicalMatrix
 
-import numpy as np
-from numpy import where
 
 __all__ = ['gotSileGULP']
 
@@ -70,7 +72,7 @@ class gotSileGULP(SileGULP):
         # skip 1 line
         self.readline()
         cell = np.empty([3, 3], np.float64)
-        for i in range(3):
+        for i in [0, 1, 2]:
             l = self.readline().split()
             cell[i, :] = [float(x) for x in l[:3]]
 
@@ -88,7 +90,7 @@ class gotSileGULP(SileGULP):
         # create default supercell
         sc = SuperCell([1, 1, 1])
 
-        for sc_geom in range(2):
+        for sc_geom in [0, 1]:
             # Step to either the geometry or
             f, ki, _ = self.step_either([self._keys['sc'], self._keys['geom']])
             if not f and ki == 0:
@@ -101,7 +103,7 @@ class gotSileGULP(SileGULP):
                 # supercell
                 self.readline()
                 cell = np.zeros([3, 3], np.float64)
-                for i in range(3):
+                for i in [0, 1, 2]:
                     l = self.readline().split()
                     cell[i, 0] = float(l[0])
                     cell[i, 1] = float(l[1])
@@ -117,7 +119,7 @@ class gotSileGULP(SileGULP):
             elif f and ki == 1:
 
                 # We skip 5 lines
-                for i in range(5):
+                for i in [0] * 5:
                     self.readline()
 
                 Z = []
@@ -257,7 +259,7 @@ class gotSileGULP(SileGULP):
             else:
                 # add the values (12 values == 3*4)
                 # for atoms on each line
-                for k in range(4):
+                for k in [0, 1, 2, 3]:
                     dat[j:j + 3] = ls[k * 3:(k + 1) * 3]
 
                     j += 3
@@ -273,6 +275,9 @@ class gotSileGULP(SileGULP):
 
         # clean-up for memory
         del dat
+
+        # Convert to CSR matrix format
+        dyn = dyn.tocsr()
 
         # Convert the GULP data to standard units
         dyn.data *= (521.469 * 1.23981e-4) ** 2
