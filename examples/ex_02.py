@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+
+# This example creates the tight-binding Hamiltonian
+# for graphene with on-site energy 0, and hopping energy
+# -2.7 eV using a simpler method to construct the
+# Hamiltonian.
+
+import sisl
+
+bond = 1.42
+# Construct the atom with the appropriate orbital range
+# Note the 0.01 which is for numerical accuracy.
+C = sisl.Atom(6, R = bond + 0.01)
+# Create graphene unit-cell
+gr = sisl.geom.graphene(bond, C)
+
+# Create the tight-binding Hamiltonian
+H = sisl.Hamiltonian(gr)
+
+# Create function to be passed to the construct method.
+# This method is *much* faster for large scale simulations.
+func = H.create_construct([0.1 * bond, bond + 0.01], [0., -2.7])
+H.construct(func)
+
+# Calculate eigenvalues at K-point
+print(H.eigh([2./3, 1./3, 0.]))
