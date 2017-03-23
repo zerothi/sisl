@@ -5,7 +5,7 @@ Atomic information can be created and handled using the
 object `Atoms`.
 
 * The `PeriodicTable` enables a *lookup* table for generic information
-about the atomic species in the periodic table of elements.
+  about the atomic species in the periodic table of elements.
 * The `Atom` enables creating atoms with associated information, such as
   * Mass
   * Species
@@ -52,21 +52,31 @@ class PeriodicTable(object):
 
     The following values are accesible:
 
-     * atomic mass (in atomic units)
-     * empirical atomic radii (in Ang)
-     * calculated atomic radii (in Ang)
-     * van der Waals atomic radii (in Ang)
+    * atomic mass (in atomic units)
+    * empirical atomic radii (in Ang)
+    * calculated atomic radii (in Ang)
+    * van der Waals atomic radii (in Ang)
 
     For certain species the above quantities are not available
     and a negative number is returned.
 
-     >>> 12.0107 == PeriodicTable().atomic_mass('C')
-     >>> 12.0107 == PeriodicTable().atomic_mass(6)
-     >>> 12.0107 == PeriodicTable().atomic_mass('Carbon')
-     >>> .67 == PeriodicTable().radii('Carbon')
-     >>> .67 == PeriodicTable().radii(6,'calc')
-     >>> .7  == PeriodicTable().radii(6,'empirical')
-     >>> 1.7 == PeriodicTable().radii(6,'vdw')
+    Examples
+    --------
+
+    >>> 12.0107 == PeriodicTable().atomic_mass('C')
+    True
+    >>> 12.0107 == PeriodicTable().atomic_mass(6)
+    True
+    >>> 12.0107 == PeriodicTable().atomic_mass('Carbon')
+    True
+    >>> .67 == PeriodicTable().radii('Carbon')
+    True
+    >>> .67 == PeriodicTable().radii(6,'calc')
+    True
+    >>> .7  == PeriodicTable().radii(6,'empirical')
+    True
+    >>> 1.7 == PeriodicTable().radii(6,'vdw')
+    True
 
     """
     _Z_int = {
@@ -801,22 +811,25 @@ class PeriodicTable(object):
 
         Parameters
         ----------
-        key : array_like, str, int
+        key : array_like or str or int
             Uses value to lookup the atomic number in the `PeriodicTable`
             object.
 
         Returns
         -------
-        Z : ndarray, int
+        Z : ndarray or int
             The atomic number corresponding to `key`, if `key` is array_like, so
             will the returned value be.
 
         Examples
-        -------
+        --------
 
         >>> 79 == PeriodicTable().Z_int('Au')
+        True
         >>> 79 == PeriodicTable().Z('Au')
+        True
         >>> 6 == PeriodicTable().Z('Carbon')
+        True
         """
         ak = np.asarray([key]).flatten()
         if len(ak) == 1:
@@ -828,18 +841,18 @@ class PeriodicTable(object):
     def Z_label(self, key):
         """ Return the atomic label of the corresponding atom
 
-        Return the atomic short name corresponding to the ``key`` lookup.
+        Return the atomic short name corresponding to the `key` lookup.
 
         Parameters
         ----------
-        key : array_like, str, int
+        key : array_like or str or int
             Uses value to lookup the atomic short name in the
             `PeriodicTable` object.
 
         Returns
         -------
-        name : ndarray, str
-            The atomic short name corresponding to ``key``, if ``key``
+        name : ndarra or str
+            The atomic short name corresponding to `key`, if `key`
             is array_like, so will the returned value be.
         """
         ak = np.asarray([key]).flatten()
@@ -852,19 +865,19 @@ class PeriodicTable(object):
     def atomic_mass(self, key):
         """ Return the atomic mass of the corresponding atom
 
-        Return the atomic mass corresponding to the ``key`` lookup.
+        Return the atomic mass corresponding to the `key` lookup.
 
         Parameters
         ----------
-        key : array_like, str, int
+        key : array_like or str or int
             Uses value to lookup the atomic mass in the
             `PeriodicTable` object.
 
         Returns
         -------
-        name : ndarray, float
-            The atomic mass in atomic units corresponding to ``key``,
-            if ``key`` is array_like, so will the returned value be.
+        name : ndarray or float
+            The atomic mass in atomic units corresponding to `key`,
+            if `key` is array_like, so will the returned value be.
         """
         Z = self.Z_int(key)
         if isinstance(Z, Integral):
@@ -878,19 +891,19 @@ class PeriodicTable(object):
 
         Parameters
         ----------
-        key : array_like, str, int
+        key : array_like or str or int
             Uses value to lookup the atomic mass in the
             `PeriodicTable` object.
-        method : str
+        method : {'calc', 'empirical', 'vdw'}
             There are 3 different radii stored:
 
-             1. ``calc``, the calculated
+             1. ``calc``, the calculated atomic radii
              2. ``empirical``, the empirically found values
              3. ``vdw``, the van-der-Waals found values
 
         Returns
         -------
-        radius : ndarray, float
+        radius : ndarray or float
             The atomic radius in `Ang`
         """
         Z = self.Z_int(key)
@@ -955,10 +968,10 @@ class Atom(with_metaclass(AtomMeta, object)):
     The `Atom` object handles the atomic species with information
     such as
 
-     * atomic number
-     * mass
-     * number of orbitals
-     * radius of each orbital
+    * atomic number
+    * mass
+    * number of orbitals
+    * radius of each orbital
 
     The `Atom` object is `pickle`-able.
 
@@ -975,9 +988,9 @@ class Atom(with_metaclass(AtomMeta, object)):
 
     Parameters
     ----------
-    Z : int, str
+    Z : int or str
         key lookup for the atomic specie, `Atom[key]`
-    R : array_like, float
+    R : array_like or float
         the range of the atomic orbitals
     orbs : int
         number of orbitals attached to this atom
@@ -1022,7 +1035,7 @@ class Atom(with_metaclass(AtomMeta, object)):
     def radius(self, method='calc'):
         """ Return the atomic radii of the atom (in Ang) 
 
-        See ``PeriodicTable.radius`` for details on the argument.
+        See `PeriodicTable.radius` for details on the argument.
         """
         return _ptbl.radius(self.Z, method)
     radii = radius
@@ -1042,7 +1055,7 @@ class Atom(with_metaclass(AtomMeta, object)):
 
         Parameters
         ----------
-        scale : ``float``
+        scale : float
            the scale factor for the atomic radii
         """
         new = self.copy()
@@ -1097,14 +1110,14 @@ class Atoms(object):
     """ A list-like object to contain a list of different atoms with minimum
     data duplication.
 
-    This holds multiple ``Atom`` objects which are indexed via a species
+    This holds multiple `Atom` objects which are indexed via a species
     index.
     This is convenient when having geometries with millions of atoms
-    because it will not duplicate the ``Atom`` object, only a list index.
+    because it will not duplicate the `Atom` object, only a list index.
 
     Attributes
     ----------
-    atom : ``list(Atom)``
+    atom : `list(Atom)`
         a list of unique atoms in this object
     specie : ndarray(int16)
         a list of unique specie indices
@@ -1219,7 +1232,7 @@ class Atoms(object):
 
         Parameters
         ----------
-        scale : ``float``
+        scale : float
            the scale factor for the atomic radii
         """
         atoms = Atoms()
@@ -1326,7 +1339,7 @@ class Atoms(object):
         return atoms
 
     def append(self, other):
-        """ Append ``other`` to this list of atoms and return the appended version """
+        """ Append `other` to this list of atoms and return the appended version """
         if not isinstance(other, Atoms):
             other = Atoms(other)
         else:
@@ -1385,7 +1398,7 @@ class Atoms(object):
         return atoms
 
     def __repr__(self):
-        """ Return the ``Atoms`` representation """
+        """ Return the `Atoms` representation """
         s = '{{Atoms({0}):\n'.format(len(self._atom))
         for a, idx in self:
             s += '  ({0}) == [{1}], \n'.format(len(idx), a)
@@ -1406,11 +1419,11 @@ class Atoms(object):
             yield atom, np.where(self.specie == s)[0]
 
     def __contains__(self, key):
-        """ Determine whether the ``key`` is in the unique atoms list """
+        """ Determine whether the `key` is in the unique atoms list """
         return key in self.atom
 
     def __getitem__(self, key):
-        """ Return an ``Atom`` object corresponding to the key(s) """
+        """ Return an `Atom` object corresponding to the key(s) """
         if isinstance(key, slice):
             if key.step is None:
                 nkey = slice(key.start or 0, key.stop or len(self), key.step or 1)
@@ -1423,7 +1436,7 @@ class Atoms(object):
             return self.atom[self._specie[key]]
 
     def __setitem__(self, key, value):
-        """ Overwrite an ``Atom`` object corresponding to the key(s) """
+        """ Overwrite an `Atom` object corresponding to the key(s) """
 
         # First we figure out if this is a new atom
         if isinstance(key, (list, np.ndarray, tuple)):
