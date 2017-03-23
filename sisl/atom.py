@@ -7,11 +7,13 @@ object `Atoms`.
 * The `PeriodicTable` enables a *lookup* table for generic information
   about the atomic species in the periodic table of elements.
 * The `Atom` enables creating atoms with associated information, such as
+
   * Mass
   * Species
   * Number of associated orbitals
   * Radii of each associated orbital
   * Custom tag (useful for denoting pseudo potentials)
+
 * The `Atoms` object is a sorted, unique list of `Atom` such that one
   can contain a list of atoms. Instead of storing all `Atom` objects
   which may have *many* dublicates, the `Atoms` object has a unique
