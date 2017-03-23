@@ -1,0 +1,8 @@
+numpydoc
+# For running
+six
+setuptools
+# We use some functionality not available in 1.8
+numpy>=1.9
+scipy
+netCDF4
