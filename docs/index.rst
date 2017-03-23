@@ -113,31 +113,6 @@ Indices
 * :ref:`modindex`
 * :ref:`search`
 
-Documentation in other themes
-=============================
-
-The `sisl` documentation has been created with several different themes
-of documentation.
-This is mainly of convenience until I have figured out which one is the
-best suited theme for this documentation.
-
-If you have any preferences please let me know.
-
-* `Alabaster`_ theme (good)
-* `Agogo`_ theme (good)
-* `Bizstyle`_ theme (default, good)
-* `Classic`_ theme (ok)
-* `Scrolls`_ theme (good)
-* `ReadTheDocs`_ theme (ok)
-
-
-.. _Alabaster: ../alabaster/index.html
-.. _Agogo: ../agogo/index.html
-.. _Bizstyle: ../bizstyle/index.html
-.. _Classic: ../classic/index.html
-.. _Scrolls: ../scrolls/index.html
-.. _ReadTheDocs: ../sphinx_rtd_theme/index.html
-
 .. |buildstatus| image:: https://travis-ci.org/zerothi/sisl.svg
 .. _buildstatus: https://travis-ci.org/zerothi/sisl
 
