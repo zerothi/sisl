@@ -17,8 +17,8 @@ def merge_instances(*args, **kwargs):
 
     Parameters
     ----------
-    name: str, "MergedClass"
-       name of class
+    name: str or MergedClass
+       name of class to merge
     """
     name = kwargs.get('name', 'MergedClass')
     # We must make a new-type class
@@ -32,16 +32,21 @@ def merge_instances(*args, **kwargs):
 
 
 def iter_shape(shape):
-    """ Generator for iterating a shp by returning consecutive slices 
+    """ Generator for iterating a shape by returning consecutive slices 
 
     Parameters
     ----------
-    shape : ``array_like``
+    shape : array_like
       the shape of the iterator
+
+    Yields
+    ------
+    tuple of int
+       a tuple of the same length as the input shape. The iterator
+       is using the C-indexing.
 
     Examples
     --------
-
     >>> for slc in iter_shape([2, 1, 3]):
     >>>    print(slc)
     [0, 0, 0]
@@ -72,12 +77,17 @@ def iter_shape(shape):
 
 
 def name_spec(name):
-    """ Checks whether `s` ends with `{..}`. Returns the split instances.
+    """ Split into a tuple of name and specifier, delimited by ``{...}``.
 
     Parameters
     ----------
     name: str
-       string to split into proper `name` and specification
+       string to split
+
+    Returns
+    -------
+    tuple of str
+       returns the name and the specifier (without delimiter) in a tuple
 
     Examples
     --------
@@ -95,12 +105,27 @@ def name_spec(name):
 
 # Transform a string to a Cartesian direction
 def direction(d):
-    """ Return the index of the direction that the input represents
+    """ Return the index coordinate index corresponding to the Cartesian coordinate system.
 
     Parameters
     ----------
-    d: str, int
-       If one of 'XYZ' or 'xyz' or 'ABC' or 'abc' it will return 012. If it is an integer, it is returned "as is"
+    d: {0, 'X', 'x', 1, 'Y', 'y',  2, 'Z', 'z'}
+       returns the integer that corresponds to the coordinate index.
+       If it is an integer, it is returned *as is*.
+    
+    Returns
+    -------
+    int
+       The index of the Cartesian coordinate system.
+
+    Examples
+    --------
+    >>> direction(0)
+    0
+    >>> direction('Y')
+    1
+    >>> direction('z')
+    2
     """
     if isinstance(d, Integral):
         return d
@@ -116,25 +141,29 @@ def direction(d):
 
 # Transform an input to an angle
 def angle(s, radians=True, in_radians=True):
-    """ Convert the input string to an angle.
+    """ Convert the input string to an angle, either radians or degrees.
 
     Parameters
     ----------
-    s: str
-       If `s` starts with 'r' it is interpreted as radians [0:2pi].
-       If `s` starts with 'a' it is interpreted as a regular angle [0:360].
-       If `s` ends with 'r' it returns in radians.
-       If `s` ends with 'a' it returns in regular angle.
+    s : str
+       If `s` starts with ``'r'`` it is interpreted as radians ``[0:2pi]``.
+       If `s` starts with ``'a'`` it is interpreted as a regular angle ``[0:360]``.
+       If `s` ends with ``'r'`` it returns in radians.
+       If `s` ends with ``'a'`` it returns in regular angle.
 
        `s` may be any mathematical equation which can be 
        intercepted through `eval`.
-
-    radians: bool, True
+    radians : bool
        Whether the returned angle is in radians. 
-       Note than an 'r' at the end of `s` has precedence.
-    in_radians: bool, True
+       Note than an ``'r'`` at the end of `s` has precedence.
+    in_radians : bool
        Whether the calculated angle is in radians. 
-       Note than an 'r' at the beginning of `s` has precedence.
+       Note than an `'r'` at the beginning of `s` has precedence.
+    
+    Returns
+    -------
+    float
+       the angle in the requested unit
     """
     s = s.lower()
 

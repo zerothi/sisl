@@ -13,9 +13,10 @@ __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
 
 # Function to change a string to a range of atoms
 def strmap(func, s, sep='b'):
-    """ Parse a string as though it was a slice and map all entries using `cast`.
+    """ Parse a string as though it was a slice and map all entries using ``func``.
 
-    This parses the string but allows relatively simple slices:
+    Examples
+    --------
     >>> strmap('1')
     [func('1')]
     >>> strmap('1-2')
@@ -27,10 +28,10 @@ def strmap(func, s, sep='b'):
     ----------
     func : function
        function to parse every match with
-    s    : str
+    s    : ``str``
        the string that should be parsed
-    sep  : str ('b', 'c', '*'/'s')
-       optional separator used, 'b' is square brackets, 'c', curly braces, and '*'/'s' is the star
+    sep  : ``str`` (``'b'``, ``'c'``, ``'*'``/``'s'``)
+       optional separator used, ``'b'`` is square brackets, ``'c'``, curly braces, and ``'*'``/``'s'`` is the star
     """
 
     if sep == 'b':
@@ -94,7 +95,7 @@ def strseq(cast, s):
     ----------
     cast: function
        parser of the individual elements
-    s: str
+    s: ``str``
        string with content
 
     Examples
@@ -199,6 +200,13 @@ def fileindex(f, cast=int):
       file[1,2,3-6]
     in which case it will return:
       file, [1,2,3,4,5,6]
+
+    Parameters
+    ----------
+    f : ``str``
+       filename to parse
+    cast : function
+       the function to cast the bracketed value
     """
 
     if '[' not in f:
