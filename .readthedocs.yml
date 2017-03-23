@@ -1,0 +1,8 @@
+requirements_file: docs/requirements.txt
+
+formats:
+    - epub
+    - htmlzip
+
+#conda:
+#    file: docs/conda.yml

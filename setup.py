@@ -159,8 +159,8 @@ def write_version(filename='sisl/info.py'):
 major   = {version[0]}
 minor   = {version[1]}
 micro   = {version[2]}
-version = '.'.join(map(str,{version}))
-release = {release}
+version = '.'.join(map(str,[major, minor]))
+release = '.'.join(map(str,{version}))
 # Git information
 git_revision = '{git}'
 git_revision_short = git_revision[:7]
@@ -173,11 +173,25 @@ if not release:
     GIT_REV = git_version()
 
     with open(filename, 'w') as fh:
-        fh.write(version_str.format(version=[MAJOR, MINOR, MICRO],
-                                    release=str(ISRELEASED),
-                                    git=GIT_REV))
+        fh.write(version_str.format(version=[MAJOR, MINOR, MICRO], git=GIT_REV))
 
 if __name__ == '__main__':
+
+    # First figure out if we should define the
+    # version file
+    try:
+        only_idx = sys.argv.index('only-version')
+    except:
+        only_idx = 0
+    if only_idx > 0:
+        # Figure out if we should write a specific file
+        print("Only creating the version file")
+        if len(sys.argv) > only_idx + 1:
+            vF = sys.argv[only_idx+1]
+            write_version(vF)
+        else:
+            write_version()
+        sys.exit(0)
 
     try:
         # Create version file
