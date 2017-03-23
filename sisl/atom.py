@@ -1037,6 +1037,18 @@ class Atom(with_metaclass(AtomMeta, object)):
         """ Return the maximum range of orbitals. """
         return np.amax(self.R)
 
+    def scale(self, scale):
+        """ Scale the atomic radii and return an equivalent atom.
+
+        Parameters
+        ----------
+        scale : ``float``
+           the scale factor for the atomic radii
+        """
+        new = self.copy()
+        new.R = np.where(new.R > 0, new.R * scale, new.R)
+        return new
+
     def __repr__(self):
         return '{0}, Z: {1:d}, orbs: {2:d}, mass(au): {3:.5f}, dR: {4:.5f}'.format(self.tag, self.Z, self.orbs, self.mass, self.dR)
 
@@ -1201,6 +1213,19 @@ class Atoms(object):
         """ Return an array of masses of the contained objects """
         umass = np.array([a.mass for a in self.atom], np.float64)
         return umass[self.specie[:]]
+
+    def scale(self, scale):
+        """ Scale the atomic radii and return an equivalent atom.
+
+        Parameters
+        ----------
+        scale : ``float``
+           the scale factor for the atomic radii
+        """
+        atoms = Atoms()
+        atoms._atom = [a.scale(scale) for a in self._atom]
+        atoms._specie = np.copy(self._specie)
+        return atoms
 
     def index(self, atom):
         """ Return the species index of the atom object """

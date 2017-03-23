@@ -222,6 +222,17 @@ class SuperCell(object):
                 idx.append(i)
         return idx
 
+    def scale(self, scale):
+        """ Scale lattice vectors
+
+        Parameters
+        ----------
+        scale : ``float``
+           the scale factor for the new lattice vectors
+        """
+        cell = self.cell * scale
+        return self.__class__(cell, np.copy(self.nsc))
+
     def cut(self, seps, axis):
         """ Cuts the cell into several different sections. """
         cell = np.copy(self.cell)

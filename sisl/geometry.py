@@ -13,7 +13,8 @@ from itertools import product
 
 import numpy as np
 
-from ._help import _str, is_python3
+from ._help import _str
+from ._help import _range as range
 from ._help import array_fill_repeat, ensure_array
 from ._help import isiterable, isndarray
 from .utils import *
@@ -23,10 +24,6 @@ from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 
 __all__ = ['Geometry', 'sgeom']
-
-if not is_python3:
-    # Make range an iterator...
-    range = xrange
 
 
 class Geometry(SuperCellChild):
@@ -1256,6 +1253,20 @@ class Geometry(SuperCellChild):
             return self.axyz(atom) + offset
 
         return self.axyz(atom) + offset[None, :]
+
+    def scale(self, scale):
+        """ Scale coordinates and unit-cell to get a new geometry with proper scaling
+
+        Parameters
+        ----------
+        scale : ``float``
+           the scale factor for the new geometry (lattice vectors, coordinates
+           and the atomic radii are scaled).
+        """
+        xyz = self.xyz * scale
+        atom = self.atom.scale(scale)
+        sc = self.sc.scale(scale)
+        return self.__class__(xyz, atom=atom, sc=sc)
 
     def within_sc(self, shapes, isc=None,
                   idx=None, idx_xyz=None,

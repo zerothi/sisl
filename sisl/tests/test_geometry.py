@@ -383,6 +383,11 @@ class TestGeometry(object):
         assert_true(len(rev) == 2)
         assert_true(np.allclose(rev.xyz[::-1, :], self.g.xyz))
 
+    def test_scale1(self):
+        two = self.g.scale(2)
+        assert_true(len(two) == len(self.g))
+        assert_true(np.allclose(two.xyz[:, :] / 2., self.g.xyz))
+
     def test_close1(self):
         three = range(3)
         for ia in self.mol:
