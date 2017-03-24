@@ -72,7 +72,7 @@ rst_epilog = """
 """
 
 import glob
-autosummary_generate = glob.glob('*.rst') + glob.glob('sisl/*.rst')
+autosummary_generate = glob.glob('sisl/*.rst')
 
 # General information about the project.
 project = u'sisl'

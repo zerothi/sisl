@@ -13,6 +13,13 @@
 |donate|_
 
 
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+
+   scripts/scripts
+   rst/files
+
 Welcome to sisl's documentation!
 ================================
 
@@ -20,7 +27,7 @@ This documentation has been created from version: |release|.
 
 `sisl` is a tool to easily create geometries and, in general, handle
 data output files from various DFT codes.
-It is particularly developed with SIESTA_ /TranSIESTA_ /TBtrans_ in mind
+It is particularly developed with `SIESTA`_/`TranSIESTA`_/`TBtrans`_ in mind
 due to my own development of TranSIESTA_ and TBtrans_.
 
 Secondly it provides an *easy* interface for creating and examining
@@ -93,18 +100,17 @@ To succesfully use `sisl` these Python packages must be installed:
  - `scipy`_ 
  - `netcdf4-python`_
 
-Indices and Tables
-==================
+
+API links
+=========
 
 .. autosummary::
    sisl
+   sisl.atom
+   sisl.geometry
+   sisl.grid
+   sisl.supercell
 
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-   
-   files
-   scripts
 
 Indices
 -------

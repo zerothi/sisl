@@ -9,4 +9,6 @@ with *all* the data files compatible with `sisl`.
    :maxdepth: 1
    :glob:   
 
-   scripts/*
+   sdata
+   sgeom
+   sgrid
