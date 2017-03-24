@@ -29,7 +29,6 @@ Topic :: Software Development
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Physics
 Topic :: Utilities
-Operating System :: OS Independent
 """
 
 MAJOR = 0
@@ -89,7 +88,7 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
          'sdata = sisl.utils.sdata:sdata']
     },
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
-    platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
+    platforms='any',
     install_requires=build_requires,
 )
 
