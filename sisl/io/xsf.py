@@ -177,12 +177,11 @@ class XSFSile(Sile):
 
                 vector = None
                 if hasattr(input_sile, 'read_{}'.format(routine)):
-                    vector = getattr(input_sile, 'read_{}'.format(routine))()
+                    vector = getattr(input_sile, 'read_{}'.format(routine))(*values)
 
                 if vector is None:
                     # Try the read_data function
-                    d = dict()
-                    d[routine] = True
+                    d = {routine: True}
                     vector = input_sile.read_data(*values, **d)
 
                 # Clean the sile
