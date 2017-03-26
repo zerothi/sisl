@@ -13,7 +13,7 @@ import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype
 from sisl._help import _zip as zip
-from sisl.sparse import SparseCSR, iter_spmatrix
+from sisl.sparse import SparseCSR, ispmatrix, ispmatrixd
 
 __all__ = ['Hamiltonian', 'TightBinding']
 
@@ -592,10 +592,10 @@ class Hamiltonian(object):
 
             # diagonal elements
             Hf1 = self.tocsr(0)[:, si*no:(si+1)*no] * phase
-            for i, j, h in iter_spmatrix(Hf1):
+            for i, j, h in ispmatrixd(Hf1):
                 H[i*2, j*2] += h
             Hf1 = self.tocsr(1)[:, si*no:(si+1)*no] * phase
-            for i, j, h in iter_spmatrix(Hf1):
+            for i, j, h in ispmatrixd(Hf1):
                 H[1+i*2, 1+j*2] += h
 
             # off-diagonal elements
@@ -603,7 +603,7 @@ class Hamiltonian(object):
             Hf2 = self.tocsr(3)[:, si*no:(si+1)*no]
             # We expect Hf1 and Hf2 to be aligned equivalently!
             # TODO CHECK
-            for i, j, hr in iter_spmatrix(Hf1):
+            for i, j, hr in ispmatrixd(Hf1):
                 # get value for the imaginary part
                 hi = Hf2[i, j]
                 H[i*2, 1+j*2] += (hr - 1j * hi) * phase
@@ -666,7 +666,7 @@ class Hamiltonian(object):
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
             # Setup the overlap for this k-point
             sf = Sf[:, si*no:(si+1)*no]
-            for i, j, s in iter_spmatrix(sf):
+            for i, j, s in ispmatrixd(sf):
                 S[i*2,   j*2] += s
                 S[1+i*2, 1+j*2] += s
 
@@ -949,7 +949,7 @@ class Hamiltonian(object):
 
         # Copy data to the model
         if has_S:
-            for jo, io, h in iter_spmatrix(H):
+            for jo, io in ispmatrix(H):
                 ham.S[jo, io] = S[jo, io]
 
             # If the Hamiltonian for one reason or the other
@@ -961,11 +961,11 @@ class Hamiltonian(object):
             if not skip_S:
                 # Re-convert back to allow index retrieval
                 H = H.tocsr()
-                for jo, io, s in iter_spmatrix(S):
+                for jo, io, s in ispmatrixd(S):
                     ham[jo, io] = (H[jo, io], s)
 
         else:
-            for jo, io, h in iter_spmatrix(H):
+            for jo, io, h in ispmatrixd(H):
                 ham[jo, io] = h
 
         return ham

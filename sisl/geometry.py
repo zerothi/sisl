@@ -249,14 +249,10 @@ class Geometry(SuperCellChild):
         ja : ``int``, ``array_like``
            atomic indices
         """
-        if not isinstance(ia, Integral):
-            if len(ia) > 1:
-                raise ValueError('rij: ia *must* be an integer, please correct input')
-            ia = ia[0]
         xi = self.axyz(ia)
         xj = self.axyz(ja)
         if isinstance(ja, Integral):
-            return np.sqrt(np.sum((xj - xi) ** 2.))
+            return ((xj[0] - xi[0]) ** 2. + (xj[1] - xi[1]) ** 2 + (xj[2] - xi[2]) ** 2) ** .5
         return np.sqrt(np.sum((xj - xi[None, :]) ** 2., axis=1))
 
     def orij(self, io, jo):
@@ -1946,9 +1942,11 @@ class Geometry(SuperCellChild):
         """
         ia = ensure_array(ia)
         idx = ia // self.na
-        if len(idx) == 1:
-            return self.sc.sc_off[idx[0], :]
-        return self.sc.sc_off[idx, :]
+        try:
+            if len(idx) == 1:
+                return self.sc.sc_off[idx[0], :]
+        except:
+            return self.sc.sc_off[idx, :]
 
     # This function is a bit weird, it returns a real array,
     # however, there should be no ambiguity as it corresponds to th

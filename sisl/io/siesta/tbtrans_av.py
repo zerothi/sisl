@@ -19,7 +19,6 @@ from .tbtrans import tbtncSileSiesta, phtncSileSiesta
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl.sparse import iter_spmatrix
 from sisl._help import _str
 from sisl._help import _range as range
 from sisl.units.siesta import unit_convert

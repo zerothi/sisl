@@ -82,7 +82,7 @@ author = u'Nick R. Papior'
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-sys.path.insert(0, os.path.dirname(__file__) )
+sys.path.insert(0, os.path.dirname(__file__))
 from setup import MAJOR, MINOR, MICRO
 version = '.'.join(map(str, [MAJOR, MINOR, MICRO]))
 release = version
@@ -324,4 +324,3 @@ def setup(app):
         sp.call(['bash', 'run_pre.sh'])
         print("\n# Done running run_pre.sh")
     print("")
-    

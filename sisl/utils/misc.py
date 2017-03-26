@@ -112,7 +112,7 @@ def direction(d):
     d: {0, 'X', 'x', 1, 'Y', 'y',  2, 'Z', 'z'}
        returns the integer that corresponds to the coordinate index.
        If it is an integer, it is returned *as is*.
-    
+
     Returns
     -------
     int
@@ -159,7 +159,7 @@ def angle(s, radians=True, in_radians=True):
     in_radians : bool
        Whether the calculated angle is in radians. 
        Note than an `'r'` at the beginning of `s` has precedence.
-    
+
     Returns
     -------
     float

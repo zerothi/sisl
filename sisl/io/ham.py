@@ -10,15 +10,12 @@ from .sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
+from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.quantity import Hamiltonian
-from sisl._help import is_python3
+from sisl._help import _zip as zip
 
 
 __all__ = ['HamiltonianSile']
-
-
-if not is_python3:
-    from itertools import izip as zip
 
 
 class HamiltonianSile(Sile):
@@ -300,7 +297,7 @@ class HamiltonianSile(Sile):
                     S.eliminate_zeros()
 
                 # Ensure that S and H have the same sparsity pattern
-                for jo, io, s in iter_spmatrix(S):
+                for jo, io, s in ispmatrix(S):
                     H[jo, io] = H[jo, io]
 
             del ut
@@ -318,7 +315,7 @@ class HamiltonianSile(Sile):
             # We have a contribution, write out the information
             self._write('\nbegin matrix {0:d} {1:d} {2:d}\n'.format(*isc))
             if advanced:
-                for jo, io, h in iter_spmatrix(Hsub):
+                for jo, io, h in ispmatrixd(Hsub):
                     if not ham.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:
@@ -335,7 +332,7 @@ class HamiltonianSile(Sile):
                             fmt2_str.format(
                                 a[0], o[0], a[1], o[1], h, s))
             else:
-                for jo, io, h in iter_spmatrix(Hsub):
+                for jo, io, h in ispmatrixd(Hsub):
                     if not ham.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:

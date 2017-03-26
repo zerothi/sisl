@@ -7,7 +7,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
-from sisl.sparse import SparseCSR, iter_spmatrix
+from sisl.sparse import *
 
 
 @attr('sparse')
@@ -151,9 +151,38 @@ class TestSparseCSR(object):
         a = self.s1.tocsr()
         for func in ['csr', 'csc', 'coo', 'lil']:
             a = getattr(a, 'to' + func)()
-            for r, c, d in iter_spmatrix(a):
+            for r, c in ispmatrix(a):
                 assert_true(r in [0, 2])
                 assert_true(c in e[r])
+
+        for func in ['csr', 'csc', 'coo', 'lil']:
+            a = getattr(a, 'to' + func)()
+            for r, c, d in ispmatrixd(a):
+                assert_true(r in [0, 2])
+                assert_true(c in e[r])
+                assert_true(d == 1.)
+
+    def test_iterator3(self):
+        e = [[1, 2, 3], [], [1, 2, 4]]
+        self.s1[0, [1, 2, 3]] = 1
+        self.s1[2, [1, 2, 4]] = 1.
+        a = self.s1.tocsr()
+        for func in ['csr', 'csc', 'coo', 'lil']:
+            a = getattr(a, 'to' + func)()
+            for r, c in ispmatrix(a):
+                assert_true(r in [0, 2])
+                assert_true(c in e[r])
+
+        # number of mapped values
+        nvals = 2
+        for func in ['csr', 'lil']:
+            a = getattr(a, 'to' + func)()
+            n = 0
+            for r, c in ispmatrix(a, lambda x: x%2, lambda x: x%2):
+                assert_true(r == 0)
+                assert_true(c in [0, 1])
+                n += 1
+            assert_true(n == nvals)
 
     def test_delitem1(self):
         self.s1[0, [1, 2, 3]] = 1

@@ -1,4 +1,4 @@
-"""
+""" 
 Sparsity pattern used to express matrices in concise manners.
 """
 from __future__ import print_function, division
@@ -21,17 +21,14 @@ from numpy import array, asarray, empty, zeros, arange
 from numpy import intersect1d, setdiff1d
 from numpy import argsort, unique, in1d
 
-from sisl._help import ensure_array, get_dtype, is_python3
+from sisl._help import ensure_array, get_dtype
+from sisl._help import _range as range, _zip as zip
+
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
 
-__all__ = ['SparseCSR', 'iter_spmatrix']
-
-
-if not is_python3:
-    range = xrange
-    from itertools import izip as zip
+__all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 
 class SparseCSR(object):
@@ -881,36 +878,169 @@ class SparseCSR(object):
             pass
 
 
-def _map_row(r):
-    return r
+def ispmatrix(matrix, map_row=None, map_col=None):
+    """ Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
 
-
-def _map_col(c):
-    return c
-
-# Local variables for checking the sparse matrix format
-
-
-def iter_spmatrix(matrix, map_row=None, map_col=None):
-    """ Iterator for iterating the elements in a ``scipy.sparse.*_matrix`` 
-
-    This will always return:
-    >>> (row, column, matrix-element)
+    If either `map_row` or `map_col` are not None the generator will only yield
+    the unique values.
 
     Parameters
     ----------
-    matrix : ``scipy.sparse.sp_matrix``
+    matrix : scipy.sparse.sp_matrix
       the sparse matrix to iterate non-zero elements
-    map_row : ``func`` (`None`)
-      map each row entry through the function `map_row`
-    map_col : ``func`` (`None`)
-      map each column entry through the function `map_col`
+    map_row : func, optional
+      map each row entry through the function `map_row`, defaults to `None` which is 
+      equivalent to no mapping.
+    map_col : func, optional
+      map each column entry through the function `map_col`, defaults to `None` which is 
+      equivalent to no mapping.
+
+    Yields
+    ------
+    int, int
+       the row, column indices of the non-zero elements
+    """
+
+    if map_row is None and map_col is None:
+        # Skip unique checks
+        for r, c in _ispmatrix_all(matrix):
+            yield r, c
+        return
+
+    if map_row is None:
+        map_row = lambda x: x
+    if map_col is None:
+        map_col = lambda x: x
+    map_row = np.vectorize(map_row)
+    map_col = np.vectorize(map_col)
+
+    nrow = len(np.unique(map_row(np.arange(matrix.shape[0]))))
+    ncol = len(np.unique(map_col(np.arange(matrix.shape[1]))))
+    rows = np.zeros(nrow, dtype=np.bool_)
+    cols = np.zeros(ncol, dtype=np.bool_)
+
+    # Initialize the unique arrays
+    rows[:] = False
+
+    # Consider using the numpy nditer function for buffered iterations
+    #it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
+    #               flags=['buffered'], op_flags=['readonly'])
+
+    if isspmatrix_csr(matrix):
+        for r in range(matrix.shape[0]):
+            rr = map_row(r)
+            if rows[rr]: continue
+            rows[rr] = True
+            cols[:] = False
+            for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
+                c = map_col(matrix.indices[ind])
+                if cols[c]: continue
+                cols[c] = True
+                yield rr, c
+
+    elif isspmatrix_lil(matrix):
+        for r in range(matrix.shape[0]):
+            rr = map_row(r)
+            if rows[rr]: continue
+            rows[rr] = True
+            cols[:] = False
+            if len(matrix.rows[r]) == 0:
+                continue
+            for c in map_col(matrix.rows[r]):
+                if cols[c]: continue
+                cols[c] = True
+                yield rr, c
+
+    elif isspmatrix_coo(matrix):
+        raise ValueError("mapping and unique returns are not implemented for COO matrix")
+
+    elif isspmatrix_csc(matrix):
+        raise ValueError("mapping and unique returns are not implemented for CSC matrix")
+
+    elif isinstance(matrix, SparseCSR):
+        for r in range(matrix.shape[0]):
+            rr = map_row(r)
+            if rows[rr]: continue
+            rows[rr] = True
+            cols[:] = False
+            n = matrix.ncol[r]
+            ptr = matrix.ptr[r]
+            for c in map_col(matrix.col[ptr:ptr+n]):
+                if cols[c]: continue
+                cols[c] = True
+                yield rr, c
+
+    else:
+        raise NotImplementedError("The iterator for this sparse matrix has not been implemented")
+
+
+def _ispmatrix_all(matrix):
+    """ Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
+
+    Parameters
+    ----------
+    matrix : scipy.sparse.sp_matrix
+      the sparse matrix to iterate non-zero elements
+
+    Yields
+    ------
+    int, int
+       the row, column indices of the non-zero elements
+    """
+    if isspmatrix_csr(matrix):
+        for r in range(matrix.shape[0]):
+            for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
+                yield r, matrix.indices[ind]
+
+    elif isspmatrix_lil(matrix):
+        for r in range(matrix.shape[0]):
+            for c in matrix.rows[r]:
+                yield r, c
+
+    elif isspmatrix_coo(matrix):
+        for r, c in zip(matrix.row, matrix.col):
+            yield r, c
+
+    elif isspmatrix_csc(matrix):
+        for c in range(matrix.shape[1]):
+            for ind in range(matrix.indptr[c], matrix.indptr[c+1]):
+                yield matrix.indices[ind], c
+
+    elif isinstance(matrix, SparseCSR):
+        for r in range(matrix.shape[0]):
+            n = matrix.ncol[r]
+            ptr = matrix.ptr[r]
+            for c in matrix.col[ptr:ptr+n]:
+                yield r, c
+
+    else:
+        raise NotImplementedError("The iterator for this sparse matrix has not been implemented")
+
+
+def ispmatrixd(matrix, map_row=None, map_col=None):
+    """ Iterator for iterating rows, columns and data for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
+
+    Parameters
+    ----------
+    matrix : scipy.sparse.sp_matrix
+      the sparse matrix to iterate non-zero elements
+    map_row : func, optional
+      map each row entry through the function `map_row`, defaults to `None` which is 
+      equivalent to no mapping.
+    map_col : func, optional
+      map each column entry through the function `map_col`, defaults to `None` which is 
+      equivalent to no mapping.
+
+    Yields
+    ------
+    int, int, <>
+       the row, column and data of the non-zero elements
     """
 
     if map_row is None:
-        map_row = _map_row
+        map_row = lambda x: x
     if map_col is None:
-        map_col = _map_col
+        map_col = lambda x: x
 
     # Consider using the numpy nditer function for buffered iterations
     #it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
@@ -939,8 +1069,12 @@ def iter_spmatrix(matrix, map_row=None, map_col=None):
                 yield map_row(matrix.indices[ind]), cc, matrix.data[ind]
 
     elif isinstance(matrix, SparseCSR):
-        for r, c in matrix:
-            yield map_row(r), map_col(c), matrix[r, c]
+        for r in range(matrix.shape[0]):
+            rr = map_row(r)
+            n = matrix.ncol[r]
+            ptr = matrix.ptr[r]
+            for c, d in zip(map_col(matrix.col[ptr:ptr+n]), matrix._D[ind, :]):
+                yield rr, c, d
 
     else:
         raise NotImplementedError("The iterator for this sparse matrix has not been implemented")
