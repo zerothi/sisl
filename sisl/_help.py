@@ -6,7 +6,7 @@ import collections
 
 import numpy as np
 
-__all__ = ['array_fill_repeat', 'ensure_array']
+__all__ = ['array_fill_repeat', 'ensure_array', 'ensure_dtype']
 __all__ += ['isndarray', 'isiterable']
 __all__ += ['get_dtype']
 
@@ -74,7 +74,7 @@ _array = np.array
 _asarray = np.asarray
 
 
-def ensure_array(arr, dtype=np.int32):
+def ensure_array(arr, dtype=np.int32, force=True):
     """ Casts a number, list, tuple to a 1D array
 
     This will check which kind of argument `arr` is
@@ -83,12 +83,15 @@ def ensure_array(arr, dtype=np.int32):
 
     Parameters
     ----------
-    arr : number/array_like/iterator
+    arr : number or array_like or iterator
        if this is a number an array of `len() == 1` will
        be returned. Else, the array will be assured
-       to be a ``numpy.ndarray``.
-    dtype : ``numpy.dtype``
+       to be a `numpy.ndarray`.
+    dtype : `numpy.dtype`
        the data-type of the array
+    force : bool
+       if True the returned value will *always* be a `numpy.ndarray`, otherwise
+       if a single number is passed it will return a numpy dtype variable.
     """
     # Complex is the highest common type
     # Real, Integer inherit from Complex
@@ -97,12 +100,24 @@ def ensure_array(arr, dtype=np.int32):
     if isinstance(arr, _ndarray):
         return _asarray(arr, dtype)
     elif isinstance(arr, Complex):
+        if not force:
+            return dtype(arr)
         return _array([arr], dtype)
     elif isiterable(arr):
         # a numpy.ndarray is also iterable
         # hence we *MUST* check that before...
         return _fromiter(arr, dtype)
     return _asarray(arr, dtype)
+
+
+def ensure_dtype(arr, dtype=np.int32):
+    """ Wrapper for `ensure_array(..., force=False)` for returning numbers as well
+
+    See Also
+    --------
+    ensure_array
+    """
+    return ensure_array(arr, dtype, force=False)
 
 
 def get_dtype(var, int=None, other=None):

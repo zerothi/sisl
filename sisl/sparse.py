@@ -6,20 +6,20 @@ from __future__ import print_function, division
 import warnings
 from numbers import Integral, Real, Complex
 
+# To speed up the extension algorithm we limit
+# the lookup table
+import numpy as np
+from numpy import where, insert, diff
+from numpy import array, asarray, empty, zeros, arange
+from numpy import intersect1d, setdiff1d
+from numpy import argsort, unique, in1d
+
 from scipy.sparse import isspmatrix
 from scipy.sparse import coo_matrix, isspmatrix_coo
 from scipy.sparse import csr_matrix, isspmatrix_csr
 from scipy.sparse import csc_matrix, isspmatrix_csc
 from scipy.sparse import lil_matrix, isspmatrix_lil
 
-import numpy as np
-
-# To speed up the extension algorithm we limit
-# the lookup table
-from numpy import where, insert, diff
-from numpy import array, asarray, empty, zeros, arange
-from numpy import intersect1d, setdiff1d
-from numpy import argsort, unique, in1d
 
 from sisl._help import ensure_array, get_dtype
 from sisl._help import _range as range, _zip as zip
@@ -348,44 +348,37 @@ class SparseCSR(object):
         # Signal that we indeed have finalized the data
         self._finalized = True
 
-    def iter_nnz(self, i=None):
+    def iter_nnz(self, row=None):
         """ Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements
 
         An iterator returning the current row index and the corresponding column index.
 
-        >>> for i, j in self:
+        >>> for r, c in self:
 
-        In the above case `i` and `j` are elements such that
+        In the above case `r` and `c` are rows and columns such that
 
-        >>> self[i,j] 
+        >>> self[r, c] 
 
         returns the non-zero element of the sparse matrix.
 
         Parameters
         ----------
-        i : `int=<all>`, `array_like`
+        row : `int=<all>`, `array_like`
            only loop on the given row(s) default to all rows
         """
-        if i is None:
+        if row is None:
             # loop on rows
-            for i in range(self.shape[0]):
-                n = self.ncol[i]
-                # quick step if no elements exists
-                if n == 0:
-                    continue
-                ptr = self.ptr[i]
-                for j in self.col[ptr:ptr+n]:
-                    yield i, j
+            for r in range(self.shape[0]):
+                n = self.ncol[r]
+                ptr = self.ptr[r]
+                for c in self.col[ptr:ptr+n]:
+                    yield r, c
         else:
-            i = ensure_array(i)
-            for ii in i:
-                n = self.ncol[ii]
-                # quick step if no elements exists
-                if n == 0:
-                    continue
-                ptr = self.ptr[ii]
-                for j in self.col[ptr:ptr+n]:
-                    yield ii, j
+            for r in ensure_array(row):
+                n = self.ncol[r]
+                ptr = self.ptr[r]
+                for c in self.col[ptr:ptr+n]:
+                    yield r, c
 
     # Define default iterator
     __iter__ = iter_nnz

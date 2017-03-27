@@ -48,7 +48,7 @@ class TestGeometryReturn(object):
         d = self.g.rij(0, [0, 1])
         assert_true(len(d) == 2)
         d = self.g.rij([0], [0, 1])
-        assert_true(len(d) == 2)
+        assert_true(len(d) == 1)
 
         # also test orij
         d = self.g.orij(0, 1)
@@ -56,14 +56,24 @@ class TestGeometryReturn(object):
         d = self.g.orij(0, [0, 1])
         assert_true(len(d) == 2)
         d = self.g.orij([0], [0, 1])
-        assert_true(len(d) == 2)
+        assert_true(len(d) == 1)
 
-    @raises(ValueError)
     def test_rij2(self):
         d = self.g.rij([0, 1], [0, 1])
+        assert_true(np.allclose(d, [0., 0.]))
+
+    def test_osc2uc(self):
+        # single value
+        d = self.g.osc2uc(0)
+        assert_true(d == 0)
+        # more values
+        d = self.g.osc2uc([0, 1, 2])
+        assert_true(len(d) == 3)
+        assert_true(np.allclose(d, [0, 1, 0]))
 
     def test_slice1(self):
         d = self.g[1]
+        print(d)
         assert_true(len(d) == 3)
         d = self.g[[1, 2]]
         assert_true(d.shape == (2, 3))

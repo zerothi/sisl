@@ -1,6 +1,10 @@
 0.8.2
 =====
 
+- Speeded up tbtrans.py analyzing methods enourmously by introducing
+  faster sparse iterators. Now one can easily perform data-analysis on
+  systems in excess of 10.000 atoms very fast.
+
 - Added the TBT.AV.nc file which is meant to be created by `sisl` from
   the TBT.nc files (i.e. create the k-averaged output).
   This enables users to run tbtrans, create the k-averaged output, and

@@ -15,7 +15,7 @@ import numpy as np
 
 from ._help import _str
 from ._help import _range as range
-from ._help import array_fill_repeat, ensure_array
+from ._help import array_fill_repeat, ensure_array, ensure_dtype
 from ._help import isiterable, isndarray
 from .utils import *
 from .quaternion import Quaternion
@@ -244,15 +244,19 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        ia : ``int``
+        ia : int or array_like
            atomic index of first atom
-        ja : ``int``, ``array_like``
+        ja : int or array_like
            atomic indices
         """
         xi = self.axyz(ia)
         xj = self.axyz(ja)
+
         if isinstance(ja, Integral):
             return ((xj[0] - xi[0]) ** 2. + (xj[1] - xi[1]) ** 2 + (xj[2] - xi[2]) ** 2) ** .5
+        elif np.all(xi.shape == xj.shape):
+            return np.sqrt(np.sum((xj - xi) ** 2., axis=1))
+
         return np.sqrt(np.sum((xj - xi[None, :]) ** 2., axis=1))
 
     def orij(self, io, jo):
@@ -650,7 +654,7 @@ class Geometry(SuperCellChild):
         cell   : ``array_like``, ``SuperCell`` (`self.cell`)
             the new associated cell of the geometry
         """
-        atms = ensure_array(atom).flatten() % self.na
+        atms = self.sc2uc(atom)
         if cell is None:
             return self.__class__(self.xyz[atms, :],
                                   atom=self.atom.sub(atms), sc=self.sc.copy())
@@ -722,7 +726,7 @@ class Geometry(SuperCellChild):
         atom  : ``array_like``
             indices of all atoms to be removed.
         """
-        atms = ensure_array(atom).flatten() % self.na
+        atms = self.sc2uc(atom)
         idx = np.setdiff1d(np.arange(self.na), atms, assume_unique=True)
         return self.sub(idx)
 
@@ -1220,9 +1224,13 @@ class Geometry(SuperCellChild):
         [[ 1.   0.   0. ]
          [ 1.5  0.   0. ]]
 
+        >>> geom = Geometry(cell=1., xyz=[[0,0,0],[0.5,0,0]])
+        >>> print(geom.axyz(0))
+        [ 1.   0.   0. ]
+
         Parameters
         ----------
-        atom : ``int``, ``array_like``
+        atom : int or array_like
           atom(s) from which we should return the coordinates, the atomic indices
           may be in supercell format.
         isc   : ``array_like``, ``[0,0,0]``
@@ -1237,7 +1245,7 @@ class Geometry(SuperCellChild):
             # get offsets from atomic indices (note that this will be per atom)
             isc = self.a2isc(atom)
             offset = self.sc.offset(isc)
-            return self.xyz[np.asarray(atom) % self.na, :] + offset
+            return self.xyz[self.sc2uc(atom), :] + offset
 
         elif atom is None:
             offset = self.sc.offset(isc)
@@ -1646,7 +1654,7 @@ class Geometry(SuperCellChild):
                                    ret_coord=True, ret_dist=True)
             i = np.argmin(d[1])
             # Convert to unitcell atom (and get the one atom)
-            idx = self.sc2uc(idx[1][i])[0]
+            idx = self.sc2uc(idx[1][i])
             c = c[1][i]
             d = d[1][i]
 
@@ -1921,7 +1929,7 @@ class Geometry(SuperCellChild):
 
     def sc2uc(self, atom, uniq=False):
         """ Returns atom from super-cell indices to unit-cell indices, possibly removing dublicates """
-        atom = ensure_array(atom)
+        atom = ensure_dtype(atom)
         if uniq:
             return np.unique(atom % self.na)
         return atom % self.na
@@ -1929,7 +1937,7 @@ class Geometry(SuperCellChild):
 
     def osc2uc(self, orbs, uniq=False):
         """ Returns orbitals from super-cell indices to unit-cell indices, possibly removing dublicates """
-        orbs = ensure_array(orbs)
+        orbs = ensure_dtype(orbs)
         if uniq:
             return np.unique(orbs % self.no)
         return orbs % self.no
@@ -1940,13 +1948,8 @@ class Geometry(SuperCellChild):
 
         Returns a vector of 3 numbers with integers.
         """
-        ia = ensure_array(ia)
-        idx = ia // self.na
-        try:
-            if len(idx) == 1:
-                return self.sc.sc_off[idx[0], :]
-        except:
-            return self.sc.sc_off[idx, :]
+        idx = ensure_dtype(ia) // self.na
+        return self.sc.sc_off[idx, :]
 
     # This function is a bit weird, it returns a real array,
     # however, there should be no ambiguity as it corresponds to th
@@ -1963,10 +1966,7 @@ class Geometry(SuperCellChild):
 
         Returns a vector of 3 numbers with integers.
         """
-        io = ensure_array(io)
-        idx = io // self.no
-        if len(idx) == 1:
-            return self.sc.sc_off[idx[0], :]
+        idx = ensure_dtype(io) // self.no
         return self.sc.sc_off[idx, :]
 
     def o2sc(self, o):
