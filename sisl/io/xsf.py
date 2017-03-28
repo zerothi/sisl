@@ -223,7 +223,7 @@ Any arguments inbetween are passed to the `read_data` function (in order).
                 if hasattr(ns, '_vector'):
                     v = getattr(ns, '_vector')
                     if getattr(ns, '_vector_scale', True):
-                        v /= np.max( (v[:, 0]**2 + v[:, 1]**2 + v[:, 2]**2) ** .5)
+                        v /= np.max((v[:, 0]**2 + v[:, 1]**2 + v[:, 2]**2) ** .5)
                     ns._geometry.write(value[0], data=v)
                 else:
                     ns._geometry.write(value[0])

@@ -859,19 +859,19 @@ class Geometry(SuperCellChild):
         # Create the geometry and return it
         return self.__class__(xyz, atom=self.atom.repeat(reps), sc=sc)
 
-    def rotatea(self, angle, only='abc+xyz', radians=False):
+    def rotatea(self, angle, origo=None, only='abc+xyz', radians=False):
         """ Rotate around first lattice vector, see ``rotate`` """
-        return self.rotate(angle, self.cell[0, :], only=only, radians=radians)
+        return self.rotate(angle, self.cell[0, :], origo, only, radians)
 
-    def rotateb(self, angle, only='abc+xyz', radians=False):
+    def rotateb(self, angle, origo=None, only='abc+xyz', radians=False):
         """ Rotate around second lattice vector, see ``rotate`` """
-        return self.rotate(angle, self.cell[1, :], only=only, radians=radians)
+        return self.rotate(angle, self.cell[1, :], origo, only, radians)
 
-    def rotatec(self, angle, only='abc+xyz', radians=False):
+    def rotatec(self, angle, origo=None, only='abc+xyz', radians=False):
         """ Rotate around third lattice vector, see ``rotate`` """
-        return self.rotate(angle, self.cell[2, :], only=only, radians=radians)
+        return self.rotate(angle, self.cell[2, :], origo, only, radians)
 
-    def rotate(self, angle, v, only='abc+xyz', radians=False):
+    def rotate(self, angle, v, origo=None, only='abc+xyz', radians=False):
         """
         Rotates the geometry, in-place by the angle around the vector
 
@@ -886,23 +886,37 @@ class Geometry(SuperCellChild):
         angle : ``float``
              the angle in radians of which the geometry should be rotated
         v     : ``array_like`` [3]
-             the vector around the rotation is going to happen
-             v = [1,0,0] will rotate in the ``yz`` plane
+             the normal vector to the rotated plane, i.e.
+             v = [1,0,0] will rotate the ``yz`` plane
+        origo : ``array_like`` [0, 0, 0]
+             the origin of rotation. Anything but [0, 0, 0] is equivalent
+             to a `self.move(-origo).rotate(...).move(origo)`.
         only  : ('abc+xyz'), str, optional
              which coordinate subject should be rotated,
              if ``abc`` is in this string the cell will be rotated
              if ``xyz`` is in this string the coordinates will be rotated
         """
+        if origo is None:
+            origo = [0., 0., 0.]
+        origo = ensure_array(origo)
+
+        # Ensure the normal vector is normalized...
         vn = np.copy(np.asarray(v, dtype=np.float64)[:])
         vn /= np.sum(vn ** 2) ** .5
+
+        # Prepare quaternion...
         q = Quaternion(angle, vn, radians=radians)
-        q /= q.norm()  # normalize the quaternion
+        q /= q.norm()
 
         # Rotate by direct call
-        sc = self.sc.rotate(angle, vn, radians=radians, only=only)
+        if 'abc' in only:
+            sc = self.sc.rotate(angle, vn, radians=radians, only=only)
+        else:
+            sc = self.sc.copy()
 
         if 'xyz' in only:
-            xyz = q.rotate(self.xyz)
+            # subtract and add origo, before and after rotation
+            xyz = q.rotate(self.xyz - origo[None, :]) + origo[None, :]
         else:
             xyz = np.copy(self.xyz)
 
@@ -2333,7 +2347,7 @@ class Geometry(SuperCellChild):
                 if hasattr(ns, '_vector'):
                     v = getattr(ns, '_vector')
                     if getattr(ns, '_vector_scale', True):
-                        v /= np.max( (v[:, 0]**2 + v[:, 1]**2 + v[:, 2]**2) ** .5)
+                        v /= np.max((v[:, 0]**2 + v[:, 1]**2 + v[:, 2]**2) ** .5)
                     kwargs['data'] = v
                 ns._geometry.write(value[0], **kwargs)
                 # Issue to the namespace that the geometry has been written, at least once.

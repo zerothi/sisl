@@ -1,6 +1,15 @@
 0.8.2
 =====
 
+- Added origo argument to rotation functions. Previously this could be
+  accomblished by:
+
+      rotated = geometry.move(-origo).rotate(...).move(origo)
+
+  while now it is:
+
+      rotated = geometry.rotate(..., origo=origo)
+
 - Speeded up tbtrans.py analyzing methods enourmously by introducing
   faster sparse iterators. Now one can easily perform data-analysis on
   systems in excess of 10.000 atoms very fast.
