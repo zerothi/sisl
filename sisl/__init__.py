@@ -24,6 +24,8 @@ from .grid import *
 
 from .io import *
 
+from .sparse import *
+
 # Hamiltonian etc.
 from .quantity import *
 
