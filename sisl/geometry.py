@@ -2331,7 +2331,10 @@ class Geometry(SuperCellChild):
                 if hasattr(ns, '_geom_fmt'):
                     kwargs['fmt'] = ns._geom_fmt
                 if hasattr(ns, '_vector'):
-                    kwargs['data'] = ns._vector
+                    v = getattr(ns, '_vector')
+                    if getattr(ns, '_vector_scale', True):
+                        v /= np.max( (v[:, 0]**2 + v[:, 1]**2 + v[:, 2]**2) ** .5)
+                    kwargs['data'] = v
                 ns._geometry.write(value[0], **kwargs)
                 # Issue to the namespace that the geometry has been written, at least once.
                 ns._stored_geometry = True
@@ -2340,8 +2343,7 @@ class Geometry(SuperCellChild):
 
         # If the user requests positional out arguments, we also add that.
         if kwargs.get('positional_out', False):
-            p.add_argument('out', nargs='*', default=None,
-                           action=Out,
+            p.add_argument('out', nargs='*', default=None, action=Out,
                            help='Store the geometry (at its current invocation) to the out file.')
 
         # We have now created all arguments

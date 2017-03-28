@@ -153,6 +153,15 @@ class XSFSile(Sile):
         import argparse
 
         # We will add the vector data
+        class VectorNoScale(argparse.Action):
+
+            def __call__(self, parser, ns, values, option_string=None):
+                setattr(ns, '_vector_scale', False)
+        p.add_argument('--no-scale-vector', '-nsv', nargs=0,
+                       action=VectorNoScale,
+                       help='''The vector components are kept as-is and are not scaled (the default is scaling largest number to 1)''')
+
+        # We will add the vector data
         class Vectors(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
@@ -212,11 +221,18 @@ Any arguments inbetween are passed to the `read_data` function (in order).
                     return
                 # If the vector, exists, we should write it
                 if hasattr(ns, '_vector'):
-                    ns._geometry.write(value[0], data=getattr(ns, '_vector', None))
+                    v = getattr(ns, '_vector')
+                    if getattr(ns, '_vector_scale', True):
+                        v /= np.max( (v[:, 0]**2 + v[:, 1]**2 + v[:, 2]**2) ** .5)
+                    ns._geometry.write(value[0], data=v)
                 else:
                     ns._geometry.write(value[0])
                 # Issue to the namespace that the geometry has been written, at least once.
                 ns._stored_geometry = True
+                setattr(ns, '_vector_scale', True)
+
+        # currently adding an argument that is already there does not remove the
+        # old one...
         p.add_argument('--out', '-o', nargs=1, action=Out,
                        help='Store the geometry (plus any vector fields) the out file.')
 
