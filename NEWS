@@ -1,6 +1,9 @@
 0.8.2
 =====
 
+- Fixed reading _hr.dat from Wannier90, now the band-structure of
+  SrTiO3 (Junquera's test example) is correct.
+
 - Added origo argument to rotation functions. Previously this could be
   accomblished by:
 

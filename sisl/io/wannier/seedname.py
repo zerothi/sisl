@@ -3,6 +3,8 @@ Sile object for reading/writing Wannier90 in/output
 """
 from __future__ import print_function
 
+import numpy as np
+
 # Import sile objects
 from .sile import SileW90
 from ..sile import *
@@ -11,7 +13,7 @@ from ..sile import *
 from sisl import Geometry, Atom, SuperCell
 from sisl.quantity import Hamiltonian
 
-import numpy as np
+from sisl.units import unit_convert
 
 __all__ = ['winSileW90']
 
@@ -24,7 +26,8 @@ class winSileW90(SileW90):
         self._seed = self.file.replace('.win', '')
 
     def _set_file(self, suffix):
-        self.file = self._seed + suffix
+        """ Update readed file """
+        self._file = self._seed + suffix
 
     @Sile_fh_open
     def _read_sc(self):
@@ -34,12 +37,27 @@ class winSileW90(SileW90):
         if not f:
             raise ValueError("The unit-cell vectors could not be found in the seed-file.")
 
+        l = self.readline()
+        lines = []
+        while not l.startswith('end'):
+            lines.append(l)
+            l = self.readline()
+
+        # Check whether the first element is a specification of the units
+        pos_unit = lines[0].split()
+        if len(pos_unit) > 2:
+            unit = 1.
+        else:
+            unit = unit_convert(pos_unit[0], 'Ang')
+            # Remove the line with the unit...
+            lines.pop(0)
+
         # Create the cell
         cell = np.empty([3, 3], np.float64)
         for i in [0, 1, 2]:
-            cell[i, :] = [float(x) for x in self.readline().split()]
+            cell[i, :] = [float(x) for x in lines[i].split()]
 
-        return SuperCell(cell)
+        return SuperCell(cell * unit)
 
     def read_sc(self):
         """ Reads a `SuperCell` and creates the Wannier90 cell """
@@ -96,8 +114,9 @@ class winSileW90(SileW90):
         # Time of creation
         self.readline()
 
-        # Retrieve # of wannier functions
+        # Retrieve # of wannier functions (or size of Hamiltonian)
         no = int(self.readline())
+        # Number of Wigner-Seitz degeneracy points
         nrpts = int(self.readline())
 
         # First read across the Wigner-Seitz degeneracy
@@ -108,28 +127,52 @@ class winSileW90(SileW90):
             nlines = nrpts + 15 - nrpts % 15
 
         ws = []
-        wextend = ws.extend
         for i in range(nlines // 15):
-            wextend(map(int, self.readline().split()))
+            ws.extend(map(int, self.readline().split()))
 
-        # Convert to numpy array
-        nws = np.array(ws, np.int32).flatten()
-        del ws, wextend
+        # Convert to numpy array and invert (for weights)
+        ws = 1. / np.array(ws, np.float64).flatten()
 
         # Figure out the number of supercells
+        # and maintain the Hamiltonian in the ham list
         nsc = [0, 0, 0]
+
+        # List for holding the Hamiltonian
+        ham = []
+        iws = -1
 
         while True:
             l = self.readline()
             if l == '':
                 break
 
-            isc = [int(x) for x in l.split(None, 4)[:3]]
-            nsc[0] = max(nsc[0], abs(isc[0]))
-            nsc[1] = max(nsc[1], abs(isc[1]))
-            nsc[2] = max(nsc[2], abs(isc[2]))
+            # Split here...
+            l = l.split()
 
-        geom.set_nsc(np.array(nsc, np.int32)*2+1)
+            # Get super-cell, row and column
+            iA, iB, iC, r, c = map(int, l[:5])
+
+            nsc[0] = max(nsc[0], abs(iA))
+            nsc[1] = max(nsc[1], abs(iB))
+            nsc[2] = max(nsc[2], abs(iC))
+
+            # Update index for degeneracy, if required
+            if r + c == 2:
+                iws += 1
+
+            # Get degeneracy of this element
+            f = ws[iws]
+
+            # Store in the Hamiltonian array:
+            #   isc
+            #   row
+            #   column
+            #   Hr
+            #   Hi
+            ham.append(([iA, iB, iC], r-1, c-1, float(l[5]) * f, float(l[6]) * f))
+
+        # Update number of super-cells
+        geom.set_nsc([i * 2 + 1 for i in nsc])
 
         # With the geometry in place we can read in the entire matrix
         # Create a new sparse matrix
@@ -137,35 +180,18 @@ class winSileW90(SileW90):
         Hr = lil_matrix((geom.no, geom.no_s), dtype=dtype)
         Hi = lil_matrix((geom.no, geom.no_s), dtype=dtype)
 
-        self.fh.seek(0)
-        # Skip lines with wx
-        for i in range(nlines // 15 + 3):
-            self.readline()
+        # populate the Hamiltonian by examining the cutoff value
+        for isc, r, c, hr, hi in ham:
 
-        while True:
-            l = self.readline()
-            if l == '':
-                break
-
-            ls = l.split()
-
-            # Get supercell and wannier functions
-            # isc = idx[:3]
-            # Hij = idx[3:5]
-            idx = map(int, ls[:5])
-            i = idx[3] - 1
-
-            hr = float(ls[5])
-            hi = float(ls[6])
-
-            # Get the offset
-            off = geom.sc_index(idx[:3]) * geom.no
-            j = idx[4] - 1 + off
+            # Calculate the column corresponding to the
+            # correct super-cell
+            c = c + geom.sc_index(isc) * geom.no
 
             if abs(hr) > cutoff:
-                Hr[i, j] = hr
+                Hr[r, c] = hr
             if abs(hi) > cutoff:
-                Hi[i, j] = hi
+                Hi[r, c] = hi
+        del ham
 
         if np.dtype(dtype).kind == 'c':
             Hr = Hr.tocsr()
