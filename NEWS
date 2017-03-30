@@ -1,6 +1,19 @@
 0.8.2
 =====
 
+- Enabled multiplying geometries with integers to emulate `repeat` or
+  `tile` functions:
+
+      >>> geometry * 2 == geometry.tile(2, 0).tile(2, 1).tile(2, 2)
+      >>> geometry * [2, 1, 2] == geometry.tile(2, 0).tile(2, 2)
+      >>> geometry * [2, 2] == geometry.tile(2, 2)
+      >>> geometry * ([2, 1, 2], 'repeat') == geometry.repeat(2, 0).repeat(2, 2)
+      >>> geometry * ([2, 1, 2], 'r') == geometry.repeat(2, 0).repeat(2, 2)
+      >>> geometry * ([2, 0], 'r') == geometry.repeat(2, 0)
+      >>> geometry * ([2, 2], 'r') == geometry.repeat(2, 2)
+
+  This may be considered an advanced feature but useful nonetheless.
+
 - Fixed reading _hr.dat from Wannier90, now the band-structure of
   SrTiO3 (Junquera's test example) is correct.
 

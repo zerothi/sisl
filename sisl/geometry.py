@@ -859,6 +859,79 @@ class Geometry(SuperCellChild):
         # Create the geometry and return it
         return self.__class__(xyz, atom=self.atom.repeat(reps), sc=sc)
 
+    def __mul__(self, m):
+        """ Implement easy repeat function 
+
+        Parameters
+        ----------
+        m : int or tuple or list or (tuple, str) or (list, str)
+           a tuple/list may be of length 2 or 3. A length of 2 corresponds
+           to tuple[0] == *number of multiplications*, tuple[1] is the
+           axis.
+           A length of 3 corresponds to each of the directions.
+           An optional string may be used to specify the `tile` or `repeat` function.
+           The default is the `tile` function.
+
+        Examples
+        --------
+
+        >>> geometry * 2 == geometry.tile(2, 0).tile(2, 1).tile(2, 2)
+        >>> geometry * [2, 1, 2] == geometry.tile(2, 0).tile(2, 2)
+        >>> geometry * [2, 2] == geometry.tile(2, 2)
+        >>> geometry * ([2, 1, 2], 'repeat') == geometry.repeat(2, 0).repeat(2, 2)
+        >>> geometry * ([2, 1, 2], 'r') == geometry.repeat(2, 0).repeat(2, 2)
+        >>> geometry * ([2, 0], 'r') == geometry.repeat(2, 0)
+        >>> geometry * ([2, 2], 'r') == geometry.repeat(2, 2)
+
+        """
+
+        # Simple form
+        if isinstance(m, Integral):
+            return self * [m, m, m]
+
+        # Error in argument, fall-back
+        if len(m) == 1:
+            return self * m[0]
+
+        # Look-up table
+        method = {'r': 'repeat',
+                  'repeat': 'repeat',
+                  't': 'tile',
+                  'tile': 'tile'}
+        def_method = 't'
+
+        # Determine the type
+        if len(m) == 2:
+            # either
+            #  (r, axis)
+            #  ((...), method
+            if isinstance(m[1], _str):
+                def_method = m[1]
+                m = m[0]
+
+        method = method[def_method]
+        if len(m) == 1:
+            #  r
+            m = m[0]
+            g = self.copy()
+            for i in range(3):
+                g = getattr(g, method)(max(m, 1), i)
+
+        elif len(m) == 2:
+            #  (r, axis)
+            g = getattr(self, method)(max(m[0], 1), m[1])
+
+        elif len(m) == 3:
+            #  (r, r, r)
+            g = self.copy()
+            for i in range(3):
+                g = getattr(g, method)(max(m[i], 1), i)
+
+        else:
+            raise ValueError('Multiplying a geometry has received a wrong argument')
+
+        return g
+
     def rotatea(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
         """ Rotate around first lattice vector, see ``rotate`` """
         return self.rotate(angle, self.cell[0, :], origo, atom, only, radians)

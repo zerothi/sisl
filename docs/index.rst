@@ -20,25 +20,32 @@
    scripts/scripts
    rst/files
 
-Welcome to sisl's documentation!
+Welcome to sisl documentation!
 ================================
 
-This documentation has been created from version: |release|.
-
-`sisl` is a tool to easily create geometries and, in general, handle
-data output files from various DFT codes.
-It is particularly developed with `SIESTA`_/`TranSIESTA`_/`TBtrans`_ in mind
-due to my own development of TranSIESTA_ and TBtrans_.
-
-Secondly it provides an *easy* interface for creating and examining
-tight-binding Hamiltonians (dynamical matrices, self-energies, etc.)
-using a fast an intuitive Python class.
-Any Hamiltonian, from tight-binding or DFT, may be written in to a NetCDF4
-file and passed to TBtrans_ for *N*-terminal transport calculations.
+`sisl` is a tool to manipulate an increasing amount of density functional
+theory code input and/or output.
+It is also a tight-binding code which implements extremely fast and scalable
+tight-binding creation algorithms (`>1,000,000` orbitals).
+In particular is `sisl` developed with `TBtrans`_ in mind to act as a tight-binding
+Hamiltonian input engine for *N*-electrode transport calculations.
 
 
 Features
 --------
+
+`sisl` consists of several distinct features:
+
+* Geometries; create, extend, combine, manipulate different geometries readed from
+  a large variety of DFT-codes and/or from generically used file formats.
+
+* Hamiltonian; easily create tight-binding Hamiltonians with user chosen number of
+  orbitals per atom. Or read in Hamiltonians from DFT software such as `SIESTA`_,
+  `Wannier90`_, etc. Secondly, there is intrinsic capability of orthogonal *and*
+  non-orthogonal Hamiltonians.
+
+* Generic output files from DFT-software. A generic set of output files are implemented
+  which provides easy examination of output files.
 
 * Command line utilities for processing of data files for a wide
   variety of file formats:
@@ -55,11 +62,8 @@ Features
   * :ref:`script_sgrid` a real-space grid conversion tool which reads and writes
     many commonly encounted files for real-space grids. *Mainly targetted SIESTA_*.
 
-* Python script which does all the above things *and more*.
-  `sisl` implements many classes for manipulating geometries and nano-structure
-  related physical quantities, e.g. atomic species, unit-cells (with user-defined periodicity), Hamiltonians (orthogonal and non-orthogonal), real-space grids.
-
-
+Introduction
+------------
 
 Installation
 ------------

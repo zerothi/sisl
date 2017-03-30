@@ -98,6 +98,40 @@ class TestGeometry(object):
         t = self.g.tile(2, 0).tile(2, 1).tile(2, 2)
         assert_true(np.allclose(cell, t.sc.cell))
 
+    def test_tile3(self):
+        cell = np.copy(self.g.sc.cell)
+        cell[0, :] *= 2
+        t1 = self.g * (2, 0)
+        assert_true(np.allclose(cell, t1.sc.cell))
+        t = self.g * ((2, 0), 'tile')
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+        cell[1, :] *= 2
+        t1 = t * (2, 1)
+        assert_true(np.allclose(cell, t1.sc.cell))
+        t = t * ((2, 1), 'tile')
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+        cell[2, :] *= 2
+        t1 = t * (2, 2)
+        assert_true(np.allclose(cell, t1.sc.cell))
+        t = t * ((2, 2), 'tile')
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+
+        # Full
+        t = self.g * [2, 2, 2]
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+        t = self.g * ([2, 2, 2], 't')
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+
+    def test_tile4(self):
+        t1 = self.g.tile(2, 0).tile(2, 2)
+        t = self.g * ([2, 0], 't') * [2, 2]
+        assert_true(np.allclose(t1.xyz, t.xyz))
+
     def test_repeat1(self):
         cell = np.copy(self.g.sc.cell)
         cell[0, :] *= 2
@@ -115,6 +149,37 @@ class TestGeometry(object):
         cell[:, :] *= 2
         t = self.g.repeat(2, 0).repeat(2, 1).repeat(2, 2)
         assert_true(np.allclose(cell, t.sc.cell))
+
+    def test_repeat3(self):
+        cell = np.copy(self.g.sc.cell)
+        cell[0, :] *= 2
+        t1 = self.g.repeat(2, 0)
+        assert_true(np.allclose(cell, t1.sc.cell))
+        t = self.g * ((2, 0), 'repeat')
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+        cell[1, :] *= 2
+        t1 = t.repeat(2, 1)
+        assert_true(np.allclose(cell, t1.sc.cell))
+        t = t * ((2, 1), 'r')
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+        cell[2, :] *= 2
+        t1 = t.repeat(2, 2)
+        assert_true(np.allclose(cell, t1.sc.cell))
+        t = t * ((2, 2), 'repeat')
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+
+        # Full
+        t = self.g * ([2, 2, 2], 'r')
+        assert_true(np.allclose(cell, t.sc.cell))
+        assert_true(np.allclose(t1.xyz, t.xyz))
+
+    def test_repeat4(self):
+        t1 = self.g.repeat(2, 0).repeat(2, 2)
+        t = self.g * ([2, 0], 'repeat') * ([2, 2], 'r')
+        assert_true(np.allclose(t1.xyz, t.xyz))
 
     def test_a2o1(self):
         assert_true(0 == self.g.a2o(0))
