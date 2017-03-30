@@ -112,7 +112,7 @@ class SemiInfinite(SelfEnergy):
         if k is None:
             k = np.zeros([3], np.float64)
         else:
-            k = ensure_array(k)
+            k = ensure_array(k, np.float64)
             k[self.semi_inf] = 0.
         return k
 

@@ -176,21 +176,20 @@ class Geometry(SuperCellChild):
         """ Returns the maximum orbital range of the atoms """
         return np.amax(self.atom.dR)
 
-    # Size of the system
-    @property
-    def na_s(self):
-        """ Number of supercell atoms """
-        return self.na * self.n_s
-
+    ## Query size of the Geometry
     @property
     def atoms(self):
         """ Number of atoms """
         return self.na
 
+    def __len__(self):
+        """ Return number of atoms in this geometry """
+        return self.na
+
     @property
-    def no_s(self):
-        """ Number of supercell orbitals """
-        return self.no * self.n_s
+    def na_s(self):
+        """ Number of supercell atoms """
+        return self.na * self.n_s
 
     @property
     def orbitalss(self):
@@ -198,13 +197,16 @@ class Geometry(SuperCellChild):
         return self.no
 
     @property
+    def no_s(self):
+        """ Number of supercell orbitals """
+        return self.no * self.n_s
+
+    ## End size of geometry
+
+    @property
     def lasto(self):
         """ The first orbital on the corresponding atom """
         return self.firsto[1:] - 1
-
-    def __len__(self):
-        """ Return number of atoms in this geometry """
-        return self.na
 
     def __getitem__(self, atom):
         """ Returns geometry coordinates (allows supercell indices)"""
@@ -274,9 +276,7 @@ class Geometry(SuperCellChild):
         jo : ``int``, ``array_like``
            orbital indices
         """
-        i = self.o2a(io)
-        j = self.o2a(jo)
-        return self.rij(i, j)
+        return self.rij(self.o2a(io), self.o2a(jo))
 
     @staticmethod
     def read(sile):
@@ -859,19 +859,19 @@ class Geometry(SuperCellChild):
         # Create the geometry and return it
         return self.__class__(xyz, atom=self.atom.repeat(reps), sc=sc)
 
-    def rotatea(self, angle, origo=None, only='abc+xyz', radians=False):
+    def rotatea(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
         """ Rotate around first lattice vector, see ``rotate`` """
-        return self.rotate(angle, self.cell[0, :], origo, only, radians)
+        return self.rotate(angle, self.cell[0, :], origo, atom, only, radians)
 
-    def rotateb(self, angle, origo=None, only='abc+xyz', radians=False):
+    def rotateb(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
         """ Rotate around second lattice vector, see ``rotate`` """
-        return self.rotate(angle, self.cell[1, :], origo, only, radians)
+        return self.rotate(angle, self.cell[1, :], origo, atom, only, radians)
 
-    def rotatec(self, angle, origo=None, only='abc+xyz', radians=False):
+    def rotatec(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
         """ Rotate around third lattice vector, see ``rotate`` """
-        return self.rotate(angle, self.cell[2, :], origo, only, radians)
+        return self.rotate(angle, self.cell[2, :], origo, atom, only, radians)
 
-    def rotate(self, angle, v, origo=None, only='abc+xyz', radians=False):
+    def rotate(self, angle, v, origo=None, atom=None, only='abc+xyz', radians=False):
         """
         Rotates the geometry, in-place by the angle around the vector
 
@@ -888,9 +888,13 @@ class Geometry(SuperCellChild):
         v     : ``array_like`` [3]
              the normal vector to the rotated plane, i.e.
              v = [1,0,0] will rotate the ``yz`` plane
-        origo : ``array_like`` [0, 0, 0]
+        origo : int or array_like, [0, 0, 0]
              the origin of rotation. Anything but [0, 0, 0] is equivalent
              to a `self.move(-origo).rotate(...).move(origo)`.
+             If this is an `int` it corresponds to the atomic index.
+        atom : int or array_like
+             only rotate the given atomic indices, if not specified, all
+             atoms will be rotated.
         only  : ('abc+xyz'), str, optional
              which coordinate subject should be rotated,
              if ``abc`` is in this string the cell will be rotated
@@ -898,7 +902,13 @@ class Geometry(SuperCellChild):
         """
         if origo is None:
             origo = [0., 0., 0.]
-        origo = ensure_array(origo)
+        elif isinstance(origo, Integral):
+            origo = self.axyz(origo)
+        origo = ensure_array(origo, np.float64)
+
+        if not atom is None:
+            # Only rotate the unique values
+            atom = self.sc2uc(atom, uniq=True)
 
         # Ensure the normal vector is normalized...
         vn = np.copy(np.asarray(v, dtype=np.float64)[:])
@@ -914,11 +924,12 @@ class Geometry(SuperCellChild):
         else:
             sc = self.sc.copy()
 
+        # Copy
+        xyz = np.copy(self.xyz)
+
         if 'xyz' in only:
             # subtract and add origo, before and after rotation
-            xyz = q.rotate(self.xyz - origo[None, :]) + origo[None, :]
-        else:
-            xyz = np.copy(self.xyz)
+            xyz[atom, :] = q.rotate(xyz[atom, :] - origo[None, :]) + origo[None, :]
 
         return self.__class__(xyz, atom=self.atom.copy(), sc=sc)
 

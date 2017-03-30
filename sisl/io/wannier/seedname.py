@@ -19,7 +19,38 @@ __all__ = ['winSileW90']
 
 
 class winSileW90(SileW90):
-    """ Wannier seedname output file object """
+    """ Wannier seedname input file object
+
+    This `Sile` enables easy interaction with the Wannier90 code.
+
+    A seedname is the basis of reading all Wannier90 output because
+    every file in Wannier90 is based of the name of the seed.
+
+    Hence, if the correct flags are present in the seedname.win file,
+    and the corresponding files are created, then the corresponding
+    quantity may be read.
+
+    For instance to read the Wannier-centres you *must* have this in your
+    seedname.win:
+
+        write_xyz = true
+
+    while if you want to read the Wannier Hamiltonian you should have this:
+
+        write_xyz = true
+        plot_hr = true
+
+
+    Examples
+    --------
+
+    >>> H = win90.read_es()
+
+    >>> H = win90.read_es(dtype=numpy.float64) # only read real-part
+
+    >>> H = win90.read_es(cutoff=0.00001) # explicitly set the cutoff for the elements
+
+    """
 
     def _setup(self):
         """ Setup `winSileW90` after initialization """

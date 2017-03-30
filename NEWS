@@ -4,7 +4,7 @@
 - Fixed reading _hr.dat from Wannier90, now the band-structure of
   SrTiO3 (Junquera's test example) is correct.
 
-- Added origo argument to rotation functions. Previously this could be
+- Added `origo` and `atom` argument to rotation functions. Previously this could be
   accomblished by:
 
       rotated = geometry.move(-origo).rotate(...).move(origo)
@@ -12,6 +12,11 @@
   while now it is:
 
       rotated = geometry.rotate(..., origo=origo)
+
+  The origo argument may also be a single integer in which case the rotation
+  is around atom `origo`.
+
+  Lastly the `atom` argument enables only rotating a sub-set of atoms.
 
 - Speeded up tbtrans.py analyzing methods enourmously by introducing
   faster sparse iterators. Now one can easily perform data-analysis on

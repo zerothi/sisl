@@ -266,7 +266,7 @@ def get_sile(file, *args, **kwargs):
     """
     cls = kwargs.pop('cls', None)
     sile = get_sile_class(file, *args, cls=cls, **kwargs)
-    return sile(file, *args, **kwargs)
+    return sile(name_spec(file)[0], *args, **kwargs)
 
 
 def get_siles(attrs=[None]):
