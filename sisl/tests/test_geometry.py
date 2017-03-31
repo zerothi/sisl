@@ -391,6 +391,25 @@ class TestGeometry(object):
         al = self.g.center()
         assert_true(np.allclose(np.mean(self.g.xyz, axis=0), al))
 
+    def test___add__(self):
+        n = len(self.g)
+        double = self.g + self.g
+        assert_equal(len(double), n * 2)
+        assert_true(np.allclose(self.g.cell, double.cell))
+        assert_true(np.allclose(self.g.xyz[:n, :], double.xyz[:n, :]))
+
+        double = (self.g, 1) + self.g
+        d = self.g.prepend(self.g, 1)
+        assert_equal(len(double), n * 2)
+        assert_true(np.allclose(self.g.cell[::2, :], double.cell[::2, :]))
+        assert_true(np.allclose(double.xyz, d.xyz))
+
+        double = self.g + (self.g, 1)
+        d = self.g.append(self.g, 1)
+        assert_equal(len(double), n * 2)
+        assert_true(np.allclose(self.g.cell[::2, :], double.cell[::2, :]))
+        assert_true(np.allclose(double.xyz, d.xyz))
+
     def test_add(self):
         double = self.g.add(self.g)
         assert_equal(len(double), len(self.g) * 2)

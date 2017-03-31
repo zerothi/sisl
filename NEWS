@@ -1,35 +1,8 @@
 0.8.2
 =====
 
-- Enabled multiplying geometries with integers to emulate `repeat` or
-  `tile` functions:
-
-      >>> geometry * 2 == geometry.tile(2, 0).tile(2, 1).tile(2, 2)
-      >>> geometry * [2, 1, 2] == geometry.tile(2, 0).tile(2, 2)
-      >>> geometry * [2, 2] == geometry.tile(2, 2)
-      >>> geometry * ([2, 1, 2], 'repeat') == geometry.repeat(2, 0).repeat(2, 2)
-      >>> geometry * ([2, 1, 2], 'r') == geometry.repeat(2, 0).repeat(2, 2)
-      >>> geometry * ([2, 0], 'r') == geometry.repeat(2, 0)
-      >>> geometry * ([2, 2], 'r') == geometry.repeat(2, 2)
-
-  This may be considered an advanced feature but useful nonetheless.
-
 - Fixed reading _hr.dat from Wannier90, now the band-structure of
   SrTiO3 (Junquera's test example) is correct.
-
-- Added `origo` and `atom` argument to rotation functions. Previously this could be
-  accomblished by:
-
-      rotated = geometry.move(-origo).rotate(...).move(origo)
-
-  while now it is:
-
-      rotated = geometry.rotate(..., origo=origo)
-
-  The origo argument may also be a single integer in which case the rotation
-  is around atom `origo`.
-
-  Lastly the `atom` argument enables only rotating a sub-set of atoms.
 
 - Speeded up tbtrans.py analyzing methods enourmously by introducing
   faster sparse iterators. Now one can easily perform data-analysis on
@@ -71,6 +44,41 @@
 
 - Geometry:
 
+  * Enabled multiplying geometries with integers to emulate `repeat` or
+    `tile` functions:
+
+        >>> geometry * 2 == geometry.tile(2, 0).tile(2, 1).tile(2, 2)
+        >>> geometry * [2, 1, 2] == geometry.tile(2, 0).tile(2, 2)
+        >>> geometry * [2, 2] == geometry.tile(2, 2)
+        >>> geometry * ([2, 1, 2], 'repeat') == geometry.repeat(2, 0).repeat(2, 2)
+        >>> geometry * ([2, 1, 2], 'r') == geometry.repeat(2, 0).repeat(2, 2)
+        >>> geometry * ([2, 0], 'r') == geometry.repeat(2, 0)
+        >>> geometry * ([2, 2], 'r') == geometry.repeat(2, 2)
+
+    This may be considered an advanced feature but useful nonetheless.
+
+  * Enabled "adding" geometries in a similar way as multiplication
+    I.e. the following applies:
+
+        >>> A + B == A.add(B)
+        >>> A + (B, 1) == A.append(B, 1)
+        >>> A + (B, 2) == A.append(B, 2)
+        >>> (A, 1) + B == A.prepend(B, 1)
+
+  * Added `origo` and `atom` argument to rotation functions. Previously this could be
+    accomblished by:
+
+        rotated = geometry.move(-origo).rotate(...).move(origo)
+
+    while now it is:
+
+        rotated = geometry.rotate(..., origo=origo)
+
+    The origo argument may also be a single integer in which case the rotation
+    is around atom `origo`.
+
+    Lastly the `atom` argument enables only rotating a sub-set of atoms.
+
   * Geometry[..] is now calling axyz if `..` is pure indices, if it is
     a `slice` it does not work with super-cell indices
 
@@ -109,13 +117,14 @@
   * Added `iter_nnz(i=None)` which loops on sparse elements connecting to
     row `i` (or default to loop on all rows and columns).
 
-  * `iter_csr` to iterate through a `scipy.sparse.csr_matrix`, not for the
-    `SparseCSR`, though.
+  * `ispmatrix` to iterate through a `scipy.sparse.*_matrix` (and the `SparseCSR`
+    matrix).
 
 - Hamiltonian:
 
   * Added `iter_nnz` which is the `Hamiltonian` equivalent of `SparseCSR.iter_nnz`.
     It enables explicit looping on atomic couplings, or orbital couplings.
+    I.e. one may specify a subset of atoms or orbitals to loop over.
 
   * Preliminary implementation of the non-collinear spin-case. Needs testing.
 

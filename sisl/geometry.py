@@ -885,6 +885,10 @@ class Geometry(SuperCellChild):
 
         """
 
+        # Reverse arguments in case it is on the LHS
+        if not isinstance(self, Geometry):
+            return m * self
+
         # Simple form
         if isinstance(m, Integral):
             return self * [m, m, m]
@@ -931,6 +935,8 @@ class Geometry(SuperCellChild):
             raise ValueError('Multiplying a geometry has received a wrong argument')
 
         return g
+
+    __rmul__ = __mul__
 
     def rotatea(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
         """ Rotate around first lattice vector, see ``rotate`` """
@@ -1206,6 +1212,39 @@ class Geometry(SuperCellChild):
         xyz = np.append(self.xyz, other.xyz, axis=0)
         sc = self.sc.copy()
         return self.__class__(xyz, atom=self.atom.add(other.atom), sc=sc)
+
+    def __add__(a, b):
+        """ Implement easy merging of two geometries
+
+        Parameters
+        ----------
+        a, b : Geometry or tuple or list
+           when adding a Geometry with a Geometry it defaults to using `add` function
+           with the LHS retaining the cell-vectors.
+           a tuple/list may be of length 2 with the first element being a Geometry and the second
+           being an integer specifying the lattice vector where it is appended.
+           One may also use a `SuperCell` instead of a `Geometry` which behaves similarly.
+
+        Examples
+        --------
+
+        >>> A + B == A.add(B)
+        >>> A + (B, 1) == A.append(B, 1)
+        >>> A + (B, 2) == A.append(B, 2)
+        >>> (A, 1) + B == A.prepend(B, 1)
+
+        """
+
+        if isinstance(a, Geometry):
+            if isinstance(b, Geometry):
+                return a.add(b)
+            return a.append(b[0], b[1])
+        elif isinstance(b, Geometry):
+            return a.prepend(b[0], b[1])
+
+        raise ValueError('Arguments for adding (add/append/prepend) are incorrect')
+
+    __radd__ = __add__
 
     def attach(self, s_idx, other, o_idx, dist='calc', axis=None):
         """ Attaches another ``Geometry`` at the `s_idx` index with respect to `o_idx` using different methods.
