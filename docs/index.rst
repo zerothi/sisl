@@ -104,7 +104,7 @@ To succesfully use `sisl` these Python packages must be installed:
  - `setuptools`_
  - `numpy`_ (`>=1.9`)
  - `scipy`_ 
- - `netcdf4-python`_
+ - `netCDF4 <netcdf4-py_>`_
 
 
 API links

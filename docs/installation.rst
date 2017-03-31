@@ -12,7 +12,9 @@ pip
 
 Installing sisl using PyPi can be done using
 
-    pip install sisl
+.. code-block:: bash
+
+   pip install sisl
 
 conda
 -----
@@ -24,21 +26,27 @@ Installing sisl using conda can be done using
 On conda sisl is also shipped in a developer installation for more
 up-to-date releases, this may be installed using:
 
-    conda install -c zerothi sisl-dev
+.. code-block:: bash
 
-Manuel installation
+   conda install -c zerothi sisl-dev
+
+Manual installation
 -------------------
 
 sisl may also be installed using the regular `setup.py` script.
 To do this the following packages are required to be in `PYTHONPATH`:
 
 - `six`_
+- `setuptools`_
 - `numpy`_
 - `scipy`_
-- `netCDF4`_
-- `setuptools`_
+- `netCDF4 <netcdf4-py_>`_
 - A fortran compiler
 
-If the above listed items are installed, sisl can be installed
-     
-    python setup.py install --prefix=<prefix>
+If the above listed items are installed, sisl can be installed by first
+downloading the latest release on `this page <gh-releases_>`_.
+Subsequently install sisl by
+
+.. code-block:: bash
+
+   python setup.py install --prefix=<prefix>

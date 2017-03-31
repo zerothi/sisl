@@ -7,7 +7,7 @@
 .. _six: https://pypi.python.org/pypi/six
 .. _setuptools: https://pypi.python.org/pypi/setuptools
 .. _NetCDF: https://www.unidata.ucar.edu/netcdf
-.. _netcdf4-python: http://github.com/Unidata/netcdf4-python
+.. _netcdf4-py: http://github.com/Unidata/netcdf4-python
 .. _numpy: http://github.com/numpy/numpy
 .. _scipy: http://github.com/scipy/scipy
 
