@@ -17,6 +17,8 @@
    :hidden:
    :maxdepth: 2
 
+   introduction
+   installation
    scripts/scripts
    rst/files
 
