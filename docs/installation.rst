@@ -21,6 +21,8 @@ conda
 
 Installing sisl using conda can be done using
 
+.. code-block:: bash
+
     conda install -c zerothi sisl
 
 On conda sisl is also shipped in a developer installation for more
