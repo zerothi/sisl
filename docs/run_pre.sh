@@ -14,7 +14,7 @@ mkdir -p build
 # Simple documentation script to generate the documentation
 rm -rf sisl
 mkdir sisl
-sphinx-apidoc -fe -o sisl ../sisl '**/setup.py' '**/tests/*'
+sphinx-apidoc -fe -o sisl ../sisl ../**/setup.py ../**/tests/*
 
 # Ensure the links.rst.dummy is EVERYWHERE
 function add_links {

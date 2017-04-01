@@ -15,11 +15,13 @@
 
 .. toctree::
    :hidden:
+   :glob:
    :maxdepth: 2
 
    introduction
    installation
    scripts/scripts
+   examples.rst
    rst/files
 
 Welcome to sisl documentation!
