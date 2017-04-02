@@ -11,10 +11,19 @@ echo ".. include:: docs/index.rst" > ../index.rst
 # Ensure directories exist
 mkdir -p build
 
+if [ "x$READTHEDOCS" == "xTrue" ]; then
+    # Make a link to the examples folder
+    ln -s ../../docs/examples examples
+fi
+
 # Simple documentation script to generate the documentation
 rm -rf sisl
 mkdir sisl
-sphinx-apidoc -fe -o sisl ../sisl ../**/setup.py ../**/tests/*
+if [ -e ../setup.py ]; then
+    sphinx-apidoc -fe -o sisl ../sisl ../sisl/**/setup.py ../sisl/**/tests/*
+elif [ -e ../../setup.py ]; then
+    sphinx-apidoc -fe -o sisl ../../sisl ../../sisl/**/setup.py ../../sisl/**/tests/*
+fi
 
 # Ensure the links.rst.dummy is EVERYWHERE
 function add_links {
