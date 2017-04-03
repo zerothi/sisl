@@ -362,3 +362,28 @@ class TestSparseCSR(object):
         assert_equal(s.dtype, np.float64)
         s = 1.j ** S
         assert_equal(s.dtype, np.complex128)
+
+    def test_op5(self):
+        S1 = SparseCSR((10, 100), dtype=np.int32)
+        S2 = SparseCSR((10, 100), dtype=np.int32)
+        S3 = SparseCSR((10, 100), dtype=np.int32)
+        # Create initial stuff
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            S1[0, j] = i
+            S2[0, j] = i
+
+            if i < 5:
+                S3[0, j] = i
+
+        S = S1 * S2
+        assert_true(np.allclose(S._D, (S2**2)._D))
+
+        S = S * S
+        assert_true(np.allclose(S._D, (S2**4)._D))
+
+        S = S1 + S2
+        assert_true(np.allclose(S._D, S1._D + S2._D))
+
+        S = S1 - S2
+        assert_true(np.allclose(S._D, S1._D - S2._D))

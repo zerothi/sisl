@@ -132,6 +132,10 @@ class Geometry(SuperCellChild):
             # We could not find any atoms very close,
             # hence we simply return and now it becomes
             # the users responsibility
+
+            # We create a molecule box with +10 A in each direction
+            m, M = np.amin(self.xyz, axis=0), np.amax(self.xyz, axis=0) + 10.
+            self.set_supercell(M-m)
             return
 
         sc_cart = np.zeros([3], np.float64)

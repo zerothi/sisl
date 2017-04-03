@@ -1,3 +1,22 @@
+0.8.3
+=====
+
+- Added `SparseCSR` math operations work on other `SparseCSR` matrices
+  Thus one may now do:
+
+      >>> a, b = SparseCSR(...), SparseCSR(...)
+      >>> aMb, aPb = a * b, a + b
+
+  Which makes many things much easier.
+  If this is used, you are encouraged to assert that the math is correct.
+  Currently are the routines largely untested. _Assistance is greatly appreciated
+  in creating `nosetests`_.
+
+- Geometries now _always_ create a supercell. This was not the case when
+  an atom with no defined orbital radius was used. Now this returns a
+  supercell with 10 A of vacuum along each Cartesian direction.
+
+
 0.8.2
 =====
 

@@ -149,7 +149,13 @@ def get_dtype(var, int=None, other=None):
     if int is None:
         int = np.int32
 
-    dtype = np.result_type(var)
+    # First try and see if the variable is a sub-class
+    # of ndarray (or something numpy-like)
+    try:
+        dtype = var.dtype
+    except:
+        dtype = np.result_type(var)
+
     if dtype == np.int64:
         dtype = int
     try:

@@ -348,6 +348,72 @@ class SparseCSR(object):
         # Signal that we indeed have finalized the data
         self._finalized = True
 
+    def spsame(self, other):
+        """ Check whether two sparse matrices have the same non-zero elements
+
+        Parameters
+        ----------
+        other : SparseCSR
+
+        Returns
+        -------
+        bool :
+            True if the same non-zero elements are in the matrices.
+        """
+
+        if self.shape[:2] != other.shape[:2]:
+            return False
+
+        def samesect1d(a, b):
+            n = len(a)
+            if n != len(b):
+                return False
+            return len(intersect1d(a, b)) == n
+
+        for r in range(self.shape[0]):
+            # pointers
+            sptr = self.ptr[r]
+            sn = self.ncol[r]
+            optr = other.ptr[r]
+            on = other.ncol[r]
+
+            if not samesect1d(self.col[sptr:sptr+sn],
+                              other.col[optr:optr+on]):
+                return False
+        return True
+
+    def spalign(self, other):
+        """ Aligns this sparse matrix with the sparse elements of the other sparse matrix
+
+        Routine for ensuring that all non-zero elements in `other` are also in this
+        object.
+
+        I.e. this will, possibly, change the sparse elements in-place.
+
+        A `ValueError` will be raised if the shapes are not mergeable.
+
+        Parameters
+        ----------
+        other : SparseCSR
+           the other sparse matrix to align.
+        """
+
+        if self.shape[:2] != other.shape[:2]:
+            raise ValueError('Aligning two sparse matrices requires same shapes')
+
+        for r in range(self.shape[0]):
+
+            # pointers
+            sptr = self.ptr[r]
+            sn = self.ncol[r]
+            optr = other.ptr[r]
+            on = other.ncol[r]
+
+            adds = setdiff1d(other.col[optr:optr+on], self.col[sptr:sptr+sn])
+            if len(adds) > 0:
+                # simply extend the elements
+                self._extend(r, adds)
+
     def iter_nnz(self, row=None):
         """ Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements
 
@@ -405,15 +471,15 @@ class SparseCSR(object):
         #                     " must only be performed at one row-element at a time.\n"
         #                     "However, multiple columns at a time are allowed.")
 
-        # fast reference
-        ptr = self.ptr
-        ncol = self.ncol
-        col = self.col
-
         # Ensure flattened array...
         j = ensure_array(j)
         if len(j) == 0:
             return np.array([], np.int32)
+
+        # fast reference
+        ptr = self.ptr
+        ncol = self.ncol
+        col = self.col
 
         # To create the indices for the sparse elements
         # we first find which values are _not_ in the sparse
@@ -733,96 +799,186 @@ class SparseCSR(object):
     # Overload of math operations #
     ###############################
     def __add__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
-        c._D += b
+        c += b
         return c
     __radd__ = __add__
 
     def __iadd__(a, b):
         if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        a._D += b
+            if a.shape != b.shape:
+                raise ValueError('Adding two sparse matrices requires the same shape')
+            # Ensure that a is aligned with b
+            a.spalign(b)
+
+            # loop and add elements
+            for r in range(a.shape[0]):
+                # pointers
+                bptr = b.ptr[r]
+                bn = b.ncol[r]
+
+                # Get positions of b-elements in a:
+                in_a = a._get(r, b.col[bptr:bptr+bn])
+                a._D[in_a, :] += b._D[bptr:bptr+bn, :]
+
+        else:
+            a._D += b
         return a
 
     def __sub__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
-        c._D -= b
+        c -= b
         return c
 
     def __rsub__(a, b):
         if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        c = b + (-1) * a
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
+            c += -1 * a
+        else:
+            c = b + (-1) * a
         return c
 
     def __isub__(a, b):
         if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        a._D -= b
+            if a.shape != b.shape:
+                raise ValueError('Subtracting two sparse matrices requires the same shape')
+            # Ensure that a is aligned with b
+            a.spalign(b)
+
+            # loop and add elements
+            for r in range(a.shape[0]):
+                # pointers
+                bptr = b.ptr[r]
+                bn = b.ncol[r]
+
+                # Get positions of b-elements in a:
+                in_a = a._get(r, b.col[bptr:bptr+bn])
+                a._D[in_a, :] -= b._D[bptr:bptr+bn, :]
+
+        else:
+            a._D -= b
         return a
 
     def __mul__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
-        c._D *= b
+        c *= b
         return c
     __rmul__ = __mul__
 
     def __imul__(a, b):
         if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        a._D *= b
+            if a.shape != b.shape:
+                raise ValueError('Multiplication of two sparse matrices requires the same shape')
+
+            # Note that for multiplication of these two matrices
+            # it is not required that they are aligned...
+            # 0 * float == 0
+            # Hence aligning is superfluous
+
+            # loop and add elements
+            for r in range(a.shape[0]):
+                # pointers
+                bptr = b.ptr[r]
+                bn = b.ncol[r]
+
+                # Get positions of b-elements in a:
+                in_a = a._get(r, b.col[bptr:bptr+bn])
+                # remove all -1's
+                in_a = in_a[in_a > -1]
+                # Everything else *must* be zeroes! :)
+                a._D[in_a, :] *= b._D[bptr:bptr+bn, :]
+
+        else:
+            a._D *= b
         return a
 
     def __div__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
-        c._D /= b
+        c /= b
+        return c
+
+    def __rdiv__(a, b):
+        c = b.copy(dtype=get_dtype(a, other=b.dtype))
+        c /= a
         return c
 
     def __idiv__(a, b):
         if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        a._D /= b
+            if a.shape != b.shape:
+                raise ValueError('Division of two sparse matrices requires the same shape')
+
+            # Ensure that a is aligned with b
+            a.spalign(b)
+
+            # loop and add elements
+            for r in range(a.shape[0]):
+                # pointers
+                bptr = b.ptr[r]
+                bn = b.ncol[r]
+
+                # Get positions of b-elements in a:
+                in_a = a._get(r, b.col[bptr:bptr+bn])
+                a._D[in_a, :] /= b._D[bptr:bptr+bn, :]
+
+        else:
+            a._D /= b
         return a
 
     def __floordiv__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
-        c._D //= b
+        c //= b
         return c
 
     def __ifloordiv__(a, b):
         if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        a._D //= b
+            if a.shape != b.shape:
+                raise ValueError('Floor-division of two sparse matrices requires the same shape')
+            # Ensure that a is aligned with b
+            a.spalign(b)
+
+            # loop and add elements
+            for r in range(a.shape[0]):
+                # pointers
+                bptr = b.ptr[r]
+                bn = b.ncol[r]
+
+                # Get positions of b-elements in a:
+                in_a = a._get(r, b.col[bptr:bptr+bn])
+                a._D[in_a, :] //= b._D[bptr:bptr+bn, :]
+
+        else:
+            a._D //= b
         return a
 
     def __truediv__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
-        c._D /= b
+        c /= b
         return c
 
     def __itruediv__(a, b):
         if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        a._D /= b
+            if a.shape != b.shape:
+                raise ValueError('True-division of two sparse matrices requires the same shape')
+            # Ensure that a is aligned with b
+            a.spalign(b)
+
+            # loop and add elements
+            for r in range(a.shape[0]):
+                # pointers
+                bptr = b.ptr[r]
+                bn = b.ncol[r]
+
+                # Get positions of b-elements in a:
+                in_a = a._get(r, b.col[bptr:bptr+bn])
+                a._D[in_a, :].__itruediv__(b._D[bptr:bptr+bn, :])
+
+        else:
+            a._D /= b
         return a
 
     def __pow__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
-        c._D **= b
+        c **= b
         return c
 
     def __rpow__(a, b):
@@ -834,8 +990,24 @@ class SparseCSR(object):
 
     def __ipow__(a, b):
         if isinstance(b, SparseCSR):
-            raise NotImplementedError
-        a._D **= b
+            if a.shape != b.shape:
+                raise ValueError('True-division of two sparse matrices requires the same shape')
+            # Ensure that a is aligned with b
+            # 0 ** float == 1.
+            a.spalign(b)
+
+            # loop and add elements
+            for r in range(a.shape[0]):
+                # pointers
+                bptr = b.ptr[r]
+                bn = b.ncol[r]
+
+                # Get positions of b-elements in a:
+                in_a = a._get(r, b.col[bptr:bptr+bn])
+                a._D[in_a, :] **= b._D[bptr:bptr+bn, :]
+
+        else:
+            a._D **= b
         return a
 
     @classmethod

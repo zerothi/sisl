@@ -76,7 +76,7 @@ def fcc(alat, atom, orthogonal=False):
 
 def hcp(a, atom, coa=1.63333, orthogonal=False):
     """
-    Returns a geometry with the FCC crystal structure (1 atom)
+    Returns a geometry with the HCP crystal structure (1 atom)
     """
     # height of hcp structure
     c = a * coa

@@ -1006,8 +1006,6 @@ class Hamiltonian(object):
     # Overload of math operations #
     ###############################
     def __add__(a, b):
-        if isinstance(b, Hamiltonian):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
         c += b
         return c
@@ -1015,32 +1013,32 @@ class Hamiltonian(object):
 
     def __iadd__(a, b):
         if isinstance(b, Hamiltonian):
-            raise NotImplementedError
-        a._data += b
+            a._data += b._data
+        else:
+            a._data += b
         return a
 
     def __sub__(a, b):
-        if isinstance(b, Hamiltonian):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
         c -= b
         return c
 
     def __rsub__(a, b):
         if isinstance(b, Hamiltonian):
-            raise NotImplementedError
-        c = b + (-1) * a
+            c = b.copy(dtype=get_dtype(a, other=b.dtype))
+            c._data += -1 * a._data
+        else:
+            c = b + (-1) * a
         return c
 
     def __isub__(a, b):
         if isinstance(b, Hamiltonian):
-            raise NotImplementedError
-        a._data -= b
+            a._data -= b._data
+        else:
+            a._data -= b
         return a
 
     def __mul__(a, b):
-        if isinstance(b, Hamiltonian):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
         c *= b
         return c
@@ -1048,25 +1046,26 @@ class Hamiltonian(object):
 
     def __imul__(a, b):
         if isinstance(b, Hamiltonian):
-            raise NotImplementedError
-        a._data *= b
+            a._data *= b._data
+        else:
+            a._data *= b
         return a
 
     def __div__(a, b):
-        if isinstance(a, Hamiltonian):
-            if isinstance(b, Hamiltonian):
-                raise NotImplementedError
-            c = a.copy(dtype=get_dtype(b, other=a.dtype))
-            c /= b
-        elif isinstance(b, Hamiltonian):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._data = a / c._data
+        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c /= b
+        return c
+
+    def __rdiv__(a, b):
+        c = b.copy(dtype=get_dtype(a, other=b.dtype))
+        c /= a
         return c
 
     def __idiv__(a, b):
         if isinstance(b, Hamiltonian):
-            raise NotImplementedError
-        a._data /= b
+            a._data /= b._data
+        else:
+            a._data /= b
         return a
 
     def __floordiv__(a, b):
@@ -1096,23 +1095,20 @@ class Hamiltonian(object):
         return a
 
     def __pow__(a, b):
-        if isinstance(b, Hamiltonian):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
         c **= b
         return c
 
     def __rpow__(a, b):
-        if isinstance(b, SparseCSR):
-            raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
         c._data = b ** c._data
         return c
 
     def __ipow__(a, b):
         if isinstance(b, Hamiltonian):
-            raise NotImplementedError
-        a._data **= b
+            a._data **= b._data
+        else:
+            a._data **= b
         return a
 
 # For backwards compatibility we also use TightBinding
