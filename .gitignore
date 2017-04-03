@@ -1,3 +1,5 @@
+build
 *.pyc
-docs/sisl
 index.rst
+docs/build
+docs/sisl
