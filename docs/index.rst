@@ -1,5 +1,3 @@
-.. highlight:: python
-
 .. sisl documentation master file, created by
    sphinx-quickstart on Wed Dec  2 19:55:34 2015.
    You can adapt this file completely to your liking, but it should at least
@@ -25,13 +23,13 @@
    rst/files
 
 Welcome to sisl documentation!
-================================
+==============================
 
 `sisl` is a tool to manipulate an increasing amount of density functional
 theory code input and/or output.
 It is also a tight-binding code which implements extremely fast and scalable
 tight-binding creation algorithms (`>1,000,000` orbitals).
-In particular is `sisl` developed with `TBtrans`_ in mind to act as a tight-binding
+`sisl` is developed in particular with `TBtrans`_ in mind to act as a tight-binding
 Hamiltonian input engine for *N*-electrode transport calculations.
 
 
@@ -66,48 +64,11 @@ Features
   * :ref:`script_sgrid` a real-space grid conversion tool which reads and writes
     many commonly encounted files for real-space grids. *Mainly targetted SIESTA_*.
 
-Introduction
-------------
+  
+:ref:`Installation <installation>`
+----------------------------------
 
-Installation
-------------
-
-The easiest way to install `sisl` is via the :program:`pypi` interface.
-Install via:
-
-.. code-block:: bash
-
-   pip install sisl
-
-In case you are using `conda` simply do:
-   
-.. code-block:: bash
-
-   conda install -c zerothi sisl
-
-Alternatively you can download the releases on the
-`release page <gh-releases_>`_. And install via the regular :program:`setup.py`
-interface:
-
-.. code-block:: bash
-
-   python setup.py install
-
-which will install `sisl` in your default location, use :program:`--prefix <path>` for
-manual control of the placement.
-
-
-Requirements
-------------
-
-To succesfully use `sisl` these Python packages must be installed:
-
- - `six`_
- - `setuptools`_
- - `numpy`_ (`>=1.9`)
- - `scipy`_ 
- - `netCDF4 <netcdf4-py_>`_
-
+Follow :ref:`these steps <installation>` to install `sisl`.
 
 API links
 =========

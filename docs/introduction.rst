@@ -1,15 +1,15 @@
+.. _introduction:
 
 Introduction
 ============
 
-sisl has a number of features that makes it easy to jump right into
+sisl has a number of features which makes it easy to jump right into
 and perform a large variation of tasks.
-
 
 1. Easy creation of geometries. Similar to `ASE`_ sisl provides an
    easy scripting engine to create and manipulate geometries.
    The goal of sisl is not specifically DFT-related software which
-   typically only works with a limited number of atoms. One of the main
+   typically only targets a limited number of atoms. One of the main
    features of sisl is the enourmously fast creation and manipulation of
    geometries such as attaching two geometries together, rotating atoms,
    removing atoms, changing bond-lengths etc. 
@@ -17,7 +17,7 @@ and perform a large variation of tasks.
    such that creating geometries for tight-binding models becomes a breeze.
 
 2. Easy creation of tight-binding Hamiltonians via intrinsic and very fast
-   algorithms for creation sparse matrices.
+   algorithms for creating sparse matrices.
    One of the key-points is that the Hamiltonian is treated as a matrix.
    I.e. one may easily specify couplings without using routine calls.
    For large systems, `>100,000`, it also becomes advantegeous to iterate on

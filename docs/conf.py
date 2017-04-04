@@ -66,7 +66,10 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
-# Append this snippet in _all_ sources
+# prepend/append this snippet in _all_ sources
+rst_prolog = """
+.. highlight:: python
+"""
 rst_epilog = """
 .. include:: links.rst.dummy
 """

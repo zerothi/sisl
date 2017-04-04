@@ -22,8 +22,8 @@ case only the unit-cell is taken into consideration. However when using
 the `Geometry.close` or `Geometry.within` functions the atomic indices it
 becomes important how large the supercell is.
 
-Specifying the number of super-cells may be done at creation of the geometry,
-or subsequently::
+Specifying the number of super-cells may be done when creating the geometry,
+or after it has been created::
 
    >>> geometry = Geometry([[0, 0, 0]], sc=SuperCell(5, [3, 3, 3]))
    >>> geometry.nsc
