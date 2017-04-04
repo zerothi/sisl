@@ -382,7 +382,7 @@ class Hamiltonian(object):
 
         Parameters
         ----------
-        func: `callable` or `tuple/list`
+        func: callable or array_like
            this function *must* take 4 arguments.
            1. Is the Hamiltonian object it-self (`self`)
            2. Is the currently examined atom (`ia`)
@@ -394,10 +394,12 @@ class Hamiltonian(object):
            >>>     idx = self.geom.close(ia, dR=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz)
            >>>     self.H[ia, idx[0]] = 0.   # on-site
            >>>     self.H[ia, idx[1]] = -2.7 # nearest-neighbour
-        na_iR : `int=1000`
+        na_iR : int, 1000
            number of atoms within the sphere for speeding
            up the `iter_block` loop.
-        eta: `bool=False`
+        method : str, 'rand'
+           method used in `Geometry.iter_block`, see there for details
+        eta: bool, False
            whether an ETA will be printed
         """
 

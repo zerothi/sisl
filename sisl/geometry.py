@@ -22,6 +22,7 @@ from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
+from .sparse import SparseCSR
 
 __all__ = ['Geometry', 'sgeom']
 
@@ -1415,7 +1416,7 @@ class Geometry(SuperCellChild):
 
     def within_sc(self, shapes, isc=None,
                   idx=None, idx_xyz=None,
-                  ret_coord=False, ret_dist=False):
+                  ret_xyz=False, ret_rij=False):
         """
         Calculates which atoms are close to some atom or point
         in space, only returns so relative to a super-cell.
@@ -1441,10 +1442,10 @@ class Geometry(SuperCellChild):
             be used to only take out a certain atoms.
         idx_xyz : ``array_like`` (`None`)
             The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
-        ret_coord : ``bool`` (`False`)
+        ret_xyz : ``bool`` (`False`)
             If true this method will return the coordinates
             for each of the couplings.
-        ret_dist : ``bool`` (`False`)
+        ret_rij : ``bool`` (`False`)
             If true this method will return the distance
             for each of the couplings.
         """
@@ -1495,25 +1496,25 @@ class Geometry(SuperCellChild):
 
             ret = [[np.empty([0], np.int32)] * nshapes]
             rc = 0
-            if ret_coord:
+            if ret_xyz:
                 rc = rc + 1
                 ret.append([np.empty([0, 3], np.float64)] * nshapes)
-            if ret_dist:
+            if ret_rij:
                 rd = rc + 1
                 ret.append([np.empty([0], np.float64)] * nshapes)
 
             if nshapes == 1:
-                if ret_coord and ret_dist:
+                if ret_xyz and ret_rij:
                     return [ret[0][0], ret[1][0], ret[2][0]]
-                elif ret_coord or ret_dist:
+                elif ret_xyz or ret_rij:
                     return [ret[0][0], ret[1][0]]
                 return ret[0][0]
-            if ret_coord or ret_dist:
+            if ret_xyz or ret_rij:
                 return ret
             return ret[0]
 
         # Calculate distance
-        if ret_dist:
+        if ret_rij:
             d = np.sum((xa - off[None, :]) ** 2, axis=1) ** .5
 
         # Create the initial lists that we will build up
@@ -1522,11 +1523,11 @@ class Geometry(SuperCellChild):
         # Quick return
         if nshapes == 1:
             ret = [[idx]]
-            if ret_coord:
+            if ret_xyz:
                 ret.append([xa])
-            if ret_dist:
+            if ret_rij:
                 ret.append([d])
-            if ret_coord or ret_dist:
+            if ret_xyz or ret_rij:
                 return ret
             return ret[0]
 
@@ -1548,27 +1549,27 @@ class Geometry(SuperCellChild):
         # Do for the first shape
         ret = [[ensure_array(idx[ixS[0]])]]
         rc = 0
-        if ret_coord:
+        if ret_xyz:
             rc = rc + 1
             ret.append([xa[ixS[0], :]])
-        if ret_dist:
+        if ret_rij:
             rd = rc + 1
             ret.append([d[ixS[0]]])
         for i in range(1, nshapes):
             ret[0].append(ensure_array(idx[ixS[i]]))
-            if ret_coord:
+            if ret_xyz:
                 ret[rc].append(xa[ixS[i], :])
-            if ret_dist:
+            if ret_rij:
                 ret[rd].append(d[ixS[i]])
 
-        if ret_coord or ret_dist:
+        if ret_xyz or ret_rij:
             return ret
         return ret[0]
 
     def close_sc(self, xyz_ia, isc=None,
                  dR=None,
                  idx=None, idx_xyz=None,
-                 ret_coord=False, ret_dist=False):
+                 ret_xyz=False, ret_rij=False):
         """
         Calculates which atoms are close to some atom or point
         in space, only returns so relative to a super-cell.
@@ -1600,10 +1601,10 @@ class Geometry(SuperCellChild):
             be used to only take out a certain atoms.
         idx_xyz : ``array_like`` (`None`)
             The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
-        ret_coord : ``bool`` (`False`)
+        ret_xyz : ``bool`` (`False`)
             If true this method will return the coordinates
             for each of the couplings.
-        ret_dist : ``bool`` (`False`)
+        ret_rij : ``bool`` (`False`)
             If true this method will return the distance
             for each of the couplings.
         """
@@ -1669,11 +1670,11 @@ class Geometry(SuperCellChild):
         # Create default return
         ret = [[np.empty([0], np.int32)] * len(dR)]
         i = 0
-        if ret_coord:
+        if ret_xyz:
             i += 1
             rc = i
             ret.append([np.empty([0, 3], np.float64)] * len(dR))
-        if ret_dist:
+        if ret_rij:
             i += 1
             rc = i
             ret.append([np.empty([0], np.float64)] * len(dR))
@@ -1682,12 +1683,12 @@ class Geometry(SuperCellChild):
             # Quick return if there are
             # no entries...
             if len(dR) == 1:
-                if ret_coord and ret_dist:
+                if ret_xyz and ret_rij:
                     return [ret[0][0], ret[1][0], ret[2][0]]
-                elif ret_coord or ret_dist:
+                elif ret_xyz or ret_rij:
                     return [ret[0][0], ret[1][0]]
                 return ret[0][0]
-            if ret_coord or ret_dist:
+            if ret_xyz or ret_rij:
                 return ret
             return ret[0]
 
@@ -1706,7 +1707,7 @@ class Geometry(SuperCellChild):
 
         # Reduce search space and correct distances
         d = xaR[ix] ** .5
-        if ret_coord:
+        if ret_xyz:
             xa = dxa[ix, :] + off[None, :]
         del xaR, dxa  # just because these arrays could be very big...
 
@@ -1714,11 +1715,11 @@ class Geometry(SuperCellChild):
         # If so, we need not reduce the index space
         if len(dR) == 1:
             ret = [idx[ix]]
-            if ret_coord:
+            if ret_xyz:
                 ret.append(xa)
-            if ret_dist:
+            if ret_rij:
                 ret.append(d)
-            if ret_coord or ret_dist:
+            if ret_xyz or ret_rij:
                 return ret
             return ret[0]
 
@@ -1732,11 +1733,11 @@ class Geometry(SuperCellChild):
         tidx = where(d <= dR[0])[0]
         ret = [[ensure_array(idx[ix[tidx]])]]
         i = 0
-        if ret_coord:
+        if ret_xyz:
             rc = i + 1
             i += 1
             ret.append([xa[tidx]])
-        if ret_dist:
+        if ret_rij:
             rd = i + 1
             i += 1
             ret.append([d[tidx]])
@@ -1747,12 +1748,12 @@ class Geometry(SuperCellChild):
             # numerics)
             tidx = where(log_and(dR[i - 1] < d, d <= dR[i]))[0]
             ret[0].append(ensure_array(idx[ix[tidx]]))
-            if ret_coord:
+            if ret_xyz:
                 ret[rc].append(xa[tidx])
-            if ret_dist:
+            if ret_rij:
                 ret[rd].append(d[tidx])
 
-        if ret_coord or ret_dist:
+        if ret_xyz or ret_rij:
             return ret
         return ret[0]
 
@@ -1792,7 +1793,7 @@ class Geometry(SuperCellChild):
             # Get bond length in the closest direction
             # A bond-length HAS to be below 10
             idx, c, d = self.close(ia, dR=(0.1, 10.), idx=algo,
-                                   ret_coord=True, ret_dist=True)
+                                   ret_xyz=True, ret_rij=True)
             i = np.argmin(d[1])
             # Convert to unitcell atom (and get the one atom)
             idx = self.sc2uc(idx[1][i])
@@ -1819,7 +1820,7 @@ class Geometry(SuperCellChild):
 
     def within(self, shapes,
             idx=None, idx_xyz=None,
-            ret_coord=False, ret_dist=False):
+            ret_xyz=False, ret_rij=False):
         """
         Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
 
@@ -1837,10 +1838,10 @@ class Geometry(SuperCellChild):
             List of indices for atoms that are to be considered
         idx_xyz : ``array_like`` (`None`)
             The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
-        ret_coord : ``bool`` (`False`)
+        ret_xyz : ``bool`` (`False`)
             If true this method will return the coordinates
             for each of the couplings.
-        ret_dist : ``bool`` (`False`)
+        ret_rij : ``bool`` (`False`)
             If true this method will return the distances from the ``xyz_ia``
             for each of the couplings.
         """
@@ -1856,22 +1857,22 @@ class Geometry(SuperCellChild):
 
         ret = [[np.empty([0], np.int32)] * nshapes]
         i = 0
-        if ret_coord:
+        if ret_xyz:
             c = i + 1
             i += 1
             ret.append([np.empty([0, 3], np.float64)] * nshapes)
-        if ret_dist:
+        if ret_rij:
             d = i + 1
             i += 1
             ret.append([np.empty([0], np.float64)] * nshapes)
 
-        ret_special = ret_coord or ret_dist
+        ret_special = ret_xyz or ret_rij
 
         for s in range(self.n_s):
             na = self.na * s
             sret = self.within_sc(shapes, self.sc.sc_off[s, :],
                                   idx=idx, idx_xyz=idx_xyz,
-                                  ret_coord=ret_coord, ret_dist=ret_dist)
+                                  ret_xyz=ret_xyz, ret_rij=ret_rij)
             if not ret_special:
                 # This is to "fake" the return
                 # of a list (we will do indexing!)
@@ -1881,23 +1882,23 @@ class Geometry(SuperCellChild):
                 # we have a list of arrays (nshapes > 1)
                 for i, x in enumerate(sret[0]):
                     ret[0][i] = concat((ret[0][i], x + na), axis=0)
-                    if ret_coord:
+                    if ret_xyz:
                         ret[c][i] = concat((ret[c][i], sret[c][i]), axis=0)
-                    if ret_dist:
+                    if ret_rij:
                         ret[d][i] = concat((ret[d][i], sret[d][i]), axis=0)
             elif len(sret[0]) > 0:
                 # We can add it to the list (nshapes == 1)
                 # We add the atomic offset for the supercell index
                 ret[0][0] = concat((ret[0][0], sret[0] + na), axis=0)
-                if ret_coord:
+                if ret_xyz:
                     ret[c][0] = concat((ret[c][0], sret[c]), axis=0)
-                if ret_dist:
+                if ret_rij:
                     ret[d][0] = concat((ret[d][0], sret[d]), axis=0)
 
         if nshapes == 1:
-            if ret_coord and ret_dist:
+            if ret_xyz and ret_rij:
                 return [ret[0][0], ret[1][0], ret[2][0]]
-            elif ret_coord or ret_dist:
+            elif ret_xyz or ret_rij:
                 return [ret[0][0], ret[1][0]]
             return ret[0][0]
 
@@ -1908,7 +1909,7 @@ class Geometry(SuperCellChild):
 
     def close(self, xyz_ia, dR=None,
             idx=None, idx_xyz=None,
-            ret_coord=False, ret_dist=False):
+            ret_xyz=False, ret_rij=False):
         """
         Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
 
@@ -1940,10 +1941,10 @@ class Geometry(SuperCellChild):
             List of indices for atoms that are to be considered
         idx_xyz : (None), array_like
             The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
-        ret_coord : (False), boolean
+        ret_xyz : (False), boolean
             If true this method will return the coordinates
             for each of the couplings.
-        ret_dist : (False), boolean
+        ret_rij : (False), boolean
             If true this method will return the distances from the ``xyz_ia``
             for each of the couplings.
         """
@@ -1957,23 +1958,23 @@ class Geometry(SuperCellChild):
 
         ret = [[np.empty([0], np.int32)] * len(dR)]
         i = 0
-        if ret_coord:
+        if ret_xyz:
             c = i + 1
             i += 1
             ret.append([np.empty([0, 3], np.float64)] * len(dR))
-        if ret_dist:
+        if ret_rij:
             d = i + 1
             i += 1
             ret.append([np.empty([0], np.float64)] * len(dR))
 
-        ret_special = ret_coord or ret_dist
+        ret_special = ret_xyz or ret_rij
 
         for s in range(self.n_s):
             na = self.na * s
             sret = self.close_sc(xyz_ia,
                 self.sc.sc_off[s, :], dR=dR,
                 idx=idx, idx_xyz=idx_xyz,
-                ret_coord=ret_coord, ret_dist=ret_dist)
+                ret_xyz=ret_xyz, ret_rij=ret_rij)
 
             if not ret_special:
                 # This is to "fake" the return
@@ -1984,23 +1985,23 @@ class Geometry(SuperCellChild):
                 # we have a list of arrays (len(dR) > 1)
                 for i, x in enumerate(sret[0]):
                     ret[0][i] = concat((ret[0][i], x + na), axis=0)
-                    if ret_coord:
+                    if ret_xyz:
                         ret[c][i] = concat((ret[c][i], sret[c][i]), axis=0)
-                    if ret_dist:
+                    if ret_rij:
                         ret[d][i] = concat((ret[d][i], sret[d][i]), axis=0)
             elif len(sret[0]) > 0:
                 # We can add it to the list (len(dR) == 1)
                 # We add the atomic offset for the supercell index
                 ret[0][0] = concat((ret[0][0], sret[0] + na), axis=0)
-                if ret_coord:
+                if ret_xyz:
                     ret[c][0] = concat((ret[c][0], sret[c]), axis=0)
-                if ret_dist:
+                if ret_rij:
                     ret[d][0] = concat((ret[d][0], sret[d]), axis=0)
 
         if len(dR) == 1:
-            if ret_coord and ret_dist:
+            if ret_xyz and ret_rij:
                 return [ret[0][0], ret[1][0], ret[2][0]]
-            elif ret_coord or ret_dist:
+            elif ret_xyz or ret_rij:
                 return [ret[0][0], ret[1][0]]
             return ret[0][0]
 
@@ -2154,6 +2155,48 @@ class Geometry(SuperCellChild):
     def __ne__(self, other):
         return not (self == other)
 
+    def sparserij(self, dtype=np.float64, na_iR=1000, method='rand'):
+        """ Return the sparse matrix with all distances in the matrix
+
+        The sparse matrix will only be defined for the elements which have
+        orbitals overlapping with other atoms.
+
+        Parameters
+        ----------
+        dtype : numpy.dtype, numpy.float64
+           the data-type of the sparse matrix
+        na_iR : int, 1000
+           number of atoms within the sphere for speeding
+           up the `iter_block` loop.
+        method : str, 'rand'
+           see `iter_block` for details
+
+        Returns
+        -------
+        SparseCSR
+           sparse matrix with all rij elements
+        """
+        rij = SparseCSR((self.no, self.no_s), nnzpr=20, dtype=dtype)
+
+        # Get dR
+        dR = (0.1, self.dR)
+        iR = self.iR(na_iR)
+
+        # Do the loop
+        for ias, idxs in self.iter_block(iR=iR, method=method):
+
+            # Get all the indexed atoms...
+            # This speeds up the searching for
+            # coordinates...
+            idxs_xyz = self[idxs, :]
+
+            # Loop the atoms inside
+            for ia in ias:
+                idx, r = self.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz, ret_rij=True)
+                rij[ia, idx[1]] = r[1]
+
+        return rij
+
     # Create pickling routines
     def __getstate__(self):
         """ Returns the state of this object """
@@ -2250,7 +2293,7 @@ class Geometry(SuperCellChild):
                     # Simple translation
                     tmp = np.amin(ns._geometry.xyz, axis=0)
                     # Find the smallest distance from the first atom
-                    _, d = ns._geometry.close(0, dR=(0.1, 20.), ret_dist=True)
+                    _, d = ns._geometry.close(0, dR=(0.1, 20.), ret_rij=True)
                     d = np.amin(d[1]) / 2
                     ns._geometry = ns._geometry.translate(-tmp + np.array([d, d, d]))
                 elif args.unit_cell in ['mod']:
