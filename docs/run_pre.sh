@@ -11,10 +11,10 @@ echo ".. include:: docs/index.rst" > ../index.rst
 # Ensure directories exist
 mkdir -p build
 
-if [ "x$READTHEDOCS" == "xTrue" ]; then
-    # Make a link to the examples folder
-    ln -s ../../docs/examples examples
-fi
+#if [ "x$READTHEDOCS" == "xTrue" ]; then
+#    # Make a link to the examples folder
+#    ln -s ../../docs/examples examples
+#fi
 
 # Simple documentation script to generate the documentation
 rm -rf sisl

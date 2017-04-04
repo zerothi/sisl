@@ -31,6 +31,22 @@ from sisl._help import _range as range, _zip as zip
 __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 
+def indices_single(col, value, offset=0):
+    """ Return indices of values in col with a possible offset """
+    w = where(col == value)[0]
+    if len(w) == 0:
+        return -1
+    else:
+        return offset + w[0]
+
+# Vectorize the function,
+# The return-type is always numpy.int32
+# The column indices are passed "as-is" via the
+# excluded keyword
+indices = np.vectorize(indices_single, otypes=[np.int32],
+                       excluded=[0, 'col'])
+
+
 class SparseCSR(object):
     """
     A compressed sparse row matrix, slightly different than ``scipy.sparse.csr_matrix``.
@@ -492,7 +508,7 @@ class SparseCSR(object):
             exists = intersect1d(j, col[ptr[i]:ptr[i]+ncol[i]],
                                  assume_unique=True)
         else:
-            exists = []
+            exists = np.array([], np.int32)
 
         # Get list of new elements to be added
         new_j = setdiff1d(j, exists, assume_unique=True)
@@ -557,20 +573,8 @@ class SparseCSR(object):
         # Now we have extended the sparse matrix to hold all
         # information that is required...
 
-        # lets retrieve the indices...
-
-        # preallocate the indices
-        index = empty(len(j), np.int32)
-
-        # we may use further dereference
-        col = col[ptr[i]:ptr[i] + ncol[i]]
-
-        # We probably should change this to something faster...
-        for ii, jj in enumerate(j):
-            index[ii] = where(col == jj)[0]
-
-        # Correct index by the pointer offset and return
-        return ptr[i] + index
+        # ... retrieve the indices and return
+        return indices(col[ptr[i]:ptr[i] + ncol[i]], j, ptr[i])
 
     def _get(self, i, j):
         """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return -1
@@ -591,22 +595,10 @@ class SparseCSR(object):
         # Ensure flattened array...
         j = asarray(j, np.int32).flatten()
 
-        # we use dereference
+        # Make it a little easier
         ptr = self.ptr[i]
-        col = self.col[ptr:ptr+self.ncol[i]]
 
-        # preallocate the indices (with pointer offset)
-        index = ptr + zeros([len(j)], np.int32)
-
-        # We probably should change this to something faster...
-        for ii, jj in enumerate(j):
-            w = where(col == jj)[0]
-            if len(w) == 0:
-                index[ii] = -1
-            else:
-                index[ii] += w
-
-        return index
+        return indices(self.col[ptr:ptr+self.ncol[i]], j, ptr)
 
     def __delitem__(self, key):
         """ Remove items from the sparse patterns """
