@@ -46,7 +46,7 @@ class TableSile(Sile):
                    fmt=fmt, delimiter=delimiter)
 
     # Specify the default write function
-    __write_default = write_data
+    _write_default = write_data
 
 
 add_sile('table', TableSile, case=False, gzip=True)

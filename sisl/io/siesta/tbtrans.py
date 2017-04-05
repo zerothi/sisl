@@ -1311,6 +1311,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 if len(ns._data) == 0:
                     # do nothing if data has not been collected
+                    print("No data has been collected in the arguments, nothing will be written, have you forgotten arguments?")
                     return
 
                 TableSile(out, mode='w').write(np.array(ns._data),

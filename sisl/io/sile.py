@@ -314,10 +314,10 @@ class BaseSile(object):
 
     # Options for writing
     # The default routine for writing
-    __write_default = None
+    _write_default = None
     # Whether only the default should be used
     # when issuing a write
-    __write_default_only = False
+    _write_default_only = False
 
     def write(self, *args, **kwargs):
         """ Generic write method which should be overloaded in child-classes
@@ -328,9 +328,9 @@ class BaseSile(object):
           keyword arguments will try and search for the attribute `write_<>`
           and call it with the remaining ``**kwargs`` as arguments.
         """
-        if self.__write_default is not None:
-            self.__write_default(*args, **kwargs)
-            if self.__write_default_only:
+        if self._write_default is not None:
+            self._write_default(*args, **kwargs)
+            if self._write_default_only:
                 return
 
         for key in kwargs.keys():

@@ -1,6 +1,11 @@
 0.8.3
 =====
 
+- Fixed bug in __write_default (should have been _write_default)
+
+- API change in `close` functions, now ret_coord => ret_xyz,
+  ret_dist => ret_rij
+
 - Added `SparseCSR` math operations work on other `SparseCSR` matrices
   Thus one may now do:
 
