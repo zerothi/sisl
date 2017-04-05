@@ -33,10 +33,10 @@ Topic :: Utilities
 
 MAJOR = 0
 MINOR = 8
-MICRO = 2
-ISRELEASED = False
+MICRO = 3
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION = "d3d8ba2bc8d78d9435c61ac8148b621c1891e76a"
+GIT_REVISION = "cd21d25449390d285d7b71f3134dbf11328fe015"
 
 # The MANIFEST should be updated (which it only is
 # if it does not exist...)
