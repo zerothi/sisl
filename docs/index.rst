@@ -6,6 +6,7 @@
 
 |buildstatus|_
 |zenodo|_
+|gitter|_
 |pypi|_
 |conda|_
 |codecov|_
@@ -106,3 +107,6 @@ Indices
 
 .. |zenodo| image:: https://zenodo.org/badge/38314495.svg
 .. _zenodo: https://zenodo.org/badge/latestdoi/38314495
+
+.. |gitter| image:: https://img.shields.io/gitter/room/nwjs/nw.js.svg
+.. _gitter: https://gitter.im/sisl-tool/Lobby
