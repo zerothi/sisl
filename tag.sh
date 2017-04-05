@@ -4,6 +4,9 @@
 # by updating the appropriate files with the
 # revision numbers
 
+# Ensure we have access to module command
+source ~/.bashrc
+
 function read_num {
     local n=$1 ; shift
     grep -e "^$n" setup.py | sed -e "s!$n[[:space:]]*=[[:space:]]*\(.*\)!\1!"
