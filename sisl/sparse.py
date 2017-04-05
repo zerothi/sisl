@@ -870,15 +870,24 @@ class SparseCSR(object):
             # loop and add elements
             for r in range(a.shape[0]):
                 # pointers
+                aptr = a.ptr[r]
+                an = a.ncol[r]
                 bptr = b.ptr[r]
                 bn = b.ncol[r]
 
+                acol = a.col[aptr:aptr+an]
+                bcol = b.col[bptr:bptr+bn]
+
                 # Get positions of b-elements in a:
-                in_a = a._get(r, b.col[bptr:bptr+bn])
+                in_a = a._get(r, bcol)
                 # remove all -1's
                 in_a = in_a[in_a > -1]
                 # Everything else *must* be zeroes! :)
                 a._D[in_a, :] *= b._D[bptr:bptr+bn, :]
+
+                # Now set everything *not* in b but in a, to zero
+                not_in_b = where(in1d(acol, bcol, invert=True))[0]
+                a._D[aptr+not_in_b, :] = 0
 
         else:
             a._D *= b
@@ -991,12 +1000,22 @@ class SparseCSR(object):
             # loop and add elements
             for r in range(a.shape[0]):
                 # pointers
+                aptr = a.ptr[r]
+                an = a.ncol[r]
                 bptr = b.ptr[r]
                 bn = b.ncol[r]
 
+                acol = a.col[aptr:aptr+an]
+                bcol = b.col[bptr:bptr+bn]
+
                 # Get positions of b-elements in a:
-                in_a = a._get(r, b.col[bptr:bptr+bn])
+                in_a = a._get(r, bcol)
                 a._D[in_a, :] **= b._D[bptr:bptr+bn, :]
+
+                # Now set everything *not* in b but in a, to 1
+                #  float ** 0 == 1
+                not_in_b = where(in1d(acol, bcol, invert=True))[0]
+                a._D[aptr+not_in_b, :] = 1
 
         else:
             a._D **= b
