@@ -34,4 +34,54 @@ or after it has been created::
 
 The final geometry enables intrinsic routines to interact with the 2 closest neighbouring cells
 along the first lattice vector (`1 + 2 == 3`), and the 4 closest neighbouring cells
-along the third lattice vector (`1 + 2 + 2 == 5`). 
+along the third lattice vector (`1 + 2 + 2 == 5`).
+
+Example -- square
+~~~~~~~~~~~~~~~~~
+
+Here we show a square 2D lattice with one atom in the unit-cell and a supercell
+which extends 2 cells along the Cartesian :math:`x` lattice vector and 1
+cell along the Cartesian :math:`y` lattice vector::
+
+  >>> square = Geometry([[0.5,0.5,0]], sc=Supercell([1,1,10], [5, 3, 1]))
+
+which results in this underlying geometry:
+
+.. image:: 04_supercell.png
+   :width: 200pt
+   :align: center
+	
+With this setup, sisl, can handle couplings that are within the defined supercell
+structure, see green, full arrow. Any other couplings that reach farther than the
+specified supercell cannot be defined (and will thus *always* be zero), see the
+red, dashed arrow.
+
+Note that even though the geometry is purely 2D, sisl **requires** the last non-used
+dimension. For 2D cases the non-used direction should *always* have a supercell of 1.
+
+
+
+Example -- graphene
+~~~~~~~~~~~~~~~~~~~
+
+A commonly encountered example is the graphene unit-cell. In a tight-binding picture
+one may suffice with a nearest-neighbour coupling.
+
+Here we create the simple graphene 2D lattice with 2 atoms per unit-cell and
+a supercell of `[3, 3, 1]` to account for nearest neighbour couplings.
+
+  >>> graphene = geom.graphene()
+
+which results in this underlying geometry:
+
+.. image:: 04_graphene_couplings.png
+   :width: 200pt
+   :align: center
+
+The couplings from each unit-cell atom is highlighted by green (first atom) and
+blue (second atom) arrows. When dealing with Hamiltonians the supercell is extremely
+important to obtain the correct electronic structure. If one wishes to use the 3rd
+nearest neighbour couplings one is forced to use a supercell of `[5, 5, 1]` (please
+try and convince yourself of this).
+
+
