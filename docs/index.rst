@@ -20,8 +20,8 @@
    introduction
    installation
    scripts/scripts
-   examples.rst
    tutorials.rst
+   examples.rst
    rst/files
 
 Welcome to sisl documentation!
