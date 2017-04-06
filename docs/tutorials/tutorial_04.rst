@@ -47,7 +47,7 @@ cell along the Cartesian :math:`y` lattice vector::
 
 which results in this underlying geometry:
 
-.. image:: 04_supercell.png
+.. image:: figures/04_supercell.png
    :width: 200pt
    :align: center
 	
@@ -74,7 +74,7 @@ a supercell of `[3, 3, 1]` to account for nearest neighbour couplings.
 
 which results in this underlying geometry:
 
-.. image:: 04_graphene_couplings.png
+.. image:: figures/04_graphene_couplings.png
    :width: 200pt
    :align: center
 

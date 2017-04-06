@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for pdf in [0-9]*.pdf
+for pdf in figures/*.pdf
 do
     png=${pdf//pdf/png}
     if [ ! -e $png ]; then
