@@ -717,13 +717,13 @@ class Hamiltonian(object):
             atoms=None, eigvals_only=True,
             *args,
             **kwargs):
-        """ Returns the eigenvalues of the Hamiltonian
+        """ Returns a subset of eigenvalues of the Hamiltonian (default 10)
 
         Setup the Hamiltonian and overlap matrix with respect to
         the given k-point, then reduce the space to the specified atoms
-        and calculate the eigenvalues.
+        and calculate a subset of the eigenvalues using the sparse algorithms.
 
-        All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
+        All subsequent arguments gets passed directly to :code:`scipy.linalg.eigsh`
         """
 
         # We always request the smallest eigenvalues...

@@ -11,11 +11,6 @@ from .quaternion import Quaternion
 __all__ = ['SuperCell', 'SuperCellChild']
 
 
-# Default nsc variable
-_nsc = np.array([1] * 3, np.int32)
-_dtype = np.float64
-
-
 class SuperCell(object):
     """ Object to retain a super-cell and its nested values.
 
@@ -39,13 +34,16 @@ class SuperCell(object):
         self.cell = self.tocell(cell)
 
         # Set the volume
-        self.vol = np.abs(np.dot(self.cell[0, :],
-                                 np.cross(self.cell[1, :], self.cell[2, :])
-                                 )
-                          )
+        self._update_vol()
 
         # Set the super-cell
         self.set_nsc(nsc=nsc)
+
+    def _update_vol(self):
+        self.vol = np.abs(np.dot(self.cell[0, :],
+                                 np.cross(self.cell[1, :], self.cell[2, :])
+                             )
+                      )
 
     def set_nsc(self, nsc=None, a=None, b=None, c=None):
         """ Sets the number of supercells in the 3 different cell directions
@@ -121,13 +119,8 @@ class SuperCell(object):
         idx = np.arange(3)
         idx[b] = a
         idx[a] = b
-        return self.__class__(
-            np.copy(
-                self.cell[
-                    idx,
-                    :],
-                order='C'),
-            nsc=self.nsc[idx])
+        return self.__class__(np.copy(self.cell[idx, :], order='C'),
+                              nsc=self.nsc[idx])
 
     @property
     def rcell(self):
@@ -150,9 +143,10 @@ class SuperCell(object):
         rcell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
         rcell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]
         rcell[2, 2] = cell[0, 0] * cell[1, 1] - cell[0, 1] * cell[1, 0]
-        rcell[0, :] = rcell[0, :] / np.sum(rcell[0, :] * cell[0, :])
-        rcell[1, :] = rcell[1, :] / np.sum(rcell[1, :] * cell[1, :])
-        rcell[2, :] = rcell[2, :] / np.sum(rcell[2, :] * cell[2, :])
+        dot = np.dot
+        rcell[0, :] = rcell[0, :] / dot(rcell[0, :], cell[0, :])
+        rcell[1, :] = rcell[1, :] / dot(rcell[1, :], cell[1, :])
+        rcell[2, :] = rcell[2, :] / dot(rcell[2, :], cell[2, :])
         return rcell * 2. * np.pi
 
     def rotatea(self, angle, only='abc', radians=False):
@@ -200,6 +194,22 @@ class SuperCell(object):
         if isc is None:
             return np.array([0, 0, 0], np.float64)
         return np.dot(isc, self.cell)
+
+    def add_vacuum(self, vacuum, axis):
+        """ Add vacuum along the `axis` lattice vector
+
+        Parameters
+        ----------
+        vacuum : float
+           amount of vacuum added, in Ang
+        axis : int
+           the lattice vector to add vacuum along
+        """
+        d = self.cell[axis, :]
+        # normalize to get direction vector
+        d = d / np.sum(d ** 2) ** .5
+        self.cell[axis, :] += d * vacuum
+        self._update_vol()
 
     def sc_index(self, sc_off):
         """ Returns the integer index in the sc_off list that corresponds to `sc_off`
@@ -456,6 +466,18 @@ class SuperCellChild(object):
     def sc_off(self):
         """ Returns the inherent `SuperCell` objects `sc_off` """
         return self.sc.sc_off
+
+    def add_vacuum(self, vacuum, axis):
+        """ Add vacuum along the `axis` lattice vector
+
+        Parameters
+        ----------
+        vacuum : float
+           amount of vacuum added, in Ang
+        axis : int
+           the lattice vector to add vacuum along
+        """
+        self.sc.add_vacuum(vacuum, axis)
 
     def sc_index(self, *args, **kwargs):
         """ Call local `SuperCell` object `sc_index` function """
