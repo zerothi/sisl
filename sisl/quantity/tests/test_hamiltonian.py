@@ -168,6 +168,17 @@ class TestHamiltonian(object):
         # orbital
         self.H2.construct([(0.1, 1.5), (1., 0.1)])
 
+    def test_getitem1(self):
+        H = self.H
+        H.construct([(0.1, 1.5), (0.1, 0.2)])
+        assert_equal(H[0, 1], 0.2)
+        assert_equal(H[0, 0, (1, 0)], 0.2)
+        H[0, 0, (0, 1)] = 0.3
+        assert_equal(H[0, 0, (0, 1)], 0.3)
+        H[0, 1, (0, 1)] = -0.2
+        assert_equal(H[0, 1, (0, 1)], -0.2)
+        H.empty()
+
     def test_op1(self):
         g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32)

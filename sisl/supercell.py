@@ -18,7 +18,7 @@ class SuperCell(object):
     """
 
     # We limit the scope of this SuperCell object.
-    __slots__ = ['cell', 'vol', 'nsc', 'n_s', 'sc_off']
+    __slots__ = ('cell', 'vol', 'nsc', 'n_s', 'sc_off')
 
     def __init__(self, cell, nsc=None):
         """ Initialize a `SuperCell` object from initial quantities
@@ -44,6 +44,28 @@ class SuperCell(object):
                                  np.cross(self.cell[1, :], self.cell[2, :])
                              )
                       )
+
+    def _fill_sc(self, supercell_index):
+        """ Return a filled supercell index by filling in zeros where needed """
+
+        if len(supercell_index) == 3:
+            return supercell_index
+
+        # Fill in zeros
+        # This will purposefully raise an exception
+        # if the dimensions of the periodic ones
+        # are not consistent.
+        sci = np.zeros(3, np.int32)
+        i = 0
+        if self.nsc[0] > 1:
+            sci[0] = supercell_index[i]
+            i += 1
+        if self.nsc[1] > 1:
+            sci[1] = supercell_index[i]
+            i += 1
+        if self.nsc[2] > 1:
+            sci[2] = supercell_index[i]
+        return sci
 
     def set_nsc(self, nsc=None, a=None, b=None, c=None):
         """ Sets the number of supercells in the 3 different cell directions
@@ -216,6 +238,7 @@ class SuperCell(object):
 
         Returns the integer for the supercell
         """
+        sc_off = self._fill_sc(sc_off)
         if sc_off[0] is not None and sc_off[1] is not None and sc_off[2] is not None:
             for i in range(self.n_s):
                 if (sc_off[0] == self.sc_off[i, 0] or sc_off[0] is None) and \
@@ -351,10 +374,9 @@ class SuperCell(object):
         cell[0, :] = cell[0, :] / np.sum(cell[0, :]**2) ** .5
         cell[1, :] = cell[1, :] / np.sum(cell[1, :]**2) ** .5
         cell[2, :] = cell[2, :] / np.sum(cell[2, :]**2) ** .5
-        i_s = True
-        i_s = i_s and np.dot(cell[0, :], cell[1, :]) < 0.001
-        i_s = i_s and np.dot(cell[0, :], cell[2, :]) < 0.001
-        i_s = i_s and np.dot(cell[1, :], cell[2, :]) < 0.001
+        i_s = np.dot(cell[0, :], cell[1, :]) < 0.001
+        i_s = np.dot(cell[0, :], cell[2, :]) < 0.001 and i_s
+        i_s = np.dot(cell[1, :], cell[2, :]) < 0.001 and i_s
         return i_s
 
     @staticmethod
@@ -478,6 +500,9 @@ class SuperCellChild(object):
            the lattice vector to add vacuum along
         """
         self.sc.add_vacuum(vacuum, axis)
+
+    def _fill_sc(self, supercell_index):
+        return self.sc._fill_sc(supercell_index)
 
     def sc_index(self, *args, **kwargs):
         """ Call local `SuperCell` object `sc_index` function """

@@ -195,6 +195,13 @@ class Hamiltonian(object):
     def __getitem__(self, key):
         """ Return Hamiltonian coupling elements for the index(s) """
         dd = self._def_dim
+        if len(key) > 2:
+            # This may be a specification of supercell indices
+            if isinstance(key[-1], tuple):
+                # We guess it is the supercell index
+                off = self.sc_index(key[-1])
+                key = [el for el in key[:-1]]
+                key[1] = self.geom.sc2uc(key[1]) + off
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
@@ -208,6 +215,13 @@ class Hamiltonian(object):
         setting of tight-binding parameters in a sparse matrix
         """
         dd = self._def_dim
+        if len(key) > 2:
+            # This may be a specification of supercell indices
+            if isinstance(key[-1], tuple):
+                # We guess it is the supercell index
+                off = self.sc_index(key[-1])
+                key = [el for el in key[:-1]]
+                key[1] = self.geom.sc2uc(key[1]) + off
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
