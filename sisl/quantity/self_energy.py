@@ -57,7 +57,7 @@ class SemiInfinite(SelfEnergy):
         infinite : `str`
            axis specification for the semi-infinite direction (`+A`/`-A`/`+B`/`-B`/`+C`/`-C`)
         eta : `float=1e-6`
-           the imaginary part of the self-energy calculation
+           the default imaginary part of the self-energy calculation
         bloch : `array_like=[1,1,1]`
            Bloch-expansion for each of the lattice vectors (`1` for no expansion)
            The resulting self-energy will have dimension
@@ -107,16 +107,23 @@ class SemiInfinite(SelfEnergy):
         except:
             pass # GOOD, no connections across the first coupling
 
-    def __correct_k(self, k=None):
-        """ Return a corrected k-point """
+    def _correct_k(self, k=None):
+        """ Return a corrected k-point 
+
+        Note
+        ----
+        This is strictly not required because any k along the semi-infinite direction
+        is *integrated* out and thus the self-energy is the same for all k along the
+        semi-infinite direction.
+        """
         if k is None:
             k = np.zeros([3], np.float64)
         else:
-            k = ensure_array(k, np.float64)
+            k = self._fill(k, np.float64)
             k[self.semi_inf] = 0.
         return k
 
-    def __call__(self, E, k=None, eta=None):
+    def __call__(self, E, k=None, eta=None, dtype=None, eps=None):
         """ Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
         Parameters
@@ -130,19 +137,26 @@ class SemiInfinite(SelfEnergy):
         eta : `float=<>`
           the imaginary value to evaluate the self-energy with. Defaults to the initial
           value
+        eps : float
+          convergence criteria.
         """
-
         if eta is None:
-            E = E + 1j * self.eta
-        else:
-            E = E + 1j * eta
+            eta = self.eta
+        E = E + 1j * eta
 
-        k = self.__correct_k(k)
+        # Get k-point
+        k = self._correct_k(k)
+
+        # Get H0 and H1
+        sc0 = [None, None, None]
+        sc1 = [None, None, None]
+        sc0[self.semi_inf] = 0
+        sc1[self.semi_inf] = self.semi_inf_dir
 
         # Now we may calculate the actual self-energy
-        return self.__SE_Sancho(E, k)
+        return self._Sancho(E, dtype=dtype, eps=eps)
 
-    def __SE_Sancho(self, H0, H1, E, k, dtype=None, eps=1e-14):
+    def _Sancho(self, H0, H1, E, dtype=None, eps=1e-14):
         """ Calculate the self-energy according to the Sancho-Sancho algorithm """
 
         # Faster calls
@@ -196,3 +210,5 @@ class SemiInfinite(SelfEnergy):
             if np.amax(np.abs(alpha) + np.abs(beta)) < eps:
                 # Return the pristine Green function
                 return GS
+
+        raise ValueError('SemiInfinite: could not converge self-energy calculation')

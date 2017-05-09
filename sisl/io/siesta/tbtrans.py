@@ -20,7 +20,7 @@ from sisl.utils import *
 
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl._help import _str
 from sisl.units.siesta import unit_convert
@@ -924,7 +924,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         val = []
         for kw in kwargs:
 
-            if kw == 'geom':
+            if kw in ['geom', 'geometry']:
                 if kwargs[kw]:
                     val.append(self.read_geom())
 
@@ -978,6 +978,29 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     ns._data_header.append('Energy[eV]')
                 return func(self, *args, **kwargs)
             return assign_E
+
+        # Correct the geometry species information
+        class Geometry(argparse.Action):
+
+            def __call__(self, parser, ns, value, option_string=None):
+
+                old_g = ns._geometry.copy()
+
+                # Now read the file to read the geometry from
+                g = get_sile(value).read_geom()
+
+                # Make sure g has the same # of orbitals
+                atoms = [None] * len(old_g)
+                for a, idx in g.atom:
+                    for i in idx:
+                        atoms[i] = a.copy(orbs=old_g.atom[i].orbs)
+                g._atom = Atoms(atoms)
+
+                ns._geometry = g
+        p.add_argument('--geometry', '-G',
+                       action=Geometry,
+                       help=('Update the geometry of the output file, this enables one to set the species correctly,'
+                             ' note this only affects output-files where species are important'))
 
         # Energy grabs
         class ERange(argparse.Action):
@@ -1259,9 +1282,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     print("  - number of kpoints: " + str(tbt.nkpt))
                 print("  - energy range:")
                 print("    {:.5f} -- {:.5f} eV".format(np.amin(tbt.E), np.amax(tbt.E)))
-                print("  - atoms with DOS (fortran index):")
+                print("  - atoms with DOS (fortran indices):")
                 print("    " + dev_rng)
-                truefalse('DOS' in tbt.variables, "DOS, Green function")
+                truefalse('DOS' in tbt.variables, "DOS Green function")
                 print()
                 print("Electrodes (*=DOS/ADOS/orbital-current not possible):")
                 for elec in tbt.elecs:
@@ -1276,16 +1299,16 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     gelec = tbt.groups[elec]
                     print("  - chemical potential: {:.4f} eV".format(tbt.mu(elec)))
                     print("  - electronic temperature: {:.2f} K".format(tbt.electronic_temperature(elec)))
-                    truefalse('DOS' in gelec.variables, "DOS, bulk")
-                    truefalse('ADOS' in gelec.variables, "DOS, spectral")
+                    truefalse('DOS' in gelec.variables, "DOS bulk")
+                    truefalse('ADOS' in gelec.variables, "DOS spectral")
                     truefalse('J' in gelec.variables, "Orbital-current")
-                    truefalse('T' in gelec.variables, "transmission, bulk")
-                    truefalse(elec + '.T' in gelec.variables, "transmission, out")
-                    truefalse(elec + '.C' in gelec.variables, "transmission, out correction")
+                    truefalse('T' in gelec.variables, "transmission bulk")
+                    truefalse(elec + '.T' in gelec.variables, "transmission out")
+                    truefalse(elec + '.C' in gelec.variables, "transmission out correction")
                     for elec2 in tbt.elecs:
                         # Skip it self, checked above in .T and .C
                         if elec2 == elec: continue
-                        truefalse(elec2 + '.T' in gelec.variables, "transmission, -> " + elec2)
+                        truefalse(elec2 + '.T' in gelec.variables, "transmission -> " + elec2)
 
         p.add_argument('--info', '-i', action=Info, nargs=0,
                        help='Print out what information is contained in the TBT.nc file.')
@@ -1297,7 +1320,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 out = value[0]
 
-                from sisl.io import get_sile, TableSile
+                from sisl.io import TableSile
                 try:
                     # We figure out if the user wants to write
                     # to a geometry

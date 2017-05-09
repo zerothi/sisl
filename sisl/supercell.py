@@ -45,27 +45,35 @@ class SuperCell(object):
                              )
                       )
 
-    def _fill_sc(self, supercell_index):
-        """ Return a filled supercell index by filling in zeros where needed """
-
-        if len(supercell_index) == 3:
-            return supercell_index
+    def _fill(self, non_filled, dtype=None):
+        """ Return a zero filled array of length 3 """
+        if len(non_filled) == 3:
+            return non_filled
 
         # Fill in zeros
         # This will purposefully raise an exception
         # if the dimensions of the periodic ones
         # are not consistent.
-        sci = np.zeros(3, np.int32)
+        if dtype is None:
+            try:
+                dtype = non_filled.dtype
+            except:
+                dtype = np.dtype(non_filled.__class__)
+        f = np.zeros(3, dtype)
         i = 0
         if self.nsc[0] > 1:
-            sci[0] = supercell_index[i]
+            f[0] = non_filled[i]
             i += 1
         if self.nsc[1] > 1:
-            sci[1] = supercell_index[i]
+            f[1] = non_filled[i]
             i += 1
         if self.nsc[2] > 1:
-            sci[2] = supercell_index[i]
-        return sci
+            f[2] = non_filled[i]
+        return f
+
+    def _fill_sc(self, supercell_index):
+        """ Return a filled supercell index by filling in zeros where needed """
+        return self._fill(supercell_index, dtype=np.int32)
 
     def set_nsc(self, nsc=None, a=None, b=None, c=None):
         """ Sets the number of supercells in the 3 different cell directions
@@ -500,6 +508,9 @@ class SuperCellChild(object):
            the lattice vector to add vacuum along
         """
         self.sc.add_vacuum(vacuum, axis)
+
+    def _fill(self, non_filled, dtype=None):
+        return self.sc._fill(non_filled, dtype)
 
     def _fill_sc(self, supercell_index):
         return self.sc._fill_sc(supercell_index)

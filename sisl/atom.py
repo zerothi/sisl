@@ -1030,9 +1030,13 @@ class Atom(with_metaclass(AtomMeta, object)):
         else:
             self.tag = tag
 
-    def copy(self):
+    def copy(self, Z=None, R=None, orbs=None, mass=None, tag=None):
         """ Return copy of this object """
-        return self.__class__(self.Z, self.R, self.orbs, self.mass, self.tag)
+        return self.__class__(self.Z if Z is None else Z,
+                              self.R if R is None else R,
+                              self.orbs if orbs is None else orbs,
+                              self.mass if mass is None else mass,
+                              self.tag if tag is None else tag)
 
     def radius(self, method='calc'):
         """ Return the atomic radii of the atom (in Ang) 
