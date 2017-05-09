@@ -27,7 +27,7 @@ class XVSileSiesta(SileSiesta):
         self._comment = []
 
     @Sile_fh_open
-    def write_geom(self, geom, fmt='.8f'):
+    def write_geometry(self, geom, fmt='.8f'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -63,7 +63,7 @@ class XVSileSiesta(SileSiesta):
         return SuperCell(cell)
 
     @Sile_fh_open
-    def read_geom(self):
+    def read_geometry(self):
         """ Returns Geometry object from the XV file
         """
         sc = self.read_sc()
@@ -85,7 +85,7 @@ class XVSileSiesta(SileSiesta):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geom().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(*args, **newkw)
 
 
 add_sile('XV', XVSileSiesta, gzip=True)

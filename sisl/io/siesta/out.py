@@ -89,7 +89,7 @@ class outSileSiesta(SileSiesta):
 
         return SuperCell(cell)
 
-    def _read_geom_outcoor(self, line, last, all, species=None):
+    def _read_geometry_outcoor(self, line, last, all, species=None):
         """ Wrapper for reading the geometry as in the outcoor output """
         species = self._ensure_species(species)
 
@@ -135,14 +135,14 @@ class outSileSiesta(SileSiesta):
             geom = Geometry(xyz, [species[int(i)-1] for i in spec], sc=cell)
 
         if all:
-            tmp = self._read_geom_outcoor(last, all, species)
+            tmp = self._read_geometry_outcoor(last, all, species)
             if tmp is None:
                 return [geom]
             return tmp.extend([geom])
 
         return geom
 
-    def _read_geom_atomic(self, line, species=None):
+    def _read_geometry_atomic(self, line, species=None):
         """ Wrapper for reading the geometry as in the outcoor output """
         species = self._ensure_species(species)
 
@@ -171,7 +171,7 @@ class outSileSiesta(SileSiesta):
         return geom
 
     @Sile_fh_open
-    def read_geom(self, last=True, all=False):
+    def read_geometry(self, last=True, all=False):
         """ Reads the geometry from the SIESTA output file
 
         Parameters
@@ -208,9 +208,9 @@ class outSileSiesta(SileSiesta):
         coord = type_coord(line)
 
         if coord == 1:
-            return self._read_geom_outcoor(line, last, all, species)
+            return self._read_geometry_outcoor(line, last, all, species)
         elif coord == 2:
-            return self._read_geom_atomic(line, species)
+            return self._read_geometry_atomic(line, species)
 
         # Signal not found
         return None
@@ -357,7 +357,7 @@ class outSileSiesta(SileSiesta):
 
             if kw == 'geom':
                 if kwargs[kw]:
-                    val.append(self.read_geom())
+                    val.append(self.read_geometry())
 
             if kw == 'force':
                 if kwargs[kw]:

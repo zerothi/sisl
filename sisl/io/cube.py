@@ -26,7 +26,7 @@ class CUBESile(Sile):
         self._comment = []
 
     @Sile_fh_open
-    def write_geom(
+    def write_geometry(
             self,
             geom,
             size=None,
@@ -71,7 +71,7 @@ class CUBESile(Sile):
         sile_raise_write(self)
 
         # Write the geometry
-        self.write_geom(grid.geom, size=grid.grid.shape, *args, **kwargs)
+        self.write_geometry(grid.geom, size=grid.grid.shape, *args, **kwargs)
 
         g_size = np.copy(grid.grid.shape)
 
@@ -112,7 +112,7 @@ class CUBESile(Sile):
         return SuperCell(cell)
 
     @Sile_fh_open
-    def read_geom(self):
+    def read_geometry(self):
         """ Returns `Geometry` object from the CUBE file """
         na, sc = self.read_sc(na=True)
 
@@ -132,7 +132,7 @@ class CUBESile(Sile):
     @Sile_fh_open
     def read_grid(self):
         """ Returns `Grid` object from the CUBE file """
-        geom = self.read_geom()
+        geom = self.read_geometry()
 
         # Now seek behind to read grid sizes
         self.fh.seek(0)

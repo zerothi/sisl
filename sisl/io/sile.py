@@ -312,6 +312,18 @@ class BaseSile(object):
                 # Call read
                 return func(kwargs[key], **kwargs)
 
+    def read_geom(self, *args, **kwargs):
+        """ Deprecated function which is superseeded by `read_geometry` """
+        if getattr(self, 'read_geometry'):
+            return self.read_geometry(*args, **kwargs)
+        raise ValueError('read_geom is deprecated, please use read_geometry')
+
+    def read_es(self, *args, **kwargs):
+        """ Deprecated function which is superseeded by `read_hamiltonian` """
+        if getattr(self, 'read_es'):
+            return self.read_hamiltonian(*args, **kwargs)
+        raise ValueError('read_es is deprecated, please use read_hamiltonian')
+
     # Options for writing
     # The default routine for writing
     _write_default = None
@@ -339,6 +351,18 @@ class BaseSile(object):
                 func = getattr(self, "write_" + key)
                 # Call write
                 func(kwargs[key], **kwargs)
+
+    def write_geom(self, *args, **kwargs):
+        """ Deprecated function which is superseeded by `write_geometry` """
+        if getattr(self, 'write_geometry'):
+            return self.write_geometry(*args, **kwargs)
+        raise ValueError('write_geom is deprecated, please use write_geometry')
+
+    def write_es(self, *args, **kwargs):
+        """ Deprecated function which is superseeded by `write_hamiltonian` """
+        if getattr(self, 'write_hamiltonian'):
+            return self.write_hamiltonian(*args, **kwargs)
+        raise ValueError('write_es is deprecated, please use write_hamiltonian')
 
     def _setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization

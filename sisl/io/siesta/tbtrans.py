@@ -174,7 +174,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 self._data['wkpt'] = np.ones([1], dtype=np.float64)
 
             # Create the geometry in the data file
-            self._data['_geom'] = self.read_geom()
+            self._data['_geom'] = self.read_geometry()
 
             # Reset the access pattern
             self._access = access
@@ -197,7 +197,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         return sc
 
-    def read_geom(self, *args, **kwargs):
+    def read_geometry(self, *args, **kwargs):
         """ Returns ``Geometry`` object from a .TBT.nc file """
         sc = self.read_sc()
 
@@ -229,7 +229,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         return geom
 
-    def write_geom(self, *args, **kwargs):
+    def write_geometry(self, *args, **kwargs):
         """ This is not meant to be used """
         raise ValueError(self.__class__.__name__ + " can not write a geometry")
 
@@ -239,7 +239,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
     @property
     def geom(self):
         """ Returns the associated geometry from the TBT file """
-        return self.read_geom()
+        return self.read_geometry()
 
     @property
     def cell(self):
@@ -926,7 +926,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
             if kw in ['geom', 'geometry']:
                 if kwargs[kw]:
-                    val.append(self.read_geom())
+                    val.append(self.read_geometry())
 
             if kw == 'atom_current':
                 if kwargs[kw]:
@@ -987,7 +987,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 old_g = ns._geometry.copy()
 
                 # Now read the file to read the geometry from
-                g = get_sile(value).read_geom()
+                g = get_sile(value).read_geometry()
 
                 # Make sure g has the same # of orbitals
                 atoms = [None] * len(old_g)
@@ -1325,8 +1325,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     # We figure out if the user wants to write
                     # to a geometry
                     obj = get_sile(out, mode='w')
-                    if hasattr(obj, 'write_geom'):
-                        obj.write_geom(ns._geometry)
+                    if hasattr(obj, 'write_geometry'):
+                        obj.write_geometry(ns._geometry)
                         return
                     raise NotImplementedError
                 except:
@@ -1410,7 +1410,7 @@ add_sile('PHT.nc', phtncSileSiesta)
 class dHncSileSiesta(SileCDFSIESTA):
     """ TBtrans delta-H file object """
 
-    def write_geom(self, geom):
+    def write_geometry(self, geom):
         """
         Creates the NetCDF file and writes the geometry information
         """
@@ -1510,7 +1510,7 @@ class dHncSileSiesta(SileCDFSIESTA):
         ham.finalize()
 
         # Ensure that the geometry is written
-        self.write_geom(ham.geom)
+        self.write_geometry(ham.geom)
 
         self._crt_dim(self, 'spin', ham._spin)
 

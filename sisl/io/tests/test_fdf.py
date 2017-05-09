@@ -35,12 +35,12 @@ class TestFDF(object):
             assert_true(fdf.get('LatticeConstant') > 0.)
 
             fdf.read_sc()
-            fdf.read_geom()
+            fdf.read_geometry()
 
     def test_fdf2(self):
         f = osp.join(self.d, 'gr.fdf')
         self.g.write(fdfSileSiesta(f, 'w'))
-        g = fdfSileSiesta(f).read_geom()
+        g = fdfSileSiesta(f).read_geometry()
 
         # Assert they are the same
         assert_true(np.allclose(g.cell, self.g.cell))

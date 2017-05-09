@@ -23,7 +23,7 @@ class TestHAM(object):
     def test_ham1(self):
         f = osp.join(self.d, 'gr.ham')
         self.g.write(HamiltonianSile(f, 'w'))
-        g = HamiltonianSile(f).read_geom()
+        g = HamiltonianSile(f).read_geometry()
 
         # Assert they are the same
         assert_true(np.allclose(g.cell, self.g.cell))

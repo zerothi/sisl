@@ -198,17 +198,17 @@ class TestObject(object):
         G = self.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=self.d)[1]
-        read_geom = get_siles(['read_geom'])
-        for sile in get_siles(['write_geom']):
-            if not sile in read_geom:
+        read_geometry = get_siles(['read_geometry'])
+        for sile in get_siles(['write_geometry']):
+            if not sile in read_geometry:
                 continue
             # It is not yet an instance, hence issubclass
             if issubclass(sile, (HamiltonianSile, tbtncSileSiesta, dHncSileSiesta)):
                 continue
             # Write
-            s = sile(f, mode='w').write_geom(G)
+            s = sile(f, mode='w').write_geometry(G)
             # Read
-            g = sile(f).read_geom()
+            g = sile(f).read_geometry()
             # Easy fix to run the ArgumentParser code...
             if hasattr(g, 'ArgumentParser'):
                 g.ArgumentParser()

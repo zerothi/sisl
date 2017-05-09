@@ -22,7 +22,7 @@ class HamiltonianSile(Sile):
     """ Hamiltonian file object """
 
     @Sile_fh_open
-    def read_geom(self):
+    def read_geometry(self):
         """ Reading a geometry in regular Hamiltonian format """
 
         cell = np.zeros([3, 3], np.float64)
@@ -93,7 +93,7 @@ class HamiltonianSile(Sile):
         Reads the Hamiltonian model
         """
         # Read the geometry in this file
-        geom = self.read_geom()
+        geom = self.read_geometry()
 
         # Rewind to ensure we can read the entire matrix structure
         self.fh.seek(0)
@@ -148,7 +148,7 @@ class HamiltonianSile(Sile):
         return Hamiltonian.sp2HS(geom, H, S)
 
     @Sile_fh_open
-    def write_geom(self, geom, fmt='.8f', **kwargs):
+    def write_geometry(self, geom, fmt='.8f', **kwargs):
         """
         Writes the geometry to the output file
 
@@ -220,7 +220,7 @@ class HamiltonianSile(Sile):
         geom = ham.geom
 
         # First write the geometry
-        self.write_geom(geom, **kwargs)
+        self.write_geometry(geom, **kwargs)
 
         # We default to the advanced layuot if we have more than one
         # orbital on any one atom

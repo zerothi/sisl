@@ -23,7 +23,7 @@ class TestXYZ(object):
     def test_xyz1(self):
         f = osp.join(self.d, 'gr.xyz')
         self.g.write(XYZSile(f, 'w'))
-        g = XYZSile(f).read_geom()
+        g = XYZSile(f).read_geometry()
 
         # Assert they are the same
         assert_true(np.allclose(g.cell, self.g.cell))

@@ -25,7 +25,7 @@ class XSFSile(Sile):
         self._comment = ['#']
 
     @Sile_fh_open
-    def write_geom(self, geom, fmt='.8f', data=None):
+    def write_geometry(self, geom, fmt='.8f', data=None):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -77,7 +77,7 @@ class XSFSile(Sile):
         self._write('\n')
 
     @Sile_fh_open
-    def read_geom(self, data=False):
+    def read_geometry(self, data=False):
         """ Returns Geometry object from the XSF file
 
         Parameters
@@ -140,7 +140,7 @@ class XSFSile(Sile):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geom().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(*args, **newkw)
 
     def ArgumentParser_out(self, p, *args, **kwargs):
         """ Adds arguments only if this file is an output file 

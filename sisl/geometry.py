@@ -285,7 +285,7 @@ class Geometry(SuperCellChild):
 
     @staticmethod
     def read(sile):
-        """ Reads geometry from the `Sile` using `Sile.read_geom`
+        """ Reads geometry from the `Sile` using `Sile.read_geometry`
 
         Parameters
         ----------
@@ -297,12 +297,12 @@ class Geometry(SuperCellChild):
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            return sile.read_geom()
+            return sile.read_geometry()
         else:
-            return get_sile(sile).read_geom()
+            return get_sile(sile).read_geometry()
 
     def write(self, sile, *args, **kwargs):
-        """ Writes geometry to the `Sile` using `sile.write_geom`
+        """ Writes geometry to the `Sile` using `sile.write_geometry`
 
         Parameters
         ----------
@@ -318,9 +318,9 @@ class Geometry(SuperCellChild):
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            sile.write_geom(self, *args, **kwargs)
+            sile.write_geometry(self, *args, **kwargs)
         else:
-            get_sile(sile, 'w').write_geom(self, *args, **kwargs)
+            get_sile(sile, 'w').write_geometry(self, *args, **kwargs)
 
     def __repr__(self):
         """ Representation of the object """
@@ -2608,7 +2608,7 @@ lattice vector.
     if geom is None:
         argv, input_file = cmd.collect_input(argv)
         try:
-            geom = get_sile(input_file).read_geom()
+            geom = get_sile(input_file).read_geometry()
         except:
             geom = Geometry([0, 0, 0])
 
@@ -2619,7 +2619,7 @@ lattice vector.
 
     elif isinstance(geom, BaseSile):
         try:
-            geom = sile.read_geom()
+            geom = sile.read_geometry()
             # Store the input file...
             input_file = geom.file
         except Exception as E:

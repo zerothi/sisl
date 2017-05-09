@@ -43,7 +43,7 @@ class TSHSSileSiesta(SileBinSIESTA):
         SC.sc_off = isc
         return SC
 
-    def read_geom(self):
+    def read_geometry(self):
         """ Returns Geometry object from a siesta.TSHS file """
 
         # Read supercell
@@ -86,7 +86,7 @@ class TSHSSileSiesta(SileBinSIESTA):
         """ Returns the electronic structure from the siesta.TSHS file """
 
         # First read the geometry
-        geom = self.read_geom()
+        geom = self.read_geometry()
 
         # Now read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)

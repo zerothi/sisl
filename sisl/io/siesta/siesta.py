@@ -35,7 +35,7 @@ class ncSileSiesta(SileCDFSIESTA):
 
         return SuperCell(cell, nsc=nsc)
 
-    def read_geom(self):
+    def read_geometry(self):
         """ Returns Geometry object from a SIESTA.nc file
 
         NOTE: Interaction range of the Atoms are currently not read.
@@ -89,7 +89,7 @@ class ncSileSiesta(SileCDFSIESTA):
             spin = len(self._dimension('spin'))
 
         # First read the geometry
-        geom = self.read_geom()
+        geom = self.read_geometry()
 
         # Populate the things
         sp = self._crt_grp(self, 'SPARSE')
@@ -158,7 +158,7 @@ class ncSileSiesta(SileCDFSIESTA):
         Enables the reading and processing of the grids created by SIESTA
         """
         # Swap as we swap back in the end
-        geom = self.read_geom().swapaxes(0, 2)
+        geom = self.read_geometry().swapaxes(0, 2)
 
         # Shorthand
         g = self.groups['GRID']
@@ -195,7 +195,7 @@ class ncSileSiesta(SileCDFSIESTA):
 
         return grid
 
-    def write_geom(self, geom):
+    def write_geometry(self, geom):
         """
         Creates the NetCDF file and writes the geometry information
         """
@@ -275,7 +275,7 @@ class ncSileSiesta(SileCDFSIESTA):
         ham.finalize()
 
         # Ensure that the geometry is written
-        self.write_geom(ham.geom)
+        self.write_geometry(ham.geom)
 
         self._crt_dim(self, 'spin', ham._spin)
 
@@ -348,7 +348,7 @@ class ncSileSiesta(SileCDFSIESTA):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geom().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(*args, **newkw)
 
 
 add_sile('nc', ncSileSiesta)

@@ -97,7 +97,7 @@ class winSileW90(SileW90):
         return self._read_sc()
 
     @Sile_fh_open
-    def _read_geom(self):
+    def _read_geometry(self):
         """ Defered routine """
 
         nc = int(self.readline())
@@ -117,7 +117,7 @@ class winSileW90(SileW90):
 
         return Geometry(xyz[:na, :], atom='H')
 
-    def read_geom(self, *args, **kwargs):
+    def read_geometry(self, *args, **kwargs):
         """ Reads a `Geometry` and creates the Wannier90 cell """
 
         # Read in the super-cell
@@ -125,7 +125,7 @@ class winSileW90(SileW90):
 
         self._set_file('_centres.xyz')
 
-        geom = self._read_geom()
+        geom = self._read_geometry()
         geom.set_sc(sc)
 
         return geom
@@ -241,7 +241,7 @@ class winSileW90(SileW90):
         """
 
         # Retrieve the geometry...
-        geom = self.read_geom()
+        geom = self.read_geometry()
 
         # Set file
         self._set_file('_hr.dat')
@@ -252,7 +252,7 @@ class winSileW90(SileW90):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geom().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(*args, **newkw)
 
 
 add_sile('win', winSileW90, gzip=True)

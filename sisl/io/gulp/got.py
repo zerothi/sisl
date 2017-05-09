@@ -83,7 +83,7 @@ class gotSileGULP(SileGULP):
         self.set_key('geom', key)
 
     @Sile_fh_open
-    def read_geom(self, key=None, **kwargs):
+    def read_geometry(self, key=None, **kwargs):
         """ Reads a geometry and creates the GULP dynamical geometry """
         self.set_geom_key(key)
 
@@ -178,7 +178,7 @@ class gotSileGULP(SileGULP):
 
         dtype = kwargs.get('dtype', np.float64)
 
-        geom = self.read_geom(**kwargs)
+        geom = self.read_geometry(**kwargs)
 
         hessian = kwargs.get('hessian', None)
         if hessian is None:

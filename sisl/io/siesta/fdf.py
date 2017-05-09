@@ -316,7 +316,7 @@ class fdfSileSiesta(SileSiesta):
                          ' could not find start/end.'))
 
     @Sile_fh_open
-    def write_geom(self, geom, fmt='.8f', *args, **kwargs):
+    def write_geometry(self, geom, fmt='.8f', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -379,7 +379,7 @@ class fdfSileSiesta(SileSiesta):
 
         return SuperCell(cell)
 
-    def read_geom(self, *args, **kwargs):
+    def read_geometry(self, *args, **kwargs):
         """ Returns Geometry object from the FDF file
 
         NOTE: Interaction range of the Atoms are currently not read.
@@ -590,10 +590,10 @@ class fdfSileSiesta(SileSiesta):
         f = label + '.XV'
         try:
             if osp.isfile(f):
-                geom = sis.XVSileSiesta(f).read_geom()
+                geom = sis.XVSileSiesta(f).read_geometry()
                 warn.warn("Reading geometry from the XV file instead of the fdf-file!")
             else:
-                geom = self.read_geom()
+                geom = self.read_geometry()
 
             tmp_p = sp.add_parser('geom',
                                   help="Edit the contained geometry in the file")
