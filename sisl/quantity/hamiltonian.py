@@ -996,27 +996,27 @@ class Hamiltonian(object):
             a `Sile` object which will be used to read the Hamiltonian
             and the overlap matrix (if any)
             if it is a string it will create a new sile using `get_sile`.
-        * : args passed directly to ``read_es(,**)``
+        * : args passed directly to ``read_hamiltonian(,**)``
         """
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            return sile.read_es(*args, **kwargs)
+            return sile.read_hamiltonian(*args, **kwargs)
         else:
-            return get_sile(sile).read_es(*args, **kwargs)
+            return get_sile(sile).read_hamiltonian(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs):
-        """ Writes a tight-binding model to the `Sile` as implemented in the :code:`Sile.write_es` method """
+        """ Writes a tight-binding model to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method """
         self.finalize()
 
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            sile.write_es(self, *args, **kwargs)
+            sile.write_hamiltonian(self, *args, **kwargs)
         else:
-            get_sile(sile, 'w').write_es(self, *args, **kwargs)
+            get_sile(sile, 'w').write_hamiltonian(self, *args, **kwargs)
 
     ###############################
     # Overload of math operations #

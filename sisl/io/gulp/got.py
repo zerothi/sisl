@@ -27,7 +27,7 @@ class gotSileGULP(SileGULP):
 
         self._keys = {
             'sc': 'Final Cartesian lattice vectors',
-            'geom': 'Final fractional coordinates',
+            'geometry': 'Final fractional coordinates',
             'dyn': 'Real Dynamical matrix',
         }
 
@@ -78,21 +78,21 @@ class gotSileGULP(SileGULP):
 
         return SuperCell(cell)
 
-    def set_geom_key(self, key):
+    def set_geometry_key(self, key):
         """ Overwrites internal key lookup value for the geometry vectors """
-        self.set_key('geom', key)
+        self.set_key('geometry', key)
 
     @Sile_fh_open
     def read_geometry(self, key=None, **kwargs):
         """ Reads a geometry and creates the GULP dynamical geometry """
-        self.set_geom_key(key)
+        self.set_geometry_key(key)
 
         # create default supercell
         sc = SuperCell([1, 1, 1])
 
         for sc_geom in [0, 1]:
             # Step to either the geometry or
-            f, ki, _ = self.step_either([self._keys['sc'], self._keys['geom']])
+            f, ki, _ = self.step_either([self._keys['sc'], self._keys['geometry']])
             if not f and ki == 0:
                 raise ValueError(
                     ('GULPSile tries to lookup the SuperCell vectors '
@@ -113,7 +113,7 @@ class gotSileGULP(SileGULP):
             elif not f and ki == 1:
                 raise ValueError(
                     ('GULPSile tries to lookup the Geometry coordinates '
-                     'using key "' + self._keys['geom'] + '". \n'
+                     'using key "' + self._keys['geometry'] + '". \n'
                      'Use ".set_geom_key(...)" to search for different name.\n'
                      'This could not be found found in file: "' + self.file + '".'))
             elif f and ki == 1:
@@ -150,7 +150,7 @@ class gotSileGULP(SileGULP):
 
         # as the cell may be read in after the geometry we have
         # to wait until here to convert from fractional
-        if 'fractional' in self._keys['geom'].lower():
+        if 'fractional' in self._keys['geometry'].lower():
             # Correct for fractional coordinates
             xyz = np.dot(xyz, sc.cell)
 
@@ -184,7 +184,7 @@ class gotSileGULP(SileGULP):
         if hessian is None:
             dyn = self._read_dyn(geom.no, **kwargs)
         else:
-            dyn = get_sile(hessian, 'r').read_es(**kwargs)
+            dyn = get_sile(hessian, 'r').read_hamiltonian(**kwargs)
 
             if dyn.shape[0] != geom.no:
                 raise ValueError("Inconsistent Hessian file, number of atoms not correct")
@@ -207,7 +207,7 @@ class gotSileGULP(SileGULP):
 
         return DynamicalMatrix.sp2HS(geom, dyn)
 
-    read_es = read_dynmat
+    read_hamiltonian = read_dynmat
 
     def _read_dyn(self, no, **kwargs):
         """ In case the dynamical matrix is read from the file """

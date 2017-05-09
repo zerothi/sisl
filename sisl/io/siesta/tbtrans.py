@@ -1496,7 +1496,7 @@ class dHncSileSiesta(SileCDFSIESTA):
 
         return lvl
 
-    def write_es(self, ham, **kwargs):
+    def write_hamiltonian(self, ham, **kwargs):
         """ Writes Hamiltonian model to file
 
         Parameters

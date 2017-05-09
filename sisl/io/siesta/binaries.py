@@ -82,7 +82,7 @@ class TSHSSileSiesta(SileBinSIESTA):
 
         return geom
 
-    def read_es(self, **kwargs):
+    def read_hamiltonian(self, **kwargs):
         """ Returns the electronic structure from the siesta.TSHS file """
 
         # First read the geometry

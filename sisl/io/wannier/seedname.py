@@ -44,11 +44,11 @@ class winSileW90(SileW90):
     Examples
     --------
 
-    >>> H = win90.read_es()
+    >>> H = win90.read_hamiltonian()
 
-    >>> H = win90.read_es(dtype=numpy.float64) # only read real-part
+    >>> H = win90.read_hamiltonian(dtype=numpy.float64) # only read real-part
 
-    >>> H = win90.read_es(cutoff=0.00001) # explicitly set the cutoff for the elements
+    >>> H = win90.read_hamiltonian(cutoff=0.00001) # explicitly set the cutoff for the elements
 
     """
 
@@ -131,7 +131,7 @@ class winSileW90(SileW90):
         return geom
 
     @Sile_fh_open
-    def _read_es(self, geom, dtype=np.complex128, **kwargs):
+    def _read_hamiltonian(self, geom, dtype=np.complex128, **kwargs):
         """ Reads a Hamiltonian
 
         Reads the Hamiltonian model
@@ -231,7 +231,7 @@ class winSileW90(SileW90):
 
         return Hamiltonian.sp2HS(geom, Hr)
 
-    def read_es(self, *args, **kwargs):
+    def read_hamiltonian(self, *args, **kwargs):
         """ Read the electronic structure of the Wannier90 output 
 
         Parameters
@@ -246,7 +246,7 @@ class winSileW90(SileW90):
         # Set file
         self._set_file('_hr.dat')
 
-        return self._read_es(geom, *args, **kwargs)
+        return self._read_hamiltonian(geom, *args, **kwargs)
 
     def ArgumentParser(self, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

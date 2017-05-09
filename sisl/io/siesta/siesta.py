@@ -79,7 +79,7 @@ class ncSileSiesta(SileCDFSIESTA):
         geom = Geometry(xyz, atom, sc=sc)
         return geom
 
-    def read_es(self, **kwargs):
+    def read_hamiltonian(self, **kwargs):
         """ Returns a tight-binding model from the underlying NetCDF file """
 
         # Get the default spin channel
@@ -261,7 +261,7 @@ class ncSileSiesta(SileCDFSIESTA):
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = np.cumsum(orbs)
 
-    def write_es(self, ham, **kwargs):
+    def write_hamiltonian(self, ham, **kwargs):
         """ Writes Hamiltonian model to file
 
         Parameters

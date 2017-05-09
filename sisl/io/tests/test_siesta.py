@@ -24,7 +24,7 @@ class TestSIESTAnc(object):
         tb.construct([self.dR, self.t])
         tb.write(ncSileSiesta(f, 'w'))
 
-        ntb = ncSileSiesta(f).read_es()
+        ntb = ncSileSiesta(f).read_hamiltonian()
 
         # Assert they are the same
         assert_true(np.allclose(tb.cell, ntb.cell))
@@ -58,7 +58,7 @@ class TestSIESTAnc(object):
         tb.construct([self.dR, self.tS])
         tb.write(ncSileSiesta(f, 'w'))
 
-        ntb = ncSileSiesta(f).read_es()
+        ntb = ncSileSiesta(f).read_hamiltonian()
 
         # Assert they are the same
         assert_true(np.allclose(tb.cell, ntb.cell))

@@ -87,7 +87,7 @@ class HamiltonianSile(Sile):
         return geom
 
     @Sile_fh_open
-    def read_es(self, hermitian=True, dtype=np.float64, **kwargs):
+    def read_hamiltonian(self, hermitian=True, dtype=np.float64, **kwargs):
         """ Reads a Hamiltonian (including the geometry)
 
         Reads the Hamiltonian model
@@ -193,7 +193,7 @@ class HamiltonianSile(Sile):
         self._write('end atom\n')
 
     @Sile_fh_open
-    def write_es(self, ham, hermitian=True, **kwargs):
+    def write_hamiltonian(self, ham, hermitian=True, **kwargs):
         """ Writes the Hamiltonian model to the file
 
         Writes a Hamiltonian model to the intrinsic Hamiltonian file format.

@@ -320,7 +320,7 @@ class BaseSile(object):
 
     def read_es(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `read_hamiltonian` """
-        if getattr(self, 'read_es'):
+        if getattr(self, 'read_hamiltonian'):
             return self.read_hamiltonian(*args, **kwargs)
         raise ValueError('read_es is deprecated, please use read_hamiltonian')
 

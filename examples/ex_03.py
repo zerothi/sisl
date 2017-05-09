@@ -186,7 +186,7 @@ print('Reading output')
 gout = sisl.get_sile('zz.gout')
 # Correct what to read from the gulp output
 gout.set_sc_key("Cartesian lattice vectors")
-dyn = gout.read_es()
+dyn = gout.read_hamiltonian()
 
 # In GULP correcting for Newtons second law is already obeyed
 # So this need not be used, however, the precision of output

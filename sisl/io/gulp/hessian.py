@@ -20,7 +20,7 @@ class HessianSileGULP(SileGULP):
     """ GULP output file object """
 
     @Sile_fh_open
-    def read_dynmat(self, **kwargs):
+    def read_dynamicalmatrix(self, **kwargs):
         """ Returns a sparse matrix in coo format which contains the GULP
         Hessian matrix. 
 
