@@ -11,7 +11,7 @@ import scipy.linalg as sli
 import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype, is_python3
-from sisl.quantity.hamiltonian import Hamiltonian
+from .hamiltonian import Hamiltonian
 
 __all__ = ['SelfEnergy', 'SemiInfinite']
 

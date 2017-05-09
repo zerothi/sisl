@@ -18,7 +18,7 @@ from ..sile import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.units.siesta import unit_convert
-from sisl.quantity import Hamiltonian
+from sisl.physics import Hamiltonian
 
 
 __all__ = ['TSHSSileSiesta']

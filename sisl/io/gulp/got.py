@@ -13,7 +13,7 @@ from ..sile import *
 from sisl._help import _range as range
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl.quantity import DynamicalMatrix
+from sisl.physics import DynamicalMatrix
 
 
 __all__ = ['gotSileGULP']

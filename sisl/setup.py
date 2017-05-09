@@ -6,7 +6,7 @@ def configuration(parent_package='', top_path=None):
     config = Configuration('sisl', parent_package, top_path)
     config.add_subpackage('geom')
     config.add_subpackage('io')
-    config.add_subpackage('quantity')
+    config.add_subpackage('physics')
     config.add_subpackage('shape')
     config.add_subpackage('units')
     config.add_subpackage('utils')

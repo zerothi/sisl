@@ -27,7 +27,7 @@ from .io import *
 from .sparse import *
 
 # Hamiltonian etc.
-from .quantity import *
+from .physics import *
 
 
 # Import the default geom structure

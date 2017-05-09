@@ -11,7 +11,7 @@ from .sile import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
-from sisl.quantity import Hamiltonian
+from sisl.physics import Hamiltonian
 from sisl._help import _zip as zip
 
 

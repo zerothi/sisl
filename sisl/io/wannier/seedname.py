@@ -11,7 +11,7 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl.quantity import Hamiltonian
+from sisl.physics import Hamiltonian
 
 from sisl.units import unit_convert
 
