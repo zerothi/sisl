@@ -1,12 +1,12 @@
 File formats
 ============
 
-`sisl` implements a generic interface for interacting with many different file
+sisl implements a generic interface for interacting with many different file
 formats. When using the :doc:`command line utilities<scripts>` all these files
 are accepted as input for, especially :ref:`script_sdata` while only those which
 contains geometries (`Geometry`) may be used with :ref:`script_sgeom`.
 
-In `sisl` any file is named a `Sile` to destinguish it from `File`.
+In sisl any file is named a `Sile` to destinguish it from `File`.
 
 Here is a list of the currently supported file-formats with the file-endings
 defining the file format:
@@ -21,7 +21,7 @@ defining the file format:
    `XSFSile` file format, XCrySDen_ file format
 
 ``ham``
-   `HamiltonianSile` file format, native file format for `sisl`
+   `HamiltonianSile` file format, native file format for sisl
 
 ``dat``
    `TableSile` for tabular data

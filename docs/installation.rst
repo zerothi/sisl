@@ -3,7 +3,7 @@
 Installation
 ============
 
-sisl is very easy to install using any of your preferred methods.
+sisl is easy to install using any of your preferred methods.
 
 .. toctree::
    :local:
@@ -20,13 +20,13 @@ Installing sisl using PyPi can be done using
 conda
 -----
 
-Installing sisl using conda can be done using
+Installing sisl using conda can be done by
 
 .. code-block:: bash
 
     conda install -c zerothi sisl
 
-On conda sisl is also shipped in a developer installation for more
+On conda, sisl is also shipped in a developer installation for more
 up-to-date releases, this may be installed using:
 
 .. code-block:: bash
@@ -36,7 +36,7 @@ up-to-date releases, this may be installed using:
 Manual installation
 -------------------
 
-sisl may also be installed using the regular `setup.py` script.
+sisl may be installed using the regular `setup.py` script.
 To do this the following packages are required to be in `PYTHONPATH`:
 
 - `six`_

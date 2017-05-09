@@ -27,18 +27,18 @@
 Welcome to sisl documentation!
 ==============================
 
-`sisl` is a tool to manipulate an increasing amount of density functional
+sisl is a tool to manipulate an increasing amount of density functional
 theory code input and/or output.
-It is also a tight-binding code which implements extremely fast and scalable
+It is also a tight-binding code implementing extremely fast and scalable
 tight-binding creation algorithms (`>1,000,000` orbitals).
-`sisl` is developed in particular with `TBtrans`_ in mind to act as a tight-binding
+sisl is developed in particular with `TBtrans`_ in mind to act as a tight-binding
 Hamiltonian input engine for *N*-electrode transport calculations.
 
 
 Features
 --------
 
-`sisl` consists of several distinct features:
+sisl consists of several distinct features:
 
 * Geometries; create, extend, combine, manipulate different geometries readed from
   a large variety of DFT-codes and/or from generically used file formats.
@@ -48,14 +48,14 @@ Features
   `Wannier90`_, etc. Secondly, there is intrinsic capability of orthogonal *and*
   non-orthogonal Hamiltonians.
 
-* Generic output files from DFT-software. A generic set of output files are implemented
+* Generic output files from DFT-software. A set of output files are implemented
   which provides easy examination of output files.
 
 * Command line utilities for processing of data files for a wide
   variety of file formats:
 
   * :ref:`script_sdata`
-    Read and transform *any* `sisl` data file. 
+    Read and transform *any* sisl data file. 
     This script is capable of handling geometries, grids, special
     data files such as binary files etc.
 
@@ -64,16 +64,18 @@ Features
     as well as DFT related input and output files.
 
   * :ref:`script_sgrid` a real-space grid conversion tool which reads and writes
-    many commonly encounted files for real-space grids. *Mainly targetted SIESTA_*.
+    many commonly encounted files for real-space grids.
 
   
 :ref:`Installation <installation>`
 ----------------------------------
 
-Follow :ref:`these steps <installation>` to install `sisl`.
+Follow :ref:`these steps <installation>` to install sisl.
 
 API links
 =========
+
+A selected list of links to the API documentation.
 
 .. autosummary::
    sisl
@@ -81,6 +83,7 @@ API links
    sisl.geometry
    sisl.grid
    sisl.supercell
+   sisl.physics
 
 
 Indices

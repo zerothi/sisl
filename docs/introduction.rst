@@ -11,8 +11,8 @@ and perform a large variation of tasks.
    The goal of sisl is not specifically DFT-related software which
    typically only targets a limited number of atoms. One of the main
    features of sisl is the enourmously fast creation and manipulation of
-   geometries such as attaching two geometries together, rotating atoms,
-   removing atoms, changing bond-lengths etc. 
+   very large geometries such as attaching two geometries together,
+   rotating atoms, removing atoms, changing bond-lengths etc. 
    Everything is optimized for extremely large scale systems `>1,000,000` atoms
    such that creating geometries for tight-binding models becomes a breeze.
 
