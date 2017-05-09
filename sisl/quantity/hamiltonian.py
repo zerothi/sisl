@@ -185,12 +185,16 @@ class Hamiltonian(object):
         return s + '\nNumber of spin / non-zero elements {0} / {1} '.format(self.spin, self.nnz)
 
     def __getattr__(self, attr):
-        """ Returns the attributes from the underlying geometry
+        """ Returns the attributes from the hosting geometry
 
         Any attribute not found in the Hamiltonian class will
-        be looked up in the underlying geometry.
+        be looked up in the hosting geometry.
         """
         return getattr(self.geom, attr)
+
+    def __delitem__(self, key):
+        """ Delete elements of the Hamiltonian """
+        del self._data[key]
 
     def __getitem__(self, key):
         """ Return Hamiltonian coupling elements for the index(s) """
@@ -757,6 +761,15 @@ class Hamiltonian(object):
                           *args,
                           return_eigenvectors=not eigvals_only,
                           **kwargs)
+
+    def sub_supercell(self, sc):
+        """ Creates a new object with only the given supercells 
+
+        Parameters
+        ----------
+        sc : 
+        """
+        pass
 
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the tight-binding model into different parts.

@@ -5,6 +5,7 @@ from __future__ import print_function, division
 
 import warnings
 from numbers import Integral, Real, Complex
+from collections import Iterable
 
 # To speed up the extension algorithm we limit
 # the lookup table
@@ -465,6 +466,17 @@ class SparseCSR(object):
     # Define default iterator
     __iter__ = iter_nnz
 
+    def _slice2list(self, slc, axis):
+        """ Convert a slice to a list depending on the provided details """
+        if not isinstance(slc, slice):
+            return slc
+
+        # Do conversion
+        N = self.shape[axis]
+        # Get the indices
+        idx = slc.indices(N)
+        return range(idx[0], idx[1], idx[2])
+
     def _extend(self, i, j):
         """ Extends the sparsity pattern to retain elements `j` in row `i`
 
@@ -603,7 +615,19 @@ class SparseCSR(object):
     def __delitem__(self, key):
         """ Remove items from the sparse patterns """
         # Get indices of sparse data (-1 if non-existing)
+        key = list(key)
+        key[0] = self._slice2list(key[0], 0)
+        if isinstance(key[0], Iterable):
+            if len(key) == 2:
+                for i in key[0]:
+                    del self[i, key[1]]
+            elif len(key) == 3:
+                for i in key[0]:
+                    del self[i, key[1], key[2]]
+            return
+
         i = key[0]
+        key[1] = self._slice2list(key[1], 1)
         index = self._get(i, key[1])
 
         # First remove all negative indices.

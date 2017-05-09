@@ -679,7 +679,7 @@ class Geometry(SuperCellChild):
         REMARK: You need to ensure that all atoms within the first
         cut out region are within the primary unit-cell.
 
-        Doing ``geom.cut(2,1).tile(seps=2,axis=1)``, could for symmetric setups,
+        Doing ``geom.cut(2, 1).tile(2, 1)``, could for symmetric setups,
         be equivalent to a no-op operation. A ``UserWarning`` will be issued
         if this is not the case.
 
