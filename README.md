@@ -12,13 +12,13 @@ The [API documentation][sisl-api] can be found [here][sisl-api].
 
 The sisl toolbox provides a simple API for manipulating, constructing and creating tight-binding matrices 
 in a standard and uniform way.  
-Secondly it provides easy interfaces for creating and calculating band-structures of
+Secondly, it provides easy interfaces for creating and calculating band-structures of
 simple tight-binding models as well as interfacing to more advanced DFT utilities.
 
 sisl may also be used together with the [ASE][ase] environment.
 
-sisl provides an interface to [TBtrans][tbtrans] and thus enables the calculation of
-transport using the Green function method and easily allows calculation of tight-binding
+sisl provides an interface to [TBtrans][tbtrans] and enables the calculation of
+transport using the non-equilibrium Green function method and easily allows calculation of tight-binding
 systems of more than 500,000 atoms.
 
 ## Downloading and installation ##
@@ -39,7 +39,7 @@ If performing a manual installation, these packages are required:
    - __setuptools__
    - A fortran compiler
 
-Installing sisl can be performed using this command:
+Subsequently manual installation may be done using this command:
 
     python setup.py install --prefix=<prefix>
 
@@ -84,7 +84,7 @@ For instance to create a huge graphene flake
                   atom=Atom(Z=6, R=1.42), sc=sc)
     huge = gr.tile(100, axis=0).tile(100, axis=1)
 
-Which results in a 20000 atom big graphene flake.
+Which results in a 20,000 atom big graphene flake.
 
 Several basic geometries are intrinsically available
 
@@ -149,7 +149,7 @@ which returns an `XYZSile` file object that enables reading the geometry in
 `file.xyz`. Subsequently you may read the geometry and obtain a geometry object
 using
 
-    geom = fxyz.read_geom()
+    geom = fxyz.read_geometry()
 
 The above two methods are equivalent.
 
@@ -183,21 +183,19 @@ To create the nearest neighbour tight-binding model for graphene you simply do
     # Create nearest-neighbour tight-binding
     # graphene lattice constant 1.42
     dR = ( 0.1 , 1.5 )
-    on = 0. 
-    nn = -0.5
 
     # Ensure that graphene has supercell connections
-    gr.sc.set_nsc([3,3,1])
+    gr.sc.set_nsc([3, 3, 1])
     tb = Hamiltonian(gr)
     for ia in tb.geom:
         idx_a = tb.close(ia, dR=dR)
-        tb[ia,idx_a[0]] = on
-        tb[ia,idx_a[1]] = nn
+        tb[ia,idx_a[0]] = 0. # on-site
+        tb[ia,idx_a[1]] = -2.7 # nearest neighbour
 
 at this point you have the tight-binding model for graphene and you can easily create
 the Hamiltonian using this construct:
 
-    Hk = tb.Hk(k=[0.,0.5,0])
+    Hk = tb.Hk(k=[0., 0.5, 0])
 
 which returns the Hamiltonian in the `scipy.sparse.csr_matrix`
 format. To calculate the dispersion you diagonalize and plot the eigenvalues
@@ -219,12 +217,12 @@ implement a much faster method to loop over huge geometries
     for ias, idxs in tb.geom.iter_block(iR = 10):
         for ia in ias:
 	        idx_a = tb.geom.close(ia, dR = dR, idx = idxs)
-	        tb[ia,idx_a[0]] = on
-            tb[ia,idx_a[1]] = nn
+	        tb[ia,idx_a[0]] = 0.
+            tb[ia,idx_a[1]] = -2.7
 
 which accomplishes the same thing, but at much faster execution. `iR` should be a
 number such that `tb.geom.close(<any index>,dR = tb.geom.dR * iR)` is approximately
-1000 atoms.
+1,000 atoms.
 
 The above example is for the default orthogonal Hamiltonian. However, sisl is
 not limited to orthogonal basis functions. To construct the same example using
@@ -233,18 +231,17 @@ explicit overlap matrix the following procedure is necessary:
     # Create nearest-neighbour tight-binding
     # graphene lattice constant 1.42
     dR = ( 0.1 , 1.5 )
-    on = ( 0. , 1.)
-    nn = (-0.5, 0.) # still orthogonal (but with fake overlap)
 
     tb = Hamiltonian(gr, orthogonal=False)
     for ia in tb.geom:
         idx_a = tb.close(ia, dR=dR)
-        tb[ia,idx_a[0]] = on
-        tb[ia,idx_a[1]] = nn
-    Hk = tb.Hk(k=[0.,0.5,0])
-    Sk = tb.Sk(k=[0.,0.5,0])
+        tb.H[ia,idx_a[0]] = 0.
+        tb.S[ia,idx_a[0]] = 1.
+        tb.H[ia,idx_a[1]] = 0. # still orthogonal (fake overlap matrix)
+        tb.S[ia,idx_a[1]] = -2.7
+    Hk = tb.Hk(k=[0., 0.5, 0])
+    Sk = tb.Sk(k=[0., 0.5, 0])
     eigs = sli.eigh(Hk.todense(), Sk.todense(), eigvals_only=True)
-
 
 
 ## Contributions, issues and bugs ##
