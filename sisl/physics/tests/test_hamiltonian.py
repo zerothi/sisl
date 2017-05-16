@@ -168,6 +168,12 @@ class TestHamiltonian(object):
         # orbital
         self.H2.construct([(0.1, 1.5), (1., 0.1)])
 
+    @raises(ValueError)
+    def test_init_raise1(self):
+        # Test that construct fails with more than one
+        # orbital
+        Hamiltonian(self.g, spin=8)
+
     def test_getitem1(self):
         H = self.H
         H.construct([(0.1, 1.5), (0.1, 0.2)])
@@ -178,6 +184,27 @@ class TestHamiltonian(object):
         H[0, 1, (0, 1)] = -0.2
         assert_equal(H[0, 1, (0, 1)], -0.2)
         H.empty()
+
+    def test_delitem1(self):
+        H = self.H
+        H.construct([(0.1, 1.5), (0.1, 0.2)])
+        assert_equal(H[0, 1], 0.2)
+        del H[0, 1]
+        assert_equal(H[0, 1], 0.0)
+        H.empty()
+
+    @raises(NotImplementedError)
+    def test_repeat1(self):
+        H = self.H.repeat(2, 0)
+
+    @raises(NotImplementedError)
+    def test_tile1(self):
+        H = self.H.tile(2, 0)
+
+    def test_sp2HS(self):
+        csr = self.H.tocsr(0)
+        H = Hamiltonian.fromsp(self.H.geom, csr)
+        assert_true(H._data.spsame(self.H._data))
 
     def test_op1(self):
         g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])

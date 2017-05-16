@@ -117,8 +117,8 @@ class Hamiltonian(object):
             self.Sk = self._Sk_non_collinear
             self.S_idx = 4
         elif spin == 8:
-            self.Hk = self._Hk_spin_orbit
-            self.Sk = self._Sk_non_collinear
+            #self.Hk = self._Hk_spin_orbit
+            #self.Sk = self._Sk_spin_orbit
             self.S_idx = 8
             raise ValueError("Currently the Hamiltonian has only been implemented with up to non-collinear spin.")
 
@@ -955,7 +955,7 @@ class Hamiltonian(object):
                               'fully implemented yet, use tile instead.'))
 
     @classmethod
-    def sp2HS(cls, geom, H, S=None):
+    def fromsp(cls, geom, H, S=None):
         """ Returns a tight-binding model from a preset H, S and Geometry
         """
         # Calculate number of connections
