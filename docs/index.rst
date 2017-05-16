@@ -4,13 +4,14 @@
    contain the root `toctree` directive.
 
 
-|buildstatus|_
-|zenodo|_
-|gitter|_
 |pypi|_
 |conda|_
-|codecov|_
+|zenodo|_
 |donate|_
+
+|buildstatus|_
+|gitter|_
+|codecov|_
 
 
 .. toctree::
