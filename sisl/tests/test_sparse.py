@@ -144,6 +144,9 @@ class TestSparseCSR(object):
             assert_equal(i, 2)
             assert_true(j in e[2])
 
+        for i, j in ispmatrix(self.s1):
+            assert_true(j in e[i])
+
     def test_iterator2(self):
         e = [[1, 2, 3], [], [1, 2, 4]]
         self.s1[0, [1, 2, 3]] = 1
@@ -199,6 +202,15 @@ class TestSparseCSR(object):
         assert_equal(self.s1[0, 2], 1)
         assert_equal(self.s1[0, 3], 0)
         self.s1.empty()
+
+    def test_same1(self):
+        self.s1[0, [1, 2, 3]] = 1
+        self.s2[0, [1, 2, 3]] = (1, 1)
+        assert_true(self.s1.spsame(self.s2))
+        self.s2[1, 1] = (1, 1)
+        assert_false(self.s1.spsame(self.s2))
+        self.s1.spalign(self.s2)
+        assert_true(self.s1.spsame(self.s2))
 
     def test_op1(self):
         for i in range(10):
