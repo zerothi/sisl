@@ -18,7 +18,7 @@ from sisl.io._help import *
 from sisl import Geometry, Atom, SuperCell, Grid
 
 from sisl.utils.cmd import *
-from sisl.utils.misc import merge_instances, name_spec
+from sisl.utils.misc import merge_instances, str_spec
 
 from sisl.units import unit_default, unit_group
 from sisl.units.siesta import unit_convert
@@ -137,7 +137,7 @@ class fdfSileSiesta(SileSiesta):
         """ Retrieve fdf-keyword from the file """
 
         # First split into specification and key
-        key, tmp_unit = name_spec(key)
+        key, tmp_unit = str_spec(key)
         if unit is None:
             unit = tmp_unit
 

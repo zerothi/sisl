@@ -17,7 +17,6 @@ from sisl.io._help import *
 from sisl import Geometry, Atom, SuperCell, Grid
 
 from sisl.utils.cmd import *
-from sisl.utils.misc import merge_instances, name_spec
 
 from sisl.units import unit_default, unit_group
 from sisl.units.siesta import unit_convert

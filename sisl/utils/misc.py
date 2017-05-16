@@ -8,7 +8,7 @@ from math import pi
 
 from sisl._help import _range as range
 
-__all__ = ['merge_instances', 'name_spec', 'direction', 'angle']
+__all__ = ['merge_instances', 'str_spec', 'direction', 'angle']
 __all__ += ['iter_shape']
 
 
@@ -76,7 +76,7 @@ def iter_shape(shape):
                     slc[i-1] += 1
 
 
-def name_spec(name):
+def str_spec(name):
     """ Split into a tuple of name and specifier, delimited by ``{...}``.
 
     Parameters
@@ -91,9 +91,9 @@ def name_spec(name):
 
     Examples
     --------
-    >>> name_spec('hello')
+    >>> str_spec('hello')
     'hello', None
-    >>> name_spec('hello{TEST}')
+    >>> str_spec('hello{TEST}')
     'hello', 'TEST'
     """
     if not name.endswith('}'):

@@ -6,7 +6,7 @@ import gzip
 import numpy as np
 
 from sisl import Geometry
-from sisl.utils.misc import name_spec
+from sisl.utils.misc import str_spec
 from ._help import *
 
 
@@ -177,7 +177,7 @@ def get_sile_class(file, *args, **kwargs):
 
     # Split filename into proper file name and
     # the specification of the type
-    tmp_file, fcls = name_spec(file)
+    tmp_file, fcls = str_spec(file)
 
     if cls is None and not fcls is None:
         # cls has not been set, and fcls is found
@@ -185,7 +185,7 @@ def get_sile_class(file, *args, **kwargs):
         # do nothing (it may be part of the file name)
         # Which is REALLY obscure... but....)
         for sile in __siles:
-            if sile.__name__.lower() == fcls.lower():
+            if sile.__name__.lower().startswith(fcls.lower()):
                 cls = sile
                 # Make sure that {class-name} is
                 # removed from the file name
@@ -266,7 +266,7 @@ def get_sile(file, *args, **kwargs):
     """
     cls = kwargs.pop('cls', None)
     sile = get_sile_class(file, *args, cls=cls, **kwargs)
-    return sile(name_spec(file)[0], *args, **kwargs)
+    return sile(str_spec(file)[0], *args, **kwargs)
 
 
 def get_siles(attrs=[None]):
