@@ -20,7 +20,7 @@ and perform a large variation of tasks.
    algorithms for creating sparse matrices.
    One of the key-points is that the Hamiltonian is treated as a matrix.
    I.e. one may easily specify couplings without using routine calls.
-   For large systems, `>100,000`, it also becomes advantegeous to iterate on
+   For large systems, `>10,000` atoms, it becomes advantegeous to iterate on
    sub-grids of atoms to speed up the creation by orders of magnitudes.
    sisl intrinsically implements such algorithms.
 

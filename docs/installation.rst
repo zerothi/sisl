@@ -43,7 +43,7 @@ To do this the following packages are required to be in `PYTHONPATH`:
 - `setuptools`_
 - `numpy`_
 - `scipy`_
-- `netCDF4 <netcdf4-py_>`_
+- `netCDF4-python <netcdf4-py_>`_
 - A fortran compiler
 
 If the above listed items are installed, sisl can be installed by first

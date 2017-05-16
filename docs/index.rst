@@ -75,7 +75,8 @@ Follow :ref:`these steps <installation>` to install sisl.
 API links
 =========
 
-A selected list of links to the API documentation.
+A selected list of links to the API documentation of the most commonly used
+objects:
 
 .. autosummary::
    sisl

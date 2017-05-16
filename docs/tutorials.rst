@@ -2,7 +2,7 @@
 Tutorials
 =========
 
-sisl is shipped with these tutorials which introduces how it works.
+sisl is shipped with these tutorials which introduces the basics.
 
 All examples are assumed to have this in the header::
 
