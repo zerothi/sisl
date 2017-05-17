@@ -58,7 +58,11 @@ class SuperCell(object):
             try:
                 dtype = non_filled.dtype
             except:
-                dtype = np.dtype(non_filled.__class__)
+                dtype = np.dtype(non_filled[0].__class__)
+                if dtype == np.dtype(int):
+                    # Never go higher than int32 for default
+                    # guesses on integer lists.
+                    dtype = np.int32
         f = np.zeros(3, dtype)
         i = 0
         if self.nsc[0] > 1:

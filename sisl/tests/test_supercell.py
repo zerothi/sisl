@@ -56,6 +56,27 @@ class TestSuperCell(object):
     def test_nsc4(self):
         assert_true(self.sc.sc_index([0, 0, 0]) == 0)
 
+    def test_fill(self):
+        sc = self.sc.swapaxes(1, 2)
+        i = sc._fill([1, 1])
+        assert_true(i.dtype == np.int32)
+        i = sc._fill([1., 1.])
+        assert_true(i.dtype == np.float64)
+        for dt in [np.int32, np.int64, np.float32, np.float64, np.complex64]:
+            i = sc._fill([1., 1.], dt)
+            assert_true(i.dtype == dt)
+            i = sc._fill(np.ones([2], dt))
+            assert_true(i.dtype == dt)
+
+    def test_add_vacuum1(self):
+        sc = self.sc.copy()
+        for i in range(3):
+            sc.add_vacuum(10, i)
+            ax = self.sc.cell[i, :]
+            ax += ax / np.sum(ax ** 2) ** .5 * 10
+            print(ax, sc.cell[i, :])
+            assert_true(np.allclose(ax, sc.cell[i, :]))
+
     def test_rotation1(self):
         rot = self.sc.rotate(180, [0, 0, 1])
         rot.cell[2, 2] *= -1
@@ -154,6 +175,12 @@ class TestSuperCell(object):
         assert_true(np.allclose(tmp1.cell, tmp2.cell))
         assert_true(np.allclose(tmp1.cell, tmp3.cell))
         assert_true(np.allclose(tmp1.cell, tmp4.cell))
+        assert_true(len(tmp1._fill([0, 0, 0])) == 3)
+        assert_true(len(tmp1._fill_sc([0, 0, 0])) == 3)
+        assert_true(tmp1.is_orthogonal())
+        for i in range(3):
+            tmp2.add_vacuum(10, i)
+            assert_true(tmp1.cell[i, i] + 10 == tmp2.cell[i, i])
 
     def test_creation3(self):
         assert_raises(ValueError, self.sc.tocell, [3, 6])
