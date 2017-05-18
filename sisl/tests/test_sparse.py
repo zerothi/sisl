@@ -15,7 +15,18 @@ class TestSparseCSR(object):
 
     def setUp(self):
         self.s1 = SparseCSR((10, 100), dtype=np.int32)
+        self.s1d = SparseCSR((10, 100))
         self.s2 = SparseCSR((10, 100, 2))
+
+    @raises(ValueError)
+    def test_fail_init1(self):
+        s = SparseCSR((10, 100, 20, 20), dtype=np.int32)
+
+    @raises(ValueError)
+    def test_fail_align1(self):
+        s1 = SparseCSR((10, 100), dtype=np.int32)
+        s2 = SparseCSR((20, 100), dtype=np.int32)
+        s1.spalign(s2)
 
     def test_init1(self):
         assert_equal(self.s1.dtype, np.int32)
@@ -88,14 +99,17 @@ class TestSparseCSR(object):
         assert_equal(csr[2, 2], 4)
 
     def test_create1(self):
-        self.s1[0, [1, 2, 3]] = 1
-        assert_equal(self.s1.nnz, 3)
-        self.s1[2, [1, 2, 3]] = 1
-        assert_equal(self.s1.nnz, 6)
-        self.s1.empty(keep=True)
-        assert_equal(self.s1.nnz, 6)
-        self.s1.empty()
-        assert_equal(self.s1.nnz, 0)
+        self.s1d[0, [1, 2, 3]] = 1
+        assert_equal(self.s1d.nnz, 3)
+        self.s1d[2, [1, 2, 3]] = 1
+        assert_equal(self.s1d.nnz, 6)
+        self.s1d.empty(keep=True)
+        assert_equal(self.s1d.nnz, 6)
+        self.s1d.empty()
+        assert_equal(self.s1d.nnz, 0)
+        self.s1d[0, 0] = np.nan
+        assert_equal(self.s1d.nnz, 0)
+        self.s1d.empty()
 
     def test_create2(self):
         for i in range(10):
@@ -147,6 +161,17 @@ class TestSparseCSR(object):
         for i, j in ispmatrix(self.s1):
             assert_true(j in e[i])
 
+        for i, j in ispmatrix(self.s1, map_col = lambda x: x):
+            assert_true(j in e[i])
+        for i, j in ispmatrix(self.s1, map_row = lambda x: x):
+            assert_true(j in e[i])
+
+        for i, j, d in ispmatrixd(self.s1):
+            assert_true(j in e[i])
+            assert_true(d == 1.)
+
+        self.s1.empty()
+
     def test_iterator2(self):
         e = [[1, 2, 3], [], [1, 2, 4]]
         self.s1[0, [1, 2, 3]] = 1
@@ -164,6 +189,8 @@ class TestSparseCSR(object):
                 assert_true(r in [0, 2])
                 assert_true(c in e[r])
                 assert_true(d == 1.)
+
+        self.s1.empty()
 
     def test_iterator3(self):
         e = [[1, 2, 3], [], [1, 2, 4]]
@@ -201,6 +228,9 @@ class TestSparseCSR(object):
         assert_equal(self.s1[0, 1], 0)
         assert_equal(self.s1[0, 2], 1)
         assert_equal(self.s1[0, 3], 0)
+        del self.s1[range(2), 0]
+        for i in range(2):
+            assert_equal(self.s1[i, 0], 0)
         self.s1.empty()
 
     def test_same1(self):

@@ -332,15 +332,16 @@ class SparseCSR(object):
                     'You cannot have two hoppings between the same ' +
                     'orbitals ({}), something has went terribly wrong.'.format(r))
 
+            sl = slice(iptr, iptr + nor, None)
             # update the colunm vector and data
-            col[iptr:iptr + nor] = col[sptr:eptr]
-            D[iptr:iptr + nor, :] = D[sptr:eptr, :]
+            col[sl] = col[sptr:eptr]
+            D[sl, :] = D[sptr:eptr, :]
 
             # Simultaneausly we sort the entries
             if sort:
-                si = argsort(col[iptr:iptr + nor])
-                col[iptr:iptr + nor] = col[iptr + si]
-                D[iptr:iptr + nor, :] = D[iptr + si, :]
+                si = argsort(col[sl])
+                col[sl] = col[iptr + si]
+                D[sl, :] = D[iptr + si, :]
 
             # update front of row
             iptr += nor
@@ -644,8 +645,9 @@ class SparseCSR(object):
         ncol = self.ncol
 
         # Get original values
-        oC = self.col[ptr[i]:ptr[i]+ncol[i]]
-        oD = self._D[ptr[i]:ptr[i]+ncol[i], :]
+        sl = slice(ptr[i], ptr[i] + ncol[i], None)
+        oC = self.col[sl]
+        oD = self._D[sl, :]
 
         # Now create the compressed data...
         index -= ptr[i]
@@ -656,8 +658,9 @@ class SparseCSR(object):
         self.ncol[i] -= len(index)
 
         # Now update the column indices and the data
-        self.col[ptr[i]:ptr[i]+self.ncol[i]] = oC[keep]
-        self._D[ptr[i]:ptr[i]+self.ncol[i], :] = oD[keep, :]
+        sl = slice(ptr[i], ptr[i] + self.ncol[i], None)
+        self.col[sl] = oC[keep]
+        self._D[sl, :] = oD[keep, :]
 
         # Once we remove some things, it is NOT
         # finalized...
@@ -832,10 +835,11 @@ class SparseCSR(object):
                 # pointers
                 bptr = b.ptr[r]
                 bn = b.ncol[r]
+                sl = slice(bptr, bptr+bn, None)
 
                 # Get positions of b-elements in a:
-                in_a = a._get(r, b.col[bptr:bptr+bn])
-                a._D[in_a, :] += b._D[bptr:bptr+bn, :]
+                in_a = a._get(r, b.col[sl])
+                a._D[in_a, :] += b._D[sl, :]
 
         else:
             a._D += b
@@ -866,10 +870,11 @@ class SparseCSR(object):
                 # pointers
                 bptr = b.ptr[r]
                 bn = b.ncol[r]
+                sl = slice(bptr, bptr+bn, None)
 
                 # Get positions of b-elements in a:
-                in_a = a._get(r, b.col[bptr:bptr+bn])
-                a._D[in_a, :] -= b._D[bptr:bptr+bn, :]
+                in_a = a._get(r, b.col[sl])
+                a._D[in_a, :] -= b._D[sl, :]
 
         else:
             a._D -= b
@@ -1164,6 +1169,8 @@ def ispmatrix(matrix, map_row=None, map_col=None):
             rows[rr] = True
             cols[:] = False
             n = matrix.ncol[r]
+            if n == 0:
+                continue
             ptr = matrix.ptr[r]
             for c in map_col(matrix.col[ptr:ptr+n]):
                 if cols[c]: continue
@@ -1236,7 +1243,6 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
     int, int, <>
        the row, column and data of the non-zero elements
     """
-
     if map_row is None:
         map_row = lambda x: x
     if map_col is None:
@@ -1272,8 +1278,11 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
         for r in range(matrix.shape[0]):
             rr = map_row(r)
             n = matrix.ncol[r]
+            if n == 0:
+                continue
             ptr = matrix.ptr[r]
-            for c, d in zip(map_col(matrix.col[ptr:ptr+n]), matrix._D[ind, :]):
+            sl = slice(ptr, ptr+n, None)
+            for c, d in zip(map_col(matrix.col[sl]), matrix._D[sl, :]):
                 yield rr, c, d
 
     else:
