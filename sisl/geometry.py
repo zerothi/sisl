@@ -903,11 +903,11 @@ class Geometry(SuperCellChild):
             return self * m[0]
 
         # Look-up table
-        method = {'r': 'repeat',
+        method_tbl = {'r': 'repeat',
                   'repeat': 'repeat',
                   't': 'tile',
                   'tile': 'tile'}
-        def_method = 't'
+        method = 'tile'
 
         # Determine the type
         if len(m) == 2:
@@ -915,10 +915,9 @@ class Geometry(SuperCellChild):
             #  (r, axis)
             #  ((...), method
             if isinstance(m[1], _str):
-                def_method = m[1]
+                method = method_tbl[m[1]]
                 m = m[0]
 
-        method = method[def_method]
         if len(m) == 1:
             #  r
             m = m[0]

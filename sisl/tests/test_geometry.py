@@ -316,6 +316,9 @@ class TestGeometry(object):
             ia, a, spec = iaaspec
             assert_true(i == ia)
             assert_true(self.g.atom[ia] == a)
+        for ia, a, spec in self.g.iter_species([1]):
+            assert_true(1 == ia)
+            assert_true(self.g.atom[ia] == a)
         for ia in self.g:
             assert_true(ia >= 0)
         i = 0
@@ -390,6 +393,11 @@ class TestGeometry(object):
         assert_true(np.allclose(self.g[0], one))
         al = self.g.center()
         assert_true(np.allclose(np.mean(self.g.xyz, axis=0), al))
+        al = self.g.center(which='mass')
+
+    @raises(ValueError)
+    def test_center_raise(self):
+        al = self.g.center(which='unknown')
 
     def test___add__(self):
         n = len(self.g)
@@ -409,6 +417,20 @@ class TestGeometry(object):
         assert_equal(len(double), n * 2)
         assert_true(np.allclose(self.g.cell[::2, :], double.cell[::2, :]))
         assert_true(np.allclose(double.xyz, d.xyz))
+
+    def test___mul__(self):
+        g = self.g.copy()
+        assert_equal(g * 2, g.tile(2, 0).tile(2, 1).tile(2, 2))
+        assert_equal(g * [2, 1], g.tile(2, 1))
+        assert_equal(g * (2, 2, 2), g.tile(2, 0).tile(2, 1).tile(2, 2))
+        assert_equal(g * [1, 2, 2], g.tile(1, 0).tile(2, 1).tile(2, 2))
+        assert_equal(g * [1, 3, 2], g.tile(1, 0).tile(3, 1).tile(2, 2))
+        assert_equal(g * ([1, 3, 2], 'r'), g.repeat(1, 0).repeat(3, 1).repeat(2, 2))
+        assert_equal(g * ([1, 3, 2], 'repeat'), g.repeat(1, 0).repeat(3, 1).repeat(2, 2))
+        assert_equal(g * ([1, 3, 2], 'tile'), g.tile(1, 0).tile(3, 1).tile(2, 2))
+        assert_equal(g * ([1, 3, 2], 't'), g.tile(1, 0).tile(3, 1).tile(2, 2))
+        assert_equal(g * ([3, 2], 't'), g.tile(3, 2))
+        assert_equal(g * ([3, 2], 'r'), g.repeat(3, 2))
 
     def test_add(self):
         double = self.g.add(self.g)
