@@ -88,14 +88,17 @@ class Grid(SuperCellChild):
             self.geom = geom
             self.set_sc(geom.sc)
 
-    def interp(self, shape, *args, **kwargs):
+    def interp(self, shape, method='linear', **kwargs):
         """ Returns an interpolated version of the grid
 
         Parameters
         ----------
         shape : int, array_like
             the new shape of the grid
-        *args, **kwargs :
+        method : str
+            the method used to perform the interpolation,
+            see `scipy.interpolate.interpn` for further details.
+        **kwargs :
             optional arguments passed to the interpolation algorithm
             The interpolation routine is `scipy.interpolate.interpn`
         """
@@ -121,7 +124,7 @@ class Grid(SuperCellChild):
             np.linspace(0, 1, shape[2])), axis=0)
         dnew.shape = (-1, 3)
 
-        grid.grid = interpn(dold, self.grid, dnew, *args, **kwargs)
+        grid.grid = interpn(dold, self.grid, dnew, method=method, **kwargs)
         # immediately delete the dnew (which is VERY large)
         del dold, dnew
         # Ensure that the grid has the correct shape
