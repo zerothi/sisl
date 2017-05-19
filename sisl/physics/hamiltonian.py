@@ -965,8 +965,11 @@ class Hamiltonian(object):
 
         # Ensure csr format
         H = H.tocsr()
+        H.sort_indices()
         if has_S:
             S = S.tocsr()
+            S.sort_indices()
+
         for i in range(geom.no):
             nc = max(nc, H[i, :].getnnz())
             if has_S:
@@ -984,9 +987,8 @@ class Hamiltonian(object):
             # If the Hamiltonian for one reason or the other
             # is zero in the diagonal, then we *must* account for
             # this as it isn't captured in the above loop.
-            skip_S = np.all(H.row == S.row)
-            skip_S = skip_S and np.all(H.col == S.col)
-            skip_S = False
+            skip_S = np.all(H.indptr == S.indptr)
+            skip_S = skip_S and np.all(H.indices == S.indices)
             if not skip_S:
                 # Re-convert back to allow index retrieval
                 H = H.tocsr()

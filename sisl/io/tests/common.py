@@ -7,6 +7,7 @@ from nose.tools import *
 from tempfile import mkstemp, mkdtemp
 
 from sisl import Geometry, Atom, SuperCell
+from sisl import Hamiltonian
 
 import os.path as osp
 import math as m
@@ -39,6 +40,9 @@ def setUp(self):
     self.gtb = Geometry(np.array([[0., 0., 0.],
                                 [1., 0., 0.]], np.float64) * alat,
                       atom=C, sc=sc)
+
+    self.ham = Hamiltonian(self.gtb)
+    self.ham.construct([(0.1, 1.5), (0.1, 2.7)])
 
 
 def tearDown(self):

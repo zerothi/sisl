@@ -12,7 +12,7 @@ from .sile import *
 from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
-from sisl._help import _zip as zip
+from sisl._help import _zip as zip, _range as range
 
 
 __all__ = ['HamiltonianSile']
@@ -116,7 +116,7 @@ class HamiltonianSile(Sile):
 
         # Start reading in the supercell
         while True:
-            found, l = self.step_to('matrix')
+            found, l = self.step_to('matrix', reread=False)
             if not found:
                 break
 
@@ -126,6 +126,7 @@ class HamiltonianSile(Sile):
                 isc = np.array([int(ls[i]) for i in range(2, 5)], np.int32)
             except:
                 isc = np.array([0, 0, 0], np.int32)
+
             off1 = geom.sc_index(isc) * geom.no
             off2 = geom.sc_index(-isc) * geom.no
             l = self.readline()
@@ -145,7 +146,7 @@ class HamiltonianSile(Sile):
                     H[io, jo + off2] = h
                 l = self.readline()
 
-        return Hamiltonian.sp2HS(geom, H, S)
+        return Hamiltonian.fromsp(geom, H, S)
 
     @Sile_fh_open
     def write_geometry(self, geom, fmt='.8f', **kwargs):
@@ -225,7 +226,7 @@ class HamiltonianSile(Sile):
         # We default to the advanced layuot if we have more than one
         # orbital on any one atom
         advanced = kwargs.get('advanced', np.any(
-            np.array([a.orbs for a in ham.atom], np.int32) > 1))
+            np.array([a.orbs for a, idx in geom.atom], np.int32) > 1))
 
         fmt = kwargs.get('fmt', 'g')
         if advanced:
@@ -248,7 +249,7 @@ class HamiltonianSile(Sile):
         # do with writing out half the entries
         if hermitian:
             herm_acc = kwargs.get('herm_acc', 1e-6)
-            # We check whether it is Hermitian
+            # We check whether it is Hermitian (not S)
             for i, isc in enumerate(geom.sc.sc_off):
                 oi = i * geom.no
                 oj = geom.sc_index(-isc) * geom.no
@@ -256,7 +257,6 @@ class HamiltonianSile(Sile):
                 diff = H[:, oi:oi + geom.no] - \
                     H[:, oj:oj + geom.no].transpose()
                 diff.eliminate_zeros()
-                diff = diff.tocoo()
                 if np.any(np.abs(diff.data) > herm_acc):
                     amax = np.amax(np.abs(diff.data))
                     warnings.warn(
@@ -297,7 +297,7 @@ class HamiltonianSile(Sile):
                     S.eliminate_zeros()
 
                 # Ensure that S and H have the same sparsity pattern
-                for jo, io, s in ispmatrix(S):
+                for jo, io in ispmatrix(S):
                     H[jo, io] = H[jo, io]
 
             del ut
@@ -316,15 +316,15 @@ class HamiltonianSile(Sile):
             self._write('\nbegin matrix {0:d} {1:d} {2:d}\n'.format(*isc))
             if advanced:
                 for jo, io, h in ispmatrixd(Hsub):
+                    o = np.array([jo, io], np.int32)
+                    a = geom.o2a(o)
+                    o = o - geom.a2o(a)
                     if not ham.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:
                         s = 1.
                     else:
                         s = 0.
-                    o = np.array([jo, io], np.int32)
-                    a = geom.o2a(o)
-                    o = o - geom.a2o(a)
                     if s == 0.:
                         self._write(fmt1_str.format(a[0], o[0], a[1], o[1], h))
                     else:
@@ -344,6 +344,5 @@ class HamiltonianSile(Sile):
                     else:
                         self._write(fmt2_str.format(jo, io, h, s))
             self._write('end matrix {0:d} {1:d} {2:d}\n'.format(*isc))
-
 
 add_sile('ham', HamiltonianSile, case=False, gzip=True)

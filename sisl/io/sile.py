@@ -531,7 +531,7 @@ class Sile(BaseSile):
             self._line += 1
         return l
 
-    def step_to(self, keywords, case=True):
+    def step_to(self, keywords, case=True, reread=True):
         """ Steps the file-handle until the keyword is found in the input """
         # If keyword is a list, it just matches one of the inputs
         found = False
@@ -552,7 +552,7 @@ class Sile(BaseSile):
                 break
             found = line_has(l, keys, case=case)
 
-        if not found and (l == '' and line > 0):
+        if not found and (l == '' and line > 0) and reread:
             # We may be in the case where the user request
             # reading the same twice...
             # So we need to re-read the file...

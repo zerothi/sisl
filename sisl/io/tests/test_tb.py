@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 from nose.tools import *
+from nose.plugins.attrib import attr
 
 from tempfile import mkstemp, mkdtemp
 
@@ -30,3 +31,9 @@ class TestHAM(object):
         assert_true(np.allclose(g.xyz, self.g.xyz))
         for ia in g:
             assert_true(g.atom[ia] == self.g.atom[ia])
+
+    def test_ham2(self):
+        f = osp.join(self.d, 'gr.ham')
+        self.ham.write(HamiltonianSile(f, 'w'))
+        ham = HamiltonianSile(f).read_hamiltonian()
+        assert_true(ham._data.spsame(self.ham._data))

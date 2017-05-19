@@ -814,6 +814,11 @@ class SparseCSR(object):
         shape = self.shape[:2]
         return csr_matrix((self._D[:, dim], self.col, self.ptr), shape=shape, **kwargs)
 
+    def __repr__(self):
+        """ Representation of the sparse matrix model """
+        s = self.shape[:] + (self.nnz,)
+        return '{{SCSR : r={0} c={1} d={2}\n  nnz={3}\n}}'.format(*s)
+
     ###############################
     # Overload of math operations #
     ###############################
