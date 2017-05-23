@@ -32,7 +32,9 @@ class REFSileScaleUp(SileScaleUp):
         self.readline() # natoms, nspecies
         self.readline() # species
         cell = ensure_array(map(float, self.readline().split()[:9]), np.float64)
-        return SuperCell(cell * Bohr2Ang)
+        # Typically ScaleUp uses very large unit-cells
+        # so supercells will typically be restricted to [3, 3, 3]
+        return SuperCell(cell * Bohr2Ang, nsc=[3, 3, 3])
 
     @Sile_fh_open
     def read_geometry(self, primary=False):
@@ -69,7 +71,7 @@ class REFSileScaleUp(SileScaleUp):
             c[2, 1] = cell[3] / 2.
             c[2, 2] = 1. + cell[2]
             cell = c * Ang2Bohr
-        sc = SuperCell(cell * Bohr2Ang)
+        sc = SuperCell(cell * Bohr2Ang, nsc=[3, 3, 3])
 
         # Create list of coordinates and atoms
         xyz = np.empty([na * ns, 3], np.float64)
