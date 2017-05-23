@@ -87,3 +87,12 @@ Below there is a list of file formats especially targetting a variety of DFT cod
   ``win``
       `winSileW90` is the seed file for Wannier90. From this one may read the `Geometry`
       or the `Hamiltonian` if it has been output by Wannier90.
+
+* ScaleUp_
+  File formats inherent to ScaleUp
+
+  ``REF``
+      `REFSileScaleUp` is the geometry file for ScaleUp. 
+
+  ``restart``
+      `restartSileScaleUp` is the displacement geometry file for ScaleUp. 

@@ -126,6 +126,7 @@ The hard-coded file formats are:
 9. ___ASCII___, BigDFT coordinate format
 10. ___win___, Wannier90 Hamiltonian and Wannier centres
 11. ___xsf___, XCrySDen file format
+12. ScaleUP file formats
 
 
 All text files can also be read from their gzipped file formats with transparency.

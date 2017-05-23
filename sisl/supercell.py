@@ -138,6 +138,11 @@ class SuperCell(object):
     # Aliases
     set_supercell = set_nsc
 
+    def __iter__(self):
+        """ Iterate the supercells and the indices of the supercells """
+        for i, sc in enumerate(self.sc_off):
+            yield i, sc
+
     def copy(self):
         """
         Returns a copy of the object.

@@ -14,6 +14,7 @@ from .cube import *
 from .gulp import *
 from .ham import *
 from .molden import *
+from .scaleup import *
 from .siesta import *
 from .table import *
 from .vasp import *
@@ -31,6 +32,7 @@ extendall(__all__, 'sisl.io.cube')
 extendall(__all__, 'sisl.io.gulp')
 extendall(__all__, 'sisl.io.ham')
 extendall(__all__, 'sisl.io.molden')
+extendall(__all__, 'sisl.io.scaleup')
 extendall(__all__, 'sisl.io.siesta')
 extendall(__all__, 'sisl.io.table')
 extendall(__all__, 'sisl.io.vasp')
