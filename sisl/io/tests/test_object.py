@@ -223,6 +223,7 @@ class TestObject(object):
             s = sile(f, mode='w').write_geometry(G)
             # Read
             g = sile(f).read_geometry()
+            g.set_nsc([1, 1, 1])
             # Easy fix to run the ArgumentParser code...
             if hasattr(g, 'ArgumentParser'):
                 g.ArgumentParser()
