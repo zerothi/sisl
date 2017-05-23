@@ -610,8 +610,7 @@ class Geometry(SuperCellChild):
         method : ``str`` (`'rand'`)
             select the method by which the block iteration is performed. 
             Possible values are:
-             `rand`: a spherical object is constructed with a random center according 
-                     to the internal atoms
+             `rand`: a spherical object is constructed with a random center according to the internal atoms
              `sphere`: a spherical equispaced shape is constructed and looped
              `cube`: a cube shape is constructed and looped
 
