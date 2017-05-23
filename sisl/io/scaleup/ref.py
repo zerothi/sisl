@@ -10,6 +10,7 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
+from sisl._help import ensure_array
 from sisl.units import unit_convert
 
 import numpy as np
@@ -27,17 +28,17 @@ class REFSileScaleUp(SileScaleUp):
     def read_sc(self):
         """ Reads a supercell from the Sile """
         # 1st line is number of supercells
-        nsc = np.array(map(int, self.readline().split()[:3]), np.int32)
+        nsc = ensure_array(map(int, self.readline().split()[:3]), np.int32)
         self.readline() # natoms, nspecies
         self.readline() # species
-        cell = np.array(map(float, self.readline().split()[:9]), np.float64)
+        cell = ensure_array(map(float, self.readline().split()[:9]), np.float64)
         return SuperCell(cell * Bohr2Ang)
 
     @Sile_fh_open
     def read_geometry(self, primary=False):
         """ Reads a geometry from the Sile """
         # 1st line is number of supercells
-        nsc = np.array(map(int, self.readline().split()[:3]), np.int32)
+        nsc = ensure_array(map(int, self.readline().split()[:3]), np.int32)
         na, ns = map(int, self.readline().split()[:2])
         # Convert species to atom objects
         species = [Atom(s) for s in self.readline().split()[:ns]]
@@ -48,7 +49,7 @@ class REFSileScaleUp(SileScaleUp):
         else:
             ns = np.prod(nsc)
 
-        cell = np.array(map(float, self.readline().split()[:9]), np.float64)
+        cell = ensure_array(map(float, self.readline().split()[:9]), np.float64)
         cell.shape = (3, 3)
         if primary:
             cell[0, :] /= nsc[0]
