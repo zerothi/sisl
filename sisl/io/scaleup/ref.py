@@ -50,12 +50,25 @@ class REFSileScaleUp(SileScaleUp):
         else:
             ns = np.prod(nsc)
 
-        cell = ensure_array(map(float, self.readline().split()[:9]), np.float64)
-        cell.shape = (3, 3)
-        if primary:
-            cell[0, :] /= nsc[0]
-            cell[1, :] /= nsc[1]
-            cell[2, :] /= nsc[2]
+        cell = ensure_array(map(float, self.readline().split()), np.float64)
+        try:
+            cell.shape = (3, 3)
+            if primary:
+                cell[0, :] /= nsc[0]
+                cell[1, :] /= nsc[1]
+                cell[2, :] /= nsc[2]
+        except:
+            c = np.empty([3, 3], np.float64)
+            c[0, 0] = 1. + cell[0]
+            c[0, 1] = cell[5] / 2.
+            c[0, 2] = cell[4] / 2.
+            c[1, 0] = cell[5] / 2.
+            c[1, 1] = 1. + cell[1]
+            c[1, 2] = cell[3] / 2.
+            c[2, 0] = cell[4] / 2.
+            c[2, 1] = cell[3] / 2.
+            c[2, 2] = 1. + cell[2]
+            cell = c * Ang2Bohr
         sc = SuperCell(cell * Bohr2Ang)
 
         # Create list of coordinates and atoms
@@ -127,7 +140,34 @@ class REFSileScaleUp(SileScaleUp):
 
 
 # The restart file is _equivalent_ but with displacements
-restartSileScaleUp = REFSileScaleUp
+class restartSileScaleUp(REFSileScaleUp):
+
+    @Sile_fh_open
+    def read_geometry(self, *args, **kwargs):
+        """ Read geometry of the restart file
+
+        This will also try and read the corresponding .REF file
+        such that final coordinates are returned.
+
+        Note that a .restart file from ScaleUp only contains the displacements
+        from a .REF file and thus it is not the *actual* atomic coordinates.
+
+        If the .REF file does not exist the returned cell vectors correspond
+        to the strain tensor (+1 along the diagonal).
+        """
+
+        try:
+            ref = get_sile(self.file.rsplit('restart', 1)[0] + 'REF').read_geometry()
+        except:
+            ref = None
+
+        restart = super(restartSileScaleUp, self).read_geometry()
+        if not ref is None:
+            restart.sc = SuperCell(np.dot(ref.sc.cell, restart.sc.cell.T),
+                                   nsc=restart.nsc)
+            restart.xyz += ref.xyz
+
+        return restart
 
 add_sile('REF', REFSileScaleUp, case=False, gzip=True)
 add_sile('restart', restartSileScaleUp, case=False, gzip=True)

@@ -80,6 +80,12 @@ class TestObject(object):
             for obj in [BaseSile, Sile, SileScaleUp, restartSileScaleUp]:
                 assert_true(isinstance(sile, obj))
 
+    def test_rham(self):
+        for end in ['rham', 'rham.gz']:
+            sile = gs('test.' + end)
+            for obj in [BaseSile, Sile, SileScaleUp, rhamSileScaleUp]:
+                assert_true(isinstance(sile, obj))
+
     def test_out(self):
         for end in ['out', 'out.gz']:
             sile = gs('test.' + end)

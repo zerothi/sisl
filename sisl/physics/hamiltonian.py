@@ -8,7 +8,7 @@ from numbers import Integral
 
 import numpy as np
 import scipy.linalg as sli
-from scipy.sparse import csr_matrix
+from scipy.sparse import isspmatrix, csr_matrix
 import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype
@@ -565,8 +565,7 @@ class Hamiltonian(object):
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
-        for si in range(self.sc.n_s):
-            isc = self.sc_off[si, :]
+        for si, isc in self.sc:
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
             H += Hf[:, si * no:(si + 1) * no] * phase
 
@@ -707,7 +706,10 @@ class Hamiltonian(object):
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
-        H = self.Hk(k=k)
+        if self.spin == 2:
+            H = self.Hk(k=k, spin=kwargs.pop('spin', 0))
+        else:
+            H = self.Hk(k=k)
         if not self.orthogonal:
             S = self.Sk(k=k)
         # Reduce sparsity pattern
@@ -747,7 +749,10 @@ class Hamiltonian(object):
         # We always request the smallest eigenvalues...
         kwargs.update({'which': kwargs.get('which', 'SM')})
 
-        H = self.Hk(k=k)
+        if self.spin == 2:
+            H = self.Hk(k=k, spin=kwargs.pop('spin', 0))
+        else:
+            H = self.Hk(k=k)
         if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
 
@@ -956,48 +961,57 @@ class Hamiltonian(object):
 
     @classmethod
     def fromsp(cls, geom, H, S=None):
-        """ Returns a tight-binding model from a preset H, S and Geometry
-        """
+        """ Returns a tight-binding model from a preset H, S and Geometry """
         # Calculate number of connections
         nc = 0
 
         has_S = not S is None
 
-        # Ensure csr format
-        H = H.tocsr()
-        H.sort_indices()
+        # Ensure list of csr format
+        if isspmatrix(H):
+            H = [H]
+
+        # Number of spin-components
+        nspin = len(H)
+        for i in range(nspin):
+            H[i] = H[i].tocsr()
+            H[i].sort_indices()
         if has_S:
             S = S.tocsr()
             S.sort_indices()
 
+        # Figure out the maximum connections per
+        # row to reduce number of re-allocations to 0
         for i in range(geom.no):
-            nc = max(nc, H[i, :].getnnz())
+            nc = max(nc, H[0][i, :].getnnz())
             if has_S:
                 nc = max(nc, S[i, :].getnnz())
 
-        # Create the Hamiltonian
-        ham = cls(geom, nnzpr=nc,
-                  orthogonal=not has_S, dtype=H.dtype)
+        # Create the Hamiltonian object
+        ham = cls(geom, nnzpr=nc, spin=nspin,
+                  orthogonal=not has_S, dtype=H[0].dtype)
 
         # Copy data to the model
         if has_S:
-            for jo, io in ispmatrix(H):
+            for jo, io in ispmatrix(H[0]):
                 ham.S[jo, io] = S[jo, io]
 
             # If the Hamiltonian for one reason or the other
             # is zero in the diagonal, then we *must* account for
             # this as it isn't captured in the above loop.
-            skip_S = np.all(H.indptr == S.indptr)
-            skip_S = skip_S and np.all(H.indices == S.indices)
+            skip_S = np.all(H[0].indptr == S.indptr)
+            skip_S = skip_S and np.all(H[0].indices == S.indices)
+
             if not skip_S:
-                # Re-convert back to allow index retrieval
-                H = H.tocsr()
                 for jo, io, s in ispmatrixd(S):
-                    ham[jo, io] = (H[jo, io], s)
+                    for i in range(nspin):
+                        ham.H[jo, io, i] = H[i][jo, io]
+                    ham.S[jo, io] = s
 
         else:
-            for jo, io, h in ispmatrixd(H):
-                ham[jo, io] = h
+            for i in range(nspin):
+                for jo, io, h in ispmatrixd(H[i]):
+                    ham.H[jo, io, i] = h
 
         return ham
 
