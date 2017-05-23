@@ -179,7 +179,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             # Reset the access pattern
             self._access = access
 
-    def read_sc(self):
+    def read_supercell(self):
         """ Returns ``SuperCell`` object from a .TBT.nc file """
         cell = np.array(np.copy(self.cell), dtype=np.float64)
         cell.shape = (3, 3)
@@ -199,7 +199,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
     def read_geometry(self, *args, **kwargs):
         """ Returns ``Geometry`` object from a .TBT.nc file """
-        sc = self.read_sc()
+        sc = self.read_supercell()
 
         xyz = np.array(np.copy(self.xa), dtype=np.float64)
         xyz.shape = (-1, 3)

@@ -34,7 +34,7 @@ class TestFDF(object):
             assert_true(fdf.get('LatticeConstant') > 0.)
             assert_true(fdf.get('LatticeConstant') > 0.)
 
-            fdf.read_sc()
+            fdf.read_supercell()
             fdf.read_geometry()
 
     def test_fdf2(self):

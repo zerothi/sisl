@@ -51,7 +51,7 @@ class XVSileSiesta(SileSiesta):
             self._write(fmt_str.format(ips + 1, a.Z, *tmp))
 
     @Sile_fh_open
-    def read_sc(self):
+    def read_supercell(self):
         """ Returns `SuperCell` object from the XV file """
 
         cell = np.empty([3, 3], np.float64)
@@ -66,7 +66,7 @@ class XVSileSiesta(SileSiesta):
     def read_geometry(self):
         """ Returns Geometry object from the XV file
         """
-        sc = self.read_sc()
+        sc = self.read_supercell()
 
         # Read number of atoms
         na = int(self.readline())

@@ -398,7 +398,7 @@ class SuperCell(object):
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads SuperCell from the `Sile` using `Sile.read_sc`
+        """ Reads SuperCell from the `Sile` using `Sile.read_supercell`
 
         Parameters
         ----------
@@ -410,9 +410,9 @@ class SuperCell(object):
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            return sile.read_sc(*args, **kwargs)
+            return sile.read_supercell(*args, **kwargs)
         else:
-            return get_sile(sile).read_sc(*args, **kwargs)
+            return get_sile(sile).read_supercell(*args, **kwargs)
 
     def __repr__(self):
         """ Returns a string representation of the object """

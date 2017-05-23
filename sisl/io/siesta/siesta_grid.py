@@ -21,7 +21,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 class gridncSileSiesta(SileCDFSIESTA):
     """ SIESTA Grid file object """
 
-    def read_sc(self):
+    def read_supercell(self):
         """ Returns a SuperCell object from a SIESTA.grid.nc file
         """
         cell = np.array(self._value('cell'), np.float64)
@@ -37,7 +37,7 @@ class gridncSileSiesta(SileCDFSIESTA):
         Enables the reading and processing of the grids created by SIESTA
         """
         # Swap as we swap back in the end
-        sc = self.read_sc().swapaxes(0, 2)
+        sc = self.read_supercell().swapaxes(0, 2)
 
         # Create the grid
         nx = len(self._dimension('n1'))

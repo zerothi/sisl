@@ -36,13 +36,13 @@ class gotSileGULP(SileGULP):
         if key is not None:
             self._keys[segment] = key
 
-    def set_sc_key(self, key):
+    def set_supercell_key(self, key):
         """ Overwrites internal key lookup value for the cell vectors """
         self.set_key('sc', key)
 
     @Sile_fh_open
     def read_super(self, key=None):
-        """ Reads a `SuperCell` and creates the GULP cell """
+        """ Reads the dimensions of the supercell """
 
         f, l = self.step_to('Supercell dimensions')
         if not f:
@@ -57,16 +57,16 @@ class gotSileGULP(SileGULP):
         return np.array(sc[:3], np.int32)
 
     @Sile_fh_open
-    def read_sc(self, key=None, **kwargs):
+    def read_supercell(self, key=None, **kwargs):
         """ Reads a `SuperCell` and creates the GULP cell """
-        self.set_sc_key(key)
+        self.set_supercell_key(key)
 
         f, _ = self.step_to(self._keys['sc'])
         if not f:
             raise ValueError(
                 ('GULPSile tries to lookup the SuperCell vectors '
                  'using key "' + self._keys['sc'] + '". \n'
-                 'Use ".set_sc_key(...)" to search for different name.\n'
+                 'Use ".set_supercell_key(...)" to search for different name.\n'
                  'This could not be found found in file: "' + self.file + '".'))
 
         # skip 1 line
@@ -97,7 +97,7 @@ class gotSileGULP(SileGULP):
                 raise ValueError(
                     ('GULPSile tries to lookup the SuperCell vectors '
                      'using key "' + self._keys['sc'] + '". \n'
-                     'Use ".set_sc_key(...)" to search for different name.\n'
+                     'Use ".set_supercell_key(...)" to search for different name.\n'
                      'This could not be found found in file: "' + self.file + '".'))
             elif f and ki == 0:
                 # supercell

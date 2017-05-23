@@ -312,6 +312,12 @@ class BaseSile(object):
                 # Call read
                 return func(kwargs[key], **kwargs)
 
+    def read_sc(self, *args, **kwargs):
+        """ Deprecated function which is superseeded by `read_supercell` """
+        if getattr(self, 'read_supercell'):
+            return self.read_supercell(*args, **kwargs)
+        raise ValueError('read_sc is deprecated, please use read_supercell')
+
     def read_geom(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `read_geometry` """
         if getattr(self, 'read_geometry'):
@@ -351,6 +357,12 @@ class BaseSile(object):
                 func = getattr(self, "write_" + key)
                 # Call write
                 func(kwargs[key], **kwargs)
+
+    def write_sc(self, *args, **kwargs):
+        """ Deprecated function which is superseeded by `write_supercell` """
+        if getattr(self, 'write_supercell'):
+            return self.write_supercell(*args, **kwargs)
+        raise ValueError('write_sc is deprecated, please use write_supercell')
 
     def write_geom(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `write_geometry` """

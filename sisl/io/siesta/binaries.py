@@ -27,7 +27,7 @@ __all__ = ['TSHSSileSiesta']
 class TSHSSileSiesta(SileBinSIESTA):
     """ TranSIESTA file object """
 
-    def read_sc(self):
+    def read_supercell(self):
         """ Returns a SuperCell object from a siesta.TSHS file
         """
 
@@ -47,7 +47,7 @@ class TSHSSileSiesta(SileBinSIESTA):
         """ Returns Geometry object from a siesta.TSHS file """
 
         # Read supercell
-        sc = self.read_sc()
+        sc = self.read_supercell()
 
         na = _siesta.read_tshs_sizes(self.file)[1]
         arr = _siesta.read_tshs_geom(self.file, na)

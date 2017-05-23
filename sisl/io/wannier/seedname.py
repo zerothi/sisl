@@ -61,7 +61,7 @@ class winSileW90(SileW90):
         self._file = self._seed + suffix
 
     @Sile_fh_open
-    def _read_sc(self):
+    def _read_supercell(self):
         """ Defered routine """
 
         f, l = self.step_to('unit_cell_cart', case=False)
@@ -90,11 +90,11 @@ class winSileW90(SileW90):
 
         return SuperCell(cell * unit)
 
-    def read_sc(self):
+    def read_supercell(self):
         """ Reads a `SuperCell` and creates the Wannier90 cell """
         self._set_file('.win')
 
-        return self._read_sc()
+        return self._read_supercell()
 
     @Sile_fh_open
     def _read_geometry(self):
@@ -121,7 +121,7 @@ class winSileW90(SileW90):
         """ Reads a `Geometry` and creates the Wannier90 cell """
 
         # Read in the super-cell
-        sc = self.read_sc()
+        sc = self.read_supercell()
 
         self._set_file('_centres.xyz')
 

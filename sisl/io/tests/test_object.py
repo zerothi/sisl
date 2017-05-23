@@ -68,15 +68,23 @@ class TestObject(object):
         for obj in [BaseSile, Sile, SileGULP, gotSileGULP]:
             assert_true(isinstance(sile, obj))
 
-    def test_out(self):
-        sile = gs('test.out')
-        for obj in [BaseSile, Sile, SileSiesta, outSileSiesta]:
-            assert_true(isinstance(sile, obj))
+    def test_REF(self):
+        for end in ['REF', 'REF.gz']:
+            sile = gs('test.' + end)
+            for obj in [BaseSile, Sile, SileScaleUp, REFSileScaleUp]:
+                assert_true(isinstance(sile, obj))
 
-    def test_out_gz(self):
-        sile = gs('test.out.gz')
-        for obj in [BaseSile, Sile, SileSiesta, outSileSiesta]:
-            assert_true(isinstance(sile, obj))
+    def test_restart(self):
+        for end in ['restart', 'restart.gz']:
+            sile = gs('test.' + end)
+            for obj in [BaseSile, Sile, SileScaleUp, restartSileScaleUp]:
+                assert_true(isinstance(sile, obj))
+
+    def test_out(self):
+        for end in ['out', 'out.gz']:
+            sile = gs('test.' + end)
+            for obj in [BaseSile, Sile, SileSiesta, outSileSiesta]:
+                assert_true(isinstance(sile, obj))
 
     def test_nc(self):
         sile = gs('test.nc', _open=False)

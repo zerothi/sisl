@@ -23,7 +23,7 @@ Ry2eV = unit_convert('Ry', 'eV')
 class ncSileSiesta(SileCDFSIESTA):
     """ SIESTA file object """
 
-    def read_sc(self):
+    def read_supercell(self):
         """ Returns a SuperCell object from a SIESTA.nc file
         """
         cell = np.array(self._value('cell'), np.float64)
@@ -42,7 +42,7 @@ class ncSileSiesta(SileCDFSIESTA):
         """
 
         # Read supercell
-        sc = self.read_sc()
+        sc = self.read_supercell()
 
         xyz = np.array(self._value('xa'), np.float64)
         xyz.shape = (-1, 3)

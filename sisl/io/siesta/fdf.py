@@ -349,7 +349,7 @@ class fdfSileSiesta(SileSiesta):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
-    def read_sc(self, *args, **kwargs):
+    def read_supercell(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
         f, lc = self._read('LatticeConstant')
 
@@ -394,7 +394,7 @@ class fdfSileSiesta(SileSiesta):
         elif 'bohr' in lc.lower():
             s *= Bohr2Ang
 
-        sc = self.read_sc(*args, **kwargs)
+        sc = self.read_supercell(*args, **kwargs)
 
         # No fractional coordinates
         is_frac = False
