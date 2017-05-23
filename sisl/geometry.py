@@ -284,7 +284,7 @@ class Geometry(SuperCellChild):
         return self.rij(self.o2a(io), self.o2a(jo))
 
     @staticmethod
-    def read(sile):
+    def read(sile, *args, **kwargs):
         """ Reads geometry from the `Sile` using `Sile.read_geometry`
 
         Parameters
@@ -297,9 +297,9 @@ class Geometry(SuperCellChild):
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            return sile.read_geometry()
+            return sile.read_geometry(*args, **kwargs)
         else:
-            return get_sile(sile).read_geometry()
+            return get_sile(sile).read_geometry(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs):
         """ Writes geometry to the `Sile` using `sile.write_geometry`
@@ -324,9 +324,9 @@ class Geometry(SuperCellChild):
 
     def __repr__(self):
         """ Representation of the object """
-        s = '{{na: {0}, no: {1}, species:\n {{'.format(self.na, self.no)
-        s += repr(self.atom).replace('\n', '\n  ')
-        return (s[:-2] + ' }},\n nsc: [{1}, {2}, {3}], dR: {0}\n}}\n'.format(self.dR, *self.nsc)).strip()
+        s = '{{na: {0}, no: {1}, species:\n '.format(self.na, self.no)
+        s += repr(self.atom).replace('\n', '\n ')
+        return (s[:-2] + ',\n nsc: [{1}, {2}, {3}], dR: {0}\n}}\n'.format(self.dR, *self.nsc)).strip()
 
     def iter(self):
         """
