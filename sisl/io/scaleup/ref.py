@@ -45,6 +45,7 @@ class REFSileScaleUp(SileScaleUp):
 
         # Total number of super-cells
         if primary:
+            # Only read in the primary unit-cell
             ns = 1
         else:
             ns = np.prod(nsc)
@@ -69,7 +70,7 @@ class REFSileScaleUp(SileScaleUp):
             line = self.readline().split()
 
             atoms[ia] = species[int(line[4]) - 1]
-            xyz[ia, :] = map(float, line[5:8])
+            xyz[ia, :] = ensure_array(map(float, line[5:8]), np.float64)
 
         return Geometry(xyz * Bohr2Ang, atoms, sc=sc)
 
