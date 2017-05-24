@@ -1216,6 +1216,16 @@ class Atoms(object):
         return self._specie
 
     @property
+    def no(self):
+        """ Return the total number of orbitals in this list of atoms """
+        uorbs = [a.orbs for a in self.atom]
+        values, counts = np.unique(self.specie, return_counts=True)
+        no = 0
+        for v, c in zip(values, counts):
+            no += c * uorbs[v]
+        return no
+
+    @property
     def orbitals(self):
         """ Return an array of orbitals of the contained objects """
         uorbs = np.array([a.orbs for a in self.atom], np.int32)

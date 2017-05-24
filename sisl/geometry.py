@@ -103,9 +103,6 @@ class Geometry(SuperCellChild):
         # Get total number of orbitals
         orbs = self.atom.orbitals
 
-        # Get total number of orbitals
-        self.no = np.sum(orbs)
-
         # Create local first
         firsto = np.append(np.array(0, np.int32), orbs)
         self.firsto = np.cumsum(firsto)
@@ -197,9 +194,14 @@ class Geometry(SuperCellChild):
         return self.na * self.n_s
 
     @property
-    def orbitalss(self):
-        """ Number of orbitals """
-        return self.no
+    def no(self):
+        """ Number of total orbitals """
+        return self.atom.no
+
+    @property
+    def orbitals(self):
+        """ List of orbitals per atom """
+        return self.atom.orbitals
 
     @property
     def no_s(self):

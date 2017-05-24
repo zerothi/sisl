@@ -6,6 +6,7 @@ from __future__ import division, print_function
 
 # Import sile objects
 from .sile import SileScaleUp
+from .orbocc import orboccSileScaleUp
 from ..sile import *
 
 # Import the geometry object
@@ -34,7 +35,7 @@ class REFSileScaleUp(SileScaleUp):
         cell = ensure_array(map(float, self.readline().split()[:9]), np.float64)
         # Typically ScaleUp uses very large unit-cells
         # so supercells will typically be restricted to [3, 3, 3]
-        return SuperCell(cell * Bohr2Ang, nsc=[3, 3, 3])
+        return SuperCell(cell * Bohr2Ang)
 
     @Sile_fh_open
     def read_geometry(self, primary=False):
@@ -43,7 +44,10 @@ class REFSileScaleUp(SileScaleUp):
         nsc = ensure_array(map(int, self.readline().split()[:3]), np.int32)
         na, ns = map(int, self.readline().split()[:2])
         # Convert species to atom objects
-        species = [Atom(s) for s in self.readline().split()[:ns]]
+        try:
+            species = get_sile(self.file.rsplit('REF', 1)[0] + 'orbocc').read_atom()
+        except:
+            species = [Atom(s) for s in self.readline().split()[:ns]]
 
         # Total number of super-cells
         if primary:
@@ -71,7 +75,7 @@ class REFSileScaleUp(SileScaleUp):
             c[2, 1] = cell[3] / 2.
             c[2, 2] = 1. + cell[2]
             cell = c * Ang2Bohr
-        sc = SuperCell(cell * Bohr2Ang, nsc=[3, 3, 3])
+        sc = SuperCell(cell * Bohr2Ang)
 
         # Create list of coordinates and atoms
         xyz = np.empty([na * ns, 3], np.float64)
@@ -170,6 +174,7 @@ class restartSileScaleUp(REFSileScaleUp):
             restart.xyz += ref.xyz
 
         return restart
+
 
 add_sile('REF', REFSileScaleUp, case=False, gzip=True)
 add_sile('restart', restartSileScaleUp, case=False, gzip=True)
