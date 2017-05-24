@@ -49,7 +49,7 @@ class rhamSileScaleUp(SileScaleUp):
         ns = 0
         no = 0
         m_sc = np.zeros([3], np.int32)
-        
+
         # To save creating a new list
         for i, line in enumerate(lines):
             lines[i] = pl(line)
@@ -78,7 +78,7 @@ class rhamSileScaleUp(SileScaleUp):
         if np.any(g.nsc != m_sc):
             # Correct the number of supercells
             g.set_nsc(m_sc)
-        
+
         # Easily construct the sparse matrix in python
         from scipy.sparse import lil_matrix
 
