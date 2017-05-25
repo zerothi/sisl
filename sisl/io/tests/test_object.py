@@ -208,6 +208,17 @@ class TestObject(object):
         for obj in [BaseSile, Sile, SileW90, winSileW90]:
             assert_true(isinstance(sile, obj))
 
+    def test_write(self):
+        G = self.g.rotatec(-30)
+        G.set_nsc([1, 1, 1])
+        f = mkstemp(dir=self.d)[1]
+        for sile in get_siles(['write_geometry']):
+            # It is not yet an instance, hence issubclass
+            if issubclass(sile, (HamiltonianSile, tbtncSileSiesta, dHncSileSiesta)):
+                continue
+            # Write
+            sile(f, mode='w').write_geometry(G)
+
     def test_read_write(self):
         G = self.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
@@ -220,11 +231,15 @@ class TestObject(object):
             if issubclass(sile, (HamiltonianSile, tbtncSileSiesta, dHncSileSiesta)):
                 continue
             # Write
-            s = sile(f, mode='w').write_geometry(G)
+            sile(f, mode='w').write_geometry(G)
+            # Easy fix to run the ArgumentParser code in the readable files
+            # Generally the ArgumentParser requires to read the file
+            if hasattr(sile, 'ArgumentParser'):
+                try:
+                    sile(f).ArgumentParser()
+                except NotImplementedError as e:
+                    pass
             # Read
             g = sile(f).read_geometry()
-            # Easy fix to run the ArgumentParser code...
-            if hasattr(g, 'ArgumentParser'):
-                g.ArgumentParser()
             # Assert
             assert_equal(g, G, sile)
