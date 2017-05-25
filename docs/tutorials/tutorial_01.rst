@@ -8,9 +8,8 @@ The *only* required information is the atomic coordinates::
    >>> single_hydrogen = Geometry([[0., 0., 0.]])
    >>> print(single_hydrogen)
    {na: 1, no: 1, species:
-    {{Atoms(1):
+    {Atoms(1):
        (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, dR: -1.00000], 
-      }
     },
     nsc: [1, 1, 1], dR: -1.0
    }
@@ -29,7 +28,7 @@ Lastly ``nsc`` refers to the number of neighbouring super-cells that is represen
 by the object. In this case ``[1, 1, 1]`` means that it is a molecule and there
 are no super-cells (only the unit-cell).
 
-To alter the atomic specie one may do::
+To specify the atomic specie one may do::
 
    >>> single_carbon = Geometry([[0., 0., 0.]], Atom('C'))
 
@@ -52,7 +51,8 @@ coordinates is a multiple of the number of passed atoms, i.e.::
                            [4.8, 0., 0.]]], [Atom('Na'), Atom('Cl')],
 		           [6.4, 10., 10.])
 
-which is twice the length of the first chain, but otherwise identical.
+which is twice the length of the first chain with alternating Natrium and Chloride atoms,
+but otherwise identical.
 
 This is the most basic form of creating geometries in sisl and is the starting
 point of almost anything related to sisl. 
