@@ -197,10 +197,6 @@ class TestHamiltonian(object):
     def test_repeat1(self):
         H = self.H.repeat(2, 0)
 
-    @raises(NotImplementedError)
-    def test_tile1(self):
-        H = self.H.tile(2, 0)
-
     def test_sp2HS(self):
         csr = self.H.tocsr(0)
         H = Hamiltonian.fromsp(self.H.geom, csr)
@@ -470,3 +466,27 @@ class TestHamiltonian(object):
         assert_true(self.HS.finalized)
         assert_true(self.HS.nnz == 1)
         self.HS.empty()
+
+    def test_tile1(self):
+        dR, param = [0.1, 1.5], [1., 0.1]
+
+        # Create reference
+        Hg = Hamiltonian(self.g.tile(2, 0).tile(2, 1).tile(2, 2))
+        Hg.construct([dR, param])
+        Hg.finalize()
+        H = Hamiltonian(self.g)
+        H.construct([dR, param])
+        H = H.tile(2, 0).tile(2, 1). tile(2, 2)
+        assert_true(Hg.spsame(H))
+
+    def test_tile2(self):
+        dR, param = [0.1, 1.5], [1., 0.1]
+
+        # Create reference
+        Hg = Hamiltonian(self.g.tile(2, 0))
+        Hg.construct([dR, param])
+        Hg.finalize()
+        H = Hamiltonian(self.g)
+        H.construct([dR, param])
+        H = H.tile(2, 0)
+        assert_true(Hg.spsame(H))

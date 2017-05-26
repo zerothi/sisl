@@ -5,6 +5,7 @@ from __future__ import print_function, division
 
 import warnings
 from numbers import Integral
+import itertools as itools
 
 import numpy as np
 import scipy.linalg as sli
@@ -12,7 +13,7 @@ from scipy.sparse import isspmatrix, csr_matrix
 import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype
-from sisl._help import _zip as zip
+from sisl._help import _zip as zip, _range as range
 from sisl.sparse import SparseCSR, ispmatrix, ispmatrixd
 
 __all__ = ['Hamiltonian', 'TightBinding']
@@ -776,6 +777,13 @@ class Hamiltonian(object):
         """
         pass
 
+    def spsame(self, other):
+        """ Compare two Hamiltonians and check whether they have the same entries.
+
+        This does not necessarily mean that the Hamiltonian values are the same
+        """
+        return self._data.spsame(other._data)
+
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the tight-binding model into different parts.
 
@@ -932,6 +940,31 @@ class Hamiltonian(object):
 
         return ham
 
+    def _init_larger(self, method, size, axis):
+        """ Internal routine to start a bigger Hamiltonian """
+        # Create the new geometry
+        g = getattr(self.geom, method)(size, axis)
+
+        # Now ensure that the supercell connections is correct
+        ns = self.geom.nsc[axis] // 2
+        if ns > 1:
+            # Reduce the number of connections
+            # due to enlarging the supercell
+            ns = max(ns - reps, 2)
+            ns = ns * 2 + 1
+            nsc = g.nsc[:]
+            nsc[axis] = ns
+            g.set_nsc(nsc)
+
+        # Now create the new Hamiltonian
+        # First figure out the initialization parameters
+        nnzpr = np.max(self._data.ncol)
+        orthogonal = self.orthogonal
+        spin = self.spin
+        dtype = self.dtype
+        return Hamiltonian(g, nnzpr=nnzpr, orthogonal=orthogonal,
+                           spin=spin, dtype=dtype)
+
     def tile(self, reps, axis):
         """ Returns a repeated tight-binding model for this, much like the `Geometry`
 
@@ -945,11 +978,74 @@ class Hamiltonian(object):
             0, 1, 2 according to the cell-direction
         """
 
-        # Create the new geometry
-        g = self.geom.tile(reps, axis)
+        # Create the new Hamiltonian
+        H = self._init_larger('tile', reps, axis)
 
-        raise NotImplementedError(('tiling a Hamiltonian model has not been '
-                              'fully implemented yet.'))
+        # Now begin to populate it accordingly
+        # Retrieve local pointers to the information
+        # regarding the current Hamiltonian sparse matrix
+        geom = self.geom
+        no = self.no
+        nspin = self.spin
+        if not self.orthogonal:
+            nspin += 1
+        D = self._data
+
+        # Information for the new Hamiltonian sparse matrix
+        no_n = H.no
+        if axis == 0:
+            def check_run(isc):
+                if isc[0] != 0:
+                    if isc[1] != 0 or isc[2] != 0:
+                        raise NotImplementedError('Can not tile this geometry')
+        elif axis == 1:
+            def check_run(isc):
+                if isc[1] != 0:
+                    if isc[0] != 0 or isc[2] != 0:
+                        raise NotImplementedError('Can not tile this geometry')
+        elif axis == 2:
+            def check_run(isc):
+                if isc[2] != 0:
+                    if isc[0] != 0 or isc[1] != 0:
+                        raise NotImplementedError('Can not tile this geometry')
+
+        # First loop on axis tiling and local
+        # atoms in the geometry
+        for ia in self.geom:
+
+            # Retrieve first orbital of atom ia
+            o = geom.a2o(ia)
+
+            # Loop on orbitals and repetitions of the orbital
+            for io in range(o, o + geom.atom[ia].orbs):
+
+                # Loop on the connection orbitals
+                for jo in D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]:
+
+                    # Figure out what orbital we are dealing with
+                    uo = geom.osc2uc(jo)
+                    isc = geom.o2isc(jo)
+                    ISC = np.copy(isc, np.int32)
+
+                    # Currently we only allow if no other than the
+                    # axis repetition is non-zero
+                    check_run(isc)
+
+                    # Create repetitions
+                    for rep in range(reps):
+
+                        # Figure out the JO orbital
+                        JO = uo + no * (rep + isc[axis])
+                        # Correct the supercell information
+                        ISC[axis] = JO // no_n
+                        JO = JO % no_n
+
+                        JO = JO + H.geom.sc_index(ISC) * no_n
+                        for i in range(nspin):
+                            H[io + no * rep, JO, i] = self[io, jo, i]
+        H.finalize()
+
+        return H
 
     def repeat(self, reps, axis):
         """ Refer to `tile` instead """
