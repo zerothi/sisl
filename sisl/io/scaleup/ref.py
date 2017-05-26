@@ -98,6 +98,7 @@ class REFSileScaleUp(SileScaleUp):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
+
         # Number of supercells
         ns = np.prod(geom.sc.nsc // 2 + 1)
 

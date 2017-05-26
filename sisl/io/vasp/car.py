@@ -76,11 +76,7 @@ class CARSileVASP(SileVASP):
         # Read cell vectors
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
-            cell[i, :] = np.fromstring(
-                self.readline(),
-                dtype=float,
-                count=3,
-                sep=' ')
+            cell[i, :] = list(map(float, self.readline().split()[:3]))
         cell *= self._scale
 
         return SuperCell(cell)
@@ -134,8 +130,7 @@ class CARSileVASP(SileVASP):
         xyz = np.empty([na, 3], np.float64)
         aoff = 0
         for ia in range(na):
-            xyz[ia, :] = np.fromstring(
-                self.readline(), dtype=float, count=3, sep=' ')
+            xyz[ia, :] = list(map(float, self.readline().split()))
         if cart:
             # The unit of the coordinates are cartesian
             xyz *= self._scale

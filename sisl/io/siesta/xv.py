@@ -56,8 +56,7 @@ class XVSileSiesta(SileSiesta):
 
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
-            cell[i, :] = np.fromstring(self.readline(),
-                                       dtype=float, sep=' ')[0:3]
+            cell[i, :] = list(map(float, self.readline().split()[:3]))
         cell *= Bohr2Ang
 
         return SuperCell(cell)
@@ -74,7 +73,7 @@ class XVSileSiesta(SileSiesta):
         xyz = np.empty([na, 3], np.float64)
         line = np.empty(8, np.float64)
         for ia in range(na):
-            line[:] = np.fromstring(self.readline(), dtype=float, sep=' ')[0:8]
+            line[:] = list(map(float, self.readline().split()[:8]))
             atms[ia] = Atom[int(line[1])]
             xyz[ia, :] = line[2:5]
         xyz *= Bohr2Ang

@@ -234,12 +234,11 @@ class TestObject(object):
             sile(f, mode='w').write_geometry(G)
             # Easy fix to run the ArgumentParser code in the readable files
             # Generally the ArgumentParser requires to read the file
-            if hasattr(sile, 'ArgumentParser'):
-                try:
-                    sile(f).ArgumentParser()
-                except NotImplementedError as e:
-                    pass
+            try:
+                sile(f).ArgumentParser()
+            except NotImplementedError as e:
+                pass
             # Read
-            g = sile(f).read_geometry()
+            g = sile(f, mode='r').read_geometry()
             # Assert
             assert_equal(g, G, sile)

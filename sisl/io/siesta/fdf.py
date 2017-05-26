@@ -428,7 +428,7 @@ class fdfSileSiesta(SileSiesta):
         if run:
             f, lor = self._read_block('AtomicCoordinatesOrigin')
             if f:
-                origo = np.fromstring(lor[0], count=3, sep=' ') * s
+                origo = ensure_array(map(float, lor[0].split()[:3])) * s
         # Origo cannot be interpreted with fractional coordinates
         # hence, it is not transformed.
 
