@@ -490,3 +490,20 @@ class TestHamiltonian(object):
         H.construct([dR, param])
         H = H.tile(2, 0)
         assert_true(Hg.spsame(H))
+
+    def test_sub1(self):
+        dR, param = [0.1, 1.5], [1., 0.1]
+
+        # Create reference
+        H = Hamiltonian(self.g)
+        H.construct([dR, param])
+        H.finalize()
+        # Tiling in this direction will not introduce
+        # any new connections.
+        # So tiling and removing is a no-op (but
+        # increases vacuum in 3rd lattice vector)
+        Hg = Hamiltonian(self.g.tile(2, 2))
+        Hg.construct([dR, param])
+        Hg = Hg.sub(range(len(self.g)))
+        Hg.finalize()
+        assert_true(Hg.spsame(H))

@@ -709,11 +709,8 @@ class Geometry(SuperCellChild):
         n = self.na // seps
         off = n * lseg
         new = self.sub(np.arange(off, off + n), cell=sc)
-        if not np.allclose(
-                new.tile(seps, axis).xyz,
-                self.xyz,
-                rtol=rtol,
-                atol=atol):
+        if not np.allclose(new.tile(seps, axis).xyz, self.xyz,
+                           rtol=rtol, atol=atol):
             st = 'The cut structure cannot be re-created by tiling'
             st += '\nThe difference between the coordinates can be altered using rtol, atol'
             warnings.warn(st, UserWarning)
@@ -729,12 +726,12 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        atom  : ``array_like``
+        atom  : array_like
             indices of all atoms to be removed.
         """
-        atms = self.sc2uc(atom)
-        idx = np.setdiff1d(np.arange(self.na), atms, assume_unique=True)
-        return self.sub(idx)
+        atom = self.sc2uc(atom)
+        atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
+        return self.sub(atom)
 
     def tile(self, reps, axis):
         """
@@ -2050,7 +2047,7 @@ class Geometry(SuperCellChild):
             n += oe[i] - ob[i]
         return o
 
-    def o2a(self, io):
+    def o2a(self, io, uc=False):
         """
         Returns an atomic index corresponding to the orbital indicies.
 

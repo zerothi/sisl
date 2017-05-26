@@ -826,7 +826,7 @@ class Hamiltonian(object):
         # First we need to figure out how long the interaction range is
         # in the cut-direction
         # We initialize to be the same as the parent direction
-        nsc = np.copy(self.nsc) // 2
+        nsc = np.array(self.nsc, np.int32, copy=True) // 2
         nsc[axis] = 0  # we count the new direction
         isc = np.zeros([3], np.int32)
         isc[axis] -= 1
@@ -881,7 +881,7 @@ class Hamiltonian(object):
 
         def sco2sco(M, o, m, seps, axis):
             # Converts an o from M to m
-            isc = np.copy(M.o2isc(o))
+            isc = np.array(M.o2isc(o), np.int32, copy=True)
             isc[axis] = isc[axis] * seps
             # Correct for cell-offset
             isc[axis] = isc[axis] + (o % M.no) // m.no
@@ -965,6 +965,99 @@ class Hamiltonian(object):
         return Hamiltonian(g, nnzpr=nnzpr, orthogonal=orthogonal,
                            spin=spin, dtype=dtype)
 
+    def remove(self, atom):
+        """
+        Remove atom from the Hamiltonian.
+
+        Indices passed *MUST* be unique.
+
+        Negative indices are wrapped and thus works.
+
+        Parameters
+        ----------
+        atom  : array_like
+            indices of all atoms to be removed.
+        """
+        atom = self.geom.sc2uc(atom)
+        atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
+        return self.sub(atom)
+
+    def sub(self, atom):
+        """
+        Returns a subset of atoms from the geometry.
+
+        Indices passed *MUST* be unique.
+
+        Negative indices are wrapped and thus works.
+
+        Parameters
+        ----------
+        atom  : ``array_like``
+            indices of all atoms to be removed.
+        """
+        atom = self.sc2uc(atom)
+        geom = self.geom.sub(atom)
+
+        # Now create the new Hamiltonian
+        # First figure out the initialization parameters
+        nnzpr = np.max(self._data.ncol)
+        orthogonal = self.orthogonal
+        nspin = self.spin
+        dtype = self.dtype
+        H = Hamiltonian(geom, nnzpr=nnzpr, orthogonal=orthogonal,
+                        spin=nspin, dtype=dtype)
+
+        if not orthogonal:
+            nspin = nspin + 1
+
+        # Retrieve pointers to local data
+        no = self.no
+        D = self._data
+
+        # Create orbital pivot table
+        pvt = np.zeros([self.no_s], np.int32) - 1
+        where = np.where
+        for a in range(self.na_s):
+            ia = a % self.na
+            IA = where(atom == ia)[0]
+            if len(IA) != 1:
+                continue
+
+            # Update pivot table
+            no = self.atom[ia].orbs
+            o = self.a2o(a)
+
+            # Get new index
+            O = geom.a2o(IA) + geom.no * (a // self.na)
+            pvt[o:o+no] = range(O, O+no)
+
+        # Now keep all atoms in the list
+        # Small indices are the current geometry
+        # Large indices are the new geometry
+        for IA, ia in enumerate(atom):
+
+            # Retrieve first orbital of atom ia
+            o = self.a2o(ia)
+            O = geom.a2o(IA)
+
+            # Loop on orbitals and repetitions of the orbital
+            for io in range(self.geom.atom[ia].orbs):
+                IO = O + io
+                io = o + io
+
+                # Loop on the connection orbitals
+                for jo in D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]:
+                    # Check that the connection orbital exists
+                    # else, continue
+                    if pvt[jo] < 0:
+                        continue
+
+                    for i in range(nspin):
+                        H[IO, pvt[jo], i] = self[io, jo, i]
+        H.finalize()
+
+        return H
+
     def tile(self, reps, axis):
         """ Returns a repeated tight-binding model for this, much like the `Geometry`
 
@@ -1025,7 +1118,7 @@ class Hamiltonian(object):
                     # Figure out what orbital we are dealing with
                     uo = geom.osc2uc(jo)
                     isc = geom.o2isc(jo)
-                    ISC = np.copy(isc, np.int32)
+                    ISC = np.array(isc, np.int32, copy=True)
 
                     # Currently we only allow if no other than the
                     # axis repetition is non-zero

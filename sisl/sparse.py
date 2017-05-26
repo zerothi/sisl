@@ -788,12 +788,12 @@ class SparseCSR(object):
         # The default sizes are not passed
         # Hence we *must* copy the arrays
         # directly
-        new.ptr = np.array(self.ptr, np.int32)
-        new.ncol = np.array(self.ncol, np.int32)
-        new.col = np.array(self.col, np.int32)
+        new.ptr = np.array(self.ptr, np.int32, copy=True)
+        new.ncol = np.array(self.ncol, np.int32, copy=True)
+        new.col = np.array(self.col, np.int32, copy=True)
         new._nnz = self.nnz
 
-        new._D = np.array(self._D, dtype=dtype)
+        new._D = np.array(self._D, dtype, copy=True)
         for dim in dims:
             new._D[:, dims] = self._D[:, dims]
 
