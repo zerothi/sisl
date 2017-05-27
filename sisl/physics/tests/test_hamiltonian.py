@@ -491,6 +491,25 @@ class TestHamiltonian(object):
         H = H.tile(2, 0)
         assert_true(Hg.spsame(H))
 
+    def test_tile3(self):
+        dR, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
+
+        # Create reference
+        g = Geometry([[0] * 3], Atom('H', R=[4.]), sc=[1.] * 3)
+        g.set_nsc([7] * 3)
+
+        # Now create bigger geometry
+        G = g.tile(2, 0).tile(2, 1).tile(2, 2)
+
+        HG = Hamiltonian(G.tile(2, 0).tile(2, 1).tile(2, 2))
+        HG.construct([dR, param])
+        HG.finalize()
+        H = Hamiltonian(G)
+        H.construct([dR, param])
+        H.finalize()
+        H = H.tile(2, 0).tile(2, 1).tile(2, 2)
+        assert_true(HG.spsame(H))
+
     def test_sub1(self):
         dR, param = [0.1, 1.5], [1., 0.1]
 

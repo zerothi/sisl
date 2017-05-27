@@ -945,20 +945,9 @@ class Hamiltonian(object):
         # Create the new geometry
         g = getattr(self.geom, method)(size, axis)
 
-        # Now ensure that the supercell connections is correct
-        ns = self.geom.nsc[axis] // 2
-        if ns > 1:
-            # Reduce the number of connections
-            # due to enlarging the supercell
-            ns = max(ns - reps, 2)
-            ns = ns * 2 + 1
-            nsc = g.nsc[:]
-            nsc[axis] = ns
-            g.set_nsc(nsc)
-
         # Now create the new Hamiltonian
         # First figure out the initialization parameters
-        nnzpr = np.max(self._data.ncol)
+        nnzpr = np.amax(self._data.ncol)
         orthogonal = self.orthogonal
         spin = self.spin
         dtype = self.dtype
@@ -1086,56 +1075,33 @@ class Hamiltonian(object):
 
         # Information for the new Hamiltonian sparse matrix
         no_n = H.no
-        if axis == 0:
-            def check_run(isc):
-                if isc[0] != 0:
-                    if isc[1] != 0 or isc[2] != 0:
-                        raise NotImplementedError('Can not tile this geometry')
-        elif axis == 1:
-            def check_run(isc):
-                if isc[1] != 0:
-                    if isc[0] != 0 or isc[2] != 0:
-                        raise NotImplementedError('Can not tile this geometry')
-        elif axis == 2:
-            def check_run(isc):
-                if isc[2] != 0:
-                    if isc[0] != 0 or isc[1] != 0:
-                        raise NotImplementedError('Can not tile this geometry')
+        geom_n = H.geom
 
         # First loop on axis tiling and local
         # atoms in the geometry
-        for ia in self.geom:
+        ISC = np.empty([3], np.int32)
+        sc_index = geom_n.sc_index
+        rngspin = range(nspin)
+        rngreps = range(reps)
+        for io in range(geom.no):
 
-            # Retrieve first orbital of atom ia
-            o = geom.a2o(ia)
+            # Loop on the connection orbitals
+            col = D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]
+            for jo, uo, isc in zip(col, col % no, geom.o2isc(col)):
 
-            # Loop on orbitals and repetitions of the orbital
-            for io in range(o, o + geom.atom[ia].orbs):
+                ISC[:] = isc[:]
 
-                # Loop on the connection orbitals
-                for jo in D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]:
+                # Create repetitions
+                for rep in rngreps:
 
-                    # Figure out what orbital we are dealing with
-                    uo = geom.osc2uc(jo)
-                    isc = geom.o2isc(jo)
-                    ISC = np.array(isc, np.int32, copy=True)
+                    # Figure out the JO orbital
+                    JO = uo + no * (rep + isc[axis])
+                    # Correct the supercell information
+                    ISC[axis] = JO // no_n
 
-                    # Currently we only allow if no other than the
-                    # axis repetition is non-zero
-                    check_run(isc)
-
-                    # Create repetitions
-                    for rep in range(reps):
-
-                        # Figure out the JO orbital
-                        JO = uo + no * (rep + isc[axis])
-                        # Correct the supercell information
-                        ISC[axis] = JO // no_n
-                        JO = JO % no_n
-
-                        JO = JO + H.geom.sc_index(ISC) * no_n
-                        for i in range(nspin):
-                            H[io + no * rep, JO, i] = self[io, jo, i]
+                    JO = JO % no_n + sc_index(ISC) * no_n
+                    for i in rngspin:
+                        H[io + no * rep, JO, i] = self[io, jo, i]
         H.finalize()
 
         return H
