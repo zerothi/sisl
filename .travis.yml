@@ -35,7 +35,7 @@ install:
   - python setup.py install
 
 script:
-  - nosetests --with-coverage --exe sisl
+  - if [[ ${COVERAGE:-false} != false ]]; then nosetests --with-coverage --exe sisl ; else nosetests --exe sisl ; fi
 
 after_success:
   - if [[ ${COVERAGE:-false} != false ]]; then bash <(curl -s https://codecov.io/bash) ; fi
