@@ -1147,7 +1147,7 @@ class Hamiltonian(object):
 
             ia = geom.o2a(io)
             oa = geom.atom[ia].orbs
-            
+
             # Loop on the connection orbitals
             if ncol[io] == 0:
                 continue
