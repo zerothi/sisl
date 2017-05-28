@@ -1048,7 +1048,7 @@ class Hamiltonian(object):
         return H
 
     def tile(self, reps, axis):
-        """ Returns a repeated tight-binding model for this, much like the `Geometry`
+        """ Returns a tiled tight-binding model for this, much like the `Geometry`
 
         The already existing tight-binding parameters are extrapolated
         to the new supercell by repeating them in blocks like the coordinates.
@@ -1068,10 +1068,9 @@ class Hamiltonian(object):
         # regarding the current Hamiltonian sparse matrix
         geom = self.geom
         no = self.no
-        nspin = self.spin
-        if not self.orthogonal:
-            nspin += 1
-        D = self._data
+        ptr = self._data.ptr
+        ncol = self._data.ncol
+        col = self._data.col
 
         # Information for the new Hamiltonian sparse matrix
         no_n = H.no
@@ -1081,38 +1080,100 @@ class Hamiltonian(object):
         # atoms in the geometry
         ISC = np.empty([3], np.int32)
         sc_index = geom_n.sc_index
-        rngspin = range(nspin)
-        rngreps = range(reps)
+        rngreps = range(0, no*reps, no)
         for io in range(geom.no):
 
             # Loop on the connection orbitals
-            col = D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]
-            for jo, uo, isc in zip(col, col % no, geom.o2isc(col)):
+            if ncol[io] == 0:
+                continue
+            ccol = col[ptr[io]:ptr[io]+ncol[io]]
+            for jo, uo, isc in zip(ccol, ccol % no, geom.o2isc(ccol)):
 
+                # Copy supercell connection
                 ISC[:] = isc[:]
 
+                O = uo + no * isc[axis]
                 # Create repetitions
-                for rep in rngreps:
+                for orep in rngreps:
 
                     # Figure out the JO orbital
-                    JO = uo + no * (rep + isc[axis])
+                    JO = O + orep
                     # Correct the supercell information
                     ISC[axis] = JO // no_n
 
-                    JO = JO % no_n + sc_index(ISC) * no_n
-                    for i in rngspin:
-                        H[io + no * rep, JO, i] = self[io, jo, i]
+                    H[io + orep, JO % no_n + sc_index(ISC) * no_n] = self[io, jo]
         H.finalize()
 
         return H
 
     def repeat(self, reps, axis):
-        """ Refer to `tile` instead """
-        # Create the new geometry
-        g = self.geom.repeat(reps, axis)
+        """ Returns a repeated tight-binding model for this, much like the `Geometry`
+
+        The already existing tight-binding parameters are extrapolated
+        to the new supercell by repeating them in blocks like the coordinates.
+
+        Parameters
+        ----------
+        reps : number of repetitions
+        axis : direction of repetition
+            0, 1, 2 according to the cell-direction
+        """
 
         raise NotImplementedError(('repeating a Hamiltonian model has not been '
-                              'fully implemented yet, use tile instead.'))
+                                   'fully implemented yet, use tile instead.'))
+
+        # Create the new Hamiltonian
+        H = self._init_larger('repeat', reps, axis)
+
+        # Now begin to populate it accordingly
+        # Retrieve local pointers to the information
+        # regarding the current Hamiltonian sparse matrix
+        geom = self.geom
+        no = self.no
+        ptr = self._data.ptr
+        ncol = self._data.ncol
+        col = self._data.col
+
+        # Information for the new Hamiltonian sparse matrix
+        no_n = H.no
+        geom_n = H.geom
+
+        # First loop on axis tiling and local
+        # atoms in the geometry
+        ISC = np.empty([3], np.int32)
+        sc_index = geom_n.sc_index
+        rngreps = range(reps)
+        for io in range(geom.no):
+
+            ia = geom.o2a(io)
+            oa = geom.atom[ia].orbs
+            
+            # Loop on the connection orbitals
+            if ncol[io] == 0:
+                continue
+            ccol = col[ptr[io]:ptr[io]+ncol[io]]
+            for ja, jo, uo, isc in zip(geom.o2a(ccol % no), ccol, ccol % no, geom.o2isc(ccol)):
+
+                # This is the skip per repeat
+                oJ = geom.firsto[ja]
+                oA = geom.atom[ja].orbs
+
+                # Copy supercell connection
+                ISC[:] = isc[:]
+
+                O = uo + no * isc[axis]
+                # Create repetitions
+                for rep in rngreps:
+
+                    # Figure out the JO orbital
+                    JO = O + oJ * reps + oA * rep
+                    # Correct the supercell information
+                    ISC[axis] = JO // no_n
+
+                    H[io + oa * rep, JO % no_n + sc_index(ISC) * no_n] = self[io, jo]
+        H.finalize()
+
+        return H
 
     @classmethod
     def fromsp(cls, geom, H, S=None):
