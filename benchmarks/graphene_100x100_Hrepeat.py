@@ -18,6 +18,7 @@ import numpy as np
 # Always fix the random seed to make each profiling concurrent
 np.random.seed(1234567890)
 
-gr = sisl.geom.graphene(orthogonal=True).tile(100, 0).tile(100, 1)
+gr = sisl.geom.graphene(orthogonal=True)
 H = sisl.Hamiltonian(gr)
 H.construct([(0.1, 1.44), (0., -2.7)], eta=True)
+H.repeat(100, 0).repeat(100, 1)
