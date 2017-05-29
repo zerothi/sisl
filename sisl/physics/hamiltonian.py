@@ -236,6 +236,10 @@ class Hamiltonian(object):
             warnings.warn(('Hamiltonian specification of both H and S simultaneously is deprecated. '
                            'This functionality will be removed in a future release.'))
 
+    def __contains__(self, key):
+        """ Check whether a sparse index is non-zero """
+        return key in self._data
+
     def __get_H(self):
         self._def_dim = self.UP
         return self
@@ -1118,10 +1122,6 @@ class Hamiltonian(object):
         axis : direction of repetition
             0, 1, 2 according to the cell-direction
         """
-
-        raise NotImplementedError(('repeating a Hamiltonian model has not been '
-                                   'fully implemented yet, use tile instead.'))
-
         # Create the new Hamiltonian
         H = self._init_larger('repeat', reps, axis)
 
@@ -1146,6 +1146,9 @@ class Hamiltonian(object):
         for io in range(geom.no):
 
             ia = geom.o2a(io)
+            # firsto * reps = the offset for all previous atoms
+            # io - firsto = the orbital on the atom
+            IO = geom.firsto[ia] * (reps-1) + io
             oa = geom.atom[ia].orbs
 
             # Loop on the connection orbitals
@@ -1161,16 +1164,16 @@ class Hamiltonian(object):
                 # Copy supercell connection
                 ISC[:] = isc[:]
 
-                O = uo + no * isc[axis]
+                # Now calculate the actual unit-cell orbital
+                JO = oJ * (reps-1) + uo
                 # Create repetitions
                 for rep in rngreps:
 
-                    # Figure out the JO orbital
-                    JO = O + oJ * reps + oA * rep
                     # Correct the supercell information
-                    ISC[axis] = JO // no_n
+                    A = isc[axis] + rep
+                    ISC[axis] = A // reps
 
-                    H[io + oa * rep, JO % no_n + sc_index(ISC) * no_n] = self[io, jo]
+                    H[IO + oa * rep, JO + oA * (A % reps) + sc_index(ISC) * no_n] = self[io, jo]
         H.finalize()
 
         return H

@@ -758,6 +758,12 @@ class SparseCSR(object):
                 # each element have different data
                 self._D[index, :] = data[:, :]
 
+    def __contains__(self, key):
+        """ Check whether a sparse index is non-zero """
+        # Get indices of sparse data (-1 if non-existing)
+        index = self._get(key[0], key[1])
+        return index > 0
+
     def copy(self, dims=None, dtype=None):
         """ Returns an exact copy of the sparse matrix
 

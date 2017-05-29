@@ -193,10 +193,6 @@ class TestHamiltonian(object):
         assert_equal(H[0, 1], 0.0)
         H.empty()
 
-    @raises(NotImplementedError)
-    def test_repeat1(self):
-        H = self.H.repeat(2, 0)
-
     def test_sp2HS(self):
         csr = self.H.tocsr(0)
         H = Hamiltonian.fromsp(self.H.geom, csr)
@@ -514,20 +510,7 @@ class TestHamiltonian(object):
         assert_true(HG.spsame(H))
 
     @attr('slow')
-    def xtest_repeat1(self):
-        dR, param = [0.1, 1.5], [1., 0.1]
-
-        # Create reference
-        Hg = Hamiltonian(self.g.repeat(2, 0).repeat(2, 1).repeat(2, 2))
-        Hg.construct([dR, param])
-        Hg.finalize()
-        H = Hamiltonian(self.g)
-        H.construct([dR, param])
-        H = H.repeat(2, 0).repeat(2, 1). repeat(2, 2)
-        assert_true(Hg.spsame(H))
-
-    @attr('slow')
-    def xtest_repeat2(self):
+    def test_repeat1(self):
         dR, param = [0.1, 1.5], [1., 0.1]
 
         # Create reference
@@ -540,7 +523,22 @@ class TestHamiltonian(object):
         assert_true(Hg.spsame(H))
 
     @attr('slow')
-    def xtest_repeat3(self):
+    def test_repeat2(self):
+        dR, param = [0.1, 1.5], [1., 0.1]
+
+        # Create reference
+        Hg = Hamiltonian(self.g.repeat(2, 0).repeat(2, 1).repeat(2, 2))
+        Hg.construct([dR, param])
+        Hg.finalize()
+        H = Hamiltonian(self.g)
+        H.construct([dR, param])
+        H = H.repeat(2, 0).repeat(2, 1). repeat(2, 2)
+        print(Hg)
+        print(H)
+        assert_true(Hg.spsame(H))
+
+    @attr('slow')
+    def test_repeat3(self):
         dR, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
 
         # Create reference
