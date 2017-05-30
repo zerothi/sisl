@@ -334,18 +334,15 @@ class fdfSileSiesta(SileSiesta):
 
         fmt_str = ' {{2:{0}}} {{3:{0}}} {{4:{0}}} {{0}} # {{1}}\n'.format(fmt)
         # Count for the species
-        spec = []
         for ia, a, isp in geom.iter_species():
             self._write(fmt_str.format(isp + 1, ia + 1, *geom.xyz[ia, :]))
-            if isp >= len(spec):
-                spec.append(a)
         self._write('%endblock AtomicCoordinatesAndAtomicSpecies\n\n')
 
         # Write out species
         # First swap key and value
-        self._write('NumberOfSpecies {0}\n'.format(len(spec)))
+        self._write('NumberOfSpecies {0}\n'.format(len(geom.atom.atom)))
         self._write('%block ChemicalSpeciesLabel\n')
-        for i, a in enumerate(spec):
+        for i, (a, _) in enumerate(geom.atom):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 

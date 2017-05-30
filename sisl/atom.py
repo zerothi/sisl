@@ -1461,7 +1461,7 @@ class Atoms(object):
             atoms = Atoms(value)
 
         # Append the new Atom objects
-        for atom, idx in atoms:
+        for atom, _ in atoms:
             if atom not in self:
                 self._atom.append(atom)
 
