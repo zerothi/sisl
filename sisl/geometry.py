@@ -515,7 +515,7 @@ class Geometry(SuperCellChild):
         dR = self.dR
         if shape is None:
             # we default to the Cube shapes
-            dS = (Cube(dR * (iR - 0.975)),
+            dS = (Cube(dR * (iR - 1.975)),
                   Cube(dR * (iR + 0.025)))
         else:
             dS = tuple(shape)
@@ -541,9 +541,9 @@ class Geometry(SuperCellChild):
         for i in [0, 1, 2]:
             if ixyz[i] > 0:
                 dxyz[i] = dxyz[i] / ixyz[i]
-                xyz_m[i] += min(dxyz[i], ir[i])
-            else:
-                ixyz[i] += 1
+                #xyz_m[i] += min(dxyz[i], ir[i])
+            # The range does not loop the last one, so add one
+            ixyz[i] += 1
 
         # Now we loop in each direction
         for x, y, z in product(range(ixyz[0]),
