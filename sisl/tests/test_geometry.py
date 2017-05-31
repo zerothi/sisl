@@ -331,17 +331,17 @@ class TestGeometry(object):
     def test_iter_block2(self):
         g = self.g.tile(30, 0).tile(30, 1)
         i = 0
-        for ias, idx in g.iter_block():
+        for ias, _ in g.iter_block():
             i += len(ias)
         assert_true(i == len(g))
 
     def test_iter_shape1(self):
         i = 0
-        for ias, idx in self.g.iter_block(method='sphere'):
+        for ias, _ in self.g.iter_block(method='sphere'):
             i += len(ias)
         assert_true(i == len(self.g))
         i = 0
-        for ias, idx in self.g.iter_block(method='cube'):
+        for ias, _ in self.g.iter_block(method='cube'):
             i += len(ias)
         assert_true(i == len(self.g))
 
@@ -349,11 +349,23 @@ class TestGeometry(object):
     def test_iter_shape2(self):
         g = self.g.tile(30, 0).tile(30, 1)
         i = 0
-        for ias, idx in g.iter_block(method='sphere'):
+        for ias, _ in g.iter_block(method='sphere'):
             i += len(ias)
         assert_true(i == len(g))
         i = 0
-        for ias, idx in g.iter_block(method='cube'):
+        for ias, _ in g.iter_block(method='cube'):
+            i += len(ias)
+        assert_true(i == len(g))
+
+    @attr('slow')
+    def test_iter_shape3(self):
+        g = self.g.tile(50, 0).tile(50, 1)
+        i = 0
+        for ias, _ in g.iter_block(method='sphere'):
+            i += len(ias)
+        assert_true(i == len(g))
+        i = 0
+        for ias, _ in g.iter_block(method='cube'):
             i += len(ias)
         assert_true(i == len(g))
 
