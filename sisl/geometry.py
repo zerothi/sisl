@@ -452,11 +452,14 @@ class Geometry(SuperCellChild):
         # The boundaries (ensure complete overlap)
         dR = np.array([iR - 0.975, iR + .025]) * dR
 
+        where = np.where
+        append = np.append
+
         # loop until all passed are true
         while not_passed_N > 0:
 
             # Take a random non-passed element
-            all_true = np.where(not_passed)[0]
+            all_true = where(not_passed)[0]
 
             # Shuffle should increase the chance of hitting a
             # completely "fresh" segment, thus we take the most
@@ -475,10 +478,10 @@ class Geometry(SuperCellChild):
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0], uniq=True)
             # First extend the search-space (before reducing)
-            all_idx[1] = self.sc2uc(np.append(all_idx[1], all_idx[0]), uniq=True)
+            all_idx[1] = self.sc2uc(append(all_idx[1], all_idx[0]), uniq=True)
 
             # Only select those who have not been runned yet
-            all_idx[0] = all_idx[0][np.where(not_passed[all_idx[0]])[0]]
+            all_idx[0] = all_idx[0][where(not_passed[all_idx[0]])[0]]
             if len(all_idx[0]) == 0:
                 raise ValueError('Internal error, please report to the developers')
 
@@ -535,15 +538,26 @@ class Geometry(SuperCellChild):
         ir = dS[0].displacement
 
         # Figure out number of segments in each iteration
-        ixyz = np.array(np.ceil(dxyz / ir), np.int32)
+        # (minimum 1)
+        ixyz = np.array(np.ceil(dxyz / ir + 0.0001), np.int32)
 
         # Calculate the steps required for each iteration
         for i in [0, 1, 2]:
-            if ixyz[i] > 0:
-                dxyz[i] = dxyz[i] / ixyz[i]
-                #xyz_m[i] += min(dxyz[i], ir[i])
-            # The range does not loop the last one, so add one
-            ixyz[i] += 1
+            dxyz[i] = dxyz[i] / ixyz[i]
+
+            # Correct the initial position to offset the initial displacement
+            # so that we are at the border.
+            xyz_m[i] += min(dxyz[i], ir[i]) / 2
+
+            if xyz_m[i] > xyz_M[i]:
+                # This is the case where one of the cell dimensions
+                # is far too great.
+                # In this case ixyz[i] should be 1
+                xyz_m[i] = (xyz_M[i] - xyz_m[i]) / 2
+
+        # Shorthand function
+        where = np.where
+        append = np.append
 
         # Now we loop in each direction
         for x, y, z in product(range(ixyz[0]),
@@ -552,6 +566,8 @@ class Geometry(SuperCellChild):
 
             # Create the new center
             center = xyz_m + [x * dxyz[0], y * dxyz[1], z * dxyz[2]]
+            # Correct in case the iteration steps across the maximum
+            center = where(center < xyz_M, center, xyz_M)
             dS[0].set_center(center[:])
             dS[1].set_center(center[:])
 
@@ -562,10 +578,10 @@ class Geometry(SuperCellChild):
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0], uniq=True)
             # First extend the search-space (before reducing)
-            all_idx[1] = self.sc2uc(np.append(all_idx[1], all_idx[0]), uniq=True)
+            all_idx[1] = self.sc2uc(append(all_idx[1], all_idx[0]), uniq=True)
 
             # Only select those who have not been runned yet
-            all_idx[0] = all_idx[0][np.where(not_passed[all_idx[0]])[0]]
+            all_idx[0] = all_idx[0][where(not_passed[all_idx[0]])[0]]
             if len(all_idx[0]) == 0:
                 continue
 
@@ -580,7 +596,7 @@ class Geometry(SuperCellChild):
             yield all_idx[0], all_idx[1]
 
         if np.any(not_passed):
-            print(np.where(not_passed)[0])
+            print(where(not_passed)[0])
             print(np.sum(not_passed), len(self))
             raise ValueError('Error on iterations. Not all atoms has been visited.')
 
