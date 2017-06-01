@@ -6,7 +6,7 @@ from nose.plugins.attrib import attr
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, Hamiltonian
+from sisl import Geometry, Atom, SuperCell, Hamiltonian, Path
 
 
 class TestHamiltonian(object):
@@ -422,6 +422,14 @@ class TestHamiltonian(object):
         # Test of eigenvalues
         self.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
         self.HS.eigh()
+        self.HS.empty()
+
+    def test_eig3(self):
+        self.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        P = Path(self.HS.geom, [[0, 0, 0], [0.5, 0.5, 0]], 10)
+        eig = self.HS.eigh(P)
+        assert_equal(len(P), eig.shape[0])
+        assert_equal(len(self.HS), eig.shape[1])
         self.HS.empty()
 
     def test_spin2(self):
