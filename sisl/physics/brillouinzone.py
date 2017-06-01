@@ -134,6 +134,7 @@ class Path(BrillouinZone):
             divisions = div[:]
 
         self.divisions = np.array(divisions, np.int32)
+        self.divisions.shape = (-1,)
 
     def __iter__(self):
         """ Iterate through the path """
@@ -156,7 +157,7 @@ class Path(BrillouinZone):
     def lineark(self):
         """ Return a 1D array which corresponds to the delta-k values of the path
 
-        I.e. this is not necessarily a equi-spaced array
+        I.e. this is not necessarily an equi-spaced array
         """
 
         nk = len(self)

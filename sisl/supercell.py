@@ -458,6 +458,8 @@ class SuperCellChild(object):
             self.sc = SuperCell([1., 1., 1.])
         elif isinstance(sc, SuperCell):
             self.sc = sc
+        elif isinstance(sc, SuperCellChild):
+            self.sc = sc.sc
         else:
             # The supercell is given as a cell
             self.sc = SuperCell(sc)

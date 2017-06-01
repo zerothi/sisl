@@ -233,6 +233,17 @@ class TestSparseCSR(object):
             assert_equal(self.s1[i, 0], 0)
         self.s1.empty()
 
+    def test_eliminate_zeros1(self):
+        self.s1[0, [1, 2, 3]] = 1
+        self.s1[1, [1, 2, 3]] = 0
+        assert_equal(len(self.s1), 6)
+        self.s1.eliminate_zeros()
+        assert_equal(len(self.s1), 3)
+        assert_equal(self.s1[1, 1], 0)
+        assert_equal(self.s1[1, 2], 0)
+        assert_equal(self.s1[1, 3], 0)
+        self.s1.empty()
+
     def test_same1(self):
         self.s1[0, [1, 2, 3]] = 1
         self.s2[0, [1, 2, 3]] = (1, 1)

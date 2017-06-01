@@ -764,6 +764,26 @@ class SparseCSR(object):
         index = self._get(key[0], key[1])
         return index > 0
 
+    def eliminate_zeros(self):
+        """ Removes all zero elememts from the sparse matrix
+
+        This is an *in-place* operation
+        """
+        # Get short-hand
+        for i in range(self.shape[0]):
+
+            # Create short-hand slice
+            sl = slice(self.ptr[i], self.ptr[i] + self.ncol[i], None)
+            # Get current column entries for the row
+            C = self.col[sl]
+            # Retrieve columns with zero values
+            C0 = np.where(self._D[sl, :] == 0)[0]
+            if len(C0) == 0:
+                continue
+
+            # Remove all entries with 0 values
+            del self[i, C[C0]]
+
     def copy(self, dims=None, dtype=None):
         """ Returns an exact copy of the sparse matrix
 

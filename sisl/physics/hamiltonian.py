@@ -269,6 +269,13 @@ class Hamiltonian(object):
 
     S = property(__get_S, __set_S)
 
+    def eliminate_zeros(self):
+        """ Removes all zero elememts from the sparse matrix
+
+        This is an *in-place* operation
+        """
+        self._data.eliminate_zeros()
+
     # Create iterations on entire set of orbitals
     def iter(self, local=False):
         """ Iterations of the orbital space in the geometry, two indices from loop
