@@ -1279,11 +1279,27 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 if tbt._k_avg:
                     print("  - all data is k-averaged")
                 else:
-                    print("  - number of kpoints: " + str(tbt.nkpt))
+                    # Print out some more information related to the
+                    # k-point sampling.
+                    # However, we still do not know whether TRS is
+                    # applied.
+                    kpt = tbt.kpt
+                    nA = len(np.unique(kpt[:, 0]))
+                    nB = len(np.unique(kpt[:, 1]))
+                    nC = len(np.unique(kpt[:, 2]))
+                    print(("  - number of kpoints: {} <- "
+                           "[ A = {} , B = {} , C = {} ] (time-reversal unknown)").format(tbt.nkpt, nA, nB, nC))
                 print("  - energy range:")
-                print("    {:.5f} -- {:.5f} eV".format(np.amin(tbt.E), np.amax(tbt.E)))
+                E = tbt.E
+                Em, EM = np.amin(E), np.amax(E)
+                dE = np.diff(E)
+                dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
+                if (dEM - dEm) < 1e-3: # 0.001 meV
+                    print("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
+                else:
+                    print("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
                 print("  - atoms with DOS (fortran indices):")
-                print("    " + dev_rng)
+                print("     " + dev_rng)
                 truefalse('DOS' in tbt.variables, "DOS Green function")
                 print()
                 print("Electrodes (*=DOS/ADOS/orbital-current not possible):")
