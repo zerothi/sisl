@@ -2,6 +2,10 @@
 =====
 
 - Added BrillouinZone class to easily create BrillouinZone plots etc.
+  When calculating the eigenspectrum of a Hamiltonian one may pass
+  the BrillouinZone object instead of the k-point to retrieve all
+  eigenvalues for the k-points in the BrillouinZone object.
+  Say for a Path one can now easily retrieve the band-structure.
 
 - Enabled specification of Hamiltonian connections across supercells via
   a tuple index (as the last index):
@@ -21,6 +25,8 @@
   Moved `quantity` to `physics`.
   
 - Enabled slice deletion in `SparseCSR`
+
+  Enabled eliminate_zeros() to remove unneeded values.
 
 - Added ScaleUp compatibility. sisl now acceps ScaleUp files which is
   a 2nd principles code for large scale calculations using Wannier

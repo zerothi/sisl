@@ -15,6 +15,7 @@ import scipy.sparse.linalg as ssli
 from sisl._help import get_dtype
 from sisl._help import _zip as zip, _range as range
 from sisl.sparse import SparseCSR, ispmatrix, ispmatrixd
+from .brillouinzone import BrillouinZone
 
 __all__ = ['Hamiltonian', 'TightBinding']
 
@@ -718,6 +719,17 @@ class Hamiltonian(object):
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
+
+        # First we check if the k-point is a BrillouinZone object
+        if isinstance(k, BrillouinZone):
+            # Pre-allocate the eigenvalue spectrum
+            eig = np.empty([len(k), len(self)], np.float64)
+            for i, k_ in enumerate(k):
+                eig[i, :] = self.eigh(k_, atoms=atoms, eigvals_only=eigvals_only,
+                                      overwrite_a=overwrite_a, overwrite_b=overwrite_b,
+                                      *args, **kwargs)
+            return eig
+
         if self.spin == 2:
             H = self.Hk(k=k, spin=kwargs.pop('spin', 0))
         else:
@@ -757,6 +769,16 @@ class Hamiltonian(object):
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigsh`
         """
+
+        # First we check if the k-point is a BrillouinZone object
+        if isinstance(k, BrillouinZone):
+            # Pre-allocate the eigenvalue spectrum
+            eig = np.empty([len(k), n], np.float64)
+            for i, k_ in enumerate(k):
+                eig[i, :] = self.eigsh(k_, n=n,
+                                       atoms=atoms, eigvals_only=eigvals_only,
+                                       *args, **kwargs)
+            return eig
 
         # We always request the smallest eigenvalues...
         kwargs.update({'which': kwargs.get('which', 'SM')})
