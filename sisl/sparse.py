@@ -769,6 +769,7 @@ class SparseCSR(object):
 
         This is an *in-place* operation
         """
+        rng = range(self.shape[2])
         # Get short-hand
         for i in range(self.shape[0]):
 
@@ -776,11 +777,10 @@ class SparseCSR(object):
             sl = slice(self.ptr[i], self.ptr[i] + self.ncol[i], None)
             # Get current column entries for the row
             C = self.col[sl]
-            # Retrieve columns with zero values
-            C0 = np.where(self._D[sl, :] == 0)[0]
+            # Retrieve columns with zero values (summed over all elements)
+            C0 = np.where(np.sum(np.abs(self._D[sl, :]), axis=1) == 0)[0]
             if len(C0) == 0:
                 continue
-
             # Remove all entries with 0 values
             del self[i, C[C0]]
 
