@@ -12,7 +12,7 @@ from numpy import sum, dot
 from sisl.supercell import SuperCell, SuperCellChild
 
 
-__all__ = ['BrillouinZone', 'Path']
+__all__ = ['BrillouinZone', 'PathBZ']
 
 
 class BrillouinZone(SuperCellChild):
@@ -54,8 +54,7 @@ class BrillouinZone(SuperCellChild):
         """
         if reduced:
             return self.k(k)
-        else:
-            return self.kb(k)
+        return self.kb(k)
 
     def __iter__(self):
         """ Returns all k-points associated with this Brillouin zone object
@@ -68,11 +67,11 @@ class BrillouinZone(SuperCellChild):
         return 1
 
 
-class Path(BrillouinZone):
+class PathBZ(BrillouinZone):
     """ Create a path in the Brillouin zone for plotting band-structures etc. """
 
     def __init__(self, sc, points, divisions):
-        """ Instantiate the `Path` by a set of special `points` separated in `divisions`
+        """ Instantiate the `PathBZ` by a set of special `points` separated in `divisions`
 
         Parameters
         ----------

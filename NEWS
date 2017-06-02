@@ -5,7 +5,7 @@
   When calculating the eigenspectrum of a Hamiltonian one may pass
   the BrillouinZone object instead of the k-point to retrieve all
   eigenvalues for the k-points in the BrillouinZone object.
-  Say for a Path one can now easily retrieve the band-structure.
+  Say for a PathBZ one can now easily retrieve the band-structure.
 
 - Enabled specification of Hamiltonian connections across supercells via
   a tuple index (as the last index):

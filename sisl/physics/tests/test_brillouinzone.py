@@ -7,7 +7,7 @@ import math as m
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell
-from sisl import BrillouinZone, Path
+from sisl import BrillouinZone, PathBZ
 
 
 @attr('brillouinzone')

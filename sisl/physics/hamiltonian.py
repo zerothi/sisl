@@ -183,8 +183,9 @@ class Hamiltonian(object):
 
     def __repr__(self):
         """ Representation of the tight-binding model """
-        s = self.geom.__repr__()
-        return s + '\nNumber of spin / non-zero elements {0} / {1} '.format(self.spin, self.nnz)
+        s = '{{spin: {0}, non-zero: {1}\n '.format(self.spin, self.nnz)
+        s += repr(self.geom).replace('\n', '\n ')
+        return s + '\n}'
 
     def __getattr__(self, attr):
         """ Returns the attributes from the hosting geometry
