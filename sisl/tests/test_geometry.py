@@ -5,6 +5,7 @@ from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np
+import warnings as warn
 
 from sisl import Sphere
 from sisl import Geometry, Atom, SuperCell
@@ -216,9 +217,11 @@ class TestGeometry(object):
         assert_true(np.allclose(self.g.orij(0, [0, 2]), [0., 1.42]))
 
     def test_cut(self):
-        assert_true(len(self.g.cut(1, 1)) == 2)
-        assert_true(len(self.g.cut(2, 1)) == 1)
-        assert_true(len(self.g.cut(2, 1, 1)) == 1)
+        with warn.catch_warnings():
+            warn.simplefilter('ignore', category=UserWarning)
+            assert_true(len(self.g.cut(1, 1)) == 2)
+            assert_true(len(self.g.cut(2, 1)) == 1)
+            assert_true(len(self.g.cut(2, 1, 1)) == 1)
 
     def test_cut2(self):
         c1 = self.g.cut(2, 1)

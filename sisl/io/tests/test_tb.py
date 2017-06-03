@@ -4,6 +4,7 @@ from nose.tools import *
 from nose.plugins.attrib import attr
 
 from tempfile import mkstemp, mkdtemp
+import warnings as warn
 
 from sisl import Geometry, Atom
 from sisl.io.ham import *
@@ -11,6 +12,7 @@ from sisl.io.ham import *
 import os.path as osp
 import math as m
 import numpy as np
+from scipy.sparse import SparseWarning
 
 import common as tc
 
@@ -33,7 +35,9 @@ class TestHAM(object):
             assert_true(g.atom[ia] == self.g.atom[ia])
 
     def test_ham2(self):
-        f = osp.join(self.d, 'gr.ham')
-        self.ham.write(HamiltonianSile(f, 'w'))
-        ham = HamiltonianSile(f).read_hamiltonian()
-        assert_true(ham._data.spsame(self.ham._data))
+        with warn.catch_warnings():
+            warn.simplefilter('ignore', category=SparseWarning)
+            f = osp.join(self.d, 'gr.ham')
+            self.ham.write(HamiltonianSile(f, 'w'))
+            ham = HamiltonianSile(f).read_hamiltonian()
+            assert_true(ham._data.spsame(self.ham._data))

@@ -3,6 +3,7 @@ from __future__ import print_function, division
 from nose.tools import *
 
 import numpy as np
+import os
 
 from tempfile import mkstemp
 from sisl.io import *
@@ -223,6 +224,7 @@ class TestObject(object):
         G = self.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=self.d)[1]
+        print(f)
         read_geometry = get_siles(['read_geometry'])
         for sile in get_siles(['write_geometry']):
             if not sile in read_geometry:
@@ -241,7 +243,17 @@ class TestObject(object):
             # Read
             try:
                 g = sile(f, mode='r').read_geometry()
+                assert_equal(g, G, sile)
             except UnicodeDecodeError as e:
                 pass
-            # Assert
-            assert_equal(g, G, sile)
+            # Clean-up file
+            os.remove(f)
+
+    def test_arg_parser1(self):
+        f = mkstemp(dir=self.d)[1]
+        print(f)
+        for sile in get_siles(['ArgumentParser']):
+            try:
+                sile(f).ArgumentParser()
+            except:
+                pass
