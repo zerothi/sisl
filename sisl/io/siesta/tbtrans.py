@@ -1267,11 +1267,13 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 # First short-hand the file
                 tbt = ns._tbt
 
-                def truefalse(bol, string):
+                def truefalse(bol, string, fdf=None):
                     if bol:
                         print("  + " + string + ": true")
-                    else:
+                    elif fdf is None:
                         print("  - " + string + ": false")
+                    else:
+                        print("  - " + string + ": false\t\t["+', '.join(fdf) + ']')
 
                 # Retrieve the device atoms
                 dev_rng = list2range(tbt.a_dev + 1)
@@ -1300,7 +1302,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     print("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
                 print("  - atoms with DOS (fortran indices):")
                 print("     " + dev_rng)
-                truefalse('DOS' in tbt.variables, "DOS Green function")
+                truefalse('DOS' in tbt.variables, "DOS Green function", ['TBT.DOS.Gf'])
                 print()
                 print("Electrodes (*=DOS/ADOS/orbital-current not possible):")
                 for elec in tbt.elecs:
@@ -1315,16 +1317,18 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     gelec = tbt.groups[elec]
                     print("  - chemical potential: {:.4f} eV".format(tbt.mu(elec)))
                     print("  - electronic temperature: {:.2f} K".format(tbt.electronic_temperature(elec)))
-                    truefalse('DOS' in gelec.variables, "DOS bulk")
-                    truefalse('ADOS' in gelec.variables, "DOS spectral")
-                    truefalse('J' in gelec.variables, "Orbital-current")
-                    truefalse('T' in gelec.variables, "transmission bulk")
-                    truefalse(elec + '.T' in gelec.variables, "transmission out")
-                    truefalse(elec + '.C' in gelec.variables, "transmission out correction")
+                    truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
+                    truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
+                    truefalse('J' in gelec.variables, "Orbital-current", ['TBT.DOS.A', 'TBT.Current.Orb'])
+                    truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
+                    truefalse(elec + '.T' in gelec.variables, "transmission out", ['TBT.T.Out'])
+                    truefalse(elec + '.C' in gelec.variables, "transmission out correction", ['TBT.T.Out'])
+                    truefalse(elec + '.C.Eig' in gelec.variables, "transmission out correction (eigen)", ['TBT.T.Out','TBT.T.Eig'])
                     for elec2 in tbt.elecs:
                         # Skip it self, checked above in .T and .C
                         if elec2 == elec: continue
                         truefalse(elec2 + '.T' in gelec.variables, "transmission -> " + elec2)
+                        truefalse(elec2 + '.T.Eig' in gelec.variables, "transmission (eigen) -> " + elec2, ['TBT.T.Eig'])
 
         p.add_argument('--info', '-i', action=Info, nargs=0,
                        help='Print out what information is contained in the TBT.nc file.')
