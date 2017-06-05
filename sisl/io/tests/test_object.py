@@ -224,7 +224,6 @@ class TestObject(object):
         G = self.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=self.d)[1]
-        print(f)
         read_geometry = get_siles(['read_geometry'])
         for sile in get_siles(['write_geometry']):
             if not sile in read_geometry:
@@ -234,12 +233,6 @@ class TestObject(object):
                 continue
             # Write
             sile(f, mode='w').write_geometry(G)
-            # Easy fix to run the ArgumentParser code in the readable files
-            # Generally the ArgumentParser requires to read the file
-            try:
-                sile(f).ArgumentParser()
-            except NotImplementedError as e:
-                pass
             # Read
             try:
                 g = sile(f, mode='r').read_geometry()
@@ -251,7 +244,6 @@ class TestObject(object):
 
     def test_arg_parser1(self):
         f = mkstemp(dir=self.d)[1]
-        print(f)
         for sile in get_siles(['ArgumentParser']):
             try:
                 sile(f).ArgumentParser()

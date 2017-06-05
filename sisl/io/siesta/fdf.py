@@ -603,7 +603,7 @@ class fdfSileSiesta(SileSiesta):
         if osp.isfile(f):
             tmp_p = sp.add_parser('band',
                                   help="Manipulate the bands file from the SIESTA simulation")
-            tmp_p, tmp_ns = sis.BandsncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = sis.bandsSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.TBT.nc'
@@ -611,6 +611,27 @@ class fdfSileSiesta(SileSiesta):
             tmp_p = sp.add_parser('tbt',
                                   help="Manipulate the tbtrans output file")
             tmp_p, tmp_ns = sis.tbtncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+
+        f = label + '.TBT.Proj.nc'
+        if osp.isfile(f):
+            tmp_p = sp.add_parser('tbt-proj',
+                                  help="Manipulate the tbtrans projection output file")
+            tmp_p, tmp_ns = sis.tbtprojncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+
+        f = label + '.PHT.nc'
+        if osp.isfile(f):
+            tmp_p = sp.add_parser('pht',
+                                  help="Manipulate the phtrans output file")
+            tmp_p, tmp_ns = sis.phtncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+
+        f = label + '.PHT.Proj.nc'
+        if osp.isfile(f):
+            tmp_p = sp.add_parser('pht-proj',
+                                  help="Manipulate the phtrans projection output file")
+            tmp_p, tmp_ns = sis.phtprojncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.nc'

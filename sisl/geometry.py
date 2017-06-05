@@ -91,7 +91,6 @@ class Geometry(SuperCellChild):
         # Create the geometry coordinate
         self.xyz = np.copy(np.asarray(xyz, dtype=np.float64))
         self.xyz.shape = (-1, 3)
-        self.na = len(self.xyz)
 
         # Default value
         if atom is None:
@@ -167,7 +166,7 @@ class Geometry(SuperCellChild):
 
     @property
     def atom(self):
-        """ Retrieve the atoms for the geometry (`Atoms` object) """
+        """ Atoms for the geometry (`Atoms` object) """
         return self._atom
 
     # Backwards compatability (do not use)
@@ -175,38 +174,37 @@ class Geometry(SuperCellChild):
 
     @property
     def dR(self):
-        """ Returns the maximum orbital range of the atoms """
+        """ Maximum orbital range of the atoms """
         return np.amax(self.atom.dR)
 
-    ## Query size of the Geometry
     @property
-    def atoms(self):
-        """ Number of atoms """
-        return self.na
-
-    def __len__(self):
-        """ Return number of atoms in this geometry """
-        return self.na
+    def na(self):
+        """ Number of atoms in geometry """
+        return self.xyz.shape[0]
 
     @property
     def na_s(self):
         """ Number of supercell atoms """
         return self.na * self.n_s
 
-    @property
-    def no(self):
-        """ Number of total orbitals """
-        return self.atom.no
+    def __len__(self):
+        """ Number of atoms in geometry """
+        return self.na
 
     @property
-    def orbitals(self):
-        """ List of orbitals per atom """
-        return self.atom.orbitals
+    def no(self):
+        """ Number of orbitals """
+        return self.atom.no
 
     @property
     def no_s(self):
         """ Number of supercell orbitals """
         return self.no * self.n_s
+
+    @property
+    def orbitals(self):
+        """ List of orbitals per atom """
+        return self.atom.orbitals
 
     ## End size of geometry
 
@@ -216,14 +214,12 @@ class Geometry(SuperCellChild):
         return self.firsto[1:] - 1
 
     def __getitem__(self, atom):
-        """ Returns geometry coordinates (allows supercell indices)"""
+        """ Geometry coordinates (allows supercell indices)"""
         if isinstance(atom, Integral):
             return self.axyz(atom)
 
         elif isinstance(atom, slice):
-            if atom is None:
-                return self.axyz()
-            if atom.start is None or atom.stop is None:
+            if atom.stop is None:
                 atom = atom.indices(self.na)
             else:
                 atom = atom.indices(self.na_s)
@@ -232,19 +228,16 @@ class Geometry(SuperCellChild):
         elif atom is None:
             return self.axyz()
 
-        elif isinstance(atom[0], slice):
+        elif isinstance(atom, tuple):
             return self[atom[0]][:, atom[1]]
 
         elif atom[0] is None:
             return self.axyz()[:, atom[1]]
 
-        elif isinstance(atom, tuple):
-            return self.axyz(atom[0])[:, atom[1]]
-
         return self.axyz(atom)
 
     def rij(self, ia, ja):
-        """ Return distance between atom ``ia`` and ``ja``, atoms are expected to be in super-cell indices
+        """ Distance between atom ``ia`` and ``ja``, atoms are expected to be in super-cell indices
 
         Returns the distance between two atoms:
 

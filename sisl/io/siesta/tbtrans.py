@@ -1323,7 +1323,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
                     truefalse(elec + '.T' in gelec.variables, "transmission out", ['TBT.T.Out'])
                     truefalse(elec + '.C' in gelec.variables, "transmission out correction", ['TBT.T.Out'])
-                    truefalse(elec + '.C.Eig' in gelec.variables, "transmission out correction (eigen)", ['TBT.T.Out','TBT.T.Eig'])
+                    truefalse(elec + '.C.Eig' in gelec.variables, "transmission out correction (eigen)", ['TBT.T.Out', 'TBT.T.Eig'])
                     for elec2 in tbt.elecs:
                         # Skip it self, checked above in .T and .C
                         if elec2 == elec: continue
