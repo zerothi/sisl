@@ -2182,7 +2182,7 @@ class Geometry(SuperCellChild):
         SparseCSR
            sparse matrix with all rij elements
         """
-        rij = SparseCSR((self.no, self.no_s), nnzpr=20, dtype=dtype)
+        rij = SparseCSR((self.na, self.na_s), nnzpr=20, dtype=dtype)
 
         # Get dR
         dR = (0.1, self.dR)
@@ -2302,7 +2302,7 @@ class Geometry(SuperCellChild):
                     _, d = ns._geometry.close(0, dR=(0.1, 20.), ret_rij=True)
                     d = np.amin(d[1]) / 2
                     ns._geometry = ns._geometry.translate(-tmp + np.array([d, d, d]))
-                elif args.unit_cell in ['mod']:
+                elif value in ['mod']:
                     # Change all coordinates using the reciprocal cell
                     rcell = ns._geometry.rcell / (2. * np.pi)
                     idx = np.abs(np.array(np.dot(ns._geometry.xyz, rcell), np.int32))
@@ -2657,7 +2657,7 @@ lattice vector.
         # We should write out the information to the stdout
         # This is merely for testing purposes and may not be used for anything.
         print('Cell:')
-        for i in range(3):
+        for i in (0, 1, 2):
             print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i, :]))
         print('SuperCell:')
         print('  {0:d} {1:d} {2:d}'.format(*g.nsc))

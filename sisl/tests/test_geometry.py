@@ -782,8 +782,52 @@ class TestGeometry(object):
             assert_true(np.allclose(g1.cell[i, :], g2.cell[i, :]))
         assert_false(np.allclose(g1.cell[2, :], g2.cell[2, :]))
 
-    def test_argumentparser(self):
+    def test_argumentparser1(self):
         self.g.ArgumentParser()
+        self.g.ArgumentParser(**self.g._ArgumentParser_args_single())
+
+    def test_argumentparser2(self, **kwargs):
+        p, ns = self.g.ArgumentParser(**kwargs)
+
+        # Try all options
+        opts = ['--origin',
+                '--center-of', 'mass',
+                '--center-of', 'xyz',
+                '--center-of', 'position',
+                '--center-of', 'cell',
+                '--unit-cell', 'translate',
+                '--unit-cell', 'mod',
+                '--rotate', 'x', '90',
+                '--rotate', 'y', '90',
+                '--rotate', 'z', '90',
+                '--add', '0,0,0', '6',
+                '--swap', '0', '1',
+                '--repeat', 'x', '2',
+                '--repeat', 'y', '2',
+                '--repeat', 'z', '2',
+                '--tile', 'x', '2',
+                '--tile', 'y', '2',
+                '--tile', 'z', '2',
+                '--cut', 'z', '2',
+                '--cut', 'y', '2',
+                '--cut', 'x', '2',
+        ]
+        if kwargs.get('limit_arguments', True):
+            opts.extend(['--rotate', 'x', '-90',
+                         '--rotate', 'y', '-90',
+                         '--rotate', 'z', '-90'])
+        else:
+            opts.extend(['--rotate-x', ' -90',
+                         '--rotate-y', ' -90',
+                         '--rotate-z', ' -90',
+                         '--repeat-x', '2',
+                         '--repeat-y', '2',
+                         '--repeat-z', '2'])
+
+        args = p.parse_args(opts, namespace=ns)
+
+        if len(kwargs) == 0:
+            self.test_argumentparser2(**self.g._ArgumentParser_args_single())
 
     def test_set_sc(self):
         # Create new geometry with only the coordinates

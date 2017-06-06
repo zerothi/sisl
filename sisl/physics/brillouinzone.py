@@ -154,9 +154,18 @@ class PathBZ(BrillouinZone):
                 yield self.points[i] + j * delta
 
     def lineark(self):
-        """ Return a 1D array which corresponds to the delta-k values of the path
+        """ A 1D array which corresponds to the delta-k values of the path
 
-        I.e. this is not necessarily an equi-spaced array
+        This is meant for plotting
+
+        Examples
+        --------
+
+        >>> p = PathBZ(...)
+        >>> eigs = Hamiltonian.eigh(p)
+        >>> for i in range(len(Hamiltonian)):
+        >>>     pyplot.plot(p.lineark(), eigs[:, i])
+
         """
 
         nk = len(self)
