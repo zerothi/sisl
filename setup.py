@@ -34,7 +34,7 @@ Topic :: Utilities
 MAJOR = 0
 MINOR = 8
 MICRO = 4
-ISRELEASED = True
+ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 GIT_REVISION = "228cb50ba2d51f7733fe06f02c3b48d571b644bc"
 
