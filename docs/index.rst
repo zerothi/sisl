@@ -110,8 +110,8 @@ Indices
 .. |donate| image:: https://img.shields.io/badge/Donate-PayPal-green.svg
 .. _donate: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NGNU2AA3JXX94&lc=DK&item_name=Papior%2dCodes&item_number=codes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted
 
-.. |zenodo| image:: https://zenodo.org/badge/38314495.svg
-.. _zenodo: https://zenodo.org/badge/latestdoi/38314495
+.. |zenodo| image:: https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg
+.. _zenodo: http://dx.doi.org/10.5281/zenodo.597181
 
 .. |gitter| image:: https://img.shields.io/gitter/room/nwjs/nw.js.svg
 .. _gitter: https://gitter.im/sisl-tool/Lobby

@@ -1,7 +1,7 @@
 # sisl #
 
 [![Build Status](https://travis-ci.org/zerothi/sisl.svg?branch=master)](https://travis-ci.org/zerothi/sisl)
-[![Get DOI for citation](https://zenodo.org/badge/19941/zerothi/sisl.svg)](https://zenodo.org/badge/latestdoi/19941/zerothi/sisl)
+[![Get DOI for citation](https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg)](http://dx.doi.org/10.5281/zenodo.597181)
 [![Documentation on RTD](https://readthedocs.org/projects/docs/badge/?version=latest)](http://sisl.readthedocs.io/en/latest/)
 [![Install sisl using PyPI](https://badge.fury.io/py/sisl.svg)](https://badge.fury.io/py/sisl)
 [![Install sisl on conda](https://anaconda.org/zerothi/sisl/badges/installer/conda.svg)](https://anaconda.org/zerothi/sisl)
