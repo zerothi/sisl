@@ -1,4 +1,6 @@
 
+.. _tutorial-02:
+
 Geometry creation -- part 2
 ---------------------------
 

@@ -27,3 +27,40 @@ and perform a large variation of tasks.
 3. Post-processing of data from DFT software. One may easily add additional
    post-processing tools to use sisl on non-implemented data-files.
 
+
+
+Package
+-------
+
+sisl is mainly a Python package with many intrinsic capabilities.
+
+DFT
+~~~
+
+Many intrinsic DFT program files are handled by sisl and extraction of the necessary
+physical quantities are easily performed.
+
+Its main focus has been `SIESTA`_ which thus has the largest amount of implemented
+output files.
+
+
+Geometry manipulation
+~~~~~~~~~~~~~~~~~~~~~
+
+Geometries can easily be generated from basic routines and enables easy repetitions,
+additions, removal etc. of different atoms/geometries, for instance to generate a
+graphene flake one can use this small snippet:
+
+
+   >>> import sisl
+   >>> graphene = sisl.geom.graphene(1.42).repeat(100, 0).repeat(100, 1)
+
+which generates a graphene flake of :math:`2 * 100 * 100 = 20000` atoms.
+
+
+Command line usage
+------------------
+
+The functionality of sisl is also extended to command line utilities for easy manipulation
+of data from DFT programs. There are a variety of commands to manipulate generic data (`sdata`),
+geometries (`sgeom`) or grid-related quantities (`sgrid`).

@@ -1,4 +1,6 @@
 
+.. _tutorial-04:
+
 Specifying super-cell information
 ---------------------------------
 
@@ -8,9 +10,8 @@ used. First, recall that the number of supercells can be retrieved by::
    >>> geometry = Geometry([[0, 0, 0]])
    >>> print(geometry)
    {na: 1, no: 1, species:
-    {{Atoms(1):
+    {Atoms(1):
        (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, dR: -1.00000], 
-      }
     },
     nsc: [1, 1, 1], dR: -1.0
    }
@@ -40,10 +41,10 @@ Example -- square
 ~~~~~~~~~~~~~~~~~
 
 Here we show a square 2D lattice with one atom in the unit-cell and a supercell
-which extends 2 cells along the Cartesian :math:`x` lattice vector and 1
-cell along the Cartesian :math:`y` lattice vector::
+which extends 2 cells along the Cartesian :math:`x` lattice vector (5 in total) and 1
+cell along the Cartesian :math:`y` lattice vector (3 in total)::
 
-  >>> square = Geometry([[0.5,0.5,0]], sc=Supercell([1,1,10], [5, 3, 1]))
+  >>> square = Geometry([[0.5,0.5,0]], sc=SuperCell([1,1,10], [5, 3, 1]))
 
 which results in this underlying geometry:
 
@@ -73,6 +74,8 @@ a supercell of `[3, 3, 1]` to account for nearest neighbour couplings.
   >>> graphene = geom.graphene()
 
 which results in this underlying geometry:
+
+.. _04-graphene-couplings:
 
 .. image:: figures/04_graphene_couplings.png
    :width: 200pt

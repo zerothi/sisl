@@ -17,3 +17,4 @@ to enable `numpy`_ and sisl.
    Geometry creation -- part 1 <tutorials/tutorial_01>
    Geometry creation -- part 2 <tutorials/tutorial_02>
    Supercells <tutorials/tutorial_04>
+   Hamiltonians <tutorials/tutorial_05>
