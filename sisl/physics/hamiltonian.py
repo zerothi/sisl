@@ -206,7 +206,7 @@ class Hamiltonian(object):
             # This may be a specification of supercell indices
             if isinstance(key[-1], tuple):
                 # We guess it is the supercell index
-                off = self.sc_index(key[-1])
+                off = self.sc_index(key[-1]) * self.no
                 key = [el for el in key[:-1]]
                 key[1] = self.geom.sc2uc(key[1]) + off
         if dd >= 0:
@@ -226,7 +226,7 @@ class Hamiltonian(object):
             # This may be a specification of supercell indices
             if isinstance(key[-1], tuple):
                 # We guess it is the supercell index
-                off = self.sc_index(key[-1])
+                off = self.sc_index(key[-1]) * self.no
                 key = [el for el in key[:-1]]
                 key[1] = self.geom.sc2uc(key[1]) + off
         if dd >= 0:
