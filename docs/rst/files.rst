@@ -18,7 +18,7 @@ defining the file format:
    `CUBESile` file format, real-space grid file format (also contains geometry)
 
 ``xsf``
-   `XSFSile` file format, XCrySDen_ file format
+   `XSFSile` file format, `XCrySDen`_ file format
 
 ``ham``
    `HamiltonianSile` file format, native file format for sisl
@@ -28,14 +28,14 @@ defining the file format:
 
 Below there is a list of file formats especially targetting a variety of DFT codes.
 
-* BigDFT_
-  File formats inherent to BigDFT_:
+* `BigDFT`_
+  File formats inherent to `BigDFT`_:
 
   ``ascii``
       `ASCIISileBigDFT` input file for BigDFT, currently only implements geometry
 
-* SIESTA_
-  File formats inherent to SIESTA_:
+* `SIESTA`_
+  File formats inherent to `SIESTA`_:
 
   ``fdf``
       `fdfSileSiesta` input file for SIESTA
@@ -50,7 +50,7 @@ Below there is a list of file formats especially targetting a variety of DFT cod
 
   ``grid.nc``
       `gridncSileSiesta` real-space grid files of SIESTA. This `Sile` allows
-      reading the NetCDF_ output of SIESTA for the real-space quantities, such
+      reading the `NetCDF`_ output of SIESTA for the real-space quantities, such
       as, electrostatic potential, charge density, etc.
 
   ``nc``
@@ -59,10 +59,10 @@ Below there is a list of file formats especially targetting a variety of DFT cod
   
   ``TSHS``
       `TSHSSileSiesta` contains the Hamiltonian (read to get a `Hamiltonian` instance)
-      and overlap matrix from a TranSIESTA_ run.
+      and overlap matrix from a `TranSIESTA`_ run.
 
   ``TBT.nc``
-      `tbtncSileSiesta` is the output file of TBtrans_ which contains all transport
+      `tbtncSileSiesta` is the output file of `TBtrans`_ which contains all transport
       related quantities.
 
   ``TBT.AV.nc``
@@ -72,7 +72,7 @@ Below there is a list of file formats especially targetting a variety of DFT cod
   ``XV``
       `XVSileSiesta` is the currently runned geometry in SIESTA.
 
-* VASP_
+* `VASP`_
   File formats inherent to VASP:
 
   ``POSCAR``
@@ -81,14 +81,14 @@ Below there is a list of file formats especially targetting a variety of DFT cod
   ``CONTCAR``
       `CONTCARSileVASP` is the continuation geometries from VASP.
 
-* Wannier90_
+* `Wannier90`_
   File formats inherent to Wannier90:
 
   ``win``
       `winSileW90` is the seed file for Wannier90. From this one may read the `Geometry`
       or the `Hamiltonian` if it has been output by Wannier90.
 
-* ScaleUp_
+* `ScaleUp`_
   File formats inherent to ScaleUp
 
   ``REF``
