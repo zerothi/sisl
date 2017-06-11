@@ -47,12 +47,15 @@ Subsequently manual installation may be done using this command:
 
 ## Usage ##
 
-If used to produce scientific contributions, please use the DOI for citation.
-Press the DOI link at the top of this page and select
+If used to produce scientific contributions, please use this [DOI][doi] for citation. It is recommend to specify the version of sisl in combination of this citation:
 
-    Cite as 
+    @misc{zerothi_sisl,
+      author       = {Papior, Nick R.},
+      title        = {sisl: v<fill-version>},
+      doi          = {10.5281/zenodo.597181},
+      url          = {https://doi.org/10.5281/zenodo.597181}
+    }
 
-in the right side of the zenodo webpage. Select your citation style.
 
 ### Scripts ###
 
@@ -269,6 +272,7 @@ Links to external and internal sites.
 [sisl-api]: http://zerothi.github.io/sisl/index.html
 [issue]: https://github.com/zerothi/sisl/issues
 [tbtrans]: https://launchpad.net/siesta
+[doi]: http://dx.doi.org/10.5281/zenodo.597181
 [pr]: https://github.com/zerothi/sisl/pulls
 [lgpl]: http://www.gnu.org/licenses/lgpl.html
 [ase]: https://wiki.fysik.dtu.dk/ase/
