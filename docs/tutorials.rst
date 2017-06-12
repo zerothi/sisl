@@ -11,7 +11,7 @@ All examples are assumed to have this in the header::
 
 to enable `numpy`_ and sisl.
 
-Below is a list of the current tutorials::
+Below is a list of the current tutorials:
    
 .. toctree::
    :maxdepth: 1
