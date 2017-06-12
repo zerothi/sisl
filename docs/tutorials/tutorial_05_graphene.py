@@ -37,4 +37,3 @@ lband = band.lineark()
 for i in range(eigs.shape[1]):
     plt.plot(lband, eigs[:, i])
 plt.savefig('05_graphene_bs.png')
-

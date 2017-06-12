@@ -1,7 +1,7 @@
 from sisl import *
 
 # Generate square lattice with nearest neighbour couplings
-square = Geometry([[0.5,0.5,0]], sc=SuperCell([1, 1, 10], [3, 3, 1]))
+square = Geometry([[0.5, 0.5, 0]], sc=SuperCell([1, 1, 10], [3, 3, 1]))
 
 # Generate Hamiltonian
 H = Hamiltonian(square)
@@ -38,4 +38,3 @@ lband = band.lineark()
 for i in range(eigs.shape[1]):
     plt.plot(lband, eigs[:, i])
 plt.savefig('05_square_bs.png')
-

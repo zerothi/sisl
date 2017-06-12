@@ -178,7 +178,7 @@ class TestHamiltonian(object):
         H = self.H
         H.construct([(0.1, 1.5), (0.1, 0.2)])
         assert_equal(H[0, 1], 0.2)
-        assert_equal(H[0, 0, (1, 0)], 0.2)
+        assert_equal(H[1, 0, (1, 0)], 0.2)
         H[0, 0, (0, 1)] = 0.3
         assert_equal(H[0, 0, (0, 1)], 0.3)
         H[0, 1, (0, 1)] = -0.2
