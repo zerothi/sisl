@@ -176,9 +176,17 @@ class TestHamiltonian(object):
 
     def test_getitem1(self):
         H = self.H
+        # graphene Hamiltonian
         H.construct([(0.1, 1.5), (0.1, 0.2)])
+        # Assert all connections
+        assert_equal(H[0, 0], 0.1)
         assert_equal(H[0, 1], 0.2)
+        assert_equal(H[0, 1, (-1, 0)], 0.2)
+        assert_equal(H[0, 1, (0, -1)], 0.2)
+        assert_equal(H[1, 0], 0.2)
+        assert_equal(H[1, 1], 0.1)
         assert_equal(H[1, 0, (1, 0)], 0.2)
+        assert_equal(H[1, 0, (0, 1)], 0.2)
         H[0, 0, (0, 1)] = 0.3
         assert_equal(H[0, 0, (0, 1)], 0.3)
         H[0, 1, (0, 1)] = -0.2
