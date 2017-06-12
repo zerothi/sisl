@@ -1,7 +1,7 @@
 
 .. _tutorial-05:
 
-Creating a tight-binding Hamiltonian
+Electronic structure setup -- part 1
 ------------------------------------
 
 A `Hamiltonian` is an extension of a `Geometry`. From the `Geometry` it

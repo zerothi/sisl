@@ -601,8 +601,8 @@ class Geometry(SuperCellChild):
         I.e. the loop would look like this:
 
         >>> for ias, idxs in Geometry.iter_block():
-        >>>    for ia in ias:
-        >>>        idx_a = dev.close(ia, R = R, idx = idxs)
+        ...    for ia in ias:
+        ...        idx_a = Geometry.close(ia, R = R, idx = idxs)
 
         This iterator is intended for systems with more than 1000 atoms.
 
