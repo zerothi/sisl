@@ -4,13 +4,13 @@
 Electronic structure setup -- part 2
 ------------------------------------
 
-Following :ref:`part 2 <tutorial-05>` we focus on how to generalize the specification
+Following :ref:`part 1 <tutorial-05>` we focus on how to generalize the specification
 of the hopping parameters in a more generic way.
 
 First, we re-create the square geometry (with one orbital per atom). However,
 to generalize the specification of the hopping parameters it is essential that
 we specify how long range the orbitals interact. In the following we set the
-atomic specie to be a Hydrogen atom with a single orbital with a range of :math:`1\,\AA`
+atomic specie to be a Hydrogen atom with a single orbital with a range of :math:`1\,Å`
 
   >>> Hydrogen = Atom(1, R=1.)
   >>> square = Geometry([[0.5, 0.5, 0]], Hydrogen,
@@ -39,9 +39,9 @@ Now one can assign the generalized parameters::
 
 The `Geometry.close` function is a convenience function to return atomic indices of
 atoms within a certain radius. For instance `close(0, R=1.)` returns all atomic
-indices within a spherical radius of :math:`1 \AA` from the first atom in the geometry,
+indices within a spherical radius of :math:`1\,Å` from the first atom in the geometry,
 including it-self.
-`close([0., 0., 1.], R=1.)` will return all atomic indices within :math:`1 \AA` of the
+`close([0., 0., 1.], R=1.)` will return all atomic indices within :math:`1\,Å` of the
 coordinate `[0., 0., 1.]`.
 If one specifies a list of `R` it will return the atomic indices in the sphere within the
 first element; and for the later values it will return the atomic indices in the spherical
