@@ -1051,8 +1051,7 @@ class Atom(with_metaclass(AtomMeta, object)):
         """ Return short atomic name (Au==79). """
         return _ptbl.Z_short(self.Z)
 
-    @property
-    def dR(self):
+    def maxR(self):
         """ Return the maximum range of orbitals. """
         return np.amax(self.R)
 
@@ -1069,7 +1068,7 @@ class Atom(with_metaclass(AtomMeta, object)):
         return new
 
     def __repr__(self):
-        return '{0}, Z: {1:d}, orbs: {2:d}, mass(au): {3:.5f}, dR: {4:.5f}'.format(self.tag, self.Z, self.orbs, self.mass, self.dR)
+        return '{0}, Z: {1:d}, orbs: {2:d}, mass(au): {3:.5f}, maxR: {4:.5f}'.format(self.tag, self.Z, self.orbs, self.mass, self.maxR())
 
     def __len__(self):
         """ Return number of orbitals in this atom """
@@ -1231,11 +1230,20 @@ class Atoms(object):
         uorbs = np.array([a.orbs for a in self.atom], np.int32)
         return uorbs[self.specie[:]]
 
-    @property
-    def dR(self):
-        """ Return an array of masses of the contained objects """
-        udR = np.array([a.dR for a in self.atom], np.float64)
-        return udR[self.specie[:]]
+    def maxR(self, all=False):
+        """ The maximum radius of the atoms
+
+        Parameters
+        ----------
+        all : bool
+            determine the returned maximum radii.
+            If `True` is passed an array of all atoms maximum radii is returned (array).
+            Else, if `False` the maximum of all atoms maximum radii is returned (scalar).
+        """
+        if all:
+            maxR = np.array([a.maxR() for a in self.atom], np.float64)
+            return maxR[self.specie[:]]
+        return np.amax([a.maxR() for a in self.atom])
 
     @property
     def mass(self):

@@ -352,7 +352,7 @@ class Hamiltonian(object):
             for io, jo in self._data:
                 yield io, jo
 
-    def create_construct(self, dR, param):
+    def create_construct(self, R, param):
         """ Returns a simple function for passing to the `construct` function.
 
         This is simply to leviate the creation of simplistic
@@ -360,7 +360,7 @@ class Hamiltonian(object):
 
         Basically this returns a function:
         >>> def func(self, ia, idxs, idxs_xyz=None):
-        >>>     idx = self.geom.close(ia, dR=dR, idx=idxs)
+        >>>     idx = self.geom.close(ia, R=R, idx=idxs)
         >>>     for ix, p in zip(idx, param):
         >>>         self[ia, ix] = p
 
@@ -373,24 +373,24 @@ class Hamiltonian(object):
 
         Parameters
         ----------
-        dR : array_like
+        R : array_like
            radii parameters for tight-binding parameters.
            Must have same length as ``param`` or one less.
-           If one less it will be extended with ``dR[0]/100``
+           If one less it will be extended with ``R[0]/100``
         param : array_like
-           coupling constants corresponding to the ``dR``
+           coupling constants corresponding to the ``R``
            ranges. ``param[0,:]`` are the tight-binding parameter
-           for the all atoms within ``dR[0]`` of each atom.
+           for the all atoms within ``R[0]`` of each atom.
         """
 
         if self.orthogonal:
             def func(self, ia, idxs, idxs_xyz=None):
-                idx = self.geom.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz)
+                idx = self.geom.close(ia, R=R, idx=idxs, idx_xyz=idxs_xyz)
                 for ix, p in zip(idx, param):
                     self[ia, ix] = p
         else:
             def func(self, ia, idxs, idxs_xyz=None):
-                idx = self.geom.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz)
+                idx = self.geom.close(ia, R=R, idx=idxs, idx_xyz=idxs_xyz)
                 for ix, p in zip(idx, param):
                     self.H[ia, ix] = p[:-1]
                     self.S[ia, ix] = p[-1]
@@ -405,10 +405,10 @@ class Hamiltonian(object):
         1. Pass a function (``func``), see e.g. ``create_construct`` 
            which does the setting up.
         2. Pass a tuple/list in ``func`` which consists of two 
-           elements, one is ``dR`` the radii parameters for
+           elements, one is ``R`` the radii parameters for
            the corresponding tight-binding parameters.
            The second is the tight-binding parameters
-           corresponding to the ``dR[i]`` elements.
+           corresponding to the ``R[i]`` elements.
            In this second case all atoms must only have
            one orbital.
 
@@ -423,7 +423,7 @@ class Hamiltonian(object):
            An example `func` could be:
 
            >>> def func(self, ia, idxs, idxs_xyz=None):
-           >>>     idx = self.geom.close(ia, dR=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz)
+           >>>     idx = self.geom.close(ia, R=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz)
            >>>     self.H[ia, idx[0]] = 0.   # on-site
            >>>     self.H[ia, idx[1]] = -2.7 # nearest-neighbour
         na_iR : int, 1000
@@ -437,7 +437,7 @@ class Hamiltonian(object):
 
         if not callable(func):
             if not isinstance(func, (tuple, list)):
-                raise ValueError('Passed `func` which is not a function, nor tuple/list of `dR, param`')
+                raise ValueError('Passed `func` which is not a function, nor tuple/list of `R, param`')
 
             if np.any(np.diff(self.geom.lasto) > 1):
                 raise ValueError("Automatically setting a tight-binding model "

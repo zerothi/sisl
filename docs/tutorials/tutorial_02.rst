@@ -6,7 +6,7 @@ Geometry creation -- part 2
 
 Many geometries are intrinsically enabled via the `sisl.geom` submodule.
 
-The default geometries that may be created may easily be used.
+Here we list the currently default geometries::
 
 * `honeycomb` (graphene unit-cell)::
 
@@ -16,7 +16,7 @@ The default geometries that may be created may easily be used.
 
      graphene = geom.graphene(1.42)
 
-* Simple, body-centered and face-centered cubic as well as HCP
+* Simple-, body- and face-centered cubic as well as HCP
   All have the same interface::
 
      sc = geom.sc(2.5)

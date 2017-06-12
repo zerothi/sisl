@@ -8,8 +8,8 @@ and with a cutoff radius of 1.42 Å.
 
 The `Hamiltonian` `H` is an object which may be treated as a sparse
 matrix. The `for` loop below loops over all atoms (`ia`) in the graphene
-unit-cell. The `close` function returns a list of length `len(dR)` with
-elements where all neighbouring atoms within the radius defined in `dR`
+unit-cell. The `close` function returns a list of length `len(R)` with
+elements where all neighbouring atoms within the radius defined in `R`
 are listed. Comments in the below example clarifies each of the steps
 carefully.
 

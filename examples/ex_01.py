@@ -15,10 +15,10 @@ gr = sisl.geom.graphene(bond, C)
 
 # Create the tight-binding Hamiltonian
 H = sisl.Hamiltonian(gr)
-dR = [0.1 * bond, bond + 0.01]
+R = [0.1 * bond, bond + 0.01]
 
 for ia in gr:
-    idx_a = gr.close(ia, dR=dR)
+    idx_a = gr.close(ia, R)
     # On-site
     H[ia, idx_a[0]] = 0.
     # Nearest neighbour hopping

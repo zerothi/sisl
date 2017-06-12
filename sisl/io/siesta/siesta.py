@@ -62,7 +62,7 @@ class ncSileSiesta(SileCDFSIESTA):
                 ID = bg.groups[basis].ID
                 atm = dict()
                 atm['Z'] = int(bg.groups[basis].Atomic_number)
-                # We could possibly read in dR, however, that is not so easy?
+                # We could possibly read in R, however, that is not so easy?
                 atm['mass'] = float(bg.groups[basis].Mass)
                 atm['tag'] = basis
                 atm['orbs'] = int(bg.groups[basis].Number_of_orbitals)

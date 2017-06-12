@@ -11,9 +11,9 @@ The *only* required information is the atomic coordinates::
    >>> print(single_hydrogen)
    {na: 1, no: 1, species:
     {Atoms(1):
-       (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, dR: -1.00000], 
+       (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000], 
     },
-    nsc: [1, 1, 1], dR: -1.0
+    nsc: [1, 1, 1], maxR: -1.0
    }
 
 this will create a `Geometry` object with 1 Hydrogen atom with a single orbital
@@ -23,7 +23,7 @@ XML-like fashion. ``na`` corresponds to the total number of atoms in the
 geometry, while ``no`` refers to the total number of orbitals.
 The species are printed in a sub-tree and ``Atoms(1)`` means that there is
 one distinct atomic specie in the geometry. That atom is a Hydrogen, with mass
-listed in atomic-units. ``dR`` refers to the maximum range of all the orbitals
+listed in atomic-units. ``maxR`` refers to the maximum range of all the orbitals
 associated with that atom. A negative number means that there is no specified
 range.
 Lastly ``nsc`` refers to the number of neighbouring super-cells that is represented

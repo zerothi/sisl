@@ -21,9 +21,9 @@ Here we create a square lattice and from this a `Hamiltonian`::
   {spin: 1, non-zero: 0
    {na: 1, no: 1, species:
     {Atoms(1):
-      (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, dR: -1.00000], 
+      (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000], 
     },
-   nsc: [1, 1, 1], dR: -1.0
+   nsc: [1, 1, 1], maxR: -1.0
    }
   }
 
@@ -61,9 +61,9 @@ and the 4 nearest neighbour couplings to, :math:`-4` and :math:`1`, respectively
   {spin: 1, non-zero: 5
    {na: 1, no: 1, species:
     {Atoms(1):
-      (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, dR: -1.00000], 
+      (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000], 
     },
-    nsc: [3, 3, 1], dR: -1.0
+    nsc: [3, 3, 1], maxR: -1.0
    }
   }
 

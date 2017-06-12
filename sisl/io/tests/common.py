@@ -28,11 +28,11 @@ def setUp(self):
                                 [1., 0., 0.]], np.float64) * alat,
                       atom=C, sc=sc)
 
-    self.dR = np.array([0.1, 1.5])
+    self.R = np.array([0.1, 1.5])
     self.t = np.array([0., 2.7])
     self.tS = np.array([(0., 1.0),
                         (2.7, 0.)])
-    C = Atom(Z=6, orbs=1, R=max(self.dR))
+    C = Atom(Z=6, orbs=1, R=max(self.R))
     sc = SuperCell(np.array([[1.5, sq3h, 0.],
                              [1.5, -sq3h, 0.],
                              [0., 0., 10.]], np.float64) * alat,

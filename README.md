@@ -187,13 +187,13 @@ To create the nearest neighbour tight-binding model for graphene you simply do
 
     # Create nearest-neighbour tight-binding
     # graphene lattice constant 1.42
-    dR = ( 0.1 , 1.5 )
+    R = ( 0.1 , 1.5 )
 
     # Ensure that graphene has supercell connections
     gr.sc.set_nsc([3, 3, 1])
     tb = Hamiltonian(gr)
     for ia in tb.geom:
-        idx_a = tb.close(ia, dR=dR)
+        idx_a = tb.close(ia, R=R)
         tb[ia,idx_a[0]] = 0. # on-site
         tb[ia,idx_a[1]] = -2.7 # nearest neighbour
 
@@ -221,12 +221,12 @@ implement a much faster method to loop over huge geometries
 
     for ias, idxs in tb.geom.iter_block(iR = 10):
         for ia in ias:
-	        idx_a = tb.geom.close(ia, dR = dR, idx = idxs)
+	        idx_a = tb.geom.close(ia, R, idx = idxs)
 	        tb[ia,idx_a[0]] = 0.
             tb[ia,idx_a[1]] = -2.7
 
 which accomplishes the same thing, but at much faster execution. `iR` should be a
-number such that `tb.geom.close(<any index>,dR = tb.geom.dR * iR)` is approximately
+number such that `tb.geom.close(<any index>,R = tb.geom.maxR() * iR)` is approximately
 1,000 atoms.
 
 The above example is for the default orthogonal Hamiltonian. However, sisl is
@@ -235,11 +235,11 @@ explicit overlap matrix the following procedure is necessary:
 
     # Create nearest-neighbour tight-binding
     # graphene lattice constant 1.42
-    dR = ( 0.1 , 1.5 )
+    R = ( 0.1 , 1.5 )
 
     tb = Hamiltonian(gr, orthogonal=False)
     for ia in tb.geom:
-        idx_a = tb.close(ia, dR=dR)
+        idx_a = tb.close(ia, R)
         tb.H[ia,idx_a[0]] = 0.
         tb.S[ia,idx_a[0]] = 1.
         tb.H[ia,idx_a[1]] = 0. # still orthogonal (fake overlap matrix)

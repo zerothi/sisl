@@ -21,7 +21,7 @@ class TestSIESTAnc(object):
     def test_nc1(self):
         f = osp.join(self.d, 'gr.nc')
         tb = Hamiltonian(self.gtb)
-        tb.construct([self.dR, self.t])
+        tb.construct([self.R, self.t])
         tb.write(ncSileSiesta(f, 'w'))
 
         ntb = ncSileSiesta(f).read_hamiltonian()
@@ -36,7 +36,7 @@ class TestSIESTAnc(object):
     def test_nc2(self):
         f = osp.join(self.d, 'gr.dH.nc')
         H = Hamiltonian(self.gtb)
-        H.construct([self.dR, self.t])
+        H.construct([self.R, self.t])
 
         # annoyingly this has to be performed like this...
         sile = dHncSileSiesta(f, 'w')
@@ -55,7 +55,7 @@ class TestSIESTAnc(object):
     def test_nc3(self):
         f = osp.join(self.d, 'grS.nc')
         tb = Hamiltonian(self.gtb, orthogonal=False)
-        tb.construct([self.dR, self.tS])
+        tb.construct([self.R, self.tS])
         tb.write(ncSileSiesta(f, 'w'))
 
         ntb = ncSileSiesta(f).read_hamiltonian()

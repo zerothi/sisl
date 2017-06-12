@@ -289,10 +289,10 @@ Here is a compressed list of changes:
 - Hamiltonian.construct now takes a single argument which is the function
   for the inner loop.
   The old behaviour may be achieved by doing either:
-  >>> func = Hamiltonian.create_construct(dR, param)
+  >>> func = Hamiltonian.create_construct(R, param)
   >>> Hamiltonian.construct(func)
   or
-  >>> Hamiltonian.construct((dR, param))
+  >>> Hamiltonian.construct((R, param))
 - The atoms contained in the Geometry are now not duplicated in case of many
   similar Atom objects. This should reduce overhead and increase throughput.
   However, the efficiency is not optimal yet. 

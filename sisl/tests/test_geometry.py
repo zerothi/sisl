@@ -512,7 +512,7 @@ class TestGeometry(object):
     def test_close1(self):
         three = range(3)
         for ia in self.mol:
-            i = self.mol.close(ia, dR=(0.1, 1.1), idx=three)
+            i = self.mol.close(ia, R=(0.1, 1.1), idx=three)
             if ia < 3:
                 assert_equal(len(i[0]), 1)
             else:
@@ -530,14 +530,14 @@ class TestGeometry(object):
     def test_close2(self):
         mol = range(3, 5)
         for ia in self.mol:
-            i = self.mol.close(ia, dR=(0.1, 1.1), idx=mol)
+            i = self.mol.close(ia, R=(0.1, 1.1), idx=mol)
             assert_equal(len(i), 2)
-        i = self.mol.close([100, 100, 100], dR=0.1)
+        i = self.mol.close([100, 100, 100], R=0.1)
         assert_equal(len(i), 0)
-        i = self.mol.close([100, 100, 100], dR=0.1, ret_rij=True)
+        i = self.mol.close([100, 100, 100], R=0.1, ret_rij=True)
         for el in i:
             assert_equal(len(el), 0)
-        i = self.mol.close([100, 100, 100], dR=0.1, ret_rij=True, ret_xyz=True)
+        i = self.mol.close([100, 100, 100], R=0.1, ret_rij=True, ret_xyz=True)
         for el in i:
             assert_equal(len(el), 0)
 
@@ -546,7 +546,7 @@ class TestGeometry(object):
         for ia in self.mol:
             shapes = [Sphere(0.1, self.mol[ia]),
                       Sphere(1.1, self.mol[ia])]
-            i = self.mol.close(ia, dR=(0.1, 1.1), idx=three)
+            i = self.mol.close(ia, R=(0.1, 1.1), idx=three)
             ii = self.mol.within(shapes, idx=three)
             assert_true(np.all(i[0] == ii[0]))
             assert_true(np.all(i[1] == ii[1]))
@@ -556,7 +556,7 @@ class TestGeometry(object):
         for ia in g:
             shapes = [Sphere(0.1, g[ia]),
                       Sphere(1.5, g[ia])]
-            i = g.close(ia, dR=(0.1, 1.5))
+            i = g.close(ia, R=(0.1, 1.5))
             ii = g.within(shapes)
             assert_true(np.all(i[0] == ii[0]))
             assert_true(np.all(i[1] == ii[1]))
@@ -567,7 +567,7 @@ class TestGeometry(object):
         for ia in g:
             shapes = [Sphere(0.1, g[ia]),
                       Sphere(1.5, g[ia])]
-            i, xa, d = g.close(ia, dR=(0.1, 1.5), **args)
+            i, xa, d = g.close(ia, R=(0.1, 1.5), **args)
             ii, xai, di = g.within(shapes, **args)
             for j in [0, 1]:
                 assert_true(np.all(i[j] == ii[j]))
@@ -578,20 +578,20 @@ class TestGeometry(object):
         point = 0
 
         # Return index
-        idx = self.mol.close(point, dR=.1)
+        idx = self.mol.close(point, R=.1)
         assert_equal(len(idx), 1)
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1, 1.1))
+        idx = self.mol.close(point, R=(.1, 1.1))
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 1)
         assert_false(isinstance(idx[0], list))
         # Longer
-        idx = self.mol.close(point, dR=(.1, 1.1, 2.1))
+        idx = self.mol.close(point, R=(.1, 1.1, 2.1))
         assert_equal(len(idx), 3)
         assert_equal(len(idx[0]), 1)
 
         # Return index
-        idx = self.mol.close(point, dR=.1, ret_xyz=True)
+        idx = self.mol.close(point, R=.1, ret_xyz=True)
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 1)
         assert_equal(len(idx[1]), 1)
@@ -599,7 +599,7 @@ class TestGeometry(object):
         assert_equal(idx[1].shape[1], 3)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1, 1.1), ret_xyz=True)
+        idx = self.mol.close(point, R=(.1, 1.1), ret_xyz=True)
         # [[idx-1, idx-2], [coord-1, coord-2]]
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 2)
@@ -616,7 +616,7 @@ class TestGeometry(object):
         assert_equal(idx[1][1].shape[1], 3)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1, 1.1), ret_xyz=True, ret_rij=True)
+        idx = self.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True)
         # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
         assert_equal(len(idx), 3)
         assert_equal(len(idx[0]), 2)
@@ -638,7 +638,7 @@ class TestGeometry(object):
         assert_equal(idx[2][1].shape[0], 1)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1, 1.1), ret_rij=True)
+        idx = self.mol.close(point, R=(.1, 1.1), ret_rij=True)
         # [[idx-1, idx-2], [dist-1, dist-2]]
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 2)
@@ -658,20 +658,20 @@ class TestGeometry(object):
         point = [100., 100., 100.]
 
         # Return index
-        idx = self.mol.close(point, dR=.1)
+        idx = self.mol.close(point, R=.1)
         assert_equal(len(idx), 0)
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1, 1.1))
+        idx = self.mol.close(point, R=(.1, 1.1))
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 0)
         assert_false(isinstance(idx[0], list))
         # Longer
-        idx = self.mol.close(point, dR=(.1, 1.1, 2.1))
+        idx = self.mol.close(point, R=(.1, 1.1, 2.1))
         assert_equal(len(idx), 3)
         assert_equal(len(idx[0]), 0)
 
         # Return index
-        idx = self.mol.close(point, dR=.1, ret_xyz=True)
+        idx = self.mol.close(point, R=.1, ret_xyz=True)
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 0)
         assert_equal(len(idx[1]), 0)
@@ -679,7 +679,7 @@ class TestGeometry(object):
         assert_equal(idx[1].shape[1], 3)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1, 1.1), ret_xyz=True)
+        idx = self.mol.close(point, R=(.1, 1.1), ret_xyz=True)
         # [[idx-1, idx-2], [coord-1, coord-2]]
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 2)
@@ -696,7 +696,7 @@ class TestGeometry(object):
         assert_equal(idx[1][1].shape[1], 3)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1, 1.1), ret_xyz=True, ret_rij=True)
+        idx = self.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True)
         # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
         assert_equal(len(idx), 3)
         assert_equal(len(idx[0]), 2)
@@ -720,7 +720,7 @@ class TestGeometry(object):
         assert_equal(idx[2][1].shape[0], 0)
 
         # Return index of two things
-        idx = self.mol.close(point, dR=(.1, 1.1), ret_rij=True)
+        idx = self.mol.close(point, R=(.1, 1.1), ret_rij=True)
         # [[idx-1, idx-2], [dist-1, dist-2]]
         assert_equal(len(idx), 2)
         assert_equal(len(idx[0]), 2)
@@ -746,11 +746,11 @@ class TestGeometry(object):
         rib.atom[-1] = Atom[1]
         ia = len(rib) - 1
         # Get bond-length
-        idx, d = rib.close(ia, dR=(.1, 1000), ret_rij=True)
+        idx, d = rib.close(ia, R=(.1, 1000), ret_rij=True)
         i = np.argmin(d[1])
         d = d[1][i]
         rib.bond_correct(ia, idx[1][i])
-        idx, d2 = rib.close(ia, dR=(.1, 1000), ret_rij=True)
+        idx, d2 = rib.close(ia, R=(.1, 1000), ret_rij=True)
         i = np.argmin(d2[1])
         d2 = d2[1][i]
         assert_false(d == d2)

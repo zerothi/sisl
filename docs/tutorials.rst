@@ -10,6 +10,8 @@ All examples are assumed to have this in the header::
    from sisl import *
 
 to enable `numpy`_ and sisl.
+
+Below is a list of the current tutorials::
    
 .. toctree::
    :maxdepth: 1

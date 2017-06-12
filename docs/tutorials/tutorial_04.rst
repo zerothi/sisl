@@ -11,17 +11,17 @@ used. First, recall that the number of supercells can be retrieved by::
    >>> print(geometry)
    {na: 1, no: 1, species:
     {Atoms(1):
-       (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, dR: -1.00000], 
+       (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000], 
     },
-    nsc: [1, 1, 1], dR: -1.0
+    nsc: [1, 1, 1], maxR: -1.0
    }
    >>> geometry.nsc # or geometry.sc.nsc
    array([1, 1, 1], dtype=int32)
 
 where ``nsc`` is the specific super-cell information. In the default
-case only the unit-cell is taken into consideration. However when using
-the `Geometry.close` or `Geometry.within` functions the atomic indices it
-becomes important how large the supercell is.
+case only the unit-cell is taken into consideration (`nsc: [1, 1, 1]`). However when using
+the `Geometry.close` or `Geometry.within` functions one may retrieve neighbouring atoms
+depending on the size of the supercell.
 
 Specifying the number of super-cells may be done when creating the geometry,
 or after it has been created::
@@ -35,7 +35,9 @@ or after it has been created::
 
 The final geometry enables intrinsic routines to interact with the 2 closest neighbouring cells
 along the first lattice vector (`1 + 2 == 3`), and the 4 closest neighbouring cells
-along the third lattice vector (`1 + 2 + 2 == 5`).
+along the third lattice vector (`1 + 2 + 2 == 5`). Note that the number of neighbouring supercells
+is *always* an uneven number because if it connects in the positive direction it also connects
+in the negative, hence the primary unit-cell plus 2 per neighbouring cell.
 
 Example -- square
 ~~~~~~~~~~~~~~~~~

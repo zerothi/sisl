@@ -114,7 +114,7 @@ class TestHamiltonian(object):
     def test_set4(self):
         for ia, io in self.H:
             # Find atoms close to 'ia'
-            idx = self.H.geom.close(ia, dR=(0.1, 1.5))
+            idx = self.H.geom.close(ia, R=(0.1, 1.5))
             self.H[io, idx[0]] = 1.
             self.H[io, idx[1]] = 0.1
         assert_true(self.H.H[0, 0] == 1.)
@@ -381,14 +381,14 @@ class TestHamiltonian(object):
     def test_cut1(self):
         # Test of eigenvalues using a cut
         # Hamiltonian
-        dR, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1., 0.1]
 
         # Create reference
         Hg = Hamiltonian(self.g)
-        Hg.construct([dR, param])
+        Hg.construct([R, param])
         g = self.g.tile(2, 0).tile(2, 1)
         H = Hamiltonian(g)
-        H.construct([dR, param])
+        H.construct([R, param])
         # Create cut Hamiltonian
         Hc = H.cut(2, 1).cut(2, 0)
         eigc = Hc.eigh()
@@ -399,15 +399,15 @@ class TestHamiltonian(object):
     def test_cut2(self):
         # Test of eigenvalues using a cut
         # Hamiltonian
-        dR, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
 
         # Create reference
         Hg = Hamiltonian(self.g, orthogonal=False)
-        Hg.construct([dR, param])
+        Hg.construct([R, param])
 
         g = self.g.tile(2, 0).tile(2, 1)
         H = Hamiltonian(g, orthogonal=False)
-        H.construct([dR, param])
+        H.construct([R, param])
         # Create cut Hamiltonian
         Hc = H.cut(2, 1).cut(2, 0)
         eigc = Hc.eigh()
@@ -417,10 +417,10 @@ class TestHamiltonian(object):
 
     def test_eig1(self):
         # Test of eigenvalues
-        dR, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1., 0.1]
         g = self.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
-        H.construct((dR, param), eta=True)
+        H.construct((R, param), eta=True)
         H.eigh()
         H.eigsh(n=4)
         H.empty()
@@ -481,33 +481,33 @@ class TestHamiltonian(object):
 
     @attr('slow')
     def test_tile1(self):
-        dR, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1., 0.1]
 
         # Create reference
         Hg = Hamiltonian(self.g.tile(2, 0).tile(2, 1).tile(2, 2))
-        Hg.construct([dR, param])
+        Hg.construct([R, param])
         Hg.finalize()
         H = Hamiltonian(self.g)
-        H.construct([dR, param])
+        H.construct([R, param])
         H = H.tile(2, 0).tile(2, 1). tile(2, 2)
         assert_true(Hg.spsame(H))
 
     @attr('slow')
     def test_tile2(self):
-        dR, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1., 0.1]
 
         # Create reference
         Hg = Hamiltonian(self.g.tile(2, 0))
-        Hg.construct([dR, param])
+        Hg.construct([R, param])
         Hg.finalize()
         H = Hamiltonian(self.g)
-        H.construct([dR, param])
+        H.construct([R, param])
         H = H.tile(2, 0)
         assert_true(Hg.spsame(H))
 
     @attr('slow')
     def test_tile3(self):
-        dR, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
+        R, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
 
         # Create reference
         g = Geometry([[0] * 3], Atom('H', R=[4.]), sc=[1.] * 3)
@@ -517,37 +517,37 @@ class TestHamiltonian(object):
         G = g.tile(2, 0).tile(2, 1).tile(2, 2)
 
         HG = Hamiltonian(G.tile(2, 0).tile(2, 1).tile(2, 2))
-        HG.construct([dR, param])
+        HG.construct([R, param])
         HG.finalize()
         H = Hamiltonian(G)
-        H.construct([dR, param])
+        H.construct([R, param])
         H.finalize()
         H = H.tile(2, 0).tile(2, 1).tile(2, 2)
         assert_true(HG.spsame(H))
 
     @attr('slow')
     def test_repeat1(self):
-        dR, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1., 0.1]
 
         # Create reference
         Hg = Hamiltonian(self.g.repeat(2, 0))
-        Hg.construct([dR, param])
+        Hg.construct([R, param])
         Hg.finalize()
         H = Hamiltonian(self.g)
-        H.construct([dR, param])
+        H.construct([R, param])
         H = H.repeat(2, 0)
         assert_true(Hg.spsame(H))
 
     @attr('slow')
     def test_repeat2(self):
-        dR, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1., 0.1]
 
         # Create reference
         Hg = Hamiltonian(self.g.repeat(2, 0).repeat(2, 1).repeat(2, 2))
-        Hg.construct([dR, param])
+        Hg.construct([R, param])
         Hg.finalize()
         H = Hamiltonian(self.g)
-        H.construct([dR, param])
+        H.construct([R, param])
         H = H.repeat(2, 0).repeat(2, 1). repeat(2, 2)
         print(Hg)
         print(H)
@@ -555,7 +555,7 @@ class TestHamiltonian(object):
 
     @attr('slow')
     def test_repeat3(self):
-        dR, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
+        R, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
 
         # Create reference
         g = Geometry([[0] * 3], Atom('H', R=[4.]), sc=[1.] * 3)
@@ -565,27 +565,27 @@ class TestHamiltonian(object):
         G = g.repeat(2, 0).repeat(2, 1).repeat(2, 2)
 
         HG = Hamiltonian(G.repeat(2, 0).repeat(2, 1).repeat(2, 2))
-        HG.construct([dR, param])
+        HG.construct([R, param])
         HG.finalize()
         H = Hamiltonian(G)
-        H.construct([dR, param])
+        H.construct([R, param])
         H.finalize()
         H = H.repeat(2, 0).repeat(2, 1).repeat(2, 2)
         assert_true(HG.spsame(H))
 
     def test_sub1(self):
-        dR, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1., 0.1]
 
         # Create reference
         H = Hamiltonian(self.g)
-        H.construct([dR, param])
+        H.construct([R, param])
         H.finalize()
         # Tiling in this direction will not introduce
         # any new connections.
         # So tiling and removing is a no-op (but
         # increases vacuum in 3rd lattice vector)
         Hg = Hamiltonian(self.g.tile(2, 2))
-        Hg.construct([dR, param])
+        Hg.construct([R, param])
         Hg = Hg.sub(range(len(self.g)))
         Hg.finalize()
         assert_true(Hg.spsame(H))

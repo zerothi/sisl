@@ -58,8 +58,9 @@ class TestAtom(object):
         assert_true(Atom(Z=1, orbs=3).orbs == 3)
         assert_true(len(Atom(Z=1, orbs=3)) == 3)
         assert_true(Atom(Z=1, R=1.4).R == 1.4)
-        assert_true(Atom(Z=1, R=1.4).dR == 1.4)
+        assert_true(Atom(Z=1, R=1.4).maxR() == 1.4)
         assert_true(Atom(Z=1, R=[1.4, 1.8]).orbs == 2)
+        assert_true(Atom(Z=1, R=[1.4, 1.8]).maxR() == 1.8)
 
     def test7(self):
         assert_true(Atom(Z=1, orbs=3).radius() > 0.)
@@ -114,7 +115,7 @@ class TestAtoms(object):
     def test_create2(self):
         atom = Atoms(Atom(6, R=1.45), na=2)
         atom = Atoms(atom, na=4)
-        assert_true(atom[0].dR == 1.45)
+        assert_true(atom[0].maxR() == 1.45)
 
     def test_len(self):
         atom = Atoms([self.C, self.C3, self.Au])

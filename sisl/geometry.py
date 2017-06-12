@@ -71,7 +71,7 @@ class Geometry(SuperCellChild):
         geometry
     no: int
         total number of orbitals in the geometry
-    dR : float np.max([a.dR for a in self.atom])
+    maxR : float np.max([a.maxR for a in self.atom])
         maximum orbital range
 
     Parameters
@@ -124,7 +124,7 @@ class Geometry(SuperCellChild):
 
         # First create an initial guess for the supercell
         # It HAS to be VERY large to not interact
-        closest = self.close(0, dR=(0., 0.4, 5.))[2]
+        closest = self.close(0, R=(0., 0.4, 5.))[2]
         if len(closest) < 1:
             # We could not find any atoms very close,
             # hence we simply return and now it becomes
@@ -172,10 +172,9 @@ class Geometry(SuperCellChild):
     # Backwards compatability (do not use)
     atoms = atom
 
-    @property
-    def dR(self):
+    def maxR(self, all=False):
         """ Maximum orbital range of the atoms """
-        return np.amax(self.atom.dR)
+        return self.atom.maxR(all)
 
     @property
     def na(self):
@@ -321,7 +320,7 @@ class Geometry(SuperCellChild):
         """ Representation of the object """
         s = '{{na: {0}, no: {1}, species:\n '.format(self.na, self.no)
         s += repr(self.atom).replace('\n', '\n ')
-        return (s[:-2] + ',\n nsc: [{1}, {2}, {3}], dR: {0}\n}}\n'.format(self.dR, *self.nsc)).strip()
+        return (s[:-2] + ',\n nsc: [{1}, {2}, {3}], maxR: {0}\n}}\n'.format(self.maxR(), *self.nsc)).strip()
 
     def iter(self):
         """
@@ -397,8 +396,8 @@ class Geometry(SuperCellChild):
                     else:
                         yield ia, io + ia1
 
-    def iR(self, na=1000, iR=20, dR=None):
-        """ Return an integer number of maximum radii (`self.dR`) which holds approximately `na` atoms
+    def iR(self, na=1000, iR=20, R=None):
+        """ Return an integer number of maximum radii (`self.maxR()`) which holds approximately `na` atoms
 
         Parameters
         ----------
@@ -406,24 +405,24 @@ class Geometry(SuperCellChild):
            number of atoms within the radius
         iR : ``int``
            initial ``iR`` value, which the sphere is estitametd from
-        dR : ``float``
-           the value used for atomic range (defaults to ``self.dR``)
+        R : ``float``
+           the value used for atomic range (defaults to ``self.maxR()``)
         """
         ia = np.random.randint(len(self) - 1)
 
         # default block iterator
-        if dR is None:
-            dR = self.dR
+        if R is None:
+            R = self.maxR()
 
-        # Number of atoms in within 20 * dR
-        naiR = len(self.close(ia, dR=dR * iR))
+        # Number of atoms in within 20 * R
+        naiR = len(self.close(ia, R=R * iR))
 
         # Convert to na atoms spherical radii
-        iR = int(4 / 3 * np.pi * dR ** 3 / naiR * na)
+        iR = int(4 / 3 * np.pi * R ** 3 / naiR * na)
 
         return iR
 
-    def iter_block_rand(self, iR=10, dR=None, atom=None):
+    def iter_block_rand(self, iR=10, R=None, atom=None):
         """ Perform the *random* block-iteration by randomly selecting the next center of block """
 
         # We implement yields as we can then do nested iterators
@@ -440,10 +439,10 @@ class Geometry(SuperCellChild):
         # Figure out how many we need to loop on
         not_passed_N = np.sum(not_passed)
 
-        if dR is None:
-            dR = self.dR
+        if R is None:
+            R = self.maxR()
         # The boundaries (ensure complete overlap)
-        dR = np.array([iR - 0.975, iR + .025]) * dR
+        R = np.array([iR - 0.975, iR + .025]) * R
 
         where = np.where
         append = np.append
@@ -466,7 +465,7 @@ class Geometry(SuperCellChild):
             # we want to create the index based stuff on
 
             # get all elements within two radii
-            all_idx = self.close(idx, dR=dR)
+            all_idx = self.close(idx, R=R)
 
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0], uniq=True)
@@ -508,15 +507,15 @@ class Geometry(SuperCellChild):
         # Figure out how many we need to loop on
         not_passed_N = np.sum(not_passed)
 
-        dR = self.dR
+        R = self.maxR()
         if shape is None:
             # we default to the Cube shapes
-            dS = (Cube(dR * (iR - 1.975)),
-                  Cube(dR * (iR + 0.025)))
+            dS = (Cube(R * (iR - 1.975)),
+                  Cube(R * (iR + 0.025)))
         else:
             dS = tuple(shape)
             if len(dS) == 1:
-                dS += dS[0].expand(dR)
+                dS += dS[0].expand(R)
         if len(dS) != 2:
             raise ValueError('Number of Shapes *must* be one or two')
 
@@ -593,17 +592,17 @@ class Geometry(SuperCellChild):
             print(np.sum(not_passed), len(self))
             raise ValueError('Error on iterations. Not all atoms has been visited.')
 
-    def iter_block(self, iR=10, dR=None, atom=None, method='rand'):
+    def iter_block(self, iR=10, R=None, atom=None, method='rand'):
         """
         Returns an iterator for performance critical looping.
 
-        NOTE: This requires that dR has been set correctly as the maximum interaction range.
+        NOTE: This requires that R has been set correctly as the maximum interaction range.
 
         I.e. the loop would look like this:
 
         >>> for ias, idxs in Geometry.iter_block():
         >>>    for ia in ias:
-        >>>        idx_a = dev.close(ia, dR = dR, idx = idxs)
+        >>>        idx_a = dev.close(ia, R = R, idx = idxs)
 
         This iterator is intended for systems with more than 1000 atoms.
 
@@ -615,9 +614,9 @@ class Geometry(SuperCellChild):
         atom : ``array_like``
             enables only effectively looping a subset of the full geometry
         iR  : ``int`` (`10`)
-            the number of ``dR`` ranges taken into account when doing the iterator
-        dR  : ``float``, (`self.dR`)
-            enables overwriting the local dR quantity.
+            the number of ``R`` ranges taken into account when doing the iterator
+        R  : ``float``, (`self.R`)
+            enables overwriting the local R quantity.
         method : ``str`` (`'rand'`)
             select the method by which the block iteration is performed. 
             Possible values are:
@@ -630,19 +629,19 @@ class Geometry(SuperCellChild):
         """
         method = method.lower()
         if method == 'rand' or method == 'random':
-            for ias, idxs in self.iter_block_rand(iR, dR, atom):
+            for ias, idxs in self.iter_block_rand(iR, R, atom):
                 yield ias, idxs
         else:
-            if dR is None:
-                dR = self.dR
+            if R is None:
+                R = self.maxR()
 
             # Create shapes
             if method == 'sphere':
-                dS = (Sphere(dR * (iR - 0.975)),
-                      Sphere(dR * (iR + 0.025)))
+                dS = (Sphere(R * (iR - 0.975)),
+                      Sphere(R * (iR + 0.025)))
             elif method == 'cube':
-                dS = (Cube(dR * (2 * iR - 0.975)),
-                      Cube(dR * (2 * iR + 0.025)))
+                dS = (Cube(R * (2 * iR - 0.975)),
+                      Cube(R * (2 * iR + 0.025)))
 
             for ias, idxs in self.iter_block_shape(dS):
                 yield ias, idxs
@@ -1428,11 +1427,11 @@ class Geometry(SuperCellChild):
         in space, only returns so relative to a super-cell.
 
         This returns a set of atomic indices which are within a
-        sphere of radius ``dR``.
+        sphere of radius ``R``.
 
-        If dR is a tuple/list/array it will return the indices:
+        If R is a tuple/list/array it will return the indices:
         in the ranges:
-        >>> ( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )
+        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
         Parameters
         ----------
@@ -1572,8 +1571,7 @@ class Geometry(SuperCellChild):
             return ret
         return ret[0]
 
-    def close_sc(self, xyz_ia, isc=None,
-                 dR=None,
+    def close_sc(self, xyz_ia, isc=None, R=None,
                  idx=None, idx_xyz=None,
                  ret_xyz=False, ret_rij=False):
         """
@@ -1581,11 +1579,11 @@ class Geometry(SuperCellChild):
         in space, only returns so relative to a super-cell.
 
         This returns a set of atomic indices which are within a
-        sphere of radius ``dR``.
+        sphere of radius ``R``.
 
-        If dR is a tuple/list/array it will return the indices:
+        If R is a tuple/list/array it will return the indices:
         in the ranges:
-        >>> ( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )
+        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
         Parameters
         ----------
@@ -1595,13 +1593,13 @@ class Geometry(SuperCellChild):
             the atomic coordinate ``close_sc(self.xyz[xyz_ia,:])``.
         isc       : ``array_like``, (`[ 0, 0, 0]`)
             The super-cell which the coordinates are checked in.
-        dR        : ``float``, ``array_like`` (`None`)
+        R        : ``float``, ``array_like`` (`None`)
             The radii parameter to where the atomic connections are found.
-            If ``dR`` is an array it will return the indices:
+            If ``R`` is an array it will return the indices:
             in the ranges:
-               ``( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )``
+               ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``
             If a single float it will return:
-               ``x <= dR``
+               ``x <= R``
         idx       : ``array_like`` (`None`)
             List of atoms that will be considered. This can
             be used to only take out a certain atoms.
@@ -1620,13 +1618,13 @@ class Geometry(SuperCellChild):
         log_and = np.logical_and
         fabs = np.fabs
 
-        if dR is None:
-            dR = np.array([self.dR], np.float64)
-        elif not isndarray(dR):
-            dR = ensure_array(dR, np.float64)
+        if R is None:
+            R = np.array([self.maxR()], np.float64)
+        elif not isndarray(R):
+            R = ensure_array(R, np.float64)
 
         # Maximum distance queried
-        max_dR = dR[-1]
+        max_R = R[-1]
 
         # Convert to actual array
         if idx is not None:
@@ -1663,7 +1661,7 @@ class Geometry(SuperCellChild):
         # For smaller ones this will actually be a slower
         # method...
         # TODO should we abstract the methods dependent on size?
-        ix = log_and.reduce(fabs(dxa[:, :]) <= max_dR, axis=1)
+        ix = log_and.reduce(fabs(dxa[:, :]) <= max_R, axis=1)
 
         if idx is None:
             # This is because of the pre-check of the
@@ -1674,21 +1672,21 @@ class Geometry(SuperCellChild):
         dxa = dxa[ix, :]
 
         # Create default return
-        ret = [[np.empty([0], np.int32)] * len(dR)]
+        ret = [[np.empty([0], np.int32)] * len(R)]
         i = 0
         if ret_xyz:
             i += 1
             rc = i
-            ret.append([np.empty([0, 3], np.float64)] * len(dR))
+            ret.append([np.empty([0, 3], np.float64)] * len(R))
         if ret_rij:
             i += 1
             rc = i
-            ret.append([np.empty([0], np.float64)] * len(dR))
+            ret.append([np.empty([0], np.float64)] * len(R))
 
         if len(dxa) == 0:
             # Quick return if there are
             # no entries...
-            if len(dR) == 1:
+            if len(R) == 1:
                 if ret_xyz and ret_rij:
                     return [ret[0][0], ret[1][0], ret[2][0]]
                 elif ret_xyz or ret_rij:
@@ -1707,9 +1705,9 @@ class Geometry(SuperCellChild):
         # a sqrt of MANY values
         # After having reduced the dxa array, we may then
         # take the sqrt
-        max_dR = max_dR * max_dR
+        max_R = max_R * max_R
         xaR = dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2
-        ix = np.where(xaR <= max_dR)[0]
+        ix = np.where(xaR <= max_R)[0]
 
         # Reduce search space and correct distances
         d = xaR[ix] ** .5
@@ -1719,7 +1717,7 @@ class Geometry(SuperCellChild):
 
         # Check whether we only have one range to check.
         # If so, we need not reduce the index space
-        if len(dR) == 1:
+        if len(R) == 1:
             ret = [idx[ix]]
             if ret_xyz:
                 ret.append(xa)
@@ -1729,14 +1727,14 @@ class Geometry(SuperCellChild):
                 return ret
             return ret[0]
 
-        if np.any(np.diff(dR) < 0.):
+        if np.any(np.diff(R) < 0.):
             raise ValueError(('Proximity checks for several quantities '
-                              'at a time requires ascending dR values.'))
+                              'at a time requires ascending R values.'))
 
         # The more neigbours you wish to find the faster this becomes
         # We only do "one" heavy duty search,
         # then we immediately reduce search space to this subspace
-        tidx = where(d <= dR[0])[0]
+        tidx = where(d <= R[0])[0]
         ret = [[ensure_array(idx[ix[tidx]])]]
         i = 0
         if ret_xyz:
@@ -1747,12 +1745,12 @@ class Geometry(SuperCellChild):
             rd = i + 1
             i += 1
             ret.append([d[tidx]])
-        for i in range(1, len(dR)):
+        for i in range(1, len(R)):
             # Search in the sub-space
             # Notice that this sub-space reduction will never
             # allow the same indice to be in two ranges (due to
             # numerics)
-            tidx = where(log_and(dR[i - 1] < d, d <= dR[i]))[0]
+            tidx = where(log_and(R[i - 1] < d, d <= R[i]))[0]
             ret[0].append(ensure_array(idx[ix[tidx]]))
             if ret_xyz:
                 ret[rc].append(xa[tidx])
@@ -1798,7 +1796,7 @@ class Geometry(SuperCellChild):
             # We have a single atom
             # Get bond length in the closest direction
             # A bond-length HAS to be below 10
-            idx, c, d = self.close(ia, dR=(0.1, 10.), idx=algo,
+            idx, c, d = self.close(ia, R=(0.1, 10.), idx=algo,
                                    ret_xyz=True, ret_rij=True)
             i = np.argmin(d[1])
             # Convert to unitcell atom (and get the one atom)
@@ -1913,7 +1911,7 @@ class Geometry(SuperCellChild):
 
         return ret[0]
 
-    def close(self, xyz_ia, dR=None,
+    def close(self, xyz_ia, R=None,
             idx=None, idx_xyz=None,
             ret_xyz=False, ret_rij=False):
         """
@@ -1932,16 +1930,16 @@ class Geometry(SuperCellChild):
             Either a point in space or an index of an atom.
             If an index is passed it is the equivalent of passing
             the atomic coordinate `close_sc(self.xyz[xyz_ia,:])`.
-        dR      : (None), float/tuple of float
+        R      : (None), float/tuple of float
             The radii parameter to where the atomic connections are found.
-            If ``dR`` is an array it will return the indices:
+            If ``R`` is an array it will return the indices:
             in the ranges:
 
-            >>> ``( x <= dR[0] , dR[0] < x <= dR[1], dR[1] < x <= dR[2] )``
+            >>> ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``
 
             If a single float it will return:
 
-            >>> ``x <= dR``
+            >>> ``x <= R``
 
         idx     : (None), array_like
             List of indices for atoms that are to be considered
@@ -1954,31 +1952,31 @@ class Geometry(SuperCellChild):
             If true this method will return the distances from the ``xyz_ia``
             for each of the couplings.
         """
-        if dR is None:
-            dR = self.dR
-        dR = ensure_array(dR, np.float64)
+        if R is None:
+            R = self.maxR()
+        R = ensure_array(R, np.float64)
 
         # Get global calls
         # Is faster for many loops
         concat = np.concatenate
 
-        ret = [[np.empty([0], np.int32)] * len(dR)]
+        ret = [[np.empty([0], np.int32)] * len(R)]
         i = 0
         if ret_xyz:
             c = i + 1
             i += 1
-            ret.append([np.empty([0, 3], np.float64)] * len(dR))
+            ret.append([np.empty([0, 3], np.float64)] * len(R))
         if ret_rij:
             d = i + 1
             i += 1
-            ret.append([np.empty([0], np.float64)] * len(dR))
+            ret.append([np.empty([0], np.float64)] * len(R))
 
         ret_special = ret_xyz or ret_rij
 
         for s in range(self.n_s):
             na = self.na * s
             sret = self.close_sc(xyz_ia,
-                self.sc.sc_off[s, :], dR=dR,
+                self.sc.sc_off[s, :], R=R,
                 idx=idx, idx_xyz=idx_xyz,
                 ret_xyz=ret_xyz, ret_rij=ret_rij)
 
@@ -1988,7 +1986,7 @@ class Geometry(SuperCellChild):
                 sret = [sret]
 
             if isinstance(sret[0], list):
-                # we have a list of arrays (len(dR) > 1)
+                # we have a list of arrays (len(R) > 1)
                 for i, x in enumerate(sret[0]):
                     ret[0][i] = concat((ret[0][i], x + na), axis=0)
                     if ret_xyz:
@@ -1996,7 +1994,7 @@ class Geometry(SuperCellChild):
                     if ret_rij:
                         ret[d][i] = concat((ret[d][i], sret[d][i]), axis=0)
             elif len(sret[0]) > 0:
-                # We can add it to the list (len(dR) == 1)
+                # We can add it to the list (len(R) == 1)
                 # We add the atomic offset for the supercell index
                 ret[0][0] = concat((ret[0][0], sret[0] + na), axis=0)
                 if ret_xyz:
@@ -2004,7 +2002,7 @@ class Geometry(SuperCellChild):
                 if ret_rij:
                     ret[d][0] = concat((ret[d][0], sret[d]), axis=0)
 
-        if len(dR) == 1:
+        if len(R) == 1:
             if ret_xyz and ret_rij:
                 return [ret[0][0], ret[1][0], ret[2][0]]
             elif ret_xyz or ret_rij:
@@ -2184,8 +2182,8 @@ class Geometry(SuperCellChild):
         """
         rij = SparseCSR((self.na, self.na_s), nnzpr=20, dtype=dtype)
 
-        # Get dR
-        dR = (0.1, self.dR)
+        # Get R
+        R = (0.1, self.maxR())
         iR = self.iR(na_iR)
 
         # Do the loop
@@ -2198,7 +2196,7 @@ class Geometry(SuperCellChild):
 
             # Loop the atoms inside
             for ia in ias:
-                idx, r = self.close(ia, dR=dR, idx=idxs, idx_xyz=idxs_xyz, ret_rij=True)
+                idx, r = self.close(ia, R=R, idx=idxs, idx_xyz=idxs_xyz, ret_rij=True)
                 rij[ia, idx[1]] = r[1]
 
         return rij
@@ -2299,7 +2297,7 @@ class Geometry(SuperCellChild):
                     # Simple translation
                     tmp = np.amin(ns._geometry.xyz, axis=0)
                     # Find the smallest distance from the first atom
-                    _, d = ns._geometry.close(0, dR=(0.1, 20.), ret_rij=True)
+                    _, d = ns._geometry.close(0, R=(0.1, 20.), ret_rij=True)
                     d = np.amin(d[1]) / 2
                     ns._geometry = ns._geometry.translate(-tmp + np.array([d, d, d]))
                 elif value in ['mod']:

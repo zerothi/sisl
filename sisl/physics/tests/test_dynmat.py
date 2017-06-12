@@ -26,12 +26,11 @@ class TestHamiltonian(object):
         self.D = DynamicalMatrix(self.g)
 
         def func(D, ia, idxs, idxs_xyz):
-            idx = D.geom.close(ia, dR=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
+            idx = D.geom.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
             ia = ia * 3
 
             i0 = idx[0] * 3
             i1 = idx[1] * 3
-            print(ia, i0, i1)
             # on-site
             p = 1.
             D.D[ia, i0] = p
@@ -66,7 +65,6 @@ class TestHamiltonian(object):
         del self.D
 
     def test_objects(self):
-        print(self.D)
         assert_true(len(self.D.xyz) == 2)
         assert_true(self.g.no == len(self.D))
 
