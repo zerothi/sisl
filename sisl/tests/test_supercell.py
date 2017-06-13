@@ -71,11 +71,11 @@ class TestSuperCell(object):
     def test_add_vacuum1(self):
         sc = self.sc.copy()
         for i in range(3):
-            sc.add_vacuum(10, i)
+            s = sc.add_vacuum(10, i)
             ax = self.sc.cell[i, :]
             ax += ax / np.sum(ax ** 2) ** .5 * 10
-            print(ax, sc.cell[i, :])
-            assert_true(np.allclose(ax, sc.cell[i, :]))
+            print(ax, s.cell[i, :])
+            assert_true(np.allclose(ax, s.cell[i, :]))
 
     def test_rotation1(self):
         rot = self.sc.rotate(180, [0, 0, 1])
@@ -146,7 +146,7 @@ class TestSuperCell(object):
         assert_true(np.allclose(cut.cell[0, :] * 2, self.sc.cell[0, :]))
         assert_true(np.allclose(cut.cell[1, :], self.sc.cell[1, :]))
 
-    def test_creation(self):
+    def test_creation1(self):
         # full cell
         tmp1 = SuperCell([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         # diagonal cell
@@ -161,7 +161,11 @@ class TestSuperCell(object):
     def test_creation2(self):
         # full cell
         class P(SuperCellChild):
-            pass
+
+            def copy(self):
+                a = P()
+                a.set_supercell(self.sc)
+                return a
         tmp1 = P()
         tmp1.set_supercell([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         # diagonal cell
@@ -179,8 +183,8 @@ class TestSuperCell(object):
         assert_true(len(tmp1._fill_sc([0, 0, 0])) == 3)
         assert_true(tmp1.is_orthogonal())
         for i in range(3):
-            tmp2.add_vacuum(10, i)
-            assert_true(tmp1.cell[i, i] + 10 == tmp2.cell[i, i])
+            t2 = tmp2.add_vacuum(10, i)
+            assert_true(tmp1.cell[i, i] + 10 == t2.cell[i, i])
 
     def test_creation3(self):
         assert_raises(ValueError, self.sc.tocell, [3, 6])

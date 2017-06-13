@@ -244,11 +244,12 @@ class SuperCell(object):
         axis : int
            the lattice vector to add vacuum along
         """
-        d = self.cell[axis, :]
+        cell = np.copy(self.cell)
+        d = cell[axis, :]
         # normalize to get direction vector
         d = d / np.sum(d ** 2) ** .5
-        self.cell[axis, :] += d * vacuum
-        self._update_vol()
+        cell[axis, :] += d * vacuum
+        return self.__class__(cell, nsc=np.copy(self.nsc))
 
     def sc_index(self, sc_off):
         """ Returns the integer index in the sc_off list that corresponds to `sc_off`
@@ -518,7 +519,9 @@ class SuperCellChild(object):
         axis : int
            the lattice vector to add vacuum along
         """
-        self.sc.add_vacuum(vacuum, axis)
+        copy = self.copy()
+        copy.set_supercell(self.sc.add_vacuum(vacuum, axis))
+        return copy
 
     def _fill(self, non_filled, dtype=None):
         return self.sc._fill(non_filled, dtype)

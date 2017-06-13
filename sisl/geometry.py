@@ -213,7 +213,7 @@ class Geometry(SuperCellChild):
         return self.firsto[1:] - 1
 
     def __getitem__(self, atom):
-        """ Geometry coordinates (allows supercell indices)"""
+        """ Geometry coordinates (allows supercell indices) """
         if isinstance(atom, Integral):
             return self.axyz(atom)
 
@@ -228,7 +228,7 @@ class Geometry(SuperCellChild):
             return self.axyz()
 
         elif isinstance(atom, tuple):
-            return self[atom[0]][:, atom[1]]
+            return self[atom[0]][..., atom[1]]
 
         elif atom[0] is None:
             return self.axyz()[:, atom[1]]

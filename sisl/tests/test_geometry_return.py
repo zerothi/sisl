@@ -73,7 +73,6 @@ class TestGeometryReturn(object):
 
     def test_slice1(self):
         d = self.g[1]
-        print(d)
         assert_true(len(d) == 3)
         d = self.g[[1, 2]]
         assert_true(d.shape == (2, 3))
@@ -82,6 +81,14 @@ class TestGeometryReturn(object):
         d = self.g[2:4]
         assert_true(d.shape == (2, 3))
 
+        d = self.g[1, 2]
+        assert_true(d == 0.)
+        d = self.g[1, 1:3]
+        assert_true(d.shape == (2,))
+        d = self.g[1, :]
+        assert_true(d.shape == (3,))
+        d = self.g[2:4, :]
+        assert_true(d.shape == (2, 3))
         d = self.g[2:4, 1]
         assert_true(d.shape == (2,))
         d = self.g[2:4, 1:3]

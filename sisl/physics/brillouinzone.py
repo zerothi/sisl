@@ -153,7 +153,25 @@ class PathBZ(BrillouinZone):
             for j in range(self.divisions[i]):
                 yield self.points[i] + j * delta
 
-    def lineark(self):
+    def linearticks(self):
+        """ The tick-marks corresponding to the linear-k values """
+        n = len(self.points)
+        xtick = np.zeros(n, np.float64)
+
+        ii = 0
+        for i in range(n-1):
+            xtick[i] = ii
+            ii += self.divisions[i]
+
+        # Final tick-mark
+        xtick[n-1] = ii - 1
+
+        # Get label tick
+        label_tick = [a for a in 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:n]]
+
+        return xtick, label_tick
+
+    def lineark(self, ticks=False):
         """ A 1D array which corresponds to the delta-k values of the path
 
         This is meant for plotting
@@ -166,17 +184,26 @@ class PathBZ(BrillouinZone):
         >>> for i in range(len(Hamiltonian)):
         >>>     pyplot.plot(p.lineark(), eigs[:, i])
 
+        Parameters
+        ----------
+        ticks : bool
+           if `True` the ticks for the points are also returned
+
+           xticks, label_ticks, lk = PathBZ.lineark(True)
+
         """
 
         nk = len(self)
         # Calculate points
         k = [self(point) for point in self.points]
         dk = np.diff(k, axis=0)
+        xtick = np.zeros(len(k), np.float64)
         # Prepare output array
         dK = np.empty(nk, np.float64)
 
         ii, add = 0, 0.
         for i in range(len(dk)):
+            xtick[i] = ii
             n = self.divisions[i]
 
             # Calculate the delta along this segment
@@ -196,6 +223,13 @@ class PathBZ(BrillouinZone):
             # next point in the BZ
             add = dK[ii-1] + delta
 
+        # Final tick-mark
+        xtick[len(dk)] = ii - 1
+
+        # Get label tick
+        label_tick = [a for a in 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(k)]]
+        if ticks:
+            return xtick, label_tick, dK
         return dK
 
     def __len__(self):
