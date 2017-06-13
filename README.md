@@ -269,7 +269,7 @@ The sisl license is [LGPL][lgpl], please see the LICENSE file.
 Links to external and internal sites.
 -->
 [sisl@git]: https://github.com/zerothi/sisl
-[sisl-api]: http://zerothi.github.io/sisl/index.html
+[sisl-api]: http://sisl.readthedocs.io/en/latest
 [issue]: https://github.com/zerothi/sisl/issues
 [tbtrans]: https://launchpad.net/siesta
 [doi]: http://dx.doi.org/10.5281/zenodo.597181
