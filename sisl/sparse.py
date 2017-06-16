@@ -13,7 +13,11 @@ import numpy as np
 from numpy import where, insert, diff
 from numpy import array, asarray, empty, zeros, arange
 from numpy import intersect1d, setdiff1d
-from numpy import argsort, unique, in1d
+from numpy import argsort, unique
+try:
+    isin = np.isin
+except:
+    isin = np.in1d
 
 from scipy.sparse import isspmatrix
 from scipy.sparse import coo_matrix, isspmatrix_coo
@@ -651,7 +655,7 @@ class SparseCSR(object):
 
         # Now create the compressed data...
         index -= ptr[i]
-        keep = in1d(arange(ncol[i]), index, invert=True)
+        keep = isin(arange(ncol[i]), index, invert=True)
 
         # Update new count of the number of
         # non-zero elements
@@ -946,7 +950,7 @@ class SparseCSR(object):
                 a._D[in_a, :] *= b._D[bptr:bptr+bn, :]
 
                 # Now set everything *not* in b but in a, to zero
-                not_in_b = where(in1d(acol, bcol, invert=True))[0]
+                not_in_b = where(isin(acol, bcol, invert=True))[0]
                 a._D[aptr+not_in_b, :] = 0
 
         else:
@@ -1074,7 +1078,7 @@ class SparseCSR(object):
 
                 # Now set everything *not* in b but in a, to 1
                 #  float ** 0 == 1
-                not_in_b = where(in1d(acol, bcol, invert=True))[0]
+                not_in_b = where(isin(acol, bcol, invert=True))[0]
                 a._D[aptr+not_in_b, :] = 1
 
         else:

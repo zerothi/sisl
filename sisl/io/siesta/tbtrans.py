@@ -5,6 +5,10 @@ from __future__ import print_function, division
 
 import warnings
 import numpy as np
+try:
+    npisin = np.isin
+except:
+    npisin = np.in1d
 import itertools
 
 # The sparse matrix for the orbital/bond currents
@@ -302,7 +306,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         orbital : ``array_like``, ``int``
            orbital indices (0-based)
         """
-        return np.where(np.in1d(self.pivot, orbital))[0]
+        return np.where(npisin(self.pivot, orbital))[0]
 
     @property
     def lasto(self):
@@ -601,7 +605,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 all_col.extend(range(i * geom.no, (i+1) * geom.no))
             all_col = np.array(all_col, np.int32)
             # Create a logical array for sub-indexing
-            all_col = np.in1d(col, all_col)
+            all_col = npisin(col, all_col)
             col = col[all_col]
 
             # recreate row-pointer (we have to fix it)
@@ -1080,7 +1084,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 # Add one to make the c-index equivalent to the f-index
                 orbs = np.concatenate(orbs).flatten()
-                pivot = np.where(np.in1d(ns._tbt.pivot, orbs))[0]
+                pivot = np.where(npisin(ns._tbt.pivot, orbs))[0]
 
                 if len(orbs) != len(pivot):
                     print('Device atoms:')

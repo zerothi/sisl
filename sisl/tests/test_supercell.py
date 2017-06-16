@@ -8,6 +8,7 @@ import numpy as np
 import scipy.linalg as sli
 
 from sisl import SuperCell, SuperCellChild
+from sisl.geom import graphene
 
 
 class TestSuperCell(object):
@@ -219,3 +220,33 @@ class TestSuperCell(object):
 
     def test_orthogonal(self):
         assert_false(self.sc.is_orthogonal())
+
+    def test_fit1(self):
+        g = graphene()
+        gbig = g.repeat(40, 0).repeat(40, 1)
+        gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
+        sc = g.sc.fit(gbig)
+        assert_true(np.allclose(sc.cell, gbig.cell))
+
+    def test_fit2(self):
+        g = graphene(orthogonal=True)
+        gbig = g.repeat(40, 0).repeat(40, 1)
+        gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
+        sc = g.sc.fit(gbig)
+        assert_true(np.allclose(sc.cell, gbig.cell))
+
+    def test_fit3(self):
+        g = graphene(orthogonal=True)
+        gbig = g.repeat(40, 0).repeat(40, 1)
+        gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
+        sc = g.sc.fit(gbig, axis=0)
+        assert_true(np.allclose(sc.cell[0, :], gbig.cell[0, :]))
+        assert_true(np.allclose(sc.cell[1:, :], g.cell[1:, :]))
+
+    def test_fit4(self):
+        g = graphene(orthogonal=True)
+        gbig = g.repeat(40, 0).repeat(40, 1)
+        gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
+        sc = g.sc.fit(gbig, axis=[0, 1])
+        assert_true(np.allclose(sc.cell[0:2, :], gbig.cell[0:2, :]))
+        assert_true(np.allclose(sc.cell[2, :], g.cell[2, :]))

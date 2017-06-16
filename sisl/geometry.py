@@ -522,8 +522,8 @@ class Geometry(SuperCellChild):
         # Now create the Grid
         # convert the radius to a square Grid
         # We do this by examining the x, y, z coordinates
-        xyz_m = np.min(self.xyz, axis=0)
-        xyz_M = np.max(self.xyz, axis=0)
+        xyz_m = np.amin(self.xyz, axis=0)
+        xyz_M = np.amax(self.xyz, axis=0)
         dxyz = xyz_M - xyz_m
 
         # Retrieve the internal diameter

@@ -5,6 +5,7 @@ This class is the basis of many different objects.
 from __future__ import print_function, division
 
 import numpy as np
+from numbers import Integral
 
 from .quaternion import Quaternion
 
@@ -148,6 +149,73 @@ class SuperCell(object):
         Returns a copy of the object.
         """
         return self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc))
+
+    def fit(self, xyz, axis=None, tol=0.05):
+        """ Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
+
+        The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
+        corresponding to the current supercell vectors.
+
+        >>> numpy.linalg.solve(self.cell.T, xyz.T)
+
+        Parameters
+        ----------
+        xyz : array_like `shape(*, 3)`
+           the coordinates that we will wish to encompass and analyze.
+        axis : None or array_like
+           if `None` equivalent to `[0, 1, 2]`, else only the cell-vectors
+           along the provided axis will be used
+        tol : float
+           tolerance (in Angstrom) of the positions. I.e. we neglect coordinates
+           which are not within the radius of this magnitude
+        """
+        # In case the passed coordinates are from a Geometry
+        from .geometry import Geometry
+
+        if isinstance(xyz, Geometry):
+            xyz = xyz.xyz[:, :]
+
+        cell = np.copy(self.cell[:, :])
+
+        # Solve to get the divisions in the current cell
+        x = np.linalg.solve(cell.T, xyz.T).T
+
+        # Now we should figure out the correct repetitions
+        # by rounding to integer positions of the cell vectors
+        ix = np.rint(x)
+
+        # Figure out the displacements from integers
+        # Then reduce search space by removing those coordinates
+        # that are more than the tolerance.
+        dist = np.sqrt(np.sum(np.dot(cell.T, (x - ix).T) ** 2, axis=0))
+        idx = np.where(dist <= tol)[0]
+        if len(idx) < 0:
+            raise ValueError(('Could not fit the cell parameters to the coordinates '
+                              'due to insufficient accuracy (try increase the tolerance)'))
+
+        # Reduce problem to allowed values below the tolerance
+        x = x[idx, :]
+        ix = ix[idx, :]
+
+        # Reduce to total repetitions
+        ireps = np.amax(ix, axis=0) - np.amin(ix, axis=0) + 1
+
+        # Only repeat the axis requested
+        if isinstance(axis, Integral):
+            axis = [axis]
+
+        # Reduce the non-set axis
+        if not axis is None:
+            for ax in [0, 1, 2]:
+                if ax not in axis:
+                    ireps[ax] = 1
+
+        # Enlarge the cell vectors
+        cell[0, :] *= ireps[0]
+        cell[1, :] *= ireps[1]
+        cell[2, :] *= ireps[2]
+
+        return self.__class__(cell, nsc=self.nsc)
 
     def swapaxes(self, a, b):
         """ Returns `SuperCell` with swapped axis
