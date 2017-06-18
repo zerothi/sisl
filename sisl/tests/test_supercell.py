@@ -250,3 +250,11 @@ class TestSuperCell(object):
         sc = g.sc.fit(gbig, axis=[0, 1])
         assert_true(np.allclose(sc.cell[0:2, :], gbig.cell[0:2, :]))
         assert_true(np.allclose(sc.cell[2, :], g.cell[2, :]))
+
+    def test_parallel1(self):
+        g = graphene(orthogonal=True)
+        gbig = g.repeat(40, 0).repeat(40, 1)
+        assert_true(g.sc.parallel(gbig.sc))
+        assert_true(gbig.sc.parallel(g.sc))
+        g = g.rotatea(90)
+        assert_false(g.sc.parallel(gbig.sc))

@@ -465,6 +465,16 @@ class SuperCell(object):
         i_s = np.dot(cell[1, :], cell[2, :]) < 0.001 and i_s
         return i_s
 
+    def parallel(self, other):
+        """ Returns true if the cell vectors are parallel to `other` """
+        # Convert to unit-vector cell
+        for i in [0, 1, 2]:
+            a = self.cell[i, :] / np.sum(self.cell[i, :]**2) ** .5
+            b = other.cell[i, :] / np.sum(other.cell[i, :]**2) ** .5
+            if abs(np.dot(a, b) - 1) > 0.001:
+                return False
+        return True
+
     @staticmethod
     def read(sile, *args, **kwargs):
         """ Reads SuperCell from the `Sile` using `Sile.read_supercell`
