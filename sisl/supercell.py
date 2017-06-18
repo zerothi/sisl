@@ -7,6 +7,7 @@ from __future__ import print_function, division
 import numpy as np
 from numbers import Integral
 
+from ._help import ensure_array
 from .quaternion import Quaternion
 
 __all__ = ['SuperCell', 'SuperCellChild']
@@ -465,10 +466,19 @@ class SuperCell(object):
         i_s = np.dot(cell[1, :], cell[2, :]) < 0.001 and i_s
         return i_s
 
-    def parallel(self, other):
-        """ Returns true if the cell vectors are parallel to `other` """
+    def parallel(self, other, axis=(0, 1, 2)):
+        """ Returns true if the cell vectors are parallel to `other` 
+
+        Parameters
+        ----------
+        other : SuperCell
+           the other object to check whether the axis are parallel
+        axis : int or array_like
+           only check the specified axis (default to all)
+        """
+        axis = ensure_array(axis)
         # Convert to unit-vector cell
-        for i in [0, 1, 2]:
+        for i in axis:
             a = self.cell[i, :] / np.sum(self.cell[i, :]**2) ** .5
             b = other.cell[i, :] / np.sum(other.cell[i, :]**2) ** .5
             if abs(np.dot(a, b) - 1) > 0.001:
