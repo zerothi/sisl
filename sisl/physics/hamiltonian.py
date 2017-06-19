@@ -119,10 +119,10 @@ class Hamiltonian(object):
             self.Sk = self._Sk_non_collinear
             self.S_idx = 4
         elif spin == 8:
-            #self.Hk = self._Hk_spin_orbit
-            #self.Sk = self._Sk_spin_orbit
+            self.Hk = self._Hk_spin_orbit
+            # The overlap is the same
+            self.Sk = self._Sk_non_collinear
             self.S_idx = 8
-            raise ValueError("Currently the Hamiltonian has only been implemented with up to non-collinear spin.")
 
         if orthogonal:
             # There is no overlap matrix
@@ -140,6 +140,44 @@ class Hamiltonian(object):
 
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
+
+    # We define this function _ONLY_ for the docstring
+    # it provides.
+    def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', *args, **kwargs):
+        """ Setup the Hamiltonian for a given k-point
+
+        Creation and return of the Hamiltonian for a given k-point (default to Gamma).
+
+        Note
+        ----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+          H(k) = H_{ij} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+          H(k) = H_{ij} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals :math:`i` and :math:`j`.
+        Currently the second gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the Hamiltonian at
+        dtype : numpy.dtype, 'numpy.complex128`
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+        gauge : str, 'R`
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        """
+        pass
 
     def empty(self, keep=False):
         """ See `SparseCSR.empty` for details """
@@ -179,7 +217,9 @@ class Hamiltonian(object):
 
     def __len__(self):
         """ Returns number of rows in the Hamiltonian """
-        return self.geom.no
+        if self.spin > 2:
+            return self.no * 2
+        return self.no
 
     def __repr__(self):
         """ Representation of the tight-binding model """
@@ -533,7 +573,7 @@ class Hamiltonian(object):
             raise NotImplementedError("Requesting sub-Hamiltonian has not been implemented yet")
         return self._data.tocsr(index)
 
-    def _Hk_unpolarized(self, k=(0, 0, 0), dtype=None):
+    def _Hk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge='R'):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
@@ -542,10 +582,12 @@ class Hamiltonian(object):
            k-point 
         dtype : ``numpy.dtype``
            default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
         """
-        return self._Hk_polarized(k, dtype=dtype)
+        return self._Hk_polarized(k, dtype=dtype, gauge=gauge)
 
-    def _Hk_polarized(self, k=(0, 0, 0), spin=0, dtype=None):
+    def _Hk_polarized(self, k=(0, 0, 0), spin=0, dtype=None, gauge='R'):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k` for a polarized calculation
 
         Parameters
@@ -556,12 +598,14 @@ class Hamiltonian(object):
            the spin-index of the Hamiltonian
         dtype : ``numpy.dtype``
            default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
         """
         if dtype is None:
             dtype = np.complex128
 
-        exp = np.exp
-        dot = np.dot
+        if gauge != 'R':
+            raise ValueError('Only the cell vector gauge has been implemented')
 
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
@@ -569,6 +613,9 @@ class Hamiltonian(object):
         if not np.allclose(k, 0.):
             if np.dtype(dtype).kind != 'c':
                 raise ValueError("Hamiltonian setup at k different from Gamma requires a complex matrix")
+
+        exp = np.exp
+        dot = np.dot
 
         # Setup the Hamiltonian for this k-point
         Hf = self.tocsr(spin)
@@ -587,7 +634,7 @@ class Hamiltonian(object):
 
         return H
 
-    def _Hk_non_collinear(self, k=(0, 0, 0), dtype=None):
+    def _Hk_non_collinear(self, k=(0, 0, 0), dtype=None, gauge='R'):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k` for a non-collinear
         Hamiltonian.
 
@@ -597,12 +644,17 @@ class Hamiltonian(object):
            k-point 
         dtype : ``numpy.dtype``
            default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
         """
         if dtype is None:
             dtype = np.complex128
 
         if np.dtype(dtype).kind != 'c':
             raise ValueError("Non-collinear Hamiltonian setup requires a complex matrix")
+
+        if gauge != 'R':
+            raise ValueError('Only the cell vector gauge has been implemented')
 
         exp = np.exp
         dot = np.dot
@@ -622,31 +674,103 @@ class Hamiltonian(object):
         for si in range(self.sc.n_s):
             isc = self.sc_off[si, :]
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
+            sl = slice(si*no, (si+1) * no, None)
 
             # diagonal elements
-            Hf1 = self.tocsr(0)[:, si*no:(si+1)*no] * phase
+            Hf1 = self.tocsr(0)[:, sl] * phase
             for i, j, h in ispmatrixd(Hf1):
                 H[i*2, j*2] += h
-            Hf1 = self.tocsr(1)[:, si*no:(si+1)*no] * phase
+            Hf1 = self.tocsr(1)[:, sl] * phase
             for i, j, h in ispmatrixd(Hf1):
                 H[1+i*2, 1+j*2] += h
 
             # off-diagonal elements
-            Hf1 = self.tocsr(2)[:, si*no:(si+1)*no]
-            Hf2 = self.tocsr(3)[:, si*no:(si+1)*no]
-            # We expect Hf1 and Hf2 to be aligned equivalently!
-            # TODO CHECK
+            Hf1 = self.tocsr(2)[:, sl]
+            Hf2 = self.tocsr(3)[:, sl]
             for i, j, hr in ispmatrixd(Hf1):
                 # get value for the imaginary part
                 hi = Hf2[i, j]
                 H[i*2, 1+j*2] += (hr - 1j * hi) * phase
                 H[1+i*2, j*2] += (hr + 1j * hi) * phase
 
+            del Hf2
+        del Hf1
+
+        return H
+
+    def _Hk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge='R'):
+        """ The Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k` for a spin-orbit Hamiltonian.
+
+        Parameters
+        ----------
+        k: ``array_like``, `[0,0,0]`
+           k-point 
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
+        """
+        if dtype is None:
+            dtype = np.complex128
+
+        if np.dtype(dtype).kind != 'c':
+            raise ValueError("Spin orbit Hamiltonian setup requires a complex matrix")
+
+        if gauge != 'R':
+            raise ValueError('Only the cell vector gauge has been implemented')
+
+        exp = np.exp
+        dot = np.dot
+
+        k = np.asarray(k, np.float64)
+        k.shape = (-1,)
+
+        no = self.no * 2
+        s = (no, no)
+        H = csr_matrix(s, dtype=dtype)
+
+        # get back-dimension of the intrinsic sparse matrix
+        no = self.no
+
+        # Get the reciprocal lattice vectors dotted with k
+        kr = dot(self.rcell, k)
+        for si in range(self.sc.n_s):
+            isc = self.sc_off[si, :]
+            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
+            sl = slice(si*no, (si+1) * no, None)
+
+            # diagonal elements
+            Hf1 = self.tocsr(0)[:, sl] * phase
+            Hf2 = self.tocsr(4)[:, sl] * phase
+            for i, j, hr in ispmatrixd(Hf1):
+                hi = Hf2[i, j]
+                H[i*2, j*2] += hr + 1j * hi
+            Hf1 = self.tocsr(1)[:, sl] * phase
+            Hf2 = self.tocsr(5)[:, sl] * phase
+            for i, j, hr in ispmatrixd(Hf1):
+                H[1+i*2, 1+j*2] += hr + 1j * hi
+
+            # upper off-diagonal elements
+            Hf1 = self.tocsr(2)[:, sl] * phase
+            Hf2 = self.tocsr(3)[:, sl] * phase
+            for i, j, hr in ispmatrixd(Hf1):
+                # get value for the imaginary part
+                hi = Hf2[i, j]
+                H[i*2, 1+j*2] += hr - 1j * hi
+
+            # lower off-diagonal elements
+            Hf1 = self.tocsr(6)[:, sl] * phase
+            Hf2 = self.tocsr(7)[:, sl] * phase
+            for i, j, hr in ispmatrixd(Hf1):
+                # get value for the imaginary part
+                hi = Hf2[i, j]
+                H[1+i*2, j*2] += hr + 1j * hi
+
         del Hf1, Hf2
 
         return H
 
-    def _Sk(self, k=(0, 0, 0), dtype=None):
+    def _Sk(self, k=(0, 0, 0), dtype=None, gauge='R'):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
@@ -655,11 +779,13 @@ class Hamiltonian(object):
            k-point 
         dtype : ``numpy.dtype``
            default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
         """
         # we forward it to Hk_polarized (same thing for S)
-        return self._Hk_polarized(k, spin=self.S_idx, dtype=dtype)
+        return self._Hk_polarized(k, spin=self.S_idx, dtype=dtype, gauge=gauge)
 
-    def _Sk_non_collinear(self, k=(0, 0, 0), dtype=None):
+    def _Sk_non_collinear(self, k=(0, 0, 0), dtype=None, gauge='R'):
         """ Return the Hamiltonian in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
@@ -668,6 +794,8 @@ class Hamiltonian(object):
            k-point 
         dtype : ``numpy.dtype``
            default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
         """
         if dtype is None:
             dtype = np.complex128
@@ -675,6 +803,9 @@ class Hamiltonian(object):
         if not np.allclose(k, 0.):
             if np.dtype(dtype).kind != 'c':
                 raise ValueError("Hamiltonian setup at k different from Gamma requires a complex matrix")
+
+        if gauge != 'R':
+            raise ValueError('Only the cell vector gauge has been implemented')
 
         exp = np.exp
         dot = np.dot
@@ -708,10 +839,9 @@ class Hamiltonian(object):
         return S
 
     def eigh(self, k=(0, 0, 0),
-            atoms=None, eigvals_only=True,
-            overwrite_a=True, overwrite_b=True,
-            *args,
-            **kwargs):
+             atoms=None, gauge='R', eigvals_only=True,
+             overwrite_a=True, overwrite_b=True,
+             *args, **kwargs):
         """ Returns the eigenvalues of the Hamiltonian
 
         Setup the Hamiltonian and overlap matrix with respect to
@@ -726,17 +856,18 @@ class Hamiltonian(object):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), len(self)], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigh(k_, atoms=atoms, eigvals_only=eigvals_only,
+                eig[i, :] = self.eigh(k_, atoms=atoms, gauge=gauge,
+                                      eigvals_only=eigvals_only,
                                       overwrite_a=overwrite_a, overwrite_b=overwrite_b,
                                       *args, **kwargs)
             return eig
 
         if self.spin == 2:
-            H = self.Hk(k=k, spin=kwargs.pop('spin', 0))
+            H = self.Hk(k=k, spin=kwargs.pop('spin', 0), gauge=gauge)
         else:
-            H = self.Hk(k=k)
+            H = self.Hk(k=k, gauge=gauge)
         if not self.orthogonal:
-            S = self.Sk(k=k)
+            S = self.Sk(k=k, gauge=gauge)
         # Reduce sparsity pattern
         if not atoms is None:
             orbs = self.a2o(atoms)
@@ -759,9 +890,8 @@ class Hamiltonian(object):
             **kwargs)
 
     def eigsh(self, k=(0, 0, 0), n=10,
-            atoms=None, eigvals_only=True,
-            *args,
-            **kwargs):
+              atoms=None, gauge='R', eigvals_only=True,
+              *args, **kwargs):
         """ Returns a subset of eigenvalues of the Hamiltonian (default 10)
 
         Setup the Hamiltonian and overlap matrix with respect to
@@ -777,7 +907,8 @@ class Hamiltonian(object):
             eig = np.empty([len(k), n], np.float64)
             for i, k_ in enumerate(k):
                 eig[i, :] = self.eigsh(k_, n=n,
-                                       atoms=atoms, eigvals_only=eigvals_only,
+                                       atoms=atoms, gauge=gauge,
+                                       eigvals_only=eigvals_only,
                                        *args, **kwargs)
             return eig
 
@@ -785,9 +916,9 @@ class Hamiltonian(object):
         kwargs.update({'which': kwargs.get('which', 'SM')})
 
         if self.spin == 2:
-            H = self.Hk(k=k, spin=kwargs.pop('spin', 0))
+            H = self.Hk(k=k, spin=kwargs.pop('spin', 0), gauge=gauge)
         else:
-            H = self.Hk(k=k)
+            H = self.Hk(k=k, gauge=gauge)
         if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
 
@@ -1266,7 +1397,7 @@ class Hamiltonian(object):
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads Hamiltonian from `Sile` using `read_H`.
+        """ Reads Hamiltonian from `Sile` using `read_hamiltonian`.
 
         Parameters
         ----------

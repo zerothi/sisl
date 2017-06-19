@@ -115,7 +115,7 @@ class ncSileSiesta(SileCDFSIESTA):
         ham._data.ncol = ncol
         ham._data.ptr = ptr
         ham._data.col = col
-        ham._nnz = len(col)
+        ham._data._nnz = len(col)
 
         # Create new container
         H = np.array(sp.variables['H'][ispin, :],

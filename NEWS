@@ -7,6 +7,11 @@
 
   now works in all cases.
 
+- Spin-orbit H(k) has been enabled (un-tested, just like non-colinear)
+
+- Fixed reading the <>.nc file from SIESTA, the non-zero elements count was
+  wrong.
+
 0.8.4
 =====
 
