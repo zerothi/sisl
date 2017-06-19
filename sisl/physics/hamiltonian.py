@@ -120,7 +120,7 @@ class Hamiltonian(object):
             self.S_idx = 4
         elif spin == 8:
             self.Hk = self._Hk_spin_orbit
-            # The overlap is the same
+            # The overlap is the same as non-collinear
             self.Sk = self._Sk_non_collinear
             self.S_idx = 8
 
@@ -620,14 +620,16 @@ class Hamiltonian(object):
         # Setup the Hamiltonian for this k-point
         Hf = self.tocsr(spin)
 
+        # number of orbitals
         no = self.no
-        s = (no, no)
-        H = csr_matrix(s, dtype=dtype)
+
+        H = csr_matrix((no, no), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
         for si, isc in self.sc:
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
+
             H += Hf[:, si * no:(si + 1) * no] * phase
 
         del Hf
@@ -662,39 +664,29 @@ class Hamiltonian(object):
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
 
-        no = self.no * 2
-        s = (no, no)
-        H = csr_matrix(s, dtype=dtype)
-
-        # get back-dimension of the intrinsic sparse matrix
+        # number of orbitals
         no = self.no
+
+        # sparse matrix dimension (2 * self.no)
+        H = csr_matrix((len(self), len(self)), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
-        for si in range(self.sc.n_s):
-            isc = self.sc_off[si, :]
+        for si, isc in self.sc:
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
             sl = slice(si*no, (si+1) * no, None)
 
             # diagonal elements
-            Hf1 = self.tocsr(0)[:, sl] * phase
-            for i, j, h in ispmatrixd(Hf1):
-                H[i*2, j*2] += h
-            Hf1 = self.tocsr(1)[:, sl] * phase
-            for i, j, h in ispmatrixd(Hf1):
-                H[1+i*2, 1+j*2] += h
+            H[::2, ::2] += self.tocsr(0)[:, sl] * phase
+            H[1::2, 1::2] += self.tocsr(1)[:, sl] * phase
 
             # off-diagonal elements
-            Hf1 = self.tocsr(2)[:, sl]
-            Hf2 = self.tocsr(3)[:, sl]
-            for i, j, hr in ispmatrixd(Hf1):
-                # get value for the imaginary part
-                hi = Hf2[i, j]
-                H[i*2, 1+j*2] += (hr - 1j * hi) * phase
-                H[1+i*2, j*2] += (hr + 1j * hi) * phase
+            H1 = self.tocsr(2)[:, sl]
+            H2 = self.tocsr(3)[:, sl]
+            H[::2, 1::2] += (H1 - 1j * H2) * phase
+            H[1::2, ::2] += (H1 + 1j * H2) * phase
 
-            del Hf2
-        del Hf1
+            del H1, H2
 
         return H
 
@@ -725,48 +717,31 @@ class Hamiltonian(object):
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
 
-        no = self.no * 2
-        s = (no, no)
-        H = csr_matrix(s, dtype=dtype)
-
-        # get back-dimension of the intrinsic sparse matrix
+        # number of orbitals
         no = self.no
+
+        # sparse matrix dimension (2 * self.no)
+        H = csr_matrix((len(self), len(self)), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
-        for si in range(self.sc.n_s):
-            isc = self.sc_off[si, :]
+        for si, isc in self.sc:
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
             sl = slice(si*no, (si+1) * no, None)
 
             # diagonal elements
-            Hf1 = self.tocsr(0)[:, sl] * phase
-            Hf2 = self.tocsr(4)[:, sl] * phase
-            for i, j, hr in ispmatrixd(Hf1):
-                hi = Hf2[i, j]
-                H[i*2, j*2] += hr + 1j * hi
-            Hf1 = self.tocsr(1)[:, sl] * phase
-            Hf2 = self.tocsr(5)[:, sl] * phase
-            for i, j, hr in ispmatrixd(Hf1):
-                H[1+i*2, 1+j*2] += hr + 1j * hi
+            H[::2, ::2] += (self.tocsr(0)[:, sl] +
+                            1j * self.tocsr(4)[:, sl]) * phase
+            H[1::2, 1::2] += (self.tocsr(1)[:, sl] +
+                              1j * self.tocsr(5)[:, sl]) * phase
 
             # upper off-diagonal elements
-            Hf1 = self.tocsr(2)[:, sl] * phase
-            Hf2 = self.tocsr(3)[:, sl] * phase
-            for i, j, hr in ispmatrixd(Hf1):
-                # get value for the imaginary part
-                hi = Hf2[i, j]
-                H[i*2, 1+j*2] += hr - 1j * hi
+            H[::2, 1::2] += (self.tocsr(2)[:, sl] -
+                             1j * self.tocsr(3)[:, sl]) * phase
 
             # lower off-diagonal elements
-            Hf1 = self.tocsr(6)[:, sl] * phase
-            Hf2 = self.tocsr(7)[:, sl] * phase
-            for i, j, hr in ispmatrixd(Hf1):
-                # get value for the imaginary part
-                hi = Hf2[i, j]
-                H[1+i*2, j*2] += hr + 1j * hi
-
-        del Hf1, Hf2
+            H[1::2, ::2] += (self.tocsr(6)[:, sl] +
+                             1j * self.tocsr(7)[:, sl]) * phase
 
         return H
 
@@ -816,25 +791,22 @@ class Hamiltonian(object):
         # Get the overlap matrix
         Sf = self.tocsr(self.S_idx)
 
-        no = self.no * 2
-        s = (no, no)
-        S = csr_matrix(s, dtype=dtype)
-
-        # Get back dimensionality of the intrinsic orbitals
+        # number of orbitals
         no = self.no
+
+        S = csr_matrix((len(self), len(self)), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
-        for si in range(self.sc.n_s):
-            isc = self.sc_off[si, :]
+        for si, isc in self.sc:
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
-            # Setup the overlap for this k-point
-            sf = Sf[:, si*no:(si+1)*no]
-            for i, j, s in ispmatrixd(sf):
-                S[i*2,   j*2] += s
-                S[1+i*2, 1+j*2] += s
 
-        del Sf
+            sf = Sf[:, si*no:(si+1)*no] * phase
+
+            S[::2, ::2] += sf
+            S[1::2, 1::2] += sf
+
+            del sf
 
         return S
 
