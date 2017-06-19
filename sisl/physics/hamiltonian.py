@@ -128,12 +128,11 @@ class Hamiltonian(object):
             # There is no overlap matrix
             self.S_idx = -1
 
-            def diagonal_Sk(self, k, dtype=None):
+            def diagonal_Sk(self, k=(0, 0, 0), dtype=None):
                 """ For an orthogonal case we always return the identity matrix """
                 if dtype is None:
                     dtype = np.float64
-                no = self.no
-                S = csr_matrix((no, no), dtype=dtype)
+                S = csr_matrix((len(self), len(self)), dtype=dtype)
                 S.setdiag(1.)
                 return S
             self.Sk = diagonal_Sk
