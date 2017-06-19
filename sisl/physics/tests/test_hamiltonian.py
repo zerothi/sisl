@@ -168,12 +168,6 @@ class TestHamiltonian(object):
         # orbital
         self.H2.construct([(0.1, 1.5), (1., 0.1)])
 
-    @raises(ValueError)
-    def test_init_raise1(self):
-        # Test that construct fails with more than one
-        # orbital
-        Hamiltonian(self.g, spin=8)
-
     def test_getitem1(self):
         H = self.H
         # graphene Hamiltonian
@@ -462,7 +456,28 @@ class TestHamiltonian(object):
             if i < 9:
                 H[i, i+1, 0] = 1.
                 H[i, i+1, 1] = 1.
-        assert_true(len(H.eigh()) == len(H) * 2)
+        assert_true(len(H.eigh()) == len(H))
+
+    def test_so1(self):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        H = Hamiltonian(g, dtype=np.float64, spin=8)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H[i, i, 0] = 0.
+            H[i, i, 1] = 0.
+            H[i, i, 2] = 0.1
+            H[i, i, 3] = 0.1
+            H[i, i, 4] = 0.1
+            H[i, i, 5] = 0.1
+            H[i, i, 6] = 0.1
+            H[i, i, 7] = 0.1
+            if i > 0:
+                H[i, i-1, 0] = 1.
+                H[i, i-1, 1] = 1.
+            if i < 9:
+                H[i, i+1, 0] = 1.
+                H[i, i+1, 1] = 1.
+        assert_true(len(H.eigh()) == len(H))
 
     def test_finalized(self):
         assert_false(self.H.finalized)
