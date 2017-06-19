@@ -117,12 +117,6 @@ class ncSileSiesta(SileCDFSIESTA):
         ham._data.col = col
         ham._data._nnz = len(col)
 
-        # Create new container
-        H = np.array(sp.variables['H'][ispin, :],
-                     np.float64) * Ry2eV ** ham._E_order
-        # Correct for the Fermi-level, Ef == 0
-        H -= Ef * S[:]
-
         ham._data._D = np.empty([ham._data.ptr[-1], spin+1], np.float64)
         if ispin == -1:
             for i in range(spin):
@@ -130,14 +124,16 @@ class ncSileSiesta(SileCDFSIESTA):
                 H = np.array(sp.variables['H'][i, :],
                              np.float64) * Ry2eV ** ham._E_order
                 # Correct for the Fermi-level, Ef == 0
-                H -= Ef * S[:]
+                if i < 2:
+                    H -= Ef * S[:]
                 ham._data._D[:, i] = H[:]
         else:
             # Create new container
             H = np.array(sp.variables['H'][ispin, :],
                          np.float64) * Ry2eV ** ham._E_order
             # Correct for the Fermi-level, Ef == 0
-            H -= Ef * S[:]
+            if ispin < 2:
+                H -= Ef * S[:]
             ham._data._D[:, 0] = H[:]
         ham._data._D[:, ham.S_idx] = S[:]
 
