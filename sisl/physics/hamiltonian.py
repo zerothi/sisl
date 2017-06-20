@@ -682,8 +682,8 @@ class Hamiltonian(object):
             # off-diagonal elements
             H1 = self.tocsr(2)[:, sl]
             H2 = self.tocsr(3)[:, sl]
-            H[::2, 1::2] += (H1 - 1j * H2) * phase
-            H[1::2, ::2] += (H1 + 1j * H2) * phase
+            H[1::2, ::2] += (H1 - 1j * H2) * phase
+            H[::2, 1::2] += (H1 + 1j * H2) * phase
 
             del H1, H2
 
@@ -734,12 +734,12 @@ class Hamiltonian(object):
             H[1::2, 1::2] += (self.tocsr(1)[:, sl] +
                               1j * self.tocsr(5)[:, sl]) * phase
 
-            # upper off-diagonal elements
-            H[::2, 1::2] += (self.tocsr(2)[:, sl] -
+            # lower off-diagonal elements
+            H[1::2, ::2] += (self.tocsr(2)[:, sl] -
                              1j * self.tocsr(3)[:, sl]) * phase
 
-            # lower off-diagonal elements
-            H[1::2, ::2] += (self.tocsr(6)[:, sl] +
+            # upper off-diagonal elements
+            H[::2, 1::2] += (self.tocsr(6)[:, sl] +
                              1j * self.tocsr(7)[:, sl]) * phase
 
         return H
