@@ -143,12 +143,12 @@ class Hamiltonian(object):
     # We define this function _ONLY_ for the docstring
     # it provides.
     def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', *args, **kwargs):
-        """ Setup the Hamiltonian for a given k-point
+        r""" Setup the Hamiltonian for a given k-point
 
         Creation and return of the Hamiltonian for a given k-point (default to Gamma).
 
-        Note
-        ----
+        Notes
+        -----
 
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
@@ -169,10 +169,11 @@ class Hamiltonian(object):
         ----------
         k : array_like
            the k-point to setup the Hamiltonian at
-        dtype : numpy.dtype, 'numpy.complex128`
+        dtype : numpy.dtype , optional 
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
-        gauge : str, 'R`
+           The default data-type is '`numpy.complex128``
+        gauge : {'R', 'r'}
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
         """
@@ -809,6 +810,24 @@ class Hamiltonian(object):
 
         return S
 
+    def shift(self, E):
+        """ Shift the electronic structure by a constant energy
+
+        Parameters
+        ----------
+        E : float
+           the energy (in eV) to shift the electronic structure
+        """
+        if not self.orthogonal:
+            # For non-colinear and SO only the diagonal components
+            # should be shifted.
+            for i in range(min(self.spin, 2)):
+                self._data._D[:, i] -= self._data._D[:, self.S_idx] * E
+        else:
+            for i in range(self.shape[0]):
+                for j in range(min(self.spin, 2)):
+                    self[i, i, j] = self[i, i, j] - E
+
     def eigh(self, k=(0, 0, 0),
              atoms=None, gauge='R', eigvals_only=True,
              overwrite_a=True, overwrite_b=True,
@@ -1118,7 +1137,7 @@ class Hamiltonian(object):
         Parameters
         ----------
         atom  : ``array_like``
-            indices of all atoms to be removed.
+            indices of all atoms to be retained
         """
         atom = self.sc2uc(atom)
         geom = self.geom.sub(atom)
@@ -1142,11 +1161,8 @@ class Hamiltonian(object):
         # Create orbital pivot table
         pvt = np.zeros([self.no_s], np.int32) - 1
         where = np.where
-        for a in range(self.na_s):
-            ia = a % self.na
-            IA = where(atom == ia)[0]
-            if len(IA) != 1:
-                continue
+        for IA, ia, i_s in enumerate(itools.product(atom, range(self.n_s))):
+            a = ia + self.na * i_s
 
             # Update pivot table
             no = self.atom[ia].orbs
@@ -1177,8 +1193,7 @@ class Hamiltonian(object):
                     if pvt[jo] < 0:
                         continue
 
-                    for i in range(nspin):
-                        H[IO, pvt[jo], i] = self[io, jo, i]
+                    H[IO, pvt[jo]] = self[io, jo]
         H.finalize()
 
         return H

@@ -7,10 +7,22 @@
 
   now works in all cases.
 
-- Spin-orbit H(k) has been enabled (un-tested, just like non-colinear)
+- Spin-orbit H(k) has been enabled
 
 - Fixed reading the <>.nc file from SIESTA, the non-zero elements count was
   wrong.
+
+- Now H(k) has been tested for non-colinear and spin-orbit coupling and
+  one can now use sisl to perform non-colinear and spin-orbit coupling
+  calculations.
+
+- API change, all dR keywords has been changed to R for consistency and
+  reduction of ambiguity.
+  Also the `Atoms.dR` is now referred to as `Atoms.maxR()` to indicate
+  its meaning.
+
+  This may break old scripts if one use the `dR` keyword in arguments.
+  
 
 0.8.4
 =====

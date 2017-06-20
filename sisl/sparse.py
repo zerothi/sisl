@@ -26,7 +26,7 @@ from scipy.sparse import csc_matrix, isspmatrix_csc
 from scipy.sparse import lil_matrix, isspmatrix_lil
 
 
-from sisl._help import ensure_array, get_dtype
+from sisl._help import array_fill_repeat, ensure_array, get_dtype
 from sisl._help import _range as range, _zip as zip
 
 
@@ -63,8 +63,7 @@ class SparseCSR(object):
     correct.
     """
 
-    def __init__(self, arg1, dim=1, dtype=None,
-                 nnzpr=20, nnz=None,
+    def __init__(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
                  **kwargs):
         """ Initialize a new sparse CSR matrix
 
@@ -83,6 +82,9 @@ class SparseCSR(object):
           where `S` is a ``scipy.sparse`` matrix
         - `SparseCSR((M,N)[, dtype])`
           the shape of the sparse matrix (equivalent
+          to `SparseCSR((M,N,1)[, dtype])`.
+        - `SparseCSR((M,N), dim=K, [, dtype])`
+          the shape of the sparse matrix (equivalent
           to `SparseCSR((M,N,K)[, dtype])`.
         - `SparseCSR((M,N,K)[, dtype])`
           creating a sparse matrix with `M` rows, `N` columns
@@ -93,16 +95,16 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        nnzpr : int, 20
+        dim : int, optional
+           number of elements stored per sparse element, only used if (M,N) is passed
+        dtype : numpy.dtype, optional
+           data type of the matrix, defaults to ``numpy.float64``
+        nnzpr : int, optional
            initial number of non-zero elements per row.
            Only used if `nnz` is not supplied
-        nnz : int
+        nnz : int, optional
            initial total number of non-zero elements
            This quantity has precedence over `nnzpr`
-        dim : int, 1
-           number of elements stored per sparse element, only used if (M,N) is passed
-        dtype : numpy data type, `numpy.float64`
-           data type of the matrix
 
         Attributes
         ----------
@@ -233,6 +235,41 @@ class SparseCSR(object):
         # Denote that this sparsity pattern hasn't been finalized
         self._finalized = False
 
+    @classmethod
+    def diags(cls, diagonals, offsets=0, shape=None, dtype=None):
+        """ Create a `SparseCSR` with diagonal elements
+
+        Parameters
+        ----------
+        diagonals : scalar or array_like
+           the diagonal values, if scalar the `shape` *must* be present.
+        offsets : scalar or array_like
+           the offsets from the diagonal for each of the components (defaults
+           to the diagonal)
+        shape : tuple or list of int
+           matrix dimensions, if un-specified the size will be a square matrix
+           with size `len(diagonals)`
+        dtype : numpy.dtype, optional
+           the data-type to create (default to ``numpy.float64``)
+        """
+        if shape is None:
+            shape = (len(diagonals), len(diagonals), 1)
+
+        # Now create the sparse matrix
+        S = cls(shape, dtype=dtype)
+
+        # Get default dtype from the sparse matrix
+        dtype = S.dtype
+
+        diagonals = array_fill_repeat(diagonals, shape[0], cls=dtype)
+        offsets = array_fill_repeat(offsets, shape[0], cls=dtype)
+
+        # Create diagonal elements
+        for i in range(S.shape[0]):
+            S[i, i + offsets[i]] = diagonals[i]
+
+        return S
+
     def empty(self, keep=False):
         """ Delete all sparse information from the sparsity pattern
 
@@ -240,9 +277,9 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        keep: boolean, False
-           if `True` it will keep the sparse elements _as is_.
-           I.e. it will merely set the stored sparse elements as zero.
+        keep: boolean, optional
+           if `True` keeps the sparse elements _as is_.
+           I.e. it will merely set the stored sparse elements to zero.
            This may be advantagegous when re-constructing a new sparse 
            matrix from an old sparse matrix
         """
@@ -264,26 +301,26 @@ class SparseCSR(object):
 
     @property
     def dim(self):
-        """ Return extra dimensionality of the sparse matrix """
+        """ The extra dimensionality of the sparse matrix """
         return self.shape[2]
 
     @property
     def data(self):
-        """ Return data contained in the sparse matrix """
+        """ Data contained in the sparse matrix (numpy array of elements) """
         return self._D
 
     @property
     def dtype(self):
-        """ Return the data-type in the sparse matrix """
+        """ The data-type in the sparse matrix """
         return self._D.dtype
 
     @property
     def nnz(self):
-        """ Return number of non-zero elements in the sparsity pattern """
+        """ Number of non-zero elements in the sparse matrix """
         return self._nnz
 
     def __len__(self):
-        """ Return number of non-zero elements in the sparse pattern """
+        """ Number of non-zero elements in the sparse matrix """
         return self.nnz
 
     @property
@@ -301,7 +338,7 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        sort: bool, True
+        sort: bool, optional
            sort the column indices for each row
         """
         if self.finalized:
@@ -379,8 +416,7 @@ class SparseCSR(object):
 
         Returns
         -------
-        bool :
-            True if the same non-zero elements are in the matrices.
+        True if the same non-zero elements are in the matrices (but not necessarily the same values)
         """
 
         if self.shape[:2] != other.shape[:2]:
@@ -451,7 +487,7 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        row : `int=<all>`, `array_like`
+        row : int or array_like of int
            only loop on the given row(s) default to all rows
         """
         if row is None:
@@ -483,18 +519,18 @@ class SparseCSR(object):
         return range(idx[0], idx[1], idx[2])
 
     def _extend(self, i, j):
-        """ Extends the sparsity pattern to retain elements `j` in row `i`
+        """ Extends the sparsity pattern to retain elements ``j`` in row ``i``
 
         Parameters
         ----------
         i : int
            the row of the matrix
-        j : int, array-like
+        j : int or array_like
            columns belonging to row ``i`` where a non-zero element is stored.
 
         Returns
         -------
-        index : array-like
+        index : array_like
            the indicies of the existing/added elements. 
         """
 
@@ -600,13 +636,12 @@ class SparseCSR(object):
         ----------
         i : int
            the row of the matrix
-        j : int, array-like
+        j : int or array_like of int
            columns belonging to row ``i`` where a non-zero element is stored.
 
         Returns
         -------
-        index : array-like
-           the indicies of the existing elements. 
+        the indicies of the existing elements. 
         """
 
         # Ensure flattened array...
@@ -769,7 +804,7 @@ class SparseCSR(object):
         return index > 0
 
     def eliminate_zeros(self):
-        """ Removes all zero elememts from the sparse matrix
+        """ Remove all zero elememts from the sparse matrix
 
         This is an *in-place* operation
         """

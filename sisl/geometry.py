@@ -236,7 +236,7 @@ class Geometry(SuperCellChild):
         return self.axyz(atom)
 
     def rij(self, ia, ja):
-        """ Distance between atom ``ia`` and ``ja``, atoms are expected to be in super-cell indices
+        r""" Distance between atom ``ia`` and ``ja``, atoms are expected to be in super-cell indices
 
         Returns the distance between two atoms:
 
@@ -261,7 +261,7 @@ class Geometry(SuperCellChild):
         return np.sqrt(np.sum((xj - xi[None, :]) ** 2., axis=1))
 
     def orij(self, io, jo):
-        """ Return distance between orbital ``io`` and ``jo``, orbitals are expected to be in super-cell indices
+        r""" Return distance between orbital ``io`` and ``jo``, orbitals are expected to be in super-cell indices
 
         Returns the distance between two orbitals:
 
@@ -611,20 +611,22 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        atom : ``array_like``
+        atom : array_like
             enables only effectively looping a subset of the full geometry
-        iR  : ``int`` (`10`)
+        iR  : int, optional
             the number of ``R`` ranges taken into account when doing the iterator
-        R  : ``float``, (`self.R`)
-            enables overwriting the local R quantity.
-        method : ``str`` (`'rand'`)
+        R  : float, optional
+            enables overwriting the local R quantity. Defaults to ``self.maxR()``
+        method : {'rand', 'sphere', 'cube'}
             select the method by which the block iteration is performed. 
             Possible values are:
              `rand`: a spherical object is constructed with a random center according to the internal atoms
              `sphere`: a spherical equispaced shape is constructed and looped
              `cube`: a cube shape is constructed and looped
 
-        Returns two lists with [0] being a list of atoms to be looped and [1] being the atoms that
+        Returns
+        -------
+        Two lists with `[0]` being a list of atoms to be looped and `[1]` being the atoms that
         need searched.
         """
         method = method.lower()
@@ -647,9 +649,7 @@ class Geometry(SuperCellChild):
                 yield ias, idxs
 
     def copy(self):
-        """
-        Returns a copy of the object.
-        """
+        """ A copy of the object. """
         return self.__class__(np.copy(self.xyz),
                               atom=self.atom.copy(), sc=self.sc.copy())
 

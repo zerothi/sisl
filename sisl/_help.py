@@ -35,10 +35,10 @@ def array_fill_repeat(array, size, cls=None):
     to be an integer part of `size`.
     """
     try:
-        reps = len(array)
+        reps = size // len(array)
     except:
         array = [array]
-    reps = size // len(array)
+        reps = size // len(array)
     if size % len(array) != 0:
         # We do not have it correctly formatted (either an integer
         # repeatable part, full, or a single)
