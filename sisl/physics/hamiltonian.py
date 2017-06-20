@@ -1161,7 +1161,7 @@ class Hamiltonian(object):
         # Create orbital pivot table
         pvt = np.zeros([self.no_s], np.int32) - 1
         where = np.where
-        for IA, ia, i_s in enumerate(itools.product(atom, range(self.n_s))):
+        for (IA, ia), i_s in itools.product(enumerate(atom), range(self.n_s)):
             a = ia + self.na * i_s
 
             # Update pivot table
