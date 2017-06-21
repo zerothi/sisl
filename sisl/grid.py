@@ -467,7 +467,7 @@ class Grid(SuperCellChild):
     def __repr__(self):
         """ Representation of object """
 
-        return 'Grid[{} {} {}]'.format(*self.shape)
+        return self.__class__.__name__ + '{{[{} {} {}]}}'.format(*self.shape)
 
     def _check_compatibility(self, other, msg):
         """ Internal check for asserting two grids are commensurable """

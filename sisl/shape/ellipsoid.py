@@ -29,6 +29,11 @@ class Ellipsoid(Shape):
         super(Ellipsoid, self).__init__(center)
         self._radius = np.array([x, y, z], np.float64)
 
+    def __repr__(self):
+        cr = np.array([self.center, self.radius])[:]
+        return self.__class__.__name__ + ('{{c({0:.2f} {1:.2f} {2:.2f}) '
+                                          'r({3:.2f} {4:.2f} {5:.2f})}}').format(*cr)
+
     @property
     def radius(self):
         """ Return the radius of the Ellipsoid """
@@ -157,6 +162,10 @@ class Sphere(Spheroid):
     def __init__(self, radius, center=None):
         super(Sphere, self).__init__(radius, radius, center=center)
 
+    def __repr__(self):
+        cr = np.array([self.center, self.radius])[:][:4]
+        return self.__class__.__name__ + '{{c({0:.2f} {1:.2f} {2:.2f}) r({3:.2f}}}'.format(*cr)
+
     def set_center(self, center):
         """ Change the center of the object """
         self.__init__(self.radius[0], center=center)
@@ -225,6 +234,4 @@ class Sphere(Spheroid):
         return within
 
     def __repr__(self):
-        s = self.__class__.__name__ + ' c({1:.2f} {2:.2f} {3:.2f}) r={0:.2f}'.format(self.radius[0], *self.center)
-
-        return s
+        return self.__class__.__name__ + '{{c({1:.2f} {2:.2f} {3:.2f}) r={0:.2f}}}'.format(self.radius[0], *self.center)

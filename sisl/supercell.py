@@ -505,7 +505,7 @@ class SuperCell(object):
 
     def __repr__(self):
         """ Returns a string representation of the object """
-        return 'SuperCell[{} {} {}]'.format(*self.nsc)
+        return self.__class__.__name__ + '{{[{} {} {}]}}'.format(*self.nsc)
 
     def __eq__(a, b):
         """ Equality check """

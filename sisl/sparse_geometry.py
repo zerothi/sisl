@@ -135,7 +135,7 @@ class SparseGeometry(object):
 
     def __repr__(self):
         """ Representation of the sparse model """
-        s = '{{dim: {0}, non-zero: {1}\n '.format(self.dim, self.nnz)
+        s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}\n '.format(self.dim, self.nnz)
         s += repr(self.geom).replace('\n', '\n ')
         return s + '\n}'
 
@@ -555,7 +555,6 @@ class SparseAtom(SparseGeometry):
             self._def_dim = -1
         self._data[key] = val
 
-    
     @property
     def _size(self):
         return self.geometry.na
@@ -687,7 +686,7 @@ class SparseAtom(SparseGeometry):
             except:
                 return None, None, None
 
-        # only loop on the orbitals remaining in the cutted structure
+        # only loop on the atoms remaining in the cutted structure
         for ja, ia in self.iter_nnz(range(geom.na)):
 
             # Get the equivalent orbital in the smaller cell
@@ -695,6 +694,8 @@ class SparseAtom(SparseGeometry):
             if a is None:
                 continue
             S[ja, a + afp] = self[ja, ia]
+            # TODO check that we indeed have Hermiticity for non-colinear (and SO)
+            S[a, ja + afm] = self[ja, ia]
 
         return S
 
@@ -715,7 +716,7 @@ class SparseAtom(SparseGeometry):
 
         # Now create the new sparse orbital class
         # First figure out the initialization parameters
-        nnzpr = np.max(self._data.ncol)
+        nnzpr = np.amax(self._data.ncol)
         S = self.__class__(geom, self.dim, self.dtype, nnzpr, **self._cls_kwargs())
 
         # Retrieve pointers to local data
@@ -734,13 +735,10 @@ class SparseAtom(SparseGeometry):
         # Large indices are the new geometry
         for IA, ia in enumerate(atom):
 
+            col = D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]
             # Loop on the connection atoms
-            for ja in D.col[D.ptr[ia]:D.ptr[ia]+D.ncol[ia]]:
-                # Check that the connection orbital exists
-                # else, continue
-                if pvt[ja] < 0:
-                    continue
-
+            jas = col[np.where(pvt[col] >= 0)[0]]
+            for ja in jas:
                 S[IA, pvt[ja]] = self[ia, ja]
         S.finalize()
 
@@ -910,7 +908,7 @@ class SparseOrbital(SparseGeometry):
 
     @property
     def _size(self):
-        return self.geometry.no
+        return self.geom.no
 
     def iter_nnz(self, atom=None, orbital=None):
         """ Iterations of the non-zero elements
@@ -982,7 +980,7 @@ class SparseOrbital(SparseGeometry):
         # First we need to figure out how long the interaction range is
         # in the cut-direction
         # We initialize to be the same as the parent direction
-        nsc = np.array(self.nsc, np.int32, copy=True) // 2
+        nsc = self.nsc // 2
         nsc[axis] = 0  # we count the new direction
         isc = np.zeros([3], np.int32)
         isc[axis] -= 1
@@ -1053,7 +1051,9 @@ class SparseOrbital(SparseGeometry):
             o, ofp, ofm = sco2sco(self.geom, io, S.geom, seps, axis)
             if o is None:
                 continue
-            S[jo, o + ofp] = self[jo, io]
+            d = self[jo, io]
+            S[jo, o + ofp] = d
+            S[o, jo + ofm] = d
 
         return S
 
@@ -1109,13 +1109,10 @@ class SparseOrbital(SparseGeometry):
                 IO = O + io
                 io = o + io
 
+                col = D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]
                 # Loop on the connection orbitals
-                for jo in D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]:
-                    # Check that the connection orbital exists
-                    # else, continue
-                    if pvt[jo] < 0:
-                        continue
-
+                jos = col[np.where(pvt[col] >= 0)[0]]
+                for jo in jos:
                     S[IO, pvt[jo]] = self[io, jo]
         S.finalize()
 
@@ -1162,7 +1159,7 @@ class SparseOrbital(SparseGeometry):
             if ncol[io] == 0:
                 continue
             ccol = col[ptr[io]:ptr[io]+ncol[io]]
-            for jo, uo, isc in zip(ccol, ccol % no, geom.o2isc(ccol)):
+            for uo, jo, isc in zip(ccol % no, ccol, geom.o2isc(ccol)):
 
                 # Copy supercell connection
                 ISC[:] = isc[:]

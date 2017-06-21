@@ -1068,7 +1068,7 @@ class Atom(with_metaclass(AtomMeta, object)):
         return new
 
     def __repr__(self):
-        return '{0}, Z: {1:d}, orbs: {2:d}, mass(au): {3:.5f}, maxR: {4:.5f}'.format(self.tag, self.Z, self.orbs, self.mass, self.maxR())
+        return self.__class__.__name__ + '{{{0}, Z: {1:d}, orbs: {2:d}, mass(au): {3:.5f}, maxR: {4:.5f}}}'.format(self.tag, self.Z, self.orbs, self.mass, self.maxR())
 
     def __len__(self):
         """ Return number of orbitals in this atom """
@@ -1423,7 +1423,7 @@ class Atoms(object):
 
     def __repr__(self):
         """ Return the `Atoms` representation """
-        s = '{{Atoms({0}):\n'.format(len(self._atom))
+        s = self.__class__.__name__ + '{{species: {0}:\n'.format(len(self._atom))
         for a, idx in self:
             s += '  ({0}) == [{1}], \n'.format(len(idx), a)
         return s + '}\n'

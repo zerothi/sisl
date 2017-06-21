@@ -78,7 +78,7 @@ class Hamiltonian(SparseOrbital):
         else:
             dim = dim - 1
             self.S_idx = dim
-        
+
         if dim == 1:
             self.UP = 0
             self.DOWN = 0
@@ -99,7 +99,7 @@ class Hamiltonian(SparseOrbital):
 
     # Override to enable spin configuration and orthogonality
     def _cls_kwargs(self):
-        return {'spin' : self.spin, 'orthogonal': self.orthogonal}
+        return {'spin': self.spin, 'orthogonal': self.orthogonal}
 
     # We define this function _ONLY_ for the docstring
     # it provides.
@@ -223,7 +223,6 @@ class Hamiltonian(SparseOrbital):
                 h.S[jo, io, ] = v
 
         return h
-        
 
     # Create iterations on entire set of orbitals
     def iter(self, local=False):
