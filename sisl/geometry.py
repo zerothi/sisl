@@ -1571,7 +1571,7 @@ class Geometry(SuperCellChild):
             return ret
         return ret[0]
 
-    def close_sc(self, xyz_ia, isc=None, R=None,
+    def close_sc(self, xyz_ia, isc=(0, 0, 0), R=None,
                  idx=None, idx_xyz=None,
                  ret_xyz=False, ret_rij=False):
         """
@@ -1587,29 +1587,29 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        xyz_ia    : ``coordinate``, ``int``
+        xyz_ia    : array_like of floats or int
             Either a point in space or an index of an atom.
             If an index is passed it is the equivalent of passing
             the atomic coordinate ``close_sc(self.xyz[xyz_ia,:])``.
-        isc       : ``array_like``, (`[ 0, 0, 0]`)
+        isc       : array_like, optional
             The super-cell which the coordinates are checked in.
-        R        : ``float``, ``array_like`` (`None`)
+        R        : float or array_like, optional
             The radii parameter to where the atomic connections are found.
             If ``R`` is an array it will return the indices:
             in the ranges:
                ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``
             If a single float it will return:
                ``x <= R``
-        idx       : ``array_like`` (`None`)
+        idx       : array_like of int, optional
             List of atoms that will be considered. This can
             be used to only take out a certain atoms.
-        idx_xyz : ``array_like`` (`None`)
+        idx_xyz : array_like of float, optional
             The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
-        ret_xyz : ``bool`` (`False`)
-            If true this method will return the coordinates
+        ret_xyz : bool, optional
+            If True this method will return the coordinates
             for each of the couplings.
-        ret_rij : ``bool`` (`False`)
-            If true this method will return the distance
+        ret_rij : bool, optional
+            If True this method will return the distance
             for each of the couplings.
         """
 
@@ -1660,16 +1660,35 @@ class Geometry(SuperCellChild):
         # systems.
         # For smaller ones this will actually be a slower
         # method...
-        # TODO should we abstract the methods dependent on size?
-        ix = log_and.reduce(fabs(dxa[:, :]) <= max_R, axis=1)
-
-        if idx is None:
-            # This is because of the pre-check of the
-            # distance checks
-            idx = where(ix)[0]
+        if dxa.shape[0] > 10000:
+            if idx is None:
+                # first
+                ix = fabs(dxa[:, 0]) <= max_R
+                idx = where(ix)[0]
+                dxa = dxa[ix, :]
+                # second
+                ix = fabs(dxa[:, 1]) <= max_R
+                idx = idx[ix]
+                dxa = dxa[ix, :]
+                # third
+                ix = fabs(dxa[:, 2]) <= max_R
+                idx = idx[ix]
+                dxa = dxa[ix, :]
+            else:
+                for i in [0, 1, 2]:
+                    ix = fabs(dxa[:, i]) <= max_R
+                    idx = idx[ix]
+                    dxa = dxa[ix, :]
         else:
-            idx = idx[ix]
-        dxa = dxa[ix, :]
+            ix = log_and.reduce(fabs(dxa[:, :]) <= max_R, axis=1)
+
+            if idx is None:
+                # This is because of the pre-check of the
+                # distance checks
+                idx = where(ix)[0]
+            else:
+                idx = idx[ix]
+            dxa = dxa[ix, :]
 
         # Create default return
         ret = [[np.empty([0], np.int32)] * len(R)]
@@ -1707,7 +1726,7 @@ class Geometry(SuperCellChild):
         # take the sqrt
         max_R = max_R * max_R
         xaR = dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2
-        ix = np.where(xaR <= max_R)[0]
+        ix = where(xaR <= max_R)[0]
 
         # Reduce search space and correct distances
         d = xaR[ix] ** .5
