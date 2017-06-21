@@ -1536,7 +1536,7 @@ class dHncSileSiesta(SileCDFSIESTA):
         # Ensure that the geometry is written
         self.write_geometry(ham.geom)
 
-        self._crt_dim(self, 'spin', ham._spin)
+        self._crt_dim(self, 'spin', ham.spin)
 
         # Determine the type of dH we are storing...
         k = kwargs.get('k', None)

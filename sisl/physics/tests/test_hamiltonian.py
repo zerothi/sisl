@@ -406,6 +406,8 @@ class TestHamiltonian(object):
         Hc = H.cut(2, 1).cut(2, 0)
         eigc = Hc.eigh()
         eigg = Hg.eigh()
+        print(eigc)
+        print(eigg)
         assert_true(np.allclose(Hg.eigh(), Hc.eigh()))
         del Hc, H
 
@@ -434,12 +436,18 @@ class TestHamiltonian(object):
         assert_equal(len(self.HS), eig.shape[1])
         self.HS.empty()
 
-    def test_spin2(self):
+    def test_spin1(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.int32, spin=2)
         for i in range(10):
             j = range(i*4, i*4+3)
             H[0, j] = (i, i*2)
+
+        H2 = Hamiltonian(g, 2, dtype=np.int32)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H2[0, j] = (i, i*2)
+        assert_true(H.spsame(H2))
 
     def test_non_collinear1(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])

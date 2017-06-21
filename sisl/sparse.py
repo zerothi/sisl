@@ -179,8 +179,7 @@ class SparseCSR(object):
 
                 self.finalize()
 
-    def __init_shape(self, arg1, dim=1, dtype=None,
-                     nnzpr=20, nnz=None,
+    def __init_shape(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
                      **kwargs):
 
         # The shape of the data...
@@ -717,34 +716,18 @@ class SparseCSR(object):
         if len(key) > 2:
 
             # user requests a specific element
-
-            data = empty(len(index), self._D.dtype)
-
             # get dimension retrieved
-            d = key[2]
-
-            # Copy data over
-            for i, j in enumerate(index):
-                if j < 0:
-                    data[i] = 0.
-                else:
-                    data[i] = self._D[j, d]
+            return np.where(index >= 0, self._D[index, key[2]], 0)
 
         else:
 
             # user request all stored data
 
-            data = empty([len(index), self.shape[2]], self._D.dtype)
-
-            # Copy data over
-            for i, j in enumerate(index):
-                if j < 0:
-                    data[i, :] = 0.
-                else:
-                    data[i, :] = self._D[j, :]
-
-        # Return data
-        return data
+            s = self.shape[2]
+            if s == 1:
+                return np.where(index >= 0, self._D[index, 0], 0)
+            else:
+                return np.where(index >= 0, self._D[index, :], [0] * s)
 
     def __setitem__(self, key, data):
         """ Intrinsic sparse matrix assignment of the item. 

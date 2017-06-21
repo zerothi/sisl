@@ -96,7 +96,7 @@ class TSHSSileSiesta(SileBinSIESTA):
         ncol, col, dH, dS = _siesta.read_tshs_es(self.file, spin, no, nnz)
 
         # Create the Hamiltonian container
-        H = Hamiltonian(geom, nnzpr=1, orthogonal=False, spin=spin)
+        H = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)
 
         # Create the new sparse matrix
         H._data.ncol = np.array(ncol, np.int32)

@@ -25,6 +25,7 @@ from .grid import *
 from .io import *
 
 from .sparse import *
+from .sparse_geometry import *
 
 # Hamiltonian etc.
 from .physics import *

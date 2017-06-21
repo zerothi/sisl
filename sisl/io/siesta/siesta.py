@@ -100,7 +100,7 @@ class ncSileSiesta(SileCDFSIESTA):
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
-        ham = Hamiltonian(geom, nnzpr=1, orthogonal=False, spin=spin)
+        ham = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)
 
         # Use Ef to move H to Ef = 0
         Ef = float(self._value('Ef')[0]) * Ry2eV ** ham._E_order
@@ -273,7 +273,7 @@ class ncSileSiesta(SileCDFSIESTA):
         # Ensure that the geometry is written
         self.write_geometry(ham.geom)
 
-        self._crt_dim(self, 'spin', ham._spin)
+        self._crt_dim(self, 'spin', ham.spin)
 
         v = self._crt_var(self, 'Ef', 'f8', ('one',))
         v.info = 'Fermi level'
@@ -323,7 +323,7 @@ class ncSileSiesta(SileCDFSIESTA):
                           chunksizes=(1, len(ham._data.col)), **self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"
-        for i in range(ham._spin):
+        for i in range(ham.spin):
             v[i, :] = ham._data._D[:, i] / Ry2eV ** ham._E_order
 
         # Create the settings
