@@ -439,7 +439,7 @@ class SparseCSR(object):
                 return False
         return True
 
-    def spalign(self, other):
+    def align(self, other):
         """ Aligns this sparse matrix with the sparse elements of the other sparse matrix
 
         Routine for ensuring that all non-zero elements in `other` are also in this
@@ -881,7 +881,7 @@ class SparseCSR(object):
             if a.shape != b.shape:
                 raise ValueError('Adding two sparse matrices requires the same shape')
             # Ensure that a is aligned with b
-            a.spalign(b)
+            a.align(b)
 
             # loop and add elements
             for r in range(a.shape[0]):
@@ -916,7 +916,7 @@ class SparseCSR(object):
             if a.shape != b.shape:
                 raise ValueError('Subtracting two sparse matrices requires the same shape')
             # Ensure that a is aligned with b
-            a.spalign(b)
+            a.align(b)
 
             # loop and add elements
             for r in range(a.shape[0]):
@@ -991,7 +991,7 @@ class SparseCSR(object):
                 raise ValueError('Division of two sparse matrices requires the same shape')
 
             # Ensure that a is aligned with b
-            a.spalign(b)
+            a.align(b)
 
             # loop and add elements
             for r in range(a.shape[0]):
@@ -1017,7 +1017,7 @@ class SparseCSR(object):
             if a.shape != b.shape:
                 raise ValueError('Floor-division of two sparse matrices requires the same shape')
             # Ensure that a is aligned with b
-            a.spalign(b)
+            a.align(b)
 
             # loop and add elements
             for r in range(a.shape[0]):
@@ -1043,7 +1043,7 @@ class SparseCSR(object):
             if a.shape != b.shape:
                 raise ValueError('True-division of two sparse matrices requires the same shape')
             # Ensure that a is aligned with b
-            a.spalign(b)
+            a.align(b)
 
             # loop and add elements
             for r in range(a.shape[0]):
@@ -1077,7 +1077,7 @@ class SparseCSR(object):
                 raise ValueError('True-division of two sparse matrices requires the same shape')
             # Ensure that a is aligned with b
             # 0 ** float == 1.
-            a.spalign(b)
+            a.align(b)
 
             # loop and add elements
             for r in range(a.shape[0]):

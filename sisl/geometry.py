@@ -318,7 +318,7 @@ class Geometry(SuperCellChild):
 
     def __repr__(self):
         """ Representation of the object """
-        s = self.__class__.__name__ + '{{na: {0}, no: {1}, species:\n '.format(self.na, self.no)
+        s = self.__class__.__name__ + '{{na: {0}, no: {1},\n '.format(self.na, self.no)
         s += repr(self.atom).replace('\n', '\n ')
         return (s[:-2] + ',\n nsc: [{1}, {2}, {3}], maxR: {0}\n}}\n'.format(self.maxR(), *self.nsc)).strip()
 

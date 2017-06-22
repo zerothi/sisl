@@ -160,7 +160,7 @@ class Hamiltonian(SparseOrbital):
 
     def __repr__(self):
         """ Representation of the tight-binding model """
-        s = '{{spin: {0}, non-zero: {1}, orthogonal: {2}\n '.format(self.spin, self.nnz, self.orthogonal)
+        s = self.__class__.__name__ + '{{spin: {0}, non-zero: {1}, orthogonal: {2}\n '.format(self.spin, self.nnz, self.orthogonal)
         s += repr(self.geom).replace('\n', '\n ')
         return s + '\n}'
 

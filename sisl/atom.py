@@ -1423,9 +1423,9 @@ class Atoms(object):
 
     def __repr__(self):
         """ Return the `Atoms` representation """
-        s = self.__class__.__name__ + '{{species: {0}:\n'.format(len(self._atom))
+        s = self.__class__.__name__ + '{{species: {0},\n'.format(len(self._atom))
         for a, idx in self:
-            s += '  ({0}) == [{1}], \n'.format(len(idx), a)
+            s += '  ({0}) == {1}, \n'.format(len(idx), a)
         return s + '}\n'
 
     def __len__(self):

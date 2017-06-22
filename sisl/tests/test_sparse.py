@@ -26,7 +26,7 @@ class TestSparseCSR(object):
     def test_fail_align1(self):
         s1 = SparseCSR((10, 100), dtype=np.int32)
         s2 = SparseCSR((20, 100), dtype=np.int32)
-        s1.spalign(s2)
+        s1.align(s2)
 
     def test_init1(self):
         assert_equal(self.s1.dtype, np.int32)
@@ -250,7 +250,7 @@ class TestSparseCSR(object):
         assert_true(self.s1.spsame(self.s2))
         self.s2[1, 1] = (1, 1)
         assert_false(self.s1.spsame(self.s2))
-        self.s1.spalign(self.s2)
+        self.s1.align(self.s2)
         assert_true(self.s1.spsame(self.s2))
 
     def test_op1(self):

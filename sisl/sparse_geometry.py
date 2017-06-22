@@ -177,6 +177,13 @@ class SparseGeometry(object):
         """ Check whether a sparse index is non-zero """
         return key in self._data
 
+    def align(self, other):
+        """ See ``SparseCSR.align`` for details """
+        if isinstance(other, SparseCSR):
+            self._data.align(other)
+        else:
+            self._data.align(other._data)
+
     def eliminate_zeros(self):
         """ Removes all zero elements from the sparse matrix
 
@@ -699,6 +706,22 @@ class SparseAtom(SparseGeometry):
 
         return S
 
+    def remove(self, atom):
+        """ Create a subset of this sparse matrix by removing the elements corresponding to ``atom``
+
+        Indices passed *MUST* be unique.
+
+        Negative indices are wrapped and thus works.
+
+        Parameters
+        ----------
+        atom  : array_like of int
+            indices of removed atoms
+        """
+        atom = self.sc2uc(atom)
+        atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
+        return self.sub(atom)
+
     def sub(self, atom):
         """ Create a subset of this sparse matrix by only retaining the elements corresponding to the ``atom``
 
@@ -735,7 +758,7 @@ class SparseAtom(SparseGeometry):
         # Large indices are the new geometry
         for IA, ia in enumerate(atom):
 
-            col = D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]
+            col = D.col[D.ptr[ia]:D.ptr[ia]+D.ncol[ia]]
             # Loop on the connection atoms
             jas = col[np.where(pvt[col] >= 0)[0]]
             for ja in jas:
@@ -861,7 +884,7 @@ class SparseAtom(SparseGeometry):
                     A = isc[axis] + rep
                     ISC[axis] = A // reps
 
-                    S[IA, JA + A % reps + sc_index(ISC) * na_n] = self[ia, ja]
+                    S[IA + rep, JA + A % reps + sc_index(ISC) * na_n] = self[ia, ja]
         S.finalize()
 
         return S
@@ -1224,7 +1247,7 @@ class SparseOrbital(SparseGeometry):
             if ncol[io] == 0:
                 continue
             ccol = col[ptr[io]:ptr[io]+ncol[io]]
-            for ja, jo, uo, isc in zip(geom.o2a(ccol % no), ccol, ccol % no, geom.o2isc(ccol)):
+            for ja, uo, jo, isc in zip(geom.o2a(ccol % no), ccol % no, ccol, geom.o2isc(ccol)):
 
                 # This is the skip per repeat
                 oJ = geom.firsto[ja]
