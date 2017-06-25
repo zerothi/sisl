@@ -10,6 +10,8 @@ from ..sile import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.units.siesta import unit_convert
+from sisl.physics import DensityMatrix
+from sisl.physics import EnergyDensityMatrix
 from sisl.physics import Hamiltonian
 
 import numpy as np
@@ -79,14 +81,9 @@ class ncSileSiesta(SileCDFSIESTA):
         geom = Geometry(xyz, atom, sc=sc)
         return geom
 
-    def read_hamiltonian(self, **kwargs):
-        """ Returns a tight-binding model from the underlying NetCDF file """
-
+    def _read_class_spin(self, cls, **kwargs):
         # Get the default spin channel
-        ispin = kwargs.get('ispin', -1)
-        spin = 1
-        if ispin == -1:
-            spin = len(self._dimension('spin'))
+        spin = len(self._dimension('spin'))
 
         # First read the geometry
         geom = self.read_geometry()
@@ -100,11 +97,7 @@ class ncSileSiesta(SileCDFSIESTA):
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
-        ham = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)
-
-        # Use Ef to move H to Ef = 0
-        Ef = float(self._value('Ef')[0]) * Ry2eV ** ham._E_order
-        S = np.array(sp.variables['S'][:], np.float64)
+        C = cls(geom, spin, nnzpr=1, orthogonal=False)
 
         ncol = np.array(sp.variables['n_col'][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)
@@ -112,32 +105,53 @@ class ncSileSiesta(SileCDFSIESTA):
         col = np.array(sp.variables['list_col'][:], np.int32) - 1
 
         # Copy information over
-        ham._data.ncol = ncol
-        ham._data.ptr = ptr
-        ham._data.col = col
-        ham._data._nnz = len(col)
+        C._data.ncol = ncol
+        C._data.ptr = ptr
+        C._data.col = col
+        C._data._nnz = len(col)
+        C._data._D = np.empty([C._data.ptr[-1], spin+1], np.float64)
+        C._data._D[:, C.S_idx] = np.array(sp.variables['S'][:], np.float64)
+        
+        return C
 
-        ham._data._D = np.empty([ham._data.ptr[-1], spin+1], np.float64)
-        if ispin == -1:
-            for i in range(spin):
-                # Create new container
-                H = np.array(sp.variables['H'][i, :],
-                             np.float64) * Ry2eV ** ham._E_order
-                # Correct for the Fermi-level, Ef == 0
-                if i < 2:
-                    H -= Ef * S[:]
-                ham._data._D[:, i] = H[:]
-        else:
+    def read_hamiltonian(self, **kwargs):
+        """ Returns a tight-binding model from the underlying NetCDF file """
+        ham = self._read_class_spin(Hamiltonian, **kwargs)
+        S = ham._data._D[:, ham.S_idx]
+
+        Ef = float(self._value('Ef')[0]) * Ry2eV ** ham._E_order
+        sp = self._crt_grp(self, 'SPARSE')
+
+        for i in range(len(ham.spin)):
             # Create new container
-            H = np.array(sp.variables['H'][ispin, :],
+            H = np.array(sp.variables['H'][i, :],
                          np.float64) * Ry2eV ** ham._E_order
             # Correct for the Fermi-level, Ef == 0
-            if ispin < 2:
+            if i < 2:
                 H -= Ef * S[:]
-            ham._data._D[:, 0] = H[:]
-        ham._data._D[:, ham.S_idx] = S[:]
+            ham._data._D[:, i] = H[:]
 
         return ham
+
+    def read_density_matrix(self, **kwargs):
+        """ Returns a density matrix from the underlying NetCDF file """
+        DM = self._read_class_spin(DensityMatrix, **kwargs)
+        sp = self._crt_grp(self, 'SPARSE')
+        for i in range(len(DM.spin)):
+            # Create new container
+            DM._data._D[:, i] = sp.variables['DM'][i, :]
+
+        return DM
+
+    def read_energy_density_matrix(self, **kwargs):
+        """ Returns energy density matrix from the underlying NetCDF file """
+        EDM = self._read_class_spin(EnergyDensityMatrix, **kwargs)
+        sp = self._crt_grp(self, 'SPARSE')
+        for i in range(len(EDM.spin)):
+            # Create new container
+            EDM._data._D[:, i] = sp.variables['EDM'][i, :]
+
+        return EDM
 
     def grids(self):
         """ Return a list of available grids in this file. """
