@@ -28,7 +28,7 @@ class Spin(object):
     POLARIZED = 1
     NONCOLINEAR = 2
     SPINORBIT = 3
-    
+
     __slots__ = ['_spin', '_dtype']
 
     def __init__(self, spin, dtype=None):

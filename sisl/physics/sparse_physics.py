@@ -343,7 +343,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self._spin = Spin(kwargs.get('spin', dim), dtype)
 
         super(SparseOrbitalBZSpin, self).__init__(geom, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
-        
+
         if self.spin.is_unpolarized:
             self.UP = 0
             self.DOWN = 0

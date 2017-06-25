@@ -111,7 +111,7 @@ class ncSileSiesta(SileCDFSIESTA):
         C._data._nnz = len(col)
         C._data._D = np.empty([C._data.ptr[-1], spin+1], np.float64)
         C._data._D[:, C.S_idx] = np.array(sp.variables['S'][:], np.float64)
-        
+
         return C
 
     def read_hamiltonian(self, **kwargs):
