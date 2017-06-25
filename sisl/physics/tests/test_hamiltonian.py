@@ -6,7 +6,7 @@ from nose.plugins.attrib import attr
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, Hamiltonian, PathBZ
+from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, PathBZ
 
 
 class TestHamiltonian(object):
@@ -449,6 +449,31 @@ class TestHamiltonian(object):
             H2[0, j] = (i, i*2)
         assert_true(H.spsame(H2))
 
+    def test_spin2(self):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        H = Hamiltonian(g, dtype=np.int32, spin=2)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H[0, j] = (i, i*2)
+
+        H2 = Hamiltonian(g, 2, dtype=np.int32)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H2[0, j] = (i, i*2)
+        assert_true(H.spsame(H2))
+
+        H2 = Hamiltonian(g, Spin(2), dtype=np.int32)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H2[0, j] = (i, i*2)
+        assert_true(H.spsame(H2))
+
+        H2 = Hamiltonian(g, Spin('polarized'), dtype=np.int32)
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H2[0, j] = (i, i*2)
+        assert_true(H.spsame(H2))
+
     def test_non_collinear1(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.float64, spin=4)
@@ -465,6 +490,22 @@ class TestHamiltonian(object):
                 H[i, i+1, 0] = 1.
                 H[i, i+1, 1] = 1.
         assert_true(len(H.eigh()) == len(H))
+
+        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-colinear'))
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H1[i, i, 0] = 0.
+            H1[i, i, 1] = 0.
+            H1[i, i, 2] = 0.1
+            H1[i, i, 3] = 0.1
+            if i > 0:
+                H1[i, i-1, 0] = 1.
+                H1[i, i-1, 1] = 1.
+            if i < 9:
+                H1[i, i+1, 0] = 1.
+                H1[i, i+1, 1] = 1.
+        assert_true(H1.spsame(H))
+        assert_true(np.allclose(H.eigh(), H1.eigh()))
 
     def test_so1(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
@@ -486,6 +527,22 @@ class TestHamiltonian(object):
                 H[i, i+1, 0] = 1.
                 H[i, i+1, 1] = 1.
         assert_true(len(H.eigh()) == len(H))
+
+        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('spin-orbit'))
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            H1[i, i, 0] = 0.
+            H1[i, i, 1] = 0.
+            H1[i, i, 2] = 0.1
+            H1[i, i, 3] = 0.1
+            if i > 0:
+                H1[i, i-1, 0] = 1.
+                H1[i, i-1, 1] = 1.
+            if i < 9:
+                H1[i, i+1, 0] = 1.
+                H1[i, i+1, 1] = 1.
+        assert_true(H1.spsame(H))
+        assert_true(np.allclose(H.eigh(), H1.eigh()))
 
     def test_finalized(self):
         assert_false(self.H.finalized)

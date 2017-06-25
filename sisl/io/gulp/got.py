@@ -13,7 +13,7 @@ from ..sile import *
 from sisl._help import _range as range
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl.physics import DynamicalMatrix
+from sisl.physics import Hessian
 
 
 __all__ = ['gotSileGULP']
@@ -164,8 +164,8 @@ class gotSileGULP(SileGULP):
     set_es_key = set_dyn_key
 
     @Sile_fh_open
-    def read_dynmat(self, **kwargs):
-        """ Returns a GULP dynamical matrix model for the output of GULP 
+    def read_hessian(self, **kwargs):
+        """ Returns a GULP Hessian matrix model for the output of GULP 
 
         Parameters
         ----------
@@ -184,7 +184,7 @@ class gotSileGULP(SileGULP):
         if hessian is None:
             dyn = self._read_dyn(geom.no, **kwargs)
         else:
-            dyn = get_sile(hessian, 'r').read_hamiltonian(**kwargs)
+            dyn = get_sile(hessian, 'r').read_hessian(**kwargs)
 
             if dyn.shape[0] != geom.no:
                 raise ValueError("Inconsistent Hessian file, number of atoms not correct")
@@ -205,9 +205,9 @@ class gotSileGULP(SileGULP):
             # clean-up
             del mass
 
-        return DynamicalMatrix.sp2HS(geom, dyn)
+        return Hessian.fromsp(geom, dyn)
 
-    read_hamiltonian = read_dynmat
+    read_hamiltonian = read_hessian
 
     def _read_dyn(self, no, **kwargs):
         """ In case the dynamical matrix is read from the file """

@@ -27,7 +27,7 @@ from .io import *
 from .sparse import *
 from .sparse_geometry import *
 
-# Hamiltonian etc.
+# Physical quantities and required classes
 from .physics import *
 
 

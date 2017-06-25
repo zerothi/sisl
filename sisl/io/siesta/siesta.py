@@ -273,7 +273,10 @@ class ncSileSiesta(SileCDFSIESTA):
         # Ensure that the geometry is written
         self.write_geometry(ham.geom)
 
-        self._crt_dim(self, 'spin', ham.spin)
+        self._crt_dim(self, 'spin', len(ham.spin))
+
+        if ham.spin.dkind != 'f':
+            raise NotImplementedError('Currently we only allow writing a floating point Hamiltonian to the SIESTA format')
 
         v = self._crt_var(self, 'Ef', 'f8', ('one',))
         v.info = 'Fermi level'
@@ -323,7 +326,7 @@ class ncSileSiesta(SileCDFSIESTA):
                           chunksizes=(1, len(ham._data.col)), **self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"
-        for i in range(ham.spin):
+        for i in range(len(ham.spin)):
             v[i, :] = ham._data._D[:, i] / Ry2eV ** ham._E_order
 
         # Create the settings

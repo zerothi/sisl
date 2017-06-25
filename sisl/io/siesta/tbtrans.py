@@ -1536,7 +1536,7 @@ class dHncSileSiesta(SileCDFSIESTA):
         # Ensure that the geometry is written
         self.write_geometry(ham.geom)
 
-        self._crt_dim(self, 'spin', ham.spin)
+        self._crt_dim(self, 'spin', len(ham.spin))
 
         # Determine the type of dH we are storing...
         k = kwargs.get('k', None)
@@ -1655,7 +1655,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                                chunksizes=csize,
                                attr = {'info': "Real part of dH",
                                        'unit': "Ry"}, **self._cmp_args)
-            for i in range(ham.spin):
+            for i in range(len(ham.spin)):
                 sl[-2] = i
                 v1[sl] = ham._data._D[:, i].real * eV2Ry ** ham._E_order
 
@@ -1663,7 +1663,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                                chunksizes=csize,
                                attr = {'info': "Imaginary part of dH",
                                        'unit': "Ry"}, **self._cmp_args)
-            for i in range(ham.spin):
+            for i in range(len(ham.spin)):
                 sl[-2] = i
                 v2[sl] = ham._data._D[:, i].imag * eV2Ry ** ham._E_order
 
@@ -1672,7 +1672,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                               chunksizes=csize,
                               attr = {'info': "dH",
                                       'unit': "Ry"},  **self._cmp_args)
-            for i in range(ham.spin):
+            for i in range(len(ham.spin)):
                 sl[-2] = i
                 v[sl] = ham._data._D[:, i] * eV2Ry ** ham._E_order
 

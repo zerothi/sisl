@@ -5,17 +5,13 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from .hamiltonian import Hamiltonian
-from sisl._help import is_python3
+from .sparse_physics import SparseOrbitalBZ
+from sisl._help import _zip as zip
 
-__all__ = ['DynamicalMatrix']
-
-
-if not is_python3:
-    from itertools import izip as zip
+__all__ = ['Hessian', 'DynamicalMatrix']
 
 
-class DynamicalMatrix(Hamiltonian):
+class Hessian(SparseOrbitalBZ):
     """ Dynamical matrix of a geometry """
 
     # The order of the Energy
@@ -23,9 +19,22 @@ class DynamicalMatrix(Hamiltonian):
     # This conversion is made: [eV] ** _E_order
     _E_order = 2
 
-    D = property(Hamiltonian._get_H, Hamiltonian._set_H)
-    # The dynamical matrix is equivalent to the unpolarized case
-    Dk = Hamiltonian._Hk_unpolarized
+    def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
+        """ Initializes the dynamical matrix from a geometry """
+        super(Hessian, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
+
+        self.Dk = self._Pk
+
+    def _get_D(self):
+        self._def_dim = 0
+        return self
+
+    def _set_D(self, key, value):
+        if len(key) == 2:
+            self._def_dim = 0
+        self[key] = value
+
+    D = property(_get_D, _set_D)
 
     def correct_Newton(self):
         """
@@ -39,13 +48,12 @@ class DynamicalMatrix(Hamiltonian):
 
         # Create UC dynamical matrix
         dyn_sc = self.tocsr(0)
-        d_sc = dyn_sc.tocoo()
-        d_uc = lil_matrix((self.no, self.no), dtype=d_sc.dtype)
+        no = self.no
+        d_uc = lil_matrix((no, no), dtype=dyn_sc.dtype)
 
-        # Convert SC to UC
-        for j, i, d in zip(d_sc.row, d_sc.col % self.no, d_sc.data):
-            d_uc[j, i] += d
-        del d_sc
+        for i, _ in self.sc:
+            d_uc[:, :] += dyn_sc[:, i*no: (i+1)*no]
+
         d_uc = d_uc.tocsc()
 
         # we need to correct the dynamical matrix found in GULP
@@ -84,3 +92,5 @@ class DynamicalMatrix(Hamiltonian):
             self.D[jo + 2, jo + 2] = D - d_uc[jo + 2, 2::3].multiply(MM).sum()
 
         del d_uc
+
+DynamicalMatrix = Hessian

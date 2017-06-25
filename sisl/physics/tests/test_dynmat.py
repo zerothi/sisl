@@ -6,7 +6,7 @@ from nose.plugins.attrib import attr
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, DynamicalMatrix
+from sisl import Geometry, Atom, SuperCell, Hessian
 
 
 class TestHamiltonian(object):
@@ -23,7 +23,7 @@ class TestHamiltonian(object):
         self.g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
                           atom=C, sc=self.sc)
-        self.D = DynamicalMatrix(self.g)
+        self.D = Hessian(self.g)
 
         def func(D, ia, idxs, idxs_xyz):
             idx = D.geom.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
