@@ -116,22 +116,37 @@ class ncSileSiesta(SileCDFSIESTA):
 
     def read_hamiltonian(self, **kwargs):
         """ Returns a tight-binding model from the underlying NetCDF file """
-        ham = self._read_class_spin(Hamiltonian, **kwargs)
-        S = ham._data._D[:, ham.S_idx]
+        H = self._read_class_spin(Hamiltonian, **kwargs)
+        S = H._data._D[:, H.S_idx]
 
-        Ef = float(self._value('Ef')[0]) * Ry2eV ** ham._E_order
+        Ef = float(self._value('Ef')[0]) * Ry2eV
         sp = self._crt_grp(self, 'SPARSE')
 
-        for i in range(len(ham.spin)):
+        for i in range(len(H.spin)):
             # Create new container
             H = np.array(sp.variables['H'][i, :],
-                         np.float64) * Ry2eV ** ham._E_order
+                         np.float64) * Ry2eV
             # Correct for the Fermi-level, Ef == 0
             if i < 2:
                 H -= Ef * S[:]
-            ham._data._D[:, i] = H[:]
+            H._data._D[:, i] = H[:]
 
-        return ham
+        return H
+
+    def read_hessian(self, **kwargs):
+        """ Returns a tight-binding model from the underlying NetCDF file """
+        H = self._read_class_spin(Hessian, **kwargs)
+        S = H._data._D[:, H.S_idx]
+
+        sp = self._crt_grp(self, 'SPARSE')
+
+        for i in range(sp.variables['H'].shape[0]):
+            # Create new container
+            h = np.array(sp.variables['H'][i, :],
+                         np.float64) * Ry2eV ** 2
+            H._data._D[:, i] = h[:]
+
+        return H
 
     def read_density_matrix(self, **kwargs):
         """ Returns a density matrix from the underlying NetCDF file """
@@ -149,7 +164,7 @@ class ncSileSiesta(SileCDFSIESTA):
         sp = self._crt_grp(self, 'SPARSE')
         for i in range(len(EDM.spin)):
             # Create new container
-            EDM._data._D[:, i] = sp.variables['EDM'][i, :]
+            EDM._data._D[:, i] = sp.variables['EDM'][i, :] * Ry2eV
 
         return EDM
 
@@ -271,33 +286,31 @@ class ncSileSiesta(SileCDFSIESTA):
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = np.cumsum(orbs)
 
-    def write_hamiltonian(self, ham, **kwargs):
+    def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
 
         Parameters
         ----------
-        ham : `Hamiltonian` model
+        H : `Hamiltonian` model
            the model to be saved in the NC file
         Ef : double=0
            the Fermi level of the electronic structure (in eV)
         """
         # Ensure finalizations
-        ham.finalize()
+        H.finalize()
 
         # Ensure that the geometry is written
-        self.write_geometry(ham.geom)
+        self.write_geometry(H.geom)
 
-        self._crt_dim(self, 'spin', len(ham.spin))
+        self._crt_dim(self, 'spin', len(H.spin))
 
-        if ham.spin.dkind != 'f':
+        if H.dkind != 'f':
             raise NotImplementedError('Currently we only allow writing a floating point Hamiltonian to the SIESTA format')
 
         v = self._crt_var(self, 'Ef', 'f8', ('one',))
         v.info = 'Fermi level'
         v.unit = 'Ry'
-        v[:] = 0.
-        if 'Ef' in kwargs:
-            v[:] = kwargs['Ef'] / Ry2eV ** ham._E_order
+        v[:] = kwargs.get('Ef', 0.) / Ry2eV
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
         v[:] = 0.
@@ -310,38 +323,116 @@ class ncSileSiesta(SileCDFSIESTA):
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
 
-        self._crt_dim(sp, 'nnzs', ham._data.col.shape[0])
+        self._crt_dim(sp, 'nnzs', H._data.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
         v.info = "Number of non-zero elements per row"
-        v[:] = ham._data.ncol[:]
+        v[:] = H._data.ncol[:]
         v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(ham._data.col),), **self._cmp_args)
+                          chunksizes=(len(H._data.col),), **self._cmp_args)
         v.info = "Supercell column indices in the sparse format"
-        v[:] = ham._data.col[:] + 1  # correct for fortran indices
+        v[:] = H._data.col[:] + 1  # correct for fortran indices
         v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = ham.geom.sc.sc_off[:, :]
+        v[:] = H.geom.sc.sc_off[:, :]
 
         # Save tight-binding parameters
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(ham._data.col),), **self._cmp_args)
+                          chunksizes=(len(H._data.col),), **self._cmp_args)
         v.info = "Overlap matrix"
-        if ham.orthogonal:
+        if H.orthogonal:
             # We need to create the orthogonal pattern
-            tmp = ham._data.copy(dims=[0])
+            tmp = H._data.copy(dims=[0])
             tmp.empty(keep=True)
             for i in range(tmp.shape[0]):
                 tmp[i, i] = 1.
             v[:] = tmp._D[:, 0]
             del tmp
         else:
-            v[:] = ham._data._D[:, ham.S_idx]
+            v[:] = H._data._D[:, H.S_idx]
         v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(ham._data.col)), **self._cmp_args)
+                          chunksizes=(1, len(H._data.col)), **self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"
-        for i in range(len(ham.spin)):
-            v[i, :] = ham._data._D[:, i] / Ry2eV ** ham._E_order
+        for i in range(len(H.spin)):
+            v[i, :] = H._data._D[:, i] / Ry2eV
+
+        # Create the settings
+        st = self._crt_grp(self, 'SETTINGS')
+        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
+        v.info = "Electronic temperature used for smearing DOS"
+        v.unit = "Ry"
+        v[:] = 0.025 / Ry2eV
+        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
+        v.info = "Grid used for the Brillouin zone integration"
+        v[:] = np.identity(3) * 2
+        v = self._crt_var(st, 'BZ_displ', 'i4', ('xyz',))
+        v.info = "Monkhorst-Pack k-grid displacements"
+        v.unit = "b**-1"
+        v[:] = np.zeros([3], np.float64)
+
+    def write_hessian(self, H, **kwargs):
+        """ Writes Hessian model to file
+
+        Parameters
+        ----------
+        H : `Hessian` model
+           the model to be saved in the NC file
+        """
+        # Ensure finalizations
+        H.finalize()
+
+        # Ensure that the geometry is written
+        self.write_geometry(H.geom)
+
+        self._crt_dim(self, 'spin', 1)
+
+        if H.dkind != 'f':
+            raise NotImplementedError('Currently we only allow writing a floating point Hessian to the SIESTA format')
+
+        v = self._crt_var(self, 'Ef', 'f8', ('one',))
+        v.info = 'Fermi level'
+        v.unit = 'Ry'
+        v[:] = 0.
+        v = self._crt_var(self, 'Qtot', 'f8', ('one',))
+        v.info = 'Total charge'
+        v.unit = 'e'
+        v[:] = 0.
+
+        # Append the sparsity pattern
+        # Create basis group
+        sp = self._crt_grp(self, 'SPARSE')
+
+        self._crt_dim(sp, 'nnzs', H._data.col.shape[0])
+        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
+        v.info = "Number of non-zero elements per row"
+        v[:] = H._data.ncol[:]
+        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
+                          chunksizes=(len(H._data.col),), **self._cmp_args)
+        v.info = "Supercell column indices in the sparse format"
+        v[:] = H._data.col[:] + 1  # correct for fortran indices
+        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
+        v.info = "Index of supercell coordinates"
+        v[:] = H.geom.sc.sc_off[:, :]
+
+        # Save tight-binding parameters
+        v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
+                          chunksizes=(len(H._data.col),), **self._cmp_args)
+        v.info = "Overlap matrix"
+        if H.orthogonal:
+            # We need to create the orthogonal pattern
+            tmp = H._data.copy(dims=[0])
+            tmp.empty(keep=True)
+            for i in range(tmp.shape[0]):
+                tmp[i, i] = 1.
+            v[:] = tmp._D[:, 0]
+            del tmp
+        else:
+            v[:] = H._data._D[:, H.S_idx]
+        v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
+                          chunksizes=(1, len(H._data.col)), **self._cmp_args)
+        v.info = "Hessian"
+        v.unit = "Ry**2"
+        v[0, :] = H._data._D[:, 0] / Ry2eV ** 2
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')

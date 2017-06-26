@@ -1520,23 +1520,23 @@ class dHncSileSiesta(SileCDFSIESTA):
 
         return lvl
 
-    def write_hamiltonian(self, ham, **kwargs):
+    def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
 
         Parameters
         ----------
-        ham : `Hamiltonian` model
+        H : `Hamiltonian` model
            the model to be saved in the NC file
         spin : int, 0
            the spin-index of the Hamiltonian object that is stored.
         """
         # Ensure finalizations
-        ham.finalize()
+        H.finalize()
 
         # Ensure that the geometry is written
-        self.write_geometry(ham.geom)
+        self.write_geometry(H.geom)
 
-        self._crt_dim(self, 'spin', len(ham.spin))
+        self._crt_dim(self, 'spin', len(H.spin))
 
         # Determine the type of dH we are storing...
         k = kwargs.get('k', None)
@@ -1559,27 +1559,27 @@ class dHncSileSiesta(SileCDFSIESTA):
         # Append the sparsity pattern
         # Create basis group
         if 'n_col' in lvl.variables:
-            if len(lvl.dimensions['nnzs']) != ham.nnz:
+            if len(lvl.dimensions['nnzs']) != H.nnz:
                 raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
                                  "all dH entries [nnz].")
-            if np.any(lvl.variables['n_col'][:] != ham._data.ncol[:]):
+            if np.any(lvl.variables['n_col'][:] != H._data.ncol[:]):
                 raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
                                  "all dH entries [n_col].")
-            if np.any(lvl.variables['list_col'][:] != ham._data.col[:]+1):
+            if np.any(lvl.variables['list_col'][:] != H._data.col[:]+1):
                 raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
                                  "all dH entries [list_col].")
         else:
-            self._crt_dim(lvl, 'nnzs', ham._data.col.shape[0])
+            self._crt_dim(lvl, 'nnzs', H._data.col.shape[0])
             v = self._crt_var(lvl, 'n_col', 'i4', ('no_u',))
             v.info = "Number of non-zero elements per row"
-            v[:] = ham._data.ncol[:]
+            v[:] = H._data.ncol[:]
             v = self._crt_var(lvl, 'list_col', 'i4', ('nnzs',),
-                              chunksizes=(len(ham._data.col),), **self._cmp_args)
+                              chunksizes=(len(H._data.col),), **self._cmp_args)
             v.info = "Supercell column indices in the sparse format"
-            v[:] = ham._data.col[:] + 1  # correct for fortran indices
+            v[:] = H._data.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
             v.info = "Index of supercell coordinates"
-            v[:] = ham.geom.sc.sc_off[:, :]
+            v[:] = H.geom.sc.sc_off[:, :]
 
         warn_E = True
         if ilvl in [3, 4]:
@@ -1648,33 +1648,33 @@ class dHncSileSiesta(SileCDFSIESTA):
             csize = [1] * 4
 
         # Number of non-zero elements
-        csize[-1] = ham.nnz
+        csize[-1] = H.nnz
 
-        if ham._data._D.dtype.kind == 'c':
+        if H._data._D.dtype.kind == 'c':
             v1 = self._crt_var(lvl, 'RedH', 'f8', dim,
                                chunksizes=csize,
                                attr = {'info': "Real part of dH",
                                        'unit': "Ry"}, **self._cmp_args)
-            for i in range(len(ham.spin)):
+            for i in range(len(H.spin)):
                 sl[-2] = i
-                v1[sl] = ham._data._D[:, i].real * eV2Ry ** ham._E_order
+                v1[sl] = H._data._D[:, i].real * eV2Ry
 
             v2 = self._crt_var(lvl, 'ImdH', 'f8', dim,
                                chunksizes=csize,
                                attr = {'info': "Imaginary part of dH",
                                        'unit': "Ry"}, **self._cmp_args)
-            for i in range(len(ham.spin)):
+            for i in range(len(H.spin)):
                 sl[-2] = i
-                v2[sl] = ham._data._D[:, i].imag * eV2Ry ** ham._E_order
+                v2[sl] = H._data._D[:, i].imag * eV2Ry
 
         else:
             v = self._crt_var(lvl, 'dH', 'f8', dim,
                               chunksizes=csize,
                               attr = {'info': "dH",
                                       'unit': "Ry"},  **self._cmp_args)
-            for i in range(len(ham.spin)):
+            for i in range(len(H.spin)):
                 sl[-2] = i
-                v[sl] = ham._data._D[:, i] * eV2Ry ** ham._E_order
+                v[sl] = H._data._D[:, i] * eV2Ry
 
 
 add_sile('dH.nc', dHncSileSiesta)

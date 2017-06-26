@@ -42,11 +42,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
     (remember that Python is 0-based elements).
     """
 
-    # The order of the Energy
-    # I.e. whether energy should be in other units than Ry
-    # This conversion is made: [eV] ** _E_order
-    _E_order = 1
-
     def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
         """Create Hamiltonian model from geometry
 

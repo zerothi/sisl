@@ -166,13 +166,11 @@ TBT.HS DEVICE_zz.nc
 
 %block TBT.Elec.Left
   HS ELEC_zz.nc
-  chemical-potential Left
   semi-inf-direction -a2
   electrode-position 1
 %endblock
 %block TBT.Elec.Right
   HS ELEC_zz.nc
-  chemical-potential Right
   semi-inf-direction +a2
   electrode-position end -1
 %endblock
@@ -185,8 +183,8 @@ if not os.path.exists('zz.gout'):
 print('Reading output')
 gout = sisl.get_sile('zz.gout')
 # Correct what to read from the gulp output
-gout.set_sc_key("Cartesian lattice vectors")
-dyn = gout.read_hamiltonian()
+gout.set_supercell_key("Cartesian lattice vectors")
+dyn = gout.read_hessian()
 
 # In GULP correcting for Newtons second law is already obeyed
 # So this need not be used, however, the precision of output

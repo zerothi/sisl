@@ -107,39 +107,39 @@ class SparseOrbitalBZ(SparseOrbital):
     S = property(_get_S, _set_S)
 
     @classmethod
-    def fromsp(cls, geom, V, S=None):
+    def fromsp(cls, geom, P, S=None):
         """ Read and return the object with possible overlap """
         # Calculate maximum number of connections per row
         nc = 0
 
         # Ensure list of csr format (to get dimensions)
-        if isspmatrix(V):
-            V = [V]
+        if isspmatrix(P):
+            P = [P]
 
         # Number of dimensions
-        dim = len(V)
+        dim = len(P)
         # Sort all indices for the passed sparse matrices
         for i in range(dim):
-            V[i] = V[i].tocsr()
-            V[i].sort_indices()
+            P[i] = P[i].tocsr()
+            P[i].sort_indices()
 
         # Figure out the maximum connections per
         # row to reduce number of re-allocations to 0
-        for i in range(V[0].shape[0]):
-            nc = max(nc, V[0][i, :].getnnz())
+        for i in range(P[0].shape[0]):
+            nc = max(nc, P[0][i, :].getnnz())
 
         # Create the sparse object
-        v = cls(geom, dim, V[0].dtype, nc, orthogonal=S is None)
+        p = cls(geom, dim, P[0].dtype, nc, orthogonal=S is None)
 
         for i in range(dim):
-            for jo, io, vv in ispmatrixd(H[i]):
-                v[jo, io, i] = vv
+            for jo, io, v in ispmatrixd(P[i]):
+                p[jo, io, i] = v
 
         if not S is None:
-            for jo, io, vv in ispmatrixd(S):
-                v.S[jo, io] = vv
+            for jo, io, v in ispmatrixd(S):
+                p.S[jo, io] = v
 
-        return v
+        return p
 
     # Create iterations on entire set of orbitals
     def iter(self, local=False):

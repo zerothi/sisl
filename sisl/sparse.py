@@ -314,6 +314,11 @@ class SparseCSR(object):
         return self._D.dtype
 
     @property
+    def dkind(self):
+        """ The data-type in the sparse matrix (in str) """
+        return np.dtype(self._D.dtype).kind
+
+    @property
     def nnz(self):
         """ Number of non-zero elements in the sparse matrix """
         return self._nnz

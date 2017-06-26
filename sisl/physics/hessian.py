@@ -14,11 +14,6 @@ __all__ = ['Hessian', 'DynamicalMatrix']
 class Hessian(SparseOrbitalBZ):
     """ Dynamical matrix of a geometry """
 
-    # The order of the Energy
-    # I.e. whether energy should be in other units than Ry
-    # This conversion is made: [eV] ** _E_order
-    _E_order = 2
-
     def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Initializes the dynamical matrix from a geometry """
         super(Hessian, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
@@ -92,5 +87,38 @@ class Hessian(SparseOrbitalBZ):
             self.D[jo + 2, jo + 2] = D - d_uc[jo + 2, 2::3].multiply(MM).sum()
 
         del d_uc
+
+    @staticmethod
+    def read(sile, *args, **kwargs):
+        """ Reads Hessian from `Sile` using `read_hessian`.
+
+        Parameters
+        ----------
+        sile : `Sile`, str
+            a `Sile` object which will be used to read the Hessian
+            and the overlap matrix (if any)
+            if it is a string it will create a new sile using `get_sile`.
+        * : args passed directly to ``read_hamiltonian(,**)``
+        """
+        # This only works because, they *must*
+        # have been imported previously
+        from sisl.io import get_sile, BaseSile
+        if isinstance(sile, BaseSile):
+            return sile.read_hessian(*args, **kwargs)
+        else:
+            return get_sile(sile).read_hessian(*args, **kwargs)
+
+    def write(self, sile, *args, **kwargs):
+        """ Writes a Hessian to the `Sile` as implemented in the :code:`Sile.write_hessian` method """
+        self.finalize()
+
+        # This only works because, they *must*
+        # have been imported previously
+        from sisl.io import get_sile, BaseSile
+        if isinstance(sile, BaseSile):
+            sile.write_hessian(self, *args, **kwargs)
+        else:
+            get_sile(sile, 'w').write_hessian(self, *args, **kwargs)
+
 
 DynamicalMatrix = Hessian

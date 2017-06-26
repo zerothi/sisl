@@ -157,11 +157,11 @@ class gotSileGULP(SileGULP):
         # Return the geometry
         return Geometry(xyz, Atom[Z], sc=sc)
 
-    def set_dyn_key(self, key):
+    def set_hessian_key(self, key):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """
         self.set_key('dyn', key)
 
-    set_es_key = set_dyn_key
+    set_dyn_key = set_hessian_key
 
     @Sile_fh_open
     def read_hessian(self, **kwargs):

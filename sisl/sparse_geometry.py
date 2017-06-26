@@ -129,6 +129,11 @@ class SparseGeometry(object):
         return self._data.dtype
 
     @property
+    def dkind(self):
+        """ Data type of sparse elements (in str) """
+        return self._data.dkind
+
+    @property
     def nnz(self):
         """ Number of non-zero elements """
         return self._data.nnz
