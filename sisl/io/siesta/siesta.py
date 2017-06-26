@@ -124,12 +124,12 @@ class ncSileSiesta(SileCDFSIESTA):
 
         for i in range(len(H.spin)):
             # Create new container
-            H = np.array(sp.variables['H'][i, :],
+            h = np.array(sp.variables['H'][i, :],
                          np.float64) * Ry2eV
             # Correct for the Fermi-level, Ef == 0
             if i < 2:
-                H -= Ef * S[:]
-            H._data._D[:, i] = H[:]
+                h -= Ef * S[:]
+            H._data._D[:, i] = h[:]
 
         return H
 
@@ -142,9 +142,7 @@ class ncSileSiesta(SileCDFSIESTA):
 
         for i in range(sp.variables['H'].shape[0]):
             # Create new container
-            h = np.array(sp.variables['H'][i, :],
-                         np.float64) * Ry2eV ** 2
-            H._data._D[:, i] = h[:]
+            H._data._D[:, i] = sp.variables['H'][i, :] * Ry2eV ** 2
 
         return H
 
