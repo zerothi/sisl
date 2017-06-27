@@ -46,4 +46,5 @@ class TestFDF(object):
         assert_true(np.allclose(g.cell, self.g.cell))
         assert_true(np.allclose(g.xyz, self.g.xyz))
         for ia in g:
-            assert_true(g.atom[ia] == self.g.atom[ia])
+            assert_true(g.atom[ia].Z == self.g.atom[ia].Z)
+            assert_true(g.atom[ia].tag == self.g.atom[ia].tag)

@@ -836,7 +836,7 @@ class PeriodicTable(object):
         ak = np.asarray([key]).flatten()
         if len(ak) == 1:
             return self._Z_int[ak[0]]
-        return np.array([self._Z_int[i] for i in ak], np.int32)
+        return np.array([self._Z_int[ia] for ia in ak], np.int32)
 
     Z_int = Z
 
@@ -860,7 +860,7 @@ class PeriodicTable(object):
         ak = np.asarray([key]).flatten()
         if len(ak) == 1:
             return self._Z_short[ak[0]]
-        return [self._Z_short[i] for i in ak]
+        return [self._Z_short[ia] for ia in ak]
 
     Z_short = Z_label
 
@@ -884,7 +884,7 @@ class PeriodicTable(object):
         Z = self.Z_int(key)
         if isinstance(Z, Integral):
             return self._atomic_mass[Z]
-        return np.array([self._atomic_mass[i] for i in Z], np.float64)
+        return np.array([self._atomic_mass[z] for z in Z], np.float64)
 
     def radius(self, key, method='calc'):
         """ Return the atomic radii
@@ -949,10 +949,6 @@ class AtomMeta(type):
             # we need to create a list of atoms
             atm = [cls[k] for k in key]
             return np.array(atm, dtype=Atom)
-        if isinstance(key, cls):
-            # if the key already is an atomic object
-            # return it
-            return key
         # Index Z based
         return cls(key)
 
@@ -1074,20 +1070,32 @@ class Atom(with_metaclass(AtomMeta, object)):
         """ Return number of orbitals in this atom """
         return self.orbs
 
+    def equal(self, other, R=True):
+        """ True if `other` is the same as this atomic specie
+
+        Parameters
+        ----------
+        other : Atom
+           the other object to check againts
+        R : bool, optional
+           if True the equality check also checks the orbital radii, else they are not compared
+        """
+        if not isinstance(other, Atom):
+            return False
+        same = self.Z == other.Z
+        same &= self.orbs == other.orbs
+        same &= self.mass == other.mass
+        same &= self.tag == other.tag
+        # This prevents an allclose being called with
+        # different number of orbitals
+        if same and R:
+            same = np.allclose(self.R, other.R)
+        return same
+
     # Check whether they are equal
     def __eq__(a, b):
         """ Return true if the saved quantities are the same """
-        if not isinstance(b, Atom):
-            return False
-        same = a.Z == b.Z
-        same &= a.orbs == b.orbs
-        same &= a.mass == b.mass
-        same &= a.tag == b.tag
-        # This prevents an allclose being called with
-        # different number of orbitals
-        if same:
-            same = np.allclose(a.R, b.R)
-        return same
+        return a.equal(b)
 
     def __ne__(a, b):
         return not (a == b)
@@ -1269,7 +1277,7 @@ class Atoms(object):
         for i, a in enumerate(self._atom):
             if a == atom:
                 return i
-        return -1
+        raise KeyError('Could not find `atom`')
 
     def reorder(self):
         """ Reorders the atoms and species index so that they are ascending """
@@ -1326,18 +1334,10 @@ class Atoms(object):
         atoms._specie = self._specie[atom]
         return atoms
 
-    def cut(self, seps, axis):
-        """ Return a subset of the list """
-        atom = ensure_array(atom).flatten()
-        atoms = Atoms()
-        atoms._atom = self._atom[:]
-        atoms._specie = self._specie[atom]
-        return atoms
-
     def remove(self, atom):
         """ Remove a set of atoms """
-        atms = ensure_array(atom).flatten()
-        idx = np.setdiff1d(np.arange(len(self)), atms, assume_unique=True)
+        atom = ensure_array(atom).flatten()
+        idx = np.setdiff1d(np.arange(len(self)), atom, assume_unique=True)
         return self.sub(idx)
 
     def tile(self, reps):
@@ -1480,6 +1480,27 @@ class Atoms(object):
                 self._specie[j] = self.index(atoms[i])
         else:
             self._specie[key] = self.index(atoms[0])
+
+    def equal(self, other, R=True):
+        """ True if the contained atoms are the same in the two lists
+
+        Notes
+        -----
+        This does not necessarily mean that the order, nor the number of atoms
+        are the same.
+
+        Parameters
+        ----------
+        other : Atoms
+           the list of atoms to check against
+        R : bool, optional
+           if True also checks that the orbital radius are the same
+        """
+        for A in self.atom:
+            for B in other.atom:
+                if not A.equal(B, R):
+                    return False
+        return True
 
     def __eq__(a, b):
         """ Returns true if the contained atoms are the same """

@@ -31,8 +31,7 @@ class TestHAM(object):
         # Assert they are the same
         assert_true(np.allclose(g.cell, self.g.cell))
         assert_true(np.allclose(g.xyz, self.g.xyz))
-        for ia in g:
-            assert_true(g.atom[ia] == self.g.atom[ia])
+        assert_true(g.atom.equal(self.g.atom, R=False))
 
     def test_ham2(self):
         with warn.catch_warnings():

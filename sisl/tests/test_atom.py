@@ -26,6 +26,9 @@ class TestAtom(object):
 
     def test1(self):
         assert_true(self.C == Atom['C'])
+        assert_true(self.C == Atom[self.C])
+        assert_true(self.C == Atom[Atom['C']])
+        assert_true(self.C == Atom[Atom(6)])
         assert_true(self.Au == Atom['Au'])
         assert_true(self.Au != self.C)
         assert_false(self.Au == self.C)
@@ -80,6 +83,21 @@ class TestAtom(object):
         a = self.PT.Z_label(1)
         assert_true(a == 'H')
 
+    def test10(self):
+        assert_equal(self.PT.atomic_mass(1), self.PT.atomic_mass('H'))
+        assert_true(np.allclose(self.PT.atomic_mass([1, 2]), self.PT.atomic_mass(['H', 'He'])))
+
+    def test11(self):
+        PT = self.PT
+        for m in ['calc', 'empirical', 'vdw']:
+            assert_equal(PT.radius(1, method=m), PT.radius('H', method=m))
+            assert_true(np.allclose(PT.radius([1, 2], method=m), PT.radius(['H', 'He'], method=m)))
+
+    @raises(KeyError)
+    def test12(self):
+        a = Atom(1.2)
+        print(a)
+
     def test_pickle(self):
         import pickle as p
         sC = p.dumps(self.C)
@@ -97,6 +115,8 @@ class TestAtom(object):
         assert_true(Au != self.C)
 
 
+@attr('atom')
+@attr('atoms')
 class TestAtoms(object):
 
     def setUp(self):
@@ -116,6 +136,8 @@ class TestAtoms(object):
         atom = Atoms(Atom(6, R=1.45), na=2)
         atom = Atoms(atom, na=4)
         assert_true(atom[0].maxR() == 1.45)
+        for ia in range(len(atom)):
+            assert_true(atom.maxR(True)[ia] == 1.45)
 
     def test_len(self):
         atom = Atoms([self.C, self.C3, self.Au])
@@ -193,6 +215,15 @@ class TestAtoms(object):
         atom = atom.sub(0)
         atom = atom.reduce()
         assert_true(atom[0] == Atom[6])
+        assert_false(atom[0] == Atom[8])
+        assert_true(len(atom) == 1)
+        assert_true(len(atom.atom) == 1)
+
+    def test_remove1(self):
+        atom = Atoms(['C', 'Au'])
+        atom = atom.remove(1)
+        atom = atom.reduce()
+        assert_true(atom[0] == Atom[6])
         assert_true(len(atom) == 1)
         assert_true(len(atom.atom) == 1)
 
@@ -203,3 +234,8 @@ class TestAtoms(object):
         assert_true(atom[0] == Atom['Au'])
         assert_true(len(atom) == 1)
         assert_true(len(atom.atom) == 2)
+
+    @raises(KeyError)
+    def test_index1(self):
+        atom = Atoms(['C', 'Au'])
+        atom.index(Atom('B'))

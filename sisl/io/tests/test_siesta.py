@@ -30,8 +30,7 @@ class TestSIESTAnc(object):
         assert_true(np.allclose(tb.cell, ntb.cell))
         assert_true(np.allclose(tb.xyz, ntb.xyz))
         assert_true(np.allclose(tb._data._D[:, 0], ntb._data._D[:, 0]))
-        for ia in ntb.geom:
-            assert_true(self.g.atom[ia] == ntb.atom[ia])
+        assert_true(self.g.atom.equal(ntb.atom, R=False))
 
     def test_nc2(self):
         f = osp.join(self.d, 'gr.dH.nc')
@@ -64,5 +63,4 @@ class TestSIESTAnc(object):
         assert_true(np.allclose(tb.cell, ntb.cell))
         assert_true(np.allclose(tb.xyz, ntb.xyz))
         assert_true(np.allclose(tb._data._D, ntb._data._D))
-        for ia in ntb.geom:
-            assert_true(self.g.atom[ia] == ntb.atom[ia])
+        assert_true(self.g.atom.equal(ntb.atom, R=False))

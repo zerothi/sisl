@@ -19,7 +19,7 @@ def setUp(self):
     self.d = mkdtemp()
     alat = 1.42
     sq3h = 3.**.5 * 0.5
-    C = Atom(Z=6, orbs=1)
+    C = Atom(Z=6, orbs=1, R=1.42)
     sc = SuperCell(np.array([[1.5, sq3h, 0.],
                              [1.5, -sq3h, 0.],
                              [0., 0., 10.]], np.float64) * alat,

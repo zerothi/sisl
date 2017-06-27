@@ -7,7 +7,7 @@ import os
 
 from tempfile import mkstemp
 from sisl.io import *
-from sisl import Geometry
+from sisl import Geometry, Hamiltonian
 
 import common as tc
 
@@ -220,7 +220,7 @@ class TestObject(object):
             # Write
             sile(f, mode='w').write_geometry(G)
 
-    def test_read_write(self):
+    def test_read_write_geom(self):
         G = self.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=self.d)[1]
@@ -236,7 +236,28 @@ class TestObject(object):
             # Read
             try:
                 g = sile(f, mode='r').read_geometry()
-                assert_equal(g, G, sile)
+                assert_true(g.equal(G, R=False))
+            except UnicodeDecodeError as e:
+                pass
+            # Clean-up file
+            os.remove(f)
+
+    def test_read_write_hamiltonian(self):
+        G = self.g.rotatec(-30)
+        H = Hamiltonian(G)
+        H.construct([[0.1, 1.45], [0.1, -2.7]])
+        print(H)
+        f = mkstemp(dir=self.d)[1]
+        read_hamiltonian = get_siles(['read_hamiltonian'])
+        for sile in get_siles(['write_hamiltonian']):
+            if not sile in read_hamiltonian:
+                continue
+            # Write
+            sile(f, mode='w').write_hamiltonian(H)
+            # Read
+            try:
+                h = sile(f, mode='r').read_hamiltonian()
+                assert_true(H.spsame(h))
             except UnicodeDecodeError as e:
                 pass
             # Clean-up file
