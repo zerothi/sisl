@@ -538,6 +538,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         # sparse matrix dimension (2 * self.no)
         V = csr_matrix((len(self), len(self)), dtype=dtype)
+        v = [self.tocsr(i) for i in range(len(self.spin))]
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
@@ -546,17 +547,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             sl = slice(si*no, (si+1) * no, None)
 
             # diagonal elements
-            V[::2, ::2] += self.tocsr(0)[:, sl] * phase
-            V[1::2, 1::2] += self.tocsr(1)[:, sl] * phase
+            V[::2, ::2] += v[0][:, sl] * phase
+            V[1::2, 1::2] += v[1][:, sl] * phase
 
             # off-diagonal elements
-            V1 = self.tocsr(2)[:, sl]
-            V2 = self.tocsr(3)[:, sl]
-            V[1::2, ::2] += (V1 - 1j * V2) * phase
-            V[::2, 1::2] += (V1 + 1j * V2) * phase
+            V[1::2, ::2] += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
+            V[::2, 1::2] += (v[2][:, sl] + 1j * v[3][:, sl]) * phase
 
-            del V1, V2
-
+        del v
         return V
 
     def _Pk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge='R'):
@@ -591,6 +589,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         # sparse matrix dimension (2 * self.no)
         V = csr_matrix((len(self), len(self)), dtype=dtype)
+        v = [self.tocsr(i) for i in range(len(self.spin))]
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
@@ -599,18 +598,16 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             sl = slice(si*no, (si+1) * no, None)
 
             # diagonal elements
-            V[::2, ::2] += (self.tocsr(0)[:, sl] +
-                            1j * self.tocsr(4)[:, sl]) * phase
-            V[1::2, 1::2] += (self.tocsr(1)[:, sl] +
-                              1j * self.tocsr(5)[:, sl]) * phase
+            V[::2, ::2] += (v[0][:, sl] + 1j * v[4][:, sl]) * phase
+            V[1::2, 1::2] += (v[1][:, sl] + 1j * v[5][:, sl]) * phase
 
             # lower off-diagonal elements
-            V[1::2, ::2] += (self.tocsr(2)[:, sl] -
-                             1j * self.tocsr(3)[:, sl]) * phase
+            V[1::2, ::2] += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
 
             # upper off-diagonal elements
-            V[::2, 1::2] += (self.tocsr(6)[:, sl] +
-                             1j * self.tocsr(7)[:, sl]) * phase
+            V[::2, 1::2] += (v[6][:, sl] + 1j * v[7][:, sl]) * phase
+
+        del v
 
         return V
 
