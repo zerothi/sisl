@@ -537,8 +537,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         no = self.no
 
         # sparse matrix dimension (2 * self.no)
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
         v = [self.tocsr(i) for i in range(len(self.spin))]
+        V11 = csr_matrix((no, no), dtype=dtype)
+        V22 = csr_matrix((no, no), dtype=dtype)
+        V21 = csr_matrix((no, no), dtype=dtype)
+        V12 = csr_matrix((no, no), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
@@ -547,14 +550,23 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             sl = slice(si*no, (si+1) * no, None)
 
             # diagonal elements
-            V[::2, ::2] += v[0][:, sl] * phase
-            V[1::2, 1::2] += v[1][:, sl] * phase
+            V11 += v[0][:, sl] * phase
+            V22 += v[1][:, sl] * phase
 
             # off-diagonal elements
-            V[1::2, ::2] += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
-            V[::2, 1::2] += (v[2][:, sl] + 1j * v[3][:, sl]) * phase
+            V21 += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
+            V12 += (v[2][:, sl] + 1j * v[3][:, sl]) * phase
 
         del v
+
+        V = csr_matrix((len(self), len(self)), dtype=dtype)
+        V[::2, ::2] = V11
+        V[1::2, 1::2] = V22
+        V[1::2, ::2] = V21
+        V[::2, 1::2] = V12
+
+        del V11, V22, V21, V12
+
         return V
 
     def _Pk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge='R'):
@@ -588,8 +600,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         no = self.no
 
         # sparse matrix dimension (2 * self.no)
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
         v = [self.tocsr(i) for i in range(len(self.spin))]
+        V11 = csr_matrix((no, no), dtype=dtype)
+        V22 = csr_matrix((no, no), dtype=dtype)
+        V21 = csr_matrix((no, no), dtype=dtype)
+        V12 = csr_matrix((no, no), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
@@ -598,16 +613,24 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             sl = slice(si*no, (si+1) * no, None)
 
             # diagonal elements
-            V[::2, ::2] += (v[0][:, sl] + 1j * v[4][:, sl]) * phase
-            V[1::2, 1::2] += (v[1][:, sl] + 1j * v[5][:, sl]) * phase
+            V11 += (v[0][:, sl] + 1j * v[4][:, sl]) * phase
+            V22 += (v[1][:, sl] + 1j * v[5][:, sl]) * phase
 
             # lower off-diagonal elements
-            V[1::2, ::2] += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
+            V21 += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
 
             # upper off-diagonal elements
-            V[::2, 1::2] += (v[6][:, sl] + 1j * v[7][:, sl]) * phase
+            V12 += (v[6][:, sl] + 1j * v[7][:, sl]) * phase
 
         del v
+
+        V = csr_matrix((len(self), len(self)), dtype=dtype)
+        V[::2, ::2] = V11
+        V[1::2, 1::2] = V22
+        V[1::2, ::2] = V21
+        V[::2, 1::2] = V12
+
+        del V11, V22, V21, V12
 
         return V
 
@@ -659,19 +682,20 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         # number of orbitals
         no = self.no
 
-        S = csr_matrix((len(self), len(self)), dtype=dtype)
+        S11 = csr_matrix((no, no), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
         kr = dot(self.rcell, k)
         for si, isc in self.sc:
             phase = exp(-1j * dot(kr, dot(self.cell, isc)))
 
-            sf = Sf[:, si*no:(si+1)*no] * phase
+            S11 += Sf[:, si*no:(si+1)*no] * phase
 
-            S[::2, ::2] += sf
-            S[1::2, 1::2] += sf
+        S = csr_matrix((len(self), len(self)), dtype=dtype)
+        S[::2, ::2] = S11
+        S[1::2, 1::2] = S11
 
-        del sf
+        del S11
 
         return S
 

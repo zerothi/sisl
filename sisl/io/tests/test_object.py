@@ -233,9 +233,15 @@ class TestObject(object):
                 continue
             # Write
             sile(f, mode='w').write_geometry(G)
-            # Read
+            # Read 1
             try:
                 g = sile(f, mode='r').read_geometry()
+                assert_true(g.equal(G, R=False))
+            except UnicodeDecodeError as e:
+                pass
+            # Read 2
+            try:
+                g = Geometry.read(sile(f, mode='r'))
                 assert_true(g.equal(G, R=False))
             except UnicodeDecodeError as e:
                 pass
@@ -254,9 +260,15 @@ class TestObject(object):
                 continue
             # Write
             sile(f, mode='w').write_hamiltonian(H)
-            # Read
+            # Read 1
             try:
                 h = sile(f, mode='r').read_hamiltonian()
+                assert_true(H.spsame(h))
+            except UnicodeDecodeError as e:
+                pass
+            # Read 2
+            try:
+                h = Hamiltonian.read(sile(f, mode='r'))
                 assert_true(H.spsame(h))
             except UnicodeDecodeError as e:
                 pass
@@ -266,6 +278,14 @@ class TestObject(object):
     def test_arg_parser1(self):
         f = mkstemp(dir=self.d)[1]
         for sile in get_siles(['ArgumentParser']):
+            try:
+                sile(f).ArgumentParser()
+            except:
+                pass
+
+    def test_arg_parser2(self):
+        f = mkstemp(dir=self.d)[1]
+        for sile in get_siles(['ArgumentParser_out']):
             try:
                 sile(f).ArgumentParser()
             except:
