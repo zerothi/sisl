@@ -51,7 +51,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
             self.Dk = self._Pk_unpolarized
         elif self.spin.is_polarized:
             self.Dk = self._Pk_polarized
-        elif self.spin.is_noncolinear:
+        elif self.spin.is_noncollinear:
             self.Dk = self._Pk_non_collinear
         elif self.spin.is_spinorbit:
             self.Dk = self._Pk_spin_orbit

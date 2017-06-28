@@ -83,7 +83,7 @@ class SparseOrbitalBZ(SparseOrbital):
         return self._orthogonal
 
     def __len__(self):
-        """ Returns number of rows in the basis (if non-colinear or spin-orbit, twice the number of orbitals) """
+        """ Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) """
         return self.no
 
     def __repr__(self):
@@ -354,7 +354,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             self.DOWN = 1
             self.Pk = self._Pk_polarized
             self.Sk = self._Sk
-        elif self.spin.is_noncolinear:
+        elif self.spin.is_noncollinear:
             if self.spin.dkind == 'f':
                 self.M11 = 0
                 self.M22 = 1
@@ -397,7 +397,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return self._spin
 
     def __len__(self):
-        """ Returns number of rows in the basis (if non-colinear or spin-orbit, twice the number of orbitals) """
+        """ Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) """
         if self.spin.spin > 2:
             return self.no * 2
         return self.no
@@ -507,7 +507,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return V
 
     def _Pk_non_collinear(self, k=(0, 0, 0), dtype=None, gauge='R'):
-        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
+        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -522,7 +522,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             dtype = np.complex128
 
         if np.dtype(dtype).kind != 'c':
-            raise ValueError("Non-colinear quantity setup requires a complex matrix")
+            raise ValueError("Non-collinear quantity setup requires a complex matrix")
 
         if gauge != 'R':
             raise ValueError('Only the cell vector gauge has been implemented')
@@ -671,7 +671,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             S[::2, ::2] += sf
             S[1::2, 1::2] += sf
 
-            del sf
+        del sf
 
         return S
 

@@ -491,7 +491,7 @@ class TestHamiltonian(object):
                 H[i, i+1, 1] = 1.
         assert_true(len(H.eigh()) == len(H))
 
-        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-colinear'))
+        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
         for i in range(10):
             j = range(i*4, i*4+3)
             H1[i, i, 0] = 0.
