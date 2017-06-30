@@ -9,7 +9,7 @@ import itertools as itools
 
 import numpy as np
 import scipy.linalg as sli
-from scipy.sparse import isspmatrix, csr_matrix
+from scipy.sparse import isspmatrix, csr_matrix, diags
 import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype
@@ -192,25 +192,19 @@ class SparseOrbitalBZ(SparseOrbital):
             if np.dtype(dtype).kind != 'c':
                 raise ValueError(self.__class__.__name__ + " setup at k different from Gamma requires a complex matrix")
 
-        exp = np.exp
-        dot = np.dot
-
-        # Setup the quantity for this k-point
-        Vf = self.tocsr(_dim)
-
-        # size of matrix
-        no = len(self)
-
-        V = csr_matrix((no, no), dtype=dtype)
+        # sparse matrix dimension (self.no)
+        V = csr_matrix((len(self), len(self)), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
-        kr = dot(self.rcell, k)
-        for si, isc in self.sc:
-            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
+        kr = np.dot(self.rcell, k)
+        # Calculate all phases
+        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
 
-            V += Vf[:, si * no:(si + 1) * no] * phase
+        # Now create offsets
+        offsets = - np.arange(len(phases)) * self.no
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
 
-        del Vf
+        V[:, :] = self.tocsr(_dim).dot(diag)
 
         return V
 
@@ -484,25 +478,19 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             if np.dtype(dtype).kind != 'c':
                 raise ValueError(self.__class__.__name__ + " setup at k different from Gamma requires a complex matrix")
 
-        exp = np.exp
-        dot = np.dot
-
-        # Setup the quantity for this k-point
-        Vf = self.tocsr(spin)
-
-        # number of orbitals
-        no = self.no
-
-        V = csr_matrix((no, no), dtype=dtype)
+        # sparse matrix dimension (self.no)
+        V = csr_matrix((len(self), len(self)), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
-        kr = dot(self.rcell, k)
-        for si, isc in self.sc:
-            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
+        kr = np.dot(self.rcell, k)
+        # Calculate all phases
+        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
 
-            V += Vf[:, si * no:(si + 1) * no] * phase
+        # Now create offsets
+        offsets = - np.arange(len(phases)) * self.no
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
 
-        del Vf
+        V[:, :] = self.tocsr(spin).dot(diag)
 
         return V
 
@@ -527,45 +515,28 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         if gauge != 'R':
             raise ValueError('Only the cell vector gauge has been implemented')
 
-        exp = np.exp
-        dot = np.dot
-
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
 
-        # number of orbitals
-        no = self.no
-
         # sparse matrix dimension (2 * self.no)
-        v = [self.tocsr(i) for i in range(len(self.spin))]
-        V11 = csr_matrix((no, no), dtype=dtype)
-        V22 = csr_matrix((no, no), dtype=dtype)
-        V21 = csr_matrix((no, no), dtype=dtype)
-        V12 = csr_matrix((no, no), dtype=dtype)
+        V = csr_matrix((len(self), len(self)), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
-        kr = dot(self.rcell, k)
-        for si, isc in self.sc:
-            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
-            sl = slice(si*no, (si+1) * no, None)
+        kr = np.dot(self.rcell, k)
+        # Calculate all phases
+        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
 
-            # diagonal elements
-            V11 += v[0][:, sl] * phase
-            V22 += v[1][:, sl] * phase
+        # Now create offsets
+        offsets = - np.arange(len(phases)) * self.no
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
 
-            # off-diagonal elements
-            V21 += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
-            V12 += (v[2][:, sl] + 1j * v[3][:, sl]) * phase
+        V[::2, ::2] = self.tocsr(0).dot(diag)
+        V[1::2, 1::2] = self.tocsr(1).dot(diag)
+        v = self.tocsr(2) - 1j * self.tocsr(3)
+        V[1::2, ::2] = v.dot(diag)
+        V[::2, 1::2] = v.conj().dot(diag)
 
         del v
-
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
-        V[::2, ::2] = V11
-        V[1::2, 1::2] = V22
-        V[1::2, ::2] = V21
-        V[::2, 1::2] = V12
-
-        del V11, V22, V21, V12
 
         return V
 
@@ -590,47 +561,25 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         if gauge != 'R':
             raise ValueError('Only the cell vector gauge has been implemented')
 
-        exp = np.exp
-        dot = np.dot
-
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
 
-        # number of orbitals
-        no = self.no
-
         # sparse matrix dimension (2 * self.no)
-        v = [self.tocsr(i) for i in range(len(self.spin))]
-        V11 = csr_matrix((no, no), dtype=dtype)
-        V22 = csr_matrix((no, no), dtype=dtype)
-        V21 = csr_matrix((no, no), dtype=dtype)
-        V12 = csr_matrix((no, no), dtype=dtype)
+        V = csr_matrix((len(self), len(self)), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
-        kr = dot(self.rcell, k)
-        for si, isc in self.sc:
-            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
-            sl = slice(si*no, (si+1) * no, None)
+        kr = np.dot(self.rcell, k)
+        # Calculate all phases
+        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
 
-            # diagonal elements
-            V11 += (v[0][:, sl] + 1j * v[4][:, sl]) * phase
-            V22 += (v[1][:, sl] + 1j * v[5][:, sl]) * phase
+        # Now create offsets
+        offsets = - np.arange(len(phases)) * self.no
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
 
-            # lower off-diagonal elements
-            V21 += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
-
-            # upper off-diagonal elements
-            V12 += (v[6][:, sl] + 1j * v[7][:, sl]) * phase
-
-        del v
-
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
-        V[::2, ::2] = V11
-        V[1::2, 1::2] = V22
-        V[1::2, ::2] = V21
-        V[::2, 1::2] = V12
-
-        del V11, V22, V21, V12
+        V[::2, ::2] = (self.tocsr(0) + 1j * self.tocsr(4)).dot(diag)
+        V[1::2, 1::2] = (self.tocsr(1) + 1j * self.tocsr(5)).dot(diag)
+        V[1::2, ::2] = (self.tocsr(2) - 1j * self.tocsr(3)).dot(diag)
+        V[::2, 1::2] = (self.tocsr(6) + 1j * self.tocsr(7)).dot(diag)
 
         return V
 
@@ -670,28 +619,21 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         if gauge != 'R':
             raise ValueError('Only the cell vector gauge has been implemented')
 
-        exp = np.exp
-        dot = np.dot
-
         k = np.asarray(k, np.float64)
         k.shape = (-1,)
 
-        # Get the overlap matrix
-        Sf = self.tocsr(self.S_idx)
-
-        # number of orbitals
-        no = self.no
-
-        S11 = csr_matrix((no, no), dtype=dtype)
+        # sparse matrix dimension (2 * self.no)
+        S = csr_matrix((len(self), len(self)), dtype=dtype)
 
         # Get the reciprocal lattice vectors dotted with k
-        kr = dot(self.rcell, k)
-        for si, isc in self.sc:
-            phase = exp(-1j * dot(kr, dot(self.cell, isc)))
+        kr = np.dot(self.rcell, k)
+        # Calculate all phases
+        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
 
-            S11 += Sf[:, si*no:(si+1)*no] * phase
-
-        S = csr_matrix((len(self), len(self)), dtype=dtype)
+        # Now create offsets
+        offsets = - np.arange(len(phases)) * self.no
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
+        S11 = self.tocsr(self.S_idx).dot(diag)
         S[::2, ::2] = S11
         S[1::2, 1::2] = S11
 

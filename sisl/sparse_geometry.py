@@ -124,6 +124,11 @@ class SparseGeometry(object):
         return self._data.shape[-1]
 
     @property
+    def shape(self):
+        """ Shape of sparse matrix """
+        return self._data.shape
+
+    @property
     def dtype(self):
         """ Data type of sparse elements """
         return self._data.dtype
