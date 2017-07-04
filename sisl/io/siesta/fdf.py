@@ -371,7 +371,7 @@ class fdfSileSiesta(SileSiesta):
         if not f:
             # the fdf file contains neither the latticevectors or parameters
             raise SileError(
-                'Could not find Vectors or Parameters block in file')
+                'Could not find LatticeVectors or LatticeParameters block in file')
         cell *= s
 
         return SuperCell(cell)

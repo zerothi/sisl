@@ -2642,10 +2642,7 @@ lattice vector.
     # First read the input "Sile"
     if geom is None:
         argv, input_file = cmd.collect_input(argv)
-        try:
-            geom = get_sile(input_file).read_geometry()
-        except:
-            geom = Geometry([0, 0, 0])
+        geom = get_sile(input_file).read_geometry()
 
     elif isinstance(geom, Geometry):
         # Do nothing, the geometry is already created
@@ -2653,12 +2650,9 @@ lattice vector.
         pass
 
     elif isinstance(geom, BaseSile):
-        try:
-            geom = sile.read_geometry()
-            # Store the input file...
-            input_file = geom.file
-        except Exception as E:
-            geom = Geometry([0, 0, 0])
+        geom = sile.read_geometry()
+        # Store the input file...
+        input_file = geom.file
         argv = ['fake.xyz'] + argv
 
     # Do the argument parser
