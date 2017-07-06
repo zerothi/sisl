@@ -157,8 +157,8 @@ def write_version(filename='sisl/info.py'):
 major   = {version[0]}
 minor   = {version[1]}
 micro   = {version[2]}
-version = '.'.join(map(str,[major, minor]))
-release = '.'.join(map(str,{version}))
+version = '.'.join(map(str,[major, minor, micro]))
+release = version
 # Git information
 git_revision = '{git}'
 git_revision_short = git_revision[:7]

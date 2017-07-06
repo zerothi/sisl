@@ -50,14 +50,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         super(Hamiltonian, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
 
-        if self.spin.is_unpolarized:
-            self.Hk = self._Pk_unpolarized
-        elif self.spin.is_polarized:
-            self.Hk = self._Pk_polarized
-        elif self.spin.is_noncollinear:
-            self.Hk = self._Pk_non_collinear
-        elif self.spin.is_spinorbit:
-            self.Hk = self._Pk_spin_orbit
+        self.Hk = self.Pk
 
     def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', *args, **kwargs):
         r""" Setup the Hamiltonian for a given k-point
@@ -116,7 +109,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the energy (in eV) to shift the electronic structure
         """
         if not self.orthogonal:
-            # For non-collinear and SO only the diagonal components
+            # For non-colinear and SO only the diagonal components
             # should be shifted.
             for i in range(min(self.spin.spin, 2)):
                 self._data._D[:, i] -= self._data._D[:, self.S_idx] * E

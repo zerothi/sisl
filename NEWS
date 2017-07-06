@@ -1,6 +1,14 @@
 0.8.5
 =====
 
+- Enabled reading the density matrix and energy density matrix
+
+- Addition of a PerformanceSelector class which enables a dynamic
+  selection of the best routine.
+
+  Currently this is enabled in the SparseOrbitalBZ class where
+  constructing a matrix @ k can be done in numerous ways.
+
 - Bug fixed in supercell specification of the Hamiltonian:
 
       >>> H[io, jo, (-1, 0, 0)]

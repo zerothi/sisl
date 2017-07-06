@@ -6,7 +6,7 @@ Its usage can be summarized in these few examples:
 
 >>> Spin(1) == Spin('non-polarized') == Spin('unpolarized') == Spin('un-polarized')
 >>> Spin(2) == Spin('polarized') == Spin('p')
->>> Spin(2, dtype=np.complex128) == Spin('non-collinear') == Spin('nc') == Spin(4)
+>>> Spin(2, dtype=np.complex128) == Spin('non-colinear') == Spin('nc') == Spin(4)
 >>> Spin(4, dtype=np.complex128) == Spin('spin-orbit') == Spin('so') == Spin(8)
 
 Note that a data-type may be associated with a spin-object. This is not to say
@@ -47,12 +47,12 @@ class Spin(object):
 
         if np.dtype(dtype).kind == 'c':
             spin = {'unpolarized': 1, 'polarized': 2,
-                    'non-collinear': 2, 'nc': 2,
+                    'non-colinear': 2, 'nc': 2,
                     'spin-orbit': 4, 'so': 4}.get(spin, spin)
 
         else:
             spin = {'unpolarized': 1, 'polarized': 2,
-                    'non-collinear': 4, 'nc': 4,
+                    'non-colinear': 4, 'nc': 4,
                     'spin-orbit': 8, 'so': 8}.get(spin, spin)
 
         # Now assert the checks
@@ -70,8 +70,8 @@ class Spin(object):
             return s + '{{unpolarized, kind={}}}'.format(self.dkind)
         if self.is_polarized:
             return s + '{{polarized, kind={}}}'.format(self.dkind)
-        if self.is_noncollinear:
-            return s + '{{non-collinear, kind={}}}'.format(self.dkind)
+        if self.is_noncolinear:
+            return s + '{{non-colinear, kind={}}}'.format(self.dkind)
         return s + '{{spin-orbit, kind={}}}'.format(self.dkind)
 
     def copy(self):
@@ -99,7 +99,7 @@ class Spin(object):
             return self.UNPOLARIZED
         if self.is_polarized:
             return self.POLARIZED
-        if self.is_noncollinear:
+        if self.is_noncolinear:
             return self.NONCOLLINEAR
         if self.is_spinorbit:
             return self.SPINORBIT
@@ -116,11 +116,11 @@ class Spin(object):
         """ True if the configuration is polarized """
         return self.spin == 2 and self.dkind != 'c'
 
-    is_collinear = is_polarized
+    is_colinear = is_polarized
 
     @property
-    def is_noncollinear(self):
-        """ True if the configuration non-collinear """
+    def is_noncolinear(self):
+        """ True if the configuration non-colinear """
         s = self.spin
         k = self.dkind
         return (s == 2 and k == 'c') or (s == 4 and k != 'c')
@@ -143,8 +143,8 @@ class Spin(object):
         if a.is_unpolarized:
             return not b.is_unpolarized
         elif a.is_polarized:
-            return b.is_noncollinear or b.is_spinorbit
-        elif a.is_noncollinear:
+            return b.is_noncolinear or b.is_spinorbit
+        elif a.is_noncolinear:
             return b.is_spinorbit
         # It cannot be less than the other one... spin-orbit is highest
         return False
@@ -157,8 +157,8 @@ class Spin(object):
             return True
         elif a.is_polarized:
             return not b.is_unpolarized
-        elif a.is_noncollinear:
-            return b.is_noncollinear or b.is_spinorbit
+        elif a.is_noncolinear:
+            return b.is_noncolinear or b.is_spinorbit
         return b.is_spinorbit
 
     def __eq__(a, b):
@@ -169,8 +169,8 @@ class Spin(object):
             return b.is_unpolarized
         elif a.is_polarized:
             return not b.is_polarized
-        elif a.is_noncollinear:
-            return b.is_noncollinear
+        elif a.is_noncolinear:
+            return b.is_noncolinear
         return b.is_spinorbit
 
     def __ne__(a, b):

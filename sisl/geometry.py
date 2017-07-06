@@ -775,6 +775,8 @@ class Geometry(SuperCellChild):
          [ 1.5  1.   0. ]]
 
         """
+        if reps < 1:
+            raise ValueError(self.__class__.__name__ + '.tile requires a repetition above 0')
         # We need a double copy as we want to re-calculate after
         # enlarging cell
         sc = self.sc.copy()
@@ -848,6 +850,8 @@ class Geometry(SuperCellChild):
          [ 1.5  1.   0. ]]
 
         """
+        if reps < 1:
+            raise ValueError(self.__class__.__name__ + '.repeat requires a repetition above 0')
         # Figure out the size
         sc = self.sc.copy()
         sc.cell[axis, :] *= reps

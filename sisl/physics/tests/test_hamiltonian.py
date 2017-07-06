@@ -474,7 +474,7 @@ class TestHamiltonian(object):
             H2[0, j] = (i, i*2)
         assert_true(H.spsame(H2))
 
-    def test_non_collinear1(self):
+    def test_non_colinear1(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
         H = Hamiltonian(g, dtype=np.float64, spin=4)
         for i in range(10):
@@ -491,7 +491,7 @@ class TestHamiltonian(object):
                 H[i, i+1, 1] = 1.
         assert_true(len(H.eigh()) == len(H))
 
-        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
+        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-colinear'))
         for i in range(10):
             j = range(i*4, i*4+3)
             H1[i, i, 0] = 0.
