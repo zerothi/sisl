@@ -15,7 +15,7 @@ class TestSelector(object):
     def sleep(self, *args):
         if len(args) == 1:
             def _sleep():
-                time.sleep(1. / 1000 * args[0])
+                time.sleep(1. / 100 * args[0])
             _sleep.__name__ = str(args[0])
             return _sleep
         return [self.sleep(arg) for arg in args]

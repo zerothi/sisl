@@ -9,6 +9,43 @@ all the calls which is the best one.
 
 Basically the `Selector` will only be a powerful tool if a given routine is
 called numerous times.
+
+The following example will show how the `TimeSelector` may be used
+to automatically call the fastest of 3 routines::
+
+  >>> def func1():
+  ...    print('Func - 1')
+  >>> def func2():
+  ...    print('Func - 2')
+  ...    time.sleep(1)
+  >>> def func3():
+  ...    print('Func - 3')
+  ...    time.sleep(1)
+  >>> selector = TimeSelector([func1, func2, func3])
+  >>> selector()
+  Func - 1
+  >>> selector()
+  Func - 2
+  >>> selector()
+  Func - 3
+  >>> selector() # will now only call the fastest of the 3
+  Func - 1
+
+In certain cases one may wish to limit the search for a selected routine
+by only searching until the performance of the *next* called routine drops.
+This is called an *ordered* selector because it tries them in order, and 
+once one is slower than the former tested ones, it will not test any further.
+For the above same functions we may do::
+
+  >>> selector = TimeSelector([func1, func2, func3], ordered=True)
+  >>> selector()
+  Func - 1
+  >>> selector()
+  Func - 2
+  >>> selector()
+  Func - 1
+  >>> selector()
+  Func - 1
 """
 from __future__ import print_function, division
 
