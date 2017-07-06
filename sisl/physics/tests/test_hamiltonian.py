@@ -3,6 +3,7 @@ from __future__ import print_function, division
 from nose.tools import *
 from nose.plugins.attrib import attr
 
+import warnings
 import math as m
 import numpy as np
 
@@ -83,7 +84,6 @@ class TestHamiltonian(object):
         # delete before creating the same content
         self.HS.empty()
         # THIS IS A CHECK FOR BACK_WARD COMPATIBILITY!
-        import warnings
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             self.HS[0, 0] = 1., 1.

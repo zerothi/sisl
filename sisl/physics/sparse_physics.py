@@ -9,7 +9,7 @@ import itertools as itools
 
 import numpy as np
 import scipy.linalg as sli
-from scipy.sparse import isspmatrix, csr_matrix, diags
+from scipy.sparse import isspmatrix, csr_matrix, diags, SparseEfficiencyWarning
 import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype
@@ -21,6 +21,10 @@ from .spin import Spin
 from .brillouinzone import BrillouinZone
 
 __all__ = ['SparseOrbitalBZ', 'SparseOrbitalBZSpin']
+
+
+# Filter warnings from the sparse library
+warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
 
 
 class SparseOrbitalBZ(SparseOrbital):
@@ -204,6 +208,7 @@ class SparseOrbitalBZ(SparseOrbital):
         phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
 
         v = self.tocsr(_dim)
+
         for si, phase in enumerate(phases):
             V += v[:, si*no:(si+1)*no] * phase
 
