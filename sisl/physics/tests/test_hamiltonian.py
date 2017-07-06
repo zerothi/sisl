@@ -10,6 +10,7 @@ import numpy as np
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, PathBZ
 
 
+@attr('hamiltonian')
 class TestHamiltonian(object):
 
     def setUp(self):
@@ -417,15 +418,20 @@ class TestHamiltonian(object):
         g = self.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param), eta=True)
-        H.eigh()
+        eig1 = H.eigh()
+        for i in range(2):
+            assert_true(np.allclose(eig1, H.eigh()))
         H.eigsh(n=4)
         H.empty()
         del H
 
     def test_eig2(self):
         # Test of eigenvalues
-        self.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
-        self.HS.eigh()
+        HS = self.HS.copy()
+        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        eig1 = HS.eigh()
+        for i in range(2):
+            assert_true(np.allclose(eig1, HS.eigh()))
         self.HS.empty()
 
     def test_eig3(self):
@@ -489,7 +495,11 @@ class TestHamiltonian(object):
             if i < 9:
                 H[i, i+1, 0] = 1.
                 H[i, i+1, 1] = 1.
-        assert_true(len(H.eigh()) == len(H))
+        eig1 = H.eigh()
+        # Check TimeSelector
+        for i in range(2):
+            assert_true(np.allclose(H.eigh(), eig1))
+        assert_true(len(eig1) == len(H))
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-colinear'))
         for i in range(10):
@@ -505,6 +515,10 @@ class TestHamiltonian(object):
                 H1[i, i+1, 0] = 1.
                 H1[i, i+1, 1] = 1.
         assert_true(H1.spsame(H))
+        eig1 = H1.eigh()
+        # Check TimeSelector
+        for i in range(2):
+            assert_true(np.allclose(H1.eigh(), eig1))
         assert_true(np.allclose(H.eigh(), H1.eigh()))
 
     def test_so1(self):
@@ -526,6 +540,10 @@ class TestHamiltonian(object):
             if i < 9:
                 H[i, i+1, 0] = 1.
                 H[i, i+1, 1] = 1.
+        eig1 = H.eigh()
+        # Check TimeSelector
+        for i in range(2):
+            assert_true(np.allclose(H.eigh(), eig1))
         assert_true(len(H.eigh()) == len(H))
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('spin-orbit'))
@@ -542,6 +560,10 @@ class TestHamiltonian(object):
                 H1[i, i+1, 0] = 1.
                 H1[i, i+1, 1] = 1.
         assert_true(H1.spsame(H))
+        eig1 = H1.eigh()
+        # Check TimeSelector
+        for i in range(2):
+            assert_true(np.allclose(H1.eigh(), eig1))
         assert_true(np.allclose(H.eigh(), H1.eigh()))
 
     def test_finalized(self):

@@ -7,6 +7,7 @@ import warnings
 from numbers import Integral
 import itertools as itools
 
+from numpy import dot
 import numpy as np
 import scipy.linalg as sli
 from scipy.sparse import isspmatrix, csr_matrix, diags, SparseEfficiencyWarning
@@ -77,7 +78,7 @@ class SparseOrbitalBZ(SparseOrbital):
             self.S_idx = dim
             self.Sk = self._Sk
 
-        self._Pk = TimeSelector([self._Pk_accummulate, self._Pk_dot], True)
+        self._Pk = TimeSelector([self._Pk_accummulate, self._Pk_dot, self._Pk_dense], True)
         self.Pk = self._Pk
 
     # Override to enable spin configuration and orthogonality
@@ -202,10 +203,8 @@ class SparseOrbitalBZ(SparseOrbital):
         # sparse matrix dimension (self.no)
         V = csr_matrix((len(self), len(self)), dtype=dtype)
 
-        # Get the reciprocal lattice vectors dotted with k
-        kr = np.dot(self.rcell, k)
         # Calculate all phases
-        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         v = self.tocsr(_dim)
 
@@ -244,16 +243,53 @@ class SparseOrbitalBZ(SparseOrbital):
         # sparse matrix dimension (self.no)
         V = csr_matrix((len(self), len(self)), dtype=dtype)
 
-        # Get the reciprocal lattice vectors dotted with k
-        kr = np.dot(self.rcell, k)
         # Calculate all phases
-        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now create offsets
         offsets = - np.arange(0, len(phases) * self.no, self.no)
         diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
 
         V[:, :] = self.tocsr(_dim).dot(diag)
+
+        return V
+
+    def _Pk_dense(self, k=(0, 0, 0), dtype=None, gauge='R', _dim=0):
+        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
+
+        Parameters
+        ----------
+        k: ``array_like``, `[0,0,0]`
+           k-point 
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
+        """
+        if dtype is None:
+            dtype = np.complex128
+
+        if gauge != 'R':
+            raise ValueError('Only the cell vector gauge has been implemented')
+
+        k = np.asarray(k, np.float64)
+        k.shape = (-1,)
+
+        if not np.allclose(k, 0.):
+            if np.dtype(dtype).kind != 'c':
+                raise ValueError(self.__class__.__name__ + " setup at k different from Gamma requires a complex matrix")
+
+        # sparse matrix dimension (self.no)
+        V = np.empty((len(self), len(self)), dtype=dtype)
+
+        # Calculate all phases
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
+
+        # Now create offsets
+        offsets = - np.arange(0, len(phases) * self.no, self.no)
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype).toarray()
+
+        V[:, :] = dot(self.tocsr(_dim).toarray(), diag)
 
         return V
 
@@ -305,14 +341,20 @@ class SparseOrbitalBZ(SparseOrbital):
             P = P[orbs, orbs]
             if not self.orthogonal:
                 S = S[orbs, orbs]
+        try:
+            P = P.toarray()
+            if not self.orthogonal:
+                S = S.toarray()
+        except:
+            pass
         if self.orthogonal:
-            return sli.eigh(P.toarray(),
+            return sli.eigh(P,
                 *args,
                 eigvals_only=eigvals_only,
                 overwrite_a=overwrite_a,
                 **kwargs)
 
-        return sli.eigh(P.toarray(), S.toarray(),
+        return sli.eigh(P, S,
             *args,
             eigvals_only=eigvals_only,
             overwrite_a=overwrite_a,
@@ -388,9 +430,15 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         super(SparseOrbitalBZSpin, self).__init__(geom, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
 
         # _Pk is already created in the SparseOrbitalBZ __init__
-        self._Pk_non_colinear = TimeSelector([self._Pk_non_colinear_accummulate, self._Pk_non_colinear_dot], True)
-        self._Sk_non_colinear = TimeSelector([self._Sk_non_colinear_accummulate, self._Sk_non_colinear_dot], True)
-        self._Pk_spin_orbit = TimeSelector([self._Pk_spin_orbit_accummulate, self._Pk_spin_orbit_dot], True)
+        self._Pk_non_colinear = TimeSelector([self._Pk_non_colinear_accummulate,
+                                              self._Pk_non_colinear_dot,
+                                              self._Pk_non_colinear_dense], True)
+        self._Sk_non_colinear = TimeSelector([self._Sk_non_colinear_accummulate,
+                                              self._Sk_non_colinear_dot,
+                                              self._Sk_non_colinear_dense], True)
+        self._Pk_spin_orbit = TimeSelector([self._Pk_spin_orbit_accummulate,
+                                            self._Pk_spin_orbit_dot,
+                                            self._Pk_spin_orbit_dense], True)
 
         if self.spin.is_unpolarized:
             self.UP = 0
@@ -551,10 +599,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         V = csr_matrix((len(self), len(self)), dtype=dtype)
         v = [self.tocsr(i) for i in range(len(self.spin))]
 
-        # Get the reciprocal lattice vectors dotted with k
-        kr = np.dot(self.rcell, k)
         # Calculate all phases
-        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now accummulate the matrix
         for si, phase in enumerate(phases):
@@ -599,10 +645,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         # sparse matrix dimension (2 * self.no)
         V = csr_matrix((len(self), len(self)), dtype=dtype)
 
-        # Get the reciprocal lattice vectors dotted with k
-        kr = np.dot(self.rcell, k)
         # Calculate all phases
-        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now create offsets
         offsets = - np.arange(0, len(phases) * self.no, self.no)
@@ -613,6 +657,50 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         v = self.tocsr(2) - 1j * self.tocsr(3)
         V[1::2, ::2] = v.dot(diag)
         V[::2, 1::2] = v.conj().dot(diag)
+
+        del v
+
+        return V
+
+    def _Pk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R'):
+        """ Dense at `k` for a non-colinear system
+
+        Parameters
+        ----------
+        k: ``array_like``, `[0,0,0]`
+           k-point 
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
+        """
+        if dtype is None:
+            dtype = np.complex128
+
+        if np.dtype(dtype).kind != 'c':
+            raise ValueError("Non-colinear quantity setup requires a complex matrix")
+
+        if gauge != 'R':
+            raise ValueError('Only the cell vector gauge has been implemented')
+
+        k = np.asarray(k, np.float64)
+        k.shape = (-1,)
+
+        # sparse matrix dimension (2 * self.no)
+        V = np.empty((len(self), len(self)), dtype=dtype)
+
+        # Calculate all phases
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
+
+        # Now create offsets
+        offsets = - np.arange(0, len(phases) * self.no, self.no)
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype).toarray()
+
+        V[::2, ::2] = dot(self.tocsr(0).toarray(), diag)
+        V[1::2, 1::2] = dot(self.tocsr(1).toarray(), diag)
+        v = (self.tocsr(2) - 1j * self.tocsr(3)).toarray()
+        V[1::2, ::2] = dot(v, diag)
+        V[::2, 1::2] = dot(v.conj(), diag)
 
         del v
 
@@ -648,10 +736,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         V = csr_matrix((len(self), len(self)), dtype=dtype)
         v = [self.tocsr(i) for i in range(len(self.spin))]
 
-        # Get the reciprocal lattice vectors dotted with k
-        kr = np.dot(self.rcell, k)
         # Calculate all phases
-        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now accummulate the matrix
         for si, phase in enumerate(phases):
@@ -696,10 +782,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         # sparse matrix dimension (2 * self.no)
         V = csr_matrix((len(self), len(self)), dtype=dtype)
 
-        # Get the reciprocal lattice vectors dotted with k
-        kr = np.dot(self.rcell, k)
         # Calculate all phases
-        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now create offsets
         offsets = - np.arange(len(phases)) * self.no
@@ -709,6 +793,47 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         V[1::2, 1::2] = (self.tocsr(1) + 1j * self.tocsr(5)).dot(diag)
         V[1::2, ::2] = (self.tocsr(2) - 1j * self.tocsr(3)).dot(diag)
         V[::2, 1::2] = (self.tocsr(6) + 1j * self.tocsr(7)).dot(diag)
+
+        return V
+
+    def _Pk_spin_orbit_dense(self, k=(0, 0, 0), dtype=None, gauge='R'):
+        """ Dense matrix at `k` for a spin-orbit system
+
+        Parameters
+        ----------
+        k: ``array_like``, `[0,0,0]`
+           k-point 
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
+        """
+        if dtype is None:
+            dtype = np.complex128
+
+        if np.dtype(dtype).kind != 'c':
+            raise ValueError("Spin orbit quantity setup requires a complex matrix")
+
+        if gauge != 'R':
+            raise ValueError('Only the cell vector gauge has been implemented')
+
+        k = np.asarray(k, np.float64)
+        k.shape = (-1,)
+
+        # sparse matrix dimension (2 * self.no)
+        V = np.empty((len(self), len(self)), dtype=dtype)
+
+        # Calculate all phases
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
+
+        # Now create offsets
+        offsets = - np.arange(len(phases)) * self.no
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype).toarray()
+
+        V[::2, ::2] = dot((self.tocsr(0) + 1j * self.tocsr(4)).toarray(), diag)
+        V[1::2, 1::2] = dot((self.tocsr(1) + 1j * self.tocsr(5)).toarray(), diag)
+        V[1::2, ::2] = dot((self.tocsr(2) - 1j * self.tocsr(3)).toarray(), diag)
+        V[::2, 1::2] = dot((self.tocsr(6) + 1j * self.tocsr(7)).toarray(), diag)
 
         return V
 
@@ -756,10 +881,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         S = csr_matrix((len(self), len(self)), dtype=dtype)
         s = self.tocsr(self.S_idx)
 
-        # Get the reciprocal lattice vectors dotted with k
-        kr = np.dot(self.rcell, k)
         # Calculate all phases
-        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now accummulate the matrix
         for si, phase in enumerate(phases):
@@ -799,16 +922,56 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         # sparse matrix dimension (2 * self.no)
         S = csr_matrix((len(self), len(self)), dtype=dtype)
 
-        # Get the reciprocal lattice vectors dotted with k
-        kr = np.dot(self.rcell, k)
         # Calculate all phases
-        phases = np.exp(-1j * np.dot(kr, np.dot(self.cell, self.sc.sc_off.T)))
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now create offsets
         offsets = - np.arange(0, len(phases) * self.no, self.no)
         diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
 
         S11 = self.tocsr(self.S_idx).dot(diag)
+        S[::2, ::2] = S11
+        S[1::2, 1::2] = S11
+
+        del S11
+
+        return S
+
+    def _Sk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R'):
+        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
+
+        Parameters
+        ----------
+        k: ``array_like``, `[0,0,0]`
+           k-point 
+        dtype : ``numpy.dtype``
+           default to `numpy.complex128`
+        gauge : str, 'R'
+           chosen gauge
+        """
+        if dtype is None:
+            dtype = np.complex128
+
+        if np.dtype(dtype).kind != 'c':
+            raise ValueError("Non-colinear quantity setup requires a complex matrix")
+
+        if gauge != 'R':
+            raise ValueError('Only the cell vector gauge has been implemented')
+
+        k = np.asarray(k, np.float64)
+        k.shape = (-1,)
+
+        # sparse matrix dimension (2 * self.no)
+        S = np.zeros((len(self), len(self)), dtype=dtype)
+
+        # Calculate all phases
+        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
+
+        # Now create offsets
+        offsets = - np.arange(0, len(phases) * self.no, self.no)
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype).toarray()
+
+        S11 = dot(self.tocsr(self.S_idx).todense(), diag)
         S[::2, ::2] = S11
         S[1::2, 1::2] = S11
 
@@ -853,14 +1016,20 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             P = P[orbs, orbs]
             if not self.orthogonal:
                 S = S[orbs, orbs]
+        try:
+            P = P.toarray()
+            if not self.orthogonal:
+                S = S.toarray()
+        except:
+            pass
         if self.orthogonal:
-            return sli.eigh(P.toarray(),
+            return sli.eigh(P,
                 *args,
                 eigvals_only=eigvals_only,
                 overwrite_a=overwrite_a,
                 **kwargs)
 
-        return sli.eigh(P.toarray(), S.toarray(),
+        return sli.eigh(P, S,
             *args,
             eigvals_only=eigvals_only,
             overwrite_a=overwrite_a,
