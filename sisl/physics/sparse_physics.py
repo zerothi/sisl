@@ -173,7 +173,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
     __iter__ = iter
 
-    def _Pk_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', _dim=0):
+    def _Pk_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
 
         Parameters
@@ -213,9 +213,9 @@ class SparseOrbitalBZ(SparseOrbital):
 
         del v
 
-        return V
+        return V.asformat(format)
 
-    def _Pk_dot(self, k=(0, 0, 0), dtype=None, gauge='R', _dim=0):
+    def _Pk_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
 
         Parameters
@@ -252,9 +252,9 @@ class SparseOrbitalBZ(SparseOrbital):
 
         V[:, :] = self.tocsr(_dim).dot(diag)
 
-        return V
+        return V.asformat(format)
 
-    def _Pk_dense(self, k=(0, 0, 0), dtype=None, gauge='R', _dim=0):
+    def _Pk_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
 
         Parameters
@@ -291,9 +291,55 @@ class SparseOrbitalBZ(SparseOrbital):
 
         V[:, :] = dot(self.tocsr(_dim).toarray(), diag)
 
-        return V
+        if format == 'array':
+            return V
+        elif format == 'dense':
+            return np.asmatrix(V)
+        # It must be a sparse matrix we inquire
+        return csr_matrix(V).asformat(format)
 
-    def _Sk(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the overlap matrix for a given k-point
+
+        Creation and return of the overlap matrix for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+          S(k) = S_{ij} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+          S(k) = S_{ij} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals :math:`i` and :math:`j`.
+        Currently the second gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the overlap at
+        dtype : numpy.dtype , optional 
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is '`numpy.complex128``
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in ``numpy.ndarray`` (`'array'`) or ``numpy.matrix`` (`'dense'`).
+        """
+        pass
+
+    def _Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
@@ -305,7 +351,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge : str, 'R'
            chosen gauge
         """
-        return self._Pk(k, dtype=dtype, gauge=gauge, _dim=self.S_idx)
+        return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
     def eigh(self, k=(0, 0, 0),
              atoms=None, gauge='R', eigvals_only=True,
@@ -331,22 +377,22 @@ class SparseOrbitalBZ(SparseOrbital):
                                       *args, **kwargs)
             return eig
 
-        P = self.Pk(k=k, gauge=gauge)
-        if not self.orthogonal:
-            S = self.Sk(k=k, gauge=gauge)
-        # Reduce sparsity pattern
-        if not atoms is None:
+        if atoms is None:
+            P = self.Pk(k=k, gauge=gauge, format='array')
+            if not self.orthogonal:
+                S = self.Sk(k=k, gauge=gauge, format='array')
+
+        else:
+            P = self.Pk(k=k, gauge=gauge)
+            if not self.orthogonal:
+                S = self.Sk(k=k, gauge=gauge)
+
+            # Reduce sparsity pattern
             orbs = self.a2o(atoms)
-            # Reduce space
-            P = P[orbs, orbs]
+            P = P[orbs, orbs].toarray()
             if not self.orthogonal:
-                S = S[orbs, orbs]
-        try:
-            P = P.toarray()
-            if not self.orthogonal:
-                S = S.toarray()
-        except:
-            pass
+                S = S[orbs, orbs].toarray()
+
         if self.orthogonal:
             return sli.eigh(P,
                 *args,
@@ -539,7 +585,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return v
 
-    def _Pk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Pk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k`
 
         Parameters
@@ -551,9 +597,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge : str, 'R'
            chosen gauge
         """
-        return self._Pk(k, dtype=dtype, gauge=gauge)
+        return self._Pk(k, dtype=dtype, gauge=gauge, format=format)
 
-    def _Pk_polarized(self, k=(0, 0, 0), spin=0, dtype=None, gauge='R'):
+    def _Pk_polarized(self, k=(0, 0, 0), spin=0, dtype=None, gauge='R', format='csr'):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
 
         Parameters
@@ -567,9 +613,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge : str, 'R'
            chosen gauge
         """
-        return self._Pk(k, dtype=dtype, gauge=gauge, _dim=spin)
+        return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
 
-    def _Pk_non_colinear_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Pk_non_colinear_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
 
         Parameters
@@ -616,9 +662,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         del v
 
-        return V
+        return V.asformat(format)
 
-    def _Pk_non_colinear_dot(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Pk_non_colinear_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
 
         Parameters
@@ -660,9 +706,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         del v
 
-        return V
+        return V.asformat(format)
 
-    def _Pk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Pk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Dense at `k` for a non-colinear system
 
         Parameters
@@ -704,9 +750,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         del v
 
-        return V
+        if format == 'array':
+            return V
+        elif format == 'dense':
+            return np.asmatrix(V)
+        # It must be a sparse matrix we inquire
+        return csr_matrix(V).asformat(format)
 
-    def _Pk_spin_orbit_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Pk_spin_orbit_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a spin-orbit system
 
         Parameters
@@ -753,9 +804,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         del v
 
-        return V
+        return V.asformat(format)
 
-    def _Pk_spin_orbit_dot(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Pk_spin_orbit_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a spin-orbit system
 
         Parameters
@@ -794,9 +845,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         V[1::2, ::2] = (self.tocsr(2) - 1j * self.tocsr(3)).dot(diag)
         V[::2, 1::2] = (self.tocsr(6) + 1j * self.tocsr(7)).dot(diag)
 
-        return V
+        return V.asformat(format)
 
-    def _Pk_spin_orbit_dense(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Pk_spin_orbit_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Dense matrix at `k` for a spin-orbit system
 
         Parameters
@@ -835,9 +886,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         V[1::2, ::2] = dot((self.tocsr(2) - 1j * self.tocsr(3)).toarray(), diag)
         V[::2, 1::2] = dot((self.tocsr(6) + 1j * self.tocsr(7)).toarray(), diag)
 
-        return V
+        if format == 'array':
+            return V
+        elif format == 'dense':
+            return np.asmatrix(V)
+        # It must be a sparse matrix we inquire
+        return csr_matrix(V).asformat(format)
 
-    def _Sk(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
@@ -849,9 +905,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge : str, 'R'
            chosen gauge
         """
-        return self._Pk(k, dtype=dtype, gauge=gauge, _dim=self.S_idx)
+        return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def _Sk_non_colinear_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Sk_non_colinear_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
 
         Parameters
@@ -893,9 +949,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         del s
 
-        return S
+        return S.asformat(format)
 
-    def _Sk_non_colinear_dot(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Sk_non_colinear_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
 
         Parameters
@@ -935,9 +991,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         del S11
 
-        return S
+        return S.asformat(format)
 
-    def _Sk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R'):
+    def _Sk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
 
         Parameters
@@ -977,7 +1033,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         del S11
 
-        return S
+        if format == 'array':
+            return S
+        elif format == 'dense':
+            return np.asmatrix(S)
+        # It must be a sparse matrix we inquire
+        return csr_matrix(S).asformat(format)
 
     def eigh(self, k=(0, 0, 0),
              atoms=None, gauge='R', eigvals_only=True,
@@ -1003,25 +1064,27 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                                       *args, **kwargs)
             return eig
 
-        if self.spin.kind == Spin.POLARIZED:
-            P = self.Pk(k=k, spin=kwargs.pop('spin', 0), gauge=gauge)
-        else:
-            P = self.Pk(k=k, gauge=gauge)
-        if not self.orthogonal:
-            S = self.Sk(k=k, gauge=gauge)
-        # Reduce sparsity pattern
-        if not atoms is None:
-            orbs = self.a2o(atoms)
+        if atoms is None:
+            if self.spin.kind == Spin.POLARIZED:
+                P = self.Pk(k=k, gauge=gauge, spin=kwargs.pop('spin', 0), format='array')
+            else:
+                P = self.Pk(k=k, gauge=gauge, format='array')
+            if not self.orthogonal:
+                S = self.Sk(k=k, gauge=gauge, format='array')
+
+        else:        # Reduce sparsity pattern
+            if self.spin.kind == Spin.POLARIZED:
+                P = self.Pk(k=k, gauge=gauge, spin=kwargs.pop('spin', 0))
+            else:
+                P = self.Pk(k=k, gauge=gauge)
+
             # Reduce space
-            P = P[orbs, orbs]
+            orbs = self.a2o(atoms)
+
+            P = P[orbs, orbs].toarray()
             if not self.orthogonal:
-                S = S[orbs, orbs]
-        try:
-            P = P.toarray()
-            if not self.orthogonal:
-                S = S.toarray()
-        except:
-            pass
+                S = self.Sk(k=k, gauge=gauge)[orbs, orbs].toarray()
+
         if self.orthogonal:
             return sli.eigh(P,
                 *args,

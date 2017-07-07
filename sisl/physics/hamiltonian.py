@@ -52,7 +52,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         self.Hk = self.Pk
 
-    def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', *args, **kwargs):
+    def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the Hamiltonian for a given k-point
 
         Creation and return of the Hamiltonian for a given k-point (default to Gamma).
@@ -86,6 +86,14 @@ class Hamiltonian(SparseOrbitalBZSpin):
         gauge : {'R', 'r'}
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in ``numpy.ndarray`` (`'array'`) or ``numpy.matrix`` (`'dense'`).
+
+        See Also
+        --------
+        Sk : Overlap matrix at `k`
         """
         pass
 
