@@ -20,6 +20,47 @@ class Hessian(SparseOrbitalBZ):
 
         self.Dk = self._Pk
 
+    def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the Hessian matrix for a given k-point
+
+        Creation and return of the density matrix for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+          H(k) = H_{ij} e^{i q R}
+
+        where :math:`R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+          H(k) = H_{ij} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals :math:`i` and :math:`j`.
+        Currently the second gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the Hessian matrix at
+        dtype : numpy.dtype , optional 
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is '`numpy.complex128``
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in ``numpy.ndarray`` (`'array'`) or ``numpy.matrix`` (`'dense'`).
+        """
+        pass
+
     def _get_D(self):
         self._def_dim = 0
         return self

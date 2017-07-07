@@ -37,7 +37,7 @@ __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
 
 class PeriodicTable(object):
-    """ Periodic table for creating an `Atom` via atomic numbers
+    r""" Periodic table for creating an `Atom`, or retrieval of atomic information via atomic numbers
 
     Enables *lookup* of atomic numbers/names/labels to get
     the atomic number.
@@ -807,7 +807,7 @@ class PeriodicTable(object):
     }
 
     def Z(self, key):
-        """ Return the atomic number based on general input
+        """ Atomic number based on general input
 
         Return the atomic number corresponding to the `key` lookup.
 
@@ -841,7 +841,7 @@ class PeriodicTable(object):
     Z_int = Z
 
     def Z_label(self, key):
-        """ Return the atomic label of the corresponding atom
+        """ Atomic label of the corresponding atom
 
         Return the atomic short name corresponding to the `key` lookup.
 
@@ -853,7 +853,7 @@ class PeriodicTable(object):
 
         Returns
         -------
-        name : ndarra or str
+        name : ndarray or str
             The atomic short name corresponding to `key`, if `key`
             is array_like, so will the returned value be.
         """
@@ -865,7 +865,7 @@ class PeriodicTable(object):
     Z_short = Z_label
 
     def atomic_mass(self, key):
-        """ Return the atomic mass of the corresponding atom
+        """ Atomic mass of the corresponding atom
 
         Return the atomic mass corresponding to the `key` lookup.
 
@@ -887,7 +887,7 @@ class PeriodicTable(object):
         return np.array([self._atomic_mass[z] for z in Z], np.float64)
 
     def radius(self, key, method='calc'):
-        """ Return the atomic radii
+        """ Atomic radii using different methods
 
         Return the atomic radii.
 
@@ -997,7 +997,7 @@ class Atom(with_metaclass(AtomMeta, object)):
         the atomic mass, if not specified uses the mass from `PeriodicTable`
     tag : str
         arbitrary designation for user handling similar atoms with
-        different settings
+        different settings (defaults to the label of the atom)
     """
 
     def __init__(self, Z, R=None, orbs=None, mass=None, tag=None):
@@ -1132,7 +1132,7 @@ class Atoms(object):
     ----------
     atom : `list(Atom)`
         a list of unique atoms in this object
-    specie : ndarray(int16)
+    specie : ndarray
         a list of unique specie indices
     """
 

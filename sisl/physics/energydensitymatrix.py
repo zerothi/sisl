@@ -56,7 +56,7 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         elif self.spin.is_spinorbit:
             self.Ek = self._Pk_spin_orbit
 
-    def Ek(self, k=(0, 0, 0), dtype=None, gauge='R', *args, **kwargs):
+    def Ek(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the energy density matrix for a given k-point
 
         Creation and return of the density matrix for a given k-point (default to Gamma).
@@ -90,6 +90,10 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         gauge : {'R', 'r'}
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in ``numpy.ndarray`` (`'array'`) or ``numpy.matrix`` (`'dense'`).
         """
         pass
 

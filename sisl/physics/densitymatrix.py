@@ -56,7 +56,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         elif self.spin.is_spinorbit:
             self.Dk = self._Pk_spin_orbit
 
-    def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', *args, **kwargs):
+    def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the density matrix for a given k-point
 
         Creation and return of the density matrix for a given k-point (default to Gamma).
@@ -90,6 +90,10 @@ class DensityMatrix(SparseOrbitalBZSpin):
         gauge : {'R', 'r'}
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in ``numpy.ndarray`` (`'array'`) or ``numpy.matrix`` (`'dense'`).
         """
         pass
 
