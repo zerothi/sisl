@@ -97,6 +97,7 @@ class TestSparseCSR(object):
         assert_equal(csr[0, 2], 2)
         assert_equal(csr[1, 1], 3)
         assert_equal(csr[2, 2], 4)
+        assert_true(np.allclose(csr[0, [0, 1, 2]], [0, 1, 2]))
 
     def test_create1(self):
         self.s1d[0, [1, 2, 3]] = 1
