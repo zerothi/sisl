@@ -1596,6 +1596,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                     lvl.variables['E'][iE] = E * Ry2eV
                     warn_E = False
             else:
+                lvl.variables['E'][iE] = E * Ry2eV
                 warn_E = False
 
         warn_k = True
@@ -1613,6 +1614,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                     lvl.variables['kpt'][ik, :] = k
                     warn_k = False
             else:
+                lvl.variables['kpt'][ik, :] = k
                 warn_k = False
 
         if ilvl == 4 and warn_k and warn_E and False:
