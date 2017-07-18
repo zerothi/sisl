@@ -1548,8 +1548,12 @@ class dHncSileSiesta(SileCDFSIESTA):
             ilvl = 2
         elif (k is None) and (E is not None):
             ilvl = 3
+            # Convert to Rydberg
+            E = E * eV2Ry
         elif (k is not None) and (E is not None):
             ilvl = 4
+            # Convert to Rydberg
+            E = E * eV2Ry
         else:
             print(k, E)
             raise ValueError("This is wrongly implemented!!!")
@@ -1583,7 +1587,7 @@ class dHncSileSiesta(SileCDFSIESTA):
 
         warn_E = True
         if ilvl in [3, 4]:
-            Es = np.array(lvl.variables['E'][:]) * eV2Ry
+            Es = np.array(lvl.variables['E'][:])
 
             iE = 0
             if len(Es) > 0:
@@ -1593,10 +1597,10 @@ class dHncSileSiesta(SileCDFSIESTA):
 
                     # create a new entry
                     iE = len(Es)
-                    lvl.variables['E'][iE] = E * Ry2eV
+                    lvl.variables['E'][iE] = E
                     warn_E = False
             else:
-                lvl.variables['E'][iE] = E * Ry2eV
+                lvl.variables['E'][iE] = E
                 warn_E = False
 
         warn_k = True
