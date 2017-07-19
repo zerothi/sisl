@@ -34,7 +34,8 @@ class TestGeometry(object):
 
     def test_objects(self):
         # just make sure __repr__ works
-        print(self.g)
+        repr(self.g)
+        str(self.g)
         assert_true(len(self.g) == 2)
         assert_true(len(self.g.xyz) == 2)
         assert_true(np.allclose(self.g[0], np.zeros([3])))
@@ -781,6 +782,85 @@ class TestGeometry(object):
         for i in range(2):
             assert_true(np.allclose(g1.cell[i, :], g2.cell[i, :]))
         assert_false(np.allclose(g1.cell[2, :], g2.cell[2, :]))
+
+    @raises(ValueError)
+    def test_distance1(self):
+        geom = Geometry(self.g.xyz, Atom[6])
+        # maxR is undefined
+        d = geom.distance()
+
+    @raises(ValueError)
+    def test_distance2(self):
+        geom = Geometry(self.g.xyz, Atom[6])
+        d = geom.distance(R=1.42, method='unknown_numpy_function')
+
+    def test_distance3(self):
+        geom = self.g.copy()
+        d = geom.distance()
+        assert_equal(len(d), 1)
+        assert_true(np.allclose(d, [1.42]))
+
+    def test_distance4(self):
+        geom = self.g.copy()
+        d = geom.distance(method=np.min)
+        assert_equal(len(d), 1)
+        assert_true(np.allclose(d, [1.42]))
+        d = geom.distance(method=np.max)
+        assert_equal(len(d), 1)
+        assert_true(np.allclose(d, [1.42]))
+        d = geom.distance(method='max')
+        assert_equal(len(d), 1)
+        assert_true(np.allclose(d, [1.42]))
+
+    def test_distance5(self):
+        geom = self.g.copy()
+        d = geom.distance(R=np.inf)
+        assert_equal(len(d), 6)
+        d = geom.distance(0, R=1.42)
+        assert_equal(len(d), 1)
+        assert_true(np.allclose(d, [1.42]))
+
+    def test_distance6(self):
+        # Create a 1D chain
+        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom.set_nsc([77, 1, 1])
+        d = geom.distance(0)
+        assert_equal(len(d), 1)
+        assert_true(np.allclose(d, [1.]))
+
+        # Do twice
+        d = geom.distance(R=2)
+        assert_equal(len(d), 2)
+        assert_true(np.allclose(d, [1., 2.]))
+
+        # Do all
+        d = geom.distance(R=np.inf)
+        assert_equal(len(d), 77 // 2)
+        # Add one due arange not adding the last item
+        assert_true(np.allclose(d, range(1, 78 // 2)))
+
+        # Create a 2D grid
+        geom.set_nsc([3, 3, 1])
+        d = geom.distance(R=2, tol=[.4, .3, .2, .1])
+        assert_equal(len(d), 2) # 1, sqrt(2)
+        # Add one due arange not adding the last item
+        assert_true(np.allclose(d, [1, 2 ** .5]))
+
+        # Create a 2D grid
+        geom.set_nsc([5, 5, 1])
+        d = geom.distance(R=2, tol=[.4, .3, .2, .1])
+        assert_equal(len(d), 3) # 1, sqrt(2), 2
+        # Add one due arange not adding the last item
+        assert_true(np.allclose(d, [1, 2 ** .5, 2]))
+
+    def test_distance7(self):
+        # Create a 1D chain
+        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom.set_nsc([77, 1, 1])
+        # Try with a short R and a long tolerance list
+        d = geom.distance(R=1, tol=np.ones(10) * .5)
+        assert_equal(len(d), 1)
+        assert_true(np.allclose(d, [1.]))
 
     def test_argumentparser1(self):
         self.g.ArgumentParser()

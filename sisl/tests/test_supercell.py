@@ -11,6 +11,7 @@ from sisl import SuperCell, SuperCellChild
 from sisl.geom import graphene
 
 
+@attr('supercell', 'sc')
 class TestSuperCell(object):
 
     def setUp(self):
@@ -24,7 +25,8 @@ class TestSuperCell(object):
         del self.sc
 
     def test_repr(self):
-        print(self.sc)
+        repr(self.sc)
+        str(self.sc)
         assert_false(self.sc == 'Not a SuperCell')
 
     def test_nsc1(self):
@@ -75,7 +77,6 @@ class TestSuperCell(object):
             s = sc.add_vacuum(10, i)
             ax = self.sc.cell[i, :]
             ax += ax / np.sum(ax ** 2) ** .5 * 10
-            print(ax, s.cell[i, :])
             assert_true(np.allclose(ax, s.cell[i, :]))
 
     def test_rotation1(self):

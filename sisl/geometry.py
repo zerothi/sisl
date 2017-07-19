@@ -2334,6 +2334,7 @@ class Geometry(SuperCellChild):
         See Also
         --------
         iter_block : the method for looping the atoms
+        distance : create a list of distances
         """
         rij = SparseCSR((self.na, self.na_s), nnzpr=20, dtype=dtype)
 
@@ -2355,6 +2356,147 @@ class Geometry(SuperCellChild):
                 rij[ia, idx[1]] = r[1]
 
         return rij
+
+    def distance(self, atom=None, R=None, tol=0.1, method='average'):
+        """ Calculate the distances for all atoms in shells of radius ``tol`` within ``max_R``
+
+        Parameters
+        ----------
+        atom : int or array_like, optional
+           only create list of distances from the given atoms, default to all atoms
+        R : float, optional
+           the maximum radius to consider, default to ``self.maxR()``. 
+           To retrieve all distances for atoms within the supercell structure
+           you can pass ``numpy.inf``.
+        tol : float or array_like, optional
+           the tolerance for grouping a set of atoms.
+           This parameter sets the shell radius for each shell.
+           I.e. the returned distances between two shells will be maximally
+           `2*tol`, but only if atoms are within two consecutive lists.
+           If this is a list, the shells will be of unequal size. 
+
+           The first shell size will be `tol * .5` or `tol[0] * .5` if ``tol`` is a list.
+
+        method : {'average', 'mode', '<numpy.func>', func}
+           How the distance in each shell is determined.
+           A list of distances within each shell is gathered and the equivalent
+           method will be used to extract a single quantity from the list of 
+           distances in the shell.
+           If `'mode'` is chosen it will use ``scipy.stats.mode``.
+           If a string is given it will correspond to ``getattr(numpy, method)``,
+           while any callable function may be passed. The passed function
+           will only be passed a list of unsorted distances that needs to be
+           processed.
+
+        Examples
+        --------
+
+        >>> geom = Geometry([0]*3, Atom(1, R=1.), sc=SuperCell(1, nsc=[5, 5, 1]))
+        >>> geom.distance() # use geom.maxR()
+        [ 1.]
+        >>> geom.distance(tol=[0.5, 0.4, 0.3, 0.2])
+        [ 1.          1.41421356]
+        >>> geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2])
+        [ 1.          1.41421356  2.        ]
+        >>> geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged
+        [ 1.20710678  2.        ]
+
+        Returns
+        -------
+        numpy.ndarray
+           an array of positive numbers yielding the distance sparse matrix with all rij elements.
+
+        See Also
+        --------
+        sparserij : return a sparse matrix will all distances between atoms
+        """
+
+        # Correct atom input
+        if atom is None:
+            atom = np.arange(len(self))
+        else:
+            atom = ensure_array(atom)
+
+        # Figure out maximum distance
+        if R is None:
+            R = self.maxR()
+            if R < 0:
+                raise ValueError((self.__class__.__name__ +
+                                  ".distance cannot determine the `R` parameter. "
+                                  "The internal `maxR()` is negative and thus not set. "
+                                  "Set an explicit value for `R`."))
+        else:
+            # In case R is infinity or some ridiculousy large number
+            # we reduce it to the maximum distance possible
+            maxR = self.sc.offset(self.nsc // 2) + np.dot([1]*3, self.cell)
+            maxR = np.sum(maxR ** 2) ** .5
+
+            if R > maxR:
+                R = maxR
+
+        # Convert to list
+        tol = ensure_array(tol, dtype=np.float64)
+        if len(tol) == 1:
+            # Now we are in a position to determine the sizes
+            dR = np.arange(tol[0] * .5, R + tol[0] * .55, tol[0])
+        else:
+            dR = [tol[0] * .5]
+            for i, t in enumerate(tol):
+                dR.append(dR[i] + t)
+
+            # Now finalize dR
+            t = tol[-1]
+            dR.extend(np.arange(dR[-1] + t, R + t * .55, t).tolist())
+            dR = np.array(dR)
+            # Reduce in case the user has provided a very long list of
+            # tolerances
+            dR = dR[dR <= R + t * .55]
+
+        # Now we can figure out the list of atoms in each shell
+        # First create the initial lists of shell atoms
+        # The inner shell will never be used, because it should correspond
+        # to the atom it-self.
+        shells = [[] for i in range(len(dR) - 1)]
+
+        for a in atom:
+            _, r = self.close(a, R=dR, ret_rij=True)
+
+            for i, rlist in enumerate(r[1:]):
+                shells[i].extend(rlist)
+
+        # Now parse all of the shells with the correct routine
+        # First we grap the routine:
+        if isinstance(method, _str):
+            if method == 'median':
+                def func(lst):
+                    return np.median(lst, overwrite_input=True)
+
+            elif method == 'mode':
+                from scipy.stats import mode
+                def func(lst):
+                    return mode(lst)[0]
+            else:
+                try:
+                    func = getattr(np, method)
+                except:
+                    raise ValueError(self.__class__.__name__ + ".distance `method` has wrong input value.")
+        else:
+            func = method
+
+        # Reduce lists
+        for i in range(len(shells)):
+            lst = shells[i]
+            if len(lst) == 0:
+                continue
+
+            # Reduce elements
+            shells[i] = func(lst)
+
+        # Convert to flattened numpy array and ensure shape
+        d = np.hstack(shells)
+        d.shape = (-1,)
+
+        return d
 
     # Create pickling routines
     def __getstate__(self):

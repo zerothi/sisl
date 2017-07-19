@@ -73,7 +73,6 @@ class TestSparseCSR(object):
         csr = sc.sparse.csr_matrix((10, 10), dtype=np.int32)
         csr[0, 1] = 1
         csr[0, 2] = 2
-        print(csr.indices, csr.indptr)
         sp = SparseCSR((csr.data, csr.indices, csr.indptr))
         assert_equal(sp.dtype, np.int32)
         assert_equal(sp.shape, (10, 10, 1))

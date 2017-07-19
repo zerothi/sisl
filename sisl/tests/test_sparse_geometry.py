@@ -88,7 +88,6 @@ class TestSparseAtom(object):
             self.s1.construct([[0.1, 1.5], [1, 2]])
             # my new sub
             sub = [j for j in all if i != j]
-            print(sub)
             s1 = self.s1.sub(sub)
             self.s1.empty()
             s2 = SparseAtom(self.g.sub(sub))

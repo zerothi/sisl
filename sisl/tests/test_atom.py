@@ -96,7 +96,6 @@ class TestAtom(object):
     @raises(KeyError)
     def test12(self):
         a = Atom(1.2)
-        print(a)
 
     def test_pickle(self):
         import pickle as p

@@ -13,14 +13,14 @@ import sisl
 class TestVersion(object):
 
     def test_version(self):
-        print(sisl.__version__)
-        print(sisl.__major__)
-        print(sisl.__minor__)
-        print(sisl.__micro__)
-        print(sisl.info.version)
-        print(sisl.info.major)
-        print(sisl.info.minor)
-        print(sisl.info.micro)
-        print(sisl.info.release)
-        print(sisl.info.git_revision)
-        print(sisl.info.git_revision_short)
+        sisl.__version__
+        sisl.__major__
+        sisl.__minor__
+        sisl.__micro__
+        sisl.info.version
+        sisl.info.major
+        sisl.info.minor
+        sisl.info.micro
+        sisl.info.release
+        sisl.info.git_revision
+        sisl.info.git_revision_short
