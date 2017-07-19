@@ -1,5 +1,12 @@
 [run]
-omit = sisl/**/tests/*
-    sisl/**/setup.py
+omit =
+    benchmarks 
+    sisl/*/tests/*
+    */setup.py
     numpy
     scipy
+
+[report]
+exclude_lines =
+    # Don't complain about missing implementations
+    raise NotImplementedError
