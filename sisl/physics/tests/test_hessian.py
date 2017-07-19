@@ -9,8 +9,8 @@ import numpy as np
 from sisl import Geometry, Atom, SuperCell, Hessian
 
 
-class TestHamiltonian(object):
-    # Base test class for MaskedArrays.
+@attr('hessian')
+class TestHessian(object):
 
     def setUp(self):
         bond = 1.42

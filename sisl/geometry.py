@@ -684,6 +684,61 @@ class Geometry(SuperCellChild):
         return self.__class__(np.copy(self.xyz),
                               atom=self.atom.copy(), sc=self.sc.copy())
 
+    def optimize_nsc(self, axis=None, R=None):
+        """ Optimize the number of supercell connections based on `self.maxR()`
+
+        After this routine the number of supercells may not necessarily be the same.
+
+        This is an in-place operation.
+
+        Parameters
+        ----------
+        axis : int or array_like, optional
+           only optimize the specified axis (default to all)
+        R : float, optional
+           the maximum connection radius for each atom
+        """
+        if axis is None:
+            axis = [0, 1, 2]
+        else:
+            axis = ensure_array(axis)
+
+        if R is None:
+            R = self.maxR()
+        if R < 0:
+            raise ValueError((self.__class__.__name__ +
+                              ".optimize_nsc could not determine the radius from the "
+                              "internal atoms. Provide a radius as an argument."))
+
+        # Now we need to find the number of supercells
+        nsc = np.copy(self.nsc)
+        # Reset the number of supercells of the wanted optimized
+        # directions to 1
+        nsc[axis] = 1
+        for i in axis:
+            # Initialize the isc for this direction
+            # (note we do not take non-orthogonal directions
+            #  into account)
+            isc = np.zeros(3, np.int32)
+            # Initialize the actual number of supercell connections
+            # along this direction.
+            prev_isc = 0
+            while prev_isc == isc[i]:
+                # Try next supercell connection
+                isc[i] += 1
+                for ia in self:
+                    idx = self.close_sc(ia, isc=isc, R=R)
+                    if len(idx) > 0:
+                        prev_isc = isc[i]
+                        break
+
+            # Save the reached supercell connection
+            nsc[i] = prev_isc * 2 + 1
+
+        self.set_nsc(nsc)
+
+        return nsc
+
     def sub(self, atom, cell=None):
         """ Create a new `Geometry` with a subset of this `Geometry`
 
@@ -700,7 +755,7 @@ class Geometry(SuperCellChild):
 
         See Also
         --------
-        fit : update the supercell according to a reference supercell
+        SuperCell.fit : update the supercell according to a reference supercell
         """
         atms = self.sc2uc(atom)
         if cell is None:

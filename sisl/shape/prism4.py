@@ -15,14 +15,12 @@ __all__ = ['Cuboid', 'Cube']
 class Cuboid(Shape):
     """ A cuboid/rectangular prism (P4) with equi-opposite faces """
 
-    def __init__(self, edge_length, center=None, origo=None):
+    def __init__(self, edge_length, center=None):
         super(Cuboid, self).__init__(center)
         if isinstance(edge_length, Real):
             # now this is really a Cube...
             edge_length = [edge_length] * 3
         self._edge_length = np.copy(edge_length, np.float64)
-        if not origo is None:
-            self.set_origo(origo)
 
     @property
     def displacement(self):
@@ -44,7 +42,7 @@ class Cuboid(Shape):
         self.__init__(self.edge_length, center)
 
     def set_origo(self, origo):
-        """ Re-setting the center can sometimes be necessary """
+        """ Re-setting the origo can sometimes be necessary """
         self.__init__(self.edge_length, origo + self.edge_length * .5)
 
     @property
@@ -124,5 +122,5 @@ class Cuboid(Shape):
 class Cube(Cuboid):
     """ A cuboid/rectangular prism (P4) with all-equi faces """
 
-    def __init__(self, edge_length, center=None, origo=None):
-        super(Cube, self).__init__(edge_length, center, origo)
+    def __init__(self, edge_length, center=None):
+        super(Cube, self).__init__(edge_length, center)

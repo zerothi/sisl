@@ -19,6 +19,8 @@ class Shape(object):
     to implement in a inherited class:
     - center
       return the geometric center of the shape
+    - origo
+      return the lowest left point in the shape
     - volume
       return the volume of the shape.
     - displacement

@@ -31,7 +31,7 @@ class Spin(object):
 
     __slots__ = ['_spin', '_dtype']
 
-    def __init__(self, spin, dtype=None):
+    def __init__(self, spin='', dtype=None):
 
         if isinstance(spin, Spin):
             self._spin = spin._spin
@@ -46,12 +46,14 @@ class Spin(object):
         self._dtype = dtype
 
         if np.dtype(dtype).kind == 'c':
-            spin = {'unpolarized': 1, 'polarized': 2,
+            spin = {'unpolarized': 1, '': 1,
+                    'polarized': 2, 'p': 2,
                     'non-colinear': 2, 'nc': 2,
                     'spin-orbit': 4, 'so': 4}.get(spin, spin)
 
         else:
-            spin = {'unpolarized': 1, 'polarized': 2,
+            spin = {'unpolarized': 1, '': 1,
+                    'polarized': 2, 'p': 2,
                     'non-colinear': 4, 'nc': 4,
                     'spin-orbit': 8, 'so': 8}.get(spin, spin)
 

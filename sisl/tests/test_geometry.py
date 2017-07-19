@@ -862,6 +862,20 @@ class TestGeometry(object):
         assert_equal(len(d), 1)
         assert_true(np.allclose(d, [1.]))
 
+    def test_optimize_nsc1(self):
+        # Create a 1D chain
+        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom.set_nsc([77, 77, 77])
+        assert_true(np.allclose(geom.optimize_nsc(), [3, 3, 3]))
+        geom.set_nsc([77, 77, 77])
+        assert_true(np.allclose(geom.optimize_nsc(1), [77, 3, 77]))
+        geom.set_nsc([77, 77, 77])
+        assert_true(np.allclose(geom.optimize_nsc([0, 2]), [3, 77, 3]))
+        geom.set_nsc([77, 77, 77])
+        assert_true(np.allclose(geom.optimize_nsc([0, 2], R=2), [5, 77, 5]))
+        geom.set_nsc([1, 1, 1])
+        assert_true(np.allclose(geom.optimize_nsc([0, 2], R=2), [5, 1, 5]))
+
     def test_argumentparser1(self):
         self.g.ArgumentParser()
         self.g.ArgumentParser(**self.g._ArgumentParser_args_single())
