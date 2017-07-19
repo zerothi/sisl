@@ -47,8 +47,7 @@ class Ellipsoid(Shape):
     @property
     def volume(self):
         """ Return the volume of the shape """
-        r = self.radius
-        return 4. / 3. * pi * r[0] * r[1] * r[2]
+        return 4. / 3. * pi * np.product(self.radius)
 
     def expand(self, length):
         """ Return a new shape with a larger corresponding to `length` """
@@ -59,41 +58,24 @@ class Ellipsoid(Shape):
         """ Change the center of the object """
         self.__init__(*self.radius, center=center)
 
-    def within(self, other, return_sub=False):
+    def within(self, other):
         """ Return whether the points are within the shape """
 
         if isinstance(other, (list, tuple)):
             other = np.asarray(other, np.float64)
 
-        if isinstance(other, np.ndarray):
-            # Figure out if th
-            other.shape = (-1, 3)
+        if not isinstance(other, np.ndarray):
+            raise ValueError('Can not check other')
 
-            # First check
-            fabs = np.fabs
-            landr = np.logical_and.reduce
-            center = self.center
-            radius = self.radius
-            tmp = other - center[None, :]
-            within = landr(fabs(tmp[:, :]) <= radius[0], axis=1)
+        other.shape = (-1, 3)
 
-            # Now only check exactly on those that are possible
-            # candidates
-            tmp = tmp[within, :]
-            wtmp = (tmp[:, 0] / radius[0]) ** 2 + \
-                   (tmp[:, 1] / radius[1]) ** 2 + \
-                   (tmp[:, 2] / radius[2]) ** 2 <= 1.
+        idx = self.iwithin(other)
+        within = np.empty(len(other), dtype='bool')
+        within[:] = False
+        within[idx] = True
+        return within
 
-            # Set values
-            within[within] = wtmp
-            if return_sub:
-                tmp = tmp[wtmp, :] + self.center[None, :]
-
-            if return_sub:
-                return within, tmp
-            return within
-
-    def iwithin(self, other, return_sub=False):
+    def iwithin(self, other):
         """ Return indices of the points that are within the shape """
 
         if isinstance(other, (list, tuple)):
@@ -108,24 +90,21 @@ class Ellipsoid(Shape):
         where = np.where
         fabs = np.fabs
         landr = np.logical_and.reduce
-        center = self.center
-        radius = self.radius[0]
-        tmp = other[:, :] - center[None, :]
+        r = self.radius
+        tmp = other[:, :] - self.center[None, :]
 
         # Get indices where we should do the more
         # expensive exact check of being inside shape
-        within = where(landr(fabs(tmp[:, :]) <= radius, axis=1))[0]
+        # I.e. this reduces the search space to the box
+        within = where(landr(fabs(tmp[:, :]) <= r, axis=1))[0]
 
         # Now only check exactly on those that are possible candidates
         tmp = tmp[within, :]
-        wtmp = where(tmp[:, 0] ** 2 + tmp[:, 1] ** 2 + tmp[:, 2] ** 2
-                     <= radius * radius)[0]
+        wtmp = where((tmp[:, 0] / r[0]) ** 2 +
+                     (tmp[:, 1] / r[1]) ** 2 +
+                     (tmp[:, 2] / r[2]) ** 2 <= 1)[0]
 
-        within = within[wtmp]
-
-        if return_sub:
-            return within, other[within, :]
-        return within
+        return within[wtmp]
 
 
 class Spheroid(Ellipsoid):
@@ -169,69 +148,6 @@ class Sphere(Spheroid):
     def set_center(self, center):
         """ Change the center of the object """
         self.__init__(self.radius[0], center=center)
-
-    def within(self, other, return_sub=False):
-        """ Return whether the points are within the shape """
-
-        if isinstance(other, (list, tuple)):
-            other = np.asarray(other, np.float64)
-
-        if isinstance(other, np.ndarray):
-            # Figure out if th
-            other.shape = (-1, 3)
-
-            # First check
-            where = np.where
-            fabs = np.fabs
-            landr = np.logical_and.reduce
-            center = self.center
-            radius = self.radius[0]
-            tmp = other[:, :] - center[None, :]
-
-            within = landr(fabs(tmp[:, :]) <= radius, axis=1)
-
-            # Now only check exactly on those that are possible
-            # candidates
-            tmp = tmp[within, :]
-            wtmp = tmp[:, 0] ** 2 + tmp[:, 1] ** 2 + tmp[:, 2] ** 2 <= radius ** 2
-
-            within[within] = wtmp
-            if return_sub:
-                tmp = tmp[wtmp, :] + self.center[None, :]
-
-            if return_sub:
-                return within, tmp
-            return within
-
-    def iwithin(self, other, return_sub=False):
-        """ Return indices of the points that are within the shape """
-
-        if isinstance(other, (list, tuple)):
-            other = np.asarray(other, np.float64)
-
-        if not isinstance(other, np.ndarray):
-            raise ValueError('Could not index the other list')
-
-        other.shape = (-1, 3)
-
-        # First check
-        where = np.where
-        fabs = np.fabs
-        landr = np.logical_and.reduce
-        center = self.center
-        radius = self.radius[0]
-        tmp = other[:, :] - center[None, :]
-
-        within = where(landr(fabs(tmp[:, :]) <= radius, axis=1))[0]
-
-        # Now only check exactly on those that are possible candidates
-        wtmp = where((tmp[within, :] ** 2).sum(1) <= radius ** 2)[0]
-
-        within = within[wtmp]
-
-        if return_sub:
-            return within, other[within, :]
-        return within
 
     def __repr__(self):
         return self.__class__.__name__ + '{{c({1:.2f} {2:.2f} {3:.2f}) r={0:.2f}}}'.format(self.radius[0], *self.center)

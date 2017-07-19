@@ -1606,7 +1606,9 @@ class Geometry(SuperCellChild):
         # Get indices and coordinates of the largest shape
         # The largest part of the calculation are to calculate
         # the content in the largest shape.
-        ix, xa = shapes[-1].iwithin(xa, return_sub=True)
+        ix = shapes[-1].iwithin(xa)
+        # Reduce search space
+        xa = xa[ix, :]
 
         if idx is None:
             # This is because of the pre-check of the distance checks

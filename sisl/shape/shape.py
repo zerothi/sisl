@@ -58,8 +58,21 @@ class Shape(object):
         return self.__class__(*args, **kwargs)
 
     @property
+    def origo(self):
+        """ The geometric origo of the shape
+
+        An origo should *always* be the lowest left coordinate of the shape.
+
+        Note
+        ----
+        Not all shapes have an origo. For instance a sphere only have a center,
+        but an origo cannot be defined.
+        """
+        return None
+
+    @property
     def center(self):
-        """ Return the geometric center of the shape """
+        """ The geometric center of the shape """
         return self._center
 
     @property
@@ -87,5 +100,4 @@ class Shape(object):
         return self.within(self, other)
 
     def __repr__(self):
-        s = self.__class__.__name__ + ' c({} {} {})'.format(*self.center)
-        return s
+        return self.__class__.__name__ + ' c({} {} {})'.format(*self.center)

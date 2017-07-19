@@ -332,15 +332,17 @@ class SparseGeometry(object):
                 # calculate the remaining atoms to process
                 na_run += len(ias)
                 na -= len(ias)
-                t1 = time()
                 # calculate hours, minutes, seconds
-                m, s = divmod(float(t1-t0)/na_run * na, 60)
+                m, s = divmod(float(time()-t0)/na_run * na, 60)
                 h, m = divmod(m, 60)
                 stdout.write(name + ".construct() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
 
         if eta:
-            stdout.write(name + ".construct() {0:23s}\n".format('DONE'))
+            # calculate hours, minutes, seconds spend on the computation
+            m, s = divmod(float(time()-t0), 60)
+            h, m = divmod(m, 60)
+            stdout.write(name + ".construct() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
 
     @property
