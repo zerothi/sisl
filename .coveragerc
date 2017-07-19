@@ -1,0 +1,5 @@
+[run]
+omit = sisl/**/tests/*
+    sisl/**/setup.py
+    numpy
+    scipy
