@@ -39,6 +39,7 @@ class TestGeometry(object):
         assert_true(len(self.g) == 2)
         assert_true(len(self.g.xyz) == 2)
         assert_true(np.allclose(self.g[0], np.zeros([3])))
+        assert_true(np.allclose(self.g[None, 0], self.g.xyz[:, 0]))
 
         i = 0
         for ia in self.g:
@@ -82,6 +83,17 @@ class TestGeometry(object):
             i += 1
         assert_true(i == 4)
 
+        i = 0
+        for ia, io in self.g.iter_orbitals(1, local=False):
+            assert_equal(ia, 1)
+            assert_true(io >= 2)
+            i += 1
+        assert_true(i == 2)
+
+    @raises(ValueError)
+    def test_tile0(self):
+        t = self.g.tile(0, 0)
+
     def test_tile1(self):
         cell = np.copy(self.g.sc.cell)
         cell[0, :] *= 2
@@ -101,6 +113,9 @@ class TestGeometry(object):
         assert_true(np.allclose(cell, t.sc.cell))
 
     def test_tile3(self):
+        cell = np.copy(self.g.sc.cell)
+        cell[:, :] *= 2
+        t1 = self.g * 2
         cell = np.copy(self.g.sc.cell)
         cell[0, :] *= 2
         t1 = self.g * (2, 0)
@@ -133,6 +148,10 @@ class TestGeometry(object):
         t1 = self.g.tile(2, 0).tile(2, 2)
         t = self.g * ([2, 0], 't') * [2, 2]
         assert_true(np.allclose(t1.xyz, t.xyz))
+
+    @raises(ValueError)
+    def test_repeat0(self):
+        t = self.g.repeat(0, 0)
 
     def test_repeat1(self):
         cell = np.copy(self.g.sc.cell)
@@ -330,6 +349,12 @@ class TestGeometry(object):
             for ia in ias:
                 i += 1
         assert_true(i == len(self.g))
+
+        i = 0
+        for ias, idx in self.g.iter_block(atom=1):
+            for ia in ias:
+                i += 1
+        assert_true(i == 1)
 
     @attr('slow')
     def test_iter_block2(self):
@@ -541,6 +566,15 @@ class TestGeometry(object):
         i = self.mol.close([100, 100, 100], R=0.1, ret_rij=True, ret_xyz=True)
         for el in i:
             assert_equal(len(el), 0)
+
+    @attr('slow')
+    def test_close4(self):
+        # 2 * 200 ** 2
+        g = self.g * (200, 200, 1)
+        i = g.close(0, R=(0.1, 1.43))
+        assert_equal(len(i), 2)
+        assert_equal(len(i[0]), 1)
+        assert_equal(len(i[1]), 3)
 
     def test_close_within1(self):
         three = range(3)
@@ -861,6 +895,16 @@ class TestGeometry(object):
         d = geom.distance(R=1, tol=np.ones(10) * .5)
         assert_equal(len(d), 1)
         assert_true(np.allclose(d, [1.]))
+
+    def test_distance8(self):
+        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom.set_nsc([77, 1, 1])
+        d = geom.distance(0, method='min')
+        assert_equal(len(d), 1)
+        d = geom.distance(0, method='median')
+        assert_equal(len(d), 1)
+        d = geom.distance(0, method='mode')
+        assert_equal(len(d), 1)
 
     def test_optimize_nsc1(self):
         # Create a 1D chain

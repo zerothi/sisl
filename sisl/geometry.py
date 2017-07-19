@@ -1028,17 +1028,17 @@ class Geometry(SuperCellChild):
             m = m[0]
             g = self.copy()
             for i in range(3):
-                g = getattr(g, method)(max(m, 1), i)
+                g = getattr(g, method)(m, i)
 
         elif len(m) == 2:
             #  (r, axis)
-            g = getattr(self, method)(max(m[0], 1), m[1])
+            g = getattr(self, method)(m[0], m[1])
 
         elif len(m) == 3:
             #  (r, r, r)
             g = self.copy()
             for i in range(3):
-                g = getattr(g, method)(max(m[i], 1), i)
+                g = getattr(g, method)(m[i], i)
 
         else:
             raise ValueError('Multiplying a geometry has received a wrong argument')
