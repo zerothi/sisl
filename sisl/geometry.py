@@ -2404,7 +2404,7 @@ class Geometry(SuperCellChild):
         Returns
         -------
         numpy.ndarray
-           an array of positive numbers yielding the distance sparse matrix with all rij elements.
+           an array of positive numbers yielding the distances from the atoms in reduced form
 
         See Also
         --------
