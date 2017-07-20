@@ -810,7 +810,6 @@ class SparseAtom(SparseGeometry):
 
         # First loop on axis tiling and local
         # atoms in the geometry
-        ISC = np.empty([3], np.int32)
         sc_index = geom_n.sc_index
         rngreps = range(0, na*reps, na)
         for ia in range(geom.na):
@@ -873,7 +872,6 @@ class SparseAtom(SparseGeometry):
 
         # First loop on axis tiling and local
         # atoms in the geometry
-        ISC = np.empty([3], np.int32)
         sc_index = geom_n.sc_index
         rngreps = range(reps)
         for ia in range(geom.na):
@@ -885,21 +883,22 @@ class SparseAtom(SparseGeometry):
             if ncol[ia] == 0:
                 continue
             ccol = col[ptr[ia]:ptr[ia]+ncol[ia]]
-            for ua, ja, isc in zip(ccol % na, ccol, geom.a2isc(ccol)):
 
-                # Copy supercell connection
-                ISC[:] = isc[:]
+            # supercells in the old geometry
+            isc = geom.a2isc(ccol)
+            # resulting atom in the new geometry (without wrapping
+            # for correct supercell, that will happen below)
+            JA = (ccol % na) * reps
 
-                # Naw calculate the actual unit-cell orbital
-                JA = ua * reps
-                # Create repetitions
-                for rep in rngreps:
+            # For recalculating stuff in the repetition loop
+            ISC = np.copy(isc)
 
-                    # Correct the supercell information
-                    A = isc[axis] + rep
-                    ISC[axis] = A // reps
+            for rep in rngreps:
 
-                    S[IA + rep, JA + A % reps + sc_index(ISC) * na_n] = self[ia, ja]
+                A = isc[:, axis] + rep
+                ISC[:, axis] = A // reps
+
+                S[IA + rep, JA + A % reps + sc_index(ISC) * na_n] = self[ia, ccol]
         S.finalize()
 
         return S
@@ -1188,7 +1187,6 @@ class SparseOrbital(SparseGeometry):
 
         # First loop on axis tiling and local
         # atoms in the geometry
-        ISC = np.empty([3], np.int32)
         sc_index = geom_n.sc_index
         rngreps = range(0, no*reps, no)
         for io in range(geom.no):
@@ -1251,7 +1249,6 @@ class SparseOrbital(SparseGeometry):
 
         # First loop on axis tiling and local
         # atoms in the geometry
-        ISC = np.empty([3], np.int32)
         sc_index = geom_n.sc_index
         rngreps = range(reps)
         for io in range(geom.no):
@@ -1266,25 +1263,25 @@ class SparseOrbital(SparseGeometry):
             if ncol[io] == 0:
                 continue
             ccol = col[ptr[io]:ptr[io]+ncol[io]]
-            for ja, uo, jo, isc in zip(geom.o2a(ccol % no), ccol % no, ccol, geom.o2isc(ccol)):
 
-                # This is the skip per repeat
-                oJ = geom.firsto[ja]
-                oA = geom.atom[ja].orbs
+            isc = geom.o2isc(ccol)
 
-                # Copy supercell connection
-                ISC[:] = isc[:]
+            # Unit-cell orbitals
+            JO = ccol % no
 
-                # Now calculate the actual unit-cell orbital
-                JO = oJ * (reps-1) + uo
-                # Create repetitions
-                for rep in rngreps:
+            # Get the number of orbitals of the residing atoms
+            ja = geom.o2a(JO)
+            oJ = geom.firsto[ja]
+            oA = geom.lasto[ja] - oJ + 1
+            ISC = np.copy(isc)
+            JO = oJ * (reps - 1) + JO
 
-                    # Correct the supercell information
-                    A = isc[axis] + rep
-                    ISC[axis] = A // reps
+            for rep in rngreps:
 
-                    S[IO + oa * rep, JO + oA * (A % reps) + sc_index(ISC) * no_n] = self[io, jo]
+                A = isc[:, axis] + rep
+                ISC[:, axis] = A // reps
+
+                S[IO + oa * rep, JO + oA * (A % reps) + sc_index(ISC) * no_n] = self[io, ccol]
         S.finalize()
 
         return S
