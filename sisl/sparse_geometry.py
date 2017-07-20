@@ -819,21 +819,25 @@ class SparseAtom(SparseGeometry):
             if ncol[ia] == 0:
                 continue
             ccol = col[ptr[ia]:ptr[ia]+ncol[ia]]
-            for ua, ja, isc in zip(ccol % na, ccol, geom.a2isc(ccol)):
 
-                # Copy supercell connection
-                ISC[:] = isc[:]
+            # supercells in the old geometry
+            isc = geom.a2isc(ccol)
+            # resulting atom in the new geometry (without wrapping
+            # for correct supercell, that will happen below)
+            A = ccol % na + na * isc[:, axis]
 
-                A = ua + na * isc[axis]
-                # Create repetitions
-                for rep in rngreps:
+            # For recalculating stuff in the repetition loop
+            ISC = np.copy(isc)
 
-                    # Figure out the JO orbital
-                    JA = A + rep
-                    # Correct the supercell information
-                    ISC[axis] = JA // na_n
+            # Create repetitions
+            for rep in rngreps:
 
-                    S[ia + rep, JA % na_n + sc_index(ISC) * na_n] = self[ia, ja]
+                # Figure out the JA atom
+                JA = A + rep
+                # Correct the supercell information
+                ISC[:, axis] = JA // na_n
+
+                S[ia + rep, JA % na_n + sc_index(ISC) * na_n] = self[ia, ccol]
         S.finalize()
 
         return S
@@ -1193,21 +1197,25 @@ class SparseOrbital(SparseGeometry):
             if ncol[io] == 0:
                 continue
             ccol = col[ptr[io]:ptr[io]+ncol[io]]
-            for uo, jo, isc in zip(ccol % no, ccol, geom.o2isc(ccol)):
 
-                # Copy supercell connection
-                ISC[:] = isc[:]
+            # supercells in the old geometry
+            isc = geom.o2isc(ccol)
+            # resulting orbital in the new geometry (without wrapping
+            # for correct supercell, that will happen below)
+            O = ccol % no + no * isc[:, axis]
 
-                O = uo + no * isc[axis]
-                # Create repetitions
-                for orep in rngreps:
+            # For recalculating stuff in the repetition loop
+            ISC = np.copy(isc)
 
-                    # Figure out the JO orbital
-                    JO = O + orep
-                    # Correct the supercell information
-                    ISC[axis] = JO // no_n
+            # Create repetitions
+            for rep in rngreps:
 
-                    S[io + orep, JO % no_n + sc_index(ISC) * no_n] = self[io, jo]
+                # Figure out the JO orbital
+                JO = O + rep
+                # Correct the supercell information
+                ISC[:, axis] = JO // no_n
+
+                S[io + rep, JO % no_n + sc_index(ISC) * no_n] = self[io, ccol]
         S.finalize()
 
         return S

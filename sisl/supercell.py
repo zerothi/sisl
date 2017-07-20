@@ -49,6 +49,7 @@ class SuperCell(object):
 
     def _fill(self, non_filled, dtype=None):
         """ Return a zero filled array of length 3 """
+
         if len(non_filled) == 3:
             return non_filled
 
@@ -325,15 +326,27 @@ class SuperCell(object):
 
         Returns the integer for the supercell
         """
+        if isinstance(sc_off[0], (np.ndarray, tuple, list)):
+            # We are dealing with a list of lists
+            sc_off = np.asarray(sc_off, np.int32)
+            off = self.sc_off
+            where = np.where
+            all = np.all
+            def func(array):
+                return where(all(off - array[None, :] == 0, axis=1))[0]
+            return np.apply_along_axis(func, 1, sc_off).ravel()
+
+        # Fall back to the other routines
         sc_off = self._fill_sc(sc_off)
         if sc_off[0] is not None and sc_off[1] is not None and sc_off[2] is not None:
-            for i in range(self.n_s):
-                if (sc_off[0] == self.sc_off[i, 0] or sc_off[0] is None) and \
-                   (sc_off[1] == self.sc_off[i, 1] or sc_off[1] is None) and \
-                   (sc_off[2] == self.sc_off[i, 2] or sc_off[2] is None):
-                    return i
+            sc_off = np.asarray(sc_off, np.int32)
+            i = np.where(np.all(self.sc_off - sc_off[None, :] == 0, axis=1))[0]
+            if len(i) == 1:
+                return i[0]
             raise Exception(
                 'Could not find supercell index, number of super-cells not big enough')
+
+        # We build it because there are 'none'
         idx = []
         for i in range(self.n_s):
             if (sc_off[0] == self.sc_off[i, 0] or sc_off[0] is None) and \

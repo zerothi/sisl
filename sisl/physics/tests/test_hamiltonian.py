@@ -44,7 +44,6 @@ class TestHamiltonian(object):
         del self.HS2
 
     def test_objects(self):
-        print(self.H)
         assert_true(len(self.H.xyz) == 2)
         assert_true(self.g.no == len(self.H))
         assert_true(len(self.HS.xyz) == 2)
@@ -388,6 +387,7 @@ class TestHamiltonian(object):
         Hc = H.cut(2, 1).cut(2, 0)
         eigc = Hc.eigh()
         eigg = Hg.eigh()
+        assert_true(np.allclose(eigc, eigg))
         assert_true(np.allclose(Hg.eigh(), Hc.eigh()))
         del Hc, H
 
@@ -407,8 +407,6 @@ class TestHamiltonian(object):
         Hc = H.cut(2, 1).cut(2, 0)
         eigc = Hc.eigh()
         eigg = Hg.eigh()
-        print(eigc)
-        print(eigg)
         assert_true(np.allclose(Hg.eigh(), Hc.eigh()))
         del Hc, H
 
@@ -591,7 +589,7 @@ class TestHamiltonian(object):
         Hg.finalize()
         H = Hamiltonian(self.g)
         H.construct([R, param])
-        H = H.tile(2, 0).tile(2, 1). tile(2, 2)
+        H = H.tile(2, 0).tile(2, 1).tile(2, 2)
         assert_true(Hg.spsame(H))
 
     @attr('slow')
@@ -651,8 +649,6 @@ class TestHamiltonian(object):
         H = Hamiltonian(self.g)
         H.construct([R, param])
         H = H.repeat(2, 0).repeat(2, 1). repeat(2, 2)
-        print(Hg)
-        print(H)
         assert_true(Hg.spsame(H))
 
     @attr('slow')

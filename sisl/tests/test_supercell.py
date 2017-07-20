@@ -58,6 +58,12 @@ class TestSuperCell(object):
 
     def test_nsc4(self):
         assert_true(self.sc.sc_index([0, 0, 0]) == 0)
+        for s in range(self.sc.n_s):
+            assert_true(self.sc.sc_index(self.sc.sc_off[s, :]) == s)
+        arng = np.arange(self.sc.n_s)
+        np.random.shuffle(arng)
+        sc_off = self.sc.sc_off[arng, :]
+        assert_true(np.all(self.sc.sc_index(sc_off) == arng))
 
     def test_fill(self):
         sc = self.sc.swapaxes(1, 2)
@@ -142,6 +148,11 @@ class TestSuperCell(object):
         assert_raises(Exception, self.sc.sc_index, [100, 100, 100])
         sc_index = self.sc.sc_index([0, 0, None])
         assert_equal(len(sc_index), self.sc.nsc[2])
+
+    def test_sc_index2(self):
+        sc_index = self.sc.sc_index([[0, 0, 0],
+                                     [1, 1, 0]])
+        assert_equal(len(sc_index), 2)
 
     def test_cut1(self):
         cut = self.sc.cut(2, 0)
