@@ -768,11 +768,14 @@ class SparseAtom(SparseGeometry):
         # Now keep all atoms in the list
         # Small indices are the current geometry
         # Large indices are the new geometry
+        col = D.col
+        ptr = D.ptr
+        ncol = D.ncol
         for IA, ia in enumerate(atom):
 
-            col = D.col[D.ptr[ia]:D.ptr[ia]+D.ncol[ia]]
+            ccol = col[ptr[ia]:ptr[ia]+ncol[ia]]
             # Loop on the connection atoms
-            jas = col[np.where(pvt[col] >= 0)[0]]
+            jas = ccol[np.where(pvt[ccol] >= 0)[0]]
             S[IA, pvt[jas]] = self[ia, jas]
         S.finalize()
 
@@ -1134,6 +1137,9 @@ class SparseOrbital(SparseGeometry):
         # Now keep all atoms in the list
         # Small indices are the current geometry
         # Large indices are the new geometry
+        col = D.col
+        ptr = D.ptr
+        ncol = D.ncol
         for IA, ia in enumerate(atom):
 
             # Retrieve first orbital of atom ia
@@ -1142,13 +1148,12 @@ class SparseOrbital(SparseGeometry):
 
             # Loop on orbitals and repetitions of the orbital
             for io in range(self.geom.atom[ia].orbs):
-                IO = O + io
-                io = o + io
+                i = o + io
 
-                col = D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]
+                ccol = col[ptr[i]:ptr[i]+ncol[i]]
                 # Loop on the connection orbitals
-                jos = col[np.where(pvt[col] >= 0)[0]]
-                S[IO, pvt[jos]] = self[io, jos]
+                jos = ccol[np.where(pvt[ccol] >= 0)[0]]
+                S[O + io, pvt[jos]] = self[i, jos]
         S.finalize()
 
         return S
