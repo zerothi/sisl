@@ -773,8 +773,7 @@ class SparseAtom(SparseGeometry):
             col = D.col[D.ptr[ia]:D.ptr[ia]+D.ncol[ia]]
             # Loop on the connection atoms
             jas = col[np.where(pvt[col] >= 0)[0]]
-            for ja in jas:
-                S[IA, pvt[ja]] = self[ia, ja]
+            S[IA, pvt[jas]] = self[ia, jas]
         S.finalize()
 
         return S
@@ -1149,8 +1148,7 @@ class SparseOrbital(SparseGeometry):
                 col = D.col[D.ptr[io]:D.ptr[io]+D.ncol[io]]
                 # Loop on the connection orbitals
                 jos = col[np.where(pvt[col] >= 0)[0]]
-                for jo in jos:
-                    S[IO, pvt[jo]] = self[io, jo]
+                S[IO, pvt[jos]] = self[io, jos]
         S.finalize()
 
         return S
