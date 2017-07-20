@@ -29,6 +29,7 @@ class TestSparseCSR(object):
         s1.align(s2)
 
     def test_init1(self):
+        repr(self.s1)
         assert_equal(self.s1.dtype, np.int32)
         assert_equal(self.s2.dtype, np.float64)
         assert_true(np.allclose(self.s1.data, self.s1.data))

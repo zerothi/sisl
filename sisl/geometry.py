@@ -872,7 +872,7 @@ class Geometry(SuperCellChild):
         sc.cell[axis, :] *= reps
         # Only reduce the size if it is larger than 5
         if sc.nsc[axis] > 3 and reps > 1:
-            sc.nsc[axis] -= 2
+            sc.nsc[axis] = max(1, sc.nsc[axis] // 2 - (reps - 1)) * 2 + 1
         sc = sc.copy()
         # Pre-allocate geometry
         # Our first repetition *must* be with
@@ -948,7 +948,7 @@ class Geometry(SuperCellChild):
         sc.cell[axis, :] *= reps
         # Only reduce the size if it is larger than 5
         if sc.nsc[axis] > 3 and reps > 1:
-            sc.nsc[axis] -= 2
+            sc.nsc[axis] = max(1, sc.nsc[axis] // 2 - (reps - 1)) * 2 + 1
         sc = sc.copy()
         # Pre-allocate geometry
         na = self.na * reps

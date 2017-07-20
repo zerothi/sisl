@@ -1,6 +1,14 @@
 0.8.5
 =====
 
+- Greatly speeded up the tile and repeat functions for the
+  Hamiltonian objects. They are now the preferred method for creating
+  large systems.
+
+- Bug fixed when having extremely long atomic ranges and using tile/repeat.
+  The number of supercells was too large.
+  It did not affect anything, but it was inconsistent.
+
 - Enabled reading the density matrix and energy density matrix
 
 - Addition of a PerformanceSelector class which enables a dynamic
