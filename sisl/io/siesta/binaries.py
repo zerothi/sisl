@@ -99,19 +99,19 @@ class TSHSSileSiesta(SileBinSIESTA):
         H = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)
 
         # Create the new sparse matrix
-        H._data.ncol = np.array(ncol, np.int32)
+        H._csr.ncol = np.array(ncol, np.int32)
         ptr = np.cumsum(ncol)
         ptr = np.insert(ptr, 0, 0)
-        H._data.ptr = np.array(ptr, np.int32)
+        H._csr.ptr = np.array(ptr, np.int32)
         # Correct fortran indices
-        H._data.col = np.array(col, np.int32) - 1
-        H._data._nnz = len(col)
+        H._csr.col = np.array(col, np.int32) - 1
+        H._csr._nnz = len(col)
 
-        H._data._D = np.empty([nnz, spin+1], np.float64)
+        H._csr._D = np.empty([nnz, spin+1], np.float64)
         for i in range(spin):
             # this is because of the F-ordering
-            H._data._D[:, i] = dH[:, i]
-        H._data._D[:, spin] = dS[:]
+            H._csr._D[:, i] = dH[:, i]
+        H._csr._D[:, spin] = dS[:]
 
         return H
 

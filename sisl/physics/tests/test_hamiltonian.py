@@ -198,7 +198,7 @@ class TestHamiltonian(object):
     def test_sp2HS(self):
         csr = self.H.tocsr(0)
         H = Hamiltonian.fromsp(self.H.geom, csr)
-        assert_true(H._data.spsame(self.H._data))
+        assert_true(H.spsame(self.H))
 
     def test_op1(self):
         g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])

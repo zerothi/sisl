@@ -1566,21 +1566,21 @@ class dHncSileSiesta(SileCDFSIESTA):
             if len(lvl.dimensions['nnzs']) != H.nnz:
                 raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
                                  "all dH entries [nnz].")
-            if np.any(lvl.variables['n_col'][:] != H._data.ncol[:]):
+            if np.any(lvl.variables['n_col'][:] != H._csr.ncol[:]):
                 raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
                                  "all dH entries [n_col].")
-            if np.any(lvl.variables['list_col'][:] != H._data.col[:]+1):
+            if np.any(lvl.variables['list_col'][:] != H._csr.col[:]+1):
                 raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
                                  "all dH entries [list_col].")
         else:
-            self._crt_dim(lvl, 'nnzs', H._data.col.shape[0])
+            self._crt_dim(lvl, 'nnzs', H._csr.col.shape[0])
             v = self._crt_var(lvl, 'n_col', 'i4', ('no_u',))
             v.info = "Number of non-zero elements per row"
-            v[:] = H._data.ncol[:]
+            v[:] = H._csr.ncol[:]
             v = self._crt_var(lvl, 'list_col', 'i4', ('nnzs',),
-                              chunksizes=(len(H._data.col),), **self._cmp_args)
+                              chunksizes=(len(H._csr.col),), **self._cmp_args)
             v.info = "Supercell column indices in the sparse format"
-            v[:] = H._data.col[:] + 1  # correct for fortran indices
+            v[:] = H._csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
             v.info = "Index of supercell coordinates"
             v[:] = H.geom.sc.sc_off[:, :]
@@ -1656,14 +1656,14 @@ class dHncSileSiesta(SileCDFSIESTA):
         # Number of non-zero elements
         csize[-1] = H.nnz
 
-        if H._data._D.dtype.kind == 'c':
+        if H.dtype.kind == 'c':
             v1 = self._crt_var(lvl, 'RedH', 'f8', dim,
                                chunksizes=csize,
                                attr = {'info': "Real part of dH",
                                        'unit': "Ry"}, **self._cmp_args)
             for i in range(len(H.spin)):
                 sl[-2] = i
-                v1[sl] = H._data._D[:, i].real * eV2Ry
+                v1[sl] = H._csr._D[:, i].real * eV2Ry
 
             v2 = self._crt_var(lvl, 'ImdH', 'f8', dim,
                                chunksizes=csize,
@@ -1671,7 +1671,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                                        'unit': "Ry"}, **self._cmp_args)
             for i in range(len(H.spin)):
                 sl[-2] = i
-                v2[sl] = H._data._D[:, i].imag * eV2Ry
+                v2[sl] = H._csr._D[:, i].imag * eV2Ry
 
         else:
             v = self._crt_var(lvl, 'dH', 'f8', dim,
@@ -1680,7 +1680,7 @@ class dHncSileSiesta(SileCDFSIESTA):
                                       'unit': "Ry"},  **self._cmp_args)
             for i in range(len(H.spin)):
                 sl[-2] = i
-                v[sl] = H._data._D[:, i] * eV2Ry
+                v[sl] = H._csr._D[:, i] * eV2Ry
 
 
 add_sile('dH.nc', dHncSileSiesta)

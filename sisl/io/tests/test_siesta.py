@@ -29,7 +29,7 @@ class TestSIESTAnc(object):
         # Assert they are the same
         assert_true(np.allclose(tb.cell, ntb.cell))
         assert_true(np.allclose(tb.xyz, ntb.xyz))
-        assert_true(np.allclose(tb._data._D[:, 0], ntb._data._D[:, 0]))
+        assert_true(np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0]))
         assert_true(self.g.atom.equal(ntb.atom, R=False))
 
     def test_nc2(self):
@@ -62,5 +62,5 @@ class TestSIESTAnc(object):
         # Assert they are the same
         assert_true(np.allclose(tb.cell, ntb.cell))
         assert_true(np.allclose(tb.xyz, ntb.xyz))
-        assert_true(np.allclose(tb._data._D, ntb._data._D))
+        assert_true(np.allclose(tb._csr._D, ntb._csr._D))
         assert_true(self.g.atom.equal(ntb.atom, R=False))

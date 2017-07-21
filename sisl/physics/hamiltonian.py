@@ -120,7 +120,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # For non-colinear and SO only the diagonal components
             # should be shifted.
             for i in range(min(self.spin.spin, 2)):
-                self._data._D[:, i] -= self._data._D[:, self.S_idx] * E
+                self._csr._D[:, i] -= self._csr._D[:, self.S_idx] * E
         else:
             for i in range(self.shape[0]):
                 for j in range(min(self.spin.spin, 2)):

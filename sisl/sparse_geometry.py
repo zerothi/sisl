@@ -87,14 +87,14 @@ class SparseGeometry(object):
 
         # query dimension of sparse matrix
         s = self._size
-        self._data = SparseCSR((s, s * self.geom.n_s, dim), nnzpr=nnzpr, dtype=dtype)
+        self._csr = SparseCSR((s, s * self.geom.n_s, dim), nnzpr=nnzpr, dtype=dtype)
 
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
 
     def empty(self, keep=False):
         """ See `SparseCSR.empty` for details """
-        self._data.empty(keep)
+        self._csr.empty(keep)
 
     def copy(self, dtype=None):
         """ A copy of this object 
@@ -109,7 +109,7 @@ class SparseGeometry(object):
             dtype = self.dtype
         new = self.__class__(self.geom, self.dim, dtype, 1, **self._cls_kwargs())
         # Be sure to copy the content of the SparseCSR object
-        new._data = self._data.copy(dtype=dtype)
+        new._csr = self._csr.copy(dtype=dtype)
         return new
 
     @property
@@ -121,27 +121,27 @@ class SparseGeometry(object):
     @property
     def dim(self):
         """ Number of components per element """
-        return self._data.shape[-1]
+        return self._csr.shape[-1]
 
     @property
     def shape(self):
         """ Shape of sparse matrix """
-        return self._data.shape
+        return self._csr.shape
 
     @property
     def dtype(self):
         """ Data type of sparse elements """
-        return self._data.dtype
+        return self._csr.dtype
 
     @property
     def dkind(self):
         """ Data type of sparse elements (in str) """
-        return self._data.dkind
+        return self._csr.dkind
 
     @property
     def nnz(self):
         """ Number of non-zero elements """
-        return self._data.nnz
+        return self._csr.nnz
 
     def __repr__(self):
         """ Representation of the sparse model """
@@ -160,7 +160,7 @@ class SparseGeometry(object):
     # Make the indicis behave on the contained sparse matrix
     def __delitem__(self, key):
         """ Delete elements of the sparse elements """
-        del self._data[key]
+        del self._csr[key]
 
     def __getitem__(self, key):
         """ Elements for the index(s) """
@@ -168,7 +168,7 @@ class SparseGeometry(object):
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
-        d = self._data[key]
+        d = self._csr[key]
         return d
 
     def __setitem__(self, key, val):
@@ -181,25 +181,25 @@ class SparseGeometry(object):
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
-        self._data[key] = val
+        self._csr[key] = val
 
     def __contains__(self, key):
         """ Check whether a sparse index is non-zero """
-        return key in self._data
+        return key in self._csr
 
     def align(self, other):
         """ See ``SparseCSR.align`` for details """
         if isinstance(other, SparseCSR):
-            self._data.align(other)
+            self._csr.align(other)
         else:
-            self._data.align(other._data)
+            self._csr.align(other._csr)
 
     def eliminate_zeros(self):
         """ Removes all zero elements from the sparse matrix
 
         This is an *in-place* operation
         """
-        self._data.eliminate_zeros()
+        self._csr.eliminate_zeros()
 
     # Create iterations on the non-zero elements
     def iter_nnz(self):
@@ -212,7 +212,7 @@ class SparseGeometry(object):
         >>> for i, j in self.iter_nnz():
         ...    self[i, j] # is then the non-zero value
         """
-        for i, j in self._data:
+        for i, j in self._csr:
             yield i, j
 
     __iter__ = iter_nnz
@@ -348,7 +348,7 @@ class SparseGeometry(object):
     @property
     def finalized(self):
         """ Whether the contained data is finalized and non-used elements have been removed """
-        return self._data.finalized
+        return self._csr.finalized
 
     def finalize(self):
         """ Finalizes the model
@@ -358,7 +358,7 @@ class SparseGeometry(object):
         Note that adding more elements to the sparse matrix is more time-consuming than for an non-finalized sparse matrix due to the
         internal data-representation.
         """
-        self._data.finalize()
+        self._csr.finalize()
 
     def tocsr(self, index, isc=None):
         """ Return a ``scipy.sparse.csr_matrix`` of the specified index
@@ -373,14 +373,14 @@ class SparseGeometry(object):
         """
         if isc is not None:
             raise NotImplementedError("Requesting sub-sparse has not been implemented yet")
-        return self._data.tocsr(index)
+        return self._csr.tocsr(index)
 
     def spsame(self, other):
         """ Compare two sparse objects and check whether they have the same entries.
 
         This does not necessarily mean that the elements are the same
         """
-        return self._data.spsame(other._data)
+        return self._csr.spsame(other._csr)
 
     def _init_larger(self, method, size, axis):
         """ Internal routine to start a bigger sparse model """
@@ -389,7 +389,7 @@ class SparseGeometry(object):
 
         # Now create the new Hamiltonian
         # First figure out the initialization parameters
-        nnzpr = np.amax(self._data.ncol)
+        nnzpr = np.amax(self._csr.ncol)
         dim = self.dim
         dtype = self.dtype
         return self.__class__(g, dim, dtype, nnzpr, **self._cls_kwargs())
@@ -436,9 +436,9 @@ class SparseGeometry(object):
 
     def __iadd__(a, b):
         if isinstance(b, SparseGeometry):
-            a._data += b._data
+            a._csr += b._csr
         else:
-            a._data += b
+            a._csr += b
         return a
 
     def __sub__(a, b):
@@ -449,16 +449,16 @@ class SparseGeometry(object):
     def __rsub__(a, b):
         if isinstance(b, SparseGeometry):
             c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._data += -1 * a._data
+            c._csr += -1 * a._csr
         else:
             c = b + (-1) * a
         return c
 
     def __isub__(a, b):
         if isinstance(b, SparseGeometry):
-            a._data -= b._data
+            a._csr -= b._csr
         else:
-            a._data -= b
+            a._csr -= b
         return a
 
     def __mul__(a, b):
@@ -469,9 +469,9 @@ class SparseGeometry(object):
 
     def __imul__(a, b):
         if isinstance(b, SparseGeometry):
-            a._data *= b._data
+            a._csr *= b._csr
         else:
-            a._data *= b
+            a._csr *= b
         return a
 
     def __div__(a, b):
@@ -486,9 +486,9 @@ class SparseGeometry(object):
 
     def __idiv__(a, b):
         if isinstance(b, SparseGeometry):
-            a._data /= b._data
+            a._csr /= b._csr
         else:
-            a._data /= b
+            a._csr /= b
         return a
 
     def __floordiv__(a, b):
@@ -501,7 +501,7 @@ class SparseGeometry(object):
     def __ifloordiv__(a, b):
         if isinstance(b, SparseGeometry):
             raise NotImplementedError
-        a._data //= b
+        a._csr //= b
         return a
 
     def __truediv__(a, b):
@@ -514,7 +514,7 @@ class SparseGeometry(object):
     def __itruediv__(a, b):
         if isinstance(b, SparseGeometry):
             raise NotImplementedError
-        a._data /= b
+        a._csr /= b
         return a
 
     def __pow__(a, b):
@@ -524,14 +524,14 @@ class SparseGeometry(object):
 
     def __rpow__(a, b):
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
-        c._data = b ** c._data
+        c._csr = b ** c._csr
         return c
 
     def __ipow__(a, b):
         if isinstance(b, SparseGeometry):
-            a._data **= b._data
+            a._csr **= b._csr
         else:
-            a._data **= b
+            a._csr **= b
         return a
 
 
@@ -552,7 +552,7 @@ class SparseAtom(SparseGeometry):
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
-        d = self._data[key]
+        d = self._csr[key]
         return d
 
     def __setitem__(self, key, val):
@@ -572,7 +572,7 @@ class SparseAtom(SparseGeometry):
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
-        self._data[key] = val
+        self._csr[key] = val
 
     @property
     def _size(self):
@@ -595,10 +595,10 @@ class SparseAtom(SparseGeometry):
         """
         if not atom is None:
             atom = ensure_array(atom)
-            for i, j in self._data.iter_nnz(atom):
+            for i, j in self._csr.iter_nnz(atom):
                 yield i, j
         else:
-            for i, j in self._data.iter_nnz():
+            for i, j in self._csr.iter_nnz():
                 yield i, j
 
     def cut(self, seps, axis, *args, **kwargs):
@@ -687,7 +687,7 @@ class SparseAtom(SparseGeometry):
         # Now we have a correct geometry, and
         # we are now ready to create the sparsity pattern
         # Reduce the sparsity pattern, first create the new one
-        S = self.__class__(geom, self.dim, self.dtype, np.amax(self._data.ncol), **self._cls_kwargs())
+        S = self.__class__(geom, self.dim, self.dtype, np.amax(self._csr.ncol), **self._cls_kwargs())
 
         def sca2sca(M, a, m, seps, axis):
             # Converts an o from M to m
@@ -751,12 +751,12 @@ class SparseAtom(SparseGeometry):
 
         # Now create the new sparse orbital class
         # First figure out the initialization parameters
-        nnzpr = np.amax(self._data.ncol)
+        nnzpr = np.amax(self._csr.ncol)
         S = self.__class__(geom, self.dim, self.dtype, nnzpr, **self._cls_kwargs())
 
         # Retrieve pointers to local data
         na = self.na
-        D = self._data
+        D = self._csr
 
         # Create orbital pivot table
         pvt = np.zeros([self.na_s], np.int32) - 1
@@ -802,9 +802,9 @@ class SparseAtom(SparseGeometry):
         # regarding the current Hamiltonian sparse matrix
         geom = self.geom
         na = self.na
-        ptr = self._data.ptr
-        ncol = self._data.ncol
-        col = self._data.col
+        ptr = self._csr.ptr
+        ncol = self._csr.ncol
+        col = self._csr.col
 
         # Information for the new Hamiltonian sparse matrix
         na_n = S.na
@@ -864,9 +864,9 @@ class SparseAtom(SparseGeometry):
         # regarding the current Hamiltonian sparse matrix
         geom = self.geom
         na = self.na
-        ptr = self._data.ptr
-        ncol = self._data.ncol
-        col = self._data.col
+        ptr = self._csr.ptr
+        ncol = self._csr.ncol
+        col = self._csr.col
 
         # Information for the new Hamiltonian sparse matrix
         na_n = S.na
@@ -923,7 +923,7 @@ class SparseOrbital(SparseGeometry):
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
-        d = self._data[key]
+        d = self._csr[key]
         return d
 
     def __setitem__(self, key, val):
@@ -943,7 +943,7 @@ class SparseOrbital(SparseGeometry):
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
-        self._data[key] = val
+        self._csr[key] = val
 
     @property
     def _size(self):
@@ -973,10 +973,10 @@ class SparseOrbital(SparseGeometry):
         elif not orbital is None:
             orbital = ensure_array(orbital)
         if not orbital is None:
-            for i, j in self._data.iter_nnz(orbital):
+            for i, j in self._csr.iter_nnz(orbital):
                 yield i, j
         else:
-            for i, j in self._data.iter_nnz():
+            for i, j in self._csr.iter_nnz():
                 yield i, j
 
     def cut(self, seps, axis, *args, **kwargs):
@@ -1065,7 +1065,7 @@ class SparseOrbital(SparseGeometry):
         # Now we have a correct geometry, and
         # we are now ready to create the sparsity pattern
         # Reduce the sparsity pattern, first create the new one
-        S = self.__class__(geom, self.dim, self.dtype, np.amax(self._data.ncol), **self._cls_kwargs())
+        S = self.__class__(geom, self.dim, self.dtype, np.amax(self._csr.ncol), **self._cls_kwargs())
 
         def sco2sco(M, o, m, seps, axis):
             # Converts an o from M to m
@@ -1113,12 +1113,12 @@ class SparseOrbital(SparseGeometry):
 
         # Now create the new sparse orbital class
         # First figure out the initialization parameters
-        nnzpr = np.max(self._data.ncol)
+        nnzpr = np.max(self._csr.ncol)
         S = self.__class__(geom, self.dim, self.dtype, nnzpr, **self._cls_kwargs())
 
         # Retrieve pointers to local data
         no = self.no
-        D = self._data
+        D = self._csr
 
         # Create orbital pivot table
         pvt = np.zeros([self.no_s], np.int32) - 1
@@ -1180,9 +1180,9 @@ class SparseOrbital(SparseGeometry):
         # regarding the current Hamiltonian sparse matrix
         geom = self.geom
         no = self.no
-        ptr = self._data.ptr
-        ncol = self._data.ncol
-        col = self._data.col
+        ptr = self._csr.ptr
+        ncol = self._csr.ncol
+        col = self._csr.col
 
         # Information for the new Hamiltonian sparse matrix
         no_n = S.no
@@ -1242,9 +1242,9 @@ class SparseOrbital(SparseGeometry):
         # regarding the current Hamiltonian sparse matrix
         geom = self.geom
         no = self.no
-        ptr = self._data.ptr
-        ncol = self._data.ncol
-        col = self._data.col
+        ptr = self._csr.ptr
+        ncol = self._csr.ncol
+        col = self._csr.col
 
         # Information for the new Hamiltonian sparse matrix
         no_n = S.no

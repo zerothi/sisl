@@ -39,4 +39,4 @@ class TestHAM(object):
             f = osp.join(self.d, 'gr.ham')
             self.ham.write(HamiltonianSile(f, 'w'))
             ham = HamiltonianSile(f).read_hamiltonian()
-            assert_true(ham._data.spsame(self.ham._data))
+            assert_true(ham.spsame(self.ham))
