@@ -125,7 +125,7 @@ class PathBZ(BrillouinZone):
                 # Get the separation of k-points
                 delta = dist / n
 
-                idx = np.amin(dists - delta * div)
+                idx = np.argmin(dists - delta * div)
                 div[idx] += 1
 
                 n = sum(div)
