@@ -722,7 +722,7 @@ class SparseCSR(object):
 
             # user requests a specific element
             # get dimension retrieved
-            return np.where(index >= 0, self._D[index, key[2]], 0)
+            return where(index >= 0, self._D[index, key[2]], 0)
 
         else:
 
@@ -730,9 +730,9 @@ class SparseCSR(object):
 
             s = self.shape[2]
             if s == 1:
-                return np.where(index >= 0, self._D[index, 0], 0)
+                return where(index >= 0, self._D[index, 0], 0)
             else:
-                return np.where(index >= 0, self._D[index, :], [0] * s)
+                return where(index >= 0, self._D[index, :], [0] * s)
 
     def __setitem__(self, key, data):
         """ Intrinsic sparse matrix assignment of the item. 
@@ -805,7 +805,7 @@ class SparseCSR(object):
             # Get current column entries for the row
             C = self.col[sl]
             # Retrieve columns with zero values (summed over all elements)
-            C0 = np.where(np.sum(np.abs(self._D[sl, :]), axis=1) == 0)[0]
+            C0 = where(np.sum(np.abs(self._D[sl, :]), axis=1) == 0)[0]
             if len(C0) == 0:
                 continue
             # Remove all entries with 0 values

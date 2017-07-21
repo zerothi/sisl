@@ -758,24 +758,19 @@ class SparseAtom(SparseGeometry):
         na = self.na
         D = self._csr
 
-        # Create orbital pivot table
+        # Create atomic pivot table
         pvt = np.zeros([self.na_s], np.int32) - 1
-        for (IA, ia), i_s in itools.product(enumerate(atom), range(self.n_s)):
-            a = ia + self.na * i_s
+        idx = np.tile(atom, self.n_s) + \
+              np.repeat(np.arange(self.n_s) * self.na, len(atom))
+        pvt[idx] = np.arange(geom.na_s)
 
-            pvt[a] = IA + geom.na * (a // self.na)
-
-        # Now keep all atoms in the list
-        # Small indices are the current geometry
-        # Large indices are the new geometry
         col = D.col
         ptr = D.ptr
         ncol = D.ncol
-        for IA, ia in enumerate(atom):
 
+        for IA, ia in enumerate(atom):
             ccol = col[ptr[ia]:ptr[ia]+ncol[ia]]
-            # Loop on the connection atoms
-            jas = ccol[np.where(pvt[ccol] >= 0)[0]]
+            jas = ccol[pvt[ccol] >= 0]
             S[IA, pvt[jas]] = self[ia, jas]
         S.finalize()
 
@@ -1109,7 +1104,9 @@ class SparseOrbital(SparseGeometry):
             indices of retained atoms
         """
         atom = self.sc2uc(atom)
+        otom = self.geom.a2o(atom, all=True)
         geom = self.geom.sub(atom)
+        Otom = geom.a2o(np.arange(len(geom)), all=True)
 
         # Now create the new sparse orbital class
         # First figure out the initialization parameters
@@ -1122,38 +1119,18 @@ class SparseOrbital(SparseGeometry):
 
         # Create orbital pivot table
         pvt = np.zeros([self.no_s], np.int32) - 1
-        where = np.where
-        for (IA, ia), i_s in itools.product(enumerate(atom), range(self.n_s)):
-            a = ia + self.na * i_s
+        idx = np.tile(otom, self.n_s) + \
+              np.repeat(np.arange(self.n_s) * self.no, len(otom))
+        pvt[idx] = np.arange(geom.no_s)
 
-            # Update pivot table
-            no = self.atom[ia].orbs
-            o = self.a2o(a)
-
-            # Get new index
-            O = geom.a2o(IA) + geom.no * (a // self.na)
-            pvt[o:o+no] = range(O, O+no)
-
-        # Now keep all atoms in the list
-        # Small indices are the current geometry
-        # Large indices are the new geometry
         col = D.col
         ptr = D.ptr
         ncol = D.ncol
-        for IA, ia in enumerate(atom):
 
-            # Retrieve first orbital of atom ia
-            o = self.a2o(ia)
-            O = geom.a2o(IA)
-
-            # Loop on orbitals and repetitions of the orbital
-            for io in range(self.geom.atom[ia].orbs):
-                i = o + io
-
-                ccol = col[ptr[i]:ptr[i]+ncol[i]]
-                # Loop on the connection orbitals
-                jos = ccol[np.where(pvt[ccol] >= 0)[0]]
-                S[O + io, pvt[jos]] = self[i, jos]
+        for IO, io in zip(Otom[:geom.no], otom[:geom.no]):
+            ccol = col[ptr[io]:ptr[io]+ncol[io]]
+            jos = ccol[pvt[ccol] >= 0]
+            S[IO, pvt[jos]] = self[io, jos]
         S.finalize()
 
         return S
