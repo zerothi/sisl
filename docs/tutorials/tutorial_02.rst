@@ -6,7 +6,7 @@ Geometry creation -- part 2
 
 Many geometries are intrinsically enabled via the `sisl.geom` submodule.
 
-Here we list the currently default geometries::
+Here we list the currently default geometries:
 
 * `honeycomb` (graphene unit-cell)::
 
