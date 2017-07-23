@@ -99,6 +99,16 @@ class TestSparseCSR(object):
         assert_equal(csr[2, 2], 4)
         assert_true(np.allclose(csr[0, [0, 1, 2]], [0, 1, 2]))
 
+    def test_diag1(self):
+        csr = SparseCSR.diags(10, shape=(10, 11))
+        assert_equal(csr.shape[0], 10)
+        assert_equal(csr.shape[1], 11)
+        assert_equal(csr.nnz, 10)
+        csr0 = SparseCSR.diags(10, shape=(10, 10))
+        csr1 = SparseCSR.diags(np.zeros(10, np.int32))
+        assert_true(csr0.spsame(csr1))
+        assert_false(csr.spsame(csr1))
+
     def test_create1(self):
         self.s1d[0, [1, 2, 3]] = 1
         assert_equal(self.s1d.nnz, 3)
