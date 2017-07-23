@@ -1,3 +1,12 @@
+0.8.6
+=====
+
+- Greatly speeded up Hamiltonian.remove/sub functions.
+  Now there are no for-loops in the remove/sub routines which
+  will greatly increase performance.
+  It will now be much faster to generate the Hamiltonian for
+  a small reference cell, tile/repeat it, remove atoms.
+
 0.8.5
 =====
 

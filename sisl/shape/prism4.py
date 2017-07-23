@@ -103,12 +103,12 @@ class Cuboid(Shape):
         voxel = np.diagflat(self.edge_length)
         # First reject those that are definitely not inside
         land = np.logical_and
-        ix = np.where(land(land(land(0 <= tmp[:, 0],
-                                     tmp[:, 0] <= el[0]),
-                                land(0 <= tmp[:, 1],
-                                     tmp[:, 1] <= el[1])),
-                           land(0 <= tmp[:, 2],
-                                tmp[:, 2] <= el[2])))[0]
+        ix = land(land(land(0 <= tmp[:, 0],
+                            tmp[:, 0] <= el[0]),
+                       land(0 <= tmp[:, 1],
+                            tmp[:, 1] <= el[1])),
+                  land(0 <= tmp[:, 2],
+                       tmp[:, 2] <= el[2])).nonzero()[0]
         return ix
         # This below is for a skewed box
         within = la.solve(voxel, tmp[ix, :].T).T

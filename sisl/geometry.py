@@ -164,7 +164,7 @@ class Geometry(SuperCellChild):
             dd = np.abs(np.dot(dist, cart))
 
             # Remove all below .4
-            tmp_idx = np.where(dd >= .4)[0]
+            tmp_idx = (dd >= .4).nonzero()[0]
             if len(tmp_idx) > 0:
                 # We have a success
                 # Add the bond-distance in the Cartesian direction
@@ -483,7 +483,7 @@ class Geometry(SuperCellChild):
         while not_passed_N > 0:
 
             # Take a random non-passed element
-            all_true = where(not_passed)[0]
+            all_true = not_passed.nonzero()[0]
 
             # Shuffle should increase the chance of hitting a
             # completely "fresh" segment, thus we take the most
@@ -505,7 +505,7 @@ class Geometry(SuperCellChild):
             all_idx[1] = self.sc2uc(append(all_idx[1], all_idx[0]), uniq=True)
 
             # Only select those who have not been runned yet
-            all_idx[0] = all_idx[0][where(not_passed[all_idx[0]])[0]]
+            all_idx[0] = all_idx[0][not_passed[all_idx[0]].nonzero()[0]]
             if len(all_idx[0]) == 0:
                 raise ValueError('Internal error, please report to the developers')
 
@@ -605,7 +605,7 @@ class Geometry(SuperCellChild):
             all_idx[1] = self.sc2uc(append(all_idx[1], all_idx[0]), uniq=True)
 
             # Only select those who have not been runned yet
-            all_idx[0] = all_idx[0][where(not_passed[all_idx[0]])[0]]
+            all_idx[0] = all_idx[0][not_passed[all_idx[0]].nonzero()[0]]
             if len(all_idx[0]) == 0:
                 continue
 
@@ -620,7 +620,7 @@ class Geometry(SuperCellChild):
             yield all_idx[0], all_idx[1]
 
         if np.any(not_passed):
-            print(where(not_passed)[0])
+            print(not_passed.nonzero()[0])
             print(np.sum(not_passed), len(self))
             raise ValueError('Error on iterations. Not all atoms has been visited.')
 
@@ -1839,7 +1839,7 @@ class Geometry(SuperCellChild):
             if idx is None:
                 # first
                 ix = fabs(dxa[:, 0]) <= max_R
-                idx = where(ix)[0]
+                idx = ix.nonzero()[0]
                 dxa = dxa[ix, :]
                 # second
                 ix = fabs(dxa[:, 1]) <= max_R
@@ -1860,7 +1860,7 @@ class Geometry(SuperCellChild):
             if idx is None:
                 # This is because of the pre-check of the
                 # distance checks
-                idx = where(ix)[0]
+                idx = ix.nonzero()[0]
             else:
                 idx = idx[ix]
             dxa = dxa[ix, :]
@@ -1901,7 +1901,7 @@ class Geometry(SuperCellChild):
         # take the sqrt
         max_R = max_R * max_R
         xaR = dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2
-        ix = where(xaR <= max_R)[0]
+        ix = (xaR <= max_R).nonzero()[0]
 
         # Reduce search space and correct distances
         d = xaR[ix] ** .5
@@ -1928,7 +1928,7 @@ class Geometry(SuperCellChild):
         # The more neigbours you wish to find the faster this becomes
         # We only do "one" heavy duty search,
         # then we immediately reduce search space to this subspace
-        tidx = where(d <= R[0])[0]
+        tidx = (d <= R[0]).nonzero()[0]
         ret = [[ensure_array(idx[ix[tidx]])]]
         i = 0
         if ret_xyz:
@@ -1944,7 +1944,7 @@ class Geometry(SuperCellChild):
             # Notice that this sub-space reduction will never
             # allow the same indice to be in two ranges (due to
             # numerics)
-            tidx = where(log_and(R[i - 1] < d, d <= R[i]))[0]
+            tidx = log_and(R[i - 1] < d, d <= R[i]).nonzero()[0]
             ret[0].append(ensure_array(idx[ix[tidx]]))
             if ret_xyz:
                 ret[rc].append(xa[tidx])

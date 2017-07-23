@@ -96,7 +96,7 @@ class Shape(object):
 
     def iwithin(self, other):
         """ Returns indices of the elements of `other` that are within the shape """
-        return np.where(self.within(other))[0]
+        return self.within(other).nonzero()[0]
 
     def __contains__(self, other):
         return self.within(self, other)

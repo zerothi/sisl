@@ -234,6 +234,24 @@ class TestSparseCSR(object):
             assert_equal(self.s1[i, 0], 0)
         self.s1.empty()
 
+    def test_sub1(self):
+        self.s1[0, [1, 2, 3]] = 1
+        assert_equal(len(self.s1), 3)
+        s1 = self.s1.sub([0, 1])
+        assert_equal(len(s1), 1)
+        assert_equal(s1.shape[0], 2)
+        assert_equal(s1.shape[1], 2)
+        self.s1.empty()
+
+    def test_remove1(self):
+        self.s1[0, [1, 2, 3]] = 1
+        assert_equal(len(self.s1), 3)
+        s1 = self.s1.remove([1])
+        assert_equal(len(s1), 2)
+        assert_equal(s1.shape[0], self.s1.shape[0] - 1)
+        assert_equal(s1.shape[1], self.s1.shape[1] - 1)
+        self.s1.empty()
+
     def test_eliminate_zeros1(self):
         self.s1[0, [1, 2, 3]] = 1
         self.s1[1, [1, 2, 3]] = 0

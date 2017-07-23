@@ -190,7 +190,7 @@ class SuperCell(object):
         # Then reduce search space by removing those coordinates
         # that are more than the tolerance.
         dist = np.sqrt(np.sum(np.dot(cell.T, (x - ix).T) ** 2, axis=0))
-        idx = np.where(dist <= tol)[0]
+        idx = (dist <= tol).nonzero()[0]
         if len(idx) < 0:
             raise ValueError(('Could not fit the cell parameters to the coordinates '
                               'due to insufficient accuracy (try increase the tolerance)'))
@@ -333,14 +333,14 @@ class SuperCell(object):
             where = np.where
             all = np.all
             def func(array):
-                return where(all(off - array[None, :] == 0, axis=1))[0]
+                return all(off - array[None, :] == 0, axis=1).nonzero()[0]
             return np.apply_along_axis(func, 1, sc_off).ravel()
 
         # Fall back to the other routines
         sc_off = self._fill_sc(sc_off)
         if sc_off[0] is not None and sc_off[1] is not None and sc_off[2] is not None:
             sc_off = np.asarray(sc_off, np.int32)
-            i = np.where(np.all(self.sc_off - sc_off[None, :] == 0, axis=1))[0]
+            i = np.all(self.sc_off - sc_off[None, :] == 0, axis=1).nonzero()[0]
             if len(i) == 1:
                 return i[0]
             raise Exception(

@@ -667,9 +667,8 @@ class SparseAtom(SparseGeometry):
                 idx = ic + geom.na * j
                 # We need to ensure that every "in between" index exists
                 # if it does not we discard those indices
-                if len(np.where(
-                        np.logical_and(idx <= sub,
-                                       sub < idx + geom.na))[0]) == 0:
+                if len(np.logical_and(idx <= sub,
+                                      sub < idx + geom.na).nonzero()[0]) == 0:
                     i = j - 1
                     out = True
                     break
@@ -750,29 +749,11 @@ class SparseAtom(SparseGeometry):
         geom = self.geom.sub(atom)
 
         # Now create the new sparse orbital class
-        # First figure out the initialization parameters
-        nnzpr = np.amax(self._csr.ncol)
-        S = self.__class__(geom, self.dim, self.dtype, nnzpr, **self._cls_kwargs())
+        S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
 
-        # Retrieve pointers to local data
-        na = self.na
-        D = self._csr
-
-        # Create atomic pivot table
-        pvt = np.zeros([self.na_s], np.int32) - 1
         idx = np.tile(atom, self.n_s) + \
               np.repeat(np.arange(self.n_s) * self.na, len(atom))
-        pvt[idx] = np.arange(geom.na_s)
-
-        col = D.col
-        ptr = D.ptr
-        ncol = D.ncol
-
-        for IA, ia in enumerate(atom):
-            ccol = col[ptr[ia]:ptr[ia]+ncol[ia]]
-            jas = ccol[pvt[ccol] >= 0]
-            S[IA, pvt[jas]] = self[ia, jas]
-        S.finalize()
+        S._csr = self._csr.sub(idx)
 
         return S
 
@@ -1040,9 +1021,8 @@ class SparseOrbital(SparseGeometry):
                 idx = ic + geom.no * j
                 # We need to ensure that every "in between" index exists
                 # if it does not we discard those indices
-                if len(np.where(
-                        np.logical_and(idx <= sub,
-                                       sub < idx + geom.no))[0]) == 0:
+                if len(np.logical_and(idx <= sub,
+                                      sub < idx + geom.no).nonzero()[0]) == 0:
                     i = j - 1
                     out = True
                     break
@@ -1091,6 +1071,22 @@ class SparseOrbital(SparseGeometry):
 
         return S
 
+    def remove(self, atom):
+        """ Create a subset of this sparse matrix by removing the elements corresponding to ``atom``
+
+        Indices passed *MUST* be unique.
+
+        Negative indices are wrapped and thus works.
+
+        Parameters
+        ----------
+        atom  : array_like of int
+            indices of removed atoms
+        """
+        atom = self.sc2uc(atom)
+        atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
+        return self.sub(atom)
+
     def sub(self, atom):
         """ Create a subset of this sparse matrix by only retaining the elements corresponding to the ``atom``
 
@@ -1106,32 +1102,13 @@ class SparseOrbital(SparseGeometry):
         atom = self.sc2uc(atom)
         otom = self.geom.a2o(atom, all=True)
         geom = self.geom.sub(atom)
-        Otom = geom.a2o(np.arange(len(geom)), all=True)
 
         # Now create the new sparse orbital class
-        # First figure out the initialization parameters
-        nnzpr = np.max(self._csr.ncol)
-        S = self.__class__(geom, self.dim, self.dtype, nnzpr, **self._cls_kwargs())
+        S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
 
-        # Retrieve pointers to local data
-        no = self.no
-        D = self._csr
-
-        # Create orbital pivot table
-        pvt = np.zeros([self.no_s], np.int32) - 1
         idx = np.tile(otom, self.n_s) + \
               np.repeat(np.arange(self.n_s) * self.no, len(otom))
-        pvt[idx] = np.arange(geom.no_s)
-
-        col = D.col
-        ptr = D.ptr
-        ncol = D.ncol
-
-        for IO, io in zip(Otom[:geom.no], otom[:geom.no]):
-            ccol = col[ptr[io]:ptr[io]+ncol[io]]
-            jos = ccol[pvt[ccol] >= 0]
-            S[IO, pvt[jos]] = self[io, jos]
-        S.finalize()
+        S._csr = self._csr.sub(idx)
 
         return S
 

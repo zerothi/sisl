@@ -96,13 +96,13 @@ class Ellipsoid(Shape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        within = where(landr(fabs(tmp[:, :]) <= r, axis=1))[0]
+        within = landr(fabs(tmp[:, :]) <= r, axis=1).nonzero()[0]
 
         # Now only check exactly on those that are possible candidates
         tmp = tmp[within, :]
-        wtmp = where((tmp[:, 0] / r[0]) ** 2 +
-                     (tmp[:, 1] / r[1]) ** 2 +
-                     (tmp[:, 2] / r[2]) ** 2 <= 1)[0]
+        wtmp = ((tmp[:, 0] / r[0]) ** 2 +
+                (tmp[:, 1] / r[1]) ** 2 +
+                (tmp[:, 2] / r[2]) ** 2 <= 1).nonzero()[0]
 
         return within[wtmp]
 

@@ -38,7 +38,7 @@ __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 def indices_single(col, value, offset=0):
     """ Return indices of values in col with a possible offset """
-    w = where(col == value)[0]
+    w = (col == value).nonzero()[0]
     if len(w) == 0:
         return -1
     else:
@@ -373,9 +373,8 @@ class SparseCSR(object):
 
             # assert no two connections
             if unique(col[sptr:eptr]).shape[0] != nor:
-                raise ValueError(
-                    'You cannot have two hoppings between the same ' +
-                    'orbitals ({}), something has went terribly wrong.'.format(r))
+                raise ValueError(('You cannot have two elements between the same ' +
+                                  'i,j index ({}), something has went terribly wrong.'.format(r)))
 
             sl = slice(iptr, iptr + nor, None)
             # update the colunm vector and data
@@ -805,7 +804,7 @@ class SparseCSR(object):
             # Get current column entries for the row
             C = self.col[sl]
             # Retrieve columns with zero values (summed over all elements)
-            C0 = where(np.sum(np.abs(self._D[sl, :]), axis=1) == 0)[0]
+            C0 = (np.sum(np.abs(self._D[sl, :]), axis=1) == 0).nonzero()[0]
             if len(C0) == 0:
                 continue
             # Remove all entries with 0 values
@@ -866,6 +865,102 @@ class SparseCSR(object):
 
         shape = self.shape[:2]
         return csr_matrix((self._D[:, dim], self.col, self.ptr), shape=shape, **kwargs)
+
+    def remove(self, indices):
+        """ Return a new sparse CSR matrix with all the indices removed
+
+        Parameters
+        ----------
+        indices : array_like
+           the indices of the rows *and* columns that are removed in the sparse pattern
+        """
+        indices = ensure_array(indices)
+
+        # Check if we have a square matrix or a rectangular one
+        if self.shape[0] >= self.shape[1]:
+            rindices = np.delete(np.arange(self.shape[0]), indices)
+
+        else:
+            rindices = np.delete(np.arange(self.shape[1]), indices)
+
+        return self.sub(rindices)
+
+    def sub(self, indices):
+        """ Return a new sparse CSR matrix with the data only for the given indices
+
+        Parameters
+        ----------
+        indices : array_like
+           the indices of the rows *and* columns that are retained in the sparse pattern
+        """
+        indices = ensure_array(indices)
+
+        # Check if we have a square matrix or a rectangular one
+        if self.shape[0] == self.shape[1]:
+            # Easy
+            ridx = indices.view()
+            nc = len(indices)
+            pvt = np.empty([self.shape[0]], np.int32)
+
+        elif self.shape[0] < self.shape[1]:
+            ridx = indices[indices < self.shape[0]]
+            nc = len(indices)
+            pvt = np.empty([self.shape[1]], np.int32)
+
+        elif self.shape[0] > self.shape[1]:
+            ridx = indices.view()
+            nc = np.count_nonzero(indices < self.shape[1])
+            pvt = np.empty([self.shape[0]], np.int32)
+
+        # Fix the pivoting indices with the new indices
+        pvt.fill(-1)
+        pvt[indices] = np.arange(len(indices))
+
+        # Create the new SparseCSR
+        # We use nnzpr = 1 because we will overwrite all quantities afterwards.
+        csr = self.__class__((len(ridx), nc, self.shape[2]), dtype=self.dtype, nnzpr=1)
+
+        # Create the sub data
+        sub_ptr = self.ptr[ridx]
+        ncol1 = self.ncol[ridx]
+
+        # Create a list of ndarrays with indices of elements per row
+        # and transfer to a linear index
+        col_idx = np.hstack(map(np.arange, sub_ptr, sub_ptr + ncol1))
+        # Reduce the column indices (note this also ensures that
+        # it will work on non-finalized sparse matrices)
+        col1 = pvt[self.col[col_idx]]
+
+        # Count the number of items that are left in the sparse pattern
+        def retained(ptr1, ptr2):
+            return np.count_nonzero(pvt[self.col[ptr1:ptr2]] >= 0)
+        ncol1 = ensure_array(map(retained, sub_ptr, sub_ptr + ncol1))
+
+        # Now we should figure out how to remove those entries
+        # that are from the old structure
+        # Because this is `sub`, it probably means that
+        # we are dealing with a relatively small number of
+        # indices compared to the original one. Hence,
+        # we use the take function here.
+        idx_take = (col1 >= 0).nonzero()[0]
+
+        # Decrease col1 and also extract the data
+        col1 = np.take(col1, idx_take)
+        D1 = np.take(self._D[col_idx, :], idx_take, 0)
+        del col_idx, idx_take
+
+        # Create new pointer
+        ptr1 = np.insert(np.cumsum(ncol1), 0, 0)
+
+        # Set the data for the new sparse csr
+        csr.ptr = ptr1
+        csr.ncol = ncol1
+        csr.col = col1
+        csr._nnz = len(col1)
+        csr._D = D1
+        csr.finalize()
+
+        return csr
 
     def __repr__(self):
         """ Representation of the sparse matrix model """
@@ -973,7 +1068,7 @@ class SparseCSR(object):
                 a._D[in_a, :] *= b._D[bptr:bptr+bn, :]
 
                 # Now set everything *not* in b but in a, to zero
-                not_in_b = where(isin(acol, bcol, invert=True))[0]
+                not_in_b = isin(acol, bcol, invert=True).nonzero()[0]
                 a._D[aptr+not_in_b, :] = 0
 
         else:
@@ -1101,7 +1196,7 @@ class SparseCSR(object):
 
                 # Now set everything *not* in b but in a, to 1
                 #  float ** 0 == 1
-                not_in_b = where(isin(acol, bcol, invert=True))[0]
+                not_in_b = isin(acol, bcol, invert=True).nonzero()[0]
                 a._D[aptr+not_in_b, :] = 1
 
         else:

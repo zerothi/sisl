@@ -306,7 +306,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         orbital : ``array_like``, ``int``
            orbital indices (0-based)
         """
-        return np.where(npisin(self.pivot, orbital))[0]
+        return npisin(self.pivot, orbital).nonzero()[0]
 
     @property
     def lasto(self):
@@ -1084,7 +1084,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 # Add one to make the c-index equivalent to the f-index
                 orbs = np.concatenate(orbs).flatten()
-                pivot = np.where(npisin(ns._tbt.pivot, orbs))[0]
+                pivot = npisin(ns._tbt.pivot, orbs).nonzero()[0]
 
                 if len(orbs) != len(pivot):
                     print('Device atoms:')

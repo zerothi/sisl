@@ -1283,7 +1283,7 @@ class Atoms(object):
         """ Reorders the atoms and species index so that they are ascending """
         smin = np.zeros(len(self.atom), np.int32)
         for i in range(len(self.atom)):
-            lst = np.where(self.specie == i)[0]
+            lst = (self.specie == i).nonzero()[0]
             if len(lst) == 0:
                 # means it is not in use
                 smin[i] = len(self.specie)
@@ -1313,7 +1313,7 @@ class Atoms(object):
 
         rem = []
         for i in range(len(self.atom)):
-            if len(np.where(specie == i)[0]) == 0:
+            if len((specie == i).nonzero()[0]) == 0:
                 rem.append(i)
 
         # Remove the atoms
@@ -1440,7 +1440,7 @@ class Atoms(object):
         2. A list of indices with all atoms being that specie
         """
         for s, atom in enumerate(self._atom):
-            yield atom, np.where(self.specie == s)[0]
+            yield atom, (self.specie == s).nonzero()[0]
 
     def __contains__(self, key):
         """ Determine whether the `key` is in the unique atoms list """
