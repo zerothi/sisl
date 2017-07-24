@@ -535,18 +535,19 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     @property
     def spin(self):
-        """ Spin class """
+        """ Associated spin class """
         return self._spin
 
     def __len__(self):
         """ Returns number of rows in the basis (if non-colinear or spin-orbit, twice the number of orbitals) """
-        if self.spin.spin > 2:
+        if self.spin.spins > 2:
             return self.no * 2
         return self.no
 
     def __repr__(self):
         """ Representation of the model """
-        s = self.__class__.__name__ + '{{spin: {0}, non-zero: {1}, orthogonal: {2}\n '.format(self.spin.spin, self.nnz, self.orthogonal)
+        s = self.__class__.__name__ + '{{non-zero: {0}, orthogonal: {1},\n '.format(self.nnz, self.orthogonal)
+        s += repr(self.spin).replace('\n', '\n ') + ',\n '
         s += repr(self.geom).replace('\n', '\n ')
         return s + '\n}'
 
