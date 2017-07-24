@@ -22,6 +22,7 @@ Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
 License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
 Programming Language :: Python :: 2.7
+Programming Language :: Python :: 3.4
 Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
 Topic :: Software Development
@@ -89,6 +90,7 @@ Tight-binding models and interfacing the tight-binding transport calculator TBtr
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     platforms='any',
     install_requires=build_requires,
+    test_suite='nose.collector',
 )
 
 cwd = osp.abspath(osp.dirname(__file__))
