@@ -13,6 +13,8 @@ import itertools
 
 # The sparse matrix for the orbital/bond currents
 from scipy.sparse import csr_matrix, lil_matrix
+from scipy.sparse import isspmatrix_csr
+
 
 # Check against integers
 from numbers import Integral
@@ -27,6 +29,7 @@ from sisl.utils import *
 from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl._help import _str
+from sisl._help import _range as range, _zip as zip
 from sisl.units.siesta import unit_convert
 
 __all__ = ['tbtncSileSiesta', 'phtncSileSiesta']
@@ -184,7 +187,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             self._access = access
 
     def read_supercell(self):
-        """ Returns ``SuperCell`` object from a .TBT.nc file """
+        """ Returns `SuperCell` object from a .TBT.nc file """
         cell = np.array(np.copy(self.cell), dtype=np.float64)
         cell.shape = (3, 3)
 
@@ -202,7 +205,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         return sc
 
     def read_geometry(self, *args, **kwargs):
-        """ Returns ``Geometry`` object from a .TBT.nc file """
+        """ Returns `Geometry` object from a .TBT.nc file """
         sc = self.read_supercell()
 
         xyz = np.array(np.copy(self.xa), dtype=np.float64)
@@ -292,7 +295,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        atom : ``array_like``, ``int``
+        atom : array_like or int
            atomic indices (0-based)
         """
         orbs = self.geom.a2o(atom, True)
@@ -303,7 +306,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        orbital : ``array_like``, ``int``
+        orbital : array_like or int
            orbital indices (0-based)
         """
         return npisin(self.pivot, orbital).nonzero()[0]
@@ -316,7 +319,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
     @property
     def no_d(self):
         """ Number of orbitals in the device region """
-        return int(len(self.dimensions['no_d']))
+        return len(self.dimensions['no_d'])
 
     @property
     def kpt(self):
@@ -339,7 +342,14 @@ class tbtncSileSiesta(SileCDFSIESTA):
         return self._value('E') * Ry2eV
 
     def Eindex(self, E):
-        """ Return the closest energy index corresponding to the energy `E`"""
+        """ Return the closest energy index corresponding to the energy ``E``
+
+        Parameters
+        ----------
+        E : float or int
+           if ``int``, return it-self, else return the energy index which is
+           closests to the energy.
+        """
         if isinstance(E, Integral):
             return E
         elif isinstance(E, _str):
@@ -393,12 +403,17 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec_from: ``str``
+        elec_from: str
            the originating electrode
-        elec_to: ``str``
+        elec_to: str
            the absorbing electrode (different from `elec_from`)
-        avg: ``bool`` (`True`)
+        avg: bool, int or array_like, optional
            whether the returned transmission is k-averaged
+
+        See Also
+        --------
+        transmission_eig : the transmission decomposed in eigenchannels
+        transmission_bulk : the total transmission in a periodic lead
         """
         if elec_from == elec_to:
             raise ValueError("Supplied elec_from and elec_to must not be the same.")
@@ -414,12 +429,17 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec_from: ``str``
+        elec_from: str
            the originating electrode
-        elec_to: ``str``
+        elec_to: str
            the absorbing electrode (different from `elec_from`)
-        avg: ``bool`` (`True`)
+        avg: bool, int or array_like, optional
            whether the returned eigenvalues are k-averaged
+
+        See Also
+        --------
+        transmission : the total transmission
+        transmission_bulk : the total transmission in a periodic lead
         """
         if elec_from == elec_to:
             raise ValueError(
@@ -433,10 +453,15 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec: ``str``
+        elec: str
            the bulk electrode
-        avg: ``bool`` (`True`)
+        avg: bool, int or array_like, optional
            whether the returned transmission is k-averaged
+
+        See Also
+        --------
+        transmission : the total transmission
+        transmission_eig : the transmission decomposed in eigenchannels
         """
         return self._value_avg('T', elec, avg=avg)
     Tbulk = transmission_bulk
@@ -468,12 +493,17 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        E : ``int`` (`None`)
+        E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
-        avg: ``bool`` (`True`)
+        avg: bool, int or array_like, optional
            whether the returned DOS is k-averaged
-        atom : ``array_like``, ``int`` (_all_)
-           only return for a given set of atoms (Python based indices)
+        atom : array_like of int, optional
+           only return for a given set of atoms (default to all)
+
+        See Also
+        --------
+        ADOS : the spectral density of states from an electrode
+        BDOS : the bulk density of states in an electrode
         """
         return self._DOS_atom_sum(self._value_E('DOS', avg=avg, E=E), atom) * eV2Ry
     DOS_Gf = DOS
@@ -483,14 +513,19 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec: ``str``
+        elec: str
            electrode originating spectral function
-        E : ``int`` (`None`)
+        E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
-        avg: ``bool`` (`True`)
+        avg: bool, int or array_like, optional
            whether the returned DOS is k-averaged
-        atom : ``array_like``, ``int`` (_all_)
-           only return for a given set of atoms (Python based indices)
+        atom : array_like of int, optional
+           only return for a given set of atoms (default to all)
+
+        See Also
+        --------
+        DOS : the total density of states (including bound states)
+        BDOS : the bulk density of states in an electrode
         """
         return self._DOS_atom_sum(self._value_E('ADOS', elec, avg=avg, E=E), atom) * eV2Ry
     DOS_A = ADOS
@@ -500,12 +535,17 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec: ``str``
+        elec: str
            electrode where the bulk DOS is returned
-        E : ``int`` (`None`)
+        E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
-        avg: ``bool`` (`True`)
+        avg: bool, int or array_like, optional
            whether the returned DOS is k-averaged
+
+        See Also
+        --------
+        DOS : the total density of states (including bound states)
+        ADOS : the spectral density of states from an electrode
         """
         return self._value_E('DOS', elec, avg=avg, E=E) * eV2Ry
     DOS_bulk = BDOS
@@ -519,17 +559,83 @@ class tbtncSileSiesta(SileCDFSIESTA):
         T = self.transmission(elec_from, elec_to, avg)
         return E[idx_sort], T[idx_sort]
 
-    def current(self, elec_from, elec_to, avg=True):
-        """ Return the current from `from` to `to` using the weights in the file. """
+    def current(self, elec_from, elec_to, interp_dE=0.001, avg=True):
+        """ Return the current from `from` to `to` using the weights in the file. 
+
+        Parameters
+        ----------
+        elec_from: str
+           the originating electrode
+        elec_to: str
+           the absorbing electrode (different from `elec_from`)
+        interp_dE : float, optional
+           the interpolation spacing for the energies
+        avg: bool, int or array_like, optional
+           whether the returned current is based on k-averaged transmissions
+
+        See Also
+        --------
+        current_parameter : to explicitly set the electronic temperature and chemical potentials
+        """
+        mu_f = self.chemical_potential(elec_from)
+        kT_f = self.electronic_temperature(elec_from)
+        mu_t = self.chemical_potential(elec_to)
+        kT_t = self.electronic_temperature(elec_to)
+        return self.current_parameter(elec_from, mu_f, kT_f,
+                                      elec_to, mu_t, kT_t, interp_dE, avg)
+
+    def current_parameter(self, elec_from, mu_from, kt_from,
+                          elec_to, mu_to, kt_to, interp_dE=0.001, avg=True):
+        """ Return the current from `from` to `to` using the passed parameters
+
+        Parameters
+        ----------
+        elec_from: str
+           the originating electrode
+        mu_from: float
+           the chemical potential of the electrode (in eV)
+        kt_from: float
+           the electronic temperature of the electrode (in eV)
+        elec_to: str
+           the absorbing electrode (different from `elec_from`)
+        mu_to: float
+           the chemical potential of the electrode (in eV)
+        kt_to: float
+           the electronic temperature of the electrode (in eV)
+        interp_dE : float, optional
+           the interpolation spacing for the energies
+        avg: bool, int or array_like, optional
+           whether the returned current is based on k-averaged transmissions
+
+        See Also
+        --------
+        current : which calculates the current with the pre-set parameters
+        """
         # Get energies
         E, T = self._E_T_sorted(avg)
 
-        # Get chemical potentials
-        mu_f = self.chemical_potential(elec_from)
-        mu_t = self.chemical_potential(elec_to)
+        # Do an interpolation to deal with non-evenly energy spacings
+        Ei = np.arange(E[0], E[-1], interp_dE)
+        Ti = np.interp(Ei, E, T)
 
-        # Calculate the current
-        return NotImplemented
+        # Check that the lower bound is sufficient
+        if mu_f < - kT_f * 5 + E[0] or \
+           mu_t < - kT_t * 5 + E[0]:
+            raise ValueError((self.__class__.__name__ + ".current_parameter cannot "
+                              "accurately calculate the current due to the lower energy bound being below the lowest calculated transmission value. "
+                              "I.e. increase your calculated energy-range."))
+
+        if mu_f > kT_f * 3 + E[-1] or \
+           mu_t > kT_t * 3 + E[-1]:
+            raise ValueError((self.__class__.__name__ + ".current_parameter cannot "
+                              "accurately calculate the current due to the high energy bound being above the highest calculated transmission value. "
+                              "I.e. increase your calculated energy-range."))
+
+        def nf(E, mu, kT):
+            return 1. / (np.exp((E - mu) / kT) - 1.)
+
+        I = np.sum(Ti * (Ei[1] - Ei[0])) * (nf(Ei, mu_to, kt_to) - nf(Ei, mu_from, kt_from))
+        return I * 1.6021766208e-19 / 4.135667662e-15
 
     def orbital_current(self, elec, E, avg=True, isc=None):
         """ Return the orbital current originating from `elec`.
@@ -548,15 +654,22 @@ class tbtncSileSiesta(SileCDFSIESTA):
            `Eindex(E)` is used.
         avg: bool, optional
            whether the orbital current returned is k-averaged, default to True
-        isc: array_like (`[0, 0, 0]`)
+        isc: array_like, optional
            the returned bond currents from the unit-cell (`[0, 0, 0]`) to
            the given supercell, the default is only orbital currents *in* the unitcell.
+
+        See Also
+        --------
+        bond_current_from_orbital : transfer the orbital current to bond current
+        bond_current : the bond current (orbital current summed over orbitals)
+        atom_current : the atomic current for each atom (scalar representation of bond-currents)
+        vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
         # Get the geometry for obtaining the sparsity pattern.
         geom = self.geom
 
         # These are the row-pointers...
-        rptr = np.cumsum(self._value('n_col'))
+        rptr = np.insert(np.cumsum(self._value('n_col')), 0, 0)
 
         # Get column indices
         col = self._value('list_col') - 1
@@ -577,15 +690,15 @@ class tbtncSileSiesta(SileCDFSIESTA):
             # The user has requested specific supercells
             # Here we create a list of supercell interactions.
 
-            nsc = geom.nsc[:]
+            nsc = np.copy(geom.nsc)
             # Shorten to the unit-cell if there are no more
             for i in [0, 1, 2]:
                 if nsc[i] == 1:
                     isc[i] = 0
                 if not isc[i] is None:
                     nsc[i] = 1
-            # Small function for creating the supercells allowed
 
+            # Small function for creating the supercells allowed
             def ret_range(val, req):
                 i = val // 2
                 if req is None:
@@ -594,39 +707,31 @@ class tbtncSileSiesta(SileCDFSIESTA):
             x = ret_range(nsc[0], isc[0])
             y = ret_range(nsc[1], isc[1])
             z = ret_range(nsc[2], isc[2])
-            offsets = []
-            for ix, iy, iz in itertools.product(x, y, z):
-                offsets.append(geom.sc_index([ix, iy, iz]))
 
             # Make a shrinking logical array for selecting a subset of the
             # orbital currents...
             all_col = []
-            for i in offsets:
-                all_col.extend(range(i * geom.no, (i+1) * geom.no))
-            all_col = np.array(all_col, np.int32)
+            for ix, iy, iz in itertools.product(x, y, z):
+                i = geom.sc_index([ix, iy, iz])
+                all_col.extend(list(range(i * geom.no, (i+1) * geom.no)))
+
             # Create a logical array for sub-indexing
-            all_col = npisin(col, all_col)
+            all_col = npisin(col, np.array(all_col, np.int32))
             col = col[all_col]
 
-            # recreate row-pointer (we have to fix it)
-            tmp = np.empty([geom.no], np.int32)
-            nsum = np.sum
-            tmp[0] = nsum(all_col[0:rptr[0]])
-            for i in range(1, len(tmp)):
-                tmp[i] = nsum(all_col[rptr[i-1]:rptr[i]])
-            rptr = np.cumsum(tmp)
+            # recreate row-pointer
+            def func(ptr1, ptr2):
+                return nsum(all_col[ptr1:ptr2])
+            tmp = np.array(map(func, rptr[:geom.no], rptr[1:]), np.int32)
+            rptr = np.insert(np.cumsum(tmp), 0, 0)
             del tmp
-
-        ptr = np.empty([geom.no + 1], np.int32)
-        ptr[0] = 0
-        ptr[1:] = rptr[:]
 
         if all_col is None:
             J = self._value_E('J', elec, avg, E)
         else:
             J = self._value_E('J', elec, avg, E)[..., all_col]
 
-        return csr_matrix((J, col, ptr), shape=mat_size)
+        return csr_matrix((J, col, rptr), shape=mat_size)
 
     def bond_current_from_orbital(self, Jij, sum='+', uc=None):
         """ Return the bond-current between atoms (sum of orbital currents) by passing the orbital
@@ -636,18 +741,25 @@ class tbtncSileSiesta(SileCDFSIESTA):
         ----------
         Jij : ``scipy.sparse.*_matrix``
            the orbital currents as retrieved from `orbital_current`
-        sum : ``str`` (`'+'`)
-           this value may be "+"/"-"/"all"
+        sum : str, {'+', '-', 'all'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return both.
-        uc : `bool` (`Jij.shape[0] == Jij.shape[1]`)
+        uc : bool, optional
            whether the returned bond-currents are only in the unit-cell.
            If `True` this will return a sparse matrix of `.shape = (self.na, self.na)`,
            else, it will return a sparse matrix of `.shape = (self.na, self.na * self.n_s)`.
            One may figure out the connections via `Geometry.sc_index`.
+
+        See Also
+        --------
+        orbital_current : the orbital current between individual orbitals
+        bond_current : the bond current (orbital current summed over orbitals)
+        atom_current : the atomic current for each atom (scalar representation of bond-currents)
+        vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
         geom = self.geom
+        na = geom.na
         o2a = geom.o2a
 
         if uc is None:
@@ -656,43 +768,71 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         # We convert to atomic bond-currents
         if uc:
-            na = geom.na
-            J = lil_matrix((na, na), dtype=Jij.dtype)
+            Jab = csr_matrix((na, na), dtype=Jij.dtype)
 
             map_row = o2a
-
             def map_col(c):
                 return o2a(c) % na
 
         else:
-            J = lil_matrix((geom.na, geom.na * geom.n_s), dtype=Jij.dtype)
+            Jab = csr_matrix((na, na * geom.n_s), dtype=Jij.dtype)
 
             map_row = o2a
             map_col = o2a
 
-        # Perform reduction
-        if "+" in sum:
-            for ia, ja, b in ispmatrixd(Jij, map_row, map_col):
-                if b > 0:
-                    J[ia, ja] += b
+        # Lets do array notation for speeding up the computations
+        if not isspmatrix_csr(Jij):
+            Jij = Jij.tocsr()
 
-        elif "-" in sum:
-            for ia, ja, b in ispmatrixd(Jij, map_row, map_col):
-                if b < 0:
-                    J[ia, ja] -= b
+        # Check for the simple case of 1-orbital systems
+        if geom.na == geom.no:
+            # In this case it is extremely easy!
+            # Just copy to the new data
+
+            # Transfer all columns to the new columns
+            if uc:
+                cols = map_col(Jij.indices)
+            else:
+                cols = Jij.indices.view()
+            Jab.indptr[:] = Jij.indptr[:]
+            Jab.indices = np.copy(cols[:])
 
         else:
-            for ia, ja, b in ispmatrixd(Jij, map_row, map_col):
-                J[ia, ja] += b
+            # The multi-orbital case
+
+            # Loop all atoms to make the new pointer array
+            # I.e. a consecutive array of pointers starting from
+            #   firsto[.] .. lasto[.]
+            iptr = Jij.indptr
+            # Get first orbital
+            fo = geom.firsto
+            # Automatically create the new index pointer
+            # from first and last orbital
+            indptr = np.insert(np.cumsum(iptr[fo[1:]] - iptr[fo[:-1]]), 0, 0)
+
+            # Now we have a new indptr, and the column indices have also
+            # been processed.
+            Jab.indptr[:] = indptr[:]
+            # Transfer all columns to the new columns
+            Jab.indices = map_col(Jij.indices)
+
+        # Copy data
+        if '+' in sum:
+            Jab.data = np.where(Jij.data > 0, Jij.data, 0)
+        elif '-' in sum:
+            Jab.data = np.where(Jij.data > 0, 0, Jij.data)
+        else:
+            Jab.data = np.copy(Jij.data)
+
+        # Do in-place operations by removing all the things not required
+        Jab.sort_indices()
+        Jab.sum_duplicates()
+        Jab.eliminate_zeros()
 
         # Rescale to correct magnitude
-        J *= 0.5
+        Jab *= 0.5
 
-        # Now we have the bond-currents convert and sort
-        mat = J.tocsr()
-        mat.sort_indices()
-
-        return mat
+        return Jab
 
     def bond_current(self, elec, E, avg=True, isc=None, sum='+', uc=False):
         """ Return the bond-current between atoms (sum of orbital currents)
@@ -721,12 +861,19 @@ class tbtncSileSiesta(SileCDFSIESTA):
            If `True` this will return a sparse matrix of `.shape = (self.na, self.na)`,
            else, it will return a sparse matrix of `.shape = (self.na, self.na * self.n_s)`.
            One may figure out the connections via `Geometry.sc_index`.
+
+        See Also
+        --------
+        orbital_current : the orbital current between individual orbitals
+        bond_current_from_orbital : transfer the orbital current to bond current
+        atom_current : the atomic current for each atom (scalar representation of bond-currents)
+        vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
 
         # First we retrieve the orbital currents
-        Jorb = self.orbital_current(elec, E, avg, isc)
+        Jij = self.orbital_current(elec, E, avg, isc)
 
-        return self.bond_current_from_orbital(Jorb, sum=sum, uc=uc)
+        return self.bond_current_from_orbital(Jij, sum=sum, uc=uc)
 
     def atom_current_from_orbital(self, Jij, activity=True):
         r""" Return the atom-current of atoms.
@@ -760,48 +907,22 @@ class tbtncSileSiesta(SileCDFSIESTA):
               J_I^{\mathcal A} = \sqrt{ J_I^{|a|} J_I^{|o|} }
 
         """
+        # Create the bond-currents with all summations
+        Jab = self.bond_current_from_orbital(Jij, sum='all')
+        # We take the absolute and sum it over all connecting atoms
+        Ja = np.asarray(abs(Jab).sum(1), dtype=Jij.dtype).ravel()
 
-        # Number of atoms
-        na = self.na_u
-
-        # atomic currents
-        Ja = np.zeros([na], np.float64)
-
-        # Create local orbital pointers
-        o2a = self.geom.o2a
-        sc2uc = self.geom.sc2uc
-        firsto = self.geom.firsto
-        lasto = self.geom.lasto[:] + 1
-
-        # Faster function calls
-        nabs = np.abs
-        nsum = np.sum
-
-        # Calculate individual bond-currents between atoms
         if activity:
-            Jo = np.zeros([na], np.float64)
-            for ia, ja in ispmatrix(Jij, o2a, o2a):
+            # Calculate the absolute summation of all orbital
+            # currents and transfer it to a bond-current
+            Jab = self.bond_current_from_orbital(abs(Jij), sum='all')
 
-                # we also include ia == ja (that should be zero anyway)
-                # Get unit-cell atom
-                a = sc2uc(ja)
-                # Get supercell index offset
-                i = (ja // na) * na
-                t = Jij[firsto[ia]:lasto[ia], firsto[a]:i+lasto[a]].data
+            # Sum to make it per atom, it is already the absolute
+            Jo = np.asarray(Jab.sum(1), dtype=Jij.dtype).ravel()
 
-                # Calculate both the orbital and atomic normalized current
-                Jo[ia] += nsum(nabs(t))
-                Ja[ia] += nabs(nsum(t))
-
-            # If it is the activity current, we return the geometric mean...
+            # Return the geometric mean of the atomic current X orbital
+            # current.
             Ja = np.sqrt(Ja * Jo)
-        else:
-            for ia, ja in ispmatrix(Jij, o2a, o2a):
-                a = sc2uc(ja)
-                i = (ja // na) * na
-                t = Jij[firsto[ia]:lasto[ia], i+firsto[a]:i+lasto[a]].data
-                Ja[ia] += nabs(nsum(t))
-        del t
 
         # Scale correctly
         Ja *= 0.5
@@ -839,21 +960,27 @@ class tbtncSileSiesta(SileCDFSIESTA):
            .. math::
               J_I^{\mathcal A} = \sqrt{ J_I^{|a|} J_I^{|o|} }
 
+        See Also
+        --------
+        orbital_current : the orbital current between individual orbitals
+        bond_current_from_orbital : transfer the orbital current to bond current
+        bond_current : the bond current (orbital current summed over orbitals)
+        vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
         Jorb = self.orbital_current(elec, E, avg, isc=[None, None, None])
 
         return self.atom_current_from_orbital(Jorb, activity=activity)
 
-    def vector_current_from_orbital(self, Jij):
-        """ Return the atom-current with vector components of atoms.
+    def vector_current_from_bond(self, Jab):
+        """ Return the atomic current with vector components of atoms.
 
-        This takes a sparse matrix with size `self.geom.no, self.geom.no_s` as argument
-        with the associated orbital currents.
+        This takes a sparse matrix with size `self.geom.na, self.geom.na_s` as argument
+        with the associated bond currents.
 
         Parameters
         ----------
-        Jij: ``scipy.sparse.*_matrix``
-           the orbital currents as retrieved from `orbital_current`
+        Jab: ``scipy.sparse.*_matrix``
+           the bond currents as retrieved from `bond_current`
         """
         geom = self.geom
 
@@ -862,54 +989,53 @@ class tbtncSileSiesta(SileCDFSIESTA):
         Ja = np.zeros([na, 3], np.float64)
 
         # Create local orbital look-up
-        o2a = geom.o2a
-        sc2uc = geom.sc2uc
-        firsto = geom.firsto
-        lasto = geom.lasto[:] + 1
         xyz = geom.xyz
 
-        # Calculate individual bond-currents between atoms
-        for ia, ja in ispmatrix(Jij, o2a, o2a):
-            if ia == ja:
-                # If we are on the same atom there is no direction
-                # and hence we would get a division by zero, so skip
-                continue
+        # Loop atoms in the device region
+        # These are the only atoms which may have bond-currents
+        for ia in self.a_dev:
+            # Get csr matrix
+            Jia = Jab[ia, :].tocsr()
 
-            # Get unit-cell index
-            a = sc2uc(ja)
-            # Get supercell index offset
-            i = (ja // na) * na
+            # Set diagonal to zero
+            Jia[0, ia] = 0.
+            # Remove the diagonal
+            Jia.eliminate_zeros()
 
-            t = Jij[firsto[ia]:lasto[ia], i+firsto[a]:i+lasto[a]].data.sum()
-
-            # calculate the vector between atom `ia` and `ja`
-            v = geom.axyz(ja) - xyz[ia, :]
-
-            # multiply by normalized vector
-            Ja[ia, :] += t * v / (v[0]**2 + v[1]**2 + v[2]**2)**.5
-
-        # Scale correctly
-        Ja *= 0.5
+            # Now calculate the vector elements
+            # Remark that the vector goes from ia -> ja
+            rv = xyz[ia, :][None, :] - geom.axyz(Jia.indices)
+            rv = rv / np.sqrt(np.sum(rv ** 2, axis=1))[:, None]
+            Ja[ia, :] = np.sum(Jia.data[:, None] * rv, axis=0)
 
         return Ja
 
-    def vector_current(self, elec, E, avg=True):
+    def vector_current(self, elec, E, avg=True, sum='all'):
         """ Return the atom-current with vector components of atoms.
 
         Parameters
         ----------
-        elec: ``str``
+        elec: str
            the electrode of originating electrons
         E: float or int
            the energy or energy index of the vector current.
            Unlike `orbital_current` this may not be `None` as the down-scaling of the
            orbital currents may not be equivalent for all energy points.
-        avg: ``bool`` (`True`)
+        avg: bool, optional
            whether the vector current returned is k-averaged
-        """
-        Jorb = self.orbital_current(elec, E, avg, isc=[None, None, None])
+        sum : str, optional
+           how the summation of the bond-currents should be
 
-        return self.vector_current_from_orbital(Jorb)
+        See Also
+        --------
+        orbital_current : the orbital current between individual orbitals
+        bond_current_from_orbital : transfer the orbital current to bond current
+        bond_current : the bond current (orbital current summed over orbitals)
+        atom_current : the atomic current for each atom (scalar representation of bond-currents)
+        """
+        Jab = self.bond_current(elec, E, avg, isc=[None, None, None], sum=sum)
+
+        return self.vector_current_from_bond(Jab)
 
     def read_data(self, *args, **kwargs):
         """ Read specific type of data. 
@@ -932,12 +1058,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 if kwargs[kw]:
                     val.append(self.read_geometry())
 
-            if kw == 'atom_current':
+            elif kw == 'atom_current':
                 if kwargs[kw]:
                     # TODO we need some way of handling arguments.
                     val.append(self.atom_current(*args))
 
-            if kw == 'vector_current':
+            elif kw == 'vector_current':
                 if kwargs[kw]:
                     # TODO we need some way of handling arguments.
                     val.append(self.vector_current(*args))
@@ -984,7 +1110,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             return assign_E
 
         # Correct the geometry species information
-        class Geometry(argparse.Action):
+        class GeometryAction(argparse.Action):
 
             def __call__(self, parser, ns, value, option_string=None):
 
@@ -1002,7 +1128,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 ns._geometry = g
         p.add_argument('--geometry', '-G',
-                       action=Geometry,
+                       action=GeometryAction,
                        help=('Update the geometry of the output file, this enables one to set the species correctly,'
                              ' note this only affects output-files where species are important'))
 
