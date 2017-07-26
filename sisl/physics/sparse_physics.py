@@ -16,7 +16,7 @@ import scipy.sparse.linalg as ssli
 from sisl._help import get_dtype
 from sisl._help import _zip as zip, _range as range
 from sisl.selector import TimeSelector
-from sisl.sparse import SparseCSR, ispmatrix, ispmatrixd
+from sisl.sparse import SparseCSR, ispmatrixd
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
 from .brillouinzone import BrillouinZone
