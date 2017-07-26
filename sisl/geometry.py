@@ -301,6 +301,10 @@ class Geometry(SuperCellChild):
         sile : `Sile`, str
             a `Sile` object which will be used to read the geometry
             if it is a string it will create a new sile using `get_sile`.
+
+        See Also
+        --------
+        write : writes a `Geometry` to a given `Sile`/file
         """
         # This only works because, they *must*
         # have been imported previously
@@ -321,6 +325,10 @@ class Geometry(SuperCellChild):
         *args, **kwargs:
             Any other args will be passed directly to the
             underlying routine
+
+        See Also
+        --------
+        read : reads a `Geometry` from a given `Sile`/file
         """
 
         # This only works because, they *must*
@@ -756,6 +764,7 @@ class Geometry(SuperCellChild):
         See Also
         --------
         SuperCell.fit : update the supercell according to a reference supercell
+        remove : the negative of this routine, i.e. remove a subset of atoms
         """
         atms = self.sc2uc(atom)
         if cell is None:
@@ -823,6 +832,10 @@ class Geometry(SuperCellChild):
         ----------
         atom  : array_like
             indices of all atoms to be removed.
+
+        See Also
+        --------
+        sub : the negative of this routine, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
         atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
@@ -1052,7 +1065,7 @@ class Geometry(SuperCellChild):
 
         See Also
         --------
-        rotate : called routine with `v = self.cell[0, :]`
+        rotate : generic function of this, this routine calls `rotate` with `v = self.cell[0, :]`
         """
         return self.rotate(angle, self.cell[0, :], origo, atom, only, radians)
 
@@ -1061,7 +1074,7 @@ class Geometry(SuperCellChild):
 
         See Also
         --------
-        rotate : called routine with `v = self.cell[1, :]`
+        rotate : generic function of this, this routine calls `rotate` with `v = self.cell[1, :]`
         """
         return self.rotate(angle, self.cell[1, :], origo, atom, only, radians)
 
@@ -1070,7 +1083,7 @@ class Geometry(SuperCellChild):
 
         See Also
         --------
-        rotate : called routine with `v = self.cell[2, :]`
+        rotate : generic function of this, this routine calls `rotate` with `v = self.cell[2, :]`
         """
         return self.rotate(angle, self.cell[2, :], origo, atom, only, radians)
 
@@ -1105,6 +1118,9 @@ class Geometry(SuperCellChild):
         See Also
         --------
         Quaternion : class to rotate
+        rotatea : generic function for rotating around first lattice vector
+        rotateb : generic function for rotating around second lattice vector
+        rotatec : generic function for rotating around third lattice vector
         """
         if origo is None:
             origo = [0., 0., 0.]
@@ -1504,7 +1520,6 @@ class Geometry(SuperCellChild):
         atom : int or array_like, optional
              only reverse the given atomic indices, if not specified, all
              atoms will be reversed
-
         """
         if atom is None:
             xyz = self.xyz[::-1, :]
