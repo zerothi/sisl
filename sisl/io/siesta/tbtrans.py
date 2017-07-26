@@ -27,7 +27,6 @@ from sisl.utils import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
-from sisl.sparse import ispmatrix, ispmatrixd
 from sisl._help import _str
 from sisl._help import _range as range, _zip as zip
 from sisl.units.siesta import unit_convert
@@ -551,7 +550,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
     DOS_bulk = BDOS
     BulkDOS = BDOS
 
-    def _E_T_sorted(self, avg=True):
+    def _E_T_sorted(self, elec_from, elec_to, avg=True):
         """ Internal routine for returning energies and transmission in a sorted array """
         E = self.E
         idx_sort = np.argsort(E)
@@ -559,7 +558,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         T = self.transmission(elec_from, elec_to, avg)
         return E[idx_sort], T[idx_sort]
 
-    def current(self, elec_from, elec_to, interp_dE=0.001, avg=True):
+    def current(self, elec_from, elec_to, avg=True):
         """ Return the current from `from` to `to` using the weights in the file. 
 
         Parameters
@@ -568,8 +567,6 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the originating electrode
         elec_to: str
            the absorbing electrode (different from `elec_from`)
-        interp_dE : float, optional
-           the interpolation spacing for the energies
         avg: bool, int or array_like, optional
            whether the returned current is based on k-averaged transmissions
 
@@ -578,14 +575,14 @@ class tbtncSileSiesta(SileCDFSIESTA):
         current_parameter : to explicitly set the electronic temperature and chemical potentials
         """
         mu_f = self.chemical_potential(elec_from)
-        kT_f = self.electronic_temperature(elec_from)
+        kt_f = self.kT(elec_from)
         mu_t = self.chemical_potential(elec_to)
-        kT_t = self.electronic_temperature(elec_to)
-        return self.current_parameter(elec_from, mu_f, kT_f,
-                                      elec_to, mu_t, kT_t, interp_dE, avg)
+        kt_t = self.kT(elec_to)
+        return self.current_parameter(elec_from, mu_f, kt_f,
+                                      elec_to, mu_t, kt_t, avg)
 
     def current_parameter(self, elec_from, mu_from, kt_from,
-                          elec_to, mu_to, kt_to, interp_dE=0.001, avg=True):
+                          elec_to, mu_to, kt_to, avg=True):
         """ Return the current from `from` to `to` using the passed parameters
 
         Parameters
@@ -602,8 +599,6 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the chemical potential of the electrode (in eV)
         kt_to: float
            the electronic temperature of the electrode (in eV)
-        interp_dE : float, optional
-           the interpolation spacing for the energies
         avg: bool, int or array_like, optional
            whether the returned current is based on k-averaged transmissions
 
@@ -612,29 +607,33 @@ class tbtncSileSiesta(SileCDFSIESTA):
         current : which calculates the current with the pre-set parameters
         """
         # Get energies
-        E, T = self._E_T_sorted(avg)
-
-        # Do an interpolation to deal with non-evenly energy spacings
-        Ei = np.arange(E[0], E[-1], interp_dE)
-        Ti = np.interp(Ei, E, T)
+        E, T = self._E_T_sorted(elec_from, elec_to, avg)
 
         # Check that the lower bound is sufficient
-        if mu_f < - kT_f * 5 + E[0] or \
-           mu_t < - kT_t * 5 + E[0]:
-            raise ValueError((self.__class__.__name__ + ".current_parameter cannot "
-                              "accurately calculate the current due to the lower energy bound being below the lowest calculated transmission value. "
-                              "I.e. increase your calculated energy-range."))
+        print_warning = mu_from - kt_from * 3 < E[0] or \
+                        mu_to - kt_to * 3  < E[0]
+        print_warning = mu_from + kt_from * 3 > E[-1] or \
+                        mu_to + kt_to * 3  > E[-1] or \
+                        print_warning
+        if print_warning:
+            # We should pretty-print a table of data
+            m = max(len(elec_from), len(elec_to), 15)
+            s = ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format('Energy range', E[0], E[-1])
+            s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format(elec_from, mu_from - kt_from * 3, mu_from + kt_from * 3)
+            s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format(elec_to, mu_to - kt_to * 3, mu_to + kt_to * 3)
+            min_e = min(mu_from - kt_from * 3, mu_to - kt_to * 3)
+            max_e = max(mu_from + kt_from * 3, mu_to + kt_to * 3)
+            s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format('dFermi function', min_e, max_e)
 
-        if mu_f > kT_f * 3 + E[-1] or \
-           mu_t > kT_t * 3 + E[-1]:
-            raise ValueError((self.__class__.__name__ + ".current_parameter cannot "
-                              "accurately calculate the current due to the high energy bound being above the highest calculated transmission value. "
-                              "I.e. increase your calculated energy-range."))
+            warnings.warn((self.__class__.__name__ + ".current_parameter cannot "
+                           "accurately calculate the current due to the calculated energy range. "
+                           "I.e. increase your calculated energy-range.\n" + s),
+                          UserWarning)
 
         def nf(E, mu, kT):
-            return 1. / (np.exp((E - mu) / kT) - 1.)
+            return 1. / (np.exp((E - mu) / kT) + 1.)
 
-        I = np.sum(Ti * (Ei[1] - Ei[0])) * (nf(Ei, mu_to, kt_to) - nf(Ei, mu_from, kt_from))
+        I = np.sum(T * (E[1] - E[0]) * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
 
     def orbital_current(self, elec, E, avg=True, isc=None):
@@ -828,6 +827,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         Jab.sort_indices()
         Jab.sum_duplicates()
         Jab.eliminate_zeros()
+        Jab.sort_indices()
 
         # Rescale to correct magnitude
         Jab *= 0.5
@@ -869,8 +869,6 @@ class tbtncSileSiesta(SileCDFSIESTA):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
-
-        # First we retrieve the orbital currents
         Jij = self.orbital_current(elec, E, avg, isc)
 
         return self.bond_current_from_orbital(Jij, sum=sum, uc=uc)
@@ -910,7 +908,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Create the bond-currents with all summations
         Jab = self.bond_current_from_orbital(Jij, sum='all')
         # We take the absolute and sum it over all connecting atoms
-        Ja = np.asarray(abs(Jab).sum(1), dtype=Jij.dtype).ravel()
+        Ja = np.asarray(abs(Jab).sum(1), dtype=Jij.dtype).reshape(-1)
 
         if activity:
             # Calculate the absolute summation of all orbital
@@ -918,7 +916,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             Jab = self.bond_current_from_orbital(abs(Jij), sum='all')
 
             # Sum to make it per atom, it is already the absolute
-            Jo = np.asarray(Jab.sum(1), dtype=Jij.dtype).ravel()
+            Jo = np.asarray(Jab.sum(1), dtype=Jij.dtype).reshape(-1)
 
             # Return the geometric mean of the atomic current X orbital
             # current.
