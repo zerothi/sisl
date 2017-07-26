@@ -20,5 +20,5 @@ np.random.seed(1234567890)
 
 gr = sisl.geom.graphene(orthogonal=True)
 H = sisl.Hamiltonian(gr)
-H.construct([(0.1, 1.44), (0., -2.7)], eta=True)
-H.repeat(100, 0).repeat(100, 1)
+H.construct([(0.1, 1.44), (0., -2.7)])
+H.repeat(100, 0, eta=True).repeat(100, 1, eta=True)

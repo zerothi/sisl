@@ -288,10 +288,15 @@ class SparseGeometry(object):
         na_iR : int, optional
            number of atoms within the sphere for speeding
            up the `iter_block` loop.
-        method : {'rand', str, 'rand'
+        method : {'rand', str}
            method used in `Geometry.iter_block`, see there for details
-        eta: bool, False
+        eta: bool, optional
            whether an ETA will be printed
+
+        See Also
+        --------
+        tile : tiling *after* construct is much faster for very large systems
+        repeat : repeating *after* construct is much faster for very large systems
         """
 
         if not callable(func):
@@ -757,7 +762,7 @@ class SparseAtom(SparseGeometry):
 
         return S
 
-    def tile(self, reps, axis):
+    def tile(self, reps, axis, eta=False):
         """ Create a tiled sparse atom object, equivalent to `Geometry.tile`
 
         The already existing sparse elements are extrapolated
@@ -769,6 +774,14 @@ class SparseAtom(SparseGeometry):
             number of repetitions along cell-vector ``axis``
         axis : int
             0, 1, 2 according to the cell-direction
+        eta : bool, optional
+            print an ETA to stdout
+
+        See Also
+        --------
+        Geometry.tile: the same ordering as the final geometry
+        Geometry.repeat: a different ordering of the final geometry
+        repeat: a different ordering of the final geometry
         """
         # Create the new sparse object
         S = self._init_larger('tile', reps, axis)
@@ -785,6 +798,12 @@ class SparseAtom(SparseGeometry):
         # Information for the new Hamiltonian sparse matrix
         na_n = S.na
         geom_n = S.geom
+
+        # For ETA
+        from time import time
+        from sys import stdout
+        t0 = time()
+        name = self.__class__.__name__
 
         # First loop on axis tiling and local
         # atoms in the geometry
@@ -815,11 +834,26 @@ class SparseAtom(SparseGeometry):
                 ISC[:, axis] = JA // na_n
 
                 S[ia + rep, JA % na_n + sc_index(ISC) * na_n] = self[ia, ccol]
+
+            if eta:
+                # calculate hours, minutes, seconds
+                m, s = divmod(float(time()-t0)/(ia+1) * (na-ia-1), 60)
+                h, m = divmod(m, 60)
+                stdout.write(name + ".tile() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
+                stdout.flush()
+
+        if eta:
+            # calculate hours, minutes, seconds spend on the computation
+            m, s = divmod(float(time()-t0), 60)
+            h, m = divmod(m, 60)
+            stdout.write(name + ".tile() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
+            stdout.flush()
+
         S.finalize()
 
         return S
 
-    def repeat(self, reps, axis):
+    def repeat(self, reps, axis, eta=False):
         """ Create a repeated sparse atom object, equivalent to `Geometry.repeat`
 
         The already existing sparse elements are extrapolated
@@ -831,6 +865,14 @@ class SparseAtom(SparseGeometry):
             number of repetitions along cell-vector ``axis``
         axis : int
             0, 1, 2 according to the cell-direction
+        eta : bool, optional
+            print an ETA to stdout
+
+        See Also
+        --------
+        Geometry.repeat: the same ordering as the final geometry
+        Geometry.tile: a different ordering of the final geometry
+        tile: a different ordering of the final geometry
         """
         # Create the new sparse object
         S = self._init_larger('repeat', reps, axis)
@@ -847,6 +889,12 @@ class SparseAtom(SparseGeometry):
         # Information for the new Hamiltonian sparse matrix
         na_n = S.na
         geom_n = S.geom
+
+        # For ETA
+        from time import time
+        from sys import stdout
+        t0 = time()
+        name = self.__class__.__name__
 
         # First loop on axis tiling and local
         # atoms in the geometry
@@ -877,6 +925,21 @@ class SparseAtom(SparseGeometry):
                 ISC[:, axis] = A // reps
 
                 S[IA + rep, JA + A % reps + sc_index(ISC) * na_n] = self[ia, ccol]
+
+            if eta:
+                # calculate hours, minutes, seconds
+                m, s = divmod(float(time()-t0)/(ia+1) * (na-ia-1), 60)
+                h, m = divmod(m, 60)
+                stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
+                stdout.flush()
+
+        if eta:
+            # calculate hours, minutes, seconds spend on the computation
+            m, s = divmod(float(time()-t0), 60)
+            h, m = divmod(m, 60)
+            stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
+            stdout.flush()
+
         S.finalize()
 
         return S
@@ -1112,7 +1175,7 @@ class SparseOrbital(SparseGeometry):
 
         return S
 
-    def tile(self, reps, axis):
+    def tile(self, reps, axis, eta=False):
         """ Create a tiled sparse orbital object, equivalent to `Geometry.tile`
 
         The already existing sparse elements are extrapolated
@@ -1124,6 +1187,14 @@ class SparseOrbital(SparseGeometry):
             number of repetitions along cell-vector ``axis``
         axis : int
             0, 1, 2 according to the cell-direction
+        eta : bool, optional
+            print an ETA to stdout
+
+        See Also
+        --------
+        Geometry.tile: the same ordering as the final geometry
+        Geometry.repeat: a different ordering of the final geometry
+        repeat: a different ordering of the final geometry
         """
 
         # Create the new sparse object
@@ -1141,6 +1212,12 @@ class SparseOrbital(SparseGeometry):
         # Information for the new Hamiltonian sparse matrix
         no_n = S.no
         geom_n = S.geom
+
+        # For ETA
+        from time import time
+        from sys import stdout
+        t0 = time()
+        name = self.__class__.__name__
 
         # First loop on axis tiling and local
         # atoms in the geometry
@@ -1171,11 +1248,26 @@ class SparseOrbital(SparseGeometry):
                 ISC[:, axis] = JO // no_n
 
                 S[io + rep, JO % no_n + sc_index(ISC) * no_n] = self[io, ccol]
+
+            if eta:
+                # calculate hours, minutes, seconds
+                m, s = divmod(float(time()-t0)/(io+1) * (no-io-1), 60)
+                h, m = divmod(m, 60)
+                stdout.write(name + ".tile() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
+                stdout.flush()
+
+        if eta:
+            # calculate hours, minutes, seconds spend on the computation
+            m, s = divmod(float(time()-t0), 60)
+            h, m = divmod(m, 60)
+            stdout.write(name + ".tile() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
+            stdout.flush()
+
         S.finalize()
 
         return S
 
-    def repeat(self, reps, axis):
+    def repeat(self, reps, axis, eta=False):
         """ Create a repeated sparse orbital object, equivalent to `Geometry.repeat`
 
         The already existing sparse elements are extrapolated
@@ -1187,6 +1279,14 @@ class SparseOrbital(SparseGeometry):
             number of repetitions along cell-vector ``axis``
         axis : int
             0, 1, 2 according to the cell-direction
+        eta : bool, optional
+            print the ETA to stdout
+
+        See Also
+        --------
+        Geometry.repeat: the same ordering as the final geometry
+        Geometry.tile: a different ordering of the final geometry
+        tile: a different ordering of the final geometry
         """
         # Create the new sparse object
         S = self._init_larger('repeat', reps, axis)
@@ -1203,6 +1303,12 @@ class SparseOrbital(SparseGeometry):
         # Information for the new Hamiltonian sparse matrix
         no_n = S.no
         geom_n = S.geom
+
+        # For ETA
+        from time import time
+        from sys import stdout
+        t0 = time()
+        name = self.__class__.__name__
 
         # First loop on axis tiling and local
         # atoms in the geometry
@@ -1239,6 +1345,20 @@ class SparseOrbital(SparseGeometry):
                 ISC[:, axis] = A // reps
 
                 S[IO + oa * rep, JO + oA * (A % reps) + sc_index(ISC) * no_n] = self[io, ccol]
+            if eta:
+                # calculate hours, minutes, seconds
+                m, s = divmod(float(time()-t0)/(io+1) * (no-io-1), 60)
+                h, m = divmod(m, 60)
+                stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
+                stdout.flush()
+
+        if eta:
+            # calculate hours, minutes, seconds spend on the computation
+            m, s = divmod(float(time()-t0), 60)
+            h, m = divmod(m, 60)
+            stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
+            stdout.flush()
+
         S.finalize()
 
         return S
