@@ -246,6 +246,10 @@ class SparseGeometry(object):
            coupling constants corresponding to the ``R``
            ranges. ``param[0,:]`` are the elements
            for the all atoms within ``R[0]`` of each atom.
+
+        See Also
+        --------
+        construct : routine to create the sparse matrix from a generic function (as returned from `create_construct`)
         """
 
         def func(self, ia, idxs, idxs_xyz=None):
@@ -295,6 +299,7 @@ class SparseGeometry(object):
 
         See Also
         --------
+        create_construct : a generic function used to create a generic function which this routine requires
         tile : tiling *after* construct is much faster for very large systems
         repeat : repeating *after* construct is much faster for very large systems
         """
@@ -733,6 +738,12 @@ class SparseAtom(SparseGeometry):
         ----------
         atom  : array_like of int
             indices of removed atoms
+
+        See Also
+        --------
+        Geometry.remove : equivalent to the resulting `Geometry` from this routine
+        Geometry.sub : the negative of `Geometry.remove`
+        sub : the negative of `remove`, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
         atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
@@ -749,6 +760,12 @@ class SparseAtom(SparseGeometry):
         ----------
         atom  : array_like of int
             indices of retained atoms
+
+        See Also
+        --------
+        Geometry.remove : the negative of `Geometry.sub`
+        Geometry.sub : equivalent to the resulting `Geometry` from this routine
+        remove : the negative of `sub`, i.e. remove a subset of atoms
         """
         atom = self.sc2uc(atom)
         geom = self.geom.sub(atom)
@@ -1151,6 +1168,12 @@ class SparseOrbital(SparseGeometry):
         ----------
         atom  : array_like of int
             indices of removed atoms
+
+        See Also
+        --------
+        Geometry.remove : equivalent to the resulting `Geometry` from this routine
+        Geometry.sub : the negative of `Geometry.remove`
+        sub : the negative of `remove`, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
         atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
@@ -1167,6 +1190,12 @@ class SparseOrbital(SparseGeometry):
         ----------
         atom  : array_like of int
             indices of retained atoms
+
+        See Also
+        --------
+        Geometry.remove : the negative of `Geometry.remove`
+        Geometry.sub : equivalent to the resulting `Geometry` from this routine
+        remove : the negative of `sub`, i.e. remove a subset of atoms
         """
         atom = self.sc2uc(atom)
         otom = self.geom.a2o(atom, all=True)
