@@ -589,7 +589,7 @@ class TestHamiltonian(object):
         Hg.finalize()
         H = Hamiltonian(self.g)
         H.construct([R, param])
-        H = H.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = H.tile(2, 0).tile(2, 1).tile(2, 2, eta=True)
         assert_true(Hg.spsame(H))
 
     @attr('slow')
@@ -648,7 +648,7 @@ class TestHamiltonian(object):
         Hg.finalize()
         H = Hamiltonian(self.g)
         H.construct([R, param])
-        H = H.repeat(2, 0).repeat(2, 1). repeat(2, 2)
+        H = H.repeat(2, 0).repeat(2, 1). repeat(2, 2, eta=True)
         assert_true(Hg.spsame(H))
 
     @attr('slow')
