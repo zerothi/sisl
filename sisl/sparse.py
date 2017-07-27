@@ -153,6 +153,10 @@ class SparseCSR(object):
                                   'with data, indices, indptr'))
             else:
 
+                # Correct dimension according to passed array
+                if len(arg1[0].shape) == 2:
+                    dim = max(dim, arg1[0].shape[1])
+
                 if dtype is None:
                     # The first element is the data
                     dtype = arg1[0].dtype
@@ -160,14 +164,14 @@ class SparseCSR(object):
                 # The first *must* be some sort of array
                 if 'shape' in kwargs:
                     shape = kwargs['shape']
+
                 else:
                     M = len(arg1[2])-1
                     N = ((np.amax(arg1[1]) // M) + 1) * M
                     shape = (M, N)
 
                 self.__init_shape(shape, dim=dim, dtype=dtype,
-                                  nnz=1,
-                                  **kwargs)
+                                  nnz=1, **kwargs)
 
                 # Copy data to the arrays
                 self.ptr = arg1[2]
@@ -175,7 +179,10 @@ class SparseCSR(object):
                 self.col = arg1[1]
                 self._nnz = len(self.col)
                 self._D = np.empty([len(arg1[1]), self.shape[-1]], dtype=self.dtype)
-                self._D[:, 0] = arg1[0]
+                if len(arg1[0].shape) == 2:
+                    self._D[:, :] = arg1[0]
+                else:
+                    self._D[:, 0] = arg1[0]
 
                 self.finalize()
 

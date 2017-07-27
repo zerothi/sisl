@@ -785,6 +785,11 @@ class SparseAtom(SparseGeometry):
         The already existing sparse elements are extrapolated
         to the new supercell by repeating them in blocks like the coordinates.
 
+        Notes
+        -----
+        Calling this routine will automatically `finalize` the `SparseAtom`. This
+        is required to greatly increase performance.
+
         Parameters
         ----------
         reps : int
@@ -800,6 +805,7 @@ class SparseAtom(SparseGeometry):
         Geometry.repeat: a different ordering of the final geometry
         repeat: a different ordering of the final geometry
         """
+        self.finalize()
         # Create the new sparse object
         S = self._init_larger('tile', reps, axis)
 
@@ -825,42 +831,45 @@ class SparseAtom(SparseGeometry):
         # First loop on axis tiling and local
         # atoms in the geometry
         sc_index = geom_n.sc_index
-        rngreps = range(0, na*reps, na)
-        for ia in range(geom.na):
 
-            # Loop on the connection orbitals
-            if ncol[ia] == 0:
-                continue
-            ccol = col[ptr[ia]:ptr[ia]+ncol[ia]]
+        # Create new indptr, indices and D
+        ncol = np.tile(np.diff(ptr), reps)
+        # Now indptr is complete
+        indptr = np.insert(np.cumsum(ncol), 0, 0)
+        del ncol
+        indices = np.empty([indptr[-1]], np.int32)
 
-            # supercells in the old geometry
-            isc = geom.a2isc(ccol)
-            # resulting atom in the new geometry (without wrapping
-            # for correct supercell, that will happen below)
-            A = ccol % na + na * isc[:, axis]
+        # Now we should fill the data
+        isc = geom.a2isc(col)
+        # resulting atom in the new geometry (without wrapping
+        # for correct supercell, that will happen below)
+        JA = col % na + na * isc[:, axis] - na
 
-            # For recalculating stuff in the repetition loop
-            ISC = np.copy(isc)
+        # Create repetitions
+        for rep in range(reps):
+            sl = slice(indptr[na*rep], indptr[na*(rep+1)])
 
-            # Get data to set
-            D = self[ia, ccol]
+            # Figure out the JA atoms
+            JA += na
 
-            # Create repetitions
-            for rep in rngreps:
+            # Correct the supercell information
+            isc[:, axis] = JA // na_n
 
-                # Figure out the JA atom
-                JA = A + rep
-                # Correct the supercell information
-                ISC[:, axis] = JA // na_n
-
-                S[ia + rep, JA % na_n + sc_index(ISC) * na_n] = D
+            indices[sl] = JA % na_n + sc_index(isc) * na_n
 
             if eta:
                 # calculate hours, minutes, seconds
-                m, s = divmod(float(time()-t0)/(ia+1) * (na-ia-1), 60)
+                m, s = divmod(float(time()-t0)/(rep+1) * (reps-rep-1), 60)
                 h, m = divmod(m, 60)
                 stdout.write(name + ".tile() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
+
+        # Clean-up
+        del isc, JA
+
+        S._csr = SparseCSR((np.tile(self._csr._D, (reps, 1)), indices, indptr),
+                           shape=(geom_n.na, geom_n.na_s))
+        S.finalize()
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
@@ -868,8 +877,6 @@ class SparseAtom(SparseGeometry):
             h, m = divmod(m, 60)
             stdout.write(name + ".tile() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
-
-        S.finalize()
 
         return S
 
@@ -1231,6 +1238,7 @@ class SparseOrbital(SparseGeometry):
         Geometry.repeat: a different ordering of the final geometry
         repeat: a different ordering of the final geometry
         """
+        self.finalize()
 
         # Create the new sparse object
         S = self._init_larger('tile', reps, axis)
@@ -1257,42 +1265,46 @@ class SparseOrbital(SparseGeometry):
         # First loop on axis tiling and local
         # atoms in the geometry
         sc_index = geom_n.sc_index
-        rngreps = range(0, no*reps, no)
-        for io in range(geom.no):
 
-            # Loop on the connection orbitals
-            if ncol[io] == 0:
-                continue
-            ccol = col[ptr[io]:ptr[io]+ncol[io]]
+        # Create new indptr, indices and D
+        ncol = np.tile(np.diff(ptr), reps)
+        # Now indptr is complete
+        indptr = np.insert(np.cumsum(ncol), 0, 0)
+        del ncol
+        indices = np.empty([indptr[-1]], np.int32)
 
-            # supercells in the old geometry
-            isc = geom.o2isc(ccol)
-            # resulting orbital in the new geometry (without wrapping
-            # for correct supercell, that will happen below)
-            O = ccol % no + isc[:, axis] * no
+        # Now we should fill the data
+        isc = geom.o2isc(col)
+        # resulting atom in the new geometry (without wrapping
+        # for correct supercell, that will happen below)
+        JO = col % no + no * isc[:, axis] - no
 
-            # For recalculating stuff in the repetition loop
-            ISC = np.copy(isc)
+        # Create repetitions
+        for rep in range(reps):
+            sl = slice(indptr[no*rep], indptr[no*(rep+1)])
 
-            # Get data to set
-            D = self[io, ccol]
+            # Figure out the JO orbitals
+            JO += no
 
-            # Create repetitions
-            for rep in rngreps:
+            # Correct the supercell information
+            isc[:, axis] = JO // no_n
 
-                # Figure out the JO orbital
-                JO = O + rep
-                # Correct the supercell information
-                ISC[:, axis] = JO // no_n
-
-                S[io + rep, JO % no_n + sc_index(ISC) * no_n] = D
+            indices[sl] = JO % no_n + sc_index(isc) * no_n
 
             if eta:
                 # calculate hours, minutes, seconds
-                m, s = divmod(float(time()-t0)/(io+1) * (no-io-1), 60)
+                m, s = divmod(float(time()-t0)/(rep+1) * (reps-rep-1), 60)
                 h, m = divmod(m, 60)
                 stdout.write(name + ".tile() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
+
+        # Clean-up
+        del isc, JO
+
+        S._csr = SparseCSR((np.tile(self._csr._D, (reps, 1)), indices, indptr),
+                           shape=(geom_n.no, geom_n.no_s))
+
+        S.finalize()
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
@@ -1300,8 +1312,6 @@ class SparseOrbital(SparseGeometry):
             h, m = divmod(m, 60)
             stdout.write(name + ".tile() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
-
-        S.finalize()
 
         return S
 

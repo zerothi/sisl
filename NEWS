@@ -1,6 +1,19 @@
 0.8.6
 =====
 
+- Added current calculator to TBT.nc sile to calculate the current as TBtrans
+  does it (this requires the latest commit in SIESTA which defines the
+  chemical potential and electronic structure of *all* electrodes).
+
+- Bug-fixes for TBT.nc sile, the bond-currents for multi-orbital systems
+  were in some cases wrong.
+
+- Huge performance increase for TBT.nc data processing. Now the majority
+  of routines are based on array-indexing, rather than sparse loops.
+
+- Hamiltonian.tile is now even faster, only utilizing
+  intrinsic numpy array functionality.
+
 - Greatly speeded up Hamiltonian.remove/sub functions.
   Now there are no for-loops in the remove/sub routines which
   will greatly increase performance.
