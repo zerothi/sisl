@@ -625,6 +625,31 @@ class TestHamiltonian(object):
         H = H.tile(2, 0).tile(2, 1).tile(2, 2)
         assert_true(HG.spsame(H))
 
+    def test_tile4(self):
+        def func(self, ia, idxs, idxs_xyz=None):
+            idx = self.geom.close(ia, R=[0.1, 1.43], idx=idxs)
+            io = self.geom.a2o(ia)
+            # Set on-site on first and second orbital
+            odx = self.geom.a2o(idx[0])
+            self[io, odx] = -1.
+            self[io+1, odx+1] = 1.
+
+            # Set connecting
+            odx = self.geom.a2o(idx[1])
+            self[io, odx] = 0.2
+            self[io, odx+1] = 0.01
+            self[io+1, odx] = 0.01
+            self[io+1, odx+1] = 0.3
+
+        self.H2.construct(func)
+        Hbig = self.H2.tile(3, 0).tile(3, 1)
+
+        gbig = self.H2.geom.tile(3, 0).tile(3, 1)
+        H = Hamiltonian(gbig)
+        H.construct(func)
+        assert_true(H.spsame(Hbig))
+        self.H2.empty()
+
     @attr('slow')
     def test_repeat1(self):
         R, param = [0.1, 1.5], [1., 0.1]
@@ -670,6 +695,32 @@ class TestHamiltonian(object):
         H.finalize()
         H = H.repeat(2, 0).repeat(2, 1).repeat(2, 2)
         assert_true(HG.spsame(H))
+
+    @attr('slow')
+    def test_repeat4(self):
+        def func(self, ia, idxs, idxs_xyz=None):
+            idx = self.geom.close(ia, R=[0.1, 1.43], idx=idxs)
+            io = self.geom.a2o(ia)
+            # Set on-site on first and second orbital
+            odx = self.geom.a2o(idx[0])
+            self[io, odx] = -1.
+            self[io+1, odx+1] = 1.
+
+            # Set connecting
+            odx = self.geom.a2o(idx[1])
+            self[io, odx] = 0.2
+            self[io, odx+1] = 0.01
+            self[io+1, odx] = 0.01
+            self[io+1, odx+1] = 0.3
+
+        self.H2.construct(func)
+        Hbig = self.H2.repeat(3, 0).repeat(3, 1)
+
+        gbig = self.H2.geom.repeat(3, 0).repeat(3, 1)
+        H = Hamiltonian(gbig)
+        H.construct(func)
+        assert_true(H.spsame(Hbig))
+        self.H2.empty()
 
     def test_sub1(self):
         R, param = [0.1, 1.5], [1., 0.1]
