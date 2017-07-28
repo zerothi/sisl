@@ -945,19 +945,17 @@ class SparseAtom(SparseGeometry):
             # resulting atom in the new geometry (without wrapping
             # for correct supercell, that will happen below)
             JA = (ccol % na) * reps
-
-            # For recalculating stuff in the repetition loop
-            ISC = np.copy(isc)
+            A = isc[:, axis] - 1
 
             # Get data to set
             D = self[ia, ccol]
 
             for rep in rngreps:
 
-                A = isc[:, axis] + rep
-                ISC[:, axis] = A // reps
+                A += 1
+                isc[:, axis] = A // reps
 
-                S[IA + rep, JA + A % reps + sc_index(ISC) * na_n] = D
+                S[IA + rep, JA + A % reps + sc_index(isc) * na_n] = D
 
             if eta:
                 # calculate hours, minutes, seconds
@@ -1389,18 +1387,18 @@ class SparseOrbital(SparseGeometry):
             ja = geom.o2a(JO)
             oJ = geom.firsto[ja]
             oA = geom.lasto[ja] - oJ + 1
-            ISC = np.copy(isc)
             JO = oJ * (reps - 1) + JO
+            A = isc[:, axis] - 1
 
             # Get data to set
             D = self[io, ccol]
 
             for rep in rngreps:
 
-                A = isc[:, axis] + rep
-                ISC[:, axis] = A // reps
+                A += 1
+                isc[:, axis] = A // reps
 
-                S[IO + oa * rep, JO + oA * (A % reps) + sc_index(ISC) * no_n] = D
+                S[IO + oa * rep, JO + oA * (A % reps) + sc_index(isc) * no_n] = D
 
             if eta:
                 # calculate hours, minutes, seconds
