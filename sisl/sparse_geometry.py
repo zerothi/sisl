@@ -806,8 +806,10 @@ class SparseAtom(SparseGeometry):
         repeat: a different ordering of the final geometry
         """
         self.finalize()
+
         # Create the new sparse object
         S = self._init_larger('tile', reps, axis)
+        del S._csr
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -847,15 +849,14 @@ class SparseAtom(SparseGeometry):
 
         # Create repetitions
         for rep in range(reps):
-            sl = slice(indptr[na*rep], indptr[na*(rep+1)])
+            nrep = na * rep
 
             # Figure out the JA atoms
             JA += na
-
             # Correct the supercell information
             isc[:, axis] = JA // na_n
 
-            indices[sl] = JA % na_n + sc_index(isc) * na_n
+            indices[indptr[nrep]:indptr[nrep+na]] = JA % na_n + sc_index(isc) * na_n
 
             if eta:
                 # calculate hours, minutes, seconds
@@ -901,6 +902,8 @@ class SparseAtom(SparseGeometry):
         Geometry.tile: a different ordering of the final geometry
         tile: a different ordering of the final geometry
         """
+        self.finalize()
+
         # Create the new sparse object
         S = self._init_larger('repeat', reps, axis)
 
@@ -1242,6 +1245,7 @@ class SparseOrbital(SparseGeometry):
 
         # Create the new sparse object
         S = self._init_larger('tile', reps, axis)
+        del S._csr
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -1281,15 +1285,14 @@ class SparseOrbital(SparseGeometry):
 
         # Create repetitions
         for rep in range(reps):
-            sl = slice(indptr[no*rep], indptr[no*(rep+1)])
+            nrep = no * rep
 
             # Figure out the JO orbitals
             JO += no
-
             # Correct the supercell information
             isc[:, axis] = JO // no_n
 
-            indices[sl] = JO % no_n + sc_index(isc) * no_n
+            indices[indptr[nrep]:indptr[nrep+no]] = JO % no_n + sc_index(isc) * no_n
 
             if eta:
                 # calculate hours, minutes, seconds
@@ -1336,6 +1339,8 @@ class SparseOrbital(SparseGeometry):
         Geometry.tile: a different ordering of the final geometry
         tile: a different ordering of the final geometry
         """
+        self.finalize()
+
         # Create the new sparse object
         S = self._init_larger('repeat', reps, axis)
 

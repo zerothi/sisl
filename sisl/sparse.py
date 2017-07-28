@@ -927,21 +927,25 @@ class SparseCSR(object):
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
         csr = self.__class__((len(ridx), nc, self.shape[2]), dtype=self.dtype, nnzpr=1)
 
-        # Create the sub data
-        sub_ptr = self.ptr[ridx]
-        ncol1 = self.ncol[ridx]
+        # Create the sub data, first ensure that we have it finalized
+        self.finalize()
+        sub_ptr = np.take(self.ptr, ridx)
+        ncol1 = np.take(self.ncol, ridx)
 
         # Create a list of ndarrays with indices of elements per row
         # and transfer to a linear index
         col_idx = np.hstack(map(np.arange, sub_ptr, sub_ptr + ncol1))
         # Reduce the column indices (note this also ensures that
         # it will work on non-finalized sparse matrices)
-        col1 = pvt[self.col[col_idx]]
+        col1 = pvt[np.take(self.col, col_idx)]
 
         # Count the number of items that are left in the sparse pattern
-        def retained(ptr1, ptr2):
-            return np.count_nonzero(pvt[self.col[ptr1:ptr2]] >= 0)
-        ncol1 = ensure_array(map(retained, sub_ptr, sub_ptr + ncol1))
+        # First recreate the new sub_ptr
+        sub_ptr = np.insert(np.cumsum(ncol1), 0, 0)
+        cnnz = np.count_nonzero
+        ncol1 = ensure_array([cnnz(col1[ptr1:ptr2] >= 0)
+                              for ptr1, ptr2 in zip(sub_ptr[:-1], sub_ptr[1:])])
+        del sub_ptr
 
         # Now we should figure out how to remove those entries
         # that are from the old structure
@@ -956,11 +960,8 @@ class SparseCSR(object):
         D1 = np.take(self._D[col_idx, :], idx_take, 0)
         del col_idx, idx_take
 
-        # Create new pointer
-        ptr1 = np.insert(np.cumsum(ncol1), 0, 0)
-
         # Set the data for the new sparse csr
-        csr.ptr = ptr1
+        csr.ptr = np.insert(np.cumsum(ncol1), 0, 0)
         csr.ncol = ncol1
         csr.col = col1
         csr._nnz = len(col1)
