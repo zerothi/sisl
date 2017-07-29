@@ -90,22 +90,14 @@ class SemiInfinite(SelfEnergy):
             self.semi_inf = 2
 
         # Check that the Hamiltonian does have a non-zero V along the semi-infinite direction
-        sc_off = [0] * 3
-        sc_off[self.semi_inf] = self.semi_inf_dir
-        try:
-            self.geom.sc.sc_index(sc_off)
-        except:
+        if self.geom.sc.nsc[self.semi_inf] == 1:
             raise ValueError(("SemiInfinite: Hamiltonian does not have couplings along the "
                               "semi-infinite direction."))
 
         # Try and see if we have connections extending more than 1
-        sc_off[self.semi_inf] = self.semi_inf_dir * 2
-        try:
-            self.geom.sc.sc_index(sc_off)
+        if self.geom.sc.nsc[self.semi_inf] > 3:
             warnings.warn(("SemiInfinite: Hamiltonian has connections across the first neighbouring cell. "
                            "These values will be forced to 0 as the principal cell-interaction is a requirement"))
-        except:
-            pass # GOOD, no connections across the first coupling
 
     def _correct_k(self, k=None):
         """ Return a corrected k-point 

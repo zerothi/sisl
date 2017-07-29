@@ -5,6 +5,7 @@ This class is the basis of many different objects.
 from __future__ import print_function, division
 
 import numpy as np
+from numpy import where
 from numbers import Integral
 
 from ._help import ensure_array
@@ -20,7 +21,7 @@ class SuperCell(object):
     """
 
     # We limit the scope of this SuperCell object.
-    __slots__ = ('cell', 'vol', 'nsc', 'n_s', 'sc_off')
+    __slots__ = ('cell', 'vol', 'nsc', 'n_s', 'sc_off', 'isc_off')
 
     def __init__(self, cell, nsc=None):
         """ Initialize a `SuperCell` object from initial quantities
@@ -114,6 +115,7 @@ class SuperCell(object):
         # We might use this very often, hence we store it
         self.n_s = np.prod(self.nsc)
         self.sc_off = np.zeros([self.n_s, 3], np.int32)
+        self.isc_off = np.zeros(self.nsc, np.int32)
 
         n = self.nsc
         # We define the following ones like this:
@@ -137,6 +139,8 @@ class SuperCell(object):
                     self.sc_off[i, 0] = ix
                     self.sc_off[i, 1] = iy
                     self.sc_off[i, 2] = iz
+
+                    self.isc_off[ix, iy, iz] = i
 
     # Aliases
     set_supercell = set_nsc
@@ -329,22 +333,13 @@ class SuperCell(object):
         if isinstance(sc_off[0], (np.ndarray, tuple, list)):
             # We are dealing with a list of lists
             sc_off = np.asarray(sc_off, np.int32)
-            off = self.sc_off
-            where = np.where
-            all = np.all
-            def func(array):
-                return all(off - array[None, :] == 0, axis=1).nonzero()[0]
-            return np.apply_along_axis(func, 1, sc_off).ravel()
+            return self.isc_off[sc_off[:, 0], sc_off[:, 1], sc_off[:, 2]]
 
         # Fall back to the other routines
         sc_off = self._fill_sc(sc_off)
         if sc_off[0] is not None and sc_off[1] is not None and sc_off[2] is not None:
             sc_off = np.asarray(sc_off, np.int32)
-            i = np.all(self.sc_off - sc_off[None, :] == 0, axis=1).nonzero()[0]
-            if len(i) == 1:
-                return i[0]
-            raise Exception(
-                'Could not find supercell index, number of super-cells not big enough')
+            return self.isc_off[sc_off[0], sc_off[1], sc_off[2]]
 
         # We build it because there are 'none'
         idx = []
@@ -609,6 +604,11 @@ class SuperCellChild(object):
     def sc_off(self):
         """ Returns the inherent `SuperCell` objects `sc_off` """
         return self.sc.sc_off
+
+    @property
+    def isc_off(self):
+        """ Returns the inherent `SuperCell` objects `isc_off` """
+        return self.sc.isc_off
 
     def add_vacuum(self, vacuum, axis):
         """ Add vacuum along the `axis` lattice vector
