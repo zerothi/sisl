@@ -823,7 +823,7 @@ class SparseAtom(SparseGeometry):
         sc_index = geom_n.sc_index
 
         # Create new indptr, indices and D
-        ncol = np.tile(np.diff(ptr), reps)
+        ncol = np.tile(ncol, reps)
         # Now indptr is complete
         indptr = np.insert(np.cumsum(ncol), 0, 0)
         del ncol
@@ -954,14 +954,14 @@ class SparseAtom(SparseGeometry):
                 stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
 
+        S.finalize()
+
         if eta:
             # calculate hours, minutes, seconds spend on the computation
             m, s = divmod(float(time()-t0), 60)
             h, m = divmod(m, 60)
             stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
-
-        S.finalize()
 
         return S
 
@@ -1259,7 +1259,7 @@ class SparseOrbital(SparseGeometry):
         sc_index = geom_n.sc_index
 
         # Create new indptr, indices and D
-        ncol = np.tile(np.diff(ptr), reps)
+        ncol = np.tile(ncol, reps)
         # Now indptr is complete
         indptr = np.insert(np.cumsum(ncol), 0, 0)
         del ncol
@@ -1294,7 +1294,6 @@ class SparseOrbital(SparseGeometry):
 
         S._csr = SparseCSR((np.tile(self._csr._D, (reps, 1)), indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
-
         S.finalize()
 
         if eta:
@@ -1399,13 +1398,13 @@ class SparseOrbital(SparseGeometry):
                 stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
 
+        S.finalize()
+
         if eta:
             # calculate hours, minutes, seconds spend on the computation
             m, s = divmod(float(time()-t0), 60)
             h, m = divmod(m, 60)
             stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
-
-        S.finalize()
 
         return S

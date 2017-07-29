@@ -10,10 +10,11 @@ from collections import Iterable
 # To speed up the extension algorithm we limit
 # the lookup table
 import numpy as np
-from numpy import where, insert, diff
-from numpy import array, asarray, empty, zeros, arange
-from numpy import intersect1d, setdiff1d
-from numpy import argsort, unique
+from numpy import empty, zeros, asarray, array, arange
+from numpy import insert, take, delete
+from numpy import where, intersect1d, setdiff1d, unique
+from numpy import diff, cumsum
+from numpy import hstack, argsort
 try:
     isin = np.isin
 except:
@@ -355,59 +356,40 @@ class SparseCSR(object):
         if self.finalized:
             return
 
-        # Fast reference
+        # Create and index array to retain the indices we want
         ptr = self.ptr
         ncol = self.ncol
-        col = self.col
-        D = self._D
+        idx = hstack(map(arange, ptr[:-1], ptr[:-1] + ncol))
+
+        self.col = take(self.col, idx)
+        self._D = take(self._D, idx, 0)
+        del idx
+        self.ptr[:] = insert(cumsum(ncol), 0, 0)
+
+        ptr = self.ptr.view()
+        ncol = self.ncol.view()
+        col = self.col.view()
+        D = self._D.view()
 
         # We truncate all the connections
-        iptr = 0
-        for r in range(self.shape[0]):
+        if sort:
+            idx = hstack([ptr[r] + argsort(col[ptr[r]:ptr[r+1]])
+                          for r in range(self.shape[0])])
 
-            # number of elements in this row
-            nor = ncol[r]
+            # We have to do slice insertions to not copy data
+            col[:] = col[idx]
+            D[:, :] = D[idx, :]
 
-            # Starting pointer index
-            sptr = ptr[r]
-            eptr = sptr + nor
+            def func(ptr1, ptr2):
+                if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
+                    raise ValueError(('You cannot have two elements between the same ' +
+                                      'i,j index ({}), something has went terribly wrong.'.format(ptr1)))
+            map(func, ptr[:-1], ptr[1:])
 
-            # update current row pointer
-            ptr[r] = iptr
-
-            if nor == 0:
-                continue
-
-            # assert no two connections
-            if unique(col[sptr:eptr]).shape[0] != nor:
-                raise ValueError(('You cannot have two elements between the same ' +
-                                  'i,j index ({}), something has went terribly wrong.'.format(r)))
-
-            sl = slice(iptr, iptr + nor, None)
-            # update the colunm vector and data
-            col[sl] = col[sptr:eptr]
-            D[sl, :] = D[sptr:eptr, :]
-
-            # Simultaneausly we sort the entries
-            if sort:
-                si = argsort(col[sl])
-                col[sl] = col[iptr + si]
-                D[sl, :] = D[iptr + si, :]
-
-            # update front of row
-            iptr += nor
-
-        # Correcting the size of the pointer array
-        ptr[self.shape[0]] = iptr
-
-        if iptr != self.nnz:
-            print(iptr, self.nnz)
-            raise ValueError('Final size in the sparse matrix finalization '
-                             'went wrong.')
-
-        # Truncate values to correct size
-        self._D = self._D[:self.nnz, :]
-        self.col = self.col[:self.nnz]
+        if len(col) != self.nnz:
+            print(len(col), self.nnz)
+            raise ValueError(('Final size in the sparse matrix finalization '
+                              'went wrong.'))
 
         # Check that all column indices are within the expected shape
         if np.any(self.shape[1] <= self.col):
@@ -553,7 +535,7 @@ class SparseCSR(object):
         # Ensure flattened array...
         j = ensure_array(j)
         if len(j) == 0:
-            return np.array([], np.int32)
+            return array([], np.int32)
 
         # fast reference
         ptr = self.ptr
@@ -571,7 +553,7 @@ class SparseCSR(object):
             exists = intersect1d(j, col[ptr[i]:ptr[i]+ncol[i]],
                                  assume_unique=True)
         else:
-            exists = np.array([], np.int32)
+            exists = array([], np.int32)
 
         # Get list of new elements to be added
         new_j = setdiff1d(j, exists, assume_unique=True)
@@ -847,12 +829,12 @@ class SparseCSR(object):
         # The default sizes are not passed
         # Hence we *must* copy the arrays
         # directly
-        new.ptr = np.array(self.ptr, np.int32, copy=True)
-        new.ncol = np.array(self.ncol, np.int32, copy=True)
-        new.col = np.array(self.col, np.int32, copy=True)
+        new.ptr = array(self.ptr, np.int32, copy=True)
+        new.ncol = array(self.ncol, np.int32, copy=True)
+        new.col = array(self.col, np.int32, copy=True)
         new._nnz = self.nnz
 
-        new._D = np.array(self._D, dtype, copy=True)
+        new._D = array(self._D, dtype, copy=True)
         for dim in dims:
             new._D[:, dims] = self._D[:, dims]
 
@@ -885,10 +867,10 @@ class SparseCSR(object):
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] >= self.shape[1]:
-            rindices = np.delete(np.arange(self.shape[0]), indices)
+            rindices = delete(arange(self.shape[0]), indices)
 
         else:
-            rindices = np.delete(np.arange(self.shape[1]), indices)
+            rindices = delete(arange(self.shape[1]), indices)
 
         return self.sub(rindices)
 
@@ -907,21 +889,21 @@ class SparseCSR(object):
             # Easy
             ridx = indices.view()
             nc = len(indices)
-            pvt = np.empty([self.shape[0]], np.int32)
+            pvt = empty([self.shape[0]], np.int32)
 
         elif self.shape[0] < self.shape[1]:
             ridx = indices[indices < self.shape[0]]
             nc = len(indices)
-            pvt = np.empty([self.shape[1]], np.int32)
+            pvt = empty([self.shape[1]], np.int32)
 
         elif self.shape[0] > self.shape[1]:
             ridx = indices.view()
             nc = np.count_nonzero(indices < self.shape[1])
-            pvt = np.empty([self.shape[0]], np.int32)
+            pvt = empty([self.shape[0]], np.int32)
 
         # Fix the pivoting indices with the new indices
         pvt.fill(-1)
-        pvt[indices] = np.arange(len(indices))
+        pvt[indices] = arange(len(indices))
 
         # Create the new SparseCSR
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
@@ -929,19 +911,19 @@ class SparseCSR(object):
 
         # Create the sub data, first ensure that we have it finalized
         self.finalize()
-        sub_ptr = np.take(self.ptr, ridx)
-        ncol1 = np.take(self.ncol, ridx)
+        sub_ptr = take(self.ptr, ridx)
+        ncol1 = take(self.ncol, ridx)
 
         # Create a list of ndarrays with indices of elements per row
         # and transfer to a linear index
-        col_idx = np.hstack(map(np.arange, sub_ptr, sub_ptr + ncol1))
+        col_idx = hstack(map(arange, sub_ptr, sub_ptr + ncol1))
         # Reduce the column indices (note this also ensures that
         # it will work on non-finalized sparse matrices)
-        col1 = pvt[np.take(self.col, col_idx)]
+        col1 = pvt[take(self.col, col_idx)]
 
         # Count the number of items that are left in the sparse pattern
         # First recreate the new sub_ptr
-        sub_ptr = np.insert(np.cumsum(ncol1), 0, 0)
+        sub_ptr = insert(cumsum(ncol1), 0, 0)
         cnnz = np.count_nonzero
         ncol1 = ensure_array([cnnz(col1[ptr1:ptr2] >= 0)
                               for ptr1, ptr2 in zip(sub_ptr[:-1], sub_ptr[1:])])
@@ -956,12 +938,12 @@ class SparseCSR(object):
         idx_take = (col1 >= 0).nonzero()[0]
 
         # Decrease col1 and also extract the data
-        col1 = np.take(col1, idx_take)
-        D1 = np.take(self._D[col_idx, :], idx_take, 0)
+        col1 = take(col1, idx_take)
+        D1 = take(self._D[col_idx, :], idx_take, 0)
         del col_idx, idx_take
 
         # Set the data for the new sparse csr
-        csr.ptr = np.insert(np.cumsum(ncol1), 0, 0)
+        csr.ptr = insert(cumsum(ncol1), 0, 0)
         csr.ncol = ncol1
         csr.col = col1
         csr._nnz = len(col1)
@@ -1280,10 +1262,10 @@ def ispmatrix(matrix, map_row=None, map_col=None):
     map_row = np.vectorize(map_row)
     map_col = np.vectorize(map_col)
 
-    nrow = len(np.unique(map_row(np.arange(matrix.shape[0]))))
-    ncol = len(np.unique(map_col(np.arange(matrix.shape[1]))))
-    rows = np.zeros(nrow, dtype=np.bool_)
-    cols = np.zeros(ncol, dtype=np.bool_)
+    nrow = len(unique(map_row(arange(matrix.shape[0]))))
+    ncol = len(unique(map_col(arange(matrix.shape[1]))))
+    rows = zeros(nrow, dtype=np.bool_)
+    cols = zeros(ncol, dtype=np.bool_)
 
     # Initialize the unique arrays
     rows[:] = False
