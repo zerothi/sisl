@@ -392,18 +392,6 @@ class SparseGeometry(object):
         """
         return self._csr.spsame(other._csr)
 
-    def _init_larger(self, method, size, axis):
-        """ Internal routine to start a bigger sparse model """
-        # Create the new geometry
-        g = getattr(self.geom, method)(size, axis)
-
-        # Now create the new Hamiltonian
-        # First figure out the initialization parameters
-        nnzpr = np.amax(self._csr.ncol)
-        dim = self.dim
-        dtype = self.dtype
-        return self.__class__(g, dim, dtype, nnzpr, **self._cls_kwargs())
-
     @classmethod
     def fromsp(cls, geom, sp):
         """ Returns a sparse model from a preset Geometry and a list of sparse matrices """
@@ -808,8 +796,8 @@ class SparseAtom(SparseGeometry):
         self.finalize()
 
         # Create the new sparse object
-        S = self._init_larger('tile', reps, axis)
-        del S._csr
+        g = self.geom.tile(reps, axis)
+        S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -905,7 +893,9 @@ class SparseAtom(SparseGeometry):
         self.finalize()
 
         # Create the new sparse object
-        S = self._init_larger('repeat', reps, axis)
+        g = self.geom.repeat(reps, axis)
+        nnzpr = np.amax(self._csr.ncol)
+        S = self.__class__(g, self.dim, self.dtype, nnzpr, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -1242,8 +1232,8 @@ class SparseOrbital(SparseGeometry):
         self.finalize()
 
         # Create the new sparse object
-        S = self._init_larger('tile', reps, axis)
-        del S._csr
+        g = self.geom.tile(reps, axis)
+        S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -1340,7 +1330,9 @@ class SparseOrbital(SparseGeometry):
         self.finalize()
 
         # Create the new sparse object
-        S = self._init_larger('repeat', reps, axis)
+        g = self.geom.repeat(reps, axis)
+        nnzpr = np.amax(self._csr.ncol)
+        S = self.__class__(g, self.dim, self.dtype, nnzpr, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
