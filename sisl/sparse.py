@@ -75,7 +75,7 @@ class SparseCSR(object):
         Creating a new sparse matrix is much similar to the 
         ``scipy`` equivalent.
 
-        `nzs` is only used if `nzs > nr * nzsr`.
+        `nnz` is only used if `nnz > nr * nnzpr`.
 
         This class may be instantiated by verious means.
 
@@ -332,8 +332,8 @@ class SparseCSR(object):
         return self._nnz
 
     def __len__(self):
-        """ Number of non-zero elements in the sparse matrix """
-        return self.nnz
+        """ Number of rows in the sparse matrix """
+        return self.shape[0]
 
     @property
     def finalized(self):
@@ -823,20 +823,19 @@ class SparseCSR(object):
         if dtype is None:
             dtype = self.dtype
 
-        new = self.__class__(shape, nnz=self.nnz,
-                             dtype=dtype)
+        new = self.__class__(shape, dim=len(dims), dtype=dtype, nnz=1)
 
         # The default sizes are not passed
         # Hence we *must* copy the arrays
         # directly
-        new.ptr = array(self.ptr, np.int32, copy=True)
-        new.ncol = array(self.ncol, np.int32, copy=True)
+        new.ptr[:] = array(self.ptr, np.int32, copy=True)
+        new.ncol[:] = array(self.ncol, np.int32, copy=True)
         new.col = array(self.col, np.int32, copy=True)
         new._nnz = self.nnz
 
-        new._D = array(self._D, dtype, copy=True)
-        for dim in dims:
-            new._D[:, dims] = self._D[:, dims]
+        new._D = empty([len(new.col), len(dims)], dtype)
+        for i, dim in enumerate(dims):
+            new._D[:, i] = self._D[:, dim]
 
         return new
 
@@ -943,8 +942,8 @@ class SparseCSR(object):
         del col_idx, idx_take
 
         # Set the data for the new sparse csr
-        csr.ptr = insert(cumsum(ncol1), 0, 0)
-        csr.ncol = ncol1
+        csr.ptr[:] = insert(cumsum(ncol1), 0, 0)
+        csr.ncol[:] = ncol1
         csr.col = col1
         csr._nnz = len(col1)
         csr._D = D1

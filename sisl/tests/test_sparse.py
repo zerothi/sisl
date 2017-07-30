@@ -60,13 +60,13 @@ class TestSparseCSR(object):
         sp = SparseCSR(csr)
         assert_equal(sp.dtype, np.int32)
         assert_equal(sp.shape, (10, 10, 1))
-        assert_equal(len(sp), 2)
+        assert_equal(sp.nnz, 2)
         assert_equal(sp[0, 1], 1)
         assert_equal(sp[0, 2], 2)
         sp = SparseCSR(csr, dtype=np.float64)
         assert_equal(sp.shape, (10, 10, 1))
         assert_equal(sp.dtype, np.float64)
-        assert_equal(len(sp), 2)
+        assert_equal(sp.nnz, 2)
         assert_equal(sp[0, 1], 1)
         assert_equal(sp[0, 2], 2)
 
@@ -77,13 +77,13 @@ class TestSparseCSR(object):
         sp = SparseCSR((csr.data, csr.indices, csr.indptr))
         assert_equal(sp.dtype, np.int32)
         assert_equal(sp.shape, (10, 10, 1))
-        assert_equal(len(sp), 2)
+        assert_equal(sp.nnz, 2)
         assert_equal(sp[0, 1], 1)
         assert_equal(sp[0, 2], 2)
         sp = SparseCSR((csr.data, csr.indices, csr.indptr), dtype=np.float64)
         assert_equal(sp.shape, (10, 10, 1))
         assert_equal(sp.dtype, np.float64)
-        assert_equal(len(sp), 2)
+        assert_equal(sp.nnz, 2)
         assert_equal(sp[0, 1], 1)
         assert_equal(sp[0, 2], 2)
 
@@ -123,10 +123,11 @@ class TestSparseCSR(object):
         self.s1d.empty()
 
     def test_create2(self):
+        assert_equal(len(self.s1), self.s1.shape[0])
         for i in range(10):
             j = range(i*4, i*4+3)
             self.s1[0, j] = i
-            assert_equal(len(self.s1), (i+1)*3)
+            assert_equal(self.s1.nnz, (i+1)*3)
             for jj in j:
                 assert_equal(self.s1[0, jj], i)
                 assert_equal(self.s1[1, jj], 0)
@@ -136,9 +137,9 @@ class TestSparseCSR(object):
         for i in range(10):
             j = range(i*4, i*4+3)
             self.s1[0, j] = i
-            assert_equal(len(self.s1), (i+1)*3)
+            assert_equal(self.s1.nnz, (i+1)*3)
             self.s1[0, range((i+1)*4, (i+1)*4+3)] = None
-            assert_equal(len(self.s1), (i+1)*3)
+            assert_equal(self.s1.nnz, (i+1)*3)
             for jj in j:
                 assert_equal(self.s1[0, jj], i)
                 assert_equal(self.s1[1, jj], 0)
@@ -235,15 +236,15 @@ class TestSparseCSR(object):
 
     def test_delitem1(self):
         self.s1[0, [1, 2, 3]] = 1
-        assert_equal(len(self.s1), 3)
+        assert_equal(self.s1.nnz, 3)
         del self.s1[0, 1]
-        assert_equal(len(self.s1), 2)
+        assert_equal(self.s1.nnz, 2)
         assert_equal(self.s1[0, 1], 0)
         assert_equal(self.s1[0, 2], 1)
         assert_equal(self.s1[0, 3], 1)
         self.s1[0, [1, 2, 3]] = 1
         del self.s1[0, [1, 3]]
-        assert_equal(len(self.s1), 1)
+        assert_equal(self.s1.nnz, 1)
         assert_equal(self.s1[0, 1], 0)
         assert_equal(self.s1[0, 2], 1)
         assert_equal(self.s1[0, 3], 0)
@@ -254,18 +255,18 @@ class TestSparseCSR(object):
 
     def test_sub1(self):
         self.s1[0, [1, 2, 3]] = 1
-        assert_equal(len(self.s1), 3)
+        assert_equal(self.s1.nnz, 3)
         s1 = self.s1.sub([0, 1])
-        assert_equal(len(s1), 1)
+        assert_equal(s1.nnz, 1)
         assert_equal(s1.shape[0], 2)
         assert_equal(s1.shape[1], 2)
         self.s1.empty()
 
     def test_remove1(self):
         self.s1[0, [1, 2, 3]] = 1
-        assert_equal(len(self.s1), 3)
+        assert_equal(self.s1.nnz, 3)
         s1 = self.s1.remove([1])
-        assert_equal(len(s1), 2)
+        assert_equal(s1.nnz, 2)
         assert_equal(s1.shape[0], self.s1.shape[0] - 1)
         assert_equal(s1.shape[1], self.s1.shape[1] - 1)
         self.s1.empty()
@@ -273,9 +274,9 @@ class TestSparseCSR(object):
     def test_eliminate_zeros1(self):
         self.s1[0, [1, 2, 3]] = 1
         self.s1[1, [1, 2, 3]] = 0
-        assert_equal(len(self.s1), 6)
+        assert_equal(self.s1.nnz, 6)
         self.s1.eliminate_zeros()
-        assert_equal(len(self.s1), 3)
+        assert_equal(self.s1.nnz, 3)
         assert_equal(self.s1[1, 1], 0)
         assert_equal(self.s1[1, 2], 0)
         assert_equal(self.s1[1, 3], 0)
