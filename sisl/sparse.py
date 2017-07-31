@@ -185,8 +185,6 @@ class SparseCSR(object):
                 else:
                     self._D[:, 0] = arg1[0]
 
-                self.finalize()
-
     def __init_shape(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
                      **kwargs):
 

@@ -130,8 +130,6 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
 
     def write(self, sile, *args, **kwargs):
         """ Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method """
-        self.finalize()
-
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile

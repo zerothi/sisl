@@ -151,8 +151,6 @@ class Hessian(SparseOrbitalBZ):
 
     def write(self, sile, *args, **kwargs):
         """ Writes a Hessian to the `Sile` as implemented in the :code:`Sile.write_hessian` method """
-        self.finalize()
-
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile

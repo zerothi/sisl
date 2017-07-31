@@ -148,8 +148,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     def write(self, sile, *args, **kwargs):
         """ Writes a tight-binding model to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method """
-        self.finalize()
-
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile
