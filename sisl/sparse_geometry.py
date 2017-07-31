@@ -793,8 +793,6 @@ class SparseAtom(SparseGeometry):
         Geometry.repeat: a different ordering of the final geometry
         repeat: a different ordering of the final geometry
         """
-        self.finalize()
-
         # Create the new sparse object
         g = self.geom.tile(reps, axis)
         S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
@@ -804,9 +802,16 @@ class SparseAtom(SparseGeometry):
         # regarding the current Hamiltonian sparse matrix
         geom = self.geom
         na = self.na
-        ptr = self._csr.ptr
         ncol = self._csr.ncol
-        col = self._csr.col
+        if self.finalized:
+            col = self._csr.col
+            D = self._csr._D
+        else:
+            ptr = self._csr.ptr
+            idx = np.hstack(map(np.arange, ptr[:-1], ptr[:-1] + ncol))
+            col = np.take(self._csr.col, idx)
+            D = np.take(self._csr._D, idx, 0)
+            del idx
 
         # Information for the new Hamiltonian sparse matrix
         na_n = S.na
@@ -856,7 +861,7 @@ class SparseAtom(SparseGeometry):
         # Clean-up
         del isc, JA
 
-        S._csr = SparseCSR((np.tile(self._csr._D, (reps, 1)), indices, indptr),
+        S._csr = SparseCSR((np.tile(D, (reps, 1)), indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
 
         if eta:
@@ -889,8 +894,6 @@ class SparseAtom(SparseGeometry):
         Geometry.tile: a different ordering of the final geometry
         tile: a different ordering of the final geometry
         """
-        self.finalize()
-
         # Create the new sparse object
         g = self.geom.repeat(reps, axis)
         nnzpr = np.amax(self._csr.ncol)
@@ -1226,8 +1229,6 @@ class SparseOrbital(SparseGeometry):
         Geometry.repeat: a different ordering of the final geometry
         repeat: a different ordering of the final geometry
         """
-        self.finalize()
-
         # Create the new sparse object
         g = self.geom.tile(reps, axis)
         S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
@@ -1237,9 +1238,16 @@ class SparseOrbital(SparseGeometry):
         # regarding the current Hamiltonian sparse matrix
         geom = self.geom
         no = self.no
-        ptr = self._csr.ptr
         ncol = self._csr.ncol
-        col = self._csr.col
+        if self.finalized:
+            col = self._csr.col
+            D = self._csr._D
+        else:
+            ptr = self._csr.ptr
+            idx = np.hstack(map(np.arange, ptr[:-1], ptr[:-1] + ncol))
+            col = np.take(self._csr.col, idx)
+            D = np.take(self._csr._D, idx, 0)
+            del idx
 
         # Information for the new Hamiltonian sparse matrix
         no_n = S.no
@@ -1289,7 +1297,7 @@ class SparseOrbital(SparseGeometry):
         # Clean-up
         del isc, JO
 
-        S._csr = SparseCSR((np.tile(self._csr._D, (reps, 1)), indices, indptr),
+        S._csr = SparseCSR((np.tile(D, (reps, 1)), indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
 
         if eta:
@@ -1322,8 +1330,6 @@ class SparseOrbital(SparseGeometry):
         Geometry.tile: a different ordering of the final geometry
         tile: a different ordering of the final geometry
         """
-        self.finalize()
-
         # Create the new sparse object
         g = self.geom.repeat(reps, axis)
         nnzpr = np.amax(self._csr.ncol)

@@ -15,6 +15,6 @@ profile=$base.profile
 # Stats
 stats=$base.stats
 
-python -m cProfile -o $profile $script
+python -m cProfile -o $profile $script $@
 python stats.py $profile > $stats
 
