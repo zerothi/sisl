@@ -609,16 +609,22 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Get energies
         E, T = self._E_T_sorted(elec_from, elec_to, avg)
 
+        # We expect the tbtrans calcluation was created with the simple
+        #   mid-rule!
+        # The mid-rule is equivalent to adding a dE = (E[1] - E[0]) / 2
+        # to both ends.
+        dE = E[1] - E[0]
+
         # Check that the lower bound is sufficient
-        print_warning = mu_from - kt_from * 3 < E[0] or \
-                        mu_to - kt_to * 3  < E[0]
-        print_warning = mu_from + kt_from * 3 > E[-1] or \
-                        mu_to + kt_to * 3  > E[-1] or \
+        print_warning = mu_from - kt_from * 3 < E[0] - dE / 2 or \
+                        mu_to - kt_to * 3  < E[0] - dE / 2
+        print_warning = mu_from + kt_from * 3 > E[-1] + dE / 2 or \
+                        mu_to + kt_to * 3  > E[-1] + dE / 2 or \
                         print_warning
         if print_warning:
             # We should pretty-print a table of data
             m = max(len(elec_from), len(elec_to), 15)
-            s = ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format('Energy range', E[0], E[-1])
+            s = ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format('Energy range', E[0] - dE / 2, E[-1] + dE / 2)
             s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format(elec_from, mu_from - kt_from * 3, mu_from + kt_from * 3)
             s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format(elec_to, mu_to - kt_to * 3, mu_to + kt_to * 3)
             min_e = min(mu_from - kt_from * 3, mu_to - kt_to * 3)
@@ -633,7 +639,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         def nf(E, mu, kT):
             return 1. / (np.exp((E - mu) / kT) + 1.)
 
-        I = np.sum(T * (E[1] - E[0]) * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
+        I = np.sum(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
 
     def orbital_current(self, elec, E, avg=True, isc=None):
