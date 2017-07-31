@@ -3,4 +3,5 @@ include LICENSE
 include requirements.txt setup.cfg README.md
 exclude DEPLOY.md pep8.sh tag.sh
 exclude .codecov.yml .gitignore .gitmodules .readthedocs.yml .travis.yml
-prune conda conda-dev
+prune conda
+prune conda-dev
