@@ -878,7 +878,8 @@ class Geometry(SuperCellChild):
         repeat : equivalent but different ordering of final structure
         """
         if reps < 1:
-            raise ValueError(self.__class__.__name__ + '.tile requires a repetition above 0')
+            raise ValueError(self.__class__.__name__ + '.tile() requires a repetition above 0')
+
         # We need a double copy as we want to re-calculate after
         # enlarging cell
         sc = self.sc.copy()
@@ -886,16 +887,17 @@ class Geometry(SuperCellChild):
         # Only reduce the size if it is larger than 5
         if sc.nsc[axis] > 3 and reps > 1:
             sc.nsc[axis] = max(1, sc.nsc[axis] // 2 - (reps - 1)) * 2 + 1
+        # Ensures that everything gets re-initialized
         sc = sc.copy()
-        # Pre-allocate geometry
+
         # Our first repetition *must* be with
-        # the later coordinate
-        # Copy the entire structure
+        # the former coordinate
         xyz = np.tile(self.xyz, (reps, 1))
-        # Single cell displacements
-        dx = np.dot(np.arange(reps)[:, None], self.cell[axis, :][None, :])
-        # Correct the unit-cell offsets
-        xyz[0:self.na * reps, :] += np.repeat(dx, self.na, axis=0)
+        nr = np.arange(reps)
+        for i in range(3):
+            # Correct the unit-cell offsets along `i`
+            xyz[:, i] += np.repeat(nr * self.cell[axis, i], self.na)
+
         # Create the geometry and return it (note the smaller atoms array
         # will also expand via tiling)
         return self.__class__(xyz, atom=self.atom.tile(reps), sc=sc)
@@ -955,26 +957,26 @@ class Geometry(SuperCellChild):
         tile : equivalent but different ordering of final structure
         """
         if reps < 1:
-            raise ValueError(self.__class__.__name__ + '.repeat requires a repetition above 0')
-        # Figure out the size
+            raise ValueError(self.__class__.__name__ + '.repeat() requires a repetition above 0')
+
+        # We need a double copy as we want to re-calculate after
+        # enlarging cell
         sc = self.sc.copy()
         sc.cell[axis, :] *= reps
         # Only reduce the size if it is larger than 5
         if sc.nsc[axis] > 3 and reps > 1:
             sc.nsc[axis] = max(1, sc.nsc[axis] // 2 - (reps - 1)) * 2 + 1
+        # Ensures that everything gets re-initialized
         sc = sc.copy()
-        # Pre-allocate geometry
-        na = self.na * reps
-        xyz = np.zeros([na, 3], np.float64)
-        dx = np.dot(np.arange(reps)[:, None], self.cell[axis, :][None, :])
-        # Start the repetition
-        ja = 0
-        for ia in range(self.na):
-            # Single atom displacements
-            # First add the basic atomic coordinate,
-            # then add displacement for each repetition.
-            xyz[ja:ja + reps, :] = self.xyz[ia, :][None, :] + dx[:, :]
-            ja += reps
+
+        # Our first repetition *must* be with
+        # the former coordinate
+        xyz = np.repeat(self.xyz, reps, axis=0)
+        nr = np.arange(reps)
+        for i in range(3):
+            # Correct the unit-cell offsets along `i`
+            xyz[:, i] += np.tile(nr * self.cell[axis, i], self.na)
+
         # Create the geometry and return it
         return self.__class__(xyz, atom=self.atom.repeat(reps), sc=sc)
 
@@ -2254,7 +2256,7 @@ class Geometry(SuperCellChild):
         if isinstance(ob, Integral):
             return np.arange(ob, oe, dtype=np.int32)
 
-        return np.hstack(map(np.arange, ob, oe)).astype(np.int32, copy=False)
+        return array_arange(ob, oe)
 
     def o2a(self, io):
         """

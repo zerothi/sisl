@@ -149,6 +149,10 @@ class TestGeometry(object):
         t = self.g * ([2, 0], 't') * [2, 2]
         assert_true(np.allclose(t1.xyz, t.xyz))
 
+    def test_tile5(self):
+        t = self.g.tile(2, 0).tile(2, 2)
+        assert_true(np.allclose(t[:len(self.g), :], self.g.xyz))
+
     @raises(ValueError)
     def test_repeat0(self):
         t = self.g.repeat(0, 0)
@@ -201,6 +205,10 @@ class TestGeometry(object):
         t1 = self.g.repeat(2, 0).repeat(2, 2)
         t = self.g * ([2, 0], 'repeat') * ([2, 2], 'r')
         assert_true(np.allclose(t1.xyz, t.xyz))
+
+    def test_repeat5(self):
+        t = self.g.repeat(2, 0).repeat(2, 2)
+        assert_true(np.allclose(t.xyz[::4, :], self.g.xyz))
 
     def test_a2o1(self):
         assert_true(0 == self.g.a2o(0))
