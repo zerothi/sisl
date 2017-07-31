@@ -858,7 +858,6 @@ class SparseAtom(SparseGeometry):
 
         S._csr = SparseCSR((np.tile(self._csr._D, (reps, 1)), indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
-        S.finalize()
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
@@ -953,8 +952,6 @@ class SparseAtom(SparseGeometry):
                 h, m = divmod(m, 60)
                 stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
-
-        S.finalize()
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
@@ -1294,7 +1291,6 @@ class SparseOrbital(SparseGeometry):
 
         S._csr = SparseCSR((np.tile(self._csr._D, (reps, 1)), indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
-        S.finalize()
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
@@ -1397,8 +1393,6 @@ class SparseOrbital(SparseGeometry):
                 h, m = divmod(m, 60)
                 stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
-
-        S.finalize()
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation

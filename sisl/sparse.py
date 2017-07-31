@@ -11,7 +11,7 @@ from collections import Iterable
 # the lookup table
 import numpy as np
 from numpy import empty, zeros, asarray, array, arange
-from numpy import insert, take, delete
+from numpy import insert, take, delete, copyto
 from numpy import where, intersect1d, setdiff1d, unique
 from numpy import diff, cumsum
 from numpy import hstack, argsort
@@ -364,10 +364,10 @@ class SparseCSR(object):
         self.col = take(self.col, idx)
         self._D = take(self._D, idx, 0)
         del idx
-        self.ptr[:] = insert(cumsum(ncol), 0, 0)
+        self.ptr[0] = 0
+        cumsum(ncol, out=self.ptr[1:])
 
         ptr = self.ptr.view()
-        ncol = self.ncol.view()
         col = self.col.view()
         D = self._D.view()
 
@@ -664,16 +664,16 @@ class SparseCSR(object):
 
         # First remove all negative indices.
         # The element isn't there anyway...
-        index.sort()
         index = index[index >= 0]
+        index.sort()
 
         if len(index) == 0:
             # There are no elements to delete...
             return
 
         # Get short-hand
-        ptr = self.ptr
-        ncol = self.ncol
+        ptr = self.ptr.view()
+        ncol = self.ncol.view()
 
         # Get original values
         sl = slice(ptr[i], ptr[i] + ncol[i], None)
@@ -686,10 +686,10 @@ class SparseCSR(object):
 
         # Update new count of the number of
         # non-zero elements
-        self.ncol[i] -= len(index)
+        ncol[i] -= len(index)
 
         # Now update the column indices and the data
-        sl = slice(ptr[i], ptr[i] + self.ncol[i], None)
+        sl = slice(ptr[i], ptr[i] + ncol[i], None)
         self.col[sl] = oC[keep]
         self._D[sl, :] = oD[keep, :]
 
@@ -784,16 +784,22 @@ class SparseCSR(object):
 
         This is an *in-place* operation
         """
+        ptr = self.ptr.view()
+        ncol = self.ncol.view()
+        col = self.col.view()
+        D = self._D.view()
+
         rng = range(self.shape[2])
         # Get short-hand
         for i in range(self.shape[0]):
 
             # Create short-hand slice
-            sl = slice(self.ptr[i], self.ptr[i] + self.ncol[i], None)
+            sl = slice(ptr[i], ptr[i] + ncol[i], None)
+
             # Get current column entries for the row
-            C = self.col[sl]
+            C = col[sl]
             # Retrieve columns with zero values (summed over all elements)
-            C0 = (np.sum(np.abs(self._D[sl, :]), axis=1) == 0).nonzero()[0]
+            C0 = (np.sum(np.abs(D[sl, :]), axis=1) == 0).nonzero()[0]
             if len(C0) == 0:
                 continue
             # Remove all entries with 0 values
@@ -813,29 +819,33 @@ class SparseCSR(object):
         # Create sparse matrix (with only one entry per
         # row, we overwrite it immediately afterward)
         if dims is None:
-            dims = list(range(self.dim))
+            dim = self.dim
+        else:
+            dim = len(dims)
 
         # Create correct input
-        dim = len(dims)
         shape = list(self.shape[:])
         shape[2] = dim
 
         if dtype is None:
             dtype = self.dtype
 
-        new = self.__class__(shape, dim=len(dims), dtype=dtype, nnz=1)
+        new = self.__class__(shape, dtype=dtype, nnz=1)
 
         # The default sizes are not passed
         # Hence we *must* copy the arrays
         # directly
-        new.ptr[:] = array(self.ptr, np.int32, copy=True)
-        new.ncol[:] = array(self.ncol, np.int32, copy=True)
-        new.col = array(self.col, np.int32, copy=True)
+        copyto(new.ptr, self.ptr, casting='no')
+        copyto(new.ncol, self.ncol, casting='no')
+        new.col = self.col.copy()
         new._nnz = self.nnz
 
-        new._D = empty([len(new.col), len(dims)], dtype)
-        for i, dim in enumerate(dims):
-            new._D[:, i] = self._D[:, dim]
+        if dims is None:
+            new._D = self._D.astype(dtype)
+        else:
+            new._D = empty([len(new.col), len(dims)], dtype)
+            for i, dim in enumerate(dims):
+                new._D[:, i] = self._D[:, dim]
 
         return new
 
@@ -906,27 +916,31 @@ class SparseCSR(object):
 
         # Create the new SparseCSR
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
-        csr = self.__class__((len(ridx), nc, self.shape[2]), dtype=self.dtype, nnzpr=1)
+        csr = self.__class__((len(ridx), nc, self.shape[2]), dtype=self.dtype, nnz=1)
 
-        # Create the sub data, first ensure that we have it finalized
-        self.finalize()
+        # Create the sub data
         sub_ptr = take(self.ptr, ridx)
-        ncol1 = take(self.ncol, ridx)
+        # Place directly where it should be (i.e. re-use space)
+        take(self.ncol, ridx, out=csr.ncol)
+        ncol1 = csr.ncol.view()
 
         # Create a list of ndarrays with indices of elements per row
         # and transfer to a linear index
         col_idx = hstack(map(arange, sub_ptr, sub_ptr + ncol1))
+        del sub_ptr
         # Reduce the column indices (note this also ensures that
         # it will work on non-finalized sparse matrices)
         col1 = pvt[take(self.col, col_idx)]
 
         # Count the number of items that are left in the sparse pattern
         # First recreate the new sub_ptr
-        sub_ptr = insert(cumsum(ncol1), 0, 0)
+        csr.ptr[0] = 0
+        # Place it directly where it should be
+        cumsum(ncol1, out=csr.ptr[1:])
         cnnz = np.count_nonzero
-        ncol1 = ensure_array([cnnz(col1[ptr1:ptr2] >= 0)
-                              for ptr1, ptr2 in zip(sub_ptr[:-1], sub_ptr[1:])])
-        del sub_ptr
+        # Note ncol1 is a view of csr.ncol
+        ncol1[:] = ensure_array([cnnz(col1[ptr1:ptr2] >= 0)
+                                 for ptr1, ptr2 in zip(csr.ptr[:-1], csr.ptr[1:])])
 
         # Now we should figure out how to remove those entries
         # that are from the old structure
@@ -937,17 +951,15 @@ class SparseCSR(object):
         idx_take = (col1 >= 0).nonzero()[0]
 
         # Decrease col1 and also extract the data
-        col1 = take(col1, idx_take)
-        D1 = take(self._D[col_idx, :], idx_take, 0)
+        csr.col = take(col1, idx_take)
+        del col1
+        csr._D = take(self._D[col_idx, :], idx_take, 0)
         del col_idx, idx_take
 
         # Set the data for the new sparse csr
-        csr.ptr[:] = insert(cumsum(ncol1), 0, 0)
-        csr.ncol[:] = ncol1
-        csr.col = col1
-        csr._nnz = len(col1)
-        csr._D = D1
-        csr.finalize()
+        csr.ptr[0] = 0
+        cumsum(ncol1, out=csr.ptr[1:])
+        csr._nnz = len(csr.col)
 
         return csr
 
