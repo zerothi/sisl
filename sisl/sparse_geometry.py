@@ -17,6 +17,7 @@ import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype, ensure_array
 from sisl._help import _zip as zip, _range as range
+from sisl.utils.ranges import array_arange
 from sisl.sparse import SparseCSR
 
 __all__ = ['SparseGeometry', 'SparseAtom', 'SparseOrbital']
@@ -818,7 +819,7 @@ class SparseAtom(SparseGeometry):
             D = self._csr._D
         else:
             ptr = self._csr.ptr
-            idx = np.hstack(map(np.arange, ptr[:-1], ptr[:-1] + ncol))
+            idx = array_arange(ptr[:-1], n=ncol)
             col = np.take(self._csr.col, idx)
             D = np.take(self._csr._D, idx, 0)
             del idx
@@ -1254,7 +1255,7 @@ class SparseOrbital(SparseGeometry):
             D = self._csr._D
         else:
             ptr = self._csr.ptr
-            idx = np.hstack(map(np.arange, ptr[:-1], ptr[:-1] + ncol))
+            idx = array_arange(ptr[:-1], n=ncol)
             col = np.take(self._csr.col, idx)
             D = np.take(self._csr._D, idx, 0)
             del idx

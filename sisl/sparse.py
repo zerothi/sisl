@@ -29,7 +29,7 @@ from scipy.sparse import lil_matrix, isspmatrix_lil
 
 from sisl._help import array_fill_repeat, ensure_array, get_dtype
 from sisl._help import _range as range, _zip as zip
-
+from sisl.utils.ranges import array_arange
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
@@ -357,7 +357,7 @@ class SparseCSR(object):
         # Create and index array to retain the indices we want
         ptr = self.ptr
         ncol = self.ncol
-        idx = hstack(map(arange, ptr[:-1], ptr[:-1] + ncol))
+        idx = array_arange(ptr[:-1], n=ncol)
 
         self.col = take(self.col, idx)
         self._D = take(self._D, idx, 0)
@@ -916,29 +916,32 @@ class SparseCSR(object):
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
         csr = self.__class__((len(ridx), nc, self.shape[2]), dtype=self.dtype, nnz=1)
 
-        # Create the sub data
-        sub_ptr = take(self.ptr, ridx)
-        # Place directly where it should be (i.e. re-use space)
-        take(self.ncol, ridx, out=csr.ncol)
+        # Get views
+        ptr1 = csr.ptr.view()
         ncol1 = csr.ncol.view()
+
+        # Create the sub data
+        take(self.ptr, ridx, out=ptr1[1:])
+        # Place directly where it should be (i.e. re-use space)
+        take(self.ncol, ridx, out=ncol1)
 
         # Create a list of ndarrays with indices of elements per row
         # and transfer to a linear index
-        col_idx = hstack(map(arange, sub_ptr, sub_ptr + ncol1))
-        del sub_ptr
+        col_idx = array_arange(ptr1[1:], n=ncol1)
+
         # Reduce the column indices (note this also ensures that
         # it will work on non-finalized sparse matrices)
         col1 = pvt[take(self.col, col_idx)]
 
         # Count the number of items that are left in the sparse pattern
-        # First recreate the new sub_ptr
-        csr.ptr[0] = 0
+        # First recreate the new (temporar) pointer
+        ptr1[0] = 0
         # Place it directly where it should be
-        cumsum(ncol1, out=csr.ptr[1:])
+        cumsum(ncol1, out=ptr1[1:])
         cnnz = np.count_nonzero
         # Note ncol1 is a view of csr.ncol
-        ncol1[:] = ensure_array([cnnz(col1[ptr1:ptr2] >= 0)
-                                 for ptr1, ptr2 in zip(csr.ptr[:-1], csr.ptr[1:])])
+        ncol1[:] = ensure_array([cnnz(col1[ptr1[r]:ptr1[r+1]] >= 0)
+                                 for r in range(len(ptr1) - 1)])
 
         # Now we should figure out how to remove those entries
         # that are from the old structure

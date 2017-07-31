@@ -7,11 +7,14 @@ import re
 from itertools import groupby
 
 import numpy as np
+from numpy import arange, hstack, empty, sum
 
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
-
+__all__ += ['array_arange']
 
 # Function to change a string to a range of atoms
+
+
 def strmap(func, s, sep='b'):
     """ Parse a string as though it was a slice and map all entries using ``func``.
 
@@ -28,10 +31,10 @@ def strmap(func, s, sep='b'):
     ----------
     func : function
        function to parse every match with
-    s    : ``str``
+    s    : str
        the string that should be parsed
-    sep  : ``str`` (``'b'``, ``'c'``, ``'*'``/``'s'``)
-       optional separator used, ``'b'`` is square brackets, ``'c'``, curly braces, and ``'*'``/``'s'`` is the star
+    sep  : {'b', 'c', '*', 's'}, optional
+       separator used, ``'b'`` is square brackets, ``'c'``, curly braces, and ``'*'``/``'s'`` is the star
     """
 
     if sep == 'b':
@@ -95,7 +98,7 @@ def strseq(cast, s):
     ----------
     cast: function
        parser of the individual elements
-    s: ``str``
+    s: str
        string with content
 
     Examples
@@ -203,7 +206,7 @@ def fileindex(f, cast=int):
 
     Parameters
     ----------
-    f : ``str``
+    f : str
        filename to parse
     cast : function
        the function to cast the bracketed value
@@ -224,3 +227,42 @@ def fileindex(f, cast=int):
     if len(rng) == 1:
         return fname, rng[0]
     return fname, rng
+
+
+def array_arange(start, end=None, n=None, dtype=np.int32):
+    """ Creates a single array from a sequence of ``np.arange``
+
+    Parameters
+    ----------
+    start : array_like
+       a list of start elements for ``np.arange``
+    end : array_like
+       a list of end elements (exclusive) for ``np.arange``.
+       This argument is not used if `n` is passed.
+    n : array_like
+       a list of counts of elements for ``np.arange``.
+       This is equivalent to `end=start + n`.
+    dtype : np.dtype
+       the returned lists data-type
+
+    Examples
+    --------
+    >>> array_arange([1, 5], [3, 6])
+    [1, 2, 5]
+    >>> array_arange([1, 6], [4, 9])
+    [1, 2, 3, 6, 7, 8]
+    >>> array_arange([1, 6], n=[2, 2])
+    [1, 2, 6, 7]
+    """
+    if n is None:
+        return hstack(map(arange, start, end)).astype(dtype, copy=False)
+
+    # Count and pre-allocate, this should reduce the memory overhead
+    size = sum(n)
+    array = empty([size], dtype=dtype)
+    j = 0
+    for i in range(len(start)):
+        N = n[i]
+        array[j:j+N] = arange(start[i], start[i] + N, dtype=dtype)
+        j += N
+    return array
