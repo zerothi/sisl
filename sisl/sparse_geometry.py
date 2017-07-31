@@ -17,7 +17,7 @@ import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype, ensure_array
 from sisl._help import _zip as zip, _range as range
-from sisl.sparse import SparseCSR, ispmatrixd
+from sisl.sparse import SparseCSR
 
 __all__ = ['SparseGeometry', 'SparseAtom', 'SparseOrbital']
 
@@ -393,33 +393,43 @@ class SparseGeometry(object):
         return self._csr.spsame(other._csr)
 
     @classmethod
-    def fromsp(cls, geom, sp):
+    def fromsp(cls, geom, *sp):
         """ Returns a sparse model from a preset Geometry and a list of sparse matrices """
-        # Calculate maximum number of connections per row
-        nc = 0
 
-        # Ensure list of csr format (to get dimensions)
-        if isspmatrix(sp):
-            sp = [sp]
+        # Ensure it is a list (no tuples can be used)
+        sp = list(sp)
+        for i, s in enumerate(sp):
+            if isinstance(s, (tuple, list)):
+                # Downcast to a single list of sparse matrices
+                if len(sp) > 1:
+                    raise ValueError("Argument should be a single list or a sequence of arguments, not both.")
+                sp = s
+                break
 
         # Number of dimensions
         dim = len(sp)
+        nnzpr = 1
         # Sort all indices for the passed sparse matrices
         for i in range(dim):
             sp[i] = sp[i].tocsr()
             sp[i].sort_indices()
 
-        # Figure out the maximum connections per
-        # row to reduce number of re-allocations to 0
-        for i in range(sp[0].shape[0]):
-            nc = max(nc, sp[0][i, :].getnnz())
+            # Figure out the maximum connections per
+            # row to reduce number of re-allocations to 0
+            nnzpr = max(nnzpr, sp[i].nnz // sp[i].shape[0])
 
         # Create the sparse object
-        S = cls(geom, dim, sp[0].dtype, nc, **self._cls_kwargs())
+        S = cls(geom, dim, sp[0].dtype, nnzpr)
 
         for i in range(dim):
-            for jo, io, v in ispmatrixd(sp[i]):
-                S[jo, io, i] = v
+            ptr = sp[i].indptr
+            col = sp[i].indices
+            D = sp[i].data
+
+            # loop and add elements
+            for r in range(S.shape[0]):
+                sl = slice(ptr[r], ptr[r+1], None)
+                S[r, col[sl], i] += D[sl]
 
         return S
 

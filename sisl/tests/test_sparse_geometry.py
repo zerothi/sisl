@@ -135,3 +135,56 @@ class TestSparseAtom(object):
         s2 = SparseAtom(self.g * ([2, 2, 1], 'r'))
         s2.construct([[0.1, 1.5], [1, 2]])
         assert_true(s1.spsame(s2))
+
+    def test_fromsp1(self):
+        g = self.g.repeat(2, 0).tile(2, 1)
+        csr = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
+        csr[0, [1, 2, 3]] = 1
+        csr[1, [2, 4, 1]] = 2
+        s1 = SparseAtom.fromsp(g, [csr])
+        assert_equal(s1.nnz, 6)
+        assert_true(np.allclose(s1.shape, [g.na, g.na_s, 1]))
+
+        assert_true(np.allclose(s1[0, [1, 2, 3]], np.ones([3], np.int32)))
+        assert_true(np.allclose(s1[1, [1, 2, 4]], np.ones([3], np.int32)*2))
+
+        # Different instantiating
+        s2 = SparseAtom.fromsp(g, csr)
+        assert_true(s1.spsame(s2))
+
+    def test_fromsp2(self):
+        g = self.g.repeat(2, 0).tile(2, 1)
+        csr1 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
+        csr2 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
+        csr1[0, [1, 2, 3]] = 1
+        csr2[1, [2, 4, 1]] = 2
+        s1 = SparseAtom.fromsp(g, [csr1, csr2])
+        assert_equal(s1.nnz, 6)
+        assert_true(np.allclose(s1.shape, [g.na, g.na_s, 2]))
+
+        assert_true(np.allclose(s1[0, [1, 2, 3], 0], np.ones([3], np.int32)))
+        assert_true(np.allclose(s1[0, [1, 2, 3], 1], np.zeros([3], np.int32)))
+        assert_true(np.allclose(s1[1, [1, 2, 4], 0], np.zeros([3], np.int32)))
+        assert_true(np.allclose(s1[1, [1, 2, 4], 1], np.ones([3], np.int32)*2))
+
+        s2 = SparseAtom.fromsp(g, csr1, csr2)
+        assert_equal(s2.nnz, 6)
+        assert_true(np.allclose(s2.shape, [g.na, g.na_s, 2]))
+
+        assert_true(np.allclose(s2[0, [1, 2, 3], 0], np.ones([3], np.int32)))
+        assert_true(np.allclose(s2[0, [1, 2, 3], 1], np.zeros([3], np.int32)))
+        assert_true(np.allclose(s2[1, [1, 2, 4], 0], np.zeros([3], np.int32)))
+        assert_true(np.allclose(s2[1, [1, 2, 4], 1], np.ones([3], np.int32)*2))
+
+        assert_true(s1.spsame(s2))
+
+    @raises(ValueError)
+    def test_fromsp3(self):
+        g = self.g.repeat(2, 0).tile(2, 1)
+        csr1 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
+        csr2 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
+        csr1[0, [1, 2, 3]] = 1
+        csr2[1, [2, 4, 1]] = 2
+
+        # Ensure that one does not mix everything.
+        SparseAtom.fromsp(g, [csr1], csr2)
