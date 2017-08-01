@@ -844,6 +844,7 @@ class SparseAtom(SparseGeometry):
         indptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
         del ncol
         indices = np.empty([indptr[-1]], np.int32)
+        indices.shape = (reps, -1)
 
         # Now we should fill the data
         isc = geom.a2isc(col)
@@ -860,7 +861,7 @@ class SparseAtom(SparseGeometry):
             # Correct the supercell information
             isc[:, axis] = JA // na_n
 
-            indices[indptr[nrep]:indptr[nrep+na]] = JA % na_n + sc_index(isc) * na_n
+            indices[rep, :] = JA % na_n + sc_index(isc) * na_n
 
             if eta:
                 # calculate hours, minutes, seconds
@@ -872,6 +873,7 @@ class SparseAtom(SparseGeometry):
         # Clean-up
         del isc, JA
 
+        indices.shape = (-1,)
         S._csr = SparseCSR((np.tile(D, (reps, 1)), indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
 
@@ -1280,6 +1282,7 @@ class SparseOrbital(SparseGeometry):
         indptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
         del ncol
         indices = np.empty([indptr[-1]], np.int32)
+        indices.shape = (reps, -1)
 
         # Now we should fill the data
         isc = geom.o2isc(col)
@@ -1296,7 +1299,7 @@ class SparseOrbital(SparseGeometry):
             # Correct the supercell information
             isc[:, axis] = JO // no_n
 
-            indices[indptr[nrep]:indptr[nrep+no]] = JO % no_n + sc_index(isc) * no_n
+            indices[rep, :] = JO % no_n + sc_index(isc) * no_n
 
             if eta:
                 # calculate hours, minutes, seconds
@@ -1308,6 +1311,7 @@ class SparseOrbital(SparseGeometry):
         # Clean-up
         del isc, JO
 
+        indices.shape = (-1,)
         S._csr = SparseCSR((np.tile(D, (reps, 1)), indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
 
