@@ -23,6 +23,13 @@ class TestSparseCSR(object):
         s = SparseCSR((10, 100, 20, 20), dtype=np.int32)
 
     @raises(ValueError)
+    def test_fail_init2(self):
+        data = np.empty([2, 2], np.float64)
+        indices = np.arange(2)
+        indptr = np.arange(2)
+        s = SparseCSR((data, indices, indptr, indptr), shape=(100, 20, 20))
+
+    @raises(ValueError)
     def test_fail_align1(self):
         s1 = SparseCSR((10, 100), dtype=np.int32)
         s2 = SparseCSR((20, 100), dtype=np.int32)
@@ -93,10 +100,12 @@ class TestSparseCSR(object):
         csr[2, 2] = 4
         csr[0, 1] = 1
         csr[0, 2] = 2
+        csr[0, []] = 2
         assert_equal(csr[0, 1], 1)
         assert_equal(csr[0, 2], 2)
         assert_equal(csr[1, 1], 3)
         assert_equal(csr[2, 2], 4)
+        assert_equal(csr.nnz, 4)
         assert_true(np.allclose(csr[0, [0, 1, 2]], [0, 1, 2]))
 
     def test_diag1(self):
@@ -249,8 +258,18 @@ class TestSparseCSR(object):
         assert_equal(self.s1[0, 2], 1)
         assert_equal(self.s1[0, 3], 0)
         del self.s1[range(2), 0]
+        assert_equal(self.s1.nnz, 1)
         for i in range(2):
             assert_equal(self.s1[i, 0], 0)
+        del self.s1[range(2), range(3), 0]
+        assert_equal(self.s1.nnz, 0)
+        self.s1.empty()
+
+    def test_contains1(self):
+        self.s1[0, [1, 2, 3]] = 1
+        assert_equal(self.s1.nnz, 3)
+        assert_true([0, 1] in self.s1)
+        assert_true([0, [1, 3]] in self.s1)
         self.s1.empty()
 
     def test_sub1(self):

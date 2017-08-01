@@ -774,8 +774,7 @@ class SparseCSR(object):
     def __contains__(self, key):
         """ Check whether a sparse index is non-zero """
         # Get indices of sparse data (-1 if non-existing)
-        index = self._get(key[0], key[1])
-        return index > 0
+        return np.all(self._get(key[0], key[1]) >= 0)
 
     def eliminate_zeros(self):
         """ Remove all zero elememts from the sparse matrix
