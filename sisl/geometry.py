@@ -893,10 +893,14 @@ class Geometry(SuperCellChild):
         # Our first repetition *must* be with
         # the former coordinate
         xyz = np.tile(self.xyz, (reps, 1))
-        nr = np.arange(reps, dtype=np.int32)
+        # We may use broadcasting rules instead of repeating stuff
+        xyz.shape = (reps, self.na, 3)
+        nr = np.arange(reps, dtype=np.float64)
+        nr.shape = (reps, 1)
         for i in range(3):
             # Correct the unit-cell offsets along `i`
-            xyz[:, i] += np.repeat(nr * self.cell[axis, i], self.na)
+            xyz[:, :, i] += nr * self.cell[axis, i]
+        xyz.shape = (-1, 3)
 
         # Create the geometry and return it (note the smaller atoms array
         # will also expand via tiling)
@@ -972,10 +976,14 @@ class Geometry(SuperCellChild):
         # Our first repetition *must* be with
         # the former coordinate
         xyz = np.repeat(self.xyz, reps, axis=0)
-        nr = np.arange(reps, dtype=np.int32)
+        # We may use broadcasting rules instead of repeating stuff
+        xyz.shape = (self.na, reps, 3)
+        nr = np.arange(reps, dtype=np.float64)
+        nr.shape = (1, reps)
         for i in range(3):
             # Correct the unit-cell offsets along `i`
-            xyz[:, i] += np.tile(nr * self.cell[axis, i], self.na)
+            xyz[:, :, i] += nr * self.cell[axis, i]
+        xyz.shape = (-1, 3)
 
         # Create the geometry and return it
         return self.__class__(xyz, atom=self.atom.repeat(reps), sc=sc)
