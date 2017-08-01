@@ -854,8 +854,6 @@ class SparseAtom(SparseGeometry):
 
         # Create repetitions
         for rep in range(reps):
-            nrep = na * rep
-
             # Figure out the JA atoms
             JA += na
             # Correct the supercell information
@@ -1292,8 +1290,6 @@ class SparseOrbital(SparseGeometry):
 
         # Create repetitions
         for rep in range(reps):
-            nrep = no * rep
-
             # Figure out the JO orbitals
             JO += no
             # Correct the supercell information
