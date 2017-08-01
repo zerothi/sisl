@@ -113,7 +113,7 @@ class SuperCell(object):
                 "one, all others count 2")
 
         # We might use this very often, hence we store it
-        self.n_s = np.prod(self.nsc)
+        self.n_s = np.prod(self.nsc, dtype=np.int32)
         self.sc_off = np.zeros([self.n_s, 3], np.int32)
         self.isc_off = np.zeros(self.nsc, np.int32)
 
@@ -140,7 +140,13 @@ class SuperCell(object):
                     self.sc_off[i, 1] = iy
                     self.sc_off[i, 2] = iz
 
-                    self.isc_off[ix, iy, iz] = i
+        self._update_isc_off()
+
+    def _update_isc_off(self):
+        """ Internal routine for updating the supercell indices """
+        for i in range(self.n_s):
+            d = self.sc_off[i, :]
+            self.isc_off[d[0], d[1], d[2]] = i
 
     # Aliases
     set_supercell = set_nsc
@@ -229,7 +235,7 @@ class SuperCell(object):
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
         """
         # Create index vector
-        idx = np.arange(3)
+        idx = np.arange(3, dtype=np.int32)
         idx[b] = a
         idx[a] = b
         return self.__class__(np.copy(self.cell[idx, :], order='C'),
@@ -529,7 +535,7 @@ class SuperCell(object):
     # Create pickling routines
     def __getstate__(self):
         """ Returns the state of this object """
-        return {'cell': self.cell, 'nsc': self.nsc}
+        return {'cell': self.cell, 'nsc': self.nsc, 'sc_off': self.sc_off}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """

@@ -255,7 +255,9 @@ def array_arange(start, end=None, n=None, dtype=np.int32):
     [1, 2, 6, 7]
     """
     if n is None:
-        return hstack(map(arange, start, end)).astype(dtype, copy=False)
+        def func(start, end):
+            return arange(start, end, dtype=dtype)
+        return hstack(map(func, start, end))#.astype(dtype, copy=False)
 
     # Count and pre-allocate, this should reduce the memory overhead
     size = sum(n)

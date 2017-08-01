@@ -175,9 +175,9 @@ class SparseCSR(object):
                                   nnz=1, **kwargs)
 
                 # Copy data to the arrays
-                self.ptr = arg1[2]
+                self.ptr = arg1[2].astype(np.int32, copy=False)
                 self.ncol = diff(self.ptr)
-                self.col = arg1[1]
+                self.col = arg1[1].astype(np.int32, copy=False)
                 self._nnz = len(self.col)
                 self._D = np.empty([len(arg1[1]), self.shape[-1]], dtype=self.dtype)
                 if len(arg1[0].shape) == 2:
@@ -226,7 +226,7 @@ class SparseCSR(object):
         # in the sparsity pattern
         self.ncol = np.zeros([M], np.int32)
         # Create pointer array
-        self.ptr = np.cumsum(np.array([nnzpr] * (M+1), np.int32)) - nnzpr
+        self.ptr = np.cumsum(np.array([nnzpr] * (M+1), np.int32), dtype=np.int32) - nnzpr
         # Create column array
         self.col = np.empty(nnz, np.int32)
         # Store current number of non-zero elements
@@ -363,7 +363,7 @@ class SparseCSR(object):
         self._D = take(self._D, idx, 0)
         del idx
         self.ptr[0] = 0
-        cumsum(ncol, out=self.ptr[1:])
+        cumsum(ncol, dtype=np.int32, out=self.ptr[1:])
 
         ptr = self.ptr.view()
         col = self.col.view()
@@ -680,7 +680,7 @@ class SparseCSR(object):
 
         # Now create the compressed data...
         index -= ptr[i]
-        keep = isin(arange(ncol[i]), index, invert=True)
+        keep = isin(arange(ncol[i], dtype=np.int32), index, invert=True)
 
         # Update new count of the number of
         # non-zero elements
@@ -873,10 +873,10 @@ class SparseCSR(object):
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] >= self.shape[1]:
-            rindices = delete(arange(self.shape[0]), indices)
+            rindices = delete(arange(self.shape[0], dtype=np.int32), indices)
 
         else:
-            rindices = delete(arange(self.shape[1]), indices)
+            rindices = delete(arange(self.shape[1], dtype=np.int32), indices)
 
         return self.sub(rindices)
 
@@ -909,7 +909,7 @@ class SparseCSR(object):
 
         # Fix the pivoting indices with the new indices
         pvt.fill(-1)
-        pvt[indices] = arange(len(indices))
+        pvt[indices] = arange(len(indices), dtype=np.int32)
 
         # Create the new SparseCSR
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
@@ -936,7 +936,7 @@ class SparseCSR(object):
         # First recreate the new (temporar) pointer
         ptr1[0] = 0
         # Place it directly where it should be
-        cumsum(ncol1, out=ptr1[1:])
+        cumsum(ncol1, dtype=np.int32, out=ptr1[1:])
         cnnz = np.count_nonzero
         # Note ncol1 is a view of csr.ncol
         ncol1[:] = ensure_array([cnnz(col1[ptr1[r]:ptr1[r+1]] >= 0)
@@ -958,7 +958,7 @@ class SparseCSR(object):
 
         # Set the data for the new sparse csr
         csr.ptr[0] = 0
-        cumsum(ncol1, out=csr.ptr[1:])
+        cumsum(ncol1, dtype=np.int32, out=csr.ptr[1:])
         csr._nnz = len(csr.col)
 
         return csr
@@ -1273,8 +1273,8 @@ def ispmatrix(matrix, map_row=None, map_col=None):
     map_row = np.vectorize(map_row)
     map_col = np.vectorize(map_col)
 
-    nrow = len(unique(map_row(arange(matrix.shape[0]))))
-    ncol = len(unique(map_col(arange(matrix.shape[1]))))
+    nrow = len(unique(map_row(arange(matrix.shape[0], dtype=np.int32))))
+    ncol = len(unique(map_col(arange(matrix.shape[1], dtype=np.int32))))
     rows = zeros(nrow, dtype=np.bool_)
     cols = zeros(ncol, dtype=np.bool_)
 

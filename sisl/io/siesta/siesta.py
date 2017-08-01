@@ -99,16 +99,13 @@ class ncSileSiesta(SileCDFSIESTA):
         # array, hence just allocate the smallest amount possible)
         C = cls(geom, spin, nnzpr=1, orthogonal=False)
 
-        ncol = np.array(sp.variables['n_col'][:], np.int32)
+        C._csr.ncol = np.array(sp.variables['n_col'][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)
-        ptr = np.append(np.array(0, np.int32), np.cumsum(ncol)).flatten()
-        col = np.array(sp.variables['list_col'][:], np.int32) - 1
+        C._csr.ptr = np.insert(np.cumsum(C._csr.ncol, dtype=np.int32), 0, 0)
+        C._csr.col = np.array(sp.variables['list_col'][:], np.int32) - 1
 
         # Copy information over
-        C._csr.ncol = ncol
-        C._csr.ptr = ptr
-        C._csr.col = col
-        C._csr._nnz = len(col)
+        C._csr._nnz = len(C._csr.col)
         C._csr._D = np.empty([C._csr.ptr[-1], spin+1], np.float64)
         C._csr._D[:, C.S_idx] = np.array(sp.variables['S'][:], np.float64)
 
@@ -124,8 +121,7 @@ class ncSileSiesta(SileCDFSIESTA):
 
         for i in range(len(H.spin)):
             # Create new container
-            h = np.array(sp.variables['H'][i, :],
-                         np.float64) * Ry2eV
+            h = np.array(sp.variables['H'][i, :], np.float64) * Ry2eV
             # Correct for the Fermi-level, Ef == 0
             if i < 2:
                 h -= Ef * S[:]
@@ -226,9 +222,9 @@ class ncSileSiesta(SileCDFSIESTA):
 
         # Create initial dimensions
         self._crt_dim(self, 'one', 1)
-        self._crt_dim(self, 'n_s', np.prod(geom.nsc))
+        self._crt_dim(self, 'n_s', np.prod(geom.nsc, dtype=np.int32))
         self._crt_dim(self, 'xyz', 3)
-        self._crt_dim(self, 'no_s', np.prod(geom.nsc) * geom.no)
+        self._crt_dim(self, 'no_s', np.prod(geom.nsc, dtype=np.int32) * geom.no)
         self._crt_dim(self, 'no_u', geom.no)
         self._crt_dim(self, 'na_u', geom.na)
 
@@ -282,7 +278,7 @@ class ncSileSiesta(SileCDFSIESTA):
                 ba.Number_of_orbitals = np.int32(a.orbs)
 
         # Store the lasto variable as the remaining thing to do
-        self.variables['lasto'][:] = np.cumsum(orbs)
+        self.variables['lasto'][:] = np.cumsum(orbs, dtype=np.int32)
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file

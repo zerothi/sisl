@@ -119,7 +119,7 @@ class Geometry(SuperCellChild):
 
         # Create local first
         firsto = np.append(np.array(0, np.int32), orbs)
-        self.firsto = np.cumsum(firsto)
+        self.firsto = np.cumsum(firsto, dtype=np.int32)
 
         self.__init_sc(sc)
 
@@ -237,7 +237,7 @@ class Geometry(SuperCellChild):
                 atom = atom.indices(self.na)
             else:
                 atom = atom.indices(self.na_s)
-            return self.axyz(np.arange(atom[0], atom[1], atom[2]))
+            return self.axyz(np.arange(atom[0], atom[1], atom[2], dtype=np.int32))
 
         elif atom is None:
             return self.axyz()
@@ -813,7 +813,7 @@ class Geometry(SuperCellChild):
         # List of atoms
         n = self.na // seps
         off = n * lseg
-        new = self.sub(np.arange(off, off + n), cell=sc)
+        new = self.sub(np.arange(off, off + n, dtype=np.int32), cell=sc)
         if not np.allclose(new.tile(seps, axis).xyz, self.xyz,
                            rtol=rtol, atol=atol):
             st = 'The cut structure cannot be re-created by tiling'
@@ -838,7 +838,7 @@ class Geometry(SuperCellChild):
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
-        atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
+        atom = np.setdiff1d(np.arange(self.na, dtype=np.int32), atom, assume_unique=True)
         return self.sub(atom)
 
     def tile(self, reps, axis):
@@ -893,7 +893,7 @@ class Geometry(SuperCellChild):
         # Our first repetition *must* be with
         # the former coordinate
         xyz = np.tile(self.xyz, (reps, 1))
-        nr = np.arange(reps)
+        nr = np.arange(reps, dtype=np.int32)
         for i in range(3):
             # Correct the unit-cell offsets along `i`
             xyz[:, i] += np.repeat(nr * self.cell[axis, i], self.na)
@@ -972,7 +972,7 @@ class Geometry(SuperCellChild):
         # Our first repetition *must* be with
         # the former coordinate
         xyz = np.repeat(self.xyz, reps, axis=0)
-        nr = np.arange(reps)
+        nr = np.arange(reps, dtype=np.int32)
         for i in range(3):
             # Correct the unit-cell offsets along `i`
             xyz[:, i] += np.tile(nr * self.cell[axis, i], self.na)
@@ -2478,7 +2478,7 @@ class Geometry(SuperCellChild):
 
         # Correct atom input
         if atom is None:
-            atom = np.arange(len(self))
+            atom = np.arange(len(self), dtype=np.int32)
         else:
             atom = ensure_array(atom)
 

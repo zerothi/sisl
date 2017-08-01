@@ -197,7 +197,7 @@ class Grid(SuperCellChild):
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
         """
         # Create index vector
-        idx = np.arange(3)
+        idx = np.arange(3, dtype=np.int32)
         idx[b] = a
         idx[a] = b
         s = np.copy(self.shape)
@@ -319,9 +319,9 @@ class Grid(SuperCellChild):
               ``grid[:idx,...]``
         """
         if above:
-            sub = np.arange(idx, self.shape[axis])
+            sub = np.arange(idx, self.shape[axis], dtype=np.int32)
         else:
-            sub = np.arange(0, idx)
+            sub = np.arange(0, idx, dtype=np.int32)
         return self.sub(sub, axis)
 
     def sub(self, idx, axis):
@@ -380,9 +380,8 @@ class Grid(SuperCellChild):
            the axis segment from which we remove all indices ``idx``
         """
         uidx = np.unique(np.clip(idx, 0, self.shape[axis] - 1))
-        ret_idx = np.setdiff1d(
-            np.arange(self.shape[axis]),
-            uidx, assume_unique=True)
+        ret_idx = np.setdiff1d(np.arange(self.shape[axis], dtype=np.int32),
+                               uidx, assume_unique=True)
         return self.sub(ret_idx, axis)
 
     def index(self, coord, axis=None):

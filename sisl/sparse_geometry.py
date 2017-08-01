@@ -841,7 +841,7 @@ class SparseAtom(SparseGeometry):
         # Create new indptr, indices and D
         ncol = np.tile(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(np.cumsum(ncol), 0, 0)
+        indptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
         del ncol
         indices = np.empty([indptr[-1]], np.int32)
 
@@ -1214,7 +1214,7 @@ class SparseOrbital(SparseGeometry):
         S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
 
         idx = np.tile(otom, self.n_s) + \
-              np.repeat(np.arange(self.n_s) * self.no, len(otom))
+              np.repeat(np.arange(self.n_s, dtype=np.int32) * self.no, len(otom))
         S._csr = self._csr.sub(idx)
 
         return S
@@ -1277,7 +1277,7 @@ class SparseOrbital(SparseGeometry):
         # Create new indptr, indices and D
         ncol = np.tile(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(np.cumsum(ncol), 0, 0)
+        indptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
         del ncol
         indices = np.empty([indptr[-1]], np.int32)
 
