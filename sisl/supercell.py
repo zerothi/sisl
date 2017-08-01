@@ -354,16 +354,17 @@ class SuperCell(object):
 
         Returns the integer for the supercell
         """
-        if isinstance(sc_off[0], (np.ndarray, tuple, list)):
+        if isinstance(sc_off[0], np.ndarray):
+            return self._isc_off[sc_off[:, 0], sc_off[:, 1], sc_off[:, 2]]
+        elif isinstance(sc_off[0], (tuple, list)):
             # We are dealing with a list of lists
-            sc_off = np.asarray(sc_off, np.int32)
-            return self.isc_off[sc_off[:, 0], sc_off[:, 1], sc_off[:, 2]]
+            sc_off = np.asarray(sc_off)
+            return self._isc_off[sc_off[:, 0], sc_off[:, 1], sc_off[:, 2]]
 
         # Fall back to the other routines
         sc_off = self._fill_sc(sc_off)
         if sc_off[0] is not None and sc_off[1] is not None and sc_off[2] is not None:
-            sc_off = np.asarray(sc_off, np.int32)
-            return self.isc_off[sc_off[0], sc_off[1], sc_off[2]]
+            return self._isc_off[sc_off[0], sc_off[1], sc_off[2]]
 
         # We build it because there are 'none'
         idx = []
