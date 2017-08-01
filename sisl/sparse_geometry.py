@@ -769,11 +769,17 @@ class SparseAtom(SparseGeometry):
         atom = self.sc2uc(atom)
         geom = self.geom.sub(atom)
 
+        idx = np.tile(atom, self.n_s)
+        # Use broadcasting rules
+        idx.shape = (self.n_s, -1)
+        tmp = np.arange(self.n_s, dtype=np.int32) * self.na
+        tmp.shape = (-1, 1)
+        idx += tmp
+        del tmp
+        idx.shape = (-1,)
+
         # Now create the new sparse orbital class
         S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
-
-        idx = np.tile(atom, self.n_s) + \
-              np.repeat(np.arange(self.n_s) * self.na, len(atom))
         S._csr = self._csr.sub(idx)
 
         return S
@@ -1210,11 +1216,17 @@ class SparseOrbital(SparseGeometry):
         otom = self.geom.a2o(atom, all=True)
         geom = self.geom.sub(atom)
 
+        idx = np.tile(atom, self.n_s)
+        # Use broadcasting rules
+        idx.shape = (self.n_s, -1)
+        tmp = np.arange(self.n_s, dtype=np.int32) * self.no
+        tmp.shape = (-1, 1)
+        idx += tmp
+        del tmp
+        idx.shape = (-1,)
+
         # Now create the new sparse orbital class
         S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
-
-        idx = np.tile(otom, self.n_s) + \
-              np.repeat(np.arange(self.n_s, dtype=np.int32) * self.no, len(otom))
         S._csr = self._csr.sub(idx)
 
         return S
