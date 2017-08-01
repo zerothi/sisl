@@ -21,7 +21,7 @@ class SuperCell(object):
     """
 
     # We limit the scope of this SuperCell object.
-    __slots__ = ('cell', 'vol', 'nsc', 'n_s', 'sc_off', 'isc_off')
+    __slots__ = ('cell', 'vol', 'nsc', 'n_s', '_sc_off', '_isc_off')
 
     def __init__(self, cell, nsc=None):
         """ Initialize a `SuperCell` object from initial quantities
@@ -114,8 +114,8 @@ class SuperCell(object):
 
         # We might use this very often, hence we store it
         self.n_s = np.prod(self.nsc, dtype=np.int32)
-        self.sc_off = np.zeros([self.n_s, 3], np.int32)
-        self.isc_off = np.zeros(self.nsc, np.int32)
+        self._sc_off = np.zeros([self.n_s, 3], np.int32)
+        self._isc_off = np.zeros(self.nsc, np.int32)
 
         n = self.nsc
         # We define the following ones like this:
@@ -136,9 +136,9 @@ class SuperCell(object):
                     i += 1
                     # The offsets for the supercells in the
                     # sparsity pattern
-                    self.sc_off[i, 0] = ix
-                    self.sc_off[i, 1] = iy
-                    self.sc_off[i, 2] = iz
+                    self._sc_off[i, 0] = ix
+                    self._sc_off[i, 1] = iy
+                    self._sc_off[i, 2] = iz
 
         self._update_isc_off()
 
@@ -146,7 +146,25 @@ class SuperCell(object):
         """ Internal routine for updating the supercell indices """
         for i in range(self.n_s):
             d = self.sc_off[i, :]
-            self.isc_off[d[0], d[1], d[2]] = i
+            self._isc_off[d[0], d[1], d[2]] = i
+
+    @property
+    def sc_off(self):
+        """ Integer supercell offsets """
+        return self._sc_off
+
+    @sc_off.setter
+    def sc_off(self, sc_off):
+        """ Set the supercell offset """
+        if len(sc_off) != self.n_s:
+            raise ValueError("Overriding the supercell indices requires the same shape")
+        self._sc_off[:, :] = np.array(sc_off, order='C', dtype=np.int32)
+        self._update_isc_off()
+
+    @property
+    def isc_off(self):
+        """ Internal indexed supercell `[ia, ib, ic] == i` """
+        return self._isc_off
 
     # Aliases
     set_supercell = set_nsc
@@ -540,6 +558,7 @@ class SuperCell(object):
     def __setstate__(self, d):
         """ Re-create the state of this object """
         self.__init__(d['cell'], d['nsc'])
+        self.sc_off = d['sc_off']
 
 
 class SuperCellChild(object):

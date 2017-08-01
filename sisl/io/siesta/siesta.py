@@ -93,7 +93,7 @@ class ncSileSiesta(SileCDFSIESTA):
         v = sp.variables['isc_off']
         # pre-allocate the super-cells
         geom.sc.set_nsc(np.amax(v[:, :], axis=0) * 2 + 1)
-        geom.sc.sc_off[:, :] = v[:, :]
+        geom.sc.sc_off = v[:, :]
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)

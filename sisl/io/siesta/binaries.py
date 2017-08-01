@@ -59,7 +59,7 @@ class TSHSSileSiesta(SileBinSIESTA):
         # The TSHS file does not contain the
         # atomic numbers, so we will just
         # create them individually
-        orbs = np.diff(lasto)
+        orbs = np.diff(lasto, dtype=np.int32)
 
         # Get unique orbitals
         uorb = np.unique(orbs)
@@ -99,12 +99,10 @@ class TSHSSileSiesta(SileBinSIESTA):
         H = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)
 
         # Create the new sparse matrix
-        H._csr.ncol = np.array(ncol, np.int32)
-        ptr = np.cumsum(ncol)
-        ptr = np.insert(ptr, 0, 0)
-        H._csr.ptr = np.array(ptr, np.int32)
+        H._csr.ncol = ncol.astype(np.int32, copy=False)
+        H._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
         # Correct fortran indices
-        H._csr.col = np.array(col, np.int32) - 1
+        H._csr.col = col.astype(np.int32, copy=False) - 1
         H._csr._nnz = len(col)
 
         H._csr._D = np.empty([nnz, spin+1], np.float64)
