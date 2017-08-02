@@ -25,7 +25,7 @@ print(H)
 band = PathBZ(H.sc, [[0., 0.], [0.5, 0.], [0.5, 0.5], [0., 0.]], 300)
 
 # Calculate eigenvalues of the band-structure
-eigs = H.eigh(band)
+eigs = np.array([eig for eig in band(H)])
 
 # Plot them
 import matplotlib.pyplot as plt

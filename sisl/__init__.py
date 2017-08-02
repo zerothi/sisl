@@ -12,6 +12,9 @@ from .info import micro as __micro__
 # Import the Selector
 from .selector import *
 
+# Import plot routine
+from .plot import *
+
 # load the most commonly, and basic classes
 # The units contain the SI standard conversions using
 # all digits (not program specific)

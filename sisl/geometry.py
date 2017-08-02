@@ -23,6 +23,7 @@ from itertools import product
 
 import numpy as np
 
+import sisl.plot as plt
 from ._help import _str
 from ._help import _range as range
 from ._help import array_fill_repeat, ensure_array, ensure_dtype
@@ -2332,6 +2333,63 @@ class Geometry(SuperCellChild):
         Returns the super-cell offset for a specific orbital.
         """
         return self.sc.offset(self.o2isc(o))
+
+    def __plot__(self, fig_axes=False, axes=None, plot_sc=True, *args, **kwargs):
+        """ Plot the geometry in a specified ``matplotlib.Axes`` object.
+
+        Parameters
+        ----------
+        fig_axes : bool or matplotlib.Axes, optional
+           the figure axes to plot in (if ``matplotlib.Axes`` object).
+           If `True` it will create a new figure to plot in.
+           If `False` it will try and grap the current figure and the current axes.
+        axes : array_like, optional
+           only plot a subset of the axis, defaults to all axes"
+        plot_sc : bool, optional
+           If `True` also plot the supercell structure
+           only plot a subset of the axis, defaults to all axes"
+        """
+        # Default dictionary for passing to newly created figures
+        d = dict()
+
+        if plot_sc:
+            self.sc.__plot__(fig_axes, axes, *args, **kwargs)
+            if fig_axes is True:
+                fig_axes = False
+
+        if axes is None:
+            axes = [0, 1, 2]
+
+        # Ensure we have a new 3D Axes3D
+        if len(axes) == 3:
+            d['projection'] = '3d'
+
+        if fig_axes is False:
+            try:
+                fig_axes = plt.mlibplt.gca()
+            except:
+                fig_axes = plt.mlibplt.figure().add_subplot(111, **d)
+        elif fig_axes is True:
+            fig_axes = plt.mlibplt.figure().add_subplot(111, **d)
+
+        colors = np.linspace(0, 1, num=len(self.atom.atom), endpoint=False)
+        colors = colors[self.atom.specie]
+        area = np.array([a.Z for a in self.atom.atom], np.float64)
+        ma, Ma = np.min(area), np.max(area)
+        area[:] *= 20 * np.pi / ma
+        area = area[self.atom.specie]
+
+        xyz = self.xyz.view()
+
+        if isinstance(fig_axes, plt.mlib3d.Axes3D):
+            # We should plot in 3D plots
+            fig_axes.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], s=area, c=colors, alpha=0.8)
+            mlibplt.zlabel('Ang')
+        else:
+            fig_axes.scatter(xyz[:, axes[0]], xyz[:, axes[1]], s=area, c=colors, alpha=0.8)
+
+        mlibplt.xlabel('Ang')
+        mlibplt.ylabel('Ang')
 
     @classmethod
     def fromASE(cls, aseg):

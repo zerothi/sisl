@@ -8,6 +8,7 @@ import numpy as np
 from numpy import where
 from numbers import Integral
 
+import sisl.plot as plt
 from ._help import ensure_array
 from .quaternion import Quaternion
 
@@ -560,6 +561,64 @@ class SuperCell(object):
         """ Re-create the state of this object """
         self.__init__(d['cell'], d['nsc'])
         self.sc_off = d['sc_off']
+
+    def __plot__(self, fig_axes=False, axes=None, *args, **kwargs):
+        """ Plot the supercell in a specified ``matplotlib.Axes`` object.
+
+        Parameters
+        ----------
+        fig_axes : bool or matplotlib.Axes, optional
+           the figure axes to plot in (if ``matplotlib.Axes`` object).
+           If `True` it will create a new figure to plot in.
+           If `False` it will try and grap the current figure and the current axes.
+        axes : array_like, optional
+           only plot a subset of the axis, defaults to all axes"
+        """
+        # Default dictionary for passing to newly created figures
+        d = dict()
+
+        if axes is None:
+            axes = [0, 1, 2]
+
+        # Ensure we have a new 3D Axes3D
+        if len(axes) == 3:
+            d['projection'] = '3d'
+
+        if fig_axes is False:
+            try:
+                fig_axes = plt.mlib.gca()
+            except:
+                fig_axes = plt.mlibplt.figure().add_subplot(111, **d)
+        elif fig_axes is True:
+            fig_axes = plt.mlibplt.figure().add_subplot(111, **d)
+
+        # Create vector objects
+        v = []
+        for a in axes:
+            v.append(np.vstack(([0.]*len(axes), self.cell[a, axes])))
+        v = np.array(v)
+
+        if isinstance(fig_axes, plt.mlib3d.Axes3D):
+            # We should plot in 3D plots
+            for i in range(len(v)):
+                fig_axes.plot(v[i][:, 0], v[i][:, 1], v[i][:, 2], *args, **kwargs)
+
+            v0, v1, v2 = v[0], v[1], v[2]
+            fig_axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], v0[1, 2] + v1[:, 2], *args, **kwargs)
+
+            plt.mlibplt.zlabel('Ang')
+            raise NotImplementedError('Not implemented for 3D plots')
+
+        else:
+            for i in range(len(v)):
+                fig_axes.plot(v[i][:, 0], v[i][:, 1], *args, **kwargs)
+
+            v0, v1 = v[0], v[1]
+            fig_axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], *args, **kwargs)
+            fig_axes.plot(v1[1, 0] + v0[:, 0], v1[1, 1] + v0[:, 1], *args, **kwargs)
+
+        mlibplt.xlabel('Ang')
+        mlibplt.ylabel('Ang')
 
 
 class SuperCellChild(object):

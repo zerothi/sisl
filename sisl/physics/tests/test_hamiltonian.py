@@ -435,9 +435,9 @@ class TestHamiltonian(object):
     def test_eig3(self):
         self.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
         BS = PathBZ(self.HS.geom, [[0, 0, 0], [0.5, 0.5, 0]], 10)
-        eig = self.HS.eigh(BS)
-        assert_equal(len(BS), eig.shape[0])
-        assert_equal(len(self.HS), eig.shape[1])
+        eigs = np.array([eig for eig in BS(self.HS)])
+        assert_equal(len(BS), eigs.shape[0])
+        assert_equal(len(self.HS), eigs.shape[1])
         self.HS.empty()
 
     def test_spin1(self):

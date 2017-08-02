@@ -1,6 +1,10 @@
 0.8.6
 =====
 
+- Changed interface for BrillouinZone __call__ to accept any object which
+  has the `eigh` routine. Then all subsequent arguments are passed directly
+  to the underlying mechanism.
+
 - Added current calculator to TBT.nc sile to calculate the current as TBtrans
   does it (this requires the latest commit in SIESTA which defines the
   chemical potential and electronic structure of *all* electrodes).

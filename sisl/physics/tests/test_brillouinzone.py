@@ -20,5 +20,5 @@ class TestBrillouinZone(object):
 
     def test_bz1(self):
         bz = BrillouinZone(self.s1)
-        assert_true(np.all(bz([0, 0, 0]) == [0] * 3))
-        assert_true(np.all(bz([0.5, 0, 0]) == [m.pi, 0, 0]))
+        assert_true(np.all(bz.k([0, 0, 0]) == [0] * 3))
+        assert_true(np.all(bz.k([0.5, 0, 0]) == [m.pi, 0, 0]))

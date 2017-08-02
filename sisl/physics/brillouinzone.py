@@ -30,7 +30,11 @@ class BrillouinZone(SuperCellChild):
         sc : SuperCell or array_like
            the attached supercell
         """
-        self.set_supercell(sc)
+        try:
+            if isinstance(sc.sc, SuperCell):
+                self.set_supercell(sc.sc)
+        except:
+            self.set_supercell(sc)
 
     def kb(self, k):
         """ Return the k-point in reduced coordinates """
@@ -40,21 +44,25 @@ class BrillouinZone(SuperCellChild):
         """ Return the k-point in 1/Ang coordinates """
         return dot(self.rcell, kb)
 
-    def __call__(self, k, reduced=True):
-        """ Return the k-point in 1/Ang coordinates
+    def __call__(self, obj, *args, **kwargs):
+        """ Return the eigenspectrum for the object passed 
 
         Parameters
         ----------
-        k : array_like of float
-           the input k-point (in units determined by `reduced`)
+        obj : object to return the eigenvalues of
+            this object is required to have a function called  
         reduced : bool
            whether the input k-point is in reduced coordinates
            If `True` it returns the k-points according to the 
            supercell, else it returns the reduced k-point.
+
+        Returns
+        -------
+        eig : an iterator for all the eigenvalues
         """
-        if reduced:
-            return self.k(k)
-        return self.kb(k)
+        # This could be of substantial size, so we yield the values
+        for k in self:
+            yield obj.eigh(k, *args, **kwargs)
 
     def __iter__(self):
         """ Returns all k-points associated with this Brillouin zone object
@@ -70,58 +78,60 @@ class BrillouinZone(SuperCellChild):
 class PathBZ(BrillouinZone):
     """ Create a path in the Brillouin zone for plotting band-structures etc. """
 
-    def __init__(self, sc, points, divisions):
+    def __init__(self, sc, point, division, name=None):
         """ Instantiate the `PathBZ` by a set of special `points` separated in `divisions`
 
         Parameters
         ----------
         sc : SuperCell or array_like
            the unit-cell of the Brillouin zone
-        points : array_like of float
+        point : array_like of float
            a list of points that are the *corners* of the path
-        divisions : int or array_like of int
+        division : int or array_like of int
            number of divisions in each segment. 
            If a single integer is passed it is the total number 
            of points on the path (equally separated).
            If it is an array_like input it must have length one
-           less than `points`.
+           less than `point`.
+        name : array_like of str
+           the associated names of the points on the Brillouin Zone path
         """
         self.set_supercell(sc)
 
         # Copy over points
-        self.points = np.array(points, dtype=np.float64)
-        nk = len(self.points)
+        self.point = np.array(point, dtype=np.float64)
+        nk = len(self.point)
 
         # If the array has fewer points we try and determine
-        if self.points.shape[1] < 3:
-            if self.points.shape[1] != np.sum(self.nsc > 1):
+        if self.point.shape[1] < 3:
+            if self.point.shape[1] != np.sum(self.nsc > 1):
                 raise ValueError('Could not determine the non-periodic direction')
 
             # fix the points where there are no periodicity
             for i in [0, 1, 2]:
                 if self.nsc[i] == 1:
-                    self.points = np.insert(self.points, i, 0., axis=1)
+                    self.point = np.insert(self.point, i, 0., axis=1)
 
         # Ensure the shape is correct
-        self.points.shape = (-1, 3)
+        self.point.shape = (-1, 3)
 
         # Now figure out what to do with the divisions
-        if isinstance(divisions, Integral):
+        if isinstance(division, Integral):
 
             # Calculate points (we need correct units for distance)
-            kpts = [self(point) for point in self.points]
+            kpts = [self.k(pnt) for pnt in self.point]
             if len(kpts) == 2:
                 dists = [sum(np.diff(kpts, axis=0) ** 2) ** .5]
             else:
                 dists = sum(np.diff(kpts, axis=0)**2, axis=1) ** .5
             dist = sum(dists)
 
-            div = np.array(np.floor(dists / dist * divisions), np.int32)
+            div = np.array(np.floor(dists / dist * division), np.int32)
             n = sum(div)
-            if n < divisions:
+            if n < division:
                 div[-1] +=1
                 n = sum(div)
-            while n < divisions:
+            while n < division:
                 # Get the separation of k-points
                 delta = dist / n
 
@@ -130,44 +140,49 @@ class PathBZ(BrillouinZone):
 
                 n = sum(div)
 
-            divisions = div[:]
+            division = div[:]
 
-        self.divisions = np.array(divisions, np.int32)
-        self.divisions.shape = (-1,)
+        self.division = np.array(division, np.int32)
+        self.division.shape = (-1,)
+
+        if name is None:
+            self.name = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(self.point)]
+        else:
+            self.name = name
 
     def __iter__(self):
         """ Iterate through the path """
 
         # Calculate points
-        dk = np.diff(self.points, axis=0)
+        dk = np.diff(self.point, axis=0)
 
         for i in range(len(dk)):
 
             # Calculate this delta
             if i == len(dk) - 1:
                 # to get end-point
-                delta = dk[i, :] / (self.divisions[i] - 1)
+                delta = dk[i, :] / (self.division[i] - 1)
             else:
-                delta = dk[i, :] / self.divisions[i]
+                delta = dk[i, :] / self.division[i]
 
-            for j in range(self.divisions[i]):
-                yield self.points[i] + j * delta
+            for j in range(self.division[i]):
+                yield self.point[i] + j * delta
 
-    def linearticks(self):
+    def lineartick(self):
         """ The tick-marks corresponding to the linear-k values """
-        n = len(self.points)
+        n = len(self.point)
         xtick = np.zeros(n, np.float64)
 
         ii = 0
         for i in range(n-1):
             xtick[i] = ii
-            ii += self.divisions[i]
+            ii += self.division[i]
 
         # Final tick-mark
         xtick[n-1] = ii - 1
 
         # Get label tick
-        label_tick = [a for a in 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:n]]
+        label_tick = [a for a in self.name]
 
         return xtick, label_tick
 
@@ -195,7 +210,7 @@ class PathBZ(BrillouinZone):
 
         nk = len(self)
         # Calculate points
-        k = [self(point) for point in self.points]
+        k = [self.k(pnt) for pnt in self.point]
         dk = np.diff(k, axis=0)
         xtick = np.zeros(len(k), np.float64)
         # Prepare output array
@@ -204,7 +219,7 @@ class PathBZ(BrillouinZone):
         ii, add = 0, 0.
         for i in range(len(dk)):
             xtick[i] = ii
-            n = self.divisions[i]
+            n = self.division[i]
 
             # Calculate the delta along this segment
             delta = sum(dk[i, :] ** 2) ** .5
@@ -227,10 +242,10 @@ class PathBZ(BrillouinZone):
         xtick[len(dk)] = ii - 1
 
         # Get label tick
-        label_tick = [a for a in 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(k)]]
+        label_tick = [a for a in self.name]
         if ticks:
             return xtick, label_tick, dK
         return dK
 
     def __len__(self):
-        return sum(self.divisions)
+        return sum(self.division)
