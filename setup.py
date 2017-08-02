@@ -20,6 +20,7 @@ import os.path as osp
 CLASSIFIERS = """\
 Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
+Intended Audience :: Developers
 License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3.4
@@ -164,7 +165,6 @@ release = version
 # Git information
 git_revision = '{git}'
 git_revision_short = git_revision[:7]
-
 """
     # If we are in git we try and fetch the
     # git version as well
