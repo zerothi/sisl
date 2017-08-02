@@ -165,8 +165,6 @@ release = version
 git_revision = '{git}'
 git_revision_short = git_revision[:7]
 
-if not release:
-    version = version + '-' + git_revision
 """
     # If we are in git we try and fetch the
     # git version as well
@@ -174,6 +172,9 @@ if not release:
 
     with open(filename, 'w') as fh:
         fh.write(version_str.format(version=[MAJOR, MINOR, MICRO], git=GIT_REV))
+        if not ISRELEASED:
+            fh.write("\nversion = version + '-' + git_revision")
+
 
 if __name__ == '__main__':
 
