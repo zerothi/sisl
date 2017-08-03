@@ -721,6 +721,7 @@ class TestHamiltonian(object):
         gbig = self.H2.geom.repeat(3, 0).repeat(3, 1)
         H = Hamiltonian(gbig)
         H.construct(func)
+
         assert_true(H.spsame(Hbig))
         self.H2.empty()
 

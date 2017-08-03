@@ -1421,7 +1421,7 @@ class SparseOrbital(SparseGeometry):
             ja = geom.o2a(JO)
             oJ = geom.firsto[ja]
             oA = geom.lasto[ja] - oJ + 1
-            JO = oJ * (reps - 1) + JO
+            JO += oJ * (reps - 1)
             A = isc[:, axis] - 1
 
             # Get data to set
@@ -1516,9 +1516,24 @@ class SparseOrbital(SparseGeometry):
         isc = geom.o2isc(col)
         # resulting orbital in the new geometry (without wrapping
         # for correct supercell, that will happen below)
-        JO = (col % no) * reps
+        JO = col % no
+        # Get number of orbitals per atom (lasto - firsto + 1)
+        # This is faster than the direct call
+
+        ja = geom.o2a(JO)
+        oJ = geom.firsto[ja]
+        oA = geom.lasto[ja] + 1 - oJ
+        # Shift the orbitals corresponding to the
+        # repetitions of all previous atoms
+        JO += oJ * (reps - 1)
         # Get the offset orbitals
         O = isc[:, axis] - 1
+
+        # Clean
+        del ja, oJ
+
+        # Get view of ncol
+        ncol = self._csr.ncol.view()
 
         for rep in range(reps):
 
@@ -1528,8 +1543,8 @@ class SparseOrbital(SparseGeometry):
             isc[:, axis] = O // reps
 
             # Create the indices for the repetition
-            idx = array_arange(indptr[rep:-1:reps], n=self._csr.ncol)
-            indices[idx] = JO + O % reps + sc_index(isc) * no_n
+            idx = array_arange(indptr[rep:-1:reps], n=ncol)
+            indices[idx] = JO + oA * (O % reps) + sc_index(isc) * no_n
 
             if eta:
                 # calculate hours, minutes, seconds
@@ -1545,7 +1560,7 @@ class SparseOrbital(SparseGeometry):
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
         D = np.hstack([np.tile(d, (reps, 1))
-                       for d in np.split(D, n_.cumsumi(self._csr.ncol[:-1]), axis=1)
+                       for d in np.split(D, n_.cumsumi(ncol[:-1]), axis=1)
                    ])
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
