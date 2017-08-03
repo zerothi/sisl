@@ -19,10 +19,10 @@ H[1, 0, (0, 1)] = 2.7
 print(H)
 
 # Create band-structure for the supercell.
-band = PathBZ(H.sc, [[0., 0.], [2./3, 1./3], [0.5, 0.5], [0., 0.]], 300)
+band = PathBZ(H, [[0., 0.], [2./3, 1./3], [0.5, 0.5], [0., 0.]], 300)
 
 # Calculate eigenvalues of the band-structure
-eigs = np.array([eig for eig in band(H)])
+eigs = band.eigh()
 
 # Plot them
 import matplotlib.pyplot as plt
