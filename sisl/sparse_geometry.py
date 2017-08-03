@@ -15,7 +15,7 @@ import scipy.linalg as sli
 from scipy.sparse import isspmatrix, csr_matrix
 import scipy.sparse.linalg as ssli
 
-import _numpy as n_
+import sisl._numpy as n_
 from ._help import get_dtype, ensure_array
 from ._help import _zip as zip, _range as range
 from .utils.ranges import array_arange
