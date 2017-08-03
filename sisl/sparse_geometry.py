@@ -15,10 +15,11 @@ import scipy.linalg as sli
 from scipy.sparse import isspmatrix, csr_matrix
 import scipy.sparse.linalg as ssli
 
-from sisl._help import get_dtype, ensure_array
-from sisl._help import _zip as zip, _range as range
-from sisl.utils.ranges import array_arange
-from sisl.sparse import SparseCSR
+import _numpy as n_
+from ._help import get_dtype, ensure_array
+from ._help import _zip as zip, _range as range
+from .utils.ranges import array_arange
+from .sparse import SparseCSR
 
 __all__ = ['SparseGeometry', 'SparseAtom', 'SparseOrbital']
 
@@ -652,7 +653,7 @@ class SparseAtom(SparseGeometry):
         # We initialize to be the same as the parent direction
         nsc = np.array(self.nsc, np.int32, copy=True) // 2
         nsc[axis] = 0  # we count the new direction
-        isc = np.zeros([3], np.int32)
+        isc = n_.zerosi([3])
         isc[axis] -= 1
         out = False
         while not out:
@@ -772,7 +773,7 @@ class SparseAtom(SparseGeometry):
         idx = np.tile(atom, self.n_s)
         # Use broadcasting rules
         idx.shape = (self.n_s, -1)
-        tmp = np.arange(self.n_s, dtype=np.int32) * self.na
+        tmp = n_.arangei(self.n_s) * self.na
         tmp.shape = (-1, 1)
         idx += tmp
         del tmp
@@ -847,9 +848,9 @@ class SparseAtom(SparseGeometry):
         # Create new indptr, indices and D
         ncol = np.tile(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        indptr = np.insert(n_.cumsumi(ncol), 0, 0)
         del ncol
-        indices = np.empty([indptr[-1]], np.int32)
+        indices = n_.emptyi([indptr[-1]])
         indices.shape = (reps, -1)
 
         # Now we should fill the data
@@ -948,9 +949,9 @@ class SparseAtom(SparseGeometry):
         # Create new indptr, indices and D
         ncol = np.repeat(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        indptr = np.insert(n_.cumsumi(ncol), 0, 0)
         del ncol
-        indices = np.empty([indptr[-1]], np.int32)
+        indices = n_.emptyi([indptr[-1]])
 
         # Now we should fill the data
         isc = geom.a2isc(col)
@@ -985,7 +986,7 @@ class SparseAtom(SparseGeometry):
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
         D = np.hstack([np.tile(d, (reps, 1))
-                       for d in np.split(D, np.cumsum(self._csr.ncol[:-1], dtype=np.int32), axis=1)
+                       for d in np.split(D, n_.cumsumi(self._csr.ncol[:-1]), axis=1)
                    ])
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
@@ -1115,7 +1116,7 @@ class SparseOrbital(SparseGeometry):
         # We initialize to be the same as the parent direction
         nsc = self.nsc // 2
         nsc[axis] = 0  # we count the new direction
-        isc = np.zeros([3], np.int32)
+        isc = n_.zerosi([3])
         isc[axis] -= 1
         out = False
         while not out:
@@ -1162,7 +1163,7 @@ class SparseOrbital(SparseGeometry):
 
         def sco2sco(M, o, m, seps, axis):
             # Converts an o from M to m
-            isc = np.array(M.o2isc(o), np.int32, copy=True)
+            isc = n_.arrayi(M.o2isc(o), copy=True)
             isc[axis] = isc[axis] * seps
             # Correct for cell-offset
             isc[axis] = isc[axis] + (o % M.no) // m.no
@@ -1236,7 +1237,7 @@ class SparseOrbital(SparseGeometry):
         idx = np.tile(atom, self.n_s)
         # Use broadcasting rules
         idx.shape = (self.n_s, -1)
-        tmp = np.arange(self.n_s, dtype=np.int32) * self.no
+        tmp = n_.arangei(self.n_s) * self.no
         tmp.shape = (-1, 1)
         idx += tmp
         del tmp
@@ -1306,9 +1307,9 @@ class SparseOrbital(SparseGeometry):
         # Create new indptr, indices and D
         ncol = np.tile(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        indptr = np.insert(n_.cumsumi(ncol), 0, 0)
         del ncol
-        indices = np.empty([indptr[-1]], np.int32)
+        indices = n_.emptyi([indptr[-1]])
         indices.shape = (reps, -1)
 
         # Now we should fill the data
@@ -1507,9 +1508,9 @@ class SparseOrbital(SparseGeometry):
         # Create new indptr, indices and D
         ncol = np.repeat(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        indptr = np.insert(n_.cumsumi(ncol), 0, 0)
         del ncol
-        indices = np.empty([indptr[-1]], np.int32)
+        indices = n_.emptyi([indptr[-1]])
 
         # Now we should fill the data
         isc = geom.o2isc(col)
@@ -1544,7 +1545,7 @@ class SparseOrbital(SparseGeometry):
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
         D = np.hstack([np.tile(d, (reps, 1))
-                       for d in np.split(D, np.cumsum(self._csr.ncol[:-1], dtype=np.int32), axis=1)
+                       for d in np.split(D, n_.cumsumi(self._csr.ncol[:-1]), axis=1)
                    ])
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
