@@ -19,6 +19,8 @@ class TestBrillouinZone(object):
         self.s2 = SuperCell([2, 2, 10, 90, 90, 60], [5, 5, 1])
 
     def test_bz1(self):
+        bz = BrillouinZone(1.)
+        bz.weight
         bz = BrillouinZone(self.s1)
         assert_equal(len(bz), 1)
         assert_true(np.allclose(bz.k([0, 0, 0]), [0] * 3))
@@ -49,11 +51,14 @@ class TestBrillouinZone(object):
             def eig(self, k, *args, **kwargs):
                 return np.arange(3) - 1
         bz = BrillouinZone(Test(self.s1))
+        # Yields
         bz.yields()
         for val in bz.eigh():
             assert_true(np.allclose(val, np.arange(3)))
         for val in bz.eig():
             assert_true(np.allclose(val, np.arange(3) - 1))
+        # Average
+        assert_true(np.allclose(bz.average().eigh(), np.arange(3)))
 
     def test_pbz1(self):
         bz = PathBZ(self.s1, [[0]*3, [.5]*3], 300)
@@ -67,3 +72,7 @@ class TestBrillouinZone(object):
         bz.lineartick()
         bz.lineark()
         bz.lineark(True)
+
+    def test_pbz2(self):
+        bz = PathBZ(self.s1, [[0]*3, [.25]*3, [.5]*3], 300)
+        assert_equal(len(bz), 300)
