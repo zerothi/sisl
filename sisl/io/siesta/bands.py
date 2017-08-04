@@ -131,26 +131,32 @@ class bandsSileSiesta(SileSiesta):
                     raise ValueError("The bands file only contains points in the BZ, not a bandstructure.")
                 lbls, k, b = ns._bands
                 b = b.T
-
-                def myplot(title, x, y, E):
-                    plt.figure()
-                    plt.title(title)
-                    for ib in range(y.shape[0]):
-                        plt.plot(x, y[ib, :])
-                    plt.xlabel('k-path [1/Bohr]')
-                    plt.ylabel('E-Ef [eV]')
-                    plt.xticks(xlbls, lbls, rotation=45)
-                    plt.xlim(x.min(), x.max())
-                    if not E is None:
-                        plt.ylim(E[0], E[1])
-
+                # Extract to tick-marks and names
                 xlbls, lbls = lbls
+
+                def myplot(ax, title, x, y, E):
+                    ax.set_title(title)
+                    for ib in range(y.shape[0]):
+                        ax.plot(x, y[ib, :])
+                    ax.set_ylabel('E-Ef [eV]')
+                    ax.set_xlim(x.min(), x.max())
+                    if not E is None:
+                        ax.set_ylim(E[0], E[1])
+
                 if b.shape[1] == 2:
+                    _, ax = plt.subplots(2, 1)
+                    ax[0].set_xticks([])
+                    ax[1].set_xticks(xlbls)
+                    ax[1].set_xticklabels(lbls, rotation=45)
                     # We must plot spin-up/down separately
-                    for i, ud in [(0, 'UP'), (1, 'DOWN')]:
-                        myplot('Bandstructure SPIN-'+ud, k, b[:, i, :], ns._Emap)
+                    for i, ud in enumerate(['UP', 'DOWN']):
+                        myplot(ax[i], 'Bandstructure SPIN-'+ud, k, b[:, i, :], ns._Emap)
                 else:
-                    myplot('Bandstructure', k, b[:, 0, :], ns._Emap)
+                    plt.figure()
+                    ax = plt.gca()
+                    ax.set_xticks(xlbls)
+                    ax.set_xticklabels(lbls, rotation=45)
+                    myplot(ax, 'Bandstructure', k, b[:, 0, :], ns._Emap)
                 if value is None:
                     plt.show()
                 else:
