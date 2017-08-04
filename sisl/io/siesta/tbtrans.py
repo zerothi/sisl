@@ -4,6 +4,9 @@ Sile object for reading TBtrans binary files
 from __future__ import print_function, division
 
 import warnings
+# Check against integers
+from StringIO import StringIO
+
 import numpy as np
 try:
     npisin = np.isin
@@ -14,10 +17,6 @@ import itertools
 # The sparse matrix for the orbital/bond currents
 from scipy.sparse import csr_matrix, lil_matrix
 from scipy.sparse import isspmatrix_csr
-
-
-# Check against integers
-from numbers import Integral
 
 # Import sile objects
 from .sile import SileCDFSIESTA
@@ -66,6 +65,25 @@ class tbtncSileSiesta(SileCDFSIESTA):
         """
         from .tbtrans_av import tbtavncSileSiesta as TBTAV
         TBTAV(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(tbtav=self)
+
+    def _elec(self, elec):
+        """ Converts a string or integer to the corresponding electrode name
+
+        Parameters
+        ----------
+        elec : str or int
+           if `str` it is the *exact* electrode name, if `int` it is the electrode
+           index
+
+        Returns
+        -------
+        str : the electrode name
+        """
+        try:
+            elec = int(elec)
+            return self.elecs[elec]
+        except:
+            return elec
 
     def _value_avg(self, name, tree=None, avg=False):
         """ Local method for obtaining the data from the SileCDF.
@@ -354,7 +372,30 @@ class tbtncSileSiesta(SileCDFSIESTA):
         elif isinstance(E, _str):
             # This will always be converted to a float
             E = float(E)
-        return np.abs(self.E - E).argmin()
+        idxE = np.abs(self.E - E).argmin()
+        ret_E = self.E[idxE]
+        if abs(ret_E - E) > 1e-3:
+            warnings.warn(self.__class__.__name__ + " requesting energy " +
+                          "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E),
+                          UserWarning)
+        return idxE
+
+    def kindex(self, k):
+        """ Return the closest k index corresponding to the k-point ``k``
+
+        Parameters
+        ----------
+        k : array_like of float
+        """
+        ik = np.sum(np.abs(self.kpt - np.asarray(k, np.float64)[None, :]), axis=1).argmin()
+        ret_k = self.kpt[ik, :]
+        if not np.allclose(ret_k, k, atol=0.0001):
+            warnings.warn(self.__class__.__name__ + " requesting k-point " +
+                          "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*k) +
+                          " found " +
+                          "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*ret_k),
+                          UserWarning)
+        return ik
 
     @property
     def ne(self):
@@ -383,18 +424,18 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
     def chemical_potential(self, elec):
         """ Return the chemical potential associated with the electrode `elec` """
-        return self._value('mu', elec)[0] * Ry2eV
+        return self._value('mu', self._elec(elec))[0] * Ry2eV
     mu = chemical_potential
 
     def electronic_temperature(self, elec):
         """ Return temperature of the electrode electronic distribution in Kelvin """
-        return self._value('kT', elec)[0] * Ry2K
+        return self._value('kT', self._elec(elec))[0] * Ry2K
 
     def kT(self, elec):
         """ Return temperature of the electrode electronic distribution in eV """
-        return self._value('kT', elec)[0] * Ry2eV
+        return self._value('kT', self._elec(elec))[0] * Ry2eV
 
-    def transmission(self, elec_from, elec_to, avg=True):
+    def transmission(self, elec_from=0, elec_to=1, avg=True):
         """ Return the transmission from `from` to `to`.
 
         The transmission between two electrodes may be retrieved
@@ -402,9 +443,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec_from: str
+        elec_from: str, int, optional
            the originating electrode
-        elec_to: str
+        elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
         avg: bool, int or array_like, optional
            whether the returned transmission is k-averaged
@@ -414,13 +455,15 @@ class tbtncSileSiesta(SileCDFSIESTA):
         transmission_eig : the transmission decomposed in eigenchannels
         transmission_bulk : the total transmission in a periodic lead
         """
+        elec_from = self._elec(elec_from)
+        elec_to = self._elec(elec_to)
         if elec_from == elec_to:
             raise ValueError("Supplied elec_from and elec_to must not be the same.")
 
         return self._value_avg(elec_to + '.T', elec_from, avg=avg)
     T = transmission
 
-    def transmission_eig(self, elec_from, elec_to, avg=True):
+    def transmission_eig(self, elec_from=0, elec_to=1, avg=True):
         """ Return the transmission eigenvalues from `from` to `to`.
 
         The transmission eigenvalues between two electrodes may be retrieved
@@ -428,9 +471,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec_from: str
+        elec_from: str, int, optional
            the originating electrode
-        elec_to: str
+        elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
         avg: bool, int or array_like, optional
            whether the returned eigenvalues are k-averaged
@@ -440,6 +483,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
         transmission : the total transmission
         transmission_bulk : the total transmission in a periodic lead
         """
+        elec_from = self._elec(elec_from)
+        elec_to = self._elec(elec_to)
         if elec_from == elec_to:
             raise ValueError(
                 "Supplied elec_from and elec_to must not be the same.")
@@ -452,7 +497,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec: str
+        elec: str, int
            the bulk electrode
         avg: bool, int or array_like, optional
            whether the returned transmission is k-averaged
@@ -462,12 +507,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
         transmission : the total transmission
         transmission_eig : the transmission decomposed in eigenchannels
         """
-        return self._value_avg('T', elec, avg=avg)
+        return self._value_avg('T', self._elec(elec), avg=avg)
     Tbulk = transmission_bulk
 
     def _DOS_atom_sum(self, DOS, atom):
         if atom is None:
-            return DOS
+            return np.sum(DOS, axis=-1)
 
         # Now we should sum per atom an retain the order...
         if isinstance(atom, Integral):
@@ -507,12 +552,12 @@ class tbtncSileSiesta(SileCDFSIESTA):
         return self._DOS_atom_sum(self._value_E('DOS', avg=avg, E=E), atom) * eV2Ry
     DOS_Gf = DOS
 
-    def ADOS(self, elec, E=None, avg=True, atom=None):
+    def ADOS(self, elec=0, E=None, avg=True, atom=None):
         """ Return the DOS of the spectral function from `elec` (1/eV).
 
         Parameters
         ----------
-        elec: str
+        elec: str, int, optional
            electrode originating spectral function
         E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
@@ -526,6 +571,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         DOS : the total density of states (including bound states)
         BDOS : the bulk density of states in an electrode
         """
+        elec = self._elec(elec)
         return self._DOS_atom_sum(self._value_E('ADOS', elec, avg=avg, E=E), atom) * eV2Ry
     DOS_A = ADOS
 
@@ -534,7 +580,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec: str
+        elec: str, int
            electrode where the bulk DOS is returned
         E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
@@ -546,6 +592,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         DOS : the total density of states (including bound states)
         ADOS : the spectral density of states from an electrode
         """
+        elec = self._elec(elec)
         return self._value_E('DOS', elec, avg=avg, E=E) * eV2Ry
     DOS_bulk = BDOS
     BulkDOS = BDOS
@@ -555,17 +602,19 @@ class tbtncSileSiesta(SileCDFSIESTA):
         E = self.E
         idx_sort = np.argsort(E)
         # Get transmission
+        elec_from = self._elec(elec_from)
+        elec_to = self._elec(elec_to)
         T = self.transmission(elec_from, elec_to, avg)
         return E[idx_sort], T[idx_sort]
 
-    def current(self, elec_from, elec_to, avg=True):
+    def current(self, elec_from=0, elec_to=1, avg=True):
         """ Return the current from `from` to `to` using the weights in the file. 
 
         Parameters
         ----------
-        elec_from: str
+        elec_from: str, int, optional
            the originating electrode
-        elec_to: str
+        elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
         avg: bool, int or array_like, optional
            whether the returned current is based on k-averaged transmissions
@@ -574,6 +623,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
         --------
         current_parameter : to explicitly set the electronic temperature and chemical potentials
         """
+        elec_from = self._elec(elec_from)
+        elec_to = self._elec(elec_to)
         mu_f = self.chemical_potential(elec_from)
         kt_f = self.kT(elec_from)
         mu_t = self.chemical_potential(elec_to)
@@ -587,13 +638,13 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec_from: str
+        elec_from: str, int
            the originating electrode
         mu_from: float
            the chemical potential of the electrode (in eV)
         kt_from: float
            the electronic temperature of the electrode (in eV)
-        elec_to: str
+        elec_to: str, int
            the absorbing electrode (different from `elec_from`)
         mu_to: float
            the chemical potential of the electrode (in eV)
@@ -606,6 +657,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
         --------
         current : which calculates the current with the pre-set parameters
         """
+        elec_from = self._elec(elec_from)
+        elec_to = self._elec(elec_to)
         # Get energies
         E, T = self._E_T_sorted(elec_from, elec_to, avg)
 
@@ -651,7 +704,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec: str
+        elec: str, int
            the electrode of originating electrons
         E: float or int
            the energy or the energy index of the orbital current. If an integer
@@ -670,6 +723,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
+        elec = self._elec(elec)
         # Get the geometry for obtaining the sparsity pattern.
         geom = self.geom
 
@@ -845,7 +899,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec : ``str``
+        elec : str, int
            the electrode of originating electrons
         E : float or int
            A `float` for energy in eV, `int` for explicit energy index
@@ -875,6 +929,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
+        elec = self._elec(elec)
         Jij = self.orbital_current(elec, E, avg, isc)
 
         return self.bond_current_from_orbital(Jij, sum=sum, uc=uc)
@@ -940,7 +995,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec: ``str``
+        elec: str, int
            the electrode of originating electrons
         E: float or int
            the energy or energy index of the atom current.
@@ -971,6 +1026,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         bond_current : the bond current (orbital current summed over orbitals)
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
+        elec = self._elec(elec)
         Jorb = self.orbital_current(elec, E, avg, isc=[None, None, None])
 
         return self.atom_current_from_orbital(Jorb, activity=activity)
@@ -1019,7 +1075,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         Parameters
         ----------
-        elec: str
+        elec: str, int
            the electrode of originating electrons
         E: float or int
            the energy or energy index of the vector current.
@@ -1037,6 +1093,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         bond_current : the bond current (orbital current summed over orbitals)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
+        elec = self._elec(elec)
         Jab = self.bond_current(elec, E, avg, isc=[None, None, None], sum=sum)
 
         return self.vector_current_from_bond(Jab)
@@ -1077,6 +1134,98 @@ class tbtncSileSiesta(SileCDFSIESTA):
         elif len(val) == 1:
             val = val[0]
         return val
+
+    def info(self, elec=None):
+        """ Return a string containing the information available for this *.TBT.nc file
+
+        Parameters
+        ----------
+        elec : str, int
+           the electrode to request information from
+        """
+        if not elec is None:
+            elec = self._elec(elec)
+
+        # Create a StringIO object to retain the information
+        out = StringIO()
+        # Create wrapper function
+        def prnt(*args, **kwargs):
+            try:
+                print(*args, file=out, **kwargs)
+            except:
+                pass
+
+        def truefalse(bol, string, fdf=None):
+            if bol:
+                prnt("  + " + string + ": true")
+            elif fdf is None:
+                prnt("  - " + string + ": false")
+            else:
+                prnt("  - " + string + ": false\t\t["+', '.join(fdf) + ']')
+
+        # Retrieve the device atoms
+        dev_rng = list2range(self.a_dev + 1)
+        prnt("Device information:")
+        if self._k_avg:
+            prnt("  - all data is k-averaged")
+        else:
+            # Print out some more information related to the
+            # k-point sampling.
+            # However, we still do not know whether TRS is
+            # applied.
+            kpt = self.kpt
+            nA = len(np.unique(kpt[:, 0]))
+            nB = len(np.unique(kpt[:, 1]))
+            nC = len(np.unique(kpt[:, 2]))
+            prnt(("  - number of kpoints: {} <- "
+                   "[ A = {} , B = {} , C = {} ] (time-reversal unknown)").format(self.nkpt, nA, nB, nC))
+        prnt("  - energy range:")
+        E = self.E
+        Em, EM = np.amin(E), np.amax(E)
+        dE = np.diff(E)
+        dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
+        if (dEM - dEm) < 1e-3: # 0.001 meV
+            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
+        else:
+            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
+        prnt("  - atoms with DOS (fortran indices):")
+        prnt("     " + dev_rng)
+        truefalse('DOS' in self.variables, "DOS Green function", ['SELF.DOS.Gf'])
+        if elec is None:
+            elecs = self.elecs
+        else:
+            elecs = [elec]
+
+        # Print out information for each electrode
+        for elec in elecs:
+            try:
+                prnt()
+                prnt("Electrode: " + elec)
+                gelec = self.groups[elec]
+                prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
+                prnt("  - electronic temperature: {:.2f} K".format(self.electronic_temperature(elec)))
+                truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
+                truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
+                truefalse('J' in gelec.variables, "orbital-current", ['TBT.DOS.A', 'TBT.Current.Orb'])
+                truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
+                truefalse(elec + '.T' in gelec.variables, "transmission out", ['TBT.T.Out'])
+                truefalse(elec + '.C' in gelec.variables, "transmission out correction", ['TBT.T.Out'])
+                truefalse(elec + '.C.Eig' in gelec.variables, "transmission out correction (eigen)", ['TBT.T.Out', 'TBT.T.Eig'])
+                for elec2 in self.elecs:
+                    # Skip it self, checked above in .T and .C
+                    if elec2 == elec:
+                        continue
+                    truefalse(elec2 + '.T' in gelec.variables, "transmission -> " + elec2)
+                    truefalse(elec2 + '.T.Eig' in gelec.variables, "transmission (eigen) -> " + elec2, ['TBT.T.Eig'])
+            except:
+                prnt("  * no information available")
+                if len(elecs) == 1:
+                    prnt("\n\nAvailable electrodes are:")
+                    for elec in self.elecs:
+                        prnt(" - " + elec)
+        s = out.getvalue()
+        out.close()
+        return s
 
     @dec_default_AP("Extract data from a TBT.nc file")
     def ArgumentParser(self, p=None, *args, **kwargs):
@@ -1144,7 +1293,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 # Convert to actual indices
                 E = []
                 for begin, end in Emap:
-                    E.append(range(ns._tbt.Eindex(begin), ns._tbt.Eindex(end)+1))
+                    E.append(range(ns._tbt.Eindex(float(begin)), ns._tbt.Eindex(float(end))+1))
                 ns._Erng = np.array(E, np.int32).flatten()
         p.add_argument('--energy', '-E',
                        action=ERange,
@@ -1239,10 +1388,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
             @dec_collect_action
             @dec_ensure_E
             def __call__(self, parser, ns, values, option_string=None):
-                e1 = values[0]
+                e1 = ns._tbt._elec(values[0])
                 if e1 not in ns._tbt.elecs:
                     raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
-                e2 = values[1]
+                e2 = ns._tbt._elec(values[1])
                 if e2 not in ns._tbt.elecs:
                     if e2.strip() == '.':
                         for e2 in ns._tbt.elecs:
@@ -1269,7 +1418,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             @dec_collect_action
             @dec_ensure_E
             def __call__(self, parser, ns, value, option_string=None):
-                e = value[0]
+                e = ns._tbt._elec(value[0])
                 if e not in ns._tbt.elecs:
                     if e.strip() == '.':
                         for e in ns._tbt.elecs:
@@ -1297,7 +1446,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             def __call__(self, parser, ns, value, option_string=None):
                 if not value is None:
                     # we are storing the spectral DOS
-                    e = value
+                    e = ns._tbt._elec(value)
                     if e not in ns._tbt.elecs:
                         if e.strip() == '.':
                             for e in ns._tbt.elecs:
@@ -1340,7 +1489,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
             def __call__(self, parser, ns, value, option_string=None):
 
                 # we are storing the Bulk DOS
-                e = value[0]
+                e = ns._tbt._elec(value[0])
                 if e not in ns._tbt.elecs:
                     if e.strip() == '.':
                         for e in ns._tbt.elecs:
@@ -1367,10 +1516,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
             @dec_collect_action
             @dec_ensure_E
             def __call__(self, parser, ns, values, option_string=None):
-                e1 = values[0]
+                e1 = ns._tbt._elec(values[1])
                 if e1 not in ns._tbt.elecs:
                     raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
-                e2 = values[1]
+                e2 = ns._tbt._elec(values[1])
                 if e2 not in ns._tbt.elecs:
                     if e2.strip() == '.':
                         for e2 in ns._tbt.elecs:
@@ -1399,72 +1548,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
             def __call__(self, parser, ns, value, option_string=None):
                 # First short-hand the file
-                tbt = ns._tbt
+                print(ns._tbt.info(value))
 
-                def truefalse(bol, string, fdf=None):
-                    if bol:
-                        print("  + " + string + ": true")
-                    elif fdf is None:
-                        print("  - " + string + ": false")
-                    else:
-                        print("  - " + string + ": false\t\t["+', '.join(fdf) + ']')
-
-                # Retrieve the device atoms
-                dev_rng = list2range(tbt.a_dev + 1)
-                print("Device information:")
-                if tbt._k_avg:
-                    print("  - all data is k-averaged")
-                else:
-                    # Print out some more information related to the
-                    # k-point sampling.
-                    # However, we still do not know whether TRS is
-                    # applied.
-                    kpt = tbt.kpt
-                    nA = len(np.unique(kpt[:, 0]))
-                    nB = len(np.unique(kpt[:, 1]))
-                    nC = len(np.unique(kpt[:, 2]))
-                    print(("  - number of kpoints: {} <- "
-                           "[ A = {} , B = {} , C = {} ] (time-reversal unknown)").format(tbt.nkpt, nA, nB, nC))
-                print("  - energy range:")
-                E = tbt.E
-                Em, EM = np.amin(E), np.amax(E)
-                dE = np.diff(E)
-                dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
-                if (dEM - dEm) < 1e-3: # 0.001 meV
-                    print("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
-                else:
-                    print("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
-                print("  - atoms with DOS (fortran indices):")
-                print("     " + dev_rng)
-                truefalse('DOS' in tbt.variables, "DOS Green function", ['TBT.DOS.Gf'])
-                print()
-                print("Electrodes (*=DOS/ADOS/orbital-current not possible):")
-                for elec in tbt.elecs:
-                    if elec in tbt.groups:
-                        print("   " + elec)
-                    else:
-                        print("  *" + elec)
-                # Print out information for each electrode
-                for elec in tbt.groups:
-                    print() # new-line
-                    print("Electrode: " + elec)
-                    gelec = tbt.groups[elec]
-                    print("  - chemical potential: {:.4f} eV".format(tbt.mu(elec)))
-                    print("  - electronic temperature: {:.2f} K".format(tbt.electronic_temperature(elec)))
-                    truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
-                    truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
-                    truefalse('J' in gelec.variables, "Orbital-current", ['TBT.DOS.A', 'TBT.Current.Orb'])
-                    truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
-                    truefalse(elec + '.T' in gelec.variables, "transmission out", ['TBT.T.Out'])
-                    truefalse(elec + '.C' in gelec.variables, "transmission out correction", ['TBT.T.Out'])
-                    truefalse(elec + '.C.Eig' in gelec.variables, "transmission out correction (eigen)", ['TBT.T.Out', 'TBT.T.Eig'])
-                    for elec2 in tbt.elecs:
-                        # Skip it self, checked above in .T and .C
-                        if elec2 == elec: continue
-                        truefalse(elec2 + '.T' in gelec.variables, "transmission -> " + elec2)
-                        truefalse(elec2 + '.T.Eig' in gelec.variables, "transmission (eigen) -> " + elec2, ['TBT.T.Eig'])
-
-        p.add_argument('--info', '-i', action=Info, nargs=0,
+        p.add_argument('--info', '-i', action=Info, nargs='?', metavar='ELEC',
                        help='Print out what information is contained in the TBT.nc file.')
 
         class Out(argparse.Action):
@@ -1523,12 +1609,16 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     return
 
                 from matplotlib import pyplot as plt
+                plt.figure()
 
                 for i in range(1, len(ns._data)):
                     plt.plot(ns._data[0], ns._data[i], label=ns._data_header[i])
 
                 plt.legend(loc=8, ncol=3, bbox_to_anchor=(0.5, 1.0))
-                plt.show()
+                if value is None:
+                    plt.show()
+                else:
+                    plt.savefig(value)
 
                 # Clean all data
                 ns._data_description = []
@@ -1540,7 +1630,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._Oscale = 1. / len(ns._tbt.pivot)
                 ns._Erng = None
                 ns._krng = True
-        p.add_argument('--plot', '-p', nargs=0, action=Plot,
+        p.add_argument('--plot', '-p', action=Plot, nargs='?', metavar='FILE',
                        help='Plot the currently collected information (at its current invocation).')
 
         return p, namespace
