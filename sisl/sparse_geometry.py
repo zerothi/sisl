@@ -345,14 +345,14 @@ class SparseGeometry(object):
                 na_run += len(ias)
                 na -= len(ias)
                 # calculate hours, minutes, seconds
-                m, s = divmod(float(time()-t0)/na_run * na, 60)
+                m, s = divmod((time()-t0)/na_run * na, 60)
                 h, m = divmod(m, 60)
                 stdout.write(name + ".construct() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod(float(time()-t0), 60)
+            m, s = divmod((time()-t0), 60)
             h, m = divmod(m, 60)
             stdout.write(name + ".construct() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
@@ -829,7 +829,7 @@ class SparseAtom(SparseGeometry):
             idx = array_arange(ptr[:-1], n=ncol)
             col = np.take(self._csr.col, idx)
             D = np.take(self._csr._D, idx, 0)
-            del idx
+            del ptr, idx
 
         # Information for the new Hamiltonian sparse matrix
         na_n = S.na
@@ -870,7 +870,7 @@ class SparseAtom(SparseGeometry):
 
             if eta:
                 # calculate hours, minutes, seconds
-                m, s = divmod(float(time()-t0)/(rep+1) * (reps-rep-1), 60)
+                m, s = divmod((time()-t0)/(rep+1) * (reps-rep-1), 60)
                 h, m = divmod(m, 60)
                 stdout.write(name + ".tile() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
@@ -884,7 +884,7 @@ class SparseAtom(SparseGeometry):
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod(float(time()-t0), 60)
+            m, s = divmod((time()-t0), 60)
             h, m = divmod(m, 60)
             stdout.write(name + ".tile() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
@@ -974,7 +974,7 @@ class SparseAtom(SparseGeometry):
 
             if eta:
                 # calculate hours, minutes, seconds
-                m, s = divmod(float(time()-t0)/(rep+1) * (reps-rep-1), 60)
+                m, s = divmod((time()-t0)/(rep+1) * (reps-rep-1), 60)
                 h, m = divmod(m, 60)
                 stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
@@ -993,7 +993,7 @@ class SparseAtom(SparseGeometry):
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod(float(time()-t0), 60)
+            m, s = divmod((time()-t0), 60)
             h, m = divmod(m, 60)
             stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
@@ -1288,7 +1288,7 @@ class SparseOrbital(SparseGeometry):
             idx = array_arange(ptr[:-1], n=ncol)
             col = np.take(self._csr.col, idx)
             D = np.take(self._csr._D, idx, 0)
-            del idx
+            del ptr, idx
 
         # Information for the new Hamiltonian sparse matrix
         no_n = S.no
@@ -1329,7 +1329,7 @@ class SparseOrbital(SparseGeometry):
 
             if eta:
                 # calculate hours, minutes, seconds
-                m, s = divmod(float(time()-t0)/(rep+1) * (reps-rep-1), 60)
+                m, s = divmod((time()-t0)/(rep+1) * (reps-rep-1), 60)
                 h, m = divmod(m, 60)
                 stdout.write(name + ".tile() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
@@ -1343,7 +1343,7 @@ class SparseOrbital(SparseGeometry):
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod(float(time()-t0), 60)
+            m, s = divmod((time()-t0), 60)
             h, m = divmod(m, 60)
             stdout.write(name + ".tile() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
@@ -1351,106 +1351,6 @@ class SparseOrbital(SparseGeometry):
         return S
 
     def repeat(self, reps, axis, eta=False):
-        """ Create a repeated sparse orbital object, equivalent to `Geometry.repeat`
-
-        The already existing sparse elements are extrapolated
-        to the new supercell by repeating them in blocks like the coordinates.
-
-        Parameters
-        ----------
-        reps : int
-            number of repetitions along cell-vector ``axis``
-        axis : int
-            0, 1, 2 according to the cell-direction
-        eta : bool, optional
-            print the ETA to stdout
-
-        See Also
-        --------
-        Geometry.repeat: the same ordering as the final geometry
-        Geometry.tile: a different ordering of the final geometry
-        tile: a different ordering of the final geometry
-        """
-        # Create the new sparse object
-        g = self.geom.repeat(reps, axis)
-        nnzpr = np.amax(self._csr.ncol)
-        S = self.__class__(g, self.dim, self.dtype, nnzpr, **self._cls_kwargs())
-
-        # Now begin to populate it accordingly
-        # Retrieve local pointers to the information
-        # regarding the current Hamiltonian sparse matrix
-        geom = self.geom
-        no = self.no
-        ptr = self._csr.ptr
-        ncol = self._csr.ncol
-        col = self._csr.col
-
-        # Information for the new Hamiltonian sparse matrix
-        no_n = S.no
-        geom_n = S.geom
-
-        # For ETA
-        from time import time
-        from sys import stdout
-        t0 = time()
-        name = self.__class__.__name__
-
-        # First loop on axis tiling and local
-        # atoms in the geometry
-        sc_index = geom_n.sc_index
-        rngreps = range(reps)
-        for io in range(geom.no):
-
-            ia = geom.o2a(io)
-            # firsto * reps = the offset for all previous atoms
-            # io - firsto = the orbital on the atom
-            IO = geom.firsto[ia] * (reps-1) + io
-            oa = geom.atom[ia].orbs
-
-            # Loop on the connection orbitals
-            if ncol[io] == 0:
-                continue
-            ccol = col[ptr[io]:ptr[io]+ncol[io]]
-
-            isc = geom.o2isc(ccol)
-
-            # Unit-cell orbitals
-            JO = ccol % no
-
-            # Get the number of orbitals of the residing atoms
-            ja = geom.o2a(JO)
-            oJ = geom.firsto[ja]
-            oA = geom.lasto[ja] - oJ + 1
-            JO += oJ * (reps - 1)
-            A = isc[:, axis] - 1
-
-            # Get data to set
-            D = self[io, ccol]
-
-            for rep in rngreps:
-
-                A += 1
-                isc[:, axis] = A // reps
-
-                S[IO + oa * rep, JO + oA * (A % reps) + sc_index(isc) * no_n] = D
-
-            if eta:
-                # calculate hours, minutes, seconds
-                m, s = divmod(float(time()-t0)/(io+1) * (no-io-1), 60)
-                h, m = divmod(m, 60)
-                stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
-                stdout.flush()
-
-        if eta:
-            # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod(float(time()-t0), 60)
-            h, m = divmod(m, 60)
-            stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
-            stdout.flush()
-
-        return S
-
-    def _repeat(self, reps, axis, eta=False):
         """ Create a repeated sparse orbital object, equivalent to `Geometry.repeat`
 
         The already existing sparse elements are extrapolated
@@ -1489,7 +1389,7 @@ class SparseOrbital(SparseGeometry):
             idx = array_arange(ptr[:-1], n=ncol)
             col = np.take(self._csr.col, idx)
             D = np.take(self._csr._D, idx, 0)
-            del idx
+            del ptr, idx
 
         # Information for the new Hamiltonian sparse matrix
         no_n = S.no
@@ -1528,33 +1428,44 @@ class SparseOrbital(SparseGeometry):
         JO += oJ * (reps - 1)
         # Get the offset orbitals
         O = isc[:, axis] - 1
+        # We need to create and indexable atomic array
+        # This is required for multi-orbital cases where
+        # we should tile atomic orbitals, and repeat the atoms (only).
+        # 'A' is now the first (non-repeated) atom in the new structure
+        A = n_.arangei(geom.na) * reps
+        AO = geom_n.lasto[A] - geom_n.firsto[A] + 1
+        # subtract AO for first iteration in repetition loop
+        OA = geom_n.firsto[A] - AO
 
         # Clean
-        del ja, oJ
+        del ja, oJ, A
 
         # Get view of ncol
         ncol = self._csr.ncol.view()
 
+        # Create repetitions
         for rep in range(reps):
 
+            # Update atomic offset
+            OA += AO
             # Update the offset
             O += 1
             # Correct supercell information
             isc[:, axis] = O // reps
 
             # Create the indices for the repetition
-            idx = array_arange(indptr[rep:-1:reps], n=ncol)
+            idx = array_arange(indptr[array_arange(OA, n=AO)], n=ncol)
             indices[idx] = JO + oA * (O % reps) + sc_index(isc) * no_n
 
             if eta:
                 # calculate hours, minutes, seconds
-                m, s = divmod(float(time()-t0)/(rep+1) * (reps-rep-1), 60)
+                m, s = divmod((time()-t0)/(rep+1) * (reps-rep-1), 60)
                 h, m = divmod(m, 60)
                 stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
                 stdout.flush()
 
         # Clean-up
-        del isc, JO, O, idx
+        del isc, JO, O, OA, AO, idx
 
         # In the repeat we have to tile individual atomic couplings
         # So we should split the arrays and tile them individually
@@ -1567,7 +1478,7 @@ class SparseOrbital(SparseGeometry):
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod(float(time()-t0), 60)
+            m, s = divmod((time()-t0), 60)
             h, m = divmod(m, 60)
             stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
             stdout.flush()
