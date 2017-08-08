@@ -13,7 +13,7 @@ from scipy.sparse import csr_matrix, lil_matrix
 # Import sile objects
 from sisl.utils import *
 from ..sile import *
-from .sile import SileCDFSIESTA
+from .sile import SileCDFSiesta
 from .tbtrans import tbtncSileSiesta, phtncSileSiesta
 
 

@@ -4,7 +4,7 @@ Sile object for reading/writing SIESTA binary files
 from __future__ import print_function
 
 # Import sile objects
-from .sile import SileCDFSIESTA
+from .sile import SileCDFSiesta
 from ..sile import *
 
 # Import the geometry object
@@ -22,7 +22,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
 
-class ncSileSiesta(SileCDFSIESTA):
+class ncSileSiesta(SileCDFSiesta):
     """ SIESTA file object """
 
     def read_supercell(self):

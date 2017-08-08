@@ -2268,8 +2268,7 @@ class Geometry(SuperCellChild):
         return array_arange(ob, oe)
 
     def o2a(self, io):
-        """
-        Returns an atomic index corresponding to the orbital indicies.
+        """ Atomic index corresponding to the orbital indicies.
 
         This is a particurlaly slow algorithm due to for-loops.
 

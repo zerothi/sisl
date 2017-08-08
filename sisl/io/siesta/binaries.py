@@ -12,7 +12,7 @@ except:
     found_module = False
 
 # Import sile objects
-from .sile import SileBinSIESTA
+from .sile import SileBinSiesta
 from ..sile import *
 
 # Import the geometry object
@@ -24,7 +24,7 @@ from sisl.physics import Hamiltonian
 __all__ = ['TSHSSileSiesta']
 
 
-class TSHSSileSiesta(SileBinSIESTA):
+class TSHSSileSiesta(SileBinSiesta):
     """ TranSIESTA file object """
 
     def read_supercell(self):

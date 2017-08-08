@@ -4,16 +4,16 @@ Define a common SIESTA Sile
 
 from ..sile import Sile, SileCDF, SileBin
 
-__all__ = ['SileSiesta', 'SileCDFSIESTA', 'SileBinSIESTA']
+__all__ = ['SileSiesta', 'SileCDFSiesta', 'SileBinSiesta']
 
 
 class SileSiesta(Sile):
     pass
 
 
-class SileCDFSIESTA(SileCDF):
+class SileCDFSiesta(SileCDF):
     pass
 
 
-class SileBinSIESTA(SileBin):
+class SileBinSiesta(SileBin):
     pass

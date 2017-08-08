@@ -4,8 +4,10 @@ Sile object for reading TBtrans binary files
 from __future__ import print_function, division
 
 import warnings
-# Check against integers
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except:
+    from io import StringIO
 
 import numpy as np
 try:
@@ -19,7 +21,7 @@ from scipy.sparse import csr_matrix, lil_matrix
 from scipy.sparse import isspmatrix_csr
 
 # Import sile objects
-from .sile import SileCDFSIESTA
+from .sile import SileCDFSiesta
 from ..sile import *
 from sisl.utils import *
 
@@ -39,7 +41,7 @@ Ry2K = unit_convert('Ry', 'K')
 eV2Ry = unit_convert('eV', 'Ry')
 
 
-class tbtncSileSiesta(SileCDFSIESTA):
+class tbtncSileSiesta(SileCDFSiesta):
     """ TBtrans file object 
 
     This ``SileCDF`` implements the TBtrans output `*.TBT.nc` sile which contains
@@ -85,7 +87,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         except:
             return elec
 
-    def _value_avg(self, name, tree=None, avg=False):
+    def _value_avg(self, name, tree=None, kavg=False):
         """ Local method for obtaining the data from the SileCDF.
 
         This method checks how the file is access, i.e. whether
@@ -103,8 +105,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         # Perform normalization
         orig_shape = v.shape
-        if isinstance(avg, bool):
-            if avg:
+        if isinstance(kavg, bool):
+            if kavg:
                 nk = len(wkpt)
                 data = v[0, ...] * wkpt[0]
                 for i in range(1, nk):
@@ -113,26 +115,26 @@ class tbtncSileSiesta(SileCDFSIESTA):
             else:
                 data = v[:]
 
-        elif isinstance(avg, Integral):
-            data = v[avg, ...] * wkpt[avg]
+        elif isinstance(kavg, Integral):
+            data = v[kavg, ...] * wkpt[kavg]
             data.shape = orig_shape[1:]
 
         else:
-            # We assume avg is some kind of iterable
-            data = v[avg[0], ...] * wkpt[avg[0]]
-            for i in range(1, len(avg)):
-                data += v[avg[i], ...] * wkpt[avg[i]]
+            # We assume kavg is some kind of iterable
+            data = v[kavg[0], ...] * wkpt[kavg[0]]
+            for i in range(1, len(kavg)):
+                data += v[kavg[i], ...] * wkpt[kavg[i]]
             data.shape = orig_shape[1:]
 
         # Return data
         return data
 
-    def _value_E(self, name, tree=None, avg=False, E=None):
+    def _value_E(self, name, tree=None, kavg=False, E=None):
         """ Local method for obtaining the data from the SileCDF using an E index.
 
         """
         if E is None:
-            return self._value_avg(name, tree, avg)
+            return self._value_avg(name, tree, kavg)
 
         # Ensure that it is an index
         iE = self.Eindex(E)
@@ -146,8 +148,8 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Perform normalization
         orig_shape = v.shape
 
-        if isinstance(avg, bool):
-            if avg:
+        if isinstance(kavg, bool):
+            if kavg:
                 nk = len(wkpt)
                 data = np.array(v[0, iE, ...]) * wkpt[0]
                 for i in range(1, nk):
@@ -156,14 +158,14 @@ class tbtncSileSiesta(SileCDFSIESTA):
             else:
                 data = np.array(v[:, iE, ...])
 
-        elif isinstance(avg, Integral):
-            data = np.array(v[avg, iE, ...]) * wkpt[avg]
+        elif isinstance(kavg, Integral):
+            data = np.array(v[kavg, iE, ...]) * wkpt[kavg]
             data.shape = orig_shape[2:]
 
         else:
-            # We assume avg is some kind of itterable
-            data = v[avg[0], iE, ...] * wkpt[avg[0]]
-            for i in avg[1:]:
+            # We assume kavg is some kind of itterable
+            data = v[kavg[0], iE, ...] * wkpt[kavg[0]]
+            for i in kavg[1:]:
                 data += v[i, iE, ...] * wkpt[i]
             data.shape = orig_shape[2:]
 
@@ -435,7 +437,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         """ Return temperature of the electrode electronic distribution in eV """
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
-    def transmission(self, elec_from=0, elec_to=1, avg=True):
+    def transmission(self, elec_from=0, elec_to=1, kavg=True):
         """ Return the transmission from `from` to `to`.
 
         The transmission between two electrodes may be retrieved
@@ -447,8 +449,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the originating electrode
         elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
-        avg: bool, int or array_like, optional
-           whether the returned transmission is k-averaged
+        kavg: bool, int or array_like, optional
+           whether the returned transmission is k-averaged, an explicit k-point
+           or a selection of k-points
 
         See Also
         --------
@@ -460,10 +463,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
         if elec_from == elec_to:
             raise ValueError("Supplied elec_from and elec_to must not be the same.")
 
-        return self._value_avg(elec_to + '.T', elec_from, avg=avg)
+        return self._value_avg(elec_to + '.T', elec_from, kavg=kavg)
     T = transmission
 
-    def transmission_eig(self, elec_from=0, elec_to=1, avg=True):
+    def transmission_eig(self, elec_from=0, elec_to=1, kavg=True):
         """ Return the transmission eigenvalues from `from` to `to`.
 
         The transmission eigenvalues between two electrodes may be retrieved
@@ -475,8 +478,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the originating electrode
         elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
-        avg: bool, int or array_like, optional
-           whether the returned eigenvalues are k-averaged
+        kavg: bool, int or array_like, optional
+           whether the returned transmission is k-averaged, an explicit k-point
+           or a selection of k-points
 
         See Also
         --------
@@ -489,70 +493,199 @@ class tbtncSileSiesta(SileCDFSIESTA):
             raise ValueError(
                 "Supplied elec_from and elec_to must not be the same.")
 
-        return self._value_avg(elec_to + '.T.Eig', elec_from, avg=avg)
+        return self._value_avg(elec_to + '.T.Eig', elec_from, kavg=kavg)
     Teig = transmission_eig
 
-    def transmission_bulk(self, elec, avg=True):
+    def transmission_bulk(self, elec=0, kavg=True):
         """ Return the bulk transmission in the `elec` electrode
 
         Parameters
         ----------
-        elec: str, int
+        elec: str, int, optional
            the bulk electrode
-        avg: bool, int or array_like, optional
-           whether the returned transmission is k-averaged
+        kavg: bool, int or array_like, optional
+           whether the returned transmission is k-averaged, an explicit k-point
+           or a selection of k-points
 
         See Also
         --------
         transmission : the total transmission
         transmission_eig : the transmission decomposed in eigenchannels
         """
-        return self._value_avg('T', self._elec(elec), avg=avg)
+        return self._value_avg('T', self._elec(elec), kavg=kavg)
     Tbulk = transmission_bulk
 
-    def _DOS_atom_sum(self, DOS, atom):
+    def norm(self, atom=None, orbital=None, norm='none'):
+        """ Return the normalization factor depending on the input
+
+        Parameters
+        ----------
+        atom : array_like of int or bool, optional
+           only return for a given set of atoms (default to all).
+           *NOT* allowed with `orbital` keyword
+        orbital : array_like of int or bool, optional
+           only return for a given set of orbitals (default to all)
+           *NOT* allowed with `atom` keyword
+        norm : {'none', 'atom', 'orbital', 'all'}
+           how the normalization of the summed DOS is performed. 
+            - 'none', no normalization is performed.
+            - 'atom', divides by number of orbitals in selected atoms, if `orbital` is provided then the total number of orbitals on the chosen atoms are the norm,
+            - 'orbital', divides by number of orbitals in selected orbitals,
+            - 'all', divides by number of orbitals in device region,
+        """
+        # Cast to lower
+        norm = norm.lower()
+        if norm == 'none':
+            NORM = 1.
+        elif norm in ['all', 'atom', 'orbital']:
+            NORM = float(self.no_d)
+        else:
+            raise ValueError('Error on norm keyword in when requesting normalization')
+
+        if atom is None and orbital is None:
+            return NORM
+
+        # Now figure out what to do
         if atom is None:
-            return np.sum(DOS, axis=-1)
+            # Get pivoting indices to average over
+            if norm == 'orbital':
+                NORM = float(len(self.o2p(orbital)))
+            elif norm == 'atom':
+                geom = self.geom
+                a = np.unique(geom.o2a(orbital))
+                # Now sum the orbitals per atom
+                NORM = float(np.sum(geom.firsto[a+1] - geom.firsto[a]))
+            return NORM
 
-        # Now we should sum per atom an retain the order...
-        if isinstance(atom, Integral):
-            return np.sum(DOS[..., self.a2p(atom)], axis=-1)
+        # atom is specified
+        if norm in ['orbital', 'atom']:
+            NORM = float(len(self.o2p(atom)))
+        return NORM
 
-        # Create return array
-        shp = list(DOS.shape)
-        shp[-1] = len(atom)
-        nDOS = np.zeros(shp, np.float64)
+    def _DOS(self, DOS, atom, orbital, sum, norm):
+        """ Averages/sums the DOS
+
+        Parameters
+        ----------
+        atom : array_like of int or bool, optional
+           only return for a given set of atoms (default to all).
+           *NOT* allowed with `orbital` keyword
+        orbital : array_like of int or bool, optional
+           only return for a given set of orbitals (default to all)
+           *NOT* allowed with `atom` keyword
+        sum : bool, optional
+           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
+        norm : {'none', 'atom', 'orbital', 'all'}
+           how the normalization of the summed DOS is performed. 
+            - 'none', no normalization is performed.
+            - 'atom', divides by number of orbitals in selected atoms, if `orbital` is provided then the total number of orbitals on the chosen atoms are the norm,
+            - 'orbital', divides by number of orbitals in selected orbitals,
+            - 'all', divides by number of orbitals in device region,
+
+        Returns
+        -------
+        numpy.ndarray : in order of the geometry orbitals (i.e. pivoted back to the device region).
+                        If `atom` or `orbital` is specified they are returned in that order.
+        """
+        if not atom is None and not orbital is None:
+            raise ValueError(('Both atom and orbital keyword in DOS request '
+                              'cannot be specified, only one at a time.'))
+        # Cast to lower
+        norm = norm.lower()
+        if norm == 'none':
+            NORM = 1.
+        elif norm in ['all', 'atom', 'orbital']:
+            NORM = float(self.no_d)
+        else:
+            raise ValueError('Error on norm keyword in DOS request')
+
+        if atom is None and orbital is None:
+            # We simply return *everything*
+            if sum:
+                return np.sum(DOS[..., :], axis=-1) / NORM
+            # We return the sorted DOS
+            p = np.argsort(self.pivot)
+            return DOS[..., p] / NORM
+
+        # Now figure out what to do
+        if atom is None:
+            # orbital *must* be specified
+
+            # Get pivoting indices to average over
+            p = self.o2p(orbital)
+            if norm == 'orbital':
+                NORM = float(len(p))
+            elif norm == 'atom':
+                geom = self.geom
+                a = np.unique(geom.o2a(orbital))
+                # Now sum the orbitals per atom
+                NORM = float(np.sum(geom.firsto[a+1] - geom.firsto[a]))
+
+            if sum:
+                return np.sum(DOS[..., p], axis=-1) / NORM
+            # Else, we have to return the full subset
+            return DOS[..., p] / NORM
+
+        # atom is specified
+        # Return the pivoting orbitals for the atom
+        p = self.a2p(atom)
+        if norm in ['orbital', 'atom']:
+            NORM = float(len(p))
+
+        if sum or isinstance(atom, Integral):
+            # Regardless of SUM, when requesting a single atom
+            # we return it
+            return np.sum(DOS[..., p], axis=-1) / NORM
+
+        # We will return per-atom
+        shp = list(DOS.shape[:-1])
+        nDOS = np.empty(shp + [len(atom)], np.float64)
 
         # Sum for new return stuff
         for i, a in enumerate(atom):
             pvt = self.a2p(a)
             if len(pvt) == 0:
-                continue
-            nDOS[..., i] = np.sum(DOS[..., pvt], axis=-1)
+                nDOS[..., i] = 0.
+            else:
+                nDOS[..., i] = np.sum(DOS[..., pvt], axis=-1) / NORM
 
         return nDOS
 
-    def DOS(self, E=None, avg=True, atom=None):
+    def DOS(self, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
         """ Return the Green function DOS (1/eV).
 
         Parameters
         ----------
         E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
-        avg: bool, int or array_like, optional
-           whether the returned DOS is k-averaged
-        atom : array_like of int, optional
-           only return for a given set of atoms (default to all)
+        kavg: bool, int or array_like, optional
+           whether the returned DOS is k-averaged, an explicit k-point
+           or a selection of k-points
+        atom : array_like of int or bool, optional
+           only return for a given set of atoms (default to all).
+           *NOT* allowed with `orbital` keyword
+        orbital : array_like of int or bool, optional
+           only return for a given set of orbitals (default to all)
+           *NOT* allowed with `atom` keyword
+        sum : bool, optional
+           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
+        norm : {'none', 'atom', 'orbital', 'all'}
+           how the normalization of the summed DOS is performed. 
+            - 'none', no normalization is performed.
+            - 'atom', divides by number of orbitals in selected atoms, if `orbital` is provided then the total number of orbitals on the chosen atoms are the norm,
+            - 'orbital', divides by number of orbitals in selected orbitals,
+            - 'all', divides by number of orbitals in device region,
 
         See Also
         --------
         ADOS : the spectral density of states from an electrode
         BDOS : the bulk density of states in an electrode
         """
-        return self._DOS_atom_sum(self._value_E('DOS', avg=avg, E=E), atom) * eV2Ry
+        return self._DOS(self._value_E('DOS', kavg=kavg, E=E),
+                                  atom, orbital, sum, norm) * eV2Ry
     DOS_Gf = DOS
 
-    def ADOS(self, elec=0, E=None, avg=True, atom=None):
+    def ADOS(self, elec=0, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
         """ Return the DOS of the spectral function from `elec` (1/eV).
 
         Parameters
@@ -561,10 +694,23 @@ class tbtncSileSiesta(SileCDFSIESTA):
            electrode originating spectral function
         E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
-        avg: bool, int or array_like, optional
-           whether the returned DOS is k-averaged
-        atom : array_like of int, optional
-           only return for a given set of atoms (default to all)
+        kavg: bool, int or array_like, optional
+           whether the returned DOS is k-averaged, an explicit k-point
+           or a selection of k-points
+        atom : array_like of int or bool, optional
+           only return for a given set of atoms (default to all).
+           *NOT* allowed with `orbital` keyword
+        orbital : array_like of int or bool, optional
+           only return for a given set of orbitals (default to all)
+           *NOT* allowed with `atom` keyword
+        sum : bool, optional
+           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
+        norm : {'none', 'atom', 'orbital', 'all'}
+           how the normalization of the summed DOS is performed. 
+            - 'none', no normalization is performed.
+            - 'atom', divides by number of orbitals in selected atoms, if `orbital` is provided then the total number of orbitals on the chosen atoms are the norm,
+            - 'orbital', divides by number of orbitals in selected orbitals,
+            - 'all', divides by number of orbitals in device region,
 
         See Also
         --------
@@ -572,20 +718,25 @@ class tbtncSileSiesta(SileCDFSIESTA):
         BDOS : the bulk density of states in an electrode
         """
         elec = self._elec(elec)
-        return self._DOS_atom_sum(self._value_E('ADOS', elec, avg=avg, E=E), atom) * eV2Ry
+        return self._DOS(self._value_E('ADOS', elec, kavg=kavg, E=E),
+                         atom, orbital, sum, norm) * eV2Ry
     DOS_A = ADOS
 
-    def BDOS(self, elec, E=None, avg=True):
+    def BDOS(self, elec=0, E=None, kavg=True, sum=True):
         """ Return the bulk DOS of `elec` (1/eV).
 
         Parameters
         ----------
-        elec: str, int
+        elec: str, int, optional
            electrode where the bulk DOS is returned
         E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
-        avg: bool, int or array_like, optional
-           whether the returned DOS is k-averaged
+        kavg: bool, int or array_like, optional
+           whether the returned DOS is k-averaged, an explicit k-point
+           or a selection of k-points
+        sum : bool, optional
+           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
+
 
         See Also
         --------
@@ -593,21 +744,25 @@ class tbtncSileSiesta(SileCDFSIESTA):
         ADOS : the spectral density of states from an electrode
         """
         elec = self._elec(elec)
-        return self._value_E('DOS', elec, avg=avg, E=E) * eV2Ry
+        if sum:
+            return np.sum(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry
+        else:
+            return self._value_E('DOS', elec, kavg=kavg, E=E) * eV2Ry
+
     DOS_bulk = BDOS
     BulkDOS = BDOS
 
-    def _E_T_sorted(self, elec_from, elec_to, avg=True):
+    def _E_T_sorted(self, elec_from, elec_to, kavg=True):
         """ Internal routine for returning energies and transmission in a sorted array """
         E = self.E
         idx_sort = np.argsort(E)
         # Get transmission
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
-        T = self.transmission(elec_from, elec_to, avg)
+        T = self.transmission(elec_from, elec_to, kavg)
         return E[idx_sort], T[idx_sort]
 
-    def current(self, elec_from=0, elec_to=1, avg=True):
+    def current(self, elec_from=0, elec_to=1, kavg=True):
         """ Return the current from `from` to `to` using the weights in the file. 
 
         Parameters
@@ -616,8 +771,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the originating electrode
         elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
-        avg: bool, int or array_like, optional
-           whether the returned current is based on k-averaged transmissions
+        kavg: bool, int or array_like, optional
+           whether the returned current is k-averaged, an explicit k-point
+           or a selection of k-points
 
         See Also
         --------
@@ -630,10 +786,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
         mu_t = self.chemical_potential(elec_to)
         kt_t = self.kT(elec_to)
         return self.current_parameter(elec_from, mu_f, kt_f,
-                                      elec_to, mu_t, kt_t, avg)
+                                      elec_to, mu_t, kt_t, kavg)
 
     def current_parameter(self, elec_from, mu_from, kt_from,
-                          elec_to, mu_to, kt_to, avg=True):
+                          elec_to, mu_to, kt_to, kavg=True):
         """ Return the current from `from` to `to` using the passed parameters
 
         Parameters
@@ -650,8 +806,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the chemical potential of the electrode (in eV)
         kt_to: float
            the electronic temperature of the electrode (in eV)
-        avg: bool, int or array_like, optional
-           whether the returned current is based on k-averaged transmissions
+        kavg: bool, int or array_like, optional
+           whether the returned current is k-averaged, an explicit k-point
+           or a selection of k-points
 
         See Also
         --------
@@ -660,7 +817,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
         # Get energies
-        E, T = self._E_T_sorted(elec_from, elec_to, avg)
+        E, T = self._E_T_sorted(elec_from, elec_to, kavg)
 
         # We expect the tbtrans calcluation was created with the simple
         #   mid-rule!
@@ -695,7 +852,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         I = np.sum(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
 
-    def orbital_current(self, elec, E, avg=True, isc=None):
+    def orbital_current(self, elec, E, kavg=True, isc=None):
         """ Return the orbital current originating from `elec`.
 
         This will return a sparse matrix (``scipy.sparse.csr_matrix``).
@@ -710,8 +867,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the energy or the energy index of the orbital current. If an integer
            is passed it is the index, otherwise the index corresponding to
            `Eindex(E)` is used.
-        avg: bool, optional
-           whether the orbital current returned is k-averaged, default to True
+        kavg: bool, int or array_like, optional
+           whether the returned orbital current is k-averaged, an explicit k-point
+           or a selection of k-points
         isc: array_like, optional
            the returned bond currents from the unit-cell (`[0, 0, 0]`) to
            the given supercell, the default is only orbital currents *in* the unitcell.
@@ -786,9 +944,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
             del tmp
 
         if all_col is None:
-            J = self._value_E('J', elec, avg, E)
+            J = self._value_E('J', elec, kavg, E)
         else:
-            J = self._value_E('J', elec, avg, E)[..., all_col]
+            J = self._value_E('J', elec, kavg, E)[..., all_col]
 
         return csr_matrix((J, col, rptr), shape=mat_size)
 
@@ -894,7 +1052,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         return Jab
 
-    def bond_current(self, elec, E, avg=True, isc=None, sum='+', uc=False):
+    def bond_current(self, elec, E, kavg=True, isc=None, sum='+', uc=False):
         """ Return the bond-current between atoms (sum of orbital currents)
 
         Parameters
@@ -905,18 +1063,18 @@ class tbtncSileSiesta(SileCDFSIESTA):
            A `float` for energy in eV, `int` for explicit energy index
            Unlike `orbital_current` this may not be `None` as the down-scaling of the
            orbital currents may not be equivalent for all energy points.
-        avg : ``bool`` (`True`)
-           whether the bond current returned is k-averaged
-        isc : ``array_like`` (`[0, 0, 0]`)
-           the returned bond currents from the unit-cell (`[0, 0, 0]`) to
+        kavg : bool, int or array_like, optional
+           whether the returned bond current is k-averaged, an explicit k-point
+           or a selection of k-points
+        isc : array_like, optional
+           the returned bond currents from the unit-cell (`[0, 0, 0]`) (default) to
            the given supercell. If `[None, None, None]` is passed all
            bond currents are returned.
-        sum : ``str`` (`'+'`)
-           this value may be "+"/"-"/"all"
+        sum : {'+', '-', 'all'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return the sum of both.
-        uc : ``bool`` (`False`)
+        uc : bool, optional
            whether the returned bond-currents are only in the unit-cell.
            If `True` this will return a sparse matrix of `.shape = (self.na, self.na)`,
            else, it will return a sparse matrix of `.shape = (self.na, self.na * self.n_s)`.
@@ -930,7 +1088,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
         elec = self._elec(elec)
-        Jij = self.orbital_current(elec, E, avg, isc)
+        Jij = self.orbital_current(elec, E, kavg, isc)
 
         return self.bond_current_from_orbital(Jij, sum=sum, uc=uc)
 
@@ -988,7 +1146,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         return Ja
 
-    def atom_current(self, elec, E, avg=True, activity=True):
+    def atom_current(self, elec, E, kavg=True, activity=True):
         r""" Return the atom-current of atoms. 
 
         This should *not* be confused with the bond-currents.
@@ -999,9 +1157,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the electrode of originating electrons
         E: float or int
            the energy or energy index of the atom current.
-        avg: ``bool`` (`True`)
-           whether the atom current returned is k-averaged
-        activity: ``bool`` (`True`)
+        kavg: bool, int or array_like, optional
+           whether the returned atomic current is k-averaged, an explicit k-point
+           or a selection of k-points
+        activity: bool, optional
            whether the activity current is returned.
            This is defined using these two equations:
 
@@ -1027,7 +1186,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
         elec = self._elec(elec)
-        Jorb = self.orbital_current(elec, E, avg, isc=[None, None, None])
+        Jorb = self.orbital_current(elec, E, kavg, isc=[None, None, None])
 
         return self.atom_current_from_orbital(Jorb, activity=activity)
 
@@ -1070,7 +1229,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
         return Ja
 
-    def vector_current(self, elec, E, avg=True, sum='all'):
+    def vector_current(self, elec, E, kavg=True, sum='all'):
         """ Return the atom-current with vector components of atoms.
 
         Parameters
@@ -1081,9 +1240,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
            the energy or energy index of the vector current.
            Unlike `orbital_current` this may not be `None` as the down-scaling of the
            orbital currents may not be equivalent for all energy points.
-        avg: bool, optional
-           whether the vector current returned is k-averaged
-        sum : str, optional
+        kavg: bool, int or array_like, optional
+           whether the returned vector current is k-averaged, an explicit k-point
+           or a selection of k-points
+        sum : {'all', '+', '-'}
            how the summation of the bond-currents should be
 
         See Also
@@ -1094,7 +1254,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
         elec = self._elec(elec)
-        Jab = self.bond_current(elec, E, avg, isc=[None, None, None], sum=sum)
+        Jab = self.bond_current(elec, E, kavg, isc=[None, None, None], sum=sum)
 
         return self.vector_current_from_bond(Jab)
 
@@ -1240,8 +1400,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
             "_data_description": [],
             "_data_header": [],
             "_data": [],
+            "_norm": 'atom',
+            "_Ovalue": '',
             "_Orng": None,
-            "_Oscale": 1. / len(self.pivot),
             "_Erng": None,
             "_krng": True,
         }
@@ -1288,6 +1449,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
         # Energy grabs
         class ERange(argparse.Action):
 
+            @dec_collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 Emap = strmap(float, value)
                 # Convert to actual indices
@@ -1297,17 +1459,38 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._Erng = np.array(E, np.int32).flatten()
         p.add_argument('--energy', '-E',
                        action=ERange,
-                       help='Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]')
+                       help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
+
+                       This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called""")
 
         # k-range
         class kRange(argparse.Action):
 
+            @dec_collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 ns._krng = lstranges(strmap(int, value))
         if not self._k_avg:
             p.add_argument('--kpoint', '-k',
                            action=kRange,
-                           help='Denote the sub-section of k-indices that are extracted.')
+                           help="""Denote the sub-section of k-indices that are extracted.
+                           
+                           This flag takes effect on all k-resolved quantities and is reset whenever --plot or --out is called""")
+
+        # The normalization method
+        class NormAction(argparse.Action):
+
+            @dec_collect_and_run_action
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._norm = value
+        p.add_argument('--norm', '-N', action=NormAction, default='atom',
+                       choices=['atom', 'all', 'none', 'orbital'],
+                       help="""Specify the normalization method:
+                       - "atom" == total orbitals in selected atoms,
+                       - "all" == total orbitals in the device region,
+                       - "none" == no normalization,
+                       - "orbital" == selected orbitals.
+                       
+                       This flag only takes effect on --dos and --ados and is reset whenever --plot or --out is called""")
 
         # Try and add the atomic specification
         class AtomRange(argparse.Action):
@@ -1363,9 +1546,10 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 # Add one to make the c-index equivalent to the f-index
                 orbs = np.concatenate(orbs).flatten()
-                pivot = npisin(ns._tbt.pivot, orbs).nonzero()[0]
 
-                if len(orbs) != len(pivot):
+                # Check that the requested orbitals are all in the device
+                # region
+                if len(orbs) != len(ns._tbt.o2p(orbs)):
                     print('Device atoms:')
                     tmp = ns._tbt.a_dev[:] + 1
                     tmp.sort()
@@ -1375,13 +1559,13 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
 
                 ns._Ovalue = value
-                ns._Orng = pivot
-                # Correct the scale to the correct number of orbitals
-                ns._Oscale = 1. / no
+                ns._Orng = orbs
                 #print('Updating Orng and Oscale: ',ns._Orng, ns._Oscale)
 
         p.add_argument('--atom', '-a', type=str, action=AtomRange,
-                       help='Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters. ')
+                       help="""Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters.
+                           
+                       This flag takes effect on all atom/orbital resolved quantities (except BDOS, transmission_bulk) and is reset whenever --plot or --out is called""")
 
         class DataT(argparse.Action):
 
@@ -1404,7 +1588,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
 
                 # Grab the information
-                data = ns._tbt.transmission(e1, e2, avg=ns._krng)[ns._Erng]
+                data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
                 ns._data_header.append('T:{}-{}[G]'.format(e1, e2))
@@ -1430,7 +1614,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
 
                 # Grab the information
-                data = ns._tbt.transmission_bulk(e, avg=ns._krng)[ns._Erng]
+                data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
                 ns._data_header.append('BT:{}[G]'.format(e))
@@ -1457,23 +1641,18 @@ class tbtncSileSiesta(SileCDFSIESTA):
                             return
                         raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                     # Grab the information
-                    data = ns._tbt.ADOS(e, avg=ns._krng)
+                    data = ns._tbt.ADOS(e, kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
                     ns._data_header.append('ADOS:{}[1/eV]'.format(e))
                 else:
-                    data = ns._tbt.DOS(avg=ns._krng)
+                    data = ns._tbt.DOS(kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
                     ns._data_header.append('DOS[1/eV]')
+                NORM = int(ns._tbt.norm(orbital=ns._Orng, norm=ns._norm))
 
-                # Grab out the orbital ranges
-                if not ns._Orng is None:
-                    orig_shape = data.shape
-                    data = data[..., ns._Orng]
-                # Select the energies, even if _Erng is None, this will work!
-                data = np.sum(data[ns._Erng, ...], axis=-1).flatten()
-                ns._data.append(data * ns._Oscale)
+                ns._data.append(data[ns._Erng, ...])
                 if ns._Orng is None:
-                    ns._data_description.append('Column {} is sum of all device atoms+orbitals with normalization 1/'.format(len(ns._data), int(1/ns._Oscale)))
+                    ns._data_description.append('Column {} is sum of all device atoms+orbitals with normalization 1/{}'.format(len(ns._data), NORM))
                 else:
-                    ns._data_description.append('Column {} is atoms[orbs] {} with normalization 1/{}'.format(len(ns._data), ns._Ovalue, int(1/ns._Oscale)))
+                    ns._data_description.append('Column {} is atoms[orbs] {} with normalization 1/{}'.format(len(ns._data), ns._Ovalue, NORM))
 
         p.add_argument('--dos', '-D', nargs='?', metavar='ELEC',
                        action=DataDOS, default=None,
@@ -1500,7 +1679,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                         return
                     raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                 # Grab the information
-                data = ns._tbt.BDOS(e, avg=ns._krng)
+                data = ns._tbt.BDOS(e, kavg=ns._krng, sum=False)
                 ns._data_header.append('BDOS:{}[1/eV]'.format(e))
                 # Select the energies, even if _Erng is None, this will work!
                 no = data.shape[-1]
@@ -1532,7 +1711,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
 
                 # Grab the information
-                data = ns._tbt.transmission_eig(e1, e2, avg=ns._krng)
+                data = ns._tbt.transmission_eig(e1, e2, kavg=ns._krng)
                 # The shape is: k, E, neig
                 neig = data.shape[-1]
                 for eig in range(neig):
@@ -1551,7 +1730,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 print(ns._tbt.info(value))
 
         p.add_argument('--info', '-i', action=Info, nargs='?', metavar='ELEC',
-                       help='Print out what information is contained in the TBT.nc file.')
+                       help='Print out what information is contained in the TBT.nc file, optionally only for one of the electrodes.')
 
         class Out(argparse.Action):
 
@@ -1560,7 +1739,6 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 out = value[0]
 
-                from sisl.io import TableSile
                 try:
                     # We figure out if the user wants to write
                     # to a geometry
@@ -1577,6 +1755,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
                     print("No data has been collected in the arguments, nothing will be written, have you forgotten arguments?")
                     return
 
+                from sisl.io import TableSile
                 TableSile(out, mode='w').write(np.array(ns._data),
                                                comment=ns._data_description, header=ns._data_header)
                 # Clean all data
@@ -1584,9 +1763,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._data_header = []
                 ns._data = []
                 # These are expert options
+                ns._norm = 'atom'
                 ns._Ovalue = ''
                 ns._Orng = None
-                ns._Oscale = 1. / len(ns._tbt.pivot)
                 ns._Erng = None
                 ns._krng = True
         p.add_argument('--out', '-o', nargs=1, action=Out,
@@ -1606,6 +1785,7 @@ class tbtncSileSiesta(SileCDFSIESTA):
 
                 if len(ns._data) == 0:
                     # do nothing if data has not been collected
+                    print("No data has been collected in the arguments, nothing will be plotted, have you forgotten arguments?")
                     return
 
                 from matplotlib import pyplot as plt
@@ -1625,9 +1805,9 @@ class tbtncSileSiesta(SileCDFSIESTA):
                 ns._data_header = []
                 ns._data = []
                 # These are expert options
+                ns._norm = 'atom'
                 ns._Ovalue = ''
                 ns._Orng = None
-                ns._Oscale = 1. / len(ns._tbt.pivot)
                 ns._Erng = None
                 ns._krng = True
         p.add_argument('--plot', '-p', action=Plot, nargs='?', metavar='FILE',
@@ -1651,7 +1831,7 @@ add_sile('PHT.nc', phtncSileSiesta)
 
 
 # The deltaH nc file
-class dHncSileSiesta(SileCDFSIESTA):
+class dHncSileSiesta(SileCDFSiesta):
     """ TBtrans delta-H file object """
 
     def write_geometry(self, geom):

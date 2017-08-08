@@ -6,7 +6,7 @@ from __future__ import print_function
 import numpy as np
 
 # Import sile objects
-from .sile import SileW90
+from .sile import SileWannier90
 from ..sile import *
 
 # Import the geometry object
@@ -15,10 +15,10 @@ from sisl.physics import Hamiltonian
 
 from sisl.units import unit_convert
 
-__all__ = ['winSileW90']
+__all__ = ['winSileWannier90']
 
 
-class winSileW90(SileW90):
+class winSileWannier90(SileWannier90):
     """ Wannier seedname input file object
 
     This `Sile` enables easy interaction with the Wannier90 code.
@@ -53,7 +53,7 @@ class winSileW90(SileW90):
     """
 
     def _setup(self):
-        """ Setup `winSileW90` after initialization """
+        """ Setup `winSileWannier90` after initialization """
         self._seed = self.file.replace('.win', '')
 
     def _set_file(self, suffix):
@@ -255,4 +255,4 @@ class winSileW90(SileW90):
         return self.read_geometry().ArgumentParser(*args, **newkw)
 
 
-add_sile('win', winSileW90, gzip=True)
+add_sile('win', winSileWannier90, gzip=True)

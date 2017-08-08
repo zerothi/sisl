@@ -6,7 +6,7 @@ from __future__ import print_function
 import numpy as np
 
 # Import sile objects
-from .sile import SileCDFSIESTA
+from .sile import SileCDFSiesta
 from ..sile import *
 
 # Import the geometry object
@@ -18,7 +18,7 @@ __all__ = ['gridncSileSiesta']
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
-class gridncSileSiesta(SileCDFSIESTA):
+class gridncSileSiesta(SileCDFSiesta):
     """ SIESTA Grid file object """
 
     def read_supercell(self):
