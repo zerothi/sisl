@@ -13,7 +13,7 @@ import numpy as np
 from numpy import empty, zeros, asarray, array, arange
 from numpy import insert, take, delete, copyto
 from numpy import where, intersect1d, setdiff1d, unique
-from numpy import diff, cumsum
+from numpy import diff
 from numpy import hstack, argsort
 try:
     isin = np.isin
@@ -373,19 +373,30 @@ class SparseCSR(object):
 
         # We truncate all the connections
         if sort:
-            idx = hstack([ptr[r] + argsort(col[ptr[r]:ptr[r+1]])
-                          for r in range(self.shape[0])])
+            def func(r):
+                """ Sort and check whether there are double entries """
+                ptr1 = ptr[r]
+                ptr2 = ptr[r+1]
+                sl = slice(ptr1, ptr2)
+                ccol = col[sl].view()
+                DD = D[sl, :].view()
+                if unique(ccol).shape[0] != ptr2 - ptr1:
+                    raise ValueError(('You cannot have two elements between the same ' +
+                                      'i,j index ({}), something has went terribly wrong.'.format(ptr1)))
+                idx = argsort(ccol)
+                # Do in-place sorting
+                ccol[:] = ccol[idx]
+                DD[:, :] = DD[idx, :]
 
-            # We have to do slice insertions to not copy data
-            col[:] = col[idx]
-            D[:, :] = D[idx, :]
-
-            def func(ptr1, ptr2):
+        else:
+            def func(r):
+                ptr1 = ptr[r]
+                ptr2 = ptr[r+1]
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
                     raise ValueError(('You cannot have two elements between the same ' +
                                       'i,j index ({}), something has went terribly wrong.'.format(ptr1)))
-            map(func, ptr[:-1], ptr[1:])
-
+        map(func, range(self.shape[0]))
+            
         if len(col) != self.nnz:
             print(len(col), self.nnz)
             raise ValueError(('Final size in the sparse matrix finalization '
