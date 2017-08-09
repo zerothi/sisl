@@ -1,6 +1,11 @@
 0.8.6
 =====
 
+- Preliminary testing of reading Siesta binary output (.RHO, .VT, etc.
+  files)
+
+- Added parsing the Siesta EIG file (easy plotting, reading in Python)
+
 - Changed interface for BrillouinZone objects.
   Now a BrillouinZone accepts any object which has cell/rcell entries.
   Any function call on the BrillouinZone object will transfer the call to the

@@ -21,10 +21,11 @@ from sisl.units.siesta import unit_convert
 from sisl.physics import Hamiltonian
 
 
-__all__ = ['TSHSSileSiesta']
+__all__ = ['tshsSileSiesta']
+__all__ += ['rhoSileSiesta', 'vSileSiesta']
 
 
-class TSHSSileSiesta(SileBinSiesta):
+class tshsSileSiesta(SileBinSiesta):
     """ TranSIESTA file object """
 
     def read_supercell(self):
@@ -114,5 +115,51 @@ class TSHSSileSiesta(SileBinSiesta):
         return H
 
 
+class GridSileSiesta(SileBinSiesta):
+    """ Grid file object from a binary Siesta output file """
+
+    grid_unit = 1.
+
+    def read_supercell(self, *args, **kwargs):
+
+        cell = _siesta.read_grid_cell(self.file)
+        cell = np.array(cell.T, np.float64)
+        cell.shape = (3, 3)
+
+        SC = SuperCell(cell)
+        return SC
+
+    def read_grid(self, *args, **kwargs):
+        """ Read grid contained in the Grid file """
+        # Read the sizes
+        nspin, mesh = _siesta.read_sizes(self.file)
+        # Read the cell and grid
+        cell, grid = _siesta.read_sizes(self.file, nspin, mesh[0], mesh[1], mesh[2])
+
+        cell = np.array(cell.T, np.float64)
+        cell.shape = (3, 3)
+
+        g = Grid(mesh, sc=SuperCell(cell), dtype=np.float32)
+        g.grid = np.array(grid.swapaxes(0, 2), np.float32) * self.grid_unit
+        return g
+
+
+class rhoSileSiesta(SileBinSiesta):
+    """ .*RHO* file object from a binary Siesta output file """
+    grid_unit = 1.
+
+
+class vSileSiesta(SileBinSiesta):
+    """ .V* file object from a binary Siesta output file """
+    grid_unit = unit_convert('Ry', 'eV')
+
 if found_module:
-    add_sile('TSHS', TSHSSileSiesta)
+    add_sile('TSHS', tshsSileSiesta)
+    add_sile('RHO', rhoSileSiesta)
+    add_sile('RHOINIT', rhoSileSiesta)
+    add_sile('DRHO', rhoSileSiesta)
+    add_sile('IOCH', rhoSileSiesta)
+    add_sile('TOCH', rhoSileSiesta)
+    add_sile('VH', vSileSiesta)
+    add_sile('VNA', vSileSiesta)
+    add_sile('VT', vSileSiesta)

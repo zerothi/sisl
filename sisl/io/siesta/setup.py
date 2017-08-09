@@ -21,6 +21,9 @@ def configuration(parent_package='', top_path=None):
         'read_tshs_cell.f90',
         'read_tshs_es.f90',
         'read_tshs_version.f90',
+        'read_grid_cell.f90',
+        'read_grid_sizes.f90',
+        'read_grid.f90',
     ]
     config.add_extension('_siesta',
                          sources = [osp_join('src', s) for s in sources],
