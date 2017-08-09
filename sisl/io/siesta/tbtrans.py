@@ -937,8 +937,9 @@ class tbtncSileSiesta(SileCDFSiesta):
             col = col[all_col]
 
             # recreate row-pointer
+            cnz = np.count_nonzero
             def func(ptr1, ptr2):
-                return nsum(all_col[ptr1:ptr2])
+                return cnz(all_col[ptr1:ptr2])
             tmp = np.array(map(func, rptr[:geom.no], rptr[1:]), np.int32)
             rptr = np.insert(np.cumsum(tmp), 0, 0)
             del tmp
