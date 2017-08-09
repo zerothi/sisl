@@ -59,7 +59,7 @@ class TSHSSileSiesta(SileBinSiesta):
         # The TSHS file does not contain the
         # atomic numbers, so we will just
         # create them individually
-        orbs = np.diff(lasto, dtype=np.int32)
+        orbs = np.diff(lasto)
 
         # Get unique orbitals
         uorb = np.unique(orbs)
