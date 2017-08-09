@@ -395,8 +395,11 @@ class SparseCSR(object):
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
                     raise ValueError(('You cannot have two elements between the same ' +
                                       'i,j index ({}), something has went terribly wrong.'.format(ptr1)))
-        map(func, range(self.shape[0]))
-            
+        for r in range(self.shape[0]):
+            # Apparently map, may create stuff on the stack in P3,
+            # hence we require a for-loop
+            func(r)
+
         if len(col) != self.nnz:
             print(len(col), self.nnz)
             raise ValueError(('Final size in the sparse matrix finalization '
