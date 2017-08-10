@@ -310,6 +310,29 @@ class TestSparseCSR(object):
         self.s1.align(self.s2)
         assert_true(self.s1.spsame(self.s2))
 
+    def test_delete_col1(self):
+        s1 = self.s1.copy()
+        nc = s1.shape[1]
+        s1[1, [1, 2, 3]] = 1
+        assert_equal(s1.nnz, 3)
+        s1.delete_column(2)
+        assert_equal(s1.nnz, 2)
+        assert_equal(s1.shape[1], nc - 1)
+        s1.delete_column(2, True)
+        assert_equal(s1.nnz, 1)
+        assert_equal(s1.shape[1], nc - 1)
+
+    def test_translate_col1(self):
+        s1 = self.s1.copy()
+        s1[1, 1] = 1
+        s1[1, 2] = 2
+        s1[1, 3] = 3
+        assert_equal(s1.nnz, 3)
+        s1.translate_column([1, 3], [3, 1])
+        assert_equal(s1.nnz, 3)
+        assert_equal(s1[1, 1], 3)
+        assert_equal(s1[1, 3], 1)
+
     def test_op1(self):
         for i in range(10):
             j = range(i*4, i*4+3)

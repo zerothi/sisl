@@ -413,6 +413,120 @@ class SparseCSR(object):
         # Signal that we indeed have finalized the data
         self._finalized = True
 
+    def delete_column(self, column, keep=False):
+        """ Delete all columns in `column`
+
+        Parameters
+        ----------
+        column : int or array_like
+           columns to delete from the sparse pattern
+        keep : bool, optional
+           whether the `shape` of the object should be retained, if `True` all higher
+           columns will be shifted according to the number of columns deleted below, 
+           if `False`, only the elements will be deleted.
+        """
+        # Sort the columns
+        column = np.sort(ensure_array(column))
+        if np.any(column >= self.shape[1]):
+            raise ValueError(self.__class__.__name__+".delete_column tries to delete a non-existing column.")
+
+        # Delete columns
+        delete = isin(self.col, column)
+        idx = delete.nonzero()
+        self.col = np.delete(self.col, idx)
+        self._D = np.delete(self._D, idx, axis=0)
+        del idx
+
+        # Loop rows to correct:
+        #  ptr
+        #  ncol
+        #  col
+        ptr = self.ptr.view()
+        ncol = self.ncol.view()
+        col = self.col.view()
+
+        # Shorthand function for retrieval
+        cnz = np.count_nonzero
+
+        # Figure out if it is necessary to update columns
+        # This is only necessary when the deleted columns
+        # are not the *last* columns
+        update_col = not keep
+        if update_col:
+            # Check that we really do have to update
+            update_col = np.any(column < self.shape[1] - len(column))
+
+        if update_col:
+            # Create a count array to subtract
+            count = n_.zerosi(self.shape[1])
+            # This is probably not the fastest solution
+            # But it works!
+            for c in column:
+                count[c:] += 1
+
+            # Loop rows
+            for r in range(self.shape[0]):
+                ndel = cnz(delete[ptr[r]:ptr[r] + ncol[r]])
+                ncol[r] -= ndel
+                ptr[r+1] -= ndel
+
+                # Correct all indices above the deleted ones
+                sl = slice(ptr[r], ptr[r] + ncol[r])
+                col[sl] -= count[col[sl]]
+
+        else:
+            # Only update counts and pointers
+            for r in range(self.shape[0]):
+                ndel = cnz(delete[ptr[r]:ptr[r] + ncol[r]])
+                ncol[r] -= ndel
+                ptr[r+1] -= ndel
+
+        # Update number of non-zeroes
+        self._nnz = sum(ncol)
+
+        if not keep:
+            shape = list(self.shape)
+            shape[1] -= len(column)
+            self._shape = tuple(shape)
+
+    def translate_column(self, old, new):
+        """ Takes all `old` columns and translates them to `new`.
+
+        Parameters
+        ----------
+        old : int or array_like
+           old column indices
+        new : int or array_like
+           new column indices
+        """
+        # Sort the columns
+        old = ensure_array(old)
+        new = ensure_array(new)
+        if np.any(old >= self.shape[1]):
+            raise ValueError(self.__class__.__name__+".translate_column tries to translate a non-existing column.")
+        if np.any(new >= self.shape[1]):
+            raise ValueError(self.__class__.__name__+".translate_column tries to translate a non-existing column.")
+
+        if len(old) != len(new):
+            raise ValueError(self.__class__.__name__+".translate_column has un-even length `old` and `new`.")
+
+        # Now do the translation
+        new_col = n_.arangei(self.shape[1])
+        new_col[old] = new
+
+        # Update the columns
+        # Sadly, due to possible un-finalization we have to loop on rows
+        ptr = self.ptr.view()
+        ncol = self.ncol.view()
+        col = self.col.view()
+        for r in range(self.shape[0]):
+            sl = slice(ptr[r], ptr[r] + ncol[r])
+            col[sl] = new_col[col[sl]]
+
+        # After translation, the finalization step *must*
+        # be set to false.
+        self._finalized = False
+
     def spsame(self, other):
         """ Check whether two sparse matrices have the same non-zero elements
 
