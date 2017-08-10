@@ -1,4 +1,6 @@
 subroutine read_grid_sizes(fname, nspin, mesh)
+  
+  implicit none
 
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
@@ -8,21 +10,21 @@ subroutine read_grid_sizes(fname, nspin, mesh)
 
   ! Input parameters
   character(len=*) :: fname
-  integer :: nspin, mesh(3)
+  integer :: nspin
+  integer :: mesh(3)
+
 ! Define f2py intents
 !f2py intent(in) :: fname
-!f2py integer, intent(out) :: nspin
-!f2py integer, intent(out), dimension(3) :: mesh
+!f2py intent(out) :: nspin
+!f2py intent(out) :: mesh
 
 ! Internal variables and arrays
   integer :: iu
 
-  iu = 1804
+  call free_unit(iu)
   open(iu,file=trim(fname),status='old',form='unformatted')
 
-  read(iu) ! cell(:,1)
-  read(iu) ! cell(:,2)
-  read(iu) ! cell(:,3)
+  read(iu) ! cell(:,:)
 
   read(iu) mesh, nspin
 

@@ -8,7 +8,8 @@ import numpy as np
 try:
     import _siesta
     found_module = True
-except:
+except Exception as e:
+    print(e)
     found_module = False
 
 # Import sile objects
@@ -132,9 +133,9 @@ class GridSileSiesta(SileBinSiesta):
     def read_grid(self, *args, **kwargs):
         """ Read grid contained in the Grid file """
         # Read the sizes
-        nspin, mesh = _siesta.read_sizes(self.file)
+        nspin, mesh = _siesta.read_grid_sizes(self.file)
         # Read the cell and grid
-        cell, grid = _siesta.read_sizes(self.file, nspin, mesh[0], mesh[1], mesh[2])
+        cell, grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
 
         cell = np.array(cell.T, np.float64)
         cell.shape = (3, 3)
@@ -144,14 +145,15 @@ class GridSileSiesta(SileBinSiesta):
         return g
 
 
-class rhoSileSiesta(SileBinSiesta):
+class rhoSileSiesta(GridSileSiesta):
     """ .*RHO* file object from a binary Siesta output file """
     grid_unit = 1.
 
 
-class vSileSiesta(SileBinSiesta):
+class vSileSiesta(GridSileSiesta):
     """ .V* file object from a binary Siesta output file """
     grid_unit = unit_convert('Ry', 'eV')
+
 
 if found_module:
     add_sile('TSHS', tshsSileSiesta)

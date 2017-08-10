@@ -15,14 +15,15 @@ subroutine read_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
   integer :: no_u, no_s, nspin, maxnh
   integer :: listh(maxnh), numh(no_u), listhptr(no_u)
   real(sp) :: H(maxnh,nspin), S(maxnh), xij(3,maxnh)
+  
 ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(in) :: Gamma, no_u, no_s, nspin, maxnh
-!f2py integer, intent(out), dimension(no_u) :: numh, listhptr
-!f2py integer, intent(out), dimension(maxnh) :: listh
-!f2py real*4, intent(out), dimension(maxnh) :: S
-!f2py real*4, intent(out), dimension(maxnh,nspin) :: H
-!f2py real*4, intent(out), dimension(3,maxnh) :: xij
+!f2py intent(out) :: numh, listhptr
+!f2py intent(out) :: listh
+!f2py intent(out) :: S
+!f2py intent(out) :: H
+!f2py intent(out) :: xij
 
 ! Internal variables and arrays
   integer :: iu
@@ -35,8 +36,8 @@ subroutine read_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
   real(sp), allocatable :: buf(:)
 
 ! Open file
-  iu = 1850
-  open( iu, file=fname, form='unformatted', status='unknown' )      
+  call free_unit(iu)
+  open( iu, file=trim(fname), form='unformatted', status='unknown' )      
   
 ! Read overall data
   read(iu) lno_u, lno_s, lnspin, lmaxnh

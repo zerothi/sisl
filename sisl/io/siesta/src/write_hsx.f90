@@ -13,6 +13,7 @@ subroutine write_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
   integer :: no_u, no_s, nspin, maxnh
   integer :: listh(maxnh), numh(no_u), listhptr(no_u)
   real(dp) :: H(maxnh,nspin), S(maxnh), xij(3,maxnh), Qtot, temp
+  
 ! Define f2py intents
 !f2py intent(in) :: fname, Gamma, no_u, no_s, nspin, maxnh
 !f2py intent(in) :: numh, listhptr, listh, H, S, xij, Qtot, temp
@@ -23,8 +24,8 @@ subroutine write_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
   integer :: indxuo(no_s)
 
 ! Open file
-  iu = 1850 ! Constant
-  open( iu, file=fname, form='unformatted', status='unknown' )      
+  call free_unit(iu)
+  open( iu, file=trim(fname), form='unformatted', status='unknown' )      
   
 ! Write overall data
   write(iu) no_u, no_s, nspin, maxnh
@@ -68,5 +69,6 @@ subroutine write_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
   enddo
 
   close(iu)
+  
 end subroutine write_hsx
 
