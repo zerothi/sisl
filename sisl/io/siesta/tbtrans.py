@@ -307,7 +307,6 @@ class tbtncSileSiesta(SileCDFSiesta):
     def pivot(self):
         """ Pivot table of device orbitals to obtain input sorting """
         return self._value('pivot') - 1
-    pvt = pivot
 
     def a2p(self, atom):
         """ Return the pivoting indices (0-based) for the atoms 
@@ -420,9 +419,6 @@ class tbtncSileSiesta(SileCDFSiesta):
                 if tvar not in elecs:
                     elecs.append(tvar)
         return elecs
-    electrodes = elecs
-    Electrodes = elecs
-    Elecs = elecs
 
     def chemical_potential(self, elec):
         """ Return the chemical potential associated with the electrode `elec` """
@@ -464,7 +460,6 @@ class tbtncSileSiesta(SileCDFSiesta):
             raise ValueError("Supplied elec_from and elec_to must not be the same.")
 
         return self._value_avg(elec_to + '.T', elec_from, kavg=kavg)
-    T = transmission
 
     def transmission_eig(self, elec_from=0, elec_to=1, kavg=True):
         """ Return the transmission eigenvalues from `from` to `to`.
@@ -494,7 +489,6 @@ class tbtncSileSiesta(SileCDFSiesta):
                 "Supplied elec_from and elec_to must not be the same.")
 
         return self._value_avg(elec_to + '.T.Eig', elec_from, kavg=kavg)
-    Teig = transmission_eig
 
     def transmission_bulk(self, elec=0, kavg=True):
         """ Return the bulk transmission in the `elec` electrode
@@ -513,7 +507,6 @@ class tbtncSileSiesta(SileCDFSiesta):
         transmission_eig : the transmission decomposed in eigenchannels
         """
         return self._value_avg('T', self._elec(elec), kavg=kavg)
-    Tbulk = transmission_bulk
 
     def norm(self, atom=None, orbital=None, norm='none'):
         r""" Return the normalization factor depending on the input
@@ -710,7 +703,6 @@ class tbtncSileSiesta(SileCDFSiesta):
         """
         return self._DOS(self._value_E('DOS', kavg=kavg, E=E),
                                   atom, orbital, sum, norm) * eV2Ry
-    DOS_Gf = DOS
 
     def ADOS(self, elec=0, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
         r""" Return the DOS of the spectral function from `elec` (1/eV).
@@ -754,7 +746,6 @@ class tbtncSileSiesta(SileCDFSiesta):
         elec = self._elec(elec)
         return self._DOS(self._value_E('ADOS', elec, kavg=kavg, E=E),
                          atom, orbital, sum, norm) * eV2Ry
-    DOS_A = ADOS
 
     def BDOS(self, elec=0, E=None, kavg=True, sum=True):
         r""" Return the bulk DOS of `elec` (1/eV).
@@ -787,9 +778,6 @@ class tbtncSileSiesta(SileCDFSiesta):
             return np.sum(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry
         else:
             return self._value_E('DOS', elec, kavg=kavg, E=E) * eV2Ry
-
-    DOS_bulk = BDOS
-    BulkDOS = BDOS
 
     def _E_T_sorted(self, elec_from, elec_to, kavg=True):
         """ Internal routine for returning energies and transmission in a sorted array """
