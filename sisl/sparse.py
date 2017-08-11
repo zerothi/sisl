@@ -441,6 +441,15 @@ class SparseCSR(object):
         idx = [ptr[r] + isin(col[ptr[r]:ptr[r]+ncol[r]], columns).nonzero()[0]
                for r in range(self.shape[0])]
         lidx = hstack(idx)
+        if len(lidx) == 0:
+            # Simply update the shape and return
+            # We have nothing to delete!
+            if not keep:
+                shape = list(self.shape)
+                shape[1] -= n_cols
+                self._shape = tuple(shape)
+            return
+
         self.col = delete(self.col, lidx)
         self._D = delete(self._D, lidx, axis=0)
         del lidx
@@ -500,22 +509,19 @@ class SparseCSR(object):
         # Number of columns
         nc = self.shape[1]
 
-        # Deleted columns
-        idx = [ptr[r] + (col[ptr[r]:ptr[r]+ncol[r]] >= nc).nonzero()[0]
-               for r in range(self.shape[0])]
-        lidx = hstack(idx)
-        if len(lidx) == 0:
-            # Everything is good!
-            return
-        self.col = delete(self.col, lidx)
-        self._D = delete(self._D, lidx, axis=0)
-        del lidx
-
         # Only update counts and pointers
+        idx = []
         for r in range(self.shape[0]):
+            idx.append(ptr[r] + (col[ptr[r]:ptr[r]+ncol[r]] >= nc).nonzero()[0])
             ndel = len(idx[r])
             ncol[r] -= ndel
             ptr[r+1] -= ndel
+
+        # Deleted columns
+        lidx = hstack(idx)
+        self.col = delete(self.col, lidx)
+        self._D = delete(self._D, lidx, axis=0)
+        del lidx, idx
 
         # Update number of non-zeroes
         self._nnz = sum(ncol)
