@@ -611,6 +611,84 @@ class SparseAtom(SparseGeometry):
             for i, j in self._csr.iter_nnz():
                 yield i, j
 
+    def set_nsc(self, *args, **kwargs):
+        """ Reset the number of allowed supercells in the sparse atom
+
+        If one reduces the number of supercells *any* sparse element
+        that references the supercell will be deleted.
+
+        See `SuperCell.set_nsc` for allowed parameters.
+
+        See Also
+        --------
+        SuperCell.set_nsc : the underlying called method
+        """
+        sc = self.sc.copy()
+        # Try first in the new one, then we figure out what to do
+        sc.set_nsc(*args, **kwargs)
+        if np.all(sc.nsc == self.sc.nsc):
+            return
+
+        # Create an array of all things that should be translated
+        old = []
+        new = []
+        deleted = np.empty(self.n_s, np.bool_)
+        deleted[:] = True
+        for i, sc_off in sc:
+            try:
+                # Luckily there are *only* one time wrap-arounds
+                j = self.sc.sc_index(sc_off)
+                # Now do translation
+                old.append(j)
+                new.append(i)
+                deleted[j] = False
+            except:
+                # Not found, i.e. new, so no need to translate
+                pass
+
+        assert len(old) == self.n_s or len(old) == sc.n_s, \
+            "Not all supercells are accounted for"
+
+        # Maximum column translated too
+        max_n = sc.n_s
+        # 1. Ensure that any one of the *old* supercells that
+        #    are now deleted are put in the end
+        for i, j in enumerate(deleted.nonzero()[0]):
+            # Old index (j)
+            old.append(j)
+            # Move to the end (*HAS* to be higher than the number of
+            # cells in the new supercell structure)
+            new.append(sc.n_s + i)
+            max_n = sc.n_s + i
+
+        old = n_.arrayi(old)
+        new = n_.arrayi(new)
+
+        # Assert that there are only unique values
+        assert len(np.unique(old)) == len(old), "non-unique values in set_nsc"
+        assert len(np.unique(new)) == len(new), "non-unique values in set_nsc"
+
+        # Remove all elements where old == new
+        # I.e. this should prevent us doing unnecessary work
+        keep = (old != new).nonzero()[0]
+        old = old[keep]
+        new = new[keep]
+
+        if len(old) > 0:
+            # Create the translation tables
+            old = array_arange(old * self.na, (old+1) * self.na)
+            new = array_arange(new * self.na, (new+1) * self.na)
+
+            # Move data to new positions
+            self._csr.translate_columns(old, new)
+
+        # Create array of deleted values
+        max_n = max(max_n, self.sc.n_s)
+        delete = n_.arangei(sc.n_s * self.na, max_n * self.na)
+        self._csr.delete_columns(delete)
+
+        self.geom.set_nsc(*args, **kwargs)
+
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse atom model into different parts.
 
@@ -1073,6 +1151,84 @@ class SparseOrbital(SparseGeometry):
         else:
             for i, j in self._csr.iter_nnz():
                 yield i, j
+
+    def set_nsc(self, *args, **kwargs):
+        """ Reset the number of allowed supercells in the sparse orbital
+
+        If one reduces the number of supercells *any* sparse element
+        that references the supercell will be deleted.
+
+        See `SuperCell.set_nsc` for allowed parameters.
+
+        See Also
+        --------
+        SuperCell.set_nsc : the underlying called method
+        """
+        sc = self.sc.copy()
+        # Try first in the new one, then we figure out what to do
+        sc.set_nsc(*args, **kwargs)
+        if np.all(sc.nsc == self.sc.nsc):
+            return
+
+        # Create an array of all things that should be translated
+        old = []
+        new = []
+        deleted = np.empty(self.n_s, np.bool_)
+        deleted[:] = True
+        for i, sc_off in sc:
+            try:
+                # Luckily there are *only* one time wrap-arounds
+                j = self.sc.sc_index(sc_off)
+                # Now do translation
+                old.append(j)
+                new.append(i)
+                deleted[j] = False
+            except:
+                # Not found, i.e. new, so no need to translate
+                pass
+
+        assert len(old) == self.n_s or len(old) == sc.n_s, \
+            "Not all supercells are accounted for"
+
+        # Maximum column translated too
+        max_n = sc.n_s
+        # 1. Ensure that any one of the *old* supercells that
+        #    are now deleted are put in the end
+        for i, j in enumerate(deleted.nonzero()[0]):
+            # Old index (j)
+            old.append(j)
+            # Move to the end (*HAS* to be higher than the number of
+            # cells in the new supercell structure)
+            new.append(sc.n_s + i)
+            max_n = sc.n_s + i
+
+        old = n_.arrayi(old)
+        new = n_.arrayi(new)
+
+        # Assert that there are only unique values
+        assert len(np.unique(old)) == len(old), "non-unique values in set_nsc"
+        assert len(np.unique(new)) == len(new), "non-unique values in set_nsc"
+
+        # Remove all elements where old == new
+        # I.e. this should prevent us doing unnecessary work
+        keep = (old != new).nonzero()[0]
+        old = old[keep]
+        new = new[keep]
+
+        if len(old) > 0:
+            # Create the translation tables
+            old = array_arange(old * self.no, (old+1) * self.no)
+            new = array_arange(new * self.no, (new+1) * self.no)
+
+            # Move data to new positions
+            self._csr.translate_columns(old, new)
+
+        # Create array of deleted values
+        max_n = max(max_n, self.sc.n_s)
+        delete = n_.arangei(sc.n_s * self.no, max_n * self.no)
+        self._csr.delete_columns(delete)
+
+        self.geom.set_nsc(*args, **kwargs)
 
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse orbital model into different parts.

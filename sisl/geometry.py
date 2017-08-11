@@ -449,7 +449,10 @@ class Geometry(SuperCellChild):
         R : float, optional
            the value used for atomic range (defaults to ``self.maxR()``)
         """
-        ia = np.random.randint(len(self) - 1)
+        if len(self) == 1:
+            ia = 0
+        else:
+            ia = np.random.randint(len(self) - 1)
 
         # default block iterator
         if R is None:

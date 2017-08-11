@@ -741,3 +741,21 @@ class TestHamiltonian(object):
         Hg = Hg.sub(range(len(self.g)))
         Hg.finalize()
         assert_true(Hg.spsame(H))
+
+    def test_set_nsc1(self):
+        R, param = [0.1, 1.5], [1., 0.1]
+
+        # Create reference
+        H = Hamiltonian(self.g.copy())
+        H.construct([R, param])
+        H.set_nsc(nsc=[None, 1, 1])
+        assert_equal(H.nnz, 6)
+        H.set_nsc(nsc=[1, None, 1])
+        assert_equal(H.nnz, 4)
+
+        g = self.g.copy()
+        g.set_nsc([1] * 3)
+        Hg = Hamiltonian(g)
+        Hg.construct([R, param])
+        assert_true(Hg.spsame(H))
+        assert_equal(Hg.nnz, 4)

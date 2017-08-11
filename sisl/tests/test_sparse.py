@@ -315,10 +315,22 @@ class TestSparseCSR(object):
         nc = s1.shape[1]
         s1[1, [1, 2, 3]] = 1
         assert_equal(s1.nnz, 3)
-        s1.delete_column(2)
+        s1.delete_columns(2)
         assert_equal(s1.nnz, 2)
         assert_equal(s1.shape[1], nc - 1)
-        s1.delete_column(2, True)
+        s1.delete_columns(2, True)
+        assert_equal(s1.nnz, 1)
+        assert_equal(s1.shape[1], nc - 1)
+
+    def test_delete_col2(self):
+        s1 = self.s1.copy()
+        nc = s1.shape[1]
+        s1[1, [1, 2, 3]] = 1
+        assert_equal(s1.nnz, 3)
+        s1.delete_columns(3)
+        assert_equal(s1.nnz, 2)
+        assert_equal(s1.shape[1], nc - 1)
+        s1.delete_columns(2, True)
         assert_equal(s1.nnz, 1)
         assert_equal(s1.shape[1], nc - 1)
 
@@ -328,7 +340,7 @@ class TestSparseCSR(object):
         s1[1, 2] = 2
         s1[1, 3] = 3
         assert_equal(s1.nnz, 3)
-        s1.translate_column([1, 3], [3, 1])
+        s1.translate_columns([1, 3], [3, 1])
         assert_equal(s1.nnz, 3)
         assert_equal(s1[1, 1], 3)
         assert_equal(s1[1, 3], 1)

@@ -8,7 +8,7 @@ import numpy as np
 import scipy as sc
 
 from sisl import Atom
-from sisl.geom import fcc
+from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 
 
@@ -135,6 +135,28 @@ class TestSparseAtom(object):
         s2 = SparseAtom(self.g * ([2, 2, 1], 'r'))
         s2.construct([[0.1, 1.5], [1, 2]])
         assert_true(s1.spsame(s2))
+
+    def test_set_nsc1(self):
+        g = fcc(1., Atom(1, R=3.5))
+        s = SparseAtom(g)
+        s.construct([[0.1, 1.5, 3.5], [1, 2, 3]])
+        s.finalize()
+        assert_true(s.nnz > 1)
+        s.set_nsc([1, 1, 1])
+        assert_equal(s.nnz, 1)
+        assert_equal(s[0, 0], 1)
+
+    def test_set_nsc2(self):
+        g = graphene(atom=Atom(6, R=1.43))
+        s = SparseAtom(g)
+        s.construct([[0.1, 1.43], [1, 2]])
+        s.finalize()
+        assert_equal(s.nnz, 8)
+        s.set_nsc(a=1)
+        assert_equal(s.nnz, 6)
+        s.set_nsc([None, 1, 1])
+        assert_equal(s.nnz, 4)
+        assert_equal(s[0, 0], 1)
 
     def test_fromsp1(self):
         g = self.g.repeat(2, 0).tile(2, 1)

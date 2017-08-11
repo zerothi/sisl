@@ -40,6 +40,7 @@ class SuperCell(object):
         # Set the volume
         self._update_vol()
 
+        self.nsc = np.ones(3, np.int32)
         # Set the super-cell
         self.set_nsc(nsc=nsc)
 
@@ -97,7 +98,9 @@ class SuperCell(object):
            number of supercells in the third unit-cell vector direction
         """
         if not nsc is None:
-            self.nsc = np.asarray(nsc, np.int32)
+            for i in range(3):
+                if not nsc[i] is None:
+                    self.nsc[i] = nsc[i]
         if a:
             self.nsc[0] = a
         if b:
@@ -628,9 +631,16 @@ class SuperCellChild(object):
     routines directly related to the `SuperCell` class.
     """
 
-    def set_nsc(self, nsc):
-        """ Set the number of super-cells in the `SuperCell` object """
-        self.sc.set_nsc(nsc)
+    def set_nsc(self, *args, **kwargs):
+        """ Set the number of super-cells in the `SuperCell` object 
+
+        See `SuperCell.set_nsc` for allowed parameters.
+
+        See Also
+        --------
+        SuperCell.set_nsc : the underlying called method
+        """
+        self.sc.set_nsc(*args, **kwargs)
 
     def set_supercell(self, sc):
         """ Overwrites the local supercell """
