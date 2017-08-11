@@ -516,7 +516,27 @@ class tbtncSileSiesta(SileCDFSiesta):
     Tbulk = transmission_bulk
 
     def norm(self, atom=None, orbital=None, norm='none'):
-        """ Return the normalization factor depending on the input
+        r""" Return the normalization factor depending on the input
+
+        The normalization can be performed in one of the below methods.
+        In the following :math:`N` refers to the normalization constant
+        that is to be used (i.e. the divisor)
+
+        #. 'none': :math:`N=1`
+
+        #. 'all': :math:`N` is equal to the number of orbitals in the total
+        device region.
+
+        #. 'atom': :math:`N` is equal to the total number of orbitals in the selected
+        atoms. If `orbital` is an argument a conversion of `orbital` to the equivalent
+        unique atoms is performed, and subsequently the total number of orbitals on the 
+        atoms is used. This makes it possible to compare the fraction of orbital DOS easier.
+        I.e. for an atom with 4 orbitals one could compare the DOS for orbital `1` with norm:
+        `norm(orbital=[1], norm='atom')` for the remaning orbitals `norm(orbital=[0, 2, 3], norm='atom')`.
+
+        #. 'orbital': :math:`N` is simply the sum of selected orbitals, if `atom` is specified, this 
+        is equivalent to the 'atom' option.
+
 
         Parameters
         ----------
@@ -652,7 +672,14 @@ class tbtncSileSiesta(SileCDFSiesta):
         return nDOS
 
     def DOS(self, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
-        """ Return the Green function DOS (1/eV).
+        r""" Return the Green function DOS (1/eV).
+
+        Returns the DOS on the selected atoms/orbitals
+        .. math::
+
+           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}(E)
+
+        The normalization (:math:`N`) is defined in the routine ``norm``.
 
         Parameters
         ----------
@@ -686,7 +713,14 @@ class tbtncSileSiesta(SileCDFSiesta):
     DOS_Gf = DOS
 
     def ADOS(self, elec=0, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
-        """ Return the DOS of the spectral function from `elec` (1/eV).
+        r""" Return the DOS of the spectral function from `elec` (1/eV).
+
+        Returns the spectral DOS (DOS *originating* from electrode `elec`) on the selected atoms/orbitals
+        .. math::
+
+           \mathrm{ADOS}_\mathfrak{el}(E) = -\frac{1}{2\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger(E)
+
+        The normalization (:math:`N`) is defined in the routine ``norm``.
 
         Parameters
         ----------
@@ -723,7 +757,12 @@ class tbtncSileSiesta(SileCDFSiesta):
     DOS_A = ADOS
 
     def BDOS(self, elec=0, E=None, kavg=True, sum=True):
-        """ Return the bulk DOS of `elec` (1/eV).
+        r""" Return the bulk DOS of `elec` (1/eV).
+
+        Returns the bulk DOS (Green function DOS from the bulk part of the electrode)
+        .. math::
+
+           \mathrm{BDOS}_\mathfrak{el}(E) = -\frac{1}{\pi} \mathbf{G}(E)
 
         Parameters
         ----------
@@ -763,7 +802,14 @@ class tbtncSileSiesta(SileCDFSiesta):
         return E[idx_sort], T[idx_sort]
 
     def current(self, elec_from=0, elec_to=1, kavg=True):
-        """ Return the current from `from` to `to` using the weights in the file. 
+        r""" Return the current from `from` to `to` using the weights in the file. 
+
+        Calculates the current as:
+
+        .. math::
+           I(\mu_t - \mu_f) = \frac{e}{h}\int\!\mathrm{d}E T(E) [n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
+
+        The chemical potential and the temperature is taken from the *.TBT.nc file.
 
         Parameters
         ----------
@@ -790,7 +836,15 @@ class tbtncSileSiesta(SileCDFSiesta):
 
     def current_parameter(self, elec_from, mu_from, kt_from,
                           elec_to, mu_to, kt_to, kavg=True):
-        """ Return the current from `from` to `to` using the passed parameters
+        r""" Return the current from `from` to `to` using the passed parameters
+
+        Calculates the current as:
+
+        .. math::
+           I(\mu_t - \mu_f) = \frac{e}{h}\int\!\mathrm{d}E T(E) [n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
+
+        The chemical potential and the temperature are passed as arguments to
+        this routine.
 
         Parameters
         ----------
