@@ -668,6 +668,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         r""" Return the Green function DOS (1/eV).
 
         Returns the DOS on the selected atoms/orbitals
+
         .. math::
 
            \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}(E)
@@ -708,6 +709,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         r""" Return the DOS of the spectral function from `elec` (1/eV).
 
         Returns the spectral DOS (DOS *originating* from electrode `elec`) on the selected atoms/orbitals
+
         .. math::
 
            \mathrm{ADOS}_\mathfrak{el}(E) = -\frac{1}{2\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger(E)
@@ -751,6 +753,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         r""" Return the bulk DOS of `elec` (1/eV).
 
         Returns the bulk DOS (Green function DOS from the bulk part of the electrode)
+
         .. math::
 
            \mathrm{BDOS}_\mathfrak{el}(E) = -\frac{1}{\pi} \mathbf{G}(E)
@@ -795,7 +798,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         Calculates the current as:
 
         .. math::
-           I(\mu_t - \mu_f) = \frac{e}{h}\int\!\mathrm{d}E T(E) [n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
+           I(\mu_t - \mu_f) = \frac{e}{h}\int\!\mathrm{d}E\,  T(E) [n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
 
         The chemical potential and the temperature is taken from the *.TBT.nc file.
 
@@ -829,7 +832,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         Calculates the current as:
 
         .. math::
-           I(\mu_t - \mu_f) = \frac{e}{h}\int\!\mathrm{d}E T(E) [n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
+           I(\mu_t - \mu_f) = \frac{e}{h}\int\!\mathrm{d}E\, T(E) [n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
 
         The chemical potential and the temperature are passed as arguments to
         this routine.
