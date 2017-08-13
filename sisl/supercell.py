@@ -88,7 +88,7 @@ class SuperCell(object):
     def set_nsc(self, nsc=None, a=None, b=None, c=None):
         """ Sets the number of supercells in the 3 different cell directions
 
-        nsc: [3], integer, optional
+        nsc: list of int, optional
            number of supercells in each direction
         a: integer, optional
            number of supercells in the first unit-cell vector direction
@@ -167,7 +167,7 @@ class SuperCell(object):
 
     @property
     def isc_off(self):
-        """ Internal indexed supercell `[ia, ib, ic] == i` """
+        """ Internal indexed supercell ``[ia, ib, ic] == i`` """
         return self._isc_off
 
     # Aliases
@@ -194,10 +194,10 @@ class SuperCell(object):
 
         Parameters
         ----------
-        xyz : array_like `shape(*, 3)`
+        xyz : array_like ``shape(*, 3)``
            the coordinates that we will wish to encompass and analyze.
         axis : None or array_like
-           if `None` equivalent to `[0, 1, 2]`, else only the cell-vectors
+           if ``None`` equivalent to ``[0, 1, 2]``, else only the cell-vectors
            along the provided axis will be used
         tol : float
            tolerance (in Angstrom) of the positions. I.e. we neglect coordinates
@@ -265,7 +265,7 @@ class SuperCell(object):
 
     @property
     def rcell(self):
-        """ Returns the reciprocal cell for the `SuperCell` without `2*np.pi`
+        """ Returns the reciprocal cell for the `SuperCell` without ``2*np.pi``
 
         Note: The returned vectors are still in [0,:] format
         and not as returned by an inverse LAPACK algorithm.
@@ -312,7 +312,7 @@ class SuperCell(object):
         v     : array_like [3]
              the vector around the rotation is going to happen
              v = [1,0,0] will rotate in the ``yz`` plane
-        radians : bool, False
+        radians : bool, optional
              Whether the angle is in radians (True) or in degrees (False)
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
@@ -528,9 +528,9 @@ class SuperCell(object):
 
         Parameters
         ----------
-        sile : `Sile`, str
+        sile : `Sile` or str
             a `Sile` object which will be used to read the supercell
-            if it is a string it will create a new sile using `get_sile`.
+            if it is a string it will create a new sile using `sisl.io.get_sile`.
         """
         # This only works because, they *must*
         # have been imported previously
@@ -572,10 +572,10 @@ class SuperCell(object):
         ----------
         fig_axes : bool or matplotlib.Axes, optional
            the figure axes to plot in (if ``matplotlib.Axes`` object).
-           If `True` it will create a new figure to plot in.
-           If `False` it will try and grap the current figure and the current axes.
+           If ``True`` it will create a new figure to plot in.
+           If ``False`` it will try and grap the current figure and the current axes.
         axes : array_like, optional
-           only plot a subset of the axis, defaults to all axes"
+           only plot a subset of the axis, defaults to all axes
         """
         # Default dictionary for passing to newly created figures
         d = dict()
@@ -625,7 +625,7 @@ class SuperCell(object):
 
 
 class SuperCellChild(object):
-    """ Class to be inherited by using the `self.sc` as a `SuperCell` object
+    """ Class to be inherited by using the ``self.sc`` as a `SuperCell` object
 
     Initialize by a `SuperCell` object and get access to several different
     routines directly related to the `SuperCell` class.
@@ -634,7 +634,7 @@ class SuperCellChild(object):
     def set_nsc(self, *args, **kwargs):
         """ Set the number of super-cells in the `SuperCell` object 
 
-        See `SuperCell.set_nsc` for allowed parameters.
+        See `set_nsc` for allowed parameters.
 
         See Also
         --------

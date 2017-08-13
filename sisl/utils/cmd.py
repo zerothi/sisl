@@ -7,7 +7,7 @@ from sisl.utils.ranges import strmap, strseq
 
 
 def argv_negative_fix(argv):
-    """ Fixes the `argv` list by adding a space for input that may be float's """
+    """ Fixes the ``argv`` list by adding a space for input that may be float's """
     rgv = []
     for a in argv:
         try:
@@ -69,25 +69,24 @@ def collect_input(argv):
 def collect_arguments(argv, input=False,
                       argumentparser=None,
                       namespace=None):
-    """
-    Function for returning the actual arguments depending on the input options.
+    """ Function for returning the actual arguments depending on the input options.
 
-    This function will create a fake `ArgumentParser` which then
+    This function will create a fake ``ArgumentParser`` which then
     will pass through the input figuring out which options
-    that should be given to the final `ArgumentParser`.
+    that should be given to the final ``ArgumentParser``.
 
     Parameters
     ----------
-    argv : ``list`` of ``str``
+    argv : list of str
        the argument list that comprise the arguments
 
-    input : ``bool``, ``False``
+    input : bool, optional
        whether or not the arguments should also gather
        from the input file.
     argumentparser : ``argparse.ArgumentParser``
        the argument parser that should add the options that we find from
        the output and input files.
-    namespace : ``Namespace``
+    namespace : ``argparse.Namespace``
        the namespace for the argument parser.
     """
 
@@ -144,7 +143,7 @@ def collect_arguments(argv, input=False,
 def dec_default_AP(*A_args, **A_kwargs):
     """
     Decorator for routines which takes a parser as argument
-    and ensures that it is _not_ `None`.
+    and ensures that it is _not_ ``None``.
     """
     def default_AP(func):
         # This requires that the first argument
@@ -163,9 +162,9 @@ def dec_default_AP(*A_args, **A_kwargs):
 
 def dec_collect_action(func):
     """
-    Decorator for collecting actions until the namespace `_actions_run` is `True`.
+    Decorator for collecting actions until the namespace attrbitute ``_actions_run`` is ``True``.
 
-    Note that the `Namespace` object is the 2nd argument.
+    Note that the ``Namespace`` object is the 2nd argument.
     """
 
     def collect(self, *args, **kwargs):
@@ -181,7 +180,7 @@ def dec_collect_and_run_action(func):
     """
     Decorator for collecting actions and running.
 
-    Note that the `Namespace` object is the 2nd argument.
+    Note that the ``Namespace`` object is the 2nd argument.
     """
 
     def collect(self, *args, **kwargs):
@@ -196,7 +195,7 @@ def dec_run_actions(func):
     """
     Decorator for running collected actions.
 
-    Note that the `Namespace` object is the 2nd argument.
+    Note that the ``Namespace`` object is the 2nd argument.
     """
 
     def run(self, *args, **kwargs):

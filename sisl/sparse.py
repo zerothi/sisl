@@ -77,27 +77,29 @@ class SparseCSR(object):
         Creating a new sparse matrix is much similar to the 
         ``scipy`` equivalent.
 
-        `nnz` is only used if `nnz > nr * nnzpr`.
+        `nnz` is only used if ``nnz > nr * nnzpr``.
 
         This class may be instantiated by verious means.
 
-        - `SparseCSR(S)`
-          where `S` is a ``scipy.sparse`` matrix
-        - `SparseCSR((M,N)[, dtype])`
+        - ``SparseCSR(S)``
+          where ``S`` is a ``scipy.sparse`` matrix
+        - ``SparseCSR((M,N)[, dtype])``
           the shape of the sparse matrix (equivalent
-          to `SparseCSR((M,N,1)[, dtype])`.
-        - `SparseCSR((M,N), dim=K, [, dtype])`
+          to ``SparseCSR((M,N,1)[, dtype])``.
+        - ``SparseCSR((M,N), dim=K, [, dtype])``
           the shape of the sparse matrix (equivalent
-          to `SparseCSR((M,N,K)[, dtype])`.
-        - `SparseCSR((M,N,K)[, dtype])`
-          creating a sparse matrix with `M` rows, `N` columns
-          and `K` elements per sparse element.
+          to ``SparseCSR((M,N,K)[, dtype])``.
+        - ``SparseCSR((M,N,K)[, dtype])``
+          creating a sparse matrix with ``M`` rows, ``N`` columns
+          and ``K`` elements per sparse element.
 
         Additionally these parameters control the
         creation of the sparse matrix
 
         Parameters
         ----------
+        arg1 : tuple
+           various initialization methods as described above
         dim : int, optional
            number of elements stored per sparse element, only used if (M,N) is passed
         dtype : numpy.dtype, optional
@@ -111,9 +113,9 @@ class SparseCSR(object):
 
         Attributes
         ----------
-        ncol: int-array, `self.shape[0]`
+        ncol: int-array, ``self.shape[0]``
            number of entries per row
-        ptr: int-array, `self.shape[0]+1`
+        ptr: int-array, ``self.shape[0]+1``
            pointer index in the 1D column indices of the corresponding row
         col: int-array, 
            column indices of the sparse elements
@@ -255,7 +257,7 @@ class SparseCSR(object):
            to the diagonal)
         shape : tuple or list of int
            matrix dimensions, if un-specified the size will be a square matrix
-           with size `len(diagonals)`
+           with size ``len(diagonals)``
         dtype : numpy.dtype, optional
            the data-type to create (default to ``numpy.float64``)
         """
@@ -285,7 +287,7 @@ class SparseCSR(object):
         Parameters
         ----------
         keep: boolean, optional
-           if `True` keeps the sparse elements _as is_.
+           if ``True`` keeps the sparse elements *as is*.
            I.e. it will merely set the stored sparse elements to zero.
            This may be advantagegous when re-constructing a new sparse 
            matrix from an old sparse matrix
@@ -303,12 +305,12 @@ class SparseCSR(object):
 
     @property
     def shape(self):
-        """ Return shape of the sparse matrix """
+        """ The shape of the sparse matrix """
         return self._shape
 
     @property
     def dim(self):
-        """ The extra dimensionality of the sparse matrix """
+        """ The extra dimensionality of the sparse matrix (elements per matrix element) """
         return self.shape[2]
 
     @property
@@ -421,9 +423,9 @@ class SparseCSR(object):
         columns : int or array_like
            columns to delete from the sparse pattern
         keep : bool, optional
-           whether the `shape` of the object should be retained, if `True` all higher
+           whether the ``shape`` of the object should be retained, if ``True`` all higher
            columns will be shifted according to the number of columns deleted below, 
-           if `False`, only the elements will be deleted.
+           if ``False``, only the elements will be deleted.
         """
         # Shorthand function for retrieval
         cnz = np.count_nonzero
@@ -611,7 +613,7 @@ class SparseCSR(object):
 
         I.e. this will, possibly, change the sparse elements in-place.
 
-        A `ValueError` will be raised if the shapes are not mergeable.
+        A ``ValueError`` will be raised if the shapes are not mergeable.
 
         Parameters
         ----------
@@ -642,7 +644,7 @@ class SparseCSR(object):
 
         >>> for r, c in self:
 
-        In the above case `r` and `c` are rows and columns such that
+        In the above case ``r`` and ``c`` are rows and columns such that
 
         >>> self[r, c] 
 
@@ -682,14 +684,14 @@ class SparseCSR(object):
         return range(idx[0], idx[1], idx[2])
 
     def _extend(self, i, j):
-        """ Extends the sparsity pattern to retain elements ``j`` in row ``i``
+        """ Extends the sparsity pattern to retain elements `j` in row `i`
 
         Parameters
         ----------
         i : int
            the row of the matrix
         j : int or array_like
-           columns belonging to row ``i`` where a non-zero element is stored.
+           columns belonging to row `i` where a non-zero element is stored.
 
         Returns
         -------
@@ -793,14 +795,14 @@ class SparseCSR(object):
         return indices(col[ptr[i]:ptr[i] + ncol[i]], j, ptr[i])
 
     def _get(self, i, j):
-        """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return -1
+        """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``
 
         Parameters
         ----------
         i : int
            the row of the matrix
         j : int or array_like of int
-           columns belonging to row ``i`` where a non-zero element is stored.
+           columns belonging to row `i` where a non-zero element is stored.
 
         Returns
         -------
@@ -899,7 +901,7 @@ class SparseCSR(object):
         It will only allow to set the data in the sparse
         matrix if the dimensions match.
 
-        If the `data` parameter is `None` or an array
+        If the `data` parameter is ``None`` or an array
         only with `None` then the data will not be stored.
         """
         # Ensure data type... possible casting...
@@ -980,9 +982,9 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        dims: array-like, (all)
-           which dimensions to store in the copy
-        dtype : `numpy.dtype`
+        dims: array-like, optional
+           which dimensions to store in the copy, defaults to all.
+        dtype : ``numpy.dtype``
            this defaults to the dtype of the object, 
            but one may change it if supplied.
         """
@@ -1024,7 +1026,7 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        dim: int
+        dim: int, optional
            the dimension of the data to create the sparse matrix
         **kwargs:
            arguments passed to the ``scipy.sparse.csr_matrix`` routine
@@ -1377,38 +1379,6 @@ class SparseCSR(object):
             a._D **= b
         return a
 
-    @classmethod
-    def register_math(cls, var, routines=None):
-        """ Register math operators on the `cls` class using `var` as attribute `getattr(cls, var)` 
-
-        Parameters
-        ----------
-        cls : class
-           class which gets registered overloaded math operators
-        var : `str`
-           name of attribute that is `SparseCSR` object in `cls`
-        routines : list of str
-           names of routines that gets overloaded, defaults to:
-            ['__sub__', '__add__', '__mul__', '__div__', 
-             '__truediv__', '__pow__']
-        """
-
-        if routines is None:
-            routines = ['__sub__', '__add__', '__mul__', '__div__',
-                        '__truediv__', '__pow__']
-
-        # What we want is something like this:
-        # def func(a, b):
-        #   if isinstance(a, cls):
-        #       setattr(a, var, getattr(a, var) OP b)
-        #   if isinstance(b, cls):
-        #       setattr(b, var, a OP getattr(b, var))
-        # setattr(cls,__ROUTINE__, func):
-
-        # Now register all things
-        for r in routines:
-            pass
-
 
 def ispmatrix(matrix, map_row=None, map_col=None):
     """ Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
@@ -1421,10 +1391,10 @@ def ispmatrix(matrix, map_row=None, map_col=None):
     matrix : scipy.sparse.sp_matrix
       the sparse matrix to iterate non-zero elements
     map_row : func, optional
-      map each row entry through the function `map_row`, defaults to `None` which is 
+      map each row entry through the function `map_row`, defaults to ``None`` which is 
       equivalent to no mapping.
     map_col : func, optional
-      map each column entry through the function `map_col`, defaults to `None` which is 
+      map each column entry through the function `map_col`, defaults to ``None`` which is 
       equivalent to no mapping.
 
     Yields
@@ -1509,11 +1479,11 @@ def ispmatrix(matrix, map_row=None, map_col=None):
 
 
 def _ispmatrix_all(matrix):
-    """ Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
+    """ Iterator for iterating rows and columns for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)
 
     Parameters
     ----------
-    matrix : scipy.sparse.sp_matrix
+    matrix : ``scipy.sparse.*_matrix``
       the sparse matrix to iterate non-zero elements
 
     Yields
@@ -1552,17 +1522,17 @@ def _ispmatrix_all(matrix):
 
 
 def ispmatrixd(matrix, map_row=None, map_col=None):
-    """ Iterator for iterating rows, columns and data for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
+    """ Iterator for iterating rows, columns and data for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)
 
     Parameters
     ----------
     matrix : scipy.sparse.sp_matrix
       the sparse matrix to iterate non-zero elements
     map_row : func, optional
-      map each row entry through the function `map_row`, defaults to `None` which is 
+      map each row entry through the function `map_row`, defaults to ``None`` which is 
       equivalent to no mapping.
     map_col : func, optional
-      map each column entry through the function `map_col`, defaults to `None` which is 
+      map each column entry through the function `map_col`, defaults to ``None`` which is 
       equivalent to no mapping.
 
     Yields

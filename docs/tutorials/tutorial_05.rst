@@ -74,16 +74,16 @@ lines in the above snippet):
    assign as would do in a normal matrix.
 2. Sets the coupling element from the first orbital
    in the primary unit-cell to the first orbital in the unit-cell neighbouring
-   in the :math:`x` direction, hence `(1, 0)`.
+   in the :math:`x` direction, hence ``(1, 0)``.
 3. Sets the coupling element from the first orbital
    in the primary unit-cell to the first orbital in the unit-cell neighbouring
-   in the :math:`-x` direction, hence `(-1, 0)`.
+   in the :math:`-x` direction, hence ``(-1, 0)``.
 4. Sets the coupling element from the first orbital
    in the primary unit-cell to the first orbital in the unit-cell neighbouring
-   in the :math:`y` direction, hence `(0, 1)`.
+   in the :math:`y` direction, hence ``(0, 1)``.
 5. Sets the coupling element from the first orbital
    in the primary unit-cell to the first orbital in the unit-cell neighbouring
-   in the :math:`-y` direction, hence `(0, -1)`.
+   in the :math:`-y` direction, hence ``(0, -1)``.
 
 sisl does not intrinsically enforce symmetry, *that is the responsibility of the user*.
 This completes the Hamiltonian for nearest neighbour interaction and enables the
@@ -105,7 +105,7 @@ A commonly encountered example is the graphene unit-cell. In a tight-binding pic
 one may suffice with a nearest-neighbour coupling.
 
 Here we create the simple graphene 2D lattice with 2 atoms per unit-cell and
-a supercell of `[3, 3, 1]` to account for nearest neighbour couplings.
+a supercell of ``[3, 3, 1]`` to account for nearest neighbour couplings.
 
    >>> graphene = geom.graphene()
    >>> H = Hamiltonian(graphene)

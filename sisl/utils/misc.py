@@ -146,19 +146,19 @@ def angle(s, radians=True, in_radians=True):
     Parameters
     ----------
     s : str
-       If `s` starts with ``'r'`` it is interpreted as radians ``[0:2pi]``.
-       If `s` starts with ``'a'`` it is interpreted as a regular angle ``[0:360]``.
-       If `s` ends with ``'r'`` it returns in radians.
-       If `s` ends with ``'a'`` it returns in regular angle.
+       If `s` starts with 'r' it is interpreted as radians ``[0:2pi]``.
+       If `s` starts with 'a' it is interpreted as a regular angle ``[0:360]``.
+       If `s` ends with 'r' it returns in radians.
+       If `s` ends with 'a' it returns in regular angle.
 
        `s` may be any mathematical equation which can be 
-       intercepted through `eval`.
+       intercepted through ``eval``.
     radians : bool
        Whether the returned angle is in radians. 
-       Note than an ``'r'`` at the end of `s` has precedence.
+       Note than an 'r' at the end of `s` has precedence.
     in_radians : bool
        Whether the calculated angle is in radians. 
-       Note than an `'r'` at the beginning of `s` has precedence.
+       Note than an 'r' at the beginning of `s` has precedence.
 
     Returns
     -------

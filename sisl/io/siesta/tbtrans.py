@@ -56,8 +56,8 @@ class tbtncSileSiesta(SileCDFSiesta):
     * :math:`\alpha` and :math:`\beta` are atomic indices
     * :math:`\nu` and :math:`\mu` are orbital indices
 
-    Note
-    ----
+    Notes
+    -----
     The API for this class are largely equivalent to the arguments of the `sdata` command-line
     tool, with the execption that the command-line tool uses Fortran indexing numbers (1-based).
     """
@@ -211,7 +211,7 @@ class tbtncSileSiesta(SileCDFSiesta):
             self._access = access
 
     def read_supercell(self):
-        """ Returns `SuperCell` object from a .TBT.nc file """
+        """ Returns `SuperCell` object from this file """
         cell = np.array(np.copy(self.cell), dtype=np.float64)
         cell.shape = (3, 3)
 
@@ -229,7 +229,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         return sc
 
     def read_geometry(self, *args, **kwargs):
-        """ Returns `Geometry` object from a .TBT.nc file """
+        """ Returns `Geometry` object from this file """
         sc = self.read_supercell()
 
         xyz = np.array(np.copy(self.xa), dtype=np.float64)
@@ -269,7 +269,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
     @property
     def geom(self):
-        """ Returns the associated geometry from the TBT file """
+        """ Returns the associated geometry from this file """
         return self.read_geometry()
 
     @property
@@ -515,7 +515,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self._value_avg('T', self._elec(elec), kavg=kavg)
 
     def norm(self, atom=None, orbital=None, norm='none'):
-        r""" Return the normalization factor depending on the input
+        r""" Normalization factor depending on the input
 
         The normalization can be performed in one of the below methods.
         In the following :math:`N` refers to the normalization constant
@@ -529,7 +529,7 @@ class tbtncSileSiesta(SileCDFSiesta):
            unique atoms is performed, and subsequently the total number of orbitals on the 
            atoms is used. This makes it possible to compare the fraction of orbital DOS easier.
            I.e. for an atom with 4 orbitals one could compare the DOS for orbital `1` with norm:
-           `norm(orbital=[1], norm='atom')` for the remaning orbitals `norm(orbital=[0, 2, 3], norm='atom')`.
+           ``norm(orbital=[1], norm='atom')`` for the remaning orbitals ``norm(orbital=[0, 2, 3], norm='atom')``.
         #. 'orbital': :math:`N` is simply the sum of selected orbitals, if `atom` is specified, this 
            is equivalent to the 'atom' option.
 

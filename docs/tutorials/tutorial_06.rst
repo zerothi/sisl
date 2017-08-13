@@ -26,7 +26,7 @@ atomic specie to be a Hydrogen atom with a single orbital with a range of :math:
    }
   }
 
-Note how the `maxR` variable has changed from `-1.0` to `1.0`. This corresponds to the
+Note how the ``maxR`` variable has changed from ``-1.0`` to ``1.0``. This corresponds to the
 maximal orbital range in the geometry. Here there is only one type of orbital, but for
 geometries with several different orbitals, there may be different orbital ranges.
 
@@ -38,12 +38,12 @@ Now one can assign the generalized parameters::
   ...     H[ia, idx_a[1]] = 1.
 
 The `Geometry.close` function is a convenience function to return atomic indices of
-atoms within a certain radius. For instance `close(0, R=1.)` returns all atomic
+atoms within a certain radius. For instance ``close(0, R=1.)`` returns all atomic
 indices within a spherical radius of :math:`1\,Å` from the first atom in the geometry,
 including it-self.
-`close([0., 0., 1.], R=1.)` will return all atomic indices within :math:`1\,Å` of the
-coordinate `[0., 0., 1.]`.
-If one specifies a list of `R` it will return the atomic indices in the sphere within the
+``close([0., 0., 1.], R=1.)`` will return all atomic indices within :math:`1\,Å` of the
+coordinate ``[0., 0., 1.]``.
+If one specifies a list of ``R`` it will return the atomic indices in the sphere within the
 first element; and for the later values it will return the atomic indices in the spherical
 shell between the corresponding radii and the previous radii.
 

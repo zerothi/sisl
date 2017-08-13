@@ -55,10 +55,8 @@ class SparseGeometry(object):
         """ Custom keyword arguments when creating a new instance """
         return {}
 
-    def reset(self, dim=1, dtype=np.float64, nnzpr=None):
-        """
-        The sparsity pattern is cleaned and every thing
-        is reset.
+    def reset(self, dim=None, dtype=np.float64, nnzpr=None):
+        """ The sparsity pattern has all elements removed and everything is reset.
 
         The object will be the same as if it had been
         initialized with the same geometry as it were
@@ -67,7 +65,8 @@ class SparseGeometry(object):
         Parameters
         ----------
         dim: int, optional
-           number of dimensions per element
+           number of dimensions per element, default to the current number of
+           elements per matrix element.
         dtype: numpy.dtype, optional
            the datatype of the sparse elements
         nnzpr: int, optional
@@ -77,6 +76,8 @@ class SparseGeometry(object):
         # access a C-array, however, for constructing a
         # sparse pattern, it should be faster if memory elements
         # are closer...
+        if dim is None:
+            dim = self.dim
 
         # We check the first atom and its neighbours, we then
         # select max(5,len(nc) * 4)
@@ -105,7 +106,7 @@ class SparseGeometry(object):
         ----------
         dtype : numpy.dtype, optional
            it is possible to convert the data to a different data-type
-           If not specified, it will use `self.dtype`
+           If not specified, it will use ``self.dtype``
         """
         if dtype is None:
             dtype = self.dtype
@@ -199,7 +200,7 @@ class SparseGeometry(object):
     def eliminate_zeros(self):
         """ Removes all zero elements from the sparse matrix
 
-        This is an *in-place* operation
+        This is an *in-place* operation.
         """
         self._csr.eliminate_zeros()
 
@@ -280,10 +281,10 @@ class SparseGeometry(object):
         ----------
         func: callable or array_like
            this function *must* take 4 arguments.
-           1. Is this object (`self`)
-           2. Is the currently examined atom (`ia`)
-           3. Is the currently bounded indices (`idxs`)
-           4. Is the currently bounded indices atomic coordinates (`idxs_xyz`)
+           1. Is this object (``self``)
+           2. Is the currently examined atom (``ia``)
+           3. Is the currently bounded indices (``idxs``)
+           4. Is the currently bounded indices atomic coordinates (``idxs_xyz``)
            An example `func` could be:
 
            >>> def func(self, ia, idxs, idxs_xyz=None):
@@ -367,7 +368,7 @@ class SparseGeometry(object):
 
         Finalizes the model so that all non-used elements are removed. I.e. this simply reduces the memory requirement for the sparse matrix.
 
-        Note that adding more elements to the sparse matrix is more time-consuming than for an non-finalized sparse matrix due to the
+        Note that adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
         internal data-representation.
         """
         self._csr.finalize()
@@ -699,7 +700,7 @@ class SparseAtom(SparseGeometry):
 
         Parameters
         ----------
-        seps : int, optional
+        seps : int
            number of times the structure will be cut
         axis : int
            the axis that will be cut
@@ -806,7 +807,7 @@ class SparseAtom(SparseGeometry):
         return S
 
     def remove(self, atom):
-        """ Create a subset of this sparse matrix by removing the elements corresponding to ``atom``
+        """ Create a subset of this sparse matrix by removing the elements corresponding to `atom`
 
         Indices passed *MUST* be unique.
 
@@ -877,7 +878,7 @@ class SparseAtom(SparseGeometry):
         Parameters
         ----------
         reps : int
-            number of repetitions along cell-vector ``axis``
+            number of repetitions along cell-vector `axis`
         axis : int
             0, 1, 2 according to the cell-direction
         eta : bool, optional
@@ -978,7 +979,7 @@ class SparseAtom(SparseGeometry):
         Parameters
         ----------
         reps : int
-            number of repetitions along cell-vector ``axis``
+            number of repetitions along cell-vector `axis`
         axis : int
             0, 1, 2 according to the cell-direction
         eta : bool, optional
@@ -1080,8 +1081,7 @@ class SparseAtom(SparseGeometry):
 
 
 class SparseOrbital(SparseGeometry):
-    """ Sparse object with number of rows equal to the total number of orbitals in the `Geometry`
-    """
+    """ Sparse object with number of rows equal to the total number of orbitals in the `Geometry` """
 
     def __getitem__(self, key):
         """ Elements for the index(s) """
@@ -1240,7 +1240,7 @@ class SparseOrbital(SparseGeometry):
 
         Parameters
         ----------
-        seps : int, optional
+        seps : int
            number of times the structure will be cut
         axis : int
            the axis that will be cut
@@ -1347,7 +1347,7 @@ class SparseOrbital(SparseGeometry):
         return S
 
     def remove(self, atom):
-        """ Create a subset of this sparse matrix by removing the elements corresponding to ``atom``
+        """ Create a subset of this sparse matrix by removing the elements corresponding to `atom`
 
         Indices passed *MUST* be unique.
 
@@ -1369,7 +1369,7 @@ class SparseOrbital(SparseGeometry):
         return self.sub(atom)
 
     def sub(self, atom):
-        """ Create a subset of this sparse matrix by only retaining the elements corresponding to the ``atom``
+        """ Create a subset of this sparse matrix by only retaining the elements corresponding to the `atom`
 
         Indices passed *MUST* be unique.
 
@@ -1414,7 +1414,7 @@ class SparseOrbital(SparseGeometry):
         Parameters
         ----------
         reps : int
-            number of repetitions along cell-vector ``axis``
+            number of repetitions along cell-vector `axis`
         axis : int
             0, 1, 2 according to the cell-direction
         eta : bool, optional
@@ -1515,7 +1515,7 @@ class SparseOrbital(SparseGeometry):
         Parameters
         ----------
         reps : int
-            number of repetitions along cell-vector ``axis``
+            number of repetitions along cell-vector `axis`
         axis : int
             0, 1, 2 according to the cell-direction
         eta : bool, optional

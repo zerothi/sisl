@@ -312,7 +312,19 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 
+# My custom detailed instructions for not documenting stuff
+def sisl_skip(app, what, name, obj, skip, options):
+    if name in ['read_es', 'read_geom', 'read_sc',
+                'write_es', 'write_geom', 'write_sc',
+                'ArgumentParser', 'ArgumentParser_out']:
+        return True
+    return skip
+
+
 def setup(app):
+    # Setup autodoc skipping
+    app.connect('autodoc-skip-member', sisl_skip)
+
     import subprocess as sp
     if os.path.isfile('../run_pre.sh'):
         print("# Running ../run_pre.sh")

@@ -19,7 +19,7 @@ used. First, recall that the number of supercells can be retrieved by::
    array([1, 1, 1], dtype=int32)
 
 where ``nsc`` is the specific super-cell information. In the default
-case only the unit-cell is taken into consideration (`nsc: [1, 1, 1]`). However when using
+case only the unit-cell is taken into consideration (``nsc: [1, 1, 1]``). However when using
 the `Geometry.close` or `Geometry.within` functions one may retrieve neighbouring atoms
 depending on the size of the supercell.
 
@@ -34,8 +34,8 @@ or after it has been created::
    array([3, 1, 5], dtype=int32)
 
 The final geometry enables intrinsic routines to interact with the 2 closest neighbouring cells
-along the first lattice vector (`1 + 2 == 3`), and the 4 closest neighbouring cells
-along the third lattice vector (`1 + 2 + 2 == 5`). Note that the number of neighbouring supercells
+along the first lattice vector (``1 + 2 == 3``), and the 4 closest neighbouring cells
+along the third lattice vector (``1 + 2 + 2 == 5``). Note that the number of neighbouring supercells
 is *always* an uneven number because if it connects in the positive direction it also connects
 in the negative, hence the primary unit-cell plus 2 per neighbouring cell.
 
@@ -71,7 +71,7 @@ A commonly encountered example is the graphene unit-cell. In a tight-binding pic
 one may suffice with a nearest-neighbour coupling.
 
 Here we create the simple graphene 2D lattice with 2 atoms per unit-cell and
-a supercell of `[3, 3, 1]` to account for nearest neighbour couplings.
+a supercell of ``[3, 3, 1]`` to account for nearest neighbour couplings.
 
   >>> graphene = geom.graphene()
 
@@ -86,7 +86,7 @@ which results in this underlying geometry:
 The couplings from each unit-cell atom is highlighted by green (first atom) and
 blue (second atom) arrows. When dealing with Hamiltonians the supercell is extremely
 important to obtain the correct electronic structure. If one wishes to use the 3rd
-nearest neighbour couplings one is forced to use a supercell of `[5, 5, 1]` (please
+nearest neighbour couplings one is forced to use a supercell of ``[5, 5, 1]`` (please
 try and convince yourself of this).
 
 

@@ -1624,9 +1624,7 @@ class Geometry(SuperCellChild):
     def within_sc(self, shapes, isc=None,
                   idx=None, idx_xyz=None,
                   ret_xyz=False, ret_rij=False):
-        """
-        Calculates which atoms are close to some atom or point
-        in space, only returns so relative to a super-cell.
+        """ Indices of atoms in a given supercell within a given shape from a given coordinate
 
         This returns a set of atomic indices which are within a
         sphere of radius ``R``.
@@ -1778,9 +1776,7 @@ class Geometry(SuperCellChild):
     def close_sc(self, xyz_ia, isc=(0, 0, 0), R=None,
                  idx=None, idx_xyz=None,
                  ret_xyz=False, ret_rij=False):
-        """
-        Calculates which atoms are close to some atom or point
-        in space, only returns so relative to a super-cell.
+        """ Indices of atoms in a given supercell within a given radius from a given coordinate
 
         This returns a set of atomic indices which are within a
         sphere of radius ``R``.
@@ -2048,10 +2044,9 @@ class Geometry(SuperCellChild):
     def within(self, shapes,
             idx=None, idx_xyz=None,
             ret_xyz=False, ret_rij=False):
-        """
-        Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
+        """ Indices of atoms in the entire supercell within a given shape from a given coordinate
 
-        This heavily relies on the `close_sc` method.
+        This heavily relies on the `within_sc` method.
 
         Note that if a connection is made in a neighbouring super-cell
         then the atomic index is shifted by the super-cell index times
@@ -2137,8 +2132,7 @@ class Geometry(SuperCellChild):
     def close(self, xyz_ia, R=None,
             idx=None, idx_xyz=None,
             ret_xyz=False, ret_rij=False):
-        """
-        Returns supercell atomic indices for all atoms connecting to ``xyz_ia``
+        """ Indices of atoms in the entire supercell within a given radius from a given coordinate
 
         This heavily relies on the `close_sc` method.
 
