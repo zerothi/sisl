@@ -42,27 +42,32 @@ eV2Ry = unit_convert('eV', 'Ry')
 
 
 class tbtncSileSiesta(SileCDFSiesta):
-    """ TBtrans file object 
+    r""" TBtrans output file object 
 
-    This ``SileCDF`` implements the TBtrans output `*.TBT.nc` sile which contains
+    Implementation of the TBtrans output ``*.TBT.nc`` files which contains
     calculated quantities related to the NEGF code TBtrans.
 
     Although the TBtrans code is in fortran and the resulting NetCDF file variables
     are in fortran indexing (1-based), everything is returned as Python indexing (0-based)
-    when scripting.
+    when creating scripts.
 
-    This is vital when using this ``Sile``.
+    In the following equations we will use this notation:
 
-    Note that when using the command-line utility ``sdata`` the indexing is fortran based 
-    because the data handlers are meant for _easy_ use.
+    * :math:`\alpha` and :math:`\beta` are atomic indices
+    * :math:`\nu` and :math:`\mu` are orbital indices
+
+    Note
+    ----
+    The API for this class are largely equivalent to the arguments of the `sdata` command-line
+    tool, with the execption that the command-line tool uses Fortran indexing numbers (1-based).
     """
     _trans_type = 'TBT'
     _k_avg = False
 
     def write_tbtav(self, **kwargs):
-        """ Write the TBT.AV.nc equivalent of this TBtrans output
+        """ Convert this to a TBT.AV.nc file, i.e. all k dependent quantites are averaged out.
 
-        This will create/overwrite the file with the ending TBT.AV.nc and thus
+        This command will overwrite any previous file with the ending TBT.AV.nc and thus
         will not take notice of any older files.
         """
         from .tbtrans_av import tbtavncSileSiesta as TBTAV
@@ -382,11 +387,12 @@ class tbtncSileSiesta(SileCDFSiesta):
         return idxE
 
     def kindex(self, k):
-        """ Return the closest k index corresponding to the k-point ``k``
+        """ Return the index of the k-point that is closests to the queried k-point (in reduced coordinates)
 
         Parameters
         ----------
         k : array_like of float
+           the queried k-point in reduced coordinates :math:`]-0.5;0.5]`.
         """
         ik = np.sum(np.abs(self.kpt - np.asarray(k, np.float64)[None, :]), axis=1).argmin()
         ret_k = self.kpt[ik, :]
@@ -434,7 +440,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
     def transmission(self, elec_from=0, elec_to=1, kavg=True):
-        """ Return the transmission from `from` to `to`.
+        """ Transmission from `from` to `to`.
 
         The transmission between two electrodes may be retrieved
         from the `Sile`.
@@ -462,10 +468,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self._value_avg(elec_to + '.T', elec_from, kavg=kavg)
 
     def transmission_eig(self, elec_from=0, elec_to=1, kavg=True):
-        """ Return the transmission eigenvalues from `from` to `to`.
-
-        The transmission eigenvalues between two electrodes may be retrieved
-        from the `Sile`.
+        """ Transmission eigenvalues from `from` to `to`.
 
         Parameters
         ----------
@@ -491,7 +494,10 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self._value_avg(elec_to + '.T.Eig', elec_from, kavg=kavg)
 
     def transmission_bulk(self, elec=0, kavg=True):
-        """ Return the bulk transmission in the `elec` electrode
+        """ Bulk transmission for the `elec` electrode
+
+        The bulk transmission is equivalent to creating a 2 terminal device with
+        electrode `elec` tiled 3 times.
 
         Parameters
         ----------
@@ -516,20 +522,16 @@ class tbtncSileSiesta(SileCDFSiesta):
         that is to be used (i.e. the divisor)
 
         #. 'none': :math:`N=1`
-
         #. 'all': :math:`N` is equal to the number of orbitals in the total
-        device region.
-
+           device region.
         #. 'atom': :math:`N` is equal to the total number of orbitals in the selected
-        atoms. If `orbital` is an argument a conversion of `orbital` to the equivalent
-        unique atoms is performed, and subsequently the total number of orbitals on the 
-        atoms is used. This makes it possible to compare the fraction of orbital DOS easier.
-        I.e. for an atom with 4 orbitals one could compare the DOS for orbital `1` with norm:
-        `norm(orbital=[1], norm='atom')` for the remaning orbitals `norm(orbital=[0, 2, 3], norm='atom')`.
-
+           atoms. If `orbital` is an argument a conversion of `orbital` to the equivalent
+           unique atoms is performed, and subsequently the total number of orbitals on the 
+           atoms is used. This makes it possible to compare the fraction of orbital DOS easier.
+           I.e. for an atom with 4 orbitals one could compare the DOS for orbital `1` with norm:
+           `norm(orbital=[1], norm='atom')` for the remaning orbitals `norm(orbital=[0, 2, 3], norm='atom')`.
         #. 'orbital': :math:`N` is simply the sum of selected orbitals, if `atom` is specified, this 
-        is equivalent to the 'atom' option.
-
+           is equivalent to the 'atom' option.
 
         Parameters
         ----------
@@ -540,11 +542,7 @@ class tbtncSileSiesta(SileCDFSiesta):
            only return for a given set of orbitals (default to all)
            *NOT* allowed with `atom` keyword
         norm : {'none', 'atom', 'orbital', 'all'}
-           how the normalization of the summed DOS is performed. 
-            - 'none', no normalization is performed.
-            - 'atom', divides by number of orbitals in selected atoms, if `orbital` is provided then the total number of orbitals on the chosen atoms are the norm,
-            - 'orbital', divides by number of orbitals in selected orbitals,
-            - 'all', divides by number of orbitals in device region,
+           how the normalization of the summed DOS is performed (see `norm` routine)
         """
         # Cast to lower
         norm = norm.lower()
@@ -589,11 +587,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
         norm : {'none', 'atom', 'orbital', 'all'}
-           how the normalization of the summed DOS is performed. 
-            - 'none', no normalization is performed.
-            - 'atom', divides by number of orbitals in selected atoms, if `orbital` is provided then the total number of orbitals on the chosen atoms are the norm,
-            - 'orbital', divides by number of orbitals in selected orbitals,
-            - 'all', divides by number of orbitals in device region,
+           how the normalization of the summed DOS is performed (see `norm` routine)
 
         Returns
         -------
@@ -665,15 +659,16 @@ class tbtncSileSiesta(SileCDFSiesta):
         return nDOS
 
     def DOS(self, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
-        r""" Return the Green function DOS (1/eV).
+        r""" Green function density of states (DOS) (1/eV).
 
-        Returns the DOS on the selected atoms/orbitals
+        Extract the DOS on a selected subset of atoms/orbitals in the device region
 
         .. math::
 
            \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}(E)
 
-        The normalization (:math:`N`) is defined in the routine ``norm``.
+        The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
+        arguments.
 
         Parameters
         ----------
@@ -691,11 +686,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
         norm : {'none', 'atom', 'orbital', 'all'}
-           how the normalization of the summed DOS is performed. 
-            - 'none', no normalization is performed.
-            - 'atom', divides by number of orbitals in selected atoms, if `orbital` is provided then the total number of orbitals on the chosen atoms are the norm,
-            - 'orbital', divides by number of orbitals in selected orbitals,
-            - 'all', divides by number of orbitals in device region,
+           how the normalization of the summed DOS is performed (see `norm` routine)
 
         See Also
         --------
@@ -706,15 +697,16 @@ class tbtncSileSiesta(SileCDFSiesta):
                                   atom, orbital, sum, norm) * eV2Ry
 
     def ADOS(self, elec=0, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
-        r""" Return the DOS of the spectral function from `elec` (1/eV).
+        r""" Spectral density of states (DOS) (1/eV).
 
-        Returns the spectral DOS (DOS *originating* from electrode `elec`) on the selected atoms/orbitals
+        Extract the spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
 
         .. math::
 
-           \mathrm{ADOS}_\mathfrak{el}(E) = -\frac{1}{2\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger(E)
+           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger(E)
 
-        The normalization (:math:`N`) is defined in the routine ``norm``.
+        The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
+        arguments.
 
         Parameters
         ----------
@@ -734,11 +726,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
         norm : {'none', 'atom', 'orbital', 'all'}
-           how the normalization of the summed DOS is performed. 
-            - 'none', no normalization is performed.
-            - 'atom', divides by number of orbitals in selected atoms, if `orbital` is provided then the total number of orbitals on the chosen atoms are the norm,
-            - 'orbital', divides by number of orbitals in selected orbitals,
-            - 'all', divides by number of orbitals in device region,
+           how the normalization of the summed DOS is performed (see `norm` routine).
 
         See Also
         --------
@@ -750,13 +738,13 @@ class tbtncSileSiesta(SileCDFSiesta):
                          atom, orbital, sum, norm) * eV2Ry
 
     def BDOS(self, elec=0, E=None, kavg=True, sum=True):
-        r""" Return the bulk DOS of `elec` (1/eV).
+        r""" Bulk density of states (DOS) (1/eV).
 
-        Returns the bulk DOS (Green function DOS from the bulk part of the electrode)
+        Extract the bulk DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
 
         .. math::
 
-           \mathrm{BDOS}_\mathfrak{el}(E) = -\frac{1}{\pi} \mathbf{G}(E)
+           \mathrm{BDOS}_\mathfrak{el}(E) = -\frac{1}{\pi} \Im\mathbf{G}(E)
 
         Parameters
         ----------
@@ -769,7 +757,6 @@ class tbtncSileSiesta(SileCDFSiesta):
            or a selection of k-points
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
-
 
         See Also
         --------
@@ -793,14 +780,14 @@ class tbtncSileSiesta(SileCDFSiesta):
         return E[idx_sort], T[idx_sort]
 
     def current(self, elec_from=0, elec_to=1, kavg=True):
-        r""" Return the current from `from` to `to` using the weights in the file. 
+        r""" Current from `from` to `to` using the k-weights and energy spacings in the file. 
 
         Calculates the current as:
 
         .. math::
-           I(\mu_t - \mu_f) = \frac{e}{h}\int\!\mathrm{d}E\,  T(E) [n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
+           I(\mu_t - \mu_f) = \frac{e}{h}\int\!\mathrm{d}E\, T(E) [n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
 
-        The chemical potential and the temperature is taken from the *.TBT.nc file.
+        The chemical potential and the temperature are taken from this object.
 
         Parameters
         ----------
@@ -815,6 +802,8 @@ class tbtncSileSiesta(SileCDFSiesta):
         See Also
         --------
         current_parameter : to explicitly set the electronic temperature and chemical potentials
+        chemical_potential : routine that defines the chemical potential of the queried electrodes
+        kT : routine that defines the electronic temperature of the queried electrodes
         """
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
@@ -827,7 +816,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
     def current_parameter(self, elec_from, mu_from, kt_from,
                           elec_to, mu_to, kt_to, kavg=True):
-        r""" Return the current from `from` to `to` using the passed parameters
+        r""" Current from `from` to `to` using the k-weights and energy spacings in the file. 
 
         Calculates the current as:
 
@@ -857,7 +846,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         See Also
         --------
-        current : which calculates the current with the pre-set parameters
+        current : which calculates the current with the chemical potentials and temperatures set in the TBtrans calculation
         """
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
@@ -898,11 +887,11 @@ class tbtncSileSiesta(SileCDFSiesta):
         return I * 1.6021766208e-19 / 4.135667662e-15
 
     def orbital_current(self, elec, E, kavg=True, isc=None):
-        """ Return the orbital current originating from `elec`.
+        """ Orbital current originating from `elec` as a sparse matrix
 
-        This will return a sparse matrix (``scipy.sparse.csr_matrix``).
-        The sparse matrix may be interacted with like a normal
-        matrix although it enables extremely big matrices.
+        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
+        Each matrix element of the sparse matrix corresponds to the orbital indices of the
+        underlying geometry.
 
         Parameters
         ----------
@@ -916,8 +905,13 @@ class tbtncSileSiesta(SileCDFSiesta):
            whether the returned orbital current is k-averaged, an explicit k-point
            or a selection of k-points
         isc: array_like, optional
-           the returned bond currents from the unit-cell (`[0, 0, 0]`) to
+           the returned bond currents from the unit-cell (``[0, 0, 0]``) to
            the given supercell, the default is only orbital currents *in* the unitcell.
+
+        Examples
+        --------
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Jij[10, 11] # orbital current from the 11th to the 12th orbital
 
         See Also
         --------
@@ -996,23 +990,44 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         return csr_matrix((J, col, rptr), shape=mat_size)
 
-    def bond_current_from_orbital(self, Jij, sum='+', uc=None):
-        """ Return the bond-current between atoms (sum of orbital currents) by passing the orbital
-        currents.
+    def bond_current_from_orbital(self, Jij, sum='+', uc=False):
+        r""" Bond-current between atoms (sum of orbital currents) from an external orbital current
+
+        Conversion routine from orbital currents into bond currents.
+
+        The bond currents are a sum over all orbital currents:
+
+        .. math::
+           J_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} J_{\nu\mu}
+
+        where if 
+
+        * ``sum='+'``:
+          only the positive :math:`J_{\nu\mu}` are summed, 
+        * ``sum='-'``:
+          only the negative :math:`J_{\nu\mu}` are summed, 
+        * ``sum='all'``:
+          all :math:`J_{\nu\mu}` are summed.
 
         Parameters
         ----------
         Jij : ``scipy.sparse.*_matrix``
            the orbital currents as retrieved from `orbital_current`
-        sum : str, {'+', '-', 'all'}
+        sum : {'+', '-', 'all'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return both.
         uc : bool, optional
            whether the returned bond-currents are only in the unit-cell.
-           If `True` this will return a sparse matrix of `.shape = (self.na, self.na)`,
-           else, it will return a sparse matrix of `.shape = (self.na, self.na * self.n_s)`.
+           If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
+           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
            One may figure out the connections via `Geometry.sc_index`.
+
+        Examples
+        --------
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Jab = tbt.bond_current_from_orbital(Jij)
+        >>> Jab[2,3] # bond current between atom 3 and 4
 
         See Also
         --------
@@ -1025,8 +1040,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         na = geom.na
         o2a = geom.o2a
 
-        if uc is None:
-            # Default UC shape
+        if uc is False:
             uc = Jij.shape[0] == Jij.shape[1]
 
         # We convert to atomic bond-currents
@@ -1099,7 +1113,9 @@ class tbtncSileSiesta(SileCDFSiesta):
         return Jab
 
     def bond_current(self, elec, E, kavg=True, isc=None, sum='+', uc=False):
-        """ Return the bond-current between atoms (sum of orbital currents)
+        """ Bond-current between atoms (sum of orbital currents)
+
+        Short hand function for calling `orbital_current` and `bond_current_from_orbital`.
 
         Parameters
         ----------
@@ -1113,8 +1129,8 @@ class tbtncSileSiesta(SileCDFSiesta):
            whether the returned bond current is k-averaged, an explicit k-point
            or a selection of k-points
         isc : array_like, optional
-           the returned bond currents from the unit-cell (`[0, 0, 0]`) (default) to
-           the given supercell. If `[None, None, None]` is passed all
+           the returned bond currents from the unit-cell (``[0, 0, 0]``) (default) to
+           the given supercell. If ``[None, None, None]`` is passed all
            bond currents are returned.
         sum : {'+', '-', 'all'}
            If "+" is supplied only the positive orbital currents are used,
@@ -1122,9 +1138,17 @@ class tbtncSileSiesta(SileCDFSiesta):
            else return the sum of both.
         uc : bool, optional
            whether the returned bond-currents are only in the unit-cell.
-           If `True` this will return a sparse matrix of `.shape = (self.na, self.na)`,
-           else, it will return a sparse matrix of `.shape = (self.na, self.na * self.n_s)`.
+           If `True` this will return a sparse matrix of ``shape = (self.na, self.na)``,
+           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
            One may figure out the connections via `Geometry.sc_index`.
+
+        Examples
+        --------
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Jab1 = tbt.bond_current_from_orbital(Jij)
+        >>> Jab2 = tbt.bond_current(0, -1.0)
+        >>> Jab1 == Jab2
+        True
 
         See Also
         --------
@@ -1139,36 +1163,37 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self.bond_current_from_orbital(Jij, sum=sum, uc=uc)
 
     def atom_current_from_orbital(self, Jij, activity=True):
-        r""" Return the atom-current of atoms.
+        r""" Atomic current of atoms by passing the orbital current
 
-        This takes a sparse matrix with size `self.geom.no, self.geom.no_s` as argument
-        with the associated orbital currents.
+        The atomic current is a single number specifying a figure of the *magnitude* 
+        current flowing through each atom. It is thus *not* a quantity that can be related to
+        the physical current flowing in/out of atoms but is merely a number that provides an
+        idea of *how much* current this atom is redistributing.
 
-        Please note that this returns the atomic current by folding all 
-        orbital currents into the unit-cell.
+        The atomic current may have two meanings based on these two equations
+
+        .. math::
+            J_\alpha^{|a|} &=\frac{1}{2} \sum_\beta \big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} J_{\nu\mu} \big|
+            \\
+            J_\alpha^{|o|} &=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| J_{\nu\mu} \big|
+
+        If the *activity* current is requested (``activity=True``) 
+        :math:`J_\alpha^{\mathcal A} = \sqrt{ J_\alpha^{|a|} J_\alpha^{|o|} }` is returned.
+        Else :math:`J_\alpha^{|a|}` is returned. 
+
+        For geometries with all atoms only having 1-orbital, they are equivalent.
 
         Parameters
         ----------
-        Jij: ``scipy.sparse.*_matrix``
+        Jij: ``scipy.sparse.csr_matrix``
            the orbital currents as retrieved from `orbital_current`
-        activity: ``bool`` (`True`)
-           whether the activity current is returned.
-           This is defined using these two equations:
+        activity: bool, optional
+           ``True`` to return the activity current, see explanation above
 
-           .. math::
-              J_I^{|a|} &=\frac{1}{2} \sum_J \big| \sum_{\nu\in I}\sum_{\mu\in J} J_{\nu\mu} \big|
-              J_I^{|o|} &=\frac{1}{2} \sum_J \sum_{\nu\in I}\sum_{\mu\in J} \big| J_{\nu\mu} \big|
-
-           If `activity = False` it returns
-
-           .. math::
-              J_I^{|a|}
-
-           and if `activity = True` it returns
-
-           .. math::
-              J_I^{\mathcal A} = \sqrt{ J_I^{|a|} J_I^{|o|} }
-
+        Examples
+        --------
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Ja = tbt.atom_current_from_orbital(Jij)
         """
         # Create the bond-currents with all summations
         Jab = self.bond_current_from_orbital(Jij, sum='all')
@@ -1193,9 +1218,9 @@ class tbtncSileSiesta(SileCDFSiesta):
         return Ja
 
     def atom_current(self, elec, E, kavg=True, activity=True):
-        r""" Return the atom-current of atoms. 
+        """ Atomic current of atoms
 
-        This should *not* be confused with the bond-currents.
+        Short hand function for calling `orbital_current` and `atom_current_from_orbital`.
 
         Parameters
         ----------
@@ -1207,22 +1232,7 @@ class tbtncSileSiesta(SileCDFSiesta):
            whether the returned atomic current is k-averaged, an explicit k-point
            or a selection of k-points
         activity: bool, optional
-           whether the activity current is returned.
-           This is defined using these two equations:
-
-           .. math::
-              J_I^{|a|} &=\frac{1}{2} \sum_J \big| \sum_{\nu\in I}\sum_{\mu\in J} J_{\nu\mu} \big|
-              J_I^{|o|} &=\frac{1}{2} \sum_J \sum_{\nu\in I}\sum_{\mu\in J} \big| J_{\nu\mu} \big|
-
-           If `activity = False` it returns
-
-           .. math::
-              J_I^{|a|}
-
-           and if `activity = True` it returns
-
-           .. math::
-              J_I^{\mathcal A} = \sqrt{ J_I^{|a|} J_I^{|o|} }
+           whether the activity current is returned, see `atom_current_from_orbital` for details.
 
         See Also
         --------
@@ -1237,15 +1247,31 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self.atom_current_from_orbital(Jorb, activity=activity)
 
     def vector_current_from_bond(self, Jab):
-        """ Return the atomic current with vector components of atoms.
+        r""" Vector for each atom describing the *mean* path for the current travelling through the atom
 
-        This takes a sparse matrix with size `self.geom.na, self.geom.na_s` as argument
-        with the associated bond currents.
+        The vector currents are defined as:
+
+        .. math::
+              \mathbf J_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} * J_{\alpha\beta}
+
+        Where :math:`J_{\alpha\beta}` is the bond current between atom :math:`\alpha` and :math:`\beta` and 
+        :math:`r_\alpha` are the atomic coordinates in the unit-cell.
 
         Parameters
         ----------
-        Jab: ``scipy.sparse.*_matrix``
+        Jab: ``scipy.sparse.csr_matrix``
            the bond currents as retrieved from `bond_current`
+
+        Returns
+        -------
+        numpy.ndarray : an array of vectors per atom in the Geometry (only non-zero for device atoms)
+
+        See Also
+        --------
+        orbital_current : the orbital current between individual orbitals
+        bond_current_from_orbital : transfer the orbital current to bond current
+        bond_current : the bond current (orbital current summed over orbitals)
+        atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
         geom = self.geom
 
@@ -1257,7 +1283,8 @@ class tbtncSileSiesta(SileCDFSiesta):
         xyz = geom.xyz
 
         # Loop atoms in the device region
-        # These are the only atoms which may have bond-currents
+        # These are the only atoms which may have bond-currents,
+        # So no need to loop over any other atoms
         for ia in self.a_dev:
             # Get csr matrix
             Jia = Jab[ia, :].tocsr()
@@ -1276,7 +1303,9 @@ class tbtncSileSiesta(SileCDFSiesta):
         return Ja
 
     def vector_current(self, elec, E, kavg=True, sum='all'):
-        """ Return the atom-current with vector components of atoms.
+        """ Vector for each atom describing the *mean* path for the current travelling through the atom
+
+        See `vector_current_from_bond` for details.
 
         Parameters
         ----------
@@ -1290,7 +1319,12 @@ class tbtncSileSiesta(SileCDFSiesta):
            whether the returned vector current is k-averaged, an explicit k-point
            or a selection of k-points
         sum : {'all', '+', '-'}
-           how the summation of the bond-currents should be
+           how the summation of the bond-currents will be performed, i.e. only
+           positive ('+'), negative ('-') or all orbital currents
+
+        Returns
+        -------
+        numpy.ndarray : an array of vectors per atom in the Geometry (only non-zero for device atoms)
 
         See Also
         --------
@@ -1300,6 +1334,8 @@ class tbtncSileSiesta(SileCDFSiesta):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
         elec = self._elec(elec)
+        # Imperative that we use the entire supercell structure to
+        # retain vectors crossing the boundaries
         Jab = self.bond_current(elec, E, kavg, isc=[None, None, None], sum=sum)
 
         return self.vector_current_from_bond(Jab)
@@ -1311,11 +1347,11 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         Parameters
         ----------
-        geom: ``bool``
+        geom: bool, optional
            return the geometry
-        atom_current: ``bool``
+        atom_current: bool, optional
            return the atomic current flowing through an atom (the *activity* current)
-        vector_current: ``bool``
+        vector_current: bool, optional
            return the orbital currents as vectors
         """
         val = []
@@ -1342,7 +1378,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         return val
 
     def info(self, elec=None):
-        """ Return a string containing the information available for this *.TBT.nc file
+        """ Information about the calculated quantities available for extracting in this file
 
         Parameters
         ----------
