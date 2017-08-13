@@ -1011,7 +1011,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         Parameters
         ----------
-        Jij : ``scipy.sparse.*_matrix``
+        Jij : scipy.sparse.csr_matrix
            the orbital currents as retrieved from `orbital_current`
         sum : {'+', '-', 'all'}
            If "+" is supplied only the positive orbital currents are used,
@@ -1173,19 +1173,26 @@ class tbtncSileSiesta(SileCDFSiesta):
         The atomic current may have two meanings based on these two equations
 
         .. math::
-            J_\alpha^{|a|} &=\frac{1}{2} \sum_\beta \big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} J_{\nu\mu} \big|
+            J_\alpha^{|a|} &=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} J_{\nu\mu} \Big|
             \\
             J_\alpha^{|o|} &=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| J_{\nu\mu} \big|
 
         If the *activity* current is requested (``activity=True``) 
         :math:`J_\alpha^{\mathcal A} = \sqrt{ J_\alpha^{|a|} J_\alpha^{|o|} }` is returned.
-        Else :math:`J_\alpha^{|a|}` is returned. 
+
+        If ``activity=False`` :math:`J_\alpha^{|a|}` is returned. 
 
         For geometries with all atoms only having 1-orbital, they are equivalent.
 
+        Generally the activity current is a more rigorous figure of merit for the current
+        flowing through an atom. More so than than the summed absolute atomic current due to 
+        the following reasoning. The activity current is a geometric mean of the absolute bond current
+        and the absolute orbital current. This means that if there is an atom with a large orbital current between
+        its own orbitals it will have a larger activity current. 
+
         Parameters
         ----------
-        Jij: ``scipy.sparse.csr_matrix``
+        Jij: scipy.sparse.csr_matrix
            the orbital currents as retrieved from `orbital_current`
         activity: bool, optional
            ``True`` to return the activity current, see explanation above
@@ -1247,19 +1254,19 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self.atom_current_from_orbital(Jorb, activity=activity)
 
     def vector_current_from_bond(self, Jab):
-        r""" Vector for each atom describing the *mean* path for the current travelling through the atom
+        r""" Vector for each atom being the sum of bond-current times the normalized bond between the atoms
 
-        The vector currents are defined as:
+        The vector current is defined as:
 
         .. math::
-              \mathbf J_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} * J_{\alpha\beta}
+              \mathbf J_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} \cdot J_{\alpha\beta}
 
         Where :math:`J_{\alpha\beta}` is the bond current between atom :math:`\alpha` and :math:`\beta` and 
-        :math:`r_\alpha` are the atomic coordinates in the unit-cell.
+        :math:`r_\alpha` are the atomic coordinates.
 
         Parameters
         ----------
-        Jab: ``scipy.sparse.csr_matrix``
+        Jab: scipy.sparse.csr_matrix
            the bond currents as retrieved from `bond_current`
 
         Returns
