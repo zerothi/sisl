@@ -990,7 +990,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         return csr_matrix((J, col, rptr), shape=mat_size)
 
-    def bond_current_from_orbital(self, Jij, sum='+', uc=False):
+    def bond_current_from_orbital(self, Jij, sum='all', uc=False):
         r""" Bond-current between atoms (sum of orbital currents) from an external orbital current
 
         Conversion routine from orbital currents into bond currents.
@@ -1003,9 +1003,9 @@ class tbtncSileSiesta(SileCDFSiesta):
         where if 
 
         * ``sum='+'``:
-          only the positive :math:`J_{\nu\mu}` are summed, 
+          only :math:`J_{\nu\mu} > 0` are summed, 
         * ``sum='-'``:
-          only the negative :math:`J_{\nu\mu}` are summed, 
+          only :math:`J_{\nu\mu} < 0` are summed, 
         * ``sum='all'``:
           all :math:`J_{\nu\mu}` are summed.
 
@@ -1013,7 +1013,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         ----------
         Jij : scipy.sparse.csr_matrix
            the orbital currents as retrieved from `orbital_current`
-        sum : {'+', '-', 'all'}
+        sum : {'all', '+', '-'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return both.
@@ -1102,7 +1102,6 @@ class tbtncSileSiesta(SileCDFSiesta):
             Jab.data = np.copy(Jij.data)
 
         # Do in-place operations by removing all the things not required
-        Jab.sort_indices()
         Jab.sum_duplicates()
         Jab.eliminate_zeros()
         Jab.sort_indices()
@@ -1112,7 +1111,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         return Jab
 
-    def bond_current(self, elec, E, kavg=True, isc=None, sum='+', uc=False):
+    def bond_current(self, elec, E, kavg=True, isc=None, sum='all', uc=False):
         """ Bond-current between atoms (sum of orbital currents)
 
         Short hand function for calling `orbital_current` and `bond_current_from_orbital`.
@@ -1132,7 +1131,7 @@ class tbtncSileSiesta(SileCDFSiesta):
            the returned bond currents from the unit-cell (``[0, 0, 0]``) (default) to
            the given supercell. If ``[None, None, None]`` is passed all
            bond currents are returned.
-        sum : {'+', '-', 'all'}
+        sum : {'all', '+', '-'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return the sum of both.
