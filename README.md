@@ -2,11 +2,11 @@
 
 [![Build Status](https://travis-ci.org/zerothi/sisl.svg?branch=master)](https://travis-ci.org/zerothi/sisl)
 [![DOI for citation](https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg)](http://dx.doi.org/10.5281/zenodo.597181)
+[![Join the chat at https://gitter.im/sisl-tool/Lobby](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/sisl-tool/Lobby)
 <!--- [![Documentation on RTD](https://readthedocs.org/projects/docs/badge/?version=latest)](http://sisl.readthedocs.io/en/latest/) -->
 [![Install sisl using PyPI](https://badge.fury.io/py/sisl.svg)](https://badge.fury.io/py/sisl)
 [![Install sisl using conda](https://anaconda.org/zerothi/sisl/badges/installer/conda.svg)](https://anaconda.org/zerothi/sisl)
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
-[![Join the chat at https://gitter.im/sisl-tool/Lobby](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/sisl-tool/Lobby)
 [![Donate money to support development of sisl](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NGNU2AA3JXX94&lc=DK&item_name=Papior%2dCodes&item_number=codes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
 
 The [API documentation][sisl-api] can be found [here][sisl-api].
