@@ -2088,9 +2088,7 @@ class dHncSileSiesta(SileCDFSiesta):
     """ TBtrans delta-H file object """
 
     def write_geometry(self, geom):
-        """
-        Creates the NetCDF file and writes the geometry information
-        """
+        """ Creates the NetCDF file and writes the geometry information """
         sile_raise_write(self)
 
         # Create initial dimensions
@@ -2178,12 +2176,12 @@ class dHncSileSiesta(SileCDFSiesta):
 
         Parameters
         ----------
-        H : `Hamiltonian` model
+        H : Hamiltonian
            the model to be saved in the NC file
-        spin : int, 0
-           the spin-index of the Hamiltonian object that is stored.
+        spin : int, optional
+           the spin-index of the Hamiltonian object that is stored. Default is the first index.
         """
-        # Ensure finalizations
+        # Ensure finalization
         H.finalize()
 
         # Ensure that the geometry is written
