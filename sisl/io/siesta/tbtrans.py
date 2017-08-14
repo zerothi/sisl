@@ -905,8 +905,9 @@ class tbtncSileSiesta(SileCDFSiesta):
            whether the returned orbital current is k-averaged, an explicit k-point
            or a selection of k-points
         isc: array_like, optional
-           the returned bond currents from the unit-cell (``[0, 0, 0]``) to
-           the given supercell, the default is only orbital currents *in* the unitcell.
+           the returned bond currents from the unit-cell (``[None, None, None]``) to
+           the given supercell, the default is all orbital currents for the supercell.
+           To only get unit cell orbital currents, pass ``[0, 0, 0]``.
 
         Examples
         --------
@@ -937,7 +938,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         # First we figure out the indices, then
         # we build the array of allowed columns
         if isc is None:
-            isc = [0, 0, 0]
+            isc = [None, None, None]
 
         if isc[0] is None and isc[1] is None and isc[2] is None:
             all_col = None
@@ -1128,7 +1129,7 @@ class tbtncSileSiesta(SileCDFSiesta):
            whether the returned bond current is k-averaged, an explicit k-point
            or a selection of k-points
         isc : array_like, optional
-           the returned bond currents from the unit-cell (``[0, 0, 0]``) (default) to
+           the returned bond currents from the unit-cell (``[None, None, None]``) (default) to
            the given supercell. If ``[None, None, None]`` is passed all
            bond currents are returned.
         sum : {'all', '+', '-'}
@@ -1198,7 +1199,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Jij = tbt.orbital_current(0, -1.0, isc=[None]*3) # orbital current @ E = -1 eV originating from electrode ``0``
         >>> Ja = tbt.atom_current_from_orbital(Jij)
         """
         # Create the bond-currents with all summations
