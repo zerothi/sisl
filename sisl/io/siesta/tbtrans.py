@@ -71,8 +71,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         This command will overwrite any previous file with the ending TBT.AV.nc and thus
         will not take notice of any older files.
         """
-        from .tbtrans_av import tbtavncSileSiesta as TBTAV
-        TBTAV(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(tbtav=self)
+        tbtavncSileSiesta(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(tbtav=self)
 
     def _elec(self, elec):
         """ Converts a string or integer to the corresponding electrode name
