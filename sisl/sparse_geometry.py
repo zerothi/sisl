@@ -864,7 +864,7 @@ class SparseAtom(SparseGeometry):
 
         return S
 
-    def tile(self, reps, axis, eta=False):
+    def tile(self, reps, axis):
         """ Create a tiled sparse atom object, equivalent to `Geometry.tile`
 
         The already existing sparse elements are extrapolated
@@ -881,8 +881,6 @@ class SparseAtom(SparseGeometry):
             number of repetitions along cell-vector `axis`
         axis : int
             0, 1, 2 according to the cell-direction
-        eta : bool, optional
-            print an ETA to stdout
 
         See Also
         --------
@@ -914,12 +912,6 @@ class SparseAtom(SparseGeometry):
         na_n = S.na
         geom_n = S.geom
 
-        # For ETA
-        from time import time
-        from sys import stdout
-        t0 = time()
-        name = self.__class__.__name__
-
         # First loop on axis tiling and local
         # atoms in the geometry
         sc_index = geom_n.sc_index
@@ -947,13 +939,6 @@ class SparseAtom(SparseGeometry):
 
             indices[rep, :] = JA % na_n + sc_index(isc) * na_n
 
-            if eta:
-                # calculate hours, minutes, seconds
-                m, s = divmod((time()-t0)/(rep+1) * (reps-rep-1), 60)
-                h, m = divmod(m, 60)
-                stdout.write(name + ".tile() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
-                stdout.flush()
-
         # Clean-up
         del isc, JA
 
@@ -961,16 +946,9 @@ class SparseAtom(SparseGeometry):
         S._csr = SparseCSR((np.tile(D, (reps, 1)), indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
 
-        if eta:
-            # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod((time()-t0), 60)
-            h, m = divmod(m, 60)
-            stdout.write(name + ".tile() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
-            stdout.flush()
-
         return S
 
-    def repeat(self, reps, axis, eta=False):
+    def repeat(self, reps, axis):
         """ Create a repeated sparse atom object, equivalent to `Geometry.repeat`
 
         The already existing sparse elements are extrapolated
@@ -982,8 +960,6 @@ class SparseAtom(SparseGeometry):
             number of repetitions along cell-vector `axis`
         axis : int
             0, 1, 2 according to the cell-direction
-        eta : bool, optional
-            print an ETA to stdout
 
         See Also
         --------
@@ -1015,12 +991,6 @@ class SparseAtom(SparseGeometry):
         na_n = S.na
         geom_n = S.geom
 
-        # For ETA
-        from time import time
-        from sys import stdout
-        t0 = time()
-        name = self.__class__.__name__
-
         # First loop on axis tiling and local
         # atoms in the geometry
         sc_index = geom_n.sc_index
@@ -1051,31 +1021,20 @@ class SparseAtom(SparseGeometry):
             idx = array_arange(indptr[rep:-1:reps], n=self._csr.ncol)
             indices[idx] = JA + A % reps + sc_index(isc) * na_n
 
-            if eta:
-                # calculate hours, minutes, seconds
-                m, s = divmod((time()-t0)/(rep+1) * (reps-rep-1), 60)
-                h, m = divmod(m, 60)
-                stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
-                stdout.flush()
-
         # Clean-up
         del isc, JA, A, idx
 
         # In the repeat we have to tile individual atomic couplings
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
-        D = np.vstack([np.tile(d, (reps, 1))
-                       for d in np.split(D, n_.cumsumi(self._csr.ncol[:-1]), axis=0)
-                   ])
+        if geom.na == 1:
+            D = np.tile(D, (reps, 1))
+        else:
+            D = np.vstack([np.tile(d, (reps, 1))
+                           for d in np.split(D, n_.cumsumi(self._csr.ncol[:-1]), axis=0)
+                       ])
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
-
-        if eta:
-            # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod((time()-t0), 60)
-            h, m = divmod(m, 60)
-            stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
-            stdout.flush()
 
         return S
 
@@ -1405,7 +1364,7 @@ class SparseOrbital(SparseGeometry):
 
         return S
 
-    def tile(self, reps, axis, eta=False):
+    def tile(self, reps, axis):
         """ Create a tiled sparse orbital object, equivalent to `Geometry.tile`
 
         The already existing sparse elements are extrapolated
@@ -1417,8 +1376,6 @@ class SparseOrbital(SparseGeometry):
             number of repetitions along cell-vector `axis`
         axis : int
             0, 1, 2 according to the cell-direction
-        eta : bool, optional
-            print an ETA to stdout
 
         See Also
         --------
@@ -1450,12 +1407,6 @@ class SparseOrbital(SparseGeometry):
         no_n = S.no
         geom_n = S.geom
 
-        # For ETA
-        from time import time
-        from sys import stdout
-        t0 = time()
-        name = self.__class__.__name__
-
         # First loop on axis tiling and local
         # atoms in the geometry
         sc_index = geom_n.sc_index
@@ -1483,13 +1434,6 @@ class SparseOrbital(SparseGeometry):
 
             indices[rep, :] = JO % no_n + sc_index(isc) * no_n
 
-            if eta:
-                # calculate hours, minutes, seconds
-                m, s = divmod((time()-t0)/(rep+1) * (reps-rep-1), 60)
-                h, m = divmod(m, 60)
-                stdout.write(name + ".tile() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
-                stdout.flush()
-
         # Clean-up
         del isc, JO
 
@@ -1497,16 +1441,9 @@ class SparseOrbital(SparseGeometry):
         S._csr = SparseCSR((np.tile(D, (reps, 1)), indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
 
-        if eta:
-            # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod((time()-t0), 60)
-            h, m = divmod(m, 60)
-            stdout.write(name + ".tile() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
-            stdout.flush()
-
         return S
 
-    def repeat(self, reps, axis, eta=False):
+    def repeat(self, reps, axis):
         """ Create a repeated sparse orbital object, equivalent to `Geometry.repeat`
 
         The already existing sparse elements are extrapolated
@@ -1518,8 +1455,6 @@ class SparseOrbital(SparseGeometry):
             number of repetitions along cell-vector `axis`
         axis : int
             0, 1, 2 according to the cell-direction
-        eta : bool, optional
-            print the ETA to stdout
 
         See Also
         --------
@@ -1550,12 +1485,6 @@ class SparseOrbital(SparseGeometry):
         # Information for the new Hamiltonian sparse matrix
         no_n = S.no
         geom_n = S.geom
-
-        # For ETA
-        from time import time
-        from sys import stdout
-        t0 = time()
-        name = self.__class__.__name__
 
         # First loop on axis tiling and local
         # orbitals in the geometry
@@ -1613,35 +1542,19 @@ class SparseOrbital(SparseGeometry):
             idx = array_arange(indptr[array_arange(OA, n=AO)], n=ncol)
             indices[idx] = JO + oA * (O % reps) + sc_index(isc) * no_n
 
-            if eta:
-                # calculate hours, minutes, seconds
-                m, s = divmod((time()-t0)/(rep+1) * (reps-rep-1), 60)
-                h, m = divmod(m, 60)
-                stdout.write(name + ".repeat() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
-                stdout.flush()
-
         # Clean-up
         del isc, JO, O, OA, AO, idx
 
         # In the repeat we have to tile individual atomic couplings
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
-        # First create a new ncol based on the number of orbitals per atom
-        if geom.na != geom.no:
-            raise ValueError("Currently not working for multi-orbital systems.")
-        nca = n_.zerosi(geom.na)
-
-        D = np.vstack([np.tile(d, (reps, 1))
-                       for d in np.split(D, n_.cumsumi(ncol[:-1]), axis=0)
-                   ])
+        if geom.na == 1:
+            D = np.tile(D, (reps, 1))
+        else:
+            D = np.vstack([np.tile(d, (reps, 1))
+                           for d in np.split(D, n_.cumsumi(ncol)[geom.lasto[:geom.na-1]], axis=0)
+                       ])
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
-
-        if eta:
-            # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod((time()-t0), 60)
-            h, m = divmod(m, 60)
-            stdout.write(name + ".repeat() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
-            stdout.flush()
 
         return S
