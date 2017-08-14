@@ -587,21 +587,23 @@ class SparseCSR(object):
         if self.shape[:2] != other.shape[:2]:
             return False
 
+        sptr = self.ptr.view()
+        sncol = self.ncol.view()
+        scol = self.col.view()
+        optr = other.ptr.view()
+        oncol = other.ncol.view()
+        ocol = other.col.view()
+
+        # Easy check for non-equal number of elements
+        if np.count_nonzero(sncol == oncol) != self.shape[0]:
+            return False
+
         def samesect1d(a, b):
-            n = len(a)
-            if n != len(b):
-                return False
-            return len(intersect1d(a, b)) == n
+            return len(intersect1d(a, b)) == len(a)
 
         for r in range(self.shape[0]):
-            # pointers
-            sptr = self.ptr[r]
-            sn = self.ncol[r]
-            optr = other.ptr[r]
-            on = other.ncol[r]
-
-            if not samesect1d(self.col[sptr:sptr+sn],
-                              other.col[optr:optr+on]):
+            if not samesect1d(scol[sptr[r]:sptr[r]+sncol[r]],
+                              ocol[optr[r]:optr[r]+oncol[r]]):
                 return False
         return True
 

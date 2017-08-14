@@ -593,6 +593,9 @@ class TestHamiltonian(object):
         H.construct([R, param])
         H = H.tile(2, 0).tile(2, 1).tile(2, 2, eta=True)
         assert_true(Hg.spsame(H))
+        H.finalize()
+        Hg.finalize()
+        assert_true(np.allclose(H._csr._D, Hg._csr._D))
 
     @attr('slow')
     def test_tile2(self):
@@ -606,6 +609,9 @@ class TestHamiltonian(object):
         H.construct([R, param])
         H = H.tile(2, 0)
         assert_true(Hg.spsame(H))
+        H.finalize()
+        Hg.finalize()
+        assert_true(np.allclose(H._csr._D, Hg._csr._D))
 
     @attr('slow')
     def test_tile3(self):
@@ -626,6 +632,9 @@ class TestHamiltonian(object):
         H.finalize()
         H = H.tile(2, 0).tile(2, 1).tile(2, 2)
         assert_true(HG.spsame(H))
+        H.finalize()
+        HG.finalize()
+        assert_true(np.allclose(H._csr._D, HG._csr._D))
 
     def test_tile4(self):
         def func(self, ia, idxs, idxs_xyz=None):
@@ -650,6 +659,9 @@ class TestHamiltonian(object):
         H = Hamiltonian(gbig)
         H.construct(func)
         assert_true(H.spsame(Hbig))
+        H.finalize()
+        Hbig.finalize()
+        assert_true(np.allclose(H._csr._D, Hbig._csr._D))
         self.H2.empty()
 
     @attr('slow')
@@ -664,6 +676,9 @@ class TestHamiltonian(object):
         H.construct([R, param])
         H = H.repeat(2, 0)
         assert_true(Hg.spsame(H))
+        H.finalize()
+        Hg.finalize()
+        assert_true(np.allclose(H._csr._D, Hg._csr._D))
 
     @attr('slow')
     def test_repeat2(self):
@@ -677,6 +692,9 @@ class TestHamiltonian(object):
         H.construct([R, param])
         H = H.repeat(2, 0).repeat(2, 1). repeat(2, 2, eta=True)
         assert_true(Hg.spsame(H))
+        H.finalize()
+        Hg.finalize()
+        assert_true(np.allclose(H._csr._D, Hg._csr._D))
 
     @attr('slow')
     def test_repeat3(self):
@@ -697,6 +715,9 @@ class TestHamiltonian(object):
         H.finalize()
         H = H.repeat(2, 0).repeat(2, 1).repeat(2, 2)
         assert_true(HG.spsame(H))
+        H.finalize()
+        HG.finalize()
+        assert_true(np.allclose(H._csr._D, HG._csr._D))
 
     @attr('slow')
     def test_repeat4(self):
@@ -723,6 +744,9 @@ class TestHamiltonian(object):
         H.construct(func)
 
         assert_true(H.spsame(Hbig))
+        H.finalize()
+        Hbig.finalize()
+        assert_true(np.allclose(H._csr._D, Hbig._csr._D))
         self.H2.empty()
 
     def test_sub1(self):

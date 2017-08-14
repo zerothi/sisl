@@ -96,14 +96,22 @@ class TestSparseAtom(object):
 
     def test_tile1(self):
         self.s1.construct([[0.1, 1.5], [1, 2]])
+        self.s1.finalize()
         s1 = self.s1.tile(2, 0).tile(2, 1, eta=True)
         s2 = SparseAtom(self.g * [2, 2, 1])
         s2.construct([[0.1, 1.5], [1, 2]])
         assert_true(s1.spsame(s2))
+        s1.finalize()
+        s2.finalize()
+        assert_true(np.allclose(s1._csr._D, s2._csr._D))
         s2 = s2.cut(2, 1).cut(2, 0)
         assert_true(self.s1.spsame(s2))
+        s2.finalize()
+        assert_true(np.allclose(self.s1._csr._D, s2._csr._D))
         s1 = s1.cut(2, 1).cut(2, 0)
         assert_true(self.s1.spsame(s1))
+        s1.finalize()
+        assert_true(np.allclose(s1._csr._D, self.s1._csr._D))
         self.s1.empty()
 
     def test_tile2(self):
@@ -113,10 +121,17 @@ class TestSparseAtom(object):
         s2 = SparseAtom(self.g * [2, 2, 1])
         s2.construct([[0.1, 1.5], [1, 2]])
         assert_true(s1.spsame(s2))
+        s1.finalize()
+        s2.finalize()
+        assert_true(np.allclose(s1._csr._D, s2._csr._D))
         s2 = s2.cut(2, 1).cut(2, 0)
         assert_true(self.s1.spsame(s2))
+        s2.finalize()
+        assert_true(np.allclose(self.s1._csr._D, s2._csr._D))
         s1 = s1.cut(2, 1).cut(2, 0)
         assert_true(self.s1.spsame(s1))
+        s1.finalize()
+        assert_true(np.allclose(s1._csr._D, self.s1._csr._D))
         self.s1.empty()
 
     def test_repeat1(self):
@@ -126,6 +141,9 @@ class TestSparseAtom(object):
         s2 = SparseAtom(self.g * ([2, 2, 1], 'r'))
         s2.construct([[0.1, 1.5], [1, 2]])
         assert_true(s1.spsame(s2))
+        s1.finalize()
+        s2.finalize()
+        assert_true(np.allclose(s1._csr._D, s2._csr._D))
 
     def test_repeat2(self):
         self.s1.construct([[0.1, 1.5], [1, 2]])
@@ -135,6 +153,9 @@ class TestSparseAtom(object):
         s2 = SparseAtom(self.g * ([2, 2, 1], 'r'))
         s2.construct([[0.1, 1.5], [1, 2]])
         assert_true(s1.spsame(s2))
+        s1.finalize()
+        s2.finalize()
+        assert_true(np.allclose(s1._csr._D, s2._csr._D))
 
     def test_set_nsc1(self):
         g = fcc(1., Atom(1, R=3.5))

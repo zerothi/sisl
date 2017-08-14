@@ -1009,7 +1009,7 @@ class SparseAtom(SparseGeometry):
             idx = array_arange(ptr[:-1], n=ncol)
             col = np.take(self._csr.col, idx)
             D = np.take(self._csr._D, idx, 0)
-            del idx
+            del ptr, idx
 
         # Information for the new Hamiltonian sparse matrix
         na_n = S.na
@@ -1064,8 +1064,8 @@ class SparseAtom(SparseGeometry):
         # In the repeat we have to tile individual atomic couplings
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
-        D = np.hstack([np.tile(d, (reps, 1))
-                       for d in np.split(D, n_.cumsumi(self._csr.ncol[:-1]), axis=1)
+        D = np.vstack([np.tile(d, (reps, 1))
+                       for d in np.split(D, n_.cumsumi(self._csr.ncol[:-1]), axis=0)
                    ])
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
@@ -1626,8 +1626,13 @@ class SparseOrbital(SparseGeometry):
         # In the repeat we have to tile individual atomic couplings
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
-        D = np.hstack([np.tile(d, (reps, 1))
-                       for d in np.split(D, n_.cumsumi(ncol[:-1]), axis=1)
+        # First create a new ncol based on the number of orbitals per atom
+        if geom.na != geom.no:
+            raise ValueError("Currently not working for multi-orbital systems.")
+        nca = n_.zerosi(geom.na)
+
+        D = np.vstack([np.tile(d, (reps, 1))
+                       for d in np.split(D, n_.cumsumi(ncol[:-1]), axis=0)
                    ])
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
