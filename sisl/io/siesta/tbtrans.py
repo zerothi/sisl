@@ -666,7 +666,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         .. math::
 
-           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}(E)
+           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{\mu\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}_{\nu\nu}(E)
 
         The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
         arguments.
@@ -704,7 +704,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         .. math::
 
-           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{o\in \mathrm{atom}/\mathrm{orbital}} \mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger(E)
+           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} [\mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger]_{\nu\nu}(E)
 
         The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
         arguments.

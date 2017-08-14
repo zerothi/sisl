@@ -809,7 +809,7 @@ class SparseAtom(SparseGeometry):
     def remove(self, atom):
         """ Create a subset of this sparse matrix by removing the elements corresponding to `atom`
 
-        Indices passed *MUST* be unique.
+        Indices passed must be unique.
 
         Negative indices are wrapped and thus works.
 

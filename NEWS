@@ -1,8 +1,12 @@
 0.8.6
 =====
 
-- Preliminary testing of reading Siesta binary output (.RHO, .VT, etc.
-  files)
+- Enabled deleting supercell elements of a sparse Geometry. This
+  will come in handy when calculating the self-energies and Green
+  functions. I.e. Hamiltonian.set_nsc(...) will truncate entries
+  based on the new supercell.
+
+- Preliminary testing of reading Siesta binary output (.RHO, .VT, etc.)
 
 - Added parsing the Siesta EIG file (easy plotting, reading in Python)
 

@@ -312,6 +312,18 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 
+#####
+#####
+# Custom sisl documentation stuff down here
+#####
+
+# These two options should solve the "toctree contains reference to nonexisting document"
+# problem.
+# See here: numpydoc #69
+class_members_toctree = False
+numpydoc_show_class_members = True
+
+
 # My custom detailed instructions for not documenting stuff
 def sisl_skip(app, what, name, obj, skip, options):
     if name in ['read_es', 'read_geom', 'read_sc',
