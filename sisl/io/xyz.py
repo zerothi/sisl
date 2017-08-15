@@ -39,7 +39,7 @@ class XYZSile(Sile):
         self._write(fmt_str.format(*geom.cell.flatten()))
 
         fmt_str = '{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
-        for ia, a, isp in geom.iter_species():
+        for ia, a, _ in geom.iter_species():
             self._write(fmt_str.format(a.symbol, *geom.xyz[ia, :]))
         # Add a single new line
         self._write('\n')
