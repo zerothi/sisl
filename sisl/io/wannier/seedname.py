@@ -248,11 +248,11 @@ class winSileWannier90(SileWannier90):
 
         return self._read_hamiltonian(geom, *args, **kwargs)
 
-    def ArgumentParser(self, *args, **kwargs):
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geometry().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
 add_sile('win', winSileWannier90, gzip=True)

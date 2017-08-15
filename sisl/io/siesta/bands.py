@@ -19,7 +19,7 @@ __all__ = ['bandsSileSiesta']
 class bandsSileSiesta(SileSiesta):
     """ bands SIESTA file object """
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup the `BandsSIEASTASile` after initialization """
         self._comment = []
 

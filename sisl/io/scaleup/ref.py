@@ -38,7 +38,7 @@ class REFSileScaleUp(SileScaleUp):
         return SuperCell(cell * Bohr2Ang)
 
     @Sile_fh_open
-    def read_geometry(self, primary=False):
+    def read_geometry(self, primary=False, **kwargs):
         """ Reads a geometry from the Sile """
         # 1st line is number of supercells
         nsc = ensure_array(map(int, self.readline().split()[:3]), np.int32)
@@ -139,11 +139,11 @@ class REFSileScaleUp(SileScaleUp):
 
                 self._write(line.format(*args))
 
-    def ArgumentParser(self, *args, **kwargs):
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geometry().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
 # The restart file is _equivalent_ but with displacements

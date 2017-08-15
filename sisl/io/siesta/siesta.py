@@ -204,7 +204,7 @@ class ncSileSiesta(SileCDFSiesta):
                 # Convert to ev
                 grid *= Ry2eV
         except:
-            # Simply, we have no units
+            # Allowed pass due to pythonic reading
             pass
 
         # Read the grid, we want the z-axis to be the fastest
@@ -442,11 +442,11 @@ class ncSileSiesta(SileCDFSiesta):
         v.unit = "b**-1"
         v[:] = np.zeros([3], np.float64)
 
-    def ArgumentParser(self, *args, **kwargs):
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geometry().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
 add_sile('nc', ncSileSiesta)

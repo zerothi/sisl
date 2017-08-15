@@ -109,6 +109,7 @@ class outSileSiesta(SileSiesta):
             try:
                 atom.append(line[5])
             except:
+                # Allowed pass due to pythonic reading
                 pass
             line = self.readline()
 

@@ -141,7 +141,8 @@ def collect_arguments(argv, input=False,
         try:
             obj = sisl.get_sile(args.out[0], mode='r')
             obj.ArgumentParser_out(argumentparser, namespace=namespace)
-        except Exception as e:
+        except Exception:
+            # Allowed pass due to pythonic reading
             pass
 
     return argumentparser, namespace, argv

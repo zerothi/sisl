@@ -99,7 +99,7 @@ class Shape(object):
         return self.within(other).nonzero()[0]
 
     def __contains__(self, other):
-        return self.within(self, other)
+        return self.within(other)
 
     def __repr__(self):
         return self.__class__.__name__ + ' c({} {} {})'.format(*self.center)

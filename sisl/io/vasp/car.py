@@ -22,7 +22,7 @@ class CARSileVASP(SileVASP):
     This file-object handles both POSCAR and CONTCAR files
     """
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup the `POSCARSile` after initialization """
         self._comment = []
         self._scale = 1.
@@ -141,11 +141,11 @@ class CARSileVASP(SileVASP):
         # The POT/CONT-CAR does not contain information on the atomic species
         return Geometry(xyz=xyz, atom=atom, sc=sc)
 
-    def ArgumentParser(self, *args, **kwargs):
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geometry().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
 # Equivalent classes

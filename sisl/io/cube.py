@@ -21,7 +21,7 @@ Ang2Bohr = unit_convert('Ang', 'Bohr')
 class CUBESile(Sile):
     """ CUBE file object """
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup the `CUBESile` after initialization """
         self._comment = []
 

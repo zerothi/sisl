@@ -76,7 +76,7 @@ def sdata(argv=None, sile=None):
     description = """
 This manipulation utility can handle nearly all files in the sisl code in
 changing ways. It handles files dependent on type AND content.
-    """.format(osp.basename(sys.argv[0]))
+    """
 
     if argv is not None:
         # We keep the arguments

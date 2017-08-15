@@ -268,16 +268,19 @@ def get_sile(file, *args, **kwargs):
     return sile(str_spec(file)[0], *args, **kwargs)
 
 
-def get_siles(attrs=[None]):
+def get_siles(attrs=None):
     """ Returns all siles with a specific attribute (or all)
 
     Parameters
     ----------
     attrs : list of attribute names
        limits the returned sile-objects to those that have
-       the given attributes `hasattr(sile, attrs)`
+       the given attributes `hasattr(sile, attrs)`, default ``[None]``
     """
     global __siles
+
+    if attrs is None:
+        attrs = [None]
 
     if len(attrs) == 1 and attrs[0] is None:
         return list(__siles)

@@ -141,10 +141,6 @@ class Sphere(Spheroid):
     def __init__(self, radius, center=None):
         super(Sphere, self).__init__(radius, radius, center=center)
 
-    def __repr__(self):
-        cr = np.array([self.center, self.radius])[:][:4]
-        return self.__class__.__name__ + '{{c({0:.2f} {1:.2f} {2:.2f}) r({3:.2f}}}'.format(*cr)
-
     def set_center(self, center):
         """ Change the center of the object """
         self.__init__(self.radius[0], center=center)

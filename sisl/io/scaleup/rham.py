@@ -67,6 +67,7 @@ class rhamSileScaleUp(SileScaleUp):
                 for i, atom in enumerate(species.atom):
                     g.atom._atom[i] = atom
             except Exception:
+                # Allowed pass due to pythonic reading
                 pass
 
         # Check again, to be sure...

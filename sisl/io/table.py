@@ -15,7 +15,7 @@ __all__ = ['TableSile']
 class TableSile(Sile):
     """ Table file object """
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup the `TableSile` after initialization """
         self._comment = ['#']
 

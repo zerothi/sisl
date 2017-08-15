@@ -19,7 +19,7 @@ __all__ = ['eigSileSiesta']
 class eigSileSiesta(SileSiesta):
     """ EIG SIESTA file object """
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup the `eigSileSiesta` after initialization """
         self._comment = []
 

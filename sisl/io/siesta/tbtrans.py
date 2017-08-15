@@ -1398,10 +1398,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         out = StringIO()
         # Create wrapper function
         def prnt(*args, **kwargs):
-            try:
-                print(*args, file=out, **kwargs)
-            except:
-                pass
+            print(*args, file=out, **kwargs)
 
         def truefalse(bol, string, fdf=None):
             if bol:

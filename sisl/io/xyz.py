@@ -19,7 +19,7 @@ __all__ = ['XYZSile']
 class XYZSile(Sile):
     """ XYZ file object """
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup the `XYZSile` after initialization """
         self._comment = []
 
@@ -84,11 +84,11 @@ class XYZSile(Sile):
 
         return Geometry(xyz, atom=sp, sc=SuperCell(cell, nsc=nsc))
 
-    def ArgumentParser(self, *args, **kwargs):
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
-        return self.read_geometry().ArgumentParser(*args, **newkw)
+        return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
 add_sile('xyz', XYZSile, case=False, gzip=True)

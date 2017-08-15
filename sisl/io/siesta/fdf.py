@@ -56,7 +56,7 @@ class fdfSileSiesta(SileSiesta):
         """ Return the current file name (without the directory prefix) """
         return self._file
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup the `fdfSileSiesta` after initialization """
         # These are the comments
         self._comment = ['#', '!', ';']
@@ -215,6 +215,7 @@ class fdfSileSiesta(SileSiesta):
                 self.fh = self._parent_fh.pop()
             self.fh.close()
         except:
+            # Allowed pass due to pythonic reading
             pass
 
         # Now we should re-read and edit the file
@@ -597,6 +598,7 @@ class fdfSileSiesta(SileSiesta):
             tmp_p, tmp_ns = geom.ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
         except:
+            # Allowed pass due to pythonic reading
             pass
 
         f = label + '.bands'

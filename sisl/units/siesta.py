@@ -77,22 +77,22 @@ _unit_table = {
 def unit_group(unit, tbl=None):
     global _unit_table
     if tbl is None:
-        return u_group(unit, tbl=_unit_table)
+        return u_group(unit, _unit_table)
     else:
-        return u_group(unit, tbl=tbl)
+        return u_group(unit, tbl)
 
 
 def unit_default(group, tbl=None):
     global _unit_table
     if tbl is None:
-        return u_default(group, tbl=_unit_table)
+        return u_default(group, _unit_table)
     else:
-        return u_default(group, tbl=tbl)
+        return u_default(group, tbl)
 
 
-def unit_convert(fr, to, opts={}, tbl=None):
+def unit_convert(fr, to, opts=None, tbl=None):
     global _unit_table
     if tbl is None:
-        return u_convert(fr, to, opts, tbl=_unit_table)
+        return u_convert(fr, to, opts, _unit_table)
     else:
-        return u_convert(fr, to, opts, tbl=tbl)
+        return u_convert(fr, to, opts, tbl)
