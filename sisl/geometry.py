@@ -1,6 +1,6 @@
 """ Geometry class to retain the atomic structure.
 
-A `Geometry` contains all necessary components regarding an 
+A `Geometry` contains all necessary components regarding an
 atomic configuration:
 
 1. Number of atoms
@@ -8,7 +8,7 @@ atomic configuration:
 3. Atomic species
 4. Unit cell where the atoms are contained
 
-The class implements a wide variety of routines for manipulation of the 
+The class implements a wide variety of routines for manipulation of the
 above listed items.
 """
 from __future__ import print_function, division
@@ -16,9 +16,8 @@ from __future__ import print_function, division
 # To check for integers
 import warnings
 from numbers import Integral, Real
-from collections import deque
 from six import string_types
-from math import acos, pi
+from math import acos
 from itertools import product
 
 import numpy as np
@@ -26,8 +25,8 @@ import numpy as np
 import sisl.plot as plt
 from ._help import _str
 from ._help import _range as range
-from ._help import array_fill_repeat, ensure_array, ensure_dtype
-from ._help import isiterable, isndarray
+from ._help import ensure_array, ensure_dtype
+from ._help import isndarray
 from .utils import *
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
@@ -409,7 +408,7 @@ class Geometry(SuperCellChild):
         atom : int or array_like, optional
            only loop on the given atoms, default to all atoms
         local : bool, optional
-           whether the orbital index is the global index, or the local index relative to 
+           whether the orbital index is the global index, or the local index relative to
            the atom it resides on.
 
         See Also
@@ -488,7 +487,6 @@ class Geometry(SuperCellChild):
         # The boundaries (ensure complete overlap)
         R = np.array([iR - 0.975, iR + .025]) * R
 
-        where = np.where
         append = np.append
 
         # loop until all passed are true
@@ -661,7 +659,7 @@ class Geometry(SuperCellChild):
         atom : array_like, optional
             enables only effectively looping a subset of the full geometry
         method : {'rand', 'sphere', 'cube'}
-            select the method by which the block iteration is performed. 
+            select the method by which the block iteration is performed.
             Possible values are:
              `rand`: a spherical object is constructed with a random center according to the internal atoms
              `sphere`: a spherical equispaced shape is constructed and looped
@@ -808,8 +806,8 @@ class Geometry(SuperCellChild):
         """
         if self.na % seps != 0:
             raise ValueError(
-                'The system cannot be cut into {0} different ' +
-                'pieces. Please check your geometry and input.'.format(seps))
+                'The system cannot be cut into {0} different '.format(seps) +
+                'pieces. Please check your geometry and input.')
         # Truncate to the correct segments
         lseg = seg % seps
         # Cut down cell
@@ -993,7 +991,7 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atom=self.atom.repeat(reps), sc=sc)
 
     def __mul__(self, m):
-        """ Implement easy repeat function 
+        """ Implement easy repeat function
 
         Parameters
         ----------
@@ -1475,14 +1473,14 @@ class Geometry(SuperCellChild):
         Parameters
         ----------
         dist : ``array_like``, ``float``, ``str`` (`'calc'`)
-           the distance (in `Ang`) between the attached coordinates. 
+           the distance (in `Ang`) between the attached coordinates.
            If `dist` is `arraylike it should be the vector between
            the atoms;
            if `dist` is `float` the argument `axis` is required
            and the vector will be calculated along the corresponding latticevector;
            else if `dist` is `str` this will correspond to the
-           `method` argument of the ``Atom.radius`` class of the two 
-           atoms. Here `axis` is also required. 
+           `method` argument of the ``Atom.radius`` class of the two
+           atoms. Here `axis` is also required.
         axis : ``int``
            specify the direction of the lattice vectors used.
            Not used if `dist` is an array-like argument.
@@ -2029,7 +2027,7 @@ class Geometry(SuperCellChild):
             try:
                 # If it is a number, we use that.
                 rad = float(method)
-            except:
+            except Exception:
                 # get radius
                 rad = self.atom[idx].radius(method) \
                       + self.atom[ia].radius(method)
@@ -2371,7 +2369,7 @@ class Geometry(SuperCellChild):
         colors = np.linspace(0, 1, num=len(self.atom.atom), endpoint=False)
         colors = colors[self.atom.specie]
         area = np.array([a.Z for a in self.atom.atom], np.float64)
-        ma, Ma = np.min(area), np.max(area)
+        ma = np.min(area)
         area[:] *= 20 * np.pi / ma
         area = area[self.atom.specie]
 
@@ -2492,7 +2490,7 @@ class Geometry(SuperCellChild):
         atom : int or array_like, optional
            only create list of distances from the given atoms, default to all atoms
         R : float, optional
-           the maximum radius to consider, default to ``self.maxR()``. 
+           the maximum radius to consider, default to ``self.maxR()``.
            To retrieve all distances for atoms within the supercell structure
            you can pass ``numpy.inf``.
         tol : float or array_like, optional
@@ -2500,14 +2498,14 @@ class Geometry(SuperCellChild):
            This parameter sets the shell radius for each shell.
            I.e. the returned distances between two shells will be maximally
            `2*tol`, but only if atoms are within two consecutive lists.
-           If this is a list, the shells will be of unequal size. 
+           If this is a list, the shells will be of unequal size.
 
            The first shell size will be `tol * .5` or `tol[0] * .5` if ``tol`` is a list.
 
         method : {'average', 'mode', '<numpy.func>', func}
            How the distance in each shell is determined.
            A list of distances within each shell is gathered and the equivalent
-           method will be used to extract a single quantity from the list of 
+           method will be used to extract a single quantity from the list of
            distances in the shell.
            If `'mode'` is chosen it will use ``scipy.stats.mode``.
            If a string is given it will correspond to ``getattr(numpy, method)``,
@@ -2654,7 +2652,7 @@ class Geometry(SuperCellChild):
     # as the options are read.
     @dec_default_AP("Manipulate a Geometry object in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Create and return a group of argument parsers which manipulates it self `Geometry`. 
+        """ Create and return a group of argument parsers which manipulates it self `Geometry`.
 
         Parameters
         ----------
@@ -2663,7 +2661,7 @@ class Geometry(SuperCellChild):
            to create a new.
         limit_arguments: bool, optional
            If `False` additional options will be created which are similar to other options.
-           For instance `--repeat-x` which is equivalent to `--repeat x`. 
+           For instance `--repeat-x` which is equivalent to `--repeat x`.
            Default `True`.
         short: bool, optional
            Create short options for a selected range of options.
@@ -2966,7 +2964,7 @@ class Geometry(SuperCellChild):
 
 
 def sgeom(geom=None, argv=None, ret_geometry=False):
-    """ Main script for sgeom script. 
+    """ Main script for sgeom script.
 
     This routine may be called with `argv` and/or a `Sile` which is the geometry at hand.
 
@@ -3043,7 +3041,6 @@ lattice vector.
     elif isinstance(geom, Geometry):
         # Do nothing, the geometry is already created
         argv = ['fake.xyz'] + argv
-        pass
 
     elif isinstance(geom, BaseSile):
         geom = sile.read_geometry()
