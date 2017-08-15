@@ -44,7 +44,7 @@ class eigSileSiesta(SileSiesta):
             e = len(E)
             tmp_E = np.empty([ns*no], np.float32)
             tmp_E[s:e] = E
-            for i in range(ns):
+            for _ in range(ns):
                 while e < ns*no:
                     E = map(float, self.readline().split())
                     s = e

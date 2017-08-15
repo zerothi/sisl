@@ -1812,7 +1812,6 @@ class Geometry(SuperCellChild):
         """
 
         # Common numpy used functions (reduces function look-ups)
-        where = np.where
         log_and = np.logical_and
         fabs = np.fabs
 

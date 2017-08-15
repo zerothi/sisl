@@ -148,7 +148,7 @@ class ASCIISileBigDFT(SileBigDFT):
         f1_str = '{{1:{0}}}  {{2:{0}}}  {{3:{0}}} {{0:2s}}\n'.format(fmt)
         f2_str = '{{2:{0}}}  {{3:{0}}}  {{4:{0}}} {{0:2s}} {{1:s}}\n'.format(fmt)
 
-        for ia, a, isp in geom.iter_species():
+        for ia, a, _ in geom.iter_species():
             if a.symbol != a.tag:
                 self._write(f2_str.format(a.symbol, a.tag, *geom.xyz[ia, :]))
             else:

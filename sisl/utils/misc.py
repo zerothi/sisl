@@ -3,13 +3,52 @@ Miscellaneous routines
 """
 from __future__ import division
 
+import ast
+import operator as op
 from numbers import Integral
 from math import pi
 
 from sisl._help import _range as range
 
 __all__ = ['merge_instances', 'str_spec', 'direction', 'angle']
-__all__ += ['iter_shape']
+__all__ += ['iter_shape', 'math_eval']
+
+
+# supported operators
+_operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
+              ast.Div: op.truediv, ast.Pow: op.pow, ast.BitXor: op.xor,
+              ast.USub: op.neg}
+
+
+def math_eval(expr):
+    """ Evaluate a mathematical expression using a safe evaluation method
+
+    Parameters
+    ----------
+    expr : str
+       the string to be evaluated using math
+
+    Examples
+    --------
+    >>> eval_expr('2^6')
+    4
+    >>> eval_expr('2**6')
+    64
+    >>> eval_expr('1 + 2*3**(4^5) / (6 + -7)')
+    -5.0
+    """
+    return _eval(ast.parse(expr, mode='eval').body)
+
+
+def _eval(node):
+    if isinstance(node, ast.Num): # <number>
+        return node.n
+    elif isinstance(node, ast.BinOp): # <left> <operator> <right>
+        return _operators[type(node.op)](_eval(node.left), _eval(node.right))
+    elif isinstance(node, ast.UnaryOp): # <operator> <operand> e.g., -1
+        return _operators[type(node.op)](_eval(node.operand))
+    else:
+        raise TypeError(node)
 
 
 def merge_instances(*args, **kwargs):
@@ -208,7 +247,7 @@ def angle(s, radians=True, in_radians=True):
     # We have now transformed all values
     # to the correct numerical values and we calculate
     # the expression
-    ra = eval(s)
+    ra = math_eval(s)
     if radians and not in_radians:
         return ra / 180. * pi
     if not radians and in_radians:

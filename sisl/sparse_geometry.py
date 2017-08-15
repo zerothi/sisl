@@ -11,7 +11,6 @@ from numbers import Integral
 import itertools as itools
 
 import numpy as np
-import scipy.linalg as sli
 from scipy.sparse import isspmatrix, csr_matrix
 import scipy.sparse.linalg as ssli
 
@@ -1346,7 +1345,6 @@ class SparseOrbital(SparseGeometry):
         remove : the negative of `sub`, i.e. remove a subset of atoms
         """
         atom = self.sc2uc(atom)
-        otom = self.geom.a2o(atom, all=True)
         geom = self.geom.sub(atom)
 
         idx = np.tile(atom, self.n_s)

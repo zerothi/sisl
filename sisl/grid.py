@@ -608,8 +608,6 @@ class Grid(SuperCellChild):
         positional_out: bool, False
            If `True`, adds a positional argument which acts as --out. This may be handy if only the geometry is in the argument list.
         """
-
-        limit_args = kwargs.get('limit_arguments', True)
         short = kwargs.get('short', False)
 
         def opts(*args):
@@ -684,7 +682,6 @@ class Grid(SuperCellChild):
                 rng = strseq(float, values[1].replace('f', ''))
                 if isinstance(rng, tuple):
                     if is_frac:
-                        t = [ns._grid.cell[axis, :] * r for r in rng]
                         rng = tuple(rng)
                     # we have bounds
                     idx1 = ns._grid.index(rng[0], axis=axis)
@@ -839,7 +836,7 @@ This may be unexpected but enables one to do advanced manipulations.
             grid = sile.read_grid()
             # Store the input file...
             input_file = grid.file
-        except Exception as E:
+        except Exception:
             grid = Grid([10, 10, 10])
         argv = ['fake.grid.nc'] + argv
 

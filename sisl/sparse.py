@@ -25,8 +25,7 @@ from scipy.sparse import isspmatrix
 from scipy.sparse import coo_matrix, isspmatrix_coo
 from scipy.sparse import csr_matrix, isspmatrix_csr
 from scipy.sparse import csc_matrix, isspmatrix_csc
-from scipy.sparse import lil_matrix, isspmatrix_lil
-
+from scipy.sparse import isspmatrix_lil
 
 import sisl._numpy as n_
 from ._help import array_fill_repeat, ensure_array, get_dtype

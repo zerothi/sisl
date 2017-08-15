@@ -158,7 +158,7 @@ class winSileWannier90(SileWannier90):
             nlines = nrpts + 15 - nrpts % 15
 
         ws = []
-        for i in range(nlines // 15):
+        for _ in range(nlines // 15):
             ws.extend(map(int, self.readline().split()))
 
         # Convert to numpy array and invert (for weights)

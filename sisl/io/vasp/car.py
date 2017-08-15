@@ -112,10 +112,11 @@ class CARSileVASP(SileVASP):
                 for i in range(nsp)]
 
         # Read whether this is selective or direct
+        # Currently direct is not used
         opt = self.readline()
-        direct = True
+        #direct = True
         if opt[0] in 'Ss':
-            direct = False
+            #direct = False
             opt = self.readline()
 
         # Check whether this is in fractional or direct

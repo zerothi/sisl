@@ -1009,11 +1009,10 @@ class Atom(with_metaclass(AtomMeta, object)):
             orbs = 1
 
         self.Z = _ptbl.Z_int(Z)
-        self.orbs = orbs
         try:
             self.orbs = max(len(R), orbs)
         except:
-            pass
+            self.orbs = orbs
         self.R = array_fill_repeat(
             np.asarray([R], np.float64).flatten(),
             self.orbs)

@@ -175,7 +175,7 @@ def list2range(lst):
     pos = [j - i for i, j in enumerate(lst)]
     t = 0
     rng = ''
-    for i, els in groupby(pos):
+    for _, els in groupby(pos):
         ln = len(list(els))
         el = lst[t]
         if t > 0:

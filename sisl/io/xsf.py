@@ -11,7 +11,7 @@ import numpy as np
 from .sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, SuperCell
 
 
 __all__ = ['XSFSile']

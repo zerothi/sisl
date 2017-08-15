@@ -5,7 +5,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from sisl import Atom, Geometry, SuperCell
+from sisl import Geometry, SuperCell
 
 __all__ = ['sc', 'bcc', 'fcc', 'hcp']
 

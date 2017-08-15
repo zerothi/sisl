@@ -5,7 +5,6 @@ import gzip
 
 import numpy as np
 
-from sisl import Geometry
 from sisl.utils.misc import str_spec
 from ._help import *
 

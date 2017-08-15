@@ -7,8 +7,6 @@ import warnings
 from numbers import Integral
 
 import numpy as np
-import scipy.linalg as sli
-import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype, is_python3
 from .hamiltonian import Hamiltonian

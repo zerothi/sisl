@@ -9,15 +9,13 @@ import itertools as itools
 
 import numpy as np
 import scipy.linalg as sli
-from scipy.sparse import isspmatrix, csr_matrix
+from scipy.sparse import csr_matrix
 import scipy.sparse.linalg as ssli
 
 from sisl._help import get_dtype
 from sisl._help import _zip as zip, _range as range
 from sisl.sparse import SparseCSR, ispmatrix, ispmatrixd
-from sisl.sparse_geometry import SparseOrbital
 from .sparse_physics import SparseOrbitalBZSpin
-from .spin import Spin
 from .brillouinzone import BrillouinZone
 
 __all__ = ['Hamiltonian', 'TightBinding']

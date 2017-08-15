@@ -8,8 +8,7 @@ from .sile import SileGULP
 from ..sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
-from sisl.units import unit_convert
+from sisl import Geometry, SuperCell
 
 import numpy as np
 

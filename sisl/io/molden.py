@@ -4,8 +4,6 @@ Sile object for reading/writing XYZ files
 
 from __future__ import print_function
 
-import numpy as np
-
 # Import sile objects
 from .sile import *
 

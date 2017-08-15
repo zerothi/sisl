@@ -18,7 +18,7 @@ from sisl import Geometry, Atom, SuperCell, Grid
 
 from sisl.utils.cmd import *
 
-from sisl.units import unit_default, unit_group
+from sisl.units import unit_group
 from sisl.units.siesta import unit_convert
 
 __all__ = ['outSileSiesta']

@@ -7,9 +7,6 @@ import warnings
 import numpy as np
 import itertools
 
-# The sparse matrix for the orbital/bond currents
-from scipy.sparse import csr_matrix, lil_matrix
-
 # Check against integers
 from numbers import Integral
 
@@ -20,7 +17,7 @@ from sisl.utils import *
 
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, SuperCell
 from sisl._help import _str
 from sisl.units.siesta import unit_convert
 
