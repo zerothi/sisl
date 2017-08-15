@@ -8,7 +8,7 @@ from __future__ import print_function
 from .sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry
 
 
 __all__ = ['MoldenSile']

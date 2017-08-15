@@ -51,9 +51,7 @@ from __future__ import print_function, division
 
 import warnings
 import time
-import numpy as np
 
-from ._help import _str as str, _range as range, _zip as zip
 
 __all__ = ['Selector', 'TimeSelector']
 

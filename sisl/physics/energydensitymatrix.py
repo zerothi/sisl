@@ -3,18 +3,7 @@ Energy density matrix class
 """
 from __future__ import print_function, division
 
-import warnings
-from numbers import Integral
-
-import numpy as np
-import scipy.linalg as sli
-from scipy.sparse import isspmatrix, csr_matrix
-
-from sisl._help import _zip as zip, _range as range
-from sisl.sparse_geometry import SparseOrbital
 from .sparse_physics import SparseOrbitalBZSpin
-from .spin import Spin
-from .brillouinzone import BrillouinZone
 
 __all__ = ['EnergyDensityMatrix']
 

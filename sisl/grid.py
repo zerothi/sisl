@@ -9,7 +9,6 @@ from numbers import Integral
 import numpy as np
 
 from .utils import *
-from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom
 from .geometry import Geometry

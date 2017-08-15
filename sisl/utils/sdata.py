@@ -5,8 +5,6 @@ Easy conversion of data from different formats to other formats.
 from __future__ import print_function, division
 
 import sys
-import os
-import os.path as osp
 import argparse
 
 __all__ = ['sdata']

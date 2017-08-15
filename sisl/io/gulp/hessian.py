@@ -7,9 +7,6 @@ from __future__ import print_function
 from .sile import SileGULP
 from ..sile import *
 
-# Import the geometry object
-from sisl import Geometry, SuperCell
-
 import numpy as np
 
 __all__ = ['HessianSileGULP']

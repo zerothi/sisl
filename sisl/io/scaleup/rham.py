@@ -9,8 +9,7 @@ from .sile import SileScaleUp
 from ..sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
-from sisl._help import ensure_array
+from sisl import Geometry, SuperCell
 
 import numpy as np
 

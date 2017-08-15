@@ -29,7 +29,7 @@ from sisl.utils import *
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl._help import _str
-from sisl._help import _range as range, _zip as zip
+from sisl._help import _range as range
 from sisl.units.siesta import unit_convert
 
 __all__ = ['tbtncSileSiesta', 'phtncSileSiesta']

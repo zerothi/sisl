@@ -4,18 +4,16 @@ Class implementation for an orbital system with, and without spin
 from __future__ import print_function, division
 
 import warnings
-from numbers import Integral
 
 from numpy import dot
 import numpy as np
 import scipy.linalg as sli
-from scipy.sparse import isspmatrix, csr_matrix, diags, SparseEfficiencyWarning
+from scipy.sparse import csr_matrix, diags, SparseEfficiencyWarning
 import scipy.sparse.linalg as ssli
 
-from sisl._help import get_dtype
 from sisl._help import _range as range
 from sisl.selector import TimeSelector
-from sisl.sparse import SparseCSR, ispmatrixd
+from sisl.sparse import SparseCSR, isspmatrix, ispmatrixd
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
 from .brillouinzone import BrillouinZone

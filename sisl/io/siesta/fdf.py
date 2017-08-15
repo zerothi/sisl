@@ -15,7 +15,7 @@ from ..sile import *
 from sisl.io._help import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell, Grid
+from sisl import Geometry, Atom, SuperCell
 
 from sisl.utils.cmd import *
 from sisl.utils.misc import merge_instances, str_spec

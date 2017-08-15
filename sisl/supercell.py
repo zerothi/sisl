@@ -5,7 +5,6 @@ This class is the basis of many different objects.
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import where
 from numbers import Integral
 
 import sisl.plot as plt

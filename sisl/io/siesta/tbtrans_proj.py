@@ -3,13 +3,6 @@ Sile object for reading TBtrans binary projection files
 """
 from __future__ import print_function, division
 
-import warnings
-import numpy as np
-import itertools
-
-# Check against integers
-from numbers import Integral
-
 # Import sile objects
 from .tbtrans import tbtncSileSiesta
 from ..sile import *
@@ -17,8 +10,6 @@ from sisl.utils import *
 
 
 # Import the geometry object
-from sisl import SuperCell
-from sisl._help import _str
 from sisl.units.siesta import unit_convert
 
 __all__ = ['tbtprojncSileSiesta', 'phtprojncSileSiesta']

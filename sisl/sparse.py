@@ -4,7 +4,7 @@ Sparsity pattern used to express matrices in concise manners.
 from __future__ import print_function, division
 
 import warnings
-from numbers import Integral, Real, Complex
+from numbers import Integral, Complex
 from collections import Iterable
 
 # To speed up the extension algorithm we limit
@@ -22,9 +22,9 @@ except:
 
 
 from scipy.sparse import isspmatrix
-from scipy.sparse import coo_matrix, isspmatrix_coo
+from scipy.sparse import isspmatrix_coo
 from scipy.sparse import csr_matrix, isspmatrix_csr
-from scipy.sparse import csc_matrix, isspmatrix_csc
+from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
 import sisl._numpy as n_

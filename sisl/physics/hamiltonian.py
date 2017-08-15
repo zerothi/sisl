@@ -3,20 +3,8 @@ Tight-binding class to create tight-binding models.
 """
 from __future__ import print_function, division
 
-import warnings
-from numbers import Integral
-import itertools as itools
-
-import numpy as np
-import scipy.linalg as sli
-from scipy.sparse import csr_matrix
-import scipy.sparse.linalg as ssli
-
-from sisl._help import get_dtype
-from sisl._help import _zip as zip, _range as range
-from sisl.sparse import SparseCSR, ispmatrix, ispmatrixd
+from sisl._help import _range as range
 from .sparse_physics import SparseOrbitalBZSpin
-from .brillouinzone import BrillouinZone
 
 __all__ = ['Hamiltonian', 'TightBinding']
 

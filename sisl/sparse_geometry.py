@@ -7,12 +7,8 @@ sub-classed for specific uses.
 from __future__ import print_function, division
 
 import warnings
-from numbers import Integral
-import itertools as itools
 
 import numpy as np
-from scipy.sparse import isspmatrix, csr_matrix
-import scipy.sparse.linalg as ssli
 
 import sisl._numpy as n_
 from ._help import get_dtype, ensure_array

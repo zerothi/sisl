@@ -1,12 +1,9 @@
 """
 Sile object for reading/writing OUT files
 """
-
 from __future__ import print_function, division
 
-import os.path as osp
 import numpy as np
-import warnings as warn
 
 # Import sile objects
 from .sile import SileSiesta
@@ -14,11 +11,10 @@ from ..sile import *
 from sisl.io._help import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell, Grid
+from sisl import Geometry, Atom, SuperCell
 
 from sisl.utils.cmd import *
 
-from sisl.units import unit_group
 from sisl.units.siesta import unit_convert
 
 __all__ = ['outSileSiesta']

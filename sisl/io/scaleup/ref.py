@@ -6,7 +6,6 @@ from __future__ import division, print_function
 
 # Import sile objects
 from .sile import SileScaleUp
-from .orbocc import orboccSileScaleUp
 from ..sile import *
 
 # Import the geometry object

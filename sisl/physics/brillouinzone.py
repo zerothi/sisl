@@ -2,7 +2,6 @@
 
 from __future__ import print_function, division
 
-import warnings
 import types
 from numbers import Integral
 
@@ -10,7 +9,7 @@ from numpy import pi
 import numpy as np
 from numpy import sum, dot
 
-from sisl.supercell import SuperCell, SuperCellChild
+from sisl.supercell import SuperCell
 
 
 __all__ = ['BrillouinZone', 'PathBZ']

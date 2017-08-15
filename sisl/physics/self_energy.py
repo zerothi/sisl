@@ -4,18 +4,10 @@ Self-energy class for calculating self-energies.
 from __future__ import print_function, division
 
 import warnings
-from numbers import Integral
 
 import numpy as np
 
-from sisl._help import get_dtype, is_python3
-from .hamiltonian import Hamiltonian
-
 __all__ = ['SelfEnergy', 'SemiInfinite']
-
-
-if not is_python3:
-    from itertools import izip as zip
 
 
 class SelfEnergy(object):

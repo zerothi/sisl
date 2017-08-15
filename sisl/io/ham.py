@@ -12,7 +12,7 @@ from .sile import *
 from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
-from sisl._help import _zip as zip, _range as range
+from sisl._help import _range as range
 
 
 __all__ = ['HamiltonianSile']
