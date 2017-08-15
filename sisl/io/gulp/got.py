@@ -165,7 +165,7 @@ class gotSileGULP(SileGULP):
 
     @Sile_fh_open
     def read_hessian(self, **kwargs):
-        """ Returns a GULP Hessian matrix model for the output of GULP 
+        """ Returns a GULP Hessian matrix model for the output of GULP
 
         Parameters
         ----------

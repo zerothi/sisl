@@ -296,7 +296,7 @@ class BaseSile(object):
     """ Base class for the Siles """
 
     def read(self, *args, **kwargs):
-        """ Generic read method which should be overloaded in child-classes 
+        """ Generic read method which should be overloaded in child-classes
 
         Parameters
         ----------

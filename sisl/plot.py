@@ -1,4 +1,4 @@
-""" 
+"""
 An interface routine for plotting the different systems in sisl
 
 It merely calls the `<>.__plot__(**)` routine and returns immediately

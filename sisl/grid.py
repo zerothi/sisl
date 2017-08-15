@@ -593,7 +593,7 @@ class Grid(SuperCellChild):
     # an automatic ArgumentParser which makes actions
     # as the options are read.
     def ArgumentParser(self, parser=None, *args, **kwargs):
-        """ Create and return a group of argument parsers which manipulates it self `Grid`. 
+        """ Create and return a group of argument parsers which manipulates it self `Grid`.
 
         Parameters
         ----------
@@ -761,7 +761,7 @@ class Grid(SuperCellChild):
 
 
 def sgrid(grid=None, argv=None, ret_grid=False):
-    """ Main script for sgrid script. 
+    """ Main script for sgrid script.
 
     This routine may be called with `argv` and/or a `Sile` which is the grid at hand.
 

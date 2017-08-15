@@ -28,7 +28,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class outSileSiesta(SileSiesta):
-    """ SIESTA output file object 
+    """ SIESTA output file object
 
     This enables reading the output quantities from the SIESTA output.
     """
@@ -176,7 +176,7 @@ class outSileSiesta(SileSiesta):
         Parameters
         ----------
         last: bool, True
-           only read the last geometry 
+           only read the last geometry
         all: bool, False
            return a list of all geometries (like an MD)
            If `True` `last` is ignored
@@ -330,7 +330,7 @@ class outSileSiesta(SileSiesta):
         return moments
 
     def read_data(self, *args, **kwargs):
-        """ Read specific content in the SIESTA out file 
+        """ Read specific content in the SIESTA out file
 
         The currently implemented things are denoted in
         the parameters list.

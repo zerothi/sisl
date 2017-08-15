@@ -163,8 +163,8 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        local : `bool=False`
-           whether the orbital index is the global index, or the local index relative to 
+        local : bool, optional
+           whether the orbital index is the global index, or the local index relative to
            the atom it resides on.
         """
         for ia, io in self.geom.iter_orbitals(local=local):
@@ -177,11 +177,11 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -219,11 +219,11 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -258,11 +258,11 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -322,9 +322,9 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like
-           the k-point to setup the overlap at
-        dtype : numpy.dtype , optional 
+        k : array_like, optional
+           the k-point to setup the overlap at (default Gamma point)
+        dtype : numpy.dtype, optional 
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is '`numpy.complex128``
@@ -343,11 +343,11 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
@@ -454,7 +454,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
     It contains an intrinsic sparse matrix of the physical elements.
 
     Assigning or changing elements is as easy as with
-    standard ``numpy`` assignments:
+    standard ``numpy`` assignments::
 
     >>> S = SparseOrbitalBZSpin(...)
     >>> S[1,2] = 0.1
@@ -590,11 +590,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format)
@@ -604,13 +604,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        spin: ``int``, `0`
+        k: array_like, optional
+           k-point (default is Gamma point)
+        spin: int, optional
            the spin-index of the quantity
-        dtype : ``numpy.dtype``
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
@@ -620,11 +620,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -669,11 +669,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -713,11 +713,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -762,11 +762,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -811,11 +811,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -852,11 +852,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -898,11 +898,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
@@ -912,11 +912,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -956,11 +956,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:
@@ -998,11 +998,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k: ``array_like``, `[0,0,0]`
-           k-point 
-        dtype : ``numpy.dtype``
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : str, 'R'
+        gauge : {'R', 'r'}
            chosen gauge
         """
         if dtype is None:

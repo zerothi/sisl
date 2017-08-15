@@ -232,7 +232,7 @@ class winSileWannier90(SileWannier90):
         return Hamiltonian.sp2HS(geom, Hr)
 
     def read_hamiltonian(self, *args, **kwargs):
-        """ Read the electronic structure of the Wannier90 output 
+        """ Read the electronic structure of the Wannier90 output
 
         Parameters
         ----------

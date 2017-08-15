@@ -17,11 +17,11 @@ class Ellipsoid(Shape):
 
     Parameters
     ----------
-    x : `float` 
+    x : `float`
        the radius along x-direction
-    y : `float` 
+    y : `float`
        the radius along y-direction
-    z : `int` 
+    z : `int`
        the radius along z-direction
     """
 
@@ -112,11 +112,11 @@ class Spheroid(Ellipsoid):
 
     Parameters
     ----------
-    a : `float` 
+    a : `float`
        the first spheroid axis radius
-    b : `float` 
+    b : `float`
        the second spheroid axis radius
-    axis : `int` 
+    axis : `int`
        the symmetry axis of the Spheroid
     """
 

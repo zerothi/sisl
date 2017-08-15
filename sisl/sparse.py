@@ -1,4 +1,4 @@
-""" 
+"""
 Sparsity pattern used to express matrices in concise manners.
 """
 from __future__ import print_function, division
@@ -61,7 +61,7 @@ class SparseCSR(object):
     This class holds all required information regarding the CSR matrix format.
 
     Note that this sparse matrix of data does not retain the number of columns
-    in the matrix, i.e. it has no way of determining whether the input is 
+    in the matrix, i.e. it has no way of determining whether the input is
     correct.
     """
 
@@ -118,7 +118,7 @@ class SparseCSR(object):
            pointer index in the 1D column indices of the corresponding row
         col: int-array, 
            column indices of the sparse elements
-        data: 
+        data:
            the data in the sparse matrix
         dim: int
            the extra dimension of the sparse matrix
@@ -697,7 +697,7 @@ class SparseCSR(object):
         Returns
         -------
         index : array_like
-           the indicies of the existing/added elements. 
+           the indicies of the existing/added elements
         """
 
         # We skip this check and let sisl die if wrong input is given...
@@ -1392,7 +1392,7 @@ def ispmatrix(matrix, map_row=None, map_col=None):
     matrix : scipy.sparse.sp_matrix
       the sparse matrix to iterate non-zero elements
     map_row : func, optional
-      map each row entry through the function `map_row`, defaults to ``None`` which is 
+      map each row entry through the function `map_row`, defaults to ``None`` which is
       equivalent to no mapping.
     map_col : func, optional
       map each column entry through the function `map_col`, defaults to ``None`` which is 

@@ -817,7 +817,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
     def current_parameter(self, elec_from, mu_from, kt_from,
                           elec_to, mu_to, kt_to, kavg=True):
-        r""" Current from `from` to `to` using the k-weights and energy spacings in the file. 
+        r""" Current from `from` to `to` using the k-weights and energy spacings in the file.
 
         Calculates the current as:
 

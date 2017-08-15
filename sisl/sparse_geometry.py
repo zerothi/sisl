@@ -99,7 +99,7 @@ class SparseGeometry(object):
         self._csr.empty(keep)
 
     def copy(self, dtype=None):
-        """ A copy of this object 
+        """ A copy of this object
 
         Parameters
         ----------
@@ -692,7 +692,7 @@ class SparseAtom(SparseGeometry):
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse atom model into different parts.
 
-        Recreates a new sparse atom object with only the cutted 
+        Recreates a new sparse atom object with only the cutted
         atoms in the structure.
 
         Cutting is the opposite of tiling.
@@ -1191,7 +1191,7 @@ class SparseOrbital(SparseGeometry):
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse orbital model into different parts.
 
-        Recreates a new sparse orbital object with only the cutted 
+        Recreates a new sparse orbital object with only the cutted
         atoms in the structure.
 
         Cutting is the opposite of tiling.

@@ -4,7 +4,7 @@ Sub-package to easily make algorithmic decisions based on different routines
 Several functions exists here to most efficiently choose the most performant 
 routine.
 
-The `Selector` will run through the different routines and decide, based on 
+The `Selector` will run through the different routines and decide, based on
 all the calls which is the best one.
 
 Basically the `Selector` will only be a powerful tool if a given routine is
@@ -33,7 +33,7 @@ to automatically call the fastest of 3 routines::
 
 In certain cases one may wish to limit the search for a selected routine
 by only searching until the performance of the *next* called routine drops.
-This is called an *ordered* selector because it tries them in order, and 
+This is called an *ordered* selector because it tries them in order, and
 once one is slower than the former tested ones, it will not test any further.
 For the above same functions we may do::
 

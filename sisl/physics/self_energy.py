@@ -98,7 +98,7 @@ class SemiInfinite(SelfEnergy):
                            "These values will be forced to 0 as the principal cell-interaction is a requirement"))
 
     def _correct_k(self, k=None):
-        """ Return a corrected k-point 
+        """ Return a corrected k-point
 
         Note
         ----

@@ -190,7 +190,7 @@ def angle(s, radians=True, in_radians=True):
        If `s` ends with 'r' it returns in radians.
        If `s` ends with 'a' it returns in regular angle.
 
-       `s` may be any mathematical equation which can be 
+       `s` may be any mathematical equation which can be
        intercepted through ``eval``.
     radians : bool
        Whether the returned angle is in radians. 
