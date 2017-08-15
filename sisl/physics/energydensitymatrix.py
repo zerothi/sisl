@@ -11,7 +11,6 @@ import scipy.linalg as sli
 from scipy.sparse import isspmatrix, csr_matrix
 
 from sisl._help import _zip as zip, _range as range
-from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.sparse_geometry import SparseOrbital
 from .sparse_physics import SparseOrbitalBZSpin
 from .spin import Spin

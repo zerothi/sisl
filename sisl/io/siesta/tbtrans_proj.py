@@ -17,7 +17,7 @@ from sisl.utils import *
 
 
 # Import the geometry object
-from sisl import Geometry, SuperCell
+from sisl import SuperCell
 from sisl._help import _str
 from sisl.units.siesta import unit_convert
 

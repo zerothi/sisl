@@ -1034,7 +1034,7 @@ class Atom(with_metaclass(AtomMeta, object)):
                               self.tag if tag is None else tag)
 
     def radius(self, method='calc'):
-        """ Return the atomic radii of the atom (in Ang) 
+        """ Return the atomic radii of the atom (in Ang)
 
         See `PeriodicTable.radius` for details on the argument.
         """

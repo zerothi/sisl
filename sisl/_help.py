@@ -129,7 +129,7 @@ def get_dtype(var, int=None, other=None):
        the variable that will be tried to be cast into
        a `numpy.dtype`.
     int : `numpy.dtype` of `np.int*`
-       whether an integer would be allowed to be cast to 
+       whether an integer would be allowed to be cast to
        the int64 equivalent.
        Because default integers in Python are of infinite
        precision, but `numpy` is limited to long, `numpy` will
