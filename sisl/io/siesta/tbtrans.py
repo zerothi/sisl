@@ -6,7 +6,7 @@ from __future__ import print_function, division
 import warnings
 try:
     from StringIO import StringIO
-except:
+except Exception:
     from io import StringIO
 
 import numpy as np
@@ -17,7 +17,7 @@ except:
 import itertools
 
 # The sparse matrix for the orbital/bond currents
-from scipy.sparse import csr_matrix, lil_matrix
+from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
 # Import sile objects
@@ -43,7 +43,7 @@ eV2Ry = unit_convert('eV', 'Ry')
 
 
 class tbtncSileSiesta(SileCDFSiesta):
-    r""" TBtrans output file object 
+    r""" TBtrans output file object
 
     Implementation of the TBtrans output ``*.TBT.nc`` files which contains
     calculated quantities related to the NEGF code TBtrans.
@@ -65,7 +65,7 @@ class tbtncSileSiesta(SileCDFSiesta):
     _trans_type = 'TBT'
     _k_avg = False
 
-    def write_tbtav(self, **kwargs):
+    def write_tbtav(self, *args, **kwargs):
         """ Convert this to a TBT.AV.nc file, i.e. all k dependent quantites are averaged out.
 
         This command will overwrite any previous file with the ending TBT.AV.nc and thus
@@ -177,7 +177,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         # Return data
         return data
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup the special object for data containing """
         self._data = dict()
 
@@ -224,6 +224,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         try:
             sc.sc_off = self._value('isc_off')
         except:
+            # This is ok, we simply do not have the supercell offsets
             pass
 
         return sc
@@ -314,7 +315,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self._value('pivot') - 1
 
     def a2p(self, atom):
-        """ Return the pivoting indices (0-based) for the atoms 
+        """ Return the pivoting indices (0-based) for the atoms
 
         Parameters
         ----------
@@ -526,11 +527,11 @@ class tbtncSileSiesta(SileCDFSiesta):
            device region.
         #. 'atom': :math:`N` is equal to the total number of orbitals in the selected
            atoms. If `orbital` is an argument a conversion of `orbital` to the equivalent
-           unique atoms is performed, and subsequently the total number of orbitals on the 
+           unique atoms is performed, and subsequently the total number of orbitals on the
            atoms is used. This makes it possible to compare the fraction of orbital DOS easier.
            I.e. for an atom with 4 orbitals one could compare the DOS for orbital `1` with norm:
            ``norm(orbital=[1], norm='atom')`` for the remaning orbitals ``norm(orbital=[0, 2, 3], norm='atom')``.
-        #. 'orbital': :math:`N` is simply the sum of selected orbitals, if `atom` is specified, this 
+        #. 'orbital': :math:`N` is simply the sum of selected orbitals, if `atom` is specified, this
            is equivalent to the 'atom' option.
 
         Parameters
@@ -780,7 +781,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         return E[idx_sort], T[idx_sort]
 
     def current(self, elec_from=0, elec_to=1, kavg=True):
-        r""" Current from `from` to `to` using the k-weights and energy spacings in the file. 
+        r""" Current from `from` to `to` using the k-weights and energy spacings in the file.
 
         Calculates the current as:
 
@@ -1001,12 +1002,12 @@ class tbtncSileSiesta(SileCDFSiesta):
         .. math::
            J_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} J_{\nu\mu}
 
-        where if 
+        where if
 
         * ``sum='+'``:
-          only :math:`J_{\nu\mu} > 0` are summed, 
+          only :math:`J_{\nu\mu} > 0` are summed,
         * ``sum='-'``:
-          only :math:`J_{\nu\mu} < 0` are summed, 
+          only :math:`J_{\nu\mu} < 0` are summed,
         * ``sum='all'``:
           all :math:`J_{\nu\mu}` are summed.
 
@@ -1048,14 +1049,12 @@ class tbtncSileSiesta(SileCDFSiesta):
         if uc:
             Jab = csr_matrix((na, na), dtype=Jij.dtype)
 
-            map_row = o2a
             def map_col(c):
                 return o2a(c) % na
 
         else:
             Jab = csr_matrix((na, na * geom.n_s), dtype=Jij.dtype)
 
-            map_row = o2a
             map_col = o2a
 
         # Lets do array notation for speeding up the computations
@@ -1165,7 +1164,7 @@ class tbtncSileSiesta(SileCDFSiesta):
     def atom_current_from_orbital(self, Jij, activity=True):
         r""" Atomic current of atoms by passing the orbital current
 
-        The atomic current is a single number specifying a figure of the *magnitude* 
+        The atomic current is a single number specifying a figure of the *magnitude*
         current flowing through each atom. It is thus *not* a quantity that can be related to
         the physical current flowing in/out of atoms but is merely a number that provides an
         idea of *how much* current this atom is redistributing.
@@ -1177,18 +1176,18 @@ class tbtncSileSiesta(SileCDFSiesta):
             \\
             J_\alpha^{|o|} &=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| J_{\nu\mu} \big|
 
-        If the *activity* current is requested (``activity=True``) 
+        If the *activity* current is requested (``activity=True``)
         :math:`J_\alpha^{\mathcal A} = \sqrt{ J_\alpha^{|a|} J_\alpha^{|o|} }` is returned.
 
-        If ``activity=False`` :math:`J_\alpha^{|a|}` is returned. 
+        If ``activity=False`` :math:`J_\alpha^{|a|}` is returned.
 
         For geometries with all atoms only having 1-orbital, they are equivalent.
 
         Generally the activity current is a more rigorous figure of merit for the current
-        flowing through an atom. More so than than the summed absolute atomic current due to 
+        flowing through an atom. More so than than the summed absolute atomic current due to
         the following reasoning. The activity current is a geometric mean of the absolute bond current
-        and the absolute orbital current. This means that if there is an atom with a large orbital current between
-        its own orbitals it will have a larger activity current. 
+        and the absolute orbital current. This means that if there is an atom with a large orbital current
+        it will have a larger activity current.
 
         Parameters
         ----------
@@ -1261,7 +1260,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         .. math::
               \mathbf J_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} \cdot J_{\alpha\beta}
 
-        Where :math:`J_{\alpha\beta}` is the bond current between atom :math:`\alpha` and :math:`\beta` and 
+        Where :math:`J_{\alpha\beta}` is the bond current between atom :math:`\alpha` and :math:`\beta` and
         :math:`r_\alpha` are the atomic coordinates.
 
         Parameters
@@ -1348,7 +1347,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         return self.vector_current_from_bond(Jab)
 
     def read_data(self, *args, **kwargs):
-        """ Read specific type of data. 
+        """ Read specific type of data.
 
         This is a generic routine for reading different parts of the data-file.
 
@@ -1914,7 +1913,6 @@ add_sile('TBT_UP.nc', tbtncSileSiesta)
 class phtncSileSiesta(tbtncSileSiesta):
     """ PHtrans file object """
     _trans_type = 'PHT'
-    pass
 
 add_sile('PHT.nc', phtncSileSiesta)
 
@@ -1923,7 +1921,7 @@ add_sile('PHT.nc', phtncSileSiesta)
 # These are essentially equivalent to the TBT.nc files
 # with the exception that the k-points have been averaged out.
 class tbtavncSileSiesta(tbtncSileSiesta):
-    """ TBtrans average file object 
+    """ TBtrans average file object
 
     This `Sile` implements the writing of the TBtrans output ``*.TBT.AV.nc`` sile which contains
     the k-averaged quantities related to the NEGF code TBtrans.
@@ -1944,7 +1942,7 @@ class tbtavncSileSiesta(tbtncSileSiesta):
         return np.ones(1, dtype=np.float64)
 
     def write_tbtav(self, *args, **kwargs):
-        """ Wrapper for writing the k-averaged TBT.AV.nc file. 
+        """ Wrapper for writing the k-averaged TBT.AV.nc file.
 
         This write *requires* the TBT.nc `Sile` object passed as the first argument,
         or as the keyword ``from=tbt`` argument.
@@ -1967,8 +1965,6 @@ class tbtavncSileSiesta(tbtncSileSiesta):
 
         # Notify if the object is not in write mode.
         sile_raise_write(self)
-
-        head = self
 
         def copy_attr(f, t):
             t.setncatts({att: f.getncattr(att) for att in f.ncattrs()})
@@ -2160,14 +2156,14 @@ class dHncSileSiesta(SileCDFSiesta):
             lvl = self._crt_grp(self, slvl)
             if ilvl in [2, 4]:
                 self._crt_dim(lvl, 'nkpt', None)
-                v = self._crt_var(lvl, 'kpt', 'f8', ('nkpt', 'xyz'),
-                                  attr = {'info': 'k-points for dH values',
-                                          'unit': 'b**-1'})
+                self._crt_var(lvl, 'kpt', 'f8', ('nkpt', 'xyz'),
+                              attr = {'info': 'k-points for dH values',
+                                      'unit': 'b**-1'})
             if ilvl in [3, 4]:
                 self._crt_dim(lvl, 'ne', None)
-                v = self._crt_var(lvl, 'E', 'f8', ('ne',),
-                                  attr = {'info': 'Energy points for dH values',
-                                          'unit': 'Ry'})
+                self._crt_var(lvl, 'E', 'f8', ('ne',),
+                              attr = {'info': 'Energy points for dH values',
+                                      'unit': 'Ry'})
 
         return lvl
 

@@ -5,6 +5,11 @@ options etc.
 
 from sisl.utils.ranges import strmap, strseq
 
+__all__ = ['argv_negative_fix', 'default_namespace', 'ensure_namespace']
+__all__ += ['collect_input', 'collect_arguments']
+__all__ += ['dec_default_AP', 'dec_collect_action']
+__all__ += ['dec_collect_and_run_action', 'dec_run_actions']
+
 
 def argv_negative_fix(argv):
     """ Fixes the ``argv`` list by adding a space for input that may be float's """

@@ -6,6 +6,8 @@ from numbers import Integral
 
 from numpy import ndarray
 
+__all__ = ['index_c2f']
+
 
 def index_c2f(lst):
     """ Returns the same object with all elements subtracted by 1 """

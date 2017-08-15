@@ -407,22 +407,22 @@ class BaseSile(object):
         return {}
 
     # Define the custom ArgumentParser
-    def ArgumentParser(self, parser=None, *args, **kwargs):
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that may be available for this Sile
 
         Parameters
         ----------
-        parser: ArgumentParser
+        p: ArgumentParser
            the argument parser to add the arguments to.
         """
         raise NotImplementedError("The ArgumentParser of '"+self.__class__.__name__+"' has not been implemented yet.")
 
-    def ArgumentParser_out(self, parser=None, *args, **kwargs):
+    def ArgumentParser_out(self, p=None, *args, **kwargs):
         """ Appends additional arguments based on the output of the file
 
         Parameters
         ----------
-        parser: ArgumentParser
+        p: ArgumentParser
            the argument parser to add the arguments to.
         """
         pass
