@@ -21,10 +21,6 @@ Ang2Bohr = unit_convert('Ang', 'Bohr')
 class CUBESile(Sile):
     """ CUBE file object """
 
-    def _setup(self, *args, **kwargs):
-        """ Setup the `CUBESile` after initialization """
-        self._comment = []
-
     @Sile_fh_open
     def write_geometry(self, geom, size=None,
             fmt='15.10e', origo=None,

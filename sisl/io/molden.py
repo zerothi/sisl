@@ -17,10 +17,6 @@ __all__ = ['MoldenSile']
 class MoldenSile(Sile):
     """ Molden file object """
 
-    def _setup(self, *args, **kwargs):
-        """ Setup the `MoldenSile` after initialization """
-        self._comment = []
-
     @Sile_fh_open
     def write_supercell(self, sc):
         """ Writes the supercell to the contained file """
@@ -49,7 +45,7 @@ class MoldenSile(Sile):
         # quantities, plus the number of supercells (3 ints)
 
         fmt_str = '{{0:2s}} {{1:4d}} {{2:4d}}  {{3:{0}}}  {{4:{0}}}  {{5:{0}}}\n'.format(fmt)
-        for ia, a, isp in geom.iter_species():
+        for ia, a, _ in geom.iter_species():
             self._write(fmt_str.format(a.symbol, ia, a.Z, *geom.xyz[ia, :]))
 
     def ArgumentParser(self, p=None, *args, **kwargs):

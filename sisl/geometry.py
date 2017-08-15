@@ -2360,7 +2360,7 @@ class Geometry(SuperCellChild):
         if fig_axes is False:
             try:
                 fig_axes = plt.mlibplt.gca()
-            except:
+            except Exception:
                 fig_axes = plt.mlibplt.figure().add_subplot(111, **d)
         elif fig_axes is True:
             fig_axes = plt.mlibplt.figure().add_subplot(111, **d)

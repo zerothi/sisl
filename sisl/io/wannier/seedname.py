@@ -54,6 +54,7 @@ class winSileWannier90(SileWannier90):
 
     def _setup(self):
         """ Setup `winSileWannier90` after initialization """
+        self._comment = ['!', '#']
         self._seed = self.file.replace('.win', '')
 
     def _set_file(self, suffix):

@@ -19,10 +19,6 @@ __all__ = ['eigSileSiesta']
 class eigSileSiesta(SileSiesta):
     """ EIG SIESTA file object """
 
-    def _setup(self, *args, **kwargs):
-        """ Setup the `eigSileSiesta` after initialization """
-        self._comment = []
-
     @Sile_fh_open
     def read_data(self):
         """ Returns data associated with the EIG file """
@@ -57,7 +53,7 @@ class eigSileSiesta(SileSiesta):
     @dec_default_AP("Manipulate EIG file in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
-        limit_args = kwargs.get('limit_arguments', True)
+        #limit_args = kwargs.get('limit_arguments', True)
         short = kwargs.get('short', False)
 
         def opts(*args):
@@ -92,7 +88,8 @@ class eigSileSiesta(SileSiesta):
             def __call__(self, parser, ns, value, option_string=None):
                 import matplotlib.pyplot as plt
                 E = ns._eigs
-                Emin, Emax = np.min(E), np.max(E)
+                #Emin = np.min(E)
+                Emax = np.max(E)
                 n = E.shape[1]
                 # We need to setup a relatively good size of the scatter
                 # plots

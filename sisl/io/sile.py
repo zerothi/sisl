@@ -476,6 +476,8 @@ class Sile(BaseSile):
 
         This method must **never** be overwritten.
         """
+        # Initialize the non-comment sile
+        self._comment = []
         self._setup()
 
     def _open(self):

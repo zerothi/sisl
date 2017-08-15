@@ -22,10 +22,6 @@ __all__ = ['XVSileSiesta']
 class XVSileSiesta(SileSiesta):
     """ XV file object """
 
-    def _setup(self, *args, **kwargs):
-        """ Setup the `XVSileSiesta` after initialization """
-        self._comment = []
-
     @Sile_fh_open
     def write_geometry(self, geom, fmt='.8f'):
         """ Writes the geometry to the contained file """

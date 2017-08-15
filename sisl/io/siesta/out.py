@@ -23,17 +23,18 @@ __all__ = ['outSileSiesta']
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
+def _ensure_species(self, species):
+    """ Ensures that the species list is a list with entries (converts `None` to a list). """
+    if species is None:
+        return [Atom(i) for i in range(150)]
+    return species
+
+
 class outSileSiesta(SileSiesta):
     """ SIESTA output file object
 
     This enables reading the output quantities from the SIESTA output.
     """
-
-    def _ensure_species(self, species):
-        """ Ensures that the species list is a list with entries (converts `None` to a list). """
-        if species is None:
-            return [Atom(i) for i in range(150)]
-        return species
 
     @Sile_fh_open
     def read_species(self):
@@ -86,7 +87,7 @@ class outSileSiesta(SileSiesta):
 
     def _read_geometry_outcoor(self, line, last, all, species=None):
         """ Wrapper for reading the geometry as in the outcoor output """
-        species = self._ensure_species(species)
+        species = _ensure_species(species)
 
         # Now we have outcoor
         scaled = 'scaled' in line
@@ -104,7 +105,7 @@ class outSileSiesta(SileSiesta):
             spec.append(line[3])
             try:
                 atom.append(line[5])
-            except:
+            except Exception:
                 # Allowed pass due to pythonic reading
                 pass
             line = self.readline()
@@ -140,7 +141,7 @@ class outSileSiesta(SileSiesta):
 
     def _read_geometry_atomic(self, line, species=None):
         """ Wrapper for reading the geometry as in the outcoor output """
-        species = self._ensure_species(species)
+        species = _ensure_species(species)
 
         # Now we have outcoor
         Ang = 'Ang' in line

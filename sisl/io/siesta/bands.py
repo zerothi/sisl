@@ -19,10 +19,6 @@ __all__ = ['bandsSileSiesta']
 class bandsSileSiesta(SileSiesta):
     """ bands SIESTA file object """
 
-    def _setup(self, *args, **kwargs):
-        """ Setup the `BandsSIEASTASile` after initialization """
-        self._comment = []
-
     @Sile_fh_open
     def read_data(self):
         """ Returns data associated with the bands file """
