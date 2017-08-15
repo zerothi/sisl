@@ -62,7 +62,7 @@ class SuperCell(object):
         if dtype is None:
             try:
                 dtype = non_filled.dtype
-            except:
+            except Exception:
                 dtype = np.dtype(non_filled[0].__class__)
                 if dtype == np.dtype(int):
                     # Never go higher than int32 for default
@@ -402,13 +402,11 @@ class SuperCell(object):
         return self.__class__(cell, nsc=np.copy(self.nsc))
 
     def prepend(self, other, axis):
-        """ Prepends other `SuperCell` to this grid along axis 
+        """ Prepends other `SuperCell` to this grid along axis
 
         For a `SuperCell` object this is equivalent to `append`.
         """
-        cell = np.copy(self.cell)
-        cell[axis, :] += other.cell[axis, :]
-        return self.__class__(cell, nsc=np.copy(self.nsc))
+        return self.append(other, axis)
 
     def move(self, v):
         """ Appends additional space in the SuperCell object """
@@ -503,7 +501,7 @@ class SuperCell(object):
         return i_s
 
     def parallel(self, other, axis=(0, 1, 2)):
-        """ Returns true if the cell vectors are parallel to `other` 
+        """ Returns true if the cell vectors are parallel to `other`
 
         Parameters
         ----------
@@ -552,6 +550,7 @@ class SuperCell(object):
         return same
 
     def __ne__(a, b):
+        """ In-equality check """
         return not (a == b)
 
     # Create pickling routines
@@ -602,18 +601,18 @@ class SuperCell(object):
 
         if isinstance(fig_axes, plt.mlib3d.Axes3D):
             # We should plot in 3D plots
-            for i in range(len(v)):
-                fig_axes.plot(v[i][:, 0], v[i][:, 1], v[i][:, 2], *args, **kwargs)
+            for vv in v:
+                fig_axes.plot(vv[:, 0], vv[:, 1], vv[:, 2], *args, **kwargs)
 
-            v0, v1, v2 = v[0], v[1], v[2]
+            v0, v1 = v[0], v[1]
             fig_axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], v0[1, 2] + v1[:, 2], *args, **kwargs)
 
             plt.mlibplt.zlabel('Ang')
             raise NotImplementedError('Not implemented for 3D plots')
 
         else:
-            for i in range(len(v)):
-                fig_axes.plot(v[i][:, 0], v[i][:, 1], *args, **kwargs)
+            for vv in v:
+                fig_axes.plot(vv[:, 0], vv[:, 1], *args, **kwargs)
 
             v0, v1 = v[0], v[1]
             fig_axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], *args, **kwargs)
@@ -631,7 +630,7 @@ class SuperCellChild(object):
     """
 
     def set_nsc(self, *args, **kwargs):
-        """ Set the number of super-cells in the `SuperCell` object 
+        """ Set the number of super-cells in the `SuperCell` object
 
         See `set_nsc` for allowed parameters.
 
