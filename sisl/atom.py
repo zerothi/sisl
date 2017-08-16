@@ -1449,15 +1449,11 @@ class Atoms(object):
     def __getitem__(self, key):
         """ Return an `Atom` object corresponding to the key(s) """
         if isinstance(key, slice):
-            if key.step is None:
-                nkey = slice(key.start or 0, key.stop or len(self), key.step or 1)
-            elif key.step < 0:
-                nkey = slice(key.stop or len(self)-1, key.start or -1, key.step)
-            return [self.atom[self._specie[s]] for s in range(nkey.start, nkey.stop, nkey.step)]
-        elif isinstance(key, (list, tuple, np.ndarray)):
-            return [self.atom[self._specie[s]] for s in key]
-        else:
+            sl = key.indices(len(self))
+            return [self.atom[self._specie[s]] for s in range(sl[0], sl[1], sl[2])]
+        elif isinstance(key, Integral):
             return self.atom[self._specie[key]]
+        return [self.atom[i] for i in self._specie[ensure_array(key)]]
 
     def __setitem__(self, key, value):
         """ Overwrite an `Atom` object corresponding to the key(s) """
