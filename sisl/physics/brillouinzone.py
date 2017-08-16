@@ -244,8 +244,8 @@ class PathBZ(BrillouinZone):
         point : array_like of float
            a list of points that are the *corners* of the path
         division : int or array_like of int
-           number of divisions in each segment. 
-           If a single integer is passed it is the total number 
+           number of divisions in each segment.
+           If a single integer is passed it is the total number
            of points on the path (equally separated).
            If it is an array_like input it must have length one
            less than `point`.

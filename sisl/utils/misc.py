@@ -52,7 +52,7 @@ def _eval(node):
 
 
 def merge_instances(*args, **kwargs):
-    """ Merges an arbitrary number of instances together. 
+    """ Merges an arbitrary number of instances together.
 
     Parameters
     ----------
@@ -71,7 +71,7 @@ def merge_instances(*args, **kwargs):
 
 
 def iter_shape(shape):
-    """ Generator for iterating a shape by returning consecutive slices 
+    """ Generator for iterating a shape by returning consecutive slices
 
     Parameters
     ----------
@@ -193,7 +193,7 @@ def angle(s, radians=True, in_radians=True):
        `s` may be any mathematical equation which can be
        intercepted through ``eval``.
     radians : bool
-       Whether the returned angle is in radians. 
+       Whether the returned angle is in radians.
        Note than an 'r' at the end of `s` has precedence.
     in_radians : bool
        Whether the calculated angle is in radians. 

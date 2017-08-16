@@ -1,4 +1,4 @@
-""" 
+"""
 Implement a set of simple shapes that
 """
 

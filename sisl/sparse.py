@@ -116,7 +116,7 @@ class SparseCSR(object):
            number of entries per row
         ptr: int-array, ``self.shape[0]+1``
            pointer index in the 1D column indices of the corresponding row
-        col: int-array, 
+        col: int-array
            column indices of the sparse elements
         data:
            the data in the sparse matrix

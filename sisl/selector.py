@@ -62,7 +62,7 @@ class Selector(object):
     This class should contain a list of routines and may then be used
     to always return the best performant routine.
 
-    This is done on a per-class basis where this class should initially 
+    This is done on a per-class basis where this class should initially
     determine which routine is the best performing one and then always return
     that one.
 
@@ -230,7 +230,7 @@ class Selector(object):
         return -1, self._best
 
     def __call__(self, *args, **kwargs):
-        """ Call the function that optimizes the run-time the most 
+        """ Call the function that optimizes the run-time the most
 
         The first argument *must* be an object (`self`) while all remaining
         arguments are transferred to the routine calls
@@ -263,7 +263,7 @@ class Selector(object):
         """ Start the performance profiler
 
         This routine should return an initial state value.
-        The difference between `stop() - start()` should yield a 
+        The difference between `stop() - start()` should yield a
         performance identifier which may be used to control the
         used algorithm.
 
@@ -275,8 +275,8 @@ class Selector(object):
         """ Stop the performance profiler
 
         This routine should return an initial state value.
-        The difference between `stop() - start()` should yield a 
-        performance identifier which may be used to control the 
+        The difference between `stop() - start()` should yield a
+        performance identifier which may be used to control the
         used algorithm.
 
         A large performance identifier results in the use of the routine.

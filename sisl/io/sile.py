@@ -669,7 +669,6 @@ class SileCDF(BaseSile):
 
         # The CDF file can easily open the file
         if _open:
-            global _import_netCDF4
             _import_netCDF4()
             self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
                                                    format='NETCDF4')
@@ -849,7 +848,7 @@ class SileCDF(BaseSile):
         variable : ``bool`` (`True`)
            whether the iterator yields `Variable` instances
         levels : ``int`` (`-1`)
-           number of levels to traverse, with respect to ``root`` variable, i.e. number of 
+           number of levels to traverse, with respect to ``root`` variable, i.e. number of
            sub-groups this iterator will return.
         root : ``str`` (`None`)
            the base root to start iterating from.

@@ -186,16 +186,16 @@ class fdfSileSiesta(SileSiesta):
         return ' '.join(fdfl[1:])
 
     def set(self, key, value, keep=True):
-        """ Add the key and value to the FDF file 
+        """ Add the key and value to the FDF file
 
         Parameters
         ----------
-        key : `str`
+        key : str
            the fdf-key value to be set in the fdf file
-        value : `str`/`list`
+        value : str or list of str
            the value of the string. If a `str` is passed a regular
            fdf-key is used, if a `list` it will be a %block.
-        keep : `bool`
+        keep : bool, optional
            whether old flags will be kept in the fdf file.
         """
 
