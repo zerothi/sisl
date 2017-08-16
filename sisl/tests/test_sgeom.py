@@ -51,26 +51,26 @@ class TestGeometry(object):
     def test_tile1(self):
         cell = np.copy(self.g.sc.cell)
         cell[0, :] *= 2
-        for tile in ['tile x 2', 'tile-x 2']:
+        for tile in ['tile 2 x', 'tile-x 2']:
             tx = self.sg_g(argv=('--' + tile).split())
             assert_true(np.allclose(cell, tx.sc.cell))
         cell[1, :] *= 2
-        for tile in ['tile y 2', 'tile-y 2']:
+        for tile in ['tile 2 y', 'tile-y 2']:
             ty = self.sg_g(geom=tx, argv=('--' + tile).split())
             assert_true(np.allclose(cell, ty.sc.cell))
         cell[2, :] *= 2
-        for tile in ['tile z 2', 'tile-z 2']:
+        for tile in ['tile 2 z', 'tile-z 2']:
             tz = self.sg_g(geom=ty, argv=('--' + tile).split())
             assert_true(np.allclose(cell, tz.sc.cell))
 
     def test_tile2(self):
         cell = np.copy(self.g.sc.cell)
         cell[:, :] *= 2
-        for xt in ['tile x 2', 'tile-x 2']:
+        for xt in ['tile 2 x', 'tile-x 2']:
             xt = '--' + xt
-            for yt in ['tile y 2', 'tile-y 2']:
+            for yt in ['tile 2 y', 'tile-y 2']:
                 yt = '--' + yt
-                for zt in ['tile z 2', 'tile-z 2']:
+                for zt in ['tile 2 z', 'tile-z 2']:
                     zt = '--' + zt
                     argv = ' '.join([xt, yt, zt]).split()
                     t = self.sg_g(argv=argv)
@@ -79,26 +79,26 @@ class TestGeometry(object):
     def test_repeat1(self):
         cell = np.copy(self.g.sc.cell)
         cell[0, :] *= 2
-        for repeat in ['repeat x 2', 'repeat-x 2']:
+        for repeat in ['repeat 2 x', 'repeat-x 2']:
             tx = self.sg_g(argv=('--' + repeat).split())
             assert_true(np.allclose(cell, tx.sc.cell))
         cell[1, :] *= 2
-        for repeat in ['repeat y 2', 'repeat-y 2']:
+        for repeat in ['repeat 2 y', 'repeat-y 2']:
             ty = self.sg_g(geom=tx, argv=('--' + repeat).split())
             assert_true(np.allclose(cell, ty.sc.cell))
         cell[2, :] *= 2
-        for repeat in ['repeat z 2', 'repeat-z 2']:
+        for repeat in ['repeat 2 z', 'repeat-z 2']:
             tz = self.sg_g(geom=ty, argv=('--' + repeat).split())
             assert_true(np.allclose(cell, tz.sc.cell))
 
     def test_repeat2(self):
         cell = np.copy(self.g.sc.cell)
         cell[:, :] *= 2
-        for xt in ['repeat x 2', 'repeat-x 2']:
+        for xt in ['repeat 2 x', 'repeat-x 2']:
             xt = '--' + xt
-            for yt in ['repeat y 2', 'repeat-y 2']:
+            for yt in ['repeat 2 y', 'repeat-y 2']:
                 yt = '--' + yt
-                for zt in ['repeat z 2', 'repeat-z 2']:
+                for zt in ['repeat 2 z', 'repeat-z 2']:
                     zt = '--' + zt
                     argv = ' '.join([xt, yt, zt]).split()
                     t = self.sg_g(argv=argv)
@@ -110,7 +110,7 @@ class TestGeometry(object):
             assert_equal(len(g), l)
 
     def test_rotation1(self):
-        rot = self.sg_g(argv='--rotate z 180'.split())
+        rot = self.sg_g(argv='--rotate 180 z'.split())
         rot.sc.cell[2, 2] *= -1
         assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(-rot.xyz, self.g.xyz))
@@ -120,7 +120,7 @@ class TestGeometry(object):
         assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(-rot.xyz, self.g.xyz))
 
-        rot = self.sg_g(argv='--rotate z rpi'.split())
+        rot = self.sg_g(argv='--rotate rpi z'.split())
         rot.sc.cell[2, 2] *= -1
         assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
         assert_true(np.allclose(-rot.xyz, self.g.xyz))

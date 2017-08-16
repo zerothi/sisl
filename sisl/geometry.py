@@ -2745,13 +2745,13 @@ class Geometry(SuperCellChild):
                 # Convert value[0] to the direction
                 # The rotate function expects degree
                 ang = angle(values[0], radians=False, in_radians=False)
+                d = direction(values[1])
                 if d == 0:
                     v = [1, 0, 0]
                 elif d == 1:
                     v = [0, 1, 0]
                 elif d == 2:
                     v = [0, 0, 1]
-                d = direction(values[1])
                 ns._geometry = ns._geometry.rotate(ang, v)
         p.add_argument(*opts('--rotate', '-R'), nargs=2, metavar=('ANGLE', 'DIR'),
                        action=Rotation,
