@@ -43,7 +43,7 @@ class HamiltonianSile(Sile):
         # The format of the geometry file is
         keys = ['atom', 'cell', 'supercell', 'nsc']
         for _ in range(len(keys)):
-            f, l = self.step_to(keys, case=False)
+            _, l = self.step_to(keys, case=False)
             l = l.strip()
             if 'supercell' in l.lower() or 'nsc' in l.lower():
                 # We have everything in one line

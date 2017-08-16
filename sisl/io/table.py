@@ -21,7 +21,6 @@ class TableSile(Sile):
 
     def write_data(self, data, header=None, footer=None, newline='\n', fmt='%.5e', comment=None, delimiter='\t'):
         """ Write tabular data to the file with optional header. """
-        C = self._comment[0]
 
         if comment is None:
             comment = ''

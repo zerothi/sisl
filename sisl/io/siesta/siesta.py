@@ -58,7 +58,6 @@ class ncSileSiesta(SileCDFSiesta):
             n_b = len(bg.groups)
 
             spc = [None] * n_b
-            zb = np.zeros([n_b], np.int32)
             for basis in bg.groups:
                 # Retrieve index
                 ID = bg.groups[basis].ID
@@ -132,7 +131,6 @@ class ncSileSiesta(SileCDFSiesta):
     def read_hessian(self, **kwargs):
         """ Returns a tight-binding model from the underlying NetCDF file """
         H = self._read_class_spin(Hessian, **kwargs)
-        S = H._csr._D[:, H.S_idx]
 
         sp = self._crt_grp(self, 'SPARSE')
 

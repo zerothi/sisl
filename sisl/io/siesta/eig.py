@@ -89,8 +89,8 @@ class eigSileSiesta(SileSiesta):
                 import matplotlib.pyplot as plt
                 E = ns._eigs
                 #Emin = np.min(E)
-                Emax = np.max(E)
-                n = E.shape[1]
+                #Emax = np.max(E)
+                #n = E.shape[1]
                 # We need to setup a relatively good size of the scatter
                 # plots
                 s = 10 #20. / max(Emax - Emin, n)

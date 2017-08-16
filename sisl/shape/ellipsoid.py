@@ -2,7 +2,6 @@
 Implement a set of simple shapes that
 """
 
-from numbers import Real
 from math import pi
 import numpy as np
 
@@ -87,7 +86,6 @@ class Ellipsoid(Shape):
         other.shape = (-1, 3)
 
         # First check
-        where = np.where
         fabs = np.fabs
         landr = np.logical_and.reduce
         r = self.radius

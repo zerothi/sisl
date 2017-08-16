@@ -9,7 +9,7 @@ from numbers import Integral
 import numpy as np
 
 from .utils import *
-from .supercell import SuperCell, SuperCellChild
+from .supercell import SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
 
@@ -336,7 +336,6 @@ class Grid(SuperCellChild):
            the axis segment from which we retain the indices ``idx``
         """
         idx = np.array([idx], np.int32).flatten()
-        uidx = np.unique(np.clip(idx, 0, self.shape[axis] - 1))
 
         # Calculate new shape
         shape = list(self.shape)

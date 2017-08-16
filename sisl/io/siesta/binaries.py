@@ -76,7 +76,7 @@ class tshsSileSiesta(SileBinSiesta):
                     return atom
 
         atom = []
-        for i, orb in enumerate(orbs):
+        for _, orb in enumerate(orbs):
             atom.append(get_atom(atoms, orb))
 
         # Create and return geometry object

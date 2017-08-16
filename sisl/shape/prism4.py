@@ -110,13 +110,13 @@ class Cuboid(Shape):
                   land(0 <= tmp[:, 2],
                        tmp[:, 2] <= el[2])).nonzero()[0]
         return ix
-        # This below is for a skewed box
-        within = la.solve(voxel, tmp[ix, :].T).T
+        ## This below is for a skewed box
+        #within = la.solve(voxel, tmp[ix, :].T).T
 
         # Reduce to check if they are within
-        within = ix[land.reduce(land(0. <= within, within <=1), axis=1)]
+        #within = ix[land.reduce(land(0. <= within, within <=1), axis=1)]
 
-        return within
+        #return within
 
 
 class Cube(Cuboid):

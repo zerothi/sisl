@@ -256,7 +256,6 @@ class PathBZ(BrillouinZone):
 
         # Copy over points
         self.point = np.array(point, dtype=np.float64)
-        nk = len(self.point)
 
         # If the array has fewer points we try and determine
         if self.point.shape[1] < 3:
@@ -363,14 +362,12 @@ class PathBZ(BrillouinZone):
            xticks, label_ticks, lk = PathBZ.lineark(True)
 
         """
-
-        nk = len(self)
         # Calculate points
         k = [self.k(pnt) for pnt in self.point]
         dk = np.diff(k, axis=0)
         xtick = np.zeros(len(k), np.float64)
         # Prepare output array
-        dK = np.empty(nk, np.float64)
+        dK = np.empty(len(self), np.float64)
 
         ii, add = 0, 0.
         for i in range(len(dk)):

@@ -146,8 +146,6 @@ class winSileWannier90(SileWannier90):
         # Time of creation
         self.readline()
 
-        # Retrieve # of wannier functions (or size of Hamiltonian)
-        no = int(self.readline())
         # Number of Wigner-Seitz degeneracy points
         nrpts = int(self.readline())
 

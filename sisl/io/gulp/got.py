@@ -90,7 +90,7 @@ class gotSileGULP(SileGULP):
         # create default supercell
         sc = SuperCell([1, 1, 1])
 
-        for sc_geom in [0, 1]:
+        for _ in [0, 1]:
             # Step to either the geometry or
             f, ki, _ = self.step_either([self._keys['sc'], self._keys['geometry']])
             if not f and ki == 0:
@@ -174,10 +174,6 @@ class gotSileGULP(SileGULP):
         dtype: np.dtype (np.float64)
            default data-type of the matrix
         """
-        from scipy.sparse import diags
-
-        dtype = kwargs.get('dtype', np.float64)
-
         geom = self.read_geometry(**kwargs)
 
         hessian = kwargs.get('hessian', None)
@@ -216,7 +212,7 @@ class gotSileGULP(SileGULP):
 
         # Default cutoff
         cutoff = kwargs.get('cutoff', 0.001)
-
+        # Default dtype
         dtype = kwargs.get('dtype', np.float64)
 
         dyn = lil_matrix((no, no), dtype=dtype)

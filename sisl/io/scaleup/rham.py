@@ -8,9 +8,6 @@ from __future__ import division, print_function
 from .sile import SileScaleUp
 from ..sile import *
 
-# Import the geometry object
-from sisl import Geometry, SuperCell
-
 import numpy as np
 
 __all__ = ['rhamSileScaleUp']

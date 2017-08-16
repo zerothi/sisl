@@ -61,7 +61,7 @@ class bandsSileSiesta(SileSiesta):
             xlabels = []
             labels = []
             nl = int(self.readline())
-            for il in range(nl):
+            for _ in range(nl):
                 l = self.readline().split()
                 xlabels.append(float(l[0]))
                 labels.append((' '.join(l[1:])).replace("'", ''))
@@ -87,7 +87,7 @@ class bandsSileSiesta(SileSiesta):
     @dec_default_AP("Manipulate bands file in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
-        limit_args = kwargs.get('limit_arguments', True)
+        #limit_args = kwargs.get('limit_arguments', True)
         short = kwargs.get('short', False)
 
         def opts(*args):

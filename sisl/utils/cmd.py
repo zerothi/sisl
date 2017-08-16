@@ -98,9 +98,6 @@ def collect_arguments(argv, input=False,
     # First we figure out the input file, and the output file
     import argparse
     import sisl
-    import sys
-    import os
-    import os.path as osp
 
     # Create the default namespace in case there is none
     if namespace is None:

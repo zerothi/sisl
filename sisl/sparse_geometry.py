@@ -1523,7 +1523,7 @@ class SparseOrbital(SparseGeometry):
         ncol = self._csr.ncol.view()
 
         # Create repetitions
-        for rep in range(reps):
+        for _ in range(reps):
 
             # Update atomic offset
             OA += AO
