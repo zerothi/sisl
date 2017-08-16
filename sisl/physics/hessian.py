@@ -46,7 +46,7 @@ class Hessian(SparseOrbitalBZ):
         ----------
         k : array_like
            the k-point to setup the Hessian matrix at
-        dtype : numpy.dtype , optional 
+        dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is '`numpy.complex128``

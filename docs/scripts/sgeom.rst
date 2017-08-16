@@ -77,7 +77,7 @@ I.e. if one performs:
 
 ::
 		
-    sgeom <in> --repeat x 3 repx3.xyz --repeat y 3 repx3_repy3.xyz
+    sgeom <in> --repeat 3 x repx3.xyz --repeat 3 y repx3_repy3.xyz
 
 will read ``<in>``, repeat the geometry 3 times along the first unit-cell
 vector, store the resulting geometry in ``repx3.xyz``. Subsequently it will repeat
@@ -94,7 +94,7 @@ To repeat a structure do
 
 ::
 		
-    sgeom <in> --repeat [ax|yb|zc] <int> <out>
+    sgeom <in> --repeat <int> [ax|yb|zc] <out>
 
 which repeats the structure one atom at a time, ``<int>`` times, in the corresponding direction.
 Note that ``x`` and ``a`` correspond to the same cell direction (the first).
@@ -103,7 +103,7 @@ To repeat the structure in *chunks* one can use the ``--tile`` option:
 
 ::
 		
-    sgeom <in> --tile [ax|yb|zc] <int> <out>
+    sgeom <in> --tile <int> [ax|yb|zc] <out>
 
 which results in the same structure as ``--repeat`` however with different atomic ordering.
 
@@ -119,9 +119,9 @@ To repeat a structure 4 times along the *x* cell direction:
 
 ::
 		
-   sgeom RUN.fdf --repeat x 4 RUN4x.fdf
+   sgeom RUN.fdf --repeat 4 x RUN4x.fdf
    sgeom RUN.fdf --repeat-x 4 RUN4x.fdf
-   sgeom RUN.fdf --tile x 4 RUN4x.fdf
+   sgeom RUN.fdf --tile 4 x RUN4x.fdf
    sgeom RUN.fdf --tile-x 4 RUN4x.fdf
 
 where all the above yields the same structure, albeit with different orderings.
@@ -134,7 +134,7 @@ To rotate the structure around certain cell directions one can do:
 
 ::
 		
-    sgeom <in> --rotate [ax|yb|zc] <angle> <out>
+    sgeom <in> --rotate <angle> [ax|yb|zc] <out>
 
 which rotates the structure around the origo with a normal vector along the
 specified cell direction. The input angle is in degrees and *not* in radians.

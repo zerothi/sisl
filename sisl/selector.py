@@ -264,7 +264,7 @@ class Selector(object):
 
         This routine should return an initial state value.
         The difference between `stop() - start()` should yield a 
-        performance identifier which may be used to control the 
+        performance identifier which may be used to control the
         used algorithm.
 
         A large performance identifier results in the use of the routine.

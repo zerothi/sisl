@@ -29,7 +29,7 @@ class SparseGeometry(object):
     The sub-classed object may re-implement the ``_cls_kwargs`` routine
     to pass down keyword arguments when a new class is instantiated.
 
-    This object contains information regarding the 
+    This object contains information regarding the
      - geometry
 
     """
@@ -230,7 +230,7 @@ class SparseGeometry(object):
 
         Notes
         -----
-        This function only works for geometry sparse matrices (i.e. one 
+        This function only works for geometry sparse matrices (i.e. one
         element per atom). If you have more than one element per atom
         you have to implement the function your-self.
 
@@ -262,9 +262,9 @@ class SparseGeometry(object):
 
         This may be called in two variants.
 
-        1. Pass a function (``func``), see e.g. ``create_construct`` 
+        1. Pass a function (``func``), see e.g. ``create_construct``
            which does the setting up.
-        2. Pass a tuple/list in ``func`` which consists of two 
+        2. Pass a tuple/list in ``func`` which consists of two
            elements, one is ``R`` the radii parameters for
            the corresponding parameters.
            The second is the parameters

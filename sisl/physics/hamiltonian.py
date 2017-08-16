@@ -12,7 +12,7 @@ __all__ = ['Hamiltonian', 'TightBinding']
 class Hamiltonian(SparseOrbitalBZSpin):
     """ Hamiltonian object containing the coupling constants between orbitals.
 
-    The Hamiltonian object contains information regarding the 
+    The Hamiltonian object contains information regarding the
      - geometry
      - coupling constants between orbitals
 
@@ -65,7 +65,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         ----------
         k : array_like
            the k-point to setup the Hamiltonian at
-        dtype : numpy.dtype , optional 
+        dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is '`numpy.complex128``

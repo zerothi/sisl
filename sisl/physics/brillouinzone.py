@@ -168,7 +168,7 @@ class BrillouinZone(object):
         Examples
         --------
         >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.average().eigh() 
+        >>> obj.average().eigh()
 
         >>> obj = BrillouinZone(Hamiltonian)
         >>> obj.average()

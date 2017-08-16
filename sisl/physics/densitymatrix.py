@@ -11,7 +11,7 @@ __all__ = ['DensityMatrix']
 class DensityMatrix(SparseOrbitalBZSpin):
     """ DensityMatrix object containing the density matrix elements
 
-    The object contains information regarding the 
+    The object contains information regarding the
      - geometry
      - density matrix elements between orbitals
 
@@ -68,7 +68,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         ----------
         k : array_like
            the k-point to setup the density matrix at
-        dtype : numpy.dtype , optional 
+        dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is '`numpy.complex128``
