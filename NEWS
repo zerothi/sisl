@@ -1,6 +1,15 @@
 0.8.6
 =====
 
+- Geometry files used in the command-line has updated these arguments:
+
+   - tile
+   - repeat
+   - rotate
+
+  The order of the arguments are interchanged to be similar to the
+  scripting capabilities.
+
 - Enabled deleting supercell elements of a sparse Geometry. This
   will come in handy when calculating the self-energies and Green
   functions. I.e. Hamiltonian.set_nsc(...) will truncate entries

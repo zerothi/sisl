@@ -2743,17 +2743,17 @@ class Geometry(SuperCellChild):
 
             def __call__(self, parser, ns, values, option_string=None):
                 # Convert value[0] to the direction
-                d = direction(values[0])
                 # The rotate function expects degree
-                ang = angle(values[1], radians=False, in_radians=False)
+                ang = angle(values[0], radians=False, in_radians=False)
                 if d == 0:
                     v = [1, 0, 0]
                 elif d == 1:
                     v = [0, 1, 0]
                 elif d == 2:
                     v = [0, 0, 1]
+                d = direction(values[1])
                 ns._geometry = ns._geometry.rotate(ang, v)
-        p.add_argument(*opts('--rotate', '-R'), nargs=2, metavar=('DIR', 'ANGLE'),
+        p.add_argument(*opts('--rotate', '-R'), nargs=2, metavar=('ANGLE', 'DIR'),
                        action=Rotation,
                        help='Rotate geometry around given axis. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
 
@@ -2802,10 +2802,10 @@ class Geometry(SuperCellChild):
         class ReduceCut(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
-                d = direction(values[0])
-                s = int(values[1])
+                s = int(values[0])
+                d = direction(values[1])
                 ns._geometry = ns._geometry.cut(s, d)
-        p.add_argument(*opts('--cut', '-c'), nargs=2, metavar=('DIR', 'SEPS'),
+        p.add_argument(*opts('--cut', '-c'), nargs=2, metavar=('SEPS', 'DIR'),
                        action=ReduceCut,
                        help='Cuts the geometry into `seps` parts along the unit-cell direction `dir`.')
 
@@ -2852,10 +2852,10 @@ class Geometry(SuperCellChild):
         class PeriodRepeat(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
-                d = direction(values[0])
-                r = int(values[1])
+                r = int(values[0])
+                d = direction(values[1])
                 ns._geometry = ns._geometry.repeat(r, d)
-        p.add_argument(*opts('--repeat', '-r'), nargs=2, metavar=('DIR', 'TIMES'),
+        p.add_argument(*opts('--repeat', '-r'), nargs=2, metavar=('TIMES', 'DIR'),
                        action=PeriodRepeat,
                        help='Repeats the geometry in the specified direction.')
 
@@ -2887,10 +2887,10 @@ class Geometry(SuperCellChild):
         class PeriodTile(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
-                d = direction(values[0])
-                r = int(values[1])
+                r = int(values[0])
+                d = direction(values[1])
                 ns._geometry = ns._geometry.tile(r, d)
-        p.add_argument(*opts('--tile'), nargs=2, metavar=('DIR', 'TIMES'),
+        p.add_argument(*opts('--tile'), nargs=2, metavar=('TIMES', 'DIR'),
                        action=PeriodTile,
                        help='Tiles the geometry in the specified direction.')
 
