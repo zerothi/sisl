@@ -389,6 +389,44 @@ class SuperCell(object):
         cell = self.cell * scale
         return self.__class__(cell, np.copy(self.nsc))
 
+    def tile(self, reps, axis):
+        """ Extend the unit-cell `reps` times along the `axis` lattice vector
+
+        Notes
+        -----
+        This is *exactly* equivalent to the `repeat` routine.
+
+        Parameters
+        ----------
+        reps : int
+            number of times the unit-cell is repeated along the specified lattice vector
+        axis : int
+            the lattice vector along which the repetition is performed
+        """
+        cell = np.copy(self.cell)
+        nsc = np.copy(self.nsc)
+        cell[axis, :] *= reps
+        # Only reduce the size if it is larger than 5
+        if nsc[axis] > 3 and reps > 1:
+            nsc[axis] = max(1, nsc[axis] // 2 - (reps - 1)) * 2 + 1
+        return self.__class__(cell, nsc=nsc)
+
+    def repeat(self, reps, axis):
+        """ Extend the unit-cell `reps` times along the `axis` lattice vector
+
+        Notes
+        -----
+        This is *exactly* equivalent to the `tile` routine.
+
+        Parameters
+        ----------
+        reps : int
+            number of times the unit-cell is repeated along the specified lattice vector
+        axis : int
+            the lattice vector along which the repetition is performed
+        """
+        return self.tile(reps, axis)
+
     def cut(self, seps, axis):
         """ Cuts the cell into several different sections. """
         cell = np.copy(self.cell)
