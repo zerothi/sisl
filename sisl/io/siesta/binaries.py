@@ -6,7 +6,7 @@ from __future__ import print_function
 import numpy as np
 
 try:
-    import sisl.io.siesta._siesta
+    import sisl.io.siesta._siesta as _siesta
     found_module = True
 except Exception as e:
     print(e)
