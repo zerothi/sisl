@@ -23,11 +23,14 @@ from itertools import product
 import numpy as np
 
 import sisl.plot as plt
+import sisl._numpy as n_
 from ._help import _str
 from ._help import _range as range
 from ._help import ensure_array, ensure_dtype
 from ._help import isndarray
-from .utils import *
+from .utils import dec_default_AP, default_namespace, cmd
+from .utils import angle, direction
+from .utils import lstranges, strmap, array_arange
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
@@ -456,9 +459,11 @@ class Geometry(SuperCellChild):
         # default block iterator
         if R is None:
             R = self.maxR()
+        if R < 0:
+            raise ValueError("Unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?")
 
         # Number of atoms in within 20 * R
-        naiR = len(self.close(ia, R=R * iR))
+        naiR = max(1, len(self.close(ia, R=R * iR)))
 
         # Convert to na atoms spherical radii
         iR = int(4 / 3 * np.pi * R ** 3 / naiR * na)
@@ -840,7 +845,7 @@ class Geometry(SuperCellChild):
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
-        atom = np.setdiff1d(np.arange(self.na, dtype=np.int32), atom, assume_unique=True)
+        atom = np.delete(n_.arangei(self.na), atom)
         return self.sub(atom)
 
     def tile(self, reps, axis):

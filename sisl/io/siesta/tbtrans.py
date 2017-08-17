@@ -4,6 +4,7 @@ Sile object for reading TBtrans binary files
 from __future__ import print_function, division
 
 import warnings
+from numbers import Integral
 try:
     from StringIO import StringIO
 except Exception:
@@ -1204,7 +1205,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         # Create the bond-currents with all summations
         Jab = self.bond_current_from_orbital(Jij, sum='all')
         # We take the absolute and sum it over all connecting atoms
-        Ja = np.asarray(abs(Jab).sum(1), dtype=Jij.dtype).reshape(-1)
+        Ja = np.asarray(abs(Jab).sum(1)).ravel()
 
         if activity:
             # Calculate the absolute summation of all orbital
@@ -1212,7 +1213,7 @@ class tbtncSileSiesta(SileCDFSiesta):
             Jab = self.bond_current_from_orbital(abs(Jij), sum='all')
 
             # Sum to make it per atom, it is already the absolute
-            Jo = np.asarray(Jab.sum(1), dtype=Jij.dtype).reshape(-1)
+            Jo = np.asarray(Jab.sum(1)).ravel()
 
             # Return the geometric mean of the atomic current X orbital
             # current.
@@ -1288,23 +1289,28 @@ class tbtncSileSiesta(SileCDFSiesta):
         # Create local orbital look-up
         xyz = geom.xyz
 
+        # Short-hands
+        sqrt = np.sqrt
+        sum = np.sum
+
         # Loop atoms in the device region
         # These are the only atoms which may have bond-currents,
         # So no need to loop over any other atoms
         for ia in self.a_dev:
             # Get csr matrix
-            Jia = Jab[ia, :].tocsr()
+            Jia = Jab.getrow(ia)
 
             # Set diagonal to zero
             Jia[0, ia] = 0.
-            # Remove the diagonal
+            # Remove the diagonal (prohibits the calculation of the
+            # norm of the zero vector, hence required)
             Jia.eliminate_zeros()
 
             # Now calculate the vector elements
             # Remark that the vector goes from ia -> ja
-            rv = xyz[ia, :][None, :] - geom.axyz(Jia.indices)
-            rv = rv / np.sqrt(np.sum(rv ** 2, axis=1))[:, None]
-            Ja[ia, :] = np.sum(Jia.data[:, None] * rv, axis=0)
+            rv = geom.axyz(Jia.indices) - xyz[ia, :][None, :]
+            rv = rv / sqrt(sum(rv ** 2, axis=1))[:, None]
+            Ja[ia, :] = sum(Jia.data[:, None] * rv, axis=0)
 
         return Ja
 

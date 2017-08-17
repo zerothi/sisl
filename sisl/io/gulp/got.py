@@ -22,7 +22,7 @@ __all__ = ['gotSileGULP']
 class gotSileGULP(SileGULP):
     """ GULP output file object """
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Setup `GULPgoutSile` after initialization """
 
         self._keys = {

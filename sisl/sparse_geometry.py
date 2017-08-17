@@ -820,7 +820,7 @@ class SparseAtom(SparseGeometry):
         sub : the negative of `remove`, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
-        atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
+        atom = np.delete(n_.arangei(self.na), atom)
         return self.sub(atom)
 
     def sub(self, atom):
@@ -1319,7 +1319,7 @@ class SparseOrbital(SparseGeometry):
         sub : the negative of `remove`, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
-        atom = np.setdiff1d(np.arange(self.na), atom, assume_unique=True)
+        atom = np.delete(n_.arangei(self.na), atom)
         return self.sub(atom)
 
     def sub(self, atom):

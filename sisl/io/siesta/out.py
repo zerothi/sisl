@@ -23,7 +23,7 @@ __all__ = ['outSileSiesta']
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
-def _ensure_species(self, species):
+def _ensure_species(species):
     """ Ensures that the species list is a list with entries (converts `None` to a list). """
     if species is None:
         return [Atom(i) for i in range(150)]

@@ -405,7 +405,6 @@ class fdfSileSiesta(SileSiesta):
         lc = lc.lower()
         if 'ang' in lc or 'notscaledcartesianang' in lc:
             s = 1.
-            pass
         elif 'bohr' in lc or 'notscaledcartesianbohr' in lc:
             s = Bohr2Ang
         elif 'scaledcartesian' in lc:

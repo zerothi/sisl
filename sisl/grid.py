@@ -478,8 +478,7 @@ class Grid(SuperCellChild):
     def _compatible_copy(self, other, *args, **kwargs):
         """ Returns a copy of self with an additional check of commensurable """
         if isinstance(other, Grid):
-            if self._check_compatibility(other, *args, **kwargs):
-                pass
+            self._check_compatibility(other, *args, **kwargs)
         return self.copy()
 
     def __eq__(self, other):
