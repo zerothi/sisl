@@ -147,7 +147,7 @@ class winSileWannier90(SileWannier90):
             # Get the species and
             l = l.split()
             s.append(l[0])
-            xyz.append(map(float, l[1:4]))
+            xyz.append(list(map(float, l[1:4])))
             l = self.readline()
 
         # Convert
@@ -257,7 +257,7 @@ class winSileWannier90(SileWannier90):
 
         ws = []
         for _ in range(nlines // 15):
-            ws.extend(map(int, self.readline().split()))
+            ws.extend(list(map(int, self.readline().split())))
 
         # Convert to numpy array and invert (for weights)
         ws = 1. / np.array(ws, np.float64).flatten()
