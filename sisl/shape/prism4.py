@@ -4,7 +4,6 @@ Implement a set of simple shapes that
 
 from numbers import Real
 import numpy as np
-import numpy.linalg as la
 
 from .shape import Shape
 
@@ -100,7 +99,6 @@ class Cuboid(Shape):
         tmp = other[:, :] - self.origo[None, :]
         el = self.edge_length[:]
 
-        voxel = np.diagflat(self.edge_length)
         # First reject those that are definitely not inside
         land = np.logical_and
         ix = land(land(land(0 <= tmp[:, 0],

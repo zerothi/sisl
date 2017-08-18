@@ -128,7 +128,6 @@ class CARSileVASP(SileVASP):
         na = len(atom)
 
         xyz = np.empty([na, 3], np.float64)
-        aoff = 0
         for ia in range(na):
             xyz[ia, :] = list(map(float, self.readline().split()))
         if cart:

@@ -57,13 +57,16 @@ class winSileWannier90(SileWannier90):
         self._comment = ['!', '#']
         self._seed = self.file.replace('.win', '')
 
-    def _set_file(self, suffix):
+    def _set_file(self, suffix=None):
         """ Update readed file """
-        self._file = self._seed + suffix
+        if suffix is None:
+            self._file = self._seed + '.win'
+        else:
+            self._file = self._seed + suffix
 
     @Sile_fh_open
     def _read_supercell(self):
-        """ Defered routine """
+        """ Deferred routine """
 
         f, l = self.step_to('unit_cell_cart', case=False)
         if not f:
@@ -93,12 +96,13 @@ class winSileWannier90(SileWannier90):
 
     def read_supercell(self):
         """ Reads a `SuperCell` and creates the Wannier90 cell """
-        self._set_file('.win')
+        # Reset
+        self._set_file()
 
         return self._read_supercell()
 
     @Sile_fh_open
-    def _read_geometry(self):
+    def _read_geometry_centres(self, *args, **kwargs):
         """ Defered routine """
 
         nc = int(self.readline())
@@ -118,6 +122,42 @@ class winSileWannier90(SileWannier90):
 
         return Geometry(xyz[:na, :], atom='H')
 
+    @Sile_fh_open
+    def _read_geometry(self, sc, *args, **kwargs):
+        """ Defered routine """
+
+        is_frac = True
+        f, _ = self.step_to('atoms_frac', case=False)
+        if not f:
+            is_frac = False
+            self.fh.seek(0)
+            f, _ = self.step_to('atoms_cart', case=False)
+
+        if not f:
+            raise ValueError("The geometry coordinates (atoms_frac/cart) could not be found in the seed-file.")
+
+        # Read the next line to determine the units
+        unit = self.readline()
+        unit = unit_convert(unit.strip(), 'Ang')
+
+        s = []
+        xyz = []
+        l = self.readline()
+        while not 'end' in l:
+            # Get the species and
+            l = l.split()
+            s.append(l[0])
+            xyz.append(map(float, l[1:4]))
+            l = self.readline()
+
+        # Convert
+        xyz = np.array(xyz, np.float64) * unit
+
+        if is_frac:
+            xyz = np.dot(sc.cell.T, xyz.T).T
+
+        return Geometry(xyz, atom=s, sc=sc)
+
     def read_geometry(self, *args, **kwargs):
         """ Reads a `Geometry` and creates the Wannier90 cell """
 
@@ -125,11 +165,71 @@ class winSileWannier90(SileWannier90):
         sc = self.read_supercell()
 
         self._set_file('_centres.xyz')
+        if self.exist():
+            geom = self._read_geometry_centres()
+        else:
+            self._set_file()
+            geom = self._read_geometry(sc, *args, **kwargs)
 
-        geom = self._read_geometry()
+        # Reset file
+        self._set_file()
+
+        # Specify the supercell and return
         geom.set_sc(sc)
-
         return geom
+
+    @Sile_fh_open
+    def _write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+        """ Writes the supercel to the contained file """
+        # Check that we can write to the file
+        sile_raise_write(self)
+
+        fmt_str = ' {{0:{0}}} {{1:{0}}} {{2:{0}}}\n'.format(fmt)
+
+        self._write('begin unit_cell_cart\n')
+        self._write(' Ang\n')
+        self._write(fmt_str.format(*sc.cell[0, :]))
+        self._write(fmt_str.format(*sc.cell[1, :]))
+        self._write(fmt_str.format(*sc.cell[2, :]))
+        self._write('end unit_cell_cart\n')
+
+    def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+        """ Writes the supercel to the contained file """
+        self._set_file()
+        self._write_supercell(sc, fmt, *args, **kwargs)
+
+    @Sile_fh_open
+    def _write_geometry(self, geom, fmt='.8f', *args, **kwargs):
+        """ Writes the geometry to the contained file """
+        # Check that we can write to the file
+        sile_raise_write(self)
+
+        # We have to have the _write_supercell here
+        # due to the open function re-instantiating the mode,
+        # and if it isn't 'a', then it cleans it... :(
+        self._write_supercell(geom.sc, fmt, *args, **kwargs)
+
+        fmt_str = ' {{1:2s}} {{2:{0}}} {{3:{0}}} {{4:{0}}} # {{0}}\n'.format(fmt)
+
+        if kwargs.get('frac', False):
+            # Get the fractional coordinates
+            fxyz = geom.fxyz[:, :]
+
+            self._write('begin atoms_frac\n')
+            for ia, a, _ in geom.iter_species():
+                self._write(fmt_str.format(ia + 1, a.symbol, *fxyz[ia, :]))
+            self._write('end atoms_frac\n')
+        else:
+            self._write('begin atoms_cart\n')
+            self._write(' Ang\n')
+            for ia, a, _ in geom.iter_species():
+                self._write(fmt_str.format(ia + 1, a.symbol, *geom.xyz[ia, :]))
+            self._write('end atoms_cart\n')
+
+    def write_geometry(self, geom, fmt='.8f', *args, **kwargs):
+        """ Writes the geometry to the contained file """
+        self._set_file()
+        self._write_geometry(geom, fmt, *args, **kwargs)
 
     @Sile_fh_open
     def _read_hamiltonian(self, geom, dtype=np.complex128, **kwargs):
@@ -137,7 +237,6 @@ class winSileWannier90(SileWannier90):
 
         Reads the Hamiltonian model
         """
-
         cutoff = kwargs.get('cutoff', 0.00001)
 
         # Rewind to ensure we can read the entire matrix structure
@@ -235,17 +334,19 @@ class winSileWannier90(SileWannier90):
 
         Parameters
         ----------
-        cutoff: (float, 0.00001)
-           the cutoff value for the zero Hamiltonian elements
+        cutoff: float, optional
+           the cutoff value for the zero Hamiltonian elements, default
+           to 0.00001 eV.
         """
-
         # Retrieve the geometry...
         geom = self.read_geometry()
 
         # Set file
         self._set_file('_hr.dat')
 
-        return self._read_hamiltonian(geom, *args, **kwargs)
+        H = self._read_hamiltonian(geom, *args, **kwargs)
+        self._set_file()
+        return H
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

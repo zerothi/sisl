@@ -254,12 +254,12 @@ class Geometry(SuperCellChild):
         return self.axyz(atom)
 
     def rij(self, ia, ja):
-        r""" Distance between atom ``ia`` and ``ja``, atoms are expected to be in super-cell indices
+        r""" Distance between atom `ia` and `ja`, atoms can be in super-cell indices
 
         Returns the distance between two atoms:
 
-        .. math ::
-            r\\_{ij} = |r\\_j - r\\_i|
+        .. math::
+            r_{ij} = |r_j - r_i|
 
         Parameters
         ----------
@@ -279,12 +279,12 @@ class Geometry(SuperCellChild):
         return np.sqrt(np.sum((xj - xi[None, :]) ** 2., axis=1))
 
     def orij(self, io, jo):
-        r""" Return distance between orbital ``io`` and ``jo``, orbitals are expected to be in super-cell indices
+        r""" Distance between orbital `io` and `jo`, orbitals can be in super-cell indices
 
         Returns the distance between two orbitals:
 
-        .. math ::
-            r\\_{ij} = |r\\_j - r\\_i|
+        .. math::
+            r_{ij} = |r_j - r_i|
 
         Parameters
         ----------
@@ -1532,14 +1532,18 @@ class Geometry(SuperCellChild):
 
     def mirror(self, plane, atom=None):
         """ Mirrors the structure around the center of the atoms """
+        if not atom is None:
+            atom = ensure_array(atom)
+        else:
+            atom = slice(None)
         g = self.copy()
         lplane = ''.join(sorted(plane.lower()))
         if lplane == 'xy':
-            g.xyz[:, 2] *= -1
+            g.xyz[atom, 2] *= -1
         elif lplane == 'yz':
-            g.xyz[:, 0] *= -1
+            g.xyz[atom, 0] *= -1
         elif lplane == 'xz':
-            g.xyz[:, 1] *= -1
+            g.xyz[atom, 1] *= -1
         return self.__class__(g.xyz, atom=g.atom, sc=self.sc.copy())
 
     @property

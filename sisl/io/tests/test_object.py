@@ -14,6 +14,12 @@ import common as tc
 gs = get_sile
 
 
+def stdoutfile(f):
+    with open(f, 'r') as fh:
+        for line in fh:
+            print(line.replace('\n', ''))
+
+
 class TestObject(object):
     # Base test class for MaskedArrays.
     setUp = tc.setUp
@@ -223,7 +229,7 @@ class TestObject(object):
     def test_read_write_geom(self):
         G = self.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
-        f = mkstemp(dir=self.d)[1]
+        f = mkstemp(dir=self.d)[1] + '.win'
         read_geometry = get_siles(['read_geometry'])
         for sile in get_siles(['write_geometry']):
             if not sile in read_geometry:

@@ -30,11 +30,11 @@ class bandsSileSiesta(SileSiesta):
         minl, maxl = map(float, self.readline().split())
         l = self.readline()
         try:
-            minE, maxE = map(float, l.split())
+            _, _ = map(float, l.split())
             band_lines = True
         except:
             # We are dealing with a band-points file
-            minE, maxE = minl, maxl
+            pass
 
         # orbitals, n-spin, n-k
         if band_lines:

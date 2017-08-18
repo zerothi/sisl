@@ -317,18 +317,30 @@ class fdfSileSiesta(SileSiesta):
                          ' could not find start/end.'))
 
     @Sile_fh_open
+    def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+        """ Writes the supercell to the contained file """
+        # Check that we can write to the file
+        sile_raise_write(self)
+
+        fmt_str = ' {{0:{0}}} {{1:{0}}} {{2:{0}}}\n'.format(fmt)
+
+        # Write out the cell
+        self._write('LatticeConstant 1. Ang\n')
+        self._write('%block LatticeVectors\n')
+        self._write(fmt_str.format(*sc.cell[0, :]))
+        self._write(fmt_str.format(*sc.cell[1, :]))
+        self._write(fmt_str.format(*sc.cell[2, :]))
+        self._write('%endblock LatticeVectors\n')
+
+    @Sile_fh_open
     def write_geometry(self, geom, fmt='.8f', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
 
-        # Write out the cell
-        self._write('LatticeConstant 1. Ang\n')
-        self._write('%block LatticeVectors\n')
-        self._write(' {0} {1} {2}\n'.format(*geom.cell[0, :]))
-        self._write(' {0} {1} {2}\n'.format(*geom.cell[1, :]))
-        self._write(' {0} {1} {2}\n'.format(*geom.cell[2, :]))
-        self._write('%endblock LatticeVectors\n\n')
+        self.write_supercell(geom.sc, fmt, *args, **kwargs)
+
+        self._write('\n')
         self._write('NumberOfAtoms {0}\n'.format(geom.na))
         self._write('AtomicCoordinatesFormat Ang\n')
         self._write('%block AtomicCoordinatesAndAtomicSpecies\n')

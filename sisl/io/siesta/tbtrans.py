@@ -646,13 +646,23 @@ class tbtncSileSiesta(SileCDFSiesta):
             # we return it
             return np.sum(DOS[..., p], axis=-1) / NORM
 
+        # We default the case where 1-orbital systems are in use
+        # Then it becomes *very* easy
+        if len(p) == len(atom):
+            return DOS[..., p] / NORM
+
+        # This is the multi-orbital case...
+
         # We will return per-atom
         shp = list(DOS.shape[:-1])
         nDOS = np.empty(shp + [len(atom)], np.float64)
 
+        # Quicker than re-creating the geometry on every instance
+        geom = self.geom
+
         # Sum for new return stuff
         for i, a in enumerate(atom):
-            pvt = self.a2p(a)
+            pvt = self.o2p(geom.a2o(a, True))
             if len(pvt) == 0:
                 nDOS[..., i] = 0.
             else:

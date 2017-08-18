@@ -358,6 +358,48 @@ class SparseGeometry(object):
         """ Whether the contained data is finalized and non-used elements have been removed """
         return self._csr.finalized
 
+    def remove(self, atom):
+        """ Create a subset of this sparse matrix by removing the atoms corresponding to `atom`
+
+        Indices passed must be unique.
+
+        Negative indices are wrapped and thus works.
+
+        Parameters
+        ----------
+        atom  : array_like of int
+            indices of removed atoms
+
+        See Also
+        --------
+        Geometry.remove : equivalent to the resulting `Geometry` from this routine
+        Geometry.sub : the negative of `Geometry.remove`
+        sub : the negative of `remove`, i.e. retain a subset of atoms
+        """
+        atom = self.sc2uc(atom)
+        atom = np.delete(n_.arangei(self.na), atom)
+        return self.sub(atom)
+
+    def sub(self, atom):
+        """ Create a subset of this sparse matrix by retaining the atoms corresponding to `atom`
+
+        Indices passed must be unique.
+
+        Negative indices are wrapped and thus works.
+
+        Parameters
+        ----------
+        atom  : array_like of int
+            indices of removed atoms
+
+        See Also
+        --------
+        Geometry.remove : equivalent to the resulting `Geometry` from this routine
+        Geometry.sub : the negative of `Geometry.remove`
+        remove : the negative of `sub`, i.e. remove a subset of atoms
+        """
+        pass
+
     def finalize(self):
         """ Finalizes the model
 
@@ -800,28 +842,6 @@ class SparseAtom(SparseGeometry):
             S[a, ja + afm] = self[ja, ia]
 
         return S
-
-    def remove(self, atom):
-        """ Create a subset of this sparse matrix by removing the elements corresponding to `atom`
-
-        Indices passed must be unique.
-
-        Negative indices are wrapped and thus works.
-
-        Parameters
-        ----------
-        atom  : array_like of int
-            indices of removed atoms
-
-        See Also
-        --------
-        Geometry.remove : equivalent to the resulting `Geometry` from this routine
-        Geometry.sub : the negative of `Geometry.remove`
-        sub : the negative of `remove`, i.e. retain a subset of atoms
-        """
-        atom = self.sc2uc(atom)
-        atom = np.delete(n_.arangei(self.na), atom)
-        return self.sub(atom)
 
     def sub(self, atom):
         """ Create a subset of this sparse matrix by only retaining the elements corresponding to the ``atom``
@@ -1300,30 +1320,8 @@ class SparseOrbital(SparseGeometry):
 
         return S
 
-    def remove(self, atom):
-        """ Create a subset of this sparse matrix by removing the elements corresponding to `atom`
-
-        Indices passed *MUST* be unique.
-
-        Negative indices are wrapped and thus works.
-
-        Parameters
-        ----------
-        atom  : array_like of int
-            indices of removed atoms
-
-        See Also
-        --------
-        Geometry.remove : equivalent to the resulting `Geometry` from this routine
-        Geometry.sub : the negative of `Geometry.remove`
-        sub : the negative of `remove`, i.e. retain a subset of atoms
-        """
-        atom = self.sc2uc(atom)
-        atom = np.delete(n_.arangei(self.na), atom)
-        return self.sub(atom)
-
     def sub(self, atom):
-        """ Create a subset of this sparse matrix by only retaining the elements corresponding to the `atom`
+        """ Create a subset of this sparse matrix by only retaining the atoms corresponding to the `atom`
 
         Indices passed *MUST* be unique.
 
