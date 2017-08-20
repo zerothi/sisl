@@ -688,7 +688,7 @@ class SparseAtom(SparseGeometry):
             "Not all supercells are accounted for"
 
         # Maximum column translated too
-        max_n = sc.n_s
+        max_n = max(sc.n_s, self.sc.n_s)
         # 1. Ensure that any one of the *old* supercells that
         #    are now deleted are put in the end
         for i, j in enumerate(deleted.nonzero()[0]):
@@ -722,7 +722,7 @@ class SparseAtom(SparseGeometry):
 
         # Create array of deleted values
         max_n = max(max_n, self.sc.n_s)
-        delete = n_.arangei(sc.n_s * self.na, max_n * self.na)
+        delete = n_.arangei(sc.n_s * self.na, (max_n + 1) * self.na)
         self._csr.delete_columns(delete)
 
         self.geom.set_nsc(*args, **kwargs)
@@ -1165,7 +1165,7 @@ class SparseOrbital(SparseGeometry):
             "Not all supercells are accounted for"
 
         # Maximum column translated too
-        max_n = sc.n_s
+        max_n = max(sc.n_s, self.sc.n_s)
         # 1. Ensure that any one of the *old* supercells that
         #    are now deleted are put in the end
         for i, j in enumerate(deleted.nonzero()[0]):
@@ -1199,7 +1199,7 @@ class SparseOrbital(SparseGeometry):
 
         # Create array of deleted values
         max_n = max(max_n, self.sc.n_s)
-        delete = n_.arangei(sc.n_s * self.no, max_n * self.no)
+        delete = n_.arangei(sc.n_s * self.no, (max_n + 1) * self.no)
         self._csr.delete_columns(delete)
 
         self.geom.set_nsc(*args, **kwargs)

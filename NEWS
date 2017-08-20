@@ -24,15 +24,20 @@
   Any function call on the BrillouinZone object will transfer the call to the
   passed object and evaluate that function for all k-points in the BrillouinZone.
 
-- Added current calculator to TBT.nc sile to calculate the current as TBtrans
-  does it (this requires the latest commit in SIESTA which defines the
-  chemical potential and electronic structure of *all* electrodes).
+- sisl.io.siesta.tbtrans
 
-- Bug-fixes for TBT.nc sile, the bond-currents for multi-orbital systems
-  were in some cases wrong.
+  * Added current calculator to TBT.nc sile to calculate the current as TBtrans
+    does it (this requires the latest commit in SIESTA which defines the
+    chemical potential and electronic structure of *all* electrodes).
 
-- Huge performance increase for TBT.nc data processing. Now the majority
-  of routines are based on array-indexing, rather than sparse loops.
+  * Bug-fixes for TBT.nc sile, the bond-currents for multi-orbital systems
+    were in some cases wrong.
+
+  * Huge performance increase for TBT.nc data processing. Now the majority
+    of routines are based on array-indexing, rather than sparse loops.
+
+  * Changed the DOS retrieval functions to be more flexible. The default is
+    now to return the summed DOS across the selected atoms.
 
 - Hamiltonian.tile is now even faster, only utilizing
   intrinsic numpy array functionality.

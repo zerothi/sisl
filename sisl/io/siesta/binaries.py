@@ -107,9 +107,7 @@ class tshsSileSiesta(SileBinSiesta):
         H._csr._nnz = len(col)
 
         H._csr._D = np.empty([nnz, spin+1], np.float64)
-        for i in range(spin):
-            # this is because of the F-ordering
-            H._csr._D[:, i] = dH[:, i]
+        H._csr._D[:, :spin] = dH[:, :]
         H._csr._D[:, spin] = dS[:]
 
         return H
