@@ -438,7 +438,7 @@ class SparseCSR(object):
         ncol = self.ncol.view()
         col = self.col.view()
 
-        # Delete columns
+        # Indices of deleted columns
         idx = [ptr[r] + isin(col[ptr[r]:ptr[r]+ncol[r]], columns).nonzero()[0]
                for r in range(self.shape[0])]
         lidx = hstack(idx)
@@ -451,6 +451,7 @@ class SparseCSR(object):
                 self._shape = tuple(shape)
             return
 
+        # Reduce the column indices and the data
         self.col = delete(self.col, lidx)
         self._D = delete(self._D, lidx, axis=0)
         del lidx
@@ -467,8 +468,7 @@ class SparseCSR(object):
             # Check that we really do have to update
             update_col = np.any(columns < self.shape[1] - n_cols)
 
-        # Correct number of elements per column,
-        # and the pointers
+        # Correct number of elements per column, and the pointers
         idx = n_.arrayi([len(r) for r in idx])
         ncol[:] -= idx
         ptr[1:] -= n_.cumsumi(idx)
@@ -504,18 +504,18 @@ class SparseCSR(object):
         nc = self.shape[1]
 
         # Only update counts and pointers
-        idx = []
+        idx = [None] * self.shape[0]
         for r in range(self.shape[0]):
-            idx.append(ptr[r] + (col[ptr[r]:ptr[r]+ncol[r]] >= nc).nonzero()[0])
+            idx[r] = ptr[r] + (col[ptr[r]:ptr[r]+ncol[r]] >= nc).nonzero()[0]
             ndel = len(idx[r])
             ncol[r] -= ndel
             ptr[r+1:] -= ndel
 
         # Deleted columns
-        lidx = hstack(idx)
-        self.col = delete(self.col, lidx)
-        self._D = delete(self._D, lidx, axis=0)
-        del lidx, idx
+        idx = hstack(idx)
+        self.col = delete(self.col, idx)
+        self._D = delete(self._D, idx, axis=0)
+        del idx
 
         # Update number of non-zeroes
         self._nnz = np.sum(ncol)
