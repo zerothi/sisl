@@ -3,7 +3,7 @@
 from __future__ import print_function, division
 
 import types
-from numbers import Integral
+from numbers import Integral, Real
 
 from numpy import pi
 import numpy as np
@@ -12,7 +12,7 @@ from numpy import sum, dot
 from sisl.supercell import SuperCell
 
 
-__all__ = ['BrillouinZone', 'PathBZ']
+__all__ = ['BrillouinZone', 'MonkhorstPackBZ', 'PathBZ']
 
 
 class BrillouinZone(object):
@@ -228,6 +228,70 @@ class BrillouinZone(object):
 
     def __len__(self):
         return 1
+
+
+class MonkhorstPackBZ(BrillouinZone):
+    """ Create a Monkhorst-Pack grid for the Brillouin zone """
+
+    def __init__(self, obj, nkpt, symmetry=True, displacement=None):
+        """ Instantiate the `MonkhorstPackBZ` by a number of points in each direction
+
+        Parameters
+        ----------
+        obj : object or array_like
+           An object with associated `obj.cell` and `obj.rcell` or
+           an array of floats which may be turned into a `SuperCell`
+        nktp : array_like of ints
+           a list of number of k-points along each cell direction
+        symmetry : bool, optional
+           whether symmetry exists in the Brillouin zone.
+        displacement : float or array_like of float, optional
+           the displacement of the evenly spaced grid, a single floating
+           number is the displacement for the 3 directions, else they
+           are the individual displacements
+        """
+        super(MonkhorstPackBZ, self).__init__(obj)
+
+        if isinstance(nkpt, Integral):
+            nkpt = np.diag([nkpt] * 3)
+        elif isinstance(nkpt[0], Integral):
+            nkpt = np.diag(nkpt)
+
+        # Now we have a matrix of k-points
+        if np.any(nkpt - np.diag(np.diag(nkpt)) != 0):
+            raise NotImplementedError("MonkhorstPackBZ with off-diagonal components is not implemented yet")
+
+        if displacement is None:
+            displacement = np.zeros(3, np.float64)
+        elif isinstance(displacement, Real):
+            displacement = np.zeros(3, np.float64) + displacement
+
+        # Retrieve the diagonal number of values
+        Dn = np.diag(nkpt)
+
+        def link(n, d):
+            return (np.arange(n) * 2 - n + 1) / (2 * n) + d
+
+        # Now we are ready to create the list of k-points
+        self._kpt = np.empty([np.prod(Dn), 3], np.float64)
+        self._kpt.shape = (Dn[0], Dn[1], Dn[2], 3)
+        self._kpt[:, :, :, 0] = link(Dn[0], displacement[0]).reshape(-1, 1, 1)
+        self._kpt[:, :, :, 1] = link(Dn[1], displacement[1]).reshape(1, -1, 1)
+        self._kpt[:, :, :, 2] = link(Dn[2], displacement[2]).reshape(1, 1, -1)
+
+        # Return to original shape
+        self._kpt.shape = (-1, 3)
+        self._kpt = np.where(self._kpt > .5, self._kpt - 1, self._kpt)
+        N = len(self._kpt)
+        self._wkpt = np.ones([N], np.float64) / N
+
+    def __iter__(self):
+        """ Iterate through the Monkhorst pack-grid """
+        for i in range(len(self)):
+            yield self._kpt[i], self._wkpt[i]
+
+    def __len__(self):
+        return len(self._kpt)
 
 
 class PathBZ(BrillouinZone):

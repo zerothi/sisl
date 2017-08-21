@@ -1100,7 +1100,7 @@ class SparseCSR(object):
         col1 = pvt[take(self.col, col_idx)]
 
         # Count the number of items that are left in the sparse pattern
-        # First recreate the new (temporar) pointer
+        # First recreate the new (temporary) pointer
         ptr1[0] = 0
         # Place it directly where it should be
         n_.cumsumi(ncol1, out=ptr1[1:])
