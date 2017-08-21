@@ -8,6 +8,7 @@ import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, SuperCellChild
 from sisl import BrillouinZone, PathBZ
+from sisl import MonkhorstPackBZ
 
 
 @attr('brillouinzone')
@@ -59,6 +60,18 @@ class TestBrillouinZone(object):
             assert_true(np.allclose(val, np.arange(3) - 1))
         # Average
         assert_true(np.allclose(bz.average().eigh(), np.arange(3)))
+
+    def test_mp1(self):
+        bz = MonkhorstPackBZ(self.s1, [2] * 3)
+        assert_equal(len(bz), 8)
+        assert_equal(bz.weight[0], 1. / 8)
+
+    def test_mp2(self):
+        bz1 = MonkhorstPackBZ(self.s1, [2] * 3)
+        assert_equal(len(bz1), 8)
+        bz2 = MonkhorstPackBZ(self.s1, [2] * 3, displacement=[.5] * 3)
+        assert_equal(len(bz2), 8)
+        assert_false(np.allclose(bz1._kpt, bz2._kpt))
 
     def test_pbz1(self):
         bz = PathBZ(self.s1, [[0]*3, [.5]*3], 300)

@@ -275,15 +275,20 @@ class MonkhorstPackBZ(BrillouinZone):
         # Now we are ready to create the list of k-points
         self._kpt = np.empty([np.prod(Dn), 3], np.float64)
         self._kpt.shape = (Dn[0], Dn[1], Dn[2], 3)
-        self._kpt[:, :, :, 0] = link(Dn[0], displacement[0]).reshape(-1, 1, 1)
-        self._kpt[:, :, :, 1] = link(Dn[1], displacement[1]).reshape(1, -1, 1)
-        self._kpt[:, :, :, 2] = link(Dn[2], displacement[2]).reshape(1, 1, -1)
+        self._kpt[..., 0] = link(Dn[0], displacement[0]).reshape(-1, 1, 1)
+        self._kpt[..., 1] = link(Dn[1], displacement[1]).reshape(1, -1, 1)
+        self._kpt[..., 2] = link(Dn[2], displacement[2]).reshape(1, 1, -1)
 
         # Return to original shape
         self._kpt.shape = (-1, 3)
         self._kpt = np.where(self._kpt > .5, self._kpt - 1, self._kpt)
         N = len(self._kpt)
         self._wkpt = np.ones([N], np.float64) / N
+
+    @property
+    def weight(self):
+        """ The weights of the k-points """
+        return self._wkpt
 
     def __iter__(self):
         """ Iterate through the Monkhorst pack-grid """
