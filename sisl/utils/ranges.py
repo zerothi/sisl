@@ -9,6 +9,8 @@ from itertools import groupby
 import numpy as np
 from numpy import arange, hstack, empty, sum
 
+from sisl._help import _zip as zip
+
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
 __all__ += ['array_arange']
 
@@ -254,17 +256,23 @@ def array_arange(start, end=None, n=None, dtype=np.int32):
     >>> array_arange([1, 6], n=[2, 2])
     [1, 2, 6, 7]
     """
-    if n is None:
-        def func(start, end):
-            return arange(start, end, dtype=dtype)
-        return hstack([func(start[i], end[i]) for i in range(len(start))])
 
-    # Count and pre-allocate, this should reduce the memory overhead
-    size = sum(n)
-    array = empty([size], dtype=dtype)
+    # Tests show that the below code is faster for large
+    # array_arange calls.
+    # I.e. pre-allocation is faster than hstack
     j = 0
-    for i in range(len(start)):
-        N = n[i]
-        array[j:j+N] = arange(start[i], start[i] + N, dtype=dtype)
-        j += N
+    if n is None:
+        size = sum(end - start, dtype=dtype)
+        array = empty([size], dtype=dtype)
+        for s, e in zip(start, end):
+            N = e - s
+            array[j:j+N] = arange(s, e, dtype=dtype)
+            j += N
+    else:
+        # Count and pre-allocate, this should reduce the memory overhead
+        size = sum(n, dtype=dtype)
+        array = empty([size], dtype=dtype)
+        for s, N in zip(start, n):
+            array[j:j+N] = arange(s, s + N, dtype=dtype)
+            j += N
     return array

@@ -21,11 +21,11 @@ from sisl.units.siesta import unit_convert
 from sisl.physics import Hamiltonian
 
 
-__all__ = ['tshsSileSiesta']
+__all__ = ['TSHSSileSiesta']
 __all__ += ['rhoSileSiesta', 'vSileSiesta']
 
 
-class tshsSileSiesta(SileBinSiesta):
+class TSHSSileSiesta(SileBinSiesta):
     """ TranSIESTA file object """
 
     def read_supercell(self):
@@ -153,7 +153,7 @@ class vSileSiesta(GridSileSiesta):
 
 
 if found_module:
-    add_sile('TSHS', tshsSileSiesta)
+    add_sile('TSHS', TSHSSileSiesta)
     add_sile('RHO', rhoSileSiesta)
     add_sile('RHOINIT', rhoSileSiesta)
     add_sile('DRHO', rhoSileSiesta)

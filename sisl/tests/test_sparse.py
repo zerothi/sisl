@@ -339,12 +339,30 @@ class TestSparseCSR(object):
         s2 = self.s1.copy()
         nc = s1.shape[1]
         for i in range(10):
-            s1[i, [1, 2, 3]] = 1
+            s1[i, [3, 2, 1]] = 1
             s2[i, 2] = 1
         s1.finalize()
         s2.finalize()
         assert_equal(s1.nnz, 10*3)
         s1.delete_columns([3, 1], keep=True)
+        assert_equal(s1.ptr[-1], s1.nnz)
+        assert_equal(s2.ptr[-1], s2.nnz)
+        assert_equal(s1.nnz, 10 * 1)
+        assert_true(s1.spsame(s2))
+
+    def test_delete_col4(self):
+        s1 = SparseCSR((10, 100), dtype=np.int32)
+        s2 = SparseCSR((10, 98), dtype=np.int32)
+        nc = s1.shape[1]
+        for i in range(10):
+            s1[i, [3, 2, 1]] = 1
+            s2[i, 1] = 1
+        s1.finalize()
+        s2.finalize()
+        assert_equal(s1.nnz, 10*3)
+        s1.delete_columns([3, 1])
+        assert_equal(s1.ptr[-1], s1.nnz)
+        assert_equal(s2.ptr[-1], s2.nnz)
         assert_equal(s1.nnz, 10 * 1)
         assert_true(s1.spsame(s2))
 
