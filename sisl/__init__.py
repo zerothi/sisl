@@ -28,14 +28,15 @@ from .atom import *
 from .geometry import *
 from .grid import *
 
-from .io import *
-
 from .sparse import *
 from .sparse_geometry import *
 
 # Physical quantities and required classes
 from .physics import *
 
+# The io files requires imports from the above modules
+# Hence, we *must* import it last.
+from .io import *
 
 # Import the default geom structure
 # This enables:
