@@ -2477,10 +2477,10 @@ class dHncSileSiesta(SileCDFSiesta):
 
         # Copy information over
         C._csr._nnz = len(C._csr.col)
-        C._csr._D = np.empty([C._csr.ptr[-1], 1], np.float64)
+        C._csr._D = np.empty([C._csr.ptr[-1], 1], dtype)
         if is_complex:
             C._csr._D[:, 0].real = lvl.variables['RedH'][sl] * Ry2eV
-            C._csr._D[:, 0].imag = lvl.variables['ImdH'][sl]
+            C._csr._D[:, 0].imag = lvl.variables['ImdH'][sl] * Ry2eV
         else:
             C._csr._D[:, 0] = lvl.variables['dH'][sl] * Ry2eV
 
