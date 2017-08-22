@@ -2441,7 +2441,7 @@ class dHncSileSiesta(SileCDFSiesta):
 
         if iE < 0 and ilvl in [3, 4]:
             raise ValueError("Energy {0} eV does not exist in the file.".format(E))
-        if ik < 0 and ilvl in [2, 3]:
+        if ik < 0 and ilvl in [2, 4]:
             raise ValueError("k-point requested does not exist in the file.")
 
         if ilvl == 1:
