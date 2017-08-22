@@ -98,8 +98,8 @@ class tbtncSileSiesta(SileCDFSiesta):
     * :math:`\alpha` and :math:`\beta` are atomic indices
     * :math:`\nu` and :math:`\mu` are orbital indices
 
-    DOS normalization
-    -----------------
+    A word on DOS normalization:
+
     All the device region DOS functions may request a normalization depending
     on a variety of functions. You are highly encouraged to read the documentation for
     the `norm` function and to consider the benefit of using the ``norm='atom'``

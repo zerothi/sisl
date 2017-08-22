@@ -55,7 +55,7 @@ graphene flake one can use this small snippet:
    >>> import sisl
    >>> graphene = sisl.geom.graphene(1.42).repeat(100, 0).repeat(100, 1)
 
-which generates a graphene flake of :math:`2 * 100 * 100 = 20000` atoms.
+which generates a graphene flake of :math:`2 \cdot 100 \cdot 100 = 20000` atoms.
 
 
 Command line usage
