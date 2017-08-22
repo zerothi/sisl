@@ -1,5 +1,45 @@
-"""
-Sile object for reading TBtrans binary files
+r"""sisl file objects for interaction with the TBtrans code
+
+The TBtrans code is a tight-binding transport code implementing
+the widely used non-equilibrium Green function method.
+
+It is primarily implemented for the support of TranSiesta (DFT+NEGF)
+as a backend for calculating th transport for self-consistent DFT software.
+
+Here we show a variety of supplement files that allows the extracting, manipulation
+and creation of files supported in TBtrans.
+
+The basic file is the `tbtncSileSiesta` which is a file to extract information
+from a TBtrans output file (typically named: ``siesta.TBT.nc``).
+The following will interact with the TBtrans file:
+
+>>> tbt = sisl.get_sile('siesta.TBT.nc')
+>>> tbt.E # retrieve energies where physical quantities are calculated
+>>> tbt.a_d # atomic indices where physical quantities are accessible
+
+Importantly one may retrieve quantities such as DOS, transmissions,
+transmission eigenvalues etc.
+
+>>> tbt.transmission() # from electrode 0 -> 1 (default)
+>>> tbt.transmission(0, 1) # from electrode 0 -> 1
+>>> tbt.transmission(0, 2) # from electrode 0 -> 2
+>>> tbt.ADOS(0, E=1.) # k-average, total spectral DOS from 0th electrode
+
+
+The above is the most important use of this module while the following
+entries are enabled:
+
+Data extraction files
+---------------------
+- `tbtncSileSiesta` (electronic TBtrans output)
+- `tbtavncSileSiesta` (electronic k-averaged TBtrans output)
+- `phtncSileSiesta` (phononic PHtrans output)
+- `phtavncSileSiesta` (phononic k-averaged PHtrans output)
+
+Support files to complement TBtrans
+-----------------------------------
+- `dHncSileSiesta` adding :math:`\delta H` elements to a TBtrans calculation
+
 """
 from __future__ import print_function, division
 
@@ -57,6 +97,13 @@ class tbtncSileSiesta(SileCDFSiesta):
 
     * :math:`\alpha` and :math:`\beta` are atomic indices
     * :math:`\nu` and :math:`\mu` are orbital indices
+
+    DOS normalization
+    -----------------
+    All the device region DOS functions may request a normalization depending
+    on a variety of functions. You are highly encouraged to read the documentation for
+    the `norm` function and to consider the benefit of using the ``norm='atom'``
+    normalization to more easily compare various partitions of DOS.
 
     Notes
     -----
