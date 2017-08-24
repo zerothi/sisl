@@ -944,6 +944,39 @@ class SparseCSR(object):
         # Get indices of sparse data (-1 if non-existing)
         return np.all(self._get(key[0], key[1]) >= 0)
 
+    def nonzero(self, row=None, only_col=False):
+        """ Indices row and column indices where non-zero elements exists
+
+        Parameters
+        ----------
+        row : int or array_like of int, optional
+           only return the tuples for the requested rows, default is all rows
+        only_col : bool, optional
+           only return then non-zero columns
+        """
+        if row is None:
+            idx = array_arange(self.ptr[:-1], n=self.ncol)
+            if not only_col:
+                rows = n_.emptyi([self.nnz])
+                j = 0
+                for r, N in enumerate(self.ncol):
+                    rows[j:j+N] = r
+                    j += N
+        else:
+            row = ensure_array(row)
+            idx = array_arange(self.ptr[row], n=self.ncol[row])
+            if not only_col:
+                N = n_.sumi(self.ncol[row])
+                rows = n_.emptyi([N])
+                j = 0
+                for r, N in zip(row, self.ncol[row]):
+                    rows[j:j+N] = r
+                    j += N
+
+        if only_col:
+            return self.col[idx]
+        return rows, self.col[idx]
+
     def eliminate_zeros(self):
         """ Remove all zero elememts from the sparse matrix
 

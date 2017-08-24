@@ -26,6 +26,11 @@ asarrayl = ftool.partial(np.asarray, dtype=np.int64)
 asarrayf = ftool.partial(np.asarray, dtype=np.float32)
 asarrayd = ftool.partial(np.asarray, dtype=np.float64)
 
+sumi = ftool.partial(np.sum, dtype=np.int32)
+suml = ftool.partial(np.sum, dtype=np.int64)
+sumf = ftool.partial(np.sum, dtype=np.float32)
+sumd = ftool.partial(np.sum, dtype=np.float64)
+
 cumsumi = ftool.partial(np.cumsum, dtype=np.int32)
 cumsuml = ftool.partial(np.cumsum, dtype=np.int64)
 cumsumf = ftool.partial(np.cumsum, dtype=np.float32)

@@ -377,6 +377,28 @@ class TestSparseCSR(object):
         assert_equal(s1[1, 1], 3)
         assert_equal(s1[1, 3], 1)
 
+    def test_nonzero1(self):
+        s1 = self.s1.copy()
+        s1[2, 1] = 1
+        s1[1, 1] = 1
+        s1[1, 2] = 2
+        s1[1, 3] = 3
+        assert_equal(s1.nnz, 4)
+        r, c = s1.nonzero()
+        assert_true(np.all(r == [1, 1, 1, 2]))
+        assert_true(np.all(c == [1, 2, 3, 1]))
+        c = s1.nonzero(only_col=True)
+        assert_true(np.all(c == [1, 2, 3, 1]))
+        c = s1.nonzero(row=1, only_col=True)
+        assert_true(np.all(c == [1, 2, 3]))
+        c = s1.nonzero(row=2, only_col=True)
+        assert_true(np.all(c == [1]))
+        c = s1.nonzero(row=[0, 1], only_col=True)
+        assert_true(np.all(c == [1, 2, 3]))
+        r, c = s1.nonzero(row=[0, 1])
+        assert_true(np.all(r == [1, 1, 1]))
+        assert_true(np.all(c == [1, 2, 3]))
+
     def test_op1(self):
         for i in range(10):
             j = range(i*4, i*4+3)

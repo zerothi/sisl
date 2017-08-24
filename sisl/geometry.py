@@ -117,12 +117,7 @@ class Geometry(SuperCellChild):
         # Create the local Atoms object
         self._atom = Atoms(atom, na=self.na)
 
-        # Get total number of orbitals
-        orbs = self.atom.orbitals
-
-        # Create local first
-        firsto = np.append(np.array(0, np.int32), orbs)
-        self.firsto = np.cumsum(firsto, dtype=np.int32)
+        self._update_orbitals()
 
         self.__init_sc(sc)
 
@@ -252,6 +247,35 @@ class Geometry(SuperCellChild):
             return self.axyz()[:, atom[1]]
 
         return self.axyz(atom)
+
+    def _update_orbitals(self):
+        """ Internal routine for updating the `firsto` attribute """
+        # Get total number of orbitals
+        orbs = self.atom.orbitals
+
+        # Create local first
+        firsto = np.append(np.array(0, np.int32), orbs)
+        self.firsto = np.cumsum(firsto, dtype=np.int32)
+
+    def reorder(self):
+        """ Reorders atoms according to first occurence in the geometry
+
+        Notes
+        -----
+        This is an in-place operation.
+        """
+        self._atom = self._atom.reorder()
+        self._update_orbitals()
+
+    def reduce(self):
+        """ Remove all atoms not currently used in the ``self.atom`` object
+
+        Notes
+        -----
+        This is an in-place operation.
+        """
+        self._atom = self._atom.reduce()
+        self._update_orbitals()
 
     def rij(self, ia, ja):
         r""" Distance between atom `ia` and `ja`, atoms can be in super-cell indices
