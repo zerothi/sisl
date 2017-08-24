@@ -626,6 +626,22 @@ class SparseAtom(SparseGeometry):
     def _size(self):
         return self.geometry.na
 
+    def nonzero(self, atom=None, only_col=False):
+        """ Indices row and column indices where non-zero elements exists
+
+        Parameters
+        ----------
+        atom : int or array_like of int, optional
+           only return the tuples for the requested atoms, default is all atoms
+        only_col : bool, optional
+           only return then non-zero columns
+
+        See Also
+        --------
+        SparseCSR.nonzero : the equivalent function call
+        """
+        return self._csr.nonzero(row=atom, only_col=only_col)
+
     def iter_nnz(self, atom=None):
         """ Iterations of the non-zero elements
 
@@ -1095,6 +1111,26 @@ class SparseOrbital(SparseGeometry):
     @property
     def _size(self):
         return self.geom.no
+
+    def nonzero(self, atom=None, only_col=False):
+        """ Indices row and column indices where non-zero elements exists
+
+        Parameters
+        ----------
+        atom : int or array_like of int, optional
+           only return the tuples for the requested atoms, default is all atoms
+           But for *all* orbitals.
+        only_col : bool, optional
+           only return then non-zero columns
+
+        See Also
+        --------
+        SparseCSR.nonzero : the equivalent function call
+        """
+        if atom is None:
+            return self._csr.nonzero(only_col=only_col)
+        row = self.geom.a2o(atom, all=True)
+        return self._csr.nonzero(row=row, only_col=only_col)
 
     def iter_nnz(self, atom=None, orbital=None):
         """ Iterations of the non-zero elements

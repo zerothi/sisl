@@ -51,6 +51,25 @@ class TestSparseAtom(object):
         assert_equal(self.s2[0, 2, 1, (1, 1, 1)], 2)
         self.s2.empty()
 
+    def test_nonzero1(self):
+        s2 = self.s2.copy()
+        s2[0, [0, 2, 3]] = [1, 2]
+        s2[3, [1, 2, 3]] = [1, 2]
+
+        r, c = s2.nonzero()
+        assert_true(np.allclose(r, [0, 0, 0, 3, 3, 3]))
+        assert_true(np.allclose(c, [0, 2, 3, 1, 2, 3]))
+        c = s2.nonzero(only_col=True)
+        assert_true(np.allclose(c, [0, 2, 3, 1, 2, 3]))
+        r, c = s2.nonzero(atom=1)
+        assert_equal(len(r), 0)
+        assert_equal(len(c), 0)
+        r, c = s2.nonzero(atom=0)
+        assert_true(np.allclose(r, [0, 0, 0]))
+        assert_true(np.allclose(c, [0, 2, 3]))
+        c = s2.nonzero(atom=0, only_col=True)
+        assert_true(np.allclose(c, [0, 2, 3]))
+
     def test_cut1(self):
         s1 = SparseAtom(self.g)
         s1.construct([[0.1, 1.5], [1, 2]])
