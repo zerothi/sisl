@@ -945,7 +945,7 @@ class SparseCSR(object):
         return np.all(self._get(key[0], key[1]) >= 0)
 
     def nonzero(self, row=None, only_col=False):
-        """ Indices row and column indices where non-zero elements exists
+        """ Row and column indices where non-zero elements exists
 
         Parameters
         ----------

@@ -36,6 +36,10 @@ class Cuboid(Shape):
         """ Return the origin of the Cuboid (lower-left corner) """
         return self.center - self.edge_length / 2
 
+    def __repr__(self):
+        v = np.append(self.origo, self.edge_length)
+        return self.__class__.__name__ + ' O({} {} {}) L({} {} {})'.format(*v)
+
     def set_center(self, center):
         """ Re-setting the center can sometimes be necessary """
         self.__init__(self.edge_length, center)

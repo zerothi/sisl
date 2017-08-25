@@ -410,7 +410,7 @@ class SparseGeometry(object):
         """
         self._csr.finalize()
 
-    def tocsr(self, index, isc=None):
+    def tocsr(self, index, isc=None, **kwargs):
         """ Return a ``scipy.sparse.csr_matrix`` of the specified index
 
         Parameters
@@ -423,7 +423,7 @@ class SparseGeometry(object):
         """
         if isc is not None:
             raise NotImplementedError("Requesting sub-sparse has not been implemented yet")
-        return self._csr.tocsr(index)
+        return self._csr.tocsr(index, **kwargs)
 
     def spsame(self, other):
         """ Compare two sparse objects and check whether they have the same entries.
