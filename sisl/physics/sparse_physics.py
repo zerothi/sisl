@@ -58,18 +58,8 @@ class SparseOrbitalBZ(SparseOrbital):
         self.reset(dim, dtype, nnzpr)
 
         if self.orthogonal:
-            # Wrapper for always enabling creating an overlap
-            # matrix. For orthogonal cases it is simply the diagonal
-            # matrix
-            def diagonal_Sk(self, k=(0, 0, 0), dtype=None, **kwargs):
-                """ For an orthogonal case we always return the identity matrix """
-                if dtype is None:
-                    dtype = np.float64
-                S = csr_matrix((len(self), len(self)), dtype=dtype)
-                S.setdiag(1.)
-                return S
-            self.Sk = diagonal_Sk
-            self.S_idx = -1
+            self.Sk = self._Sk_diagonal
+            self.S_idx = -100
         else:
             dim = dim - 1
             self.S_idx = dim
@@ -86,6 +76,11 @@ class SparseOrbitalBZ(SparseOrbital):
     def orthogonal(self):
         """ True if the object is using an orthogonal basis """
         return self._orthogonal
+
+    @property
+    def non_orthogonal(self):
+        """ True if the object is using a non-orthogonal basis """
+        return not self._orthogonal
 
     def __len__(self):
         """ Returns number of rows in the basis (if non-colinear or spin-orbit, twice the number of orbitals) """
@@ -336,6 +331,14 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         pass
 
+    def _Sk_diagonal(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        """ For an orthogonal case we always return the identity matrix """
+        if dtype is None:
+            dtype = np.float64
+        S = csr_matrix((len(self), len(self)), dtype=dtype)
+        S.setdiag(1.)
+        return S.asformat(format)
+
     def _Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
 
@@ -525,6 +528,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # The overlap is the same as non-colinear
             self.Pk = self._Pk_spin_orbit
             self.Sk = self._Sk_non_colinear
+
+        if self.orthogonal:
+            self.Sk = self._Sk_diagonal
 
     # Override to enable spin configuration and orthogonality
     def _cls_kwargs(self):
