@@ -48,8 +48,22 @@ class BrillouinZone(object):
         except:
             self.obj = SuperCell(obj)
 
+        # Gamma point
+        self._k = np.zeros([1, 3], np.float64)
+        self._w = np.ones(1, np.float64)
+
         # Instantiate the array call
         self.array()
+
+    @property
+    def k(self):
+        """ A list of all k-points (if available) """
+        return self._k
+
+    @property
+    def weight(self):
+        """ Weight of the k-points in the `BrillouinZone` object """
+        return self._w
 
     @property
     def cell(self):
@@ -59,18 +73,25 @@ class BrillouinZone(object):
     def rcell(self):
         return self.obj.rcell
 
-    def kb(self, k):
-        """ Return the k-point in reduced coordinates """
+    def tocartesian(self, k):
+        """ Transfer a k-point in reduced coordinates to the Cartesian coordinates
+
+        Parameters
+        ----------
+        k : list of float
+           k-point in reduced coordinates
+        """
+        return dot(self.rcell, k)
+
+    def toreduced(self, k):
+        """ Transfer a k-point in Cartesian coordinates to the reduced coordinates
+
+        Parameters
+        ----------
+        k : list of float
+           k-point in Cartesian coordinates
+        """
         return dot(k, self.cell) * 0.5 / pi
-
-    def k(self, kb):
-        """ Return the k-point in 1/Ang coordinates """
-        return dot(self.rcell, kb)
-
-    @property
-    def weight(self):
-        """ Weight of the k-points in the `BrillouinZone` object """
-        return np.repeat(1. / len(self), len(self))
 
     __attr = None
 
@@ -222,19 +243,20 @@ class BrillouinZone(object):
     def __iter__(self):
         """ Returns all k-points associated with this Brillouin zone object
 
-        The default `BrillouinZone` class only has the Gamma point
+        The default `BrillouinZone` class only has the Gamma point.
         """
-        yield np.zeros([3], np.float64)
+        for k in self.k:
+            yield k
 
     def __len__(self):
-        return 1
+        return len(self._k)
 
 
 class MonkhorstPackBZ(BrillouinZone):
     """ Create a Monkhorst-Pack grid for the Brillouin zone """
 
-    def __init__(self, obj, nkpt, symmetry=True, displacement=None):
-        """ Instantiate the `MonkhorstPackBZ` by a number of points in each direction
+    def __init__(self, obj, nkpt, symmetry=True, displacement=None, size=None):
+        r""" Instantiate the `MonkhorstPackBZ` by a number of points in each direction
 
         Parameters
         ----------
@@ -249,6 +271,12 @@ class MonkhorstPackBZ(BrillouinZone):
            the displacement of the evenly spaced grid, a single floating
            number is the displacement for the 3 directions, else they
            are the individual displacements
+        size : float or array_like of float, optional
+           the size of the Brillouin zone sampled. This reduces the boundaries
+           of the Brillouin zone to the fraction specified. I.e. `size` must
+           be of values :math:`]0 ; 1]`. Default to the entire BZ.
+           Note that this will also reduce the weights such that the weights
+           are normalized to the entire BZ.
         """
         super(MonkhorstPackBZ, self).__init__(obj)
 
@@ -266,37 +294,44 @@ class MonkhorstPackBZ(BrillouinZone):
         elif isinstance(displacement, Real):
             displacement = np.zeros(3, np.float64) + displacement
 
+        if size is None:
+            size = np.ones(3, np.float64)
+        elif isinstance(size, Real):
+            size = np.zeros(3, np.float64) + size
+
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt)
 
-        def link(n, d):
-            return (np.arange(n) * 2 - n + 1) / (2 * n) + d
+        # Correct for 1's where it does not
+        # make sense to reduce the BZ
+        size = np.where(Dn == 1, 1., size)
+
+        def link(n, d, s):
+            return (np.arange(n) * 2 - n + 1) * s / (2 * n) + d
 
         # Now we are ready to create the list of k-points
-        self._kpt = np.empty([np.prod(Dn), 3], np.float64)
-        self._kpt.shape = (Dn[0], Dn[1], Dn[2], 3)
-        self._kpt[..., 0] = link(Dn[0], displacement[0]).reshape(-1, 1, 1)
-        self._kpt[..., 1] = link(Dn[1], displacement[1]).reshape(1, -1, 1)
-        self._kpt[..., 2] = link(Dn[2], displacement[2]).reshape(1, 1, -1)
+        self._k = np.empty([np.prod(Dn), 3], np.float64)
+        self._k.shape = (Dn[0], Dn[1], Dn[2], 3)
+        self._k[..., 0] = link(Dn[0], displacement[0], size[0]).reshape(-1, 1, 1)
+        self._k[..., 1] = link(Dn[1], displacement[1], size[1]).reshape(1, -1, 1)
+        self._k[..., 2] = link(Dn[2], displacement[2], size[2]).reshape(1, 1, -1)
 
         # Return to original shape
-        self._kpt.shape = (-1, 3)
-        self._kpt = np.where(self._kpt > .5, self._kpt - 1, self._kpt)
-        N = len(self._kpt)
-        self._wkpt = np.ones([N], np.float64) / N
-
-    @property
-    def weight(self):
-        """ The weights of the k-points """
-        return self._wkpt
+        self._k.shape = (-1, 3)
+        self._k = np.where(self._k > .5, self._k - 1, self._k)
+        N = len(self._k)
+        # We have to correct for the size of the Brillouin zone
+        self._w = np.ones([N], np.float64) * np.prod(size) / N
 
     def __iter__(self):
-        """ Iterate through the Monkhorst pack-grid """
-        for i in range(len(self)):
-            yield self._kpt[i], self._wkpt[i]
+        """ Iterate through the Monkhorst pack-grid 
 
-    def __len__(self):
-        return len(self._kpt)
+        Yields
+        ------
+        k, w : k-point and associated weight
+        """
+        for i in range(len(self)):
+            yield self._k[i], self._w[i]
 
 
 class PathBZ(BrillouinZone):
@@ -343,7 +378,7 @@ class PathBZ(BrillouinZone):
         if isinstance(division, Integral):
 
             # Calculate points (we need correct units for distance)
-            kpts = [self.k(pnt) for pnt in self.point]
+            kpts = [self.tocartesian(pnt) for pnt in self.point]
             if len(kpts) == 2:
                 dists = [sum(np.diff(kpts, axis=0) ** 2) ** .5]
             else:
@@ -432,7 +467,7 @@ class PathBZ(BrillouinZone):
 
         """
         # Calculate points
-        k = [self.k(pnt) for pnt in self.point]
+        k = [self.tocartesian(pnt) for pnt in self.point]
         dk = np.diff(k, axis=0)
         xtick = np.zeros(len(k), np.float64)
         # Prepare output array

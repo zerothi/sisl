@@ -24,10 +24,10 @@ class TestBrillouinZone(object):
         bz.weight
         bz = BrillouinZone(self.s1)
         assert_equal(len(bz), 1)
-        assert_true(np.allclose(bz.k([0, 0, 0]), [0] * 3))
-        assert_true(np.allclose(bz.k([0.5, 0, 0]), [m.pi, 0, 0]))
-        assert_true(np.allclose(bz.kb([0, 0, 0]), [0] * 3))
-        assert_true(np.allclose([0.5, 0, 0], bz.k(bz.kb([0.5, 0, 0]))))
+        assert_true(np.allclose(bz.tocartesian([0, 0, 0]), [0] * 3))
+        assert_true(np.allclose(bz.tocartesian([0.5, 0, 0]), [m.pi, 0, 0]))
+        assert_true(np.allclose(bz.toreduced([0, 0, 0]), [0] * 3))
+        assert_true(np.allclose([0.5, 0, 0], bz.tocartesian(bz.toreduced([0.5, 0, 0]))))
         for k in bz:
             assert_true(np.allclose(k, np.zeros(3)))
 
@@ -71,7 +71,12 @@ class TestBrillouinZone(object):
         assert_equal(len(bz1), 8)
         bz2 = MonkhorstPackBZ(self.s1, [2] * 3, displacement=[.5] * 3)
         assert_equal(len(bz2), 8)
-        assert_false(np.allclose(bz1._kpt, bz2._kpt))
+        assert_false(np.allclose(bz1.k, bz2.k))
+
+    def test_mp3(self):
+        bz1 = MonkhorstPackBZ(self.s1, [2] * 3, size=0.5)
+        assert_equal(len(bz1), 8)
+        assert_true(np.all(bz1.k < 0.25))
 
     def test_pbz1(self):
         bz = PathBZ(self.s1, [[0]*3, [.5]*3], 300)
