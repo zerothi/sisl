@@ -6,9 +6,7 @@ Library to create/handle geometries and tight-binding parameters in Python. Made
 from __future__ import print_function
 
 if __doc__ is None:
-    __doc__ = """sisl: Creating and handling of geometries.
-
-Enables tight-binding models etc."""
+    __doc__ = """sisl: Generic library for manipulating DFT output, geometries and tight-binding parameter sets"""
 
 DOCLINES = __doc__.split("\n")
 
@@ -71,12 +69,14 @@ metadata = dict(
     name='sisl',
     maintainer="Nick R. Papior",
     maintainer_email="nickpapior@gmail.com",
-    description="Tight-binding models and interfacing the tight-binding transport calculator TBtrans",
-    long_description="""Manipulating with SIESTA output files.
+    description="Tight-binding models (interface to NEGF calculator TBtrans) and generic DFT output handling",
+    long_description="""The sisl toolbox provides a simple API for manipulating, constructing and creating tight-binding matrices
+in a standard and uniform way.
+Secondly, it provides easy interfaces for advanced DFT programs, creating and calculating various
+properties of both DFT and tight-binding Hamiltonians.
 
-Creation of geometries using simple IO interfaces with multiple formats.
-
-Tight-binding models and interfacing the tight-binding transport calculator TBtrans.
+It has high emphasis on its ease of use, low compatibility (pure Python and Cython)
+and the availability of creating input for the tight-binding transport calculator TBtrans (part of DFT SIESTA suite).
 """,
     url="http://github.com/zerothi/sisl",
     download_url="http://github.com/zerothi/sisl/releases",

@@ -1,6 +1,8 @@
 0.8.6
 =====
 
+- Lots of bug-fixes here and there
+
 - Geometry files used in the command-line has updated these arguments:
 
    - tile
@@ -38,6 +40,8 @@
 
   * Changed the DOS retrieval functions to be more flexible. The default is
     now to return the summed DOS across the selected atoms.
+
+  * BEWARE, lots of defaults has changed in this release.
 
 - Hamiltonian.tile is now even faster, only utilizing
   intrinsic numpy array functionality.

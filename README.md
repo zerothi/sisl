@@ -21,7 +21,7 @@ sisl may also be used together with the [ASE][ase] environment.
 
 sisl provides an interface to [TBtrans][tbtrans] and enables the calculation of
 transport using the non-equilibrium Green function method and easily allows calculation of tight-binding
-systems of more than 500,000 atoms.
+systems of millions of atoms.
 
 ## Downloading and installation ##
 
