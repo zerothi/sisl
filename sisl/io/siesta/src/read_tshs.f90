@@ -3,8 +3,8 @@ subroutine read_tshs_version(fname, version)
   implicit none
   
   ! Input parameters
-  character(len=*) :: fname
-  integer :: version
+  character(len=*), intent(in) :: fname
+  integer, intent(out) :: version
 
   ! Define f2py intents
 !f2py intent(in)  :: fname
@@ -33,12 +33,8 @@ subroutine read_tshs_sizes(fname, nspin, na_u, no_u, n_s, nnz)
   implicit none
 
   ! Input parameters
-  character(len=*) :: fname
-  integer :: nspin
-  integer :: na_u
-  integer :: no_u
-  integer :: n_s
-  integer :: nnz
+  character(len=*), intent(in) :: fname
+  integer, intent(out) :: nspin, na_u, no_u, n_s, nnz
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
@@ -90,11 +86,11 @@ subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
   real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
-  character(len=*) :: fname
-  integer :: n_s
-  integer :: nsc(3)
-  real(dp) :: cell(3,3)
-  integer :: isc(3,n_s)
+  character(len=*), intent(in) :: fname
+  integer, intent(in) :: n_s
+  integer, intent(out) :: nsc(3)
+  real(dp), intent(out) :: cell(3,3)
+  integer, intent(out) :: isc(3,n_s)
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
@@ -167,10 +163,10 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
   real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
-  character(len=*) :: fname
-  integer :: na_u
-  real(dp) :: xa(3,na_u)
-  integer :: lasto(0:na_u)
+  character(len=*), intent(in) :: fname
+  integer, intent(in) :: na_u
+  real(dp), intent(out) :: xa(3,na_u)
+  integer, intent(out) :: lasto(0:na_u)
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
@@ -213,7 +209,7 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
 
 end subroutine read_tshs_geom
 
-subroutine read_tshs_es(fname, nspin, no_u, nnz, ncol, list_col, H, S)
+subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
 
   implicit none
   
@@ -223,10 +219,10 @@ subroutine read_tshs_es(fname, nspin, no_u, nnz, ncol, list_col, H, S)
   real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
-  character(len=*) :: fname
-  integer :: nspin, no_u, nnz
-  integer :: ncol(no_u), list_col(nnz)
-  real(dp) :: H(nnz, nspin), S(nnz)
+  character(len=*), intent(in) :: fname
+  integer, intent(in) :: nspin, no_u, nnz
+  integer, intent(out) :: ncol(no_u), list_col(nnz)
+  real(dp), intent(out) :: H(nnz, nspin), S(nnz)
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
@@ -296,5 +292,5 @@ subroutine read_tshs_es(fname, nspin, no_u, nnz, ncol, list_col, H, S)
 
   close(iu)
 
-end subroutine read_tshs_es
+end subroutine read_tshs_hs
 

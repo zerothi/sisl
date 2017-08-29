@@ -3,9 +3,9 @@ subroutine read_hsx_header(fname,Gamma,nspin,no_u,no_s,maxnh)
   implicit none
 
   ! Input parameters
-  character(len=*) :: fname
-  logical :: Gamma
-  integer :: no_u, no_s, nspin, maxnh
+  character(len=*), intent(in) :: fname
+  logical, intent(out) :: Gamma
+  integer, intent(out) :: no_u, no_s, nspin, maxnh
   
 ! Define f2py intents
 !f2py intent(in)  :: fname
@@ -40,11 +40,11 @@ subroutine read_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
   real(sp), parameter :: Ang = 0.529177_sp
 
   ! Input parameters
-  character(len=*) :: fname
-  logical :: Gamma
-  integer :: no_u, no_s, nspin, maxnh
-  integer :: listh(maxnh), numh(no_u), listhptr(no_u)
-  real(sp) :: H(maxnh,nspin), S(maxnh), xij(3,maxnh)
+  character(len=*), intent(in) :: fname
+  logical, intent(in) :: Gamma
+  integer, intent(in) :: no_u, no_s, nspin, maxnh
+  integer, intent(out) :: listh(maxnh), numh(no_u), listhptr(no_u)
+  real(sp), intent(out) :: H(maxnh,nspin), S(maxnh), xij(3,maxnh)
   
 ! Define f2py intents
 !f2py intent(in) :: fname

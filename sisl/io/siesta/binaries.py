@@ -29,9 +29,7 @@ class TSHSSileSiesta(SileBinSiesta):
     """ TranSIESTA file object """
 
     def read_supercell(self):
-        """ Returns a SuperCell object from a siesta.TSHS file
-        """
-
+        """ Returns a SuperCell object from a siesta.TSHS file """
         n_s = _siesta.read_tshs_sizes(self.file)[3]
         arr = _siesta.read_tshs_cell(self.file, n_s)
         nsc = np.array(arr[0].T, np.int32)
@@ -94,7 +92,7 @@ class TSHSSileSiesta(SileBinSiesta):
         spin = sizes[0]
         no = sizes[2]
         nnz = sizes[4]
-        ncol, col, dH, dS = _siesta.read_tshs_es(self.file, spin, no, nnz)
+        ncol, col, dH, dS = _siesta.read_tshs_hs(self.file, spin, no, nnz)
 
         # Create the Hamiltonian container
         H = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)

@@ -9,9 +9,9 @@ subroutine read_grid_sizes(fname, nspin, mesh)
   real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
-  character(len=*) :: fname
-  integer :: nspin
-  integer :: mesh(3)
+  character(len=*), intent(in) :: fname
+  integer, intent(out) :: nspin
+  integer, intent(out) :: mesh(3)
 
 ! Define f2py intents
 !f2py intent(in) :: fname
@@ -43,8 +43,8 @@ subroutine read_grid_cell(fname, cell)
   real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
-  character(len=*) :: fname
-  real(dp) :: cell(3,3)
+  character(len=*), intent(in):: fname
+  real(dp), intent(out) :: cell(3,3)
   
 ! Define f2py intents
 !f2py intent(in) :: fname
@@ -80,12 +80,8 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
   
 ! Define f2py intents
 !f2py intent(in) :: fname
-!f2py intent(in) :: nspin
-!f2py intent(in) :: mesh1
-!f2py intent(in) :: mesh2
-!f2py intent(in) :: mesh3
-!f2py intent(out) :: cell
-!f2py intent(out) :: grid
+!f2py intent(in) :: nspin, mesh1, mesh2, mesh3
+!f2py intent(out) :: cell, grid
 
 ! Internal variables and arrays
   integer :: iu
