@@ -97,6 +97,10 @@ class TestAtom(object):
     def test12(self):
         a = Atom(1.2)
 
+    def test_tag1(self):
+        a = Atom(6, tag='my-tag')
+        assert_true(a.tag == 'my-tag')
+
     def test_pickle(self):
         import pickle as p
         sC = p.dumps(self.C)
@@ -129,7 +133,8 @@ class TestAtoms(object):
         atom3 = Atoms(['C', 6, 'Au'])
         atom4 = Atoms(['Au', 6, 'C'])
         assert_true(atom2 == atom3)
-        assert_true(atom2 == atom4)
+        assert_false(atom2 == atom4)
+        assert_true(atom2.hassame(atom4))
 
     def test_create2(self):
         atom = Atoms(Atom(6, R=1.45), na=2)
@@ -184,6 +189,28 @@ class TestAtoms(object):
         assert_true(len(atom.atom) == 2)
         atom[1:4] = Atom('C')
         assert_true(len(atom.atom) == 2)
+
+    def test_append1(self):
+        # Add new atoms to the set
+        atom1 = Atoms(['C', 'C'])
+        assert_true(atom1[0] == Atom('C'))
+        assert_true(atom1[1] == Atom('C'))
+        atom2 = Atoms([Atom('C', tag='DZ'), Atom[6]])
+        assert_true(atom2[0] == Atom('C', tag='DZ'))
+        assert_true(atom2[1] == Atom('C'))
+
+        atom = atom1.append(atom2)
+        assert_true(atom[0] == Atom('C'))
+        assert_true(atom[1] == Atom('C'))
+        assert_true(atom[2] == Atom('C', tag='DZ'))
+        assert_true(atom[3] == Atom('C'))
+
+    def test_compare1(self):
+        # Add new atoms to the set
+        atom1 = Atoms([Atom('C', tag='DZ'), Atom[6]])
+        atom2 = Atoms([Atom[6], Atom('C', tag='DZ')])
+        assert_true(atom1.hassame(atom2))
+        assert_false(atom1.equal(atom2))
 
     def test_in1(self):
         # Add new atoms to the set

@@ -1084,7 +1084,7 @@ class Atom(with_metaclass(AtomMeta, object)):
             return False
         same = self.Z == other.Z
         same &= self.orbs == other.orbs
-        same &= self.mass == other.mass
+        same &= np.isclose(self.mass, other.mass)
         same &= self.tag == other.tag
         # This prevents an allclose being called with
         # different number of orbitals
@@ -1372,12 +1372,12 @@ class Atoms(object):
         atoms = self.copy()
         spec = np.copy(other._specie)
         for i, atom in enumerate(other.atom):
-            if atom not in atoms:
+            try:
+                s = atoms.index(atom)
+            except KeyError as e:
                 s = len(atoms.atom)
                 atoms._atom.append(atom)
-            else:
-                s = atoms.index(atom)
-            spec = np.where(spec == i, s, spec)
+            spec = np.where(other._specie == i, s, spec)
         atoms._specie = np.concatenate((atoms._specie, spec))
         return atoms
 
@@ -1473,7 +1473,7 @@ class Atoms(object):
                 self._atom.append(atom)
             self._specie[key[s_i]] = self.index(atom)
 
-    def equal(self, other, R=True):
+    def hassame(self, other, R=True):
         """ True if the contained atoms are the same in the two lists
 
         Notes
@@ -1487,19 +1487,68 @@ class Atoms(object):
            the list of atoms to check against
         R : bool, optional
            if True also checks that the orbital radius are the same
+
+        See Also
+        --------
+        equal : explicit check of the indices *and* the contained atoms
         """
+        if len(self.atom) != len(other.atom):
+            return False
         for A in self.atom:
+            is_in = False
             for B in other.atom:
-                if not A.equal(B, R):
+                if A.equal(B, R):
+                    is_in = True
+                    break
+            if not is_in:
+                return False
+        return True
+
+    def equal(self, other, R=True):
+        """ True if the contained atoms are the same in the two lists (also checks indices)
+
+        Parameters
+        ----------
+        other : Atoms
+           the list of atoms to check against
+        R : bool, optional
+           if True also checks that the orbital radius are the same
+
+        See Also
+        --------
+        hassame : only check whether the two atoms are contained in both
+        """
+        if len(self.atom) > len(other.atom):
+            for iA, A in enumerate(self.atom):
+                is_in = -1
+                for iB, B in enumerate(other.atom):
+                    if A.equal(B, R):
+                        is_in = iB
+                        break
+                if is_in == -1:
+                    return False
+                # We should check that they also have the same indices
+                if not np.all(np.nonzero(self.specie == iA)[0] \
+                              == np.nonzero(other.specie == is_in)[0]):
+                    return False
+        else:
+            for iB, B in enumerate(other.atom):
+                is_in = -1
+                for iA, A in enumerate(self.atom):
+                    if B.equal(A, R):
+                        is_in = iA
+                        break
+                if is_in == -1:
+                    return False
+                # We should check that they also have the same indices
+                if not np.all(np.nonzero(other.specie == iB)[0] \
+                              == np.nonzero(self.specie == is_in)[0]):
                     return False
         return True
 
     def __eq__(a, b):
         """ Returns true if the contained atoms are the same """
-        for atom in a.atom:
-            if atom not in b:
-                return False
-        return True
+        return a.equal(b)
 
     # Create pickling routines
     def __getstate__(self):
