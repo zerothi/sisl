@@ -400,6 +400,28 @@ class SparseGeometry(object):
         """
         pass
 
+    def swap(self, a, b):
+        """ Swaps atoms in the sparse geometry to obtain a new order of atoms
+
+        This can be used to reorder elements of a geometry.
+
+        Parameters
+        ----------
+        a : array_like
+             the first list of atomic coordinates
+        b : array_like
+             the second list of atomic coordinates
+        """
+        a = ensure_array(a)
+        b = ensure_array(b)
+        # Create full index list
+        full = n_.arangei(len(self.geom))
+        # Regardless of whether swapping or new indices are requested
+        # this should work.
+        full[a] = b
+        full[b] = a
+        return self.sub(full)
+
     def finalize(self):
         """ Finalizes the model
 
