@@ -243,9 +243,8 @@ class SparseCSR(object):
         # Denote that this sparsity pattern hasn't been finalized
         self._finalized = False
 
-    @classmethod
-    def diags(cls, diagonals, offsets=0, shape=None, dtype=None):
-        """ Create a `SparseCSR` with diagonal elements
+    def diags(self, diagonals, offsets=0, dim=None, dtype=None):
+        """ Create a `SparseCSR` with diagonal elements with the same shape as the routine
 
         Parameters
         ----------
@@ -254,29 +253,33 @@ class SparseCSR(object):
         offsets : scalar or array_like
            the offsets from the diagonal for each of the components (defaults
            to the diagonal)
-        shape : tuple or list of int
-           matrix dimensions, if un-specified the size will be a square matrix
-           with size ``len(diagonals)``
+        dim : int, optional
+           the extra dimension of the new diagonal matrix (default to the current
+           extra dimension)
         dtype : numpy.dtype, optional
            the data-type to create (default to ``numpy.float64``)
         """
-        if shape is None:
-            shape = (len(diagonals), len(diagonals), 1)
+        if dim is None:
+            dim = self.shape[2]
+        if dtype is None:
+            dtype = self.dtype
 
         # Now create the sparse matrix
-        S = cls(shape, dtype=dtype)
+        shape = list(self.shape)
+        shape[2] = dim
+        shape = tuple(shape)
 
-        # Get default dtype from the sparse matrix
-        dtype = S.dtype
+        # Delete the last entry, regardless of the size, the diagonal
+        D = self.__class__(shape, dtype=dtype)
 
-        diagonals = array_fill_repeat(diagonals, shape[0], cls=dtype)
-        offsets = array_fill_repeat(offsets, shape[0], cls=dtype)
+        diagonals = array_fill_repeat(diagonals, D.shape[0], cls=dtype)
+        offsets = array_fill_repeat(offsets, D.shape[0], cls=dtype)
 
         # Create diagonal elements
-        for i in range(S.shape[0]):
-            S[i, i + offsets[i]] = diagonals[i]
+        for i in range(D.shape[0]):
+            D[i, i + offsets[i]] = diagonals[i]
 
-        return S
+        return D
 
     def empty(self, keep=False):
         """ Delete all sparse information from the sparsity pattern
@@ -928,7 +931,11 @@ class SparseCSR(object):
 
         else:
             # Ensure correct shape
-            data.shape = (-1, self.shape[2])
+            if data.ndim == 0:
+                data = np.array([data])
+                data.shape = (1, 1)
+            else:
+                data.shape = (-1, self.shape[2])
 
             # Now there are two cases
             if data.shape[0] == 1:

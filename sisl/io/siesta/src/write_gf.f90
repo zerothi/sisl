@@ -11,7 +11,7 @@ subroutine open_gf( fname, iu )
   
   ! Open file
   call free_unit(iu)
-  open( iu, file=trim(fname), form='unformatted', status='new' )
+  open( iu, file=trim(fname), form='unformatted', status='unknown', action='write' )
   
 end subroutine open_gf
 

@@ -110,6 +110,52 @@ class TSHSSileSiesta(SileBinSiesta):
 
         return H
 
+    def write_hamiltonian(self, H, **kwargs):
+        """ Writes the Hamiltonian to a `TSHS` file """
+        # Ensure the Hamiltonian is finalized
+        H.finalize()
+
+        Ang2Bohr = unit_convert('Ang', 'Bohr')
+        eV2Ry = unit_convert('eV', 'Ry')
+
+        # Extract the data to pass to the fortran routine
+
+        cell = H.geom.cell * Ang2Bohr
+        xyz = H.geom.xyz * Ang2Bohr
+
+        # Pointer to CSR matrix
+        csr = H._csr
+
+        # Get H and S
+        if H.orthogonal:
+            h = csr._D * eV2Ry
+            s = csr.diags(1., dim=1)
+            # Ensure all data is correctly formatted (i.e. have the same sparsity pattern
+            s.align(csr)
+            s.finalize()
+            if s.nnz != len(h):
+                raise ValueError(("The diagonal elements of your orthogonal Hamiltonian have not been defined, "
+                                  "this is a requirement."))
+            s = s._D[:, 0]
+        else:
+            h = csr._D[:, :H.S_idx-1] * eV2Ry
+            s = csr._D[:, H.S_idx]
+        # Ensure shapes (say if only 1 spin)
+        h.shape = (-1, len(H.spin))
+        s.shape = (-1,)
+
+        # Get shorter variants
+        nsc = H.geom.nsc[:]
+        isc = H.geom.sc.sc_off[:, :]
+
+        # I can't seem to figure out the usage of f2py
+        # Below I get an error if xyz is not transposed and h is transposed,
+        # however, they are both in C-contiguous arrays and this is indeed weird... :(
+        _siesta.write_tshs_hs(self.file, nsc[0], nsc[1], nsc[2],
+                              cell.T, xyz.T, H.geom.firsto,
+                              csr.ncol, csr.col + 1, h, s, isc.T,
+                              nspin=len(H.spin), na_u=H.geom.na, no_u=H.geom.no, nnz=H.nnz)
+
 
 class GridSileSiesta(SileBinSiesta):
     """ Grid file object from a binary Siesta output file """
@@ -122,15 +168,23 @@ class GridSileSiesta(SileBinSiesta):
         cell = np.array(cell.T, np.float64)
         cell.shape = (3, 3)
 
-        SC = SuperCell(cell)
-        return SC
+        return SuperCell(cell)
 
-    def read_grid(self, *args, **kwargs):
-        """ Read grid contained in the Grid file """
+    def read_grid(self, spin=0, *args, **kwargs):
+        """ Read grid contained in the Grid file
+
+        Parameters
+        ----------
+        spin : int, optional
+           the returned spin
+        """
         # Read the sizes
         nspin, mesh = _siesta.read_grid_sizes(self.file)
         # Read the cell and grid
         cell, grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
+
+        if grid.ndim == 4:
+            grid = grid[spin, :, :, :]
 
         cell = np.array(cell.T, np.float64)
         cell.shape = (3, 3)

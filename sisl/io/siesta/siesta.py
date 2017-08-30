@@ -169,10 +169,17 @@ class ncSileSiesta(SileCDFSiesta):
 
         return grids
 
-    def read_grid(self, name, idx=0):
+    def read_grid(self, name, spin=0):
         """ Reads a grid in the current SIESTA.nc file
 
         Enables the reading and processing of the grids created by SIESTA
+
+        Parameters
+        ----------
+        name : str
+           name of the grid variable to read
+        spin : int
+           the spin-index
         """
         # Swap as we swap back in the end
         geom = self.read_geometry().swapaxes(0, 2)
@@ -194,7 +201,7 @@ class ncSileSiesta(SileCDFSiesta):
         if len(v[:].shape) == 3:
             grid.grid = v[:, :, :]
         else:
-            grid.grid = v[idx, :, :, :]
+            grid.grid = v[spin, :, :, :]
 
         try:
             u = v.unit

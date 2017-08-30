@@ -25,7 +25,7 @@ subroutine write_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
 
 ! Open file
   call free_unit(iu)
-  open( iu, file=trim(fname), form='unformatted', status='unknown' )      
+  open( iu, file=trim(fname), form='unformatted', status='unknown', action='write' )
   
 ! Write overall data
   write(iu) no_u, no_s, nspin, maxnh

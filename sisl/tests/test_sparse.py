@@ -109,14 +109,36 @@ class TestSparseCSR(object):
         assert_true(np.allclose(csr[0, [0, 1, 2]], [0, 1, 2]))
 
     def test_diag1(self):
-        csr = SparseCSR.diags(10, shape=(10, 11))
-        assert_equal(csr.shape[0], 10)
-        assert_equal(csr.shape[1], 11)
-        assert_equal(csr.nnz, 10)
-        csr0 = SparseCSR.diags(10, shape=(10, 10))
-        csr1 = SparseCSR.diags(np.zeros(10, np.int32))
-        assert_true(csr0.spsame(csr1))
-        assert_false(csr.spsame(csr1))
+        csr = SparseCSR((10, 10), nnzpr=1, dtype=np.int32)
+        csr1 = csr.diags(10)
+        assert_equal(csr1.shape[0], 10)
+        assert_equal(csr1.shape[1], 10)
+        assert_equal(csr1.shape[2], 1)
+        assert_equal(csr1.nnz, 10)
+        csr2 = csr.diags(10)
+        csr3 = csr.diags(np.zeros(10, np.int32))
+        assert_true(csr2.spsame(csr3))
+
+    def test_diag2(self):
+        csr = SparseCSR((10, 10), dim=3, nnzpr=1, dtype=np.int32)
+        csr1 = csr.diags(10, dim=1)
+        csr2 = csr.diags(10, dim=2)
+        assert_equal(csr1.shape[2], 1)
+        assert_equal(csr2.shape[2], 2)
+        assert_equal(csr1.nnz, 10)
+        assert_equal(csr2.nnz, 10)
+        assert_true(csr1.spsame(csr2))
+
+    def test_diag3(self):
+        csr = SparseCSR((10, 10), dim=3, nnzpr=1, dtype=np.int32)
+        csr1 = csr.diags(10, dim=1, dtype=np.int16)
+        csr2 = csr.diags(10, dim=2, dtype=np.float64)
+        assert_equal(csr1.shape[2], 1)
+        assert_equal(csr2.shape[2], 2)
+        assert_equal(csr1.nnz, 10)
+        assert_equal(csr2.nnz, 10)
+        assert_equal(csr1.dtype, np.int16)
+        assert_equal(csr2.dtype, np.float64)
 
     def test_create1(self):
         self.s1d[0, [1, 2, 3]] = 1
