@@ -32,7 +32,7 @@ from numbers import Integral
 import numpy as np
 
 from ._help import array_fill_repeat, ensure_array, _str
-import sisl._numpy as n_
+import sisl._numpy_scipy as ns_
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
@@ -1460,7 +1460,7 @@ class Atoms(object):
         # Convert to array
         if isinstance(key, slice):
             sl = key.indices(len(self))
-            key = n_.arangei(sl[0], sl[1], sl[2])
+            key = ns_.arangei(sl[0], sl[1], sl[2])
         else:
             key = ensure_array(key)
 
