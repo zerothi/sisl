@@ -4,10 +4,11 @@ Self-energy class for calculating self-energies.
 from __future__ import print_function, division
 
 import warnings
+from functools import partial
 
 import numpy as np
 from numpy import dot
-from scipy.linalg import solve
+import sisl._numpy_scipy as ns_
 
 __all__ = ['SelfEnergy', 'SemiInfinite']
 __all__ += ['RecursiveSI']
@@ -58,9 +59,9 @@ class SemiInfinite(SelfEnergy):
         """
         self.eta = eta
         if bloch is None:
-            self.bloch = np.ones([3], np.int16)
+            self.bloch = np.ones([3], np.int32)
         else:
-            self.bloch = np.array(bloch, np.int16)
+            self.bloch = np.array(bloch, np.int32)
 
         # Determine whether we are in plus/minus direction
         if infinite.startswith('+'):
@@ -68,7 +69,7 @@ class SemiInfinite(SelfEnergy):
         elif infinite.startswith('-'):
             self.semi_inf_dir = -1
         else:
-            raise ValueError("SemiInfinite: infinite keyword does not start with `+` or `-`.")
+            raise ValueError(self.__class__.__name__ + ": infinite keyword does not start with `+` or `-`.")
 
         # Determine the direction
         INF = infinite.upper()
@@ -81,8 +82,8 @@ class SemiInfinite(SelfEnergy):
 
         # Check that the Hamiltonian does have a non-zero V along the semi-infinite direction
         if spgeom.geom.sc.nsc[self.semi_inf] == 1:
-            raise ValueError(("SemiInfinite: SparseGeometry does not have couplings along the "
-                              "semi-infinite direction."))
+            warnings.warn('Creating a semi-infinite self-energy with no couplings along the semi-infinite direction',
+                          UserWarning)
 
         # Finalize the setup by calling the class specific routine
         self._setup(spgeom)
@@ -90,9 +91,9 @@ class SemiInfinite(SelfEnergy):
     def _correct_k(self, k=None):
         """ Return a corrected k-point
 
-        Note
-        ----
-        This is strictly not required because any k along the semi-infinite direction
+        Notes
+        -----
+        This is strictly not required because any `k` along the semi-infinite direction
         is *integrated* out and thus the self-energy is the same for all k along the
         semi-infinite direction.
         """
@@ -111,7 +112,7 @@ class RecursiveSI(SemiInfinite):
         """ Setup the Lopez-Sancho internals for easy axes """
 
         # Create spgeom0 and spgeom1
-        self.spgeom0 = orig.copy()
+        self.spgeom0 = spgeom.copy()
         nsc = np.copy(self.geom.sc.nsc)
         nsc[self.semi_inf] = 1
         self.spgeom0.set_nsc(nsc)
@@ -138,7 +139,7 @@ class RecursiveSI(SemiInfinite):
                         n_.arrayi(spgeom.geom.sc.sc_index(nsc)))
 
         cols = array_arange(idx * n, (idx + 1) * n)
-        # Delete all values in columns, but keep them to retain
+        # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep=True)
 
     def __call__(self, E, k=None, eta=None, dtype=None, eps=1e-14):
@@ -178,36 +179,29 @@ class RecursiveSI(SemiInfinite):
               'format': 'array'}
         def herm(m):
             return np.transpose(np.conjugate(m))
-        try:
-            if sp0.orthogonal:
-                raise AttributeError('pass')
-            # non-orthogonal case
-            GB = sp0.Sk(k, **kw) * E - sp0.Pk(k, **kw)
 
-            M = sp1.Pk(k, dtype=dtype)
-            S = sp1.Sk(k, dtype=dtype)
-            alpha = (M - S * E).asformat('array')
-            beta  = (M.getH() - S.getH() * E).asformat('array')
-            del M, S
-        except AttributeError:
-            # Bulk Green function
-            GB = - sp0.Pk(k, **kw)
-            GB += np.eye(len(GB), dtype=dtype) * E
+        # As the SparseGeometry inherently works for
+        # orthogonal and non-orthogonal basis, there is no
+        # need to have two algorithms.
+        GB = sp0.Sk(k, **kw) * E - sp0.Pk(k, **kw)
 
-            # The two forward/backward arrays (orthogonal basis-set)
-            alpha = sp1.Pk(k, **kw)
-            beta = alpha.transpose().conj().copy()
+        M = sp1.Pk(k, dtype=dtype)
+        S = sp1.Sk(k, dtype=dtype)
+        alpha = (M - S * E).asformat('array')
+        beta  = (M.getH() - S.getH() * E).asformat('array')
+        del M, S
 
         # Surface Green function (self-energy)
         GS = np.zeros_like(GB)
+
+        solve = ns_.solve
 
         i = 0
         while True:
             i += 1
 
-            # Do not allow overwrite
-            tA = solve(GB, alpha, overwrite_a=False, overwrite_b=False)
-            tB = solve(GB, beta, overwrite_a=False, overwrite_b=False)
+            tA = solve(GB, alpha)
+            tB = solve(GB, beta)
 
             tmp = dot(alpha, tB)
             # Update surface self-energy
@@ -224,4 +218,4 @@ class RecursiveSI(SemiInfinite):
                 # Return the pristine Green function
                 return GS
 
-        raise ValueError('SemiInfinite: could not converge self-energy calculation')
+        raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')

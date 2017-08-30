@@ -19,11 +19,12 @@ from numbers import Integral, Real
 from six import string_types
 from math import acos
 from itertools import product
+from functools import partial
 
 import numpy as np
 
 import sisl.plot as plt
-import sisl._numpy as n_
+import sisl._numpy_scipy as ns_
 from ._help import _str
 from ._help import _range as range
 from ._help import ensure_array, ensure_dtype
@@ -869,7 +870,7 @@ class Geometry(SuperCellChild):
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
-        atom = np.delete(n_.arangei(self.na), atom)
+        atom = np.delete(ns_.arangei(self.na), atom)
         return self.sub(atom)
 
     def tile(self, reps, axis):
@@ -1573,7 +1574,7 @@ class Geometry(SuperCellChild):
     @property
     def fxyz(self):
         """ Returns geometry coordinates in fractional coordinates """
-        return np.linalg.solve(self.cell.T, self.xyz.T).T
+        return ns_.solve(self.cell.T, self.xyz.T).T
 
     def axyz(self, atom=None, isc=None):
         """ Return the atomic coordinates in the supercell of a given atom.
@@ -1933,7 +1934,8 @@ class Geometry(SuperCellChild):
         # than our delta-R
         # The linear algebra norm function could be used, but it
         # has a lot of checks, hence we do it manually
-        #xaR = np.linalg.norm(dxa,axis=-1)
+        # xaR = np.linalg.norm(dxa,axis=-1)
+
         # It is faster to do a single multiplacation than
         # a sqrt of MANY values
         # After having reduced the dxa array, we may then

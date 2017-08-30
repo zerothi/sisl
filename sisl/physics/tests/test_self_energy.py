@@ -36,14 +36,6 @@ class TestSelfEnergy(object):
         del self.H
         del self.HS
 
-    @raises(ValueError)
-    def test_error1(self):
-        SE = SemiInfinite(self.H, '+C')
-
-    @raises(ValueError)
-    def test_error2(self):
-        SE = SemiInfinite(self.H, '-C')
-
     def test_objects(self):
         for D, si, sid in [('+A', 0, 1),
                            ('-A', 0, -1),

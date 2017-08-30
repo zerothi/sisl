@@ -22,7 +22,8 @@ from sisl.physics import Hamiltonian
 
 
 __all__ = ['TSHSSileSiesta']
-__all__ += ['rhoSileSiesta', 'vSileSiesta']
+__all__ += ['GridSileSiesta', 'EnergyGridSileSiesta']
+__all__ += ['TSGFSileSiesta', 'TBTGFSileSiesta']
 
 
 class TSHSSileSiesta(SileBinSiesta):
@@ -160,7 +161,8 @@ class TSHSSileSiesta(SileBinSiesta):
 class GridSileSiesta(SileBinSiesta):
     """ Grid file object from a binary Siesta output file """
 
-    grid_unit = 1.
+    def _setup(self, *args, **kwargs):
+        self.grid_unit = 1.
 
     def read_supercell(self, *args, **kwargs):
 
@@ -194,23 +196,70 @@ class GridSileSiesta(SileBinSiesta):
         return g
 
 
-class rhoSileSiesta(GridSileSiesta):
-    """ .*RHO* file object from a binary Siesta output file """
-    grid_unit = 1.
+class EnergyGridSileSiesta(GridSileSiesta):
+    """ Energy grid file object from a binary Siesta output file """
+
+    def _setup(self, *args, **kwargs):
+        self.grid_unit = unit_convert('Ry', 'eV')
 
 
-class vSileSiesta(GridSileSiesta):
-    """ .V* file object from a binary Siesta output file """
-    grid_unit = unit_convert('Ry', 'eV')
+class _GFSileSiesta(SileBinSiesta):
+    """ Surface Green function file for inclusion in TranSiesta and TBtrans """
 
+    def _setup(self, *args, **kwargs):
+        """ Simple setup that needs to be overwritten """
+        self._iu = -1
+
+    def _is_open(self):
+        return self._iu > 0
+
+    def _open_gf(self):
+        self._iu = _siesta.open_gf(self.file)
+
+    def write_se_header(self, spgeom):
+        pass
+
+    def write_se(self, spin=0, *args, **kwargs):
+        """ Read grid contained in the Grid file
+
+        Parameters
+        ----------
+        spin : int, optional
+           the returned spin
+        """
+        # Read the sizes
+        nspin, mesh = _siesta.read_grid_sizes(self.file)
+        # Read the cell and grid
+        cell, grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
+
+        if grid.ndim == 4:
+            grid = grid[spin, :, :, :]
+
+        cell = np.array(cell.T, np.float64)
+        cell.shape = (3, 3)
+
+        g = Grid(mesh, sc=SuperCell(cell), dtype=np.float32)
+        g.grid = np.array(grid.swapaxes(0, 2), np.float32) * self.grid_unit
+        return g
+
+
+def _type(name, obj):
+    return type(name, (obj, ), {})
+
+# Faster than class ... \ pass
+TSGFSileSiesta = _type("TSGFSileSiesta", _GFSileSiesta)
+TBTGFSileSiesta = _type("TBTGFSileSiesta", _GFSileSiesta)
 
 if found_module:
     add_sile('TSHS', TSHSSileSiesta)
-    add_sile('RHO', rhoSileSiesta)
-    add_sile('RHOINIT', rhoSileSiesta)
-    add_sile('DRHO', rhoSileSiesta)
-    add_sile('IOCH', rhoSileSiesta)
-    add_sile('TOCH', rhoSileSiesta)
-    add_sile('VH', vSileSiesta)
-    add_sile('VNA', vSileSiesta)
-    add_sile('VT', vSileSiesta)
+    add_sile('RHO', _type("RhoSileSiesta", GridSileSiesta))
+    add_sile('RHOINIT', _type("RhoInitSileSiesta", GridSileSiesta))
+    add_sile('DRHO', _type("dRhoSileSiesta", GridSileSiesta))
+    add_sile('IOCH', _type("IoRhoSileSiesta", GridSileSiesta))
+    add_sile('TOCH', _type("TotalRhoSileSiesta", GridSileSiesta))
+    add_sile('VH', _type("HartreeSileSiesta", EnergyGridSileSiesta))
+    add_sile('VNA', _type("NeutralAtomHartreeSileSiesta", EnergyGridSileSiesta))
+    add_sile('VT', _type("TotalHartreeSileSiesta", EnergyGridSileSiesta))
+
+    add_sile('TSGF', TSGFSileSiesta)
+    add_sile('TBTGF', TBTGFSileSiesta)

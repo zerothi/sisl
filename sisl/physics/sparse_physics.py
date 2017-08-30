@@ -7,10 +7,9 @@ import warnings
 
 from numpy import dot
 import numpy as np
-import scipy.linalg as sli
 from scipy.sparse import csr_matrix, diags, SparseEfficiencyWarning
-import scipy.sparse.linalg as ssli
 
+import sisl._numpy_scipy as ns_
 from sisl._help import _range as range
 from sisl.selector import TimeSelector
 from sisl.sparse import isspmatrix, ispmatrixd
@@ -353,10 +352,8 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def eigh(self, k=(0, 0, 0),
-             atoms=None, gauge='R', eigvals_only=True,
-             overwrite_a=True, overwrite_b=True,
-             *args, **kwargs):
+    def eigh(self, k=(0, 0, 0), atoms=None, gauge='R',
+             eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
 
         Setup the system and overlap matrix with respect to
@@ -372,9 +369,7 @@ class SparseOrbitalBZ(SparseOrbital):
             eig = np.empty([len(k), len(self)], np.float64)
             for i, k_ in enumerate(k):
                 eig[i, :] = self.eigh(k_, atoms=atoms, gauge=gauge,
-                                      eigvals_only=eigvals_only,
-                                      overwrite_a=overwrite_a, overwrite_b=overwrite_b,
-                                      *args, **kwargs)
+                                      eigvals_only=eigvals_only, **kwargs)
             return eig
 
         if atoms is None:
@@ -394,22 +389,12 @@ class SparseOrbitalBZ(SparseOrbital):
                 S = S[orbs, orbs].toarray()
 
         if self.orthogonal:
-            return sli.eigh(P,
-                *args,
-                eigvals_only=eigvals_only,
-                overwrite_a=overwrite_a,
-                **kwargs)
+            return ns_.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
 
-        return sli.eigh(P, S,
-            *args,
-            eigvals_only=eigvals_only,
-            overwrite_a=overwrite_a,
-            overwrite_b=overwrite_b,
-            **kwargs)
+        return ns_.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
-    def eigsh(self, k=(0, 0, 0), n=10,
-              atoms=None, gauge='R', eigvals_only=True,
-              *args, **kwargs):
+    def eigsh(self, k=(0, 0, 0), n=10, atoms=None, gauge='R',
+              eigvals_only=True, **kwargs):
         """ Calculates a subset of eigenvalues of the physical quantity  (default 10)
 
         Setup the quantity and overlap matrix with respect to
@@ -424,10 +409,8 @@ class SparseOrbitalBZ(SparseOrbital):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), n], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigsh(k_, n=n,
-                                       atoms=atoms, gauge=gauge,
-                                       eigvals_only=eigvals_only,
-                                       *args, **kwargs)
+                eig[i, :] = self.eigsh(k_, n=n, atoms=atoms, gauge=gauge,
+                                       eigvals_only=eigvals_only, **kwargs)
             return eig
 
         # We always request the smallest eigenvalues...
@@ -443,10 +426,7 @@ class SparseOrbitalBZ(SparseOrbital):
             # Reduce space
             P = P[orbs, orbs]
 
-        return ssli.eigsh(P, k=n,
-                          *args,
-                          return_eigenvectors=not eigvals_only,
-                          **kwargs)
+        return ns_.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
 
 class SparseOrbitalBZSpin(SparseOrbitalBZ):
@@ -1044,10 +1024,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         # It must be a sparse matrix we inquire
         return csr_matrix(S).asformat(format)
 
-    def eigh(self, k=(0, 0, 0),
-             atoms=None, gauge='R', eigvals_only=True,
-             overwrite_a=True, overwrite_b=True,
-             *args, **kwargs):
+    def eigh(self, k=(0, 0, 0), atoms=None, gauge='R',
+             eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
 
         Setup the system and overlap matrix with respect to
@@ -1063,9 +1041,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             eig = np.empty([len(k), len(self)], np.float64)
             for i, k_ in enumerate(k):
                 eig[i, :] = self.eigh(k_, atoms=atoms, gauge=gauge,
-                                      eigvals_only=eigvals_only,
-                                      overwrite_a=overwrite_a, overwrite_b=overwrite_b,
-                                      *args, **kwargs)
+                                      eigvals_only=eigvals_only, **kwargs)
             return eig
 
         if atoms is None:
@@ -1090,22 +1066,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 S = self.Sk(k=k, gauge=gauge)[orbs, orbs].toarray()
 
         if self.orthogonal:
-            return sli.eigh(P,
-                *args,
-                eigvals_only=eigvals_only,
-                overwrite_a=overwrite_a,
-                **kwargs)
+            return ns_.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
 
-        return sli.eigh(P, S,
-            *args,
-            eigvals_only=eigvals_only,
-            overwrite_a=overwrite_a,
-            overwrite_b=overwrite_b,
-            **kwargs)
+        return ns_.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
-    def eigsh(self, k=(0, 0, 0), n=10,
-              atoms=None, gauge='R', eigvals_only=True,
-              *args, **kwargs):
+    def eigsh(self, k=(0, 0, 0), n=10, atoms=None, gauge='R',
+              eigvals_only=True, **kwargs):
         """ Calculates a subset of eigenvalues of the physical quantity  (default 10)
 
         Setup the quantity and overlap matrix with respect to
@@ -1120,10 +1086,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), n], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigsh(k_, n=n,
-                                       atoms=atoms, gauge=gauge,
-                                       eigvals_only=eigvals_only,
-                                       *args, **kwargs)
+                eig[i, :] = self.eigsh(k_, n=n, atoms=atoms, gauge=gauge,
+                                       eigvals_only=eigvals_only, **kwargs)
             return eig
 
         # We always request the smallest eigenvalues...
@@ -1142,7 +1106,4 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # Reduce space
             P = P[orbs, orbs]
 
-        return ssli.eigsh(P, k=n,
-                          *args,
-                          return_eigenvectors=not eigvals_only,
-                          **kwargs)
+        return ns_.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
