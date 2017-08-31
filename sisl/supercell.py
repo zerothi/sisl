@@ -4,6 +4,7 @@ This class is the basis of many different objects.
 """
 from __future__ import print_function, division
 
+import math
 import numpy as np
 from numbers import Integral
 
@@ -557,6 +558,25 @@ class SuperCell(object):
             if abs(np.dot(a, b) - 1) > 0.001:
                 return False
         return True
+
+    def angle(self, i, j, radians=False):
+        """ The angle between two of the cell vectors
+
+        Parameters
+        ----------
+        i : int
+           the first cell vector
+        j : int
+           the second cell vector
+        radians : bool, optional
+           whether the returned value is in radians
+        """
+        na = np.sum(self.cell[i, :]**2)
+        nb = np.sum(self.cell[j, :]**2)
+        ang = math.acos(np.sum(self.cell[i, :] * self.cell[j, :]) / (na * nb))
+        if radians:
+            return ang
+        return math.degrees(ang)
 
     @staticmethod
     def read(sile, *args, **kwargs):

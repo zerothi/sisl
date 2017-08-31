@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
-from nose.tools import *
-from nose.plugins.attrib import attr
+import pytest
 
 import math as m
 import numpy as np
@@ -11,601 +10,607 @@ from sisl import Sphere
 from sisl import Geometry, Atom, SuperCell
 
 
-@attr('geometry')
+@pytest.fixture
+def setup():
+    class t():
+        def __init__(self):
+            bond = 1.42
+            sq3h = 3.**.5 * 0.5
+            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+                                          [1.5, -sq3h, 0.],
+                                          [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+            C = Atom(Z=6, R=bond * 1.01, orbs=2)
+            self.g = Geometry(np.array([[0., 0., 0.],
+                                        [1., 0., 0.]], np.float64) * bond,
+                              atom=C, sc=self.sc)
+
+            self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
+    return t()
+
+
+@pytest.mark.geometry
 class TestGeometry(object):
 
-    def setUp(self):
-        bond = 1.42
-        sq3h = 3.**.5 * 0.5
-        self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                                      [1.5, -sq3h, 0.],
-                                      [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
-        C = Atom(Z=6, R=bond * 1.01, orbs=2)
-        self.g = Geometry(np.array([[0., 0., 0.],
-                                    [1., 0., 0.]], np.float64) * bond,
-                          atom=C, sc=self.sc)
-
-        self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
-
-    def tearDown(self):
-        del self.g
-        del self.sc
-        del self.mol
-
-    def test_objects(self):
+    def test_objects(self, setup):
         # just make sure __repr__ works
-        repr(self.g)
-        str(self.g)
-        assert_true(len(self.g) == 2)
-        assert_true(len(self.g.xyz) == 2)
-        assert_true(np.allclose(self.g[0], np.zeros([3])))
-        assert_true(np.allclose(self.g[None, 0], self.g.xyz[:, 0]))
+        repr(setup.g)
+        str(setup.g)
+        assert len(setup.g) == 2
+        assert len(setup.g.xyz) == 2
+        assert np.allclose(setup.g[0], np.zeros([3]))
+        assert np.allclose(setup.g[None, 0], setup.g.xyz[:, 0])
 
         i = 0
-        for ia in self.g:
+        for ia in setup.g:
             i += 1
-        assert_true(i == len(self.g))
-        assert_true(self.g.no_s == 2 * len(self.g) * np.prod(self.g.sc.nsc))
+        assert i == len(setup.g)
+        assert setup.g.no_s == 2 * len(setup.g) * np.prod(setup.g.sc.nsc)
 
-    def test_properties(self):
-        assert_true(2 == len(self.g))
-        assert_true(2 == self.g.na)
-        assert_true(3*3 == self.g.n_s)
-        assert_true(2*3*3 == self.g.na_s)
-        assert_true(2*2 == self.g.no)
-        assert_true(2*2*3*3 == self.g.no_s)
+    def test_properties(self, setup):
+        assert 2 == len(setup.g)
+        assert 2 == setup.g.na
+        assert 3*3 == setup.g.n_s
+        assert 2*3*3 == setup.g.na_s
+        assert 2*2 == setup.g.no
+        assert 2*2*3*3 == setup.g.no_s
 
-    def test_iter1(self):
+    def test_iter1(self, setup):
         i = 0
-        for ia in self.g:
+        for ia in setup.g:
             i += 1
-        assert_true(i == 2)
+        assert i == 2
 
-    def test_iter2(self):
-        for ia in self.g:
-            assert_true(np.allclose(self.g[ia], self.g.xyz[ia, :]))
+    def test_iter2(self, setup):
+        for ia in setup.g:
+            assert np.allclose(setup.g[ia], setup.g.xyz[ia, :])
 
-    def test_iter3(self):
+    def test_iter3(self, setup):
         i = 0
-        for ia, io in self.g.iter_orbitals(0):
-            assert_equal(ia, 0)
-            assert_true(io < 2)
+        for ia, io in setup.g.iter_orbitals(0):
+            assert ia == 0
+            assert io < 2
             i += 1
-        for ia, io in self.g.iter_orbitals(1):
-            assert_equal(ia, 1)
-            assert_true(io < 2)
+        for ia, io in setup.g.iter_orbitals(1):
+            assert ia == 1
+            assert io < 2
             i += 1
-        assert_true(i == 4)
+        assert i == 4
         i = 0
-        for ia, io in self.g.iter_orbitals():
-            assert_true(ia in [0, 1])
-            assert_true(io < 2)
+        for ia, io in setup.g.iter_orbitals():
+            assert ia in [0, 1]
+            assert io < 2
             i += 1
-        assert_true(i == 4)
+        assert i == 4
 
         i = 0
-        for ia, io in self.g.iter_orbitals(1, local=False):
-            assert_equal(ia, 1)
-            assert_true(io >= 2)
+        for ia, io in setup.g.iter_orbitals(1, local=False):
+            assert ia == 1
+            assert io >= 2
             i += 1
-        assert_true(i == 2)
+        assert i == 2
 
-    @raises(ValueError)
-    def test_tile0(self):
-        t = self.g.tile(0, 0)
+    @pytest.mark.xfail(raises=ValueError)
+    def test_tile0(self, setup):
+        t = setup.g.tile(0, 0)
 
-    def test_tile1(self):
-        cell = np.copy(self.g.sc.cell)
+    def test_tile1(self, setup):
+        cell = np.copy(setup.g.sc.cell)
         cell[0, :] *= 2
-        t = self.g.tile(2, 0)
-        assert_true(np.allclose(cell, t.sc.cell))
+        t = setup.g.tile(2, 0)
+        assert np.allclose(cell, t.sc.cell)
         cell[1, :] *= 2
         t = t.tile(2, 1)
-        assert_true(np.allclose(cell, t.sc.cell))
+        assert np.allclose(cell, t.sc.cell)
         cell[2, :] *= 2
         t = t.tile(2, 2)
-        assert_true(np.allclose(cell, t.sc.cell))
+        assert np.allclose(cell, t.sc.cell)
 
-    def test_tile2(self):
-        cell = np.copy(self.g.sc.cell)
+    def test_tile2(self, setup):
+        cell = np.copy(setup.g.sc.cell)
         cell[:, :] *= 2
-        t = self.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        assert_true(np.allclose(cell, t.sc.cell))
+        t = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        assert np.allclose(cell, t.sc.cell)
 
-    def test_tile3(self):
-        cell = np.copy(self.g.sc.cell)
+    def test_tile3(self, setup):
+        cell = np.copy(setup.g.sc.cell)
         cell[:, :] *= 2
-        t1 = self.g * 2
-        cell = np.copy(self.g.sc.cell)
+        t1 = setup.g * 2
+        cell = np.copy(setup.g.sc.cell)
         cell[0, :] *= 2
-        t1 = self.g * (2, 0)
-        assert_true(np.allclose(cell, t1.sc.cell))
-        t = self.g * ((2, 0), 'tile')
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
+        t1 = setup.g * (2, 0)
+        assert np.allclose(cell, t1.sc.cell)
+        t = setup.g * ((2, 0), 'tile')
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
         cell[1, :] *= 2
         t1 = t * (2, 1)
-        assert_true(np.allclose(cell, t1.sc.cell))
+        assert np.allclose(cell, t1.sc.cell)
         t = t * ((2, 1), 'tile')
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
         cell[2, :] *= 2
         t1 = t * (2, 2)
-        assert_true(np.allclose(cell, t1.sc.cell))
+        assert np.allclose(cell, t1.sc.cell)
         t = t * ((2, 2), 'tile')
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
 
         # Full
-        t = self.g * [2, 2, 2]
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
-        t = self.g * ([2, 2, 2], 't')
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
+        t = setup.g * [2, 2, 2]
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
+        t = setup.g * ([2, 2, 2], 't')
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
 
-    def test_tile4(self):
-        t1 = self.g.tile(2, 0).tile(2, 2)
-        t = self.g * ([2, 0], 't') * [2, 2]
-        assert_true(np.allclose(t1.xyz, t.xyz))
+    def test_tile4(self, setup):
+        t1 = setup.g.tile(2, 0).tile(2, 2)
+        t = setup.g * ([2, 0], 't') * [2, 2]
+        assert np.allclose(t1.xyz, t.xyz)
 
-    def test_tile5(self):
-        t = self.g.tile(2, 0).tile(2, 2)
-        assert_true(np.allclose(t[:len(self.g), :], self.g.xyz))
+    def test_tile5(self, setup):
+        t = setup.g.tile(2, 0).tile(2, 2)
+        assert np.allclose(t[:len(setup.g), :], setup.g.xyz)
 
-    @raises(ValueError)
-    def test_repeat0(self):
-        t = self.g.repeat(0, 0)
+    @pytest.mark.xfail(raises=ValueError)
+    def test_repeat0(self, setup):
+        t = setup.g.repeat(0, 0)
 
-    def test_repeat1(self):
-        cell = np.copy(self.g.sc.cell)
+    def test_repeat1(self, setup):
+        cell = np.copy(setup.g.sc.cell)
         cell[0, :] *= 2
-        t = self.g.repeat(2, 0)
-        assert_true(np.allclose(cell, t.sc.cell))
+        t = setup.g.repeat(2, 0)
+        assert np.allclose(cell, t.sc.cell)
         cell[1, :] *= 2
         t = t.repeat(2, 1)
-        assert_true(np.allclose(cell, t.sc.cell))
+        assert np.allclose(cell, t.sc.cell)
         cell[2, :] *= 2
         t = t.repeat(2, 2)
-        assert_true(np.allclose(cell, t.sc.cell))
+        assert np.allclose(cell, t.sc.cell)
 
-    def test_repeat2(self):
-        cell = np.copy(self.g.sc.cell)
+    def test_repeat2(self, setup):
+        cell = np.copy(setup.g.sc.cell)
         cell[:, :] *= 2
-        t = self.g.repeat(2, 0).repeat(2, 1).repeat(2, 2)
-        assert_true(np.allclose(cell, t.sc.cell))
+        t = setup.g.repeat(2, 0).repeat(2, 1).repeat(2, 2)
+        assert np.allclose(cell, t.sc.cell)
 
-    def test_repeat3(self):
-        cell = np.copy(self.g.sc.cell)
+    def test_repeat3(self, setup):
+        cell = np.copy(setup.g.sc.cell)
         cell[0, :] *= 2
-        t1 = self.g.repeat(2, 0)
-        assert_true(np.allclose(cell, t1.sc.cell))
-        t = self.g * ((2, 0), 'repeat')
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
+        t1 = setup.g.repeat(2, 0)
+        assert np.allclose(cell, t1.sc.cell)
+        t = setup.g * ((2, 0), 'repeat')
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
         cell[1, :] *= 2
         t1 = t.repeat(2, 1)
-        assert_true(np.allclose(cell, t1.sc.cell))
+        assert np.allclose(cell, t1.sc.cell)
         t = t * ((2, 1), 'r')
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
         cell[2, :] *= 2
         t1 = t.repeat(2, 2)
-        assert_true(np.allclose(cell, t1.sc.cell))
+        assert np.allclose(cell, t1.sc.cell)
         t = t * ((2, 2), 'repeat')
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
 
         # Full
-        t = self.g * ([2, 2, 2], 'r')
-        assert_true(np.allclose(cell, t.sc.cell))
-        assert_true(np.allclose(t1.xyz, t.xyz))
+        t = setup.g * ([2, 2, 2], 'r')
+        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(t1.xyz, t.xyz)
 
-    def test_repeat4(self):
-        t1 = self.g.repeat(2, 0).repeat(2, 2)
-        t = self.g * ([2, 0], 'repeat') * ([2, 2], 'r')
-        assert_true(np.allclose(t1.xyz, t.xyz))
+    def test_repeat4(self, setup):
+        t1 = setup.g.repeat(2, 0).repeat(2, 2)
+        t = setup.g * ([2, 0], 'repeat') * ([2, 2], 'r')
+        assert np.allclose(t1.xyz, t.xyz)
 
-    def test_repeat5(self):
-        t = self.g.repeat(2, 0).repeat(2, 2)
-        assert_true(np.allclose(t.xyz[::4, :], self.g.xyz))
+    def test_repeat5(self, setup):
+        t = setup.g.repeat(2, 0).repeat(2, 2)
+        assert np.allclose(t.xyz[::4, :], setup.g.xyz)
 
-    def test_a2o1(self):
-        assert_true(0 == self.g.a2o(0))
-        assert_true(self.g.atom[0].orbs == self.g.a2o(1))
-        assert_true(self.g.no == self.g.a2o(self.g.na))
+    def test_a2o1(self, setup):
+        assert 0 == setup.g.a2o(0)
+        assert setup.g.atom[0].orbs == setup.g.a2o(1)
+        assert setup.g.no == setup.g.a2o(setup.g.na)
 
-    def test_sub1(self):
-        assert_true(len(self.g.sub([0])) == 1)
-        assert_true(len(self.g.sub([0, 1])) == 2)
-        assert_true(len(self.g.sub([-1])) == 1)
+    def test_sub1(self, setup):
+        assert len(setup.g.sub([0])) == 1
+        assert len(setup.g.sub([0, 1])) == 2
+        assert len(setup.g.sub([-1])) == 1
 
-    def test_sub2(self):
-        assert_true(len(self.g.sub(range(1))) == 1)
-        assert_true(len(self.g.sub(range(2))) == 2)
+    def test_sub2(self, setup):
+        assert len(setup.g.sub(range(1))) == 1
+        assert len(setup.g.sub(range(2))) == 2
 
-    def test_fxyz(self):
-        assert_true(np.allclose(self.g.fxyz, [[0,    0, 0],
-                                              [1./3, 1./3, 0]]))
+    def test_fxyz(self, setup):
+        assert np.allclose(setup.g.fxyz, [[0,    0, 0],
+                                          [1./3, 1./3, 0]])
 
-    def test_axyz(self):
-        assert_true(np.allclose(self.g[:], self.g.xyz[:]))
-        assert_true(np.allclose(self.g[0], self.g.xyz[0, :]))
-        assert_true(np.allclose(self.g[2], self.g.axyz(2)))
-        isc = self.g.a2isc(2)
-        off = self.g.sc.offset(isc)
-        assert_true(np.allclose(self.g.xyz[0] + off, self.g.axyz(2)))
+    def test_axyz(self, setup):
+        assert np.allclose(setup.g[:], setup.g.xyz[:])
+        assert np.allclose(setup.g[0], setup.g.xyz[0, :])
+        assert np.allclose(setup.g[2], setup.g.axyz(2))
+        isc = setup.g.a2isc(2)
+        off = setup.g.sc.offset(isc)
+        assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(2))
 
-    def test_rij1(self):
-        assert_true(np.allclose(self.g.rij(0, 1), 1.42))
-        assert_true(np.allclose(self.g.rij(0, [0, 1]), [0., 1.42]))
+    def test_rij1(self, setup):
+        assert np.allclose(setup.g.rij(0, 1), 1.42)
+        assert np.allclose(setup.g.rij(0, [0, 1]), [0., 1.42])
 
-    def test_orij1(self):
-        assert_true(np.allclose(self.g.orij(0, 2), 1.42))
-        assert_true(np.allclose(self.g.orij(0, [0, 2]), [0., 1.42]))
+    def test_orij1(self, setup):
+        assert np.allclose(setup.g.orij(0, 2), 1.42)
+        assert np.allclose(setup.g.orij(0, [0, 2]), [0., 1.42])
 
-    def test_cut(self):
-        with warn.catch_warnings():
-            warn.simplefilter('ignore', category=UserWarning)
-            assert_true(len(self.g.cut(1, 1)) == 2)
-            assert_true(len(self.g.cut(2, 1)) == 1)
-            assert_true(len(self.g.cut(2, 1, 1)) == 1)
+    def test_cut(self, setup):
+        with pytest.warns(UserWarning) as warns:
+            assert len(setup.g.cut(1, 1)) == 2
+            assert len(setup.g.cut(2, 1)) == 1
+            assert len(setup.g.cut(2, 1, 1)) == 1
+        assert len(warns) == 2
 
-    def test_cut2(self):
-        c1 = self.g.cut(2, 1)
-        c2 = self.g.cut(2, 1, 1)
-        assert_true(np.allclose(c1.xyz[0, :], self.g.xyz[0, :]))
-        assert_true(np.allclose(c2.xyz[0, :], self.g.xyz[1, :]))
+    def test_cut2(self, setup):
+        with pytest.warns(UserWarning) as warns:
+            c1 = setup.g.cut(2, 1)
+            c2 = setup.g.cut(2, 1, 1)
+        assert len(warns) == 2
+        assert np.allclose(c1.xyz[0, :], setup.g.xyz[0, :])
+        assert np.allclose(c2.xyz[0, :], setup.g.xyz[1, :])
 
-    def test_remove1(self):
-        assert_true(len(self.g.remove([0])) == 1)
-        assert_true(len(self.g.remove([])) == 2)
-        assert_true(len(self.g.remove([-1])) == 1)
-        assert_true(len(self.g.remove([-0])) == 1)
+    def test_remove1(self, setup):
+        assert len(setup.g.remove([0])) == 1
+        assert len(setup.g.remove([])) == 2
+        assert len(setup.g.remove([-1])) == 1
+        assert len(setup.g.remove([-0])) == 1
 
-    def test_remove2(self):
-        assert_true(len(self.g.remove(range(1))) == 1)
-        assert_true(len(self.g.remove(range(0))) == 2)
+    def test_remove2(self, setup):
+        assert len(setup.g.remove(range(1))) == 1
+        assert len(setup.g.remove(range(0))) == 2
 
-    def test_copy(self):
-        assert_true(self.g == self.g.copy())
+    def test_copy(self, setup):
+        assert setup.g == setup.g.copy()
 
-    def test_nsc1(self):
-        nsc = np.copy(self.g.nsc)
-        self.g.sc.set_nsc([5, 5, 0])
-        assert_true(np.allclose([5, 5, 1], self.g.nsc))
-        assert_true(len(self.g.sc_off) == np.prod(self.g.nsc))
+    def test_nsc1(self, setup):
+        sc = setup.g.sc.copy()
+        nsc = np.copy(sc.nsc)
+        sc.set_nsc([5, 5, 0])
+        assert np.allclose([5, 5, 1], sc.nsc)
+        assert len(sc.sc_off) == np.prod(sc.nsc)
 
-    def test_nsc2(self):
-        nsc = np.copy(self.g.nsc)
-        self.g.sc.set_nsc([0, 1, 0])
-        assert_true(np.allclose([1, 1, 1], self.g.nsc))
-        assert_true(len(self.g.sc_off) == np.prod(self.g.nsc))
+    def test_nsc2(self, setup):
+        sc = setup.g.sc.copy()
+        nsc = np.copy(sc.nsc)
+        sc.set_nsc([0, 1, 0])
+        assert np.allclose([1, 1, 1], sc.nsc)
+        assert len(sc.sc_off) == np.prod(sc.nsc)
 
-    def test_rotation1(self):
-        rot = self.g.rotate(180, [0, 0, 1])
+    def test_rotation1(self, setup):
+        rot = setup.g.rotate(180, [0, 0, 1])
         rot.sc.cell[2, 2] *= -1
-        assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(-rot.xyz, self.g.xyz))
+        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = self.g.rotate(np.pi, [0, 0, 1], radians=True)
+        rot = setup.g.rotate(np.pi, [0, 0, 1], radians=True)
         rot.sc.cell[2, 2] *= -1
-        assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(-rot.xyz, self.g.xyz))
+        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(-rot.xyz, setup.g.xyz)
 
         rot = rot.rotate(180, [0, 0, 1])
         rot.sc.cell[2, 2] *= -1
-        assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(rot.xyz, self.g.xyz))
+        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(rot.xyz, setup.g.xyz)
 
-    def test_rotation2(self):
-        rot = self.g.rotate(180, [0, 0, 1], only='abc')
+    def test_rotation2(self, setup):
+        rot = setup.g.rotate(180, [0, 0, 1], only='abc')
         rot.sc.cell[2, 2] *= -1
-        assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(rot.xyz, self.g.xyz))
+        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(rot.xyz, setup.g.xyz)
 
-        rot = self.g.rotate(np.pi, [0, 0, 1], radians=True, only='abc')
+        rot = setup.g.rotate(np.pi, [0, 0, 1], radians=True, only='abc')
         rot.sc.cell[2, 2] *= -1
-        assert_true(np.allclose(-rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(rot.xyz, self.g.xyz))
+        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(rot.xyz, setup.g.xyz)
 
         rot = rot.rotate(180, [0, 0, 1], only='abc')
         rot.sc.cell[2, 2] *= -1
-        assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(rot.xyz, self.g.xyz))
+        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(rot.xyz, setup.g.xyz)
 
-    def test_rotation3(self):
-        rot = self.g.rotate(180, [0, 0, 1], only='xyz')
-        assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(-rot.xyz, self.g.xyz))
+    def test_rotation3(self, setup):
+        rot = setup.g.rotate(180, [0, 0, 1], only='xyz')
+        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = self.g.rotate(np.pi, [0, 0, 1], radians=True, only='xyz')
-        assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(-rot.xyz, self.g.xyz))
+        rot = setup.g.rotate(np.pi, [0, 0, 1], radians=True, only='xyz')
+        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(-rot.xyz, setup.g.xyz)
 
         rot = rot.rotate(180, [0, 0, 1], only='xyz')
-        assert_true(np.allclose(rot.sc.cell, self.g.sc.cell))
-        assert_true(np.allclose(rot.xyz, self.g.xyz))
+        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(rot.xyz, setup.g.xyz)
 
-    def test_rotation4(self):
-        rot = self.g.rotatea(180, only='xyz')
-        rot = self.g.rotateb(180, only='xyz')
-        rot = self.g.rotatec(180, only='xyz')
+    def test_rotation4(self, setup):
+        rot = setup.g.rotatea(180, only='xyz')
+        rot = setup.g.rotateb(180, only='xyz')
+        rot = setup.g.rotatec(180, only='xyz')
 
-    def test_translate(self):
-        t = self.g.translate([0, 0, 1])
-        assert_true(np.allclose(self.g.xyz[:, 0], t.xyz[:, 0]))
-        assert_true(np.allclose(self.g.xyz[:, 1], t.xyz[:, 1]))
-        assert_true(np.allclose(self.g.xyz[:, 2] + 1, t.xyz[:, 2]))
-        t = self.g.move([0, 0, 1])
-        assert_true(np.allclose(self.g.xyz[:, 0], t.xyz[:, 0]))
-        assert_true(np.allclose(self.g.xyz[:, 1], t.xyz[:, 1]))
-        assert_true(np.allclose(self.g.xyz[:, 2] + 1, t.xyz[:, 2]))
+    def test_translate(self, setup):
+        t = setup.g.translate([0, 0, 1])
+        assert np.allclose(setup.g.xyz[:, 0], t.xyz[:, 0])
+        assert np.allclose(setup.g.xyz[:, 1], t.xyz[:, 1])
+        assert np.allclose(setup.g.xyz[:, 2] + 1, t.xyz[:, 2])
+        t = setup.g.move([0, 0, 1])
+        assert np.allclose(setup.g.xyz[:, 0], t.xyz[:, 0])
+        assert np.allclose(setup.g.xyz[:, 1], t.xyz[:, 1])
+        assert np.allclose(setup.g.xyz[:, 2] + 1, t.xyz[:, 2])
 
-    def test_iter_block1(self):
-        for i, iaaspec in enumerate(self.g.iter_species()):
+    def test_iter_block1(self, setup):
+        for i, iaaspec in enumerate(setup.g.iter_species()):
             ia, a, spec = iaaspec
-            assert_true(i == ia)
-            assert_true(self.g.atom[ia] == a)
-        for ia, a, spec in self.g.iter_species([1]):
-            assert_true(1 == ia)
-            assert_true(self.g.atom[ia] == a)
-        for ia in self.g:
-            assert_true(ia >= 0)
+            assert i == ia
+            assert setup.g.atom[ia] == a
+        for ia, a, spec in setup.g.iter_species([1]):
+            assert 1 == ia
+            assert setup.g.atom[ia] == a
+        for ia in setup.g:
+            assert ia >= 0
         i = 0
-        for ias, idx in self.g.iter_block():
+        for ias, idx in setup.g.iter_block():
             for ia in ias:
                 i += 1
-        assert_true(i == len(self.g))
+        assert i == len(setup.g)
 
         i = 0
-        for ias, idx in self.g.iter_block(atom=1):
+        for ias, idx in setup.g.iter_block(atom=1):
             for ia in ias:
                 i += 1
-        assert_true(i == 1)
+        assert i == 1
 
-    @attr('slow')
-    def test_iter_block2(self):
-        g = self.g.tile(30, 0).tile(30, 1)
+    @pytest.mark.slow
+    def test_iter_block2(self, setup):
+        g = setup.g.tile(30, 0).tile(30, 1)
         i = 0
         for ias, _ in g.iter_block():
             i += len(ias)
-        assert_true(i == len(g))
+        assert i == len(g)
 
-    def test_iter_shape1(self):
+    def test_iter_shape1(self, setup):
         i = 0
-        for ias, _ in self.g.iter_block(method='sphere'):
+        for ias, _ in setup.g.iter_block(method='sphere'):
             i += len(ias)
-        assert_true(i == len(self.g))
+        assert i == len(setup.g)
         i = 0
-        for ias, _ in self.g.iter_block(method='cube'):
+        for ias, _ in setup.g.iter_block(method='cube'):
             i += len(ias)
-        assert_true(i == len(self.g))
+        assert i == len(setup.g)
 
-    @attr('slow')
-    def test_iter_shape2(self):
-        g = self.g.tile(30, 0).tile(30, 1)
+    @pytest.mark.slow
+    def test_iter_shape2(self, setup):
+        g = setup.g.tile(30, 0).tile(30, 1)
         i = 0
         for ias, _ in g.iter_block(method='sphere'):
             i += len(ias)
-        assert_true(i == len(g))
+        assert i == len(g)
         i = 0
         for ias, _ in g.iter_block(method='cube'):
             i += len(ias)
-        assert_true(i == len(g))
+        assert i == len(g)
 
-    @attr('slow')
-    def test_iter_shape3(self):
-        g = self.g.tile(50, 0).tile(50, 1)
+    @pytest.mark.slow
+    def test_iter_shape3(self, setup):
+        g = setup.g.tile(50, 0).tile(50, 1)
         i = 0
         for ias, _ in g.iter_block(method='sphere'):
             i += len(ias)
-        assert_true(i == len(g))
+        assert i == len(g)
         i = 0
         for ias, _ in g.iter_block(method='cube'):
             i += len(ias)
-        assert_true(i == len(g))
+        assert i == len(g)
 
-    def test_swap(self):
-        s = self.g.swap(0, 1)
+    def test_swap(self, setup):
+        s = setup.g.swap(0, 1)
         for i in [0, 1, 2]:
-            assert_true(np.allclose(self.g.xyz[::-1, i], s.xyz[:, i]))
+            assert np.allclose(setup.g.xyz[::-1, i], s.xyz[:, i])
 
-    def test_append1(self):
+    def test_append1(self, setup):
         for axis in [0, 1, 2]:
-            s = self.g.append(self.g, axis)
-            assert_equal(len(s), len(self.g) * 2)
-            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
-            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
-            s = self.g.prepend(self.g, axis)
-            assert_equal(len(s), len(self.g) * 2)
-            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
-            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
-            s = self.g.append(self.g.sc, axis)
-            assert_equal(len(s), len(self.g))
-            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
-            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
-            s = self.g.prepend(self.g.sc, axis)
-            assert_equal(len(s), len(self.g))
-            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
-            assert_true(np.allclose(s.cell[axis, :], self.g.cell[axis, :]* 2))
+            s = setup.g.append(setup.g, axis)
+            assert len(s) == len(setup.g) * 2
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            s = setup.g.prepend(setup.g, axis)
+            assert len(s) == len(setup.g) * 2
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            s = setup.g.append(setup.g.sc, axis)
+            assert len(s) == len(setup.g)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            s = setup.g.prepend(setup.g.sc, axis)
+            assert len(s) == len(setup.g)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
 
-    def test_swapaxes(self):
-        s = self.g.swapaxes(0, 1)
-        assert_true(np.allclose(self.g.xyz[:, 0], s.xyz[:, 1]))
-        assert_true(np.allclose(self.g.xyz[:, 1], s.xyz[:, 0]))
-        assert_true(np.allclose(self.g.cell[0, :], s.cell[1, :]))
-        assert_true(np.allclose(self.g.cell[1, :], s.cell[0, :]))
+    def test_swapaxes(self, setup):
+        s = setup.g.swapaxes(0, 1)
+        assert np.allclose(setup.g.xyz[:, 0], s.xyz[:, 1])
+        assert np.allclose(setup.g.xyz[:, 1], s.xyz[:, 0])
+        assert np.allclose(setup.g.cell[0, :], s.cell[1, :])
+        assert np.allclose(setup.g.cell[1, :], s.cell[0, :])
 
-    def test_center(self):
-        one = self.g.center(atom=[0])
-        assert_true(np.allclose(self.g[0], one))
-        al = self.g.center()
-        assert_true(np.allclose(np.mean(self.g.xyz, axis=0), al))
-        al = self.g.center(which='mass')
+    def test_center(self, setup):
+        one = setup.g.center(atom=[0])
+        assert np.allclose(setup.g[0], one)
+        al = setup.g.center()
+        assert np.allclose(np.mean(setup.g.xyz, axis=0), al)
+        al = setup.g.center(which='mass')
 
-    @raises(ValueError)
-    def test_center_raise(self):
-        al = self.g.center(which='unknown')
+    @pytest.mark.xfail(raises=ValueError)
+    def test_center_raise(self, setup):
+        al = setup.g.center(which='unknown')
 
-    def test___add__(self):
-        n = len(self.g)
-        double = self.g + self.g
-        assert_equal(len(double), n * 2)
-        assert_true(np.allclose(self.g.cell, double.cell))
-        assert_true(np.allclose(self.g.xyz[:n, :], double.xyz[:n, :]))
+    def test___add__(self, setup):
+        n = len(setup.g)
+        double = setup.g + setup.g
+        assert len(double) == n * 2
+        assert np.allclose(setup.g.cell, double.cell)
+        assert np.allclose(setup.g.xyz[:n, :], double.xyz[:n, :])
 
-        double = (self.g, 1) + self.g
-        d = self.g.prepend(self.g, 1)
-        assert_equal(len(double), n * 2)
-        assert_true(np.allclose(self.g.cell[::2, :], double.cell[::2, :]))
-        assert_true(np.allclose(double.xyz, d.xyz))
+        double = (setup.g, 1) + setup.g
+        d = setup.g.prepend(setup.g, 1)
+        assert len(double) == n * 2
+        assert np.allclose(setup.g.cell[::2, :], double.cell[::2, :])
+        assert np.allclose(double.xyz, d.xyz)
 
-        double = self.g + (self.g, 1)
-        d = self.g.append(self.g, 1)
-        assert_equal(len(double), n * 2)
-        assert_true(np.allclose(self.g.cell[::2, :], double.cell[::2, :]))
-        assert_true(np.allclose(double.xyz, d.xyz))
+        double = setup.g + (setup.g, 1)
+        d = setup.g.append(setup.g, 1)
+        assert len(double) == n * 2
+        assert np.allclose(setup.g.cell[::2, :], double.cell[::2, :])
+        assert np.allclose(double.xyz, d.xyz)
 
-    def test___mul__(self):
-        g = self.g.copy()
-        assert_equal(g * 2, g.tile(2, 0).tile(2, 1).tile(2, 2))
-        assert_equal(g * [2, 1], g.tile(2, 1))
-        assert_equal(g * (2, 2, 2), g.tile(2, 0).tile(2, 1).tile(2, 2))
-        assert_equal(g * [1, 2, 2], g.tile(1, 0).tile(2, 1).tile(2, 2))
-        assert_equal(g * [1, 3, 2], g.tile(1, 0).tile(3, 1).tile(2, 2))
-        assert_equal(g * ([1, 3, 2], 'r'), g.repeat(1, 0).repeat(3, 1).repeat(2, 2))
-        assert_equal(g * ([1, 3, 2], 'repeat'), g.repeat(1, 0).repeat(3, 1).repeat(2, 2))
-        assert_equal(g * ([1, 3, 2], 'tile'), g.tile(1, 0).tile(3, 1).tile(2, 2))
-        assert_equal(g * ([1, 3, 2], 't'), g.tile(1, 0).tile(3, 1).tile(2, 2))
-        assert_equal(g * ([3, 2], 't'), g.tile(3, 2))
-        assert_equal(g * ([3, 2], 'r'), g.repeat(3, 2))
+    def test___mul__(self, setup):
+        g = setup.g.copy()
+        assert g * 2 == g.tile(2, 0).tile(2, 1).tile(2, 2)
+        assert g * [2, 1] == g.tile(2, 1)
+        assert g * (2, 2, 2) == g.tile(2, 0).tile(2, 1).tile(2, 2)
+        assert g * [1, 2, 2] == g.tile(1, 0).tile(2, 1).tile(2, 2)
+        assert g * [1, 3, 2] == g.tile(1, 0).tile(3, 1).tile(2, 2)
+        assert g * ([1, 3, 2], 'r') == g.repeat(1, 0).repeat(3, 1).repeat(2, 2)
+        assert g * ([1, 3, 2], 'repeat') == g.repeat(1, 0).repeat(3, 1).repeat(2, 2)
+        assert g * ([1, 3, 2], 'tile') == g.tile(1, 0).tile(3, 1).tile(2, 2)
+        assert g * ([1, 3, 2], 't') == g.tile(1, 0).tile(3, 1).tile(2, 2)
+        assert g * ([3, 2], 't') == g.tile(3, 2)
+        assert g * ([3, 2], 'r') == g.repeat(3, 2)
 
-    def test_add(self):
-        double = self.g.add(self.g)
-        assert_equal(len(double), len(self.g) * 2)
-        assert_true(np.allclose(self.g.cell, double.cell))
+    def test_add(self, setup):
+        double = setup.g.add(setup.g)
+        assert len(double) == len(setup.g) * 2
+        assert np.allclose(setup.g.cell, double.cell)
 
-    def test_insert(self):
-        double = self.g.insert(0, self.g)
-        assert_equal(len(double), len(self.g) * 2)
-        assert_true(np.allclose(self.g.cell, double.cell))
+    def test_insert(self, setup):
+        double = setup.g.insert(0, setup.g)
+        assert len(double) == len(setup.g) * 2
+        assert np.allclose(setup.g.cell, double.cell)
 
-    def test_a2o(self):
+    def test_a2o(self, setup):
         # There are 2 orbitals per C atom
-        assert_equal(self.g.a2o(1), self.g.atom[0].orbs)
-        assert_true(np.all(self.g.a2o(1, True) == [2, 3]))
+        assert setup.g.a2o(1) == setup.g.atom[0].orbs
+        assert np.all(setup.g.a2o(1, True) == [2, 3])
 
-    def test_o2a(self):
+    def test_o2a(self, setup):
         # There are 2 orbitals per C atom
-        assert_equal(self.g.o2a(2), 1)
+        assert setup.g.o2a(2) == 1
 
-    def test_2uc(self):
+    def test_2uc(self, setup):
         # functions for any-thing to UC
-        assert_equal(self.g.sc2uc(2), 0)
-        assert_true(np.all(self.g.sc2uc([2, 3]) == [0, 1]))
-        assert_equal(self.g.asc2uc(2), 0)
-        assert_true(np.all(self.g.asc2uc([2, 3]) == [0, 1]))
-        assert_equal(self.g.osc2uc(4), 0)
-        assert_equal(self.g.osc2uc(5), 1)
-        assert_true(np.all(self.g.osc2uc([4, 5]) == [0, 1]))
+        assert setup.g.sc2uc(2) == 0
+        assert np.all(setup.g.sc2uc([2, 3]) == [0, 1])
+        assert setup.g.asc2uc(2) == 0
+        assert np.all(setup.g.asc2uc([2, 3]) == [0, 1])
+        assert setup.g.osc2uc(4) == 0
+        assert setup.g.osc2uc(5) == 1
+        assert np.all(setup.g.osc2uc([4, 5]) == [0, 1])
 
-    def test_2sc(self):
+    def test_2sc(self, setup):
         # functions for any-thing to SC
-        c = self.g.cell
+        c = setup.g.cell
 
+        print(setup)
         # check indices
-        assert_true(np.all(self.g.a2isc([1, 2]) == [[0,  0, 0],
-                                                    [-1, -1, 0]]))
-        assert_true(np.all(self.g.a2isc(2) == [-1, -1, 0]))
-        assert_true(np.allclose(self.g.a2sc(2), -c[0, :] - c[1, :]))
-        assert_true(np.all(self.g.o2isc([1, 5]) == [[0,  0, 0],
-                                                    [-1, -1, 0]]))
-        assert_true(np.all(self.g.o2isc(5) == [-1, -1, 0]))
-        assert_true(np.allclose(self.g.o2sc(5), -c[0, :] - c[1, :]))
+        assert np.all(setup.g.a2isc([1, 2]) == [[0,  0, 0],
+                                                [-1, -1, 0]])
+        assert np.all(setup.g.a2isc(2) == [-1, -1, 0])
+        assert np.allclose(setup.g.a2sc(2), -c[0, :] - c[1, :])
+        assert np.all(setup.g.o2isc([1, 5]) == [[0,  0, 0],
+                                                [-1, -1, 0]])
+        assert np.all(setup.g.o2isc(5) == [-1, -1, 0])
+        assert np.allclose(setup.g.o2sc(5), -c[0, :] - c[1, :])
 
         # Check off-sets
-        assert_true(np.allclose(self.g.a2sc([1, 2]), [[0.,  0., 0.],
-                                                      -c[0, :] - c[1, :]]))
-        assert_true(np.allclose(self.g.o2sc([1, 5]), [[0.,  0., 0.],
-                                                      -c[0, :] - c[1, :]]))
+        assert np.allclose(setup.g.a2sc([1, 2]), [[0.,  0., 0.],
+                                                      -c[0, :] - c[1, :]])
+        assert np.allclose(setup.g.o2sc([1, 5]), [[0.,  0., 0.],
+                                                      -c[0, :] - c[1, :]])
 
-    def test_reverse(self):
-        rev = self.g.reverse()
-        assert_true(len(rev) == 2)
-        assert_true(np.allclose(rev.xyz[::-1, :], self.g.xyz))
-        rev = self.g.reverse(atom=list(range(len(self.g))))
-        assert_true(len(rev) == 2)
-        assert_true(np.allclose(rev.xyz[::-1, :], self.g.xyz))
+    def test_reverse(self, setup):
+        rev = setup.g.reverse()
+        assert len(rev) == 2
+        assert np.allclose(rev.xyz[::-1, :], setup.g.xyz)
+        rev = setup.g.reverse(atom=list(range(len(setup.g))))
+        assert len(rev) == 2
+        assert np.allclose(rev.xyz[::-1, :], setup.g.xyz)
 
-    def test_scale1(self):
-        two = self.g.scale(2)
-        assert_true(len(two) == len(self.g))
-        assert_true(np.allclose(two.xyz[:, :] / 2., self.g.xyz))
+    def test_scale1(self, setup):
+        two = setup.g.scale(2)
+        assert len(two) == len(setup.g)
+        assert np.allclose(two.xyz[:, :] / 2., setup.g.xyz)
 
-    def test_close1(self):
+    def test_close1(self, setup):
         three = range(3)
-        for ia in self.mol:
-            i = self.mol.close(ia, R=(0.1, 1.1), idx=three)
+        for ia in setup.mol:
+            i = setup.mol.close(ia, R=(0.1, 1.1), idx=three)
             if ia < 3:
-                assert_equal(len(i[0]), 1)
+                assert len(i[0]) == 1
             else:
-                assert_equal(len(i[0]), 0)
+                assert len(i[0]) == 0
             # Will only return results from [0,1,2]
             # but the fourth atom connects to
             # the third
             if ia in [0, 2, 3]:
-                assert_equal(len(i[1]), 1)
+                assert len(i[1]) == 1
             elif ia == 1:
-                assert_equal(len(i[1]), 2)
+                assert len(i[1]) == 2
             else:
-                assert_equal(len(i[1]), 0)
+                assert len(i[1]) == 0
 
-    def test_close2(self):
+    def test_close2(self, setup):
         mol = range(3, 5)
-        for ia in self.mol:
-            i = self.mol.close(ia, R=(0.1, 1.1), idx=mol)
-            assert_equal(len(i), 2)
-        i = self.mol.close([100, 100, 100], R=0.1)
-        assert_equal(len(i), 0)
-        i = self.mol.close([100, 100, 100], R=0.1, ret_rij=True)
+        for ia in setup.mol:
+            i = setup.mol.close(ia, R=(0.1, 1.1), idx=mol)
+            assert len(i) == 2
+        i = setup.mol.close([100, 100, 100], R=0.1)
+        assert len(i) == 0
+        i = setup.mol.close([100, 100, 100], R=0.1, ret_rij=True)
         for el in i:
-            assert_equal(len(el), 0)
-        i = self.mol.close([100, 100, 100], R=0.1, ret_rij=True, ret_xyz=True)
+            assert len(el) == 0
+        i = setup.mol.close([100, 100, 100], R=0.1, ret_rij=True, ret_xyz=True)
         for el in i:
-            assert_equal(len(el), 0)
+            assert len(el) == 0
 
-    @attr('slow')
-    def test_close4(self):
+    @pytest.mark.slow
+    def test_close4(self, setup):
         # 2 * 200 ** 2
-        g = self.g * (200, 200, 1)
+        g = setup.g * (200, 200, 1)
         i = g.close(0, R=(0.1, 1.43))
-        assert_equal(len(i), 2)
-        assert_equal(len(i[0]), 1)
-        assert_equal(len(i[1]), 3)
+        print(i)
+        assert len(i) == 2
+        assert len(i[0]) == 1
+        assert len(i[1]) == 3
 
-    def test_close_within1(self):
+    def test_close_within1(self, setup):
         three = range(3)
-        for ia in self.mol:
-            shapes = [Sphere(0.1, self.mol[ia]),
-                      Sphere(1.1, self.mol[ia])]
-            i = self.mol.close(ia, R=(0.1, 1.1), idx=three)
-            ii = self.mol.within(shapes, idx=three)
-            assert_true(np.all(i[0] == ii[0]))
-            assert_true(np.all(i[1] == ii[1]))
+        for ia in setup.mol:
+            shapes = [Sphere(0.1, setup.mol[ia]),
+                      Sphere(1.1, setup.mol[ia])]
+            i = setup.mol.close(ia, R=(0.1, 1.1), idx=three)
+            ii = setup.mol.within(shapes, idx=three)
+            assert np.all(i[0] == ii[0])
+            assert np.all(i[1] == ii[1])
 
-    def test_close_within2(self):
-        g = self.g.repeat(6, 0).repeat(6, 1)
+    def test_close_within2(self, setup):
+        g = setup.g.repeat(6, 0).repeat(6, 1)
         for ia in g:
             shapes = [Sphere(0.1, g[ia]),
                       Sphere(1.5, g[ia])]
             i = g.close(ia, R=(0.1, 1.5))
             ii = g.within(shapes)
-            assert_true(np.all(i[0] == ii[0]))
-            assert_true(np.all(i[1] == ii[1]))
+            assert np.all(i[0] == ii[0])
+            assert np.all(i[1] == ii[1])
 
-    def test_close_within3(self):
-        g = self.g.repeat(6, 0).repeat(6, 1)
+    def test_close_within3(self, setup):
+        g = setup.g.repeat(6, 0).repeat(6, 1)
         args = {'ret_xyz': True, 'ret_rij': True}
         for ia in g:
             shapes = [Sphere(0.1, g[ia]),
@@ -613,178 +618,178 @@ class TestGeometry(object):
             i, xa, d = g.close(ia, R=(0.1, 1.5), **args)
             ii, xai, di = g.within(shapes, **args)
             for j in [0, 1]:
-                assert_true(np.all(i[j] == ii[j]))
-                assert_true(np.allclose(xa[j], xai[j]))
-                assert_true(np.allclose(d[j], di[j]))
+                assert np.all(i[j] == ii[j])
+                assert np.allclose(xa[j], xai[j])
+                assert np.allclose(d[j], di[j])
 
-    def test_close_sizes(self):
+    def test_close_sizes(self, setup):
         point = 0
 
         # Return index
-        idx = self.mol.close(point, R=.1)
-        assert_equal(len(idx), 1)
+        idx = setup.mol.close(point, R=.1)
+        assert len(idx) == 1
         # Return index of two things
-        idx = self.mol.close(point, R=(.1, 1.1))
-        assert_equal(len(idx), 2)
-        assert_equal(len(idx[0]), 1)
-        assert_false(isinstance(idx[0], list))
+        idx = setup.mol.close(point, R=(.1, 1.1))
+        assert len(idx) == 2
+        assert len(idx[0]) == 1
+        assert not isinstance(idx[0], list)
         # Longer
-        idx = self.mol.close(point, R=(.1, 1.1, 2.1))
-        assert_equal(len(idx), 3)
-        assert_equal(len(idx[0]), 1)
+        idx = setup.mol.close(point, R=(.1, 1.1, 2.1))
+        assert len(idx) == 3
+        assert len(idx[0]) == 1
 
         # Return index
-        idx = self.mol.close(point, R=.1, ret_xyz=True)
-        assert_equal(len(idx), 2)
-        assert_equal(len(idx[0]), 1)
-        assert_equal(len(idx[1]), 1)
-        assert_equal(idx[1].shape[0], 1) # equivalent to above
-        assert_equal(idx[1].shape[1], 3)
+        idx = setup.mol.close(point, R=.1, ret_xyz=True)
+        assert len(idx) == 2
+        assert len(idx[0]) == 1
+        assert len(idx[1]) == 1
+        assert idx[1].shape[0] == 1 # equivalent to above
+        assert idx[1].shape[1] == 3
 
         # Return index of two things
-        idx = self.mol.close(point, R=(.1, 1.1), ret_xyz=True)
+        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True)
         # [[idx-1, idx-2], [coord-1, coord-2]]
-        assert_equal(len(idx), 2)
-        assert_equal(len(idx[0]), 2)
-        assert_equal(len(idx[1]), 2)
+        assert len(idx) == 2
+        assert len(idx[0]) == 2
+        assert len(idx[1]) == 2
         # idx-1
-        assert_equal(len(idx[0][0].shape), 1)
-        assert_equal(idx[0][0].shape[0], 1)
+        assert len(idx[0][0].shape) == 1
+        assert idx[0][0].shape[0] == 1
         # idx-2
-        assert_equal(idx[0][1].shape[0], 1)
+        assert idx[0][1].shape[0] == 1
         # coord-1
-        assert_equal(len(idx[1][0].shape), 2)
-        assert_equal(idx[1][0].shape[1], 3)
+        assert len(idx[1][0].shape) == 2
+        assert idx[1][0].shape[1] == 3
         # coord-2
-        assert_equal(idx[1][1].shape[1], 3)
+        assert idx[1][1].shape[1] == 3
 
         # Return index of two things
-        idx = self.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True)
+        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True)
         # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
-        assert_equal(len(idx), 3)
-        assert_equal(len(idx[0]), 2)
-        assert_equal(len(idx[1]), 2)
+        assert len(idx) == 3
+        assert len(idx[0]) == 2
+        assert len(idx[1]) == 2
         # idx-1
-        assert_equal(len(idx[0][0].shape), 1)
-        assert_equal(idx[0][0].shape[0], 1)
+        assert len(idx[0][0].shape) == 1
+        assert idx[0][0].shape[0] == 1
         # idx-2
-        assert_equal(idx[0][1].shape[0], 1)
+        assert idx[0][1].shape[0] == 1
         # coord-1
-        assert_equal(len(idx[1][0].shape), 2)
-        assert_equal(idx[1][0].shape[1], 3)
+        assert len(idx[1][0].shape) == 2
+        assert idx[1][0].shape[1] == 3
         # coord-2
-        assert_equal(idx[1][1].shape[1], 3)
+        assert idx[1][1].shape[1] == 3
         # dist-1
-        assert_equal(len(idx[2][0].shape), 1)
-        assert_equal(idx[2][0].shape[0], 1)
+        assert len(idx[2][0].shape) == 1
+        assert idx[2][0].shape[0] == 1
         # dist-2
-        assert_equal(idx[2][1].shape[0], 1)
+        assert idx[2][1].shape[0] == 1
 
         # Return index of two things
-        idx = self.mol.close(point, R=(.1, 1.1), ret_rij=True)
+        idx = setup.mol.close(point, R=(.1, 1.1), ret_rij=True)
         # [[idx-1, idx-2], [dist-1, dist-2]]
-        assert_equal(len(idx), 2)
-        assert_equal(len(idx[0]), 2)
-        assert_equal(len(idx[1]), 2)
+        assert len(idx) == 2
+        assert len(idx[0]) == 2
+        assert len(idx[1]) == 2
         # idx-1
-        assert_equal(len(idx[0][0].shape), 1)
-        assert_equal(idx[0][0].shape[0], 1)
+        assert len(idx[0][0].shape) == 1
+        assert idx[0][0].shape[0] == 1
         # idx-2
-        assert_equal(idx[0][1].shape[0], 1)
+        assert idx[0][1].shape[0] == 1
         # dist-1
-        assert_equal(len(idx[1][0].shape), 1)
-        assert_equal(idx[1][0].shape[0], 1)
+        assert len(idx[1][0].shape) == 1
+        assert idx[1][0].shape[0] == 1
         # dist-2
-        assert_equal(idx[1][1].shape[0], 1)
+        assert idx[1][1].shape[0] == 1
 
-    def test_close_sizes_none(self):
+    def test_close_sizes_none(self, setup):
         point = [100., 100., 100.]
 
         # Return index
-        idx = self.mol.close(point, R=.1)
-        assert_equal(len(idx), 0)
+        idx = setup.mol.close(point, R=.1)
+        assert len(idx) == 0
         # Return index of two things
-        idx = self.mol.close(point, R=(.1, 1.1))
-        assert_equal(len(idx), 2)
-        assert_equal(len(idx[0]), 0)
-        assert_false(isinstance(idx[0], list))
+        idx = setup.mol.close(point, R=(.1, 1.1))
+        assert len(idx) == 2
+        assert len(idx[0]) == 0
+        assert not isinstance(idx[0], list)
         # Longer
-        idx = self.mol.close(point, R=(.1, 1.1, 2.1))
-        assert_equal(len(idx), 3)
-        assert_equal(len(idx[0]), 0)
+        idx = setup.mol.close(point, R=(.1, 1.1, 2.1))
+        assert len(idx) == 3
+        assert len(idx[0]) == 0
 
         # Return index
-        idx = self.mol.close(point, R=.1, ret_xyz=True)
-        assert_equal(len(idx), 2)
-        assert_equal(len(idx[0]), 0)
-        assert_equal(len(idx[1]), 0)
-        assert_equal(idx[1].shape[0], 0) # equivalent to above
-        assert_equal(idx[1].shape[1], 3)
+        idx = setup.mol.close(point, R=.1, ret_xyz=True)
+        assert len(idx) == 2
+        assert len(idx[0]) == 0
+        assert len(idx[1]) == 0
+        assert idx[1].shape[0] == 0 # equivalent to above
+        assert idx[1].shape[1] == 3
 
         # Return index of two things
-        idx = self.mol.close(point, R=(.1, 1.1), ret_xyz=True)
+        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True)
         # [[idx-1, idx-2], [coord-1, coord-2]]
-        assert_equal(len(idx), 2)
-        assert_equal(len(idx[0]), 2)
-        assert_equal(len(idx[1]), 2)
+        assert len(idx) == 2
+        assert len(idx[0]) == 2
+        assert len(idx[1]) == 2
         # idx-1
-        assert_equal(len(idx[0][0].shape), 1)
-        assert_equal(idx[0][0].shape[0], 0)
+        assert len(idx[0][0].shape) == 1
+        assert idx[0][0].shape[0] == 0
         # idx-2
-        assert_equal(idx[0][1].shape[0], 0)
+        assert idx[0][1].shape[0] == 0
         # coord-1
-        assert_equal(len(idx[1][0].shape), 2)
-        assert_equal(idx[1][0].shape[1], 3)
+        assert len(idx[1][0].shape) == 2
+        assert idx[1][0].shape[1] == 3
         # coord-2
-        assert_equal(idx[1][1].shape[1], 3)
+        assert idx[1][1].shape[1] == 3
 
         # Return index of two things
-        idx = self.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True)
+        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True)
         # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
-        assert_equal(len(idx), 3)
-        assert_equal(len(idx[0]), 2)
-        assert_equal(len(idx[1]), 2)
+        assert len(idx) == 3
+        assert len(idx[0]) == 2
+        assert len(idx[1]) == 2
         # idx-1
-        assert_equal(len(idx[0][0].shape), 1)
-        assert_equal(idx[0][0].shape[0], 0)
+        assert len(idx[0][0].shape) == 1
+        assert idx[0][0].shape[0] == 0
         # idx-2
-        assert_equal(idx[0][1].shape[0], 0)
+        assert idx[0][1].shape[0] == 0
         # coord-1
-        assert_equal(len(idx[1][0].shape), 2)
-        assert_equal(idx[1][0].shape[0], 0)
-        assert_equal(idx[1][0].shape[1], 3)
+        assert len(idx[1][0].shape) == 2
+        assert idx[1][0].shape[0] == 0
+        assert idx[1][0].shape[1] == 3
         # coord-2
-        assert_equal(idx[1][1].shape[0], 0)
-        assert_equal(idx[1][1].shape[1], 3)
+        assert idx[1][1].shape[0] == 0
+        assert idx[1][1].shape[1] == 3
         # dist-1
-        assert_equal(len(idx[2][0].shape), 1)
-        assert_equal(idx[2][0].shape[0], 0)
+        assert len(idx[2][0].shape) == 1
+        assert idx[2][0].shape[0] == 0
         # dist-2
-        assert_equal(idx[2][1].shape[0], 0)
+        assert idx[2][1].shape[0] == 0
 
         # Return index of two things
-        idx = self.mol.close(point, R=(.1, 1.1), ret_rij=True)
+        idx = setup.mol.close(point, R=(.1, 1.1), ret_rij=True)
         # [[idx-1, idx-2], [dist-1, dist-2]]
-        assert_equal(len(idx), 2)
-        assert_equal(len(idx[0]), 2)
-        assert_equal(len(idx[1]), 2)
+        assert len(idx) == 2
+        assert len(idx[0]) == 2
+        assert len(idx[1]) == 2
         # idx-1
-        assert_equal(len(idx[0][0].shape), 1)
-        assert_equal(idx[0][0].shape[0], 0)
+        assert len(idx[0][0].shape) == 1
+        assert idx[0][0].shape[0] == 0
         # idx-2
-        assert_equal(idx[0][1].shape[0], 0)
+        assert idx[0][1].shape[0] == 0
         # dist-1
-        assert_equal(len(idx[1][0].shape), 1)
-        assert_equal(idx[1][0].shape[0], 0)
+        assert len(idx[1][0].shape) == 1
+        assert idx[1][0].shape[0] == 0
         # dist-2
-        assert_equal(idx[1][1].shape[0], 0)
+        assert idx[1][1].shape[0] == 0
 
-    def test_sparserij1(self):
-        rij = self.g.sparserij()
+    def test_sparserij1(self, setup):
+        rij = setup.g.sparserij()
 
-    def test_bond_correct(self):
+    def test_bond_correct(self, setup):
         # Create ribbon
-        rib = self.g.tile(2, 1)
+        rib = setup.g.tile(2, 1)
         # Convert the last atom to a H atom
         rib.atom[-1] = Atom[1]
         ia = len(rib) - 1
@@ -796,144 +801,144 @@ class TestGeometry(object):
         idx, d2 = rib.close(ia, R=(.1, 1000), ret_rij=True)
         i = np.argmin(d2[1])
         d2 = d2[1][i]
-        assert_false(d == d2)
+        assert d != d2
         # Calculate actual radius
-        assert_true(d2 == (Atom[1].radius() + Atom[6].radius()))
+        assert d2 == (Atom[1].radius() + Atom[6].radius())
 
-    def test_unit_cell_estimation1(self):
+    def test_unit_cell_estimation1(self, setup):
         # Create new geometry with only the coordinates
         # and atoms
-        geom = Geometry(self.g.xyz, Atom[6])
+        geom = Geometry(setup.g.xyz, Atom[6])
         # Only check the two distances we know have sizes
         for i in range(2):
             # It cannot guess skewed axis
-            assert_false(np.allclose(geom.cell[i, :], self.g.cell[i, :]))
+            assert not np.allclose(geom.cell[i, :], setup.g.cell[i, :])
 
-    def test_unit_cell_estimation2(self):
+    def test_unit_cell_estimation2(self, setup):
         # Create new geometry with only the coordinates
         # and atoms
         s1 = SuperCell([2, 2, 2])
         g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=s1)
         g2 = Geometry(np.copy(g1.xyz))
-        assert_true(np.allclose(g1.cell, g2.cell))
+        assert np.allclose(g1.cell, g2.cell)
 
         # Assert that it correctly calculates the bond-length in the
         # directions of actual distance
         g1 = Geometry([[0, 0, 0], [1, 1, 0]], atom='H', sc=s1)
         g2 = Geometry(np.copy(g1.xyz))
         for i in range(2):
-            assert_true(np.allclose(g1.cell[i, :], g2.cell[i, :]))
-        assert_false(np.allclose(g1.cell[2, :], g2.cell[2, :]))
+            assert np.allclose(g1.cell[i, :], g2.cell[i, :])
+        assert not np.allclose(g1.cell[2, :], g2.cell[2, :])
 
-    @raises(ValueError)
-    def test_distance1(self):
-        geom = Geometry(self.g.xyz, Atom[6])
+    @pytest.mark.xfail(raises=ValueError)
+    def test_distance1(self, setup):
+        geom = Geometry(setup.g.xyz, Atom[6])
         # maxR is undefined
         d = geom.distance()
 
-    @raises(ValueError)
-    def test_distance2(self):
-        geom = Geometry(self.g.xyz, Atom[6])
+    @pytest.mark.xfail(raises=ValueError)
+    def test_distance2(self, setup):
+        geom = Geometry(setup.g.xyz, Atom[6])
         d = geom.distance(R=1.42, method='unknown_numpy_function')
 
-    def test_distance3(self):
-        geom = self.g.copy()
+    def test_distance3(self, setup):
+        geom = setup.g.copy()
         d = geom.distance()
-        assert_equal(len(d), 1)
-        assert_true(np.allclose(d, [1.42]))
+        assert len(d) == 1
+        assert np.allclose(d, [1.42])
 
-    def test_distance4(self):
-        geom = self.g.copy()
+    def test_distance4(self, setup):
+        geom = setup.g.copy()
         d = geom.distance(method=np.min)
-        assert_equal(len(d), 1)
-        assert_true(np.allclose(d, [1.42]))
+        assert len(d) == 1
+        assert np.allclose(d, [1.42])
         d = geom.distance(method=np.max)
-        assert_equal(len(d), 1)
-        assert_true(np.allclose(d, [1.42]))
+        assert len(d) == 1
+        assert np.allclose(d, [1.42])
         d = geom.distance(method='max')
-        assert_equal(len(d), 1)
-        assert_true(np.allclose(d, [1.42]))
+        assert len(d) == 1
+        assert np.allclose(d, [1.42])
 
-    def test_distance5(self):
-        geom = self.g.copy()
+    def test_distance5(self, setup):
+        geom = setup.g.copy()
         d = geom.distance(R=np.inf)
-        assert_equal(len(d), 6)
+        assert len(d) == 6
         d = geom.distance(0, R=1.42)
-        assert_equal(len(d), 1)
-        assert_true(np.allclose(d, [1.42]))
+        assert len(d) == 1
+        assert np.allclose(d, [1.42])
 
-    def test_distance6(self):
+    def test_distance6(self, setup):
         # Create a 1D chain
         geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
         geom.set_nsc([77, 1, 1])
         d = geom.distance(0)
-        assert_equal(len(d), 1)
-        assert_true(np.allclose(d, [1.]))
+        assert len(d) == 1
+        assert np.allclose(d, [1.])
 
         # Do twice
         d = geom.distance(R=2)
-        assert_equal(len(d), 2)
-        assert_true(np.allclose(d, [1., 2.]))
+        assert len(d) == 2
+        assert np.allclose(d, [1., 2.])
 
         # Do all
         d = geom.distance(R=np.inf)
-        assert_equal(len(d), 77 // 2)
+        assert len(d) == 77 // 2
         # Add one due arange not adding the last item
-        assert_true(np.allclose(d, range(1, 78 // 2)))
+        assert np.allclose(d, range(1, 78 // 2))
 
         # Create a 2D grid
         geom.set_nsc([3, 3, 1])
         d = geom.distance(R=2, tol=[.4, .3, .2, .1])
-        assert_equal(len(d), 2) # 1, sqrt(2)
+        assert len(d) == 2 # 1, sqrt(2)
         # Add one due arange not adding the last item
-        assert_true(np.allclose(d, [1, 2 ** .5]))
+        assert np.allclose(d, [1, 2 ** .5])
 
         # Create a 2D grid
         geom.set_nsc([5, 5, 1])
         d = geom.distance(R=2, tol=[.4, .3, .2, .1])
-        assert_equal(len(d), 3) # 1, sqrt(2), 2
+        assert len(d) == 3 # 1, sqrt(2), 2
         # Add one due arange not adding the last item
-        assert_true(np.allclose(d, [1, 2 ** .5, 2]))
+        assert np.allclose(d, [1, 2 ** .5, 2])
 
-    def test_distance7(self):
+    def test_distance7(self, setup):
         # Create a 1D chain
         geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
         geom.set_nsc([77, 1, 1])
         # Try with a short R and a long tolerance list
         d = geom.distance(R=1, tol=np.ones(10) * .5)
-        assert_equal(len(d), 1)
-        assert_true(np.allclose(d, [1.]))
+        assert len(d) == 1
+        assert np.allclose(d, [1.])
 
-    def test_distance8(self):
+    def test_distance8(self, setup):
         geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
         geom.set_nsc([77, 1, 1])
         d = geom.distance(0, method='min')
-        assert_equal(len(d), 1)
+        assert len(d) == 1
         d = geom.distance(0, method='median')
-        assert_equal(len(d), 1)
+        assert len(d) == 1
         d = geom.distance(0, method='mode')
-        assert_equal(len(d), 1)
+        assert len(d) == 1
 
-    def test_optimize_nsc1(self):
+    def test_optimize_nsc1(self, setup):
         # Create a 1D chain
         geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
         geom.set_nsc([77, 77, 77])
-        assert_true(np.allclose(geom.optimize_nsc(), [3, 3, 3]))
+        assert np.allclose(geom.optimize_nsc(), [3, 3, 3])
         geom.set_nsc([77, 77, 77])
-        assert_true(np.allclose(geom.optimize_nsc(1), [77, 3, 77]))
+        assert np.allclose(geom.optimize_nsc(1), [77, 3, 77])
         geom.set_nsc([77, 77, 77])
-        assert_true(np.allclose(geom.optimize_nsc([0, 2]), [3, 77, 3]))
+        assert np.allclose(geom.optimize_nsc([0, 2]), [3, 77, 3])
         geom.set_nsc([77, 77, 77])
-        assert_true(np.allclose(geom.optimize_nsc([0, 2], R=2), [5, 77, 5]))
+        assert np.allclose(geom.optimize_nsc([0, 2], R=2), [5, 77, 5])
         geom.set_nsc([1, 1, 1])
-        assert_true(np.allclose(geom.optimize_nsc([0, 2], R=2), [5, 1, 5]))
+        assert np.allclose(geom.optimize_nsc([0, 2], R=2), [5, 1, 5])
 
-    def test_argumentparser1(self):
-        self.g.ArgumentParser()
-        self.g.ArgumentParser(**self.g._ArgumentParser_args_single())
+    def test_argumentparser1(self, setup):
+        setup.g.ArgumentParser()
+        setup.g.ArgumentParser(**setup.g._ArgumentParser_args_single())
 
-    def test_argumentparser2(self, **kwargs):
-        p, ns = self.g.ArgumentParser(**kwargs)
+    def test_argumentparser2(self, setup, **kwargs):
+        p, ns = setup.g.ArgumentParser(**kwargs)
 
         # Try all options
         opts = ['--origin',
@@ -973,28 +978,27 @@ class TestGeometry(object):
         args = p.parse_args(opts, namespace=ns)
 
         if len(kwargs) == 0:
-            self.test_argumentparser2(**self.g._ArgumentParser_args_single())
+            self.test_argumentparser2(setup, **setup.g._ArgumentParser_args_single())
 
-    def test_set_sc(self):
+    def test_set_sc(self, setup):
         # Create new geometry with only the coordinates
         # and atoms
         s1 = SuperCell([2, 2, 2])
         g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=[2, 2, 1])
         g1.set_sc(s1)
-        assert_true(g1.sc == s1)
+        assert g1.sc == s1
 
-    def test_attach1(self):
-        g = self.g.attach(0, self.mol, 0, dist=1.42, axis=2)
-        g = self.g.attach(0, self.mol, 0, dist='calc', axis=2)
-        g = self.g.attach(0, self.mol, 0, dist=[0, 0, 1.42])
+    def test_attach1(self, setup):
+        g = setup.g.attach(0, setup.mol, 0, dist=1.42, axis=2)
+        g = setup.g.attach(0, setup.mol, 0, dist='calc', axis=2)
+        g = setup.g.attach(0, setup.mol, 0, dist=[0, 0, 1.42])
 
-    def test_mirror1(self):
+    def test_mirror1(self, setup):
         for plane in ['xy', 'xz', 'yz']:
-            self.g.mirror(plane)
+            setup.g.mirror(plane)
 
-    def test_pickle(self):
+    def test_pickle(self, setup):
         import pickle as p
-        s = p.dumps(self.g)
+        s = p.dumps(setup.g)
         n = p.loads(s)
-        assert_true(n == self.g)
-        assert_false(n != self.g)
+        assert n == setup.g

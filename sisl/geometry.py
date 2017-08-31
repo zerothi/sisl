@@ -2556,7 +2556,7 @@ class Geometry(SuperCellChild):
 
         # Correct atom input
         if atom is None:
-            atom = np.arange(len(self), dtype=np.int32)
+            atom = ns_.arangei(len(self))
         else:
             atom = ensure_array(atom)
 
@@ -2569,10 +2569,21 @@ class Geometry(SuperCellChild):
                                   "The internal `maxR()` is negative and thus not set. "
                                   "Set an explicit value for `R`."))
         else:
-            # In case R is infinity or some ridiculousy large number
-            # we reduce it to the maximum distance possible
-            maxR = self.sc.offset(self.nsc // 2) + np.dot([1]*3, self.cell)
-            maxR = np.sum(maxR ** 2) ** .5
+            maxR = 0.
+            # These loops could be leveraged if we look at angles...
+            for i, j, k in product([0, self.nsc[0] // 2],
+                                   [0, self.nsc[1] // 2],
+                                   [0, self.nsc[2] // 2]):
+                if i == 0 and j == 0 and k == 0:
+                    continue
+                sc = [i, j, k]
+                off = self.sc.offset(sc)
+
+                for ii, jj, kk in product([0, 1], [0, 1], [0, 1]):
+                    o = self.cell[0, :] * ii + \
+                        self.cell[1, :] * jj + \
+                        self.cell[2, :] * kk
+                    maxR = max(maxR, np.sum((off + o) ** 2) ** 0.5)
 
             if R > maxR:
                 R = maxR
