@@ -34,11 +34,11 @@ class TestQuaternion(object):
 
     def test_norm(self, setup):
         for c in 'xyz':
-            assert getattr(self, 'q'+c).norm() == 1.
+            assert getattr(setup, 'q'+c).norm() == 1.
 
     def test_degree1(self, setup):
         for c in 'xyz':
-            assert getattr(self, 'q'+c).degree == 90
+            assert getattr(setup, 'q'+c).degree == 90
 
     def test_radians1(self, setup):
         rx = setup.qx.radians

@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from nose.tools import *
+import pytest
 
 from tempfile import mkstemp, mkdtemp
 

@@ -2,8 +2,6 @@
 """
 from __future__ import print_function, division
 
-from nose.tools import *
-
 from tempfile import mkstemp, mkdtemp
 
 from sisl import Geometry, Atom, SuperCell
