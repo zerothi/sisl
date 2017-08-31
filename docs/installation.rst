@@ -33,6 +33,7 @@ up-to-date releases, this may be installed using:
 
    conda install -c zerothi sisl-dev
 
+
 Manual installation
 -------------------
 
@@ -53,3 +54,16 @@ Subsequently install sisl by
 .. code-block:: bash
 
    python setup.py install --prefix=<prefix>
+
+
+Testing your installation
+-------------------------
+
+It may be good practice to test your installation using the shipped test-suite.
+
+To test `sisl`, you are also required having the `pytest` package installed.
+Then to test the installation simply run:
+
+.. code-block:: bash
+
+    pytest sisl

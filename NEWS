@@ -1,6 +1,8 @@
 0.8.6
 =====
 
+- Changed internal testing scheme to `pytest`
+
 - Lots of bug-fixes here and there
 
 - Geometry files used in the command-line has updated these arguments:
