@@ -9,8 +9,6 @@ try:
     from . import _siesta
     found_module = True
 except Exception as e:
-    import sys
-    print('sisl.io.siesta: cannot load fortran sources compatibility', file=sys.stderr)
     found_module = False
 
 # Import sile objects
