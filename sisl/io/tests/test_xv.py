@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from nose.tools import *
+import pytest
 
 from tempfile import mkstemp, mkdtemp
 
@@ -13,19 +13,26 @@ import numpy as np
 
 import common as tc
 
+_C = type('Temporary', (object, ), {})
+
+
+def setup_module(module):
+    tc.setup(module._C)
+
+
+def teardown_module(module):
+    tc.teardown(module._C)
+
 
 class TestXV(object):
     # Base test class for MaskedArrays.
 
-    setUp = tc.setUp
-    tearDown = tc.tearDown
-
     def test_xv1(self):
-        f = osp.join(self.d, 'gr.XV')
-        self.g.write(XVSileSiesta(f, 'w'))
+        f = osp.join(_C.d, 'gr.XV')
+        _C.g.write(XVSileSiesta(f, 'w'))
         g = XVSileSiesta(f).read_geometry()
 
         # Assert they are the same
-        assert_true(np.allclose(g.cell, self.g.cell))
-        assert_true(np.allclose(g.xyz, self.g.xyz))
-        assert_true(self.g.atom.equal(g.atom, R=False))
+        assert np.allclose(g.cell, _C.g.cell)
+        assert np.allclose(g.xyz, _C.g.xyz)
+        assert _C.g.atom.equal(g.atom, R=False)

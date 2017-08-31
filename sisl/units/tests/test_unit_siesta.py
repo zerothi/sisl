@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from nose.tools import *
+import pytest
 
 from sisl.units.siesta import *
 
@@ -8,16 +8,16 @@ from sisl.units.siesta import *
 class TestUnits(object):
 
     def test_group(self):
-        assert_equal(unit_group('kg'), 'mass')
-        assert_equal(unit_group('eV'), 'energy')
-        assert_equal(unit_group('N'), 'force')
+        assert unit_group('kg') == 'mass'
+        assert unit_group('eV') == 'energy'
+        assert unit_group('N') == 'force'
 
     def test_unit_convert(self):
-        assert_almost_equal(unit_convert('kg', 'g'), 1.e3)
-        assert_almost_equal(unit_convert('eV', 'J'), 1.60219e-19)
-        assert_almost_equal(unit_convert('J', 'eV'), 1./1.60219e-19)
+        assert pytest.approx(unit_convert('kg', 'g')) == 1.e3
+        assert pytest.approx(unit_convert('eV', 'J')) == 1.60219e-19
+        assert pytest.approx(unit_convert('J', 'eV')) == 1/1.60219e-19
 
     def test_default(self):
-        assert_equal(unit_default('mass'), 'amu')
-        assert_equal(unit_default('energy'), 'Ry')
-        assert_equal(unit_default('force'), 'Ry/Bohr')
+        assert unit_default('mass') == 'amu'
+        assert unit_default('energy') == 'Ry'
+        assert unit_default('force') == 'Ry/Bohr'

@@ -13,6 +13,14 @@ import numpy as np
 
 
 def setUp(self):
+    return self
+
+
+def tearDown(self):
+    return self
+
+
+def setup(self):
     # Create temporary folder
     self.d = mkdtemp()
     alat = 1.42
@@ -43,7 +51,7 @@ def setUp(self):
     self.ham.construct([(0.1, 1.5), (0.1, 2.7)])
 
 
-def tearDown(self):
+def teardown(self):
     # Do each removal separately
     try:
         shutil.rmtree(self.d)

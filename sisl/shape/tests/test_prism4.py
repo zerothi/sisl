@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
-from nose.tools import *
-from nose.plugins.attrib import attr
+import pytest
 
 import math as m
 import numpy as np
@@ -9,7 +8,7 @@ import numpy as np
 from sisl.shape.prism4 import *
 
 
-@attr('shape')
+@pytest.mark.shape
 class TestPrism4(object):
 
     def test_create_cuboid(self):
@@ -23,22 +22,22 @@ class TestPrism4(object):
 
     def test_vol1(self):
         cube = Cuboid([1.0]*3)
-        assert_true(cube.volume == 1.)
+        assert cube.volume == 1.
         cube = Cuboid([1., 2., 3.])
-        assert_true(cube.volume == 6.)
+        assert cube.volume == 6.
 
     def test_within1(self):
         cube = Cuboid([1.0]*3)
-        assert_false(cube.within([-1.]*3))
-        assert_false(cube.within([[-1.]*3, [-1., 0.5, 0.2]]).any())
-        assert_true(cube.within([[-1.]*3,
-                                 [-1., 0.5, 0.2],
-                                 [.1, 0.5, 0.2]]).any())
+        assert not cube.within([-1.]*3)
+        assert not cube.within([[-1.]*3, [-1., 0.5, 0.2]]).any()
+        assert cube.within([[-1.]*3,
+                            [-1., 0.5, 0.2],
+                            [.1, 0.5, 0.2]]).any()
 
     def test_iwithin1(self):
         cube = Cuboid([1.0]*3)
-        assert_false(cube.iwithin([-1.]*3) == [0])
-        assert_false(cube.iwithin([[-1.]*3, [-1., 0.5, 0.2]]) == [0, 1])
-        assert_true((cube.iwithin([[-1.]*3,
-                                   [-1., 0.5, 0.2],
-                                   [.1, 0.5, 0.2]]) == [0, 1, 2]).any())
+        assert not cube.iwithin([-1.]*3) == [0]
+        assert not cube.iwithin([[-1.]*3, [-1., 0.5, 0.2]]) == [0, 1]
+        assert (cube.iwithin([[-1.]*3,
+                              [-1., 0.5, 0.2],
+                              [.1, 0.5, 0.2]]) == [0, 1, 2]).any()

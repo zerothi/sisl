@@ -1,8 +1,6 @@
 from __future__ import print_function, division
 
 import pytest
-from nose.tools import *
-from nose.plugins.attrib import attr
 
 import math as m
 import numpy as np

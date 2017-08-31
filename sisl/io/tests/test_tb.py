@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
-from nose.tools import *
-from nose.plugins.attrib import attr
+import pytest
 
 from tempfile import mkstemp, mkdtemp
 import warnings as warn
@@ -16,27 +15,32 @@ from scipy.sparse import SparseWarning
 
 import common as tc
 
+_C = type('Temporary', (object, ), {})
 
+
+def setup_module(module):
+    tc.setup(module._C)
+
+
+def teardown_module(module):
+    tc.teardown(module._C)
+
+
+@pytest.mark.io
 class TestHAM(object):
-    # Base test class for MaskedArrays.
-
-    setUp = tc.setUp
-    tearDown = tc.tearDown
 
     def test_ham1(self):
-        f = osp.join(self.d, 'gr.ham')
-        self.g.write(HamiltonianSile(f, 'w'))
+        f = osp.join(_C.d, 'gr.ham')
+        _C.g.write(HamiltonianSile(f, 'w'))
         g = HamiltonianSile(f).read_geometry()
 
         # Assert they are the same
-        assert_true(np.allclose(g.cell, self.g.cell))
-        assert_true(np.allclose(g.xyz, self.g.xyz))
-        assert_true(g.atom.equal(self.g.atom, R=False))
+        assert np.allclose(g.cell, _C.g.cell)
+        assert np.allclose(g.xyz, _C.g.xyz)
+        assert g.atom.equal(_C.g.atom, R=False)
 
     def test_ham2(self):
-        with warn.catch_warnings():
-            warn.simplefilter('ignore', category=SparseWarning)
-            f = osp.join(self.d, 'gr.ham')
-            self.ham.write(HamiltonianSile(f, 'w'))
-            ham = HamiltonianSile(f).read_hamiltonian()
-            assert_true(ham.spsame(self.ham))
+        f = osp.join(_C.d, 'gr.ham')
+        _C.ham.write(HamiltonianSile(f, 'w'))
+        ham = HamiltonianSile(f).read_hamiltonian()
+        assert ham.spsame(_C.ham)
