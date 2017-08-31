@@ -9,6 +9,7 @@ import numpy as np
 from sisl import Sphere
 from sisl import Geometry, Atom, SuperCell
 
+
 @pytest.fixture
 def setup():
     class t():
@@ -22,12 +23,13 @@ def setup():
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
                               atom=C, sc=self.sc)
-            
+
             C = Atom(Z=6, R=bond * 1.01, orbs=2)
             self.g2 = Geometry(np.array([[0., 0., 0.],
                                          [1., 0., 0.]], np.float64) * bond,
                                atom=C, sc=self.sc)
     return t()
+
 
 @pytest.mark.geometry
 class TestGeometryReturn(object):

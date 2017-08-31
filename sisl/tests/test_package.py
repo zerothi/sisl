@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
-from nose.tools import *
-from nose.plugins.attrib import attr
+import pytest
 
 import math as m
 import numpy as np
@@ -9,7 +8,7 @@ import numpy as np
 import sisl
 
 
-@attr('version')
+@pytest.mark.version
 class TestVersion(object):
 
     def test_version(self):

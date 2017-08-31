@@ -11,7 +11,7 @@ from sisl._help import array_fill_repeat, get_dtype
 class TestHelp(object):
 
     def test_array_fill_repeat1(self):
-        assert (array_fill_repeat([1], 20).shape[0] == 20
+        assert array_fill_repeat([1], 20).shape[0] == 20
         assert array_fill_repeat([1, 2], 20).shape[0] == 20
         assert array_fill_repeat(1, 20).shape[0] == 20
 

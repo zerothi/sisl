@@ -7,6 +7,7 @@ import numpy as np
 
 from sisl import Grid, SuperCell
 
+
 @pytest.fixture
 def setup():
     class t():

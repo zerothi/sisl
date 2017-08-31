@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
-from nose.tools import *
-from nose.plugins.attrib import attr
+import pytest
 
 import time
 import numpy as np
@@ -9,7 +8,7 @@ import numpy as np
 from sisl import TimeSelector
 
 
-@attr('selector')
+@pytest.mark.selector
 class TestSelector(object):
 
     def sleep(self, *args):
@@ -31,15 +30,15 @@ class TestSelector(object):
         while sel.best is None:
             sel()
             i += 1
-        assert_equal(i, 3)
-        assert_equal(sel.best.__name__, "1")
+        assert i == 3
+        assert sel.best.__name__ == "1"
 
     def test_selector2(self):
         sel = TimeSelector(self.sleep(1, 2, 3))
 
         while sel.best is None:
             sel()
-        assert_equal(sel.best.__name__, "1")
+        assert sel.best.__name__ == "1"
 
     def test_selector3(self):
         sel = TimeSelector(self.sleep(3, 2, 1))
@@ -48,8 +47,8 @@ class TestSelector(object):
         while sel.best is None:
             sel()
             i += 1
-        assert_equal(i, 3)
-        assert_equal(sel.best.__name__, "1")
+        assert i == 3
+        assert sel.best.__name__ == "1"
 
     def test_ordered1(self):
         sel = TimeSelector(self.sleep(1, 2, 3), True)
@@ -58,9 +57,9 @@ class TestSelector(object):
         while sel.best is None:
             sel()
             i += 1
-        assert_equal(i, 2)
-        assert_equal(sel.best.__name__, "1")
-        assert_equal(sel.performances[-1], None)
+        assert i == 2
+        assert sel.best.__name__ == "1"
+        assert sel.performances[-1] is None
 
     def test_ordered2(self):
         sel = TimeSelector(self.sleep(1, 2, 3), True)
@@ -69,9 +68,9 @@ class TestSelector(object):
         while sel.best is None:
             sel()
             i += 1
-        assert_equal(i, 2)
-        assert_equal(sel.best.__name__, "1")
-        assert_equal(sel.performances[-1], None)
+        assert i == 2
+        assert sel.best.__name__ == "1"
+        assert sel.performances[-1] is None
 
         sel.prepend(self.sleep(2))
 
@@ -79,18 +78,18 @@ class TestSelector(object):
         while sel.best is None:
             sel()
             i += 1
-        assert_equal(i, 1)
-        assert_equal(sel.best.__name__, "1")
-        assert_equal(sel.performances[-1], None)
+        assert i == 1
+        assert sel.best.__name__ == "1"
+        assert sel.performances[-1] is None
 
         sel.reset()
         i = 0
         while sel.best is None:
             sel()
             i += 1
-        assert_equal(i, 3)
-        assert_equal(sel.best.__name__, "1")
-        assert_equal(sel.performances[-1], None)
+        assert i == 3
+        assert sel.best.__name__ == "1"
+        assert sel.performances[-1] is None
 
     def test_select1(self):
         sel = TimeSelector(self.sleep(1, 2, 3))
@@ -99,12 +98,12 @@ class TestSelector(object):
         while sel.best is None:
             sel()
             i += 1
-        assert_equal(i, 3)
-        assert_equal(sel.best.__name__, "1")
+        assert i == 3
+        assert sel.best.__name__ == "1"
 
         sel.select_best("2")
-        assert_equal(sel.best.__name__, "2")
+        assert sel.best.__name__ == "2"
 
         idx, routine = sel.next()
-        assert_equal(idx, -1)
-        assert_equal(routine.__name__, "2")
+        assert idx == -1
+        assert routine.__name__ == "2"
