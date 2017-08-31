@@ -2267,16 +2267,17 @@ class Geometry(SuperCellChild):
              `False`, return only the first orbital corresponding to the atom,
              `True`, returns list of the full atom
         """
+        ia = ns_.asarrayi(ia)
         if not all:
-            ia = np.asarray(ia)
             return self.firsto[ia % self.na] + (ia // self.na) * self.no
-        ia = np.asarray(ia, np.int32)
-        ob = self.a2o(ia)
-        oe = self.a2o(ia + 1)
+        off = (ia // self.na) * self.no
+        ia = ia % self.na
+        ob = self.firsto[ia] + off
+        oe = self.lasto[ia] + off + 1
 
         # Create ranges
         if isinstance(ob, Integral):
-            return np.arange(ob, oe, dtype=np.int32)
+            return ns_.arangei(ob, oe)
 
         return array_arange(ob, oe)
 
