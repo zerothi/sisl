@@ -39,6 +39,9 @@ install:
   - if [[ ${COVERAGE:-false} != false ]]; then pip install coverage ; fi
   - pip install pytest
   - python setup.py install
+# Regardless of system, we will make a soft-link to ensure that the binary
+# files are also tested
+  - for f in $(find build -name "*.so") ; do n=${f#*/} ; n=${n#*/} ; ln -s $f $n ; done
 
 script:
   - if [[ ${COVERAGE:-false} != false ]]; then coverage run --source sisl -m py.test ; else pytest --pyargs sisl ; fi
