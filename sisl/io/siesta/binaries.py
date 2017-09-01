@@ -270,7 +270,7 @@ class _GFSileSiesta(SileBinSiesta):
             'ne': NE,
         }
 
-        self._E = np.copy(E)
+        self._E = np.copy(E) * eV2Ry
         self._k = np.copy(k)
 
         # Ensure it is open
@@ -279,7 +279,7 @@ class _GFSileSiesta(SileBinSiesta):
 
         # Now write to it...
         _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,
-                                bloch, 0, mu, k.T, w, E, **sizes)
+                                bloch, 0, mu, k.T, w, self._E, **sizes)
 
     def write_gf_hs(self, H, S):
         """ Write the current energy, k-point and H and S to the file
@@ -295,7 +295,7 @@ class _GFSileSiesta(SileBinSiesta):
         self._ik += 1
         self._ie = 1
         no = len(H)
-        _siesta.write_gf_hs(self._iu, self._ik, self._ie, self._E[self._ie-1] * eV2Ry,
+        _siesta.write_gf_hs(self._iu, self._ik, self._ie, self._E[self._ie-1],
                             H.T, S.T, no_u=no)
 
     def write_gf_se(self, SE):
@@ -309,7 +309,7 @@ class _GFSileSiesta(SileBinSiesta):
         # Step e
         no = len(SE)
         _siesta.write_gf_se(self._iu, self._ik, self._ie,
-                            self._E[self._ie-1] * eV2Ry, SE.T, no_u=no)
+                            self._E[self._ie-1], SE.T, no_u=no)
         self._ie += 1
 
     def __iter__(self):
@@ -320,8 +320,8 @@ class _GFSileSiesta(SileBinSiesta):
         bool, list of float, float
         """
         for k in self._k:
-            yield True, k, self._E[0]
-            for E in self._E[1:]:
+            yield True, k, self._E[0] * Ry2eV
+            for E in self._E[1:] * Ry2eV:
                 yield False, k, E
         # We will automatically close once we hit the end
         self._close_gf()

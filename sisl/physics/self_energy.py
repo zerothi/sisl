@@ -64,9 +64,9 @@ class SemiInfinite(SelfEnergy):
         """
         self.eta = eta
         if bloch is None:
-            self.bloch = np.ones([3], np.int32)
+            self.bloch = ns_.onesi([3])
         else:
-            self.bloch = np.array(bloch, np.int32)
+            self.bloch = ns_.arrayi(bloch)
 
         # Determine whether we are in plus/minus direction
         if infinite.startswith('+'):
@@ -103,7 +103,7 @@ class SemiInfinite(SelfEnergy):
         semi-infinite direction.
         """
         if k is None:
-            k = np.zeros([3], np.float64)
+            k = ns_.zerosd([3])
         else:
             k = self._fill(k, np.float64)
             k[self.semi_inf] = 0.
@@ -175,7 +175,10 @@ class RecursiveSI(SemiInfinite):
         """
         if eta is None:
             eta = self.eta
-        E = E + 1j * eta
+        try:
+            E = E.real + 1j * eta
+        except:
+            E = E + 1j * eta
 
         # Get k-point
         k = self._correct_k(k)
@@ -183,19 +186,15 @@ class RecursiveSI(SemiInfinite):
         if dtype is None:
             dtype = np.complex128
 
-        # It could be that we are dealing with a
-        # non-orthogonal system
         sp0 = self.spgeom0
         sp1 = self.spgeom1
-        kw = {'dtype': dtype,
-              'format': 'array'}
         def herm(m):
             return np.transpose(np.conjugate(m))
 
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        GB = sp0.Sk(k, **kw) * E - sp0.Pk(k, **kw)
+        GB = (sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)).asformat('array')
 
         M = sp1.Pk(k, dtype=dtype)
         S = sp1.Sk(k, dtype=dtype)
@@ -204,7 +203,7 @@ class RecursiveSI(SemiInfinite):
         del M, S
 
         # Surface Green function (self-energy)
-        GS = np.zeros_like(GB)
+        GS = np.copy(GB)
 
         solve = ns_.solve
 
@@ -217,7 +216,7 @@ class RecursiveSI(SemiInfinite):
 
             tmp = dot(alpha, tB)
             # Update surface self-energy
-            GS += tmp
+            GS -= tmp
             # Update bulk Green function
             GB -= tmp + dot(beta, tA)
 
