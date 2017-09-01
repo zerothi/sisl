@@ -9,7 +9,7 @@ import numpy as np
 import warnings as warn
 
 # Import sile objects
-from sisl._help import _str
+from sisl._help import _str, ensure_array
 from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
@@ -286,11 +286,11 @@ class fdfSileSiesta(SileSiesta):
         """ Returns the arguments following the keyword in the FDF file """
         k = key.lower()
         f, fdf = self.step_to(k, case=False)
-        if force and not f:
-            # The user requests that the block *MUST* be found
-            raise SileError(('Requested forced block could not be found: ' +
-                             str(key) + '.'), self)
         if not f:
+            if force:
+                # The user requests that the block *MUST* be found
+                raise SileError(('Requested forced block could not be found: ' +
+                                 str(key) + '.'), self)
             return False, []  # not found
 
         # If the block is piped in from another file...
@@ -304,6 +304,11 @@ class fdfSileSiesta(SileSiesta):
                     li.append(line.replace('\n', ''))
                     line = sub_fdf.readline()
             return True, li
+
+        # Check whether we have accidentially found the endblock construct
+        if self.line_has_key(fdf, '%endblock', case=False):
+            # Return a re-read
+            return self._read_block(key, force=force)
 
         li = []
         while True:
@@ -431,22 +436,15 @@ class fdfSileSiesta(SileSiesta):
         # If the user requests a shifted geometry
         # we correct for this
         origo = np.zeros([3], np.float64)
-        run = 'origin' in kwargs
-        if run:
-            run = kwargs['origin']
-        if run:
-            f, lor = self._read_block('AtomicCoordinatesOrigin')
-            if f:
+        f, lor = self._read_block('AtomicCoordinatesOrigin')
+        if f:
+            if kwargs.get('origin', True):
                 origo = ensure_array(map(float, lor[0].split()[:3])) * s
         # Origo cannot be interpreted with fractional coordinates
         # hence, it is not transformed.
 
         # Read atom block
-        f, atms = self._read_block(
-            'AtomicCoordinatesAndAtomicSpecies', force=True)
-        if not f:
-            raise ValueError(
-                'Could not find AtomicCoordinatesAndAtomicSpecies in fdf file.')
+        f, atms = self._read_block('AtomicCoordinatesAndAtomicSpecies', force=True)
 
         # Read number of atoms and block
         f, l = self._read('NumberOfAtoms')

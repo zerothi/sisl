@@ -36,11 +36,13 @@ matrix:
 
 install:
   - conda install hdf4 libnetcdf
-  - pip install coverage pytest pytest-cov
+  - if [[ ${COVERAGE:-false} != false ]]; then pip install coverage ; fi
+  - pip install pytest
   - python setup.py install
 
 script:
-  - if [[ ${COVERAGE:-false} != false ]]; then pytest --cov=sisl sisl ; else pytest sisl ; fi
+  - pytest sisl
+  - if [[ ${COVERAGE:-false} != false ]]; then coverage run --source sisl -m py.test ; fi
 
 after_success:
   - if [[ ${COVERAGE:-false} != false ]]; then bash <(curl -s https://codecov.io/bash) ; fi
