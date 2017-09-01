@@ -27,6 +27,7 @@ class TestAtom(object):
         assert setup.C == Atom['C']
         assert setup.C == Atom[setup.C]
         assert setup.C == Atom[Atom['C']]
+        assert setup.C == Atom(Atom['C'])
         assert setup.C == Atom[Atom(6)]
         assert setup.Au == Atom['Au']
         assert setup.Au != setup.C
@@ -95,6 +96,10 @@ class TestAtom(object):
     def test12(self):
         a = Atom(1.2)
 
+    @pytest.mark.xfail(raises=ValueError)
+    def test_radius1(self, setup):
+        setup.PT.radius(1, method='unknown')
+
     def test_tag1(self):
         a = Atom(6, tag='my-tag')
         assert a.tag == 'my-tag'
@@ -134,6 +139,14 @@ class TestAtoms(object):
         assert atom[0].maxR() == 1.45
         for ia in range(len(atom)):
             assert atom.maxR(True)[ia] == 1.45
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_create3(self):
+        Atoms([{Atom(4)}])
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_create4(self):
+        Atoms({Atom(4)})
 
     def test_len(self, setup):
         atom = Atoms([setup.C, setup.C3, setup.Au])
@@ -197,6 +210,17 @@ class TestAtoms(object):
         assert atom[2] == Atom('C', tag='DZ')
         assert atom[3] == Atom('C')
 
+        atom = atom1.append(Atom(6, tag='DZ'))
+        assert atom[0] == Atom('C')
+        assert atom[1] == Atom('C')
+        assert atom[2] == Atom('C', tag='DZ')
+
+        atom = atom1.append([Atom(6, tag='DZ'), Atom[6]])
+        assert atom[0] == Atom('C')
+        assert atom[1] == Atom('C')
+        assert atom[2] == Atom('C', tag='DZ')
+        assert atom[3] == Atom('C')
+
     def test_compare1(self):
         # Add new atoms to the set
         atom1 = Atoms([Atom('C', tag='DZ'), Atom[6]])
@@ -252,6 +276,11 @@ class TestAtoms(object):
         assert atom[0] == Atom['Au']
         assert len(atom) == 1
         assert len(atom.atom) == 2
+
+    def test_reorder2(self):
+        atom1 = Atoms(['C', 'Au'])
+        atom2 = atom1.reorder()
+        assert atom1 == atom2
 
     @pytest.mark.xfail(raises=KeyError)
     def test_index1(self):

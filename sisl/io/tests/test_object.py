@@ -38,6 +38,9 @@ def _my_intersect(a, b):
 @pytest.mark.io
 class TestObject(object):
 
+    def test_siesta_sources(self):
+        pytest.importorskip("sisl.io.siesta._siesta")
+
     def test_cube(self):
         sile1 = gs('test.cube')
         sile2 = gs('test.CUBE')

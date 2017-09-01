@@ -6,7 +6,8 @@ from __future__ import print_function
 import numpy as np
 
 try:
-    from . import _siesta
+    # Do full path import
+    import sisl.io.siesta._siesta as _siesta
     found_module = True
 except Exception as e:
     found_module = False
@@ -234,7 +235,7 @@ class _GFSileSiesta(SileBinSiesta):
         except:
             pass
 
-    def write_gf_header(self, E, bz, obj, mu=0.):
+    def write_header(self, E, bz, obj, mu=0.):
         """ Write to the binary file the header of the file
 
         Parameters
@@ -254,6 +255,8 @@ class _GFSileSiesta(SileBinSiesta):
         no_u = obj.geom.no
         xa = obj.geom.xyz * Ang2Bohr
         # The lasto in siesta requires lasto(0) == 0
+        # and secondly, the Python index to fortran
+        # index makes firsto behave like fortran lasto
         lasto = obj.geom.firsto
         bloch = ns_.onesi(3)
         mu = mu * eV2Ry
@@ -281,7 +284,7 @@ class _GFSileSiesta(SileBinSiesta):
         _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,
                                 bloch, 0, mu, k.T, w, self._E, **sizes)
 
-    def write_gf_hs(self, H, S):
+    def write_hamiltonian(self, H, S):
         """ Write the current energy, k-point and H and S to the file
 
         Parameters
@@ -298,7 +301,7 @@ class _GFSileSiesta(SileBinSiesta):
         _siesta.write_gf_hs(self._iu, self._ik, self._ie, self._E[self._ie-1],
                             H.T * eV2Ry, S.T, no_u=no)
 
-    def write_gf_se(self, SE):
+    def write_self_energy(self, SE):
         """ Write the current energy, k-point and H and S to the file
 
         Parameters
@@ -306,10 +309,10 @@ class _GFSileSiesta(SileBinSiesta):
         SE : matrix
            a square matrix corresponding to the self-energy (Green function)
         """
-        # Step e
         no = len(SE)
         _siesta.write_gf_se(self._iu, self._ik, self._ie,
                             self._E[self._ie-1], SE.T * eV2Ry, no_u=no)
+        # Step energy counter
         self._ie += 1
 
     def __iter__(self):

@@ -151,7 +151,7 @@ class RecursiveSI(SemiInfinite):
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep=True)
 
-    def __call__(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=True):
+    def __call__(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=False):
         r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
         Parameters
@@ -169,9 +169,9 @@ class RecursiveSI(SemiInfinite):
           the resulting data type
         eps : float, optional
           convergence criteria for the recursion
-        bulk : bool
+        bulk : bool, optional
           if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else
-          :math:`\boldsymbol\Sigma` is returned.
+          :math:`\boldsymbol\Sigma` is returned (default).
         """
         if eta is None:
             eta = self.eta
@@ -205,7 +205,10 @@ class RecursiveSI(SemiInfinite):
             del M, S
 
         # Surface Green function (self-energy)
-        GS = np.copy(GB)
+        if bulk:
+            GS = np.copy(GB)
+        else:
+            GS = np.zeros_like(GB)
 
         solve = ns_.solve
 
@@ -232,6 +235,6 @@ class RecursiveSI(SemiInfinite):
                 del tA, tB, alpha, beta, GB
                 if bulk:
                     return GS
-                return (sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)).asformat('array') - GS
+                return - GS
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')
