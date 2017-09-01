@@ -105,7 +105,7 @@ class SparseGeometry(object):
         """
         if dtype is None:
             dtype = self.dtype
-        new = self.__class__(self.geom, self.dim, dtype, 1, **self._cls_kwargs())
+        new = self.__class__(self.geom.copy(), self.dim, dtype, 1, **self._cls_kwargs())
         # Be sure to copy the content of the SparseCSR object
         new._csr = self._csr.copy(dtype=dtype)
         return new
@@ -1247,8 +1247,8 @@ class SparseOrbital(SparseGeometry):
         new = ns_.arrayi(new)
 
         # Assert that there are only unique values
-        assert len(np.unique(old)) == len(old), "non-unique values in set_nsc"
-        assert len(np.unique(new)) == len(new), "non-unique values in set_nsc"
+        assert len(np.unique(old)) == len(old), "non-unique values in old set_nsc"
+        assert len(np.unique(new)) == len(new), "non-unique values in new set_nsc"
 
         # Remove all elements where old == new
         # I.e. this should prevent us doing unnecessary work
@@ -1269,7 +1269,7 @@ class SparseOrbital(SparseGeometry):
         delete = ns_.arangei(sc.n_s * self.no, (max_n + 1) * self.no)
         self._csr.delete_columns(delete)
 
-        self.geom.set_nsc(*args, **kwargs)
+        self.geom.sc.set_nsc(*args, **kwargs)
 
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse orbital model into different parts.

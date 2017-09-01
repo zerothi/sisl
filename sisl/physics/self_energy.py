@@ -8,6 +8,7 @@ from functools import partial
 
 import numpy as np
 from numpy import dot
+from sisl.utils.ranges import array_arange
 import sisl._numpy_scipy as ns_
 
 __all__ = ['SelfEnergy', 'SemiInfinite']
@@ -34,6 +35,10 @@ class SelfEnergy(object):
     def __call__(self, *args, **kwargs):
         """ Return the calculated self-energy """
         raise NotImplementedError
+
+    def __getattr__(self, attr):
+        """ Overload attributes from the hosting object """
+        pass
 
 
 class SemiInfinite(SelfEnergy):
@@ -108,6 +113,10 @@ class SemiInfinite(SelfEnergy):
 class RecursiveSI(SemiInfinite):
     """ Self-energy object using the Lopez-Sancho Lopez-Sancho algorithm """
 
+    def __getattr__(self, attr):
+        """ Overload attributes from the hosting object """
+        return getattr(self.spgeom0, attr)
+
     def _setup(self, spgeom):
         """ Setup the Lopez-Sancho internals for easy axes """
 
@@ -135,15 +144,15 @@ class RecursiveSI(SemiInfinite):
         nsc = [None] * 3
         nsc[self.semi_inf] = self.semi_inf_dir
         # Get all supercell indices that we should delete
-        idx = np.delete(n_.arangei(n_s),
-                        n_.arrayi(spgeom.geom.sc.sc_index(nsc)))
+        idx = np.delete(ns_.arangei(n_s),
+                        ns_.arrayi(spgeom.geom.sc.sc_index(nsc)))
 
         cols = array_arange(idx * n, (idx + 1) * n)
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep=True)
 
-    def __call__(self, E, k=None, eta=None, dtype=None, eps=1e-14):
-        """ Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
+    def __call__(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=True):
+        r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
         Parameters
         ----------
@@ -160,6 +169,9 @@ class RecursiveSI(SemiInfinite):
           the resulting data type
         eps : float, optional
           convergence criteria for the recursion
+        bulk : bool
+          if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else
+          :math:`\boldsymbol\Sigma` is returned.
         """
         if eta is None:
             eta = self.eta
@@ -216,6 +228,10 @@ class RecursiveSI(SemiInfinite):
             # Convergence criteria, it could be stricter
             if np.amax(np.abs(alpha) + np.abs(beta)) < eps:
                 # Return the pristine Green function
-                return GS
+                del tA, tB, GB, alpha, beta
+                tmp = ns_.inv_destroy(GS)
+                if bulk:
+                    return tmp
+                return (sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)).asformat('array') - tmp
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')

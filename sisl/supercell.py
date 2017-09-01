@@ -359,16 +359,30 @@ class SuperCell(object):
 
         Returns the integer for the supercell
         """
+        def _assert(m, v):
+            if np.abs(v) > m:
+                raise ValueError("Requesting a non-existing supercell index")
+        hsc = self.nsc // 2
+
         if isinstance(sc_off[0], np.ndarray):
+            _assert(hsc[0], sc_off[0])
+            _assert(hsc[1], sc_off[1])
+            _assert(hsc[2], sc_off[2])
             return self._isc_off[sc_off[:, 0], sc_off[:, 1], sc_off[:, 2]]
         elif isinstance(sc_off[0], (tuple, list)):
             # We are dealing with a list of lists
             sc_off = np.asarray(sc_off)
+            _assert(hsc[0], sc_off[0])
+            _assert(hsc[1], sc_off[1])
+            _assert(hsc[2], sc_off[2])
             return self._isc_off[sc_off[:, 0], sc_off[:, 1], sc_off[:, 2]]
 
         # Fall back to the other routines
         sc_off = self._fill_sc(sc_off)
         if sc_off[0] is not None and sc_off[1] is not None and sc_off[2] is not None:
+            _assert(hsc[0], sc_off[0])
+            _assert(hsc[1], sc_off[1])
+            _assert(hsc[2], sc_off[2])
             return self._isc_off[sc_off[0], sc_off[1], sc_off[2]]
 
         # We build it because there are 'none'
