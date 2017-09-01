@@ -296,7 +296,7 @@ class _GFSileSiesta(SileBinSiesta):
         self._ie = 1
         no = len(H)
         _siesta.write_gf_hs(self._iu, self._ik, self._ie, self._E[self._ie-1],
-                            H.T, S.T, no_u=no)
+                            H.T * eV2Ry, S.T, no_u=no)
 
     def write_gf_se(self, SE):
         """ Write the current energy, k-point and H and S to the file
@@ -309,7 +309,7 @@ class _GFSileSiesta(SileBinSiesta):
         # Step e
         no = len(SE)
         _siesta.write_gf_se(self._iu, self._ik, self._ie,
-                            self._E[self._ie-1], SE.T, no_u=no)
+                            self._E[self._ie-1], SE.T * eV2Ry, no_u=no)
         self._ie += 1
 
     def __iter__(self):

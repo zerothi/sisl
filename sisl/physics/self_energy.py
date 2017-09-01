@@ -176,9 +176,9 @@ class RecursiveSI(SemiInfinite):
         if eta is None:
             eta = self.eta
         try:
-            E = E.real + 1j * eta
+            Z = E.real + 1j * eta
         except:
-            E = E + 1j * eta
+            Z = E + 1j * eta
 
         # Get k-point
         k = self._correct_k(k)
@@ -188,19 +188,21 @@ class RecursiveSI(SemiInfinite):
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
-        def herm(m):
-            return np.transpose(np.conjugate(m))
 
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        GB = (sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)).asformat('array')
+        GB = (sp0.Sk(k, dtype=dtype) * Z - sp0.Pk(k, dtype=dtype)).asformat('array')
 
-        M = sp1.Pk(k, dtype=dtype)
-        S = sp1.Sk(k, dtype=dtype)
-        alpha = (M - S * E).asformat('array')
-        beta  = (M.getH() - S.getH() * E).asformat('array')
-        del M, S
+        if sp1.orthogonal:
+            alpha = sp1.Pk(k, dtype=dtype, format='array')
+            beta  = np.conjugate(np.transpose(alpha))
+        else:
+            M = sp1.Pk(k, dtype=dtype)
+            S = sp1.Sk(k, dtype=dtype)
+            alpha = (M - S * Z).asformat('array')
+            beta  = (M.getH() - S.getH() * Z).asformat('array')
+            del M, S
 
         # Surface Green function (self-energy)
         GS = np.copy(GB)
@@ -215,22 +217,21 @@ class RecursiveSI(SemiInfinite):
             tB = solve(GB, beta)
 
             tmp = dot(alpha, tB)
-            # Update surface self-energy
-            GS -= tmp
             # Update bulk Green function
             GB -= tmp + dot(beta, tA)
+            # Update surface self-energy
+            GS -= tmp
 
             # Update forward/backward
             alpha = dot(alpha, tA)
             beta = dot(beta, tB)
 
             # Convergence criteria, it could be stricter
-            if np.amax(np.abs(alpha) + np.abs(beta)) < eps:
+            if np.amax(np.abs(tmp)) < eps:
                 # Return the pristine Green function
-                del tA, tB, GB, alpha, beta
-                tmp = ns_.inv_destroy(GS)
+                del tA, tB, alpha, beta, GB
                 if bulk:
-                    return tmp
-                return (sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)).asformat('array') - tmp
+                    return GS
+                return (sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)).asformat('array') - GS
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')
