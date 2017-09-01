@@ -154,7 +154,8 @@ class TestSuperCell(object):
 
     def test_sc_index2(self, setup):
         sc_index = setup.sc.sc_index([[0, 0, 0],
-                                     [1, 1, 0]])
+                                      [1, 1, 0]])
+        print(sc_index)
         assert len(sc_index) == 2
 
     @pytest.mark.xfail(raises=Exception)
