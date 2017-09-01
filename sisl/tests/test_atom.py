@@ -142,11 +142,11 @@ class TestAtoms(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_create3(self):
-        Atoms([{Atom(4)}])
+        Atoms([{0: Atom(4)}])
 
     @pytest.mark.xfail(raises=ValueError)
     def test_create4(self):
-        Atoms({Atom(4)})
+        Atoms({0: Atom(4)})
 
     def test_len(self, setup):
         atom = Atoms([setup.C, setup.C3, setup.Au])
