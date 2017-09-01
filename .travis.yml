@@ -41,7 +41,7 @@ install:
   - python setup.py install
 
 script:
-  - if [[ ${COVERAGE:-false} != false ]]; then coverage run --source sisl -m py.test ; else pytest sisl ; fi
+  - if [[ ${COVERAGE:-false} != false ]]; then coverage run --source sisl -m py.test ; else pytest --pyargs sisl ; fi
 
 after_success:
   - if [[ ${COVERAGE:-false} != false ]]; then bash <(curl -s https://codecov.io/bash) ; fi
