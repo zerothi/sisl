@@ -88,8 +88,8 @@ and the availability of creating input for the tight-binding transport calculato
          'sgrid = sisl.grid:sgrid',
          'sdata = sisl.utils.sdata:sdata']
     },
-    classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
-    platforms='any',
+    classifiers=[_f.strip() for _f in CLASSIFIERS.split('\n') if _f],
+    platforms=['Unix', 'Linux', 'Mac OS-X', 'Windows'],
     install_requires=build_requires,
     zip_safe=False,
 )
