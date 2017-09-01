@@ -255,8 +255,8 @@ class Geometry(SuperCellChild):
         orbs = self.atom.orbitals
 
         # Create local first
-        firsto = np.append(np.array(0, np.int32), orbs)
-        self.firsto = np.cumsum(firsto, dtype=np.int32)
+        firsto = np.append(ns_.arrayi(0), orbs)
+        self.firsto = ns_.cumsumi(firsto)
 
     def reorder(self):
         """ Reorders atoms according to first occurence in the geometry

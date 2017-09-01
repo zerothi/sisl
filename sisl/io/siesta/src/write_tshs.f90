@@ -12,7 +12,7 @@ subroutine write_tshs_hs(fname, &
   real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
-  character(len=*) :: fname
+  character(len=*), intent(in) :: fname
   integer, intent(in) :: nspin, na_u, no_u, nnz
   integer, intent(in) :: nsc1, nsc2, nsc3
   real(dp), intent(in) :: cell(3,3), xa(3,na_u)

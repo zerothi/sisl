@@ -113,7 +113,7 @@ class RecursiveSI(SemiInfinite):
 
         # Create spgeom0 and spgeom1
         self.spgeom0 = spgeom.copy()
-        nsc = np.copy(self.geom.sc.nsc)
+        nsc = np.copy(spgeom.geom.sc.nsc)
         nsc[self.semi_inf] = 1
         self.spgeom0.set_nsc(nsc)
 

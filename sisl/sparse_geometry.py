@@ -447,6 +447,15 @@ class SparseGeometry(object):
             raise NotImplementedError("Requesting sub-sparse has not been implemented yet")
         return self._csr.tocsr(index, **kwargs)
 
+    def spalign(self, other):
+        """ Aligns two sparse objects and by extending `self` with the elements in `other` which are not in `self`
+
+        See Also
+        --------
+        SparseCSR.spalign : the resulting function called
+        """
+        return self._csr.spalign(other._csr)
+
     def spsame(self, other):
         """ Compare two sparse objects and check whether they have the same entries.
 

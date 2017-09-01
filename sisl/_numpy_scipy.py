@@ -21,6 +21,12 @@ zerosf = _partial(np.zeros, dtype=np.float32)
 zerosd = _partial(np.zeros, dtype=np.float64)
 __all__ += ['zeros' + s for s in 'ilfd']
 
+onesi = _partial(np.ones, dtype=np.int32)
+onesl = _partial(np.ones, dtype=np.int64)
+onesf = _partial(np.ones, dtype=np.float32)
+onesd = _partial(np.ones, dtype=np.float64)
+__all__ += ['ones' + s for s in 'ilfd']
+
 emptyi = _partial(np.empty, dtype=np.int32)
 emptyl = _partial(np.empty, dtype=np.int64)
 emptyf = _partial(np.empty, dtype=np.float32)

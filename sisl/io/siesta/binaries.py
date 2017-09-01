@@ -16,10 +16,15 @@ from .sile import SileBinSiesta
 from ..sile import *
 
 # Import the geometry object
+import sisl._numpy_scipy as ns_
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.units.siesta import unit_convert
 from sisl.physics import Hamiltonian
 
+Ang2Bohr = unit_convert('Ang', 'Bohr')
+eV2Ry = unit_convert('eV', 'Ry')
+Bohr2Ang = unit_convert('Bohr', 'Ang')
+Ry2eV = unit_convert('Ry', 'eV')
 
 __all__ = ['TSHSSileSiesta']
 __all__ += ['GridSileSiesta', 'EnergyGridSileSiesta']
@@ -116,9 +121,6 @@ class TSHSSileSiesta(SileBinSiesta):
         # Ensure the Hamiltonian is finalized
         H.finalize()
 
-        Ang2Bohr = unit_convert('Ang', 'Bohr')
-        eV2Ry = unit_convert('eV', 'Ry')
-
         # Extract the data to pass to the fortran routine
 
         cell = H.geom.cell * Ang2Bohr
@@ -200,7 +202,7 @@ class EnergyGridSileSiesta(GridSileSiesta):
     """ Energy grid file object from a binary Siesta output file """
 
     def _setup(self, *args, **kwargs):
-        self.grid_unit = unit_convert('Ry', 'eV')
+        self.grid_unit = Ry2eV
 
 
 class _GFSileSiesta(SileBinSiesta):
@@ -215,32 +217,114 @@ class _GFSileSiesta(SileBinSiesta):
 
     def _open_gf(self):
         self._iu = _siesta.open_gf(self.file)
+        # Counters to keep track
+        self._ie = 0
+        self._ik = 0
 
-    def write_se_header(self, spgeom):
-        pass
+    def _close_gf(self):
+        if not self._is_open():
+            return
+        # Close it
+        _siesta.close_gf(self._iu)
+        del self._ie
+        del self._ik
+        try:
+            del self._E
+            del self._k
+        except:
+            pass
 
-    def write_se(self, spin=0, *args, **kwargs):
-        """ Read grid contained in the Grid file
+    def write_gf_header(self, E, bz, obj, mu=0.):
+        """ Write to the binary file the header of the file
 
         Parameters
         ----------
-        spin : int, optional
-           the returned spin
+        E : array_like of cmplx or float
+           the energy points. If `obj` is an instance of `SelfEnergy` where an
+           associated ``eta`` is defined then `E` may be float, otherwise
+           it *has* to be a complex array.
+        bz : BrillouinZone
+           contains the k-points and their weights
+        obj : ...
+           an object that contains the Hamiltonian definitions
         """
-        # Read the sizes
-        nspin, mesh = _siesta.read_grid_sizes(self.file)
-        # Read the cell and grid
-        cell, grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
+        nspin = len(obj.spin)
+        cell = obj.geom.sc.cell * Ang2Bohr
+        na_u = obj.geom.na
+        no_u = obj.geom.no
+        xa = obj.geom.xyz * Ang2Bohr
+        # The lasto in siesta requires lasto(0) == 0
+        lasto = obj.geom.firsto
+        bloch = ns_.onesi(3)
+        mu = mu * eV2Ry
+        NE = len(E)
+        if E.dtype not in [np.complex64, np.complex128]:
+            E = E + 1j * obj.eta
+        Nk = len(bz)
+        k = bz.k
+        w = bz.weight
 
-        if grid.ndim == 4:
-            grid = grid[spin, :, :, :]
+        sizes = {
+            'na_used': na_u,
+            'nkpt': Nk,
+            'ne': NE,
+        }
 
-        cell = np.array(cell.T, np.float64)
-        cell.shape = (3, 3)
+        self._E = np.copy(E)
+        self._k = np.copy(k)
 
-        g = Grid(mesh, sc=SuperCell(cell), dtype=np.float32)
-        g.grid = np.array(grid.swapaxes(0, 2), np.float32) * self.grid_unit
-        return g
+        # Ensure it is open
+        self._close_gf()
+        self._open_gf()
+
+        # Now write to it...
+        _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,
+                                bloch, 0, mu, k.T, w, E, **sizes)
+
+    def write_gf_hs(self, H, S):
+        """ Write the current energy, k-point and H and S to the file
+
+        Parameters
+        ----------
+        H : matrix
+           a square matrix corresponding to the Hamiltonian
+        S : matrix
+           a square matrix corresponding to the overlap
+        """
+        # Step k
+        self._ik += 1
+        self._ie = 1
+        no = len(H)
+        _siesta.write_gf_hs(self._iu, self._ik, self._ie, self._E[self._ie-1] * eV2Ry,
+                            H.T, S.T, no_u=no)
+
+    def write_gf_se(self, SE):
+        """ Write the current energy, k-point and H and S to the file
+
+        Parameters
+        ----------
+        SE : matrix
+           a square matrix corresponding to the self-energy (Green function)
+        """
+        # Step e
+        no = len(SE)
+        _siesta.write_gf_se(self._iu, self._ik, self._ie,
+                            self._E[self._ie-1] * eV2Ry, SE.T, no_u=no)
+        self._ie += 1
+
+    def __iter__(self):
+        """ Iterate through the energies and k-points that this GF file is associated with 
+
+        Yields
+        ------
+        bool, list of float, float
+        """
+        for k in self._k:
+            yield True, k, self._E[0]
+            for E in self._E[1:]:
+                yield False, k, E
+        # We will automatically close once we hit the end
+        self._close_gf()
 
 
 def _type(name, obj):

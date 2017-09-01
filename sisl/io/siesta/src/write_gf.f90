@@ -3,10 +3,11 @@ subroutine open_gf( fname, iu )
   implicit none
 
   ! Input parameters
-  character(len=*) :: fname
-  integer :: iu
+  character(len=*), intent(in) :: fname
+  integer, intent(out) :: iu
 
   ! Define f2py intents
+!f2py intent(in) :: fname
 !f2py intent(out) :: iu
   
   ! Open file
@@ -24,20 +25,20 @@ subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
   integer, parameter :: dp = selected_real_kind(p=15)
 
   ! Input parameters
-  integer :: iu
+  integer, intent(in) :: iu
   ! Variables for the size
-  integer :: nspin
-  real(dp) :: cell(3,3)
-  integer :: na_u, no_u, na_used, no_used
-  real(dp) :: xa_used(3,na_used)
-  integer :: lasto_used(0:na_used)
-  integer :: Bloch(3)
-  integer :: pre_expand
-  real(dp) :: mu
-  integer :: nkpt
-  real(dp) :: kpt(3,nkpt), kw(nkpt)
-  integer :: NE
-  complex(dp) :: E(NE)
+  integer, intent(in) :: nspin
+  real(dp), intent(in) :: cell(3,3)
+  integer, intent(in) :: na_u, no_u, na_used, no_used
+  real(dp), intent(in) :: xa_used(3,na_used)
+  integer, intent(in) :: lasto_used(0:na_used)
+  integer, intent(in) :: Bloch(3)
+  integer, intent(in) :: pre_expand
+  real(dp), intent(in) :: mu
+  integer, intent(in) :: nkpt
+  real(dp), intent(in) :: kpt(3,nkpt), kw(nkpt)
+  integer, intent(in) :: NE
+  complex(dp), intent(in) :: E(NE)
 
 ! Define f2py intents
 !f2py intent(in) :: iu

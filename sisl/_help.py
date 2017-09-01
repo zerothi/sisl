@@ -128,7 +128,7 @@ def get_dtype(var, int=None, other=None):
     var : object
        the variable that will be tried to be cast into
        a `numpy.dtype`.
-    int : `numpy.dtype` of `np.int*`
+    int : numpy.dtype of np.int*
        whether an integer would be allowed to be cast to
        the int64 equivalent.
        Because default integers in Python are of infinite
@@ -136,7 +136,7 @@ def get_dtype(var, int=None, other=None):
        always select `np.int64` when an integer is tried
        to be converted.
        This will prohibit this conversion and will revert to int32.
-    other : `numpy.dtype`
+    other : numpy.dtype
        If supplied the returned value will be extracted from:
        >>> numpy.result_type(dtype(var)(1), other(1))
        such that one can select the highest among `var` and

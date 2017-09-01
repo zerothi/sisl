@@ -9,6 +9,9 @@ from .info import major as __major__
 from .info import minor as __minor__
 from .info import micro as __micro__
 
+# Import numpy_scipy routines
+import sisl._numpy_scipy as math
+
 # Import the Selector
 from .selector import *
 
@@ -36,7 +39,15 @@ from .physics import *
 
 # The io files requires imports from the above modules
 # Hence, we *must* import it last.
-from .io import *
+# This makes one able to get files through:
+#  import sisl
+#  sisl.io.TBTGFSileSiesta
+# or
+#  sisl.get_sile
+# This will reduce the cluttering of the separate entities
+# that sisl is made of.
+from .io.sile import *
+import sisl.io as io
 
 # Import the default geom structure
 # This enables:
