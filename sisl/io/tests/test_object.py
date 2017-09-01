@@ -31,6 +31,10 @@ def stdoutfile(f):
             print(line.replace('\n', ''))
 
 
+def _my_intersect(a, b):
+    return list(set(get_siles(a)).intersection(get_siles(b)))
+
+
 @pytest.mark.io
 class TestObject(object):
 
@@ -235,60 +239,52 @@ class TestObject(object):
             # Write
             sile(f, mode='w').write_geometry(G)
 
-    def test_read_write_geom(self):
+    @pytest.mark.parametrize("sile", _my_intersect(['read_geometry'], ['write_geometry']))
+    def test_read_write_geom(self, sile):
         G = _C.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=_C.d)[1] + '.win'
-        read_geometry = get_siles(['read_geometry'])
-        for sile in get_siles(['write_geometry']):
-            if not sile in read_geometry:
-                continue
-            # It is not yet an instance, hence issubclass
-            if issubclass(sile, (HamiltonianSile, tbtncSileSiesta, dHncSileSiesta)):
-                continue
-            # Write
-            sile(f, mode='w').write_geometry(G)
-            # Read 1
-            try:
-                g = sile(f, mode='r').read_geometry()
-                assert g.equal(G, R=False)
-            except UnicodeDecodeError as e:
-                pass
-            # Read 2
-            try:
-                g = Geometry.read(sile(f, mode='r'))
-                assert g.equal(G, R=False)
-            except UnicodeDecodeError as e:
-                pass
-            # Clean-up file
-            os.remove(f)
+        if issubclass(sile, (tbtncSileSiesta, dHncSileSiesta)):
+            return
+        # Write
+        sile(f, mode='w').write_geometry(G)
+        # Read 1
+        try:
+            g = sile(f, mode='r').read_geometry()
+            assert g.equal(G, R=False)
+        except UnicodeDecodeError as e:
+            pass
+        # Read 2
+        try:
+            g = Geometry.read(sile(f, mode='r'))
+            assert g.equal(G, R=False)
+        except UnicodeDecodeError as e:
+            pass
+        # Clean-up file
+        os.remove(f)
 
-    def test_read_write_hamiltonian(self):
+    @pytest.mark.parametrize("sile", _my_intersect(['read_hamiltonian'], ['write_hamiltonian']))
+    def test_read_write_hamiltonian(self, sile):
         G = _C.g.rotatec(-30)
         H = Hamiltonian(G)
         H.construct([[0.1, 1.45], [0.1, -2.7]])
-        print(H)
         f = mkstemp(dir=_C.d)[1]
-        read_hamiltonian = get_siles(['read_hamiltonian'])
-        for sile in get_siles(['write_hamiltonian']):
-            if not sile in read_hamiltonian:
-                continue
-            # Write
-            sile(f, mode='w').write_hamiltonian(H)
-            # Read 1
-            try:
-                h = sile(f, mode='r').read_hamiltonian()
-                assert H.spsame(h)
-            except UnicodeDecodeError as e:
-                pass
-            # Read 2
-            try:
-                h = Hamiltonian.read(sile(f, mode='r'))
-                assert H.spsame(h)
-            except UnicodeDecodeError as e:
-                pass
-            # Clean-up file
-            os.remove(f)
+        # Write
+        sile(f, mode='w').write_hamiltonian(H)
+        # Read 1
+        try:
+            h = sile(f, mode='r').read_hamiltonian()
+            assert H.spsame(h)
+        except UnicodeDecodeError as e:
+            pass
+        # Read 2
+        try:
+            h = Hamiltonian.read(sile(f, mode='r'))
+            assert H.spsame(h)
+        except UnicodeDecodeError as e:
+            pass
+        # Clean-up file
+        os.remove(f)
 
     def test_arg_parser1(self):
         f = mkstemp(dir=_C.d)[1]
