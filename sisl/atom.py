@@ -1130,14 +1130,20 @@ class Atoms(object):
 
     Attributes
     ----------
-    atom : `list(Atom)`
+    atom : list of Atom
         a list of unique atoms in this object
-    specie : ndarray
+    specie : numpy.ndarray
         a list of unique specie indices
+    firsto : numpy.ndarray
+        a list of orbital indices for each atom, this corresponds to the first
+        orbital on each of the atoms.
+    lasto : numpy.ndarray
+        a list of orbital indices for each atom, this corresponds to the last
+        orbital on each of the atoms.
     """
 
-    # Using the slots should make this routine slightly faster.
-    __slots__ = ['_atom', '_specie']
+    # Using the slots should make this class slightly faster.
+    __slots__ = ['_atom', '_specie', '_firsto']
 
     def __init__(self, atom=None, na=None):
 
@@ -1205,6 +1211,14 @@ class Atoms(object):
 
         self._specie = array_fill_repeat(specie, na, cls=np.int16)
 
+        self._update_orbitals()
+
+    def _update_orbitals(self):
+        """ Internal routine for updating the `firsto` attribute """
+        # Get number of orbitals per specie
+        uorbs = np.array([a.orbs for a in self.atom], np.int32)
+        self._firsto = np.insert(ns_.cumsumi(uorbs[self.specie[:]]), 0, 0)
+
     def copy(self):
         """ Return a copy of this atom """
         atoms = Atoms()
@@ -1235,8 +1249,17 @@ class Atoms(object):
     @property
     def orbitals(self):
         """ Return an array of orbitals of the contained objects """
-        uorbs = np.array([a.orbs for a in self.atom], np.int32)
-        return uorbs[self.specie[:]]
+        return np.diff(self.firsto)
+
+    @property
+    def firsto(self):
+        """ The first orbital of the corresponding atom in the consecutive list of orbitals """
+        return self._firsto
+
+    @property
+    def lasto(self):
+        """ The lasto orbital of the corresponding atom in the consecutive list of orbitals """
+        return self._firsto[1:] - 1
 
     def maxR(self, all=False):
         """ The maximum radius of the atoms
@@ -1303,6 +1326,7 @@ class Atoms(object):
             atoms._atom[ns] = self._atom[os].copy()
             atoms._specie[self.specie == os] = ns
 
+        atoms._update_orbitals()
         return atoms
 
     def reduce(self):
@@ -1323,6 +1347,7 @@ class Atoms(object):
 
         atoms._atom = atom
         atoms._specie = specie
+        atoms._update_orbitals()
 
         return atoms
 
@@ -1332,6 +1357,7 @@ class Atoms(object):
         atoms = Atoms()
         atoms._atom = self._atom[:]
         atoms._specie = self._specie[atom]
+        atoms._update_orbitals()
         return atoms
 
     def remove(self, atom):
@@ -1344,12 +1370,14 @@ class Atoms(object):
         """ Tile this atom object """
         atoms = self.copy()
         atoms._specie = np.tile(atoms._specie, reps)
+        atoms._update_orbitals()
         return atoms
 
     def repeat(self, reps):
         """ Repeat this atom object """
         atoms = self.copy()
         atoms._specie = np.repeat(atoms._specie, reps)
+        atoms._update_orbitals()
         return atoms
 
     def swap(self, a, b):
@@ -1360,6 +1388,7 @@ class Atoms(object):
         spec = np.copy(atoms._specie)
         atoms._specie[a] = spec[b]
         atoms._specie[b] = spec[a]
+        atoms._update_orbitals()
         return atoms
 
     def append(self, other):
@@ -1379,6 +1408,7 @@ class Atoms(object):
                 atoms._atom.append(atom)
             spec = np.where(other._specie == i, s, spec)
         atoms._specie = np.concatenate((atoms._specie, spec))
+        atoms._update_orbitals()
         return atoms
 
     add = append
@@ -1398,6 +1428,7 @@ class Atoms(object):
             atoms._specie = atoms._specie[::-1]
         else:
             atoms._specie[atom] = atoms._specie[atom[::-1]]
+        atoms._update_orbitals()
         return atoms
 
     def insert(self, index, other):
@@ -1419,6 +1450,7 @@ class Atoms(object):
                 s = atoms.index(atom)
             spec = np.where(spec == i, s, spec)
         atoms._specie = np.insert(atoms._specie, index, spec)
+        atoms._update_orbitals()
         return atoms
 
     def __repr__(self):
@@ -1472,6 +1504,7 @@ class Atoms(object):
             if atom not in self:
                 self._atom.append(atom)
             self._specie[key[s_i]] = self.index(atom)
+        self._update_orbitals()
 
     def hassame(self, other, R=True):
         """ True if the contained atoms are the same in the two lists
