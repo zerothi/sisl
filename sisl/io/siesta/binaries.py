@@ -6,8 +6,7 @@ from __future__ import print_function
 import numpy as np
 
 try:
-    # Do full path import
-    import sisl.io.siesta._siesta as _siesta
+    from . import _siesta
     found_module = True
 except Exception as e:
     found_module = False
