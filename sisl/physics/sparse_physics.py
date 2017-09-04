@@ -200,7 +200,7 @@ class SparseOrbitalBZ(SparseOrbital):
         v = self.tocsr(_dim)
 
         for si, phase in enumerate(phases):
-            V += v[:, si*no:(si+1)*no] * phase
+            V[:, :] += v[:, si*no:(si+1)*no] * phase
 
         del v
 
@@ -238,8 +238,9 @@ class SparseOrbitalBZ(SparseOrbital):
         phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now create offsets
-        offsets = - np.arange(0, len(phases) * self.no, self.no)
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
+        offsets = - ns_.arangei(0, len(phases) * self.no, self.no)
+        # Do not cast to dtype, that is done below, then we retain precision
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]))
 
         V[:, :] = self.tocsr(_dim).dot(diag)
 
@@ -277,8 +278,9 @@ class SparseOrbitalBZ(SparseOrbital):
         phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
 
         # Now create offsets
-        offsets = - np.arange(0, len(phases) * self.no, self.no)
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype).toarray()
+        offsets = - ns_.arangei(0, len(phases) * self.no, self.no)
+        # Do not cast to dtype, that is done below, then we retain precision
+        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0])).toarray()
 
         V[:, :] = dot(self.tocsr(_dim).toarray(), diag)
 

@@ -157,6 +157,76 @@ class TestHamiltonian(object):
         assert nnz == 1
         setup.HS.empty()
 
+    def test_Hk1(self, setup):
+        H = setup.HS.copy()
+        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
+        # The loops ensures that we loop over all selector
+        # items
+        h = H.copy()
+        for i in range(4):
+            Hk = h.Hk()
+            assert Hk.dtype == np.complex128
+        h = H.copy()
+        for i in range(4):
+            Hk = h.Hk(dtype=np.complex64)
+            assert Hk.dtype == np.complex64
+        h = H.copy()
+        for i in range(4):
+            Hk = h.Hk(dtype=np.float64)
+            assert Hk.dtype == np.float64
+        h = H.copy()
+        for i in range(4):
+            Hk = h.Hk(dtype=np.float32)
+            assert Hk.dtype == np.float32
+
+    def test_Hk2(self, setup):
+        H = setup.HS.copy()
+        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
+        # The loops ensures that we loop over all selector
+        # items
+        h = H.copy()
+        for i in range(4):
+            Hk = h.Hk(k=[0.15, 0.15, 0.15])
+            assert Hk.dtype == np.complex128
+        h = H.copy()
+        for i in range(4):
+            Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.complex64)
+            assert Hk.dtype == np.complex64
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_Hk3(self, setup):
+        H = setup.HS.copy()
+        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
+        # The loops ensures that we loop over all selector
+        # items
+        grabbed = True
+        h = H.copy()
+        for i in range(4):
+            try:
+                Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.float64)
+                grabbed = False
+            except ValueError:
+                grabbed = grabbed and True
+        if grabbed:
+            raise ValueError('all grabbed')
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_Hk4(self, setup):
+        H = setup.HS.copy()
+        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
+        # The loops ensures that we loop over all selector
+        # items
+        grabbed = True
+        h = H.copy()
+        for i in range(4):
+            try:
+                Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.float32)
+                grabbed = False
+            except ValueError:
+                grabbed = grabbed and True
+        if grabbed:
+            raise ValueError('all grabbed')
+
     @pytest.mark.xfail(raises=ValueError)
     def test_construct_raise(self, setup):
         # Test that construct fails with more than one

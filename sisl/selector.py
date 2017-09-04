@@ -113,6 +113,20 @@ class Selector(object):
     def ordered(self):
         return self._ordered
 
+    def __len__(self):
+        """ Number of routines that it can select from """
+        return len(self.routines)
+
+    def __repr__(self):
+        """ A representation of the current selector state """
+        s = self.__class__.__name__ + '{{n={0}, \n'.format(len(self))
+        for r, p in zip(self.routines, self.performances):
+            if p is None:
+                s += '  {{{0}: None}},\n'.format(r.__name__)
+            else:
+                s += '  {{{0}: {1}}},\n'.format(r.__name__, p)
+        return s + '}}'
+
     def prepend(self, routine):
         """ Prepends a new routine to the selector
 
