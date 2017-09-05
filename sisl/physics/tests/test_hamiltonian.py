@@ -277,9 +277,8 @@ class TestHamiltonian(object):
     def test_fromsp3(self, setup):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ([1., 1.], [0.1, 0])])
-        h = H.tocsr(0)
-        s = H.tocsr(1)
-        Hamiltonian.fromsp(H.geom.copy(), h, s)
+        h = Hamiltonian.fromsp(H.geom.copy(), H.tocsr(0), H.tocsr(1))
+        assert H.spsame(h)
 
     def test_op1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
