@@ -237,7 +237,7 @@ class TestObject(object):
         f = mkstemp(dir=_C.d)[1]
         for sile in get_siles(['write_geometry']):
             # It is not yet an instance, hence issubclass
-            if issubclass(sile, (HamiltonianSile, tbtncSileSiesta, dHncSileSiesta)):
+            if issubclass(sile, (HamiltonianSile, tbtncSileSiesta, deltancSileSiesta)):
                 continue
             # Write
             sile(f, mode='w').write_geometry(G)
@@ -247,7 +247,7 @@ class TestObject(object):
         G = _C.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=_C.d)[1] + '.win'
-        if issubclass(sile, (tbtncSileSiesta, dHncSileSiesta)):
+        if issubclass(sile, (tbtncSileSiesta, deltancSileSiesta)):
             return
         # Write
         sile(f, mode='w').write_geometry(G)

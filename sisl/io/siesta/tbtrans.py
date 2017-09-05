@@ -38,7 +38,9 @@ Data extraction files
 
 Support files to complement TBtrans
 -----------------------------------
+- `deltacSileSiesta` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
 - `dHncSileSiesta` adding :math:`\delta H` elements to a TBtrans calculation
+  (this class is deprecated for with `deltancSileSiesta` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
 
 """
 from __future__ import print_function, division
@@ -75,7 +77,7 @@ from sisl.units.siesta import unit_convert
 
 __all__ = ['tbtncSileSiesta', 'phtncSileSiesta']
 __all__ += ['tbtavncSileSiesta', 'phtavncSileSiesta']
-__all__ += ['dHncSileSiesta']
+__all__ += ['deltancSileSiesta', 'dHncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
@@ -2139,9 +2141,9 @@ class phtavncSileSiesta(tbtavncSileSiesta):
 add_sile('PHT.AV.nc', phtavncSileSiesta)
 
 
-# The deltaH nc file
-class dHncSileSiesta(SileCDFSiesta):
-    """ TBtrans delta-H file object """
+# The delta nc file
+class deltancSileSiesta(SileCDFSiesta):
+    """ TBtrans delta file object """
 
     def read_supercell(self):
         """ Returns the `SuperCell` object from this file """
@@ -2333,15 +2335,217 @@ class dHncSileSiesta(SileCDFSiesta):
             if ilvl in [2, 4]:
                 self._crt_dim(lvl, 'nkpt', None)
                 self._crt_var(lvl, 'kpt', 'f8', ('nkpt', 'xyz'),
-                              attr = {'info': 'k-points for dH values',
+                              attr = {'info': 'k-points for delta values',
                                       'unit': 'b**-1'})
             if ilvl in [3, 4]:
                 self._crt_dim(lvl, 'ne', None)
                 self._crt_var(lvl, 'E', 'f8', ('ne',),
-                              attr = {'info': 'Energy points for dH values',
+                              attr = {'info': 'Energy points for delta values',
                                       'unit': 'Ry'})
 
         return lvl
+
+    def write_hamiltonian(self, H, **kwargs):
+        """ Writes Hamiltonian model to file
+
+        Parameters
+        ----------
+        H : Hamiltonian
+           the model to be saved in the NC file
+        spin : int, optional
+           the spin-index of the Hamiltonian object that is stored. Default is the first index.
+        """
+        # Ensure finalization
+        H.finalize()
+
+        # Ensure that the geometry is written
+        self.write_geometry(H.geom)
+
+        self._crt_dim(self, 'spin', len(H.spin))
+
+        # Determine the type of delta we are storing...
+        k = kwargs.get('k', None)
+        E = kwargs.get('E', None)
+
+        ilvl, ik, iE = self._get_lvl_k_E(**kwargs)
+        lvl = self._add_lvl(ilvl)
+
+        # Append the sparsity pattern
+        # Create basis group
+        if 'n_col' in lvl.variables:
+            if len(lvl.dimensions['nnzs']) != H.nnz:
+                raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
+                                 "all delta entries [nnz].")
+            if np.any(lvl.variables['n_col'][:] != H._csr.ncol[:]):
+                raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
+                                 "all delta entries [n_col].")
+            if np.any(lvl.variables['list_col'][:] != H._csr.col[:]+1):
+                raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
+                                 "all delta entries [list_col].")
+            if np.any(lvl.variables['isc_off'][:] != H.geom.sc.sc_off):
+                raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
+                                 "all delta entries [sc_off].")
+        else:
+            self._crt_dim(lvl, 'nnzs', H._csr.col.shape[0])
+            v = self._crt_var(lvl, 'n_col', 'i4', ('no_u',))
+            v.info = "Number of non-zero elements per row"
+            v[:] = H._csr.ncol[:]
+            v = self._crt_var(lvl, 'list_col', 'i4', ('nnzs',),
+                              chunksizes=(len(H._csr.col),), **self._cmp_args)
+            v.info = "Supercell column indices in the sparse format"
+            v[:] = H._csr.col[:] + 1  # correct for fortran indices
+            v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
+            v.info = "Index of supercell coordinates"
+            v[:] = H.geom.sc.sc_off[:, :]
+
+        warn_E = True
+        if ilvl in [3, 4]:
+            if iE < 0:
+                # We need to add the new value
+                iE = len(lvl.variables['E'])
+                lvl.variables['E'][iE] = E * eV2Ry
+                warn_E = False
+
+        warn_k = True
+        if ilvl in [2, 4]:
+            if ik < 0:
+                ik = len(lvl.variables['kpt'])
+                lvl.variables['kpt'][ik, :] = k
+                warn_k = False
+
+        if ilvl == 4 and warn_k and warn_E and False:
+            # As soon as we have put the second k-point and the first energy
+            # point, this warning will proceed...
+            # I.e. even though the variable has not been set, it will WARN
+            # Hence we out-comment this for now...
+            warnings.warn('Overwriting k-point {0} and energy point {1} correction.'.format(ik, iE), UserWarning)
+        elif ilvl == 3 and warn_E:
+            warnings.warn('Overwriting energy point {0} correction.'.format(iE), UserWarning)
+        elif ilvl == 2 and warn_k:
+            warnings.warn('Overwriting k-point {0} correction.'.format(ik), UserWarning)
+
+        if ilvl == 1:
+            dim = ('spin', 'nnzs')
+            sl = [slice(None)] * 2
+            csize = [1] * 2
+        elif ilvl == 2:
+            dim = ('nkpt', 'spin', 'nnzs')
+            sl = [slice(None)] * 3
+            sl[0] = ik
+            csize = [1] * 3
+        elif ilvl == 3:
+            dim = ('ne', 'spin', 'nnzs')
+            sl = [slice(None)] * 3
+            sl[0] = iE
+            csize = [1] * 3
+        elif ilvl == 4:
+            dim = ('nkpt', 'ne', 'spin', 'nnzs')
+            sl = [slice(None)] * 4
+            sl[0] = ik
+            sl[1] = iE
+            csize = [1] * 4
+
+        # Number of non-zero elements
+        csize[-1] = H.nnz
+
+        if H.dtype.kind == 'c':
+            v1 = self._crt_var(lvl, 'Redelta', 'f8', dim,
+                               chunksizes=csize,
+                               attr = {'info': "Real part of delta",
+                                       'unit': "Ry"}, **self._cmp_args)
+            for i in range(len(H.spin)):
+                sl[-2] = i
+                v1[sl] = H._csr._D[:, i].real * eV2Ry
+
+            v2 = self._crt_var(lvl, 'Imdelta', 'f8', dim,
+                               chunksizes=csize,
+                               attr = {'info': "Imaginary part of delta",
+                                       'unit': "Ry"}, **self._cmp_args)
+            for i in range(len(H.spin)):
+                sl[-2] = i
+                v2[sl] = H._csr._D[:, i].imag * eV2Ry
+
+        else:
+            v = self._crt_var(lvl, 'delta', 'f8', dim,
+                              chunksizes=csize,
+                              attr = {'info': "delta",
+                                      'unit': "Ry"},  **self._cmp_args)
+            for i in range(len(H.spin)):
+                sl[-2] = i
+                v[sl] = H._csr._D[:, i] * eV2Ry
+
+    def _read_class(self, cls, **kwargs):
+        """ Reads a class model from a file """
+
+        # Ensure that the geometry is written
+        geom = self.read_geometry()
+
+        # Determine the type of delta we are storing...
+        E = kwargs.get('E', None)
+
+        ilvl, ik, iE = self._get_lvl_k_E(**kwargs)
+
+        # Get the level
+        lvl = self._get_lvl(ilvl)
+
+        if iE < 0 and ilvl in [3, 4]:
+            raise ValueError("Energy {0} eV does not exist in the file.".format(E))
+        if ik < 0 and ilvl in [2, 4]:
+            raise ValueError("k-point requested does not exist in the file.")
+
+        if ilvl == 1:
+            sl = [slice(None)] * 2
+        elif ilvl == 2:
+            sl = [slice(None)] * 3
+            sl[0] = ik
+        elif ilvl == 3:
+            sl = [slice(None)] * 3
+            sl[0] = iE
+        elif ilvl == 4:
+            sl = [slice(None)] * 4
+            sl[0] = ik
+            sl[1] = iE
+
+        # Now figure out what data-type the delta is.
+        if 'Redelta' in lvl.variables:
+            # It *must* be a complex valued Hamiltonian
+            is_complex = True
+            dtype = np.complex128
+        elif 'delta' in lvl.variables:
+            is_complex = False
+            dtype = np.float64
+
+        # Now create the tight-binding stuff (we re-create the
+        # array, hence just allocate the smallest amount possible)
+        C = cls(geom, 1, nnzpr=1, dtype=dtype, orthogonal=True)
+
+        C._csr.ncol = np.array(lvl.variables['n_col'][:], np.int32)
+        # Update maximum number of connections (in case future stuff happens)
+        C._csr.ptr = np.insert(np.cumsum(C._csr.ncol, dtype=np.int32), 0, 0)
+        C._csr.col = np.array(lvl.variables['list_col'][:], np.int32) - 1
+
+        # Copy information over
+        C._csr._nnz = len(C._csr.col)
+        C._csr._D = np.empty([C._csr.ptr[-1], 1], dtype)
+        if is_complex:
+            C._csr._D[:, 0].real = lvl.variables['Redelta'][sl] * Ry2eV
+            C._csr._D[:, 0].imag = lvl.variables['Imdelta'][sl] * Ry2eV
+        else:
+            C._csr._D[:, 0] = lvl.variables['delta'][sl] * Ry2eV
+
+        return C
+
+    def read_hamiltonian(self, **kwargs):
+        """ Reads a Hamiltonian model from the file """
+
+        return self._read_class(Hamiltonian, **kwargs)
+
+add_sile('delta.nc', deltancSileSiesta)
+
+
+# The deltaH nc file
+class dHncSileSiesta(deltancSileSiesta):
+    """ TBtrans delta-H file object """
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
@@ -2532,10 +2736,5 @@ class dHncSileSiesta(SileCDFSiesta):
             C._csr._D[:, 0] = lvl.variables['dH'][sl] * Ry2eV
 
         return C
-
-    def read_hamiltonian(self, **kwargs):
-        """ Reads a Hamiltonian model from the file """
-
-        return self._read_class(Hamiltonian, **kwargs)
 
 add_sile('dH.nc', dHncSileSiesta)
