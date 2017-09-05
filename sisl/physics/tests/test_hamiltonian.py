@@ -260,10 +260,26 @@ class TestHamiltonian(object):
         assert H[0, 1] == 0.0
         H.empty()
 
-    def test_sp2HS(self, setup):
+    def test_fromsp1(self, setup):
+        setup.H.construct([(0.1, 1.5), (1., 0.1)])
         csr = setup.H.tocsr(0)
         H = Hamiltonian.fromsp(setup.H.geom, csr)
         assert H.spsame(setup.H)
+        setup.H.empty()
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_fromsp2(self, setup):
+        H = setup.H.copy()
+        H.construct([(0.1, 1.5), (1., 0.1)])
+        csr = H.tocsr(0)
+        Hamiltonian.fromsp(setup.H.geom.tile(2, 0), csr)
+
+    def test_fromsp3(self, setup):
+        H = setup.HS.copy()
+        H.construct([(0.1, 1.5), ([1., 1.], [0.1, 0])])
+        h = H.tocsr(0)
+        s = H.tocsr(1)
+        Hamiltonian.fromsp(H.geom.copy(), h, s)
 
     def test_op1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])

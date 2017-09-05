@@ -255,3 +255,14 @@ class TestSparseAtom(object):
 
         # Ensure that one does not mix everything.
         SparseAtom.fromsp(g, [csr1], csr2)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_fromsp4(self, setup):
+        g = setup.g.repeat(2, 0).tile(2, 1)
+        csr1 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
+        csr2 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
+        csr1[0, [1, 2, 3]] = 1
+        csr2[1, [2, 4, 1]] = 2
+
+        # Ensure that one does not mix everything.
+        SparseAtom.fromsp(setup.g.copy(), [csr1, csr2])

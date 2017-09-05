@@ -91,8 +91,16 @@ and the availability of creating input for the tight-binding transport calculato
     classifiers=[_f.strip() for _f in CLASSIFIERS.split('\n') if _f],
     platforms=['Unix', 'Linux', 'Mac OS-X', 'Windows'],
     install_requires=build_requires,
+    tests_require=['pytest'],
     zip_safe=False,
 )
+
+# If pytest is installed, add it to setup_requires
+try:
+    import pytest
+    metadata['setup_requires'] = ['pytest-runner']
+except:
+    pass
 
 cwd = osp.abspath(osp.dirname(__file__))
 if not osp.exists(osp.join(cwd, 'PKG-INFO')):

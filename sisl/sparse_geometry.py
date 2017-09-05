@@ -44,7 +44,7 @@ class SparseGeometry(object):
     @property
     def _size(self):
         """ The size of the sparse object """
-        raise NotImplementedError
+        return self.geom.na
 
     def _cls_kwargs(self):
         """ Custom keyword arguments when creating a new instance """
@@ -466,7 +466,6 @@ class SparseGeometry(object):
     @classmethod
     def fromsp(cls, geom, *sp):
         """ Returns a sparse model from a preset Geometry and a list of sparse matrices """
-
         # Ensure it is a list (no tuples can be used)
         sp = list(sp)
         for i, s in enumerate(sp):
@@ -484,6 +483,7 @@ class SparseGeometry(object):
         for i in range(dim):
             sp[i] = sp[i].tocsr()
             sp[i].sort_indices()
+            sp[i].sum_duplicates()
 
             # Figure out the maximum connections per
             # row to reduce number of re-allocations to 0
@@ -491,6 +491,10 @@ class SparseGeometry(object):
 
         # Create the sparse object
         S = cls(geom, dim, sp[0].dtype, nnzpr)
+
+        if S._size != sp[0].shape[0]:
+            raise ValueError(cls.__name__ + '.fromsp cannot create a new class, the geometry ' + \
+                             'and sparse matrices does not have coinciding dimensions size != sp.shape[0]')
 
         for i in range(dim):
             ptr = sp[i].indptr
@@ -500,7 +504,7 @@ class SparseGeometry(object):
             # loop and add elements
             for r in range(S.shape[0]):
                 sl = slice(ptr[r], ptr[r+1], None)
-                S[r, col[sl], i] += D[sl]
+                S[r, col[sl], i] = D[sl]
 
         return S
 
