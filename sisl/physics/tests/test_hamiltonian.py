@@ -58,6 +58,8 @@ class TestHamiltonian(object):
     def test_ortho(self, setup):
         assert setup.H.orthogonal
         assert not setup.HS.orthogonal
+        assert not setup.H.non_orthogonal
+        assert setup.HS.non_orthogonal
 
     def test_set1(self, setup):
         setup.H.H[0, 0] = 1.
@@ -164,8 +166,8 @@ class TestHamiltonian(object):
         # items
         h = H.copy()
         for i in range(4):
-            Hk = h.Hk()
-            assert Hk.dtype == np.complex128
+            assert h.Hk().dtype == np.complex128
+            assert h.Sk().dtype == np.complex128
         h = H.copy()
         for i in range(4):
             Hk = h.Hk(dtype=np.complex64)
@@ -226,6 +228,18 @@ class TestHamiltonian(object):
                 grabbed = grabbed and True
         if grabbed:
             raise ValueError('all grabbed')
+
+    def test_Hk5(self, setup):
+        H = setup.H.copy()
+        H.construct([(0.1, 1.5), (1., 0.1)])
+        # The loops ensures that we loop over all selector
+        # items
+        h = H.copy()
+        for i in range(4):
+            Hk = h.Hk(k=[0.15, 0.15, 0.15])
+            assert Hk.dtype == np.complex128
+            Sk = h.Sk(k=[0.15, 0.15, 0.15])
+            assert Sk.dtype == np.float64
 
     @pytest.mark.xfail(raises=ValueError)
     def test_construct_raise(self, setup):
@@ -863,3 +877,15 @@ class TestHamiltonian(object):
         Hg.construct([R, param])
         assert Hg.spsame(H)
         assert Hg.nnz == 4
+
+    def test_shift1(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        H = Hamiltonian(setup.g.copy())
+        H.construct([R, param])
+        H.shift(0.2)
+
+    def test_shift2(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        H = Hamiltonian(setup.g.copy(), orthogonal=False)
+        H.construct([R, param])
+        H.shift(0.2)
