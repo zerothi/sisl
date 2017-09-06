@@ -38,9 +38,9 @@ Data extraction files
 
 Support files to complement TBtrans
 -----------------------------------
-- `deltacSileSiesta` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
+- `deltancSileSiesta` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
 - `dHncSileSiesta` adding :math:`\delta H` elements to a TBtrans calculation
-  (this class is deprecated for with `deltancSileSiesta` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
+  (this class is deprecated by `deltancSileSiesta` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
 
 """
 from __future__ import print_function, division
@@ -93,7 +93,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
     Although the TBtrans code is in fortran and the resulting NetCDF file variables
     are in fortran indexing (1-based), everything is returned as Python indexing (0-based)
-    when creating scripts.
+    when using Python scripts.
 
     In the following equations we will use this notation:
 
@@ -355,7 +355,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
     @property
     def a_d(self):
-        """ Atomic indices (1-based) of device atoms """
+        """ Atomic indices (0-based) of device atoms """
         return self._value('a_dev') - 1
     a_dev = a_d
 
@@ -726,7 +726,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         .. math::
 
-           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{\mu\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}_{\nu\nu}(E)
+           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}_{\nu\nu}(E)
 
         The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
         arguments.
