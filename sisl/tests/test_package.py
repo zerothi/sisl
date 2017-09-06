@@ -23,3 +23,21 @@ class TestVersion(object):
         sisl.info.release
         sisl.info.git_revision
         sisl.info.git_revision_short
+
+    def test_import1(self):
+        # The imports should only be visible in the io module
+        s = sisl.BaseSile
+        s = sisl.Sile
+        s = sisl.SileCDF
+        s = sisl.SileBin
+        s = sisl.io.XYZSile
+
+    @pytest.mark.xfail(raises=AttributeError)
+    def test_import2(self):
+        # The imports should only be visible in the io module
+        sisl.XYZSile
+
+    @pytest.mark.xfail(raises=ImportError)
+    def test_import3(self):
+        # The imports should only be visible in the io module
+        from sisl import XYZSile

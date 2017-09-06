@@ -159,6 +159,7 @@ class TestHamiltonian(object):
         assert nnz == 1
         setup.HS.empty()
 
+    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
     def test_Hk1(self, setup):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])

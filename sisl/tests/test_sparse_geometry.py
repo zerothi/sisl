@@ -28,6 +28,7 @@ class TestSparseAtom(object):
     @pytest.mark.xfail(raises=ValueError)
     def test_fail_align1(self, setup):
         s = SparseAtom(setup.g * 2)
+        print(s)
         setup.s1.align(s)
 
     def test_create1(self, setup):
@@ -96,6 +97,20 @@ class TestSparseAtom(object):
         s2.construct([[0.1, 1.5], [1, 2]])
         s2 = s2.cut(2, 1)
         assert s1.spsame(s2)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_sparserij1(self, setup):
+        s = SparseAtom(setup.g.copy())
+        s.construct([[0.1, 1.5], [1, 2]])
+        s.sparserij(what='none')
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_sparserij2(self, setup):
+        s = SparseAtom(setup.g.copy())
+        s.construct([[0.1, 1.5], [1, 2]])
+        atom = s.sparserij()
+        orb = s.sparserij('orb')
+        assert atom.spsame(orb)
 
     def test_remove1(self, setup):
         for i in range(len(setup.g)):

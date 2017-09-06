@@ -141,6 +141,34 @@ class SparseGeometry(object):
         """ Number of non-zero elements """
         return self._csr.nnz
 
+    def sparserij(self, what='atom', dtype=np.float64):
+        r""" Create a sparse matrix with the distances between atoms/orbitals
+
+        Parameters
+        ----------
+        what : {'atom', 'orbital', 'orb'}
+            which kind of sparse distance matrix to return, either an atomic distance matrix
+            or an orbital distance matrix. The orbital matrix is equivalent to the atomic
+            one with the same distance repeated for the same atomic orbitals.
+        dtype : numpy.dtype, optional
+            the data-type of the sparse matrix.
+
+        Notes
+        -----
+        The returned sparse matrix with distances are taken from the current sparse pattern.
+        I.e. a subsequent addition of sparse elements will make them inequivalent.
+        It is thus important to *only* create the sparse distance matrix when the sparse
+        structure is completed.
+        """
+        if what == 'atom':
+            cls = SparseAtom
+        elif what in ['orbital', 'orb']:
+            cls = SparseOrbital
+        else:
+            raise ValueError(self.__class__.__name__ + '.sparserij what= must be "atom", "orbital" or "orb".')
+
+        raise NotImplementedError
+
     def __repr__(self):
         """ Representation of the sparse model """
         s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}\n '.format(self.dim, self.nnz)
@@ -659,7 +687,7 @@ class SparseAtom(SparseGeometry):
 
     @property
     def _size(self):
-        return self.geometry.na
+        return self.geom.na
 
     def nonzero(self, atom=None, only_col=False):
         """ Indices row and column indices where non-zero elements exists
