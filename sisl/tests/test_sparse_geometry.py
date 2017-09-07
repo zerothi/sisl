@@ -99,18 +99,33 @@ class TestSparseAtom(object):
         assert s1.spsame(s2)
 
     @pytest.mark.xfail(raises=ValueError)
-    def test_sparserij1(self, setup):
+    def test_rij1(self, setup):
         s = SparseAtom(setup.g.copy())
         s.construct([[0.1, 1.5], [1, 2]])
-        s.sparserij(what='none')
+        s.rij(what='none')
 
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_sparserij2(self, setup):
+    def test_rij2(self, setup):
         s = SparseAtom(setup.g.copy())
         s.construct([[0.1, 1.5], [1, 2]])
-        atom = s.sparserij()
-        orb = s.sparserij('orb')
+        atom = s.rij()
+        orb = s.rij('orbital')
         assert atom.spsame(orb)
+
+    def test_rij3(self, setup):
+        sa = SparseAtom(setup.g.copy())
+        so = SparseOrbital(setup.g.copy())
+        sa.construct([[0.1, 1.5], [1, 2]])
+        so.construct([[0.1, 1.5], [1, 2]])
+        atom = sa.rij()
+        orbital = so.rij()
+        assert atom.spsame(orbital)
+        atom = sa.rij('atom', uniq=True)
+        orbital = so.rij('atom')
+        assert atom.spsame(orbital)
+        # This only works because there is 1 orbital per atom
+        atom = sa.rij('orbital')
+        orbital = so.rij()
+        assert atom.spsame(orbital)
 
     def test_remove1(self, setup):
         for i in range(len(setup.g)):

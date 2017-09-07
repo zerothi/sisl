@@ -2287,9 +2287,9 @@ class Geometry(SuperCellChild):
         """
         if isinstance(io, Integral):
             return np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na
-        iio = np.asarray(io) % self.no
-        a = np.array([np.argmax(i <= self.lasto) for i in iio], np.int32)
-        return a + (iio // self.no) * self.na
+        iio = ns_.asarrayi(io) % self.no
+        a = ns_.arrayi([np.argmax(i <= self.lasto) for i in iio])
+        return a + (io // self.no) * self.na
 
     def sc2uc(self, atom, uniq=False):
         """ Returns atom from super-cell indices to unit-cell indices, possibly removing dublicates """

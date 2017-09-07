@@ -8,6 +8,7 @@ from __future__ import print_function, division
 
 import warnings
 
+import functools as ftool
 import numpy as np
 
 import sisl._numpy_scipy as ns_
@@ -141,17 +142,29 @@ class SparseGeometry(object):
         """ Number of non-zero elements """
         return self._csr.nnz
 
-    def sparserij(self, what='atom', dtype=np.float64):
+    def rij(self, what=None, dtype=np.float64, uniq=None):
         r""" Create a sparse matrix with the distances between atoms/orbitals
 
         Parameters
         ----------
-        what : {'atom', 'orbital', 'orb'}
+        what : {None, 'atom', 'orbital'}
             which kind of sparse distance matrix to return, either an atomic distance matrix
             or an orbital distance matrix. The orbital matrix is equivalent to the atomic
             one with the same distance repeated for the same atomic orbitals.
+            The default is the same type as the parent class.
         dtype : numpy.dtype, optional
             the data-type of the sparse matrix.
+        uniq : bool, optional
+            if true only a sparse matrix with unique distances are returned. Else,
+            duplicates may exist if the parent object has duplicates. The default
+            depends on what the calling object is and the value of `what`.
+            There are two cases:
+              - defaults to ``False`` for
+                ``isinstance(self, SparseAtom) and what == 'atom'``, or
+                ``isinstance(self, SparseOrbital) and what == 'orbital'``.
+              - defaults to ``True`` for
+                ``isinstance(self, SparseAtom) and what != 'atom'``, or
+                ``isinstance(self, SparseOrbital) and what != 'orbital'``.
 
         Notes
         -----
@@ -160,14 +173,76 @@ class SparseGeometry(object):
         It is thus important to *only* create the sparse distance matrix when the sparse
         structure is completed.
         """
+        geom = self.geom
+
+        # Define default of what
+        if what is None:
+            uniq = True
+            if isinstance(self, SparseOrbital):
+                what = 'orbital'
+            else:
+                what = 'atom'
+
+        # Conversion before doing rij on geometry
+        # We default to expect atoms
+        dconv = lambda val: val
+        conv = lambda val: val
+        col_conv = lambda val: val
+
         if what == 'atom':
             cls = SparseAtom
+            if isinstance(self, SparseOrbital):
+                conv = self.geom.o2a
+                col_conv = np.unique
+            elif isinstance(self, SparseAtom):
+                if uniq:
+                    # in principle not neccessary as SparseCSR will
+                    # never have duplicates
+                    col_conv = np.unique
+                dconv = geom.o2a
+            else:
+                raise ValueError(self.__class__.__name__ + ' is not a SparseAtom/Orbital and can thus not be converted to rij')
         elif what in ['orbital', 'orb']:
             cls = SparseOrbital
+            if isinstance(self, SparseOrbital):
+                if uniq:
+                    # in principle not neccessary as SparseCSR will
+                    # never have duplicates
+                    col_conv = np.unique
+                dconv = geom.o2a
+            elif isinstance(self, SparseAtom):
+                conv = ftool.partial(self.geom.a2o, all=True)
+                col_conv = np.unique
+            else:
+                raise ValueError(self.__class__.__name__ + ' is not a SparseAtom/Orbital and can thus not be converted to rij')
         else:
-            raise ValueError(self.__class__.__name__ + '.sparserij what= must be "atom", "orbital" or "orb".')
+            raise ValueError(self.__class__.__name__ + '.rij what= must be "atom", "orbital" or "orb".')
 
-        raise NotImplementedError
+        ncol = self._csr.ncol.view()
+        if self.finalized:
+            ptr = self._csr.ptr.view()
+            col = conv(self._csr.col)
+        else:
+            ptr = self._csr.ptr.view()
+            idx = array_arange(ptr[:-1], n=ncol)
+            col = conv(np.take(self._csr.col, idx))
+            del ptr, idx
+            ptr = np.insert(ns_.cumsumi(ncol), 0, 0)
+
+        # Create the output class
+        rij = cls(geom, 1, dtype, nnzpr=np.amax(ncol))
+
+        orow = ns_.arangei(self.shape[0])
+        nrow = conv(orow)
+
+        for ro, rn in zip(orow, nrow):
+            # Reduce to the unique columns
+            coln = col_conv(col[ptr[ro]:ptr[ro]+ncol[ro]])
+            rij[rn, coln] = geom.rij(dconv(ro), dconv(coln))
+
+        del ptr
+
+        return rij
 
     def __repr__(self):
         """ Representation of the sparse model """
