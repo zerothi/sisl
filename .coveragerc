@@ -1,10 +1,10 @@
 [run]
 omit =
-    benchmarks 
+    benchmarks
+    examples
     sisl/*/tests/*
+    */__config__.py
     */setup.py
-    numpy
-    scipy
 
 [report]
 exclude_lines =
