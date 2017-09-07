@@ -67,10 +67,11 @@ from scipy.sparse import isspmatrix_csr
 from .sile import SileCDFSiesta
 from ..sile import *
 from sisl.utils import *
-
+import sisl._numpy_scipy as ns_
 
 # Import the geometry object
-from sisl import Geometry, Atom, Atoms, SuperCell, Hamiltonian
+from sisl import Geometry, Atom, Atoms, SuperCell
+from sisl import Hamiltonian, SparseOrbitalBZSpin
 from sisl._help import _str
 from sisl._help import _range as range
 from sisl.units.siesta import unit_convert
@@ -248,11 +249,11 @@ class tbtncSileSiesta(SileCDFSiesta):
             try:
                 self._data['kpt'] = self._value('kpt')
             except:
-                self._data['kpt'] = np.zeros([3], dtype=np.float64)
+                self._data['kpt'] = ns_.zerosd([3])
             try:
                 self._data['wkpt'] = self._value('wkpt')
             except:
-                self._data['wkpt'] = np.ones([1], dtype=np.float64)
+                self._data['wkpt'] = ns_.onesd([1])
 
             # Create the geometry in the data file
             self._data['_geom'] = self.read_geometry()
@@ -262,7 +263,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
     def read_supercell(self):
         """ Returns `SuperCell` object from this file """
-        cell = np.array(np.copy(self.cell), dtype=np.float64)
+        cell = ns_.arrayd(np.copy(self.cell))
         cell.shape = (3, 3)
 
         try:
@@ -283,13 +284,13 @@ class tbtncSileSiesta(SileCDFSiesta):
         """ Returns `Geometry` object from this file """
         sc = self.read_supercell()
 
-        xyz = np.array(np.copy(self.xa), dtype=np.float64)
+        xyz = ns_.arrayd(np.copy(self.xa))
         xyz.shape = (-1, 3)
 
         # Create list with correct number of orbitals
-        lasto = np.array(np.copy(self.lasto) + 1, dtype=np.int32)
+        lasto = ns_.arrayi(np.copy(self.lasto) + 1)
         nos = np.append([lasto[0]], np.diff(lasto))
-        nos = np.array(nos, np.int32)
+        nos = ns_.arrayi(nos)
 
         if 'atom' in kwargs:
             # The user "knows" which atoms are present
@@ -445,7 +446,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         k : array_like of float
            the queried k-point in reduced coordinates :math:`]-0.5;0.5]`.
         """
-        ik = np.sum(np.abs(self.kpt - np.asarray(k, np.float64)[None, :]), axis=1).argmin()
+        ik = np.sum(np.abs(self.kpt - ns_.asarrayd(k)[None, :]), axis=1).argmin()
         ret_k = self.kpt[ik, :]
         if not np.allclose(ret_k, k, atol=0.0001):
             warnings.warn(self.__class__.__name__ + " requesting k-point " +
@@ -616,7 +617,7 @@ class tbtncSileSiesta(SileCDFSiesta):
                 geom = self.geom
                 a = np.unique(geom.o2a(orbital))
                 # Now sum the orbitals per atom
-                NORM = float(np.sum(geom.firsto[a+1] - geom.firsto[a]))
+                NORM = float(ns_.sumi(geom.firsto[a+1] - geom.firsto[a]))
             return NORM
 
         # atom is specified
@@ -660,7 +661,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         if atom is None and orbital is None:
             # We simply return *everything*
             if sum:
-                return np.sum(DOS[..., :], axis=-1) / NORM
+                return ns_.sumd(DOS[..., :], axis=-1) / NORM
             # We return the sorted DOS
             p = np.argsort(self.pivot)
             return DOS[..., p] / NORM
@@ -677,10 +678,10 @@ class tbtncSileSiesta(SileCDFSiesta):
                 geom = self.geom
                 a = np.unique(geom.o2a(orbital))
                 # Now sum the orbitals per atom
-                NORM = float(np.sum(geom.firsto[a+1] - geom.firsto[a]))
+                NORM = float(ns_.sumi(geom.firsto[a+1] - geom.firsto[a]))
 
             if sum:
-                return np.sum(DOS[..., p], axis=-1) / NORM
+                return ns_.sumd(DOS[..., p], axis=-1) / NORM
             # Else, we have to return the full subset
             return DOS[..., p] / NORM
 
@@ -693,7 +694,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         if sum or isinstance(atom, Integral):
             # Regardless of SUM, when requesting a single atom
             # we return it
-            return np.sum(DOS[..., p], axis=-1) / NORM
+            return ns_.sumd(DOS[..., p], axis=-1) / NORM
 
         # We default the case where 1-orbital systems are in use
         # Then it becomes *very* easy
@@ -715,7 +716,7 @@ class tbtncSileSiesta(SileCDFSiesta):
             if len(pvt) == 0:
                 nDOS[..., i] = 0.
             else:
-                nDOS[..., i] = np.sum(DOS[..., pvt], axis=-1) / NORM
+                nDOS[..., i] = ns_.sumd(DOS[..., pvt], axis=-1) / NORM
 
         return nDOS
 
@@ -826,7 +827,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         """
         elec = self._elec(elec)
         if sum:
-            return np.sum(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry
+            return ns_.sumd(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry
         else:
             return self._value_E('DOS', elec, kavg=kavg, E=E) * eV2Ry
 
@@ -944,7 +945,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         def nf(E, mu, kT):
             return 1. / (np.exp((E - mu) / kT) + 1.)
 
-        I = np.sum(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
+        I = ns_.sumd(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
 
     def orbital_current(self, elec, E, kavg=True, isc=None):
@@ -987,7 +988,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         geom = self.geom
 
         # These are the row-pointers...
-        rptr = np.insert(np.cumsum(self._value('n_col')), 0, 0)
+        rptr = np.insert(ns_.cumsumi(self._value('n_col')), 0, 0)
 
         # Get column indices
         col = self._value('list_col') - 1
@@ -1034,15 +1035,15 @@ class tbtncSileSiesta(SileCDFSiesta):
                 all_col.extend(list(range(i * geom.no, (i+1) * geom.no)))
 
             # Create a logical array for sub-indexing
-            all_col = npisin(col, np.array(all_col, np.int32))
+            all_col = npisin(col, ns_.arrayi(all_col))
             col = col[all_col]
 
             # recreate row-pointer
             cnz = np.count_nonzero
             def func(ptr1, ptr2):
                 return cnz(all_col[ptr1:ptr2])
-            tmp = np.array(map(func, rptr[:geom.no], rptr[1:]), np.int32)
-            rptr = np.insert(np.cumsum(tmp), 0, 0)
+            tmp = ns_.arrayi(map(func, rptr[:geom.no], rptr[1:]))
+            rptr = np.insert(ns_.cumsumi(tmp), 0, 0)
             del tmp
 
         if all_col is None:
@@ -1145,7 +1146,7 @@ class tbtncSileSiesta(SileCDFSiesta):
             fo = geom.firsto
             # Automatically create the new index pointer
             # from first and last orbital
-            indptr = np.insert(np.cumsum(iptr[fo[1:]] - iptr[fo[:-1]]), 0, 0)
+            indptr = np.insert(ns_.cumsumi(iptr[fo[1:]] - iptr[fo[:-1]]), 0, 0)
 
             # Now we have a new indptr, and the column indices have also
             # been processed.
@@ -1343,7 +1344,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         na = geom.na
         # vector currents
-        Ja = np.zeros([na, 3], np.float64)
+        Ja = ns_.zerosd([na, 3])
 
         # Create local orbital look-up
         xyz = geom.xyz
@@ -1606,7 +1607,7 @@ class tbtncSileSiesta(SileCDFSiesta):
                 E = []
                 for begin, end in Emap:
                     E.append(range(ns._tbt.Eindex(float(begin)), ns._tbt.Eindex(float(end))+1))
-                ns._Erng = np.array(E, np.int32).flatten()
+                ns._Erng = ns_.arrayi(E).flatten()
         p.add_argument('--energy', '-E',
                        action=ERange,
                        help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
@@ -1673,7 +1674,7 @@ class tbtncSileSiesta(SileCDFSiesta):
                 # we have only a subset of the orbitals
                 orbs = []
                 no = 0
-                asarray = np.asarray
+                asarrayi = ns_.asarrayi
                 for atoms in ranges:
                     if isinstance(atoms, list):
                         # this will be
@@ -1688,7 +1689,7 @@ class tbtncSileSiesta(SileCDFSiesta):
                         # for same atoms with different sets of orbitals and the
                         # total will add up.
                         no += len(ob)
-                        ob = ob[asarray(atoms[1], np.int32) - 1]
+                        ob = ob[asarrayi(atoms[1]) - 1]
                     else:
                         ob = geom.a2o(atoms - 1, True)
                         no += len(ob)
@@ -2001,7 +2002,7 @@ class tbtavncSileSiesta(tbtncSileSiesta):
     @property
     def wkpt(self):
         """ Always return [1.], this is to signal other routines """
-        return np.ones(1, dtype=np.float64)
+        return ns_.onesd(1)
 
     def write_tbtav(self, *args, **kwargs):
         """ Wrapper for writing the k-averaged TBT.AV.nc file.
@@ -2033,7 +2034,7 @@ class tbtavncSileSiesta(tbtncSileSiesta):
 
         # Retrieve k-weights
         nkpt = len(tbt.dimensions['nkpt'])
-        wkpt = np.asarray(tbt.variables['wkpt'][:], np.float64)
+        wkpt = ns_.asarrayd(tbt.variables['wkpt'][:])
 
         # First copy and re-create all entries in the output file
         for dvg in tbt:
@@ -2143,11 +2144,22 @@ add_sile('PHT.AV.nc', phtavncSileSiesta)
 
 # The delta nc file
 class deltancSileSiesta(SileCDFSiesta):
-    """ TBtrans delta file object """
+    r""" TBtrans delta file object 
+
+    The :math:`\delta` file object is an extension enabled in `TBtrans`_ which 
+    enables changing the Hamiltonian in transport problems.
+
+    Its main functionality is in the change of Hamiltonian via either :math:`\delta H` or
+    :math:`\delta \Sigma` terms:
+
+    .. math::
+        \mathbf H'(\mathbf k) = \mathbf H(\mathbf k) + \delta\mathbf H + \delta\mathbf\Sigma
+
+    """
 
     def read_supercell(self):
         """ Returns the `SuperCell` object from this file """
-        cell = np.array(np.copy(self._value('cell')), dtype=np.float64)
+        cell = ns_.arrayd(np.copy(self._value('cell')))
         cell.shape = (3, 3)
 
         try:
@@ -2168,13 +2180,13 @@ class deltancSileSiesta(SileCDFSiesta):
         """ Returns the `Geometry` object from this file """
         sc = self.read_supercell()
 
-        xyz = np.array(np.copy(self._value('xa')), dtype=np.float64)
+        xyz = ns_.arrayd(np.copy(self._value('xa')))
         xyz.shape = (-1, 3)
 
         # Create list with correct number of orbitals
-        lasto = np.array(np.copy(self._value('lasto')), dtype=np.int32)
+        lasto = ns_.arrayi(np.copy(self._value('lasto')))
         nos = np.append([lasto[0]], np.diff(lasto))
-        nos = np.array(nos, np.int32)
+        nos = ns_.arrayi(nos)
 
         if 'atom' in kwargs:
             # The user "knows" which atoms are present
@@ -2237,9 +2249,6 @@ class deltancSileSiesta(SileCDFSiesta):
         v.info = 'Atomic coordinates'
         v.unit = 'Bohr'
 
-        # Create designation of the creation
-        self.method = 'sisl'
-
         # Save stuff
         self.variables['xa'][:] = geom.xyz / Bohr2Ang
 
@@ -2247,7 +2256,7 @@ class deltancSileSiesta(SileCDFSiesta):
         b = self._crt_var(bs, 'basis', 'i4', ('na_u',))
         b.info = "Basis of each atom by ID"
 
-        orbs = np.empty([geom.na], np.int32)
+        orbs = ns_.emptyi([geom.na])
 
         for ia, a, isp in geom.iter_species():
             b[ia] = isp + 1
@@ -2268,7 +2277,7 @@ class deltancSileSiesta(SileCDFSiesta):
                 ba.Number_of_orbitals = np.int32(a.orbs)
 
         # Store the lasto variable as the remaining thing to do
-        self.variables['lasto'][:] = np.cumsum(orbs)
+        self.variables['lasto'][:] = ns_.cumsumi(orbs)
 
     def _get_lvl_k_E(self, **kwargs):
         """ Return level, k and E indices, in that order.
@@ -2303,7 +2312,7 @@ class deltancSileSiesta(SileCDFSiesta):
         # Now determine the energy and k-indices
         iE = -1
         if ilvl in [3, 4]:
-            Es = np.array(lvl.variables['E'][:])
+            Es = ns_.arrayd(lvl.variables['E'][:])
             if len(Es) > 0:
                 iE = np.argmin(np.abs(Es - E))
                 if abs(Es[iE] - E) > 0.0001:
@@ -2311,7 +2320,7 @@ class deltancSileSiesta(SileCDFSiesta):
 
         ik = -1
         if ilvl in [2, 4]:
-            kpt = np.array(lvl.variables['kpt'][:])
+            kpt = ns_.arrayd(lvl.variables['kpt'][:])
             if len(kpt) > 0:
                 ik = np.argmin(np.sum(np.abs(kpt - k[None, :]), axis=1))
                 if not np.allclose(kpt[ik, :], k, atol=0.0001):
@@ -2345,23 +2354,21 @@ class deltancSileSiesta(SileCDFSiesta):
 
         return lvl
 
-    def write_hamiltonian(self, H, **kwargs):
+    def write_delta(self, delta, **kwargs):
         """ Writes Hamiltonian model to file
 
         Parameters
         ----------
-        H : Hamiltonian
+        delta : SparseOrbitalBZSpin
            the model to be saved in the NC file
-        spin : int, optional
-           the spin-index of the Hamiltonian object that is stored. Default is the first index.
         """
         # Ensure finalization
-        H.finalize()
+        delta.finalize()
 
         # Ensure that the geometry is written
-        self.write_geometry(H.geom)
+        self.write_geometry(delta.geom)
 
-        self._crt_dim(self, 'spin', len(H.spin))
+        self._crt_dim(self, 'spin', len(delta.spin))
 
         # Determine the type of delta we are storing...
         k = kwargs.get('k', None)
@@ -2373,30 +2380,30 @@ class deltancSileSiesta(SileCDFSiesta):
         # Append the sparsity pattern
         # Create basis group
         if 'n_col' in lvl.variables:
-            if len(lvl.dimensions['nnzs']) != H.nnz:
+            if len(lvl.dimensions['nnzs']) != delta.nnz:
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [nnz].")
-            if np.any(lvl.variables['n_col'][:] != H._csr.ncol[:]):
+            if np.any(lvl.variables['n_col'][:] != delta._csr.ncol[:]):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [n_col].")
-            if np.any(lvl.variables['list_col'][:] != H._csr.col[:]+1):
+            if np.any(lvl.variables['list_col'][:] != delta._csr.col[:]+1):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [list_col].")
-            if np.any(lvl.variables['isc_off'][:] != H.geom.sc.sc_off):
+            if np.any(lvl.variables['isc_off'][:] != delta.geom.sc.sc_off):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [sc_off].")
         else:
-            self._crt_dim(lvl, 'nnzs', H._csr.col.shape[0])
+            self._crt_dim(lvl, 'nnzs', delta.nnz)
             v = self._crt_var(lvl, 'n_col', 'i4', ('no_u',))
             v.info = "Number of non-zero elements per row"
-            v[:] = H._csr.ncol[:]
+            v[:] = delta._csr.ncol[:]
             v = self._crt_var(lvl, 'list_col', 'i4', ('nnzs',),
-                              chunksizes=(len(H._csr.col),), **self._cmp_args)
+                              chunksizes=(delta.nnz,), **self._cmp_args)
             v.info = "Supercell column indices in the sparse format"
-            v[:] = H._csr.col[:] + 1  # correct for fortran indices
+            v[:] = delta._csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
             v.info = "Index of supercell coordinates"
-            v[:] = H.geom.sc.sc_off[:, :]
+            v[:] = delta.geom.sc.sc_off[:, :]
 
         warn_E = True
         if ilvl in [3, 4]:
@@ -2446,33 +2453,30 @@ class deltancSileSiesta(SileCDFSiesta):
             csize = [1] * 4
 
         # Number of non-zero elements
-        csize[-1] = H.nnz
+        csize[-1] = delta.nnz
 
-        if H.dtype.kind == 'c':
+        if delta.dtype.kind == 'c':
             v1 = self._crt_var(lvl, 'Redelta', 'f8', dim,
                                chunksizes=csize,
                                attr = {'info': "Real part of delta",
                                        'unit': "Ry"}, **self._cmp_args)
-            for i in range(len(H.spin)):
-                sl[-2] = i
-                v1[sl] = H._csr._D[:, i].real * eV2Ry
-
             v2 = self._crt_var(lvl, 'Imdelta', 'f8', dim,
                                chunksizes=csize,
                                attr = {'info': "Imaginary part of delta",
                                        'unit': "Ry"}, **self._cmp_args)
-            for i in range(len(H.spin)):
+            for i in range(len(delta.spin)):
                 sl[-2] = i
-                v2[sl] = H._csr._D[:, i].imag * eV2Ry
+                v1[sl] = delta._csr._D[:, i].real * eV2Ry
+                v2[sl] = delta._csr._D[:, i].imag * eV2Ry
 
         else:
             v = self._crt_var(lvl, 'delta', 'f8', dim,
                               chunksizes=csize,
                               attr = {'info': "delta",
                                       'unit': "Ry"},  **self._cmp_args)
-            for i in range(len(H.spin)):
+            for i in range(len(delta.spin)):
                 sl[-2] = i
-                v[sl] = H._csr._D[:, i] * eV2Ry
+                v[sl] = delta._csr._D[:, i] * eV2Ry
 
     def _read_class(self, cls, **kwargs):
         """ Reads a class model from a file """
@@ -2515,30 +2519,36 @@ class deltancSileSiesta(SileCDFSiesta):
             is_complex = False
             dtype = np.float64
 
-        # Now create the tight-binding stuff (we re-create the
-        # array, hence just allocate the smallest amount possible)
-        C = cls(geom, 1, nnzpr=1, dtype=dtype, orthogonal=True)
+        # Get number of spins
+        nspin = len(lvl.dimensions['spin'])
 
-        C._csr.ncol = np.array(lvl.variables['n_col'][:], np.int32)
+        # Now create the sparse matrix stuff (we re-create the
+        # array, hence just allocate the smallest amount possible)
+        C = cls(geom, nspin, nnzpr=1, dtype=dtype, orthogonal=True)
+
+        C._csr.ncol = ns_.arrayi(lvl.variables['n_col'][:])
         # Update maximum number of connections (in case future stuff happens)
-        C._csr.ptr = np.insert(np.cumsum(C._csr.ncol, dtype=np.int32), 0, 0)
-        C._csr.col = np.array(lvl.variables['list_col'][:], np.int32) - 1
+        C._csr.ptr = np.insert(ns_.cumsumi(C._csr.ncol), 0, 0)
+        C._csr.col = ns_.arrayi(lvl.variables['list_col'][:]) - 1
 
         # Copy information over
         C._csr._nnz = len(C._csr.col)
-        C._csr._D = np.empty([C._csr.ptr[-1], 1], dtype)
+        C._csr._D = np.empty([C._csr.ptr[-1], nspin], dtype)
         if is_complex:
-            C._csr._D[:, 0].real = lvl.variables['Redelta'][sl] * Ry2eV
-            C._csr._D[:, 0].imag = lvl.variables['Imdelta'][sl] * Ry2eV
+            for ispin in range(nspin):
+                sl[-2] = ispin
+                C._csr._D[:, ispin].real = lvl.variables['Redelta'][sl] * Ry2eV
+                C._csr._D[:, ispin].imag = lvl.variables['Imdelta'][sl] * Ry2eV
         else:
-            C._csr._D[:, 0] = lvl.variables['delta'][sl] * Ry2eV
+            for ispin in range(nspin):
+                sl[-2] = ispin
+                C._csr._D[:, ispin] = lvl.variables['delta'][sl] * Ry2eV
 
         return C
 
-    def read_hamiltonian(self, **kwargs):
-        """ Reads a Hamiltonian model from the file """
-
-        return self._read_class(Hamiltonian, **kwargs)
+    def read_delta(self, **kwargs):
+        """ Reads a delta model from the file """
+        return self._read_class(SparseOrbitalBZSpin, **kwargs)
 
 add_sile('delta.nc', deltancSileSiesta)
 
@@ -2721,10 +2731,10 @@ class dHncSileSiesta(deltancSileSiesta):
         # array, hence just allocate the smallest amount possible)
         C = cls(geom, 1, nnzpr=1, dtype=dtype, orthogonal=True)
 
-        C._csr.ncol = np.array(lvl.variables['n_col'][:], np.int32)
+        C._csr.ncol = ns_.arrayi(lvl.variables['n_col'][:])
         # Update maximum number of connections (in case future stuff happens)
-        C._csr.ptr = np.insert(np.cumsum(C._csr.ncol, dtype=np.int32), 0, 0)
-        C._csr.col = np.array(lvl.variables['list_col'][:], np.int32) - 1
+        C._csr.ptr = np.insert(ns_.cumsumi(C._csr.ncol), 0, 0)
+        C._csr.col = ns_.arrayi(lvl.variables['list_col'][:]) - 1
 
         # Copy information over
         C._csr._nnz = len(C._csr.col)

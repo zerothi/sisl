@@ -247,6 +247,7 @@ class TestObject(object):
         G = _C.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=_C.d)[1] + '.win'
+        # These files does not store the atomic species
         if issubclass(sile, (tbtncSileSiesta, deltancSileSiesta)):
             return
         # Write
