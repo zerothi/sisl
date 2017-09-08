@@ -659,7 +659,7 @@ class Geometry(SuperCellChild):
     def iter_block(self, iR=10, R=None, atom=None, method='rand'):
         """ Iterator for performance critical loops
 
-        NOTE: This requires that R has been set correctly as the maximum interaction range.
+        NOTE: This requires that `R` has been set correctly as the maximum interaction range.
 
         I.e. the loop would look like this:
 
@@ -689,7 +689,7 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        Two lists with `[0]` being a list of atoms to be looped and `[1]` being the atoms that
+        Two lists with ``[0]`` being a list of atoms to be looped and ``[1]`` being the atoms that
         need searched.
         """
         method = method.lower()
@@ -717,7 +717,7 @@ class Geometry(SuperCellChild):
                               atom=self.atom.copy(), sc=self.sc.copy())
 
     def optimize_nsc(self, axis=None, R=None):
-        """ Optimize the number of supercell connections based on `self.maxR()`
+        """ Optimize the number of supercell connections based on ``self.maxR()``
 
         After this routine the number of supercells may not necessarily be the same.
 
@@ -2743,20 +2743,13 @@ class Geometry(SuperCellChild):
                 if value in ['translate', 'tr', 't']:
                     # Simple translation
                     tmp = np.amin(ns._geometry.xyz, axis=0)
-                    # Find the smallest distance from the first atom
-                    _, d = ns._geometry.close(0, R=(0.1, 20.), ret_rij=True)
-                    d = np.amin(d[1]) / 2
-                    ns._geometry = ns._geometry.translate(-tmp + np.array([d, d, d]))
+                    ns._geometry = ns._geometry.translate(-tmp)
                 elif value in ['mod']:
-                    # Change all coordinates using the reciprocal cell
-                    rcell = ns._geometry.rcell / (2. * np.pi)
-                    idx = np.abs(np.array(np.dot(ns._geometry.xyz, rcell), np.int32))
-                    # change supercell
-                    nsc = np.amax(idx * 2 + 1, axis=0)
-                    ns._geometry.set_nsc(nsc)
-                    # Change the coordinates
-                    for ia in ns._geometry:
-                        ns._geometry.xyz[ia, :] = ns._geometry.axyz(isc=idx[ia, :], atom=ia)
+                    g = ns._geometry
+                    # Change all coordinates using the reciprocal cell and move to unit-cell (% 1.)
+                    fxyz = g.fxyz % 1.
+                    fxyz -= np.amin(fxyz, axis=0)
+                    ns._geometry.xyz[:, :] = np.dot(fxyz, g.cell)
         p.add_argument(*opts('--unit-cell', '-uc'), choices=['translate', 'tr', 't', 'mod'],
                        action=MoveUnitCell,
                        help='Moves the coordinates into the unit-cell by translation or the mod-operator')
