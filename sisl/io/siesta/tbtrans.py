@@ -71,7 +71,7 @@ import sisl._numpy_scipy as ns_
 
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
-from sisl import Hamiltonian, SparseOrbitalBZSpin
+from sisl import SparseOrbitalBZSpin
 from sisl._help import _str
 from sisl._help import _range as range
 from sisl.units.siesta import unit_convert
@@ -2144,9 +2144,9 @@ add_sile('PHT.AV.nc', phtavncSileSiesta)
 
 # The delta nc file
 class deltancSileSiesta(SileCDFSiesta):
-    r""" TBtrans delta file object 
+    r""" TBtrans delta file object
 
-    The :math:`\delta` file object is an extension enabled in `TBtrans`_ which 
+    The :math:`\delta` file object is an extension enabled in `TBtrans`_ which
     enables changing the Hamiltonian in transport problems.
 
     Its main functionality is in the change of Hamiltonian via either :math:`\delta H` or
