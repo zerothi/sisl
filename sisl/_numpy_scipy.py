@@ -349,25 +349,25 @@ __all__ += _append('inv', ['', '_destroy'])
 
 # Solve eigenvalue problem
 eig = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False)
-eig_left = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, left=True)
+eig_left = eig
 eig_right = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, right=True)
 __all__ += _append('eig', ['', '_left', '_right'])
 
 # Solve eigenvalue problem
 eig_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True)
-eig_left_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, left=True)
+eig_left_destroy = eig_destroy
 eig_right_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, right=True)
 __all__ += _append('eig_', ['destroy', 'left_destroy', 'right_destroy'])
 
 # Solve symmetric/hermitian eigenvalue problem (generic == no overwrite)
 eigh = _partial(sl.eigh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=True)
-eigh_dc = _partial(sl.eigh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=True)
+eigh_dc = eigh
 eigh_qr = _partial(sl.eigh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=False)
 __all__ += _append('eigh', ['', '_dc', '_qr'])
 
 # Solve symmetric/hermitian eigenvalue problem (allow overwrite)
 eigh_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=True)
-eigh_dc_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=True)
+eigh_dc_destroy = eigh_destroy
 eigh_qr_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=False)
 __all__ += _append('eigh_', ['destroy', 'dc_destroy', 'qr_destroy'])
 

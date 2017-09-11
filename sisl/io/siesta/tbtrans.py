@@ -2520,7 +2520,7 @@ class deltancSileSiesta(SileCDFSiesta):
             dtype = np.float64
 
         # Get number of spins
-        nspin = len(lvl.dimensions['spin'])
+        nspin = len(self.dimensions['spin'])
 
         # Now create the sparse matrix stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
