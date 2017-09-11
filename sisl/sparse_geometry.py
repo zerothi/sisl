@@ -47,6 +47,10 @@ class SparseGeometry(object):
         """ The size of the sparse object """
         return self.geom.na
 
+    def __len__(self):
+        """ Number of rows in the basis """
+        return self._size
+
     def _cls_kwargs(self):
         """ Custom keyword arguments when creating a new instance """
         return {}
@@ -1513,9 +1517,10 @@ class SparseOrbital(SparseGeometry):
         remove : the negative of `sub`, i.e. remove a subset of atoms
         """
         atom = self.sc2uc(atom)
+        orbs = self.a2o(atom, all=True)
         geom = self.geom.sub(atom)
 
-        idx = np.tile(atom, self.n_s)
+        idx = np.tile(orbs, self.n_s)
         # Use broadcasting rules
         idx.shape = (self.n_s, -1)
         tmp = ns_.arangei(self.n_s) * self.no

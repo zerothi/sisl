@@ -860,6 +860,7 @@ class TestHamiltonian(object):
         Hg = Hg.sub(range(len(setup.g)))
         Hg.finalize()
         assert Hg.spsame(H)
+        assert len(Hg) == len(setup.g)
 
     def test_set_nsc1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

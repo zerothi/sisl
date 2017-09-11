@@ -147,6 +147,7 @@ class TestSparseAtom(object):
             s2 = SparseAtom(setup.g.sub(sub))
             s2.construct([[0.1, 1.5], [1, 2]])
             assert s1.spsame(s2)
+            assert len(s2) == len(sub)
 
     def test_tile1(self, setup):
         setup.s1.construct([[0.1, 1.5], [1, 2]])

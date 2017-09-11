@@ -297,13 +297,7 @@ class fdfSileSiesta(SileSiesta):
         if '<' in fdf:
             # Create new fdf-file
             sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n', '').strip())
-            with sub_fdf:
-                li = []
-                line = sub_fdf.readline()
-                while line != '':
-                    li.append(line.replace('\n', ''))
-                    line = sub_fdf.readline()
-            return True, li
+            return sub_fdf._read_block(key, force)
 
         # Check whether we have accidentially found the endblock construct
         if self.line_has_key(fdf, '%endblock', case=False):
