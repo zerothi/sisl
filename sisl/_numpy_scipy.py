@@ -257,31 +257,27 @@ except:
                  x, rcond, _, _, info) = gesvx(a1, b1,
                                                trans=trans_conj,
                                                overwrite_a=overwrite_a,
-                                               overwrite_b=overwrite_b
-                 )
+                                               overwrite_b=overwrite_b)
             elif _structure == 'sym':
                 sysvx, sysvx_lw = get_lapack_funcs(('sysvx', 'sysvx_lwork'), (a1, b1))
                 lwork = _compute_lwork(sysvx_lw, n, lower)
                 _, _, _, _, x, rcond, _, _, info = sysvx(a1, b1, lwork=lwork,
                                                          lower=lower,
                                                          overwrite_a=overwrite_a,
-                                                         overwrite_b=overwrite_b
-                )
+                                                         overwrite_b=overwrite_b)
             elif _structure == 'her':
                 hesvx, hesvx_lw = get_lapack_funcs(('hesvx', 'hesvx_lwork'), (a1, b1))
                 lwork = _compute_lwork(hesvx_lw, n, lower)
                 _, _, x, rcond, _, _, info = hesvx(a1, b1, lwork=lwork,
                                                    lower=lower,
                                                    overwrite_a=overwrite_a,
-                                                   overwrite_b=overwrite_b
-                )
+                                                   overwrite_b=overwrite_b)
             else:
                 posvx = get_lapack_funcs('posvx', (a1, b1))
                 _, _, _, _, _, x, rcond, _, _, info = posvx(a1, b1,
                                                             lower=lower,
                                                             overwrite_a=overwrite_a,
-                                                            overwrite_b=overwrite_b
-                )
+                                                            overwrite_b=overwrite_b)
 
             # Unlike ?xxSV, ?xxSVX writes the solution x to a separate array, and
             # overwrites b with its scaled version which is thrown away. Thus, the
@@ -299,31 +295,27 @@ except:
                 gesv = get_lapack_funcs('gesv', (a1, b1))
                 _, _, x, info = gesv(a1, b1,
                                      overwrite_a=overwrite_a,
-                                     overwrite_b=overwrite_b
-                )
+                                     overwrite_b=overwrite_b)
             elif _structure == 'sym':
                 sysv, sysv_lw = get_lapack_funcs(('sysv', 'sysv_lwork'), (a1, b1))
                 lwork = _compute_lwork(sysv_lw, n, lower)
                 _, _, x, info = sysv(a1, b1, lwork=lwork,
                                      lower=lower,
                                      overwrite_a=overwrite_a,
-                                     overwrite_b=overwrite_b
-                )
+                                     overwrite_b=overwrite_b)
             elif _structure == 'her':
                 hesv, hesv_lw = get_lapack_funcs(('hesv', 'hesv_lwork'), (a1, b1))
                 lwork = _compute_lwork(hesv_lw, n, lower)
                 _, _, x, info = hesv(a1, b1, lwork=lwork,
                                      lower=lower,
                                      overwrite_a=overwrite_a,
-                                     overwrite_b=overwrite_b
-                )
+                                     overwrite_b=overwrite_b)
             else:
                 posv = get_lapack_funcs('posv', (a1, b1))
                 _, x, info = posv(a1, b1,
                                   lower=lower,
                                   overwrite_a=overwrite_a,
-                                  overwrite_b=overwrite_b
-                )
+                                  overwrite_b=overwrite_b)
 
         if b_is_1D:
             x = x.ravel()
