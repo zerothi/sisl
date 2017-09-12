@@ -349,13 +349,13 @@ __all__ += _append('inv', ['', '_destroy'])
 
 # Solve eigenvalue problem
 eig = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False)
-eig_left = eig
+eig_left = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, left=True)
 eig_right = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, right=True)
 __all__ += _append('eig', ['', '_left', '_right'])
 
 # Solve eigenvalue problem
 eig_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True)
-eig_left_destroy = eig_destroy
+eig_left_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, left=True)
 eig_right_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, right=True)
 __all__ += _append('eig_', ['destroy', 'left_destroy', 'right_destroy'])
 
@@ -370,6 +370,11 @@ eigh_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite
 eigh_dc_destroy = eigh_destroy
 eigh_qr_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=False)
 __all__ += _append('eigh_', ['destroy', 'dc_destroy', 'qr_destroy'])
+
+# SVD problem
+svd = _partial(sl.svd, check_finite=False, overwrite_a=False)
+svd_destroy = _partial(sl.svd, check_finite=False, overwrite_a=True)
+__all__ += _append('svd', ['', '_destroy'])
 
 
 # Sparse linalg routines
