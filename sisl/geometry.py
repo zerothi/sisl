@@ -19,7 +19,6 @@ from numbers import Integral, Real
 from six import string_types
 from math import acos
 from itertools import product
-from functools import partial
 
 import numpy as np
 
@@ -2389,12 +2388,12 @@ class Geometry(SuperCellChild):
         if isinstance(fig_axes, plt.mlib3d.Axes3D):
             # We should plot in 3D plots
             fig_axes.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], s=area, c=colors, alpha=0.8)
-            mlibplt.zlabel('Ang')
+            plt.mlibplt.zlabel('Ang')
         else:
             fig_axes.scatter(xyz[:, axes[0]], xyz[:, axes[1]], s=area, c=colors, alpha=0.8)
 
-        mlibplt.xlabel('Ang')
-        mlibplt.ylabel('Ang')
+        plt.mlibplt.xlabel('Ang')
+        plt.mlibplt.ylabel('Ang')
 
     @classmethod
     def fromASE(cls, aseg):
@@ -3058,7 +3057,7 @@ lattice vector.
         argv = ['fake.xyz'] + argv
 
     elif isinstance(geom, BaseSile):
-        geom = sile.read_geometry()
+        geom = geom.read_geometry()
         # Store the input file...
         input_file = geom.file
         argv = ['fake.xyz'] + argv

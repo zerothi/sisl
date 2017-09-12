@@ -8,7 +8,7 @@ from numbers import Integral
 
 import numpy as np
 
-from .utils import *
+from .utils import cmd, strseq, direction, default_namespace
 from .supercell import SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
@@ -830,7 +830,7 @@ This may be unexpected but enables one to do advanced manipulations.
 
     elif isinstance(grid, BaseSile):
         try:
-            grid = sile.read_grid()
+            grid = grid.read_grid()
             # Store the input file...
             input_file = grid.file
         except Exception:

@@ -2,6 +2,7 @@
 Wrapper routines for creating partial function calls with other defaults
 """
 
+import warnings
 import functools as ftool
 import numpy as np
 import numpy.linalg as nl

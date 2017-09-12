@@ -4,7 +4,6 @@ Self-energy class for calculating self-energies.
 from __future__ import print_function, division
 
 import warnings
-from functools import partial
 
 import numpy as np
 from numpy import dot

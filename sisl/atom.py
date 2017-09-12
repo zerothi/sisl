@@ -1403,7 +1403,7 @@ class Atoms(object):
         for i, atom in enumerate(other.atom):
             try:
                 s = atoms.index(atom)
-            except KeyError as e:
+            except KeyError:
                 s = len(atoms.atom)
                 atoms._atom.append(atom)
             spec = np.where(other._specie == i, s, spec)

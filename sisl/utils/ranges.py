@@ -7,7 +7,7 @@ import re
 from itertools import groupby
 
 import numpy as np
-from numpy import arange, hstack, empty, sum
+from numpy import arange, empty, sum
 
 from sisl._help import _zip as zip
 

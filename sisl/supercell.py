@@ -691,8 +691,8 @@ class SuperCell(object):
             fig_axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], *args, **kwargs)
             fig_axes.plot(v1[1, 0] + v0[:, 0], v1[1, 1] + v0[:, 1], *args, **kwargs)
 
-        mlibplt.xlabel('Ang')
-        mlibplt.ylabel('Ang')
+        plt.mlibplt.xlabel('Ang')
+        plt.mlibplt.ylabel('Ang')
 
 
 class SuperCellChild(object):
