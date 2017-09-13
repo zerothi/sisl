@@ -1148,10 +1148,10 @@ class SparseCSR(object):
         ptr1[0] = 0
         # Place it directly where it should be
         ns_.cumsumi(ncol1, out=ptr1[1:])
-        cnnz = np.count_nonzero
-        # Note ncol1 is a view of csr.ncol
-        ncol1[:] = ensure_array([cnnz(col1[ptr1[r]:ptr1[r+1]] >= 0)
-                                 for r in range(len(ptr1) - 1)])
+
+        # Count number of entries
+        ncol1[:] = ensure_array(map(np.count_nonzero,
+                                    np.split(col1 >= 0, ptr1[1:-1])))
 
         # Now we should figure out how to remove those entries
         # that are from the old structure
