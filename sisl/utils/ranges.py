@@ -4,12 +4,13 @@ Basic functionality of creating ranges from text-input and/or other types of inf
 from __future__ import print_function, division
 
 import re
+from functools import partial
 from itertools import groupby
 
 import numpy as np
-from numpy import arange, empty, sum
+from numpy import arange, empty, hstack, sum
 
-from sisl._help import _zip as zip
+from sisl._help import _zip as zip, _map as map
 
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
 __all__ += ['array_arange']
@@ -256,23 +257,12 @@ def array_arange(start, end=None, n=None, dtype=np.int32):
     >>> array_arange([1, 6], n=[2, 2])
     [1, 2, 6, 7]
     """
+    larange = partial(arange, dtype=dtype)
 
-    # Tests show that the below code is faster for large
-    # array_arange calls.
-    # I.e. pre-allocation is faster than hstack
-    j = 0
+    # Tests show that the below code is faster than
+    # implicit for-loops, or list-comprehensions
     if n is None:
-        size = sum(end - start, dtype=dtype)
-        array = empty([size], dtype=dtype)
-        for s, e in zip(start, end):
-            N = e - s
-            array[j:j+N] = arange(s, e, dtype=dtype)
-            j += N
+        array = hstack(map(larange, start, end))
     else:
-        # Count and pre-allocate, this should reduce the memory overhead
-        size = sum(n, dtype=dtype)
-        array = empty([size], dtype=dtype)
-        for s, N in zip(start, n):
-            array[j:j+N] = arange(s, s + N, dtype=dtype)
-            j += N
+        array = hstack(map(larange, start, start + n))
     return array

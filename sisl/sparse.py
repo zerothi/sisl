@@ -28,7 +28,7 @@ from scipy.sparse import isspmatrix_lil
 
 import sisl._numpy_scipy as ns_
 from ._help import array_fill_repeat, ensure_array, get_dtype
-from ._help import _range as range, _zip as zip
+from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix

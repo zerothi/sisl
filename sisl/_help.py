@@ -11,7 +11,7 @@ __all__ += ['isndarray', 'isiterable']
 __all__ += ['get_dtype']
 
 # Wrappers typically used
-__all__ += ['_str', '_range', '_zip']
+__all__ += ['_str', '_range', '_zip', '_map']
 __all__ += ['is_python2', 'is_python3']
 
 
@@ -22,10 +22,12 @@ if is_python3:
     _str = str
     _range = range
     _zip = zip
+    _map = map
 else:
     _str = basestring
     _range = xrange
     from itertools import izip as _zip
+    from itertools import imap as _map
 
 
 def array_fill_repeat(array, size, cls=None):
