@@ -14,12 +14,11 @@ from numpy import empty, zeros, asarray, arange
 from numpy import insert, take, delete, copyto
 from numpy import where, intersect1d, setdiff1d, unique
 from numpy import diff
-from numpy import hstack, argsort, sort
+from numpy import argsort, sort
 try:
     isin = np.isin
 except Exception:
     isin = np.in1d
-
 
 from scipy.sparse import isspmatrix
 from scipy.sparse import isspmatrix_coo
@@ -441,10 +440,16 @@ class SparseCSR(object):
         ncol = self.ncol.view()
         col = self.col.view()
 
-        # Indices of deleted columns
-        idx = [ptr[r] + isin(col[ptr[r]:ptr[r]+ncol[r]], columns).nonzero()[0]
-               for r in range(self.shape[0])]
-        lidx = hstack(idx)
+        # Get indices of deleted columns
+        idx = array_arange(ptr[:-1], n=ncol)
+        # Convert to boolean array where we have columns to be deleted
+        lidx = isin(col[idx], columns)
+        # Count number of deleted entries per row
+        ndel = ensure_array(map(np.count_nonzero, np.split(lidx, ns_.cumsumi(ncol[:-1]))))
+        # Backconvert lidx to deleted indices
+        lidx = idx[lidx]
+        del idx
+
         if len(lidx) == 0:
             # Simply update the shape and return
             # We have nothing to delete!
@@ -472,21 +477,19 @@ class SparseCSR(object):
             update_col = np.any(columns < self.shape[1] - n_cols)
 
         # Correct number of elements per column, and the pointers
-        idx = ns_.arrayi([len(r) for r in idx])
-        ncol[:] -= idx
-        ptr[1:] -= ns_.cumsumi(idx)
+        ncol[:] -= ndel
+        ptr[1:] -= ns_.cumsumi(ndel)
 
         if update_col:
             # Create a count array to subtract
             count = ns_.zerosi(self.shape[1])
-            # This is probably not the fastest solution
-            # But it works!
-            for c in columns:
-                count[c:] += 1
+            count[columns] = 1
+            count = ns_.cumsumi(count)
 
+            # Recreate pointers due to deleted indices
             idx = array_arange(ptr[:-1], n=ncol)
             col[idx] -= count[col[idx]]
-        del idx
+            del idx
 
         # Update number of non-zeroes
         self._nnz = np.sum(ncol)
@@ -506,18 +509,22 @@ class SparseCSR(object):
         # Number of columns
         nc = self.shape[1]
 
-        # Only update counts and pointers
-        idx = [None] * self.shape[0]
-        for r in range(self.shape[0]):
-            idx[r] = ptr[r] + (col[ptr[r]:ptr[r]+ncol[r]] >= nc).nonzero()[0]
-            ndel = len(idx[r])
-            ncol[r] -= ndel
-            ptr[r+1:] -= ndel
+        # Get indices of columns
+        idx = array_arange(ptr[:-1], n=ncol)
+        # Convert to boolean array where we have columns to be deleted
+        lidx = col[idx] >= nc
+        # Count number of deleted entries per row
+        ndel = ensure_array(map(np.count_nonzero, np.split(lidx, ns_.cumsumi(ncol[:-1]))))
+        # Backconvert lidx to deleted indices
+        lidx = idx[lidx]
+        del idx
 
-        # Deleted columns
-        idx = hstack(idx)
-        self.col = delete(self.col, idx)
-        self._D = delete(self._D, idx, axis=0)
+        # Update number of entries per row, and pointers
+        ncol[:] -= ndel
+        ptr[1:] -= ns_.cumsumi(ndel)
+
+        self.col = delete(self.col, lidx)
+        self._D = delete(self._D, lidx, axis=0)
         del idx
 
         # Update number of non-zeroes
@@ -557,9 +564,8 @@ class SparseCSR(object):
         ptr = self.ptr.view()
         ncol = self.ncol.view()
         col = self.col.view()
-        for r in range(self.shape[0]):
-            sl = slice(ptr[r], ptr[r] + ncol[r])
-            col[sl] = new_col[col[sl]]
+        idx = array_arange(ptr[:-1], n=ncol)
+        col[idx] = new_col[col[idx]]
 
         # After translation, the finalization step *must*
         # be set to false.
