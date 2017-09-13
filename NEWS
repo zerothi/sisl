@@ -1,6 +1,8 @@
 0.8.6
 =====
 
+- Added uniq keyword to o2a for better handling of orbitals -> atoms.
+
 - Fixed a performance bottleneck issue related to the `scipy.linalg.solve`
   routine which was changed since 0.19.0.
 
