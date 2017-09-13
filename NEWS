@@ -1,6 +1,9 @@
 0.8.6
 =====
 
+- Fixed a performance bottleneck issue related to the `scipy.linalg.solve`
+  routine which was changed since 0.19.0.
+
 - Changed internal testing scheme to `pytest`
 
 - Lots of bug-fixes here and there
@@ -13,6 +16,8 @@
 
   The order of the arguments are interchanged to be similar to the
   scripting capabilities.
+
+  Also fixed an issue related to moving atoms into the unit-cell.
 
 - Enabled deleting supercell elements of a sparse Geometry. This
   will come in handy when calculating the self-energies and Green
@@ -43,6 +48,13 @@
   * Changed the DOS retrieval functions to be more flexible. The default is
     now to return the summed DOS across the selected atoms.
 
+  * Added a TBTGFSileSiesta which enables one to create _external_ self-energies
+    to be read in by TBtrans (complete electrode control).
+
+  * Added `deltancSileSiesta` as a replacement for `dHncSileSiesta`, TBtrans 4.1b4
+    will have two delta terms, dH (adds to bond-currents) and dSigma (does not
+    add to bond-currents).
+
   * BEWARE, lots of defaults has changed in this release.
 
 - Hamiltonian.tile is now even faster, only utilizing
@@ -53,6 +65,7 @@
   will greatly increase performance.
   It will now be much faster to generate the Hamiltonian for
   a small reference cell, tile/repeat it, remove atoms.
+
 
 0.8.5
 =====
