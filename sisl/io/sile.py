@@ -162,7 +162,7 @@ def get_sile_class(file, *args, **kwargs):
        `cls` in case `cls` is not set.
        For instance:
           water.xyz
-       will return an ``XYZSile``. 
+       will return an ``XYZSile``.
     cls : class
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.

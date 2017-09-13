@@ -143,7 +143,7 @@ class XSFSile(Sile):
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
     def ArgumentParser_out(self, p, *args, **kwargs):
-        """ Adds arguments only if this file is an output file 
+        """ Adds arguments only if this file is an output file
 
         Parameters
         ----------

@@ -18,7 +18,7 @@ class HessianSileGULP(SileGULP):
     @Sile_fh_open
     def read_hessian(self, **kwargs):
         """ Returns a sparse matrix in coo format which contains the GULP
-        Hessian matrix. 
+        Hessian matrix.
 
         This routine expects the units to be in eV/Ang**2.
 

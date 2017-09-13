@@ -826,7 +826,6 @@ This may be unexpected but enables one to do advanced manipulations.
     elif isinstance(grid, Grid):
         # Do nothing, the geometry is already created
         argv = ['fake.grid.nc'] + argv
-        pass
 
     elif isinstance(grid, BaseSile):
         try:

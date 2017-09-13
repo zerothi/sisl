@@ -141,7 +141,7 @@ except:
             If True the ``svx`` LAPACK routines are used which produces more precise
             solutions at the expense of more computations. For ``NRHS << N`` this
             has minimal influence of the performance, whereas for ``NRHS`` close to 
-            ``N`` it can hurt performance. Exploration whether ``refine=True`` is 
+            ``N`` it can hurt performance. Exploration whether ``refine=True`` is
             required for your particular application may be desirable.
 
         Returns

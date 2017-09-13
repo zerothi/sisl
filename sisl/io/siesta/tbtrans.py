@@ -2138,7 +2138,6 @@ add_sile('TBT_UP.AV.nc', tbtavncSileSiesta)
 class phtavncSileSiesta(tbtavncSileSiesta):
     """ PHtrans file object """
     _trans_type = 'PHT'
-    pass
 
 add_sile('PHT.AV.nc', phtavncSileSiesta)
 

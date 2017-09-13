@@ -1,7 +1,7 @@
 """
 Sub-package to easily make algorithmic decisions based on different routines
 
-Several functions exists here to most efficiently choose the most performant 
+Several functions exists here to most efficiently choose the most performant
 routine.
 
 The `Selector` will run through the different routines and decide, based on
@@ -180,7 +180,7 @@ class Selector(object):
         Parameters
         ----------
         routine : func or str
-           If `None` is passed (the default) it will select the best 
+           If `None` is passed (the default) it will select the best
            default routine based on the stored performances.
            If, however, not all performance values has been created
            no routine will be selected.

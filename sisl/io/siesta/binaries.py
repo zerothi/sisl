@@ -315,7 +315,7 @@ class _GFSileSiesta(SileBinSiesta):
         self._ie += 1
 
     def __iter__(self):
-        """ Iterate through the energies and k-points that this GF file is associated with 
+        """ Iterate through the energies and k-points that this GF file is associated with
 
         Yields
         ------

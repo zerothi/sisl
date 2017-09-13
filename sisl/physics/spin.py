@@ -11,7 +11,7 @@ Its usage can be summarized in these few examples:
 
 Note that a data-type may be associated with a spin-object. This is not to say
 that the data-type is used in the configuration, but merely that it helps
-any sub-classed or classes who use the spin-object to determine the 
+any sub-classed or classes who use the spin-object to determine the
 usage of the different spin-components.
 """
 from __future__ import print_function, division

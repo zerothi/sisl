@@ -157,7 +157,7 @@ class SparseGeometry(object):
         atom : int or list of int
             the edges are returned only for the given atom
         exclude : int or list of int, optional
-           remove edges which are in the `exclude` list. 
+           remove edges which are in the `exclude` list.
            Default to `atom`.
 
         See Also

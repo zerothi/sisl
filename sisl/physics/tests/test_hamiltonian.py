@@ -895,7 +895,7 @@ class TestHamiltonian(object):
         eig0 = H.eigh()[0]
         H.shift(0.2)
         assert H.eigh()[0] == pytest.approx(eig0 + 0.2)
-        
+
     def test_edges1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         H = Hamiltonian(setup.g)
@@ -930,23 +930,18 @@ class TestHamiltonian(object):
         # first atom
         assert len(H2.edges(0)) == 3
         # orbitals of first atom
-        edge = H2.edges(orbital=[0,1])
+        edge = H2.edges(orbital=[0, 1])
         assert len(edge) == 6
         assert len(H2.geom.o2a(edge, uniq=True)) == 3
 
         # first orbital on first two atoms
-        edge = H2.edges(orbital=[0,2])
+        edge = H2.edges(orbital=[0, 2])
         # The 1, 3 are still on the first two atoms, but aren't
         # excluded. Hence they are both there
         assert len(edge) == 10
         assert len(H2.geom.o2a(edge, uniq=True)) == 6
 
         # first orbital on first two atoms
-        edge = H2.edges(orbital=[0,2], exclude=[0, 1, 2, 3])
+        edge = H2.edges(orbital=[0, 2], exclude=[0, 1, 2, 3])
         assert len(edge) == 8
         assert len(H2.geom.o2a(edge, uniq=True)) == 4
-
-        
-        
-
-        

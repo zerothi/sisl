@@ -196,7 +196,7 @@ def angle(s, radians=True, in_radians=True):
        Whether the returned angle is in radians.
        Note than an 'r' at the end of `s` has precedence.
     in_radians : bool
-       Whether the calculated angle is in radians. 
+       Whether the calculated angle is in radians.
        Note than an 'r' at the beginning of `s` has precedence.
 
     Returns

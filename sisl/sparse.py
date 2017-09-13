@@ -424,7 +424,7 @@ class SparseCSR(object):
         row : int or list of int
             the edges are returned only for the given row
         exclude : int or list of int, optional
-           remove edges which are in the `exclude` list. 
+           remove edges which are in the `exclude` list.
            Default to `row`.
         """
         row = np.unique(ensure_array(row))

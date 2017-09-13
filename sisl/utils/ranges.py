@@ -8,9 +8,9 @@ from functools import partial
 from itertools import groupby
 
 import numpy as np
-from numpy import arange, empty, hstack, sum
+from numpy import arange, hstack, sum
 
-from sisl._help import _zip as zip, _map as map
+from sisl._help import _map as map
 
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
 __all__ += ['array_arange']

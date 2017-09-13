@@ -159,7 +159,7 @@ class BrillouinZone(object):
         Examples
         --------
         >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.yields().eigh() 
+        >>> obj.yields().eigh()
 
         See Also
         --------
@@ -324,7 +324,7 @@ class MonkhorstPackBZ(BrillouinZone):
         self._w = np.ones([N], np.float64) * np.prod(size) / N
 
     def __iter__(self):
-        """ Iterate through the Monkhorst pack-grid 
+        """ Iterate through the Monkhorst pack-grid
 
         Yields
         ------
