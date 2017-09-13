@@ -341,7 +341,7 @@ class ncSileSiesta(SileCDFSiesta):
         if H.orthogonal:
             # We need to create the orthogonal pattern
             tmp = H._csr.copy(dims=[0])
-            tmp.empty(keep=True)
+            tmp.empty(keep_nnz=True)
             for i in range(tmp.shape[0]):
                 tmp[i, i] = 1.
             v[:] = tmp._D[:, 0]
@@ -420,7 +420,7 @@ class ncSileSiesta(SileCDFSiesta):
         if H.orthogonal:
             # We need to create the orthogonal pattern
             tmp = H._csr.copy(dims=[0])
-            tmp.empty(keep=True)
+            tmp.empty(keep_nnz=True)
             for i in range(tmp.shape[0]):
                 tmp[i, i] = 1.
             v[:] = tmp._D[:, 0]

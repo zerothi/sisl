@@ -149,7 +149,7 @@ class TestSparseCSR(object):
         assert setup.s1d.nnz == 3
         setup.s1d[2, [1, 2, 3]] = 1
         assert setup.s1d.nnz == 6
-        setup.s1d.empty(keep=True)
+        setup.s1d.empty(keep_nnz=True)
         assert setup.s1d.nnz == 6
         setup.s1d.empty()
         assert setup.s1d.nnz == 0
@@ -194,7 +194,7 @@ class TestSparseCSR(object):
         # of the pointers and ncol
         assert np.allclose(setup.s1.col[p[1]:p[1]+n[1]], [1, 2, 3])
         assert setup.s1.finalized
-        setup.s1.empty(keep=True)
+        setup.s1.empty(keep_nnz=True)
         assert setup.s1.finalized
         setup.s1.empty()
         assert not setup.s1.finalized
@@ -374,7 +374,7 @@ class TestSparseCSR(object):
         s1.finalize()
         s2.finalize()
         assert s1.nnz == 10*3
-        s1.delete_columns([3, 1], keep=True)
+        s1.delete_columns([3, 1], keep_shape=True)
         assert s1.ptr[-1] == s1.nnz
         assert s2.ptr[-1] == s2.nnz
         assert s1.nnz == 10 * 1

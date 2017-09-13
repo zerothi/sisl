@@ -148,7 +148,7 @@ class RecursiveSI(SemiInfinite):
 
         cols = array_arange(idx * n, (idx + 1) * n)
         # Delete all values in columns, but keep them to retain the supercell information
-        self.spgeom1._csr.delete_columns(cols, keep=True)
+        self.spgeom1._csr.delete_columns(cols, keep_shape=True)
 
     def __call__(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=False):
         r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).

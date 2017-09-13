@@ -37,7 +37,7 @@ class TestSparseAtom(object):
         assert setup.s1[0, 1] == 1
         setup.s1[2, [1, 2, 3]] = 1
         assert setup.s1.nnz == 6
-        setup.s1.empty(keep=True)
+        setup.s1.empty(keep_nnz=True)
         assert setup.s1.nnz == 6
         setup.s1.empty()
         assert setup.s1.nnz == 0

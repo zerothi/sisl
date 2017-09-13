@@ -936,8 +936,10 @@ class TestHamiltonian(object):
 
         # first orbital on first two atoms
         edge = H2.edges(orbital=[0,2])
-        assert len(edge) == 8
-        assert len(H2.geom.o2a(edge, uniq=True)) == 4
+        # The 1, 3 are still on the first two atoms, but aren't
+        # excluded. Hence they are both there
+        assert len(edge) == 10
+        assert len(H2.geom.o2a(edge, uniq=True)) == 5
 
         
         
