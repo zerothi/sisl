@@ -884,10 +884,62 @@ class TestHamiltonian(object):
         R, param = [0.1, 1.5], [1., 0.1]
         H = Hamiltonian(setup.g.copy())
         H.construct([R, param])
+        eig0 = H.eigh()[0]
         H.shift(0.2)
+        assert H.eigh()[0] == pytest.approx(eig0 + 0.2)
 
     def test_shift2(self, setup):
         R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
         H = Hamiltonian(setup.g.copy(), orthogonal=False)
         H.construct([R, param])
+        eig0 = H.eigh()[0]
         H.shift(0.2)
+        assert H.eigh()[0] == pytest.approx(eig0 + 0.2)
+        
+    def test_edges1(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        H = Hamiltonian(setup.g)
+        H.construct([R, param])
+        assert len(H.edges(0)) == 3
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_edges2(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        H = Hamiltonian(setup.g)
+        H.construct([R, param])
+        H.edges()
+
+    def test_edges3(self, setup):
+        def func(self, ia, idxs, idxs_xyz=None):
+            idx = self.geom.close(ia, R=[0.1, 1.43], idx=idxs)
+            io = self.geom.a2o(ia)
+            # Set on-site on first and second orbital
+            odx = self.geom.a2o(idx[0])
+            self[io, odx] = -1.
+            self[io+1, odx+1] = 1.
+
+            # Set connecting
+            odx = self.geom.a2o(idx[1])
+            self[io, odx] = 0.2
+            self[io, odx+1] = 0.01
+            self[io+1, odx] = 0.01
+            self[io+1, odx+1] = 0.3
+
+        H2 = setup.H2.copy()
+        H2.construct(func)
+        # first atom
+        assert len(H2.edges(0)) == 3
+        # orbitals of first atom
+        edge = H2.edges(orbital=[0,1])
+        assert len(edge) == 6
+        assert len(H2.geom.o2a(edge, uniq=True)) == 3
+
+        # first orbital on first two atoms
+        edge = H2.edges(orbital=[0,2])
+        assert len(edge) == 8
+        assert len(H2.geom.o2a(edge, uniq=True)) == 4
+
+        
+        
+
+        

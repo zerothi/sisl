@@ -571,18 +571,19 @@ class tbtncSileSiesta(SileCDFSiesta):
 
         The normalization can be performed in one of the below methods.
         In the following :math:`N` refers to the normalization constant
-        that is to be used (i.e. the divisor)
+        that is to be used (i.e. the divisor):
 
-        #. 'none': :math:`N=1`
-        #. 'all': :math:`N` is equal to the number of orbitals in the total
-           device region.
-        #. 'atom': :math:`N` is equal to the total number of orbitals in the selected
+        ``'none'``
+           :math:`N=1`
+        ``'all'``
+           :math:`N` equals the number of orbitals in the total device region.
+        ``'atom'``
+           :math:`N` equals the total number of orbitals in the selected
            atoms. If `orbital` is an argument a conversion of `orbital` to the equivalent
            unique atoms is performed, and subsequently the total number of orbitals on the
            atoms is used. This makes it possible to compare the fraction of orbital DOS easier.
-           I.e. for an atom with 4 orbitals one could compare the DOS for orbital `1` with norm:
-           ``norm(orbital=[1], norm='atom')`` for the remaning orbitals ``norm(orbital=[0, 2, 3], norm='atom')``.
-        #. 'orbital': :math:`N` is simply the sum of selected orbitals, if `atom` is specified, this
+        ``'orbital'``
+           :math:`N` is the sum of selected orbitals, if `atom` is specified, this
            is equivalent to the 'atom' option.
 
         Parameters

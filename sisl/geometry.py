@@ -2272,7 +2272,7 @@ class Geometry(SuperCellChild):
 
         return array_arange(ob, oe)
 
-    def o2a(self, io):
+    def o2a(self, io, uniq=False):
         """ Atomic index corresponding to the orbital indicies.
 
         This is a particurlaly slow algorithm due to for-loops.
@@ -2283,11 +2283,20 @@ class Geometry(SuperCellChild):
         ----------
         io: array_like
              List of indices to return the atoms for
+        uniq : bool, optional
+             If True only return the unique atoms.
         """
         if isinstance(io, Integral):
+            if uniq:
+                return np.unique(np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na)
             return np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na
-        iio = ns_.asarrayi(io) % self.no
-        a = ns_.arrayi([np.argmax(i <= self.lasto) for i in iio])
+
+        a = ns_.asarrayi(io) % self.no
+        # Use b-casting rules
+        a.shape = (-1, 1)
+        a = np.argmax(a <= self.lasto, axis=1)
+        if uniq:
+            return np.unique(a + (io // self.no) * self.na)
         return a + (io // self.no) * self.na
 
     def sc2uc(self, atom, uniq=False):

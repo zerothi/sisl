@@ -418,6 +418,16 @@ class TestSparseCSR(object):
         assert s1[1, 3] == 1
         assert s1[1, 1] == 0
 
+    def test_edges1(self, setup):
+        s1 = setup.s1.copy()
+        s1[1, 1] = 1
+        s1[1, 2] = 2
+        s1[1, 3] = 3
+        assert np.all(s1.edges(1, exclude=[]) == [1, 2, 3])
+        assert np.all(s1.edges(1) == [2, 3])
+        assert np.all(s1.edges(1, exclude=2) == [1, 3])
+        assert len(s1.edges(2)) == 0
+
     def test_nonzero1(self, setup):
         s1 = setup.s1.copy()
         s1[2, 1] = 1

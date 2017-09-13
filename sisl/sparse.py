@@ -280,14 +280,14 @@ class SparseCSR(object):
 
         return D
 
-    def empty(self, keep=False):
+    def empty(self, keep_nnz=False):
         """ Delete all sparse information from the sparsity pattern
 
         Essentially this deletes all entries.
 
         Parameters
         ----------
-        keep: boolean, optional
+        keep_nnz: boolean, optional
            if ``True`` keeps the sparse elements *as is*.
            I.e. it will merely set the stored sparse elements to zero.
            This may be advantagegous when re-constructing a new sparse
@@ -295,7 +295,7 @@ class SparseCSR(object):
         """
         self._D[:, :] = 0.
 
-        if not keep:
+        if not keep_nnz:
             self._finalized = False
             # The user does not wish to retain the
             # sparse pattern
@@ -414,14 +414,43 @@ class SparseCSR(object):
         # Signal that we indeed have finalized the data
         self._finalized = True
 
-    def delete_columns(self, columns, keep=False):
+    def edges(self, row, exclude=None):
+        """ Retrieve edges (connections) of a given `row` or list of `row`'s
+
+        The returned edges are unique and sorted (see ``numpy.unique``).
+
+        Parameters
+        ----------
+        row : int or list of int
+            the edges are returned only for the given row
+        exclude : int or list of int, optional
+           remove edges which are in the `exclude` list. 
+           Default to `row`.
+        """
+        row = np.unique(ensure_array(row))
+        if exclude is None:
+            exclude = row.view()
+        else:
+            exclude = np.unique(ensure_array(exclude))
+
+        # Now get the edges
+        ptr = self.ptr.view()
+        ncol = self.ncol.view()
+
+        # Create column indices
+        edges = np.unique(self.col[array_arange(ptr[row], n=ncol[row])])
+
+        # Return the difference to the exclude region, we know both are unique
+        return np.setdiff1d(edges, exclude, assume_unique=True)
+
+    def delete_columns(self, columns, keep_shape=False):
         """ Delete all columns in `columns`
 
         Parameters
         ----------
         columns : int or array_like
            columns to delete from the sparse pattern
-        keep : bool, optional
+        keep_shape : bool, optional
            whether the ``shape`` of the object should be retained, if ``True`` all higher
            columns will be shifted according to the number of columns deleted below,
            if ``False``, only the elements will be deleted.
@@ -451,7 +480,7 @@ class SparseCSR(object):
         if len(lidx) == 0:
             # Simply update the shape and return
             # We have nothing to delete!
-            if not keep:
+            if not keep_shape:
                 shape = list(self.shape)
                 shape[1] -= n_cols
                 self._shape = tuple(shape)
@@ -469,7 +498,7 @@ class SparseCSR(object):
         # Figure out if it is necessary to update columns
         # This is only necessary when the deleted columns
         # are not the *last* columns
-        update_col = not keep
+        update_col = not keep_shape
         if update_col:
             # Check that we really do have to update
             update_col = np.any(columns < self.shape[1] - n_cols)
@@ -492,7 +521,7 @@ class SparseCSR(object):
         # Update number of non-zeroes
         self._nnz = np.sum(ncol)
 
-        if not keep:
+        if not keep_shape:
             shape = list(self.shape)
             shape[1] -= n_cols
             self._shape = tuple(shape)

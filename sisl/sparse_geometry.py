@@ -95,9 +95,9 @@ class SparseGeometry(object):
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
 
-    def empty(self, keep=False):
+    def empty(self, keep_nnz=False):
         """ See `SparseCSR.empty` for details """
-        self._csr.empty(keep)
+        self._csr.empty(keep_nnz)
 
     def copy(self, dtype=None):
         """ A copy of this object
@@ -145,6 +145,26 @@ class SparseGeometry(object):
     def nnz(self):
         """ Number of non-zero elements """
         return self._csr.nnz
+
+    def edges(self, atom, exclude=None):
+        """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
+
+        The returned edges are unique and sorted (see ``numpy.unique``) and are returned
+        in supercell indices (i.e. ``0 <= edge < self.geom.na_s``).
+
+        Parameters
+        ----------
+        atom : int or list of int
+            the edges are returned only for the given atom
+        exclude : int or list of int, optional
+           remove edges which are in the `exclude` list. 
+           Default to `atom`.
+
+        See Also
+        --------
+        SparseCSR.edges: the underlying routine used for extracting the edges
+        """
+        return self._csr.edges(atom, exclude)
 
     def rij(self, what=None, dtype=np.float64, uniq=None):
         r""" Create a sparse matrix with the distances between atoms/orbitals
@@ -861,8 +881,8 @@ class SparseAtom(SparseGeometry):
         new = ns_.arrayi(new)
 
         # Assert that there are only unique values
-        assert len(np.unique(old)) == len(old), "non-unique values in set_nsc"
-        assert len(np.unique(new)) == len(new), "non-unique values in set_nsc"
+        assert len(np.unique(old)) == len(old), "non-unique values in old set_nsc"
+        assert len(np.unique(new)) == len(new), "non-unique values in new set_nsc"
 
         # Remove all elements where old == new
         # I.e. this should prevent us doing unnecessary work
@@ -1253,6 +1273,33 @@ class SparseOrbital(SparseGeometry):
     @property
     def _size(self):
         return self.geom.no
+
+    def edges(self, atom=None, exclude=None, orbital=None):
+        """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
+
+        The returned edges are unique and sorted (see ``numpy.unique``) and are returned
+        in supercell indices (i.e. ``0 <= edge < self.geom.no_s``).
+
+        Parameters
+        ----------
+        atom : int or list of int
+            the edges are returned only for the given atom (but by using  all orbitals of the
+            requested atom). The returned edges are also atoms.
+        exclude : int or list of int, optional
+           remove edges which are in the `exclude` list. 
+           Default to `atom`.
+        orbital : int or list of int
+            the edges are returned only for the given orbital. The returned edges are orbitals.
+
+        See Also
+        --------
+        SparseCSR.edges: the underlying routine used for extracting the edges
+        """
+        if atom is None and orbital is None:
+            raise ValueError(self.__class__.__name__ + '.edges must have either "atom" or "orbital" keyword defined.')
+        if orbital is None:
+            return np.unique(self.geom.o2a(self._csr.edges(self.geom.a2o(atom, True), exclude)))
+        return self._csr.edges(orbital, exclude)
 
     def nonzero(self, atom=None, only_col=False):
         """ Indices row and column indices where non-zero elements exists

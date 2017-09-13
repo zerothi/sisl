@@ -234,6 +234,13 @@ class TestSparseAtom(object):
         assert s.nnz == 4
         assert s[0, 0] == 1
 
+    def test_edges1(self, setup):
+        g = graphene(atom=Atom(6, R=1.43))
+        s = SparseAtom(g)
+        s.construct([[0.1, 1.43], [1, 2]])
+        assert len(s.edges(0)) == 3
+        assert len(s.edges(0, exclude=[])) == 4
+
     def test_fromsp1(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
         csr = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
