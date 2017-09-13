@@ -347,6 +347,10 @@ class TestSparseCSR(object):
         s1.delete_columns(2, True)
         assert s1.nnz == 1
         assert s1.shape[1] == nc - 1
+        # Delete a non-existing column
+        s1.delete_columns(100000, True)
+        assert s1.nnz == 1
+        assert s1.shape[1] == nc - 1
 
     def test_delete_col2(self, setup):
         s1 = setup.s1.copy()
@@ -402,6 +406,17 @@ class TestSparseCSR(object):
         assert s1.nnz == 3
         assert s1[1, 1] == 3
         assert s1[1, 3] == 1
+
+    def test_translate_col2(self, setup):
+        s1 = setup.s1.copy()
+        s1[1, 1] = 1
+        s1[1, 2] = 2
+        s1[1, 3] = 3
+        assert s1.nnz == 3
+        s1.translate_columns([1, 3], [3, s1.shape[1] + 100])
+        assert s1.nnz == 2
+        assert s1[1, 3] == 1
+        assert s1[1, 1] == 0
 
     def test_nonzero1(self, setup):
         s1 = setup.s1.copy()

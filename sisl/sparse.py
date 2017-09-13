@@ -403,10 +403,8 @@ class SparseCSR(object):
             # hence we require a for-loop
             func(r)
 
-        if len(col) != self.nnz:
-            print(len(col), self.nnz)
-            raise ValueError(('Final size in the sparse matrix finalization '
-                              'went wrong.'))
+        assert len(col) == self.nnz, ('Final size in the sparse matrix finalization '
+                                      'went wrong.')
 
         # Check that all column indices are within the expected shape
         if np.any(self.shape[1] <= self.col):
@@ -525,7 +523,7 @@ class SparseCSR(object):
 
         self.col = delete(self.col, lidx)
         self._D = delete(self._D, lidx, axis=0)
-        del idx
+        del lidx
 
         # Update number of non-zeroes
         self._nnz = np.sum(ncol)

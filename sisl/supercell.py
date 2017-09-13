@@ -161,8 +161,6 @@ class SuperCell(object):
     @sc_off.setter
     def sc_off(self, sc_off):
         """ Set the supercell offset """
-        if len(sc_off) != self.n_s:
-            raise ValueError("Overriding the supercell indices requires the same shape")
         self._sc_off[:, :] = np.array(sc_off, order='C', dtype=np.int32)
         self._update_isc_off()
 

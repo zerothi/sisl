@@ -283,3 +283,14 @@ class TestSuperCell(object):
         assert gbig.sc.parallel(g.sc)
         g = g.rotatea(90)
         assert not g.sc.parallel(gbig.sc)
+
+    def test_angle1(self, setup):
+        g = graphene(orthogonal=True)
+        gbig = g.repeat(40, 0).repeat(40, 1)
+        assert g.sc.angle(0, 1) == 90
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_set_nsc1(self, setup):
+        sc = setup.sc.copy()
+        sc.sc_off = np.zeros([10000, 3])
+        setup.sc.set_nsc(a=2)
