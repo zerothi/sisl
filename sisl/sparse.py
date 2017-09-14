@@ -398,10 +398,8 @@ class SparseCSR(object):
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
                     raise ValueError(('You cannot have two elements between the same ' +
                                       'i,j index ({}), something has went terribly wrong.'.format(ptr1)))
-        for r in range(self.shape[0]):
-            # Apparently map, may create stuff on the stack in P3,
-            # hence we require a for-loop
-            func(r)
+        # Since map puts it on the stack, we have to force the evaluation.
+        list(map(func, range(self.shape[0])))
 
         assert len(col) == self.nnz, ('Final size in the sparse matrix finalization '
                                       'went wrong.')
@@ -626,12 +624,11 @@ class SparseCSR(object):
         if np.count_nonzero(sncol == oncol) != self.shape[0]:
             return False
 
-        def samesect1d(a, b):
-            return len(intersect1d(a, b)) == len(a)
-
+        llen = len
+        lintersect1d = intersect1d
         for r in range(self.shape[0]):
-            if not samesect1d(scol[sptr[r]:sptr[r]+sncol[r]],
-                              ocol[optr[r]:optr[r]+oncol[r]]):
+            if llen(lintersect1d(scol[sptr[r]:sptr[r]+sncol[r]],
+                                 ocol[optr[r]:optr[r]+oncol[r]])) != sncol[r]:
                 return False
         return True
 
@@ -654,15 +651,21 @@ class SparseCSR(object):
         if self.shape[:2] != other.shape[:2]:
             raise ValueError('Aligning two sparse matrices requires same shapes')
 
+        lsetdiff1d = setdiff1d
+        sptr = self.ptr.view()
+        sncol = self.ncol.view()
+        scol = self.col.view()
+        optr = other.ptr.view()
+        oncol = other.ncol.view()
+        ocol = other.col.view()
         for r in range(self.shape[0]):
-
             # pointers
-            sptr = self.ptr[r]
-            sn = self.ncol[r]
-            optr = other.ptr[r]
-            on = other.ncol[r]
+            sp = sptr[r]
+            sn = sncol[r]
+            op = optr[r]
+            on = oncol[r]
 
-            adds = setdiff1d(other.col[optr:optr+on], self.col[sptr:sptr+sn])
+            adds = lsetdiff1d(ocol[op:op+on], scol[sp:sp+sn])
             if len(adds) > 0:
                 # simply extend the elements
                 self._extend(r, adds)
@@ -1028,6 +1031,8 @@ class SparseCSR(object):
         D = self._D.view()
 
         # Get short-hand
+        nsum = np.sum
+        nabs = np.abs
         for i in range(self.shape[0]):
 
             # Create short-hand slice
@@ -1036,7 +1041,7 @@ class SparseCSR(object):
             # Get current column entries for the row
             C = col[sl]
             # Retrieve columns with zero values (summed over all elements)
-            C0 = (np.sum(np.abs(D[sl, :]), axis=1) == 0).nonzero()[0]
+            C0 = (nsum(nabs(D[sl, :]), axis=1) == 0).nonzero()[0]
             if len(C0) == 0:
                 continue
             # Remove all entries with 0 values

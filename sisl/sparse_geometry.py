@@ -13,7 +13,7 @@ import numpy as np
 
 import sisl._numpy_scipy as ns_
 from ._help import get_dtype, ensure_array
-from ._help import _zip as zip, _range as range
+from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
 from .sparse import SparseCSR
 
@@ -1223,9 +1223,9 @@ class SparseAtom(SparseGeometry):
         if geom.na == 1:
             D = np.tile(D, (reps, 1))
         else:
-            D = np.vstack([np.tile(d, (reps, 1))
-                           for d in np.split(D, ns_.cumsumi(self._csr.ncol[:-1]), axis=0)
-                       ])
+            ntile = ftool.partial(np.tile, reps=(reps, 1))
+            D = np.vstack(map(ntile, np.split(D, ns_.cumsumi(self._csr.ncol[:-1]), axis=0)))
+
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
 
@@ -1769,9 +1769,8 @@ class SparseOrbital(SparseGeometry):
         if geom.na == 1:
             D = np.tile(D, (reps, 1))
         else:
-            D = np.vstack([np.tile(d, (reps, 1))
-                           for d in np.split(D, ns_.cumsumi(ncol)[geom.lasto[:geom.na-1]], axis=0)
-                       ])
+            ntile = ftool.partial(np.tile, reps=(reps, 1))
+            D = np.vstack(map(ntile, np.split(D, ns_.cumsumi(ncol)[geom.lasto[:geom.na-1]], axis=0)))
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
 
