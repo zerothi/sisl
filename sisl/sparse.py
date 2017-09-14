@@ -1159,6 +1159,9 @@ class SparseCSR(object):
         # Create the new SparseCSR
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
         csr = self.__class__((len(ridx), nc, self.shape[2]), dtype=self.dtype, nnz=1)
+        # Limit memory
+        csr.col = np.empty([1])
+        csr._D = np.empty([1])
 
         # Get views
         ptr1 = csr.ptr.view()
@@ -1184,21 +1187,16 @@ class SparseCSR(object):
         ns_.cumsumi(ncol1, out=ptr1[1:])
 
         # Count number of entries
+        idx_take = col1 >= 0
         ncol1[:] = ensure_array(map(np.count_nonzero,
-                                    np.split(col1 >= 0, ptr1[1:-1])))
-
-        # Now we should figure out how to remove those entries
-        # that are from the old structure
-        # Because this is `sub`, it probably means that
-        # we are dealing with a relatively small number of
-        # indices compared to the original one. Hence,
-        # we use the take function here.
-        idx_take = (col1 >= 0).nonzero()[0]
+                                    np.split(idx_take, ptr1[1:-1])))
+        # Convert to indices
+        idx_take = idx_take.nonzero()[0]
 
         # Decrease col1 and also extract the data
         csr.col = take(col1, idx_take)
         del col1
-        csr._D = take(self._D[col_idx, :], idx_take, 0)
+        csr._D = take(self._D, take(col_idx, idx_take), axis=0)
         del col_idx, idx_take
 
         # Set the data for the new sparse csr

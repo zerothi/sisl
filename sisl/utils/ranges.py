@@ -8,7 +8,7 @@ from functools import partial
 from itertools import groupby
 
 import numpy as np
-from numpy import arange, concatenate, sum
+from numpy import zeros, ones, cumsum, take
 
 from sisl._help import _map as map
 
@@ -257,11 +257,38 @@ def array_arange(start, end=None, n=None, dtype=np.int32):
     >>> array_arange([1, 6], n=[2, 2])
     [1, 2, 6, 7]
     """
-    larange = partial(arange, dtype=dtype)
+    _z = partial(zeros, dtype=dtype)
+    _o = partial(ones, dtype=dtype)
+    _c = partial(cumsum, dtype=dtype)
 
     # Tests show that the below code is faster than
     # implicit for-loops, or list-comprehensions
+    # concatenate(map(..)
+    # This below is much faster and does not require _any_
+    # loops
     if n is None:
-        return concatenate(list(map(larange, start, end)))
+        # We really do need n to speed things up
+        n = end - start
+    # The below algorithm only works for non-zero n
+    idx = n.nonzero()[0]
 
-    return concatenate(list(map(larange, start, start + n)))
+    # Grab corner case
+    if len(idx) == 0:
+        return _z(0)
+
+    # Reduce size
+    start = take(start, idx)
+    n = take(n, idx)
+
+    # Create array
+    a = _o(n.sum())
+
+    # set pointers such that we can
+    # correct for final cumsum
+    ptr = _c(n[:-1])
+    a[0] = start[0]
+    a[ptr] = start[1:]
+    # Correct for previous values
+    a[ptr] -= start[:-1] + n[:-1] - 1
+
+    return _c(a)
