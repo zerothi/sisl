@@ -8,7 +8,7 @@ from functools import partial
 from itertools import groupby
 
 import numpy as np
-from numpy import arange, hstack, sum
+from numpy import arange, concatenate, sum
 
 from sisl._help import _map as map
 
@@ -262,7 +262,6 @@ def array_arange(start, end=None, n=None, dtype=np.int32):
     # Tests show that the below code is faster than
     # implicit for-loops, or list-comprehensions
     if n is None:
-        array = hstack(map(larange, start, end))
-    else:
-        array = hstack(map(larange, start, start + n))
-    return array
+        return concatenate(list(map(larange, start, end)))
+
+    return concatenate(list(map(larange, start, start + n)))
