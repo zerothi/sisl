@@ -1160,7 +1160,6 @@ class SparseCSR(object):
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
         csr = self.__class__((len(ridx), nc, self.shape[2]), dtype=self.dtype, nnz=1)
         # Limit memory
-        csr.col = np.empty([1])
         csr._D = np.empty([1])
 
         # Get views
@@ -1172,13 +1171,23 @@ class SparseCSR(object):
         # Place directly where it should be (i.e. re-use space)
         take(self.ncol, ridx, out=ncol1)
 
+        # Create a 2D array to contain
+        #   [0, :] the column indices to keep
+        #   [1, :] the new column data
+        # We do this because we can then use take on this array
+        # and not two arrays.
+        col_data = ns_.emptyi([2, ncol1.sum()])
+        # Create views to limit the memory
+        col_idx = col_data[0, :].view()
+        col1 = col_data[1, :].view()
+
         # Create a list of ndarrays with indices of elements per row
         # and transfer to a linear index
-        col_idx = array_arange(ptr1[1:], n=ncol1)
+        col_data[0, :] = array_arange(ptr1[1:], n=ncol1)
 
         # Reduce the column indices (note this also ensures that
         # it will work on non-finalized sparse matrices)
-        col1 = pvt[take(self.col, col_idx)]
+        col_data[1, :] = pvt[take(self.col, col_data[0, :])]
 
         # Count the number of items that are left in the sparse pattern
         # First recreate the new (temporary) pointer
@@ -1187,17 +1196,19 @@ class SparseCSR(object):
         ns_.cumsumi(ncol1, out=ptr1[1:])
 
         # Count number of entries
-        idx_take = col1 >= 0
+        idx_take = col_data[1, :] >= 0
         ncol1[:] = ensure_array(map(np.count_nonzero,
                                     np.split(idx_take, ptr1[1:-1])))
+
         # Convert to indices
         idx_take = idx_take.nonzero()[0]
 
-        # Decrease col1 and also extract the data
-        csr.col = take(col1, idx_take)
-        del col1
-        csr._D = take(self._D, take(col_idx, idx_take), axis=0)
-        del col_idx, idx_take
+        # Decrease column data and also extract the data
+        col_data = take(col_data, idx_take, axis=1)
+        del idx_take
+        csr._D = take(self._D, col_data[0, :], axis=0)
+        csr.col = col_data[1, :].copy()
+        del col_data
 
         # Set the data for the new sparse csr
         csr.ptr[0] = 0
