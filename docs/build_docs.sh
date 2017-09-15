@@ -18,6 +18,9 @@ if [ $succeed -eq 0 -a -d latest ]; then
     cp -rf ../build/html/* .
     rm -rf _sources
     popd
+    # Clean all rst.dummy files in the
+    # folder
+    rm latest/**/*.rst.dummy
     git add latest
     
 fi
