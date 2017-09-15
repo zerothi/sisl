@@ -29,6 +29,10 @@ class TestMisc(object):
         assert direction('y') == 1
         assert direction('z') == 2
 
+    @pytest.mark.xfail(raises=ValueError)
+    def test_direction_str(self):
+        direction(4)
+
     def test_angle_r2r(self):
         assert pytest.approx(angle('2pi')) == 2*m.pi
         assert pytest.approx(angle('2pi/2')) == m.pi
@@ -36,6 +40,7 @@ class TestMisc(object):
 
         assert pytest.approx(angle('a2*180')) == 2*m.pi
         assert pytest.approx(angle('2*180', in_radians=False)) == 2*m.pi
+        assert pytest.approx(angle('a2*180r')) == 2*m.pi
 
     def test_angle_a2a(self):
         assert pytest.approx(angle('a2pia')) == 360
@@ -64,3 +69,11 @@ class TestMisc(object):
             else:
                 # if this is reached, something is wrong
                 assert False
+
+    def test_str_spec1(self):
+        a = str_spec('foo')
+        assert a[0] == 'foo'
+        assert a[1] is None
+        a = str_spec('foo{bar}')
+        assert a[0] == 'foo'
+        assert a[1] == 'bar'

@@ -62,8 +62,9 @@ class TestGrid(object):
 
     def test_copy(self, setup):
         assert setup.g.copy() == setup.g
+        assert not setup.g.copy() != setup.g
 
-    def test_add(self, setup):
+    def test_add1(self, setup):
         g = setup.g + setup.g
         assert np.allclose(g.grid, (setup.g * 2).grid)
         g = setup.g.copy()
@@ -72,6 +73,26 @@ class TestGrid(object):
         g = setup.g.copy()
         g /= 2
         assert np.allclose(g.grid, (setup.g / 2).grid)
+
+    def test_add2(self, setup):
+        g = setup.g + 2.
+        assert np.allclose(g.grid, setup.g.grid + 2)
+        g = setup.g.copy()
+        g += 2.
+        g -= 2.
+        assert np.allclose(g.grid, setup.g.grid)
+        g = setup.g + setup.g
+        assert np.allclose(g.grid, setup.g.grid * 2)
+
+    def test_op1(self, setup):
+        g = setup.g * setup.g
+        assert np.allclose(g.grid, setup.g.grid * setup.g.grid)
+        g = setup.g.copy()
+        g *= setup.g
+        assert np.allclose(g.grid, setup.g.grid * setup.g.grid)
+        g = setup.g * setup.g
+        g /= setup.g
+        assert np.allclose(g.grid, setup.g.grid)
 
     def test_swapaxes(self, setup):
         g = setup.g.swapaxes(0, 1)
