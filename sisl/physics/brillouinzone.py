@@ -469,7 +469,7 @@ class PathBZ(BrillouinZone):
         # Calculate points
         k = [self.tocartesian(pnt) for pnt in self.point]
         dk = np.diff(k, axis=0)
-        xtick = np.zeros(len(k), np.float64)
+        xtick = [None] * len(k)
         # Prepare output array
         dK = np.empty(len(self), np.float64)
 
@@ -501,7 +501,7 @@ class PathBZ(BrillouinZone):
         # Get label tick
         label_tick = [a for a in self.name]
         if ticks:
-            return xtick, label_tick, dK
+            return dK[xtick], label_tick, dK
         return dK
 
     def __len__(self):
