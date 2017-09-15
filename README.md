@@ -46,6 +46,15 @@ Subsequently manual installation may be done using this command:
     python setup.py install --prefix=<prefix>
 
 
+### Testing installation ###
+
+After installation it may be a good idea to check that the tests shipped with sisl pass.
+To do this the `pytest` package is necessary. Then run
+
+    pytest --pyargs sisl
+
+which will run the shipped sisl test-suite.
+
 ## Usage ##
 
 If used to produce scientific contributions, please use this [DOI][doi] for citation. It is recommend to specify the version of sisl in combination of this citation:

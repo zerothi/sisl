@@ -66,4 +66,4 @@ Then to test the installation simply run:
 
 .. code-block:: bash
 
-    pytest sisl
+    pytest --pyargs sisl
