@@ -868,17 +868,20 @@ class TestHamiltonian(object):
         # Create reference
         H = Hamiltonian(setup.g.copy())
         H.construct([R, param])
+        h = H.copy()
         H.set_nsc(nsc=[None, 1, 1])
         assert H.nnz == 6
         H.set_nsc(nsc=[1, None, 1])
         assert H.nnz == 4
+        h.set_nsc(nsc=[1, None, 1])
+        assert h.nnz == 6
 
         g = setup.g.copy()
         g.set_nsc([1] * 3)
         Hg = Hamiltonian(g)
         Hg.construct([R, param])
-        assert Hg.spsame(H)
         assert Hg.nnz == 4
+        assert Hg.spsame(H)
 
     def test_shift1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

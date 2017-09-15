@@ -6,6 +6,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
+from sisl.utils.ranges import array_arange
 from sisl.sparse import *
 
 
@@ -339,17 +340,20 @@ class TestSparseCSR(object):
     def test_delete_col1(self, setup):
         s1 = setup.s1.copy()
         nc = s1.shape[1]
+        s1[0, [1, 3]] = 1
         s1[1, [1, 2, 3]] = 1
-        assert s1.nnz == 3
+        assert s1.nnz == 5
         s1.delete_columns(2)
+        assert s1.nnz == 4
+        assert s1.shape[1] == nc - 1
+        assert np.all(s1.col[array_arange(s1.ptr, n=s1.ncol)] < 3)
+        s1.delete_columns(2, True)
         assert s1.nnz == 2
         assert s1.shape[1] == nc - 1
-        s1.delete_columns(2, True)
-        assert s1.nnz == 1
-        assert s1.shape[1] == nc - 1
+        assert np.all(s1.col[array_arange(s1.ptr, n=s1.ncol)] < 2)
         # Delete a non-existing column
         s1.delete_columns(100000, True)
-        assert s1.nnz == 1
+        assert s1.nnz == 2
         assert s1.shape[1] == nc - 1
 
     def test_delete_col2(self, setup):
@@ -396,6 +400,34 @@ class TestSparseCSR(object):
         assert s1.nnz == 10 * 1
         assert s1.spsame(s2)
 
+    def test_delete_col5(self, setup):
+        s1 = setup.s1.copy()
+        nc = s1.shape[1]
+        s1[1, [1, 2, 3]] = 1
+        assert s1.nnz == 3
+        s1.delete_columns(2)
+        assert s1.nnz == 2
+        assert s1.shape[1] == nc - 1
+        assert np.all(s1.col[array_arange(s1.ptr, n=s1.ncol)] < 3)
+        s1.delete_columns(2, True)
+        assert s1.nnz == 1
+        assert s1.shape[1] == nc - 1
+        assert np.all(s1.col[array_arange(s1.ptr, n=s1.ncol)] < 2)
+        # Delete a non-existing column
+        s1.delete_columns(100000, True)
+        assert s1.nnz == 1
+        assert s1.shape[1] == nc - 1
+
+    def test_delete_col6(self, setup):
+        s1 = setup.s1.copy()
+        nc = s1.shape[1]
+        for i in range(3):
+            s1[i, [1, 2, 3]] = 1
+        assert s1.nnz == 9
+        s1.delete_columns(2)
+        assert s1.nnz == 6
+        assert s1.shape[1] == nc - 1
+
     def test_translate_col1(self, setup):
         s1 = setup.s1.copy()
         s1[1, 1] = 1
@@ -417,6 +449,45 @@ class TestSparseCSR(object):
         assert s1.nnz == 2
         assert s1[1, 3] == 1
         assert s1[1, 1] == 0
+
+    def test_translate_col3(self, setup):
+        s1 = setup.s1.copy()
+        for i in range(3):
+            s1[i, 1] = 1
+            s1[i, 2] = 2
+            s1[i, 3] = 3
+        assert s1.nnz == 9
+        s1.translate_columns([1, 3], [3, 1])
+        assert s1.nnz == 9
+        for i in range(3):
+            assert s1[i, 1] == 3
+            assert s1[i, 3] == 1
+        s1.translate_columns([1, 3], [3, 1])
+        assert s1.nnz == 9
+        for i in range(3):
+            assert s1[i, 1] == 1
+            assert s1[i, 3] == 3
+
+    def test_translate_col4(self, setup):
+        s1 = setup.s1.copy()
+        nc = s1.shape[1]
+        for i in range(3):
+            s1[i, 1] = 1
+            s1[i, 2] = 2
+            s1[i, 3] = 3
+        assert s1.nnz == 9
+        s1.translate_columns([1, 3], [nc, 1])
+        assert s1.nnz == 6
+        assert s1.shape[1] == nc
+        for i in range(3):
+            assert s1[i, 1] == 3
+            assert s1[i, 2] == 2
+            assert s1[i, 3] == 0
+        s1.translate_columns([1, 3], [3, 1])
+        assert s1.nnz == 6
+        for i in range(3):
+            assert s1[i, 1] == 0
+            assert s1[i, 3] == 3
 
     def test_edges1(self, setup):
         s1 = setup.s1.copy()

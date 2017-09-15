@@ -234,11 +234,10 @@ class BrillouinZone(object):
         getattr(self, attr)(k, *args, **kwargs) : whatever this returns
         """
         try:
-            # We have to by-pass the getattr because the __call__ is a
-            # special method.
-            return getattr(self, '__call__')(*args, **kwargs)
-        except:
+            call = getattr(self, '__call__')
+        except Exception as e:
             raise NotImplementedError("Could not call the object it self")
+        return call(*args, **kwargs)
 
     def __iter__(self):
         """ Returns all k-points associated with this Brillouin zone object

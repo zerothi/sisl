@@ -177,11 +177,18 @@ class SuperCell(object):
         for i, sc in enumerate(self.sc_off):
             yield i, sc
 
-    def copy(self):
+    def copy(self, cell=None):
         """
         Returns a copy of the object.
         """
-        return self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc))
+        if cell is None:
+            copy = self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc))
+        else:
+            copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc))
+        # Ensure that the correct super-cell information gets carried through
+        if not np.all(copy.sc_off == self.sc_off):
+            copy.sc_off = self.sc_off
+        return copy
 
     def fit(self, xyz, axis=None, tol=0.05):
         """ Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
@@ -248,7 +255,7 @@ class SuperCell(object):
         cell[1, :] *= ireps[1]
         cell[2, :] *= ireps[2]
 
-        return self.__class__(cell, nsc=self.nsc)
+        return self.copy(cell)
 
     def swapaxes(self, a, b):
         """ Returns `SuperCell` with swapped axis
@@ -259,6 +266,7 @@ class SuperCell(object):
         idx = np.arange(3, dtype=np.int32)
         idx[b] = a
         idx[a] = b
+        # There _can_ be errors when sc_off isn't created by sisl
         return self.__class__(np.copy(self.cell[idx, :], order='C'),
                               nsc=self.nsc[idx])
 
@@ -327,7 +335,7 @@ class SuperCell(object):
             cell[1, :] = q.rotate(self.cell[1, :])
         if 'c' in only:
             cell[2, :] = q.rotate(self.cell[2, :])
-        return self.__class__(cell, nsc=np.copy(self.nsc))
+        return self.copy(cell)
 
     def offset(self, isc=None):
         """ Returns the supercell offset of the supercell index """
@@ -350,7 +358,7 @@ class SuperCell(object):
         # normalize to get direction vector
         d = d / np.sum(d ** 2) ** .5
         cell[axis, :] += d * vacuum
-        return self.__class__(cell, nsc=np.copy(self.nsc))
+        return self.copy(cell)
 
     def sc_index(self, sc_off):
         """ Returns the integer index in the sc_off list that corresponds to `sc_off`
@@ -400,8 +408,7 @@ class SuperCell(object):
         scale : ``float``
            the scale factor for the new lattice vectors
         """
-        cell = self.cell * scale
-        return self.__class__(cell, np.copy(self.nsc))
+        return self.copy(self.cell * scale)
 
     def tile(self, reps, axis):
         """ Extend the unit-cell `reps` times along the `axis` lattice vector
@@ -445,13 +452,13 @@ class SuperCell(object):
         """ Cuts the cell into several different sections. """
         cell = np.copy(self.cell)
         cell[axis, :] /= seps
-        return self.__class__(cell, np.copy(self.nsc))
+        return self.copy(cell)
 
     def append(self, other, axis):
         """ Appends other `SuperCell` to this grid along axis """
         cell = np.copy(self.cell)
         cell[axis, :] += other.cell[axis, :]
-        return self.__class__(cell, nsc=np.copy(self.nsc))
+        return self.copy(cell)
 
     def prepend(self, other, axis):
         """ Prepends other `SuperCell` to this grid along axis
@@ -469,7 +476,7 @@ class SuperCell(object):
         for i in range(3):
             p[i] = abs(np.sum(cell[i, :] * v)) / np.sum(cell[i, :]**2)**.5
         cell[np.argmax(p), :] += v
-        return self.__class__(cell, np.copy(self.nsc))
+        return self.copy(cell)
     translate = move
 
     def center(self, axis=None):

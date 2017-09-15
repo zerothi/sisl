@@ -26,6 +26,9 @@ def setup():
 @pytest.mark.grid
 class TestGrid(object):
 
+    def test_print(self, setup):
+        print(setup.g)
+
     def test_append(self, setup):
         g = setup.g.append(setup.g, 0)
         assert np.allclose(g.grid.shape, [20, 10, 100])
