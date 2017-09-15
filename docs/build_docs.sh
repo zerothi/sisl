@@ -17,10 +17,12 @@ if [ $succeed -eq 0 -a -d latest ]; then
     pushd latest
     cp -rf ../build/html/* .
     rm -rf _sources
-    popd
     # Clean all rst.dummy files in the
-    # folder
-    rm latest/**/*.rst.dummy
+    for f in `find ./ -name "*rst.dummy"`
+    do
+	rm $f
+    done
+    popd
     git add latest
     
 fi
