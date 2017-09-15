@@ -1177,9 +1177,6 @@ class SparseCSR(object):
         # We do this because we can then use take on this array
         # and not two arrays.
         col_data = ns_.emptyi([2, ncol1.sum()])
-        # Create views to limit the memory
-        col_idx = col_data[0, :].view()
-        col1 = col_data[1, :].view()
 
         # Create a list of ndarrays with indices of elements per row
         # and transfer to a linear index

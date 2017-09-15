@@ -287,8 +287,7 @@ def array_arange(start, end=None, n=None, dtype=np.int32):
     # correct for final cumsum
     ptr = _c(n[:-1])
     a[0] = start[0]
-    a[ptr] = start[1:]
-    # Correct for previous values
-    a[ptr] -= start[:-1] + n[:-1] - 1
+    # Define start and correct for previous values
+    a[ptr] = start[1:] - start[:-1] - n[:-1] + 1
 
     return _c(a)
