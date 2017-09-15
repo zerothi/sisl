@@ -429,21 +429,7 @@ class PathBZ(BrillouinZone):
 
     def lineartick(self):
         """ The tick-marks corresponding to the linear-k values """
-        n = len(self.point)
-        xtick = np.zeros(n, np.float64)
-
-        ii = 0
-        for i in range(n-1):
-            xtick[i] = ii
-            ii += self.division[i]
-
-        # Final tick-mark
-        xtick[n-1] = ii - 1
-
-        # Get label tick
-        label_tick = [a for a in self.name]
-
-        return xtick, label_tick
+        return self.lineark(True)[0:2]
 
     def lineark(self, ticks=False):
         """ A 1D array which corresponds to the delta-k values of the path
