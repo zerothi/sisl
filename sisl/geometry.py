@@ -1080,13 +1080,13 @@ class Geometry(SuperCellChild):
     def angle(self, atom, dir=(1., 0, 0), ref=None, radians=False):
         r""" The angle between atom `atom` and the direction `dir`, with possibility of a reference coordinate `ref`
 
-        The calculated angle can be written as this 
+        The calculated angle can be written as this
 
         .. math::
             \alpha = \acos \frac{(\mathrm{atom} - \mathrm{ref})\cdot \mathrm{dir}}
             {|\mathrm{atom}-\mathrm{ref}||\mathrm{dir}|}
 
-        and thus lies in the interval :math:`[0 ; \pi]` as one cannot distinguish orientation without 
+        and thus lies in the interval :math:`[0 ; \pi]` as one cannot distinguish orientation without
         additional vectors.
 
         Parameters
@@ -1119,7 +1119,7 @@ class Geometry(SuperCellChild):
         ang = np.where(nx > 1e-6, np.arccos((xi * dir).sum(axis=1) / nx), 0.)
         if radians:
             return ang
-        return np.degree(ang)
+        return np.degrees(ang)
 
     def rotatea(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
         """ Rotate around first lattice vector
