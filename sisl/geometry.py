@@ -1077,6 +1077,50 @@ class Geometry(SuperCellChild):
 
     __rmul__ = __mul__
 
+    def angle(self, atom, dir=(1., 0, 0), ref=None, radians=False):
+        r""" The angle between atom `atom` and the direction `dir`, with possibility of a reference coordinate `ref`
+
+        The calculated angle can be written as this 
+
+        .. math::
+            \alpha = \acos \frac{(\mathrm{atom} - \mathrm{ref})\cdot \mathrm{dir}}
+            {|\mathrm{atom}-\mathrm{ref}||\mathrm{dir}|}
+
+        and thus lies in the interval :math:`[0 ; \pi]` as one cannot distinguish orientation without 
+        additional vectors.
+
+        Parameters
+        ----------
+        atom : int or array_like
+           atomic index
+        dir : str, int or vector
+           the direction from which the angle is calculated from, default to ``x``
+        ref : int or coordinate, optional
+           the reference point from which the vectors are drawn, default to origo
+        radians : bool, optional
+           whether the returned value is in radians
+        """
+        xi = self.axyz(ensure_array(atom))
+        if isinstance(dir, (_str, Integral)):
+            dir = self.cell[direction(dir), :]
+        else:
+            dir = ensure_array(dir, np.float64)
+        # Normalize
+        dir /= (dir ** 2).sum() ** .5
+        dir.shape = (1, -1)
+
+        if ref is None:
+            pass
+        elif isinstance(ref, Integral):
+            xi -= self.axyz(ref)[None, :]
+        else:
+            xi -= ensure_array(ref, np.float64)[None, :]
+        nx = (xi ** 2).sum(axis=1) ** .5
+        ang = np.where(nx > 1e-6, np.arccos((xi * dir).sum(axis=1) / nx), 0.)
+        if radians:
+            return ang
+        return np.degree(ang)
+
     def rotatea(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
         """ Rotate around first lattice vector
 
@@ -2590,7 +2634,7 @@ class Geometry(SuperCellChild):
                 R = maxR
 
         # Convert to list
-        tol = ensure_array(tol, dtype=np.float64)
+        tol = ensure_array(tol, np.float64)
         if len(tol) == 1:
             # Now we are in a position to determine the sizes
             dR = np.arange(tol[0] * .5, R + tol[0] * .55, tol[0])

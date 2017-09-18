@@ -590,9 +590,8 @@ class SuperCell(object):
         radians : bool, optional
            whether the returned value is in radians
         """
-        na = np.sum(self.cell[i, :]**2)
-        nb = np.sum(self.cell[j, :]**2)
-        ang = math.acos(np.sum(self.cell[i, :] * self.cell[j, :]) / (na * nb))
+        n = np.sum(self.cell[[i, j], :]**2) ** .5
+        ang = math.acos(np.sum(self.cell[i, :] * self.cell[j, :]) / n)
         if radians:
             return ang
         return math.degrees(ang)
