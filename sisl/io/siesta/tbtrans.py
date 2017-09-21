@@ -1130,7 +1130,7 @@ class tbtncSileSiesta(SileCDFSiesta):
 
             # Transfer all columns to the new columns
             if uc:
-                cols = map_col(Jij.indices)
+                cols = map_col(Jij.indices).astype(np.int32, copy=False)
             else:
                 cols = Jij.indices.view()
             Jab.indptr[:] = Jij.indptr[:]
@@ -1153,13 +1153,13 @@ class tbtncSileSiesta(SileCDFSiesta):
             # been processed.
             Jab.indptr[:] = indptr[:]
             # Transfer all columns to the new columns
-            Jab.indices = map_col(Jij.indices)
+            Jab.indices = map_col(Jij.indices).astype(np.int32, copy=False)
 
         # Copy data
         if '+' in sum:
-            Jab.data = np.where(Jij.data > 0, Jij.data, 0)
+            Jab.data = np.where(Jij.data > 0, Jij.data, 0).astype(Jij.dtype, copy=False)
         elif '-' in sum:
-            Jab.data = np.where(Jij.data > 0, 0, Jij.data)
+            Jab.data = np.where(Jij.data > 0, 0, Jij.data).astype(Jij.dtype, copy=False)
         else:
             Jab.data = np.copy(Jij.data)
 
