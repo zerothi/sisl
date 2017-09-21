@@ -1097,10 +1097,15 @@ class SparseCSR(object):
         **kwargs:
            arguments passed to the ``scipy.sparse.csr_matrix`` routine
         """
+        # We finalize because we do not expect the sparse pattern to change once
+        # we request a csr matrix in another format.
+        # Otherwise we *could* do array_arange
         self.finalize()
 
         shape = self.shape[:2]
-        return csr_matrix((self._D[:, dim], self.col, self.ptr), shape=shape, **kwargs)
+        return csr_matrix((self._D[:, dim], self.col.astype(np.int32, copy=False),
+                           self.ptr.astype(np.int32, copy=False)),
+                          shape=shape, **kwargs)
 
     def remove(self, indices):
         """ Return a new sparse CSR matrix with all the indices removed
