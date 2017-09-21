@@ -29,7 +29,12 @@ class TestSparseAtom(object):
     def test_fail_align1(self, setup):
         s = SparseAtom(setup.g * 2)
         print(s)
-        setup.s1.align(s)
+        setup.s1.spalign(s)
+
+    def test_align1(self, setup):
+        s = SparseAtom(setup.g)
+        setup.s1.spalign(s)
+        setup.s1.spalign(s._csr)
 
     def test_create1(self, setup):
         setup.s1[0, [1, 2, 3]] = 1
@@ -56,6 +61,27 @@ class TestSparseAtom(object):
         assert setup.s2[0, 2, 0, (1, 1, 1)] == 1
         assert setup.s2[0, 2, 1, (1, 1, 1)] == 2
         setup.s2.empty()
+
+    def test_in1(self, setup):
+        setup.s1[0, [1, 2, 3]] = 1
+        assert setup.s1[0, 2] == 1
+        assert [0, 4] not in setup.s1
+        assert [0, 2] in setup.s1
+        setup.s1.empty()
+
+    def test_reset1(self, setup):
+        setup.s1[0, [1, 2, 3], (1, 1, 1)] = 1
+        assert setup.s1[0, 2, (1, 1, 1)] == 1
+        setup.s1.reset()
+        assert setup.s1.nnz == 0
+        setup.s1.empty()
+
+    def test_eliminate_zeros1(self, setup):
+        setup.s1[0, [1, 2, 3]] = 0
+        assert setup.s1.nnz == 3
+        setup.s1.eliminate_zeros()
+        assert setup.s1.nnz == 0
+        setup.s1.empty()
 
     def test_nonzero1(self, setup):
         s2 = setup.s2.copy()
@@ -124,6 +150,9 @@ class TestSparseAtom(object):
         assert atom.spsame(orbital)
         # This only works because there is 1 orbital per atom
         atom = sa.rij('orbital')
+        orbital = so.rij()
+        assert atom.spsame(orbital)
+        so.finalize()
         orbital = so.rij()
         assert atom.spsame(orbital)
 

@@ -17,10 +17,10 @@ from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
 from .sparse import SparseCSR
 
-__all__ = ['SparseGeometry', 'SparseAtom', 'SparseOrbital']
+__all__ = ['SparseAtom', 'SparseOrbital']
 
 
-class SparseGeometry(object):
+class _SparseGeometry(object):
     """ Sparse object containing sparse elements for a given geometry.
 
     This is a base class intended to be sub-classed because the sparsity information
@@ -287,27 +287,6 @@ class SparseGeometry(object):
         """ Delete elements of the sparse elements """
         del self._csr[key]
 
-    def __getitem__(self, key):
-        """ Elements for the index(s) """
-        dd = self._def_dim
-        if dd >= 0:
-            key = tuple(key) + (dd,)
-            self._def_dim = -1
-        d = self._csr[key]
-        return d
-
-    def __setitem__(self, key, val):
-        """ Set or create elements in the sparse data
-
-        Override set item for slicing operations and enables easy
-        setting of parameters in a sparse matrix
-        """
-        dd = self._def_dim
-        if dd >= 0:
-            key = tuple(key) + (dd,)
-            self._def_dim = -1
-        self._csr[key] = val
-
     def __contains__(self, key):
         """ Check whether a sparse index is non-zero """
         return key in self._csr
@@ -393,8 +372,8 @@ class SparseGeometry(object):
 
         self.geom.set_nsc(*args, **kwargs)
 
-    def align(self, other):
-        """ See ``SparseCSR.align`` for details """
+    def spalign(self, other):
+        """ See `SparseCSR.align` for details """
         if isinstance(other, SparseCSR):
             self._csr.align(other)
         else:
@@ -655,15 +634,6 @@ class SparseGeometry(object):
             raise NotImplementedError("Requesting sub-sparse has not been implemented yet")
         return self._csr.tocsr(index, **kwargs)
 
-    def spalign(self, other):
-        """ Aligns two sparse objects and by extending `self` with the elements in `other` which are not in `self`
-
-        See Also
-        --------
-        SparseCSR.spalign : the resulting function called
-        """
-        return self._csr.spalign(other._csr)
-
     def spsame(self, other):
         """ Compare two sparse objects and check whether they have the same entries.
 
@@ -726,7 +696,7 @@ class SparseGeometry(object):
     __radd__ = __add__
 
     def __iadd__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             a._csr += b._csr
         else:
             a._csr += b
@@ -738,7 +708,7 @@ class SparseGeometry(object):
         return c
 
     def __rsub__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             c = b.copy(dtype=get_dtype(a, other=b.dtype))
             c._csr += -1 * a._csr
         else:
@@ -746,7 +716,7 @@ class SparseGeometry(object):
         return c
 
     def __isub__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             a._csr -= b._csr
         else:
             a._csr -= b
@@ -759,7 +729,7 @@ class SparseGeometry(object):
     __rmul__ = __mul__
 
     def __imul__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             a._csr *= b._csr
         else:
             a._csr *= b
@@ -776,34 +746,34 @@ class SparseGeometry(object):
         return c
 
     def __idiv__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             a._csr /= b._csr
         else:
             a._csr /= b
         return a
 
     def __floordiv__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
         c //= b
         return c
 
     def __ifloordiv__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             raise NotImplementedError
         a._csr //= b
         return a
 
     def __truediv__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             raise NotImplementedError
         c = a.copy(dtype=get_dtype(b, other=a.dtype))
         c /= b
         return c
 
     def __itruediv__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             raise NotImplementedError
         a._csr /= b
         return a
@@ -819,16 +789,15 @@ class SparseGeometry(object):
         return c
 
     def __ipow__(a, b):
-        if isinstance(b, SparseGeometry):
+        if isinstance(b, _SparseGeometry):
             a._csr **= b._csr
         else:
             a._csr **= b
         return a
 
 
-class SparseAtom(SparseGeometry):
-    """ Sparse object with number of rows equal to the total number of atoms in the `Geometry`
-    """
+class SparseAtom(_SparseGeometry):
+    """ Sparse object with number of rows equal to the total number of atoms in the `Geometry` """
 
     def __getitem__(self, key):
         """ Elements for the index(s) """
@@ -1249,7 +1218,7 @@ class SparseAtom(SparseGeometry):
         return S
 
 
-class SparseOrbital(SparseGeometry):
+class SparseOrbital(_SparseGeometry):
     """ Sparse object with number of rows equal to the total number of orbitals in the `Geometry` """
 
     def __getitem__(self, key):
