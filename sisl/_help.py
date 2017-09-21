@@ -66,7 +66,7 @@ def isiterable(obj):
 
 
 def isndarray(arr):
-    """ Returns ``True`` if the input object is a ``numpy.ndarray`` object """
+    """ Returns ``True`` if the input object is a `numpy.ndarray` object """
     return isinstance(arr, _ndarray)
 
 # Private variables for speeding up ensure_array

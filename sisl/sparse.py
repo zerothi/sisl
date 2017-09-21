@@ -101,7 +101,7 @@ class SparseCSR(object):
         dim : int, optional
            number of elements stored per sparse element, only used if (M,N) is passed
         dtype : numpy.dtype, optional
-           data type of the matrix, defaults to ``numpy.float64``
+           data type of the matrix, defaults to `numpy.float64`
         nnzpr : int, optional
            initial number of non-zero elements per row.
            Only used if `nnz` is not supplied
@@ -256,7 +256,7 @@ class SparseCSR(object):
            the extra dimension of the new diagonal matrix (default to the current
            extra dimension)
         dtype : numpy.dtype, optional
-           the data-type to create (default to ``numpy.float64``)
+           the data-type to create (default to `numpy.float64`)
         """
         if dim is None:
             dim = self.shape[2]
@@ -415,7 +415,7 @@ class SparseCSR(object):
     def edges(self, row, exclude=None):
         """ Retrieve edges (connections) of a given `row` or list of `row`'s
 
-        The returned edges are unique and sorted (see ``numpy.unique``).
+        The returned edges are unique and sorted (see `numpy.unique`).
 
         Parameters
         ----------
@@ -1061,7 +1061,7 @@ class SparseCSR(object):
         ----------
         dims: array-like, optional
            which dimensions to store in the copy, defaults to all.
-        dtype : ``numpy.dtype``
+        dtype : `numpy.dtype`
            this defaults to the dtype of the object,
            but one may change it if supplied.
         """

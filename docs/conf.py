@@ -19,9 +19,12 @@ import shlex
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(0, os.path.abspath('../../..'))
+_this_dir = os.path.dirname(__file__)
+sys.path.insert(0, os.path.abspath(_this_dir))
+sys.path.insert(0, os.path.abspath(os.path.dirname(_this_dir)))
+#sys.path.insert(0, os.path.abspath('..'))
+#sys.path.insert(0, os.path.abspath('../..'))
+#sys.path.insert(0, os.path.abspath('../../..'))
 
 # -- General configuration ------------------------------------------------
 
@@ -38,6 +41,7 @@ extensions = [
     'numpydoc',
     'sphinx.ext.todo',
     'sphinx.ext.extlinks',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
@@ -70,12 +74,12 @@ master_doc = 'index'
 rst_prolog = """
 .. highlight:: python
 """
-rst_epilog = """
-.. include:: links.rst.dummy
-"""
+# Insert the links into the epilog (globally)
+# This means that every document has access to the links
+rst_epilog = ''.join(open('epilog.dummy').readlines())
 
 import glob
-autosummary_generate = glob.glob('sisl/*.rst')
+autosummary_generate = glob.glob('*.rst')
 
 # General information about the project.
 project = u'sisl'
@@ -333,6 +337,16 @@ texinfo_documents = [
 # See here: numpydoc #69
 class_members_toctree = False
 numpydoc_show_class_members = True
+
+# -----------------------------------------------------------------------------
+# Intersphinx configuration
+# -----------------------------------------------------------------------------
+intersphinx_mapping = {
+    'python': ('http://docs.python.org/dev', None),
+    'numpy': ('https://docs.scipy.org/doc/numpy', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
+    'matplotlib': ('http://matplotlib.org', None),
+}
 
 
 # My custom detailed instructions for not documenting stuff

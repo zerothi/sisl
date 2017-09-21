@@ -1,7 +1,3 @@
-"""
-SIESTA I/O Siles
-"""
-
 from .._help import extendall
 
 from .sile import *

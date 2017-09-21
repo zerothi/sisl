@@ -233,17 +233,17 @@ def fileindex(f, cast=int):
 
 
 def array_arange(start, end=None, n=None, dtype=np.int32):
-    """ Creates a single array from a sequence of ``numpy.arange``
+    """ Creates a single array from a sequence of `numpy.arange`
 
     Parameters
     ----------
     start : array_like
-       a list of start elements for ``numpy.arange``
+       a list of start elements for `numpy.arange`
     end : array_like
-       a list of end elements (exclusive) for ``numpy.arange``.
+       a list of end elements (exclusive) for `numpy.arange`.
        This argument is not used if `n` is passed.
     n : array_like
-       a list of counts of elements for ``numpy.arange``.
+       a list of counts of elements for `numpy.arange`.
        This is equivalent to ``end=start + n``.
     dtype : numpy.dtype
        the returned lists data-type

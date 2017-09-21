@@ -24,6 +24,7 @@
    tutorials.rst
    examples.rst
    rst/files
+   api
 
 Welcome to sisl documentation!
 ==============================
@@ -72,20 +73,6 @@ sisl consists of several distinct features:
 ----------------------------------
 
 Follow :ref:`these steps <installation>` to install sisl.
-
-API links
-=========
-
-A selected list of links to the API documentation of the most commonly used
-objects:
-
-.. autosummary::
-   sisl
-   sisl.atom
-   sisl.geometry
-   sisl.grid
-   sisl.supercell
-   sisl.physics
 
 
 Indices

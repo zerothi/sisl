@@ -822,8 +822,8 @@ class Geometry(SuperCellChild):
             returns the i'th segment of the cut structure
             Currently the atomic coordinates are not translated,
             this may change in the future.
-        rtol : (tolerance for checking tiling, see ``numpy.allclose``)
-        atol : (tolerance for checking tiling, see ``numpy.allclose``)
+        rtol : (tolerance for checking tiling, see `numpy.allclose`)
+        atol : (tolerance for checking tiling, see `numpy.allclose`)
         """
         if self.na % seps != 0:
             raise ValueError(
@@ -2555,7 +2555,7 @@ class Geometry(SuperCellChild):
         R : float, optional
            the maximum radius to consider, default to ``self.maxR()``.
            To retrieve all distances for atoms within the supercell structure
-           you can pass ``numpy.inf``.
+           you can pass `numpy.inf`.
         tol : float or array_like, optional
            the tolerance for grouping a set of atoms.
            This parameter sets the shell radius for each shell.

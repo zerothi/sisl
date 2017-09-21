@@ -1,7 +1,3 @@
-"""
-Sile object for reading/writing FDF files
-"""
-
 from __future__ import print_function, division
 
 import os.path as osp

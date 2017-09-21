@@ -20,9 +20,9 @@ mkdir -p build
 rm -rf sisl
 mkdir sisl
 if [ -e ../setup.py ]; then
-    sphinx-apidoc -fe -o sisl ../sisl ../sisl/**/setup.py ../sisl/**/tests/*
+    sphinx-apidoc -fMeET -o sisl ../sisl ../sisl/**/setup.py ../sisl/**/tests/*
 elif [ -e ../../setup.py ]; then
-    sphinx-apidoc -fe -o sisl ../../sisl ../../sisl/**/setup.py ../../sisl/**/tests/*
+    sphinx-apidoc -fMeET -o sisl ../../sisl ../../sisl/**/setup.py ../../sisl/**/tests/*
 fi
 
 # Ensure the links.rst.dummy is EVERYWHERE

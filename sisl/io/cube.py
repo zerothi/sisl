@@ -1,7 +1,3 @@
-"""
-Sile object for reading/writing CUBE files
-"""
-
 from __future__ import print_function
 
 import numpy as np

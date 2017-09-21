@@ -1,6 +1,3 @@
-"""
-Sile object for reading/writing TB in/output
-"""
 from __future__ import print_function, division
 
 import numpy as np

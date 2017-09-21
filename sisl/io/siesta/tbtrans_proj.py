@@ -1,6 +1,3 @@
-"""
-Sile object for reading TBtrans binary projection files
-"""
 from __future__ import print_function, division
 
 # Import sile objects

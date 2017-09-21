@@ -1,5 +1,47 @@
-"""
-IO imports
+""" Available files for reading/writing
+
+.. currentmodule:: sisl.io
+
+sisl handles a large variety of input/output files from a large selection
+of DFT software and other post-processing tools.
+
+Since sisl may be used with many other packages all files are name *siles*
+to distinguish them from files from other packages.
+
+.. toctree::
+
+
+Basic IO routines
+-----------------
+
+.. autosummary::
+   :toctree: sisl/
+
+   add_sile - add a file to the list of files that sisl can interact with
+   get_sile - retrieve a file object via a file name by comparing the extension
+   get_siles - retrieve all files with specific attributes or methods
+   get_sile_class - retrieve class via a file name by comparing the extension
+   BaseSile - the base class for all sisl files
+   Sile - a base class for ASCII files
+   SileCDF - a base class for NetCDF files
+   SileBin - a base class for binary files
+   SileError - sisl specific error
+
+Generic files
+-------------
+
+These files are generic, in the sense that they are not specific to a
+given code.
+
+.. autosummary::
+   :toctree: sisl/
+
+   XYZSile - atomic coordinate file
+   CUBESile - atomic coordinates *and* 3D grid values
+   TableSile - data file in tabular form
+   MoldenSile - atomic coordinate file specific for Molden
+   XSFSile - atomic coordinate file specific for XCrySDen
+
 """
 from __future__ import print_function, division
 import sys

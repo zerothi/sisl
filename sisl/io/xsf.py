@@ -1,7 +1,3 @@
-"""
-Sile object for reading/writing XSF (XCrySDen) files
-"""
-
 from __future__ import print_function
 
 import os.path as osp
@@ -18,7 +14,7 @@ __all__ = ['XSFSile']
 
 
 class XSFSile(Sile):
-    """ XSF file object """
+    """ XSF file for XCrySDen """
 
     def _setup(self, *args, **kwargs):
         """ Setup the `XSFSile` after initialization """

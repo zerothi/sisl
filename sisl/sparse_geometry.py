@@ -149,7 +149,7 @@ class SparseGeometry(object):
     def edges(self, atom, exclude=None):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
-        The returned edges are unique and sorted (see ``numpy.unique``) and are returned
+        The returned edges are unique and sorted (see `numpy.unique`) and are returned
         in supercell indices (i.e. ``0 <= edge < self.geom.na_s``).
 
         Parameters
@@ -1294,7 +1294,7 @@ class SparseOrbital(SparseGeometry):
     def edges(self, atom=None, exclude=None, orbital=None):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
-        The returned edges are unique and sorted (see ``numpy.unique``) and are returned
+        The returned edges are unique and sorted (see `numpy.unique`) and are returned
         in supercell indices (i.e. ``0 <= edge < self.geom.no_s``).
 
         Parameters

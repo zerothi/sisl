@@ -44,7 +44,8 @@ __siles = []
 
 
 def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
-    """
+    """ Add files to the global lookup table
+
     Public for attaching lookup tables for allowing
     users to attach files for the IOSile function call
 
@@ -152,7 +153,7 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
 
 
 def get_sile_class(file, *args, **kwargs):
-    """ Guess the ``Sile`` class corresponding to the input file and return the class
+    """ Retrieve a class from the global lookup table via filename and the extension
 
     Parameters
     ----------
@@ -246,7 +247,9 @@ def get_sile_class(file, *args, **kwargs):
 
 
 def get_sile(file, *args, **kwargs):
-    """ Guess the ``Sile`` corresponding to the input file and return an open object of the corresponding ``Sile``
+    """ Retrieve an object from the global lookup table via filename and the extension
+
+    Internally this is roughly equivalent to ``get_sile_class(...)()``.
 
     Parameters
     ----------
@@ -269,7 +272,7 @@ def get_sile(file, *args, **kwargs):
 
 
 def get_siles(attrs=None):
-    """ Returns all siles with a specific attribute (or all)
+    """ Retrieve all files with specific attributes or methods
 
     Parameters
     ----------
@@ -296,7 +299,7 @@ def get_siles(attrs=None):
 
 
 class BaseSile(object):
-    """ Base class for the Siles """
+    """ Base class for all sisl files """
 
     def exist(self):
         """ Query whether the file exists """
@@ -453,7 +456,11 @@ def Sile_fh_open(func):
 
 
 class Sile(BaseSile):
-    """ Class to contain a file with easy access """
+    """ Base class for ASCII files
+
+    All ASCII files that needs to be added to the global lookup table can
+    with benefit inherit this class.
+    """
 
     def __init__(self, filename, mode='r', comment='#'):
 
@@ -640,8 +647,7 @@ def _import_netCDF4():
 
 
 class SileCDF(BaseSile):
-    """ Class to contain a file with easy access
-    The file format for this file is the NetCDF file format """
+    """ Base class for NetCDF files """
 
     def __init__(self, filename, mode='r', lvl=0, access=1, _open=True):
         """ Creates/Opens a SileCDF
@@ -899,9 +905,7 @@ class SileCDF(BaseSile):
 
 
 class SileBin(BaseSile):
-    """ Class to contain a file with easy access
-    The file format for this file is a binary format.
-    """
+    """ Base class for binary files """
 
     def __init__(self, filename, mode='r'):
         """ Creates/Opens a SileBin
