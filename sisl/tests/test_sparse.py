@@ -40,6 +40,16 @@ class TestSparseCSR(object):
         s2 = SparseCSR((20, 100), dtype=np.int32)
         s1.align(s2)
 
+    def test_set_get1(self):
+        s1 = SparseCSR((10, 10, 3), dtype=np.int32)
+        s1[1, 1] = [1, 2, 3]
+        s1[1, 2] = [1, 2, 3]
+        assert s1.nnz == 2
+        assert np.all(s1[1, 1] == [1, 2, 3])
+        assert np.all(s1[1, [1, 2]] == [[1, 2, 3], [1, 2, 3]])
+        assert np.all(s1[1, [1, 2], 1] == [2, 2])
+        assert np.all(s1[1, [1, 6], 1] == [2, 0])
+
     def test_init1(self, setup):
         repr(setup.s1)
         assert setup.s1.dtype == np.int32

@@ -904,14 +904,21 @@ class SparseCSR(object):
         """ Intrinsic sparse matrix retrieval of a non-zero element """
 
         # Get indices of sparse data (-1 if non-existing)
-        index = self._get(key[0], key[1])
+        get_idx = self._get(key[0], key[1])
+        n = len(get_idx)
+
+        # Indices of existing values in return array
+        ret_idx = (get_idx >= 0).nonzero()[0]
+        # Indices of existing values in get array
+        get_idx = get_idx[ret_idx]
 
         # Check which data to retrieve
         if len(key) > 2:
 
             # user requests a specific element
             # get dimension retrieved
-            return where(index >= 0, self._D[index, key[2]], 0)
+            r = np.zeros(n, dtype=self.dtype)
+            r[ret_idx] = self._D[get_idx, key[2]]
 
         else:
 
@@ -919,9 +926,13 @@ class SparseCSR(object):
 
             s = self.shape[2]
             if s == 1:
-                return where(index >= 0, self._D[index, 0], 0)
+                r = np.zeros(n, dtype=self.dtype)
+                r[ret_idx] = self._D[get_idx, 0]
             else:
-                return where(index >= 0, self._D[index, :], [0] * s)
+                r = np.zeros([n, s], dtype=self.dtype)
+                r[ret_idx, :] = self._D[get_idx, :]
+
+        return r
 
     def __setitem__(self, key, data):
         """ Intrinsic sparse matrix assignment of the item.
