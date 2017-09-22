@@ -1,4 +1,5 @@
 """
+================================================
 sisl: an electronic structure package for Python
 ================================================
 
@@ -78,3 +79,6 @@ import sisl.io as io
 # import sisl
 # sisl.geom.graphene
 from . import geom
+
+__all__ = [s for s in dir() if not s.startswith('_')]
+__all__ += ['__{}__'.format(r) for r in ['version', 'major', 'minor', 'micro']]
