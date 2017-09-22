@@ -141,12 +141,12 @@ class TestObject(object):
 
     def test_tbtrans(self):
         sile = gs('test.TBT.nc', _open=False)
-        for obj in [BaseSile, SileCDF, SileCDFSiesta, tbtncSileSiesta]:
+        for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans]:
             assert isinstance(sile, obj)
 
     def test_phtrans(self):
         sile = gs('test.PHT.nc', _open=False)
-        for obj in [BaseSile, SileCDF, SileCDFSiesta, tbtncSileSiesta, phtncSileSiesta]:
+        for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans, phtncSileTBtrans]:
             assert isinstance(sile, obj)
 
     def test_vasp_contcar(self):
@@ -237,7 +237,7 @@ class TestObject(object):
         f = mkstemp(dir=_C.d)[1]
         for sile in get_siles(['write_geometry']):
             # It is not yet an instance, hence issubclass
-            if issubclass(sile, (HamiltonianSile, tbtncSileSiesta, deltancSileSiesta)):
+            if issubclass(sile, (HamiltonianSile, tbtncSileTBtrans, deltancSileTBtrans)):
                 continue
             # Write
             sile(f, mode='w').write_geometry(G)
@@ -248,7 +248,7 @@ class TestObject(object):
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=_C.d)[1] + '.win'
         # These files does not store the atomic species
-        if issubclass(sile, (tbtncSileSiesta, deltancSileSiesta)):
+        if issubclass(sile, (tbtncSileTBtrans, deltancSileTBtrans)):
             return
         # Write
         sile(f, mode='w').write_geometry(G)

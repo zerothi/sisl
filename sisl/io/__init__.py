@@ -133,10 +133,10 @@ Siesta (:mod:`sisl.io.siesta`)
    siesta_grid.gridncSileSiesta - NetCDF grid output files
    xv.XVSileSiesta - xyz and vxyz file
 
-TBtrans (:mod:`sisl.io.siesta`)
+TBtrans (:mod:`sisl.io.tbtrans`)
 -------------------------------
 
-.. module:: sisl.io.siesta.tbtrans
+.. module:: sisl.io.tbtrans
 
 .. autosummary::
    :toctree: api-sisl/
@@ -147,12 +147,6 @@ TBtrans (:mod:`sisl.io.siesta`)
    phtavncSileSiesta - k-averaged output (phtrans)
    deltancSileSiesta - :math:`\delta` files
    dHncSileSiesta - :math:`\delta H` (deprecated)
-
-.. module:: sisl.io.siesta.tbtrans_proj
-
-.. autosummary::
-   :toctree: api-sisl/
-
    tbtprojncSileSiesta - projection output
    phtprojncSileSiesta - projection output (phtrans)
 
@@ -181,6 +175,7 @@ from .ham import *
 from .molden import *
 from .scaleup import *
 from .siesta import *
+from .tbtrans import *
 from .table import *
 from .vasp import *
 from .wannier import *
