@@ -69,7 +69,8 @@ from .physics import *
 # This will reduce the cluttering of the separate entities
 # that sisl is made of.
 from .io.sile import (add_sile, get_sile_class, get_sile,
-                      get_siles, BaseSile, SileError)
+                      get_siles, SileError,
+                      BaseSile, Sile, SileCDF, SileBin)
 import sisl.io as io
 
 # Import the default geom structure
