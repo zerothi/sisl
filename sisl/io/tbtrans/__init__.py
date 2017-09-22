@@ -1,0 +1,56 @@
+r"""
+TBtrans (:mod:`sisl.io.tbtrans`)
+================================
+File objects for interaction with the `TBtrans`_ code.
+
+The TBtrans code is a tight-binding transport code implementing
+the widely used non-equilibrium Green function method.
+
+It is primarily implemented for the support of TranSiesta (DFT+NEGF)
+as a backend for calculating transport for self-consistent DFT software.
+
+Here we show a variety of supplement files that allows the extracting, manipulation
+and creation of files supported in TBtrans.
+
+The basic file is the `tbtncSileSiesta` which is a file to extract information
+from a TBtrans output file (typically named: ``siesta.TBT.nc``).
+The following will interact with the TBtrans file:
+
+>>> tbt = sisl.get_sile('siesta.TBT.nc')
+>>> tbt.E # retrieve energies where physical quantities are calculated
+>>> tbt.a_d # atomic indices where physical quantities are accessible
+
+Importantly one may retrieve quantities such as DOS, transmissions,
+transmission eigenvalues etc.
+
+>>> tbt.transmission() # from electrode 0 -> 1 (default)
+>>> tbt.transmission(0, 1) # from electrode 0 -> 1
+>>> tbt.transmission(0, 2) # from electrode 0 -> 2
+>>> tbt.ADOS(0, E=1.) # k-average, total spectral DOS from 0th electrode
+
+
+The above is the most important use of this module while the following
+entries are enabled:
+
+Data extraction files
+^^^^^^^^^^^^^^^^^^^^^
+
+- `tbtncSileSiesta` (electronic TBtrans output)
+- `tbtavncSileSiesta` (electronic k-averaged TBtrans output)
+- `phtncSileSiesta` (phononic PHtrans output)
+- `phtavncSileSiesta` (phononic k-averaged PHtrans output)
+
+Support files to complement TBtrans
+-----------------------------------
+- `deltancSileSiesta` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
+- `dHncSileSiesta` adding :math:`\delta H` elements to a TBtrans calculation
+  (this class is deprecated by `deltancSileSiesta` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
+
+"""
+
+from .sile import *
+
+from .tbt import *
+from .tbtproj import *
+
+__all__ = [s for s in dir() if not s.startswith('_')]
