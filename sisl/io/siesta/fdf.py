@@ -603,7 +603,7 @@ class fdfSileSiesta(SileSiesta):
         f = label + '.bands'
         if osp.isfile(f):
             tmp_p = sp.add_parser('band',
-                                  help="Manipulate the bands file from the SIESTA simulation")
+                                  help="Manipulate the bands file from the Siesta simulation")
             tmp_p, tmp_ns = sis.bandsSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
@@ -638,7 +638,7 @@ class fdfSileSiesta(SileSiesta):
         f = label + '.nc'
         if osp.isfile(f):
             tmp_p = sp.add_parser('nc',
-                                  help="Manipulate the SIESTA output file")
+                                  help="Manipulate the Siesta output file")
             tmp_p, tmp_ns = sis.ncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 

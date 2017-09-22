@@ -46,7 +46,7 @@ sisl consists of several distinct features:
   a large variety of DFT-codes and/or from generically used file formats.
 
 * Hamiltonian; easily create tight-binding Hamiltonians with user chosen number of
-  orbitals per atom. Or read in Hamiltonians from DFT software such as `SIESTA`_,
+  orbitals per atom. Or read in Hamiltonians from DFT software such as `Siesta`_,
   `Wannier90`_, etc. Secondly, there is intrinsic capability of orthogonal *and*
   non-orthogonal Hamiltonians.
 

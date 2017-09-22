@@ -16,11 +16,12 @@ mkdir -p build
 #    ln -s ../../docs/examples examples
 #fi
 
+exit 0
 # Simple documentation script to generate the documentation
-rm -rf sisl
-mkdir sisl
+rm -rf sisl-api
+mkdir sisl-api
 if [ -e ../setup.py ]; then
-    sphinx-apidoc -fMeET -o sisl ../sisl ../sisl/**/setup.py ../sisl/**/tests/*
+    sphinx-apidoc -fMeET -o sisl-api ../sisl ../sisl/**/setup.py ../sisl/**/tests/*
 elif [ -e ../../setup.py ]; then
-    sphinx-apidoc -fMeET -o sisl ../../sisl ../../sisl/**/setup.py ../../sisl/**/tests/*
+    sphinx-apidoc -fMeET -o sisl-api ../../sisl ../../sisl/**/setup.py ../../sisl/**/tests/*
 fi

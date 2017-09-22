@@ -1,7 +1,7 @@
 """
 Units from various programs
 
-This conversion tool is inspired by the SIESTA fdf-parser in its
+This conversion tool is inspired by the Siesta fdf-parser in its
 group-construct.
 """
 

@@ -35,32 +35,32 @@ Below there is a list of file formats especially targetting a variety of DFT cod
   ``ascii``
       `ASCIISileBigDFT` input file for BigDFT, currently only implements geometry
 
-* `SIESTA`_
-  File formats inherent to `SIESTA`_:
+* `Siesta`_
+  File formats inherent to `Siesta`_:
 
   ``fdf``
-      `fdfSileSiesta` input file for SIESTA
+      `fdfSileSiesta` input file for Siesta
 
   ``bands``
-      `bandsSileSiesta` contains the band-structure output of SIESTA, with
+      `bandsSileSiesta` contains the band-structure output of Siesta, with
       :ref:`script_sdata` one may plot this file using the command-line.
 
   ``out``
-      `outSileSiesta` output file of SIESTA, currently this may be used to
+      `outSileSiesta` output file of Siesta, currently this may be used to
       query certain elements from the output, such as the final geometry, etc.
 
   ``grid.nc``
-      `gridncSileSiesta` real-space grid files of SIESTA. This `Sile` allows
-      reading the `NetCDF`_ output of SIESTA for the real-space quantities, such
+      `gridncSileSiesta` real-space grid files of Siesta. This `Sile` allows
+      reading the `NetCDF`_ output of Siesta for the real-space quantities, such
       as, electrostatic potential, charge density, etc.
 
   ``nc``
-      `ncSileSiesta` generic output file of SIESTA (only `>=4.1`).
+      `ncSileSiesta` generic output file of Siesta (only `>=4.1`).
       This `Sile` may contain *all* real-space grids, Hamiltonians, density matrices, etc.
   
   ``TSHS``
       `TSHSSileSiesta` contains the Hamiltonian (read to get a `Hamiltonian` instance)
-      and overlap matrix from a `TranSIESTA`_ run.
+      and overlap matrix from a `TranSiesta`_ run.
 
   ``TBT.nc``
       `tbtncSileSiesta` is the output file of `TBtrans`_ which contains all transport
@@ -71,7 +71,7 @@ Below there is a list of file formats especially targetting a variety of DFT cod
       this may be generated using `sdata siesta.TBT.nc --tbt-av<script_sdata>`.
 
   ``XV``
-      `XVSileSiesta` is the currently runned geometry in SIESTA.
+      `XVSileSiesta` is the currently runned geometry in Siesta.
 
 * `VASP`_
   File formats inherent to VASP:

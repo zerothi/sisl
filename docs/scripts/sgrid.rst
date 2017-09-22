@@ -8,7 +8,7 @@
 The `sgrid` executable is a tool for manipulating a simulation grid and transforming
 it into CUBE format for plotting 3D data in, *e.g.* VMD or XCrySDen.
 
-Currently this is primarily intended for usage with SIESTA.
+Currently this is primarily intended for usage with Siesta.
 
 For a short help description of the possible uses do:
 
@@ -28,7 +28,7 @@ The simplest usage is converting a grid file to CUBE file using
 		
     sgrid Rho.grid.nc Rho.cube
 
-which converts a SIESTA grid file of the electron density into a corresponding
+which converts a Siesta grid file of the electron density into a corresponding
 CUBE file. The CUBE file writeout is implemented in `Cube`.
 
 Conveniently CUBE files can accomodate geometries and species for inclusion in the 3D

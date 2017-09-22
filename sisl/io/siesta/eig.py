@@ -13,7 +13,7 @@ __all__ = ['eigSileSiesta']
 
 
 class eigSileSiesta(SileSiesta):
-    """ EIG SIESTA file object """
+    """ EIG Siesta file object """
 
     @Sile_fh_open
     def read_data(self):

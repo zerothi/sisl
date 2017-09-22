@@ -113,7 +113,7 @@ release = version
 language = None
 
 # Add __init__ classes to the documentation
-autoclass_content = 'both'
+#autoclass_content = 'both'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -127,10 +127,10 @@ exclude_patterns = ['**/setupegg.py', '**/setup.rst', '**/tests']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
-default_role = 'any'
+default_role = 'autolink'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
+add_function_parentheses = False
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
@@ -184,7 +184,11 @@ html_short_title = "sisl"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+if os.path.exists('_static'):
+    html_static_path = ['_static']
+else:
+    html_static_path = []
+
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -206,6 +210,7 @@ html_static_path = ['_static']
 #html_domain_indices = True
 
 # If false, no index is generated.
+html_use_modindex = True
 html_use_index = True
 
 # If true, the index is split into individual pages for each letter.
@@ -243,7 +248,7 @@ html_use_index = True
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'sisldoc'
+htmlhelp_basename = 'sisl'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -335,8 +340,8 @@ texinfo_documents = [
 # These two options should solve the "toctree contains reference to nonexisting document"
 # problem.
 # See here: numpydoc #69
-class_members_toctree = False
-numpydoc_show_class_members = True
+#class_members_toctree = False
+#numpydoc_show_class_members = True
 
 # -----------------------------------------------------------------------------
 # Intersphinx configuration

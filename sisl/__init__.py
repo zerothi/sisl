@@ -1,6 +1,28 @@
-""" sisl package
+"""
+sisl: an electronic structure package for Python
+================================================
 
-Geometry and tight-binding setups using pure python.
+.. currentmodule:: sisl
+
+The sisl package consists of a variety of sub packages enabling
+different routines for electronic structure calculations.
+
+.. autosummary::
+
+   geom            --- Default geometries to easily create a variety of geometries
+   io              --- Reading/Writing files related to different software codes
+   physics         --- Specific classes for electronic structure, Hamiltonian, Brillouin zone, etc.
+   shape           --- Geometric shapes
+   units           --- unit conversion
+   utils           --- a variety of utilites, mostly used internally but also globally availabl
+   geometry        --- class containing atoms (multi-orbital), coordinates and a supercell
+   supercell       --- class defining a supercell via a unitcell and its connecting images
+   grid            --- class to manipulate real-space grids
+   sparse          --- class to implement a generic sparse CSR matrix
+   sparse_geometry --- class to implement a generic sparse CSR matrix from a defined `Geometry`
+   quaternion      --- Rotation capabilities via quaternions
+   selector        --- Method constructor when different routines may be used
+
 """
 
 # Import version string and the major, minor, micro as well
@@ -46,7 +68,8 @@ from .physics import *
 #  sisl.get_sile
 # This will reduce the cluttering of the separate entities
 # that sisl is made of.
-from .io.sile import *
+from .io.sile import (add_sile, get_sile_class, get_sile,
+                      get_siles, BaseSile, SileError)
 import sisl.io as io
 
 # Import the default geom structure

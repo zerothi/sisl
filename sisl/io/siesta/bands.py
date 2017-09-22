@@ -13,7 +13,7 @@ __all__ = ['bandsSileSiesta']
 
 
 class bandsSileSiesta(SileSiesta):
-    """ bands SIESTA file object """
+    """ bands Siesta file object """
 
     @Sile_fh_open
     def read_data(self):

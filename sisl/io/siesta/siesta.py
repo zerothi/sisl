@@ -20,10 +20,10 @@ Ry2eV = unit_convert('Ry', 'eV')
 
 
 class ncSileSiesta(SileCDFSiesta):
-    """ SIESTA file object """
+    """ Siesta file object """
 
     def read_supercell(self):
-        """ Returns a SuperCell object from a SIESTA.nc file
+        """ Returns a SuperCell object from a Siesta.nc file
         """
         cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
@@ -35,7 +35,7 @@ class ncSileSiesta(SileCDFSiesta):
         return SuperCell(cell, nsc=nsc)
 
     def read_geometry(self):
-        """ Returns Geometry object from a SIESTA.nc file
+        """ Returns Geometry object from a Siesta.nc file
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
@@ -167,9 +167,9 @@ class ncSileSiesta(SileCDFSiesta):
         return grids
 
     def read_grid(self, name, spin=0):
-        """ Reads a grid in the current SIESTA.nc file
+        """ Reads a grid in the current Siesta.nc file
 
-        Enables the reading and processing of the grids created by SIESTA
+        Enables the reading and processing of the grids created by Siesta
 
         Parameters
         ----------
@@ -192,7 +192,7 @@ class ncSileSiesta(SileCDFSiesta):
         # Shorthand variable name
         v = g.variables[name]
 
-        # Create the grid, SIESTA uses periodic, always
+        # Create the grid, Siesta uses periodic, always
         grid = Grid([nz, ny, nx], bc=Grid.Periodic, dtype=v.dtype)
 
         if len(v[:].shape) == 3:
@@ -301,7 +301,7 @@ class ncSileSiesta(SileCDFSiesta):
         self._crt_dim(self, 'spin', len(H.spin))
 
         if H.dkind != 'f':
-            raise NotImplementedError('Currently we only allow writing a floating point Hamiltonian to the SIESTA format')
+            raise NotImplementedError('Currently we only allow writing a floating point Hamiltonian to the Siesta format')
 
         v = self._crt_var(self, 'Ef', 'f8', ('one',))
         v.info = 'Fermi level'
@@ -383,7 +383,7 @@ class ncSileSiesta(SileCDFSiesta):
         self._crt_dim(self, 'spin', 1)
 
         if H.dkind != 'f':
-            raise NotImplementedError('Currently we only allow writing a floating point Hessian to the SIESTA format')
+            raise NotImplementedError('Currently we only allow writing a floating point Hessian to the Siesta format')
 
         v = self._crt_var(self, 'Ef', 'f8', ('one',))
         v.info = 'Fermi level'

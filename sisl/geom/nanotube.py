@@ -11,10 +11,9 @@ __all__ = ['nanotube']
 
 
 def nanotube(bond, atom=None, chirality=(1, 1)):
-    """
-    Create a nano-tube geometry
+    """ Nanotube geometry
 
-    This routine is implemented as in ``ASE`` with few changes.
+    This routine is implemented as in ``ASE`` with some cosmetic changes.
 
     Parameters
     ----------

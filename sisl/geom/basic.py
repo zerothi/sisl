@@ -1,6 +1,3 @@
-"""
-Helper functions for returning special geometries often encountered
-"""
 from __future__ import print_function, division
 
 import numpy as np
@@ -22,8 +19,14 @@ _t60 = 3 ** .5
 
 
 def sc(alat, atom):
-    """
-    Returns a Simple cubic lattice (1 atom)
+    """ A simple cubic lattice with 1 atom
+
+    Parameters
+    ----------
+    alat : float
+        lattice parameter
+    atom : Atom
+        the atom in the SC lattice
     """
     sc = SuperCell(np.array([[1, 0, 0],
                              [0, 1, 0],
@@ -34,8 +37,16 @@ def sc(alat, atom):
 
 
 def bcc(alat, atom, orthogonal=False):
-    """
-    Returns a BCC lattice (1 atom)
+    """ A body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
+
+    Parameters
+    ----------
+    alat : float
+        lattice parameter
+    atom : Atom
+        the atom in the BCC lattice
+    orthogonal : bool, optional
+        whether the lattice is orthogonal (2 atoms)
     """
     if orthogonal:
         sc = SuperCell(np.array([[1, 0, 0],
@@ -54,8 +65,16 @@ def bcc(alat, atom, orthogonal=False):
 
 
 def fcc(alat, atom, orthogonal=False):
-    """
-    Returns a geometry with the FCC crystal structure (1 atom)
+    """ A face centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
+
+    Parameters
+    ----------
+    alat : float
+        lattice parameter
+    atom : Atom
+        the atom in the FCC lattice
+    orthogonal : bool, optional
+        whether the lattice is orthogonal (2 atoms)
     """
     if orthogonal:
         sc = SuperCell(np.array([[1, 0, 0],
@@ -75,8 +94,16 @@ def fcc(alat, atom, orthogonal=False):
 
 
 def hcp(a, atom, coa=1.63333, orthogonal=False):
-    """
-    Returns a geometry with the HCP crystal structure (1 atom)
+    """ A hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
+
+    Parameters
+    ----------
+    alat : float
+        lattice parameter
+    atom : Atom
+        the atom in the FCC lattice
+    orthogonal : bool, optional
+        whether the lattice is orthogonal (4 atoms)
     """
     # height of hcp structure
     c = a * coa

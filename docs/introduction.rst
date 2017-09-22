@@ -40,7 +40,7 @@ DFT
 Many intrinsic DFT program files are handled by sisl and extraction of the necessary
 physical quantities are easily performed.
 
-Its main focus has been `SIESTA`_ which thus has the largest amount of implemented
+Its main focus has been `Siesta`_ which thus has the largest amount of implemented
 output files.
 
 

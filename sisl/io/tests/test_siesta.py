@@ -23,7 +23,7 @@ def teardown_module(module):
 
 
 @pytest.mark.io
-class TestSIESTAnc(object):
+class TestSiestanc(object):
 
     def test_nc1(self):
         f = osp.join(_C.d, 'gr.nc')

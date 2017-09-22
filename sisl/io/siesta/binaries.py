@@ -29,7 +29,7 @@ __all__ += ['TSGFSileSiesta', 'TBTGFSileSiesta']
 
 
 class TSHSSileSiesta(SileBinSiesta):
-    """ TranSIESTA file object """
+    """ TranSiesta file object """
 
     def read_supercell(self):
         """ Returns a SuperCell object from a siesta.TSHS file """

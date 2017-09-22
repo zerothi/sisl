@@ -8,14 +8,14 @@ of DFT software and other post-processing tools.
 Since sisl may be used with many other packages all files are name *siles*
 to distinguish them from files from other packages.
 
-.. toctree::
 
+Basic IO classes
+================
 
-Basic IO routines
------------------
+.. module:: sisl.io.sile
 
 .. autosummary::
-   :toctree: sisl/
+   :toctree: api-sisl/
 
    add_sile - add a file to the list of files that sisl can interact with
    get_sile - retrieve a file object via a file name by comparing the extension
@@ -28,25 +28,141 @@ Basic IO routines
    SileError - sisl specific error
 
 Generic files
--------------
+=============
 
 These files are generic, in the sense that they are not specific to a
 given code.
 
-.. autosummary::
-   :toctree: sisl/
+.. module:: sisl.io
 
-   XYZSile - atomic coordinate file
-   CUBESile - atomic coordinates *and* 3D grid values
-   TableSile - data file in tabular form
-   MoldenSile - atomic coordinate file specific for Molden
-   XSFSile - atomic coordinate file specific for XCrySDen
+.. autosummary::
+   :toctree: api-sisl/
+
+   xyz.XYZSile - atomic coordinate file
+   cube.CUBESile - atomic coordinates *and* 3D grid values
+   table.TableSile - data file in tabular form
+   molden.MoldenSile - atomic coordinate file specific for Molden
+   xsf.XSFSile - atomic coordinate file specific for XCrySDen
+
+
+
+External code in/out put supported
+==================================
+
+List the relevant codes that `sisl` can interact with. If there are files you think
+are missing, please create an issue :ref:`here <issue>`.
+
+- `BigDFT`_
+- `GULP`_
+- `Molden`_
+- `ScaleUp`_
+- `Siesta`_
+- `VASP`_
+- `Wannier90`_
+- `XCrySDen`_
+
+BigDFT
+------
+
+.. module:: sisl.io.bigdft
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   ascii.ASCIISileBigDFT - the input for BigDFT
+
+GULP
+----
+
+.. module:: sisl.io.gulp
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   got.gotSileGULP - the output from GULP
+   hessian.HessianSileGULP - Hessian output from GULP
+
+
+Molden
+------
+
+.. module:: sisl.io.molden
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   MoldenSile - coordinate file for molden
+
+ScaleUp
+-------
+
+.. module:: sisl.io.scaleup
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   orbocc.orboccSileScaleUp - orbital information
+   ref.REFSileScaleUp - reference coordinates
+   rham.rhamSileScaleUp - Hamiltonian file
+
+Siesta
+------
+
+.. module:: sisl.io.siesta
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   bands.bandsSileSiesta - band structure information
+   binaries.TSHSSileSiesta - TranSiesta Hamiltonian
+   binaries.GridSileSiesta - Grid charge information
+   binaries.EnergyGridSileSiesta - Grid potential information
+   binaries.TSGFSileSiesta - TranSiesta surface Green function files
+   binaries.TBTGFSileSiesta - TBtrans surface Green function files
+   eig.eigSileSiesta - EIG file
+   fdf.fdfSileSiesta - input file
+   out.outSileSiesta - output file
+   siesta.ncSileSiesta - NetCDF output file
+   siesta_grid.gridncSileSiesta - NetCDF grid output files
+   xv.XVSileSiesta - xyz and vxyz file
+
+TBtrans
+-------
+
+.. module:: sisl.io.siesta.tbtrans
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   tbtncSileSiesta - output
+   tbtavncSileSiesta - k-averaged output
+   phtncSileSiesta - output (phtrans)
+   phtavncSileSiesta - k-averaged output (phtrans)
+   deltancSileSiesta - :math:`\delta` files
+   dHncSileSiesta - :math:`\delta H` (deprecated)
+
+.. module:: sisl.io.siesta.tbtrans_proj
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   tbtprojncSileSiesta - projection output
+   phtprojncSileSiesta - projection output (phtrans)
+
+
+Wannier90
+---------
+
+.. module:: sisl.io.wannier
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   seedname.winSileWannier90 - input file
+
 
 """
-from __future__ import print_function, division
-import sys
 
-from ._help import extendall
 from .sile import *
 
 # Import the different Sile objects
@@ -64,20 +180,4 @@ from .wannier import *
 from .xsf import *
 from .xyz import *
 
-# Default functions in this top module
-__all__ = []
-
-extendall(__all__, 'sisl.io.sile')
-
-extendall(__all__, 'sisl.io.bigdft')
-extendall(__all__, 'sisl.io.cube')
-extendall(__all__, 'sisl.io.gulp')
-extendall(__all__, 'sisl.io.ham')
-extendall(__all__, 'sisl.io.molden')
-extendall(__all__, 'sisl.io.scaleup')
-extendall(__all__, 'sisl.io.siesta')
-extendall(__all__, 'sisl.io.table')
-extendall(__all__, 'sisl.io.vasp')
-extendall(__all__, 'sisl.io.wannier')
-extendall(__all__, 'sisl.io.xsf')
-extendall(__all__, 'sisl.io.xyz')
+__all__ = [s for s in dir() if not s.startswith('_')]
