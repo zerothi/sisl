@@ -1,6 +1,9 @@
 r"""
 TBtrans (:mod:`sisl.io.tbtrans`)
 ================================
+
+.. currentmodule:: sisl.io.tbtrans
+
 File objects for interaction with the `TBtrans`_ code.
 
 The TBtrans code is a tight-binding transport code implementing
@@ -35,16 +38,27 @@ entries are enabled:
 Data extraction files
 ^^^^^^^^^^^^^^^^^^^^^
 
-- `tbtncSileSiesta` (electronic TBtrans output)
-- `tbtavncSileSiesta` (electronic k-averaged TBtrans output)
-- `phtncSileSiesta` (phononic PHtrans output)
-- `phtavncSileSiesta` (phononic k-averaged PHtrans output)
+.. autosummary::
+   :toctree: api-sisl
+
+   tbtncSileTBtrans
+   tbtavncSileTBtrans
+   tbtprojncSileTBtrans
+   phtncSileTBtrans
+   phtavncSileTBtrans
 
 Support files to complement TBtrans
 -----------------------------------
-- `deltancSileSiesta` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
-- `dHncSileSiesta` adding :math:`\delta H` elements to a TBtrans calculation
-  (this class is deprecated by `deltancSileSiesta` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
+
+.. autosummary::
+   :toctree: api-sisl
+
+   deltancSileTBtrans
+   dHncSileTBtrans
+
+.. `deltancSileSiesta` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
+   `dHncSileSiesta` adding :math:`\delta H` elements to a TBtrans calculation
+   (this class is deprecated by `deltancSileSiesta` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
 
 """
 
