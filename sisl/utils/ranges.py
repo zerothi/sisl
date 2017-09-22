@@ -1,23 +1,18 @@
-"""
-Basic functionality of creating ranges from text-input and/or other types of information
-"""
 from __future__ import print_function, division
 
 import re
 from functools import partial
 from itertools import groupby
 
-import numpy as np
-from numpy import zeros, ones, cumsum, take
+from numpy import zeros, ones, cumsum, take, int32
 
 from sisl._help import _map as map
 
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
 __all__ += ['array_arange']
 
-# Function to change a string to a range of atoms
 
-
+# Function to change a string to a range of integers
 def strmap(func, s, sep='b'):
     """ Parse a string as though it was a slice and map all entries using ``func``.
 
@@ -232,7 +227,7 @@ def fileindex(f, cast=int):
     return fname, rng
 
 
-def array_arange(start, end=None, n=None, dtype=np.int32):
+def array_arange(start, end=None, n=None, dtype=int32):
     """ Creates a single array from a sequence of `numpy.arange`
 
     Parameters

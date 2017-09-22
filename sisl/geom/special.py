@@ -8,7 +8,7 @@ __all__ = ['diamond']
 
 
 def diamond(alat=3.57, atom=None):
-    """ A diamond unit-cell with 2 atoms
+    """ Diamond lattice with 2 atoms in the unitcell
 
     Parameters
     ----------

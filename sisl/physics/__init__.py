@@ -1,10 +1,71 @@
 """
-Module containing a variety of different physical quantities.
+Physical objects (:mod:`sisl.physics`)
+====
+
+.. currentmodule:: sisl.physics
+
+Implementations of various DFT and tight-binding related quantities
+are defined. The implementations range from simple Brillouin zone
+perspectives to self-energy calculations from Hamiltonians.
+
+In `sisl` the general usage of physical matrices are considering sparse
+matrices. Hence Hamiltonians, density matrices, etc. are considered
+sparse. There are exceptions, but it is generally advisable to have this in mind.
+
+Brillouin zones (:mod:`sisl.physics.brillouinzone`)
+----
+
+.. module:: sisl.physics.brillouinzone
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   BrillouinZone - base class
+   MonkhorstPackBZ - MP class
+   PathBZ - bandstructure class
+
+Spin configurations (:mod:`sisl.physics.spin`)
+----
+
+.. module:: sisl.physics.brillouinzone
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   Spin - spin configurations
+
+Sparse matrices (:mod:`sisl.physics.sparse`)
+----
+
+.. module:: sisl.physics.sparse
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
+   SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
+
+.. currentmodule:: sisl.physics
+
+Physical quantites
+----
+
+.. autosummary::
+   :toctree: api-sisl/
+
+   EnergyDensityMatrix
+   DensityMatrix
+   Hamiltonian
+   Hessian
+   SelfEnergy
+   SemiInfinite
+   RecursiveSI
+
 """
 
 from .brillouinzone import *
 from .spin import *
-from .sparse_physics import *
+from .sparse import *
 
 from .energydensitymatrix import *
 from .densitymatrix import *

@@ -1,6 +1,3 @@
-sisl\.io package
-==================
-
 .. automodule:: sisl.io
 
 .. toctree::

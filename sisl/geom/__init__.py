@@ -6,8 +6,8 @@ Common geometries (:mod:`sisl.geom`)
 
 A variety of default geometries.
 
-Basic
------
+Basic (:mod:`sisl.geom.basic`)
+------------------------------
 
 .. module:: sisl.geom.basic
 
@@ -20,8 +20,8 @@ Basic
    hcp - hexagonal
 
 
-Flat
-----
+Flat (:mod:`sisl.geom.flat`)
+----------------------------
 
 .. module:: sisl.geom.flat
 
@@ -31,8 +31,8 @@ Flat
    honeycomb - graphene like, but generic
    graphene - graphen
 
-Nanotube
---------
+Nanotube (:mod:`sisl.geom.nanotube`)
+------------------------------------
 
 .. module:: sisl.geom.nanotube
 
@@ -41,8 +41,8 @@ Nanotube
 
    nanotube - a nanotube (default to carbon)
 
-Special
--------
+Special (:mod:`sisl.geom.special`)
+----------------------------------
 
 .. module:: sisl.geom.special
 

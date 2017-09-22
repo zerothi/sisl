@@ -1,4 +1,11 @@
-""" Available files for reading/writing
+"""
+============================
+IO routines (:mod:`sisl.io`)
+============================
+
+.. currentmodule:: sisl.io
+
+Available files for reading/writing
 
 .. currentmodule:: sisl.io
 
@@ -9,8 +16,8 @@ Since sisl may be used with many other packages all files are name *siles*
 to distinguish them from files from other packages.
 
 
-Basic IO classes
-================
+Basic IO classes (:mod:`sisl.io.sile`)
+======================================
 
 .. module:: sisl.io.sile
 
@@ -61,8 +68,8 @@ are missing, please create an issue :ref:`here <issue>`.
 - `Wannier90`_
 - `XCrySDen`_
 
-BigDFT
-------
+BigDFT (:mod:`sisl.io.bigdft`)
+------------------------------
 
 .. module:: sisl.io.bigdft
 
@@ -71,8 +78,8 @@ BigDFT
 
    ascii.ASCIISileBigDFT - the input for BigDFT
 
-GULP
-----
+GULP (:mod:`sisl.io.gulp`)
+--------------------------
 
 .. module:: sisl.io.gulp
 
@@ -93,8 +100,8 @@ Molden
 
    MoldenSile - coordinate file for molden
 
-ScaleUp
--------
+ScaleUp (:mod:`sisl.io.scaleup`)
+--------------------------------
 
 .. module:: sisl.io.scaleup
 
@@ -105,8 +112,8 @@ ScaleUp
    ref.REFSileScaleUp - reference coordinates
    rham.rhamSileScaleUp - Hamiltonian file
 
-Siesta
-------
+Siesta (:mod:`sisl.io.siesta`)
+------------------------------
 
 .. module:: sisl.io.siesta
 
@@ -126,8 +133,8 @@ Siesta
    siesta_grid.gridncSileSiesta - NetCDF grid output files
    xv.XVSileSiesta - xyz and vxyz file
 
-TBtrans
--------
+TBtrans (:mod:`sisl.io.siesta`)
+-------------------------------
 
 .. module:: sisl.io.siesta.tbtrans
 
@@ -150,8 +157,8 @@ TBtrans
    phtprojncSileSiesta - projection output (phtrans)
 
 
-Wannier90
----------
+Wannier90 (:mod:`sisl.io.wannier`)
+------------------------------------
 
 .. module:: sisl.io.wannier
 

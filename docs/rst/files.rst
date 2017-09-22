@@ -3,7 +3,7 @@ File formats
 ============
 
 sisl implements a generic interface for interacting with many different file
-formats. When using the :doc:`command line utilities<scripts>` all these files
+formats. When using the :doc:`command line utilities<scripts/scripts>` all these files
 are accepted as input for, especially :ref:`script_sdata` while only those which
 contains geometries (`Geometry`) may be used with :ref:`script_sgeom`.
 
@@ -13,7 +13,7 @@ Here is a list of the currently supported file-formats with the file-endings
 defining the file format:
 
 ``xyz``
-   `XYZSile` file format, generic file format for many geometry viewers.
+   :class:`XYZSile` file format, generic file format for many geometry viewers.
 
 ``cube``
    `CUBESile` file format, real-space grid file format (also contains geometry)

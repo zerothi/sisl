@@ -1,6 +1,3 @@
-"""
-Helper functions for returning a nanotube
-"""
 from __future__ import print_function, division
 
 import numpy as np
@@ -11,9 +8,9 @@ __all__ = ['nanotube']
 
 
 def nanotube(bond, atom=None, chirality=(1, 1)):
-    """ Nanotube geometry
+    """ Nanotube with user-defined chirality.
 
-    This routine is implemented as in ``ASE`` with some cosmetic changes.
+    This routine is implemented as in `ASE`_ with some cosmetic changes.
 
     Parameters
     ----------

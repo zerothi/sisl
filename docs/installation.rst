@@ -5,9 +5,6 @@ Installation
 
 sisl is easy to install using any of your preferred methods.
 
-.. toctree::
-   :local:
-
 pip
 ---
 
@@ -61,7 +58,7 @@ Testing your installation
 
 It may be good practice to test your installation using the shipped test-suite.
 
-To test `sisl`, you are also required having the `pytest` package installed.
+To test `sisl`, you are also required having the ``pytest`` package installed.
 Then to test the installation simply run:
 
 .. code-block:: bash

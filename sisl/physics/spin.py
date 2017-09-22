@@ -20,6 +20,8 @@ from numbers import Integral
 
 import numpy as np
 
+__all__ = ['Spin']
+
 
 class Spin(object):
     """ Implementation of the spin configuration space """

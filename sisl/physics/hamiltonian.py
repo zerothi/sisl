@@ -1,16 +1,13 @@
-"""
-Tight-binding class to create tight-binding models.
-"""
 from __future__ import print_function, division
 
 from sisl._help import _range as range
-from .sparse_physics import SparseOrbitalBZSpin
+from .sparse import SparseOrbitalBZSpin
 
 __all__ = ['Hamiltonian', 'TightBinding']
 
 
 class Hamiltonian(SparseOrbitalBZSpin):
-    """ Hamiltonian object containing the coupling constants between orbitals.
+    """ Object containing the coupling constants between orbitals.
 
     The Hamiltonian object contains information regarding the
      - geometry

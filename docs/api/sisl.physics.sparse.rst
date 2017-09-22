@@ -1,4 +1,4 @@
-.. automodule:: sisl.physics.sparse_physics
+.. automodule:: sisl.physics.sparse
     :members:
     :undoc-members:
     :show-inheritance:

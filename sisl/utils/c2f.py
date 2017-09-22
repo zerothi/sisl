@@ -1,7 +1,3 @@
-"""
-Utilities for converting C stuff to Fortran stuff.
-"""
-
 from numbers import Integral
 
 from numpy import ndarray

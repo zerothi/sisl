@@ -5,7 +5,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from .sparse_physics import SparseOrbitalBZ
+from .sparse import SparseOrbitalBZ
 
 __all__ = ['Hessian', 'DynamicalMatrix']
 

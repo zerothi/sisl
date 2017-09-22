@@ -1,6 +1,3 @@
-sisl\.physics package
-=====================
-
 .. automodule:: sisl.physics
 
 .. toctree::

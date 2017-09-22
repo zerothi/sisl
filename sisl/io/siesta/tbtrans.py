@@ -1,4 +1,5 @@
-r"""sisl file objects for interaction with the TBtrans code
+r"""
+sisl file objects for interaction with the TBtrans code
 
 The TBtrans code is a tight-binding transport code implementing
 the widely used non-equilibrium Green function method.
@@ -30,7 +31,8 @@ The above is the most important use of this module while the following
 entries are enabled:
 
 Data extraction files
----------------------
+^^^^^^^^^^^^^^^^^^^^^
+
 - `tbtncSileSiesta` (electronic TBtrans output)
 - `tbtavncSileSiesta` (electronic k-averaged TBtrans output)
 - `phtncSileSiesta` (phononic PHtrans output)

@@ -19,7 +19,7 @@ _t60 = 3 ** .5
 
 
 def sc(alat, atom):
-    """ A simple cubic lattice with 1 atom
+    """ Simple cubic lattice with 1 atom
 
     Parameters
     ----------
@@ -37,7 +37,7 @@ def sc(alat, atom):
 
 
 def bcc(alat, atom, orthogonal=False):
-    """ A body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
+    """ Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
 
     Parameters
     ----------
@@ -65,7 +65,7 @@ def bcc(alat, atom, orthogonal=False):
 
 
 def fcc(alat, atom, orthogonal=False):
-    """ A face centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
+    """ Face centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
 
     Parameters
     ----------
@@ -94,7 +94,7 @@ def fcc(alat, atom, orthogonal=False):
 
 
 def hcp(a, atom, coa=1.63333, orthogonal=False):
-    """ A hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
+    """ Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters
     ----------

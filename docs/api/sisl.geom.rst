@@ -1,6 +1,3 @@
-sisl\.geom package
-==================
-
 .. automodule:: sisl.geom
 
 .. toctree::
