@@ -1,6 +1,3 @@
-sisl\.shape package
-===================
-
 .. automodule:: sisl.shape
 
 .. toctree::

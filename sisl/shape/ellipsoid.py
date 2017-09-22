@@ -1,7 +1,3 @@
-"""
-Implement a set of simple shapes that
-"""
-
 from math import pi
 import numpy as np
 

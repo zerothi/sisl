@@ -1,6 +1,3 @@
-sisl\.utils package
-===================
-
 .. automodule:: sisl.utils
 
 .. toctree::

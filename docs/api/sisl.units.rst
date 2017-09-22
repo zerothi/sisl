@@ -1,5 +1,7 @@
-sisl\.units package
-===================
-
 .. automodule:: sisl.units
 
+.. toctree::
+   :hidden:
+   :glob:
+
+   sisl.units.*

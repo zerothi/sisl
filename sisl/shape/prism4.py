@@ -1,7 +1,3 @@
-"""
-Implement a set of simple shapes that
-"""
-
 from numbers import Real
 import numpy as np
 
