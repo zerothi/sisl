@@ -1,6 +1,5 @@
-from .._help import extendall
-
 from .sile import *
+
 from .bands import *
 from .binaries import *
 from .eig import *
@@ -12,17 +11,4 @@ from .tbtrans import *
 from .tbtrans_proj import *
 from .xv import *
 
-__all__ = []
-
-extendall(__all__, 'sisl.io.siesta.sile')
-
-extendall(__all__, 'sisl.io.siesta.bands')
-extendall(__all__, 'sisl.io.siesta.binaries')
-extendall(__all__, 'sisl.io.siesta.eig')
-extendall(__all__, 'sisl.io.siesta.fdf')
-extendall(__all__, 'sisl.io.siesta.out')
-extendall(__all__, 'sisl.io.siesta.siesta')
-extendall(__all__, 'sisl.io.siesta.siesta_grid')
-extendall(__all__, 'sisl.io.siesta.tbtrans')
-extendall(__all__, 'sisl.io.siesta.tbtrans_proj')
-extendall(__all__, 'sisl.io.siesta.xv')
+__all__ = [s for s in dir() if not s.startswith('_')]
