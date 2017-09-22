@@ -1,4 +1,10 @@
-""" Geometry class to retain the atomic structure.
+"""
+Geometry (:mod:`sisl.geometry`)
+===============================
+
+A geometry object enables one to perform a large variety of calculations.
+
+
 
 A `Geometry` contains all necessary components regarding an
 atomic configuration:
@@ -682,6 +688,7 @@ class Geometry(SuperCellChild):
         method : {'rand', 'sphere', 'cube'}
             select the method by which the block iteration is performed.
             Possible values are:
+
              `rand`: a spherical object is constructed with a random center according to the internal atoms
              `sphere`: a spherical equispaced shape is constructed and looped
              `cube`: a cube shape is constructed and looped
@@ -1689,7 +1696,8 @@ class Geometry(SuperCellChild):
         shapes  : Shape or list of Shape
             A list of increasing shapes that define the extend of the geometric
             volume that is searched.
-            It is vital that:
+            It is vital that::
+
                shapes[0] in shapes[1] in shapes[2] ...
         isc       : array_like, optional
             The super-cell which the coordinates are checked in. Defaults to `[0, 0, 0]`
@@ -1834,6 +1842,7 @@ class Geometry(SuperCellChild):
 
         If R is a tuple/list/array it will return the indices:
         in the ranges:
+
         >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
         Parameters
@@ -1847,10 +1856,8 @@ class Geometry(SuperCellChild):
         R        : float or array_like, optional
             The radii parameter to where the atomic connections are found.
             If ``R`` is an array it will return the indices:
-            in the ranges:
-               ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``
-            If a single float it will return:
-               ``x <= R``
+            in the ranges ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``.
+            If a single float it will return ``x <= R``.
         idx       : array_like of int, optional
             List of atoms that will be considered. This can
             be used to only take out a certain atoms.

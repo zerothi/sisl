@@ -50,8 +50,7 @@ class PeriodicTable(object):
     >>> 'Au' == PeriodicTable().Z_label('Gold')
 
     Several quantities available to the atomic species are available
-    from
-      <https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)>
+    from <https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)>.
 
     The following values are accesible:
 

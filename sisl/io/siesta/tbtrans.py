@@ -5,7 +5,7 @@ The TBtrans code is a tight-binding transport code implementing
 the widely used non-equilibrium Green function method.
 
 It is primarily implemented for the support of TranSiesta (DFT+NEGF)
-as a backend for calculating th transport for self-consistent DFT software.
+as a backend for calculating transport for self-consistent DFT software.
 
 Here we show a variety of supplement files that allows the extracting, manipulation
 and creation of files supported in TBtrans.
