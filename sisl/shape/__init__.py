@@ -8,28 +8,25 @@ A variety of default shapes.
 
 All shapes inherit the `Shape` class.
 
-.. module:: sisl.shape.shape
-
 .. autosummary::
+   :toctree: api-generated/
 
    Shape
 
-Cuboids (:mod:`sisl.shape.prism4`)
-----------------------------------
-
-.. module:: sisl.shape.prism4
+Cuboids
+-------
 
 .. autosummary::
+   :toctree: api-generated/
 
    Cuboid
    Cube
 
-Ellipsoids (:mod:`sisl.shape.ellipsoid`)
-----------------------------------------
-
-.. module:: sisl.shape.ellipsoid
+Ellipsoids
+----------
 
 .. autosummary::
+   :toctree: api-generated/
 
    Ellipsoid 
    Spheroid
