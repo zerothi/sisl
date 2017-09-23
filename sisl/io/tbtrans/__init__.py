@@ -1,6 +1,6 @@
 r"""
 TBtrans (:mod:`sisl.io.tbtrans`)
---------------------------------
+================================
 
 .. currentmodule:: sisl.io.tbtrans
 
