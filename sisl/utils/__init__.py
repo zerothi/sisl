@@ -12,7 +12,6 @@ Range routines (:mod:`sisl.utils.ranges`)
 .. module:: sisl.utils.ranges
 
 .. autosummary::
-   :toctree: api-sisl/
 
    array_arange - fast creation of sub-aranges
    strmap
@@ -28,7 +27,6 @@ Miscellaneous routines (:mod:`sisl.utils.misc`)
 .. module:: sisl.utils.misc
 
 .. autosummary::
-   :toctree: api-sisl/
 
    str_spec
    direction - abc/012 -> 012
@@ -42,7 +40,6 @@ Command line utilites (:mod:`sisl.utils.cmd`)
 .. module:: sisl.utils.cmd
 
 .. autosummary::
-   :toctree: api-sisl/
 
    default_namespace
    ensure_namespace

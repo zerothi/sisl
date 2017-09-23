@@ -1,6 +1,9 @@
 r"""
 TBtrans (:mod:`sisl.io.tbtrans`)
-================================
+--------------------------------
+
+.. currentmodule:: sisl.io.tbtrans
+
 File objects for interaction with the `TBtrans`_ code.
 
 The TBtrans code is a tight-binding transport code implementing
@@ -12,7 +15,7 @@ as a backend for calculating transport for self-consistent DFT software.
 Here we show a variety of supplement files that allows the extracting, manipulation
 and creation of files supported in TBtrans.
 
-The basic file is the `tbtncSileSiesta` which is a file to extract information
+The basic file is the `tbtncSileTBtrans` which is a file to extract information
 from a TBtrans output file (typically named: ``siesta.TBT.nc``).
 The following will interact with the TBtrans file:
 
@@ -35,16 +38,16 @@ entries are enabled:
 Data extraction files
 ^^^^^^^^^^^^^^^^^^^^^
 
-- `tbtncSileSiesta` (electronic TBtrans output)
-- `tbtavncSileSiesta` (electronic k-averaged TBtrans output)
-- `phtncSileSiesta` (phononic PHtrans output)
-- `phtavncSileSiesta` (phononic k-averaged PHtrans output)
+- `tbtncSileTBtrans` (electronic TBtrans output)
+- `tbtavncSileTBtrans` (electronic k-averaged TBtrans output)
+- `phtncSileTBtrans` (phononic PHtrans output)
+- `phtavncSileTBtrans` (phononic k-averaged PHtrans output)
 
 Support files to complement TBtrans
 -----------------------------------
-- `deltancSileSiesta` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
-- `dHncSileSiesta` adding :math:`\delta H` elements to a TBtrans calculation
-  (this class is deprecated by `deltancSileSiesta` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
+- `deltancSileTBtrans` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
+- `dHncSileTBtrans` adding :math:`\delta H` elements to a TBtrans calculation
+  (this class is deprecated by `deltancSileTBtrans` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
 
 """
 

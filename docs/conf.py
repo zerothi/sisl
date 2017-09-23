@@ -79,7 +79,8 @@ rst_prolog = """
 rst_epilog = ''.join(open('epilog.dummy').readlines())
 
 import glob
-autosummary_generate = glob.glob('*.rst')
+autosummary_generate = glob.glob('**/*.rst')
+autosummary_generate = [f for f in autosummary_generate if 'api-generated' not in f]
 
 # General information about the project.
 project = u'sisl'

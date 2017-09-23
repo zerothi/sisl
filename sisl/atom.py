@@ -1,4 +1,11 @@
-""" Atomic information in different object containers.
+"""
+--------------------------------
+Atomic definitions (:mod:`sisl`)
+--------------------------------
+
+.. currentmodule:: sisl
+
+Atomic information in different object containers.
 
 Atomic information can be created and handled using the
 `PeriodicTable` object or the `Atom` object, or lastly the combined

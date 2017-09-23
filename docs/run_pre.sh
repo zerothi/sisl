@@ -16,6 +16,9 @@ mkdir -p build
 #    ln -s ../../docs/examples examples
 #fi
 
+# Clean-up autosummary docs
+rm -rf api/api-generated
+
 exit 0
 # Simple documentation script to generate the documentation
 rm -rf sisl-api

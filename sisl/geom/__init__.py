@@ -1,4 +1,5 @@
 """
+====================================
 Common geometries (:mod:`sisl.geom`)
 ====================================
 
@@ -6,50 +7,34 @@ Common geometries (:mod:`sisl.geom`)
 
 A variety of default geometries.
 
-Basic (:mod:`sisl.geom.basic`)
-------------------------------
-
-.. module:: sisl.geom.basic
+Basic
+=====
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
    sc - simple cubic
    bcc - body centered cubic
    fcc - face centered cubic
    hcp - hexagonal
+   diamond - a diamond lattice
 
-
-Flat (:mod:`sisl.geom.flat`)
-----------------------------
-
-.. module:: sisl.geom.flat
+2D materials
+============
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
    honeycomb - graphene like, but generic
    graphene - graphen
 
-Nanotube (:mod:`sisl.geom.nanotube`)
-------------------------------------
-
-.. module:: sisl.geom.nanotube
+Nanotube
+========
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
    nanotube - a nanotube (default to carbon)
-
-Special (:mod:`sisl.geom.special`)
-----------------------------------
-
-.. module:: sisl.geom.special
-
-.. autosummary::
-   :toctree: api-sisl/
-
-   diamond - a diamond lattice
 
 """
 
@@ -59,3 +44,5 @@ from .nanotube import *
 from .special import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
+for rm in ['basic', 'flat', 'special']:
+    __all__.remove(rm)

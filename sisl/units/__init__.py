@@ -16,7 +16,7 @@ Default unit conversion utilities
 ---------------------------------
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
    unit_group - which group does the unit belong to
    unit_convert - conversion factor between to units
@@ -26,7 +26,7 @@ Default unit conversion utilities
 Siesta units (:mod:`sisl.units.siesta`)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. module:: sisl.units.siesta
+.. currentmodule:: sisl.units.siesta
 
 This subpackage implements the unit conversions used in `Siesta`_.
 """

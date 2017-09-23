@@ -1,21 +1,32 @@
 """
-Geometry (:mod:`sisl.geometry`)
-===============================
+Geometry (:mod:`sisl`)
+----------------------
+
+.. module:: sisl
 
 A geometry object enables one to perform a large variety of calculations.
 
+The `Geometry` relies heavily on the `Atom`, `Atoms` and `SuperCell` classes
+for storing these informations.
 
+Creation of geometries may be from a preset geometry (see :mod:`sisl.geom`), or
+from custom defined geometries.
 
-A `Geometry` contains all necessary components regarding an
-atomic configuration:
+.. code::
 
-1. Number of atoms
-2. Atomic coordinates (in Cartesian coordinates)
-3. Atomic species
-4. Unit cell where the atoms are contained
+    >>> square = Geometry([[0.5, 0.5, 0.5]], Atom(1),
+    ...                   sc=SuperCell([1, 1, 10], nsc=[3, 3, 1]))
+    >>> print(square)
+    Geometry{na: 1, no: 1,
+     Atoms{species: 1,
+       (1) == Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000},
+     },
+     nsc: [3, 3, 1], maxR: -1.0
+    }
 
-The class implements a wide variety of routines for manipulation of the
-above listed items.
+Subsequently one can alter, expand and generally manipulate the geometry
+in a variety of ways:
+
 """
 from __future__ import print_function, division
 

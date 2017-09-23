@@ -7,8 +7,6 @@ IO routines (:mod:`sisl.io`)
 
 Available files for reading/writing
 
-.. currentmodule:: sisl.io
-
 sisl handles a large variety of input/output files from a large selection
 of DFT software and other post-processing tools.
 
@@ -16,13 +14,11 @@ Since sisl may be used with many other packages all files are name *siles*
 to distinguish them from files from other packages.
 
 
-Basic IO classes (:mod:`sisl.io.sile`)
-======================================
-
-.. module:: sisl.io.sile
+Basic IO classes
+================
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
    add_sile - add a file to the list of files that sisl can interact with
    get_sile - retrieve a file object via a file name by comparing the extension
@@ -40,17 +36,14 @@ Generic files
 These files are generic, in the sense that they are not specific to a
 given code.
 
-.. module:: sisl.io
-
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
-   xyz.XYZSile - atomic coordinate file
-   cube.CUBESile - atomic coordinates *and* 3D grid values
-   table.TableSile - data file in tabular form
-   molden.MoldenSile - atomic coordinate file specific for Molden
-   xsf.XSFSile - atomic coordinate file specific for XCrySDen
-
+   XYZSile - atomic coordinate file
+   CUBESile - atomic coordinates *and* 3D grid values
+   TableSile - data file in tabular form
+   MoldenSile - atomic coordinate file specific for Molden
+   XSFSile - atomic coordinate file specific for XCrySDen
 
 
 External code in/out put supported
@@ -64,103 +57,73 @@ are missing, please create an issue :ref:`here <issue>`.
 - `Molden`_
 - `ScaleUp`_
 - `Siesta`_
+- `TBtrans`_
 - `VASP`_
 - `Wannier90`_
 - `XCrySDen`_
 
-BigDFT (:mod:`sisl.io.bigdft`)
-------------------------------
-
-.. module:: sisl.io.bigdft
+BigDFT
+------
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
-   ascii.ASCIISileBigDFT - the input for BigDFT
+   ASCIISileBigDFT - the input for BigDFT
 
-GULP (:mod:`sisl.io.gulp`)
---------------------------
-
-.. module:: sisl.io.gulp
+GULP
+----
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
-   got.gotSileGULP - the output from GULP
-   hessian.HessianSileGULP - Hessian output from GULP
+   gotSileGULP - the output from GULP
+   HessianSileGULP - Hessian output from GULP
 
 
 Molden
 ------
 
-.. module:: sisl.io.molden
-
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
    MoldenSile - coordinate file for molden
 
-ScaleUp (:mod:`sisl.io.scaleup`)
---------------------------------
-
-.. module:: sisl.io.scaleup
+ScaleUp
+-------
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
-   orbocc.orboccSileScaleUp - orbital information
-   ref.REFSileScaleUp - reference coordinates
-   rham.rhamSileScaleUp - Hamiltonian file
+   orboccSileScaleUp - orbital information
+   REFSileScaleUp - reference coordinates
+   rhamSileScaleUp - Hamiltonian file
 
-Siesta (:mod:`sisl.io.siesta`)
-------------------------------
-
-.. module:: sisl.io.siesta
+Siesta
+------
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
-   bands.bandsSileSiesta - band structure information
-   binaries.TSHSSileSiesta - TranSiesta Hamiltonian
-   binaries.GridSileSiesta - Grid charge information
-   binaries.EnergyGridSileSiesta - Grid potential information
-   binaries.TSGFSileSiesta - TranSiesta surface Green function files
-   binaries.TBTGFSileSiesta - TBtrans surface Green function files
-   eig.eigSileSiesta - EIG file
-   fdf.fdfSileSiesta - input file
-   out.outSileSiesta - output file
-   siesta.ncSileSiesta - NetCDF output file
-   siesta_grid.gridncSileSiesta - NetCDF grid output files
-   xv.XVSileSiesta - xyz and vxyz file
+   bandsSileSiesta - band structure information
+   TSHSSileSiesta - TranSiesta Hamiltonian
+   GridSileSiesta - Grid charge information
+   EnergyGridSileSiesta - Grid potential information
+   TSGFSileSiesta - TranSiesta surface Green function files
+   TBTGFSileSiesta - TBtrans surface Green function files
+   eigSileSiesta - EIG file
+   fdfSileSiesta - input file
+   outSileSiesta - output file
+   ncSileSiesta - NetCDF output file
+   gridncSileSiesta - NetCDF grid output files
+   XVSileSiesta - xyz and vxyz file
 
-TBtrans (:mod:`sisl.io.tbtrans`)
--------------------------------
-
-.. module:: sisl.io.tbtrans
+Wannier90
+---------
 
 .. autosummary::
-   :toctree: api-sisl/
+   :toctree: api-generated/
 
-   tbtncSileSiesta - output
-   tbtavncSileSiesta - k-averaged output
-   phtncSileSiesta - output (phtrans)
-   phtavncSileSiesta - k-averaged output (phtrans)
-   deltancSileSiesta - :math:`\delta` files
-   dHncSileSiesta - :math:`\delta H` (deprecated)
-   tbtprojncSileSiesta - projection output
-   phtprojncSileSiesta - projection output (phtrans)
-
-
-Wannier90 (:mod:`sisl.io.wannier`)
-------------------------------------
-
-.. module:: sisl.io.wannier
-
-.. autosummary::
-   :toctree: api-sisl/
-
-   seedname.winSileWannier90 - input file
-
+   winSileWannier90 - input file
 
 """
 

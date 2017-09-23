@@ -18,7 +18,6 @@ Brillouin zones (:mod:`sisl.physics.brillouinzone`)
 .. module:: sisl.physics.brillouinzone
 
 .. autosummary::
-   :toctree: api-sisl/
 
    BrillouinZone - base class
    MonkhorstPackBZ - MP class
@@ -30,7 +29,6 @@ Spin configurations (:mod:`sisl.physics.spin`)
 .. module:: sisl.physics.brillouinzone
 
 .. autosummary::
-   :toctree: api-sisl/
 
    Spin - spin configurations
 
@@ -40,7 +38,6 @@ Sparse matrices (:mod:`sisl.physics.sparse`)
 .. module:: sisl.physics.sparse
 
 .. autosummary::
-   :toctree: api-sisl/
 
    SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
    SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
@@ -51,7 +48,6 @@ Physical quantites
 ----
 
 .. autosummary::
-   :toctree: api-sisl/
 
    EnergyDensityMatrix
    DensityMatrix

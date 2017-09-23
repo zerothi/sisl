@@ -1,4 +1,5 @@
 """
+================================================
 sisl: an electronic structure package for Python
 ================================================
 
@@ -6,6 +7,38 @@ sisl: an electronic structure package for Python
 
 The sisl package consists of a variety of sub packages enabling
 different routines for electronic structure calculations.
+
+The below 
+
+.. autosummary::
+   :hidden:
+   :toctree: api-generated/
+
+   PeriodicTable
+   Atom
+   Atoms
+   Geometry
+   Grid
+   SuperCell
+   Quaternion
+   SparseCSR
+   SparseAtom
+   SparseOrbital
+   Selector
+
+.. autosummary::
+
+   PeriodicTable
+   Atom
+   Atoms
+   Geometry
+   Grid
+   SuperCell
+   Quaternion
+   SparseCSR
+   SparseAtom
+   SparseOrbital
+   Selector
 
 .. autosummary::
 
@@ -15,13 +48,6 @@ different routines for electronic structure calculations.
    shape           --- Geometric shapes
    units           --- unit conversion
    utils           --- a variety of utilites, mostly used internally but also globally availabl
-   geometry        --- class containing atoms (multi-orbital), coordinates and a supercell
-   supercell       --- class defining a supercell via a unitcell and its connecting images
-   grid            --- class to manipulate real-space grids
-   sparse          --- class to implement a generic sparse CSR matrix
-   sparse_geometry --- class to implement a generic sparse CSR matrix from a defined `Geometry`
-   quaternion      --- Rotation capabilities via quaternions
-   selector        --- Method constructor when different routines may be used
 
 """
 
@@ -79,5 +105,6 @@ import sisl.io as io
 # sisl.geom.graphene
 from . import geom
 
+# Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]
 __all__ += ['__{}__'.format(r) for r in ['version', 'major', 'minor', 'micro']]

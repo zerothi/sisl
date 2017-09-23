@@ -1,7 +1,3 @@
-""" Define a grid
-
-This grid is the basis of different used models.
-"""
 from __future__ import print_function, division
 
 from numbers import Integral
