@@ -8,7 +8,7 @@ __all__ = ['Ellipsoid', 'Spheroid', 'Sphere']
 
 
 class Ellipsoid(Shape):
-    """ A 3D Ellipsoid shape
+    """ 3D Ellipsoid shape
 
     Parameters
     ----------
@@ -102,7 +102,7 @@ class Ellipsoid(Shape):
 
 
 class Spheroid(Ellipsoid):
-    """ A 3D spheroid shape
+    """ 3D spheroid shape
 
     Parameters
     ----------
@@ -130,7 +130,7 @@ class Spheroid(Ellipsoid):
 
 
 class Sphere(Spheroid):
-    """ A sphere """
+    """ Sphere """
 
     def __init__(self, radius, center=None):
         super(Sphere, self).__init__(radius, radius, center=center)

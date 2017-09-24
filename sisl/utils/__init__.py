@@ -1,4 +1,5 @@
 """
+====================================
 Utility routines (:mod:`sisl.utils`)
 ====================================
 
@@ -6,12 +7,11 @@ Utility routines (:mod:`sisl.utils`)
 
 Several utility functions are used throughout sisl.
 
-Range routines (:mod:`sisl.utils.ranges`)
------------------------------------------
-
-.. module:: sisl.utils.ranges
+Range routines
+==============
 
 .. autosummary::
+   :toctree: api-generated/
 
    array_arange - fast creation of sub-aranges
    strmap
@@ -21,12 +21,11 @@ Range routines (:mod:`sisl.utils.ranges`)
    list2range
    fileindex
 
-Miscellaneous routines (:mod:`sisl.utils.misc`)
------------------------------------------------
-
-.. module:: sisl.utils.misc
+Miscellaneous routines
+======================
 
 .. autosummary::
+   :toctree: api-generated/
 
    str_spec
    direction - abc/012 -> 012
@@ -34,12 +33,11 @@ Miscellaneous routines (:mod:`sisl.utils.misc`)
    iter_shape
    math_eval
 
-Command line utilites (:mod:`sisl.utils.cmd`)
----------------------------------------------
-
-.. module:: sisl.utils.cmd
+Command line utilites
+=====================
 
 .. autosummary::
+   :toctree: api-generated/
 
    default_namespace
    ensure_namespace
@@ -55,3 +53,6 @@ from .misc import *
 from .ranges import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
+
+#for rm in ['cmd', 'misc', 'ranges']:
+#    __all__.remove(rm)

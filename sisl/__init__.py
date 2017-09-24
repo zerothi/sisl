@@ -8,23 +8,9 @@ sisl: an electronic structure package for Python
 The sisl package consists of a variety of sub packages enabling
 different routines for electronic structure calculations.
 
-The below 
 
-.. autosummary::
-   :hidden:
-   :toctree: api-generated/
-
-   PeriodicTable
-   Atom
-   Atoms
-   Geometry
-   Grid
-   SuperCell
-   Quaternion
-   SparseCSR
-   SparseAtom
-   SparseOrbital
-   Selector
+Generic classes
+===============
 
 .. autosummary::
 

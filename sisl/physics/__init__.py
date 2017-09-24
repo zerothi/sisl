@@ -1,6 +1,7 @@
 """
+======================================
 Physical objects (:mod:`sisl.physics`)
-====
+======================================
 
 .. currentmodule:: sisl.physics
 
@@ -12,42 +13,39 @@ In `sisl` the general usage of physical matrices are considering sparse
 matrices. Hence Hamiltonians, density matrices, etc. are considered
 sparse. There are exceptions, but it is generally advisable to have this in mind.
 
-Brillouin zones (:mod:`sisl.physics.brillouinzone`)
-----
-
-.. module:: sisl.physics.brillouinzone
+Brillouin zone
+==============
 
 .. autosummary::
+   :toctree: api-generated/
 
    BrillouinZone - base class
    MonkhorstPackBZ - MP class
    PathBZ - bandstructure class
 
-Spin configurations (:mod:`sisl.physics.spin`)
-----
-
-.. module:: sisl.physics.brillouinzone
+Spin configurations
+===================
 
 .. autosummary::
+   :toctree: api-generated/
 
    Spin - spin configurations
 
-Sparse matrices (:mod:`sisl.physics.sparse`)
-----
-
-.. module:: sisl.physics.sparse
+Sparse matrices
+===============
 
 .. autosummary::
+   :toctree: api-generated/
 
    SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
    SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
 
-.. currentmodule:: sisl.physics
 
 Physical quantites
-----
+==================
 
 .. autosummary::
+   :toctree: api-generated/
 
    EnergyDensityMatrix
    DensityMatrix
@@ -70,3 +68,8 @@ from .hessian import *
 from .self_energy import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
+
+#for rm in ['brillouinzone', 'spin', 'sparse',
+#           'energydensitymatrix', 'densitymatrix',
+#           'hamiltonian', 'hessian', 'self_energy']:
+#    __all__.remove(rm)

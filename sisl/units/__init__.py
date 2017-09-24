@@ -1,4 +1,5 @@
 """
+===================================
 Unit conversion (:mod:`sisl.units`)
 ===================================
 
@@ -13,7 +14,7 @@ code where specific unit conversions are required. I.e. if
 the codes unit conversion are not the same as the sisl defaults.
 
 Default unit conversion utilities
----------------------------------
+=================================
 
 .. autosummary::
    :toctree: api-generated/
@@ -24,7 +25,7 @@ Default unit conversion utilities
 
 
 Siesta units (:mod:`sisl.units.siesta`)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------
 
 .. currentmodule:: sisl.units.siesta
 

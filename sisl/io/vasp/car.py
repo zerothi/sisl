@@ -1,7 +1,3 @@
-"""
-Sile object for reading/writing CONTCAR/POSCAR files
-"""
-
 from __future__ import print_function
 
 import numpy as np

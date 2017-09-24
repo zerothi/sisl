@@ -36,6 +36,8 @@ tight-binding creation algorithms (`>1,000,000` orbitals).
 sisl is developed in particular with `TBtrans`_ in mind to act as a tight-binding
 Hamiltonian input engine for *N*-electrode transport calculations.
 
+sisl is hosted here http://github.com/zerothi/sisl.
+
 
 Features
 --------

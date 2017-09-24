@@ -4,7 +4,7 @@ __all__ = ['Shape']
 
 
 class Shape(object):
-    """ Baseclass for shapes.
+    """ Baseclass for shapes
 
     This class should always be sub-classed.
 

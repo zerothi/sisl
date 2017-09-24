@@ -341,8 +341,8 @@ texinfo_documents = [
 # These two options should solve the "toctree contains reference to nonexisting document"
 # problem.
 # See here: numpydoc #69
-#class_members_toctree = False
-#numpydoc_show_class_members = True
+class_members_toctree = False
+numpydoc_show_class_members = True
 
 # -----------------------------------------------------------------------------
 # Intersphinx configuration

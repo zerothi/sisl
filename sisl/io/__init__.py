@@ -1,7 +1,7 @@
 """
-============================
-IO routines (:mod:`sisl.io`)
-============================
+=============================
+Input/Output (:mod:`sisl.io`)
+=============================
 
 .. currentmodule:: sisl.io
 
@@ -52,15 +52,16 @@ External code in/out put supported
 List the relevant codes that `sisl` can interact with. If there are files you think
 are missing, please create an issue :ref:`here <issue>`.
 
-- `BigDFT`_
-- `GULP`_
-- `Molden`_
-- `ScaleUp`_
-- `Siesta`_
-- `TBtrans`_
-- `VASP`_
-- `Wannier90`_
-- `XCrySDen`_
+- :ref:`toc-io-bigdft`
+- :ref:`toc-io-gulp`
+- :ref:`toc-io-scaleup`
+- :ref:`toc-io-siesta`
+- :ref:`toc-io-tbtrans`
+- :ref:`toc-io-vasp`
+- :ref:`toc-io-wannier`
+
+
+.. _toc-io-bigdft:
 
 BigDFT
 ------
@@ -69,6 +70,9 @@ BigDFT
    :toctree: api-generated/
 
    ASCIISileBigDFT - the input for BigDFT
+
+
+.. _toc-io-gulp:
 
 GULP
 ----
@@ -80,13 +84,7 @@ GULP
    HessianSileGULP - Hessian output from GULP
 
 
-Molden
-------
-
-.. autosummary::
-   :toctree: api-generated/
-
-   MoldenSile - coordinate file for molden
+.. _toc-io-scaleup:
 
 ScaleUp
 -------
@@ -98,24 +96,58 @@ ScaleUp
    REFSileScaleUp - reference coordinates
    rhamSileScaleUp - Hamiltonian file
 
+
+.. _toc-io-siesta:
+
 Siesta
 ------
 
 .. autosummary::
    :toctree: api-generated/
 
-   bandsSileSiesta - band structure information
-   TSHSSileSiesta - TranSiesta Hamiltonian
-   GridSileSiesta - Grid charge information
-   EnergyGridSileSiesta - Grid potential information
-   TSGFSileSiesta - TranSiesta surface Green function files
-   TBTGFSileSiesta - TBtrans surface Green function files
-   eigSileSiesta - EIG file
    fdfSileSiesta - input file
    outSileSiesta - output file
-   ncSileSiesta - NetCDF output file
-   gridncSileSiesta - NetCDF grid output files
    XVSileSiesta - xyz and vxyz file
+   bandsSileSiesta - band structure information
+   eigSileSiesta - EIG file
+   GridSileSiesta - Grid charge information (binary)
+   gridncSileSiesta - NetCDF grid output files (netcdf)
+   EnergyGridSileSiesta - Grid potential information
+   TSHSSileSiesta - TranSiesta Hamiltonian
+   TSGFSileSiesta - TranSiesta surface Green function files
+   ncSileSiesta - NetCDF output file
+
+
+.. _toc-io-tbtrans:
+
+TBtrans
+-------
+
+.. autosummary::
+   :toctree: api-generated/
+
+   tbtncSileTBtrans
+   phtncSileTBtrans
+   deltancSileTBtrans
+   TBTGFSileSiesta - TBtrans surface Green function files
+   tbtavncSileTBtrans
+   phtavncSileTBtrans
+
+
+.. _toc-io-vasp:
+
+VASP
+----
+
+.. autosummary::
+   :toctree: api-generated/
+
+   CARSileVASP
+   POSCARSileVASP
+   CONTCARSileVASP
+
+
+.. _toc-io-wannier:
 
 Wannier90
 ---------
@@ -146,3 +178,9 @@ from .xsf import *
 from .xyz import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
+
+#for rm in ['sile', 'bigdft', 'cube', 'gulp',
+#           'ham', 'molden', 'scaleup', 'siesta',
+#           'tbtrans', 'vasp', 'wannier', 'xsf',
+#           'xyz']:
+#    __all__.remove(rm)

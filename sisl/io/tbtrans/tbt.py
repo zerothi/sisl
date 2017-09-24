@@ -2510,7 +2510,7 @@ add_sile('delta.nc', deltancSileTBtrans)
 
 # The deltaH nc file
 class dHncSileTBtrans(deltancSileTBtrans):
-    """ TBtrans delta-H file object """
+    """ TBtrans delta-H file object (deprecated by `deltancSileTBtrans`) """
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
