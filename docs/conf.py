@@ -114,7 +114,9 @@ release = version
 language = None
 
 # Add __init__ classes to the documentation
-#autoclass_content = 'both'
+autoclass_content = 'both'
+autodoc_default_flags = ['members', 'undoc-members',
+                         'inherited-members', 'no-show-inheritance']
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

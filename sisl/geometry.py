@@ -1101,7 +1101,7 @@ class Geometry(SuperCellChild):
         The calculated angle can be written as this
 
         .. math::
-            \alpha = \acos \frac{(\mathrm{atom} - \mathrm{ref})\cdot \mathrm{dir}}
+            \alpha = \arccos \frac{(\mathrm{atom} - \mathrm{ref})\cdot \mathrm{dir}}
             {|\mathrm{atom}-\mathrm{ref}||\mathrm{dir}|}
 
         and thus lies in the interval :math:`[0 ; \pi]` as one cannot distinguish orientation without

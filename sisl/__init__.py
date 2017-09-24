@@ -1,18 +1,18 @@
 """
-================================================
-sisl: an electronic structure package for Python
-================================================
+==================================
+sisl: electronic structure package
+==================================
 
 .. currentmodule:: sisl
 
 The sisl package consists of a variety of sub packages enabling
 different routines for electronic structure calculations.
 
-
 Generic classes
 ===============
 
 .. autosummary::
+   :toctree: api-generated
 
    PeriodicTable
    Atom
@@ -20,20 +20,13 @@ Generic classes
    Geometry
    Grid
    SuperCell
-   Quaternion
-   SparseCSR
-   SparseAtom
-   SparseOrbital
-   Selector
 
-.. autosummary::
 
-   geom            --- Default geometries to easily create a variety of geometries
-   io              --- Reading/Writing files related to different software codes
-   physics         --- Specific classes for electronic structure, Hamiltonian, Brillouin zone, etc.
-   shape           --- Geometric shapes
-   units           --- unit conversion
-   utils           --- a variety of utilites, mostly used internally but also globally availabl
+..   Quaternion
+..   SparseCSR
+..   SparseAtom
+..   SparseOrbital
+..   Selector
 
 """
 
