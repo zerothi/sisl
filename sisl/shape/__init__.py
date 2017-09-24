@@ -35,11 +35,11 @@ Ellipsoids
 
 """
 
-from .shape import *
+from .base import *
 from .ellipsoid import *
 from .prism4 import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
 
-#for rm in ['shape', 'ellipsoid', 'prism4']:
+#for rm in ['base', 'ellipsoid', 'prism4']:
 #    __all__.remove(rm)

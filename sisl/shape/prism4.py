@@ -1,7 +1,7 @@
 from numbers import Real
 import numpy as np
 
-from .shape import Shape
+from .base import Shape
 
 
 __all__ = ['Cuboid', 'Cube']

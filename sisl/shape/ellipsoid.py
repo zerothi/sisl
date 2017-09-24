@@ -1,7 +1,7 @@
 from math import pi
 import numpy as np
 
-from .shape import Shape
+from .base import Shape
 
 
 __all__ = ['Ellipsoid', 'Spheroid', 'Sphere']
