@@ -1,4 +1,14 @@
-""" Test document """
+"""
+======
+Siesta
+======
+
+.. currentmodule:: sisl.io.siesta
+
+The interaction between sisl and `Siesta`_ is one of the main goals due
+to the implicit relationship between the developer of sisl and `Siesta`_.
+
+"""
 from .sile import *
 
 from .bands import *

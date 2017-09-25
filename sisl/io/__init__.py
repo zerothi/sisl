@@ -159,6 +159,17 @@ Wannier90
 
    winSileWannier90 - input file
 
+
+
+.. Add all io modules to the toc (to be reachable)
+
+.. autosummary::
+   :toctree:
+   :hidden:
+
+   api-generated/sisl.io.siesta
+   api-generated/sisl.io.tbtrans
+
 """
 
 from .sile import *

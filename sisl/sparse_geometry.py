@@ -177,10 +177,11 @@ class SparseGeometry(object):
             duplicates may exist if the parent object has duplicates. The default
             depends on what the calling object is and the value of `what`.
             There are two cases:
-              - defaults to ``False`` for
+
+             - defaults to ``False`` for
                 ``isinstance(self, SparseAtom) and what == 'atom'``, or
                 ``isinstance(self, SparseOrbital) and what == 'orbital'``.
-              - defaults to ``True`` for
+             - defaults to ``True`` for
                 ``isinstance(self, SparseAtom) and what != 'atom'``, or
                 ``isinstance(self, SparseOrbital) and what != 'orbital'``.
 

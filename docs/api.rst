@@ -9,7 +9,6 @@ different routines for electronic structure calculations.
    :maxdepth: 2
 
    api-generated/sisl
-   api-generated/sisl.Geometry
    api-generated/sisl.geom
    api-generated/sisl.physics
    api-generated/sisl.shape
@@ -18,8 +17,8 @@ different routines for electronic structure calculations.
    api-generated/sisl.utils
 
 .. autosummary::
-   :hidden:
    :toctree: api-generated
+   :hidden:
 
    sisl
    sisl.geom

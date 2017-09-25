@@ -1,9 +1,17 @@
 """
-==================================
-sisl: electronic structure package
-==================================
+==================
+sisl (:mod:`sisl`)
+==================
 
 .. currentmodule:: sisl
+
+sisl is an electronic structure package which may interact with tight-binding
+and DFT matrices alike.
+
+Below a set of classes that are the basis of *everything* in sisl is present.
+
+Generic classes
+===============
 
 .. autosummary::
    :toctree:
@@ -19,6 +27,9 @@ Below are a group of advanced classes rarely needed.
 A lot of the sub-classes extend these classes, or use them
 intrinsically. However, they are not necessarily intended
 for users use.
+
+Advanced classes
+================
 
 .. autosummary::
    :toctree:
