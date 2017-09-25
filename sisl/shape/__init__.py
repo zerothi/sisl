@@ -7,28 +7,14 @@ Shapes (:mod:`sisl.shape`)
 
 A variety of default shapes.
 
-All shapes inherit the :ref:`Shape` class.
+All shapes inherit the :ref:`~sisl.shape.Shape` class.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    Shape - base class
-
-Cuboids
-=======
-
-.. autosummary::
-   :toctree: api-generated/
-
    Cuboid - 3d cube
    Cube - 3d box
-
-Ellipsoids
-==========
-
-.. autosummary::
-   :toctree: api-generated/
-
    Ellipsoid 
    Spheroid
    Sphere

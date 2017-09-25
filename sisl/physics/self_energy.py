@@ -1,6 +1,3 @@
-"""
-Self-energy class for calculating self-energies.
-"""
 from __future__ import print_function, division
 
 import warnings

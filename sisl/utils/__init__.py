@@ -11,7 +11,7 @@ Range routines
 ==============
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    array_arange - fast creation of sub-aranges
    strmap
@@ -25,26 +25,13 @@ Miscellaneous routines
 ======================
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    str_spec
    direction - abc/012 -> 012
    angle - radian to degree
    iter_shape
    math_eval
-
-Command line utilites
-=====================
-
-.. autosummary::
-   :toctree: api-generated/
-
-   default_namespace
-   ensure_namespace
-   dec_default_AP
-   dec_collect_action
-   dec_collect_and_run_action
-   dec_run_actions
 
 """
 

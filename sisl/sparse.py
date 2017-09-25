@@ -1,6 +1,3 @@
-"""
-Sparsity pattern used to express matrices in concise manners.
-"""
 from __future__ import print_function, division
 
 import warnings

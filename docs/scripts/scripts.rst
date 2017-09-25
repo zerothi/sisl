@@ -1,4 +1,6 @@
 
+.. _toc-scripts:
+
 Scripts
 =======
 
@@ -8,7 +10,6 @@ with *all* the data files compatible with `sisl`.
 
 .. toctree::
    :maxdepth: 1
-   :glob:   
 
    sdata
    sgeom

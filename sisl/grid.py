@@ -21,9 +21,9 @@ class Grid(SuperCellChild):
     """
 
     # Constant (should never be changed)
-    Periodic = 1
-    Neumann = 2
-    Dirichlet = 3
+    PERIODIC = 1
+    NEUMANN = 2
+    DIRICHLET = 3
 
     def __init__(self, shape=None, bc=None, sc=None, dtype=None, geom=None):
         """ Initialize a `Grid` object.
@@ -35,14 +35,14 @@ class Grid(SuperCellChild):
         shape : `list of ints`
            the size of each grid dimension
         bc : `int`
-           the boundary condition (`Grid.Periodic/Grid.Neumann/Grid.Dirichlet`)
+           the boundary condition (`Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET`)
         sc : `SuperCell/list`
            the associated supercell (
         """
         if shape is None:
             shape = [1, 1, 1]
         if bc is None:
-            bc = self.Periodic
+            bc = self.PERIODIC
 
         self.set_supercell(sc)
 

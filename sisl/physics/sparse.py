@@ -1,6 +1,3 @@
-"""
-Class implementation for an orbital system with, and without spin
-"""
 from __future__ import print_function, division
 
 import warnings

@@ -18,7 +18,7 @@ Basic IO classes
 ================
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    add_sile - add a file to the list of files that sisl can interact with
    get_sile - retrieve a file object via a file name by comparing the extension
@@ -30,21 +30,7 @@ Basic IO classes
    SileBin - a base class for binary files
    SileError - sisl specific error
 
-Generic files
-=============
-
-These files are generic, in the sense that they are not specific to a
-given code.
-
-.. autosummary::
-   :toctree: api-generated/
-
-   XYZSile - atomic coordinate file
-   CUBESile - atomic coordinates *and* 3D grid values
-   TableSile - data file in tabular form
-   MoldenSile - atomic coordinate file specific for Molden
-   XSFSile - atomic coordinate file specific for XCrySDen
-
+.. _toc-io-supported:
 
 External code in/out put supported
 ==================================
@@ -61,24 +47,40 @@ are missing, please create an issue :ref:`here <issue>`.
 - :ref:`toc-io-wannier`
 
 
-.. _toc-io-bigdft:
+Generic files
+-------------
 
-BigDFT
-------
+These files are generic, in the sense that they are not specific to a
+given code.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
+
+   XYZSile - atomic coordinate file
+   CUBESile - atomic coordinates *and* 3D grid values
+   TableSile - data file in tabular form
+   MoldenSile - atomic coordinate file specific for Molden
+   XSFSile - atomic coordinate file specific for XCrySDen
+
+
+.. _toc-io-bigdft:
+
+BigDFT (:mod:`sisl.io.bigdft`)
+------------------------------
+
+.. autosummary::
+   :toctree:
 
    ASCIISileBigDFT - the input for BigDFT
 
 
 .. _toc-io-gulp:
 
-GULP
-----
+GULP (:mod:`sisl.io.gulp`)
+--------------------------
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    gotSileGULP - the output from GULP
    HessianSileGULP - Hessian output from GULP
@@ -90,7 +92,7 @@ ScaleUp
 -------
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    orboccSileScaleUp - orbital information
    REFSileScaleUp - reference coordinates
@@ -99,11 +101,11 @@ ScaleUp
 
 .. _toc-io-siesta:
 
-Siesta
-------
+Siesta (:mod:`sisl.io.siesta`)
+------------------------------
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    fdfSileSiesta - input file
    outSileSiesta - output file
@@ -124,7 +126,7 @@ TBtrans
 -------
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    tbtncSileTBtrans
    phtncSileTBtrans
@@ -140,7 +142,7 @@ VASP
 ----
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    CARSileVASP
    POSCARSileVASP
@@ -153,7 +155,7 @@ Wannier90
 ---------
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    winSileWannier90 - input file
 

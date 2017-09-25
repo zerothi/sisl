@@ -14,18 +14,6 @@
 |codecov|_
 
 
-.. toctree::
-   :hidden:
-   :maxdepth: 2
-
-   introduction
-   installation
-   scripts/scripts
-   tutorials.rst
-   examples.rst
-   rst/files
-   api
-
 Welcome to sisl documentation!
 ==============================
 
@@ -83,6 +71,32 @@ Indices
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+
+   introduction
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: User Guide
+   
+   installation
+   tutorials.rst
+   examples.rst
+   scripts/scripts
+   rst/files
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Reference documentation
+   
+   api
+
 
 .. |buildstatus| image:: https://travis-ci.org/zerothi/sisl.svg
 .. _buildstatus: https://travis-ci.org/zerothi/sisl

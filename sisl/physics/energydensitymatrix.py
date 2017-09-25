@@ -1,6 +1,3 @@
-"""
-Energy density matrix class
-"""
 from __future__ import print_function, division
 
 from .sparse import SparseOrbitalBZSpin

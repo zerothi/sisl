@@ -79,7 +79,7 @@ rst_prolog = """
 rst_epilog = ''.join(open('epilog.dummy').readlines())
 
 import glob
-autosummary_generate = glob.glob('**/*.rst')
+autosummary_generate = glob.glob('*.rst') + glob.glob('*/*.rst')
 autosummary_generate = [f for f in autosummary_generate if 'api-generated' not in f]
 
 # General information about the project.
@@ -114,7 +114,7 @@ release = version
 language = None
 
 # Add __init__ classes to the documentation
-autoclass_content = 'both'
+autoclass_content = 'class'
 autodoc_default_flags = ['members', 'undoc-members',
                          'inherited-members', 'no-show-inheritance']
 

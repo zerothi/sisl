@@ -1,33 +1,3 @@
-"""
-Geometry (:mod:`sisl`)
-----------------------
-
-.. module:: sisl
-
-A geometry object enables one to perform a large variety of calculations.
-
-The `Geometry` relies heavily on the `Atom`, `Atoms` and `SuperCell` classes
-for storing these informations.
-
-Creation of geometries may be from a preset geometry (see :mod:`sisl.geom`), or
-from custom defined geometries.
-
-.. code::
-
-    >>> square = Geometry([[0.5, 0.5, 0.5]], Atom(1),
-    ...                   sc=SuperCell([1, 1, 10], nsc=[3, 3, 1]))
-    >>> print(square)
-    Geometry{na: 1, no: 1,
-     Atoms{species: 1,
-       (1) == Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000},
-     },
-     nsc: [3, 3, 1], maxR: -1.0
-    }
-
-Subsequently one can alter, expand and generally manipulate the geometry
-in a variety of ways:
-
-"""
 from __future__ import print_function, division
 
 # To check for integers
@@ -75,18 +45,32 @@ class Geometry(SuperCellChild):
     An atomic lattice consisting of Hydrogen atoms.
     An atomic square lattice of Hydrogen atoms
 
-     >>> xyz = [[0, 0, 0],
-                [1, 1, 1]]
-     >>> sc = SuperCell([2,2,2])
-     >>> g = Geometry(xyz,Atom['H'],sc)
+    >>> xyz = [[0, 0, 0],
+               [1, 1, 1]]
+    >>> sc = SuperCell([2,2,2])
+    >>> g = Geometry(xyz,Atom['H'],sc)
 
     The following estimates the lattice vectors from the
     atomic coordinates, although possible, it is not recommended
     to be used.
 
-     >>> xyz = [[0, 0, 0],
-                [1, 1, 1]]
-     >>> g = Geometry(xyz, Atom['H'])
+    >>> xyz = [[0, 0, 0],
+               [1, 1, 1]]
+    >>> g = Geometry(xyz, Atom['H'])
+
+
+    .. code::
+
+       >>> square = Geometry([[0.5, 0.5, 0.5]], Atom(1),
+       ...                   sc=SuperCell([1, 1, 10], nsc=[3, 3, 1]))
+       >>> print(square)
+       Geometry{na: 1, no: 1,
+        Atoms{species: 1,
+          (1) == Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000},
+        },
+        nsc: [3, 3, 1], maxR: -1.0
+       }
+
 
     Attributes
     ----------

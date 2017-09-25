@@ -1,1 +1,0 @@
-.. automodule:: sisl.io.siesta

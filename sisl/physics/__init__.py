@@ -17,7 +17,7 @@ Brillouin zone
 ==============
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    BrillouinZone - base class
    MonkhorstPackBZ - MP class
@@ -27,7 +27,7 @@ Spin configurations
 ===================
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    Spin - spin configurations
 
@@ -35,7 +35,7 @@ Sparse matrices
 ===============
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
    SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
@@ -45,7 +45,7 @@ Physical quantites
 ==================
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    EnergyDensityMatrix
    DensityMatrix

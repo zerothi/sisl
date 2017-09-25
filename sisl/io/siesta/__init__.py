@@ -1,3 +1,4 @@
+""" Test document """
 from .sile import *
 
 from .bands import *

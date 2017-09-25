@@ -1,9 +1,3 @@
-"""
-A generic sparse matrix which is based on a hosting `Geometry`.
-
-The sparse matrix can in this case represent _any_ data and should be
-sub-classed for specific uses.
-"""
 from __future__ import print_function, division
 
 import warnings

@@ -17,7 +17,7 @@ mkdir -p build
 #fi
 
 # Clean-up autosummary docs
-rm -rf api/api-generated
+rm -rf api-generated
 
 exit 0
 # Simple documentation script to generate the documentation

@@ -1,5 +1,3 @@
-""" Different tools for contsructing k-points and paths in the Brillouin zone """
-
 from __future__ import print_function, division
 
 import types

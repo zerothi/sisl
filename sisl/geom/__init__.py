@@ -11,7 +11,7 @@ Basic
 =====
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    sc - simple cubic
    bcc - body centered cubic
@@ -23,7 +23,7 @@ Basic
 ============
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    honeycomb - graphene like, but generic
    graphene - graphen
@@ -32,7 +32,7 @@ Nanotube
 ========
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree:
 
    nanotube - a nanotube (default to carbon)
 

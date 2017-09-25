@@ -5,28 +5,29 @@ sisl: electronic structure package
 
 .. currentmodule:: sisl
 
-The sisl package consists of a variety of sub packages enabling
-different routines for electronic structure calculations.
-
-Generic classes
-===============
-
 .. autosummary::
-   :toctree: api-generated
+   :toctree:
 
    PeriodicTable
    Atom
    Atoms
    Geometry
-   Grid
    SuperCell
+   Grid
 
+Below are a group of advanced classes rarely needed. 
+A lot of the sub-classes extend these classes, or use them
+intrinsically. However, they are not necessarily intended
+for users use.
 
-..   Quaternion
-..   SparseCSR
-..   SparseAtom
-..   SparseOrbital
-..   Selector
+.. autosummary::
+   :toctree:
+
+   Quaternion
+   SparseCSR
+   SparseAtom
+   SparseOrbital
+   Selector
 
 """
 
