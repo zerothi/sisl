@@ -1,8 +1,9 @@
 r"""
+================================
 TBtrans (:mod:`sisl.io.tbtrans`)
 ================================
 
-.. currentmodule:: sisl.io.tbtrans
+.. module:: sisl.io.tbtrans
 
 File objects for interaction with the `TBtrans`_ code.
 
@@ -35,6 +36,7 @@ transmission eigenvalues etc.
 The above is the most important use of this module while the following
 entries are enabled:
 
+
 Data extraction files
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -45,14 +47,17 @@ Data extraction files
 
 Support files to complement TBtrans
 -----------------------------------
-- `deltancSileTBtrans` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
+- `deltancSileTBtrans` adding :math:`\delta H` or :math:`\delta\Sigma` elements 
+  to a TBtrans calculation
 - `dHncSileTBtrans` adding :math:`\delta H` elements to a TBtrans calculation
-  (this class is deprecated by `deltancSileTBtrans` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
+  (this class is deprecated by `deltancSileTBtrans` which is generic for
+  :math:`\delta H` and :math:`\delta\Sigma`)
 
 """
 
 from .sile import *
 
+from .binaries import *
 from .tbt import *
 from .tbtproj import *
 

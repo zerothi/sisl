@@ -1,5 +1,17 @@
 """
-GULP I/O Siles
+==========================
+GULP (:mod:`sisl.io.gulp`)
+==========================
+
+.. module:: sisl.io.gulp
+
+
+.. autosummary::
+   :toctree:
+
+   gotSileGULP - the output from GULP
+   HessianSileGULP - Hessian output from GULP
+
 """
 
 from .sile import *

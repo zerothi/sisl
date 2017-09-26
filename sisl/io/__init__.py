@@ -3,7 +3,7 @@
 Input/Output (:mod:`sisl.io`)
 =============================
 
-.. currentmodule:: sisl.io
+.. module:: sisl.io
 
 Available files for reading/writing
 
@@ -30,6 +30,7 @@ Basic IO classes
    SileBin - a base class for binary files
    SileError - sisl specific error
 
+
 .. _toc-io-supported:
 
 External code in/out put supported
@@ -44,7 +45,7 @@ are missing, please create an issue :ref:`here <issue>`.
 - :ref:`toc-io-siesta`
 - :ref:`toc-io-tbtrans`
 - :ref:`toc-io-vasp`
-- :ref:`toc-io-wannier`
+- :ref:`toc-io-wannier90`
 
 
 Generic files
@@ -56,17 +57,19 @@ given code.
 .. autosummary::
    :toctree:
 
-   XYZSile - atomic coordinate file
-   CUBESile - atomic coordinates *and* 3D grid values
-   TableSile - data file in tabular form
-   MoldenSile - atomic coordinate file specific for Molden
-   XSFSile - atomic coordinate file specific for XCrySDen
+   ~xyz.XYZSile - atomic coordinate file
+   ~cube.CUBESile - atomic coordinates *and* 3D grid values
+   ~table.TableSile - data file in tabular form
+   ~molden.MoldenSile - atomic coordinate file specific for Molden
+   ~xsf.XSFSile - atomic coordinate file specific for XCrySDen
 
 
 .. _toc-io-bigdft:
 
 BigDFT (:mod:`sisl.io.bigdft`)
 ------------------------------
+
+.. currentmodule:: sisl.io.bigdft
 
 .. autosummary::
    :toctree:
@@ -79,6 +82,8 @@ BigDFT (:mod:`sisl.io.bigdft`)
 GULP (:mod:`sisl.io.gulp`)
 --------------------------
 
+.. currentmodule:: sisl.io.gulp
+
 .. autosummary::
    :toctree:
 
@@ -88,8 +93,10 @@ GULP (:mod:`sisl.io.gulp`)
 
 .. _toc-io-scaleup:
 
-ScaleUp
--------
+ScaleUp (:mod:`sisl.io.scaleup`)
+--------------------------------
+
+.. currentmodule:: sisl.io.scaleup
 
 .. autosummary::
    :toctree:
@@ -103,6 +110,8 @@ ScaleUp
 
 Siesta (:mod:`sisl.io.siesta`)
 ------------------------------
+
+.. currentmodule:: sisl.io.siesta
 
 .. autosummary::
    :toctree:
@@ -122,8 +131,10 @@ Siesta (:mod:`sisl.io.siesta`)
 
 .. _toc-io-tbtrans:
 
-TBtrans
--------
+TBtrans (:mod:`sisl.io.tbtrans`)
+--------------------------------
+
+.. currentmodule:: sisl.io.tbtrans
 
 .. autosummary::
    :toctree:
@@ -131,15 +142,23 @@ TBtrans
    tbtncSileTBtrans
    phtncSileTBtrans
    deltancSileTBtrans
-   TBTGFSileSiesta - TBtrans surface Green function files
+   TBTGFSileTBtrans - TBtrans surface Green function files
    tbtavncSileTBtrans
    phtavncSileTBtrans
+
+.. autosummary::
+   :toctree:
+   :hidden:
+
+   dHncSileTBtrans
 
 
 .. _toc-io-vasp:
 
-VASP
-----
+VASP (:mod:`sisl.io.vasp`)
+--------------------------
+
+.. currentmodule:: sisl.io.vasp
 
 .. autosummary::
    :toctree:
@@ -149,10 +168,12 @@ VASP
    CONTCARSileVASP
 
 
-.. _toc-io-wannier:
+.. _toc-io-wannier90:
 
-Wannier90
----------
+Wannier90 (:mod:`sisl.io.wannier90`)
+------------------------------------
+
+.. currentmodule:: sisl.io.wannier90
 
 .. autosummary::
    :toctree:
@@ -161,14 +182,23 @@ Wannier90
 
 
 
+.. ###############################################
 .. Add all io modules to the toc (to be reachable)
+.. ###############################################
+
+.. currentmodule:: sisl.io
 
 .. autosummary::
    :toctree:
    :hidden:
 
-   api-generated/sisl.io.siesta
-   api-generated/sisl.io.tbtrans
+   bigdft
+   gulp
+   scaleup
+   siesta
+   tbtrans
+   vasp
+   wannier90
 
 """
 
@@ -186,7 +216,7 @@ from .siesta import *
 from .tbtrans import *
 from .table import *
 from .vasp import *
-from .wannier import *
+from .wannier90 import *
 from .xsf import *
 from .xyz import *
 
@@ -194,6 +224,6 @@ __all__ = [s for s in dir() if not s.startswith('_')]
 
 #for rm in ['sile', 'bigdft', 'cube', 'gulp',
 #           'ham', 'molden', 'scaleup', 'siesta',
-#           'tbtrans', 'vasp', 'wannier', 'xsf',
+#           'tbtrans', 'vasp', 'wannier90', 'xsf',
 #           'xyz']:
 #    __all__.remove(rm)

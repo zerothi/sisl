@@ -5,15 +5,7 @@ from ..sile import add_sile
 from .tbt import tbtncSileTBtrans
 
 
-# Import the geometry object
-from sisl.units.siesta import unit_convert
-
 __all__ = ['tbtprojncSileTBtrans', 'phtprojncSileTBtrans']
-
-Bohr2Ang = unit_convert('Bohr', 'Ang')
-Ry2eV = unit_convert('Ry', 'eV')
-Ry2K = unit_convert('Ry', 'K')
-eV2Ry = unit_convert('eV', 'Ry')
 
 
 class tbtprojncSileTBtrans(tbtncSileTBtrans):

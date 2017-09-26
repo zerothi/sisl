@@ -3,7 +3,7 @@
 Utility routines (:mod:`sisl.utils`)
 ====================================
 
-.. currentmodule:: sisl.utils
+.. module:: sisl.utils
 
 Several utility functions are used throughout sisl.
 

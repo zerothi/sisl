@@ -3,7 +3,7 @@
 Common geometries (:mod:`sisl.geom`)
 ====================================
 
-.. currentmodule:: sisl.geom
+.. module:: sisl.geom
 
 A variety of default geometries.
 

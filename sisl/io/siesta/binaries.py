@@ -9,8 +9,8 @@ except Exception as e:
     found_module = False
 
 # Import sile objects
+from ..sile import add_sile
 from .sile import SileBinSiesta
-from ..sile import *
 
 # Import the geometry object
 import sisl._numpy_scipy as ns_
@@ -25,7 +25,7 @@ Ry2eV = unit_convert('Ry', 'eV')
 
 __all__ = ['TSHSSileSiesta']
 __all__ += ['GridSileSiesta', 'EnergyGridSileSiesta']
-__all__ += ['TSGFSileSiesta', 'TBTGFSileSiesta']
+__all__ += ['_GFSileSiesta', 'TSGFSileSiesta']
 
 
 class TSHSSileSiesta(SileBinSiesta):
@@ -331,7 +331,6 @@ def _type(name, obj):
 
 # Faster than class ... \ pass
 TSGFSileSiesta = _type("TSGFSileSiesta", _GFSileSiesta)
-TBTGFSileSiesta = _type("TBTGFSileSiesta", _GFSileSiesta)
 
 if found_module:
     add_sile('TSHS', TSHSSileSiesta)
@@ -345,4 +344,3 @@ if found_module:
     add_sile('VT', _type("TotalHartreeSileSiesta", EnergyGridSileSiesta))
 
     add_sile('TSGF', TSGFSileSiesta)
-    add_sile('TBTGF', TBTGFSileSiesta)

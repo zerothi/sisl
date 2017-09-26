@@ -3,7 +3,7 @@
 Unit conversion (:mod:`sisl.units`)
 ===================================
 
-.. currentmodule:: sisl.units
+.. module:: sisl.units
 
 Generic conversion utility between different units. 
 

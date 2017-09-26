@@ -19,8 +19,8 @@ from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
 # Import sile objects
+from ..sile import add_sile
 from .sile import SileCDFTBtrans
-from ..sile import *
 from sisl.utils import *
 import sisl._numpy_scipy as ns_
 
@@ -30,6 +30,7 @@ from sisl import SparseOrbitalBZSpin
 from sisl._help import _str
 from sisl._help import _range as range
 from sisl.units.siesta import unit_convert
+
 
 __all__ = ['tbtncSileTBtrans', 'phtncSileTBtrans']
 __all__ += ['tbtavncSileTBtrans', 'phtavncSileTBtrans']

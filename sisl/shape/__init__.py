@@ -3,7 +3,7 @@
 Shapes (:mod:`sisl.shape`)
 ==========================
 
-.. currentmodule:: sisl.shape
+.. module:: sisl.shape
 
 A variety of default shapes.
 

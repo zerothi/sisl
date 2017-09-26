@@ -1,5 +1,20 @@
 """
-VASP I/O Siles
+==========================
+VASP (:mod:`sisl.io.vasp`)
+==========================
+
+.. module:: sisl.io.vasp
+
+VASP files.
+
+
+.. autosummary::
+   :toctree:
+
+   CARSileVASP
+   POSCARSileVASP
+   CONTCARSileVASP
+
 """
 
 from .sile import *

@@ -9,7 +9,6 @@ with *all* the data files compatible with `sisl`.
 
 
 .. toctree::
-   :maxdepth: 1
 
    sdata
    sgeom

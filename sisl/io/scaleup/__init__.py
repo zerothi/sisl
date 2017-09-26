@@ -1,3 +1,19 @@
+"""
+================================
+ScaleUp (:mod:`sisl.io.scaleup`)
+================================
+
+.. module:: sisl.io.scaleup
+
+
+.. autosummary::
+
+   orboccSileScaleUp - orbital information
+   REFSileScaleUp - reference coordinates
+   rhamSileScaleUp - Hamiltonian file
+
+"""
+
 from .sile import *
 
 from .orbocc import *
