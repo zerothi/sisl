@@ -344,7 +344,8 @@ texinfo_documents = [
 # problem.
 # See here: numpydoc #69
 class_members_toctree = False
-numpydoc_show_class_members = True
+# If this is false we do not have double method sections
+numpydoc_show_class_members = False
 
 # -----------------------------------------------------------------------------
 # Intersphinx configuration

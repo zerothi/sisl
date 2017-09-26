@@ -1833,31 +1833,31 @@ class Geometry(SuperCellChild):
         """ Indices of atoms in a given supercell within a given radius from a given coordinate
 
         This returns a set of atomic indices which are within a
-        sphere of radius ``R``.
+        sphere of radius `R`.
 
-        If R is a tuple/list/array it will return the indices:
+        If `R` is a tuple/list/array it will return the indices:
         in the ranges:
 
         >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
         Parameters
         ----------
-        xyz_ia    : array_like of floats or int
+        xyz_ia : array_like of floats or int
             Either a point in space or an index of an atom.
             If an index is passed it is the equivalent of passing
             the atomic coordinate ``close_sc(self.xyz[xyz_ia,:])``.
-        isc       : array_like, optional
+        isc : array_like, optional
             The super-cell which the coordinates are checked in.
-        R        : float or array_like, optional
+        R : float or array_like, optional
             The radii parameter to where the atomic connections are found.
-            If ``R`` is an array it will return the indices:
+            If `R` is an array it will return the indices:
             in the ranges ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``.
             If a single float it will return ``x <= R``.
-        idx       : array_like of int, optional
+        idx : array_like of int, optional
             List of atoms that will be considered. This can
             be used to only take out a certain atoms.
         idx_xyz : array_like of float, optional
-            The atomic coordinates of the equivalent ``idx`` variable (``idx`` must also be passed)
+            The atomic coordinates of the equivalent `idx` variable (`idx` must also be passed)
         ret_xyz : bool, optional
             If True this method will return the coordinates
             for each of the couplings.

@@ -10,21 +10,28 @@ class Shape(object):
 
     There are a few routines that are *always* necessary
     to implement in a inherited class:
-    - center
+
+    `center`
       return the geometric center of the shape
-    - origo
+
+    origo
       return the lowest left point in the shape
-    - volume
+
+    volume
       return the volume of the shape.
-    - displacement
+
+    displacement
       return a vector that is the largest displacement vector such that
       a grid of the Shape will fully contian all space
-    - within
+
+    within
       Enables to check if coordinates, or other things
       are contained in this shape
-    - iwithin
+
+    iwithin
       Returns only the indices of elements that are within
-    - enlarge
+
+    enlarge
       Creates a new shape with a only the indices of elements that are within
 
     A `Shape` allows interaction with outside elements to check if geometric

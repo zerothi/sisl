@@ -47,25 +47,25 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
     """ Add files to the global lookup table
 
     Public for attaching lookup tables for allowing
-    users to attach files for the IOSile function call
+    users to attach files externally.
 
     Parameters
     ----------
     ending : str
          The file-name ending, it can be several file endings (.TBT.nc)
-    cls : `BaseSile` child
+    cls : child of BaseSile
          An object that is associated with the respective file.
-         It must be inherited from a `BaseSile`.
-    case : bool, (True)
+         It must be inherited from `BaseSile`.
+    case : bool, optional
          Whether case sensitivity is applicable for determining
          file.
-    gzip : bool, (False)
-         Whether files with `.gz` endings can be read.
+    gzip : bool, optional
+         Whether files with ``.gz`` endings can be read.
          This option should only be given to files with ASCII text
          output.
          It will automatically call:
 
-          >>> add_sile(ending+'.gz',...,gzip=False)
+             add_sile(ending+'.gz',...,gzip=False)
 
          to add the gzipped file to the list of possible files.
     """
@@ -158,16 +158,18 @@ def get_sile_class(file, *args, **kwargs):
     Parameters
     ----------
     file : str
-       the file to be quried for a correct `Sile` object.
+       the file to be quried for a correct file object.
        This file name may contain {<class-name>} which sets
        `cls` in case `cls` is not set.
        For instance:
+
           water.xyz
-       will return an ``XYZSile``.
+
+       will return an `XYZSile`.
     cls : class
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.
-       If there are several ``Sile``s with similar file-endings this
+       If there are several files with similar file-endings this
        function returns a random one.
     """
     global __sile_rules, __siles
@@ -258,12 +260,14 @@ def get_sile(file, *args, **kwargs):
        This file name may contain {<class-name>} which sets
        `cls` in case `cls` is not set.
        For instance:
+
           water.dat{XYZSile}
-       will read the file water.dat as an `XYZSile`.
+
+       will read the file ``water.dat` using the `XYZSile` class.
     cls : class
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.
-       If there are several `Sile`s with similar file-endings this
+       If there are several files with similar file-endings this
        function returns a random one.
     """
     cls = kwargs.pop('cls', None)
@@ -277,8 +281,8 @@ def get_siles(attrs=None):
     Parameters
     ----------
     attrs : list of attribute names
-       limits the returned sile-objects to those that have
-       the given attributes `hasattr(sile, attrs)`, default ``[None]``
+       limits the returned objects to those that have
+       the given attributes ``hasattr(sile, attrs)``, default ``[None]``
     """
     global __siles
 
@@ -311,7 +315,7 @@ class BaseSile(object):
         Parameters
         ----------
         **kwargs :
-          keyword arguments will try and search for the attribute `read_<>`
+          keyword arguments will try and search for the attribute ``read_<>``
           and call it with the remaining ``**kwargs`` as arguments.
         """
         for key in kwargs.keys():

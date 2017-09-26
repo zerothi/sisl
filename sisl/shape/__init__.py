@@ -7,7 +7,7 @@ Shapes (:mod:`sisl.shape`)
 
 A variety of default shapes.
 
-All shapes inherit the :ref:`~sisl.shape.Shape` class.
+All shapes inherit the `Shape` class.
 
 .. autosummary::
    :toctree:
