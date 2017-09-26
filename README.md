@@ -184,7 +184,7 @@ meaning of that file object.
 
 __NOTE__: if you know the file is in _xyz_ file format but the ending is erroneous, you can force the `XYZSile` by instantiating using that class
 
-    sisl.XYZSile(<filename>)
+    sisl.io.XYZSile(<filename>)
 
 which disregards the ending check. 
 
