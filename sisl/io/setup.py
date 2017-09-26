@@ -6,7 +6,7 @@ def configuration(parent_package='', top_path=None):
     config = Configuration('io', parent_package, top_path)
     for sub in ['bigdft', 'gulp', 'scaleup',
                 'siesta', 'tbtrans',
-                'vasp', 'wannier']:
+                'vasp', 'wannier90']:
         config.add_subpackage(sub)
     config.make_config_py()  # installs __config__.py
     config.add_data_dir('tests')
