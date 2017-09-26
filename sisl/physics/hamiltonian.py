@@ -1,16 +1,13 @@
-"""
-Tight-binding class to create tight-binding models.
-"""
 from __future__ import print_function, division
 
 from sisl._help import _range as range
-from .sparse_physics import SparseOrbitalBZSpin
+from .sparse import SparseOrbitalBZSpin
 
 __all__ = ['Hamiltonian', 'TightBinding']
 
 
 class Hamiltonian(SparseOrbitalBZSpin):
-    """ Hamiltonian object containing the coupling constants between orbitals.
+    """ Object containing the coupling constants between orbitals.
 
     The Hamiltonian object contains information regarding the
      - geometry
@@ -19,7 +16,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
     It contains an intrinsic sparse matrix of the Hamiltonian elements.
 
     Assigning or changing Hamiltonian elements is as easy as with
-    standard ``numpy`` assignments:
+    standard `numpy` assignments:
 
     >>> ham = Hamiltonian(...)
     >>> ham.H[1,2] = 0.1
@@ -68,14 +65,14 @@ class Hamiltonian(SparseOrbitalBZSpin):
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
-           The default data-type is '`numpy.complex128``
+           The default data-type is `numpy.complex128`
         gauge : {'R', 'r'}
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in ``numpy.ndarray`` (`'array'`) or ``numpy.matrix`` (`'dense'`).
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
 
         See Also
         --------
@@ -103,7 +100,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the energy (in eV) to shift the electronic structure
         """
         if not self.orthogonal:
-            # For non-colinear and SO only the diagonal components
+            # For non-colinear and SO only the diagonal (real) components
             # should be shifted.
             for i in range(min(self.spin.spins, 2)):
                 self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E

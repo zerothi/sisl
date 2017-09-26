@@ -1,14 +1,19 @@
 """
-SIESTA I/O Siles
+==============================
+BigDFT (:mod:`sisl.io.bigdft`)
+==============================
+
+.. module:: sisl.io.bigdft
+
+
+.. autosummary::
+   :toctree:
+
+   ASCIISileBigDFT - the input for BigDFT
+
 """
-
-from .._help import extendall
-
 from .sile import *
+
 from .ascii import *
 
-__all__ = []
-
-extendall(__all__, 'sisl.io.bigdft.sile')
-
-extendall(__all__, 'sisl.io.bigdft.ascii')
+__all__ = [s for s in dir() if not s.startswith('_')]

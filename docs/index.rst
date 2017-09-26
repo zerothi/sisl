@@ -14,17 +14,6 @@
 |codecov|_
 
 
-.. toctree::
-   :hidden:
-   :maxdepth: 2
-
-   introduction
-   installation
-   scripts/scripts
-   tutorials.rst
-   examples.rst
-   rst/files
-
 Welcome to sisl documentation!
 ==============================
 
@@ -34,6 +23,8 @@ It is also a tight-binding code implementing extremely fast and scalable
 tight-binding creation algorithms (`>1,000,000` orbitals).
 sisl is developed in particular with `TBtrans`_ in mind to act as a tight-binding
 Hamiltonian input engine for *N*-electrode transport calculations.
+
+sisl is hosted here http://github.com/zerothi/sisl.
 
 
 Features
@@ -45,7 +36,7 @@ sisl consists of several distinct features:
   a large variety of DFT-codes and/or from generically used file formats.
 
 * Hamiltonian; easily create tight-binding Hamiltonians with user chosen number of
-  orbitals per atom. Or read in Hamiltonians from DFT software such as `SIESTA`_,
+  orbitals per atom. Or read in Hamiltonians from DFT software such as `Siesta`_,
   `Wannier90`_, etc. Secondly, there is intrinsic capability of orthogonal *and*
   non-orthogonal Hamiltonians.
 
@@ -73,20 +64,6 @@ sisl consists of several distinct features:
 
 Follow :ref:`these steps <installation>` to install sisl.
 
-API links
-=========
-
-A selected list of links to the API documentation of the most commonly used
-objects:
-
-.. autosummary::
-   sisl
-   sisl.atom
-   sisl.geometry
-   sisl.grid
-   sisl.supercell
-   sisl.physics
-
 
 Indices
 -------
@@ -94,6 +71,32 @@ Indices
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+
+   introduction
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: User Guide
+   
+   installation
+   tutorials.rst
+   examples.rst
+   scripts/scripts
+   rst/files
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Reference documentation
+   
+   api
+
 
 .. |buildstatus| image:: https://travis-ci.org/zerothi/sisl.svg
 .. _buildstatus: https://travis-ci.org/zerothi/sisl

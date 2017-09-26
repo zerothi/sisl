@@ -1,10 +1,32 @@
 """
-SIESTA I/O Siles
+==============================
+Siesta (:mod:`sisl.io.siesta`)
+==============================
+
+.. module:: sisl.io.siesta
+
+
+The interaction between sisl and `Siesta`_ is one of the main goals due
+to the implicit relationship between the developer of sisl and `Siesta`_.
+
+
+.. autosummary::
+
+   fdfSileSiesta - input file
+   outSileSiesta - output file
+   XVSileSiesta - xyz and vxyz file
+   bandsSileSiesta - band structure information
+   eigSileSiesta - EIG file
+   GridSileSiesta - Grid charge information (binary)
+   gridncSileSiesta - NetCDF grid output files (netcdf)
+   EnergyGridSileSiesta - Grid potential information
+   TSHSSileSiesta - TranSiesta Hamiltonian
+   TSGFSileSiesta - TranSiesta surface Green function files
+   ncSileSiesta - NetCDF output file
+
 """
-
-from .._help import extendall
-
 from .sile import *
+
 from .bands import *
 from .binaries import *
 from .eig import *
@@ -12,21 +34,6 @@ from .fdf import *
 from .out import *
 from .siesta import *
 from .siesta_grid import *
-from .tbtrans import *
-from .tbtrans_proj import *
 from .xv import *
 
-__all__ = []
-
-extendall(__all__, 'sisl.io.siesta.sile')
-
-extendall(__all__, 'sisl.io.siesta.bands')
-extendall(__all__, 'sisl.io.siesta.binaries')
-extendall(__all__, 'sisl.io.siesta.eig')
-extendall(__all__, 'sisl.io.siesta.fdf')
-extendall(__all__, 'sisl.io.siesta.out')
-extendall(__all__, 'sisl.io.siesta.siesta')
-extendall(__all__, 'sisl.io.siesta.siesta_grid')
-extendall(__all__, 'sisl.io.siesta.tbtrans')
-extendall(__all__, 'sisl.io.siesta.tbtrans_proj')
-extendall(__all__, 'sisl.io.siesta.xv')
+__all__ = [s for s in dir() if not s.startswith('_')]

@@ -1,4 +1,6 @@
 .. Internal links:
+.. _pr: http://github.com/zerothi/sisl/pulls
+.. _issue: http://github.com/zerothi/sisl/issues
 .. _gh-releases: http://github.com/zerothi/sisl/releases
 .. _pypi-releases: http://pypi.python.org/pypi/sisl
 .. _conda-releases: http://anaconda.org/zerothi/sisl
@@ -12,13 +14,14 @@
 .. _scipy: http://github.com/scipy/scipy
 
 .. DFT codes
-.. _SIESTA: https://departments.icmab.es/leem/siesta
-.. _TranSIESTA: https://launchpad.net/siesta
+.. _Siesta: https://departments.icmab.es/leem/siesta
+.. _TranSiesta: https://launchpad.net/siesta
 .. _TBtrans: https://launchpad.net/siesta
 
 .. _BigDFT: http://www.bigdft.org
 .. _VASP: https://www.vasp.at
 .. _ScaleUp: unknown
+.. _GULP: https://nanochemistry.curtin.edu.au/gulp/news.cfm
 
 .. Other programs heavily used
 .. _ASE: https://wiki.fysik.dtu.dk/ase

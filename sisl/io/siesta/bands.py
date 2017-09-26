@@ -1,7 +1,3 @@
-"""
-Sile object for reading/writing SIESTA bands files
-"""
-
 from __future__ import print_function
 
 import numpy as np
@@ -17,7 +13,7 @@ __all__ = ['bandsSileSiesta']
 
 
 class bandsSileSiesta(SileSiesta):
-    """ bands SIESTA file object """
+    """ bands Siesta file object """
 
     @Sile_fh_open
     def read_data(self):

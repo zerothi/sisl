@@ -4,6 +4,7 @@ import pytest
 
 from sisl import Geometry, Atom, Hamiltonian
 from sisl.io.siesta import *
+from sisl.io.tbtrans import *
 
 import os.path as osp
 import math as m
@@ -23,7 +24,7 @@ def teardown_module(module):
 
 
 @pytest.mark.io
-class TestSIESTAnc(object):
+class TestSiestanc(object):
 
     def test_nc1(self):
         f = osp.join(_C.d, 'gr.nc')
@@ -45,9 +46,9 @@ class TestSIESTAnc(object):
         H.construct([_C.R, _C.t])
 
         # annoyingly this has to be performed like this...
-        sile = dHncSileSiesta(f, 'w')
+        sile = dHncSileTBtrans(f, 'w')
         H.geom.write(sile)
-        sile = dHncSileSiesta(f, 'a')
+        sile = dHncSileTBtrans(f, 'a')
 
         # Write to level-1
         H.write(sile)

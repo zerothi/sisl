@@ -1,14 +1,23 @@
 """
-VASP I/O Siles
-"""
+==========================
+VASP (:mod:`sisl.io.vasp`)
+==========================
 
-from .._help import extendall
+.. module:: sisl.io.vasp
+
+VASP files.
+
+
+.. autosummary::
+   :toctree:
+
+   CARSileVASP
+   POSCARSileVASP
+   CONTCARSileVASP
+
+"""
 
 from .sile import *
 from .car import *
 
-__all__ = []
-
-extendall(__all__, 'sisl.io.vasp.sile')
-
-extendall(__all__, 'sisl.io.vasp.car')
+__all__ = [s for s in dir() if not s.startswith('_')]

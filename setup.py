@@ -76,7 +76,7 @@ Secondly, it provides easy interfaces for advanced DFT programs, creating and ca
 properties of both DFT and tight-binding Hamiltonians.
 
 It has high emphasis on its ease of use, low compatibility (pure Python and Cython)
-and the availability of creating input for the tight-binding transport calculator TBtrans (part of DFT SIESTA suite).
+and the availability of creating input for the tight-binding transport calculator TBtrans (part of DFT Siesta suite).
 """,
     url="http://github.com/zerothi/sisl",
     download_url="http://github.com/zerothi/sisl/releases",

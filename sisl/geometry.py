@@ -1,16 +1,3 @@
-""" Geometry class to retain the atomic structure.
-
-A `Geometry` contains all necessary components regarding an
-atomic configuration:
-
-1. Number of atoms
-2. Atomic coordinates (in Cartesian coordinates)
-3. Atomic species
-4. Unit cell where the atoms are contained
-
-The class implements a wide variety of routines for manipulation of the
-above listed items.
-"""
 from __future__ import print_function, division
 
 # To check for integers
@@ -58,18 +45,32 @@ class Geometry(SuperCellChild):
     An atomic lattice consisting of Hydrogen atoms.
     An atomic square lattice of Hydrogen atoms
 
-     >>> xyz = [[0, 0, 0],
-                [1, 1, 1]]
-     >>> sc = SuperCell([2,2,2])
-     >>> g = Geometry(xyz,Atom['H'],sc)
+    >>> xyz = [[0, 0, 0],
+               [1, 1, 1]]
+    >>> sc = SuperCell([2,2,2])
+    >>> g = Geometry(xyz,Atom['H'],sc)
 
     The following estimates the lattice vectors from the
     atomic coordinates, although possible, it is not recommended
     to be used.
 
-     >>> xyz = [[0, 0, 0],
-                [1, 1, 1]]
-     >>> g = Geometry(xyz, Atom['H'])
+    >>> xyz = [[0, 0, 0],
+               [1, 1, 1]]
+    >>> g = Geometry(xyz, Atom['H'])
+
+
+    .. code::
+
+       >>> square = Geometry([[0.5, 0.5, 0.5]], Atom(1),
+       ...                   sc=SuperCell([1, 1, 10], nsc=[3, 3, 1]))
+       >>> print(square)
+       Geometry{na: 1, no: 1,
+        Atoms{species: 1,
+          (1) == Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000},
+        },
+        nsc: [3, 3, 1], maxR: -1.0
+       }
+
 
     Attributes
     ----------
@@ -682,6 +683,7 @@ class Geometry(SuperCellChild):
         method : {'rand', 'sphere', 'cube'}
             select the method by which the block iteration is performed.
             Possible values are:
+
              `rand`: a spherical object is constructed with a random center according to the internal atoms
              `sphere`: a spherical equispaced shape is constructed and looped
              `cube`: a cube shape is constructed and looped
@@ -822,8 +824,8 @@ class Geometry(SuperCellChild):
             returns the i'th segment of the cut structure
             Currently the atomic coordinates are not translated,
             this may change in the future.
-        rtol : (tolerance for checking tiling, see ``numpy.allclose``)
-        atol : (tolerance for checking tiling, see ``numpy.allclose``)
+        rtol : (tolerance for checking tiling, see `numpy.allclose`)
+        atol : (tolerance for checking tiling, see `numpy.allclose`)
         """
         if self.na % seps != 0:
             raise ValueError(
@@ -1083,7 +1085,7 @@ class Geometry(SuperCellChild):
         The calculated angle can be written as this
 
         .. math::
-            \alpha = \acos \frac{(\mathrm{atom} - \mathrm{ref})\cdot \mathrm{dir}}
+            \alpha = \arccos \frac{(\mathrm{atom} - \mathrm{ref})\cdot \mathrm{dir}}
             {|\mathrm{atom}-\mathrm{ref}||\mathrm{dir}|}
 
         and thus lies in the interval :math:`[0 ; \pi]` as one cannot distinguish orientation without
@@ -1689,7 +1691,8 @@ class Geometry(SuperCellChild):
         shapes  : Shape or list of Shape
             A list of increasing shapes that define the extend of the geometric
             volume that is searched.
-            It is vital that:
+            It is vital that::
+
                shapes[0] in shapes[1] in shapes[2] ...
         isc       : array_like, optional
             The super-cell which the coordinates are checked in. Defaults to `[0, 0, 0]`
@@ -1834,6 +1837,7 @@ class Geometry(SuperCellChild):
 
         If R is a tuple/list/array it will return the indices:
         in the ranges:
+
         >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
         Parameters
@@ -1847,10 +1851,8 @@ class Geometry(SuperCellChild):
         R        : float or array_like, optional
             The radii parameter to where the atomic connections are found.
             If ``R`` is an array it will return the indices:
-            in the ranges:
-               ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``
-            If a single float it will return:
-               ``x <= R``
+            in the ranges ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``.
+            If a single float it will return ``x <= R``.
         idx       : array_like of int, optional
             List of atoms that will be considered. This can
             be used to only take out a certain atoms.
@@ -2555,7 +2557,7 @@ class Geometry(SuperCellChild):
         R : float, optional
            the maximum radius to consider, default to ``self.maxR()``.
            To retrieve all distances for atoms within the supercell structure
-           you can pass ``numpy.inf``.
+           you can pass `numpy.inf`.
         tol : float or array_like, optional
            the tolerance for grouping a set of atoms.
            This parameter sets the shell radius for each shell.

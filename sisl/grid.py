@@ -1,7 +1,3 @@
-""" Define a grid
-
-This grid is the basis of different used models.
-"""
 from __future__ import print_function, division
 
 from numbers import Integral
@@ -25,9 +21,9 @@ class Grid(SuperCellChild):
     """
 
     # Constant (should never be changed)
-    Periodic = 1
-    Neumann = 2
-    Dirichlet = 3
+    PERIODIC = 1
+    NEUMANN = 2
+    DIRICHLET = 3
 
     def __init__(self, shape=None, bc=None, sc=None, dtype=None, geom=None):
         """ Initialize a `Grid` object.
@@ -39,14 +35,14 @@ class Grid(SuperCellChild):
         shape : `list of ints`
            the size of each grid dimension
         bc : `int`
-           the boundary condition (`Grid.Periodic/Grid.Neumann/Grid.Dirichlet`)
+           the boundary condition (`Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET`)
         sc : `SuperCell/list`
            the associated supercell (
         """
         if shape is None:
             shape = [1, 1, 1]
         if bc is None:
-            bc = self.Periodic
+            bc = self.PERIODIC
 
         self.set_supercell(sc)
 
@@ -155,13 +151,16 @@ class Grid(SuperCellChild):
 
     def set_bc(self, boundary=None, a=None, b=None, c=None):
         """ Set the boundary conditions on the grid
-        boundary: [3], integer, optional
+
+        Parameters
+        ----------
+        boundary: (3, ) or int, optional
            boundary condition for all boundaries (or the same for all)
-        a: integer, optional
+        a: int, optional
            boundary condition for the first unit-cell vector direction
-        b: integer, optional
+        b: int, optional
            boundary condition for the second unit-cell vector direction
-        c: integer, optional
+        c: int, optional
            boundary condition for the third unit-cell vector direction
         """
         if not boundary is None:
@@ -220,7 +219,8 @@ class Grid(SuperCellChild):
 
     @property
     def dvol(self):
-        """ Returns the delta-volume """
+        """ Volume of the grids voxel elements
+        """
         return self.sc.vol / self.size
 
     def cross_section(self, idx, axis):
@@ -383,14 +383,14 @@ class Grid(SuperCellChild):
         return self.sub(ret_idx, axis)
 
     def index(self, coord, axis=None):
-        """ Returns the index along axis ``axis`` where ``coord`` exists
+        """ Returns the index along axis `axis` where `coord` exists
 
         Parameters
         ----------
-        coord : array_like / float
-           the coordinate of the axis
+        coord : array_like or float
+            the coordinate of the axis
         axis : int
-           the axis direction of the index
+            the axis direction of the index
         """
 
         # if the axis is none, we do this for all axes

@@ -1,7 +1,3 @@
-"""
-Sile object for reading/writing a file with tabular data
-"""
-
 from __future__ import print_function
 
 import numpy as np
@@ -13,7 +9,10 @@ __all__ = ['TableSile']
 
 
 class TableSile(Sile):
-    """ Table file object """
+    """ ASCII tabular formatted data
+
+    Intrinsically this uses the `numpy.savetxt` routine to store the content.
+    """
 
     def _setup(self, *args, **kwargs):
         """ Setup the `TableSile` after initialization """

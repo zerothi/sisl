@@ -1,6 +1,3 @@
-"""
-Helper functions for returning special geometries often encountered
-"""
 from __future__ import print_function, division
 
 import numpy as np
@@ -11,8 +8,14 @@ __all__ = ['diamond']
 
 
 def diamond(alat=3.57, atom=None):
-    """
-    Returns a geometry with the diamond unit-cell (2 atoms)
+    """ Diamond lattice with 2 atoms in the unitcell
+
+    Parameters
+    ----------
+    alat : float
+        the lattice constant for the diamond
+    atom : Atom, optional
+        atom in the lattice, may be one or two atoms. Default is Carbon
     """
     dist = alat * 3. ** .5 / 4
     if atom is None:

@@ -1,6 +1,3 @@
-"""
-Sile object for reading/writing SIESTA Grid files
-"""
 from __future__ import print_function
 
 import numpy as np
@@ -19,10 +16,10 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class gridncSileSiesta(SileCDFSiesta):
-    """ SIESTA Grid file object """
+    """ Siesta Grid file object """
 
     def read_supercell(self):
-        """ Returns a SuperCell object from a SIESTA.grid.nc file
+        """ Returns a SuperCell object from a Siesta.grid.nc file
         """
         cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
@@ -32,9 +29,9 @@ class gridncSileSiesta(SileCDFSiesta):
         return SuperCell(cell)
 
     def read_grid(self, name='gridfunc', idx=0, *args, **kwargs):
-        """ Reads a grid in the current SIESTA.grid.nc file
+        """ Reads a grid in the current Siesta.grid.nc file
 
-        Enables the reading and processing of the grids created by SIESTA
+        Enables the reading and processing of the grids created by Siesta
         """
         # Swap as we swap back in the end
         sc = self.read_supercell().swapaxes(0, 2)
@@ -49,7 +46,7 @@ class gridncSileSiesta(SileCDFSiesta):
         else:
             v = self._variable(name)
 
-        # Create the grid, SIESTA uses periodic, always
+        # Create the grid, Siesta uses periodic, always
         grid = Grid([nz, ny, nx], bc=Grid.Periodic, sc=sc,
                     dtype=v.dtype)
 

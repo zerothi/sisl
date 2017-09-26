@@ -1,28 +1,29 @@
-r""" Implementation of class to determine spin configurations and spin components.
-
-The basic class ``Spin`` implements a generic method to determine a spin configuration.
-
-Its usage can be summarized in these few examples:
-
->>> Spin(1) == Spin('non-polarized') == Spin('unpolarized') == Spin('un-polarized')
->>> Spin(2) == Spin('polarized') == Spin('p')
->>> Spin(2, dtype=np.complex128) == Spin('non-colinear') == Spin('nc') == Spin(4)
->>> Spin(4, dtype=np.complex128) == Spin('spin-orbit') == Spin('so') == Spin(8)
-
-Note that a data-type may be associated with a spin-object. This is not to say
-that the data-type is used in the configuration, but merely that it helps
-any sub-classed or classes who use the spin-object to determine the
-usage of the different spin-components.
-"""
 from __future__ import print_function, division
 
 from numbers import Integral
 
 import numpy as np
 
+__all__ = ['Spin']
+
 
 class Spin(object):
-    """ Implementation of the spin configuration space """
+    r""" Spin class to determine configurations and spin components.
+
+    The basic class ``Spin`` implements a generic method to determine a spin configuration.
+
+    Its usage can be summarized in these few examples:
+
+    >>> Spin(1) == Spin('non-polarized') == Spin('unpolarized') == Spin('un-polarized')
+    >>> Spin(2) == Spin('polarized') == Spin('p')
+    >>> Spin(2, dtype=np.complex128) == Spin('non-colinear') == Spin('nc') == Spin(4)
+    >>> Spin(4, dtype=np.complex128) == Spin('spin-orbit') == Spin('so') == Spin(8)
+
+    Note that a data-type may be associated with a spin-object. This is not to say
+    that the data-type is used in the configuration, but merely that it helps
+    any sub-classed or classes who use the spin-object to determine the
+    usage of the different spin-components.
+    """
 
     UNPOLARIZED = 0
     POLARIZED = 1

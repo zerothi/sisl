@@ -1,8 +1,3 @@
-"""
-Generic utility to create commonly used ArgumentParser
-options etc.
-"""
-
 from sisl.utils.ranges import strmap, strseq
 
 __all__ = ['argv_negative_fix', 'default_namespace', 'ensure_namespace']

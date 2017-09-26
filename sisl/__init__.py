@@ -1,6 +1,45 @@
-""" sisl package
+"""
+==================
+sisl (:mod:`sisl`)
+==================
 
-Geometry and tight-binding setups using pure python.
+.. module:: sisl
+
+sisl is an electronic structure package which may interact with tight-binding
+and DFT matrices alike.
+
+Below a set of classes that are the basis of *everything* in sisl is present.
+
+Generic classes
+===============
+
+.. autosummary::
+   :toctree:
+
+   PeriodicTable
+   Atom
+   Atoms
+   Geometry
+   SuperCell
+   Grid
+
+Below are a group of advanced classes rarely needed. 
+A lot of the sub-classes extend these classes, or use them
+intrinsically. However, they are not necessarily intended
+for users use.
+
+Advanced classes
+================
+
+.. autosummary::
+   :toctree:
+
+   Quaternion
+   SparseCSR
+   SparseAtom
+   SparseOrbital
+   Selector
+
 """
 
 # Import version string and the major, minor, micro as well
@@ -46,7 +85,9 @@ from .physics import *
 #  sisl.get_sile
 # This will reduce the cluttering of the separate entities
 # that sisl is made of.
-from .io.sile import *
+from .io.sile import (add_sile, get_sile_class, get_sile,
+                      get_siles, SileError,
+                      BaseSile, Sile, SileCDF, SileBin)
 import sisl.io as io
 
 # Import the default geom structure
@@ -54,3 +95,7 @@ import sisl.io as io
 # import sisl
 # sisl.geom.graphene
 from . import geom
+
+# Make these things publicly available
+__all__ = [s for s in dir() if not s.startswith('_')]
+__all__ += ['__{}__'.format(r) for r in ['version', 'major', 'minor', 'micro']]

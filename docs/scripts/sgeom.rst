@@ -31,7 +31,7 @@ file formats
 		
    sgeom <in> <out> [<out2>] [[<out3>] ...]
 
-Hence to convert from an **fdf** SIESTA input file to an **xyz** file
+Hence to convert from an **fdf** Siesta input file to an **xyz** file
 for plotting in a GUI program one can do this:
 
 ::
@@ -54,11 +54,11 @@ The currently available formats are:
     section (2nd line). Hence if the file was written with sisl you retain
     the cell information.
   * **gout**, reads geometries from GULP output
-  * **nc**, reads/writes NetCDF4 files created by SIESTA
+  * **nc**, reads/writes NetCDF4 files created by Siesta
   * **TBT.nc**/**PHT.nc**, reads NetCDF4 files created by TBtrans/PHtrans
   * **tb**, intrinsic file format for geometry/tight-binding models
-  * **fdf**, SIESTA native format
-  * **XV**, SIESTA coordinate format with velocities
+  * **fdf**, Siesta native format
+  * **XV**, Siesta coordinate format with velocities
   * **POSCAR**/**CONTCAR**, VASP coordinate format, does *not* contain species, i.e. returns Hydrogen geometry.
   * **ASCII**, BigDFT coordinate format
   * **win**, Wannier90 input file

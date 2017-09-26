@@ -1,9 +1,3 @@
-"""
-A generic sparse matrix which is based on a hosting `Geometry`.
-
-The sparse matrix can in this case represent _any_ data and should be
-sub-classed for specific uses.
-"""
 from __future__ import print_function, division
 
 import warnings
@@ -149,7 +143,7 @@ class _SparseGeometry(object):
     def edges(self, atom, exclude=None):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
-        The returned edges are unique and sorted (see ``numpy.unique``) and are returned
+        The returned edges are unique and sorted (see `numpy.unique`) and are returned
         in supercell indices (i.e. ``0 <= edge < self.geom.na_s``).
 
         Parameters
@@ -183,10 +177,11 @@ class _SparseGeometry(object):
             duplicates may exist if the parent object has duplicates. The default
             depends on what the calling object is and the value of `what`.
             There are two cases:
-              - defaults to ``False`` for
+
+             - defaults to ``False`` for
                 ``isinstance(self, SparseAtom) and what == 'atom'``, or
                 ``isinstance(self, SparseOrbital) and what == 'orbital'``.
-              - defaults to ``True`` for
+             - defaults to ``True`` for
                 ``isinstance(self, SparseAtom) and what != 'atom'``, or
                 ``isinstance(self, SparseOrbital) and what != 'orbital'``.
 
@@ -1263,7 +1258,7 @@ class SparseOrbital(_SparseGeometry):
     def edges(self, atom=None, exclude=None, orbital=None):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
-        The returned edges are unique and sorted (see ``numpy.unique``) and are returned
+        The returned edges are unique and sorted (see `numpy.unique`) and are returned
         in supercell indices (i.e. ``0 <= edge < self.geom.no_s``).
 
         Parameters

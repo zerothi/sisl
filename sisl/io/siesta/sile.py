@@ -1,7 +1,3 @@
-"""
-Define a common SIESTA Sile
-"""
-
 from ..sile import Sile, SileCDF, SileBin
 
 __all__ = ['SileSiesta', 'SileCDFSiesta', 'SileBinSiesta']

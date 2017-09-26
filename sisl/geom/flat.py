@@ -1,6 +1,3 @@
-"""
-Helper functions for returning special geometries often encountered
-"""
 from __future__ import print_function, division
 
 import numpy as np
@@ -11,8 +8,22 @@ __all__ = ['honeycomb', 'graphene']
 
 
 def honeycomb(bond, atom, orthogonal=False):
-    """
-    Returns a honeycomb geometry with the graphene unit-cell (2 atoms)
+    """ Honeycomb lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
+
+    This enables creating BN lattices with ease, or graphene lattices.
+
+    Parameters
+    ----------
+    bond : float
+        bond length between atoms (*not* lattice constant)
+    atom : Atom
+        the atom (or atoms) that the honeycomb lattice consists of
+    orthogonal : bool, optional
+        if True returns an orthogonal lattice
+
+    See Also
+    --------
+    graphene: the equivalent of this, but with default of Carbon atoms
     """
     sq3h = 3.**.5 * 0.5
     if orthogonal:
@@ -35,8 +46,21 @@ def honeycomb(bond, atom, orthogonal=False):
 
 
 def graphene(bond=1.42, atom=None, orthogonal=False):
-    """
-    Returns a geometry with the graphene unit-cell (2 atoms)
+    """ Graphene lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
+
+    Parameters
+    ----------
+    bond : float
+        bond length between atoms (*not* lattice constant)
+    atom : Atom, optional
+        the atom (or atoms) that the honeycomb lattice consists of.
+        Default to Carbon atom.
+    orthogonal : bool, optional
+        if True returns an orthogonal lattice
+
+    See Also
+    --------
+    honeycomb: the equivalent of this, but with non-default atoms
     """
     if atom is None:
         return honeycomb(bond, Atom(Z=6, R=bond * 1.01), orthogonal)

@@ -1,6 +1,3 @@
-"""
-Sile object for reading/writing OUT files
-"""
 from __future__ import print_function, division
 
 import numpy as np
@@ -31,9 +28,9 @@ def _ensure_species(species):
 
 
 class outSileSiesta(SileSiesta):
-    """ SIESTA output file object
+    """ Siesta output file object
 
-    This enables reading the output quantities from the SIESTA output.
+    This enables reading the output quantities from the Siesta output.
     """
 
     @Sile_fh_open
@@ -169,7 +166,7 @@ class outSileSiesta(SileSiesta):
 
     @Sile_fh_open
     def read_geometry(self, last=True, all=False):
-        """ Reads the geometry from the SIESTA output file
+        """ Reads the geometry from the Siesta output file
 
         Parameters
         ----------
@@ -214,7 +211,7 @@ class outSileSiesta(SileSiesta):
 
     @Sile_fh_open
     def read_force(self, last=True, all=False):
-        """ Reads the forces from the SIESTA output file
+        """ Reads the forces from the Siesta output file
 
         Parameters
         ----------
@@ -249,7 +246,7 @@ class outSileSiesta(SileSiesta):
 
     @Sile_fh_open
     def read_moment(self, orbital=False, quantity='S', last=True, all=False):
-        """ Reads the moments from the SIESTA output file
+        """ Reads the moments from the Siesta output file
         These will only be present in case of spin-orbit coupling.
 
         Parameters
@@ -328,7 +325,7 @@ class outSileSiesta(SileSiesta):
         return moments
 
     def read_data(self, *args, **kwargs):
-        """ Read specific content in the SIESTA out file
+        """ Read specific content in the Siesta out file
 
         The currently implemented things are denoted in
         the parameters list.

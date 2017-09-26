@@ -1,17 +1,10 @@
-"""
-Implementation of different shapes
-
-This module implements a generic shape which may be sub-classed
-for other more distinct shapes such as, Spheres, Boxes, Polygons
-etc.
-"""
 import numpy as np
 
 __all__ = ['Shape']
 
 
 class Shape(object):
-    """ Baseclass for shapes.
+    """ Baseclass for shapes
 
     This class should always be sub-classed.
 
@@ -65,8 +58,8 @@ class Shape(object):
 
         An origo should *always* be the lowest left coordinate of the shape.
 
-        Note
-        ----
+        Notes
+        -----
         Not all shapes have an origo. For instance a sphere only have a center,
         but an origo cannot be defined.
         """

@@ -1,7 +1,3 @@
-"""
-Sile object for reading/writing SIESTA EIG files
-"""
-
 from __future__ import print_function
 
 import numpy as np
@@ -17,7 +13,7 @@ __all__ = ['eigSileSiesta']
 
 
 class eigSileSiesta(SileSiesta):
-    """ EIG SIESTA file object """
+    """ EIG Siesta file object """
 
     @Sile_fh_open
     def read_data(self):

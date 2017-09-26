@@ -1,11 +1,8 @@
-"""
-Dynamical matrix.
-"""
 from __future__ import print_function, division
 
 import numpy as np
 
-from .sparse_physics import SparseOrbitalBZ
+from .sparse import SparseOrbitalBZ
 
 __all__ = ['Hessian', 'DynamicalMatrix']
 
@@ -49,14 +46,14 @@ class Hessian(SparseOrbitalBZ):
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
-           The default data-type is '`numpy.complex128``
+           The default data-type is `numpy.complex128`
         gauge : {'R', 'r'}
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in ``numpy.ndarray`` (`'array'`) or ``numpy.matrix`` (`'dense'`).
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
         """
         pass
 

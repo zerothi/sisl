@@ -1,48 +1,3 @@
-r"""sisl file objects for interaction with the TBtrans code
-
-The TBtrans code is a tight-binding transport code implementing
-the widely used non-equilibrium Green function method.
-
-It is primarily implemented for the support of TranSiesta (DFT+NEGF)
-as a backend for calculating th transport for self-consistent DFT software.
-
-Here we show a variety of supplement files that allows the extracting, manipulation
-and creation of files supported in TBtrans.
-
-The basic file is the `tbtncSileSiesta` which is a file to extract information
-from a TBtrans output file (typically named: ``siesta.TBT.nc``).
-The following will interact with the TBtrans file:
-
->>> tbt = sisl.get_sile('siesta.TBT.nc')
->>> tbt.E # retrieve energies where physical quantities are calculated
->>> tbt.a_d # atomic indices where physical quantities are accessible
-
-Importantly one may retrieve quantities such as DOS, transmissions,
-transmission eigenvalues etc.
-
->>> tbt.transmission() # from electrode 0 -> 1 (default)
->>> tbt.transmission(0, 1) # from electrode 0 -> 1
->>> tbt.transmission(0, 2) # from electrode 0 -> 2
->>> tbt.ADOS(0, E=1.) # k-average, total spectral DOS from 0th electrode
-
-
-The above is the most important use of this module while the following
-entries are enabled:
-
-Data extraction files
----------------------
-- `tbtncSileSiesta` (electronic TBtrans output)
-- `tbtavncSileSiesta` (electronic k-averaged TBtrans output)
-- `phtncSileSiesta` (phononic PHtrans output)
-- `phtavncSileSiesta` (phononic k-averaged PHtrans output)
-
-Support files to complement TBtrans
------------------------------------
-- `deltancSileSiesta` adding :math:`\delta H` or :math:`\delta\Sigma` elements to a TBtrans calculation
-- `dHncSileSiesta` adding :math:`\delta H` elements to a TBtrans calculation
-  (this class is deprecated by `deltancSileSiesta` which is generic for :math:`\delta H` and :math:`\delta\Sigma`)
-
-"""
 from __future__ import print_function, division
 
 import warnings
@@ -64,8 +19,8 @@ from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
 # Import sile objects
-from .sile import SileCDFSiesta
-from ..sile import *
+from ..sile import add_sile
+from .sile import SileCDFTBtrans
 from sisl.utils import *
 import sisl._numpy_scipy as ns_
 
@@ -76,9 +31,10 @@ from sisl._help import _str
 from sisl._help import _range as range
 from sisl.units.siesta import unit_convert
 
-__all__ = ['tbtncSileSiesta', 'phtncSileSiesta']
-__all__ += ['tbtavncSileSiesta', 'phtavncSileSiesta']
-__all__ += ['deltancSileSiesta', 'dHncSileSiesta']
+
+__all__ = ['tbtncSileTBtrans', 'phtncSileTBtrans']
+__all__ += ['tbtavncSileTBtrans', 'phtavncSileTBtrans']
+__all__ += ['deltancSileTBtrans', 'dHncSileTBtrans']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
@@ -86,7 +42,7 @@ Ry2K = unit_convert('Ry', 'K')
 eV2Ry = unit_convert('eV', 'Ry')
 
 
-class tbtncSileSiesta(SileCDFSiesta):
+class tbtncSileTBtrans(SileCDFTBtrans):
     r""" TBtrans output file object
 
     Implementation of the TBtrans output ``*.TBT.nc`` files which contains
@@ -122,7 +78,7 @@ class tbtncSileSiesta(SileCDFSiesta):
         This command will overwrite any previous file with the ending TBT.AV.nc and thus
         will not take notice of any older files.
         """
-        tbtavncSileSiesta(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(tbtav=self)
+        tbtavncSileTBtrans(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(tbtav=self)
 
     def _elec(self, elec):
         """ Converts a string or integer to the corresponding electrode name
@@ -1968,29 +1924,29 @@ class tbtncSileSiesta(SileCDFSiesta):
         return p, namespace
 
 
-add_sile('TBT.nc', tbtncSileSiesta)
+add_sile('TBT.nc', tbtncSileTBtrans)
 # Add spin-dependent files
-add_sile('TBT_DN.nc', tbtncSileSiesta)
-add_sile('TBT_UP.nc', tbtncSileSiesta)
+add_sile('TBT_DN.nc', tbtncSileTBtrans)
+add_sile('TBT_UP.nc', tbtncSileTBtrans)
 
 
-class phtncSileSiesta(tbtncSileSiesta):
+class phtncSileTBtrans(tbtncSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
 
-add_sile('PHT.nc', phtncSileSiesta)
+add_sile('PHT.nc', phtncSileTBtrans)
 
 
 # The average files
 # These are essentially equivalent to the TBT.nc files
 # with the exception that the k-points have been averaged out.
-class tbtavncSileSiesta(tbtncSileSiesta):
+class tbtavncSileTBtrans(tbtncSileTBtrans):
     """ TBtrans average file object
 
     This `Sile` implements the writing of the TBtrans output ``*.TBT.AV.nc`` sile which contains
     the k-averaged quantities related to the NEGF code TBtrans.
 
-    See `tbtncSileSiesta` for details as this object is essentially a copy of it.
+    See `tbtncSileTBtrans` for details as this object is essentially a copy of it.
     """
     _trans_type = 'TBT'
     _k_avg = True
@@ -2013,7 +1969,7 @@ class tbtavncSileSiesta(tbtncSileSiesta):
 
         Parameters
         ----------
-        from : tbtncSileSiesta
+        from : tbtncSileTBtrans
           the TBT.nc file object that has the k-sampled quantities.
         """
 
@@ -2022,10 +1978,10 @@ class tbtavncSileSiesta(tbtncSileSiesta):
         elif len(args) > 0:
             tbt = args[0]
         else:
-            raise ValueError("tbtncSileSiesta has not been passed to write the averaged file")
+            raise ValueError("tbtncSileTBtrans has not been passed to write the averaged file")
 
-        if not isinstance(tbt, tbtncSileSiesta):
-            raise ValueError('first argument of tbtavncSileSiesta.write *must* be a tbtncSileSiesta object')
+        if not isinstance(tbt, tbtncSileTBtrans):
+            raise ValueError('first argument of tbtavncSileTBtrans.write *must* be a tbtncSileTBtrans object')
 
         # Notify if the object is not in write mode.
         sile_raise_write(self)
@@ -2129,21 +2085,21 @@ class tbtavncSileSiesta(tbtncSileSiesta):
         self.sync()
 
 
-add_sile('TBT.AV.nc', tbtavncSileSiesta)
+add_sile('TBT.AV.nc', tbtavncSileTBtrans)
 # Add spin-dependent files
-add_sile('TBT_DN.AV.nc', tbtavncSileSiesta)
-add_sile('TBT_UP.AV.nc', tbtavncSileSiesta)
+add_sile('TBT_DN.AV.nc', tbtavncSileTBtrans)
+add_sile('TBT_UP.AV.nc', tbtavncSileTBtrans)
 
 
-class phtavncSileSiesta(tbtavncSileSiesta):
+class phtavncSileTBtrans(tbtavncSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
 
-add_sile('PHT.AV.nc', phtavncSileSiesta)
+add_sile('PHT.AV.nc', phtavncSileTBtrans)
 
 
 # The delta nc file
-class deltancSileSiesta(SileCDFSiesta):
+class deltancSileTBtrans(SileCDFTBtrans):
     r""" TBtrans delta file object
 
     The :math:`\delta` file object is an extension enabled in `TBtrans`_ which
@@ -2550,12 +2506,12 @@ class deltancSileSiesta(SileCDFSiesta):
         """ Reads a delta model from the file """
         return self._read_class(SparseOrbitalBZSpin, **kwargs)
 
-add_sile('delta.nc', deltancSileSiesta)
+add_sile('delta.nc', deltancSileTBtrans)
 
 
 # The deltaH nc file
-class dHncSileSiesta(deltancSileSiesta):
-    """ TBtrans delta-H file object """
+class dHncSileTBtrans(deltancSileTBtrans):
+    """ TBtrans delta-H file object (deprecated by `deltancSileTBtrans`) """
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
@@ -2747,4 +2703,4 @@ class dHncSileSiesta(deltancSileSiesta):
 
         return C
 
-add_sile('dH.nc', dHncSileSiesta)
+add_sile('dH.nc', dHncSileTBtrans)

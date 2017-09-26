@@ -6,7 +6,7 @@
 =======
 
 The `sdata` executable is a tool for reading and performing actions
-on *all* `sisl` file formats applicable (all `Sile` 's).
+on *all* `sisl` file formats applicable.
 
 Essentially it performs operations dependent on the file that is being
 processed. If for instance the file contains any kind of `Geometry`
@@ -25,20 +25,18 @@ is not completely documented.
 
 
 
-Siles with `Geometry`
------------------------
+Files with `Geometry`
+---------------------
 
-If the `Sile` specified contains a `Geometry` one gets *all*
-the options like `sgeom`. I.e. `sdata` is a generic form of the
-`sgeom` script.
+If a file contains a `Geometry` one gets *all* the options like
+`sgeom`. I.e. `sdata` is a generic form of the `sgeom` script.
 
 
-Siles with `Grid`
--------------------
+Files with `Grid`
+-----------------
 
-If the `Sile` specified contains a `Grid` one gets *all*
-the options like `sgrid`. I.e. `sdata` is a generic form of the
-`sgrid` script.
+If the file contains a `Grid` one gets *all* the options like
+`sgrid`. I.e. `sdata` is a generic form of the `sgrid` script.
 
 
 .. highlight:: python

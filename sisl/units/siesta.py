@@ -2,8 +2,8 @@
 Library for converting units and creating numpy arrays
 with automatic unit conversion.
 
-The conversion factors are taken directly from SIESTA
-which means these unit conversions should be used for SIESTA "stuff".
+The conversion factors are taken directly from Siesta
+which means these unit conversions should be used for Siesta "stuff".
 """
 from __future__ import print_function, division
 
