@@ -41,8 +41,8 @@ class TestQuaternion(object):
             assert getattr(setup, 'q'+c).degree == 90
 
     def test_radians1(self, setup):
-        rx = setup.qx.radians
-        ry = setup.qy.radians
+        rx = setup.qx.radian
+        ry = setup.qy.radian
         assert rx == ry
 
     def test_op1(self, setup):

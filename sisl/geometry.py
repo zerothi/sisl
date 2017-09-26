@@ -1079,7 +1079,7 @@ class Geometry(SuperCellChild):
 
     __rmul__ = __mul__
 
-    def angle(self, atom, dir=(1., 0, 0), ref=None, radians=False):
+    def angle(self, atom, dir=(1., 0, 0), ref=None, rad=False):
         r""" The angle between atom `atom` and the direction `dir`, with possibility of a reference coordinate `ref`
 
         The calculated angle can be written as this
@@ -1099,7 +1099,7 @@ class Geometry(SuperCellChild):
            the direction from which the angle is calculated from, default to ``x``
         ref : int or coordinate, optional
            the reference point from which the vectors are drawn, default to origo
-        radians : bool, optional
+        rad : bool, optional
            whether the returned value is in radians
         """
         xi = self.axyz(ensure_array(atom))
@@ -1107,8 +1107,10 @@ class Geometry(SuperCellChild):
             dir = self.cell[direction(dir), :]
         else:
             dir = ensure_array(dir, np.float64)
-        # Normalize
+        # Normalize so we don't have to have this in the
+        # below formula
         dir /= (dir ** 2).sum() ** .5
+        # Broad-casting
         dir.shape = (1, -1)
 
         if ref is None:
@@ -1119,38 +1121,38 @@ class Geometry(SuperCellChild):
             xi -= ensure_array(ref, np.float64)[None, :]
         nx = (xi ** 2).sum(axis=1) ** .5
         ang = np.where(nx > 1e-6, np.arccos((xi * dir).sum(axis=1) / nx), 0.)
-        if radians:
+        if rad:
             return ang
         return np.degrees(ang)
 
-    def rotatea(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
+    def rotatea(self, angle, origo=None, atom=None, only='abc+xyz', rad=False):
         """ Rotate around first lattice vector
 
         See Also
         --------
         rotate : generic function of this, this routine calls `rotate` with `v = self.cell[0, :]`
         """
-        return self.rotate(angle, self.cell[0, :], origo, atom, only, radians)
+        return self.rotate(angle, self.cell[0, :], origo, atom, only, rad)
 
-    def rotateb(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
+    def rotateb(self, angle, origo=None, atom=None, only='abc+xyz', rad=False):
         """ Rotate around second lattice vector
 
         See Also
         --------
         rotate : generic function of this, this routine calls `rotate` with `v = self.cell[1, :]`
         """
-        return self.rotate(angle, self.cell[1, :], origo, atom, only, radians)
+        return self.rotate(angle, self.cell[1, :], origo, atom, only, rad)
 
-    def rotatec(self, angle, origo=None, atom=None, only='abc+xyz', radians=False):
+    def rotatec(self, angle, origo=None, atom=None, only='abc+xyz', rad=False):
         """ Rotate around third lattice vector
 
         See Also
         --------
         rotate : generic function of this, this routine calls `rotate` with `v = self.cell[2, :]`
         """
-        return self.rotate(angle, self.cell[2, :], origo, atom, only, radians)
+        return self.rotate(angle, self.cell[2, :], origo, atom, only, rad)
 
-    def rotate(self, angle, v, origo=None, atom=None, only='abc+xyz', radians=False):
+    def rotate(self, angle, v, origo=None, atom=None, only='abc+xyz', rad=False):
         """ Rotate geometry around vector and return a new geometry
 
         Per default will the entire geometry be rotated, such that everything
@@ -1200,12 +1202,12 @@ class Geometry(SuperCellChild):
         vn /= np.sum(vn ** 2) ** .5
 
         # Prepare quaternion...
-        q = Quaternion(angle, vn, radians=radians)
+        q = Quaternion(angle, vn, rad=rad)
         q /= q.norm()
 
         # Rotate by direct call
         if 'abc' in only:
-            sc = self.sc.rotate(angle, vn, radians=radians, only=only)
+            sc = self.sc.rotate(angle, vn, rad=rad, only=only)
         else:
             sc = self.sc.copy()
 
@@ -2814,7 +2816,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, values, option_string=None):
                 # Convert value[0] to the direction
                 # The rotate function expects degree
-                ang = angle(values[0], radians=False, in_radians=False)
+                ang = angle(values[0], rad=False, in_rad=False)
                 d = direction(values[1])
                 if d == 0:
                     v = [1, 0, 0]
@@ -2832,7 +2834,7 @@ class Geometry(SuperCellChild):
 
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
-                    ang = angle(value, radians=False, in_radians=False)
+                    ang = angle(value, rad=False, in_rad=False)
                     ns._geometry = ns._geometry.rotate(ang, [1, 0, 0])
             p.add_argument(*opts('--rotate-x', '-Rx'), metavar='ANGLE',
                            action=RotationX,
@@ -2842,7 +2844,7 @@ class Geometry(SuperCellChild):
 
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
-                    ang = angle(value, radians=False, in_radians=False)
+                    ang = angle(value, rad=False, in_rad=False)
                     ns._geometry = ns._geometry.rotate(ang, [0, 1, 0])
             p.add_argument(*opts('--rotate-y', '-Ry'), metavar='ANGLE',
                            action=RotationY,
@@ -2852,7 +2854,7 @@ class Geometry(SuperCellChild):
 
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
-                    ang = angle(value, radians=False, in_radians=False)
+                    ang = angle(value, rad=False, in_rad=False)
                     ns._geometry = ns._geometry.rotate(ang, [0, 0, 1])
             p.add_argument(*opts('--rotate-z', '-Rz'), metavar='ANGLE',
                            action=RotationZ,

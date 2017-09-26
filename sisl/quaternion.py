@@ -11,12 +11,12 @@ class Quaternion(object):
     Quaternion object to enable easy rotational quantities.
     """
 
-    def __init__(self, angle=0., v=None, radians=False):
+    def __init__(self, angle=0., v=None, rad=False):
         """ Create quaternion object with angle and vector """
-        if not radians:
-            half = angle / 180 * m.pi / 2
-        else:
+        if rad:
             half = angle / 2
+        else:
+            half = angle / 180 * m.pi / 2
         self._v = np.empty([4], np.float64)
         self._v[0] = m.cos(half)
         if v is None:
@@ -45,11 +45,11 @@ class Quaternion(object):
         return m.acos(self._v[0]) * 2. / m.pi * 180.
 
     @property
-    def radians(self):
+    def radian(self):
         """ Returns the angle associated with this quaternion (in radians)"""
         return m.acos(self._v[0]) * 2.
 
-    angle = radians
+    angle = radian
 
     def rotate(self, v):
         """ Rotates 3-dimensional vector ``v`` with the associated quaternion """

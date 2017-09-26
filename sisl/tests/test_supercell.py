@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 import pytest
+from pytest import approx
 
 import math as m
 import numpy as np
@@ -94,7 +95,7 @@ class TestSuperCell(object):
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.sc.cell)
 
-        rot = setup.sc.rotate(m.pi, [0, 0, 1], radians=True)
+        rot = setup.sc.rotate(m.pi, [0, 0, 1], rad=True)
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.sc.cell)
 
@@ -107,7 +108,7 @@ class TestSuperCell(object):
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.sc.cell)
 
-        rot = setup.sc.rotatec(m.pi, radians=True)
+        rot = setup.sc.rotatec(m.pi, rad=True)
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.sc.cell)
 
@@ -120,7 +121,7 @@ class TestSuperCell(object):
         assert np.allclose(rot.cell[0, :], setup.sc.cell[0, :])
         assert np.allclose(-rot.cell[2, 2], setup.sc.cell[2, 2])
 
-        rot = setup.sc.rotateb(m.pi, radians=True)
+        rot = setup.sc.rotateb(m.pi, rad=True)
         assert np.allclose(rot.cell[1, :], setup.sc.cell[1, :])
         assert np.allclose(-rot.cell[2, 2], setup.sc.cell[2, 2])
 
@@ -288,6 +289,25 @@ class TestSuperCell(object):
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)
         assert g.sc.angle(0, 1) == 90
+
+    @pytest.mark.only
+    def test_angle2(self, setup):
+        sc = SuperCell([1, 1, 1])
+        assert sc.angle(0, 1) == 90
+        assert sc.angle(0, 2) == 90
+        assert sc.angle(1, 2) == 90
+        sc = SuperCell([[1, 1, 0],
+                        [1, -1, 0],
+                        [0, 0, 2]])
+        assert sc.angle(0, 1) == 90
+        assert sc.angle(0, 2) == 90
+        assert sc.angle(1, 2) == 90
+        sc = SuperCell([[3, 4, 0],
+                        [4, 3, 0],
+                        [0, 0, 2]])
+        assert sc.angle(0, 1, rad=True) == approx(0.28379, abs=1e-4)
+        assert sc.angle(0, 2) == 90
+        assert sc.angle(1, 2) == 90
 
     @pytest.mark.xfail(raises=ValueError)
     def test_set_nsc1(self, setup):

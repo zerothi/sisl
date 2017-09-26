@@ -297,16 +297,16 @@ class SuperCell(object):
         rcell[2, :] = rcell[2, :] / dot(rcell[2, :], cell[2, :])
         return rcell * 2. * np.pi
 
-    def rotatea(self, angle, only='abc', radians=False):
-        return self.rotate(angle, self.cell[0, :], only=only, radians=radians)
+    def rotatea(self, angle, only='abc', rad=False):
+        return self.rotate(angle, self.cell[0, :], only=only, rad=rad)
 
-    def rotateb(self, angle, only='abc', radians=False):
-        return self.rotate(angle, self.cell[1, :], only=only, radians=radians)
+    def rotateb(self, angle, only='abc', rad=False):
+        return self.rotate(angle, self.cell[1, :], only=only, rad=rad)
 
-    def rotatec(self, angle, only='abc', radians=False):
-        return self.rotate(angle, self.cell[2, :], only=only, radians=radians)
+    def rotatec(self, angle, only='abc', rad=False):
+        return self.rotate(angle, self.cell[2, :], only=only, rad=rad)
 
-    def rotate(self, angle, v, only='abc', radians=False):
+    def rotate(self, angle, v, only='abc', rad=False):
         """ Rotates the supercell, in-place by the angle around the vector
 
         One can control which cell vectors are rotated by designating them
@@ -319,14 +319,14 @@ class SuperCell(object):
         v     : array_like [3]
              the vector around the rotation is going to happen
              v = [1,0,0] will rotate in the ``yz`` plane
-        radians : bool, optional
+        rad : bool, optional
              Whether the angle is in radians (True) or in degrees (False)
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
         """
         vn = np.copy(np.asarray(v, dtype=np.float64)[:])
         vn /= np.sum(vn ** 2) ** .5
-        q = Quaternion(angle, vn, radians=radians)
+        q = Quaternion(angle, vn, rad=rad)
         q /= q.norm()  # normalize the quaternion
         cell = np.copy(self.cell)
         if 'a' in only:
@@ -578,7 +578,7 @@ class SuperCell(object):
                 return False
         return True
 
-    def angle(self, i, j, radians=False):
+    def angle(self, i, j, rad=False):
         """ The angle between two of the cell vectors
 
         Parameters
@@ -587,12 +587,12 @@ class SuperCell(object):
            the first cell vector
         j : int
            the second cell vector
-        radians : bool, optional
+        rad : bool, optional
            whether the returned value is in radians
         """
-        n = np.sum(self.cell[[i, j], :]**2) ** .5
-        ang = math.acos(np.sum(self.cell[i, :] * self.cell[j, :]) / n)
-        if radians:
+        n = np.sum(self.cell[[i, j], :]**2, axis=1) ** .5
+        ang = math.acos(np.dot(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
+        if rad:
             return ang
         return math.degrees(ang)
 

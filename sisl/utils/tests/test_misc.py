@@ -39,7 +39,7 @@ class TestMisc(object):
         assert pytest.approx(angle('3pi/4')) == 3*m.pi/4
 
         assert pytest.approx(angle('a2*180')) == 2*m.pi
-        assert pytest.approx(angle('2*180', in_radians=False)) == 2*m.pi
+        assert pytest.approx(angle('2*180', in_rad=False)) == 2*m.pi
         assert pytest.approx(angle('a2*180r')) == 2*m.pi
 
     def test_angle_a2a(self):

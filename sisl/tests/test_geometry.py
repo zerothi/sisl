@@ -291,7 +291,7 @@ class TestGeometry(object):
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], radians=True)
+        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True)
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
@@ -307,7 +307,7 @@ class TestGeometry(object):
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], radians=True, only='abc')
+        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, only='abc')
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
@@ -322,7 +322,7 @@ class TestGeometry(object):
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], radians=True, only='xyz')
+        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, only='xyz')
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 

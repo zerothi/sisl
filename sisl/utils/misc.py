@@ -176,7 +176,7 @@ def direction(d):
 
 
 # Transform an input to an angle
-def angle(s, radians=True, in_radians=True):
+def angle(s, rad=True, in_rad=True):
     """ Convert the input string to an angle, either radians or degrees.
 
     Parameters
@@ -189,10 +189,10 @@ def angle(s, radians=True, in_radians=True):
 
        `s` may be any mathematical equation which can be
        intercepted through ``eval``.
-    radians : bool
+    rad : bool, optional
        Whether the returned angle is in radians.
        Note than an 'r' at the end of `s` has precedence.
-    in_radians : bool
+    in_rad : bool, optional
        Whether the calculated angle is in radians.
        Note than an 'r' at the beginning of `s` has precedence.
 
@@ -204,13 +204,13 @@ def angle(s, radians=True, in_radians=True):
     s = s.lower()
 
     if s.startswith('r'):
-        in_radians = True
+        in_rad = True
     elif s.startswith('a'):
-        in_radians = False
+        in_rad = False
     if s.endswith('r'):
-        radians = True
+        rad = True
     elif s.endswith('a'):
-        radians = False
+        rad = False
 
     # Remove all r/a's and remove white-space
     s = s.replace('r', '').replace('a', '').replace(' ', '')
@@ -234,7 +234,7 @@ def angle(s, radians=True, in_radians=True):
                     spi[i] = '*' + spi[i]
 
         # Now insert Pi dependent on the input type
-        if in_radians:
+        if in_rad:
             Pi = pi
         else:
             Pi = 180.
@@ -245,9 +245,9 @@ def angle(s, radians=True, in_radians=True):
     # to the correct numerical values and we calculate
     # the expression
     ra = math_eval(s)
-    if radians and not in_radians:
+    if rad and not in_rad:
         return ra / 180. * pi
-    if not radians and in_radians:
+    if not rad and in_rad:
         return ra / pi * 180.
 
     # Both radians and in_radians are equivalent
