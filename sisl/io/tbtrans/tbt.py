@@ -19,7 +19,7 @@ from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
 # Import sile objects
-from ..sile import add_sile
+from ..sile import add_sile, sile_raise_write
 from .sile import SileCDFTBtrans
 from sisl.utils import *
 import sisl._numpy_scipy as ns_
