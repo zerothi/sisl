@@ -54,6 +54,7 @@ after_success:
 addons:
   apt:
     packages: &common_packages
+      - gcc
       - gfortran
 #      - libhdf5-serial-dev 
 #      - libnetcdf-dev
