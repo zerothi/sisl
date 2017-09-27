@@ -1432,7 +1432,7 @@ class Atoms(object):
         """ Return the `Atoms` representation """
         s = self.__class__.__name__ + '{{species: {0},\n'.format(len(self._atom))
         for a, idx in self:
-            s += '  ({0}) == {1}, \n'.format(len(idx), a)
+            s += '  {1}: {0}, \n'.format(len(idx), a)
         return s + '}\n'
 
     def __len__(self):

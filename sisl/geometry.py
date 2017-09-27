@@ -66,7 +66,7 @@ class Geometry(SuperCellChild):
        >>> print(square)
        Geometry{na: 1, no: 1,
         Atoms{species: 1,
-          (1) == Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000},
+          Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000}: 1,
         },
         nsc: [3, 3, 1], maxR: -1.0
        }
