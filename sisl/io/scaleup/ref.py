@@ -7,7 +7,7 @@ from ..sile import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl._help import ensure_array
-from sisl.units import unit_convert
+from sisl.unit import unit_convert
 
 import numpy as np
 

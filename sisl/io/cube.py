@@ -7,7 +7,7 @@ from sisl.io.sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell, Grid
-from sisl.units import unit_convert
+from sisl.unit import unit_convert
 
 __all__ = ['CUBESile']
 

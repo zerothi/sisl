@@ -8,7 +8,7 @@ def configuration(parent_package='', top_path=None):
     config.add_subpackage('io')
     config.add_subpackage('physics')
     config.add_subpackage('shape')
-    config.add_subpackage('units')
+    config.add_subpackage('unit')
     config.add_subpackage('utils')
     config.make_config_py()  # installs __config__.py
     config.add_data_dir('tests')

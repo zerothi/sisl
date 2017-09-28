@@ -16,8 +16,7 @@ from sisl import Geometry, Atom, SuperCell
 from sisl.utils.cmd import *
 from sisl.utils.misc import merge_instances, str_spec
 
-from sisl.units import unit_default, unit_group
-from sisl.units.siesta import unit_convert
+from sisl.unit.siesta import unit_convert, unit_default, unit_group
 
 __all__ = ['fdfSileSiesta']
 

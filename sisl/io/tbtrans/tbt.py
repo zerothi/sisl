@@ -29,7 +29,7 @@ from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl import SparseOrbitalBZSpin
 from sisl._help import _str
 from sisl._help import _range as range
-from sisl.units.siesta import unit_convert
+from sisl.unit.siesta import unit_convert
 
 
 __all__ = ['tbtncSileTBtrans', 'phtncSileTBtrans']

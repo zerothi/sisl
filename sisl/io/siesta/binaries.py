@@ -15,7 +15,7 @@ from .sile import SileBinSiesta
 # Import the geometry object
 import sisl._numpy_scipy as ns_
 from sisl import Geometry, Atom, SuperCell, Grid
-from sisl.units.siesta import unit_convert
+from sisl.unit.siesta import unit_convert
 from sisl.physics import Hamiltonian
 
 Ang2Bohr = unit_convert('Ang', 'Bohr')

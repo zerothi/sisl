@@ -13,7 +13,7 @@ from ..sile import *
 from sisl import Geometry, SuperCell
 from sisl.physics import Hamiltonian
 
-from sisl.units import unit_convert
+from sisl.unit import unit_convert
 
 __all__ = ['winSileWannier90']
 

@@ -7,9 +7,9 @@ which means these unit conversions should be used for Siesta "stuff".
 """
 from __future__ import print_function, division
 
-from sisl.units import unit_group as u_group
-from sisl.units import unit_convert as u_convert
-from sisl.units import unit_default as u_default
+from .base import unit_group as u_group
+from .base import unit_convert as u_convert
+from .base import unit_default as u_default
 
 __all__  = ['unit_group', 'unit_convert', 'unit_default']
 

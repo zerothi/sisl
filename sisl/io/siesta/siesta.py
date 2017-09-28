@@ -6,7 +6,7 @@ from ..sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell, Grid
-from sisl.units.siesta import unit_convert
+from sisl.unit.siesta import unit_convert
 from sisl.physics import DensityMatrix
 from sisl.physics import EnergyDensityMatrix
 from sisl.physics import Hamiltonian
@@ -193,7 +193,7 @@ class ncSileSiesta(SileCDFSiesta):
         v = g.variables[name]
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nz, ny, nx], bc=Grid.Periodic, dtype=v.dtype)
+        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, dtype=v.dtype)
 
         if len(v[:].shape) == 3:
             grid.grid = v[:, :, :]

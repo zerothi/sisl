@@ -58,9 +58,11 @@ from .selector import *
 from .plot import *
 
 # load the most commonly, and basic classes
-# The units contain the SI standard conversions using
+# The unit contain the SI standard conversions using
 # all digits (not program specific)
-from .units import *
+from .unit import unit_group, unit_convert, unit_default
+import sisl.unit as unit
+
 from .quaternion import *
 from .shape import *
 
@@ -89,6 +91,7 @@ from .io.sile import (add_sile, get_sile_class, get_sile,
                       get_siles, SileError,
                       BaseSile, Sile, SileCDF, SileBin)
 import sisl.io as io
+
 
 # Import the default geom structure
 # This enables:
