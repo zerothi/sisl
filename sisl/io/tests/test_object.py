@@ -298,7 +298,10 @@ class TestObject(object):
 
         f = mkstemp(dir=_C.d)[1]
         # Write
-        sile(f, mode='w').write_grid(G)
+        try:
+            sile(f, mode='w').write_grid(G)
+        except SileError:
+            sile(f, mode='wb').write_grid(G)
         # Read 1
         try:
             g = sile(f, mode='r').read_grid()

@@ -961,11 +961,21 @@ class SileError(IOError):
         return self.value + ' in ' + s
 
 
-def sile_raise_write(self):
-    if not ('w' in self._mode or 'a' in self._mode):
-        raise SileError('Writing to a read-only file not possible', self)
+def sile_raise_write(self, ok=('w', 'a')):
+    is_ok = True
+    for O in ok:
+        is_ok = is_ok or O in self._mode
+    if not is_ok:
+        raise SileError('Writing to file not possible allowed '
+                        'modes={0}, used mode={1}'.format(
+                            ok, self._mode), self)
 
 
-def sile_raise_read(self):
-    if not ('r' in self._mode or 'a' in self._mode):
-        raise SileError('Reading a write-only file not possible', self)
+def sile_raise_read(self, ok=('r', 'a')):
+    is_ok = True
+    for O in ok:
+        is_ok = is_ok or O in self._mode
+    if not is_ok:
+        raise SileError('Reading file not possible allowed '
+                        'modes={0}, used mode={1}'.format(
+                            ok, self._mode), self)

@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import sys
 import numpy as np
 
 # Import sile objects
@@ -10,6 +11,11 @@ from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.unit import unit_convert
 
 __all__ = ['CUBESile']
+
+if sys.version_info >= (3, 0):
+    _w = ['wb', 'ab']
+else:
+    _w = ['w', 'a']
 
 Ang2Bohr = unit_convert('Ang', 'Bohr')
 
@@ -55,7 +61,7 @@ class CUBESile(Sile):
     def write_grid(self, grid, fmt='%.5e', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
-        sile_raise_write(self)
+        sile_raise_write(self, _w)
 
         # Write the geometry
         self.write_geometry(grid.geom, size=grid.grid.shape, *args, **kwargs)
