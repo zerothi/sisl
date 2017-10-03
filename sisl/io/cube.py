@@ -74,9 +74,10 @@ class CUBESile(Sile):
         #     for z
         #       write...
         cast = np.vectorize((fmt + '\n').__mod__)
+        _fmt = (fmt + '\n') * grid.shape[2]
         for z in np.nditer(np.asarray(grid.grid, order='C'), flags=['external_loop', 'buffered'],
                            op_flags=[['readonly']], order='C', buffersize=grid.shape[2]):
-            self._write(cast(z))
+            self._write(_fmt % tuple(z))
 
         # Add a finishing line to ensure empty ending
         self._write('\n')
