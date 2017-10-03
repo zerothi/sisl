@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import sys
 import numpy as np
 
 # Import sile objects
@@ -12,16 +11,19 @@ from sisl.unit import unit_convert
 
 __all__ = ['CUBESile']
 
-if sys.version_info >= (3, 0):
-    _w = ['wb', 'ab']
-else:
-    _w = ['w', 'a']
-
 Ang2Bohr = unit_convert('Ang', 'Bohr')
 
 
 class CUBESile(Sile):
     """ CUBE file object """
+
+    def _open(self):
+        if self.file.endswith('gz'):
+            self.fh = gzip.open(self.file)
+        else:
+            # Default to buffer 1MB
+            self.fh = open(self.file, self._mode, buffering=1024**2)
+        self._line = 0
 
     @Sile_fh_open
     def write_geometry(self, geom, size=None,
@@ -61,22 +63,23 @@ class CUBESile(Sile):
     def write_grid(self, grid, fmt='%.5e', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
-        sile_raise_write(self, _w)
+        sile_raise_write(self)
 
         # Write the geometry
         self.write_geometry(grid.geom, size=grid.grid.shape, *args, **kwargs)
 
-        g_size = np.copy(grid.grid.shape)
-
-        grid.grid.shape = (-1,)
-
-        # Write the grid
-        np.savetxt(self.fh, grid.grid[:], fmt)
+        # A CUBE file contains grid-points aligned like this:
+        # for x
+        #   for y
+        #     for z
+        #       write...
+        cast = np.vectorize((fmt + '\n').__mod__)
+        for z in np.nditer(np.asarray(grid.grid, order='C'), flags=['external_loop', 'buffered'],
+                           op_flags=[['readonly']], order='C', buffersize=grid.shape[2]):
+            self._write(cast(z))
 
         # Add a finishing line to ensure empty ending
         self._write('\n')
-
-        grid.grid.shape = g_size
 
     @Sile_fh_open
     def read_supercell(self, na=False):
