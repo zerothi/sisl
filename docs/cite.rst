@@ -8,9 +8,7 @@ released under the LGPL-3 license.
 
 The sisl DOI is released through Zenodo here:
 
-.. class:: center
-
-   |zenodo|
+|zenodo|_
 
 By citing sisl you are encouraging development and expoosing the software package.
 
