@@ -86,7 +86,6 @@ Indices
    :caption: User Guide
    
    installation
-   cite
    tutorials.rst
    examples.rst
    scripts/scripts

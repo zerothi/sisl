@@ -34,6 +34,8 @@ Package
 
 sisl is mainly a Python package with many intrinsic capabilities.
 
+Follow `these <installation>` instructions for installing sisl.
+
 DFT
 ~~~
 

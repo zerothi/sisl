@@ -6,15 +6,17 @@ Citing
 sisl is an open-source software package intended for the scientific community. It is
 released under the LGPL-3 license.
 
-The sisl DOI is released through Zenodo here:
+You are encouraged to cite sisl you use it to produce scientific contributions.
+
+The sisl citation can be found through Zenodo:
 
 |zenodo|_
 
 By citing sisl you are encouraging development and expoosing the software package.
 
 
-Basic usage
------------
+Citing basic usage
+------------------
 
 If you are *only* using sisl as a post-processing tool and/or tight-binding calculations
 you should cite this (Zenodo DOI):
@@ -31,8 +33,8 @@ you should cite this (Zenodo DOI):
 
 .. _citing-transport:
     
-Transport backend
------------------
+Citing transport backend
+------------------------
 
 When using sisl as tight-binding setup for Hamiltonians and dynamical matrices for
 `TBtrans`_ and ``PHtrans`` you should cite these two DOI's:
@@ -59,7 +61,6 @@ When using sisl as tight-binding setup for Hamiltonians and dynamical matrices f
       volume = {212},
       year = {2017}
     }
-
 
 
 

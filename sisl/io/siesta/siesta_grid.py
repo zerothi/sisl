@@ -28,6 +28,19 @@ class gridncSileSiesta(SileCDFSiesta):
 
         return SuperCell(cell)
 
+    def write_supercell(self, sc):
+        """ Write a supercell to the grid.nc file """
+        sile_raise_write(self)
+
+        # Create initial dimensions
+        self._crt_dim(self, 'xyz', 3)
+        self._crt_dim(self, 'abc', 3)
+
+        v = self._crt_var(self, 'cell', 'f8', ('abc', 'xyz'))
+        v.info = 'Unit cell'
+        v.unit = 'Bohr'
+        v[:, :] = sc.cell[:, :] / Bohr2Ang
+
     def read_grid(self, name='gridfunc', idx=0, *args, **kwargs):
         """ Reads a grid in the current Siesta.grid.nc file
 
@@ -58,6 +71,32 @@ class gridncSileSiesta(SileCDFSiesta):
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
         return grid.swapaxes(0, 2)
+
+    def write_grid(self, grid, ispin=0, nspin=None):
+        """ Write a grid to the grid.nc file """
+        sile_raise_write(self)
+
+        self.write_supercell(grid.sc)
+
+        if nspin is None:
+            self._crt_dim(self, 'spin', 1)
+        else:
+            self._crt_dim(self, 'spin', nspin)
+
+        self._crt_dim(self, 'n1', grid.shape[2])
+        self._crt_dim(self, 'n2', grid.shape[1])
+        self._crt_dim(self, 'n3', grid.shape[0])
+
+        if nspin is None:
+            v = self._crt_var(self, 'gridfunc', 'f4', ('n3', 'n2', 'n1'))
+        else:
+            v = self._crt_var(self, 'gridfunc', 'f4', ('spin', 'n3', 'n2', 'n1'))
+        v.info = 'Grid function'
+
+        if nspin is None:
+            v[ispin, :, :, :] = np.swapaxes(grid[:, :, :], 0, 2)
+        else:
+            v[:, :, :] = np.swapaxes(grid[:, :, :], 0, 2)
 
 
 add_sile('grid.nc', gridncSileSiesta)
