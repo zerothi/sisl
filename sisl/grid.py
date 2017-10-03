@@ -68,7 +68,7 @@ class Grid(SuperCellChild):
         """ Updates the grid contained """
         self.grid[key] = val
 
-    def set_geom(self, geom):
+    def set_geometry(self, geom):
         """ Sets the `Geometry` for the grid.
 
         Setting the `Geometry` for the grid is a possibility
@@ -78,10 +78,11 @@ class Grid(SuperCellChild):
         """
         if geom is None:
             # Fake geometry
-            self.set_geom(Geometry([0, 0, 0], Atom['H'], sc=self.sc))
+            self.set_geometry(Geometry([0, 0, 0], Atom['H'], sc=self.sc))
         else:
             self.geom = geom
             self.set_sc(geom.sc)
+    set_geom = set_geometry
 
     def interp(self, shape, method='linear', **kwargs):
         """ Returns an interpolated version of the grid

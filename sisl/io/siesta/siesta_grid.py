@@ -78,14 +78,12 @@ class gridncSileSiesta(SileCDFSiesta):
 
         self.write_supercell(grid.sc)
 
-        if nspin is None:
-            self._crt_dim(self, 'spin', 1)
-        else:
+        if nspin is not None:
             self._crt_dim(self, 'spin', nspin)
 
-        self._crt_dim(self, 'n1', grid.shape[2])
+        self._crt_dim(self, 'n1', grid.shape[0])
         self._crt_dim(self, 'n2', grid.shape[1])
-        self._crt_dim(self, 'n3', grid.shape[0])
+        self._crt_dim(self, 'n3', grid.shape[2])
 
         if nspin is None:
             v = self._crt_var(self, 'gridfunc', 'f4', ('n3', 'n2', 'n1'))
@@ -94,9 +92,9 @@ class gridncSileSiesta(SileCDFSiesta):
         v.info = 'Grid function'
 
         if nspin is None:
-            v[ispin, :, :, :] = np.swapaxes(grid[:, :, :], 0, 2)
+            v[:, :, :] = np.swapaxes(grid.grid, 0, 2)
         else:
-            v[:, :, :] = np.swapaxes(grid[:, :, :], 0, 2)
+            v[ispin, :, :, :] = np.swapaxes(grid.grid, 0, 2)
 
 
 add_sile('grid.nc', gridncSileSiesta)

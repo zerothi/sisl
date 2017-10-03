@@ -7,7 +7,7 @@ import os
 
 from tempfile import mkstemp
 from sisl.io import *
-from sisl import Geometry, Hamiltonian
+from sisl import Geometry, Grid, Hamiltonian
 
 import common as tc
 
@@ -285,6 +285,30 @@ class TestObject(object):
         try:
             h = Hamiltonian.read(sile(f, mode='r'))
             assert H.spsame(h)
+        except UnicodeDecodeError as e:
+            pass
+        # Clean-up file
+        os.remove(f)
+
+    @pytest.mark.parametrize("sile", _my_intersect(['read_grid'], ['write_grid']))
+    def test_read_write_grid(self, sile):
+        g = _C.g.rotatec(-30)
+        G = Grid([10, 11, 12])
+        G[:, :, :] = np.random.rand(10, 11, 12)
+
+        f = mkstemp(dir=_C.d)[1]
+        # Write
+        sile(f, mode='w').write_grid(G)
+        # Read 1
+        try:
+            g = sile(f, mode='r').read_grid()
+            assert np.allclose(g.grid, G.grid)
+        except UnicodeDecodeError as e:
+            pass
+        # Read 2
+        try:
+            g = Grid.read(sile(f, mode='r'))
+            assert np.allclose(g.grid, G.grid)
         except UnicodeDecodeError as e:
             pass
         # Clean-up file
