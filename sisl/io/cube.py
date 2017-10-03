@@ -17,14 +17,6 @@ Ang2Bohr = unit_convert('Ang', 'Bohr')
 class CUBESile(Sile):
     """ CUBE file object """
 
-    def _open(self):
-        if self.file.endswith('gz'):
-            self.fh = gzip.open(self.file)
-        else:
-            # Default to buffer 1MB
-            self.fh = open(self.file, self._mode, buffering=1024**2)
-        self._line = 0
-
     @Sile_fh_open
     def write_geometry(self, geom, size=None,
             fmt='15.10e', origo=None,
@@ -73,7 +65,6 @@ class CUBESile(Sile):
         #   for y
         #     for z
         #       write...
-        cast = np.vectorize((fmt + '\n').__mod__)
         _fmt = (fmt + '\n') * grid.shape[2]
         for z in np.nditer(np.asarray(grid.grid, order='C'), flags=['external_loop', 'buffered'],
                            op_flags=[['readonly']], order='C', buffersize=grid.shape[2]):
