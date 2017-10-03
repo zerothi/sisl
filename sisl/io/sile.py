@@ -962,9 +962,9 @@ class SileError(IOError):
 
 
 def sile_raise_write(self, ok=('w', 'a')):
-    is_ok = True
+    is_ok = False
     for O in ok:
-        is_ok = is_ok or O in self._mode
+        is_ok = is_ok or (O in self._mode)
     if not is_ok:
         raise SileError('Writing to file not possible allowed '
                         'modes={0}, used mode={1}'.format(
@@ -972,9 +972,9 @@ def sile_raise_write(self, ok=('w', 'a')):
 
 
 def sile_raise_read(self, ok=('r', 'a')):
-    is_ok = True
+    is_ok = False
     for O in ok:
-        is_ok = is_ok or O in self._mode
+        is_ok = is_ok or (O in self._mode)
     if not is_ok:
         raise SileError('Reading file not possible allowed '
                         'modes={0}, used mode={1}'.format(
