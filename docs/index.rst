@@ -78,6 +78,7 @@ Indices
    :maxdepth: 2
 
    introduction
+   cite
 
 .. toctree::
    :hidden:
@@ -85,6 +86,7 @@ Indices
    :caption: User Guide
    
    installation
+   cite
    tutorials.rst
    examples.rst
    scripts/scripts
