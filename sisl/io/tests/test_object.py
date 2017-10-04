@@ -305,13 +305,13 @@ class TestObject(object):
         # Read 1
         try:
             g = sile(f, mode='r').read_grid()
-            assert np.allclose(g.grid, G.grid)
+            assert np.allclose(g.grid, G.grid, atol=1e-5)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
             g = Grid.read(sile(f, mode='r'))
-            assert np.allclose(g.grid, G.grid)
+            assert np.allclose(g.grid, G.grid, atol=1e-5)
         except UnicodeDecodeError as e:
             pass
         # Clean-up file

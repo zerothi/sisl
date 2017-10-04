@@ -1864,8 +1864,9 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                     return
 
                 from sisl.io import TableSile
-                TableSile(out, mode='w').write(np.array(ns._data),
-                                               comment=ns._data_description, header=ns._data_header)
+                TableSile(out, mode='w').write(ns._data,
+                                               comment=ns._data_description,
+                                               header=ns._data_header)
                 # Clean all data
                 ns._data_description = []
                 ns._data_header = []
