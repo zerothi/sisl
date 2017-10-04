@@ -1,17 +1,4 @@
-""" Faster variants of the `numpy.linalg` and `scipy.linalg` derivatives
-
-This subpackage re-implements a variety of commonly used routines for 
-linear algebra routines. Currently we implement these variants:
-
-- `eig` -- eigenvalue problem
-- `eigh` -- Hermitian eigenvalue problem
-- `solve` -- solution of linear system of equations
-
-The idea is that these routines does less checks and ensures the fastest
-approach to the LA problem at hand.
-"""
-
-import functools as ftool
+from functools import partial as _partial
 
 # Create a _copy_ of the scipy.linalg.solve routine and implement
 # our own refine keyword.
@@ -23,9 +10,7 @@ from scipy._lib._util import _asarray_validated
 import scipy.linalg as sl
 import scipy.sparse.linalg as ssl
 
-_partial = ftool.partial
 
-# Clean all
 __all__ = []
 
 

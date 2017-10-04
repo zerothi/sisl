@@ -1,13 +1,7 @@
-"""
-Wrapper routines for creating partial function calls with other defaults
-"""
+from functools import partial as _partial
 
-import functools as ftool
 import numpy as np
 
-_partial = ftool.partial
-
-# Create __all__
 __all__ = []
 
 
