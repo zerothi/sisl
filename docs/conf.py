@@ -360,6 +360,9 @@ intersphinx_mapping = {
 
 # My custom detailed instructions for not documenting stuff
 def sisl_skip(app, what, name, obj, skip, options):
+    # When adding routines here, please also add them
+    # to the _templates/autosummary/class.rst file to limit
+    # the documentation.
     if name in ['read_es', 'read_geom', 'read_sc',
                 'write_es', 'write_geom', 'write_sc',
                 'ArgumentParser', 'ArgumentParser_out']:
@@ -370,6 +373,7 @@ def sisl_skip(app, what, name, obj, skip, options):
 def setup(app):
     # Setup autodoc skipping
     app.connect('autodoc-skip-member', sisl_skip)
+
 
     import subprocess as sp
     if os.path.isfile('../run_pre.sh'):

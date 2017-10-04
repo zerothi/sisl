@@ -24,7 +24,11 @@
 
     .. autosummary::
     {% for item in methods %}
-        ~{{ name }}.{{ item }}
+       {% if item not in ["read_es", "read_geom", "read_sc",
+                          "write_es", "write_geom", "write_sc",
+			  "ArgumentParser", "ArgumentParser_out"] %}
+            ~{{ name }}.{{ item }}
+       {% endif %}
     {%- endfor %}
     {% endif %}
     {% endblock %}
