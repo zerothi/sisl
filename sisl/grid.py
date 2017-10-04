@@ -485,7 +485,7 @@ class Grid(SuperCellChild):
         """ Returns true if the two grids are commensurable
 
         There will be no check of the values _on_ the grid. """
-        return all(self.shape == other.shape)
+        return self.shape == other.shape
 
     def __ne__(self, other):
         """ Returns whether two grids have the same shape """
