@@ -85,6 +85,7 @@ class TestGrid(object):
         assert np.allclose(g.grid, setup.g.grid)
         g = setup.g + setup.g
         assert np.allclose(g.grid, setup.g.grid * 2)
+        assert np.allclose((g - setup.g).grid, setup.g.grid)
 
     @pytest.mark.xfail(raises=ValueError)
     def test_add_fail1(self, setup):

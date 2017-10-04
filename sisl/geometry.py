@@ -3035,18 +3035,18 @@ class Geometry(SuperCellChild):
 
 
 def sgeom(geom=None, argv=None, ret_geometry=False):
-    """ Main script for sgeom script.
+    """ Main script for sgeom.
 
     This routine may be called with `argv` and/or a `Sile` which is the geometry at hand.
 
     Parameters
     ----------
-    geom : ``Geometry``, ``BaseSile``
+    geom : Geometry or BaseSile
        this may either be the geometry, as-is, or a `Sile` which contains
        the geometry.
-    argv : list of ``str``
+    argv : list of str
        the arguments passed to sgeom
-    ret_geometry : ``bool`` (`False`)
+    ret_geometry : bool, optional
        whether the function should return the geometry
     """
     import sys
@@ -3111,13 +3111,12 @@ lattice vector.
 
     elif isinstance(geom, Geometry):
         # Do nothing, the geometry is already created
-        argv = ['fake.xyz'] + argv
+        pass
 
     elif isinstance(geom, BaseSile):
         geom = geom.read_geometry()
         # Store the input file...
         input_file = geom.file
-        argv = ['fake.xyz'] + argv
 
     # Do the argument parser
     p, ns = geom.ArgumentParser(p, **geom._ArgumentParser_args_single())

@@ -7,11 +7,21 @@ from sisl.utils.ranges import *
 import math as m
 
 
+@pytest.mark.ranges
 class TestRanges(object):
 
-    def test_strseq(self):
-        ranges = strseq(int, '1:2:5')
+    @pytest.mark.parametrize("sep", ['-', ':'])
+    def test_strseq(self, sep):
+        ranges = strseq(int, sep.join(['1', '2', '5']))
         assert ranges == (1, 2, 5)
+        ranges = strseq(int, sep.join(['1', '2']))
+        assert ranges == (1, 2)
+        ranges = strseq(int, sep.join(['1', '']))
+        assert ranges == (1, None)
+        ranges = strseq(int, sep.join(['', '4']))
+        assert ranges == (None, 4)
+        ranges = strseq(int, sep.join(['', '4', '']))
+        assert ranges == (None, 4, None)
 
     def test_strmap1(self):
         assert strmap(int, '1') == [1]

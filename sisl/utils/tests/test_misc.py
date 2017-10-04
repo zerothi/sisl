@@ -28,6 +28,12 @@ class TestMisc(object):
         assert direction('x') == 0
         assert direction('y') == 1
         assert direction('z') == 2
+        assert direction('0') == 0
+        assert direction('1') == 1
+        assert direction('2') == 2
+        assert direction(' 0') == 0
+        assert direction(' 1  ') == 1
+        assert direction('   2   ') == 2
 
     @pytest.mark.xfail(raises=ValueError)
     def test_direction_str(self):

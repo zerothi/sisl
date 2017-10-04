@@ -64,23 +64,23 @@ consuming. There are two methods for reducing grids:
 
 ::
 		
-   sgrid <file> --sub x <pos|<frac>f>
-   sgrid <file> --remove x [+-]<pos|<frac>f>
+   sgrid <file> --sub <pos|<frac>f> x
+   sgrid <file> --remove [+-]<pos|<frac>f> x
 
 This needs an example, say the unit cell is an orthogonal unit-cell with side lengths 10x10x20 Angstrom.
 To reduce the cell to a middle square of 5x5x5 Angstrom you can do:
 
 ::
 		
-   sgrid Rho.grid.nc --sub x 2.5:7.5 --sub y 2.5:7.5 --sub z 7.5:12.5 5x5x5.cube
+   sgrid Rho.grid.nc --sub 2.5:7.5 x --sub 2.5:7.5 y --sub 7.5:12.5 z 5x5x5.cube
 
 note that the order of the reductions are made in the order of appearence. So *two* subsequent sub/remove
 commands with the same direction will not yield the same final grid.
 The individual commands can be understood via
 
-  - ``--sub x 2.5:7.5``: keep the grid along the first cell direction above 2.5 Å and below 5 Å.
-  - ``--sub y 2.5:7.5``: keep the grid along the second cell direction above 2.5 Å and below 5 Å.
-  - ``--sub z 7.5:12.5``: keep the grid along the third cell direction above 7.5 Å and below 12.5 Å.
+  - ``--sub 2.5:7.5 x``: keep the grid along the first cell direction above 2.5 Å and below 5 Å.
+  - ``--sub 2.5:7.5 y``: keep the grid along the second cell direction above 2.5 Å and below 5 Å.
+  - ``--sub 7.5:12.5 z``: keep the grid along the third cell direction above 7.5 Å and below 12.5 Å.
 
 When one is dealing with fractional coordinates is can be convenient to use fractional grid operations.
 The length unit for the position is *always* in Ångstrøm, unless an optional **f** is appended which

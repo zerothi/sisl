@@ -111,9 +111,9 @@ def strseq(cast, s):
     (3.2, 6.3)
     """
     if ':' in s:
-        return tuple(map(cast, s.split(':')))
+        return tuple(cast(ss) if len(ss.strip()) > 0 else None for ss in s.split(':'))
     elif '-' in s:
-        return tuple(map(cast, s.split('-')))
+        return tuple(cast(ss) if len(ss.strip()) > 0 else None for ss in s.split('-'))
     return cast(s)
 
 

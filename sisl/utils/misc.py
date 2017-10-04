@@ -162,17 +162,21 @@ def direction(d):
     1
     >>> direction('z')
     2
+    >>> direction('2')
+    2
+    >>> direction(' 2')
+    2
     """
     if isinstance(d, Integral):
         return d
 
     # We take it as a string
-    d = d.lower()
+    d = d.lower().strip()
     # We must use an arry to not allow 'xy' input
-    if d in 'x y z a b c'.split():
-        return 'xaybzc'.index(d) // 2
+    if d in 'x y z a b c 0 1 2'.split():
+        return 'xa0yb1zc2'.index(d) // 3
 
-    raise ValueError('Input direction is not an integer, nor a string in "xyzabc".')
+    raise ValueError('Input direction is not an integer, nor a string in "xyzabc012".')
 
 
 # Transform an input to an angle

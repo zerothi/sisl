@@ -374,7 +374,6 @@ def setup(app):
     # Setup autodoc skipping
     app.connect('autodoc-skip-member', sisl_skip)
 
-
     import subprocess as sp
     if os.path.isfile('../run_pre.sh'):
         print("# Running ../run_pre.sh")

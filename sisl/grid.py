@@ -4,7 +4,10 @@ from numbers import Integral
 
 import numpy as np
 
-from .utils import cmd, strseq, direction, default_namespace
+from ._help import ensure_array
+import sisl._numpy_scipy as ns_
+from .utils import dec_default_AP, default_namespace
+from .utils import cmd, strseq, direction
 from .supercell import SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
@@ -25,22 +28,20 @@ class Grid(SuperCellChild):
     NEUMANN = 2
     DIRICHLET = 3
 
-    def __init__(self, shape=None, bc=None, sc=None, dtype=None, geom=None):
+    def __init__(self, shape, bc=None, sc=None, dtype=None, geom=None):
         """ Initialize a `Grid` object.
 
         Initialize a `Grid` object.
 
         Parameters
         ----------
-        shape : `list of ints`
+        shape : list of ints
            the size of each grid dimension
-        bc : `int`
+        bc : int, optional
            the boundary condition (`Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET`)
-        sc : `SuperCell/list`
-           the associated supercell (
+        sc : SuperCell or list, optional
+           the associated supercell
         """
-        if shape is None:
-            shape = [1, 1, 1]
         if bc is None:
             bc = self.PERIODIC
 
@@ -53,7 +54,7 @@ class Grid(SuperCellChild):
         self.set_bc(bc)
 
         # Create the atomic structure in the grid, if possible
-        self.set_geom(geom)
+        self.set_geometry(geom)
 
         # If the user sets the super-cell, that has precedence.
         if sc is not None:
@@ -166,9 +167,9 @@ class Grid(SuperCellChild):
         """
         if not boundary is None:
             if isinstance(boundary, Integral):
-                self.bc = np.array([boundary] * 3, np.int32)
+                self.bc = ns_.arrayi([boundary] * 3)
             else:
-                self.bc = np.asarray(boundary, np.int32)
+                self.bc = ns_.asarrayi(boundary)
         if not a is None:
             self.bc[0] = a
         if not b is None:
@@ -196,7 +197,7 @@ class Grid(SuperCellChild):
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
         """
         # Create index vector
-        idx = np.arange(3, dtype=np.int32)
+        idx = ns_.arangei(3)
         idx[b] = a
         idx[a] = b
         s = np.copy(self.shape)
@@ -225,11 +226,11 @@ class Grid(SuperCellChild):
         return self.sc.vol / self.size
 
     def cross_section(self, idx, axis):
-        """ Takes a cross-section of the grid along axis ``axis``
+        """ Takes a cross-section of the grid along axis `axis`
 
         Remark: This API entry might change to handle arbitrary
         cuts via rotation of the axis """
-        idx = np.array(idx, np.int32).flatten()
+        idx = ensure_array(idx).flatten()
         # First calculate the new shape
         shape = list(self.shape)
         cell = np.copy(self.cell)
@@ -252,7 +253,7 @@ class Grid(SuperCellChild):
         return grid
 
     def sum(self, axis):
-        """ Returns the grid summed along axis ``axis``. """
+        """ Returns the grid summed along axis `axis`. """
         # First calculate the new shape
         shape = list(self.shape)
         cell = np.copy(self.cell)
@@ -269,7 +270,7 @@ class Grid(SuperCellChild):
         return grid
 
     def average(self, axis):
-        """ Returns the average grid along direction ``axis`` """
+        """ Returns the average grid along direction `axis` """
         n = self.shape[axis]
         g = self.sum(axis)
         g /= float(n)
@@ -286,16 +287,16 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis ``axis`` to be removed
+           the indices of the grid axis `axis` to be removed
            for ``above=True`` grid[:idx,...]
            for ``above=False`` grid[idx:,...]
         axis : int
            the axis segment from which we retain the indices `idx`
         above: bool
-           if `True` will retain the grid:
-              `grid[:idx,...]`
+           if ``True`` will retain the grid:
+              ``grid[:idx,...]``
            else it will retain the grid:
-              `grid[idx:,...]`
+              ``grid[idx:,...]``
         """
         return self.sub_part(idx, axis, not above)
 
@@ -307,11 +308,11 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis ``axis`` to be retained
+           the indices of the grid axis `axis` to be retained
            for ``above=True`` grid[idx:,...]
            for ``above=False`` grid[:idx,...]
         axis : int
-           the axis segment from which we retain the indices ``idx``
+           the axis segment from which we retain the indices `idx`
         above: bool
            if ``True`` will retain the grid:
               ``grid[idx:,...]``
@@ -319,9 +320,9 @@ class Grid(SuperCellChild):
               ``grid[:idx,...]``
         """
         if above:
-            sub = np.arange(idx, self.shape[axis], dtype=np.int32)
+            sub = ns_.arangei(idx, self.shape[axis])
         else:
-            sub = np.arange(0, idx, dtype=np.int32)
+            sub = ns_.arangei(0, idx)
         return self.sub(sub, axis)
 
     def sub(self, idx, axis):
@@ -332,11 +333,11 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis ``axis`` to be retained
+           the indices of the grid axis `axis` to be retained
         axis : int
-           the axis segment from which we retain the indices ``idx``
+           the axis segment from which we retain the indices `idx`
         """
-        idx = np.array([idx], np.int32).flatten()
+        idx = ensure_array(idx).flatten()
 
         # Calculate new shape
         shape = list(self.shape)
@@ -374,13 +375,11 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         idx : array_like
-           the indices of the grid axis ``axis`` to be removed
+           the indices of the grid axis `axis` to be removed
         axis : int
-           the axis segment from which we remove all indices ``idx``
+           the axis segment from which we remove all indices `idx`
         """
-        uidx = np.unique(np.clip(idx, 0, self.shape[axis] - 1))
-        ret_idx = np.setdiff1d(np.arange(self.shape[axis], dtype=np.int32),
-                               uidx, assume_unique=True)
+        ret_idx = np.delete(ns_.arangei(self.shape[axis]), ensure_array(idx))
         return self.sub(ret_idx, axis)
 
     def index(self, coord, axis=None):
@@ -398,7 +397,7 @@ class Grid(SuperCellChild):
         if axis is None:
             rcell = self.rcell / (2. * np.pi)
             # Loop over each direction
-            idx = np.empty([3], np.int32)
+            idx = ns_.emptyi([3])
             for i in [0, 1, 2]:
                 # get the coordinate along the direction of the cell vector
                 c = np.dot(rcell[i, :], coord) * self.cell[i, :]
@@ -486,8 +485,7 @@ class Grid(SuperCellChild):
         """ Returns true if the two grids are commensurable
 
         There will be no check of the values _on_ the grid. """
-        a = np.array
-        return bool(np.all(a(self.shape, np.int32) == a(other.shape, np.int32)))
+        return all(self.shape == other.shape)
 
     def __ne__(self, other):
         """ Returns whether two grids have the same shape """
@@ -590,12 +588,13 @@ class Grid(SuperCellChild):
     # Hook into the Grid class to create
     # an automatic ArgumentParser which makes actions
     # as the options are read.
-    def ArgumentParser(self, parser=None, *args, **kwargs):
+    @dec_default_AP("Manipulate a Grid object in sisl.")
+    def ArgumentParser(self, p=None, *args, **kwargs):
         """ Create and return a group of argument parsers which manipulates it self `Grid`.
 
         Parameters
         ----------
-        parser: ArgumentParser, None
+        p: ArgumentParser, None
            in case the arguments should be added to a specific parser. It defaults
            to create a new.
         limit_arguments: bool, True
@@ -606,6 +605,7 @@ class Grid(SuperCellChild):
         positional_out: bool, False
            If `True`, adds a positional argument which acts as --out. This may be handy if only the geometry is in the argument list.
         """
+        limit_args = kwargs.get('limit_arguments', True)
         short = kwargs.get('short', False)
 
         def opts(*args):
@@ -615,11 +615,6 @@ class Grid(SuperCellChild):
 
         # We limit the import to occur here
         import argparse
-
-        if parser is None:
-            p = argparse.ArgumentParser("Manipulate a Grid object in sisl.")
-        else:
-            p = parser
 
         # The first thing we do is adding the Grid to the NameSpace of the
         # parser.
@@ -636,7 +631,7 @@ class Grid(SuperCellChild):
 
             def __call__(self, parser, ns, value, option_string=None):
                 ns._geometry = Geometry.read(value)
-                ns._grid.set_geom(ns._geometry)
+                ns._grid.set_geometry(ns._geometry)
         p.add_argument(*opts('--geometry', '-G'), action=SetGeometry,
                        help='Define the geometry attached to the Grid.')
 
@@ -668,23 +663,37 @@ class Grid(SuperCellChild):
                        action=AverageGrid,
                        help='Take the average of the grid along DIR.')
 
+        class SumGrid(argparse.Action):
+
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._grid = ns._grid.sum(direction(value))
+        p.add_argument(*opts('--sum'), metavar='DIR',
+                       action=SumGrid,
+                       help='Take the sum of the grid along DIR.')
+
         # Create-subsets of the grid
         class SubDirectionGrid(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
                 # The unit-cell direction
-                axis = direction(values[0])
+                axis = direction(values[1])
                 # Figure out whether this is a fractional or
                 # distance in Ang
-                is_frac = 'f' in values[1]
-                rng = strseq(float, values[1].replace('f', ''))
+                is_frac = 'f' in values[0]
+                rng = strseq(float, values[0].replace('f', ''))
                 if isinstance(rng, tuple):
                     if is_frac:
                         rng = tuple(rng)
                     # we have bounds
-                    idx1 = ns._grid.index(rng[0], axis=axis)
-                    idx2 = ns._grid.index(rng[1], axis=axis)
-                    ns._grid = ns._grid.sub(range(idx1, idx2+1), d)
+                    if rng[0] is None:
+                        idx1 = 0
+                    else:
+                        idx1 = ns._grid.index(rng[0], axis=axis)
+                    if rng[1] is None:
+                        idx2 = ns._grid.shape[axis]
+                    else:
+                        idx2 = ns._grid.index(rng[1], axis=axis)
+                    ns._grid = ns._grid.sub(ns_.arangei(idx1, idx2), axis)
                     return
                 elif rng < 0.:
                     if is_frac:
@@ -696,7 +705,7 @@ class Grid(SuperCellChild):
                     b = True
                 idx = ns._grid.index(rng, axis=axis)
                 ns._grid = ns._grid.sub_part(idx, axis, b)
-        p.add_argument(*opts('--sub'), nargs=2, metavar=('DIR', 'COORD'),
+        p.add_argument(*opts('--sub'), nargs=2, metavar=('COORD', 'DIR'),
                        action=SubDirectionGrid,
                        help='Reduce the grid by taking a subset of the grid (along DIR).')
 
@@ -705,13 +714,25 @@ class Grid(SuperCellChild):
 
             def __call__(self, parser, ns, values, option_string=None):
                 # The unit-cell direction
-                axis = direction(values[0])
+                axis = direction(values[1])
                 # Figure out whether this is a fractional or
                 # distance in Ang
-                is_frac = 'f' in values[1]
-                rng = strseq(float, values[1].replace('f', ''))
+                is_frac = 'f' in values[0]
+                rng = strseq(float, values[0].replace('f', ''))
                 if isinstance(rng, tuple):
-                    raise NotImplementedError('Can not figure out how to apply mid-removal of grids.')
+                    # we have bounds
+                    if not (rng[0] is None or rng[1] is None):
+                        raise NotImplementedError('Can not figure out how to apply mid-removal of grids.')
+                    if rng[0] is None:
+                        idx1 = 0
+                    else:
+                        idx1 = ns._grid.index(rng[0], axis=axis)
+                    if rng[1] is None:
+                        idx2 = ns._grid.shape[axis]
+                    else:
+                        idx2 = ns._grid.index(rng[1], axis=axis)
+                    ns._grid = ns._grid.remove(ns_.arangei(idx1, idx2), axis)
+                    return
                 elif rng < 0.:
                     if is_frac:
                         rng = ns._grid.cell[axis, :] * abs(rng)
@@ -721,8 +742,8 @@ class Grid(SuperCellChild):
                         rng = ns._grid.cell[axis, :] * rng
                     b = False
                 idx = ns._grid.index(rng, axis=axis)
-                ns._grid = ns._grid.sub_part(idx, axis, b)
-        p.add_argument(*opts('--remove'), nargs=2, metavar=('DIR', 'COORD'),
+                ns._grid = ns._grid.remove_part(idx, axis, b)
+        p.add_argument(*opts('--remove'), nargs=2, metavar=('COORD', 'DIR'),
                        action=RemoveDirectionGrid,
                        help='Reduce the grid by removing a subset of the grid (along DIR).')
 
@@ -730,6 +751,7 @@ class Grid(SuperCellChild):
         class PrintInfo(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
+                ns._stored_grid = True
                 print(ns._grid)
         p.add_argument(*opts('--info'), nargs=0,
                        action=PrintInfo,
@@ -743,7 +765,7 @@ class Grid(SuperCellChild):
                 if len(value) == 0:
                     return
                 ns._grid.write(value[0])
-                # Issue to the namespace that the geometry has been written, at least once.
+                # Issue to the namespace that the grid has been written, at least once.
                 ns._stored_grid = True
         p.add_argument(*opts('--out', '-o'), nargs=1, action=Out,
                        help='Store the grid (at its current invocation) to the out file.')
@@ -759,18 +781,18 @@ class Grid(SuperCellChild):
 
 
 def sgrid(grid=None, argv=None, ret_grid=False):
-    """ Main script for sgrid script.
+    """ Main script for sgrid.
 
     This routine may be called with `argv` and/or a `Sile` which is the grid at hand.
 
     Parameters
     ----------
-    grid : `Grid`/`BaseSile`
+    grid : Grid or BaseSile
        this may either be the grid, as-is, or a `Sile` which contains
        the grid.
-    argv : `list of str`
-       the arguments passed to sgeom
-    ret_grid : `bool` (`False`)
+    argv : list of str
+       the arguments passed to sgrid
+    ret_grid : bool, optional
        whether the function should return the grid
     """
     import sys
@@ -819,23 +841,16 @@ This may be unexpected but enables one to do advanced manipulations.
     # First read the input "Sile"
     if grid is None:
         argv, input_file = cmd.collect_input(argv)
-        try:
-            grid = get_sile(input_file).read_grid()
-        except:
-            grid = Grid([10, 10, 10])
+        grid = get_sile(input_file).read_grid()
 
     elif isinstance(grid, Grid):
-        # Do nothing, the geometry is already created
-        argv = ['fake.grid.nc'] + argv
+        # Do nothing, the grid is already created
+        pass
 
     elif isinstance(grid, BaseSile):
-        try:
-            grid = grid.read_grid()
-            # Store the input file...
-            input_file = grid.file
-        except Exception:
-            grid = Grid([10, 10, 10])
-        argv = ['fake.grid.nc'] + argv
+        grid = grid.read_grid()
+        # Store the input file...
+        input_file = grid.file
 
     # Do the argument parser
     p, ns = grid.ArgumentParser(p, **grid._ArgumentParser_args_single())
