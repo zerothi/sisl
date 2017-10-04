@@ -48,9 +48,6 @@ from .info import major as __major__
 from .info import minor as __minor__
 from .info import micro as __micro__
 
-# Import numpy_scipy routines
-import sisl._numpy_scipy as math
-
 # Import the Selector
 from .selector import *
 
@@ -92,6 +89,7 @@ from .io.sile import (add_sile, get_sile_class, get_sile,
                       BaseSile, Sile, SileCDF, SileBin)
 import sisl.io as io
 
+import sisl.linalg as linalg
 
 # Import the default geom structure
 # This enables:

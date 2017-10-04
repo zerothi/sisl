@@ -8,7 +8,7 @@ from numbers import Integral
 import numpy as np
 
 from ._help import array_fill_repeat, ensure_array, _str
-import sisl._numpy_scipy as ns_
+import sisl._array as _a
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
@@ -1192,7 +1192,7 @@ class Atoms(object):
         """ Internal routine for updating the `firsto` attribute """
         # Get number of orbitals per specie
         uorbs = np.array([a.orbs for a in self.atom], np.int32)
-        self._firsto = np.insert(ns_.cumsumi(uorbs[self.specie[:]]), 0, 0)
+        self._firsto = np.insert(_a.cumsumi(uorbs[self.specie[:]]), 0, 0)
 
     def copy(self):
         """ Return a copy of this atom """
@@ -1467,7 +1467,7 @@ class Atoms(object):
         # Convert to array
         if isinstance(key, slice):
             sl = key.indices(len(self))
-            key = ns_.arangei(sl[0], sl[1], sl[2])
+            key = _a.arangei(sl[0], sl[1], sl[2])
         else:
             key = ensure_array(key)
 

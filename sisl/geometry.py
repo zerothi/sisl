@@ -10,7 +10,9 @@ from itertools import product
 import numpy as np
 
 import sisl.plot as plt
-import sisl._numpy_scipy as ns_
+import sisl._array as _a
+import sisl.linalg as lin
+
 from ._help import _str
 from ._help import _range as range
 from ._help import ensure_array, ensure_dtype
@@ -863,7 +865,7 @@ class Geometry(SuperCellChild):
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
-        atom = np.delete(ns_.arangei(self.na), atom)
+        atom = np.delete(_a.arangei(self.na), atom)
         return self.sub(atom)
 
     def tile(self, reps, axis):
@@ -1613,7 +1615,7 @@ class Geometry(SuperCellChild):
     @property
     def fxyz(self):
         """ Returns geometry coordinates in fractional coordinates """
-        return ns_.solve(self.cell.T, self.xyz.T).T
+        return lin.solve(self.cell.T, self.xyz.T).T
 
     def axyz(self, atom=None, isc=None):
         """ Return the atomic coordinates in the supercell of a given atom.
@@ -2306,7 +2308,7 @@ class Geometry(SuperCellChild):
              `False`, return only the first orbital corresponding to the atom,
              `True`, returns list of the full atom
         """
-        ia = ns_.asarrayi(ia)
+        ia = _a.asarrayi(ia)
         if not all:
             return self.firsto[ia % self.na] + (ia // self.na) * self.no
         off = (ia // self.na) * self.no
@@ -2316,7 +2318,7 @@ class Geometry(SuperCellChild):
 
         # Create ranges
         if isinstance(ob, Integral):
-            return ns_.arangei(ob, oe)
+            return _a.arangei(ob, oe)
 
         return array_arange(ob, oe)
 
@@ -2339,7 +2341,7 @@ class Geometry(SuperCellChild):
                 return np.unique(np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na)
             return np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na
 
-        a = ns_.asarrayi(io) % self.no
+        a = _a.asarrayi(io) % self.no
         # Use b-casting rules
         a.shape = (-1, 1)
         a = np.argmax(a <= self.lasto, axis=1)
@@ -2605,7 +2607,7 @@ class Geometry(SuperCellChild):
 
         # Correct atom input
         if atom is None:
-            atom = ns_.arangei(len(self))
+            atom = _a.arangei(len(self))
         else:
             atom = ensure_array(atom)
 

@@ -6,7 +6,7 @@ from pytest import approx
 import math as m
 import numpy as np
 
-import sisl._numpy_scipy as ns_
+import sisl.linalg as lin
 from sisl import SuperCell, SuperCellChild
 from sisl.geom import graphene
 
@@ -223,7 +223,7 @@ class TestSuperCell(object):
     def test_rcell(self, setup):
         # LAPACK inverse algorithm implicitly does
         # a transpose.
-        rcell = ns_.inv(setup.sc.cell) * 2. * np.pi
+        rcell = lin.inv(setup.sc.cell) * 2. * np.pi
         assert np.allclose(rcell.T, setup.sc.rcell)
 
     def test_translate1(self, setup):

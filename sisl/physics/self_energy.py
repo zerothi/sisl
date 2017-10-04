@@ -5,7 +5,8 @@ import warnings
 import numpy as np
 from numpy import dot
 from sisl.utils.ranges import array_arange
-import sisl._numpy_scipy as ns_
+import sisl._array as _a
+import sisl.linalg as lin
 
 __all__ = ['SelfEnergy', 'SemiInfinite']
 __all__ += ['RecursiveSI']
@@ -60,9 +61,9 @@ class SemiInfinite(SelfEnergy):
         """
         self.eta = eta
         if bloch is None:
-            self.bloch = ns_.onesi([3])
+            self.bloch = _a.onesi([3])
         else:
-            self.bloch = ns_.arrayi(bloch)
+            self.bloch = _a.arrayi(bloch)
 
         # Determine whether we are in plus/minus direction
         if infinite.startswith('+'):
@@ -99,7 +100,7 @@ class SemiInfinite(SelfEnergy):
         semi-infinite direction.
         """
         if k is None:
-            k = ns_.zerosd([3])
+            k = _a.zerosd([3])
         else:
             k = self._fill(k, np.float64)
             k[self.semi_inf] = 0.
@@ -140,8 +141,8 @@ class RecursiveSI(SemiInfinite):
         nsc = [None] * 3
         nsc[self.semi_inf] = self.semi_inf_dir
         # Get all supercell indices that we should delete
-        idx = np.delete(ns_.arangei(n_s),
-                        ns_.arrayi(spgeom.geom.sc.sc_index(nsc)))
+        idx = np.delete(_a.arangei(n_s),
+                        _a.arrayi(spgeom.geom.sc.sc_index(nsc)))
 
         cols = array_arange(idx * n, (idx + 1) * n)
         # Delete all values in columns, but keep them to retain the supercell information
@@ -206,7 +207,7 @@ class RecursiveSI(SemiInfinite):
         else:
             GS = np.zeros_like(GB)
 
-        solve = ns_.solve
+        solve = lin.solve
 
         i = 0
         while True:

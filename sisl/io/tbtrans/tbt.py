@@ -22,7 +22,7 @@ from scipy.sparse import isspmatrix_csr
 from ..sile import add_sile, sile_raise_write
 from .sile import SileCDFTBtrans
 from sisl.utils import *
-import sisl._numpy_scipy as ns_
+import sisl._array as _a
 
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
@@ -205,11 +205,11 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             try:
                 self._data['kpt'] = self._value('kpt')
             except:
-                self._data['kpt'] = ns_.zerosd([3])
+                self._data['kpt'] = _a.zerosd([3])
             try:
                 self._data['wkpt'] = self._value('wkpt')
             except:
-                self._data['wkpt'] = ns_.onesd([1])
+                self._data['wkpt'] = _aonesd([1])
 
             # Create the geometry in the data file
             self._data['_geom'] = self.read_geometry()
@@ -219,7 +219,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
     def read_supercell(self):
         """ Returns `SuperCell` object from this file """
-        cell = ns_.arrayd(np.copy(self.cell))
+        cell = _a.arrayd(np.copy(self.cell))
         cell.shape = (3, 3)
 
         try:
@@ -240,13 +240,13 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         """ Returns `Geometry` object from this file """
         sc = self.read_supercell()
 
-        xyz = ns_.arrayd(np.copy(self.xa))
+        xyz = _a.arrayd(np.copy(self.xa))
         xyz.shape = (-1, 3)
 
         # Create list with correct number of orbitals
-        lasto = ns_.arrayi(np.copy(self.lasto) + 1)
+        lasto = _a.arrayi(np.copy(self.lasto) + 1)
         nos = np.append([lasto[0]], np.diff(lasto))
-        nos = ns_.arrayi(nos)
+        nos = _a.arrayi(nos)
 
         if 'atom' in kwargs:
             # The user "knows" which atoms are present
@@ -402,7 +402,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         k : array_like of float
            the queried k-point in reduced coordinates :math:`]-0.5;0.5]`.
         """
-        ik = np.sum(np.abs(self.kpt - ns_.asarrayd(k)[None, :]), axis=1).argmin()
+        ik = np.sum(np.abs(self.kpt - _a.asarrayd(k)[None, :]), axis=1).argmin()
         ret_k = self.kpt[ik, :]
         if not np.allclose(ret_k, k, atol=0.0001):
             warnings.warn(self.__class__.__name__ + " requesting k-point " +
@@ -574,7 +574,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 geom = self.geom
                 a = np.unique(geom.o2a(orbital))
                 # Now sum the orbitals per atom
-                NORM = float(ns_.sumi(geom.firsto[a+1] - geom.firsto[a]))
+                NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
             return NORM
 
         # atom is specified
@@ -618,7 +618,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         if atom is None and orbital is None:
             # We simply return *everything*
             if sum:
-                return ns_.sumd(DOS[..., :], axis=-1) / NORM
+                return _a.sumd(DOS[..., :], axis=-1) / NORM
             # We return the sorted DOS
             p = np.argsort(self.pivot)
             return DOS[..., p] / NORM
@@ -635,10 +635,10 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 geom = self.geom
                 a = np.unique(geom.o2a(orbital))
                 # Now sum the orbitals per atom
-                NORM = float(ns_.sumi(geom.firsto[a+1] - geom.firsto[a]))
+                NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
 
             if sum:
-                return ns_.sumd(DOS[..., p], axis=-1) / NORM
+                return _a.sumd(DOS[..., p], axis=-1) / NORM
             # Else, we have to return the full subset
             return DOS[..., p] / NORM
 
@@ -651,7 +651,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         if sum or isinstance(atom, Integral):
             # Regardless of SUM, when requesting a single atom
             # we return it
-            return ns_.sumd(DOS[..., p], axis=-1) / NORM
+            return _a.sumd(DOS[..., p], axis=-1) / NORM
 
         # We default the case where 1-orbital systems are in use
         # Then it becomes *very* easy
@@ -673,7 +673,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             if len(pvt) == 0:
                 nDOS[..., i] = 0.
             else:
-                nDOS[..., i] = ns_.sumd(DOS[..., pvt], axis=-1) / NORM
+                nDOS[..., i] = _a.sumd(DOS[..., pvt], axis=-1) / NORM
 
         return nDOS
 
@@ -784,7 +784,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         """
         elec = self._elec(elec)
         if sum:
-            return ns_.sumd(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry
+            return _a.sumd(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry
         else:
             return self._value_E('DOS', elec, kavg=kavg, E=E) * eV2Ry
 
@@ -902,7 +902,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         def nf(E, mu, kT):
             return 1. / (np.exp((E - mu) / kT) + 1.)
 
-        I = ns_.sumd(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
+        I = _a.sumd(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
 
     def orbital_current(self, elec, E, kavg=True, isc=None):
@@ -945,7 +945,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         geom = self.geom
 
         # These are the row-pointers...
-        rptr = np.insert(ns_.cumsumi(self._value('n_col')), 0, 0)
+        rptr = np.insert(_a.cumsumi(self._value('n_col')), 0, 0)
 
         # Get column indices
         col = self._value('list_col') - 1
@@ -992,15 +992,15 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 all_col.extend(list(range(i * geom.no, (i+1) * geom.no)))
 
             # Create a logical array for sub-indexing
-            all_col = npisin(col, ns_.arrayi(all_col))
+            all_col = npisin(col, _a.arrayi(all_col))
             col = col[all_col]
 
             # recreate row-pointer
             cnz = np.count_nonzero
             def func(ptr1, ptr2):
                 return cnz(all_col[ptr1:ptr2])
-            tmp = ns_.arrayi(map(func, rptr[:geom.no], rptr[1:]))
-            rptr = np.insert(ns_.cumsumi(tmp), 0, 0)
+            tmp = _a.arrayi(map(func, rptr[:geom.no], rptr[1:]))
+            rptr = np.insert(_a.cumsumi(tmp), 0, 0)
             del tmp
 
         if all_col is None:
@@ -1103,7 +1103,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             fo = geom.firsto
             # Automatically create the new index pointer
             # from first and last orbital
-            indptr = np.insert(ns_.cumsumi(iptr[fo[1:]] - iptr[fo[:-1]]), 0, 0)
+            indptr = np.insert(_a.cumsumi(iptr[fo[1:]] - iptr[fo[:-1]]), 0, 0)
 
             # Now we have a new indptr, and the column indices have also
             # been processed.
@@ -1301,7 +1301,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         na = geom.na
         # vector currents
-        Ja = ns_.zerosd([na, 3])
+        Ja = _a.zerosd([na, 3])
 
         # Create local orbital look-up
         xyz = geom.xyz
@@ -1564,7 +1564,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 E = []
                 for begin, end in Emap:
                     E.append(range(ns._tbt.Eindex(float(begin)), ns._tbt.Eindex(float(end))+1))
-                ns._Erng = ns_.arrayi(E).flatten()
+                ns._Erng = _a.arrayi(E).flatten()
         p.add_argument('--energy', '-E',
                        action=ERange,
                        help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
@@ -1631,7 +1631,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 # we have only a subset of the orbitals
                 orbs = []
                 no = 0
-                asarrayi = ns_.asarrayi
+                asarrayi = _a.asarrayi
                 for atoms in ranges:
                     if isinstance(atoms, list):
                         # this will be
@@ -1960,7 +1960,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
     @property
     def wkpt(self):
         """ Always return [1.], this is to signal other routines """
-        return ns_.onesd(1)
+        return _aonesd(1)
 
     def write_tbtav(self, *args, **kwargs):
         """ Wrapper for writing the k-averaged TBT.AV.nc file.
@@ -1992,7 +1992,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
 
         # Retrieve k-weights
         nkpt = len(tbt.dimensions['nkpt'])
-        wkpt = ns_.asarrayd(tbt.variables['wkpt'][:])
+        wkpt = _a.asarrayd(tbt.variables['wkpt'][:])
 
         # First copy and re-create all entries in the output file
         for dvg in tbt:
@@ -2116,7 +2116,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
     def read_supercell(self):
         """ Returns the `SuperCell` object from this file """
-        cell = ns_.arrayd(np.copy(self._value('cell')))
+        cell = _a.arrayd(np.copy(self._value('cell')))
         cell.shape = (3, 3)
 
         try:
@@ -2137,13 +2137,13 @@ class deltancSileTBtrans(SileCDFTBtrans):
         """ Returns the `Geometry` object from this file """
         sc = self.read_supercell()
 
-        xyz = ns_.arrayd(np.copy(self._value('xa')))
+        xyz = _a.arrayd(np.copy(self._value('xa')))
         xyz.shape = (-1, 3)
 
         # Create list with correct number of orbitals
-        lasto = ns_.arrayi(np.copy(self._value('lasto')))
+        lasto = _a.arrayi(np.copy(self._value('lasto')))
         nos = np.append([lasto[0]], np.diff(lasto))
-        nos = ns_.arrayi(nos)
+        nos = _a.arrayi(nos)
 
         if 'atom' in kwargs:
             # The user "knows" which atoms are present
@@ -2213,7 +2213,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         b = self._crt_var(bs, 'basis', 'i4', ('na_u',))
         b.info = "Basis of each atom by ID"
 
-        orbs = ns_.emptyi([geom.na])
+        orbs = _a.emptyi([geom.na])
 
         for ia, a, isp in geom.iter_species():
             b[ia] = isp + 1
@@ -2234,7 +2234,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                 ba.Number_of_orbitals = np.int32(a.orbs)
 
         # Store the lasto variable as the remaining thing to do
-        self.variables['lasto'][:] = ns_.cumsumi(orbs)
+        self.variables['lasto'][:] = _a.cumsumi(orbs)
 
     def _get_lvl_k_E(self, **kwargs):
         """ Return level, k and E indices, in that order.
@@ -2269,7 +2269,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # Now determine the energy and k-indices
         iE = -1
         if ilvl in [3, 4]:
-            Es = ns_.arrayd(lvl.variables['E'][:])
+            Es = _a.arrayd(lvl.variables['E'][:])
             if len(Es) > 0:
                 iE = np.argmin(np.abs(Es - E))
                 if abs(Es[iE] - E) > 0.0001:
@@ -2277,7 +2277,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         ik = -1
         if ilvl in [2, 4]:
-            kpt = ns_.arrayd(lvl.variables['kpt'][:])
+            kpt = _a.arrayd(lvl.variables['kpt'][:])
             if len(kpt) > 0:
                 ik = np.argmin(np.sum(np.abs(kpt - k[None, :]), axis=1))
                 if not np.allclose(kpt[ik, :], k, atol=0.0001):
@@ -2483,10 +2483,10 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # array, hence just allocate the smallest amount possible)
         C = cls(geom, nspin, nnzpr=1, dtype=dtype, orthogonal=True)
 
-        C._csr.ncol = ns_.arrayi(lvl.variables['n_col'][:])
+        C._csr.ncol = _a.arrayi(lvl.variables['n_col'][:])
         # Update maximum number of connections (in case future stuff happens)
-        C._csr.ptr = np.insert(ns_.cumsumi(C._csr.ncol), 0, 0)
-        C._csr.col = ns_.arrayi(lvl.variables['list_col'][:]) - 1
+        C._csr.ptr = np.insert(_a.cumsumi(C._csr.ncol), 0, 0)
+        C._csr.col = _a.arrayi(lvl.variables['list_col'][:]) - 1
 
         # Copy information over
         C._csr._nnz = len(C._csr.col)
@@ -2688,10 +2688,10 @@ class dHncSileTBtrans(deltancSileTBtrans):
         # array, hence just allocate the smallest amount possible)
         C = cls(geom, 1, nnzpr=1, dtype=dtype, orthogonal=True)
 
-        C._csr.ncol = ns_.arrayi(lvl.variables['n_col'][:])
+        C._csr.ncol = _a.arrayi(lvl.variables['n_col'][:])
         # Update maximum number of connections (in case future stuff happens)
-        C._csr.ptr = np.insert(ns_.cumsumi(C._csr.ncol), 0, 0)
-        C._csr.col = ns_.arrayi(lvl.variables['list_col'][:]) - 1
+        C._csr.ptr = np.insert(_a.cumsumi(C._csr.ncol), 0, 0)
+        C._csr.col = _a.arrayi(lvl.variables['list_col'][:]) - 1
 
         # Copy information over
         C._csr._nnz = len(C._csr.col)

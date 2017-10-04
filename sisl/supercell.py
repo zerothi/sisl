@@ -8,7 +8,8 @@ import math
 import numpy as np
 from numbers import Integral
 
-import sisl._numpy_scipy as ns_
+import sisl._array as _a
+import sisl.linalg as lin
 import sisl.plot as plt
 from ._help import ensure_array
 from .quaternion import Quaternion
@@ -218,7 +219,7 @@ class SuperCell(object):
         cell = np.copy(self.cell[:, :])
 
         # Solve to get the divisions in the current cell
-        x = ns_.solve(cell.T, xyz.T).T
+        x = lin.solve(cell.T, xyz.T).T
 
         # Now we should figure out the correct repetitions
         # by rounding to integer positions of the cell vectors

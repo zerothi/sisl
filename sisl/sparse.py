@@ -23,7 +23,7 @@ from scipy.sparse import csr_matrix, isspmatrix_csr
 from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
-import sisl._numpy_scipy as ns_
+import sisl._array as _a
 from ._help import array_fill_repeat, ensure_array, get_dtype
 from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
@@ -223,11 +223,11 @@ class SparseCSR(object):
 
         # Store number of columns currently hold
         # in the sparsity pattern
-        self.ncol = ns_.zerosi([M])
+        self.ncol = _a.zerosi([M])
         # Create pointer array
-        self.ptr = ns_.cumsumi(ns_.arrayi([nnzpr] * (M+1))) - nnzpr
+        self.ptr = _a.cumsumi(_a.arrayi([nnzpr] * (M+1))) - nnzpr
         # Create column array
-        self.col = ns_.emptyi(nnz)
+        self.col = _a.emptyi(nnz)
         # Store current number of non-zero elements
         self._nnz = 0
 
@@ -365,7 +365,7 @@ class SparseCSR(object):
         self._D = take(self._D, idx, 0)
         del idx
         self.ptr[0] = 0
-        ns_.cumsumi(ncol, out=self.ptr[1:])
+        _a.cumsumi(ncol, out=self.ptr[1:])
 
         ptr = self.ptr.view()
         col = self.col.view()
@@ -467,7 +467,7 @@ class SparseCSR(object):
         # Convert to boolean array where we have columns to be deleted
         lidx = isin(col[idx], columns)
         # Count number of deleted entries per row
-        ndel = ensure_array(map(count_nonzero, split(lidx, ns_.cumsumi(ncol[:-1]))))
+        ndel = ensure_array(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
         # Backconvert lidx to deleted indices
         lidx = idx[lidx]
         del idx
@@ -500,13 +500,13 @@ class SparseCSR(object):
 
         # Correct number of elements per column, and the pointers
         ncol[:] -= ndel
-        ptr[1:] -= ns_.cumsumi(ndel)
+        ptr[1:] -= _a.cumsumi(ndel)
 
         if update_col:
             # Create a count array to subtract
-            count = ns_.zerosi(self.shape[1])
+            count = _a.zerosi(self.shape[1])
             count[columns] = 1
-            count = ns_.cumsumi(count)
+            count = _a.cumsumi(count)
 
             # Recreate pointers due to deleted indices
             idx = array_arange(ptr[:-1], n=ncol)
@@ -536,7 +536,7 @@ class SparseCSR(object):
         # Convert to boolean array where we have columns to be deleted
         lidx = col[idx] >= nc
         # Count number of deleted entries per row
-        ndel = ensure_array(map(count_nonzero, split(lidx, ns_.cumsumi(ncol[:-1]))))
+        ndel = ensure_array(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
         # Backconvert lidx to deleted indices
         lidx = idx[lidx]
         del idx
@@ -548,7 +548,7 @@ class SparseCSR(object):
 
         # Update number of entries per row, and pointers
         ncol[:] -= ndel
-        ptr[1:] -= ns_.cumsumi(ndel)
+        ptr[1:] -= _a.cumsumi(ndel)
 
         # Update number of non-zeroes
         self._nnz = np.sum(ncol)
@@ -578,7 +578,7 @@ class SparseCSR(object):
             end_clean = True
 
         # Now do the translation
-        pvt = ns_.arangei(self.shape[1])
+        pvt = _a.arangei(self.shape[1])
         pvt[old] = new
 
         # Get indices of valid column entries
@@ -734,7 +734,7 @@ class SparseCSR(object):
         # Ensure flattened array...
         j = ensure_array(j)
         if len(j) == 0:
-            return ns_.arrayi([])
+            return _a.arrayi([])
 
         # fast reference
         ptr = self.ptr
@@ -752,7 +752,7 @@ class SparseCSR(object):
             exists = intersect1d(j, col[ptr[i]:ptr[i]+ncol[i]],
                                  assume_unique=True)
         else:
-            exists = ns_.arrayi([])
+            exists = _a.arrayi([])
 
         # Get list of new elements to be added
         new_j = setdiff1d(j, exists, assume_unique=True)
@@ -836,7 +836,7 @@ class SparseCSR(object):
         """
 
         # Ensure flattened array...
-        j = ns_.asarrayi(j).flatten()
+        j = _a.asarrayi(j).flatten()
 
         # Make it a little easier
         ptr = self.ptr[i]
@@ -881,7 +881,7 @@ class SparseCSR(object):
 
         # Now create the compressed data...
         index -= ptr[i]
-        keep = isin(ns_.arangei(ncol[i]), index, invert=True)
+        keep = isin(_a.arangei(ncol[i]), index, invert=True)
 
         # Update new count of the number of
         # non-zero elements
@@ -1004,7 +1004,7 @@ class SparseCSR(object):
         if row is None:
             idx = array_arange(self.ptr[:-1], n=self.ncol)
             if not only_col:
-                rows = ns_.emptyi([self.nnz])
+                rows = _a.emptyi([self.nnz])
                 j = 0
                 for r, N in enumerate(self.ncol):
                     rows[j:j+N] = r
@@ -1013,8 +1013,8 @@ class SparseCSR(object):
             row = ensure_array(row)
             idx = array_arange(self.ptr[row], n=self.ncol[row])
             if not only_col:
-                N = ns_.sumi(self.ncol[row])
-                rows = ns_.emptyi([N])
+                N = _a.sumi(self.ncol[row])
+                rows = _a.emptyi([N])
                 j = 0
                 for r, N in zip(row, self.ncol[row]):
                     rows[j:j+N] = r
@@ -1127,10 +1127,10 @@ class SparseCSR(object):
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] >= self.shape[1]:
-            rindices = delete(ns_.arangei(self.shape[0]), indices)
+            rindices = delete(_a.arangei(self.shape[0]), indices)
 
         else:
-            rindices = delete(ns_.arangei(self.shape[1]), indices)
+            rindices = delete(_a.arangei(self.shape[1]), indices)
 
         return self.sub(rindices)
 
@@ -1159,9 +1159,9 @@ class SparseCSR(object):
         nc = count_nonzero(indices < self.shape[1])
 
         # Fix the pivoting indices with the new indices
-        pvt = ns_.emptyi([max(self.shape[0], self.shape[1])])
+        pvt = _a.emptyi([max(self.shape[0], self.shape[1])])
         pvt.fill(-1)
-        pvt[indices] = ns_.arangei(len(indices))
+        pvt[indices] = _a.arangei(len(indices))
 
         # Create the new SparseCSR
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
@@ -1183,7 +1183,7 @@ class SparseCSR(object):
         #   [1, :] the new column data
         # We do this because we can then use take on this array
         # and not two arrays.
-        col_data = ns_.emptyi([2, ncol1.sum()])
+        col_data = _a.emptyi([2, ncol1.sum()])
 
         # Create a list of ndarrays with indices of elements per row
         # and transfer to a linear index
@@ -1197,7 +1197,7 @@ class SparseCSR(object):
         # First recreate the new (temporary) pointer
         ptr1[0] = 0
         # Place it directly where it should be
-        ns_.cumsumi(ncol1, out=ptr1[1:])
+        _a.cumsumi(ncol1, out=ptr1[1:])
 
         # Count number of entries
         idx_take = col_data[1, :] >= 0
@@ -1216,7 +1216,7 @@ class SparseCSR(object):
 
         # Set the data for the new sparse csr
         csr.ptr[0] = 0
-        ns_.cumsumi(ncol1, out=csr.ptr[1:])
+        _a.cumsumi(ncol1, out=csr.ptr[1:])
         csr._nnz = len(csr.col)
 
         return csr

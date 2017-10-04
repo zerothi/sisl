@@ -5,7 +5,7 @@ from numbers import Integral
 import numpy as np
 
 from ._help import ensure_array
-import sisl._numpy_scipy as ns_
+import sisl._array as _a
 from .utils import dec_default_AP, default_namespace
 from .utils import cmd, strseq, direction
 from .supercell import SuperCellChild
@@ -167,9 +167,9 @@ class Grid(SuperCellChild):
         """
         if not boundary is None:
             if isinstance(boundary, Integral):
-                self.bc = ns_.arrayi([boundary] * 3)
+                self.bc = _a.arrayi([boundary] * 3)
             else:
-                self.bc = ns_.asarrayi(boundary)
+                self.bc = _a.asarrayi(boundary)
         if not a is None:
             self.bc[0] = a
         if not b is None:
@@ -197,7 +197,7 @@ class Grid(SuperCellChild):
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
         """
         # Create index vector
-        idx = ns_.arangei(3)
+        idx = _a.arangei(3)
         idx[b] = a
         idx[a] = b
         s = np.copy(self.shape)
@@ -320,9 +320,9 @@ class Grid(SuperCellChild):
               ``grid[:idx,...]``
         """
         if above:
-            sub = ns_.arangei(idx, self.shape[axis])
+            sub = _a.arangei(idx, self.shape[axis])
         else:
-            sub = ns_.arangei(0, idx)
+            sub = _a.arangei(0, idx)
         return self.sub(sub, axis)
 
     def sub(self, idx, axis):
@@ -379,7 +379,7 @@ class Grid(SuperCellChild):
         axis : int
            the axis segment from which we remove all indices `idx`
         """
-        ret_idx = np.delete(ns_.arangei(self.shape[axis]), ensure_array(idx))
+        ret_idx = np.delete(_a.arangei(self.shape[axis]), ensure_array(idx))
         return self.sub(ret_idx, axis)
 
     def index(self, coord, axis=None):
@@ -397,7 +397,7 @@ class Grid(SuperCellChild):
         if axis is None:
             rcell = self.rcell / (2. * np.pi)
             # Loop over each direction
-            idx = ns_.emptyi([3])
+            idx = _a.emptyi([3])
             for i in [0, 1, 2]:
                 # get the coordinate along the direction of the cell vector
                 c = np.dot(rcell[i, :], coord) * self.cell[i, :]
@@ -693,7 +693,7 @@ class Grid(SuperCellChild):
                         idx2 = ns._grid.shape[axis]
                     else:
                         idx2 = ns._grid.index(rng[1], axis=axis)
-                    ns._grid = ns._grid.sub(ns_.arangei(idx1, idx2), axis)
+                    ns._grid = ns._grid.sub(_a.arangei(idx1, idx2), axis)
                     return
                 elif rng < 0.:
                     if is_frac:
@@ -731,7 +731,7 @@ class Grid(SuperCellChild):
                         idx2 = ns._grid.shape[axis]
                     else:
                         idx2 = ns._grid.index(rng[1], axis=axis)
-                    ns._grid = ns._grid.remove(ns_.arangei(idx1, idx2), axis)
+                    ns._grid = ns._grid.remove(_a.arangei(idx1, idx2), axis)
                     return
                 elif rng < 0.:
                     if is_frac:

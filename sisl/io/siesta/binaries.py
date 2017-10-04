@@ -13,7 +13,7 @@ from ..sile import add_sile
 from .sile import SileBinSiesta
 
 # Import the geometry object
-import sisl._numpy_scipy as ns_
+import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
 from sisl.physics import Hamiltonian
@@ -254,7 +254,7 @@ class _GFSileSiesta(SileBinSiesta):
         # and secondly, the Python index to fortran
         # index makes firsto behave like fortran lasto
         lasto = obj.geom.firsto
-        bloch = ns_.onesi(3)
+        bloch = _a.onesi(3)
         mu = mu * eV2Ry
         NE = len(E)
         if E.dtype not in [np.complex64, np.complex128]:
