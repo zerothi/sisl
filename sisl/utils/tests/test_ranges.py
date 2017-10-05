@@ -2,9 +2,13 @@ from __future__ import print_function, division
 
 import pytest
 
+import math as m
+from functools import partial
+
 from sisl.utils.ranges import *
 
-import math as m
+
+pytestmark = pytest.mark.utils
 
 
 @pytest.mark.ranges
@@ -32,6 +36,25 @@ class TestRanges(object):
         assert strmap(int, '[82][10]') == [(82, [10])]
         assert strmap(int, '[82,83][10]') == [(82, [10]), (83, [10])]
         assert strmap(int, '[82,83][10-13]') == [(82, [(10, 13)]), (83, [(10, 13)])]
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_strmap2(self):
+        strmap(int, '1', sep='*')
+
+    def test_strmap3(self):
+        sm = partial(strmap, sep='c')
+        assert sm(int, '1') == [1]
+        assert sm(int, '1,2') == [1, 2]
+        assert sm(int, '1,2{0,2}') == [1, (2, [0, 2])]
+        assert sm(int, '1,2-3{0,2}') == [1, ((2, 3), [0, 2])]
+        assert sm(int, '1,{2,3}{0,2}') == [1, (2, [0, 2]), (3, [0, 2])]
+        assert sm(int, '{82}{10}') == [(82, [10])]
+        assert sm(int, '{82,83}{10}') == [(82, [10]), (83, [10])]
+        assert sm(int, '{82,83}{10-13}') == [(82, [(10, 13)]), (83, [(10, 13)])]
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_strmap4(self):
+        strmap(int, '1[oestuh]]')
 
     def test_lstranges1(self):
         ranges = strmap(int, '1,2-3[0,2]')

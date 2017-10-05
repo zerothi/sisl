@@ -2,9 +2,12 @@ from __future__ import print_function, division
 
 import pytest
 
+import math as m
+
 from sisl.utils.misc import *
 
-import math as m
+
+pytestmark = pytest.mark.utils
 
 
 class TestMisc(object):
@@ -38,6 +41,10 @@ class TestMisc(object):
     @pytest.mark.xfail(raises=ValueError)
     def test_direction_str(self):
         direction(4)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_direction_str(self):
+        direction('aosetuh')
 
     def test_angle_r2r(self):
         assert pytest.approx(angle('2pi')) == 2*m.pi
@@ -83,3 +90,23 @@ class TestMisc(object):
         a = str_spec('foo{bar}')
         assert a[0] == 'foo'
         assert a[1] == 'bar'
+
+    def test_merge_instances1(self):
+        class A(object):
+            pass
+        a = A()
+        a.hello = 1
+        class B(object):
+            pass
+        b = B()
+        b.hello = 2
+        b.foo = 2
+        class C(object):
+            pass
+        c = C()
+        c.bar = 3
+        d = merge_instances(a, b, c, name='TestClass')
+        assert d.__class__.__name__ == 'TestClass'
+        assert d.hello == 2
+        assert d.foo == 2
+        assert d.bar == 3

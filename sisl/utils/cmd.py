@@ -1,3 +1,5 @@
+import argparse
+
 from sisl.utils.ranges import strmap, strseq
 
 __all__ = ['argv_negative_fix', 'default_namespace', 'ensure_namespace']
@@ -20,7 +22,7 @@ def argv_negative_fix(argv):
     return rgv
 
 
-def default_namespace(*args, **kwargs):
+def default_namespace(**kwargs):
     class CustomNamespace(object):
         pass
     namespace = CustomNamespace()
@@ -53,8 +55,6 @@ def collect_input(argv):
     This simply creates a shortcut input file and returns
     it.
     """
-    import argparse
-
     # Grap input-file
     p = argparse.ArgumentParser('Parser for input file', add_help=False)
     # Now add the input and output file
@@ -71,9 +71,9 @@ def collect_arguments(argv, input=False,
                       namespace=None):
     """ Function for returning the actual arguments depending on the input options.
 
-    This function will create a fake ``ArgumentParser`` which then
+    This function will create a fake `argparse.ArgumentParser` which then
     will pass through the input figuring out which options
-    that should be given to the final ``ArgumentParser``.
+    that should be given to the final `argparse.ArgumentParser`.
 
     Parameters
     ----------
@@ -83,30 +83,22 @@ def collect_arguments(argv, input=False,
     input : bool, optional
        whether or not the arguments should also gather
        from the input file.
-    argumentparser : ``argparse.ArgumentParser``
+    argumentparser : argparse.ArgumentParser, optional
        the argument parser that should add the options that we find from
        the output and input files.
-    namespace : ``argparse.Namespace``
+    namespace : argparse.Namespace, optional
        the namespace for the argument parser.
     """
 
     # First we figure out the input file, and the output file
-    import argparse
-    import sisl
+    from sisl import get_sile
 
     # Create the default namespace in case there is none
     if namespace is None:
         namespace = default_namespace()
 
     if input:
-        # Grap input-file
-        p = argparse.ArgumentParser('Parser for input file', add_help=False)
-        # Now add the input and output file
-        p.add_argument('input_file', nargs='?', default=None)
-        # Retrieve the input file
-        # (return the remaining options)
-        args, argv = p.parse_known_args(argv)
-        input_file = args.input_file
+        argv, input_file = collect_input(argv)
     else:
         input_file = None
 
@@ -120,7 +112,7 @@ def collect_arguments(argv, input=False,
 
     if input_file is not None:
         try:
-            obj = sisl.get_sile(input_file)
+            obj = get_sile(input_file)
             argumentparser, namespace = obj.ArgumentParser(argumentparser, namespace=namespace,
                                                            **obj._ArgumentParser_args_single())
             # Be sure to add the input file
@@ -131,7 +123,7 @@ def collect_arguments(argv, input=False,
 
     if args.out is not None:
         try:
-            obj = sisl.get_sile(args.out[0], mode='r')
+            obj = get_sile(args.out[0], mode='r')
             obj.ArgumentParser_out(argumentparser, namespace=namespace)
         except Exception:
             # Allowed pass due to pythonic reading
@@ -148,13 +140,11 @@ def dec_default_AP(*A_args, **A_kwargs):
     def default_AP(func):
         # This requires that the first argument
         # for the function is the parser with default=None
-        from argparse import ArgumentParser
-
         def new_func(self, parser=None, *args, **kwargs):
             if parser is None:
                 # Create the new parser and insert in the
                 # argument list
-                parser = ArgumentParser(*A_args, **A_kwargs)
+                parser = argparse.ArgumentParser(*A_args, **A_kwargs)
             return func(self, parser, *args, **kwargs)
         return new_func
     return default_AP
