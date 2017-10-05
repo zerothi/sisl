@@ -36,18 +36,25 @@ matrix:
 
 install:
   - conda install hdf4 libnetcdf
-  - if [[ ${COVERAGE:-false} != false ]]; then pip install coverage codacy-coverage ; fi
+  - if [[ ${COVERAGE:-false} != false ]]; then
+       pip install coverage codacy-coverage ;
+    fi
   - pip install pytest pytest-cov
   - python setup.py install
 
 script:
-  - if [[ ${COVERAGE:-false} != false ]]; then pip install -e . ; pytest --cov=sisl ; else pytest --pyargs sisl ; fi
+  - if [[ ${COVERAGE:-false} != false ]]; then
+        pip install -e . ;
+        pytest --cov=sisl ;
+    else
+	pytest --pyargs sisl ;
+    fi
 
 after_success:
-  - if [[ ${COVERAGE:-false} != false ]]; then \
-       bash <(curl -s https://codecov.io/bash) ; \
-       coverage xml ; \
-       python-codacy-coverage -r coverage.xml ; \
+  - if [[ ${COVERAGE:-false} != false ]]; then
+       bash <(curl -s https://codecov.io/bash) ;
+       coverage xml ;
+       python-codacy-coverage -r coverage.xml ;
     fi
 
 
