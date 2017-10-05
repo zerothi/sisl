@@ -53,7 +53,6 @@ script:
 after_success:
   - if [[ ${COVERAGE:-false} != false ]]; then
        bash <(curl -s https://codecov.io/bash) ;
-       coverage xml ;
        python-codacy-coverage -r coverage.xml ;
     fi
 

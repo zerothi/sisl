@@ -871,6 +871,7 @@ class SileCDF(BaseSile):
         --------
 
         Script for looping and checking each instance.
+
         >>> for gv in self.iter():
         >>>     if self.isGroup(gv):
         >>>         # is group
