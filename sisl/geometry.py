@@ -459,21 +459,18 @@ class Geometry(SuperCellChild):
                         yield ia, io
 
     def iR(self, na=1000, iR=20, R=None):
-        """ Return an integer number of maximum radii (`self.maxR()`) which holds approximately `na` atoms
+        """ Return an integer number of maximum radii (``self.maxR()``) which holds approximately `na` atoms
 
         Parameters
         ----------
         na : int, optional
            number of atoms within the radius
         iR : int, optional
-           initial ``iR`` value, which the sphere is estitametd from
+           initial `iR` value, which the sphere is estitametd from
         R : float, optional
            the value used for atomic range (defaults to ``self.maxR()``)
         """
-        if len(self) == 1:
-            ia = 0
-        else:
-            ia = np.random.randint(len(self) - 1)
+        ia = np.random.randint(len(self))
 
         # default block iterator
         if R is None:
