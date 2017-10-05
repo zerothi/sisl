@@ -18,7 +18,7 @@ Range routines
    strseq
    lstranges
    erange
-   list2range
+   list2str
    fileindex
 
 Miscellaneous routines

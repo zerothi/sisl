@@ -5,9 +5,7 @@ from itertools import groupby
 
 from numpy import zeros, ones, cumsum, take, int32
 
-from sisl._help import _map as map
-
-__all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2range', 'fileindex']
+__all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2str', 'fileindex']
 __all__ += ['array_arange']
 
 
@@ -155,14 +153,14 @@ def lstranges(lst, cast=erange):
     return l
 
 
-def list2range(lst):
+def list2str(lst):
     """ Convert a list of elements into a string of ranges
 
     Examples
     --------
-    >>> list2range([2, 4, 5, 6])
+    >>> list2str([2, 4, 5, 6])
     2, 4-6
-    >>> list2range([2, 4, 5, 6, 8, 9])
+    >>> list2str([2, 4, 5, 6, 8, 9])
     2, 4-6, 8-9
     """
     lst = lst[:]

@@ -1432,7 +1432,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 prnt("  - " + string + ": false\t\t["+', '.join(fdf) + ']')
 
         # Retrieve the device atoms
-        dev_rng = list2range(self.a_dev + 1)
+        dev_rng = list2str(self.a_dev + 1)
         prnt("Device information:")
         if self._k_avg:
             prnt("  - all data is k-averaged")
