@@ -23,7 +23,7 @@ Generic classes
    SuperCell
    Grid
 
-Below are a group of advanced classes rarely needed. 
+Below are a group of advanced classes rarely needed.
 A lot of the sub-classes extend these classes, or use them
 intrinsically. However, they are not necessarily intended
 for users use.

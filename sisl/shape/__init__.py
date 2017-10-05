@@ -15,7 +15,7 @@ All shapes inherit the `Shape` class.
    Shape - base class
    Cuboid - 3d cube
    Cube - 3d box
-   Ellipsoid 
+   Ellipsoid
    Spheroid
    Sphere
 

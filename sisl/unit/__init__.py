@@ -5,7 +5,7 @@ Unit conversion (:mod:`sisl.unit`)
 
 .. module:: sisl.unit
 
-Generic conversion utility between different units. 
+Generic conversion utility between different units.
 
 All different codes unit conversion routines
 should adhere to the same routine names for consistency and

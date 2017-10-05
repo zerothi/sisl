@@ -20,7 +20,7 @@ class TableSile(Sile):
 
     @Sile_fh_open
     def write_data(self, *args, **kwargs):
-        """ Write tabular data to the file with optional header. 
+        """ Write tabular data to the file with optional header.
 
         Parameters
         ----------
