@@ -539,7 +539,7 @@ class TestHamiltonian(object):
 
     def test_spin1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
-        H = Hamiltonian(g, dtype=np.int32, spin=2)
+        H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
         for i in range(10):
             j = range(i*4, i*4+3)
             H[0, j] = (i, i*2)
@@ -552,7 +552,7 @@ class TestHamiltonian(object):
 
     def test_spin2(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
-        H = Hamiltonian(g, dtype=np.int32, spin=2)
+        H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
         for i in range(10):
             j = range(i*4, i*4+3)
             H[0, j] = (i, i*2)
@@ -563,7 +563,7 @@ class TestHamiltonian(object):
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
 
-        H2 = Hamiltonian(g, Spin(2), dtype=np.int32)
+        H2 = Hamiltonian(g, Spin(Spin.POLARIZED), dtype=np.int32)
         for i in range(10):
             j = range(i*4, i*4+3)
             H2[0, j] = (i, i*2)
@@ -577,7 +577,7 @@ class TestHamiltonian(object):
 
     def test_non_colinear1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
-        H = Hamiltonian(g, dtype=np.float64, spin=4)
+        H = Hamiltonian(g, dtype=np.float64, spin=Spin.NONCOLINEAR)
         for i in range(10):
             j = range(i*4, i*4+3)
             H[i, i, 0] = 0.
@@ -618,7 +618,7 @@ class TestHamiltonian(object):
 
     def test_so1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
-        H = Hamiltonian(g, dtype=np.float64, spin=8)
+        H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
             j = range(i*4, i*4+3)
             H[i, i, 0] = 0.

@@ -471,7 +471,17 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         as the underlying geometry for the parameters that connects orbital elements.
         """
         # Check that the passed parameters are correct
-        self._spin = Spin(kwargs.get('spin', dim), dtype)
+        if 'spin' not in kwargs:
+            if isinstance(dim, Spin):
+                spin = dim
+            else:
+                spin = {1: Spin.UNPOLARIZED,
+                        2: Spin.POLARIZED,
+                        4: Spin.NONCOLINEAR,
+                        8: Spin.SPINORBIT}.get(dim)
+        else:
+            spin = kwargs.get('spin')
+        self._spin = Spin(spin, dtype)
 
         super(SparseOrbitalBZSpin, self).__init__(geom, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
 
@@ -534,7 +544,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     # Override to enable spin configuration and orthogonality
     def _cls_kwargs(self):
-        return {'spin': self.spin, 'orthogonal': self.orthogonal}
+        return {'spin': self.spin.kind, 'orthogonal': self.orthogonal}
 
     @property
     def spin(self):

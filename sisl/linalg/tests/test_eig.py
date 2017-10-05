@@ -11,7 +11,7 @@ from sisl.linalg import (eig, eig_destroy,
 pytestmark = [pytest.mark.linalg, pytest.mark.eig]
 
 
-def test_eig1(self):
+def test_eig1():
     np.random.seed(1204982)
     a = np.random.rand(10, 10)
     ac = a.copy()
@@ -24,7 +24,8 @@ def test_eig1(self):
     assert np.allclose(a, ac)
     assert np.allclose(b, bc)
 
-def test_eigh1(self):
+
+def test_eigh1():
     np.random.seed(1204982)
     a = np.random.rand(10, 10)
     # Symmetrize
@@ -35,7 +36,7 @@ def test_eigh1(self):
     assert np.allclose(xs, x)
     assert np.allclose(vs, v)
     assert np.allclose(a, ac)
-    
+
     x, v = eigh_dc(a)
     assert np.allclose(xs, x)
     assert np.allclose(vs, v)
@@ -46,7 +47,8 @@ def test_eigh1(self):
     assert np.allclose(vs, v)
     assert np.allclose(a, ac)
 
-def test_eig_d1(self):
+
+def test_eig_d1():
     np.random.seed(1204982)
     a = np.random.rand(10, 10)
     b = np.random.rand(10, 10)
@@ -55,7 +57,8 @@ def test_eig_d1(self):
     assert np.allclose(xs, x)
     assert np.allclose(vs, v)
 
-def test_eigh_d1(self):
+
+def test_eigh_d1():
     np.random.seed(1204982)
     a = np.random.rand(10, 10)
     # Symmetrize

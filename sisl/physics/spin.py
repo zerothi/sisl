@@ -27,45 +27,47 @@ class Spin(object):
 
     UNPOLARIZED = 0
     POLARIZED = 1
-    NONCOLLINEAR = 2
+    NONCOLINEAR = 2
     SPINORBIT = 3
 
-    __slots__ = ['_spin', '_dtype']
+    __slots__ = ['_spins', '_kind', '_dtype']
 
-    def __init__(self, spin='', dtype=None):
+    def __init__(self, kind='', dtype=np.float64):
 
-        if isinstance(spin, Spin):
-            self._spin = spin._spin
-            self._dtype = spin._dtype
+        if isinstance(kind, Spin):
+            self._kind = kind._kind
+            self._dtype = kind._dtype
+            self._spins = kind._spins
             return
-
-        # Determine the spin-configuration
-        if dtype is None:
-            dtype = np.float64
 
         # Copy data-type
         self._dtype = dtype
 
-        if np.dtype(dtype).kind == 'c':
-            spin = {'unpolarized': 1, '': 1, 1: 1,
-                    'polarized': 2, 'p': 2,
-                    'non-colinear': 2, 'nc': 2,
-                    'spin-orbit': 4, 'so': 4, 3: 4}.get(spin, spin)
-
-        else:
-            spin = {'unpolarized': 1, '': 1, 1: 1,
-                    'polarized': 2, 'p': 2, 2: 2,
-                    'non-colinear': 4, 'nc': 4, 4: 4,
-                    'spin-orbit': 8, 'so': 8, 8: 8}.get(spin, spin)
+        kind = {'unpolarized': Spin.UNPOLARIZED, '': Spin.UNPOLARIZED,
+                Spin.UNPOLARIZED: Spin.UNPOLARIZED,
+                'polarized': Spin.POLARIZED, 'p': Spin.POLARIZED,
+                Spin.POLARIZED: Spin.POLARIZED,
+                'non-colinear': Spin.NONCOLINEAR, 'nc': Spin.NONCOLINEAR,
+                Spin.NONCOLINEAR: Spin.NONCOLINEAR,
+                'spin-orbit': Spin.SPINORBIT, 'so': Spin.SPINORBIT,
+                Spin.SPINORBIT: Spin.SPINORBIT}.get(kind)
 
         # Now assert the checks
-        self._spin = spin
+        self._kind = kind
 
-        if not isinstance(spin, Integral):
-            raise ValueError('Could not determine spin-size from input')
+        if np.dtype(dtype).kind == 'c':
+            spins = {self.UNPOLARIZED: 1,
+                     self.POLARIZED: 2,
+                     self.NONCOLINEAR: 4,
+                     self.SPINORBIT: 4}.get(kind)
 
-        # Perhaps we should add additional checks here to assert that the
-        # spin values and data-type makes sense...
+        else:
+            spins = {self.UNPOLARIZED: 1,
+                     self.POLARIZED: 2,
+                     self.NONCOLINEAR: 4,
+                     self.SPINORBIT: 8}.get(kind)
+
+        self._spins = spins
 
     def __repr__(self):
         s = self.__class__.__name__
@@ -78,7 +80,7 @@ class Spin(object):
         return s + '{{spin-orbit, kind={}}}'.format(self.dkind)
 
     def copy(self):
-        return Spin(self.spins, self.dtype)
+        return Spin(self.kind, self.dtype)
 
     @property
     def dtype(self):
@@ -93,94 +95,54 @@ class Spin(object):
     @property
     def spins(self):
         """ Number of spin-components """
-        return self._spin
+        return self._spins
 
     @property
     def kind(self):
         """ A unique ID for the kind of spin configuration """
-        if self.is_unpolarized:
-            return self.UNPOLARIZED
-        if self.is_polarized:
-            return self.POLARIZED
-        if self.is_noncolinear:
-            return self.NONCOLLINEAR
-        if self.is_spinorbit:
-            return self.SPINORBIT
-        raise NotImplementedError
+        return self._kind
 
     @property
     def is_unpolarized(self):
         """ True if the configuration is not polarized """
         # Regardless of data-type
-        return self.spins == 1
+        return self.kind == Spin.UNPOLARIZED
 
     @property
     def is_polarized(self):
         """ True if the configuration is polarized """
-        return self.spins == 2 and self.dkind != 'c'
+        return self.kind == Spin.POLARIZED
 
     is_colinear = is_polarized
 
     @property
     def is_noncolinear(self):
         """ True if the configuration non-colinear """
-        s = self.spins
-        k = self.dkind
-        return (s == 2 and k == 'c') or (s == 4 and k != 'c')
+        return self.kind == Spin.NONCOLINEAR
 
     @property
     def is_spinorbit(self):
         """ True if the configuration is spin-orbit """
-        s = self.spins
-        k = self.dkind
-        return (s == 4 and k == 'c') or (s == 8 and k != 'c')
+        return self.kind == Spin.SPINORBIT
 
     def __len__(self):
-        return self.spins
+        return self._spins
 
-    # Comparison types
+    # Comparisons
     def __lt__(a, b):
-        if a.dkind == b.dkind:
-            return a.spins < b.spins
-        # Explicit checks
-        if a.is_unpolarized:
-            return not b.is_unpolarized
-        elif a.is_polarized:
-            return b.is_noncolinear or b.is_spinorbit
-        elif a.is_noncolinear:
-            return b.is_spinorbit
-        # It cannot be less than the other one... spin-orbit is highest
-        return False
+        return a.kind < b.kind
 
     def __le__(a, b):
-        if a.dkind == b.dkind:
-            return a.spins <= b.spins
-
-        if a.is_unpolarized:
-            return True
-        elif a.is_polarized:
-            return not b.is_unpolarized
-        elif a.is_noncolinear:
-            return b.is_noncolinear or b.is_spinorbit
-        return b.is_spinorbit
+        return a.kind <= b.kind
 
     def __eq__(a, b):
-        if a.dkind == b.dkind:
-            return a.spins == b.spins
-
-        if a.is_unpolarized:
-            return b.is_unpolarized
-        elif a.is_polarized:
-            return b.is_polarized
-        elif a.is_noncolinear:
-            return b.is_noncolinear
-        return b.is_spinorbit
+        return a.kind == b.kind
 
     def __ne__(a, b):
         return not a == b
 
     def __gt__(a, b):
-        return b < a
+        return a.kind > b.kind
 
     def __ge__(a, b):
-        return b <= a
+        return a.kind >= b.kind
