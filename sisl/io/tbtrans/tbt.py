@@ -447,6 +447,13 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         """ Return temperature of the electrode electronic distribution in eV """
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
+    def eta(self, elec):
+        """ The imaginary part used when calculating the self-energies in eV """
+        try:
+            return self._value('eta', self._elec(elec))[0] * Ry2eV
+        except:
+            return 0.
+
     def transmission(self, elec_from=0, elec_to=1, kavg=True):
         """ Transmission from `from` to `to`.
 
@@ -785,8 +792,12 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         DOS : the total density of states (including bound states)
         ADOS : the spectral density of states from an electrode
         """
+        # The bulk DOS is already normalized per non-expanded cell
+        # Hence the non-normalized quantity needs to be multiplied by
+        #  product(bloch)
         elec = self._elec(elec)
         if norm in ['atom', 'orbital', 'all']:
+            # This is normalized per non-expanded unit-cell, so no need to do Bloch
             N = 1. / len(self._dimension('no_u', elec))
         else:
             N = 1.
@@ -1465,7 +1476,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
         prnt("  - atoms with DOS (fortran indices):")
         prnt("     " + dev_rng)
-        truefalse('DOS' in self.variables, "DOS Green function", ['SELF.DOS.Gf'])
+        truefalse('DOS' in self.variables, "DOS Green function", ['TBT.DOS.Gf'])
         if elec is None:
             elecs = self.elecs
         else:
@@ -1474,11 +1485,17 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # Print out information for each electrode
         for elec in elecs:
             try:
+                try:
+                    bloch = self._variable('bloch', elec)[:]
+                except:
+                    bloch = [0] * 3
                 prnt()
-                prnt("Electrode: " + elec)
+                prnt("Electrode: {}".format(elec))
+                prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
                 gelec = self.groups[elec]
                 prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
                 prnt("  - electronic temperature: {:.2f} K".format(self.electronic_temperature(elec)))
+                prnt("  - imaginary part: {:.4f} meV".format(self.eta(elec) * 1e3))
                 truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
                 truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
                 truefalse('J' in gelec.variables, "orbital-current", ['TBT.DOS.A', 'TBT.Current.Orb'])
