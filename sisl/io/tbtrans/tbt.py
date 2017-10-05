@@ -756,7 +756,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         return self._DOS(self._value_E('ADOS', elec, kavg=kavg, E=E),
                          atom, orbital, sum, norm) * eV2Ry
 
-    def BDOS(self, elec=0, E=None, kavg=True, sum=True):
+    def BDOS(self, elec=0, E=None, kavg=True, sum=True, norm='none'):
         r""" Bulk density of states (DOS) (1/eV).
 
         Extract the bulk DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
@@ -776,6 +776,9 @@ class tbtncSileTBtrans(SileCDFTBtrans):
            or a selection of k-points
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
+        norm : {'none', 'atom', 'orbital', 'all'}
+           whether the returned quantities are summed or normed by total number of orbitals.
+           Currently one cannot extract DOS per atom/orbital.
 
         See Also
         --------
@@ -783,10 +786,14 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         ADOS : the spectral density of states from an electrode
         """
         elec = self._elec(elec)
-        if sum:
-            return _a.sumd(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry
+        if norm in ['atom', 'orbital', 'all']:
+            N = 1. / len(self._dimension('no_u', elec))
         else:
-            return self._value_E('DOS', elec, kavg=kavg, E=E) * eV2Ry
+            N = 1.
+        if sum:
+            return _a.sumd(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry * N
+        else:
+            return self._value_E('DOS', elec, kavg=kavg, E=E) * eV2Ry * N
 
     def _E_T_sorted(self, elec_from, elec_to, kavg=True):
         """ Internal routine for returning energies and transmission in a sorted array """
