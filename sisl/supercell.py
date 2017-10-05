@@ -8,7 +8,6 @@ import math
 import numpy as np
 from numbers import Integral
 
-import sisl._array as _a
 import sisl.linalg as lin
 import sisl.plot as plt
 from ._help import ensure_array

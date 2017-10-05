@@ -50,7 +50,7 @@ class Spin(object):
             spin = {'unpolarized': 1, '': 1, 1: 1,
                     'polarized': 2, 'p': 2,
                     'non-colinear': 2, 'nc': 2,
-                    'spin-orbit': 4, 'so': 4, 4: 4}.get(spin, spin)
+                    'spin-orbit': 4, 'so': 4, 3: 4}.get(spin, spin)
 
         else:
             spin = {'unpolarized': 1, '': 1, 1: 1,
@@ -171,7 +171,7 @@ class Spin(object):
         if a.is_unpolarized:
             return b.is_unpolarized
         elif a.is_polarized:
-            return not b.is_polarized
+            return b.is_polarized
         elif a.is_noncolinear:
             return b.is_noncolinear
         return b.is_spinorbit

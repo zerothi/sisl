@@ -27,6 +27,11 @@ class TestSpin(object):
         s3 = Spin('nc')
         s4 = Spin('so')
 
+        assert s1.kind == Spin.UNPOLARIZED
+        assert s2.kind == Spin.POLARIZED
+        assert s3.kind == Spin.NONCOLINEAR
+        assert s4.kind == Spin.SPINORBIT
+
         assert s1 == s1.copy()
         assert s2 == s2.copy()
         assert s3 == s3.copy()
@@ -67,3 +72,18 @@ class TestSpin(object):
         assert not s4.is_polarized
         assert not s4.is_noncolinear
         assert s4.is_spinorbit
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_spin3(self):
+        s = Spin('satoehus')
+
+    def test_spin4(self):
+        s1 = Spin(1)
+        S1 = Spin(1, np.complex64)
+        s2 = Spin(2)
+        S2 = Spin(2, np.complex64)
+        s3 = Spin(3)
+        S3 = Spin(3, np.complex64)
+        s4 = Spin(4)
+        S4 = Spin(4, np.complex64)
+        assert sr == sc

@@ -16,7 +16,7 @@ __all__ = []
 
 def inv(a, overwrite_a=False):
     """
-    Inverts a matrix 
+    Inverts a matrix
 
     Parameters
     ----------
@@ -31,7 +31,6 @@ def inv(a, overwrite_a=False):
         The inverted matrix
     """
     a1 = atleast_2d(_asarray_validated(a, check_finite=False))
-    n = a1.shape[0]
 
     overwrite_a = overwrite_a or _datacopied(a1, a)
 

@@ -7,7 +7,7 @@ from .sile import SileCDFSiesta
 from ..sile import *
 
 # Import the geometry object
-from sisl import Geometry, SuperCell, Grid
+from sisl import SuperCell, Grid
 from sisl.unit.siesta import unit_convert
 
 __all__ = ['gridncSileSiesta']

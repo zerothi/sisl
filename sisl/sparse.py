@@ -9,7 +9,7 @@ from collections import Iterable
 import numpy as np
 from numpy import empty, zeros, asarray, arange
 from numpy import insert, take, delete, copyto, split
-from numpy import where, intersect1d, setdiff1d, unique
+from numpy import intersect1d, setdiff1d, unique
 from numpy import diff, count_nonzero
 from numpy import argsort
 try:
