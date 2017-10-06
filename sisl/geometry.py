@@ -2261,18 +2261,18 @@ class Geometry(SuperCellChild):
 
             # Check all 6 faces
             # p1 is always [0, 0, 0]
-            n, _ = self.sc.plane(0, 1, True)
+            n, _ = self.sc.plane(0, 1)
             d1 = _dot(n, pp)
             d2 = _dot(n, pp - up)
             if d1 > r or -d2 > r:
                 return False
 
-            n, _ = self.sc.plane(0, 2, True)
+            n, _ = self.sc.plane(0, 2)
             d1 = _dot(n, pp)
             d2 = _dot(n, pp - up)
             if d1 > r or -d2 > r:
                 return False
-            n, _ = self.sc.plane(1, 2, True)
+            n, _ = self.sc.plane(1, 2)
             d1 = _dot(n, pp)
             d2 = _dot(n, pp - up)
             if d1 > r or -d2 > r:

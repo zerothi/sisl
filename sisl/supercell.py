@@ -283,8 +283,8 @@ class SuperCell(object):
         return self.__class__(np.copy(self.cell[idx, :], order='C'),
                               nsc=self.nsc[idx])
 
-    def plane(self, ax1, ax2, origo):
-        """ Query the point and plane normal for the plane spanning `ax1` and `ax2`
+    def plane(self, ax1, ax2, origo=True):
+        """ Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
         ----------
@@ -292,13 +292,43 @@ class SuperCell(object):
            the first axis vector
         ax2 : int
            the second axis vector
-        origo : bool
-           whether the plane intersects the origo
+        origo : bool, optional
+           whether the plane intersects the origo or the opposite corner of the
+           unit-cell.
+
+        Examples
+        --------
+
+        All 6 faces of the supercell can be retrieved like this:
+
+        >>> n1, p1 = self.plane(0, 1, True)
+        >>> n2, p2 = self.plane(0, 1, False)
+        >>> n3, p3 = self.plane(0, 2, True)
+        >>> n4, p4 = self.plane(0, 2, False)
+        >>> n5, p5 = self.plane(1, 2, True)
+        >>> n6, p6 = self.plane(1, 2, False)
+
+        However, for performance critical calculations it may be advantegeous to
+        do this:
+
+        >>> uc = self.cell.sum(0)
+        >>> n1, p1 = self.sc.plane(0, 1)
+        >>> n2 = -n1
+        >>> p2 = p1 + uc
+        >>> n3, p3 = self.sc.plane(0, 2)
+        >>> n4 = -n3
+        >>> p4 = p3 + uc
+        >>> n5, p5 = self.sc.plane(1, 2)
+        >>> n6 = -n5
+        >>> p6 = p5 + uc
+
+        Secondly, the variables `p1`, `p3` and `p5` are always the origo and hence
+        can be neglected in many calculations.
 
         Returns
         -------
         n : array_like
-           normal vector (pointing outwards in regards of the cell) of the plane
+           planes normal vector (pointing outwards with regards to the cell)
         p : array_like
            a point on the plane
         """
