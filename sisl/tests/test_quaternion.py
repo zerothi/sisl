@@ -60,3 +60,33 @@ class TestQuaternion(object):
         assert rxy == setup.qx
         setup.qx += setup.qy
         assert -rx == setup.qx
+
+    def test_op2(self, setup):
+        rx = setup.qx + 1.
+        assert rx - 1. == setup.qx
+
+        rx = setup.qx * 1.
+        assert rx == setup.qx
+
+        rx = setup.qx * 1.
+        assert rx == setup.qx
+
+        rx = setup.qx / 1.
+        assert rx == setup.qx
+
+        rx = setup.qx.copy()
+        rx += 1.
+        rx -= 1.
+        assert rx == setup.qx
+
+        rx = setup.qx.copy()
+        rx *= setup.qy
+        assert rx == setup.qx * setup.qy
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_fail_div1(self, setup):
+        setup.qx /= setup.qy
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_fail_div2(self, setup):
+        a = setup.qx / setup.qy
