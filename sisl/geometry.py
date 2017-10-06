@@ -2273,6 +2273,10 @@ class Geometry(SuperCellChild):
                 return False
             return True
 
+        if np.all(self.sc.nsc == 1):
+            def sphere_intersect(*args):
+                return True
+
         # To reduce calculations of the same quantities
         up = self.sc.cell.sum(0)
         r = R[-1]
