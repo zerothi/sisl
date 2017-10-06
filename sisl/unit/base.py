@@ -106,7 +106,7 @@ def unit_default(group, tbl=None):
         if group == k:
             return tbl[k]['DEFAULT']
 
-    raise UnitError('The unit-group does not exist!')
+    raise ValueError('The unit-group does not exist!')
 
 
 def unit_convert(fr, to, opts=None, tbl=None):
