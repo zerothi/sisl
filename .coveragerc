@@ -5,6 +5,7 @@ omit =
     sisl/*/tests/*
     */__config__.py
     */setup.py
+    sisl/utils/sdata.py
 
 [report]
 exclude_lines =

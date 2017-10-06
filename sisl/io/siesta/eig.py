@@ -4,7 +4,7 @@ import numpy as np
 
 # Import sile objects
 from sisl.utils import strmap
-from sisl.utils.cmd import *
+from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from ..sile import add_sile, Sile_fh_open
 from .sile import *
 
@@ -46,7 +46,7 @@ class eigSileSiesta(SileSiesta):
             eigs[:, ik, :] = tmp_E
         return eigs - Ef
 
-    @dec_default_AP("Manipulate EIG file in sisl.")
+    @default_ArgumentParser(description="Manipulate EIG file in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         #limit_args = kwargs.get('limit_arguments', True)

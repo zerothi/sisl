@@ -17,7 +17,7 @@ from ._help import _str
 from ._help import _range as range
 from ._help import ensure_array, ensure_dtype
 from ._help import isndarray
-from .utils import dec_default_AP, default_namespace, cmd
+from .utils import default_ArgumentParser, default_namespace, cmd
 from .utils import angle, direction
 from .utils import lstranges, strmap, array_arange
 from .quaternion import Quaternion
@@ -2772,7 +2772,7 @@ class Geometry(SuperCellChild):
     # Hook into the Geometry class to create
     # an automatic ArgumentParser which makes actions
     # as the options are read.
-    @dec_default_AP("Manipulate a Geometry object in sisl.")
+    @default_ArgumentParser(description="Manipulate a Geometry object in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Create and return a group of argument parsers which manipulates it self `Geometry`.
 

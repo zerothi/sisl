@@ -1519,7 +1519,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         out.close()
         return s
 
-    @dec_default_AP("Extract data from a TBT.nc file")
+    @default_ArgumentParser(description="Extract data from a TBT.nc file")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
 
@@ -1540,7 +1540,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         }
         namespace = default_namespace(**d)
 
-        def dec_ensure_E(func):
+        def ensure_E(func):
             """ This decorater ensures that E is the first element in the _data container """
 
             def assign_E(self, *args, **kwargs):
@@ -1581,7 +1581,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # Energy grabs
         class ERange(argparse.Action):
 
-            @dec_collect_and_run_action
+            @collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 Emap = strmap(float, value)
                 # Convert to actual indices
@@ -1598,7 +1598,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # k-range
         class kRange(argparse.Action):
 
-            @dec_collect_and_run_action
+            @collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 ns._krng = lstranges(strmap(int, value))
         if not self._k_avg:
@@ -1611,7 +1611,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # The normalization method
         class NormAction(argparse.Action):
 
-            @dec_collect_and_run_action
+            @collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 ns._norm = value
         p.add_argument('--norm', '-N', action=NormAction, default='atom',
@@ -1627,7 +1627,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # Try and add the atomic specification
         class AtomRange(argparse.Action):
 
-            @dec_collect_and_run_action
+            @collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 value = value.replace(' ', '')
                 # Immediately convert to proper indices
@@ -1701,8 +1701,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         class DataT(argparse.Action):
 
-            @dec_collect_action
-            @dec_ensure_E
+            @collect_action
+            @ensure_E
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = ns._tbt._elec(values[0])
                 if e1 not in ns._tbt.elecs:
@@ -1731,8 +1731,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         class DataBT(argparse.Action):
 
-            @dec_collect_action
-            @dec_ensure_E
+            @collect_action
+            @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
                 e = ns._tbt._elec(value[0])
                 if e not in ns._tbt.elecs:
@@ -1757,8 +1757,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         class DataDOS(argparse.Action):
 
-            @dec_collect_action
-            @dec_ensure_E
+            @collect_action
+            @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
                 if not value is None:
                     # we are storing the spectral DOS
@@ -1795,8 +1795,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         class DataDOSBulk(argparse.Action):
 
-            @dec_collect_action
-            @dec_ensure_E
+            @collect_action
+            @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
 
                 # we are storing the Bulk DOS
@@ -1824,8 +1824,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         class DataTEig(argparse.Action):
 
-            @dec_collect_action
-            @dec_ensure_E
+            @collect_action
+            @ensure_E
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = ns._tbt._elec(values[1])
                 if e1 not in ns._tbt.elecs:
@@ -1866,7 +1866,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         class Out(argparse.Action):
 
-            @dec_run_actions
+            @run_actions
             def __call__(self, parser, ns, value, option_string=None):
 
                 out = value[0]
@@ -1913,7 +1913,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         class Plot(argparse.Action):
 
-            @dec_run_actions
+            @run_actions
             def __call__(self, parser, ns, value, option_string=None):
 
                 if len(ns._data) == 0:

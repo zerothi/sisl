@@ -13,7 +13,7 @@ from sisl.io._help import *
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 
-from sisl.utils.cmd import *
+from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances, str_spec
 
 from sisl.unit.siesta import unit_convert, unit_default, unit_group
@@ -516,7 +516,7 @@ class fdfSileSiesta(SileSiesta):
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
 
-    @dec_default_AP("Manipulate a FDF file.")
+    @default_ArgumentParser(description="Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         import argparse

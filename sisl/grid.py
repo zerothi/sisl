@@ -6,7 +6,7 @@ import numpy as np
 
 from ._help import ensure_array
 import sisl._array as _a
-from .utils import dec_default_AP, default_namespace
+from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction
 from .supercell import SuperCellChild
 from .atom import Atom
@@ -588,7 +588,7 @@ class Grid(SuperCellChild):
     # Hook into the Grid class to create
     # an automatic ArgumentParser which makes actions
     # as the options are read.
-    @dec_default_AP("Manipulate a Grid object in sisl.")
+    @default_ArgumentParser(description="Manipulate a Grid object in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Create and return a group of argument parsers which manipulates it self `Grid`.
 

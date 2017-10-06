@@ -2,10 +2,10 @@ import argparse
 
 from sisl.utils.ranges import strmap, strseq
 
-__all__ = ['argv_negative_fix', 'default_namespace', 'ensure_namespace']
+__all__ = ['argv_negative_fix', 'default_namespace']
 __all__ += ['collect_input', 'collect_arguments']
-__all__ += ['dec_default_AP', 'dec_collect_action']
-__all__ += ['dec_collect_and_run_action', 'dec_run_actions']
+__all__ += ['default_ArgumentParser', 'collect_action']
+__all__ += ['collect_and_run_action', 'run_actions']
 
 
 def argv_negative_fix(argv):
@@ -31,22 +31,6 @@ def default_namespace(**kwargs):
     for key in kwargs:
         setattr(namespace, key, kwargs[key])
     return namespace
-
-
-def ensure_namespace(p, ns):
-    """
-    Ensure a namespace passed in case it is not.
-
-    This is currently a hack for:
-       https://bugs.python.org/issue27859
-    """
-    old_parse_known_args = p.parse_known_args
-
-    def parse_known_args(self, argv, namespace=None):
-        if namespace is None:
-            return old_parse_known_args(argv, ns)
-        return old_parse_known_args(argv, namespace)
-    p.parse_known_args = parse_known_args
 
 
 def collect_input(argv):
@@ -132,7 +116,7 @@ def collect_arguments(argv, input=False,
     return argumentparser, namespace, argv
 
 
-def dec_default_AP(*A_args, **A_kwargs):
+def default_ArgumentParser(*A_args, **A_kwargs):
     """
     Decorator for routines which takes a parser as argument
     and ensures that it is _not_ ``None``.
@@ -150,11 +134,11 @@ def dec_default_AP(*A_args, **A_kwargs):
     return default_AP
 
 
-def dec_collect_action(func):
+def collect_action(func):
     """
     Decorator for collecting actions until the namespace attrbitute ``_actions_run`` is ``True``.
 
-    Note that the ``Namespace`` object is the 2nd argument.
+    Note that the `argparse.Namespace` object is the 2nd argument.
     """
 
     def collect(self, *args, **kwargs):
@@ -166,11 +150,11 @@ def dec_collect_action(func):
     return collect
 
 
-def dec_collect_and_run_action(func):
+def collect_and_run_action(func):
     """
     Decorator for collecting actions and running.
 
-    Note that the ``Namespace`` object is the 2nd argument.
+    Note that the `argparse.Namespace` object is the 2nd argument.
     """
 
     def collect(self, *args, **kwargs):
@@ -181,11 +165,11 @@ def dec_collect_and_run_action(func):
     return collect
 
 
-def dec_run_actions(func):
+def run_actions(func):
     """
     Decorator for running collected actions.
 
-    Note that the ``Namespace`` object is the 2nd argument.
+    Note that the `argparse.Namespace` object is the 2nd argument.
     """
 
     def run(self, *args, **kwargs):

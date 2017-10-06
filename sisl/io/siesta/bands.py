@@ -4,7 +4,7 @@ import numpy as np
 
 # Import sile objects
 from sisl.utils import strmap
-from sisl.utils.cmd import *
+from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from ..sile import add_sile, Sile_fh_open
 from .sile import *
 
@@ -80,7 +80,7 @@ class bandsSileSiesta(SileSiesta):
             vals = k, b
         return vals
 
-    @dec_default_AP("Manipulate bands file in sisl.")
+    @default_ArgumentParser(description="Manipulate bands file in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         #limit_args = kwargs.get('limit_arguments', True)
