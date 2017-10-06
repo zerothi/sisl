@@ -478,7 +478,7 @@ class Geometry(SuperCellChild):
         if R < 0:
             raise ValueError("Unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?")
 
-        # Number of atoms in within 20 * R
+        # Number of atoms within 20 * R
         naiR = max(1, len(self.close(ia, R=R * iR)))
 
         # Convert to na atoms spherical radii
@@ -486,7 +486,7 @@ class Geometry(SuperCellChild):
 
         return iR
 
-    def iter_block_rand(self, iR=10, R=None, atom=None):
+    def iter_block_rand(self, iR=20, R=None, atom=None):
         """ Perform the *random* block-iteration by randomly selecting the next center of block """
 
         # We implement yields as we can then do nested iterators
@@ -553,7 +553,7 @@ class Geometry(SuperCellChild):
         if np.any(not_passed):
             raise ValueError('Error on iterations. Not all atoms has been visited.')
 
-    def iter_block_shape(self, shape=None, iR=10, atom=None):
+    def iter_block_shape(self, shape=None, iR=20, atom=None):
         """ Perform the *grid* block-iteration by looping a grid """
 
         # We implement yields as we can then do nested iterators
@@ -655,7 +655,7 @@ class Geometry(SuperCellChild):
             print(np.sum(not_passed), len(self))
             raise ValueError('Error on iterations. Not all atoms has been visited.')
 
-    def iter_block(self, iR=10, R=None, atom=None, method='rand'):
+    def iter_block(self, iR=20, R=None, atom=None, method='rand'):
         """ Iterator for performance critical loops
 
         NOTE: This requires that `R` has been set correctly as the maximum interaction range.
@@ -674,7 +674,7 @@ class Geometry(SuperCellChild):
         Parameters
         ----------
         iR  : int, optional
-            the number of ``R`` ranges taken into account when doing the iterator
+            the number of `R` ranges taken into account when doing the iterator
         R  : float, optional
             enables overwriting the local R quantity. Defaults to ``self.maxR()``
         atom : array_like, optional
