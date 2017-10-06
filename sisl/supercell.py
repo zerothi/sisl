@@ -8,12 +8,25 @@ import math
 import numpy as np
 from numbers import Integral
 
+import sisl._array as _a
 import sisl.linalg as lin
 import sisl.plot as plt
 from ._help import ensure_array
 from .quaternion import Quaternion
 
 __all__ = ['SuperCell', 'SuperCellChild']
+
+
+def _cross(u, v):
+    """ Cross product u x v """
+    return np.array([u[1] * v[2] - u[2] * v[1],
+                     u[2] * v[0] - u[0] * v[2],
+                     u[0] * v[1] - u[1] * v[0]])
+
+
+def _dot(u, v):
+    """ Dot product u . v """
+    return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
 
 
 class SuperCell(object):
@@ -270,11 +283,50 @@ class SuperCell(object):
         return self.__class__(np.copy(self.cell[idx, :], order='C'),
                               nsc=self.nsc[idx])
 
+    def plane(self, ax1, ax2, origo):
+        """ Query the point and plane normal for the plane spanning `ax1` and `ax2`
+
+        Parameters
+        ----------
+        ax1 : int
+           the first axis vector
+        ax2 : int
+           the second axis vector
+        origo : bool
+           whether the plane intersects the origo
+
+        Returns
+        -------
+        n : array_like
+           normal vector (pointing outwards in regards of the cell) of the plane
+        p : array_like
+           a point on the plane
+        """
+        cell = self.cell
+        n = _cross(cell[ax1, :], cell[ax2, :])
+        # Normalize
+        n /= _dot(n, n) ** .5
+        # Now we need to figure out if the normal vector
+        # is pointing outwards
+        # Take the cell center
+        up = cell.sum(0)
+        # Calculate the distance from the plane to the center of the cell
+
+        # If d is positive then the normal vector is pointing towards
+        # the center, so rotate 180
+        if _dot(n, up / 2) > 0.:
+            n *= -1
+
+        if origo:
+            return n, _a.zerosd(3)
+        # We have to reverse the normal vector
+        return -n, up
+
     @property
     def rcell(self):
         """ Returns the reciprocal cell for the `SuperCell` without ``2*np.pi``
 
-        Note: The returned vectors are still in [0,:] format
+        Note: The returned vectors are still in [0, :] format
         and not as returned by an inverse LAPACK algorithm.
         """
         # Calculate the reciprocal cell

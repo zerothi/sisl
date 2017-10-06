@@ -11,6 +11,9 @@ from sisl import SuperCell, SuperCellChild
 from sisl.geom import graphene
 
 
+pytestmark = [pytest.mark.supercell, pytest.mark.sc]
+
+
 @pytest.fixture
 def setup():
     class t():
@@ -23,8 +26,6 @@ def setup():
     return t()
 
 
-@pytest.mark.supercell
-@pytest.mark.sc
 class TestSuperCell(object):
 
     def test_repr(self, setup):
@@ -314,3 +315,46 @@ class TestSuperCell(object):
         sc = setup.sc.copy()
         sc.sc_off = np.zeros([10000, 3])
         setup.sc.set_nsc(a=2)
+
+
+def _dot(u, v):
+    """ Dot product u . v """
+    return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
+
+
+def test_plane1():
+    sc = SuperCell([1] * 3)
+    # Check point [0.5, 0.5, 0.5]
+    pp = np.array([0.5] * 3)
+
+    n, p = sc.plane(0, 1, True)
+    assert -0.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(0, 2, True)
+    assert -0.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(1, 2, True)
+    assert -0.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(0, 1, False)
+    assert -0.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(0, 2, False)
+    assert -0.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(1, 2, False)
+    assert -0.5 == approx(_dot(n, pp - p))
+
+
+def test_plane2():
+    sc = SuperCell([1] * 3)
+    # Check point [-0.5, -0.5, -0.5]
+    pp = np.array([-0.5] * 3)
+
+    n, p = sc.plane(0, 1, True)
+    assert 0.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(0, 2, True)
+    assert 0.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(1, 2, True)
+    assert 0.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(0, 1, False)
+    assert -1.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(0, 2, False)
+    assert -1.5 == approx(_dot(n, pp - p))
+    n, p = sc.plane(1, 2, False)
+    assert -1.5 == approx(_dot(n, pp - p))
