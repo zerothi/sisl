@@ -308,7 +308,7 @@ class SuperCell(object):
         >>> n5, p5 = self.plane(1, 2, True)
         >>> n6, p6 = self.plane(1, 2, False)
 
-        However, for performance critical calculations it may be advantegeous to
+        However, for performance critical calculations it may be advantageous to
         do this:
 
         >>> uc = self.cell.sum(0)
@@ -322,8 +322,9 @@ class SuperCell(object):
         >>> n6 = -n5
         >>> p6 = p5 + uc
 
-        Secondly, the variables `p1`, `p3` and `p5` are always the origo and hence
-        can be neglected in many calculations.
+        Secondly, the variables ``p1``, ``p3`` and ``p5`` are always ``[0, 0, 0]`` and
+        ``p2``, ``p4`` and ``p6`` are always ``uc``.
+        Hence this may be used to further reduce certain computations.
 
         Returns
         -------

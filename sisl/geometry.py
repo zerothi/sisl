@@ -2250,32 +2250,26 @@ class Geometry(SuperCellChild):
 
         ret_special = ret_xyz or ret_rij
 
-        def _dot(u, v):
-            """ Dot product u . v """
-            return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
-
-        def sphere_intersect(s, c, r, up):
+        def sphere_intersect(sc, s, c, r, up):
 
             # w = point - point-in-plane
-            pp = c - self.sc.offset(self.sc.sc_off[s, :])
+            p1 = c - sc.offset(sc.sc_off[s, :])
+            p2 = p1 - up
 
             # Check all 6 faces
-            # p1 is always [0, 0, 0]
-            n, _ = self.sc.plane(0, 1)
-            d1 = _dot(n, pp)
-            d2 = _dot(n, pp - up)
-            if d1 > r or -d2 > r:
+            # See SuperCell.plane documentation for details
+            n, _ = sc.plane(0, 1)
+            if n[0] * p1[0] + n[1] * p1[1] + n[2] * p1[2] > r or \
+               -n[0] * p2[0] - n[1] * p2[1] - n[2] * p2[2] > r:
                 return False
 
-            n, _ = self.sc.plane(0, 2)
-            d1 = _dot(n, pp)
-            d2 = _dot(n, pp - up)
-            if d1 > r or -d2 > r:
+            n, _ = sc.plane(0, 2)
+            if n[0] * p1[0] + n[1] * p1[1] + n[2] * p1[2] > r or \
+               -n[0] * p2[0] - n[1] * p2[1] - n[2] * p2[2] > r:
                 return False
-            n, _ = self.sc.plane(1, 2)
-            d1 = _dot(n, pp)
-            d2 = _dot(n, pp - up)
-            if d1 > r or -d2 > r:
+            n, _ = sc.plane(1, 2)
+            if n[0] * p1[0] + n[1] * p1[1] + n[2] * p1[2] > r or \
+               -n[0] * p2[0] - n[1] * p2[1] - n[2] * p2[2] > r:
                 return False
             return True
 
@@ -2289,7 +2283,7 @@ class Geometry(SuperCellChild):
             # Currently it seems this is overdoing it
             # I.e. this check is very heavy because it calculates
             # all planes
-            if not sphere_intersect(s, xyz_ia, r, up):
+            if not sphere_intersect(self.sc, s, xyz_ia, r, up):
                 continue
 
             na = self.na * s
