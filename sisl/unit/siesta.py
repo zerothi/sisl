@@ -11,10 +11,10 @@ from .base import unit_group as u_group
 from .base import unit_convert as u_convert
 from .base import unit_default as u_default
 
-__all__  = ['unit_group', 'unit_convert', 'unit_default']
+__all__  = ['unit_group', 'unit_convert', 'unit_default', 'unit_table_siesta']
 
 
-_unit_table = {
+unit_table_siesta = {
     'mass': {
         'DEFAULT': 'amu',
         'kg': 1.,
@@ -75,24 +75,21 @@ _unit_table = {
 
 
 def unit_group(unit, tbl=None):
-    global _unit_table
+    global unit_table_siesta
     if tbl is None:
-        return u_group(unit, _unit_table)
-    else:
-        return u_group(unit, tbl)
+        return u_group(unit, unit_table_siesta)
+    return u_group(unit, tbl)
 
 
 def unit_default(group, tbl=None):
-    global _unit_table
+    global unit_table_siesta
     if tbl is None:
-        return u_default(group, _unit_table)
-    else:
-        return u_default(group, tbl)
+        return u_default(group, unit_table_siesta)
+    return u_default(group, tbl)
 
 
 def unit_convert(fr, to, opts=None, tbl=None):
-    global _unit_table
+    global unit_table_siesta
     if tbl is None:
-        return u_convert(fr, to, opts, _unit_table)
-    else:
-        return u_convert(fr, to, opts, tbl)
+        return u_convert(fr, to, opts, unit_table_siesta)
+    return u_convert(fr, to, opts, tbl)

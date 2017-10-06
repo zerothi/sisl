@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-__all__ = ['unit_group', 'unit_convert', 'unit_default']
+__all__ = ['unit_group', 'unit_convert', 'unit_default', 'unit_table_base']
 
 
 # We do not import anything as it depends on the package.
@@ -8,7 +8,7 @@ __all__ = ['unit_group', 'unit_convert', 'unit_default']
 # standard. Other programs may use their units as they
 # please with non-standard conversion factors.
 
-_unit_table = {
+unit_table_base = {
     'mass': {
         'DEFAULT': 'amu',
         'kg': 1.,
@@ -74,8 +74,8 @@ def unit_group(unit, tbl=None):
     'energy'
     """
     if tbl is None:
-        global _unit_table
-        tbl = _unit_table
+        global unit_table_base
+        tbl = unit_table_base
 
     for k in tbl:
         if unit in tbl[k]:
@@ -99,8 +99,8 @@ def unit_default(group, tbl=None):
     'eV'
     """
     if tbl is None:
-        global _unit_table
-        tbl = _unit_table
+        global unit_table_base
+        tbl = unit_table_base
 
     for k in tbl:
         if group == k:
@@ -131,8 +131,8 @@ def unit_convert(fr, to, opts=None, tbl=None):
     1.60219e-19
     """
     if tbl is None:
-        global _unit_table
-        tbl = _unit_table
+        global unit_table_base
+        tbl = unit_table_base
     if opts is None:
         opts = dict()
 
