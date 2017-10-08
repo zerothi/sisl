@@ -65,19 +65,17 @@ for subdir, dirs, files in os.walk('sisl'):
         if 'tests' in 'dirs':
             packages.append(subdir.replace(os.sep, '.') + '.tests')
 
+def readme():
+    if osp.exists('README.md'):
+        return open('README.md').read()
+    return ""
+
 metadata = dict(
     name='sisl',
     maintainer="Nick R. Papior",
     maintainer_email="nickpapior@gmail.com",
-    description="Tight-binding models (interface to NEGF calculator TBtrans) and generic DFT output handling",
-    long_description="""The sisl toolbox provides a simple API for manipulating, constructing and creating tight-binding matrices
-in a standard and uniform way.
-Secondly, it provides easy interfaces for advanced DFT programs, creating and calculating various
-properties of both DFT and tight-binding Hamiltonians.
-
-It has high emphasis on its ease of use, low compatibility (pure Python and Cython)
-and the availability of creating input for the tight-binding transport calculator TBtrans (part of DFT Siesta suite).
-""",
+    description="Tight-binding models (interface to NEGF calculator TBtrans) and generic DFT output manipulation",
+    long_description="Documentation of sisl may be found here: https://zerothi.github.io/sisl\n\n\n" + readme(),
     url="http://github.com/zerothi/sisl",
     download_url="http://github.com/zerothi/sisl/releases",
     license='LGPLv3',
