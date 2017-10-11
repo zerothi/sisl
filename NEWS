@@ -1,5 +1,12 @@
-0.8.6
+0.9.0
 =====
+
+- Lots of updates to the spin-class. It should now be more coherent.
+
+- Added rij and Rij to the sparse_geometry classes to extract orbital or
+  atomic distance matrices (returing the same sparsity pattern).
+
+- Renamed `which` keyword in `Geometry.center` to `what`
 
 - Added uniq keyword to o2a for better handling of orbitals -> atoms.
 

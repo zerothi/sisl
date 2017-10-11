@@ -15,7 +15,6 @@ sisl implements its own variants which has interfaces much
 like `numpy` and `scipy`.
 
 .. autosummary::
-   :toctree:
 
    inv
    solve
