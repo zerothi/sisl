@@ -106,6 +106,9 @@ class Ellipsoid(Shape):
         tmp = tmp[within, :]
         wtmp = (((tmp[:, :] / r) ** 2).sum(1) <= 1).nonzero()[0]
 
+        # Ensure the shape of the internal radius is not changed
+        r.shape = (3, )
+
         return within[wtmp]
 
 

@@ -2678,7 +2678,7 @@ class Geometry(SuperCellChild):
         >>> geom.distance() # use geom.maxR()
         array([ 1.])
         >>> geom.distance(tol=[0.5, 0.4, 0.3, 0.2])
-        array([ 1.        ,  1.41421356])
+        array([ 1.])
         >>> geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2])
         array([ 1.        ,  1.41421356,  2.        ])
         >>> geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged
@@ -2745,6 +2745,10 @@ class Geometry(SuperCellChild):
                 t = tol[-1]
 
                 dR = np.concatenate((dR, _a.aranged(dR[-1] + t, R + t * .55, t)))
+
+            # Reduce to the largest value above R
+            # This ensures that R, truly is the largest considered element
+            dR = dR[:(dR > R).nonzero()[0][0]+1]
 
         # Now we can figure out the list of atoms in each shell
         # First create the initial lists of shell atoms

@@ -28,6 +28,7 @@ def setup():
     return t()
 
 
+@pytest.mark.geom
 @pytest.mark.geometry
 class TestGeometry(object):
 
@@ -919,6 +920,7 @@ class TestGeometry(object):
         geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
         geom.set_nsc([77, 1, 1])
         # Try with a short R and a long tolerance list
+        # We know that the tolerance list prevails, because
         d = geom.distance(R=1, tol=np.ones(10) * .5)
         assert len(d) == 1
         assert np.allclose(d, [1.])
