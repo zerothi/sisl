@@ -744,3 +744,11 @@ class TestSparseCSR(object):
         v[0] = 3
         v[2] = 6
         assert np.allclose(S.sum(1), v)
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_sum2(self, setup):
+        S1 = SparseCSR((10, 10, 2), dtype=np.int32)
+        S1[0, 0] = [1, 2]
+        S1[2, 0] = [1, 2]
+        S1[2, 2] = [1, 2]
+        S1.sum(1)

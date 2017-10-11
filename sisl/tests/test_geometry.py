@@ -456,11 +456,11 @@ class TestGeometry(object):
         assert np.allclose(setup.g[0], one)
         al = setup.g.center()
         assert np.allclose(np.mean(setup.g.xyz, axis=0), al)
-        al = setup.g.center(which='mass')
+        al = setup.g.center(what='mass')
 
     @pytest.mark.xfail(raises=ValueError)
     def test_center_raise(self, setup):
-        al = setup.g.center(which='unknown')
+        al = setup.g.center(what='unknown')
 
     def test___add__(self, setup):
         n = len(setup.g)

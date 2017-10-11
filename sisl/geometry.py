@@ -1355,10 +1355,10 @@ class Geometry(SuperCellChild):
             sc = self.sc.copy()
         return self.__class__(xyz, atom=self.atom.copy(), sc=sc)
 
-    def center(self, atom=None, which='xyz'):
+    def center(self, atom=None, what='xyz'):
         """ Returns the center of the geometry
 
-        By specifying ``which`` one can control whether it should be:
+        By specifying `what` one can control whether it should be:
 
         * ``xyz|position``: Center of coordinates (default)
         * ``mass``: Center of mass
@@ -1368,22 +1368,22 @@ class Geometry(SuperCellChild):
         ----------
         atom : array_like
             list of atomic indices to find center of
-        which : {'xyz', 'mass', 'cell'}
+        what : {'xyz', 'mass', 'cell'}
             determine whether center should be of 'cell', mass-centered ('mass'),
             or absolute center of the positions.
         """
-        if 'cell' in which:
+        if 'cell' in what:
             return self.sc.center()
         if atom is None:
             g = self
         else:
             g = self.sub(ensure_array(atom))
-        if 'mass' in which:
+        if 'mass' in what:
             mass = self.mass
             return np.dot(mass, g.xyz) / np.sum(mass)
-        if not ('xyz' in which or 'position' in which):
+        if not ('xyz' in what or 'position' in what):
             raise ValueError(
-                'Unknown which, not one of [xyz,position,mass,cell]')
+                'Unknown what, not one of [xyz,position,mass,cell]')
         return np.mean(g.xyz, axis=0)
 
     def append(self, other, axis):
@@ -2870,8 +2870,8 @@ class Geometry(SuperCellChild):
         class MoveCenterOf(argparse.Action):
 
             def __call__(self, parser, ns, value, option_string=None):
-                xyz = ns._geometry.center(which='xyz')
-                ns._geometry = ns._geometry.translate(ns._geometry.center(which=value) - xyz)
+                xyz = ns._geometry.center(what='xyz')
+                ns._geometry = ns._geometry.translate(ns._geometry.center(what=value) - xyz)
         p.add_argument(*opts('--center-of', '-co'), choices=['mass', 'xyz', 'position', 'cell'],
                        action=MoveCenterOf,
                        help='Move coordinates to the center of the designated choice.')
