@@ -6,7 +6,7 @@ It merely calls the `<>.__plot__(**)` routine and returns immediately
 
 try:
     import matplotlib as mlib
-    import matplotlib as mlibplt
+    import matplotlib.pyplot as mlibplt
     import mpl_toolkits.mplot3d as mlib3d
     has_matplotlib = True
 except:

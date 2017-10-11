@@ -52,7 +52,7 @@ from .info import micro as __micro__
 from .selector import *
 
 # Import plot routine
-from .plot import *
+from sisl._plot import plot
 
 # load the most commonly, and basic classes
 # The unit contain the SI standard conversions using

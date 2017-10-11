@@ -10,7 +10,7 @@ from numbers import Integral
 
 import sisl._array as _a
 import sisl.linalg as lin
-import sisl.plot as plt
+import sisl._plot as plt
 from ._help import ensure_array
 from .quaternion import Quaternion
 

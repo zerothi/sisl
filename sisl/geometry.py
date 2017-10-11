@@ -9,7 +9,7 @@ from itertools import product
 
 import numpy as np
 
-import sisl.plot as plt
+import sisl._plot as plt
 import sisl._array as _a
 import sisl.linalg as lin
 
