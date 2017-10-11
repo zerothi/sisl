@@ -12,10 +12,14 @@ class Spin(object):
 
     Its usage can be summarized in these few examples:
 
-    >>> Spin(1) == Spin('non-polarized') == Spin('unpolarized') == Spin('un-polarized')
-    >>> Spin(2) == Spin('polarized') == Spin('p')
-    >>> Spin(2, dtype=np.complex128) == Spin('non-colinear') == Spin('nc') == Spin(4)
-    >>> Spin(4, dtype=np.complex128) == Spin('spin-orbit') == Spin('so') == Spin(8)
+    >>> Spin(Spin.UNPOLARIZED) == Spin('unpolarized') == Spin()
+    True
+    >>> Spin(Spin.POLARIZED) == Spin('polarized') == Spin('p')
+    True
+    >>> Spin(Spin.NONCOLINEAR, dtype=np.complex128) == Spin('non-colinear') == Spin('nc')
+    True
+    >>> Spin(Spin.SPINORBIT, dtype=np.complex128) == Spin('spin-orbit') == Spin('so')
+    True
 
     Note that a data-type may be associated with a spin-object. This is not to say
     that the data-type is used in the configuration, but merely that it helps

@@ -5,6 +5,8 @@ from itertools import groupby
 
 from numpy import zeros, ones, cumsum, take, int32
 
+from sisl._help import ensure_array
+
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2str', 'fileindex']
 __all__ += ['array_arange']
 
@@ -15,12 +17,12 @@ def strmap(func, s, sep='b'):
 
     Examples
     --------
-    >>> strmap('1')
-    [func('1')]
-    >>> strmap('1-2')
-    [func('1-2')]
-    >>> strmap('1-10[2-3]')
-    [( func('1-10'), func('2-3'))]
+    >>> strmap(int, '1')
+    [1]
+    >>> strmap(int, '1-2')
+    [(1, 2)]
+    >>> strmap(int, '1-10[2-3]')
+    [((1, 10), [(2, 3)])]
 
     Parameters
     ----------
@@ -97,13 +99,13 @@ def strseq(cast, s):
 
     Examples
     --------
-    >>> strmap(int, '3')
+    >>> strseq(int, '3')
     3
-    >>> strmap(int, '3-6')
+    >>> strseq(int, '3-6')
     (3, 6)
-    >>> strmap(int, '3:2:7')
+    >>> strseq(int, '3:2:7')
     (3, 2, 7)
-    >>> strmap(float, '3.2:6.3')
+    >>> strseq(float, '3.2:6.3')
     (3.2, 6.3)
     """
     if ':' in s:
@@ -159,9 +161,9 @@ def list2str(lst):
     Examples
     --------
     >>> list2str([2, 4, 5, 6])
-    2, 4-6
+    '2, 4-6'
     >>> list2str([2, 4, 5, 6, 8, 9])
-    2, 4-6, 8-9
+    '2, 4-6, 8-9'
     """
     lst = lst[:]
     lst.sort()
@@ -204,6 +206,13 @@ def fileindex(f, cast=int):
        filename to parse
     cast : function
        the function to cast the bracketed value
+
+    Examples
+    --------
+    >>> fileindex('Hello[0]')
+    ('Hello', 0)
+    >>> fileindex('Hello[0-2]')
+    ('Hello', [0, 1, 2])
     """
 
     if '[' not in f:
@@ -242,11 +251,11 @@ def array_arange(start, end=None, n=None, dtype=int32):
     Examples
     --------
     >>> array_arange([1, 5], [3, 6])
-    [1, 2, 5]
+    array([1, 2, 5], dtype=int32)
     >>> array_arange([1, 6], [4, 9])
-    [1, 2, 3, 6, 7, 8]
+    array([1, 2, 3, 6, 7, 8], dtype=int32)
     >>> array_arange([1, 6], n=[2, 2])
-    [1, 2, 6, 7]
+    array([1, 2, 6, 7], dtype=int32)
     """
     # Tests show that the below code is faster than
     # implicit for-loops, or list-comprehensions
@@ -255,7 +264,9 @@ def array_arange(start, end=None, n=None, dtype=int32):
     # loops
     if n is None:
         # We really do need n to speed things up
-        n = end - start
+        n = ensure_array(end, dtype) - ensure_array(start, dtype)
+    else:
+        n = ensure_array(n, dtype)
     # The below algorithm only works for non-zero n
     idx = n.nonzero()[0]
 

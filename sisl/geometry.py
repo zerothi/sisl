@@ -41,26 +41,6 @@ class Geometry(SuperCellChild):
     All lengths are assumed to be in units of Angstrom, however, as
     long as units are kept same the exact units are irrespective.
 
-    Examples
-    --------
-
-    An atomic lattice consisting of Hydrogen atoms.
-    An atomic square lattice of Hydrogen atoms
-
-    >>> xyz = [[0, 0, 0],
-               [1, 1, 1]]
-    >>> sc = SuperCell([2,2,2])
-    >>> g = Geometry(xyz,Atom['H'],sc)
-
-    The following estimates the lattice vectors from the
-    atomic coordinates, although possible, it is not recommended
-    to be used.
-
-    >>> xyz = [[0, 0, 0],
-               [1, 1, 1]]
-    >>> g = Geometry(xyz, Atom['H'])
-
-
     .. code::
 
        >>> square = Geometry([[0.5, 0.5, 0.5]], Atom(1),
@@ -68,7 +48,7 @@ class Geometry(SuperCellChild):
        >>> print(square)
        Geometry{na: 1, no: 1,
         Atoms{species: 1,
-          Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000}: 1,
+          Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000}: 1, 
         },
         nsc: [3, 3, 1], maxR: -1.0
        }
@@ -100,6 +80,25 @@ class Geometry(SuperCellChild):
     sc : SuperCell
         the unit-cell describing the atoms in a periodic
         super-cell
+
+    Examples
+    --------
+
+    An atomic lattice consisting of Hydrogen atoms.
+    An atomic square lattice of Hydrogen atoms
+
+    >>> xyz = [[0, 0, 0],
+    ...        [1, 1, 1]]
+    >>> sc = SuperCell([2,2,2])
+    >>> g = Geometry(xyz, Atom['H'], sc)
+
+    The following estimates the lattice vectors from the
+    atomic coordinates, although possible, it is not recommended
+    to be used.
+
+    >>> xyz = [[0, 0, 0],
+    ...        [1, 1, 1]]
+    >>> g = Geometry(xyz, Atom['H'])
 
     See Also
     --------
@@ -411,11 +410,13 @@ class Geometry(SuperCellChild):
 
         This iterator is the same as:
 
-          >>> for ia in range(len(self)):
-          ...    <do something>
+        >>> for ia in range(len(self)): # doctest: +SKIP
+        ...    <do something> # doctest: +SKIP
+
         or equivalently
-          >>> for ia in self:
-          ...    <do something>
+
+        >>> for ia in self: # doctest: +SKIP
+        ...    <do something> # doctest: +SKIP
 
         See Also
         --------
@@ -428,12 +429,12 @@ class Geometry(SuperCellChild):
     __iter__ = iter
 
     def iter_species(self, atom=None):
-        """ Iterator over all atoms and species as a tuple in this geometry
+        """ Iterator over all atoms (or a subset) and species as a tuple in this geometry
 
-        >>> for ia, a, idx_specie in self.iter_species():
-        ...     isinstance(ia, int) == True
-        ...     isinstance(a, Atom) == True
-        ...     isinstance(idx_specie, int) == True
+        >>> for ia, a, idx_specie in self.iter_species(): # doctest: +SKIP
+        ...     isinstance(ia, int) == True # doctest: +SKIP
+        ...     isinstance(a, Atom) == True # doctest: +SKIP
+        ...     isinstance(idx_specie, int) == True # doctest: +SKIP
 
         with ``ia`` being the atomic index, ``a`` the `Atom` object, `idx_specie`
         is the index of the specie
@@ -459,7 +460,7 @@ class Geometry(SuperCellChild):
         """
         Returns an iterator over all atoms and their associated orbitals
 
-         >>> for ia, io in self.iter_orbitals():
+        >>> for ia, io in self.iter_orbitals(): # doctest: +SKIP
 
         with ``ia`` being the atomic index, ``io`` the associated orbital index on atom ``ia``.
         Note that ``io`` will start from ``0``.
@@ -701,9 +702,9 @@ class Geometry(SuperCellChild):
 
         I.e. the loop would look like this:
 
-        >>> for ias, idxs in self.iter_block():
-        ...    for ia in ias:
-        ...        idx_a = self.close(ia, R = R, idx = idxs)
+        >>> for ias, idxs in self.iter_block(): # doctest: +SKIP
+        ...    for ia in ias: # doctest: +SKIP
+        ...        idx_a = self.close(ia, R = R, idx = idxs) # doctest: +SKIP
 
         This iterator is intended for systems with more than 1000 atoms.
 
@@ -918,7 +919,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = Geometry(cell=[[1.,0,0],[0,1.,0.],[0,0,1.]],xyz=[[0,0,0],[0.5,0,0]])
+        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
         >>> g = geom.tile(2,axis=0)
         >>> print(g.xyz)
         [[ 0.   0.   0. ]
@@ -969,11 +970,11 @@ class Geometry(SuperCellChild):
         The expansion of the atoms are basically performed using this
         algorithm:
 
-        >>> ja = 0
-        >>> for ia in range(self.na):
-        ...     for id,r in args:
-        ...        for i in range(r):
-        ...           ja = ia + cell[id,:] * i
+        >>> ja = 0 # doctest: +SKIP
+        >>> for ia in range(self.na): # doctest: +SKIP
+        ...     for id,r in args: # doctest: +SKIP
+        ...        for i in range(r): # doctest: +SKIP
+        ...           ja = ia + cell[id,:] * i # doctest: +SKIP
 
         This method allows to utilise Bloch's theorem when creating
         Hamiltonian parameter sets for TBtrans.
@@ -993,7 +994,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = Geometry(cell=[[1.,0,0],[0,1.,0.],[0,0,1.]],xyz=[[0,0,0],[0.5,0,0]])
+        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1)
         >>> g = geom.repeat(2,axis=0)
         >>> print(g.xyz)
         [[ 0.   0.   0. ]
@@ -1003,12 +1004,12 @@ class Geometry(SuperCellChild):
         >>> g = geom.repeat(2,0).repeat(2,1)
         >>> print(g.xyz)
         [[ 0.   0.   0. ]
-         [ 1.   0.   0. ]
          [ 0.   1.   0. ]
+         [ 1.   0.   0. ]
          [ 1.   1.   0. ]
          [ 0.5  0.   0. ]
-         [ 1.5  0.   0. ]
          [ 0.5  1.   0. ]
+         [ 1.5  0.   0. ]
          [ 1.5  1.   0. ]]
 
         See Also
@@ -1050,14 +1051,21 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-
+        >>> geometry = Geometry([0.] * 3, sc=[1.5, 3, 4])
         >>> geometry * 2 == geometry.tile(2, 0).tile(2, 1).tile(2, 2)
+        True
         >>> geometry * [2, 1, 2] == geometry.tile(2, 0).tile(2, 2)
+        True
         >>> geometry * [2, 2] == geometry.tile(2, 2)
+        True
         >>> geometry * ([2, 1, 2], 'repeat') == geometry.repeat(2, 0).repeat(2, 2)
+        True
         >>> geometry * ([2, 1, 2], 'r') == geometry.repeat(2, 0).repeat(2, 2)
+        True
         >>> geometry * ([2, 0], 'r') == geometry.repeat(2, 0)
+        True
         >>> geometry * ([2, 2], 'r') == geometry.repeat(2, 2)
+        True
 
         See Also
         --------
@@ -1393,9 +1401,9 @@ class Geometry(SuperCellChild):
 
         The basic algorithm is this:
 
-        >>> oxa = other.xyz + self.cell[axis,:][None,:]
-        >>> self.xyz = np.append(self.xyz,oxa)
-        >>> self.cell[axis,:] += other.cell[axis,:]
+        >>> oxa = other.xyz + self.cell[axis,:][None,:] # doctest: +SKIP
+        >>> self.xyz = np.append(self.xyz,oxa) # doctest: +SKIP
+        >>> self.cell[axis,:] += other.cell[axis,:] # doctest: +SKIP
 
         NOTE: The cell appended is only in the axis that
         is appended, which means that the other cell directions
@@ -1438,9 +1446,9 @@ class Geometry(SuperCellChild):
 
         The basic algorithm is this:
 
-        >>> oxa = other.xyz
-        >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:])
-        >>> self.cell[axis,:] += other.cell[axis,:]
+        >>> oxa = other.xyz # doctest: +SKIP
+        >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:]) # doctest: +SKIP
+        >>> self.cell[axis,:] += other.cell[axis,:] # doctest: +SKIP
 
         NOTE: The cell prepended is only in the axis that
         is prependend, which means that the other cell directions
@@ -1535,10 +1543,10 @@ class Geometry(SuperCellChild):
         Examples
         --------
 
-        >>> A + B == A.add(B)
-        >>> A + (B, 1) == A.append(B, 1)
-        >>> A + (B, 2) == A.append(B, 2)
-        >>> (A, 1) + B == A.prepend(B, 1)
+        >>> A + B == A.add(B) # doctest: +SKIP
+        >>> A + (B, 1) == A.append(B, 1) # doctest: +SKIP
+        >>> A + (B, 2) == A.append(B, 2) # doctest: +SKIP
+        >>> (A, 1) + B == A.prepend(B, 1) # doctest: +SKIP
 
         See Also
         --------
@@ -1658,18 +1666,6 @@ class Geometry(SuperCellChild):
 
         The `Geometry[...]` slicing is calling this function with appropriate options.
 
-        Examples
-        --------
-
-        >>> geom = Geometry(cell=1., xyz=[[0,0,0],[0.5,0,0]])
-        >>> print(geom.axyz(isc=[1,0,0])
-        [[ 1.   0.   0. ]
-         [ 1.5  0.   0. ]]
-
-        >>> geom = Geometry(cell=1., xyz=[[0,0,0],[0.5,0,0]])
-        >>> print(geom.axyz(0))
-        [ 1.   0.   0. ]
-
         Parameters
         ----------
         atom : int or array_like
@@ -1678,6 +1674,18 @@ class Geometry(SuperCellChild):
         isc   : array_like, optional
             Returns the atomic coordinates shifted according to the integer
             parts of the cell. Defaults to the unit-cell
+
+        Examples
+        --------
+        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
+        >>> print(geom.axyz(isc=[1,0,0]))
+        [[ 1.   0.   0. ]
+         [ 1.5  0.   0. ]]
+
+        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
+        >>> print(geom.axyz(0))
+        [ 0.  0.  0.]
+
         """
         if atom is None and isc is None:
             return self.xyz
@@ -1724,7 +1732,8 @@ class Geometry(SuperCellChild):
 
         If R is a tuple/list/array it will return the indices:
         in the ranges:
-        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
+
+        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] ) # doctest: +SKIP
 
         Parameters
         ----------
@@ -1878,7 +1887,7 @@ class Geometry(SuperCellChild):
         If `R` is a tuple/list/array it will return the indices:
         in the ranges:
 
-        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
+        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] ) # doctest: +SKIP
 
         Parameters
         ----------
@@ -2245,11 +2254,11 @@ class Geometry(SuperCellChild):
             If ``R`` is an array it will return the indices:
             in the ranges:
 
-            >>> ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``
+            >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] ) # doctest: +SKIP
 
             If a single float it will return:
 
-            >>> ``x <= R``
+            >>> x <= R # doctest: +SKIP
 
         idx     : array_like, optional
             List of indices for atoms that are to be considered
@@ -2633,7 +2642,7 @@ class Geometry(SuperCellChild):
         return rij
 
     def distance(self, atom=None, R=None, tol=0.1, method='average'):
-        """ Calculate the distances for all atoms in shells of radius ``tol`` within ``max_R``
+        """ Calculate the distances for all atoms in shells of radius `tol` within ``max_R``
 
         Parameters
         ----------
@@ -2650,14 +2659,14 @@ class Geometry(SuperCellChild):
            `2*tol`, but only if atoms are within two consecutive lists.
            If this is a list, the shells will be of unequal size.
 
-           The first shell size will be `tol * .5` or `tol[0] * .5` if ``tol`` is a list.
+           The first shell size will be `tol * .5` or `tol[0] * .5` if `tol` is a list.
 
         method : {'average', 'mode', '<numpy.func>', func}
            How the distance in each shell is determined.
            A list of distances within each shell is gathered and the equivalent
            method will be used to extract a single quantity from the list of
            distances in the shell.
-           If `'mode'` is chosen it will use ``scipy.stats.mode``.
+           If `'mode'` is chosen it will use `scipy.stats.mode`.
            If a string is given it will correspond to ``getattr(numpy, method)``,
            while any callable function may be passed. The passed function
            will only be passed a list of unsorted distances that needs to be
@@ -2665,16 +2674,15 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-
-        >>> geom = Geometry([0]*3, Atom(1, R=1.), sc=SuperCell(1, nsc=[5, 5, 1]))
+        >>> geom = Geometry([0]*3, Atom(1, R=1.), sc=SuperCell(1., nsc=[5, 5, 1]))
         >>> geom.distance() # use geom.maxR()
-        [ 1.]
+        array([ 1.])
         >>> geom.distance(tol=[0.5, 0.4, 0.3, 0.2])
-        [ 1.          1.41421356]
+        array([ 1.        ,  1.41421356])
         >>> geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2])
-        [ 1.          1.41421356  2.        ]
+        array([ 1.        ,  1.41421356,  2.        ])
         >>> geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged
-        [ 1.20710678  2.        ]
+        array([ 1.20710678,  2.        ])
 
         Returns
         -------
@@ -2724,19 +2732,19 @@ class Geometry(SuperCellChild):
         tol = ensure_array(tol, np.float64)
         if len(tol) == 1:
             # Now we are in a position to determine the sizes
-            dR = np.arange(tol[0] * .5, R + tol[0] * .55, tol[0])
+            dR = _a.aranged(tol[0] * .5, R + tol[0] * .55, tol[0])
         else:
-            dR = [tol[0] * .5]
-            for i, t in enumerate(tol):
-                dR.append(dR[i] + t)
+            dR = tol.copy()
+            dR[0] *= 0.5
+            # The first tolerance, is for it-self, the second
+            # has to have the first tolerance as the field
+            dR = _a.cumsumd(np.insert(dR, 1, tol[0]))
 
-            # Now finalize dR
-            t = tol[-1]
-            dR.extend(np.arange(dR[-1] + t, R + t * .55, t).tolist())
-            dR = np.array(dR)
-            # Reduce in case the user has provided a very long list of
-            # tolerances
-            dR = dR[dR <= R + t * .55]
+            if dR[-1] < R:
+                # Now finalize dR by ensuring all remaining segments are captured
+                t = tol[-1]
+
+                dR = np.concatenate((dR, _a.aranged(dR[-1] + t, R + t * .55, t)))
 
         # Now we can figure out the list of atoms in each shell
         # First create the initial lists of shell atoms

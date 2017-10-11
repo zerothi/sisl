@@ -1,6 +1,8 @@
 from math import pi
 import numpy as np
 
+import sisl._array as _a
+
 from .base import Shape
 
 
@@ -12,17 +14,24 @@ class Ellipsoid(Shape):
 
     Parameters
     ----------
-    x : `float`
+    x : float
        the radius along x-direction
-    y : `float`
+    y : float
        the radius along y-direction
-    z : `int`
+    z : int
        the radius along z-direction
+
+    Examples
+    --------
+    >>> xyz = [0, 2, 0]
+    >>> shape = Ellipsoid(2, 2.2, 2, [0] * 3)
+    >>> shape.within(xyz)
+    array([ True], dtype=bool)
     """
 
     def __init__(self, x, y, z, center=None):
         super(Ellipsoid, self).__init__(center)
-        self._radius = np.array([x, y, z], np.float64)
+        self._radius = _a.arrayd([x, y, z])
 
     def __repr__(self):
         cr = np.array([self.center, self.radius])[:]
@@ -57,7 +66,7 @@ class Ellipsoid(Shape):
         """ Return whether the points are within the shape """
 
         if isinstance(other, (list, tuple)):
-            other = np.asarray(other, np.float64)
+            other = _a.asarrayd(other)
 
         if not isinstance(other, np.ndarray):
             raise ValueError('Can not check other')
@@ -74,7 +83,7 @@ class Ellipsoid(Shape):
         """ Return indices of the points that are within the shape """
 
         if isinstance(other, (list, tuple)):
-            other = np.asarray(other, np.float64)
+            other = _a.asarrayd(other)
 
         if not isinstance(other, np.ndarray):
             raise ValueError('Could not index the other list')
@@ -90,13 +99,12 @@ class Ellipsoid(Shape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
+        r.shape = (1, 3)
         within = landr(fabs(tmp[:, :]) <= r, axis=1).nonzero()[0]
 
         # Now only check exactly on those that are possible candidates
         tmp = tmp[within, :]
-        wtmp = ((tmp[:, 0] / r[0]) ** 2 +
-                (tmp[:, 1] / r[1]) ** 2 +
-                (tmp[:, 2] / r[2]) ** 2 <= 1).nonzero()[0]
+        wtmp = (((tmp[:, :] / r) ** 2).sum(1) <= 1).nonzero()[0]
 
         return within[wtmp]
 

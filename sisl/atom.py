@@ -19,12 +19,6 @@ class PeriodicTable(object):
     Enables *lookup* of atomic numbers/names/labels to get
     the atomic number.
 
-    >>> 79 == PeriodicTable().Z('Au')
-    >>> 79 == PeriodicTable().Z_int('Au')
-    >>> 'Au' == PeriodicTable().Z_short(79)
-    >>> 'Au' == PeriodicTable().Z_label(79)
-    >>> 'Au' == PeriodicTable().Z_label('Gold')
-
     Several quantities available to the atomic species are available
     from <https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)>.
 
@@ -40,7 +34,16 @@ class PeriodicTable(object):
 
     Examples
     --------
-
+    >>> 79 == PeriodicTable().Z('Au')
+    True
+    >>> 79 == PeriodicTable().Z_int('Au')
+    True
+    >>> 'Au' == PeriodicTable().Z_short(79)
+    True
+    >>> 'Au' == PeriodicTable().Z_label(79)
+    True
+    >>> 'Au' == PeriodicTable().Z_label('Gold')
+    True
     >>> 12.0107 == PeriodicTable().atomic_mass('C')
     True
     >>> 12.0107 == PeriodicTable().atomic_mass(6)
@@ -801,7 +804,6 @@ class PeriodicTable(object):
 
         Examples
         --------
-
         >>> 79 == PeriodicTable().Z_int('Au')
         True
         >>> 79 == PeriodicTable().Z('Au')

@@ -30,8 +30,8 @@ class SparseOrbitalBZ(SparseOrbital):
     Assigning or changing elements is as easy as with
     standard `numpy` assignments:
 
-    >>> S = SparseOrbitalBZ(...)
-    >>> S[1,2] = 0.1
+    >>> S = SparseOrbitalBZ(...) # doctest: +SKIP
+    >>> S[1,2] = 0.1 # doctest: +SKIP
 
     which assigns 0.1 as the element between orbital 2 and 3.
     (remember that Python is 0-based elements).
@@ -165,7 +165,7 @@ class SparseOrbitalBZ(SparseOrbital):
         An iterator returning the current atomic index and the corresponding
         orbital index.
 
-        >>> for ia, io in self:
+        >>> for ia, io in self: # doctest: +SKIP
 
         In the above case `io` always belongs to atom `ia` and `ia` may be
         repeated according to the number of orbitals associated with
@@ -457,8 +457,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
     Assigning or changing elements is as easy as with
     standard `numpy` assignments::
 
-    >>> S = SparseOrbitalBZSpin(...)
-    >>> S[1,2] = 0.1
+    >>> S = SparseOrbitalBZSpin(...) # doctest: +SKIP
+    >>> S[1,2] = 0.1 # doctest: +SKIP
 
     which assigns 0.1 as the element between orbital 2 and 3.
     (remember that Python is 0-based elements).

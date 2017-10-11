@@ -40,16 +40,12 @@ class winSileWannier90(SileWannier90):
         write_xyz = true
         plot_hr = true
 
-
     Examples
     --------
-
-    >>> H = win90.read_hamiltonian()
-
-    >>> H = win90.read_hamiltonian(dtype=numpy.float64) # only read real-part
-
-    >>> H = win90.read_hamiltonian(cutoff=0.00001) # explicitly set the cutoff for the elements
-
+    >>> wan90 = get_sile('seedname.win') # doctest: +SKIP
+    >>> H = wan90.read_hamiltonian() # doctest: +SKIP
+    >>> H = wan90.read_hamiltonian(dtype=numpy.float64) # doctest: +SKIP
+    >>> H = wan90.read_hamiltonian(cutoff=0.00001) # doctest: +SKIP
     """
 
     def _setup(self, *args, **kwargs):

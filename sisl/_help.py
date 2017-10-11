@@ -86,10 +86,10 @@ def ensure_array(arr, dtype=np.int32, force=True):
     Parameters
     ----------
     arr : number or array_like or iterator
-       if this is a number an array of `len() == 1` will
+       if this is a number an array of ``len() == 1`` will
        be returned. Else, the array will be assured
        to be a `numpy.ndarray`.
-    dtype : `numpy.dtype`
+    dtype : numpy.dtype
        the data-type of the array
     force : bool
        if True the returned value will *always* be a `numpy.ndarray`, otherwise
@@ -113,7 +113,7 @@ def ensure_array(arr, dtype=np.int32, force=True):
 
 
 def ensure_dtype(arr, dtype=np.int32):
-    """ Wrapper for `ensure_array(..., force=False)` for returning numbers as well
+    """ Wrapper for ``ensure_array(..., force=False)`` for returning numbers as well
 
     See Also
     --------
@@ -140,13 +140,21 @@ def get_dtype(var, int=None, other=None):
        This will prohibit this conversion and will revert to int32.
     other : numpy.dtype
        If supplied the returned value will be extracted from:
-       >>> numpy.result_type(dtype(var)(1), other(1))
+
+       >>> np.result_type(dtype(var)(1), other(1)) # doctest: +SKIP
+
        such that one can select the highest among `var` and
        the input `other`.
        For instance:
-       >>> get_dtype(1., other=numpy.complex128) == np.complex128
-       >>> get_dtype(1., other=numpy.int32) == np.float64
-       >>> get_dtype(1, other=numpy.int32) == np.int32
+
+    Examples
+    --------
+    >>> get_dtype(1., other=np.complex128) == np.complex128
+    True
+    >>> get_dtype(1., other=np.int32) == np.float64
+    True
+    >>> get_dtype(1, other=np.int32) == np.int32
+    True
     """
     if int is None:
         int = np.int32

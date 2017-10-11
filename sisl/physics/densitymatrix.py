@@ -15,8 +15,8 @@ class DensityMatrix(SparseOrbitalBZSpin):
     Assigning or changing elements is as easy as with
     standard `numpy` assignments:
 
-    >>> DM = DensityMatrix(...)
-    >>> DM.D[1,2] = 0.1
+    >>> DM = DensityMatrix(...) # doctest: +SKIP
+    >>> DM.D[1,2] = 0.1 # doctest: +SKIP
 
     which assigns 0.1 as the density element between orbital 2 and 3.
     (remember that Python is 0-based elements).

@@ -39,11 +39,6 @@ class Shape(object):
     For instance to assert that a given point `x`, `y`, `z` is within a sphere
     of radius `r` with center `cx`, `cy`, `cz` on may do:
 
-    >>> xyz = [...]
-    >>> shape = Sphere(r, [cx, cy, cz])
-    >>> if shape.within(xyz):
-    >>>    # do something
-
     This makes it very efficient to enable arbitrary shapes to be passed
     and used as determinations of regions of space.
     """

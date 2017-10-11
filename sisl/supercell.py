@@ -209,7 +209,7 @@ class SuperCell(object):
         The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
         corresponding to the current supercell vectors.
 
-        >>> numpy.linalg.solve(self.cell.T, xyz.T)
+        >>> numpy.linalg.solve(self.cell.T, xyz.T) # doctest: +SKIP
 
         Parameters
         ----------
@@ -296,42 +296,42 @@ class SuperCell(object):
            whether the plane intersects the origo or the opposite corner of the
            unit-cell.
 
-        Examples
-        --------
-
-        All 6 faces of the supercell can be retrieved like this:
-
-        >>> n1, p1 = self.plane(0, 1, True)
-        >>> n2, p2 = self.plane(0, 1, False)
-        >>> n3, p3 = self.plane(0, 2, True)
-        >>> n4, p4 = self.plane(0, 2, False)
-        >>> n5, p5 = self.plane(1, 2, True)
-        >>> n6, p6 = self.plane(1, 2, False)
-
-        However, for performance critical calculations it may be advantageous to
-        do this:
-
-        >>> uc = self.cell.sum(0)
-        >>> n1, p1 = self.sc.plane(0, 1)
-        >>> n2 = -n1
-        >>> p2 = p1 + uc
-        >>> n3, p3 = self.sc.plane(0, 2)
-        >>> n4 = -n3
-        >>> p4 = p3 + uc
-        >>> n5, p5 = self.sc.plane(1, 2)
-        >>> n6 = -n5
-        >>> p6 = p5 + uc
-
-        Secondly, the variables ``p1``, ``p3`` and ``p5`` are always ``[0, 0, 0]`` and
-        ``p2``, ``p4`` and ``p6`` are always ``uc``.
-        Hence this may be used to further reduce certain computations.
-
         Returns
         -------
         n : array_like
            planes normal vector (pointing outwards with regards to the cell)
         p : array_like
            a point on the plane
+
+        Examples
+        --------
+
+        All 6 faces of the supercell can be retrieved like this:
+
+        >>> n1, p1 = self.plane(0, 1, True) # doctest: +SKIP
+        >>> n2, p2 = self.plane(0, 1, False) # doctest: +SKIP
+        >>> n3, p3 = self.plane(0, 2, True) # doctest: +SKIP
+        >>> n4, p4 = self.plane(0, 2, False) # doctest: +SKIP
+        >>> n5, p5 = self.plane(1, 2, True) # doctest: +SKIP
+        >>> n6, p6 = self.plane(1, 2, False) # doctest: +SKIP
+
+        However, for performance critical calculations it may be advantageous to
+        do this:
+
+        >>> uc = self.cell.sum(0) # doctest: +SKIP
+        >>> n1, p1 = self.sc.plane(0, 1) # doctest: +SKIP
+        >>> n2 = -n1 # doctest: +SKIP
+        >>> p2 = p1 + uc # doctest: +SKIP
+        >>> n3, p3 = self.sc.plane(0, 2) # doctest: +SKIP
+        >>> n4 = -n3 # doctest: +SKIP
+        >>> p4 = p3 + uc # doctest: +SKIP
+        >>> n5, p5 = self.sc.plane(1, 2) # doctest: +SKIP
+        >>> n6 = -n5 # doctest: +SKIP
+        >>> p6 = p5 + uc # doctest: +SKIP
+
+        Secondly, the variables ``p1``, ``p3`` and ``p5`` are always ``[0, 0, 0]`` and
+        ``p2``, ``p4`` and ``p6`` are always ``uc``.
+        Hence this may be used to further reduce certain computations.
         """
         cell = self.cell
         n = _cross(cell[ax1, :], cell[ax2, :])

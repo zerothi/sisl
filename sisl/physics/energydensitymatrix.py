@@ -15,8 +15,8 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
     Assigning or changing elements is as easy as with
     standard `numpy` assignments:
 
-    >>> DM = DensityMatrix(...)
-    >>> DM.D[1,2] = 0.1
+    >>> EDM = EnergyDensityMatrix(...) # doctest: +SKIP
+    >>> EDM.E[1,2] = 0.1 # doctest: +SKIP
 
     which assigns 0.1 as the density element between orbital 2 and 3.
     (remember that Python is 0-based elements).
@@ -25,7 +25,7 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
     def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
         """Create EnergyDensityMatrix model from geometry
 
-        Initializes a EnergyDensityMatrix using the ``geom`` object.
+        Initializes a EnergyDensityMatrix using the `geom` object.
         """
         super(EnergyDensityMatrix, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
 

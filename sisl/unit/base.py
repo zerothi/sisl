@@ -126,9 +126,9 @@ def unit_convert(fr, to, opts=None, tbl=None):
     Examples
     --------
     >>> unit_convert('kg','g')
-    1000
+    1000.0
     >>> unit_convert('eV','J')
-    1.60219e-19
+    1.60217733e-19
     """
     if tbl is None:
         global unit_table_base

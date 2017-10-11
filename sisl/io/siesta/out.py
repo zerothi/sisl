@@ -332,9 +332,9 @@ class outSileSiesta(SileSiesta):
         Note that the returned quantities are in the order
         of keywords, so:
 
-        >>> read_data(geometry=True, force=True)
+        >>> read_data(geometry=True, force=True) # doctest: +SKIP
         <geom>, <forces>
-        >>> read_data(force=True,geometry=True)
+        >>> read_data(force=True,geometry=True) # doctest: +SKIP
         <forces>, <geom>
 
         Parameters

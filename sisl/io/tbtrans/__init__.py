@@ -20,17 +20,17 @@ The basic file is the `tbtncSileTBtrans` which is a file to extract information
 from a TBtrans output file (typically named: ``siesta.TBT.nc``).
 The following will interact with the TBtrans file:
 
->>> tbt = sisl.get_sile('siesta.TBT.nc')
->>> tbt.E # retrieve energies where physical quantities are calculated
->>> tbt.a_d # atomic indices where physical quantities are accessible
+>>> tbt = sisl.get_sile('siesta.TBT.nc') # doctest: +SKIP
+>>> tbt.E # doctest: +SKIP
+>>> tbt.a_d # doctest: +SKIP
 
 Importantly one may retrieve quantities such as DOS, transmissions,
 transmission eigenvalues etc.
 
->>> tbt.transmission() # from electrode 0 -> 1 (default)
->>> tbt.transmission(0, 1) # from electrode 0 -> 1
->>> tbt.transmission(0, 2) # from electrode 0 -> 2
->>> tbt.ADOS(0, E=1.) # k-average, total spectral DOS from 0th electrode
+>>> tbt.transmission() # from electrode 0 -> 1 (default) # doctest: +SKIP
+>>> tbt.transmission(0, 1) # from electrode 0 -> 1 # doctest: +SKIP
+>>> tbt.transmission(0, 2) # from electrode 0 -> 2 # doctest: +SKIP
+>>> tbt.ADOS(0, E=1.) # k-average, total spectral DOS from 0th electrode # doctest: +SKIP
 
 
 The above is the most important use of this module while the following

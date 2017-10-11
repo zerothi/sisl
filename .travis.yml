@@ -47,7 +47,7 @@ script:
         pip install -e . ;
         pytest --cov=sisl ;
     else
-        pytest --pyargs sisl ;
+        pytest --doctest-modules --pyargs sisl ;
     fi
 
 after_success:

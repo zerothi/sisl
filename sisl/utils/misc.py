@@ -27,11 +27,11 @@ def math_eval(expr):
 
     Examples
     --------
-    >>> eval_expr('2^6')
+    >>> math_eval('2^6')
     4
-    >>> eval_expr('2**6')
+    >>> math_eval('2**6')
     64
-    >>> eval_expr('1 + 2*3**(4^5) / (6 + -7)')
+    >>> math_eval('1 + 2*3**(4^5) / (6 + -7)')
     -5.0
     """
     return _eval(ast.parse(expr, mode='eval').body)
@@ -87,7 +87,7 @@ def iter_shape(shape):
     Examples
     --------
     >>> for slc in iter_shape([2, 1, 3]):
-    >>>    print(slc)
+    ...    print(slc)
     [0, 0, 0]
     [0, 0, 1]
     [0, 0, 2]
@@ -131,9 +131,9 @@ def str_spec(name):
     Examples
     --------
     >>> str_spec('hello')
-    'hello', None
+    ('hello', None)
     >>> str_spec('hello{TEST}')
-    'hello', 'TEST'
+    ('hello', 'TEST')
     """
     if not name.endswith('}'):
         return name, None
@@ -169,6 +169,8 @@ def direction(d):
     2
     >>> direction(' 2')
     2
+    >>> direction('b')
+    1
     """
     if isinstance(d, Integral):
         return d

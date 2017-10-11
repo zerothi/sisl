@@ -115,8 +115,8 @@ class BrillouinZone(object):
 
         Examples
         --------
-        >>> obj = BrillouinZone(...)
-        >>> obj.array().eigh()
+        >>> obj = BrillouinZone(...) # doctest: +SKIP
+        >>> obj.array().eigh() # doctest: +SKIP
 
         See Also
         --------
@@ -156,8 +156,8 @@ class BrillouinZone(object):
 
         Examples
         --------
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.yields().eigh()
+        >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
+        >>> obj.yields().eigh() # doctest: +SKIP
 
         See Also
         --------
@@ -186,13 +186,13 @@ class BrillouinZone(object):
 
         Examples
         --------
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.average().eigh()
+        >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
+        >>> obj.average().eigh() # doctest: +SKIP
 
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.average()
-        >>> obj.eigh()
-        >>> obj.eighs()
+        >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
+        >>> obj.average() # doctest: +SKIP
+        >>> obj.eigh() # doctest: +SKIP
+        >>> obj.eighs() # doctest: +SKIP
 
         See Also
         --------
@@ -436,10 +436,10 @@ class PathBZ(BrillouinZone):
         Examples
         --------
 
-        >>> p = PathBZ(...)
-        >>> eigs = Hamiltonian.eigh(p)
-        >>> for i in range(len(Hamiltonian)):
-        >>>     pyplot.plot(p.lineark(), eigs[:, i])
+        >>> p = PathBZ(...) # doctest: +SKIP
+        >>> eigs = Hamiltonian.eigh(p) # doctest: +SKIP
+        >>> for i in range(len(Hamiltonian)): # doctest: +SKIP
+        >>>     pyplot.plot(p.lineark(), eigs[:, i]) # doctest: +SKIP
 
         Parameters
         ----------

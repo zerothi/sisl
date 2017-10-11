@@ -948,8 +948,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
-        >>> Jij[10, 11] # orbital current from the 11th to the 12th orbital
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
+        >>> Jij[10, 11] # orbital current from the 11th to the 12th orbital # doctest: +SKIP
 
         See Also
         --------
@@ -1063,9 +1063,9 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
-        >>> Jab = tbt.bond_current_from_orbital(Jij)
-        >>> Jab[2,3] # bond current between atom 3 and 4
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
+        >>> Jab = tbt.bond_current_from_orbital(Jij) # doctest: +SKIP
+        >>> Jab[2,3] # bond current between atom 3 and 4 # doctest: +SKIP
 
         See Also
         --------
@@ -1179,10 +1179,10 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
-        >>> Jab1 = tbt.bond_current_from_orbital(Jij)
-        >>> Jab2 = tbt.bond_current(0, -1.0)
-        >>> Jab1 == Jab2
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
+        >>> Jab1 = tbt.bond_current_from_orbital(Jij) # doctest: +SKIP
+        >>> Jab2 = tbt.bond_current(0, -1.0) # doctest: +SKIP
+        >>> Jab1 == Jab2 # doctest: +SKIP
         True
 
         See Also
@@ -1234,8 +1234,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0, isc=[None]*3) # orbital current @ E = -1 eV originating from electrode ``0``
-        >>> Ja = tbt.atom_current_from_orbital(Jij)
+        >>> Jij = tbt.orbital_current(0, -1.0, isc=[None]*3) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
+        >>> Ja = tbt.atom_current_from_orbital(Jij) # doctest: +SKIP
         """
         # Create the bond-currents with all summations
         Jab = self.bond_current_from_orbital(Jij, sum='all')
