@@ -287,15 +287,37 @@ class Geometry(SuperCellChild):
         ja : int or array_like
            atomic indices
         """
+        R = self.Rij(ia, ja)
+
+        if len(R.shape) == 1:
+            return (R[0] ** 2. + R[1] ** 2 + R[2] ** 2) ** .5
+
+        return np.sqrt(np.sum(R ** 2, axis=1))
+
+    def Rij(self, ia, ja):
+        r""" Vector between atom `ia` and `ja`, atoms can be in super-cell indices
+
+        Returns the vector between two atoms:
+
+        .. math::
+            R_{ij} = r_j - r_i
+
+        Parameters
+        ----------
+        ia : int or array_like
+           atomic index of first atom
+        ja : int or array_like
+           atomic indices
+        """
         xi = self.axyz(ia)
         xj = self.axyz(ja)
 
         if isinstance(ja, Integral):
-            return ((xj[0] - xi[0]) ** 2. + (xj[1] - xi[1]) ** 2 + (xj[2] - xi[2]) ** 2) ** .5
+            return xj[:] - xi[:]
         elif np.all(xi.shape == xj.shape):
-            return np.sqrt(np.sum((xj - xi) ** 2., axis=1))
+            return xj - xi
 
-        return np.sqrt(np.sum((xj - xi[None, :]) ** 2., axis=1))
+        return xj - xi[None, :]
 
     def orij(self, io, jo):
         r""" Distance between orbital `io` and `jo`, orbitals can be in super-cell indices
@@ -313,6 +335,23 @@ class Geometry(SuperCellChild):
            orbital indices
         """
         return self.rij(self.o2a(io), self.o2a(jo))
+
+    def oRij(self, io, jo):
+        r""" Vector between orbital `io` and `jo`, orbitals can be in super-cell indices
+
+        Returns the vector between two orbitals:
+
+        .. math::
+            R_{ij} = r_j - r_i
+
+        Parameters
+        ----------
+        io : int or array_like
+           orbital index of first orbital
+        jo : int or array_like
+           orbital indices
+        """
+        return self.Rij(self.o2a(io), self.o2a(jo))
 
     @staticmethod
     def read(sile, *args, **kwargs):

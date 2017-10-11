@@ -209,7 +209,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             try:
                 self._data['wkpt'] = self._value('wkpt')
             except:
-                self._data['wkpt'] = _aonesd([1])
+                self._data['wkpt'] = _a.onesd([1])
 
             # Create the geometry in the data file
             self._data['_geom'] = self.read_geometry()
@@ -1984,7 +1984,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
     @property
     def wkpt(self):
         """ Always return [1.], this is to signal other routines """
-        return _aonesd(1)
+        return _a.onesd(1)
 
     def write_tbtav(self, *args, **kwargs):
         """ Wrapper for writing the k-averaged TBT.AV.nc file.
@@ -2336,12 +2336,25 @@ class deltancSileTBtrans(SileCDFTBtrans):
         return lvl
 
     def write_delta(self, delta, **kwargs):
-        """ Writes Hamiltonian model to file
+        r""" Writes a :math:`\delta` term
+
+        This term may be of
+
+        - level-1: no E or k dependence
+        - level-2: k-dependent
+        - level-3: E-dependent
+        - level-4: k- and E-dependent
 
         Parameters
         ----------
         delta : SparseOrbitalBZSpin
            the model to be saved in the NC file
+        k : array_like, optional
+           a specific k-point :math:`\delta` term. I.e. only save the :math:`\delta` term for
+           the given k-point. May be combined with `E` for a specific k and energy point.
+        E : float, optional
+           a specific energy-point :math:`\delta` term. I.e. only save the :math:`\delta` term for
+           the given energy. May be combined with `k` for a specific k and energy point.
         """
         # Ensure finalization
         delta.finalize()
@@ -2532,11 +2545,17 @@ class deltancSileTBtrans(SileCDFTBtrans):
         return self._read_class(SparseOrbitalBZSpin, **kwargs)
 
 add_sile('delta.nc', deltancSileTBtrans)
+add_sile('dH.nc', deltancSileTBtrans)
+add_sile('dSE.nc', deltancSileTBtrans)
 
 
 # The deltaH nc file
 class dHncSileTBtrans(deltancSileTBtrans):
-    """ TBtrans delta-H file object (deprecated by `deltancSileTBtrans`) """
+    """ TBtrans delta-H file object (deprecated by `deltancSileTBtrans`)
+
+    This class is not made globally visible through `get_sile` because of its deprecation.
+    If required please use `sisl.io.dHncSileTBtrans` explicitly.
+    """
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
@@ -2727,5 +2746,3 @@ class dHncSileTBtrans(deltancSileTBtrans):
             C._csr._D[:, 0] = lvl.variables['dH'][sl] * Ry2eV
 
         return C
-
-add_sile('dH.nc', dHncSileTBtrans)

@@ -160,8 +160,8 @@ class _SparseGeometry(object):
         """
         return self._csr.edges(atom, exclude)
 
-    def rij(self, what=None, dtype=np.float64, uniq=None):
-        r""" Create a sparse matrix with the distances between atoms/orbitals
+    def rij(self, what=None, dtype=np.float64):
+        r""" Create a sparse matrix with the distance between atoms/orbitals
 
         Parameters
         ----------
@@ -172,96 +172,89 @@ class _SparseGeometry(object):
             The default is the same type as the parent class.
         dtype : numpy.dtype, optional
             the data-type of the sparse matrix.
-        uniq : bool, optional
-            if true only a sparse matrix with unique distances are returned. Else,
-            duplicates may exist if the parent object has duplicates. The default
-            depends on what the calling object is and the value of `what`.
-            There are two cases:
-
-             - defaults to ``False`` for
-                ``isinstance(self, SparseAtom) and what == 'atom'``, or
-                ``isinstance(self, SparseOrbital) and what == 'orbital'``.
-             - defaults to ``True`` for
-                ``isinstance(self, SparseAtom) and what != 'atom'``, or
-                ``isinstance(self, SparseOrbital) and what != 'orbital'``.
 
         Notes
         -----
         The returned sparse matrix with distances are taken from the current sparse pattern.
         I.e. a subsequent addition of sparse elements will make them inequivalent.
-        It is thus important to *only* create the sparse distance matrix when the sparse
+        It is thus important to *only* create the sparse distance when the sparse
         structure is completed.
         """
-        geom = self.geom
+        R = self.Rij(what, dtype)
+        R._csr = (R._csr ** 2).sum(-1)
+        return R
 
+    def Rij(self, what=None, dtype=np.float64):
+        r""" Create a sparse matrix with the vectors between atoms/orbitals
+
+        Parameters
+        ----------
+        what : {None, 'atom', 'orbital'}
+            which kind of sparse vector matrix to return, either an atomic vector matrix
+            or an orbital vector matrix. The orbital matrix is equivalent to the atomic
+            one with the same vectors repeated for the same atomic orbitals.
+            The default is the same type as the parent class.
+        dtype : numpy.dtype, optional
+            the data-type of the sparse matrix.
+
+        Notes
+        -----
+        The returned sparse matrix with vectors are taken from the current sparse pattern.
+        I.e. a subsequent addition of sparse elements will make them inequivalent.
+        It is thus important to *only* create the sparse vector matrix when the sparse
+        structure is completed.
+        """
         # Define default of what
         if what is None:
-            uniq = True
             if isinstance(self, SparseOrbital):
                 what = 'orbital'
             else:
                 what = 'atom'
 
-        # Conversion before doing rij on geometry
+        geom = self.geom
+
+        if isinstance(self, SparseAtom):
+            Rij = geom.Rij
+        elif isinstance(self, SparseOrbital):
+            Rij = geom.oRij
+        else:
+            raise ValueError(self.__class__.__name__ + ' is an unknown class. Perhaps the inheritance has been broken.')
+
+        # Conversion before doing Rij on geometry
         # We default to expect atoms
-        dconv = lambda val: val
         conv = lambda val: val
-        col_conv = lambda val: val
+        # Always only keep unique entries
+        col_conv = np.unique
 
         if what == 'atom':
             cls = SparseAtom
             if isinstance(self, SparseOrbital):
-                conv = self.geom.o2a
-                col_conv = np.unique
-            elif isinstance(self, SparseAtom):
-                if uniq:
-                    # in principle not neccessary as SparseCSR will
-                    # never have duplicates
-                    col_conv = np.unique
-                dconv = geom.o2a
-            else:
-                raise ValueError(self.__class__.__name__ + ' is not a SparseAtom/Orbital and can thus not be converted to rij')
+                conv = geom.o2a
+
         elif what in ['orbital', 'orb']:
             cls = SparseOrbital
-            if isinstance(self, SparseOrbital):
-                if uniq:
-                    # in principle not neccessary as SparseCSR will
-                    # never have duplicates
-                    col_conv = np.unique
-                dconv = geom.o2a
-            elif isinstance(self, SparseAtom):
-                conv = ftool.partial(self.geom.a2o, all=True)
-                col_conv = np.unique
-            else:
-                raise ValueError(self.__class__.__name__ + ' is not a SparseAtom/Orbital and can thus not be converted to rij')
+            if isinstance(self, SparseAtom):
+                raise NotImplementedError(self.__class__.__name__ + ' cannot create Rij in SparseAtom from SparseOrbital')
+
         else:
-            raise ValueError(self.__class__.__name__ + '.rij what= must be "atom", "orbital" or "orb".')
+            raise ValueError(self.__class__.__name__ + '.Rij what= must be "atom", "orbital" or "orb".')
 
         ncol = self._csr.ncol.view()
-        if self.finalized:
-            ptr = self._csr.ptr.view()
-            col = conv(self._csr.col)
-        else:
-            ptr = self._csr.ptr.view()
-            idx = array_arange(ptr[:-1], n=ncol)
-            col = conv(np.take(self._csr.col, idx))
-            del ptr, idx
-            ptr = np.insert(_a.cumsumi(ncol), 0, 0)
+        ptr = self._csr.ptr.view()
+        col = self._csr.col.view()
 
         # Create the output class
-        rij = cls(geom, 1, dtype, nnzpr=np.amax(ncol))
+        R = cls(geom, 3, dtype, nnzpr=np.amax(ncol))
 
+        # Old rows
         orow = _a.arangei(self.shape[0])
-        nrow = conv(orow)
 
-        for ro, rn in zip(orow, nrow):
+        for ro, rn in zip(orow, conv(orow)):
             # Reduce to the unique columns
-            coln = col_conv(col[ptr[ro]:ptr[ro]+ncol[ro]])
-            rij[rn, coln] = geom.rij(dconv(ro), dconv(coln))
+            coln = np.unique(conv(col[ptr[ro]:ptr[ro]+ncol[ro]]))
+            R[rn, coln] = Rij(rn, coln)
 
-        del ptr
-
-        return rij
+        return R
 
     def __repr__(self):
         """ Representation of the sparse model """

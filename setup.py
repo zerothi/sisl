@@ -65,6 +65,7 @@ for subdir, dirs, files in os.walk('sisl'):
         if 'tests' in 'dirs':
             packages.append(subdir.replace(os.sep, '.') + '.tests')
 
+
 def readme():
     if osp.exists('README.md'):
         return open('README.md').read()

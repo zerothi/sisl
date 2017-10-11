@@ -718,3 +718,29 @@ class TestSparseCSR(object):
 
         S = S1 - S2
         assert np.allclose(S._D, S1._D - S2._D)
+
+    def test_sum1(self, setup):
+        S1 = SparseCSR((10, 10, 2), dtype=np.int32)
+        S1[0, 0] = [1, 2]
+        S1[2, 0] = [1, 2]
+        S1[2, 2] = [1, 2]
+
+        S2 = S1.sum(-1)
+        assert S1.spsame(S2)
+        assert S2[0, 0] == 3
+        assert S2[0, 1] == 0
+        assert S2[2, 0] == 3
+        assert S2[2, 2] == 3
+
+        assert S1.sum() == 1 * 3 + 2 * 3
+
+        S = S1.sum(0)
+        v = np.zeros([S1.shape[0], S1.shape[2]], np.int32)
+        v[0] = [1, 2]
+        v[2] = [2, 4]
+        assert np.allclose(S, v)
+
+        v = np.zeros([S1.shape[0]], np.int32)
+        v[0] = 3
+        v[2] = 6
+        assert np.allclose(S.sum(1), v)

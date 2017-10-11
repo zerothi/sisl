@@ -1221,6 +1221,38 @@ class SparseCSR(object):
 
         return csr
 
+    def sum(self, axis=None):
+        """ Calculate the sum, if `axis` is ``None`` the sum of all elements are returned, else a new sparse matrix is returned
+
+        Parameters
+        ----------
+        axis : int, optional
+           which axis to perform the sum of. If ``None`` the element sum is returned, if either ``0`` or ``1`` is passed a
+           vector is returned, and for ``2`` it returns a new sparse matrix with the last dimension reduced to 1 (summed).
+
+        Raises
+        ------
+        NotImplementedError : when ``axis = 1``
+        """
+        if axis is None:
+            return np.sum(self._D)
+        if axis == -1 or axis == 2:
+            # We simply create a new sparse matrix with only one entry
+            ret = self.copy([0])
+            ret._D[:, 0] = self._D.sum(1)
+        elif axis == -2 or axis == 1:
+            ret = zeros(self.shape[1], dtype=self.dtype)
+            raise NotImplementedError('Currently performing a sum on the columns is not implemented')
+        elif axis == 0:
+            ret = empty([self.shape[0], self.shape[2]], dtype=self.dtype)
+            ptr = self.ptr.view()
+            ncol = self.ncol.view()
+            col = self.col.view()
+            for r in range(self.shape[0]):
+                ret[r, :] = self._D[ptr[r]:ptr[r]+ncol[r], :].sum(0)
+
+        return ret
+
     def __repr__(self):
         """ Representation of the sparse matrix model """
         s = self.shape[:] + (self.nnz,)
