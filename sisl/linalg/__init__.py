@@ -24,6 +24,18 @@ like `numpy` and `scipy`.
    eigs
    eigsh
 
+.. autosummary::
+   :toctree:
+   :hidden:
+
+   inv
+   solve
+   eig
+   eigh
+   svd
+   eigs
+   eigsh
+
 """
 from .base import *
 
