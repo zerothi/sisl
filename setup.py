@@ -160,6 +160,8 @@ def git_version():
         # Get number of commits since tag
         out = _minimal_ext_cmd(['git', 'rev-list', tag + '..', '--count'])
         count = out.strip().decode('ascii')
+        if len(count) == 0:
+            count = '1'
     except:
         # Retain the revision name
         rev = GIT_REVISION
