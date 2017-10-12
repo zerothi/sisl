@@ -42,7 +42,9 @@ Advanced classes
 
 """
 
-# Import version string and the major, minor, micro as well
+# Import bibtex, version string and the major, minor, micro as well
+from .info import cite as cite
+from .info import bibtex as __bibtex__
 from .info import version as __version__
 from .info import major as __major__
 from .info import minor as __minor__
