@@ -714,10 +714,17 @@ class SileCDF(BaseSile):
     def __enter__(self):
         """ Opens the output file and returns it self """
         # We do the import here
+        if 'fh' not in self.__dict__:
+            _import_netCDF4()
+            self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode, format='NETCDF4')
         return self
 
     def __exit__(self, type, value, traceback):
+        self.close()
         return False
+
+    def close(self):
+        self.fh.close()
 
     def _dimension(self, name, tree=None):
         """ Local method for obtaing the dimension in a certain tree """
