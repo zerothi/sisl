@@ -43,12 +43,13 @@ Advanced classes
 """
 
 # Import bibtex, version string and the major, minor, micro as well
-from .info import cite as cite
+import sisl.info as info
 from .info import bibtex as __bibtex__
 from .info import version as __version__
 from .info import major as __major__
 from .info import minor as __minor__
 from .info import micro as __micro__
+from .info import cite
 
 # Import the Selector
 from .selector import *
@@ -101,4 +102,4 @@ from . import geom
 
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]
-__all__ += ['__{}__'.format(r) for r in ['version', 'major', 'minor', 'micro']]
+__all__ += ['__{}__'.format(r) for r in ['bibtex', 'version', 'major', 'minor', 'micro']]
