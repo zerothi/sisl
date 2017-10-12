@@ -143,7 +143,8 @@ class Hessian(SparseOrbitalBZ):
         if isinstance(sile, BaseSile):
             return sile.read_hessian(*args, **kwargs)
         else:
-            return get_sile(sile).read_hessian(*args, **kwargs)
+            with get_sile(sile) as fh:
+                return fh.read_hessian(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs):
         """ Writes a Hessian to the `Sile` as implemented in the :code:`Sile.write_hessian` method """
@@ -153,7 +154,8 @@ class Hessian(SparseOrbitalBZ):
         if isinstance(sile, BaseSile):
             sile.write_hessian(self, *args, **kwargs)
         else:
-            get_sile(sile, 'w').write_hessian(self, *args, **kwargs)
+            with get_sile(sile, 'w') as fh:
+                fh.write_hessian(self, *args, **kwargs)
 
 
 DynamicalMatrix = Hessian

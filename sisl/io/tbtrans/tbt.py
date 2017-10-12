@@ -1563,7 +1563,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 old_g = ns._geometry.copy()
 
                 # Now read the file to read the geometry from
-                g = get_sile(value).read_geometry()
+                g = Geometry.read(value)
 
                 # Make sure g has the same # of orbitals
                 atoms = [None] * len(old_g)
@@ -1876,7 +1876,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                     # to a geometry
                     obj = get_sile(out, mode='w')
                     if hasattr(obj, 'write_geometry'):
-                        obj.write_geometry(ns._geometry)
+                        with obj as fh:
+                            fh.write_geometry(ns._geometry)
                         return
                     raise NotImplementedError
                 except:

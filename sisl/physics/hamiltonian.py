@@ -127,7 +127,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if isinstance(sile, BaseSile):
             return sile.read_hamiltonian(*args, **kwargs)
         else:
-            return get_sile(sile).read_hamiltonian(*args, **kwargs)
+            with get_sile(sile) as fh:
+                return fh.read_hamiltonian(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs):
         """ Writes a tight-binding model to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method """
@@ -137,7 +138,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if isinstance(sile, BaseSile):
             sile.write_hamiltonian(self, *args, **kwargs)
         else:
-            get_sile(sile, 'w').write_hamiltonian(self, *args, **kwargs)
+            with get_sile(sile, 'w') as fh:
+                fh.write_hamiltonian(self, *args, **kwargs)
 
 # For backwards compatibility we also use TightBinding
 # NOTE: that this is not sub-classed...

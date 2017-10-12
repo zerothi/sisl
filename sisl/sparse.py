@@ -1093,6 +1093,9 @@ class SparseCSR(object):
             for i, dim in enumerate(dims):
                 new._D[:, i] = self._D[:, dim]
 
+        # Mark it as finalized, if able
+        new._finalized = self._finalized
+
         return new
 
     def tocsr(self, dim=0, **kwargs):

@@ -441,9 +441,10 @@ class Grid(SuperCellChild):
         if isinstance(sile, BaseSile):
             return sile.read_grid(*args, **kwargs)
         else:
-            return get_sile(sile).read_grid(*args, **kwargs)
+            with get_sile(sile) as fh:
+                return fh.read_grid(*args, **kwargs)
 
-    def write(self, sile):
+    def write(self, sile, *args, **kwargs):
         """ Writes grid to the `Sile` using `write_grid`
 
         Parameters
@@ -457,9 +458,10 @@ class Grid(SuperCellChild):
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            sile.write_grid(self)
+            sile.write_grid(self, *args, **kwargs)
         else:
-            get_sile(sile, 'w').write_grid(self)
+            with get_sile(sile, 'w') as fh:
+                fh.write_grid(self, *args, **kwargs)
 
     def __repr__(self):
         """ Representation of object """
@@ -841,7 +843,8 @@ This may be unexpected but enables one to do advanced manipulations.
     # First read the input "Sile"
     if grid is None:
         argv, input_file = cmd.collect_input(argv)
-        grid = get_sile(input_file).read_grid()
+        with get_sile(input_file) as fh:
+            grid = fh.read_grid()
 
     elif isinstance(grid, Grid):
         # Do nothing, the grid is already created

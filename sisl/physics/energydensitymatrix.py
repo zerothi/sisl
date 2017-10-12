@@ -108,7 +108,8 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         if isinstance(sile, BaseSile):
             return sile.read_energy_density_matrix(*args, **kwargs)
         else:
-            return get_sile(sile).read_energy_density_matrix(*args, **kwargs)
+            with get_sile(sile) as fh:
+                return fh.read_energy_density_matrix(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs):
         """ Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method """
@@ -118,4 +119,5 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         if isinstance(sile, BaseSile):
             sile.write_energy_density_matrix(self, *args, **kwargs)
         else:
-            get_sile(sile, 'w').write_energy_density_matrix(self, *args, **kwargs)
+            with get_sile(sile, 'w') as fh:
+                fh.write_energy_density_matrix(self, *args, **kwargs)

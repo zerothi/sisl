@@ -372,7 +372,8 @@ class Geometry(SuperCellChild):
         if isinstance(sile, BaseSile):
             return sile.read_geometry(*args, **kwargs)
         else:
-            return get_sile(sile).read_geometry(*args, **kwargs)
+            with get_sile(sile) as fh:
+                return fh.read_geometry(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs):
         """ Writes geometry to the `Sile` using `sile.write_geometry`
@@ -390,14 +391,14 @@ class Geometry(SuperCellChild):
         --------
         read : reads a `Geometry` from a given `Sile`/file
         """
-
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
             sile.write_geometry(self, *args, **kwargs)
         else:
-            get_sile(sile, 'w').write_geometry(self, *args, **kwargs)
+            with get_sile(sile, 'w') as fh:
+                fh.write_geometry(self, *args, **kwargs)
 
     def __repr__(self):
         """ Representation of the object """
