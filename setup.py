@@ -152,19 +152,18 @@ def git_version():
         return out
 
     try:
+        # Get latest revision tag
         out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
         rev = out.strip().decode('ascii')
-    except OSError:
-        # Retain the revision name
-        rev = GIT_REVISION
-
-    try:
         # Get latest tag
         out = _minimal_ext_cmd(['git', 'describe', '--abbrev=0'])
         tag = out.strip().decode('ascii')
+        # Get number of commits since tag
         out = _minimal_ext_cmd(['git', 'rev-list', tag + '..', '--count'])
         count = out.strip().decode('ascii')
     except OSError:
+        # Retain the revision name
+        rev = GIT_REVISION
         # Assume it is on tag
         count = '0'
 
@@ -211,7 +210,6 @@ def cite():
                                     released=ISRELEASED,
                                     count=GIT_COUNT,
                                     git=GIT_REV))
-    exit(0)
 
 if __name__ == '__main__':
 
