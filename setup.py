@@ -209,6 +209,7 @@ def cite():
                                     count=GIT_COUNT,
                                     git=GIT_REV))
 
+
 if __name__ == '__main__':
 
     # First figure out if we should define the
@@ -231,8 +232,9 @@ if __name__ == '__main__':
         # Create version file
         # if allowed
         write_version()
-    except:
-        pass
+    except Exception as e:
+        print('Could not write sisl/info.py:')
+        print(str(e))
 
     # Be sure to import this before numpy setup
     from setuptools import setup
