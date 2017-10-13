@@ -276,9 +276,10 @@ class tbtncSileTBtrans(SileCDFTBtrans):
     # file.
 
     @property
-    def geom(self):
-        """ Returns the associated geometry from this file """
+    def geometry(self):
+        """ The associated geometry from this file """
         return self.read_geometry()
+    geom = geometry
 
     @property
     def cell(self):
