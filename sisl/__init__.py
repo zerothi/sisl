@@ -42,6 +42,9 @@ Advanced classes
 
 """
 
+__author__ = "Nick R. Papior"
+__copyright__ = "LGPL-3.0"
+
 # Import bibtex, version string and the major, minor, micro as well
 import sisl.info as info
 from .info import bibtex as __bibtex__
@@ -103,3 +106,4 @@ from . import geom
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]
 __all__ += ['__{}__'.format(r) for r in ['bibtex', 'version', 'major', 'minor', 'micro']]
+__all__ += ['__{}__'.format(r) for r in ['author', 'copyright']]
