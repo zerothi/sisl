@@ -1322,12 +1322,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # vector currents
         Ja = _a.zerosd([na, 3])
 
-        # Create local orbital look-up
-        xyz = geom.xyz
-
-        # Short-hands
+        # Short-hand
         sqrt = np.sqrt
-        sum = np.sum
 
         # Loop atoms in the device region
         # These are the only atoms which may have bond-currents,
@@ -1344,9 +1340,9 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
             # Now calculate the vector elements
             # Remark that the vector goes from ia -> ja
-            rv = geom.axyz(Jia.indices) - xyz[ia, :][None, :]
-            rv = rv / sqrt(sum(rv ** 2, axis=1))[:, None]
-            Ja[ia, :] = sum(Jia.data[:, None] * rv, axis=0)
+            rv = geom.Rij(ia, Jia.indices)
+            rv = rv / sqrt( (rv ** 2).sum(1) )[:, None]
+            Ja[ia, :] = (Jia.data[:, None] * rv).sum(0)
 
         return Ja
 
@@ -1451,7 +1447,6 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 prnt("  - " + string + ": false\t\t["+', '.join(fdf) + ']')
 
         # Retrieve the device atoms
-        dev_rng = list2str(self.a_dev + 1)
         prnt("Device information:")
         if self._k_avg:
             prnt("  - all data is k-averaged")
@@ -1476,7 +1471,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         else:
             prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
         prnt("  - atoms with DOS (fortran indices):")
-        prnt("     " + dev_rng)
+        prnt("     " + list2str(self.a_dev + 1))
         truefalse('DOS' in self.variables, "DOS Green function", ['TBT.DOS.Gf'])
         if elec is None:
             elecs = self.elecs
@@ -1685,7 +1680,6 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 if len(orbs) != len(ns._tbt.o2p(orbs)):
                     print('Device atoms:')
                     tmp = ns._tbt.a_dev[:] + 1
-                    tmp.sort()
                     print(tmp[:])
                     print('Input atoms:')
                     print(value)
