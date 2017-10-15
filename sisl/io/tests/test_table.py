@@ -57,3 +57,36 @@ class TestTable(object):
 
         os.remove(io0.file)
         os.remove(io1.file)
+
+    def test_tbl3(self):
+        dat0 = np.arange(8).reshape(2, 2, 2)
+        dat1 = np.arange(8).reshape(2, 2, 2) + 1
+        DAT = np.stack([dat0, dat1])
+        DAT.shape = (-1, 2, 2)
+
+        io = TableSile(join(_C.d, 't0.dat'), 'w')
+        io.write_data(dat0, dat1)
+        dat = TableSile(io.file, 'r').read_data()
+        assert np.allclose(dat, DAT)
+        io = TableSile(io.file, 'w')
+        io.write_data((dat0, dat1))
+        dat = TableSile(io.file, 'r').read_data()
+        assert np.allclose(dat, DAT)
+
+        os.remove(io.file)
+
+    def test_tbl4(self):
+        dat0 = np.arange(8)
+        dat1 = np.arange(8) + 1
+        DAT = np.stack([dat0, dat1])
+
+        io = TableSile(join(_C.d, 't0.dat'), 'w')
+        io.write_data(dat0, dat1)
+        dat = TableSile(io.file, 'r').read_data()
+        assert np.allclose(dat, DAT)
+        io = TableSile(io.file, 'w')
+        io.write_data((dat0, dat1))
+        dat = TableSile(io.file, 'r').read_data()
+        assert np.allclose(dat, DAT)
+
+        os.remove(io.file)

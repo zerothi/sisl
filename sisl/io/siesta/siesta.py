@@ -4,9 +4,8 @@ from __future__ import print_function
 from .sile import SileCDFSiesta
 from ..sile import *
 
-# Import the geometry object
-from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
+from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.physics import DensityMatrix
 from sisl.physics import EnergyDensityMatrix
 from sisl.physics import Hamiltonian

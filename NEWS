@@ -1,6 +1,8 @@
 0.9.0
 =====
 
+- Enabled reading a tabular data-file
+
 - Lots of updates to the spin-class. It should now be more coherent.
 
 - Added rij and Rij to the sparse_geometry classes to extract orbital or

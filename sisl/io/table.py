@@ -3,16 +3,14 @@ from __future__ import print_function
 import numpy as np
 
 # Import sile objects
-from .sile import *
+from sisl._help import ensure_array
+from .sile import Sile, add_sile, Sile_fh_open
 
 __all__ = ['TableSile']
 
 
 class TableSile(Sile):
-    """ ASCII tabular formatted data
-
-    Intrinsically this uses the `numpy.savetxt` routine to store the content.
-    """
+    """ ASCII tabular formatted data """
 
     def _setup(self, *args, **kwargs):
         """ Setup the `TableSile` after initialization """
@@ -33,6 +31,9 @@ class TableSile(Sile):
             characters (like gnuplot acceptable data).
         fmt : str, optional
             The formatting string, defaults to ``'.5e'``.
+        fmts : str, optional
+            The formatting string (for all columns), defaults to ``fmt * len(args)`.
+            `fmts` has precedence over `fmt`.
         newline : str, optional
             Defaults to ``'\n'``.
         delimiter : str, optional
@@ -43,20 +44,21 @@ class TableSile(Sile):
             start of new lines, for lists each item corresponds to a newline
             which is automatically appended.
         header : str or list of str, optional
-            A header for the data.
+            A header for the data (this will be prepended a comment if not present).
         footer : str or list of str, optional
             A footer written at the end of the file.
 
         Examples
         --------
 
-        >>> tbl = sisl.io.TableSile('test.dat')
-        >>> tbl.write_data(np.arange(2), np.arange(2) + 1, comment='This is nothing', header=['index', 'value'])
+        >>> tbl = TableSile('test.dat', 'w')
+        >>> tbl.write_data(range(2), range(1, 3), comment='A comment', header=['index', 'value'])
         >>> print(open('test.dat').readlines())
-        # This is nothing
-        index    value
+        # A comment
+        #index    value
         0        1
         1        2
+
         """
         fmt = kwargs.get('fmt', '.5e')
         newline = kwargs.get('newline', '\n')
@@ -75,6 +77,13 @@ class TableSile(Sile):
             header = ''
         elif isinstance(header, (list, tuple)):
             header = delimiter.join(header)
+        if header is not None:
+            # Ensure no "dangling" spaces
+            header = header.strip()
+            if not header.startswith(self._comment[0]):
+                header = self._comment[0] + header
+            if not header.endswith('\n'):
+                header += '\n'
         header = comment + header
 
         footer = kwargs.get('footer', None)
@@ -84,7 +93,12 @@ class TableSile(Sile):
             footer = newline.join(footer)
 
         # Create a unified data table
-        dat = np.vstack(args)
+        # This is rather difficult because we have to guess the
+        # input size
+        if len(args) == 1:
+            dat = np.stack(args[0])
+        else:
+            dat = np.stack(args)
 
         _fmt = '{:' + fmt + '}'
 
@@ -96,18 +110,96 @@ class TableSile(Sile):
         self._write(header)
 
         if len(dat.shape) > 2:
-            _fmt = (_fmt + delimiter) * (dat.shape[1] - 1) + _fmt + newline
+            _fmt = kwargs.get('fmts', (_fmt + delimiter) * (dat.shape[1] - 1) + _fmt + newline)
             for i in range(dat.shape[0]):
                 for j in range(dat.shape[2]):
                     self._write(_fmt.format(*dat[i, :, j]))
                 self._write(newline * 2)
         else:
-            _fmt = (_fmt + delimiter) * (dat.shape[0] - 1) + _fmt + newline
+            _fmt = kwargs.get('fmts', (_fmt + delimiter) * (dat.shape[0] - 1) + _fmt + newline)
             for i in range(dat.shape[1]):
                 self._write(_fmt.format(*dat[:, i]))
 
         if len(footer) > 0:
             self._write(newline * 2 + footer)
+
+    @Sile_fh_open
+    def read_data(self, *args, **kwargs):
+        """ Read tabular data from the file.
+
+        Parameters
+        ----------
+        columns : list of int, optional
+            only return the indices of the columns that are provided
+        delimiter : str, optional
+            the delimiter used in the file, will automatically try to guess if not specified
+        ret_comment : bool, optional
+            also return the comments at the top of the file (if queried)
+        ret_header : bool, optional
+            also return the header information (if queried)
+        comment : str, optional
+            lines starting with this are discarded as comments
+        """
+        # Override the comment in the file
+        self._comment = [kwargs.get('comment', self._comment[0])]
+
+        # Skip to next line
+        lines = []
+        comment = []
+        header = ''
+
+        # Also read comments
+        line = self.readline(True)
+        while line.startswith(self._comment[0] + ' '):
+            comment.append(line)
+            line = self.readline(True)
+
+        if line.startswith(self._comment[0]):
+            header = line
+
+        # Now we are ready to read the data
+        dat = [[]]
+        line = self.readline()
+
+        # First we need to figure out the separator:
+        len_sep = 0
+        sep = kwargs.get('delimiter', '')
+        if len(sep) == 0:
+            for cur_sep in ['\t', ' ', ',']:
+                s = line.split(cur_sep)
+                if len(s) > len_sep:
+                    len_sep = len(s)
+                    sep = cur_sep
+            if len(sep) == 0:
+                raise ValueError(self.__class__.__name__ + '.read_data could not determine '
+                                 'column separator...')
+
+        while len(line) > 0:
+            # If we start a line by a comment, or a newline
+            # then we have a new data set
+            if line.startswith('\n'):
+                dat[-1] = ensure_array(dat[-1], np.float64)
+                dat.append([])
+            else:
+                dat[-1].append(ensure_array(map(float, line.split(sep)), np.float64))
+
+            line = self.readline()
+        dat[-1] = ensure_array(dat[-1], np.float64)
+
+        # Ensure we have no false positives
+        dat = [d for d in dat if len(d) > 0]
+        dat = ensure_array(dat, np.float64)
+        if dat.shape[0] == 1:
+            s = list(dat.shape)
+            s.pop(0)
+            dat.shape = tuple(s)
+
+        dat = np.swapaxes(dat, -2, -1)
+        if kwargs.get('ret_comment', False):
+            if kwargs.get('ret_header', False):
+                return dat, comment, header
+            return dat, comment
+        return dat
 
     # Specify the default write function
     _write_default = write_data

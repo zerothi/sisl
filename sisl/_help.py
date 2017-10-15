@@ -105,6 +105,8 @@ def ensure_array(arr, dtype=np.int32, force=True):
         if not force:
             return dtype(arr)
         return _array([arr], dtype)
+    elif isinstance(arr, (tuple, list)):
+        return _asarray(arr, dtype)
     elif isiterable(arr):
         # a numpy.ndarray is also iterable
         # hence we *MUST* check that before...
