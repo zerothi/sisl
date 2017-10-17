@@ -1131,12 +1131,15 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             Jab.indices = map_col(Jij.indices).astype(np.int32, copy=False)
 
         # Copy data
-        if '+' in sum:
+        if sum == '+':
             Jab.data = np.where(Jij.data > 0, Jij.data, 0).astype(Jij.dtype, copy=False)
-        elif '-' in sum:
+        elif sum == '-':
             Jab.data = np.where(Jij.data > 0, 0, Jij.data).astype(Jij.dtype, copy=False)
-        else:
+        elif sum == 'all':
             Jab.data = np.copy(Jij.data)
+        else:
+            raise ValueError(self.__class__.__name__ + '.bond_current_from_orbital "sum" keyword has '
+                             'wrong value ["+", "-", "all"] allowed.')
 
         # Do in-place operations by removing all the things not required
         Jab.sum_duplicates()
@@ -1343,7 +1346,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         return Ja
 
-    def vector_current(self, elec, E, kavg=True, sum='all'):
+    def vector_current(self, elec, E, kavg=True, sum='+'):
         """ Vector for each atom describing the *mean* path for the current travelling through the atom
 
         See `vector_current_from_bond` for details.
@@ -1359,9 +1362,12 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         kavg: bool, int or array_like, optional
            whether the returned vector current is k-averaged, an explicit k-point
            or a selection of k-points
-        sum : {'all', '+', '-'}
-           how the summation of the bond-currents will be performed, i.e. only
-           positive ('+'), negative ('-') or all orbital currents
+        sum : {'+', '-', 'all'}
+           By default only sum *outgoing* vector currents (``'+'``).
+           The *incoming* vector currents may be retrieved by ``'-'``, while the
+           average incoming and outgoing direction can be obtained with ``'all'``.
+           In the last case the vector currents are divided by 2 to ensure the length
+           of the vector is compatibile with the other options given a pristine system.
 
         Returns
         -------
@@ -1378,6 +1384,13 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # Imperative that we use the entire supercell structure to
         # retain vectors crossing the boundaries
         Jab = self.bond_current(elec, E, kavg, sum=sum)
+
+        if sum == 'all':
+            # When we divide by two one can *always* compare the bulk
+            # vector currents using either of the sum-rules.
+            # I.e. it will be much easier to distinguish differences
+            # between "incoming" and "outgoing".
+            return self.vector_current_from_bond(Jab) / 2
 
         return self.vector_current_from_bond(Jab)
 

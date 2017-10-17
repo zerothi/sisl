@@ -13,4 +13,4 @@ select="$select,E401"
 autopep8 --select "$select" --in-place -r --exclude build,dist .
 
 # Non-Python files
-autopep8 --select "W291,W293" --in-place NEWS
+autopep8 --select "W291,W293" --in-place CHANGELOG
