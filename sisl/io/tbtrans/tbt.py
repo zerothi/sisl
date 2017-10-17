@@ -1143,9 +1143,6 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         Jab.eliminate_zeros()
         Jab.sort_indices()
 
-        # Rescale to correct magnitude
-        Jab *= 0.5
-
         return Jab
 
     def bond_current(self, elec, E, kavg=True, isc=None, sum='all', uc=False):
@@ -1235,7 +1232,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0, isc=[None]*3) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
+        >>> Jij = tbt.orbital_current(0, -1.03) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
         >>> Ja = tbt.atom_current_from_orbital(Jij) # doctest: +SKIP
         """
         # Create the bond-currents with all summations
@@ -1285,7 +1282,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
         elec = self._elec(elec)
-        Jorb = self.orbital_current(elec, E, kavg, isc=[None, None, None])
+        Jorb = self.orbital_current(elec, E, kavg)
 
         return self.atom_current_from_orbital(Jorb, activity=activity)
 
@@ -1380,7 +1377,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         elec = self._elec(elec)
         # Imperative that we use the entire supercell structure to
         # retain vectors crossing the boundaries
-        Jab = self.bond_current(elec, E, kavg, isc=[None, None, None], sum=sum)
+        Jab = self.bond_current(elec, E, kavg, sum=sum)
 
         return self.vector_current_from_bond(Jab)
 
