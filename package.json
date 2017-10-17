@@ -1,7 +1,7 @@
 {
     "name": "sisl",
     "version": "0.9.0",
-    "description": "Dart Development Compiler",
+    "description": "Python tight-binding utility and manipulator of DFT output. Also input engine for large scale transport calculations using TBtrans",
     "homepage": "https://github.com/zerothi/sisl",
     "bugs": "https://github.com/zerothi/sisl/issues",
     "license": "LGPLv3",
