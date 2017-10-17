@@ -1581,12 +1581,22 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
             @collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
-                Emap = strmap(float, value)
+                E = ns._tbt.E
+                Emap = strmap(float, value, E.min(), E.max())
                 # Convert to actual indices
                 E = []
                 for begin, end in Emap:
-                    E.append(range(ns._tbt.Eindex(float(begin)), ns._tbt.Eindex(float(end))+1))
-                ns._Erng = _a.arrayi(E).flatten()
+                    if begin is None and end is None:
+                        ns._Erng = None
+                        return
+                    elif begin is None:
+                        E.append(range(ns._tbt.Eindex(end)+1))
+                    elif end is None:
+                        E.append(range(ns._tbt.Eindex(begin), len(ns._tbt.E)))
+                    else:
+                        E.append(range(ns._tbt.Eindex(begin), ns._tbt.Eindex(end)+1))
+                # Issuing unique also sorts the entries
+                ns._Erng = np.unique(_a.arrayi(E).flatten())
         p.add_argument('--energy', '-E',
                        action=ERange,
                        help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
@@ -1625,8 +1635,10 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             @collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 value = value.replace(' ', '')
+
                 # Immediately convert to proper indices
                 geom = ns._geometry
+                a_dev = ns._tbt.a_dev[:] + 1
 
                 # Sadly many shell interpreters does not
                 # allow simple [] because they are expansion tokens
@@ -1639,7 +1651,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 failed = True
                 while failed and len(sep) > 0:
                     try:
-                        ranges = lstranges(strmap(int, value, sep.pop()))
+                        ranges = lstranges(strmap(int, value, a_dev.min(), a_dev.max(), sep.pop()))
                         failed = False
                     except:
                         pass
@@ -1656,6 +1668,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                         # this will be
                         #  atoms[0] == atom
                         #  atoms[1] == list of orbitals on the atom
+                        if atoms[0] not in a_dev:
+                            continue
 
                         # Get atoms and orbitals
                         ob = geom.a2o(atoms[0] - 1, True)
@@ -1667,25 +1681,34 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                         no += len(ob)
                         ob = ob[asarrayi(atoms[1]) - 1]
                     else:
+                        if atoms not in a_dev:
+                            continue
                         ob = geom.a2o(atoms - 1, True)
                         no += len(ob)
                     orbs.append(ob)
 
+                if len(orbs) == 0:
+                    print('Device atoms:')
+                    print('  ', list2str(a_dev))
+                    print('Input atoms:')
+                    print('  ', value)
+                    raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
+
                 # Add one to make the c-index equivalent to the f-index
                 orbs = np.concatenate(orbs).flatten()
 
-                # Check that the requested orbitals are all in the device
-                # region
+                # Check that the requested orbitals are all in the device region
                 if len(orbs) != len(ns._tbt.o2p(orbs)):
+                    # This should in principle never be called because of the
+                    # checks above.
                     print('Device atoms:')
-                    print(list2str(ns._tbt.a_dev[:] + 1))
+                    print('  ', list2str(a_dev))
                     print('Input atoms:')
-                    print(value)
+                    print('  ', value)
                     raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
 
                 ns._Ovalue = value
                 ns._Orng = orbs
-                #print('Updating Orng and Oscale: ',ns._Orng, ns._Oscale)
 
         p.add_argument('--atom', '-a', type=str, action=AtomRange,
                        help="""Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters.

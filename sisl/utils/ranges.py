@@ -12,17 +12,8 @@ __all__ += ['array_arange']
 
 
 # Function to change a string to a range of integers
-def strmap(func, s, sep='b'):
+def strmap(func, s, start=None, end=None, sep='b'):
     """ Parse a string as though it was a slice and map all entries using ``func``.
-
-    Examples
-    --------
-    >>> strmap(int, '1')
-    [1]
-    >>> strmap(int, '1-2')
-    [(1, 2)]
-    >>> strmap(int, '1-10[2-3]')
-    [((1, 10), [(2, 3)])]
 
     Parameters
     ----------
@@ -30,10 +21,26 @@ def strmap(func, s, sep='b'):
        function to parse every match with
     s    : str
        the string that should be parsed
+    start  : optional
+       the replacement in case the LHS of the delimiter is not present
+    end  : optional
+       the replacement in case the RHS of the delimiter is not present
     sep  : {'b', 'c'}
        separator used, ``'b'`` is square brackets, ``'c'``, curly braces
-    """
 
+    Examples
+    --------
+    >>> strmap(int, '1')
+    [1]
+    >>> strmap(int, '1-2')
+    [(1, 2)]
+    >>> strmap(int, '1-')
+    [(1, None)]
+    >>> strmap(int, '1-', 4)
+    [(1, 4)]
+    >>> strmap(int, '1-10[2-3]')
+    [((1, 10), [(2, 3)])]
+    """
     if sep == 'b':
         segment = re.compile(r'\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)')
         sep1, sep2 = '[', ']'
@@ -44,9 +51,13 @@ def strmap(func, s, sep='b'):
         raise ValueError('Unknown separator for the sequence')
 
     # Create list
-    l = []
+    s = s.replace(' ', '')
+    if len(s) == 0:
+        return [None]
+    elif s in ['-', ':']:
+        return [(start, end)]
 
-    commas = s.replace(' ', '').split(',')
+    commas = s.split(',')
 
     # Collect all the comma separated quantities that
     # may be selected by [..,..]
@@ -66,6 +77,7 @@ def strmap(func, s, sep='b'):
 
     # Now we have a comma-separated list
     # with collected brackets.
+    l = []
     for seg in commas:
 
         # Split it in groups of reg-exps
@@ -73,21 +85,22 @@ def strmap(func, s, sep='b'):
 
         if len(m[0]) > 0:
             # this is: [..][..]
-            rhs = strmap(func, m[1], sep)
-            for el in strmap(func, m[0], sep):
+            rhs = strmap(func, m[1], start, end, sep)
+            for el in strmap(func, m[0], start, end, sep):
                 l.append((el, rhs))
 
         elif len(m[2]) > 0:
             # this is: ..[..]
-            l.append((strseq(func, m[2]), strmap(func, m[3], sep)))
+            l.append((strseq(func, m[2], start, end),
+                      strmap(func, m[3], start, end, sep)))
 
         elif len(m[4]) > 0:
-            l.append(strseq(func, m[4]))
+            l.append(strseq(func, m[4], start, end))
 
     return l
 
 
-def strseq(cast, s):
+def strseq(cast, s, start=None, end=None):
     """ Accept a string and return the casted tuples of content based on ranges.
 
     Parameters
@@ -103,26 +116,38 @@ def strseq(cast, s):
     3
     >>> strseq(int, '3-6')
     (3, 6)
+    >>> strseq(int, '3-')
+    (3, None)
     >>> strseq(int, '3:2:7')
     (3, 2, 7)
+    >>> strseq(int, '3:2:', end=8)
+    (3, 2, 8)
+    >>> strseq(int, ':2:', start=2)
+    (2, 2, 8)
     >>> strseq(float, '3.2:6.3')
     (3.2, 6.3)
     """
     if ':' in s:
-        return tuple(cast(ss) if len(ss.strip()) > 0 else None for ss in s.split(':'))
+        s = [ss.strip() for ss in s.split(':')]
     elif '-' in s:
-        return tuple(cast(ss) if len(ss.strip()) > 0 else None for ss in s.split('-'))
+        s = [ss.strip() for ss in s.split('-')]
+    if isinstance(s, list):
+        if len(s[0]) == 0:
+            s[0] = start
+        if len(s[-1]) == 0:
+            s[-1] = end
+        return tuple(cast(ss) if ss is not None else None for ss in s)
     return cast(s)
 
 
-def erange(*args):
+def erange(start, step, end=None):
     """ Returns the range with both ends includede """
-    if len(args) == 3:
-        return range(args[0], args[2]+1, args[1])
-    return range(args[0], args[1]+1)
+    if end is None:
+        return range(start, step + 1)
+    return range(start, end + 1, step)
 
 
-def lstranges(lst, cast=erange):
+def lstranges(lst, cast=erange, end=None):
     """ Convert a `strmap` list into expanded ranges """
     l = []
     # If an entry is a tuple, it means it is either
@@ -133,8 +158,8 @@ def lstranges(lst, cast=erange):
         if len(lst) == 3:
             l.extend(cast(*lst))
         else:
-            head = lstranges(lst[0], cast)
-            bot = lstranges(lst[1], cast)
+            head = lstranges(lst[0], cast, end)
+            bot = lstranges(lst[1], cast, end)
             if isinstance(head, list):
                 for el in head:
                     l.append([el, bot])
@@ -145,12 +170,14 @@ def lstranges(lst, cast=erange):
 
     elif isinstance(lst, list):
         for lt in lst:
-            ls = lstranges(lt, cast)
+            ls = lstranges(lt, cast, end)
             if isinstance(ls, list):
                 l.extend(ls)
             else:
                 l.append(ls)
     else:
+        if lst is None and end is not None:
+            return cast(0, end)
         return lst
     return l
 

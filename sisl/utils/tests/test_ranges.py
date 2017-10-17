@@ -29,7 +29,15 @@ class TestRanges(object):
 
     def test_strmap1(self):
         assert strmap(int, '1') == [1]
+        assert strmap(int, '') == [None]
+        assert strmap(int, '1-') == [(1, None)]
+        assert strmap(int, '-') == [(None, None)]
+        assert strmap(int, '-1') == [(None, 1)]
+        assert strmap(int, '-1', start=1) == [(1, 1)]
+        assert strmap(int, '-', start=1, end=2) == [(1, 2)]
         assert strmap(int, '1,2') == [1, 2]
+        assert strmap(int, '1,2[0,2-]') == [1, (2, [0, (2, None)])]
+        assert strmap(int, '1,2-[0,-2]') == [1, ((2, None), [0, (None, 2)])]
         assert strmap(int, '1,2[0,2]') == [1, (2, [0, 2])]
         assert strmap(int, '1,2-3[0,2]') == [1, ((2, 3), [0, 2])]
         assert strmap(int, '1,[2,3][0,2]') == [1, (2, [0, 2]), (3, [0, 2])]
@@ -55,6 +63,16 @@ class TestRanges(object):
     @pytest.mark.xfail(raises=ValueError)
     def test_strmap4(self):
         strmap(int, '1[oestuh]]')
+
+    def test_strmap5(self):
+        r = strmap(int, '1-', end=5)
+        assert r == [(1, 5)]
+        r = strmap(int, '1-', start=0, end=5)
+        assert r == [(1, 5)]
+        r = strmap(int, '-4', start=0, end=5)
+        assert r == [(0, 4)]
+        r = strmap(int, '-', start=0, end=5)
+        assert r == [(0, 5)]
 
     def test_lstranges1(self):
         ranges = strmap(int, '1,2-3[0,2]')
