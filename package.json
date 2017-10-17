@@ -15,10 +15,18 @@
 	{
 	    "name": "Nick R. Papior",
 	    "email": "nickpapior@gmail.com"
-	},
+	}
     ],
     "repository": {
 	"type": "git",
 	"url": "https://github.com/zerothi/sisl.git"
     },
+    "devDependencies" : {
+	"pytest": "pytest-dev/pytest"
+    },
+    "dependencies" : {
+	"numpy": "numpy/numpy",
+	"scipy": "scipy/scipy",
+	"netcdf4py": "Unidata/netcdf4-python"
+    }
 }
