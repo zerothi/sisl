@@ -1,0 +1,24 @@
+{
+    "name": "sisl",
+    "version": "0.9.0",
+    "description": "Dart Development Compiler",
+    "homepage": "https://github.com/zerothi/sisl",
+    "bugs": "https://github.com/zerothi/sisl/issues",
+    "license": "LGPLv3",
+    "keywords": [
+	"python",
+	"electronic structure",
+	"Green function",
+	"tight-binding"
+    ],
+    "contributors": [
+	{
+	    "name": "Nick R. Papior",
+	    "email": "nickpapior@gmail.com"
+	},
+    ],
+    "repository": {
+	"type": "git",
+	"url": "https://github.com/zerothi/sisl.git"
+    },
+}
