@@ -924,7 +924,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         I = _a.sumd(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
 
-    def orbital_current(self, elec, E, kavg=True, take='all', isc=None):
+    def orbital_current(self, elec, E, kavg=True, isc=None, take='all'):
         """ Orbital current originating from `elec` as a sparse matrix
 
         This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
@@ -942,14 +942,14 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         kavg: bool, int or array_like, optional
            whether the returned orbital current is k-averaged, an explicit k-point
            or a selection of k-points
-        take : {'all', '+', '-'}
-           which orbital currents to return, all, positive or negative values only.
-           Default to ``'all'`` because it can then be used in the subsequent default
-           arguments for `bond_current_from_orbital` and `atom_current_from_orbital`.
         isc: array_like, optional
            the returned bond currents from the unit-cell (``[None, None, None]``) to
            the given supercell, the default is all orbital currents for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+        take : {'all', '+', '-'}
+           which orbital currents to return, all, positive or negative values only.
+           Default to ``'all'`` because it can then be used in the subsequent default
+           arguments for `bond_current_from_orbital` and `atom_current_from_orbital`.
 
         Examples
         --------
@@ -975,7 +975,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         col = self._value('list_col') - 1
 
         # Default matrix size
-        mat_size = (geom.no, geom.no_s)
+        mat_size = [geom.no, geom.no_s]
 
         # Figure out the super-cell indices that are requested
         # First we figure out the indices, then
@@ -1013,7 +1013,15 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             all_col = []
             for ix, iy, iz in itertools.product(x, y, z):
                 i = geom.sc_index([ix, iy, iz])
-                all_col.extend(list(range(i * geom.no, (i+1) * geom.no)))
+                all_col.append(i)
+
+            # If the user requests a single supercell index, we will
+            # return a square matrix
+            if len(all_col) == 1:
+                mat_size[1] = mat_size[0]
+
+            # Transfer all_col to the range
+            all_col = array_arange(all_col, n=[geom.no] * len(all_col))
 
             # Create a logical array for sub-indexing
             all_col = npisin(col, _a.arrayi(all_col))
