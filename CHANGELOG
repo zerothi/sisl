@@ -1,7 +1,14 @@
 0.9.1
 =====
 
+- Fixed scaling of bond-currents in case 'all' is used, makes comparison
+  with '+' and '-' easier.
 
+- Updated defaults in bond_current to '+' such that only forward
+  going electrons are captured.
+
+- Updated defaults in vector_current to '+' such that only forward
+  going electrons are captured.
 
 0.9.0
 =====
@@ -148,7 +155,7 @@
   its meaning.
 
   This may break old scripts if one use the `dR` keyword in arguments.
-  
+
 
 0.8.4
 =====
@@ -175,7 +182,7 @@
       read/write_es => read/write_hamiltonian
 
   Moved `quantity` to `physics`.
-  
+
 - Enabled slice deletion in `SparseCSR`
 
   Enabled eliminate_zeros() to remove unneeded values.
@@ -438,9 +445,8 @@ Here is a compressed list of changes:
   >>> Hamiltonian.construct((R, param))
 - The atoms contained in the Geometry are now not duplicated in case of many
   similar Atom objects. This should reduce overhead and increase throughput.
-  However, the efficiency is not optimal yet. 
+  However, the efficiency is not optimal yet.
 - Added many more tests, thus further stabilizing sisl
 
   I would really like help with creating more tests!
   Please help if you can!
-
