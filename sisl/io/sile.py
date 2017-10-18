@@ -229,12 +229,9 @@ def get_sile_class(file, *args, **kwargs):
 
         # Now we skip the limitation of the suffix,
         # now only the base-class is necessary.
-        for end in end_list:
-
-            # Check for object
-            for suf, base, fobj in __sile_rules:
-                if cls == base:
-                    return fobj
+        for suf, base, fobj in __sile_rules:
+            if cls == base:
+                return fobj
 
         del end_list
 

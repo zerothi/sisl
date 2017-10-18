@@ -54,16 +54,16 @@ class ncSileSiesta(SileCDFSiesta):
             n_b = len(bg.groups)
 
             spc = [None] * n_b
+            atm = dict()
             for basis in bg.groups:
                 # Retrieve index
                 ID = bg.groups[basis].ID
-                atm = dict()
                 atm['Z'] = int(bg.groups[basis].Atomic_number)
                 # We could possibly read in R, however, that is not so easy?
                 atm['mass'] = float(bg.groups[basis].Mass)
                 atm['tag'] = basis
                 atm['orbs'] = int(bg.groups[basis].Number_of_orbitals)
-                spc[ID - 1] = Atom(atm)
+                spc[ID - 1] = Atom(**atm)
             atom = [None] * len(xyz)
             for ia in range(len(xyz)):
                 atom[ia] = spc[b_idx[ia] - 1]

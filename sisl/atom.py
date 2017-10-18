@@ -811,10 +811,10 @@ class PeriodicTable(object):
         >>> 6 == PeriodicTable().Z('Carbon')
         True
         """
-        ak = np.asarray([key]).flatten()
-        if len(ak) == 1:
-            return self._Z_int[ak[0]]
-        return np.array([self._Z_int[ia] for ia in ak], np.int32)
+        key = np.asarray([key]).flatten()
+        if len(key) == 1:
+            return self._Z_int[key[0]]
+        return _a.asarrayi([self._Z_int[ia] for ia in key])
 
     Z_int = Z
 
@@ -862,7 +862,7 @@ class PeriodicTable(object):
         Z = self.Z_int(key)
         if isinstance(Z, Integral):
             return self._atomic_mass[Z]
-        return np.array([self._atomic_mass[z] for z in Z], np.float64)
+        return _a.arrayd([self._atomic_mass[z] for z in Z])
 
     def radius(self, key, method='calc'):
         """ Atomic radii using different methods
@@ -890,17 +890,15 @@ class PeriodicTable(object):
         if method == 'calc':
             if isinstance(Z, Integral):
                 return self._radius_calc[Z] / 100
-            return np.array([self._radius_calc[i]
-                             for i in Z], np.float64) / 100
+            return _a.arrayd([self._radius_calc[i] for i in Z]) / 100
         elif method == 'empirical':
             if isinstance(Z, Integral):
                 return self._radius_empirical[Z] / 100
-            return np.array([self._radius_empirical[i]
-                             for i in Z], np.float64) / 100
+            return _a.arrayd([self._radius_empirical[i] for i in Z]) / 100
         elif method == 'vdw':
             if isinstance(Z, Integral):
                 return self._radius_vdw[Z] / 100
-            return np.array([self._radius_vdw[i] for i in Z], np.float64) / 100
+            return _a.arrayd([self._radius_vdw[i] for i in Z]) / 100
         raise ValueError(
             'Method option could not be deciphered [calc|empirical|vdw].')
     radii = radius
@@ -991,9 +989,8 @@ class Atom(with_metaclass(AtomMeta, object)):
             self.orbs = max(len(R), orbs)
         except:
             self.orbs = orbs
-        self.R = array_fill_repeat(
-            np.asarray([R], np.float64).flatten(),
-            self.orbs)
+        self.R = array_fill_repeat(_a.asarrayd([R]).flatten(),
+                                   self.orbs)
         # Save the mass
         self.mass = mass
         if mass is None:
@@ -1193,7 +1190,7 @@ class Atoms(object):
     def _update_orbitals(self):
         """ Internal routine for updating the `firsto` attribute """
         # Get number of orbitals per specie
-        uorbs = np.array([a.orbs for a in self.atom], np.int32)
+        uorbs = _a.arrayi([a.orbs for a in self.atom])
         self._firsto = np.insert(_a.cumsumi(uorbs[self.specie[:]]), 0, 0)
 
     def copy(self):
@@ -1249,14 +1246,14 @@ class Atoms(object):
             Else, if `False` the maximum of all atoms maximum radii is returned (scalar).
         """
         if all:
-            maxR = np.array([a.maxR() for a in self.atom], np.float64)
+            maxR = _a.arrayd([a.maxR() for a in self.atom])
             return maxR[self.specie[:]]
         return np.amax([a.maxR() for a in self.atom])
 
     @property
     def mass(self):
         """ Return an array of masses of the contained objects """
-        umass = np.array([a.mass for a in self.atom], np.float64)
+        umass = _a.arrayd([a.mass for a in self.atom])
         return umass[self.specie[:]]
 
     def scale(self, scale):
