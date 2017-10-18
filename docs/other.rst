@@ -13,12 +13,13 @@ Here a short introduction to some of the other methods is also highlighted.
 
 We are currently aware of 3 established tight-binding methods used in litterature (in random order):
 
-- PythTB, see `here <http://physics.rutgers.edu/pythtb/index.html>`.
-- kwant, see `here <https://kwant-project.org/>`
-- pybinding, see `here <http://pybinding.site/>`
+- PythTB, see `here <http://physics.rutgers.edu/pythtb/index.html>`_
+- kwant, see `here <https://kwant-project.org/>`_
+- pybinding, see `here <http://pybinding.site/>`_
 
-sisl's philosophy is drastically different in the sense that Hamiltonian's (and other
-physical quantities described via matrices) are defined in matrix form. As for kwant and
+sisl's philosophy is drastically different in the sense that the Hamiltonian (and other
+physical quantities described via matrices) is defined in matrix form. As for kwant and
 pybinding the model is *descriptive* as *shapes* define the geometries.
-Secondyl, both kwant and pybinding are self-contained packages where all physics is handled by the
-scripts them-selves.
+Secondly, both kwant and pybinding are self-contained packages where all physics is handled by the
+scripts them-selves, while sisl can calculate band-structures, but transport properties should be
+off-loaded to `TBtrans`_.
