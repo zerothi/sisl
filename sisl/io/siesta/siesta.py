@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import numpy as np
+
 # Import sile objects
 from .sile import SileCDFSiesta
 from ..sile import *
@@ -10,7 +12,6 @@ from sisl.physics import DensityMatrix
 from sisl.physics import EnergyDensityMatrix
 from sisl.physics import Hamiltonian
 
-import numpy as np
 
 __all__ = ['ncSileSiesta']
 

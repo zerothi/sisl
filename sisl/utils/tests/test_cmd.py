@@ -66,12 +66,12 @@ def test_decorators2():
     ns = default_namespace(my_default='test')
 
     class Act1(argparse.Action):
-        @collect_and_run_action
+        @run_collect_action
         def __call__(self, parser, ns, value, option_string=None):
             setattr(ns, 'act1', value)
 
     class Act2(argparse.Action):
-        @collect_and_run_action
+        @run_collect_action
         def __call__(self, parser, ns, value, option_string=None):
             assert ns.act1 is not None
             setattr(ns, 'act2', value)

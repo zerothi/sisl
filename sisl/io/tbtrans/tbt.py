@@ -1601,10 +1601,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                        help=('Update the geometry of the output file, this enables one to set the species correctly,'
                              ' note this only affects output-files where species are important'))
 
-        # Energy grabs
         class ERange(argparse.Action):
 
-            @collect_and_run_action
             def __call__(self, parser, ns, value, option_string=None):
                 E = ns._tbt.E
                 Emap = strmap(float, value, E.min(), E.max())
@@ -1631,7 +1629,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # k-range
         class kRange(argparse.Action):
 
-            @collect_and_run_action
+            @collect_action
             def __call__(self, parser, ns, value, option_string=None):
                 ns._krng = lstranges(strmap(int, value))
         if not self._k_avg:
@@ -1644,7 +1642,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # The normalization method
         class NormAction(argparse.Action):
 
-            @collect_and_run_action
+            @collect_action
             def __call__(self, parser, ns, value, option_string=None):
                 ns._norm = value
         p.add_argument('--norm', '-N', action=NormAction, default='atom',
@@ -1657,7 +1655,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         # Try and add the atomic specification
         class AtomRange(argparse.Action):
 
-            @collect_and_run_action
+            @collect_action
             def __call__(self, parser, ns, value, option_string=None):
                 value = value.replace(' ', '')
 

@@ -4,12 +4,22 @@ from sisl.utils.ranges import strmap, strseq
 
 __all__ = ['argv_negative_fix', 'default_namespace']
 __all__ += ['collect_input', 'collect_arguments']
-__all__ += ['default_ArgumentParser', 'collect_action']
-__all__ += ['collect_and_run_action', 'run_actions']
+__all__ += ['default_ArgumentParser']
+__all__ += ['collect_action', 'run_collect_action']
+__all__ += ['run_actions']
+__all__ += ['add_action']
 
 
 def argv_negative_fix(argv):
-    """ Fixes the ``argv`` list by adding a space for input that may be float's """
+    """ Fixes `argv` list by adding a space for input that may be float's
+
+    This function tries to prevent ``'-<>'`` being captured by `argparse`.
+
+    Parameters
+    ----------
+    argv : list of str
+       the arguments passed to an argument-parser
+    """
     rgv = []
     for a in argv:
         try:
@@ -23,6 +33,13 @@ def argv_negative_fix(argv):
 
 
 def default_namespace(**kwargs):
+    """ Ensure the namespace can be used to collect and run the actions
+
+    Parameters
+    ----------
+    **kwargs : dict
+       the dictionary keys added to the namespace object.
+    """
     class CustomNamespace(object):
         pass
     namespace = CustomNamespace()
@@ -33,11 +50,33 @@ def default_namespace(**kwargs):
     return namespace
 
 
+def add_action(namespace, action, args, kwargs):
+    """ Add an action to the list of actions to be runned
+
+    Parameters
+    ----------
+    namespace : obj
+       the `argparse` namespace to append the action too
+    action : obj
+       the `argparse.Action` which is appended to the list of actions
+    args : list
+       arguments that will be passed to `action` once asked to runs
+    kwargs : dict
+       keyword arguments passed to `action` once asked to runs
+    """
+    namespace._actions.append((action, args, kwargs))
+
+
 def collect_input(argv):
     """ Function for returning the input file
 
     This simply creates a shortcut input file and returns
     it.
+
+    Parameters
+    ----------
+    argv : list of str
+       arguments passed to an `argparse.ArgumentParser`
     """
     # Grap input-file
     p = argparse.ArgumentParser('Parser for input file', add_help=False)
@@ -63,7 +102,6 @@ def collect_arguments(argv, input=False,
     ----------
     argv : list of str
        the argument list that comprise the arguments
-
     input : bool, optional
        whether or not the arguments should also gather
        from the input file.
@@ -145,12 +183,12 @@ def collect_action(func):
         if args[1]._actions_run:
             return func(self, *args, **kwargs)
         # Else we append the actions to be performed
-        args[1]._actions.append((self, args, kwargs))
+        add_action(args[1], self, args, kwargs)
         return None
     return collect
 
 
-def collect_and_run_action(func):
+def run_collect_action(func):
     """
     Decorator for collecting actions and running.
 
@@ -160,7 +198,7 @@ def collect_and_run_action(func):
     def collect(self, *args, **kwargs):
         if args[1]._actions_run:
             return func(self, *args, **kwargs)
-        args[1]._actions.append((self, args, kwargs))
+        add_action(args[1], self, args, kwargs)
         return func(self, *args, **kwargs)
     return collect
 
