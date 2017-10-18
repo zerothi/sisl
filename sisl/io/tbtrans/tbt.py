@@ -924,7 +924,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         I = _a.sumd(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
 
-    def orbital_current(self, elec, E, kavg=True, isc=None):
+    def orbital_current(self, elec, E, kavg=True, take='all', isc=None):
         """ Orbital current originating from `elec` as a sparse matrix
 
         This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
@@ -942,6 +942,10 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         kavg: bool, int or array_like, optional
            whether the returned orbital current is k-averaged, an explicit k-point
            or a selection of k-points
+        take : {'all', '+', '-'}
+           which orbital currents to return, all, positive or negative values only.
+           Default to ``'all'`` because it can then be used in the subsequent default
+           arguments for `bond_current_from_orbital` and `atom_current_from_orbital`.
         isc: array_like, optional
            the returned bond currents from the unit-cell (``[None, None, None]``) to
            the given supercell, the default is all orbital currents for the supercell.
@@ -956,6 +960,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         --------
         bond_current_from_orbital : transfer the orbital current to bond current
         bond_current : the bond current (orbital current summed over orbitals)
+        atom_current_from_orbital : transfer the orbital current to atomic current
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
@@ -1027,9 +1032,22 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         else:
             J = self._value_E('J', elec, kavg, E)[..., all_col]
 
-        return csr_matrix((J, col, rptr), shape=mat_size)
+        J = csr_matrix((J, col, rptr), shape=mat_size)
+        if take == '+':
+            J.data = np.where(J.data > 0, J.data, 0).astype(J.dtype, copy=False)
+        elif take == '-':
+            J.data = np.where(J.data > 0, 0, J.data).astype(J.dtype, copy=False)
+        elif take != 'all':
+            raise ValueError(self.__class__.__name__ + '.orbital_current "take" keyword has '
+                             'wrong value ["all", "+", "-"] allowed.')
 
-    def bond_current_from_orbital(self, Jij, sum='all', uc=False):
+        # We will always remove the zeroes and sort the indices... (they should be sorted anyways)
+        J.eliminate_zeros()
+        J.sort_indices()
+
+        return J
+
+    def bond_current_from_orbital(self, Jij, sum='+', uc=False):
         r""" Bond-current between atoms (sum of orbital currents) from an external orbital current
 
         Conversion routine from orbital currents into bond currents.
@@ -1052,7 +1070,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
         ----------
         Jij : scipy.sparse.csr_matrix
            the orbital currents as retrieved from `orbital_current`
-        sum : {'all', '+', '-'}
+        sum : {'+', 'all', '-'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return both.
@@ -1104,12 +1122,11 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             # Just copy to the new data
 
             # Transfer all columns to the new columns
+            Jab.indptr[:] = Jij.indptr.copy()
             if uc:
-                cols = map_col(Jij.indices).astype(np.int32, copy=False)
+                Jab.indices = (Jij.indices % na).astype(np.int32, copy=False)
             else:
-                cols = Jij.indices.view()
-            Jab.indptr[:] = Jij.indptr[:]
-            Jab.indices = np.copy(cols[:])
+                Jab.indices = Jij.indices.copy()
 
         else:
             # The multi-orbital case
@@ -1148,7 +1165,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
         return Jab
 
-    def bond_current(self, elec, E, kavg=True, isc=None, sum='all', uc=False):
+    def bond_current(self, elec, E, kavg=True, isc=None, sum='+', uc=False):
         """ Bond-current between atoms (sum of orbital currents)
 
         Short hand function for calling `orbital_current` and `bond_current_from_orbital`.
@@ -1168,7 +1185,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
            the returned bond currents from the unit-cell (``[None, None, None]``) (default) to
            the given supercell. If ``[None, None, None]`` is passed all
            bond currents are returned.
-        sum : {'all', '+', '-'}
+        sum : {'+', 'all', '-'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return the sum of both.
