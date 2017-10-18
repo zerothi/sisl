@@ -79,6 +79,7 @@ Indices
 
    introduction
    cite
+   other.rst
 
 .. toctree::
    :hidden:
