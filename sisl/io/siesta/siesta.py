@@ -63,12 +63,12 @@ class ncSileSiesta(SileCDFSiesta):
                 atm['mass'] = float(bg.groups[basis].Mass)
                 atm['tag'] = basis
                 atm['orbs'] = int(bg.groups[basis].Number_of_orbitals)
-                spc[ID - 1] = Atom[atm]
+                spc[ID - 1] = Atom(atm)
             atom = [None] * len(xyz)
             for ia in range(len(xyz)):
                 atom[ia] = spc[b_idx[ia] - 1]
         else:
-            atom = Atom[1]
+            atom = Atom(1)
 
         xyz *= Bohr2Ang
 

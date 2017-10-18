@@ -66,7 +66,7 @@ class XVSileSiesta(SileSiesta):
         line = np.empty(8, np.float64)
         for ia in range(na):
             line[:] = list(map(float, self.readline().split()[:8]))
-            atms[ia] = Atom[int(line[1])]
+            atms[ia] = Atom(int(line[1]))
             xyz[ia, :] = line[2:5]
         xyz *= Bohr2Ang
 

@@ -90,7 +90,7 @@ class Geometry(SuperCellChild):
     >>> xyz = [[0, 0, 0],
     ...        [1, 1, 1]]
     >>> sc = SuperCell([2,2,2])
-    >>> g = Geometry(xyz, Atom['H'], sc)
+    >>> g = Geometry(xyz, Atom('H'), sc)
 
     The following estimates the lattice vectors from the
     atomic coordinates, although possible, it is not recommended
@@ -98,7 +98,7 @@ class Geometry(SuperCellChild):
 
     >>> xyz = [[0, 0, 0],
     ...        [1, 1, 1]]
-    >>> g = Geometry(xyz, Atom['H'])
+    >>> g = Geometry(xyz, Atom('H'))
 
     See Also
     --------

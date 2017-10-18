@@ -119,7 +119,7 @@ class gotSileGULP(SileGULP):
             elif f and ki == 1:
 
                 # We skip 5 lines
-                for i in [0] * 5:
+                for _ in [0] * 5:
                     self.readline()
 
                 Z = []
