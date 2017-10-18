@@ -7,6 +7,7 @@
 |pypi|_
 |conda|_
 |zenodo|_
+|license|_
 |donate|_
 
 |buildstatus|_
@@ -105,6 +106,9 @@ Indices
 
 .. |pypi| image:: https://badge.fury.io/py/sisl.svg
 .. _pypi: https://badge.fury.io/py/sisl
+
+.. |license| image:: https://img.shields.io/badge/License-LGPL%20v3-blue.svg
+.. _license: https://www.gnu.org/licenses/lgpl-3.0
 
 .. |conda| image:: https://anaconda.org/zerothi/sisl/badges/installer/conda.svg
 .. _conda: https://anaconda.org/zerothi/sisl
