@@ -958,11 +958,10 @@ class SileError(IOError):
         self.obj = obj
 
     def __str__(self):
-        s = ''
         if self.obj:
-            s = self.obj.__name__ + '(' + self.obj.file + ')'
-
-        return self.value + ' in ' + s
+            return self.value + ' in ' + repr(self.obj)
+        else:
+            return self.value
 
 
 def sile_raise_write(self, ok=('w', 'a')):
@@ -970,9 +969,8 @@ def sile_raise_write(self, ok=('w', 'a')):
     for O in ok:
         is_ok = is_ok or (O in self._mode)
     if not is_ok:
-        raise SileError('Writing to file not possible allowed '
-                        'modes={0}, used mode={1}'.format(
-                            ok, self._mode), self)
+        raise SileError(('Writing to file not possible allowed '
+                         'modes={0}, used mode={1}'.format(ok, self._mode)), self)
 
 
 def sile_raise_read(self, ok=('r', 'a')):
