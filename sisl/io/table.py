@@ -183,7 +183,8 @@ class TableSile(Sile):
                 dat[-1] = ensure_array(dat[-1], np.float64)
                 dat.append([])
             else:
-                dat[-1].append(ensure_array(map(float, line.split(sep)), np.float64))
+                line = [l for l in line.split(sep) if len(l) > 0]
+                dat[-1].append(ensure_array(map(float, line), np.float64))
 
             line = self.readline()
         dat[-1] = ensure_array(dat[-1], np.float64)

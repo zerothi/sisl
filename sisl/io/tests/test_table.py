@@ -90,3 +90,19 @@ class TestTable(object):
         assert np.allclose(dat, DAT)
 
         os.remove(io.file)
+
+    @pytest.mark.parametrize("delimiter", ['\t', ' ', ',', ':', 'M'])
+    def test_tbl5(self, delimiter):
+        dat0 = np.arange(8)
+        dat1 = np.arange(8) + 1
+        DAT = np.stack([dat0, dat1])
+
+        io = TableSile(join(_C.d, 't0.dat'), 'w')
+        io.write_data(dat0, dat1, delimiter=delimiter)
+        if delimiter in ['\t', ' ', ',']:
+            dat = TableSile(io.file, 'r').read_data()
+            assert np.allclose(dat, DAT)
+        dat = TableSile(io.file, 'r').read_data(delimiter=delimiter)
+        assert np.allclose(dat, DAT)
+
+        os.remove(io.file)
