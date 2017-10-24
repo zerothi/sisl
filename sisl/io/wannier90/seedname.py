@@ -79,7 +79,7 @@ class winSileWannier90(SileWannier90):
         if len(pos_unit) > 2:
             unit = 1.
         else:
-            unit = unit_convert(pos_unit[0], 'Ang')
+            unit = unit_convert(pos_unit[0].capitalize(), 'Ang')
             # Remove the line with the unit...
             lines.pop(0)
 
@@ -134,7 +134,7 @@ class winSileWannier90(SileWannier90):
 
         # Read the next line to determine the units
         unit = self.readline()
-        unit = unit_convert(unit.strip(), 'Ang')
+        unit = unit_convert(unit.strip().capitalize(), 'Ang')
 
         s = []
         xyz = []
@@ -228,7 +228,7 @@ class winSileWannier90(SileWannier90):
         self._write_geometry(geom, fmt, *args, **kwargs)
 
     @Sile_fh_open
-    def _read_hamiltonian(self, geom, dtype=np.complex128, **kwargs):
+    def _read_hamiltonian(self, geom, dtype=np.float64, **kwargs):
         """ Reads a Hamiltonian
 
         Reads the Hamiltonian model
@@ -240,6 +240,12 @@ class winSileWannier90(SileWannier90):
 
         # Time of creation
         self.readline()
+
+        # Number of orbitals
+        no = int(self.readline())
+        if no != geom.no:
+            raise ValueError(self.__class__.__name__ + '.read_hamiltonian has found inconsistent number '
+                             'of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?')
 
         # Number of Wigner-Seitz degeneracy points
         nrpts = int(self.readline())
@@ -323,7 +329,7 @@ class winSileWannier90(SileWannier90):
             Hi = Hi.tocsr()
             Hr = Hr + 1j*Hi
 
-        return Hamiltonian.sp2HS(geom, Hr)
+        return Hamiltonian.fromsp(geom, Hr)
 
     def read_hamiltonian(self, *args, **kwargs):
         """ Read the electronic structure of the Wannier90 output
