@@ -1010,10 +1010,9 @@ class tbtncSileTBtrans(SileCDFTBtrans):
 
             # Make a shrinking logical array for selecting a subset of the
             # orbital currents...
-            all_col = []
-            for ix, iy, iz in itertools.product(x, y, z):
-                i = geom.sc_index([ix, iy, iz])
-                all_col.append(i)
+            all_col = _a.emptyi(len(x) * len(y) * len(z))
+            for i, (ix, iy, iz) in enumerate(itertools.product(x, y, z)):
+                all_col[i] = geom.sc_index([ix, iy, iz])
 
             # If the user requests a single supercell index, we will
             # return a square matrix
@@ -1021,7 +1020,8 @@ class tbtncSileTBtrans(SileCDFTBtrans):
                 mat_size[1] = mat_size[0]
 
             # Transfer all_col to the range
-            all_col = array_arange(all_col, n=[geom.no] * len(all_col))
+            all_col = array_arange(all_col * geom.no,
+                                   n=_a.fulli(len(all_col), geom.no))
 
             # Create a logical array for sub-indexing
             all_col = npisin(col, _a.arrayi(all_col))

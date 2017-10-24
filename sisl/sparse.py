@@ -1162,8 +1162,7 @@ class SparseCSR(object):
         nc = count_nonzero(indices < self.shape[1])
 
         # Fix the pivoting indices with the new indices
-        pvt = _a.emptyi([max(self.shape[0], self.shape[1])])
-        pvt.fill(-1)
+        pvt = _a.fulli([max(self.shape[0], self.shape[1])], -1)
         pvt[indices] = _a.arangei(len(indices))
 
         # Create the new SparseCSR
