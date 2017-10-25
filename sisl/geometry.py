@@ -2301,45 +2301,7 @@ class Geometry(SuperCellChild):
 
         ret_special = ret_xyz or ret_rij
 
-        def sphere_intersect(sc, s, c, r, up):
-
-            # w = point - point-in-plane
-            p1 = c - sc.offset(sc.sc_off[s, :])
-            p2 = p1 - up
-
-            # Check all 6 faces
-            # See SuperCell.plane documentation for details
-            n, _ = sc.plane(0, 1)
-            if n[0] * p1[0] + n[1] * p1[1] + n[2] * p1[2] > r or \
-               -n[0] * p2[0] - n[1] * p2[1] - n[2] * p2[2] > r:
-                return False
-
-            n, _ = sc.plane(0, 2)
-            if n[0] * p1[0] + n[1] * p1[1] + n[2] * p1[2] > r or \
-               -n[0] * p2[0] - n[1] * p2[1] - n[2] * p2[2] > r:
-                return False
-            n, _ = sc.plane(1, 2)
-            if n[0] * p1[0] + n[1] * p1[1] + n[2] * p1[2] > r or \
-               -n[0] * p2[0] - n[1] * p2[1] - n[2] * p2[2] > r:
-                return False
-            return True
-
-        if np.all(self.sc.nsc == 1):
-            def sphere_intersect(*args):
-                return True
-
-        # To reduce calculations of the same quantities
-        up = self.sc.cell.sum(0)
-        r = R[-1]
-
         for s in range(self.n_s):
-
-            # Check if we need to process this supercell
-            # Currently it seems this is overdoing it
-            # I.e. this check is very heavy because it calculates
-            # all planes
-            if not sphere_intersect(self.sc, s, xyz_ia, r, up):
-                continue
 
             na = self.na * s
             sret = self.close_sc(xyz_ia,

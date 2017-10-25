@@ -1069,12 +1069,12 @@ class SparseCSR(object):
         else:
             dim = len(dims)
 
+        if dtype is None:
+            dtype = self.dtype
+
         # Create correct input
         shape = list(self.shape[:])
         shape[2] = dim
-
-        if dtype is None:
-            dtype = self.dtype
 
         new = self.__class__(shape, dtype=dtype, nnz=1)
 
@@ -1089,11 +1089,11 @@ class SparseCSR(object):
         if dims is None:
             new._D = self._D.astype(dtype)
         else:
-            new._D = empty([len(new.col), len(dims)], dtype)
+            new._D = empty([len(self.col), dim], dtype)
             for i, dim in enumerate(dims):
                 new._D[:, i] = self._D[:, dim]
 
-        # Mark it as finalized, if able
+        # Mark it as the same state as the other one
         new._finalized = self._finalized
 
         return new

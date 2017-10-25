@@ -245,6 +245,20 @@ class TestSparseAtom(object):
         s2.finalize()
         assert np.allclose(s1._csr._D, s2._csr._D)
 
+    def test_supercell_poisition1(self, setup):
+        g1 = setup.g.copy()
+        g2 = setup.g.translate([100, 100, 100])
+        # Just check that the atomic coordinates are not equivalent
+        # up to 1 angstrom
+        assert not np.allclose(g1.xyz, g2.xyz, atol=1)
+        s1 = SparseAtom(g1)
+        s2 = SparseAtom(g2)
+        s1.construct([[0.1, 1.5], [1, 2]])
+        s1.finalize()
+        s2.construct([[0.1, 1.5], [1, 2]])
+        s2.finalize()
+        assert s1.spsame(s2)
+
     def test_set_nsc1(self, setup):
         g = fcc(1., Atom(1, R=3.5))
         s = SparseAtom(g)
