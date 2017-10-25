@@ -1226,6 +1226,8 @@ class Geometry(SuperCellChild):
              which coordinate subject should be rotated,
              if ``abc`` is in this string the cell will be rotated
              if ``xyz`` is in this string the coordinates will be rotated
+        rad : bool, optional
+             if ``True`` the angle is provided in radians (rather than degrees)
 
         See Also
         --------

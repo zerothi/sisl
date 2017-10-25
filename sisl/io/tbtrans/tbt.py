@@ -27,7 +27,7 @@ import sisl._array as _a
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl import SparseOrbitalBZSpin
-from sisl._help import _str
+from sisl._help import _str, ensure_array
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
 
@@ -2294,6 +2294,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
         """
         # Determine the type of dH we are storing...
         k = kwargs.get('k', None)
+        if k is not None:
+            k = ensure_array(k, np.float64).flatten()
         E = kwargs.get('E', None)
 
         if (k is None) and (E is None):
@@ -2314,23 +2316,24 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         try:
             lvl = self._get_lvl(ilvl)
-        except ValueError:
+        except:
             return ilvl, -1, -1
 
         # Now determine the energy and k-indices
         iE = -1
         if ilvl in [3, 4]:
-            Es = _a.arrayd(lvl.variables['E'][:])
-            if len(Es) > 0:
+            if lvl.variables['E'].size != 0:
+                Es = _a.arrayd(lvl.variables['E'][:])
                 iE = np.argmin(np.abs(Es - E))
                 if abs(Es[iE] - E) > 0.0001:
                     iE = -1
 
         ik = -1
         if ilvl in [2, 4]:
-            kpt = _a.arrayd(lvl.variables['kpt'][:])
-            if len(kpt) > 0:
-                ik = np.argmin(np.sum(np.abs(kpt - k[None, :]), axis=1))
+            if lvl.variables['kpt'].size != 0:
+                kpt = _a.arrayd(lvl.variables['kpt'][:])
+                kpt.shape = (-1, 3)
+                ik = np.argmin(np.abs(kpt - k[None, :]).sum(axis=1))
                 if not np.allclose(kpt[ik, :], k, atol=0.0001):
                     ik = -1
 
@@ -2344,7 +2347,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
     def _add_lvl(self, ilvl):
         """ Simply adds and returns a group if it does not exist it will be created """
-        slvl = 'LEVEL-'+str(ilvl)
+        slvl = 'LEVEL-' + str(ilvl)
         if slvl in self.groups:
             lvl = self._crt_grp(self, slvl)
         else:
@@ -2430,14 +2433,14 @@ class deltancSileTBtrans(SileCDFTBtrans):
         if ilvl in [3, 4]:
             if iE < 0:
                 # We need to add the new value
-                iE = len(lvl.variables['E'])
+                iE = lvl.variables['E'].shape[0]
                 lvl.variables['E'][iE] = E * eV2Ry
                 warn_E = False
 
         warn_k = True
         if ilvl in [2, 4]:
             if ik < 0:
-                ik = len(lvl.variables['kpt'])
+                ik = lvl.variables['kpt'].shape[0]
                 lvl.variables['kpt'][ik, :] = k
                 warn_k = False
 

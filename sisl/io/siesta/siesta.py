@@ -292,6 +292,10 @@ class ncSileSiesta(SileCDFSiesta):
         Ef : double=0
            the Fermi level of the electronic structure (in eV)
         """
+        if H.nnz == 0:
+            raise ValueError(self.__class__.__name__ + '.write_hamiltonian + cannot write a Hamiltonian '
+                             'with zero non-zero elements!')
+
         # Ensure finalizations
         H.finalize()
 

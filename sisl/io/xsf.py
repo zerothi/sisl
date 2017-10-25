@@ -23,6 +23,11 @@ class XSFSile(Sile):
     @Sile_fh_open
     def write_geometry(self, geom, fmt='.8f', data=None):
         """ Writes the geometry to the contained file """
+
+        # Implemntation notice!
+        # The XSF files are compatible with Vesta, but ONLY
+        # if there are no empty lines!
+
         # Check that we can write to the file
         sile_raise_write(self)
 
@@ -35,11 +40,11 @@ class XSFSile(Sile):
         # Is it a necessity?
 
         # Write out top-header stuff
-        self._write('# File created by: sisl\n\n')
+        self._write('# File created by: sisl\n#\n')
 
-        self._write('CRYSTAL\n\n')
+        self._write('CRYSTAL\n#\n')
 
-        self._write('# Primitive lattice vectors:\n\n')
+        self._write('# Primitive lattice vectors:\n#\n')
         self._write('PRIMVEC\n')
         # We write the cell coordinates as the cell coordinates
         fmt_str = '{{:{0}}} '.format(fmt) * 3 + '\n'
@@ -50,13 +55,13 @@ class XSFSile(Sile):
         # to a conventional cell (90-90-90))
         # It seems this simply allows to store both formats in
         # the same file.
-        #self._write('\n# Conventional lattice vectors:\n\n')
+        #self._write('\n# Conventional lattice vectors:\n#\n')
         #self._write('CONVVEC\n')
         #convcell =
         #for i in [0, 1, 2]:
         #    self._write(fmt_str.format(*convcell[i,:]))
 
-        self._write('\n# Atomic coordinates (in primitive coordinates)\n\n')
+        self._write('#\n# Atomic coordinates (in primitive coordinates)\n#\n')
         self._write('PRIMCOORD\n')
         self._write('{} {}\n'.format(len(geom), 1))
 
@@ -69,8 +74,6 @@ class XSFSile(Sile):
             fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
             for ia in geom:
                 self._write(fmt_str.format(geom.atom[ia].Z, *geom.xyz[ia, :]))
-        # Add a single new line
-        self._write('\n')
 
     @Sile_fh_open
     def read_geometry(self, data=False):

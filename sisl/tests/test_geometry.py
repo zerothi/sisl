@@ -347,6 +347,10 @@ class TestGeometry(object):
         rot = setup.g.rotateb(180, only='xyz')
         rot = setup.g.rotatec(180, only='xyz')
 
+    def test_rotation5(self, setup):
+        g = setup.g.copy()
+        rot = g.rotatea(180, origo=g.center(what='xyz'), only='xyz')
+
     def test_translate(self, setup):
         t = setup.g.translate([0, 0, 1])
         assert np.allclose(setup.g.xyz[:, 0], t.xyz[:, 0])
