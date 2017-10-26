@@ -154,7 +154,7 @@ class tbtncSileTBtrans(SileCDFTBtrans):
             return v[iE, ...]
 
         wkpt = self.wk
-        
+
         # Perform normalization
         orig_shape = v.shape
 
