@@ -58,6 +58,7 @@ Support files to complement TBtrans
 from .sile import *
 
 from .binaries import *
+from .delta import *
 from .tbt import *
 from .tbtproj import *
 
