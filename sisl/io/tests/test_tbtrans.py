@@ -74,3 +74,30 @@ class TestTBtransnc(object):
             assert h.spsame(H)
             h = sile.read_delta(E=0.2, k=[0, 1., .5])
             assert h.spsame(H)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_nc2(self):
+        f = osp.join(_C.d, 'gr.dH.nc')
+        H = Hamiltonian(_C.gtb)
+        H.construct([_C.R, _C.t])
+        H.finalize()
+
+        with deltancSileTBtrans(f, 'w') as sile:
+            sile.write_delta(H, k=[0.] * 3)
+            nnz = H.nnz
+            for i in range(H.no_s):
+                H[0, i] = 1.
+            sile.write_delta(H, k=[0.2] * 3)
+
+    def test_nc3(self):
+        f = osp.join(_C.d, 'gr.dH.nc')
+        H = Hamiltonian(_C.gtb, dtype=np.complex64)
+        H.construct([_C.R, _C.t])
+        H.finalize()
+
+        with deltancSileTBtrans(f, 'w') as sile:
+            sile.write_delta(H)
+        with deltancSileTBtrans(f, 'r') as sile:
+            h = sile.read_delta()
+        assert h.spsame(H)
+        assert h.dkind == H.dkind

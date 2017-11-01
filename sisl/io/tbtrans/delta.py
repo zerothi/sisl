@@ -189,9 +189,6 @@ class deltancSileTBtrans(SileCDFTBtrans):
             ilvl = 4
             # Convert to Rydberg
             E = E * eV2Ry
-        else:
-            print(k, E)
-            raise ValueError("This is wrongly implemented!!!")
 
         try:
             lvl = self._get_lvl(ilvl)
