@@ -21,16 +21,16 @@ from a TBtrans output file (typically named: ``siesta.TBT.nc``).
 The following will interact with the TBtrans file:
 
 >>> tbt = sisl.get_sile('siesta.TBT.nc') # doctest: +SKIP
->>> tbt.E # doctest: +SKIP
->>> tbt.a_d # doctest: +SKIP
+>>> tbt.E
+>>> tbt.a_d
 
 Importantly one may retrieve quantities such as DOS, transmissions,
 transmission eigenvalues etc.
 
 >>> tbt.transmission() # from electrode 0 -> 1 (default) # doctest: +SKIP
->>> tbt.transmission(0, 1) # from electrode 0 -> 1 # doctest: +SKIP
->>> tbt.transmission(0, 2) # from electrode 0 -> 2 # doctest: +SKIP
->>> tbt.ADOS(0, E=1.) # k-average, total spectral DOS from 0th electrode # doctest: +SKIP
+>>> tbt.transmission(0, 1) # from electrode 0 -> 1
+>>> tbt.transmission(0, 2) # from electrode 0 -> 2
+>>> tbt.ADOS(0, E=1.) # k-average, total spectral DOS from 0th electrode
 
 
 The above is the most important use of this module while the following
@@ -42,10 +42,7 @@ Data extraction files
 
 - `tbtncSileTBtrans` (electronic TBtrans output)
 - `tbtavncSileTBtrans` (electronic k-averaged TBtrans output)
-- `phtncSileTBtrans` (phononic PHtrans output)
-- `phtavncSileTBtrans` (phononic k-averaged PHtrans output)
 - `tbtsencSileTBtrans` (electronic TBtrans self-energy output)
-- `phtsencSileTBtrans` (phononic PHtrans self-energy output)
 
 Support files to complement TBtrans
 -----------------------------------
@@ -54,6 +51,17 @@ Support files to complement TBtrans
 - `dHncSileTBtrans` adding :math:`\delta H` elements to a TBtrans calculation
   (this class is deprecated by `deltancSileTBtrans` which is generic for
   :math:`\delta H` and :math:`\delta\Sigma`)
+
+
+PHtrans
+-------
+
+PHtrans is the same program as TBtrans, it however uses the dynamical matrix to calculate
+phonon transport.
+
+- `phtncSileTBtrans` (phononic PHtrans output)
+- `phtsencSileTBtrans` (phononic PHtrans self-energy output)
+- `phtavncSileTBtrans` (phononic k-averaged PHtrans output)
 
 """
 

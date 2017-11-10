@@ -3,7 +3,7 @@ from __future__ import print_function, division
 import warnings
 
 import numpy as np
-from numpy import in1d
+from numpy import in1d, argsort, sort
 
 # Import sile objects
 from ..sile import add_sile, sile_raise_write
@@ -144,7 +144,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             se_pvt = in1d(pvt, se_pvt, assume_unique=True).nonzero()[0]
         if sort:
             # sort the indices
-            return np.sort(se_pvt)
+            return sort(se_pvt)
         return se_pvt
 
     def self_energy(self, elec, k, E, sort=False):
@@ -173,7 +173,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :]) * Ry2eV
         if sort:
             pvt = self.pivot(elec)
-            idx = np.argsort(pvt)
+            idx = argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
@@ -205,7 +205,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :]) * Ry2eV
         if sort:
             pvt = self.pivot(elec)
-            idx = np.argsort(pvt)
+            idx = argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region

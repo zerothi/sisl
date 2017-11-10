@@ -140,10 +140,18 @@ TBtrans (:mod:`sisl.io.tbtrans`)
    :toctree:
 
    tbtncSileTBtrans
-   phtncSileTBtrans
    deltancSileTBtrans
    TBTGFSileTBtrans - TBtrans surface Green function files
+   tbtsencSileTBtrans
    tbtavncSileTBtrans
+
+Additionally the PHtrans code also has these files
+
+.. autosummary::
+   :toctree:
+
+   phtncSileTBtrans
+   phtsencSileTBtrans
    phtavncSileTBtrans
 
 .. autosummary::
