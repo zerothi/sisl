@@ -9,13 +9,9 @@ from collections import Iterable
 import numpy as np
 from numpy import empty, zeros, asarray, arange
 from numpy import insert, take, delete, copyto, split
-from numpy import intersect1d, setdiff1d, unique
+from numpy import intersect1d, setdiff1d, unique, in1d
 from numpy import diff, count_nonzero
 from numpy import argsort
-try:
-    isin = np.isin
-except Exception:
-    isin = np.in1d
 
 from scipy.sparse import isspmatrix
 from scipy.sparse import isspmatrix_coo
@@ -465,7 +461,7 @@ class SparseCSR(object):
         # Get indices of deleted columns
         idx = array_arange(ptr[:-1], n=ncol)
         # Convert to boolean array where we have columns to be deleted
-        lidx = isin(col[idx], columns)
+        lidx = in1d(col[idx], columns)
         # Count number of deleted entries per row
         ndel = ensure_array(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
         # Backconvert lidx to deleted indices
@@ -881,7 +877,7 @@ class SparseCSR(object):
 
         # Now create the compressed data...
         index -= ptr[i]
-        keep = isin(_a.arangei(ncol[i]), index, invert=True)
+        keep = in1d(_a.arangei(ncol[i]), index, invert=True)
 
         # Update new count of the number of
         # non-zero elements
@@ -1361,7 +1357,7 @@ class SparseCSR(object):
                 a._D[in_a, :] *= b._D[bptr:bptr+bn, :]
 
                 # Now set everything *not* in b but in a, to zero
-                not_in_b = isin(acol, bcol, invert=True).nonzero()[0]
+                not_in_b = in1d(acol, bcol, invert=True).nonzero()[0]
                 a._D[aptr+not_in_b, :] = 0
 
         else:
@@ -1489,7 +1485,7 @@ class SparseCSR(object):
 
                 # Now set everything *not* in b but in a, to 1
                 #  float ** 0 == 1
-                not_in_b = isin(acol, bcol, invert=True).nonzero()[0]
+                not_in_b = in1d(acol, bcol, invert=True).nonzero()[0]
                 a._D[aptr+not_in_b, :] = 1
 
         else:

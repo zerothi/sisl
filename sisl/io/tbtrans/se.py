@@ -3,6 +3,7 @@ from __future__ import print_function, division
 import warnings
 
 import numpy as np
+from numpy import in1d
 
 # Import sile objects
 from ..sile import add_sile, sile_raise_write
@@ -65,7 +66,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         orbital : array_like or int
            orbital indices (0-based)
         """
-        return np.isin(self.pivot(), orbital).nonzero()[0]
+        return in1d(self.pivot(), orbital).nonzero()[0]
 
     def _elec(self, elec):
         """ Converts a string or integer to the corresponding electrode name
@@ -140,7 +141,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         if in_device:
             # translate to the device indices
-            se_pvt = np.isin(pvt, se_pvt).nonzero()[0]
+            se_pvt = in1d(pvt, se_pvt, assume_unique=True).nonzero()[0]
         if sort:
             # sort the indices
             return np.sort(se_pvt)

@@ -8,6 +8,7 @@ except Exception:
     from io import StringIO
 
 import numpy as np
+from numpy import in1d
 import itertools
 
 # The sparse matrix for the orbital/bond currents
@@ -783,7 +784,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                                    n=_a.fulli(len(all_col), geom.no))
 
             # Create a logical array for sub-indexing
-            all_col = np.isin(col, _a.arrayi(all_col))[0]
+            all_col = in1d(col, _a.arrayi(all_col))
             col = col[all_col]
 
             # recreate row-pointer

@@ -4,6 +4,7 @@ import warnings
 from numbers import Integral
 
 import numpy as np
+from numpy import in1d
 
 # Import sile objects
 from ..sile import sile_raise_write
@@ -290,4 +291,4 @@ class _devncSileTBtrans(_ncSileTBtrans):
         orbital : array_like or int
            orbital indices (0-based)
         """
-        return np.isin(self.pivot, orbital).nonzero()[0]
+        return in1d(self.pivot, orbital).nonzero()[0]
