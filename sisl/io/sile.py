@@ -747,7 +747,7 @@ class SileCDF(BaseSile):
 
         This method returns the variable as-is.
         """
-        if self._access > 0:
+        if self._access > 0 and tree is None:
             if name in self._data:
                 return self._data[name]
         return self._variables(self, name, tree=tree)
