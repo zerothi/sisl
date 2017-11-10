@@ -215,6 +215,11 @@ class _ncSileTBtrans(SileCDFTBtrans):
         k : array_like of float
            the queried k-point in reduced coordinates :math:`]-0.5;0.5]`.
         """
+        if isinstance(k, Integral):
+            return k
+        elif isinstance(k, _str):
+            # This will always be converted to an integer (single index)
+            return int(k)
         ik = np.sum(np.abs(self.k - _a.asarrayd(k)[None, :]), axis=1).argmin()
         ret_k = self.k[ik, :]
         if not np.allclose(ret_k, k, atol=0.0001):
