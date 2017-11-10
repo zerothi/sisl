@@ -169,15 +169,17 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         re = self._variable('ReSelfEnergy', tree=tree)
         im = self._variable('ImSelfEnergy', tree=tree)
+
+        SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :]) * Ry2eV
         if sort:
             pvt = self.pivot(elec)
             idx = np.argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
-            return (re[ik, iE, idx, idx.T] + 1j * im[ik, iE, idx, idx.T]) * Ry2eV
+            return SE[idx, idx.T]
 
-        return (re[ik, iE, :, :] + 1j * im[ik, iE, :, :]) * Ry2eV
+        return SE
 
     def self_energy_average(self, elec, E, sort=False):
         """ Return the k-averaged average self-energy from the electrode `elec`
@@ -199,15 +201,17 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         re = self._variable('ReSelfEnergyMean', tree=tree)
         im = self._variable('ImSelfEnergyMean', tree=tree)
+
+        SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :]) * Ry2eV
         if sort:
             pvt = self.pivot(elec)
             idx = np.argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
-            return (re[iE, idx, idx.T] + 1j * im[iE, idx, idx.T]) * Ry2eV
+            return SE[idx, idx.T]
 
-        return (re[iE, :, :] + 1j * im[iE, :, :]) * Ry2eV
+        return SE
 
 
 add_sile('TBT.SE.nc', tbtsencSileTBtrans)
