@@ -1,3 +1,11 @@
+0.9.3
+=====
+
+- Added TBT.SE.nc file to enable easy extraction of self-energies
+  from TBtrans
+
+- Reorganized the TBtrans netcdf files (internal changes only)
+
 0.9.2
 =====
 

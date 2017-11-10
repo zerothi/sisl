@@ -7,6 +7,7 @@ import os
 
 from tempfile import mkstemp
 from sisl.io import *
+from sisl.io.tbtrans._cdf import *
 from sisl import Geometry, Grid, Hamiltonian
 
 import common as tc
@@ -237,7 +238,7 @@ class TestObject(object):
         f = mkstemp(dir=_C.d)[1]
         for sile in get_siles(['write_geometry']):
             # It is not yet an instance, hence issubclass
-            if issubclass(sile, (HamiltonianSile, tbtncSileTBtrans, deltancSileTBtrans)):
+            if issubclass(sile, (HamiltonianSile, _ncSileTBtrans, deltancSileTBtrans)):
                 continue
             # Write
             sile(f, mode='w').write_geometry(G)
@@ -248,7 +249,7 @@ class TestObject(object):
         G.set_nsc([1, 1, 1])
         f = mkstemp(dir=_C.d)[1] + '.win'
         # These files does not store the atomic species
-        if issubclass(sile, (tbtncSileTBtrans, deltancSileTBtrans)):
+        if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
             return
         # Write
         sile(f, mode='w').write_geometry(G)

@@ -44,6 +44,8 @@ Data extraction files
 - `tbtavncSileTBtrans` (electronic k-averaged TBtrans output)
 - `phtncSileTBtrans` (phononic PHtrans output)
 - `phtavncSileTBtrans` (phononic k-averaged PHtrans output)
+- `tbtsencSileTBtrans` (electronic TBtrans self-energy output)
+- `phtsencSileTBtrans` (phononic PHtrans self-energy output)
 
 Support files to complement TBtrans
 -----------------------------------
@@ -59,6 +61,7 @@ from .sile import *
 
 from .binaries import *
 from .delta import *
+from .se import *
 from .tbt import *
 from .tbtproj import *
 
