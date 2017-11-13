@@ -223,7 +223,7 @@ class HamiltonianSile(Sile):
         # We default to the advanced layuot if we have more than one
         # orbital on any one atom
         advanced = kwargs.get('advanced', np.any(
-            np.array([a.orbs for a, idx in geom.atom], np.int32) > 1))
+            np.array([a.orbs for a in geom.atom.atom], np.int32) > 1))
 
         fmt = kwargs.get('fmt', 'g')
         if advanced:

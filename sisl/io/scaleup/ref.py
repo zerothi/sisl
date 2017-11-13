@@ -100,7 +100,7 @@ class REFSileScaleUp(SileScaleUp):
         self._write('{:5d}{:5d}\n'.format(len(geom), len(geom.atom.atom)))
 
         s = ''
-        for a, _ in geom.atom:
+        for a in geom.atom.atom:
             # Append the species label
             s += '{:<10}'.format(a.tag)
         self._write(s + '\n')

@@ -195,6 +195,27 @@ class TestAtoms(object):
         atom[1:4] = Atom('C')
         assert len(atom.atom) == 2
 
+    def test_replace1(self):
+        # Add new atoms to the set
+        atom = Atoms(['C'] * 10 + ['B'] * 2)
+        atom[range(1, 4)] = Atom('Au', orbs=2)
+        assert atom[0] == Atom('C')
+        for i in range(1, 4):
+            assert atom[i] != Atom('Au')
+            assert atom[i] == Atom('Au', orbs=2)
+        assert atom[4] != Atom('Au')
+        assert atom[4] != Atom('Au', orbs=2)
+        assert len(atom.atom) == 3
+        atom.replace(atom[0], Atom('C', orbs=2))
+        assert atom[0] == Atom('C', orbs=2)
+        assert len(atom.atom) == 3
+        for i in [0] + range(4, 10):
+            assert atom[i] == Atom('C', orbs=2)
+        for i in range(1, 4):
+            assert atom[i] == Atom('Au', orbs=2)
+        for i in range(10, 12):
+            assert atom[i] == Atom('B')
+
     def test_append1(self):
         # Add new atoms to the set
         atom1 = Atoms(['C', 'C'])
@@ -237,12 +258,14 @@ class TestAtoms(object):
     def test_iter1(self):
         # Add new atoms to the set
         atom = Atoms(['C', 'C'])
-        for a, idx in atom:
+        for a in atom.iter():
+            assert a == Atom[6]
+        for a, idx in atom.iter(True):
             assert a == Atom[6]
             assert len(idx) == 2
 
         atom = Atoms(['C', 'Au', 'C', 'Au'])
-        for i, aidx in enumerate(atom):
+        for i, aidx in enumerate(atom.iter(True)):
             a, idx = aidx
             if i == 0:
                 assert a == Atom[6]

@@ -1265,13 +1265,13 @@ class Atoms(object):
            the scale factor for the atomic radii
         """
         atoms = Atoms()
-        atoms._atom = [a.scale(scale) for a in self._atom]
+        atoms._atom = [a.scale(scale) for a in self.atom]
         atoms._specie = np.copy(self._specie)
         return atoms
 
     def index(self, atom):
         """ Return the species index of the atom object """
-        for i, a in enumerate(self._atom):
+        for i, a in enumerate(self.atom):
             if a == atom:
                 return i
         raise KeyError('Could not find `atom`')
@@ -1430,7 +1430,7 @@ class Atoms(object):
     def __repr__(self):
         """ Return the `Atoms` representation """
         s = self.__class__.__name__ + '{{species: {0},\n'.format(len(self._atom))
-        for a, idx in self:
+        for a, idx in self.iter(True):
             s += '  {1}: {0}, \n'.format(len(idx), a)
         return s + '}\n'
 
@@ -1438,15 +1438,34 @@ class Atoms(object):
         """ Return number of atoms in the object """
         return len(self._specie)
 
-    def __iter__(self):
-        """ Loop on all atoms with the same specie in order
+    def iter(self, species=False):
+        """ Loop on all atoms
 
-        This iterator returns two values:
-        1. The `Atom` object of the specie
-        2. A list of indices with all atoms being that specie
+        This iterator may be used in two contexts:
+
+        1. `species` is ``False``, this is the slowest method and will yield the
+           `Atom` per contained atom.
+        2. `species` is ``True``, which yields a tuple of `(Atom, list)` where
+           ``list`` contains all indices of atoms that has the `Atom` specie.
+           This is much faster than the first option.
+
+        Parameters
+        ----------
+        species : bool, optional
+           If ``True`` loops only on different species and yields a tuple of (Atom, list)
+           Else yields the atom for the equivalent index.
         """
-        for s, atom in enumerate(self._atom):
-            yield atom, (self.specie == s).nonzero()[0]
+        if species:
+            for s, atom in enumerate(self._atom):
+                yield atom, (self.specie == s).nonzero()[0]
+        else:
+            for s in self.specie:
+                yield self._atom[s]
+
+    def __iter__(self):
+        """ Loop on all atoms with the same specie in order of atoms """
+        for atom in self.iter():
+            yield atom
 
     def __contains__(self, key):
         """ Determine whether the `key` is in the unique atoms list """
@@ -1474,11 +1493,38 @@ class Atoms(object):
         other = Atoms(value, na=len(key))
 
         # Append the new Atom objects
-        for atom, s_i in other:
+        for atom, s_i in other.iter(True):
             if atom not in self:
                 self._atom.append(atom)
             self._specie[key[s_i]] = self.index(atom)
         self._update_orbitals()
+
+    def replace(self, atom_from, atom_to):
+        """ Replace all atoms equivalent to `atom_from` with `atom_to` (in-place)
+
+        I.e. this is the preferred way of adapting all atoms of a specific type
+        with another one.
+
+        This is an *in-place* operation.
+
+        Parameters
+        ----------
+        atom_from : Atom
+           the atom that should be replaced, if not found in the current list
+           of atoms, nothing will happen.
+        atom_to : Atom
+           the replacement atom.
+        """
+        if not isinstance(atom_from, Atom):
+            raise ValueError(self.__class__.__name__ + '.replace requires input arguments to '
+                             'be of the class Atom')
+        if not isinstance(atom_to, Atom):
+            raise ValueError(self.__class__.__name__ + '.replace requires input arguments to '
+                             'be of the class Atom')
+
+        for i, atom in enumerate(self.atom):
+            if atom == atom_from:
+                self._atom[i] = atom_to
 
     def hassame(self, other, R=True):
         """ True if the contained atoms are the same in the two lists

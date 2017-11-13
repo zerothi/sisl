@@ -349,7 +349,7 @@ class fdfSileSiesta(SileSiesta):
         # First swap key and value
         self._write('NumberOfSpecies {0}\n'.format(len(geom.atom.atom)))
         self._write('%block ChemicalSpeciesLabel\n')
-        for i, (a, _) in enumerate(geom.atom):
+        for i, a in enumerate(geom.atom.atom):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
