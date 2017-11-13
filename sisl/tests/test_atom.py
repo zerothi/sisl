@@ -209,7 +209,8 @@ class TestAtoms(object):
         atom.replace(atom[0], Atom('C', orbs=2))
         assert atom[0] == Atom('C', orbs=2)
         assert len(atom.atom) == 3
-        for i in [0] + range(4, 10):
+        assert atom[0] == Atom('C', orbs=2)
+        for i in range(4, 10):
             assert atom[i] == Atom('C', orbs=2)
         for i in range(1, 4):
             assert atom[i] == Atom('Au', orbs=2)
