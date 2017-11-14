@@ -36,9 +36,9 @@ class SuperCell(object):
     """
 
     # We limit the scope of this SuperCell object.
-    __slots__ = ('cell', 'vol', 'nsc', 'n_s', '_sc_off', '_isc_off')
+    __slots__ = ('cell', 'origo', 'vol', 'nsc', 'n_s', '_sc_off', '_isc_off')
 
-    def __init__(self, cell, nsc=None):
+    def __init__(self, cell, nsc=None, origo=None):
         """ Initialize a `SuperCell` object from initial quantities
 
         Initialize a `SuperCell` object with cell information
@@ -50,6 +50,8 @@ class SuperCell(object):
         # If the length of cell is 6 it must be cell-parameters, not
         # actual cell coordinates
         self.cell = self.tocell(cell)
+
+        self.origo = _a.zerosd(3)
 
         # Set the volume
         self._update_vol()
@@ -131,9 +133,9 @@ class SuperCell(object):
                 "one, all others count 2")
 
         # We might use this very often, hence we store it
-        self.n_s = np.prod(self.nsc, dtype=np.int32)
-        self._sc_off = np.zeros([self.n_s, 3], np.int32)
-        self._isc_off = np.zeros(self.nsc, np.int32)
+        self.n_s = _a.prodi(self.nsc)
+        self._sc_off = _a.zerosi([self.n_s, 3])
+        self._isc_off = _a.zerosi(self.nsc)
 
         n = self.nsc
         # We define the following ones like this:
@@ -195,9 +197,9 @@ class SuperCell(object):
         Returns a copy of the object.
         """
         if cell is None:
-            copy = self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc))
+            copy = self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc), origo=np.copy(self.origo))
         else:
-            copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc))
+            copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc), origo=np.copy(self.origo))
         # Ensure that the correct super-cell information gets carried through
         if not np.all(copy.sc_off == self.sc_off):
             copy.sc_off = self.sc_off
@@ -281,7 +283,8 @@ class SuperCell(object):
         idx[a] = b
         # There _can_ be errors when sc_off isn't created by sisl
         return self.__class__(np.copy(self.cell[idx, :], order='C'),
-                              nsc=self.nsc[idx])
+                              nsc=self.nsc[idx],
+                              origo=np.copy(self.origo[idx], order='C'))
 
     def plane(self, ax1, ax2, origo=True):
         """ Query point and plane-normal for the plane spanning `ax1` and `ax2`
@@ -349,9 +352,9 @@ class SuperCell(object):
             n *= -1
 
         if origo:
-            return n, _a.zerosd(3)
+            return n, np.copy(self.origo)
         # We have to reverse the normal vector
-        return -n, up
+        return -n, up + self.origo
 
     @property
     def rcell(self):
@@ -424,7 +427,7 @@ class SuperCell(object):
         """ Returns the supercell offset of the supercell index """
         if isc is None:
             return np.array([0, 0, 0], np.float64)
-        return np.dot(isc, self.cell)
+        return np.dot(isc, self.cell) + self.origo
 
     def add_vacuum(self, vacuum, axis):
         """ Add vacuum along the `axis` lattice vector
@@ -486,6 +489,8 @@ class SuperCell(object):
     def scale(self, scale):
         """ Scale lattice vectors
 
+        Does not scale `origo`.
+
         Parameters
         ----------
         scale : ``float``
@@ -509,11 +514,12 @@ class SuperCell(object):
         """
         cell = np.copy(self.cell)
         nsc = np.copy(self.nsc)
+        origo = np.copy(self.origo)
         cell[axis, :] *= reps
         # Only reduce the size if it is larger than 5
         if nsc[axis] > 3 and reps > 1:
             nsc[axis] = max(1, nsc[axis] // 2 - (reps - 1)) * 2 + 1
-        return self.__class__(cell, nsc=nsc)
+        return self.__class__(cell, nsc=nsc, origo=origo)
 
     def repeat(self, reps, axis):
         """ Extend the unit-cell `reps` times along the `axis` lattice vector
@@ -563,11 +569,10 @@ class SuperCell(object):
     translate = move
 
     def center(self, axis=None):
-        """ Returns center of the `SuperCell`, possibly with respect to an axis
-        """
+        """ Returns center of the `SuperCell`, possibly with respect to an axis """
         if axis is None:
-            return np.sum(self.cell, axis=0) / 2
-        return self.cell[axis, :] / 2
+            return np.sum(self.cell, axis=0) / 2 + self.origo
+        return self.cell[axis, :] / 2 + self.origo
 
     @classmethod
     def tocell(cls, *args):
@@ -708,6 +713,7 @@ class SuperCell(object):
             return False
         same = np.allclose(a.cell, b.cell)
         same = same and np.all(a.nsc == b.nsc)
+        same = same and np.allclose(a.origo, b.origo)
         return same
 
     def __ne__(a, b):
@@ -717,11 +723,11 @@ class SuperCell(object):
     # Create pickling routines
     def __getstate__(self):
         """ Returns the state of this object """
-        return {'cell': self.cell, 'nsc': self.nsc, 'sc_off': self.sc_off}
+        return {'cell': self.cell, 'nsc': self.nsc, 'sc_off': self.sc_off, 'origo': self.origo}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['cell'], d['nsc'])
+        self.__init__(d['cell'], d['nsc'], d['origo'])
         self.sc_off = d['sc_off']
 
     def __plot__(self, fig_axes=False, axes=None, *args, **kwargs):
@@ -843,6 +849,11 @@ class SuperCellChild(object):
     def rcell(self):
         """ Returns the inherent `SuperCell` objects `rcell` """
         return self.sc.rcell
+
+    @property
+    def origo(self):
+        """ Returns the inherent `SuperCell` objects `origo` """
+        return self.sc.origo
 
     @property
     def n_s(self):

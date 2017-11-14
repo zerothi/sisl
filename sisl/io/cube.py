@@ -70,7 +70,7 @@ class CUBESile(Sile):
         _fmt = '{:' + fmt + '}\n'
         for z in np.nditer(np.asarray(grid.grid, order='C').reshape(-1), flags=['external_loop', 'buffered'],
                            op_flags=[['readonly']], order='C', buffersize=buffersize):
-            self._write((_fmt * z.shape[0]).format(*tuple(z)))
+            self._write((_fmt * z.shape[0]).format(*z.tolist()))
 
         # Add a finishing line to ensure empty ending
         self._write('\n')

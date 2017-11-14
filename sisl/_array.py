@@ -57,6 +57,12 @@ arangef = _partial(np.arange, dtype=np.float32)
 aranged = _partial(np.arange, dtype=np.float64)
 __all__ += _append('arange')
 
+prodi = _partial(np.prod, dtype=np.int32)
+prodl = _partial(np.prod, dtype=np.int64)
+prodf = _partial(np.prod, dtype=np.float32)
+prodd = _partial(np.prod, dtype=np.float64)
+__all__ += _append('prod')
+
 # Create all partial objects for creating arrays
 fulli = _partial(np.full, dtype=np.int32)
 fulll = _partial(np.full, dtype=np.int64)
