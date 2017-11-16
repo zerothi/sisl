@@ -291,6 +291,29 @@ class TestObject(object):
         # Clean-up file
         os.remove(f)
 
+    @pytest.mark.parametrize("sile", _my_intersect(['read_hamiltonian'], ['write_hamiltonian']))
+    def test_read_write_hamiltonian_overlap(self, sile):
+        G = _C.g.rotatec(-30)
+        H = Hamiltonian(G, orthogonal=False)
+        H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])
+        f = mkstemp(dir=_C.d)[1]
+        # Write
+        sile(f, mode='w').write_hamiltonian(H)
+        # Read 1
+        try:
+            h = sile(f, mode='r').read_hamiltonian()
+            assert H.spsame(h)
+        except UnicodeDecodeError as e:
+            pass
+        # Read 2
+        try:
+            h = Hamiltonian.read(sile(f, mode='r'))
+            assert H.spsame(h)
+        except UnicodeDecodeError as e:
+            pass
+        # Clean-up file
+        os.remove(f)
+
     @pytest.mark.parametrize("sile", _my_intersect(['read_grid'], ['write_grid']))
     def test_read_write_grid(self, sile):
         g = _C.g.rotatec(-30)

@@ -22,13 +22,13 @@ subroutine write_tshs_hs(fname, &
   integer, intent(in) :: isc(3,nsc1*nsc2*nsc3)
 
 ! Define f2py intents
-!f2py intent(in)  :: fname
-!f2py intent(in)  :: nspin, na_u, no_u, nnz
-!f2py intent(in)  :: nsc1, nsc2, nsc3
-!f2py intent(in)  :: cell, xa, lasto
-!f2py intent(in)  :: ncol, list_col
-!f2py intent(in)  :: H, S
-!f2py intent(in)  :: isc
+!f2py intent(in) :: fname
+!f2py intent(in) :: nspin, na_u, no_u, nnz
+!f2py intent(in) :: nsc1, nsc2, nsc3
+!f2py intent(in) :: cell, xa, lasto
+!f2py intent(in) :: ncol, list_col
+!f2py intent(in) :: H, S
+!f2py intent(in) :: isc
 
 ! Internal variables and arrays
   integer :: iu, is, i, idx

@@ -138,7 +138,7 @@ class TSHSSileSiesta(SileBinSiesta):
                                   "this is a requirement."))
             s = s._D[:, 0]
         else:
-            h = csr._D[:, :H.S_idx-1] * eV2Ry
+            h = csr._D[:, :H.S_idx] * eV2Ry
             s = csr._D[:, H.S_idx]
         # Ensure shapes (say if only 1 spin)
         h.shape = (-1, len(H.spin))
