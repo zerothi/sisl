@@ -429,6 +429,26 @@ class SuperCell(object):
             return np.array([0, 0, 0], np.float64)
         return np.dot(isc, self.cell) + self.origo
 
+    def add(self, other):
+        """ Add two supercell lattice vectors to each other
+
+        Parameters
+        ----------
+        other : SuperCell, array_like
+           the lattice vectors of the other supercell to add
+        """
+        if not isinstance(other, SuperCell):
+            other = self.tocell(other)
+        cell = self.cell + other.cell
+        origo = self.origo + other.origo
+        nsc = np.where(self.nsc > other.nsc, self.nsc, other.nsc)
+        return self.__class__(cell, nsc=nsc, origo=origo)
+
+    def __add__(self, other):
+        return self.add(other)
+
+    __radd__ = __add__
+
     def add_vacuum(self, vacuum, axis):
         """ Add vacuum along the `axis` lattice vector
 

@@ -1486,15 +1486,15 @@ class Geometry(SuperCellChild):
             sc = self.sc.append(other.sc, axis)
         return self.__class__(xyz, atom=atom, sc=sc)
 
-    def add(self, other):
-        """
-        Adds atoms (as is) from the ``other`` geometry.
-        This will not alter the cell vectors.
+    def add(self, other, only_atoms=False):
+        """ Merge two geometries by adding the two atoms together, and (optionally) the supercells
 
         Parameters
         ----------
         other : Geometry
             Other geometry class which is added
+        only_atoms : bool, optional
+            If ``True`` only the atoms are added, else both the atoms and lattice vectors are added
 
         See Also
         --------
@@ -1504,7 +1504,7 @@ class Geometry(SuperCellChild):
         insert : insert a geometry
         """
         xyz = np.append(self.xyz, other.xyz, axis=0)
-        sc = self.sc.copy()
+        sc = self.sc + other.sc
         return self.__class__(xyz, atom=self.atom.add(other.atom), sc=sc)
 
     def insert(self, atom, geom):
@@ -1557,13 +1557,12 @@ class Geometry(SuperCellChild):
         append : appending geometries
         prepend : prending geometries
         """
-
         if isinstance(a, Geometry):
             if isinstance(b, Geometry):
                 return a.add(b)
             return a.append(b[0], b[1])
         elif isinstance(b, Geometry):
-            return a.prepend(b[0], b[1])
+            return b.prepend(a[0], a[1])
 
         raise ValueError('Arguments for adding (add/append/prepend) are incorrect')
 
@@ -1622,7 +1621,7 @@ class Geometry(SuperCellChild):
 
         # We do not know how to handle the lattice-vectors,
         # so we will do nothing...
-        return self.add(o)
+        return self.add(o, only_atoms=True)
 
     def reverse(self, atom=None):
         """ Returns a reversed geometry
@@ -2961,7 +2960,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, values, option_string=None):
                 # Create an atom from the input
                 g = Geometry([float(x) for x in values[0].split(',')], atom=Atom(values[1]))
-                ns._geometry = ns._geometry.add(g)
+                ns._geometry = ns._geometry.add(g, only_atoms=True)
         p.add_argument(*opts('--add'), nargs=2, metavar=('COORD', 'Z'),
                        action=AtomAdd,
                        help='Adds an atom, coordinate is comma separated (in Ang). Z is the atomic number.')

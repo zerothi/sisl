@@ -467,11 +467,11 @@ class TestGeometry(object):
     def test_center_raise(self, setup):
         al = setup.g.center(what='unknown')
 
-    def test___add__(self, setup):
+    def test___add1__(self, setup):
         n = len(setup.g)
         double = setup.g + setup.g
         assert len(double) == n * 2
-        assert np.allclose(setup.g.cell, double.cell)
+        assert np.allclose(setup.g.cell * 2, double.cell)
         assert np.allclose(setup.g.xyz[:n, :], double.xyz[:n, :])
 
         double = (setup.g, 1) + setup.g
@@ -485,6 +485,19 @@ class TestGeometry(object):
         assert len(double) == n * 2
         assert np.allclose(setup.g.cell[::2, :], double.cell[::2, :])
         assert np.allclose(double.xyz, d.xyz)
+
+    def test___add2__(self, setup):
+        g1 = setup.g.rotatec(15)
+        g2 = setup.g.rotatec(30)
+
+        assert g1 != g2
+        assert g1 + g2 == g1.add(g2)
+        assert g1 + g2 != g2.add(g1)
+        assert g2 + g1 == g2.add(g1)
+        assert g2 + g1 != g1.add(g2)
+        for i in range(3):
+            assert g1 + (g2, i) == g1.append(g2, i)
+            assert (g1, i) + g2 == g2.append(g1, i)
 
     def test___mul__(self, setup):
         g = setup.g.copy()
@@ -503,7 +516,7 @@ class TestGeometry(object):
     def test_add(self, setup):
         double = setup.g.add(setup.g)
         assert len(double) == len(setup.g) * 2
-        assert np.allclose(setup.g.cell, double.cell)
+        assert np.allclose(setup.g.cell * 2, double.cell)
 
     def test_insert(self, setup):
         double = setup.g.insert(0, setup.g)

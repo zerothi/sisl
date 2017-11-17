@@ -1,6 +1,8 @@
 0.9.3
 =====
 
+- Changed Geometry.add to also add the supercell information by default.
+
 - Added TBT.SE.nc file to enable easy extraction of self-energies
   from TBtrans
 
