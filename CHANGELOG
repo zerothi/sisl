@@ -1,6 +1,9 @@
 0.9.3
 =====
 
+- Added siesta PDOS xml parsing, currently this is only scriptable
+  but it manages easy extraction of quantities without the PDOSXML utility.
+
 - Changed Geometry.add to also add the supercell information by default.
 
 - Added TBT.SE.nc file to enable easy extraction of self-energies

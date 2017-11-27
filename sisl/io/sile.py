@@ -147,7 +147,10 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
 
     else:
         # Add the rule of the sile to the list of rules.
+
+        # First loop and check that the sile does not exist
         __sile_rules.append((ending, cls, _parent_cls))
+
         if gzip:
             add_sile(ending + '.gz', cls, case=case, _parent_cls=_parent_cls)
 

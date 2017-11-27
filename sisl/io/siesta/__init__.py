@@ -17,6 +17,7 @@ to the implicit relationship between the developer of sisl and `Siesta`_.
    XVSileSiesta - xyz and vxyz file
    bandsSileSiesta - band structure information
    eigSileSiesta - EIG file
+   pdosSileSiesta - PDOS file
    GridSileSiesta - Grid charge information (binary)
    gridncSileSiesta - NetCDF grid output files (netcdf)
    EnergyGridSileSiesta - Grid potential information
@@ -32,6 +33,7 @@ from .binaries import *
 from .eig import *
 from .fdf import *
 from .out import *
+from .pdos import *
 from .siesta import *
 from .siesta_grid import *
 from .xv import *
