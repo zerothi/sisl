@@ -836,9 +836,10 @@ class PeriodicTable(object):
             is array_like, so will the returned value be.
         """
         ak = np.asarray([key]).flatten()
+        get = self._Z_short.get
         if len(ak) == 1:
-            return self._Z_short[ak[0]]
-        return [self._Z_short[ia] for ia in ak]
+            return get(ak[0], 'fa')
+        return [get(ia, 'fa') for ia in ak]
 
     Z_short = Z_label
 
@@ -860,9 +861,10 @@ class PeriodicTable(object):
             if `key` is array_like, so will the returned value be.
         """
         Z = self.Z_int(key)
+        get = self._atomic_mass.get
         if isinstance(Z, Integral):
-            return self._atomic_mass[Z]
-        return _a.arrayd([self._atomic_mass[z] for z in Z])
+            return get(Z, 0.)
+        return _a.arrayd([get(z, 0.) for z in Z])
 
     def radius(self, key, method='calc'):
         """ Atomic radii using different methods

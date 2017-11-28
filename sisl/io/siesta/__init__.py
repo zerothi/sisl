@@ -24,11 +24,13 @@ to the implicit relationship between the developer of sisl and `Siesta`_.
    TSHSSileSiesta - TranSiesta Hamiltonian
    TSGFSileSiesta - TranSiesta surface Green function files
    ncSileSiesta - NetCDF output file
+   ionxmlSileSiesta - Basis-information from the ion.xml files
 
 """
 from .sile import *
 
 from .bands import *
+from .basis import *
 from .binaries import *
 from .eig import *
 from .fdf import *
