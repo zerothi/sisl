@@ -122,29 +122,38 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         >>> se = tbtsencSileTBtrans(...) # doctest: +SKIP
         >>> se.pivot()
         [3, 4, 6, 5, 2]
+        >>> se.pivot(sort=True)
+        [2, 3, 4, 5, 6]
         >>> se.pivot(0)
         [2, 3]
         >>> se.pivot(0, in_device=True)
         [4, 0]
         >>> se.pivot(0, in_device=True, sort=True)
-        [0, 4]
+        [0, 1]
         >>> se.pivot(0, sort=True)
         [2, 3]
         """
         if elec is None or in_device:
             pvt = self._value('pivot') - 1
+            if sort:
+                # We sort everything, because the user expects
+                # the device region to be sorted
+                pvt = np.sort(pvt)
             if elec is None:
                 return pvt
 
         # Get electrode pivoting elements
         se_pvt = self._value('pivot', tree=self._elec(elec)) - 1
+        if sort:
+            # Sort pivoting indices
+            # Since we know that pvt is also sorted, then
+            # the resulting in_device would also return sorted
+            # indices
+            se_pvt = np.sort(se_pvt)
 
         if in_device:
             # translate to the device indices
             se_pvt = in1d(pvt, se_pvt, assume_unique=True).nonzero()[0]
-        if sort:
-            # sort the indices
-            return np.sort(se_pvt)
         return se_pvt
 
     def self_energy(self, elec, k, E, sort=False):
