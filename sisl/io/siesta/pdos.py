@@ -33,7 +33,6 @@ class pdosSileSiesta(SileSiesta):
 
         # Get number of orbitals
         nspin = int(root.find('nspin').text)
-        no = int(root.find('norbitals').text)
         E = arrayd(map(float, root.find('energy_values').text.split()))
 
         # Now loop over all orbitals
@@ -55,4 +54,10 @@ class pdosSileSiesta(SileSiesta):
 
         return E, data
 
+# PDOS files are:
+# They contain the same file (same xml-data)
+# However, pdos.xml is preferred because it has higher precision.
+#  siesta.PDOS
 add_sile('PDOS', pdosSileSiesta, case=False, gzip=True)
+#  pdos.xml
+add_sile('pdos.xml', pdosSileSiesta, case=False, gzip=True)
