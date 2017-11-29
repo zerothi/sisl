@@ -133,14 +133,23 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         >>> se.pivot(0, sort=True)
         [2, 3]
         """
-        if elec is None or in_device:
+        if elec is None:
+            if in_device and sort:
+                pvt = _a.arangei(self.no_d)
+            pvt = self._value('pivot') - 1
+            if in_device:
+                # Count number of elements that we need to subtract from each orbital
+                subn = _a.onesi(self.no)
+                subn[pvt] = 0
+                pvt -= _a.cumsumi(subn)[pvt]
+            elif sort:
+                pvt = np.sort(pvt)
+            return pvt
+
+        if in_device:
             pvt = self._value('pivot') - 1
             if sort:
-                # We sort everything, because the user expects
-                # the device region to be sorted
                 pvt = np.sort(pvt)
-            if elec is None:
-                return pvt
 
         # Get electrode pivoting elements
         se_pvt = self._value('pivot', tree=self._elec(elec)) - 1

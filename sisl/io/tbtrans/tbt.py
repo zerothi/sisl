@@ -388,7 +388,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             if sum:
                 return _a.sumd(DOS, axis=-1) / NORM
             # We return the sorted DOS
-            p = np.argsort(self.pivot)
+            p = np.argsort(self.pivot())
             return DOS[..., p] / NORM
 
         # Now figure out what to do

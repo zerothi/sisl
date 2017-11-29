@@ -273,9 +273,35 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """ Number of orbitals in the device region """
         return len(self.dimensions['no_d'])
 
-    def pivot(self):
-        """ Pivoting orbitals for the full system """
-        return self._value('pivot') - 1
+    @property
+    def n_btd(self):
+        """ Number of blocks in the BTD partioning """
+        return len(self.dimensions['n_btd'])
+
+    def btd(self):
+        """ Block-sizes for the BTD method """
+        return self._value('btd')
+
+    def pivot(self, in_device=False, sort=False):
+        """ Pivoting orbitals for the full system
+
+        Parameters
+        ----------
+        in_device : bool, optional
+           whether the pivoting elements are with respect to the device region
+        sort : bool, optional
+           whether the pivoting elements are sorted
+        """
+        if in_device and sort:
+            return _a.arangei(self.no_d)
+        pvt = self._value('pivot') - 1
+        if in_device:
+            subn = _a.onesi(self.no)
+            subn[pvt] = 0
+            pvt -= _a.cumsumi(subn)[pvt]
+        elif sort:
+            pvt = np.sort(pvt)
+        return pvt
 
     def a2p(self, atom):
         """ Return the pivoting indices (0-based) for the atoms
@@ -296,4 +322,4 @@ class _devncSileTBtrans(_ncSileTBtrans):
         orbital : array_like or int
            orbital indices (0-based)
         """
-        return in1d(self.pivot, orbital).nonzero()[0]
+        return in1d(self.pivot(), orbital).nonzero()[0]
