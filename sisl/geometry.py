@@ -2672,8 +2672,8 @@ class Geometry(SuperCellChild):
                                   ".distance cannot determine the `R` parameter. "
                                   "The internal `maxR()` is negative and thus not set. "
                                   "Set an explicit value for `R`."))
-        else:
-            maxR = 0.
+        elif np.any(self.nsc > 1):
+            maxR = (self.cell.sum(-1) ** 2).sum() ** .5
             # These loops could be leveraged if we look at angles...
             for i, j, k in product([0, self.nsc[0] // 2],
                                    [0, self.nsc[1] // 2],
