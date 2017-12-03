@@ -3,7 +3,7 @@ from __future__ import print_function, division
 # We need this for python3 support PY3
 from six import with_metaclass
 
-from numbers import Integral
+from numbers import Integral, Real
 
 import numpy as np
 
@@ -812,9 +812,10 @@ class PeriodicTable(object):
         True
         """
         key = np.asarray([key]).flatten()
+        get = self._Z_int.get
         if len(key) == 1:
-            return self._Z_int[key[0]]
-        return _a.asarrayi([self._Z_int[ia] for ia in key])
+            return get(key[0], key[0])
+        return _a.asarrayi([get(ia, ia) for ia in key])
 
     Z_int = Z
 
@@ -862,7 +863,7 @@ class PeriodicTable(object):
         """
         Z = self.Z_int(key)
         get = self._atomic_mass.get
-        if isinstance(Z, Integral):
+        if isinstance(Z, (Integral, Real)):
             return get(Z, 0.)
         return _a.arrayd([get(z, 0.) for z in Z])
 

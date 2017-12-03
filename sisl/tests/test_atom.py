@@ -45,6 +45,7 @@ class TestAtom(object):
 
     def test3(self, setup):
         assert setup.C.symbol == 'C'
+        assert setup.C.tag == 'C'
         assert setup.Au.symbol == 'Au'
 
     def test4(self, setup):
@@ -103,6 +104,12 @@ class TestAtom(object):
     def test_tag1(self):
         a = Atom(6, tag='my-tag')
         assert a.tag == 'my-tag'
+
+    def test_negative1(self):
+        a = Atom(-1)
+        assert a.symbol == 'fa'
+        assert a.tag == 'fa'
+        assert a.Z == -1
 
     def test_pickle(self, setup):
         import pickle as p
