@@ -13,6 +13,7 @@ class TestVersion(object):
 
     def test_version(self):
         sisl.__bibtex__
+        sisl.__git_revision__
         sisl.__version__
         sisl.__major__
         sisl.__minor__
@@ -20,6 +21,7 @@ class TestVersion(object):
         # Currently we only do bibtex citation
         assert sisl.__bibtex__ == sisl.cite()
         sisl.info.bibtex
+        sisl.info.git_revision
         sisl.info.version
         sisl.info.major
         sisl.info.minor

@@ -1,7 +1,6 @@
 """
 Sile object for reading/writing XYZ files
 """
-
 from __future__ import print_function
 
 import numpy as np
@@ -53,12 +52,16 @@ class XYZSile(Sile):
         na = int(l)
         l = self.readline()
         l = l.split()
+        cell_set = False
         if len(l) == 9:
             # we possibly have the cell as a comment
-            cell.shape = (9,)
-            for i, il in enumerate(l):
-                cell[i] = float(il)
-            cell.shape = (3, 3)
+            try:
+                cell.shape = (9,)
+                for i, il in enumerate(l):
+                    cell[i] = float(il)
+                cell_set = True
+            finally:
+                cell.shape = (3, 3)
         elif len(l) > 9:
             # We may have the latest version of sisl xyz coordinates
             try:
@@ -68,6 +71,7 @@ class XYZSile(Sile):
                 # Try and read the nsc
                 for i, il in enumerate(l[11:14]):
                     nsc[i] = int(il)
+                cell_set = True
             finally:
                 cell.shape = (3, 3)
 
@@ -77,6 +81,11 @@ class XYZSile(Sile):
             l = self.readline().split()
             sp[ia] = l.pop(0)
             xyz[ia, :] = [float(k) for k in l[:3]]
+
+        # Fix the maximum size of the supercell
+        # by adding 10 A vacuum
+        if not cell_set:
+            cell = xyz.max(0) - xyz.min(0) + 10.
 
         return Geometry(xyz, atom=sp, sc=SuperCell(cell, nsc=nsc))
 

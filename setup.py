@@ -110,7 +110,12 @@ if not osp.exists(osp.join(cwd, 'PKG-INFO')):
 
 # Generate configuration
 def configuration(parent_package='', top_path=None):
-    from numpy.distutils.misc_util import Configuration
+    try:
+        from numpy.distutils.misc_util import Configuration
+    except:
+        print("\n\nsisl installation requires numpy to be installed, please "
+              "install numpy before installing sisl!\n\n")
+        raise ImportError("numpy is required for sisl installation")
     config = Configuration(None, parent_package, top_path)
     config.set_options(ignore_setup_xxx_py=True,
                        assume_default_configuration=True,
@@ -144,10 +149,8 @@ def git_version():
         env['LANGUAGE'] = 'C'
         env['LANG'] = 'C'
         env['LC_ALL'] = 'C'
-        out = subprocess.Popen(cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            env=env).communicate()[0]
+        out = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, env=env).communicate()[0]
         return out
 
     try:

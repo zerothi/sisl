@@ -469,7 +469,7 @@ class TestGeometry(object):
 
     def test___add1__(self, setup):
         n = len(setup.g)
-        double = setup.g + setup.g
+        double = setup.g + setup.g + setup.g.sc
         assert len(double) == n * 2
         assert np.allclose(setup.g.cell * 2, double.cell)
         assert np.allclose(setup.g.xyz[:n, :], double.xyz[:n, :])
@@ -515,6 +515,9 @@ class TestGeometry(object):
 
     def test_add(self, setup):
         double = setup.g.add(setup.g)
+        assert len(double) == len(setup.g) * 2
+        assert np.allclose(setup.g.cell, double.cell)
+        double = setup.g.add(setup.g).add(setup.g.sc)
         assert len(double) == len(setup.g) * 2
         assert np.allclose(setup.g.cell * 2, double.cell)
 

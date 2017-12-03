@@ -1486,12 +1486,12 @@ class Geometry(SuperCellChild):
             sc = self.sc.append(other.sc, axis)
         return self.__class__(xyz, atom=atom, sc=sc)
 
-    def add(self, other, only_atoms=False):
+    def add(self, other):
         """ Merge two geometries by adding the two atoms together, and (optionally) the supercells
 
         Parameters
         ----------
-        other : Geometry
+        other : Geometry or SuperCell
             Other geometry class which is added
         only_atoms : bool, optional
             If ``True`` only the atoms are added, else both the atoms and lattice vectors are added
@@ -1503,14 +1503,20 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        xyz = np.append(self.xyz, other.xyz, axis=0)
-        sc = self.sc + other.sc
-        return self.__class__(xyz, atom=self.atom.add(other.atom), sc=sc)
+        if isinstance(other, SuperCell):
+            xyz = self.xyz.copy()
+            sc = self.sc + other
+            atom = self.atom.copy()
+        else:
+            xyz = np.append(self.xyz, other.xyz, axis=0)
+            sc = self.sc.copy()
+            atom = self.atom.add(other.atom)
+        return self.__class__(xyz, atom=atom, sc=sc)
 
     def insert(self, atom, geom):
         """ Inserts other atoms right before index
 
-        We insert the ``geom`` `Geometry` before `atom`.
+        We insert the `geom` `Geometry` before `atom`.
         Note that this will not change the unit cell.
 
         Parameters
@@ -1532,11 +1538,11 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atom=atoms, sc=self.sc.copy())
 
     def __add__(a, b):
-        """ Merge two geometries
+        """ Merge two geometries (or geometry and supercell)
 
         Parameters
         ----------
-        a, b : Geometry or tuple or list
+        a, b : Geometry or SuperCell or tuple or list
            when adding a Geometry with a Geometry it defaults to using `add` function
            with the LHS retaining the cell-vectors.
            a tuple/list may be of length 2 with the first element being a Geometry and the second
@@ -1558,7 +1564,7 @@ class Geometry(SuperCellChild):
         prepend : prending geometries
         """
         if isinstance(a, Geometry):
-            if isinstance(b, Geometry):
+            if isinstance(b, (SuperCell, Geometry)):
                 return a.add(b)
             return a.append(b[0], b[1])
         elif isinstance(b, Geometry):
@@ -1569,7 +1575,7 @@ class Geometry(SuperCellChild):
     __radd__ = __add__
 
     def attach(self, s_idx, other, o_idx, dist='calc', axis=None):
-        """ Attaches another ``Geometry`` at the `s_idx` index with respect to `o_idx` using different methods.
+        """ Attaches another `Geometry` at the `s_idx` index with respect to `o_idx` using different methods.
 
         Parameters
         ----------
@@ -1621,7 +1627,7 @@ class Geometry(SuperCellChild):
 
         # We do not know how to handle the lattice-vectors,
         # so we will do nothing...
-        return self.add(o, only_atoms=True)
+        return self.add(o)
 
     def reverse(self, atom=None):
         """ Returns a reversed geometry
@@ -2960,7 +2966,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, values, option_string=None):
                 # Create an atom from the input
                 g = Geometry([float(x) for x in values[0].split(',')], atom=Atom(values[1]))
-                ns._geometry = ns._geometry.add(g, only_atoms=True)
+                ns._geometry = ns._geometry.add(g)
         p.add_argument(*opts('--add'), nargs=2, metavar=('COORD', 'Z'),
                        action=AtomAdd,
                        help='Adds an atom, coordinate is comma separated (in Ang). Z is the atomic number.')
