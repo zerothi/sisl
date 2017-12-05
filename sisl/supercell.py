@@ -244,7 +244,7 @@ class SuperCell(object):
         # that are more than the tolerance.
         dist = np.sqrt(np.sum(np.dot(cell.T, (x - ix).T) ** 2, axis=0))
         idx = (dist <= tol).nonzero()[0]
-        if len(idx) < 0:
+        if len(idx) == 0:
             raise ValueError(('Could not fit the cell parameters to the coordinates '
                               'due to insufficient accuracy (try increase the tolerance)'))
 
