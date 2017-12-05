@@ -56,7 +56,7 @@ class SuperCell(object):
         # Set the volume
         self._update_vol()
 
-        self.nsc = np.ones(3, np.int32)
+        self.nsc = _a.onesi(3)
         # Set the super-cell
         self.set_nsc(nsc=nsc)
 
@@ -176,7 +176,7 @@ class SuperCell(object):
     @sc_off.setter
     def sc_off(self, sc_off):
         """ Set the supercell offset """
-        self._sc_off[:, :] = np.array(sc_off, order='C', dtype=np.int32)
+        self._sc_off[:, :] = _a.arrayi(sc_off, order='C')
         self._update_isc_off()
 
     @property
@@ -212,6 +212,10 @@ class SuperCell(object):
         corresponding to the current supercell vectors.
 
         >>> numpy.linalg.solve(self.cell.T, xyz.T) # doctest: +SKIP
+
+        It is important to know that this routine will *only* work if at least some of the atoms are
+        integer offsets of the lattice vectors. I.e. the resulting fit will depend on the translation
+        of the coordinates.
 
         Parameters
         ----------
@@ -278,7 +282,7 @@ class SuperCell(object):
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
         """
         # Create index vector
-        idx = np.arange(3, dtype=np.int32)
+        idx = _a.arrayi([0, 1, 2])
         idx[b] = a
         idx[a] = b
         # There _can_ be errors when sc_off isn't created by sisl
@@ -426,7 +430,7 @@ class SuperCell(object):
     def offset(self, isc=None):
         """ Returns the supercell offset of the supercell index """
         if isc is None:
-            return np.array([0, 0, 0], np.float64)
+            return _a.arrayd([0, 0, 0])
         return np.dot(isc, self.cell) + self.origo
 
     def add(self, other):
