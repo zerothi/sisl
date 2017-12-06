@@ -152,7 +152,7 @@ class CUBESile(Sile):
         # We are currently doing this to enable reading
         #  1-column data and 6-column data.
         lines = [item for sublist in self.fh.readlines() for item in sublist.split()]
-        grid.grid[:] = map(float, lines)
+        grid.grid[:] = np.array(lines).astype(grid.dtype)
         grid.grid.shape = ngrid
 
         return grid
