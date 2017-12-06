@@ -216,7 +216,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             return 0.
 
     def transmission(self, elec_from=0, elec_to=1, kavg=True):
-        """ Transmission from `from` to `to`.
+        """ Transmission from `elec_from` to `elec_to`.
 
         The transmission between two electrodes may be retrieved
         from the `Sile`.
@@ -244,7 +244,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self._value_avg(elec_to + '.T', elec_from, kavg=kavg)
 
     def transmission_eig(self, elec_from=0, elec_to=1, kavg=True):
-        """ Transmission eigenvalues from `from` to `to`.
+        """ Transmission eigenvalues from `elec_from` to `elec_to`.
 
         Parameters
         ----------
@@ -835,6 +835,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         # Copy data
         Dab.data = np.copy(Dij.data)
+        # Note that we do not sum duplicates as that depends on the next routine
+        # I.e. sometimes we want to remove negative values, etc.
         return Dab
 
     def orbital_current(self, elec, E, kavg=True, isc=None, take='all'):
@@ -1249,7 +1251,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_COHP_from_orbital : atomic COHP analysis from an orbital COHP
         atom_COHP : atomic COHP analysis
         """
-        COOP = self._sparse_data('COOP', E, elec, kavg, isc)
+        COOP = self._sparse_data('COOP', E, elec, kavg, isc) * eV2Ry
         COOP.sort_indices()
         COOP.eliminate_zeros()
         return COOP
@@ -1320,7 +1322,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_COHP : atomic COHP analysis
         """
         COOP = self.orbital_COOP(E, elec, kavg, isc)
-        return self.atom_COOP_from_orbital(COOP, uc=False)
+        return self.atom_COOP_from_orbital(COOP, uc)
 
     def orbital_COHP(self, E, elec=None, kavg=True, isc=None):
         r""" Orbital resolved COHP analysis
@@ -1437,7 +1439,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_COHP_from_orbital : atomic COHP analysis from an orbital COHP
         """
         COHP = self.orbital_COHP(E, elec, kavg, isc)
-        return self.atom_COHP_from_orbital(COHP, uc=False)
+        return self.atom_COHP_from_orbital(COHP, uc)
 
     def read_data(self, *args, **kwargs):
         """ Read specific type of data.
