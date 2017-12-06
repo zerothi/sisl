@@ -79,14 +79,14 @@ class CUBESile(Sile):
     def read_supercell(self, na=False):
         """ Returns `SuperCell` object from the CUBE file
 
-        If `na=True` it will return a tuple (na,SuperCell)
+        If ``na=True`` it will return a tuple (na,SuperCell)
         """
 
         self.readline()  # header 1
         self.readline()  # header 2
         origo = self.readline().split() # origo
         na = int(origo[0])
-        origo = np.array(map(float, origo[1:]), np.float64)
+        origo = np.array(list(map(float, origo[1:])), np.float64)
 
         cell = np.empty([3, 3], np.float64)
         for i in [0, 1, 2]:
