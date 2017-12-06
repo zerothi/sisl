@@ -151,9 +151,6 @@ class CUBESile(Sile):
         # TODO check performance of this
         # We are currently doing this to enable reading
         #  1-column data and 6-column data.
-        def split(arg):
-            return arg.split()
-
         lines = [item for sublist in self.fh.readlines() for item in sublist.split()]
         grid.grid[:] = map(float, lines)
         grid.grid.shape = ngrid
