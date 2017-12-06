@@ -84,8 +84,9 @@ class CUBESile(Sile):
 
         self.readline()  # header 1
         self.readline()  # header 2
-        tmp = self.readline().split()  # origo
-        na = int(tmp[0])
+        origo = self.readline().split() # origo
+        na = int(origo[0])
+        origo = np.array(map(float, origo[1:]), np.float64)
 
         cell = np.empty([3, 3], np.float64)
         for i in [0, 1, 2]:
@@ -96,14 +97,18 @@ class CUBESile(Sile):
                 cell[i, j] = float(tmp[j]) * s
 
         cell = cell / Ang2Bohr
+        origo = origo / Ang2Bohr
         if na:
-            return na, SuperCell(cell)
-        return SuperCell(cell)
+            return na, SuperCell(cell, origo=origo)
+        return 0, SuperCell(cell, origo=origo)
 
     @Sile_fh_open
     def read_geometry(self):
         """ Returns `Geometry` object from the CUBE file """
         na, sc = self.read_supercell(na=True)
+
+        if na == 0:
+            raise ValueError("There is no atoms in the CUBE file")
 
         # Start reading the geometry
         xyz = np.empty([na, 3], np.float64)
@@ -143,11 +148,14 @@ class CUBESile(Sile):
         grid = Grid(ngrid, dtype=np.float64, geom=geom)
         grid.grid.shape = (-1,)
 
-        for i, l in enumerate(self.fh):
-            if i >= grid.grid.size:
-                break
-            grid.grid[i] = float(l)
+        # TODO check performance of this
+        # We are currently doing this to enable reading
+        #  1-column data and 6-column data.
+        def split(arg):
+            return arg.split()
 
+        lines = [item for sublist in self.fh.readlines() for item in sublist.split()]
+        grid.grid[:] = map(float, lines)
         grid.grid.shape = ngrid
 
         return grid
