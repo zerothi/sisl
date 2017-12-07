@@ -269,6 +269,11 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return self._value('a_dev') - 1
 
     @property
+    def o_dev(self):
+        """ Orbital indices (0-based) of device orbitals """
+        return self.pivot(sort=True)
+
+    @property
     def no_d(self):
         """ Number of orbitals in the device region """
         return len(self.dimensions['no_d'])
