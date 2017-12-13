@@ -100,7 +100,7 @@ class Orbital(object):
         if tag is None:
             tag = ''
         if len(tag) > 0:
-            return self.__class__.__name__ + '{{{0}, tag: {1}}}'.format(self.name(), tag)
+            return self.__class__.__name__ + '{{R: {0}, tag: {1}}}'.format(self.R, tag)
         return self.__class__.__name__ + '{{R: {0}}}'.format(self.R)
 
     def equal(self, other, radial=False, phi=False):
@@ -119,9 +119,16 @@ class Orbital(object):
             return False
         same = np.isclose(self.R, other.R)
         if radial:
-            r = np.linspace(0, self.R, 500)
+            # Ensure they also have the same fill-values
+            r = np.linspace(0, self.R * 2, 500)
             same &= np.allclose(self.radial(r), other.radial(r))
+        if phi:
+            xyz = np.linspace(0, self.R * 2, 999).reshape(-1, 3)
+            same &= np.allclose(self.phi(xyz), other.phi(xyz))
         return same
+
+    def __eq__(self, other):
+        return self.equal(other)
 
     def radial(self, r, *args, **kwargs):
         raise NotImplementedError
@@ -181,8 +188,6 @@ class SphericalOrbital(Orbital):
            tag of the orbital
         """
         self.l = l
-        if self.l > 4:
-            raise ValueError(self.__class__.__name__ + ' does not implement h and shells above!')
 
         # Initialize R and tag through the parent
         # Note that the maximum range of the orbital will be the
@@ -191,9 +196,29 @@ class SphericalOrbital(Orbital):
         super(SphericalOrbital, self).__init__(r.max(), tag)
 
         # Set the internal function
-        self.update_f(r, f, kind)
+        self.set_radial(r, f, kind)
 
-    def update_f(self, r, f, kind='cubic'):
+    def equal(self, other, radial=False, phi=False):
+        """ Compare two orbitals by comparing their radius, and possibly the radial and phi functions
+
+        Parameters
+        ----------
+        other : Orbital
+           comparison orbital
+        radial : bool, optional
+           also compare that the radial parts are the same
+        phi : bool, optional
+           also compare that the full phi are the same
+        """
+        same = super(SphericalOrbital, self).equal(other, radial, phi)
+        if not same:
+            return False
+        same = isinstance(other, SphericalOrbital)
+        if same:
+            same &= self.l == other.l
+        return same
+
+    def set_radial(self, r, f, kind='cubic'):
         """ Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
         Parameters
@@ -213,13 +238,14 @@ class SphericalOrbital(Orbital):
         idx = np.argsort(r)
         r = r[idx]
         f = f[idx]
-        # Also update R
+        # Also update R to the maximum R value
         self.R = r[-1]
 
         if isinstance(kind, _str):
             # Now make interpolation extrapolation values
             # fill_value *has* to be a tuple
-            self.f = interp1d(r, f, kind=kind, fill_value=(f[0], f[-1]), assume_sorted=True)
+            # Note that we *always* interpolate to 0 above R
+            self.f = interp1d(r, f, kind=kind, fill_value=(f[0], 0.), assume_sorted=True)
         else:
             self.f = kind(r, f)
             # Just to be sure we actually have a working function
@@ -283,7 +309,7 @@ class SphericalOrbital(Orbital):
         idx = (r <= self.R).nonzero()[0]
         p = _a.zerosd(len(r))
         if len(idx) > 0:
-            p[idx] = self.f(r[idx]) * spherical_harm(m, self.l, r[idx], theta[idx], phi[idx])
+            p[idx] = self.f(r[idx]) * spherical_harm(m, self.l, theta[idx], phi[idx])
         return p
 
     def toAtomicOrbital(self, m=None, n=None, Z=1, P=False):
@@ -453,11 +479,34 @@ class AtomicOrbital(Orbital):
         self.P = P
 
         if self.l > 4:
-            raise ValueError(self.__class__.__name__ + ' does not implement h and shells above!')
+            raise ValueError(self.__class__.__name__ + ' does not implement shell h and above!')
 
         if 'spherical' in kwargs:
             self.orb = kwargs.get('spherical')
         self.R = self.orb.R
+
+    def equal(self, other, radial=False, phi=False):
+        """ Compare two orbitals by comparing their radius, and possibly the radial and phi functions
+
+        Parameters
+        ----------
+        other : Orbital
+           comparison orbital
+        radial : bool, optional
+           also compare that the radial parts are the same
+        phi : bool, optional
+           also compare that the full phi are the same
+        """
+        if isinstance(other, AtomicOrbital):
+            same = self.orb.equal(other.orb)
+            same &= self.n == other.n
+            same &= self.l == other.l
+            same &= self.m == other.m
+            same &= self.Z == other.Z
+            same &= self.P == other.P
+        elif isinstance(other, Orbital):
+            same = self.orb.equal(other)
+        return same
 
     def name(self, tex=False):
         """ Return named specification of the atomic orbital """
@@ -500,7 +549,7 @@ class AtomicOrbital(Orbital):
             return self.__class__.__name__ + '{{{0}, tag: {1},\n  {2}\n}}'.format(self.name(), tag, repr(self.orb))
         return self.__class__.__name__ + '{{{0},\n  {1}\n}}'.format(self.name(), repr(self.orb))
 
-    def update_f(self, r, f, kind='cubic'):
+    def set_radial(self, r, f, kind='cubic'):
         """ Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
         Parameters
@@ -514,7 +563,7 @@ class AtomicOrbital(Orbital):
            in `scipy.interpolate.interp1d`, otherwise it may be a function which should return
            an interpolation function which only accepts two arguments: ``func = kind(r, f)``
         """
-        self.orb.update_f(r, f, kind)
+        self.orb.set_radial(r, f, kind)
         self.R = self.orb.R
 
     def radial(self, r, is_radius=True):
