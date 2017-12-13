@@ -73,6 +73,7 @@ from .shape import *
 from .supercell import *
 from .atom import *
 
+from .orbital import *
 from .geometry import *
 from .grid import *
 
