@@ -118,11 +118,14 @@ class Orbital(object):
         if not isinstance(other, Orbital):
             return False
         same = np.isclose(self.R, other.R)
-        if radial:
+        if not same:
+            # Quick return
+            return False
+        if same and radial:
             # Ensure they also have the same fill-values
             r = np.linspace(0, self.R * 2, 500)
             same &= np.allclose(self.radial(r), other.radial(r))
-        if phi:
+        if same and phi:
             xyz = np.linspace(0, self.R * 2, 999).reshape(-1, 3)
             same &= np.allclose(self.phi(xyz), other.phi(xyz))
         return same and self.tag == other.tag
@@ -263,11 +266,10 @@ class SphericalOrbital(Orbital):
                     The maximum orbital range is determined automatically to a precision
                     of 0.0001 AA.
         """
-        if len(args) == 1:
-            # It has to be a function
-            if not callable(args[0]):
-                raise ValueError(self.__class__.__name__ + '.set_radial '
-                                 'has been passed a non-callable function, please correct arguments.')
+        if len(args) == 0:
+            # Return immediately
+            return
+        elif len(args) == 1 and callable(args[0]):
             self.f = args[0]
             # Determine the maximum R
             # We should never expect a radial components above
@@ -309,7 +311,7 @@ class SphericalOrbital(Orbital):
 
             self.f = interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False, assume_sorted=True)
         else:
-            raise ValueError('Arguments for set_radial are in-correct, please see the decumentation of SphericalOrbital.set_radial')
+            raise ValueError('Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial')
 
     def __repr__(self):
         """ A string representation of the object """

@@ -22,6 +22,7 @@ class Test_orbital(object):
         orb = Orbital(1., 'none')
         repr(orb)
         assert orb == orb.copy()
+        assert orb == 1.
 
     @pytest.mark.xfail(raises=NotImplementedError)
     def test_radial1(self):
@@ -34,6 +35,8 @@ class Test_orbital(object):
     def test_scale1(self):
         o = Orbital(1.)
         assert o.scale(2).R == 2.
+        o = Orbital(-1)
+        assert o.scale(2).R == -1.
 
     def test_pickle1(self):
         import pickle as p
@@ -101,6 +104,7 @@ class Test_sphericalorbital(object):
         r[r >= n - 1] = 0.
         assert np.allclose(r0, r)
         assert np.allclose(r1, r)
+        assert orb0.equal(orb1, radial=True)
 
     def test_phi1(self):
         n = 6
@@ -112,6 +116,8 @@ class Test_sphericalorbital(object):
         p0 = orb0.phi(r)
         p1 = orb1.phi(r)
         assert not np.allclose(p0, p1)
+        orb1 = SphericalOrbital(0, rf)
+        assert orb0.equal(orb1, phi=True)
 
     def test_same1(self):
         n = 6
