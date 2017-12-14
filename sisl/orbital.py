@@ -125,7 +125,7 @@ class Orbital(object):
         if phi:
             xyz = np.linspace(0, self.R * 2, 999).reshape(-1, 3)
             same &= np.allclose(self.phi(xyz), other.phi(xyz))
-        return same
+        return same and self.tag == other.tag
 
     def copy(self):
         """ Create an exact copy of this object """
@@ -243,8 +243,7 @@ class SphericalOrbital(Orbital):
         same = super(SphericalOrbital, self).equal(other, phi, radial)
         if not same:
             return False
-        same = isinstance(other, SphericalOrbital)
-        if same:
+        if isinstance(other, SphericalOrbital):
             same &= self.l == other.l
         return same
 
@@ -266,6 +265,9 @@ class SphericalOrbital(Orbital):
         """
         if len(args) == 1:
             # It has to be a function
+            if not callable(args[0]):
+                raise ValueError(self.__class__.__name__ + '.set_radial '
+                                 'has been passed a non-callable function, please correct arguments.')
             self.f = args[0]
             # Determine the maximum R
             # We should never expect a radial components above
@@ -576,6 +578,8 @@ class AtomicOrbital(Orbital):
             same &= self.P == other.P
         elif isinstance(other, Orbital):
             same = self.orb.equal(other)
+        else:
+            return False
         return same
 
     def name(self, tex=False):
