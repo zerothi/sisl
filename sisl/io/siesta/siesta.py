@@ -261,10 +261,10 @@ class ncSileSiesta(SileCDFSiesta):
 
         for ia, a, isp in geom.iter_species():
             b[ia] = isp + 1
-            orbs[ia] = a.orbs
+            orbs[ia] = a.no
             if a.tag in bs.groups:
                 # Assert the file sizes
-                if bs.groups[a.tag].Number_of_orbitals != a.orbs:
+                if bs.groups[a.tag].Number_of_orbitals != a.no:
                     raise ValueError(
                         'File ' +
                         self.file +
@@ -277,7 +277,7 @@ class ncSileSiesta(SileCDFSiesta):
                 ba.Mass = a.mass
                 ba.Label = a.tag
                 ba.Element = a.symbol
-                ba.Number_of_orbitals = np.int32(a.orbs)
+                ba.Number_of_orbitals = np.int32(a.no)
 
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = np.cumsum(orbs, dtype=np.int32)

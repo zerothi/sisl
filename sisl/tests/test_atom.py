@@ -5,7 +5,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import Atom, Atoms, PeriodicTable
+from sisl import Atom, Atoms, PeriodicTable, Orbital
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def setup():
     class t():
         def __init__(self):
             self.C = Atom['C']
-            self.C3 = Atom('C', orbs=3)
+            self.C3 = Atom('C', [-1] * 3)
             self.Au = Atom('Au')
             self.PT = PeriodicTable()
 
@@ -53,21 +53,29 @@ class TestAtom(object):
         assert setup.Au.mass > 0
 
     def test5(self, setup):
+        assert Atom(Z=1, mass=12).R < 0
         assert Atom(Z=1, mass=12).mass == 12
         assert Atom(Z=31, mass=12).mass == 12
         assert Atom(Z=31, mass=12).Z == 31
 
     def test6(self, setup):
-        assert Atom(Z=1, orbs=3).orbs == 3
-        assert len(Atom(Z=1, orbs=3)) == 3
+        assert Atom(1, [-1] * 3).no == 3
+        assert len(Atom(1, [-1] * 3)) == 3
         assert Atom(Z=1, R=1.4).R == 1.4
         assert Atom(Z=1, R=1.4).maxR() == 1.4
-        assert Atom(Z=1, R=[1.4, 1.8]).orbs == 2
+        assert Atom(Z=1, R=[1.4, 1.8]).no == 2
         assert Atom(Z=1, R=[1.4, 1.8]).maxR() == 1.8
+        assert Atom(Z=1, R=[1.4, 1.8]).maxR() == 1.8
+        a = Atom(1, Orbital(1.4))
+        assert a.R == 1.4
+        assert a.no == 1
+        a = Atom(1, [Orbital(1.4)])
+        assert a.R == 1.4
+        assert a.no == 1
 
     def test7(self, setup):
-        assert Atom(Z=1, orbs=3).radius() > 0.
-        assert len(str(Atom(Z=1, orbs=3)))
+        assert Atom(1, [-1] * 3).radius() > 0.
+        assert len(str(Atom(1, [-1] * 3)))
 
     def test8(self, setup):
         a = setup.PT.Z([1, 2])
@@ -182,22 +190,22 @@ class TestAtoms(object):
         assert atom[0] == Atom('C')
         assert atom[1] == Atom('C')
         assert len(atom.atom) == 1
-        atom[1] = Atom('Au', orbs=2)
+        atom[1] = Atom('Au', [-1] * 2)
         assert atom[0] == Atom('C')
         assert atom[1] != Atom('Au')
-        assert atom[1] == Atom('Au', orbs=2)
+        assert atom[1] == Atom('Au', [-1] * 2)
         assert len(atom.atom) == 2
 
     def test_set3(self):
         # Add new atoms to the set
         atom = Atoms(['C'] * 10)
-        atom[range(1, 4)] = Atom('Au', orbs=2)
+        atom[range(1, 4)] = Atom('Au', [-1] * 2)
         assert atom[0] == Atom('C')
         for i in range(1, 4):
             assert atom[i] != Atom('Au')
-            assert atom[i] == Atom('Au', orbs=2)
+            assert atom[i] == Atom('Au', [-1] * 2)
         assert atom[4] != Atom('Au')
-        assert atom[4] != Atom('Au', orbs=2)
+        assert atom[4] != Atom('Au', [-1] * 2)
         assert len(atom.atom) == 2
         atom[1:4] = Atom('C')
         assert len(atom.atom) == 2
@@ -205,22 +213,22 @@ class TestAtoms(object):
     def test_replace1(self):
         # Add new atoms to the set
         atom = Atoms(['C'] * 10 + ['B'] * 2)
-        atom[range(1, 4)] = Atom('Au', orbs=2)
+        atom[range(1, 4)] = Atom('Au', [-1] * 2)
         assert atom[0] == Atom('C')
         for i in range(1, 4):
             assert atom[i] != Atom('Au')
-            assert atom[i] == Atom('Au', orbs=2)
+            assert atom[i] == Atom('Au', [-1] * 2)
         assert atom[4] != Atom('Au')
-        assert atom[4] != Atom('Au', orbs=2)
+        assert atom[4] != Atom('Au', [-1] * 2)
         assert len(atom.atom) == 3
-        atom.replace(atom[0], Atom('C', orbs=2))
-        assert atom[0] == Atom('C', orbs=2)
+        atom.replace(atom[0], Atom('C', [-1] * 2))
+        assert atom[0] == Atom('C', [-1] * 2)
         assert len(atom.atom) == 3
-        assert atom[0] == Atom('C', orbs=2)
+        assert atom[0] == Atom('C', [-1] * 2)
         for i in range(4, 10):
-            assert atom[i] == Atom('C', orbs=2)
+            assert atom[i] == Atom('C', [-1] * 2)
         for i in range(1, 4):
-            assert atom[i] == Atom('Au', orbs=2)
+            assert atom[i] == Atom('Au', [-1] * 2)
         for i in range(10, 12):
             assert atom[i] == Atom('B')
 

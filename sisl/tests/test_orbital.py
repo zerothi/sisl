@@ -4,6 +4,7 @@ import pytest
 
 import math as m
 import numpy as np
+from scipy.interpolate import interp1d
 
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
 
@@ -29,32 +30,52 @@ class Test_orbital(object):
     def test_phi1(self):
         Orbital(1.).phi(np.arange(10))
 
+    def test_pickle1(self, setup):
+        import pickle as p
+        o0 = Orbital(1.)
+        o1 = Orbital(1., 'none')
+        p0 = p.dumps(o0)
+        p1 = p.dumps(o1)
+        l0 = p.loads(p0)
+        l1 = p.loads(p1)
+        assert o0 == l0
+        assert o1 == l1
+        assert o0 != l1
+        assert o1 != l0
+
 
 @pytest.mark.orbital
 class Test_sphericalorbital(object):
 
     def test_init1(self):
         n = 6
-        assert SphericalOrbital(1, np.arange(n), np.arange(n)) == \
-            SphericalOrbital(1, np.arange(n), np.arange(n))
-        assert SphericalOrbital(1, np.arange(n), np.arange(n), tag='none') != \
-            SphericalOrbital(1, np.arange(n), np.arange(n))
-        SphericalOrbital(5, np.arange(n), np.arange(n))
+        rf = np.arange(n)
+        rf = (rf, rf)
+        assert SphericalOrbital(1, rf) == SphericalOrbital(1, rf)
+        f = interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
+        rf = [rf[0], rf[0]]
+        assert SphericalOrbital(1, rf) == SphericalOrbital(1, f)
+        assert SphericalOrbital(1, rf, tag='none') != SphericalOrbital(1, rf)
+        SphericalOrbital(5, rf)
         for l in range(10):
-            o = SphericalOrbital(l, np.arange(n), np.arange(n))
+            o = SphericalOrbital(l, rf)
             assert l == o.l
 
     def test_basic1(self):
         n = 6
-        orb = SphericalOrbital(1, np.arange(n), np.arange(n))
+        rf = np.arange(n)
+        rf = (rf, rf)
+        orb = SphericalOrbital(1, rf)
         repr(orb)
-        orb = SphericalOrbital(1, np.arange(n), np.arange(n), tag='none')
+        orb = SphericalOrbital(1, rf, tag='none')
         repr(orb)
 
     def test_radial1(self):
         n = 6
-        orb0 = SphericalOrbital(0, np.arange(n), np.arange(n))
-        orb1 = SphericalOrbital(1, np.arange(n), np.arange(n))
+        rf = np.arange(n)
+        rf = (rf, rf)
+        orb0 = SphericalOrbital(0, rf)
+        orb1 = SphericalOrbital(1, rf)
         r = np.linspace(0, n, 400)
         # Note r > n - 1 should be zero, regardless of the fill-value
         r0 = orb0.radial(r)
@@ -66,8 +87,10 @@ class Test_sphericalorbital(object):
 
     def test_phi1(self):
         n = 6
-        orb0 = SphericalOrbital(0, np.arange(n), np.arange(n))
-        orb1 = SphericalOrbital(1, np.arange(n), np.arange(n))
+        rf = np.arange(n)
+        rf = (rf, rf)
+        orb0 = SphericalOrbital(0, rf)
+        orb1 = SphericalOrbital(1, rf)
         r = np.linspace(0, n, 333 * 3).reshape(-1, 3)
         p0 = orb0.phi(r)
         p1 = orb1.phi(r)
@@ -75,7 +98,9 @@ class Test_sphericalorbital(object):
 
     def test_toatomicorbital1(self):
         n = 6
-        orb = SphericalOrbital(0, np.arange(n), np.arange(n))
+        rf = np.arange(n)
+        rf = (rf, rf)
+        orb = SphericalOrbital(0, rf)
         ao = orb.toAtomicOrbital()
         assert len(ao) == 1
         assert ao[0].l == orb.l
@@ -83,7 +108,7 @@ class Test_sphericalorbital(object):
 
         # Check m and l
         for l in range(1, 5):
-            orb = SphericalOrbital(l, np.arange(n), np.arange(n))
+            orb = SphericalOrbital(l, rf)
             ao = orb.toAtomicOrbital()
             assert len(ao) == 2*l + 1
             m = -l
@@ -92,7 +117,7 @@ class Test_sphericalorbital(object):
                 assert a.m == m
                 m += 1
 
-        orb = SphericalOrbital(1, np.arange(n), np.arange(n))
+        orb = SphericalOrbital(1, rf)
         ao = orb.toAtomicOrbital(1)
         assert ao.l == orb.l
         assert ao.m == 1
@@ -112,5 +137,23 @@ class Test_sphericalorbital(object):
     @pytest.mark.xfail(raises=ValueError)
     def test_toatomicorbital2(self):
         n = 6
-        orb = SphericalOrbital(1, np.arange(n), np.arange(n))
+        rf = np.arange(n)
+        rf = (rf, rf)
+        orb = SphericalOrbital(1, rf)
         ao = orb.toAtomicOrbital(2)
+
+    def test_pickle1(self, setup):
+        n = 6
+        rf = np.arange(n)
+        rf = (rf, rf)
+        import pickle as p
+        o0 = SphericalOrbital(1, rf)
+        o1 = SphericalOrbital(2, rf)
+        p0 = p.dumps(o0)
+        p1 = p.dumps(o1)
+        l0 = p.loads(p0)
+        l1 = p.loads(p1)
+        assert o0 == l0
+        assert o1 == l1
+        assert o0 != l1
+        assert o1 != l0

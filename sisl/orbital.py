@@ -103,17 +103,17 @@ class Orbital(object):
             return self.__class__.__name__ + '{{R: {0}, tag: {1}}}'.format(self.R, tag)
         return self.__class__.__name__ + '{{R: {0}}}'.format(self.R)
 
-    def equal(self, other, radial=False, phi=False):
+    def equal(self, other, phi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and phi functions
 
         Parameters
         ----------
         other : Orbital
            comparison orbital
-        radial : bool, optional
-           also compare that the radial parts are the same
         phi : bool, optional
            also compare that the full phi are the same
+        radial : bool, optional
+           also compare that the radial parts are the same
         """
         if not isinstance(other, Orbital):
             return False
@@ -127,6 +127,17 @@ class Orbital(object):
             same &= np.allclose(self.phi(xyz), other.phi(xyz))
         return same
 
+    def copy(self):
+        """ Create an exact copy of this object """
+        return self.__class__(self.R, self.tag)
+
+    def scale(self, scale):
+        """ Scale the orbital by extending R by `scale` """
+        R = self.R * scale
+        if R < 0:
+            R = -1.
+        return self.__class__(R, self.tag)
+
     def __eq__(self, other):
         return self.equal(other)
 
@@ -135,6 +146,14 @@ class Orbital(object):
 
     def phi(self, r, *args, **kwargs):
         raise NotImplementedError
+
+    def __getstate__(self):
+        """ Return the state of this object """
+        return {'R': self.R, 'tag': self.tag}
+
+    def __setstate__(self, d):
+        """ Re-create the state of this object """
+        self.__init__(d['R'], d['tag'])
 
 
 class SphericalOrbital(Orbital):
@@ -165,52 +184,63 @@ class SphericalOrbital(Orbital):
         azimuthal quantum number
     f : func
         the interpolation function that returns `f(r)` for the provided data
+    tag : str or None
+        a tag for this orbital
     """
     # Additional slots (inherited classes retain the same slots)
     __slots__ = ['l', 'f']
 
-    def __init__(self, l, r, f, kind='cubic', tag=None):
+    def __init__(self, l, rf_or_func, tag=None):
         """ Initialize a spherical orbital via a radial grid
 
         Parameters
         ----------
         l : int
            azimuthal quantum number
-        r : array_like
-           radii for the evaluated function `f`
-        f : array_like
-           the function evaluated at `r`
-        kind : str, func, optional
-           the kind of interpolation used, if this is a string it is the `kind` parameter
-           in `scipy.interpolate.interp1d`, otherwise it may be a function which should return
-           an interpolation function which only accepts two arguments: ``func = kind(r, f)``
+        rf_or_func : tuple of (r, f) or func
+           the radial components as a tuple/list, or the function which can interpolate to any R
+           See `set_radial` for details.
         tag : str, optional
            tag of the orbital
+
+        Examples
+        --------
+        >>> from scipy.interpolate import interp1d
+        >>> orb = SphericalOrbital(1, (np.arange(10), np.arange(10)))
+        >>> orb.equal(SphericalOrbital(1, interp1d(np.arange(10), np.arange(10),
+        ...       fill_value=(0., 0.), kind='cubic')))
         """
         self.l = l
+
+        # Set the internal function
+        if callable(rf_or_func):
+            self.set_radial(rf_or_func)
+        else:
+            # it must be two arguments
+            self.set_radial(rf_or_func[0], rf_or_func[1])
 
         # Initialize R and tag through the parent
         # Note that the maximum range of the orbital will be the
         # maximum value in r.
-        r = ensure_array(r, np.float64)
-        super(SphericalOrbital, self).__init__(r.max(), tag)
+        super(SphericalOrbital, self).__init__(self.R, tag)
 
-        # Set the internal function
-        self.set_radial(r, f, kind)
+    def copy(self):
+        """ Create an exact copy of this object """
+        return self.__class__(self.l, self.f, self.tag)
 
-    def equal(self, other, radial=False, phi=False):
+    def equal(self, other, phi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and phi functions
 
         Parameters
         ----------
         other : Orbital
            comparison orbital
-        radial : bool, optional
-           also compare that the radial parts are the same
         phi : bool, optional
            also compare that the full phi are the same
+        radial : bool, optional
+           also compare that the radial parts are the same
         """
-        same = super(SphericalOrbital, self).equal(other, radial, phi)
+        same = super(SphericalOrbital, self).equal(other, phi, radial)
         if not same:
             return False
         same = isinstance(other, SphericalOrbital)
@@ -218,38 +248,66 @@ class SphericalOrbital(Orbital):
             same &= self.l == other.l
         return same
 
-    def set_radial(self, r, f, kind='cubic'):
+    def set_radial(self, *args):
         """ Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
-        Parameters
-        ----------
-        r : array_like
-           radii for the evaluated function `f`
-        f : array_like
-           the function evaluated at `r`
-        kind : str, func, optional
-           the kind of interpolation used, if this is a string it is the `kind` parameter
-           in `scipy.interpolate.interp1d`, otherwise it may be a function which should return
-           an interpolation function which only accepts two arguments: ``func = kind(r, f)``
-        """
-        r = ensure_array(r, np.float64)
-        f = ensure_array(f, np.float64)
-        # Sort r and f
-        idx = np.argsort(r)
-        r = r[idx]
-        f = f[idx]
-        # Also update R to the maximum R value
-        self.R = r[-1]
+        This can be called in several ways:
 
-        if isinstance(kind, _str):
-            # Now make interpolation extrapolation values
-            # fill_value *has* to be a tuple
-            # Note that we *always* interpolate to 0 above R
-            self.f = interp1d(r, f, kind=kind, fill_value=(f[0], 0.), assume_sorted=True)
+              set_radial(r, f)
+                    which uses ``scipy.interpolate.interp1d(r, f, bounds_error=False, kind='cubic')``
+                    to define the interpolation function.
+                    Here the maximum radius of the orbital is the maximum `r` value,
+                    regardless of ``f(r)`` is zero for smaller `r`.
+
+              set_radial(func)
+                    which sets the interpolation function directly.
+                    The maximum orbital range is determined automatically to a precision
+                    of 0.0001 AA.
+        """
+        if len(args) == 1:
+            # It has to be a function
+            self.f = args[0]
+            # Determine the maximum R
+            # We should never expect a radial components above
+            # 50 Ang (is this not fine? ;))
+            # Precision of 0.05 A
+            r = np.linspace(0.05, 50, 1000)
+            f = self.f(r) ** 2
+            # Find maximum R and focus around this point
+            idx = (f > 0).nonzero()[0]
+            if len(idx) > 0:
+                idx = idx.max()
+                # Preset
+                self.R = r[idx]
+                # This should give us a precision of 0.0001 A
+                r = np.linspace(r[idx]-0.025+0.0001, r[idx]+0.025, 500)
+                f = self.f(r) ** 2
+                # Find minimum R and focus around this point
+                idx = (f > 0).nonzero()[0]
+                if len(idx) > 0:
+                    idx = idx.max()
+                    self.R = r[idx]
+            else:
+                # The orbital radius
+                # Is undefined, no values are above 0 in a range
+                # of 50 A
+                self.R = -1
+
+        elif len(args) > 1:
+
+            # A radial and function component has been passed
+            r = ensure_array(args[0], np.float64)
+            f = ensure_array(args[1], np.float64)
+            # Sort r and f
+            idx = np.argsort(r)
+            r = r[idx]
+            f = f[idx]
+            # Also update R to the maximum R value
+            self.R = r[-1]
+
+            self.f = interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False, assume_sorted=True)
         else:
-            self.f = kind(r, f)
-            # Just to be sure we actually have a working function
-            self.f(r[0])
+            raise ValueError('Arguments for set_radial are in-correct, please see the decumentation of SphericalOrbital.set_radial')
 
     def __repr__(self):
         """ A string representation of the object """
@@ -332,6 +390,18 @@ class SphericalOrbital(Orbital):
         elif isinstance(m, Integral):
             return AtomicOrbital(n=n, l=self.l, m=m, Z=Z, P=P, spherical=self)
         return [AtomicOrbital(n=n, l=self.l, m=mm, Z=Z, P=P, spherical=self) for mm in m]
+
+    def __getstate__(self):
+        """ Return the state of this object """
+        # A function is not necessarily pickable, so we store interpolated
+        # data which *should* ensure the correct pickable state (to close agreement)
+        r = np.linspace(0, self.R, 1000)
+        f = self.f(r)
+        return {'l': self.l, 'r': r, 'f': f, 'tag': self.tag}
+
+    def __setstate__(self, d):
+        """ Re-create the state of this object """
+        self.__init__(d['l'], (d['r'], d['f']), d['tag'])
 
 
 class AtomicOrbital(Orbital):
@@ -485,20 +555,20 @@ class AtomicOrbital(Orbital):
             self.orb = kwargs.get('spherical')
         self.R = self.orb.R
 
-    def equal(self, other, radial=False, phi=False):
+    def equal(self, other, phi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and phi functions
 
         Parameters
         ----------
         other : Orbital
            comparison orbital
-        radial : bool, optional
-           also compare that the radial parts are the same
         phi : bool, optional
            also compare that the full phi are the same
+        radial : bool, optional
+           also compare that the radial parts are the same
         """
         if isinstance(other, AtomicOrbital):
-            same = self.orb.equal(other.orb)
+            same = self.orb.equal(other.orb, phi, radial)
             same &= self.n == other.n
             same &= self.l == other.l
             same &= self.m == other.m
@@ -549,21 +619,12 @@ class AtomicOrbital(Orbital):
             return self.__class__.__name__ + '{{{0}, tag: {1},\n  {2}\n}}'.format(self.name(), tag, repr(self.orb))
         return self.__class__.__name__ + '{{{0},\n  {1}\n}}'.format(self.name(), repr(self.orb))
 
-    def set_radial(self, r, f, kind='cubic'):
+    def set_radial(self, *args):
         """ Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
-        Parameters
-        ----------
-        r : array_like
-           radii for the evaluated function `f`
-        f : array_like
-           the function evaluated at `r`
-        kind : str, func, optional
-           the kind of interpolation used, if this is a string it is the `kind` parameter
-           in `scipy.interpolate.interp1d`, otherwise it may be a function which should return
-           an interpolation function which only accepts two arguments: ``func = kind(r, f)``
+        See `SphericalOrbital.set_radial` where these arguments are passed to.
         """
-        self.orb.set_radial(r, f, kind)
+        self.orb.set_radial(*args)
         self.R = self.orb.R
 
     def radial(self, r, is_radius=True):

@@ -9,6 +9,7 @@ import numpy as np
 
 from ._help import array_fill_repeat, ensure_array, _str
 import sisl._array as _a
+from .orbital import Orbital
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
@@ -956,10 +957,10 @@ class Atom(with_metaclass(AtomMeta, object)):
     ----------
     Z : int
         atomic number
-    R : ndarray
-        radius of orbitals belonging to the `Atom`
-    orbs : int
+    no : int
         number of orbitals belonging to the `Atom`
+    R : numpy.ndarray
+        the range of each orbital associated with this `Atom` (see `Orbital.R` for details)
     mass : float
         mass of `Atom`
 
@@ -967,47 +968,65 @@ class Atom(with_metaclass(AtomMeta, object)):
     ----------
     Z : int or str
         key lookup for the atomic specie, `Atom[key]`
-    R : array_like or float
-        the range of the atomic orbitals
-    orbs : int
-        number of orbitals attached to this atom
-        NOTE: Length of `R` precedes this quantity.
+    orbital : list of Orbital or float, optional
+        all orbitals associated with this atom. Default to one orbital.
     mass : float, optional
         the atomic mass, if not specified uses the mass from `PeriodicTable`
-    tag : str
+    tag : str, optional
         arbitrary designation for user handling similar atoms with
         different settings (defaults to the label of the atom)
     """
 
-    def __init__(self, Z, R=None, orbs=None, mass=None, tag=None):
+    def __init__(self, Z, orbital=None, mass=None, tag=None, **kwargs):
         if isinstance(Z, Atom):
             Z = Z.Z
-        if R is None:
-            R = -1.
-        if orbs is None:
-            orbs = 1
-
         self.Z = _ptbl.Z_int(Z)
-        try:
-            self.orbs = max(len(R), orbs)
-        except:
-            self.orbs = orbs
-        self.R = array_fill_repeat(_a.asarrayd([R]).flatten(),
-                                   self.orbs)
-        # Save the mass
-        self.mass = mass
+
+        self.orbital = None
+        if isinstance(orbital, (list, np.ndarray)):
+            if isinstance(orbital[0], Orbital):
+                # all is good
+                self.orbital = orbital
+            elif isinstance(orbital[0], Real):
+                # radius has been given
+                self.orbital = [Orbital(R) for R in orbital]
+        elif isinstance(orbital, Orbital):
+            self.orbital = [orbital]
+        elif isinstance(orbital, Real):
+            self.orbital = [Orbital(orbital)]
+
+        if self.orbital is None:
+            if 'R' in kwargs:
+                # backwards compatibility (possibly remove this in the future)
+                R = ensure_array(kwargs['R'], np.float64)
+                self.orbital = [Orbital(r) for r in R]
+            else:
+                self.orbital = [Orbital(-1.)]
+
         if mass is None:
             self.mass = _ptbl.atomic_mass(self.Z)
+        else:
+            self.mass = mass
+
         if tag is None:
             self.tag = self.symbol
         else:
             self.tag = tag
 
-    def copy(self, Z=None, R=None, orbs=None, mass=None, tag=None):
+    @property
+    def no(self):
+        """ Number of orbitals on this atom """
+        return len(self.orbital)
+
+    @property
+    def R(self):
+        """ Orbital radius """
+        return _a.arrayd([o.R for o in self.orbital])
+
+    def copy(self, Z=None, orbital=None, mass=None, tag=None):
         """ Return copy of this object """
         return self.__class__(self.Z if Z is None else Z,
-                              self.R if R is None else R,
-                              self.orbs if orbs is None else orbs,
+                              self.orbital if orbital is None else orbital,
                               self.mass if mass is None else mass,
                               self.tag if tag is None else tag)
 
@@ -1017,7 +1036,6 @@ class Atom(with_metaclass(AtomMeta, object)):
         See `PeriodicTable.radius` for details on the argument.
         """
         return _ptbl.radius(self.Z, method)
-    radii = radius
 
     @property
     def symbol(self):
@@ -1026,7 +1044,10 @@ class Atom(with_metaclass(AtomMeta, object)):
 
     def maxR(self):
         """ Return the maximum range of orbitals. """
-        return np.amax(self.R)
+        mR = -1e10
+        for o in self.orbital:
+            mR = max(mR, o.R)
+        return mR
 
     def scale(self, scale):
         """ Scale the atomic radii and return an equivalent atom.
@@ -1037,17 +1058,19 @@ class Atom(with_metaclass(AtomMeta, object)):
            the scale factor for the atomic radii
         """
         new = self.copy()
-        new.R = np.where(new.R > 0, new.R * scale, new.R)
+        new.orbital = [o.scale(scale) for o in self.orbital]
         return new
 
     def __repr__(self):
-        return self.__class__.__name__ + '{{{0}, Z: {1:d}, orbs: {2:d}, mass(au): {3:.5f}, maxR: {4:.5f}}}'.format(self.tag, self.Z, self.orbs, self.mass, self.maxR())
+        # Create orbitals output
+        orbs = ',\n '.join([repr(o) for o in self.orbital])
+        return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5f}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
 
     def __len__(self):
         """ Return number of orbitals in this atom """
-        return self.orbs
+        return self.no
 
-    def equal(self, other, R=True):
+    def equal(self, other, R=True, phi=False):
         """ True if `other` is the same as this atomic specie
 
         Parameters
@@ -1056,17 +1079,17 @@ class Atom(with_metaclass(AtomMeta, object)):
            the other object to check againts
         R : bool, optional
            if True the equality check also checks the orbital radii, else they are not compared
+        phi : bool, optional
+           if True, also check the wave-function component of the orbitals, see `Orbital.phi`
         """
         if not isinstance(other, Atom):
             return False
         same = self.Z == other.Z
-        same &= self.orbs == other.orbs
+        same &= self.no == other.no
+        if same and R:
+            same &= all([self.orbital[i].equal(other.orbital[i], phi=phi) for i in range(self.no)])
         same &= np.isclose(self.mass, other.mass)
         same &= self.tag == other.tag
-        # This prevents an allclose being called with
-        # different number of orbitals
-        if same and R:
-            same = np.allclose(self.R, other.R)
         return same
 
     # Check whether they are equal
@@ -1080,20 +1103,11 @@ class Atom(with_metaclass(AtomMeta, object)):
     # Create pickling routines
     def __getstate__(self):
         """ Return the state of this object """
-        return {'Z': self.Z,
-                'orbs': self.orbs,
-                'mass': self.mass,
-                'tag': self.tag,
-                'R': self.R}
+        return {'Z': self.Z, 'orbital': self.orbital, 'mass': self.mass, 'tag': self.tag}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(
-            d['Z'],
-            R=d['R'],
-            orbs=d['orbs'],
-            mass=d['mass'],
-            tag=d['tag'])
+        self.__init__(d['Z'], d['orbital'], d['mass'], d['tag'])
 
 
 class Atoms(object):
@@ -1193,7 +1207,7 @@ class Atoms(object):
     def _update_orbitals(self):
         """ Internal routine for updating the `firsto` attribute """
         # Get number of orbitals per specie
-        uorbs = _a.arrayi([a.orbs for a in self.atom])
+        uorbs = _a.arrayi([a.no for a in self.atom])
         self._firsto = np.insert(_a.cumsumi(uorbs[self.specie[:]]), 0, 0)
 
     def copy(self):
@@ -1216,7 +1230,8 @@ class Atoms(object):
     @property
     def no(self):
         """ Return the total number of orbitals in this list of atoms """
-        uorbs = [a.orbs for a in self.atom]
+        uorbs = _a.arrayi([a.no for a in self.atom])
+        return uorbs[self.specie].sum()
         values, counts = np.unique(self.specie, return_counts=True)
         no = 0
         for v, c in zip(values, counts):

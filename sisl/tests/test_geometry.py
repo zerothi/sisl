@@ -19,7 +19,7 @@ def setup():
             self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
-            C = Atom(Z=6, R=bond * 1.01, orbs=2)
+            C = Atom(Z=6, R=[bond * 1.01]*2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
                               atom=C, sc=self.sc)
@@ -212,7 +212,7 @@ class TestGeometry(object):
 
     def test_a2o1(self, setup):
         assert 0 == setup.g.a2o(0)
-        assert setup.g.atom[0].orbs == setup.g.a2o(1)
+        assert setup.g.atom[0].no == setup.g.a2o(1)
         assert setup.g.no == setup.g.a2o(setup.g.na)
 
     def test_sub1(self, setup):
@@ -528,7 +528,7 @@ class TestGeometry(object):
 
     def test_a2o(self, setup):
         # There are 2 orbitals per C atom
-        assert setup.g.a2o(1) == setup.g.atom[0].orbs
+        assert setup.g.a2o(1) == setup.g.atom[0].no
         assert np.all(setup.g.a2o(1, True) == [2, 3])
 
     def test_o2a(self, setup):

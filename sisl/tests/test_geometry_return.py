@@ -19,12 +19,12 @@ def setup():
             self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
-            C = Atom(Z=6, R=bond * 1.01, orbs=1)
+            C = Atom(Z=6, R=bond * 1.01)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
                               atom=C, sc=self.sc)
 
-            C = Atom(Z=6, R=bond * 1.01, orbs=2)
+            C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g2 = Geometry(np.array([[0., 0., 0.],
                                          [1., 0., 0.]], np.float64) * bond,
                                atom=C, sc=self.sc)

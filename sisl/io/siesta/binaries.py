@@ -68,11 +68,11 @@ class TSHSSileSiesta(SileBinSiesta):
         # Create atoms
         atoms = []
         for Z, orb in enumerate(uorb):
-            atoms.append(Atom(Z+1, orbs=orb))
+            atoms.append(Atom(Z+1, [-1] * orb))
 
         def get_atom(atoms, orbs):
             for atom in atoms:
-                if atom.orbs == orbs:
+                if atom.no == orbs:
                     return atom
 
         atom = []

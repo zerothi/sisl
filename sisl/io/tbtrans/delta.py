@@ -81,14 +81,14 @@ class deltancSileTBtrans(SileCDFTBtrans):
             # Check that all atoms have the correct number of orbitals.
             # Otherwise we will correct them
             for i in range(len(atms)):
-                if atms[i].orbs != nos[i]:
-                    atms[i] = Atom(Z=atms[i].Z, orbs=nos[i], tag=atms[i].tag)
+                if atms[i].no != nos[i]:
+                    atms[i] = Atom(atms[i].Z, [-1] * nos[i], tag=atms[i].tag)
 
         else:
             # Default to Hydrogen atom with nos[ia] orbitals
             # This may be counterintuitive but there is no storage of the
             # actual species
-            atms = [Atom(Z='H', orbs=o) for o in nos]
+            atms = [Atom('H', [-1] * o) for o in nos]
 
         # Create and return geometry object
         geom = Geometry(xyz, atms, sc=sc)
@@ -147,10 +147,10 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         for ia, a, isp in geom.iter_species():
             b[ia] = isp + 1
-            orbs[ia] = a.orbs
+            orbs[ia] = a.no
             if a.tag in bs.groups:
                 # Assert the file sizes
-                if bs.groups[a.tag].Number_of_orbitals != a.orbs:
+                if bs.groups[a.tag].Number_of_orbitals != a.no:
                     raise ValueError(('File {0}'
                                       ' has erroneous data in regards of '
                                       'of the alreay stored dimensions.').format(self.file))
@@ -161,7 +161,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                 ba.Mass = a.mass
                 ba.Label = a.tag
                 ba.Element = a.symbol
-                ba.Number_of_orbitals = np.int32(a.orbs)
+                ba.Number_of_orbitals = np.int32(a.no)
 
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = _a.cumsumi(orbs)
