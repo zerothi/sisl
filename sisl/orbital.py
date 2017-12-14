@@ -17,7 +17,7 @@ __all__ = ['Orbital', 'SphericalOrbital', 'AtomicOrbital']
 
 
 def xyz2spher(r):
-    r""" Transfer a vector to the spherical coordinates
+    r""" Transfer a vector to spherical coordinates
 
     Parameters
     ----------
@@ -37,7 +37,9 @@ def xyz2spher(r):
     r.shape = (-1, 3)
     rr = np.sqrt((r ** 2).sum(1))
     phi = np.arctan2(r[:, 1], r[:, 0])
-    theta = np.where(rr != 0, np.arccos(r[:, 2] / rr), 0)
+    theta = _a.zerosd(len(rr))
+    idx = rr > 0
+    theta[idx] = np.arccos(r[idx, 2] / rr[idx])
     return rr, theta, phi
 
 

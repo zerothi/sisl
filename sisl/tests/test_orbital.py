@@ -22,7 +22,7 @@ class Test_orbital(object):
         orb = Orbital(1., 'none')
         repr(orb)
         assert orb == orb.copy()
-        assert orb == 1.
+        assert orb != 1.
 
     @pytest.mark.xfail(raises=NotImplementedError)
     def test_radial1(self):
@@ -104,7 +104,6 @@ class Test_sphericalorbital(object):
         r[r >= n - 1] = 0.
         assert np.allclose(r0, r)
         assert np.allclose(r1, r)
-        assert orb0.equal(orb1, radial=True)
 
     def test_phi1(self):
         n = 6
@@ -117,7 +116,7 @@ class Test_sphericalorbital(object):
         p1 = orb1.phi(r)
         assert not np.allclose(p0, p1)
         orb1 = SphericalOrbital(0, rf)
-        assert orb0.equal(orb1, phi=True)
+        assert orb0.equal(orb1, radial=True, phi=True)
 
     def test_same1(self):
         n = 6
