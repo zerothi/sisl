@@ -30,7 +30,7 @@ class Test_orbital(object):
     def test_phi1(self):
         Orbital(1.).phi(np.arange(10))
 
-    def test_pickle1(self, setup):
+    def test_pickle1(self):
         import pickle as p
         o0 = Orbital(1.)
         o1 = Orbital(1., 'none')
@@ -142,7 +142,7 @@ class Test_sphericalorbital(object):
         orb = SphericalOrbital(1, rf)
         ao = orb.toAtomicOrbital(2)
 
-    def test_pickle1(self, setup):
+    def test_pickle1(self):
         n = 6
         rf = np.arange(n)
         rf = (rf, rf)
