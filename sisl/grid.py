@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 import warnings
-from numbers import Integral
+from numbers import Integral, Real
 
 import numpy as np
 
@@ -37,8 +37,8 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        shape : list of ints
-           the size of each grid dimension
+        shape : list of ints or float
+           the size of each grid dimension, if a float it is the grid-spacing in Ang
         bc : int, optional
            the boundary condition (``Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET/Grid.OPEN``)
         sc : SuperCell or list, optional
@@ -49,14 +49,18 @@ class Grid(SuperCellChild):
 
         self.set_supercell(sc)
 
+        # Create the atomic structure in the grid, if possible
+        self.set_geometry(geom)
+
+        if isinstance(shape, Real):
+            d = (self.cell ** 2).sum(1) ** 0.5
+            shape = list(map(int, np.rint(d / shape)))
+
         # Create the grid
         self.set_grid(shape, dtype=dtype)
 
         # Create the grid boundary conditions
         self.set_bc(bc)
-
-        # Create the atomic structure in the grid, if possible
-        self.set_geometry(geom)
 
         # If the user sets the super-cell, that has precedence.
         if sc is not None:
