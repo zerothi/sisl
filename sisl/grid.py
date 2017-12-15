@@ -556,6 +556,11 @@ class Grid(SuperCellChild):
                 xyzR[1] += R
                 min_max(idxm, idxM, self.index(xyzR))
 
+                for i in (0, 1, 2):
+                    if self.bc[i] != self.PERIODIC:
+                        idxm[i] = max(0, idxm[i])
+                        idxM[i] = min(self.shape[i]-1, idxM[i])
+
                 # Now idxM/m contains max/min indices used
                 # Convert to a xyz-coordinate
                 idx = np.ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]

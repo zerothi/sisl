@@ -9,7 +9,7 @@ from ..sile import *
 
 from sisl._array import aranged
 from sisl.unit.siesta import unit_convert
-from sisl import Geometry, Atom, SuperCell, Grid, SphericalOrbital
+from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
 from sisl.physics import DensityMatrix
 from sisl.physics import EnergyDensityMatrix
 from sisl.physics import Hamiltonian
@@ -46,6 +46,19 @@ class ncSileSiesta(SileCDFSiesta):
 
         for a_str in basis.groups:
             a = basis.groups[a_str]
+
+            if 'orbnl_l' not in a.variables:
+
+                # Do the easy thing.
+
+                # Get number of orbitals
+                label = a.Label.strip()
+                Z = int(a.Atomic_number)
+                mass = float(a.Mass)
+
+                i = int(a.ID) - 1
+                atom[i] = Atom(Z, [-1] * a.Number_of_orbitals, mass=mass, tag=label)
+                continue
 
             # Retrieve values
             orb_l = a.variables['orbnl_l'][:] # angular quantum number
@@ -263,6 +276,37 @@ class ncSileSiesta(SileCDFSiesta):
 
         return grid
 
+    def write_basis(self, atom):
+        """ Write the current atoms orbitals as the basis
+
+        Parameters
+        ----------
+        atom : Atoms
+           atom specifications to write.
+        """
+        sile_raise_write(self)
+        bs = self._crt_grp(self, 'BASIS')
+
+        # Create variable of basis-indices
+        b = self._crt_var(bs, 'basis', 'i4', ('na_u',))
+        b.info = "Basis of each atom by ID"
+
+        for isp, (a, ia) in enumerate(atom.iter(True)):
+            b[ia] = isp + 1
+            if a.tag in bs.groups:
+                # Assert the file sizes
+                if bs.groups[a.tag].Number_of_orbitals != a.no:
+                    raise ValueError('File {} has erroneous data '
+                                     'in regards of the already stored dimensions.'.format(self.file))
+            else:
+                ba = bs.createGroup(a.tag)
+                ba.ID = np.int32(isp + 1)
+                ba.Atomic_number = np.int32(a.Z)
+                ba.Mass = a.mass
+                ba.Label = a.tag
+                ba.Element = a.symbol
+                ba.Number_of_orbitals = np.int32(a.no)
+
     def write_geometry(self, geom):
         """
         Creates the NetCDF file and writes the geometry information
@@ -298,36 +342,10 @@ class ncSileSiesta(SileCDFSiesta):
         self.variables['cell'][:] = geom.cell / Bohr2Ang
 
         # Create basis group
-        bs = self._crt_grp(self, 'BASIS')
-
-        # Create variable of basis-indices
-        b = self._crt_var(bs, 'basis', 'i4', ('na_u',))
-        b.info = "Basis of each atom by ID"
-
-        orbs = np.empty([geom.na], np.int32)
-
-        for ia, a, isp in geom.iter_species():
-            b[ia] = isp + 1
-            orbs[ia] = a.no
-            if a.tag in bs.groups:
-                # Assert the file sizes
-                if bs.groups[a.tag].Number_of_orbitals != a.no:
-                    raise ValueError(
-                        'File ' +
-                        self.file +
-                        ' has erroneous data in regards of ' +
-                        'of the already stored dimensions.')
-            else:
-                ba = bs.createGroup(a.tag)
-                ba.ID = np.int32(isp + 1)
-                ba.Atomic_number = np.int32(a.Z)
-                ba.Mass = a.mass
-                ba.Label = a.tag
-                ba.Element = a.symbol
-                ba.Number_of_orbitals = np.int32(a.no)
+        self.write_basis(geom.atom)
 
         # Store the lasto variable as the remaining thing to do
-        self.variables['lasto'][:] = np.cumsum(orbs, dtype=np.int32)
+        self.variables['lasto'][:] = geom.lasto + 1
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
