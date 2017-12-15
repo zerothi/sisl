@@ -51,7 +51,12 @@ class SuperCell(object):
         # actual cell coordinates
         self.cell = self.tocell(cell)
 
-        self.origo = _a.zerosd(3)
+        if origo is None:
+            self.origo = _a.zerosd(3)
+        else:
+            self.origo = _a.arrayd(origo)
+            if self.origo.size != 3:
+                raise ValueError("Origo *must* be 3 numbers.")
 
         # Set the volume
         self._update_vol()

@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 
+import warnings
 from numbers import Integral
 
 import numpy as np
@@ -69,7 +70,11 @@ class Grid(SuperCellChild):
         """ Updates the grid contained """
         self.grid[key] = val
 
-    def set_geometry(self, geom):
+    @property
+    def geom(self):
+        return self.geometry
+
+    def set_geometry(self, geometry):
         """ Sets the `Geometry` for the grid.
 
         Setting the `Geometry` for the grid is a possibility
@@ -77,12 +82,12 @@ class Grid(SuperCellChild):
 
         It is not a necessary entity.
         """
-        if geom is None:
+        if geometry is None:
             # Fake geometry
             self.set_geometry(Geometry([0, 0, 0], Atom['H'], sc=self.sc))
         else:
-            self.geom = geom
-            self.set_sc(geom.sc)
+            self.geometry = geometry
+            self.set_sc(geometry.sc)
     set_geom = set_geometry
 
     def interp(self, shape, method='linear', **kwargs):
@@ -462,6 +467,109 @@ class Grid(SuperCellChild):
         else:
             with get_sile(sile, 'w') as fh:
                 fh.write_grid(self, *args, **kwargs)
+
+    def phi(self, v, k=None):
+        """ Add the wave-function (`Orbital.phi`) component of each orbital to the grid
+
+        This routine takes a vector `v` which may be of complex values and calculates the
+        real-space wave-function components in the specified grid. The length of `v` should
+        correspond to the number of orbitals in the geometry associated with this grid.
+
+        This is an *in-place* operation that *adds* to the current values in the grid.
+
+        Parameters
+        ----------
+        v : array_like
+           the coefficients for all orbitals in the geometry
+        k : (3, )
+           k-point of the coefficients
+        """
+        v = ensure_array(v, np.float64)
+        if len(v) != self.geometry.no:
+            raise ValueError(self.__class__.__name__ + ".phi "
+                             "requires the coefficient to have length as the number of orbitals.")
+
+        dcell = self.dcell
+        da = dcell[:, 0].reshape(1, 1, 1, -1)
+        db = dcell[:, 1].reshape(1, 1, 1, -1)
+        dc = dcell[:, 2].reshape(1, 1, 1, -1)
+        def idx2R(idx, offset):
+            R = _a.emptyd([idx[0].size, idx[1].size, idx[2].size, 3])
+            R[..., 0] = (idx[0][:, :, :, None] * da).sum(-1) + da.sum() * 0.5 - offset[0]
+            R[..., 1] = (idx[1][:, :, :, None] * db).sum(-1) + db.sum() * 0.5 - offset[1]
+            R[..., 2] = (idx[2][:, :, :, None] * dc).sum(-1) + dc.sum() * 0.5 - offset[2]
+            return R
+
+        def min_max(idxm, idxM, idx):
+            idxm[0] = min(idxm[0], idx[0])
+            idxM[0] = max(idxM[0], idx[0])
+            idxm[1] = min(idxm[1], idx[1])
+            idxM[1] = max(idxM[1], idx[1])
+            idxm[2] = min(idxm[2], idx[2])
+            idxM[2] = max(idxM[2], idx[2])
+
+        # Loop over all atoms
+        io = -1
+        for ia in self.geometry:
+            # The coordinates are relative to origo, so we need to shift
+            xyz = self.geometry.xyz[ia, :] - self.origo
+            IDX = self.index(xyz)
+
+            # Loop on orbitals on this atom
+            for o in self.geometry.atom[ia]:
+                io += 1
+                # Plotting this orbital now
+                R = o.R
+                if R < 0.:
+                    warnings.warn("Orbital '{}' does not have a wave-function, skipping orbital.")
+                    # Skip this one.
+                    continue
+
+                idxm = IDX.copy()
+                idxM = IDX.copy()
+
+                # Figure out the number of indices in each direction
+                xyzR = xyz.copy()
+
+                xyzR[0] += R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[1] += R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[2] += R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[0] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[1] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[2] -= R
+
+                xyzR[0] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[1] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[2] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[0] += R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[1] += R
+                min_max(idxm, idxM, self.index(xyzR))
+
+                # Now idxM/m contains max/min indices used
+                # Convert to a xyz-coordinate
+                idx = np.ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
+
+                # Extract the vectors for this (note that we are subtracting xyz
+                # to concentrate the vector on the basis-orbital)
+                R = idx2R(idx, xyz)
+
+                # Wrap-around for continuous grids
+                idx[0] = idx[0] % self.shape[0]
+                idx[1] = idx[1] % self.shape[1]
+                idx[2] = idx[2] % self.shape[2]
+
+                # Evaluate the phi component of the wavefunction
+                # and add it directly to the grid
+                self.grid[idx[0], idx[1], idx[2]] += o.phi(R) * v[io]
 
     def __repr__(self):
         """ Representation of object """

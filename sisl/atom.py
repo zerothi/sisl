@@ -1061,6 +1061,11 @@ class Atom(with_metaclass(AtomMeta, object)):
         new.orbital = [o.scale(scale) for o in self.orbital]
         return new
 
+    def __iter__(self):
+        """ Loop on all orbitals in this atom """
+        for o in self.orbital:
+            yield o
+
     def __repr__(self):
         # Create orbitals output
         orbs = ',\n '.join([repr(o) for o in self.orbital])

@@ -4,12 +4,11 @@ from __future__ import print_function, division
 from numbers import Integral
 
 import numpy as np
-from numpy import pi
 from scipy.misc import factorial
 from scipy.special import lpmv, sph_harm
 from scipy.interpolate import interp1d
 
-from sisl._help import ensure_array, _str
+from ._help import ensure_array, _str
 import sisl._array as _a
 
 
@@ -29,17 +28,17 @@ def xyz2spher(r):
     r : numpy.ndarray
        the radius in spherical coordinates
     theta : numpy.ndarray
-       the angle in the :math:`x-y` plane from :math:`x`
+       angle in the :math:`x-y` plane from :math:`x` (azimuthal)
     phi : numpy.ndarray
-       angle from :math:`z` and down towards the :math:`x-y` plane
+       angle from :math:`z` axis (polar)
     """
     r = ensure_array(r, np.float64)
     r.shape = (-1, 3)
     rr = np.sqrt((r ** 2).sum(1))
-    phi = np.arctan2(r[:, 1], r[:, 0])
-    theta = _a.zerosd(len(rr))
+    theta = np.arctan2(r[:, 1], r[:, 0])
+    phi = _a.zerosd(len(rr))
     idx = rr > 0
-    theta[idx] = np.arccos(r[idx, 2] / rr[idx])
+    phi[idx] = np.arccos(r[idx, 2] / rr[idx])
     return rr, theta, phi
 
 
@@ -59,9 +58,9 @@ def spherical_harm(m, l, theta, phi):
     l : int
        degree of the spherical harmonics
     theta : array_like
-       angle in :math:`x-y` plane (azimuthal angle)
+       angle in :math:`x-y` plane (azimuthal)
     phi : array_like
-       angle from :math:`z` axis and down (polar angle)
+       angle from :math:`z` axis (polar)
     """
     # Probably same as:
     #return (-1) ** m * ( (2*l+1)/(4*pi) * factorial(l-m) / factorial(l+m) ) ** 0.5 \
@@ -151,6 +150,35 @@ class Orbital(object):
 
     def phi(self, r, *args, **kwargs):
         raise NotImplementedError
+
+    def toGrid(self, c=1., precision=0.05, dtype=np.float64):
+        """ Create a Grid with *only* this orbital wavefunction on it
+
+        Parameters
+        ----------
+        c : float or complex, optional
+           coefficient for the orbital
+        precision : float, optional
+           used separation in the `Grid` between voxels (in Ang)
+        dtype : numpy.dtype, optional
+            the used separation in the `Grid` between voxels
+        """
+        R = self.R
+        if R < 0:
+            raise ValueError(self.__class__.__name__ + " was unable to create "
+                             "the orbital grid for plotting, the orbital range is negative.")
+        # Since all these things depend on other elements
+        # we will simply import them here.
+        from .supercell import SuperCell
+        from .geometry import Geometry
+        from .grid import Grid
+        from .atom import Atom
+        sc = SuperCell(R*2, origo=[-R] * 3)
+        g = Geometry([0] * 3, Atom(1, self), sc=sc)
+        n = int(np.rint(2 * R / precision))
+        G = Grid([n] * 3, dtype=dtype, geom=g)
+        G.phi(c)
+        return G
 
     def __getstate__(self):
         """ Return the state of this object """
@@ -341,14 +369,21 @@ class SphericalOrbital(Orbital):
         f : the orbital value at point `r`
         """
         r = ensure_array(r, np.float64)
-        if not is_radius:
-            r.shape = (-1, 3)
-            r = np.sqrt((r ** 2).sum(1))
-        p = _a.zerosd(len(r))
+        if is_radius:
+            s = r.shape
+        else:
+            r = np.sqrt((r ** 2).sum(-1))
+            s = r.shape
+        r.shape = (-1,)
+        n = len(r)
         # Only calculate where it makes sense, all other points are removed and set to zero
         idx = (r <= self.R).nonzero()[0]
+        # Reduce memory immediately
+        r = r[idx]
+        p = _a.zerosd(n)
         if len(idx) > 0:
-            p[idx] = self.f(r[idx])
+            p[idx] = self.f(r)
+        p.shape = s
         return p
 
     def phi(self, r, m=0):
@@ -367,13 +402,23 @@ class SphericalOrbital(Orbital):
         -------
         phi : the orbital value at point `r`
         """
+        r = ensure_array(r, np.float64)
+        s = r.shape[:-1]
         # Convert to spherical coordinates
         r, theta, phi = xyz2spher(r)
+        n = len(r)
         # Only calculate where it makes sense, all other points are removed and set to zero
         idx = (r <= self.R).nonzero()[0]
-        p = _a.zerosd(len(r))
+        # Reduce memory immediately
+        r = r[idx]
+        theta = theta[idx]
+        phi = phi[idx]
+        p = _a.zerosd(n)
         if len(idx) > 0:
-            p[idx] = self.f(r[idx]) * spherical_harm(m, self.l, theta[idx], phi[idx])
+            p[idx] = self.f(r) * spherical_harm(m, self.l, theta, phi)
+            # Reduce memory immediately
+            del r, theta, phi
+        p.shape = s
         return p
 
     def toAtomicOrbital(self, m=None, n=None, Z=1, P=False):
@@ -385,7 +430,7 @@ class SphericalOrbital(Orbital):
         Parameters
         ----------
         m : int or list or None
-           if ``None`` it defaults to -l:l, else only for the requested `m`
+           if ``None`` it defaults to ``-l:l``, else only for the requested `m`
         Z : int, optional
            the specified zeta-shell
         P : bool, optional
