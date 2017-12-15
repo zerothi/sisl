@@ -1075,7 +1075,7 @@ class Atom(with_metaclass(AtomMeta, object)):
         """ Return number of orbitals in this atom """
         return self.no
 
-    def equal(self, other, R=True, phi=False):
+    def equal(self, other, R=True, psi=False):
         """ True if `other` is the same as this atomic specie
 
         Parameters
@@ -1084,15 +1084,15 @@ class Atom(with_metaclass(AtomMeta, object)):
            the other object to check againts
         R : bool, optional
            if True the equality check also checks the orbital radii, else they are not compared
-        phi : bool, optional
-           if True, also check the wave-function component of the orbitals, see `Orbital.phi`
+        psi : bool, optional
+           if True, also check the wave-function component of the orbitals, see `Orbital.psi`
         """
         if not isinstance(other, Atom):
             return False
         same = self.Z == other.Z
         same &= self.no == other.no
         if same and R:
-            same &= all([self.orbital[i].equal(other.orbital[i], phi=phi) for i in range(self.no)])
+            same &= all([self.orbital[i].equal(other.orbital[i], psi=psi) for i in range(self.no)])
         same &= np.isclose(self.mass, other.mass)
         same &= self.tag == other.tag
         return same

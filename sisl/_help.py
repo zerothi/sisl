@@ -44,9 +44,8 @@ def array_fill_repeat(array, size, cls=None):
     if size % len(array) != 0:
         # We do not have it correctly formatted (either an integer
         # repeatable part, full, or a single)
-        raise ValueError(
-            'Repetition of or array is not divisible with actual length. ' +
-            'Hence we cannot create a repeated size.')
+        raise ValueError('Repetition of or array is not divisible with actual length. '
+                         'Hence we cannot create a repeated size.')
     if cls is None:
         if reps > 1:
             return np.tile(array, reps)

@@ -28,6 +28,7 @@ class Grid(SuperCellChild):
     PERIODIC = 1
     NEUMANN = 2
     DIRICHLET = 3
+    OPEN = 4
 
     def __init__(self, shape, bc=None, sc=None, dtype=None, geom=None):
         """ Initialize a `Grid` object.
@@ -39,7 +40,7 @@ class Grid(SuperCellChild):
         shape : list of ints
            the size of each grid dimension
         bc : int, optional
-           the boundary condition (`Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET`)
+           the boundary condition (``Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET/Grid.OPEN``)
         sc : SuperCell or list, optional
            the associated supercell
         """
@@ -69,6 +70,10 @@ class Grid(SuperCellChild):
     def __setitem__(self, key, val):
         """ Updates the grid contained """
         self.grid[key] = val
+
+    def dSuperCell(self):
+        """ Create a supercell with the size of the voxels """
+        return SuperCell(self.dcell)
 
     @property
     def geom(self):
@@ -225,10 +230,9 @@ class Grid(SuperCellChild):
         return dcell
 
     @property
-    def dvol(self):
-        """ Volume of the grids voxel elements
-        """
-        return self.sc.vol / self.size
+    def dvolume(self):
+        """ Volume of the grids voxel elements """
+        return self.sc.volume / self.size
 
     def cross_section(self, idx, axis):
         """ Takes a cross-section of the grid along axis `axis`
@@ -468,8 +472,8 @@ class Grid(SuperCellChild):
             with get_sile(sile, 'w') as fh:
                 fh.write_grid(self, *args, **kwargs)
 
-    def phi(self, v, k=None):
-        """ Add the wave-function (`Orbital.phi`) component of each orbital to the grid
+    def psi(self, v):
+        """ Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
         This routine takes a vector `v` which may be of complex values and calculates the
         real-space wave-function components in the specified grid. The length of `v` should
@@ -481,12 +485,10 @@ class Grid(SuperCellChild):
         ----------
         v : array_like
            the coefficients for all orbitals in the geometry
-        k : (3, )
-           k-point of the coefficients
         """
         v = ensure_array(v, np.float64)
         if len(v) != self.geometry.no:
-            raise ValueError(self.__class__.__name__ + ".phi "
+            raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
 
         dcell = self.dcell
@@ -567,13 +569,12 @@ class Grid(SuperCellChild):
                 idx[1] = idx[1] % self.shape[1]
                 idx[2] = idx[2] % self.shape[2]
 
-                # Evaluate the phi component of the wavefunction
+                # Evaluate the psi component of the wavefunction
                 # and add it directly to the grid
-                self.grid[idx[0], idx[1], idx[2]] += o.phi(R) * v[io]
+                self.grid[idx[0], idx[1], idx[2]] += o.psi(R) * v[io]
 
     def __repr__(self):
         """ Representation of object """
-
         return self.__class__.__name__ + '{{[{} {} {}]}}'.format(*self.shape)
 
     def _check_compatibility(self, other, msg):

@@ -2,6 +2,7 @@ from __future__ import print_function, division
 
 # To check for integers
 from numbers import Integral
+from math import pi
 
 import numpy as np
 from scipy.misc import factorial
@@ -68,6 +69,37 @@ def spherical_harm(m, l, theta, phi):
     return sph_harm(m, l, theta, phi) * (-1) ** m
 
 
+def rspherical_harm(m, l, theta, phi):
+    r""" Calculates the real spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf R\to \{r, \theta, \varphi\}`.
+
+    .. math::
+        Y^m_l(\theta,\varphi) = (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-|m|)!}{(l+|m|)!}}
+             \Re e^{i m \theta} P^{|m|}_l\cos \theta (\cos(\varphi))
+
+    which is the spherical harmonics with the Condon-Shortley phase.
+
+    Parameters
+    ----------
+    m : int
+       order of the spherical harmonics
+    l : int
+       degree of the spherical harmonics
+    theta : array_like
+       angle in :math:`x-y` plane (azimuthal)
+    phi : array_like
+       angle from :math:`z` axis (polar)
+    """
+    # Calculate the associated Legendre polynomial
+    # Since the real spherical harmonics has slight differences
+    # for positive and negative m, we have to implement them individually.
+    P = lpmv(abs(m), l, np.cos(phi)) * (-1) ** m
+    if m == 0:
+        return ((2*l + 1) / (4 * pi)) ** .5 * P
+    elif m < 0:
+        return (2 * (2*l + 1) / (4 * pi) * factorial(l+m) / factorial(l-m)) ** .5 * P * np.sin(-m*theta)
+    return (2 * (2*l + 1) / (4 * pi) * factorial(l-m) / factorial(l+m)) ** .5 * P * np.cos(m*theta)
+
+
 class Orbital(object):
     """ Base class for orbital information. This base class holds nothing but the *tag* and the orbital radius
 
@@ -104,15 +136,15 @@ class Orbital(object):
             return self.__class__.__name__ + '{{R: {0}, tag: {1}}}'.format(self.R, tag)
         return self.__class__.__name__ + '{{R: {0}}}'.format(self.R)
 
-    def equal(self, other, phi=False, radial=False):
-        """ Compare two orbitals by comparing their radius, and possibly the radial and phi functions
+    def equal(self, other, psi=False, radial=False):
+        """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
         Parameters
         ----------
         other : Orbital
            comparison orbital
-        phi : bool, optional
-           also compare that the full phi are the same
+        psi : bool, optional
+           also compare that the full psi are the same
         radial : bool, optional
            also compare that the radial parts are the same
         """
@@ -126,9 +158,9 @@ class Orbital(object):
             # Ensure they also have the same fill-values
             r = np.linspace(0, self.R * 2, 500)
             same &= np.allclose(self.radial(r), other.radial(r))
-        if same and phi:
+        if same and psi:
             xyz = np.linspace(0, self.R * 2, 999).reshape(-1, 3)
-            same &= np.allclose(self.phi(xyz), other.phi(xyz))
+            same &= np.allclose(self.psi(xyz), other.psi(xyz))
         return same and self.tag == other.tag
 
     def copy(self):
@@ -148,7 +180,7 @@ class Orbital(object):
     def radial(self, r, *args, **kwargs):
         raise NotImplementedError
 
-    def phi(self, r, *args, **kwargs):
+    def psi(self, r, *args, **kwargs):
         raise NotImplementedError
 
     def toGrid(self, c=1., precision=0.05, dtype=np.float64):
@@ -177,7 +209,7 @@ class Orbital(object):
         g = Geometry([0] * 3, Atom(1, self), sc=sc)
         n = int(np.rint(2 * R / precision))
         G = Grid([n] * 3, dtype=dtype, geom=g)
-        G.phi(c)
+        G.psi(c)
         return G
 
     def __getstate__(self):
@@ -261,19 +293,19 @@ class SphericalOrbital(Orbital):
         """ Create an exact copy of this object """
         return self.__class__(self.l, self.f, self.tag)
 
-    def equal(self, other, phi=False, radial=False):
-        """ Compare two orbitals by comparing their radius, and possibly the radial and phi functions
+    def equal(self, other, psi=False, radial=False):
+        """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
         Parameters
         ----------
         other : Orbital
            comparison orbital
-        phi : bool, optional
-           also compare that the full phi are the same
+        psi : bool, optional
+           also compare that the full psi are the same
         radial : bool, optional
            also compare that the radial parts are the same
         """
-        same = super(SphericalOrbital, self).equal(other, phi, radial)
+        same = super(SphericalOrbital, self).equal(other, psi, radial)
         if not same:
             return False
         if isinstance(other, SphericalOrbital):
@@ -360,7 +392,7 @@ class SphericalOrbital(Orbital):
         Parameters
         -----------
         r : array_like
-           radius from the orbital origin, for `is_radius=False` `r` must be vectors
+           radius from the orbital origin, for ``is_radius=False`` `r` must be vectors
         is_radius : bool, optional
            whether `r` is a vector or the radius
 
@@ -386,7 +418,7 @@ class SphericalOrbital(Orbital):
         p.shape = s
         return p
 
-    def phi(self, r, m=0):
+    def psi(self, r, m=0):
         r""" Calculate :math:`\phi(\mathbf R)` at a given point (or more points)
 
         The position `r` is a vector from the origin of this orbital.
@@ -400,7 +432,7 @@ class SphericalOrbital(Orbital):
 
         Returns
         -------
-        phi : the orbital value at point `r`
+        psi : the orbital value at point `r`
         """
         r = ensure_array(r, np.float64)
         s = r.shape[:-1]
@@ -415,7 +447,7 @@ class SphericalOrbital(Orbital):
         phi = phi[idx]
         p = _a.zerosd(n)
         if len(idx) > 0:
-            p[idx] = self.f(r) * spherical_harm(m, self.l, theta, phi)
+            p[idx] = self.f(r) * rspherical_harm(m, self.l, theta, phi)
             # Reduce memory immediately
             del r, theta, phi
         p.shape = s
@@ -465,7 +497,7 @@ class AtomicOrbital(Orbital):
     #   Z = zeta shell
     #   P = polarization shell or not
     # orb is the SphericalOrbital class that retains the radial
-    # grid and enables to calculate phi(r)
+    # grid and enables to calculate psi(r)
     __slots__ = ['n', 'l', 'm', 'Z', 'P', 'orb']
 
     def __init__(self, *args, **kwargs):
@@ -606,20 +638,20 @@ class AtomicOrbital(Orbital):
             self.orb = kwargs.get('spherical')
         self.R = self.orb.R
 
-    def equal(self, other, phi=False, radial=False):
-        """ Compare two orbitals by comparing their radius, and possibly the radial and phi functions
+    def equal(self, other, psi=False, radial=False):
+        """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
         Parameters
         ----------
         other : Orbital
            comparison orbital
-        phi : bool, optional
-           also compare that the full phi are the same
+        psi : bool, optional
+           also compare that the full psi are the same
         radial : bool, optional
            also compare that the radial parts are the same
         """
         if isinstance(other, AtomicOrbital):
-            same = self.orb.equal(other.orb, phi, radial)
+            same = self.orb.equal(other.orb, psi, radial)
             same &= self.n == other.n
             same &= self.l == other.l
             same &= self.m == other.m
@@ -669,8 +701,8 @@ class AtomicOrbital(Orbital):
         if tag is None:
             tag = ''
         if len(tag) > 0:
-            return self.__class__.__name__ + '{{{0}, tag: {1},\n  {2}\n}}'.format(self.name(), tag, repr(self.orb))
-        return self.__class__.__name__ + '{{{0},\n  {1}\n}}'.format(self.name(), repr(self.orb))
+            return self.__class__.__name__ + '{{{0}, tag: {1}, {2}}}'.format(self.name(), tag, repr(self.orb))
+        return self.__class__.__name__ + '{{{0}, {1}}}'.format(self.name(), repr(self.orb))
 
     def set_radial(self, *args):
         """ Update the internal radial function used as a :math:`f(|\mathbf r|)`
@@ -688,7 +720,7 @@ class AtomicOrbital(Orbital):
         Parameters
         -----------
         r : array_like
-           radius from the orbital origin, for `is_radius=False` `r` must be vectors
+           radius from the orbital origin, for ``is_radius=False`` `r` must be vectors
         is_radius : bool, optional
            whether `r` is a vector or the radius
 
@@ -698,7 +730,7 @@ class AtomicOrbital(Orbital):
         """
         return self.orb.radial(r, is_radius=is_radius)
 
-    def phi(self, r):
+    def psi(self, r):
         r""" Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
 
         The position `r` is a vector from the origin of this orbital.
@@ -710,6 +742,6 @@ class AtomicOrbital(Orbital):
 
         Returns
         -------
-        phi : the orbital value at point `r`
+        psi : the orbital value at point `r`
         """
-        return self.orb.phi(r, self.m)
+        return self.orb.psi(r, self.m)

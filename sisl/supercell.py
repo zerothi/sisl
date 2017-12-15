@@ -36,7 +36,7 @@ class SuperCell(object):
     """
 
     # We limit the scope of this SuperCell object.
-    __slots__ = ('cell', 'origo', 'vol', 'nsc', 'n_s', '_sc_off', '_isc_off')
+    __slots__ = ('cell', 'origo', 'volume', 'nsc', 'n_s', '_sc_off', '_isc_off')
 
     def __init__(self, cell, nsc=None, origo=None):
         """ Initialize a `SuperCell` object from initial quantities
@@ -66,10 +66,9 @@ class SuperCell(object):
         self.set_nsc(nsc=nsc)
 
     def _update_vol(self):
-        self.vol = np.abs(np.dot(self.cell[0, :],
-                                 np.cross(self.cell[1, :], self.cell[2, :])
-                             )
-                      )
+        self.volume = np.abs(np.dot(self.cell[0, :],
+                                    np.cross(self.cell[1, :], self.cell[2, :])
+        ))
 
     def _fill(self, non_filled, dtype=None):
         """ Return a zero filled array of length 3 """
@@ -865,9 +864,9 @@ class SuperCellChild(object):
     set_sc = set_supercell
 
     @property
-    def vol(self):
+    def volume(self):
         """ Returns the inherent `SuperCell` objects `vol` """
-        return self.sc.vol
+        return self.sc.volume
 
     @property
     def cell(self):

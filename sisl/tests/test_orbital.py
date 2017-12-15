@@ -29,8 +29,8 @@ class Test_orbital(object):
         Orbital(1.).radial(np.arange(10))
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_phi1(self):
-        Orbital(1.).phi(np.arange(10))
+    def test_psi1(self):
+        Orbital(1.).psi(np.arange(10))
 
     def test_scale1(self):
         o = Orbital(1.)
@@ -105,18 +105,26 @@ class Test_sphericalorbital(object):
         assert np.allclose(r0, r)
         assert np.allclose(r1, r)
 
-    def test_phi1(self):
+    def test_psi1(self):
         n = 6
         rf = np.arange(n)
         rf = (rf, rf)
         orb0 = SphericalOrbital(0, rf)
         orb1 = SphericalOrbital(1, rf)
         r = np.linspace(0, n, 333 * 3).reshape(-1, 3)
-        p0 = orb0.phi(r)
-        p1 = orb1.phi(r)
+        p0 = orb0.psi(r)
+        p1 = orb1.psi(r)
         assert not np.allclose(p0, p1)
-        orb1 = SphericalOrbital(0, rf)
-        assert orb0.equal(orb1, radial=True, phi=True)
+        orb0 = SphericalOrbital(1, rf)
+        assert orb0.equal(orb1, radial=True, psi=True)
+
+        for m in range(orb0.l, orb0.l + 1):
+            p0 = orb0.psi(r, -1)
+            p1 = orb1.psi(r, -1)
+            assert np.allclose(p0, p1)
+        p0 = orb0.psi(r, -1)
+        p1 = orb1.psi(r, 1)
+        assert not np.allclose(p0, p1)
 
     def test_same1(self):
         n = 6
