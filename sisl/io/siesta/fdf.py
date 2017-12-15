@@ -10,7 +10,8 @@ from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
-# Import the geometry object
+from .siesta import ncSileSiesta
+from .basis import ionxmlSileSiesta, ionncSileSiesta
 from sisl import Geometry, Atom, SuperCell
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
@@ -472,11 +473,15 @@ class fdfSileSiesta(SileSiesta):
 
         # Read the block (not strictly needed, if so we simply set all atoms to
         # H)
-        f, spcs = self._read_block('ChemicalSpeciesLabel')
-        if not f:
-            f, spcs = self._read_block('Chemical_Species_Label')
+        atom = self.read_basis()
 
-        if f:
+        if len(atom) > 0:
+            atom = [atom[i] for i in species]
+        else:
+            f, spcs = self._read_block('ChemicalSpeciesLabel')
+            if not f:
+                f, spcs = self._read_block('Chemical_Species_Label')
+
             # Initialize number of species to
             # the length of the ChemicalSpeciesLabel block
             if ns == 0:
@@ -488,26 +493,21 @@ class fdfSileSiesta(SileSiesta):
                 l = spc.split()
                 idx = int(l[0]) - 1
                 # Insert the atom
-                sp[idx] = Atom(Z=int(l[1]), tag=l[2])
-
+                sp[idx] = Atom(Z=int(l[1]), tag=l[2].strip())
             if None in sp:
                 idx = sp.index(None) + 1
-                raise ValueError(
-                    ("Could not populate entire species list. "
-                     "Please ensure specie with index {} is present".format(idx)))
+                raise ValueError("Could not populate entire species list. "
+                                 "Please ensure specie with index {} is present".format(idx))
 
             # Create atoms array with species
-            atom = [None] * na
-            for ia in range(na):
-                atom[ia] = sp[species[ia]]
+            atom = [sp[i] for i in species]
 
             if None in atom:
                 idx = atom.index(None) + 1
-                raise ValueError(
-                    ("Could not populate entire atomic list list. "
-                     "Please ensure atom with index {} is present".format(idx)))
+                raise ValueError("Could not populate entire atomic list list. "
+                                 "Please ensure atom with index {} is present".format(idx))
 
-        else:
+        if len(atom) == 0:
             # Default atom (hydrogen)
             atom = Atom(1)
             # Force number of species to 1
@@ -515,6 +515,53 @@ class fdfSileSiesta(SileSiesta):
 
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
+
+    def read_basis(self):
+        """ Read the atomic species and figure out the number of atomic orbitals in their basis
+
+        This will try and read the basis from 3 different instances (following is order of preference):
+
+        1. <systemlabel>.nc
+        2. <>.ion.nc
+        3. <>.ion.xml
+        """
+
+        # First we will try and read from the systemlabel .nc file
+        f = self.get('SystemLabel', 'siesta')
+        try:
+            basis = ncSileSiesta(f + '.nc').read_basis()
+        except:
+            basis = []
+
+        if len(basis) > 0:
+            return basis
+
+        # We couldn't find the siesta.nc file, try ion.nc files
+        f, spcs = self._read_block('ChemicalSpeciesLabel')
+        if not f:
+            f, spcs = self._read_block('Chemical_Species_Label')
+        if not f:
+            # We haven't found the chemical and species label,
+            # so return nothing
+            return []
+
+        # Now spcs contains the block of the chemicalspecieslabel
+        atom = [None] * len(spcs)
+        for spc in spcs:
+            idx, Z, lbl = spc.split()
+            idx = int(idx)
+            Z = int(Z)
+            lbl = lbl.strip()
+
+            # now try and read the basi
+            try:
+                atom[idx] = ionncSileSiesta(lbl + '.ion.nc').read_basis()
+            except:
+                try:
+                    atom[idx] = ionxmlSileSiesta(lbl + '.ion.xml').read_basis()
+                except:
+                    return []
+        return atom
 
     @default_ArgumentParser(description="Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):

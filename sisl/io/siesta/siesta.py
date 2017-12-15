@@ -2,12 +2,14 @@ from __future__ import print_function
 
 import numpy as np
 
+
 # Import sile objects
 from .sile import SileCDFSiesta
 from ..sile import *
 
+from sisl._array import aranged
 from sisl.unit.siesta import unit_convert
-from sisl import Geometry, Atom, SuperCell, Grid
+from sisl import Geometry, Atom, SuperCell, Grid, SphericalOrbital
 from sisl.physics import DensityMatrix
 from sisl.physics import EnergyDensityMatrix
 from sisl.physics import Hamiltonian
@@ -34,6 +36,69 @@ class ncSileSiesta(SileCDFSiesta):
 
         return SuperCell(cell, nsc=nsc)
 
+    def read_basis(self):
+        """ Returns a set of atoms corresponding to the basis-sets in the nc file """
+        if 'BASIS' not in self.groups:
+            return []
+
+        basis = self.groups['BASIS']
+        atom = [None] * len(basis.groups)
+
+        for a_str in basis.groups:
+            a = basis.groups[a_str]
+
+            # Retrieve values
+            orb_l = a.variables['orbnl_l'][:] # angular quantum number
+            orb_n = a.variables['orbnl_n'][:] # principal quantum number
+            orb_z = a.variables['orbnl_z'][:] # zeta
+            orb_P = a.variables['orbnl_ispol'][:] > 0 # polarization shell, or not
+            orb_delta = a.variables['delta'][:] # delta for the functions
+            orb_psi = a.variables['orb'][:, :]
+
+            # Now loop over all orbitals
+            orbital = []
+
+            # Number of basis-orbitals (before m-expansion)
+            no = len(a.dimensions['norbs'])
+
+            # All orbital data
+            for io in range(no):
+
+                n = orb_n[io]
+                l = orb_l[io]
+                z = orb_z[io]
+                P = orb_P[io]
+
+                # Grid spacing in Bohr (conversion is done later
+                # because the normalization is easier)
+                delta = orb_delta[io]
+
+                # Since the readed data has fewer significant digits we
+                # might as well re-create the table of the radial component.
+                r = aranged(orb_psi.shape[1]) * delta
+
+                # To get it per Ang**3
+                # TODO, check that this is correct.
+                # The fact that we have to have it normalized means that we need
+                # to convert psi /sqrt(Bohr**3) -> /sqrt(Ang**3)
+                # \int psi^\dagger psi == 1
+                psi = orb_psi[io, :] * r ** l / Bohr2Ang ** (3./2.)
+
+                # Create the sphericalorbital and then the atomicorbital
+                sorb = SphericalOrbital(l, (r * Bohr2Ang, psi))
+
+                # This will be -l:l (this is the way siesta does it)
+                orbital.extend(sorb.toAtomicOrbital(n=n, Z=z, P=P))
+
+            # Get number of orbitals
+            label = a.Label.strip()
+            Z = int(a.Atomic_number)
+            mass = float(a.Mass)
+
+            i = int(a.ID) - 1
+            atom[i] = Atom(Z, orbital, mass=mass, tag=label)
+        return atom
+
     def read_geometry(self):
         """ Returns Geometry object from a Siesta.nc file
 
@@ -47,27 +112,9 @@ class ncSileSiesta(SileCDFSiesta):
         xyz.shape = (-1, 3)
 
         if 'BASIS' in self.groups:
-            bg = self.groups['BASIS']
-            # We can actually read the exact basis-information
-            b_idx = np.array(bg.variables['basis'][:], np.int32)
-
-            # Get number of different species
-            n_b = len(bg.groups)
-
-            spc = [None] * n_b
-            atm = dict()
-            for basis in bg.groups:
-                # Retrieve index
-                ID = bg.groups[basis].ID
-                atm['Z'] = int(bg.groups[basis].Atomic_number)
-                # We could possibly read in R, however, that is not so easy?
-                atm['mass'] = float(bg.groups[basis].Mass)
-                atm['tag'] = basis
-                atm['orbs'] = int(bg.groups[basis].Number_of_orbitals)
-                spc[ID - 1] = Atom(**atm)
-            atom = [None] * len(xyz)
-            for ia in range(len(xyz)):
-                atom[ia] = spc[b_idx[ia] - 1]
+            basis = self.read_basis()
+            species = self.groups['BASIS'].variables['basis'][:] - 1
+            atom = Atoms([basis[i] for i in species])
         else:
             atom = Atom(1)
 
