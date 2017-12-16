@@ -514,6 +514,7 @@ class AtomicOrbital(Orbital):
         super(AtomicOrbital, self).__init__(0., kwargs.get('tag', None))
         # Ensure args is a list (to be able to pop)
         args = list(args)
+        self.orb = None
 
         # Extract shell information
         n = kwargs.get('n', None)
@@ -561,7 +562,7 @@ class AtomicOrbital(Orbital):
                 l = _l.get(s[0])
 
                 # Get number of zeta shell
-                iZ = s.index('Z')
+                iZ = s.find('Z')
                 if iZ >= 0:
                     # Currently we know that we are limited to 9 zeta shells.
                     # However, for now we assume this is enough (could easily
@@ -579,14 +580,12 @@ class AtomicOrbital(Orbital):
                 #  1. The radial function is passed as two arrays: r, f
                 #  2. The SphericalOrbital-class is passed which already contains
                 #     the relevant information.
+                # Figure out if it is a sphericalorbital
                 if len(args) > 0:
                     if isinstance(args[0], SphericalOrbital):
                         self.orb = args.pop(0)
-                if len(args) > 1:
-                    # It could be r, f
-                    if isinstance(args[0], (list, tuple, np.ndarray)) and \
-                       isinstance(args[1], (list, tuple, np.ndarray)):
-                        self.orb = SphericalOrbital(l, args.pop(0), args.pop(0))
+                    else:
+                        self.orb = SphericalOrbital(l, args.pop(0))
             else:
 
                 # Arguments *have* to be
@@ -614,11 +613,8 @@ class AtomicOrbital(Orbital):
                 if len(args) > 0:
                     if isinstance(args[0], SphericalOrbital):
                         self.orb = args.pop(0)
-                # It could be r, f
-                if len(args) > 1:
-                    if isinstance(args[0], (list, tuple, np.ndarray)) and \
-                       isinstance(args[1], (list, tuple, np.ndarray)):
-                        self.orb = SphericalOrbital(l, args.pop(0), args.pop(0))
+                    else:
+                        self.orb = SphericalOrbital(l, args.pop(0))
 
         # Still if n is None, we assign the default (lowest) quantum number
         if n is None:
@@ -634,8 +630,19 @@ class AtomicOrbital(Orbital):
         if self.l > 4:
             raise ValueError(self.__class__.__name__ + ' does not implement shell h and above!')
 
-        if 'spherical' in kwargs:
-            self.orb = kwargs.get('spherical')
+        s = kwargs.get('spherical', None)
+        if s is None:
+            # Expect the orbital to already be set
+            pass
+        elif isinstance(s, Orbital):
+            self.orb = s
+        else:
+            self.orb = SphericalOrbital(l, s)
+
+        if self.orb is None:
+            raise ValueError(self.__class__.__name__ + " is not initialized with an "
+                             "orbital which contains the radial function.")
+
         self.R = self.orb.R
 
     def equal(self, other, psi=False, radial=False):
@@ -745,3 +752,15 @@ class AtomicOrbital(Orbital):
         psi : the orbital value at point `r`
         """
         return self.orb.psi(r, self.m)
+
+    def __getstate__(self):
+        """ Return the state of this object """
+        # A function is not necessarily pickable, so we store interpolated
+        # data which *should* ensure the correct pickable state (to close agreement)
+        r = np.linspace(0, self.R, 1000)
+        f = self.orb.f(r)
+        return {'name': self.name(), 'r': r, 'f': f, 'tag': self.tag}
+
+    def __setstate__(self, d):
+        """ Re-create the state of this object """
+        self.__init__(d['name'], (d['r'], d['f']), d['tag'])

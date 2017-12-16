@@ -9,6 +9,11 @@ from scipy.interpolate import interp1d
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
 
 
+def r_f(n):
+    r = np.arange(n)
+    return r, r
+
+
 @pytest.mark.orbital
 class Test_orbital(object):
 
@@ -71,9 +76,7 @@ class Test_sphericalorbital(object):
             assert o == o.copy()
 
     def test_basic1(self):
-        n = 6
-        rf = np.arange(n)
-        rf = (rf, rf)
+        rf = r_f(6)
         orb = SphericalOrbital(1, rf)
         repr(orb)
         orb = SphericalOrbital(1, rf, tag='none')
@@ -81,19 +84,15 @@ class Test_sphericalorbital(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_set_radial1(self):
-        n = 6
-        rf = np.arange(n)
-        rf = (rf, rf)
+        rf = r_f(6)
         o = SphericalOrbital(1, rf)
         o.set_radial(1.)
 
     def test_radial1(self):
-        n = 6
-        rf = np.arange(n)
-        rf = (rf, rf)
+        rf = r_f(6)
         orb0 = SphericalOrbital(0, rf)
         orb1 = SphericalOrbital(1, rf)
-        r = np.linspace(0, n, 400)
+        r = np.linspace(0, 6, 400)
         # Note r > n - 1 should be zero, regardless of the fill-value
         r0 = orb0.radial(r)
         r1 = orb1.radial(r)
@@ -101,17 +100,15 @@ class Test_sphericalorbital(object):
         r2 = orb1.radial(rr, is_radius=False)
         assert np.allclose(r0, r1)
         assert np.allclose(r0, r2)
-        r[r >= n - 1] = 0.
+        r[r >= rf[0].max()] = 0.
         assert np.allclose(r0, r)
         assert np.allclose(r1, r)
 
     def test_psi1(self):
-        n = 6
-        rf = np.arange(n)
-        rf = (rf, rf)
+        rf = r_f(6)
         orb0 = SphericalOrbital(0, rf)
         orb1 = SphericalOrbital(1, rf)
-        r = np.linspace(0, n, 333 * 3).reshape(-1, 3)
+        r = np.linspace(0, 6, 333 * 3).reshape(-1, 3)
         p0 = orb0.psi(r)
         p1 = orb1.psi(r)
         assert not np.allclose(p0, p1)
@@ -127,18 +124,14 @@ class Test_sphericalorbital(object):
         assert not np.allclose(p0, p1)
 
     def test_same1(self):
-        n = 6
-        rf = np.arange(n)
-        rf = (rf, rf)
+        rf = r_f(6)
         o0 = SphericalOrbital(0, rf)
         o1 = Orbital(5.)
         assert o0.equal(o1)
         assert not o0.equal(Orbital(3.))
 
     def test_toatomicorbital1(self):
-        n = 6
-        rf = np.arange(n)
-        rf = (rf, rf)
+        rf = r_f(6)
         orb = SphericalOrbital(0, rf)
         ao = orb.toAtomicOrbital()
         assert len(ao) == 1
@@ -175,19 +168,51 @@ class Test_sphericalorbital(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_toatomicorbital2(self):
-        n = 6
-        rf = np.arange(n)
-        rf = (rf, rf)
+        rf = r_f(6)
         orb = SphericalOrbital(1, rf)
         ao = orb.toAtomicOrbital(2)
 
     def test_pickle1(self):
-        n = 6
-        rf = np.arange(n)
-        rf = (rf, rf)
+        rf = r_f(6)
         import pickle as p
         o0 = SphericalOrbital(1, rf)
         o1 = SphericalOrbital(2, rf)
+        p0 = p.dumps(o0)
+        p1 = p.dumps(o1)
+        l0 = p.loads(p0)
+        l1 = p.loads(p1)
+        assert o0 == l0
+        assert o1 == l1
+        assert o0 != l1
+        assert o1 != l0
+
+
+@pytest.mark.orbital
+class Test_atomicorbital(object):
+
+    def test_init1(self):
+        rf = r_f(6)
+        a = []
+        a.append(AtomicOrbital(2, 1, 0, 1, True, rf))
+        a.append(AtomicOrbital(l=1, m=0, Z=1, P=True, spherical=rf))
+        f = interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
+        a.append(AtomicOrbital(l=1, m=0, Z=1, P=True, spherical=f))
+        a.append(AtomicOrbital('pzP', f))
+        a.append(AtomicOrbital('pzP', rf))
+        a.append(AtomicOrbital('2pzP', rf))
+        for i in range(len(a) - 1):
+            for j in range(i+1, len(a)):
+                assert a[i] == a[j] and a[i].equal(a[j], psi=True, radial=True)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_init2(self):
+        AtomicOrbital('pzP')
+
+    def test_pickle1(self):
+        import pickle as p
+        rf = r_f(6)
+        o0 = AtomicOrbital(2, 1, 0, 1, True, rf)
+        o1 = AtomicOrbital(l=1, m=0, Z=1, P=True, spherical=rf)
         p0 = p.dumps(o0)
         p1 = p.dumps(o1)
         l0 = p.loads(p0)
