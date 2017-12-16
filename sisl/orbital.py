@@ -685,7 +685,7 @@ class AtomicOrbital(Orbital):
                 name += {-4: '_{_{xy(x^2-y^2)}}', -3: '_{zy(3x^2-y^2)}', -2: '_{z^2xy}', -1: '_{z^3y}', 0: '_{z^4}',
                          1: '_{z^3x}', 2: '_{z^2(x^2-y^2)}', 3: '_{zx(x^2-3y^2)}', 4: '_{x^4+y^4}'}.get(self.m)
             if self.P:
-                return name + r'\zeta^{}\mathrm{P}'.format(self.Z)
+                return name + r'\zeta^{}\mathrm{{P}}'.format(self.Z)
             return name + r'\zeta^{}'.format(self.Z)
         name = '{0}{1}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
         if self.l == 1:

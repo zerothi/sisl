@@ -208,6 +208,18 @@ class Test_atomicorbital(object):
     def test_init2(self):
         AtomicOrbital('pzP')
 
+    def test_init3(self):
+        rf = r_f(6)
+        for l in range(5):
+            a = AtomicOrbital(l=l, m=0, spherical=rf)
+            a.name()
+            a.name(True)
+            repr(a)
+            a = AtomicOrbital(l=l, m=0, P=True, spherical=rf, tag='hello')
+            a.name()
+            a.name(True)
+            repr(a)
+
     def test_pickle1(self):
         import pickle as p
         rf = r_f(6)
