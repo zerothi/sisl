@@ -155,10 +155,7 @@ class XSFSile(Sile):
         self._write(' ' + name.replace(' ', '_') + '\n')
         _v3 = (('{:' + fmt + '} ') * 3).strip() + '\n'
 
-        for i, grid in enumerate(args):
-            name = kwargs.get('grid' + str(i), str(i))
-            self._write(' BEGIN_DATAGRID_3D_{}\n'.format(name))
-
+        def write_cell(grid):
             # Now write the grid
             self._write('  {} {} {}\n'.format(*grid.shape))
             self._write('  ' + _v3.format(*grid.origo))
@@ -166,12 +163,34 @@ class XSFSile(Sile):
             self._write('  ' + _v3.format(*grid.cell[1, :]))
             self._write('  ' + _v3.format(*grid.cell[2, :]))
 
+        for i, grid in enumerate(args):
+            is_complex = np.iscomplexobj(grid.grid)
+
+            name = kwargs.get('grid' + str(i), str(i))
+            if is_complex:
+                self._write(' BEGIN_DATAGRID_3D_real_{}\n'.format(name))
+            else:
+                self._write(' BEGIN_DATAGRID_3D_{}\n'.format(name))
+
+            write_cell(grid)
+
             # for z
             #   for y
             #     for x
             #       write...
             _fmt = '{:' + fmt + '}\n'
-            for x in np.nditer(np.asarray(grid.grid.T, order='C').reshape(-1), flags=['external_loop', 'buffered'],
+            for x in np.nditer(np.asarray(grid.grid.real.T, order='C').reshape(-1), flags=['external_loop', 'buffered'],
+                               op_flags=[['readonly']], order='C', buffersize=buffersize):
+                self._write((_fmt * x.shape[0]).format(*x.tolist()))
+
+            self._write(' END_DATAGRID_3D\n')
+
+            # Skip if not complex
+            if not is_complex:
+                continue
+            self._write(' BEGIN_DATAGRID_3D_imag_{}\n'.format(name))
+            write_cell(grid)
+            for x in np.nditer(np.asarray(grid.grid.imag.T, order='C').reshape(-1), flags=['external_loop', 'buffered'],
                                op_flags=[['readonly']], order='C', buffersize=buffersize):
                 self._write((_fmt * x.shape[0]).format(*x.tolist()))
 

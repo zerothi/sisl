@@ -31,12 +31,12 @@ class CUBESile(Sile):
         if size is None:
             size = np.ones([3], np.int32)
         if origo is None:
-            origo = np.zeros([3], np.float64)
+            origo = geom.origo[:]
 
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
         # Add #-of atoms and origo
-        self._write(_fmt.format(len(geom), *origo * Ang2Bohr))
+        self._write(_fmt.format(len(geom), *(origo * Ang2Bohr)))
 
         # Write the cell and voxels
         dcell = np.empty([3, 3], np.float64)

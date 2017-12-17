@@ -53,8 +53,8 @@ class TestGrid(object):
     def test_dcell(self, setup):
         assert np.all(setup.g.dcell*setup.g.cell >= 0)
 
-    def test_dvol(self, setup):
-        assert setup.g.dvol > 0
+    def test_dvolume(self, setup):
+        assert setup.g.dvolume > 0
 
     def test_shape(self, setup):
         assert np.all(setup.g.shape == setup.g.grid.shape)

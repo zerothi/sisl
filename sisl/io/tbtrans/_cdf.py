@@ -101,14 +101,14 @@ class _ncSileTBtrans(SileCDFTBtrans):
             # Check that all atoms have the correct number of orbitals.
             # Otherwise we will correct them
             for i in range(len(atms)):
-                if atms[i].orbs != nos[i]:
-                    atms[i] = Atom(Z=atms[i].Z, orbs=nos[i], tag=atms[i].tag)
+                if atms[i].no != nos[i]:
+                    atms[i] = Atom(atms[i].Z, [-1] *nos[i], tag=atms[i].tag)
 
         else:
             # Default to Hydrogen atom with nos[ia] orbitals
             # This may be counterintuitive but there is no storage of the
             # actual species
-            atms = [Atom(Z='H', orbs=o) for o in nos]
+            atms = [Atom('H', [-1] * o) for o in nos]
 
         # Create and return geometry object
         geom = Geometry(xyz, atms, sc=sc)

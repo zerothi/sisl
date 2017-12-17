@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
-from numbers import Integral
+import warnings
+from numbers import Integral, Real
 
 import numpy as np
 
@@ -27,6 +28,7 @@ class Grid(SuperCellChild):
     PERIODIC = 1
     NEUMANN = 2
     DIRICHLET = 3
+    OPEN = 4
 
     def __init__(self, shape, bc=None, sc=None, dtype=None, geom=None):
         """ Initialize a `Grid` object.
@@ -35,10 +37,10 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        shape : list of ints
-           the size of each grid dimension
+        shape : list of ints or float
+           the size of each grid dimension, if a float it is the grid-spacing in Ang
         bc : int, optional
-           the boundary condition (`Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET`)
+           the boundary condition (``Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET/Grid.OPEN``)
         sc : SuperCell or list, optional
            the associated supercell
         """
@@ -47,14 +49,18 @@ class Grid(SuperCellChild):
 
         self.set_supercell(sc)
 
+        # Create the atomic structure in the grid, if possible
+        self.set_geometry(geom)
+
+        if isinstance(shape, Real):
+            d = (self.cell ** 2).sum(1) ** 0.5
+            shape = list(map(int, np.rint(d / shape)))
+
         # Create the grid
         self.set_grid(shape, dtype=dtype)
 
         # Create the grid boundary conditions
         self.set_bc(bc)
-
-        # Create the atomic structure in the grid, if possible
-        self.set_geometry(geom)
 
         # If the user sets the super-cell, that has precedence.
         if sc is not None:
@@ -69,7 +75,15 @@ class Grid(SuperCellChild):
         """ Updates the grid contained """
         self.grid[key] = val
 
-    def set_geometry(self, geom):
+    def dSuperCell(self):
+        """ Create a supercell with the size of the voxels """
+        return SuperCell(self.dcell)
+
+    @property
+    def geom(self):
+        return self.geometry
+
+    def set_geometry(self, geometry):
         """ Sets the `Geometry` for the grid.
 
         Setting the `Geometry` for the grid is a possibility
@@ -77,12 +91,12 @@ class Grid(SuperCellChild):
 
         It is not a necessary entity.
         """
-        if geom is None:
+        if geometry is None:
             # Fake geometry
             self.set_geometry(Geometry([0, 0, 0], Atom['H'], sc=self.sc))
         else:
-            self.geom = geom
-            self.set_sc(geom.sc)
+            self.geometry = geometry
+            self.set_sc(geometry.sc)
     set_geom = set_geometry
 
     def interp(self, shape, method='linear', **kwargs):
@@ -220,10 +234,9 @@ class Grid(SuperCellChild):
         return dcell
 
     @property
-    def dvol(self):
-        """ Volume of the grids voxel elements
-        """
-        return self.sc.vol / self.size
+    def dvolume(self):
+        """ Volume of the grids voxel elements """
+        return self.sc.volume / self.size
 
     def cross_section(self, idx, axis):
         """ Takes a cross-section of the grid along axis `axis`
@@ -463,9 +476,114 @@ class Grid(SuperCellChild):
             with get_sile(sile, 'w') as fh:
                 fh.write_grid(self, *args, **kwargs)
 
+    def psi(self, v):
+        """ Add the wave-function (`Orbital.psi`) component of each orbital to the grid
+
+        This routine takes a vector `v` which may be of complex values and calculates the
+        real-space wave-function components in the specified grid. The length of `v` should
+        correspond to the number of orbitals in the geometry associated with this grid.
+
+        This is an *in-place* operation that *adds* to the current values in the grid.
+
+        Parameters
+        ----------
+        v : array_like
+           the coefficients for all orbitals in the geometry
+        """
+        v = ensure_array(v, np.float64)
+        if len(v) != self.geometry.no:
+            raise ValueError(self.__class__.__name__ + ".psi "
+                             "requires the coefficient to have length as the number of orbitals.")
+
+        dcell = self.dcell
+        da = dcell[:, 0].reshape(1, 1, 1, -1)
+        db = dcell[:, 1].reshape(1, 1, 1, -1)
+        dc = dcell[:, 2].reshape(1, 1, 1, -1)
+        def idx2R(idx, offset):
+            R = _a.emptyd([idx[0].size, idx[1].size, idx[2].size, 3])
+            R[..., 0] = (idx[0][:, :, :, None] * da).sum(-1) + da.sum() * 0.5 - offset[0]
+            R[..., 1] = (idx[1][:, :, :, None] * db).sum(-1) + db.sum() * 0.5 - offset[1]
+            R[..., 2] = (idx[2][:, :, :, None] * dc).sum(-1) + dc.sum() * 0.5 - offset[2]
+            return R
+
+        def min_max(idxm, idxM, idx):
+            idxm[0] = min(idxm[0], idx[0])
+            idxM[0] = max(idxM[0], idx[0])
+            idxm[1] = min(idxm[1], idx[1])
+            idxM[1] = max(idxM[1], idx[1])
+            idxm[2] = min(idxm[2], idx[2])
+            idxM[2] = max(idxM[2], idx[2])
+
+        # Loop over all atoms
+        io = -1
+        for ia in self.geometry:
+            # The coordinates are relative to origo, so we need to shift
+            xyz = self.geometry.xyz[ia, :] - self.origo
+            IDX = self.index(xyz)
+
+            # Loop on orbitals on this atom
+            for o in self.geometry.atom[ia]:
+                io += 1
+                # Plotting this orbital now
+                R = o.R
+                if R < 0.:
+                    warnings.warn("Orbital '{}' does not have a wave-function, skipping orbital.")
+                    # Skip this one.
+                    continue
+
+                idxm = IDX.copy()
+                idxM = IDX.copy()
+
+                # Figure out the number of indices in each direction
+                xyzR = xyz.copy()
+
+                xyzR[0] += R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[1] += R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[2] += R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[0] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[1] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[2] -= R
+
+                xyzR[0] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[1] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[2] -= R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[0] += R
+                min_max(idxm, idxM, self.index(xyzR))
+                xyzR[1] += R
+                min_max(idxm, idxM, self.index(xyzR))
+
+                for i in (0, 1, 2):
+                    if self.bc[i] != self.PERIODIC:
+                        idxm[i] = max(0, idxm[i])
+                        idxM[i] = min(self.shape[i]-1, idxM[i])
+
+                # Now idxM/m contains max/min indices used
+                # Convert to a xyz-coordinate
+                idx = np.ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
+
+                # Extract the vectors for this (note that we are subtracting xyz
+                # to concentrate the vector on the basis-orbital)
+                R = idx2R(idx, xyz)
+
+                # Wrap-around for continuous grids
+                idx[0] = idx[0] % self.shape[0]
+                idx[1] = idx[1] % self.shape[1]
+                idx[2] = idx[2] % self.shape[2]
+
+                # Evaluate the psi component of the wavefunction
+                # and add it directly to the grid
+                self.grid[idx[0], idx[1], idx[2]] += o.psi(R) * v[io]
+
     def __repr__(self):
         """ Representation of object """
-
         return self.__class__.__name__ + '{{[{} {} {}]}}'.format(*self.shape)
 
     def _check_compatibility(self, other, msg):

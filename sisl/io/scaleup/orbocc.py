@@ -21,7 +21,7 @@ class orboccSileScaleUp(SileScaleUp):
         species = self.readline().split()[:ns] # species
         orbs = self.readline().split()[:ns] # orbs per species
         # Create list of species with correct # of orbitals per specie
-        species = [Atom(s, orbs=int(o)) for s, o in zip(species, orbs)]
+        species = [Atom(s, [-1] * int(o)) for s, o in zip(species, orbs)]
         return Atoms(species)
 
 add_sile('orbocc', orboccSileScaleUp, case=False, gzip=True)
