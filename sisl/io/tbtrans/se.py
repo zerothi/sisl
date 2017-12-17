@@ -165,19 +165,19 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             se_pvt = in1d(pvt, se_pvt, assume_unique=True).nonzero()[0]
         return se_pvt
 
-    def self_energy(self, elec, k, E, sort=False):
+    def self_energy(self, elec, E, k, sort=False):
         """ Return the self-energy from the electrode `elec`
 
         Parameters
         ----------
         elec : str or int
            the corresponding electrode to return the self-energy from
-        k : array_like or int
-           k-point to retrieve, if an integer it is the k-index in the file
         E : float or int
            energy to retrieve the self-energy at, if a floating point the closest
            energy value will be found and returned, if an integer it will correspond
            to the exact index
+        k : array_like or int
+           k-point to retrieve, if an integer it is the k-index in the file
         sort : bool, optional
            if ``True`` the returned self-energy will be sorted (equivalent to pivoting the self-energy)
         """
