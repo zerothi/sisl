@@ -17,6 +17,9 @@ Generic classes
    :toctree:
 
    PeriodicTable
+   Orbital
+   SphericalOrbital
+   AtomicOrbital
    Atom
    Atoms
    Geometry
