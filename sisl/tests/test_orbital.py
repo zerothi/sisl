@@ -224,7 +224,7 @@ class Test_atomicorbital(object):
         import pickle as p
         rf = r_f(6)
         o0 = AtomicOrbital(2, 1, 0, 1, True, rf)
-        o1 = AtomicOrbital(l=1, m=0, Z=1, P=True, spherical=rf)
+        o1 = AtomicOrbital(l=1, m=0, Z=1, P=False, spherical=rf)
         p0 = p.dumps(o0)
         p1 = p.dumps(o1)
         l0 = p.loads(p0)
