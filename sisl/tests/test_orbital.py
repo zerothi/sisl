@@ -186,6 +186,10 @@ class Test_sphericalorbital(object):
         assert o0 != l1
         assert o1 != l0
 
+    def test_togrid1(self):
+        o = SphericalOrbital(1, r_f(6))
+        o.toGrid()
+
 
 @pytest.mark.orbital
 class Test_atomicorbital(object):
@@ -219,6 +223,10 @@ class Test_atomicorbital(object):
             a.name()
             a.name(True)
             repr(a)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_init4(self):
+        AtomicOrbital(5, 5, 0)
 
     def test_pickle1(self):
         import pickle as p
