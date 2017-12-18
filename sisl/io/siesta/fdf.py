@@ -10,6 +10,7 @@ from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
+from .binaries import TSHSSileSiesta
 from .siesta import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from sisl import Geometry, Atom, SuperCell
@@ -474,40 +475,8 @@ class fdfSileSiesta(SileSiesta):
         # Read the block (not strictly needed, if so we simply set all atoms to
         # H)
         atom = self.read_basis()
-
-        if len(atom) > 0:
-            atom = [atom[i] for i in species]
-        else:
-            f, spcs = self._read_block('ChemicalSpeciesLabel')
-            if not f:
-                f, spcs = self._read_block('Chemical_Species_Label')
-
-            # Initialize number of species to
-            # the length of the ChemicalSpeciesLabel block
-            if ns == 0:
-                ns = len(spcs)
-            # Pre-allocate the species array
-            sp = [None] * ns
-            for spc in spcs:
-                #  index Z pseudo-tag
-                l = spc.split()
-                idx = int(l[0]) - 1
-                # Insert the atom
-                sp[idx] = Atom(Z=int(l[1]), tag=l[2].strip())
-            if None in sp:
-                idx = sp.index(None) + 1
-                raise ValueError("Could not populate entire species list. "
-                                 "Please ensure specie with index {} is present".format(idx))
-
-            # Create atoms array with species
-            atom = [sp[i] for i in species]
-
-            if None in atom:
-                idx = atom.index(None) + 1
-                raise ValueError("Could not populate entire atomic list list. "
-                                 "Please ensure atom with index {} is present".format(idx))
-
         if len(atom) == 0:
+            warn.warn('The block ChemicalSpeciesLabel does not exist, cannot determine the basis.')
             # Default atom (hydrogen)
             atom = Atom(1)
             # Force number of species to 1
@@ -525,16 +494,13 @@ class fdfSileSiesta(SileSiesta):
         2. <>.ion.nc
         3. <>.ion.xml
         """
-
         # First we will try and read from the systemlabel .nc file
         f = self.get('SystemLabel', 'siesta')
         try:
             basis = ncSileSiesta(f + '.nc').read_basis()
-        except:
-            basis = []
-
-        if len(basis) > 0:
             return basis
+        except:
+            pass
 
         # We couldn't find the siesta.nc file, try ion.nc files
         f, spcs = self._read_block('ChemicalSpeciesLabel')
@@ -549,19 +515,37 @@ class fdfSileSiesta(SileSiesta):
         atom = [None] * len(spcs)
         for spc in spcs:
             idx, Z, lbl = spc.split()
-            idx = int(idx)
+            idx = int(idx) - 1 # F-indexing
             Z = int(Z)
             lbl = lbl.strip()
 
-            # now try and read the basi
-            try:
+            # now try and read the basis
+            if isfile(lbl + '.ion.nc'):
                 atom[idx] = ionncSileSiesta(lbl + '.ion.nc').read_basis()
-            except:
-                try:
-                    atom[idx] = ionxmlSileSiesta(lbl + '.ion.xml').read_basis()
-                except:
-                    return []
+            elif isfile(lbl + '.ion.xml'):
+                atom[idx] = ionxmlSileSiesta(lbl + '.ion.xml').read_basis()
+            else:
+                # default the atom
+                atom[idx] = Atom(Z=Z, tag=lbl)
         return atom
+
+    def read_hamiltonian(self, *args, **kwargs):
+        """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files (in that order) """
+        sys = self.get('SystemLabel', 'siesta')
+
+        if isfile(sys + '.nc'):
+            return ncSileSiesta(sys + '.nc').read_hamiltonian()
+        elif isfile(sys + '.TSHS'):
+            H = TSHSSileSiesta(sys + '.TSHS').read_hamiltonian()
+            geom = self.read_geometry()
+            for a, s in geom.atom.iter(True):
+                if len(s) == 0:
+                    continue
+                # Only replace if the number of orbitals is correct
+                if a.no == H.geom.atom[s[0]].no:
+                    H.geom.atom.replace(H.geom.atom[s[0]], a)
+            return H
+        return None
 
     @default_ArgumentParser(description="Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):

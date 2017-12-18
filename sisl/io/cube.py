@@ -99,7 +99,6 @@ class CUBESile(Sile):
 
         If ``na=True`` it will return a tuple (na,SuperCell)
         """
-
         self.readline()  # header 1
         self.readline()  # header 2
         origo = self.readline().split() # origo

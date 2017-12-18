@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 # We need this for python3 support PY3
+import warnings as warn
 from six import with_metaclass
 
 from numbers import Integral, Real
@@ -1530,6 +1531,9 @@ class Atoms(object):
 
         This is an *in-place* operation.
 
+        If the two atoms does not have the same number of orbitals a warning will
+        be raised.
+
         Parameters
         ----------
         atom_from : Atom
@@ -1547,6 +1551,8 @@ class Atoms(object):
 
         for i, atom in enumerate(self.atom):
             if atom == atom_from:
+                if atom.no != atom_to.no:
+                    warn.warn('Replacing atom {} to {} with a different number of orbitals!'.format(atom, atom_to))
                 self._atom[i] = atom_to
 
     def hassame(self, other, R=True):

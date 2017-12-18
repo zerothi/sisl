@@ -16,18 +16,24 @@ import sisl._array as _a
 __all__ = ['Orbital', 'SphericalOrbital', 'AtomicOrbital']
 
 
-def xyz2spher(r):
+def xyz_spher_psi(r, maxR):
     r""" Transfer a vector to spherical coordinates
 
     Parameters
     ----------
     r : array_like
        the cartesian vectors
+    maxR : float
+       cutoff of the spherical coordinate calculations
 
     Returns
     -------
+    n : int
+       number of total points
+    idx : numpy.ndarray
+       indices of points with ``r <= maxR``
     r : numpy.ndarray
-       the radius in spherical coordinates
+       radius in spherical coordinates
     theta : numpy.ndarray
        angle in the :math:`x-y` plane from :math:`x` (azimuthal)
     phi : numpy.ndarray
@@ -35,12 +41,17 @@ def xyz2spher(r):
     """
     r = ensure_array(r, np.float64)
     r.shape = (-1, 3)
+    n = len(r)
     rr = np.sqrt((r ** 2).sum(1))
+    idx = (rr <= maxR).nonzero()[0]
+    # Only calculate where we are interested
+    r = r[idx, :]
+    rr = rr[idx]
     theta = np.arctan2(r[:, 1], r[:, 0])
-    phi = _a.zerosd(len(rr))
-    idx = rr > 0
-    phi[idx] = np.arccos(r[idx, 2] / rr[idx])
-    return rr, theta, phi
+    phi = _a.zerosd(len(idx))
+    idx2 = rr > 0
+    phi[idx2] = np.arccos(r[idx2, 2] / rr[idx2])
+    return n, idx, rr, theta, phi
 
 
 def spherical_harm(m, l, theta, phi):
@@ -96,7 +107,7 @@ def rspherical_harm(m, l, theta, phi):
     if m == 0:
         return ((2*l + 1) / (4 * pi)) ** .5 * P
     elif m < 0:
-        return (2 * (2*l + 1) / (4 * pi) * factorial(l+m) / factorial(l-m)) ** .5 * P * np.sin(-m*theta)
+        return (2 * (2*l + 1) / (4 * pi) * factorial(l-m) / factorial(l+m)) ** .5 * P * np.sin(-m*theta)
     return (2 * (2*l + 1) / (4 * pi) * factorial(l-m) / factorial(l+m)) ** .5 * P * np.cos(m*theta)
 
 
@@ -440,19 +451,12 @@ class SphericalOrbital(Orbital):
         r = ensure_array(r, np.float64)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        r, theta, phi = xyz2spher(r)
-        n = len(r)
-        # Only calculate where it makes sense, all other points are removed and set to zero
-        idx = (r <= self.R).nonzero()[0]
-        # Reduce memory immediately
-        r = r[idx]
-        theta = theta[idx]
-        phi = phi[idx]
+        n, idx, r, theta, phi = xyz_spher_psi(r, self.R)
         p = _a.zerosd(n)
         if len(idx) > 0:
             p[idx] = self.f(r) * rspherical_harm(m, self.l, theta, phi)
             # Reduce memory immediately
-            del r, theta, phi
+            del idx, r, theta, phi
         p.shape = s
         return p
 

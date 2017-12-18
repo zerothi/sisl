@@ -26,6 +26,7 @@ __all__ += [
 
 # Decorators or sile-specific functions
 __all__ += [
+    'isfile',
     'Sile_fh_open',
     'sile_raise_write',
     'sile_raise_read']

@@ -99,6 +99,16 @@ class Grid(SuperCellChild):
             self.set_sc(geometry.sc)
     set_geom = set_geometry
 
+    def fill(self, val):
+        """ Fill the grid with this value
+
+        Parameters
+        ----------
+        val : numpy.dtype
+           all grid-points will have this value after execution
+        """
+        self.grid[...] = val
+
     def interp(self, shape, method='linear', **kwargs):
         """ Returns an interpolated version of the grid
 
@@ -476,7 +486,7 @@ class Grid(SuperCellChild):
             with get_sile(sile, 'w') as fh:
                 fh.write_grid(self, *args, **kwargs)
 
-    def psi(self, v):
+    def psi(self, v, k=(0., 0., 0.), isc=(0, 0, 0)):
         """ Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
         This routine takes a vector `v` which may be of complex values and calculates the
@@ -489,11 +499,24 @@ class Grid(SuperCellChild):
         ----------
         v : array_like
            the coefficients for all orbitals in the geometry
+        k : array_like, optional
+           k-point associated with the coefficients
+        isc : array_like, optional
+           which supercell index to plot if indices are ``None`` a summation of all
+           orbitals in the primary unit-cell will be performed.
         """
         v = ensure_array(v, np.float64)
         if len(v) != self.geometry.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
+
+        k = ensure_array(k, np.float64)
+        if any(k != 0.):
+            raise NotImplementedError('Currently k-points are not available')
+
+        isc = ensure_array(isc, np.float64)
+        if any(isc != 0):
+            raise NotImplementedError('Currently non-primary unit-cells are not available')
 
         dcell = self.dcell
         da = dcell[:, 0].reshape(1, 1, 1, -1)
@@ -527,7 +550,7 @@ class Grid(SuperCellChild):
                 # Plotting this orbital now
                 R = o.R
                 if R < 0.:
-                    warnings.warn("Orbital '{}' does not have a wave-function, skipping orbital.")
+                    warnings.warn("Orbital '{}' does not have a wave-function, skipping orbital.".format(o))
                     # Skip this one.
                     continue
 
@@ -561,9 +584,8 @@ class Grid(SuperCellChild):
                 min_max(idxm, idxM, self.index(xyzR))
 
                 for i in (0, 1, 2):
-                    if self.bc[i] != self.PERIODIC:
-                        idxm[i] = max(0, idxm[i])
-                        idxM[i] = min(self.shape[i]-1, idxM[i])
+                    idxm[i] = max(0, idxm[i])
+                    idxM[i] = min(self.shape[i]-1, idxM[i])
 
                 # Now idxM/m contains max/min indices used
                 # Convert to a xyz-coordinate
@@ -572,11 +594,6 @@ class Grid(SuperCellChild):
                 # Extract the vectors for this (note that we are subtracting xyz
                 # to concentrate the vector on the basis-orbital)
                 R = idx2R(idx, xyz)
-
-                # Wrap-around for continuous grids
-                idx[0] = idx[0] % self.shape[0]
-                idx[1] = idx[1] % self.shape[1]
-                idx[2] = idx[2] % self.shape[2]
 
                 # Evaluate the psi component of the wavefunction
                 # and add it directly to the grid
