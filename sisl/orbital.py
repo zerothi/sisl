@@ -183,7 +183,7 @@ class Orbital(object):
     def psi(self, r, *args, **kwargs):
         raise NotImplementedError
 
-    def toGrid(self, c=1., precision=0.05, dtype=np.float64):
+    def toGrid(self, c=1., precision=0.05, R=None, dtype=np.float64):
         """ Create a Grid with *only* this orbital wavefunction on it
 
         Parameters
@@ -192,10 +192,13 @@ class Orbital(object):
            coefficient for the orbital
         precision : float, optional
            used separation in the `Grid` between voxels (in Ang)
+        R : float, optional
+            box size of the grid (default to the orbital range)
         dtype : numpy.dtype, optional
             the used separation in the `Grid` between voxels
         """
-        R = self.R
+        if R is None:
+            R = self.R
         if R < 0:
             raise ValueError(self.__class__.__name__ + " was unable to create "
                              "the orbital grid for plotting, the orbital range is negative.")

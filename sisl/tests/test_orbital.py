@@ -189,6 +189,12 @@ class Test_sphericalorbital(object):
     def test_togrid1(self):
         o = SphericalOrbital(1, r_f(6))
         o.toGrid()
+        o.toGrid(R=10)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_togrid2(self):
+        o = SphericalOrbital(1, r_f(6))
+        o.toGrid(R=-1)
 
 
 @pytest.mark.orbital

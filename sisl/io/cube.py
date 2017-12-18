@@ -53,7 +53,18 @@ class CUBESile(Sile):
 
     @Sile_fh_open
     def write_grid(self, grid, fmt='.5e', *args, **kwargs):
-        """ Writes the geometry to the contained file """
+        """ Writes the geometry to the contained file
+
+        Parameters
+        ----------
+        grid : Grid
+           the grid to be written in the CUBE file
+        fmt : str, optional
+           format used for precision output
+        imag : bool, optional
+           write the imaginary part of the grid, default to only writing the
+           real part
+        """
         # Check that we can write to the file
         sile_raise_write(self)
 
@@ -62,15 +73,22 @@ class CUBESile(Sile):
 
         buffersize = kwargs.get('buffersize', min(6144, grid.grid.size))
 
+        imag = kwargs.get('imag', False)
+
         # A CUBE file contains grid-points aligned like this:
         # for x
         #   for y
         #     for z
         #       write...
         _fmt = '{:' + fmt + '}\n'
-        for z in np.nditer(np.asarray(grid.grid, order='C').reshape(-1), flags=['external_loop', 'buffered'],
-                           op_flags=[['readonly']], order='C', buffersize=buffersize):
-            self._write((_fmt * z.shape[0]).format(*z.tolist()))
+        if imag:
+            for z in np.nditer(np.asarray(grid.grid.imag, order='C').reshape(-1), flags=['external_loop', 'buffered'],
+                               op_flags=[['readonly']], order='C', buffersize=buffersize):
+                self._write((_fmt * z.shape[0]).format(*z.tolist()))
+        else:
+            for z in np.nditer(np.asarray(grid.grid.real, order='C').reshape(-1), flags=['external_loop', 'buffered'],
+                               op_flags=[['readonly']], order='C', buffersize=buffersize):
+                self._write((_fmt * z.shape[0]).format(*z.tolist()))
 
         # Add a finishing line to ensure empty ending
         self._write('\n')
