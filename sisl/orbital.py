@@ -36,8 +36,8 @@ def xyz_spher_psi(r, maxR):
        radius in spherical coordinates
     theta : numpy.ndarray
        angle in the :math:`x-y` plane from :math:`x` (azimuthal)
-    phi : numpy.ndarray
-       angle from :math:`z` axis (polar)
+    cos_phi : numpy.ndarray
+       cosine to the angle from :math:`z` axis (polar)
     """
     r = ensure_array(r, np.float64)
     r.shape = (-1, 3)
@@ -48,10 +48,10 @@ def xyz_spher_psi(r, maxR):
     r = r[idx, :]
     rr = rr[idx]
     theta = np.arctan2(r[:, 1], r[:, 0])
-    phi = _a.zerosd(len(idx))
+    cos_phi = _a.zerosd(len(idx))
     idx2 = rr > 0
-    phi[idx2] = np.arccos(r[idx2, 2] / rr[idx2])
-    return n, idx, rr, theta, phi
+    cos_phi[idx2] = r[idx2, 2] / rr[idx2]
+    return n, idx, rr, theta, cos_phi
 
 
 def spherical_harm(m, l, theta, phi):
@@ -80,14 +80,17 @@ def spherical_harm(m, l, theta, phi):
     return sph_harm(m, l, theta, phi) * (-1) ** m
 
 
-def rspherical_harm(m, l, theta, phi):
+def rspherical_harm(m, l, theta, cos_phi):
     r""" Calculates the real spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf R\to \{r, \theta, \varphi\}`.
 
-    .. math::
-        Y^m_l(\theta,\varphi) = (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-|m|)!}{(l+|m|)!}}
-             \Re e^{i m \theta} P^{|m|}_l\cos \theta (\cos(\varphi))
+    These real spherical harmonics are via these equations:
 
-    which is the spherical harmonics with the Condon-Shortley phase.
+    .. math::
+        Y^m_l(\theta,\varphi) &= -(-1)^m\sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \sin(m \theta) & m < 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{\frac{2l+1}{4\pi}} P^{m}_l (\cos(\varphi)) & m = 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \cos(m \theta) & m > 0
 
     Parameters
     ----------
@@ -97,17 +100,17 @@ def rspherical_harm(m, l, theta, phi):
        degree of the spherical harmonics
     theta : array_like
        angle in :math:`x-y` plane (azimuthal)
-    phi : array_like
-       angle from :math:`z` axis (polar)
+    cos_phi : array_like
+       cos(phi) to angle from :math:`z` axis (polar)
     """
     # Calculate the associated Legendre polynomial
     # Since the real spherical harmonics has slight differences
     # for positive and negative m, we have to implement them individually.
-    P = lpmv(abs(m), l, np.cos(phi)) * (-1) ** m
+    P = lpmv(m, l, cos_phi)
     if m == 0:
         return ((2*l + 1) / (4 * pi)) ** .5 * P
     elif m < 0:
-        return (2 * (2*l + 1) / (4 * pi) * factorial(l-m) / factorial(l+m)) ** .5 * P * np.sin(-m*theta)
+        return -(2 * (2*l + 1) / (4 * pi) * factorial(l-m) / factorial(l+m)) ** .5 * P * np.sin(m*theta) * (-1) ** m
     return (2 * (2*l + 1) / (4 * pi) * factorial(l-m) / factorial(l+m)) ** .5 * P * np.cos(m*theta)
 
 
