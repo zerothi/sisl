@@ -196,14 +196,22 @@ class SuperCell(object):
         for i, sc in enumerate(self.sc_off):
             yield i, sc
 
-    def copy(self, cell=None):
+    def copy(self, cell=None, origo=None):
+        """ Returns a copy of the object with possibly some quantities overwritten
+
+        Parameters
+        ----------
+        cell : array_like
+           the new cell parameters
+        origo : array_like
+           the new origo
         """
-        Returns a copy of the object.
-        """
+        if origo is None:
+            origo = self.origo.copy()
         if cell is None:
-            copy = self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc), origo=np.copy(self.origo))
+            copy = self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc), origo=origo)
         else:
-            copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc), origo=np.copy(self.origo))
+            copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc), origo=origo)
         # Ensure that the correct super-cell information gets carried through
         if not np.all(copy.sc_off == self.sc_off):
             copy.sc_off = self.sc_off

@@ -106,6 +106,9 @@ def rspherical_harm(m, l, theta, cos_phi):
     # Calculate the associated Legendre polynomial
     # Since the real spherical harmonics has slight differences
     # for positive and negative m, we have to implement them individually.
+    # Currently this is a re-write of what Inelastica does and a combination of
+    # learned lessons from Denchar.
+    # As such the choice of these real spherical harmonics is that of Siesta.
     P = lpmv(m, l, cos_phi)
     if m == 0:
         return ((2*l + 1) / (4 * pi)) ** .5 * P

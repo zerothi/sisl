@@ -390,7 +390,6 @@ class fdfSileSiesta(SileSiesta):
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
-
         f, lc = self._read('LatticeConstant')
         if not f:
             raise ValueError('Could not find LatticeConstant in fdf file.')
@@ -516,7 +515,7 @@ class fdfSileSiesta(SileSiesta):
         # Now spcs contains the block of the chemicalspecieslabel
         atom = [None] * len(spcs)
         for spc in spcs:
-            idx, Z, lbl = spc.split()
+            idx, Z, lbl = spc.split()[:3]
             idx = int(idx) - 1 # F-indexing
             Z = int(Z)
             lbl = lbl.strip()
@@ -527,7 +526,7 @@ class fdfSileSiesta(SileSiesta):
             elif isfile(lbl + '.ion.xml'):
                 atom[idx] = ionxmlSileSiesta(lbl + '.ion.xml').read_basis()
             else:
-                # default the atom
+                # default the atom to not have a range, and no associated orbitals
                 atom[idx] = Atom(Z=Z, tag=lbl)
         return atom
 
@@ -547,7 +546,7 @@ class fdfSileSiesta(SileSiesta):
                 if a.no == H.geom.atom[s[0]].no:
                     H.geom.atom.replace(H.geom.atom[s[0]], a)
             return H
-        return None
+        raise ValueError("Could not find the Hamiltonian from the *.nc, nor the *.TSHS file.")
 
     @default_ArgumentParser(description="Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):
