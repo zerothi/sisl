@@ -481,6 +481,8 @@ class fdfSileSiesta(SileSiesta):
             atom = Atom(1)
             # Force number of species to 1
             ns = 1
+        else:
+            atom = [atom[i] for i in species]
 
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
