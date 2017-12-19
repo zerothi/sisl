@@ -18,7 +18,7 @@ def setup():
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
             self.g = Grid([10, 10, 100], sc=self.sc)
-            self.g[:, :, :] = 2.
+            self.g.fill(2.)
     return t()
 
 
@@ -94,7 +94,7 @@ class TestGrid(object):
 
     def test_iadd1(self):
         g = Grid([10, 10, 10])
-        g[:] = 1
+        g.fill(1)
         old = g.copy()
         g += g
         g -= old

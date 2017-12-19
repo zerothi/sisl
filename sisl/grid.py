@@ -4,6 +4,8 @@ import warnings
 from numbers import Integral, Real
 
 import numpy as np
+from numpy import int32, float64
+from numpy import dot, sqrt, square, rint, ogrid
 
 from ._help import ensure_array
 import sisl._array as _a
@@ -236,12 +238,8 @@ class Grid(SuperCellChild):
     def dcell(self):
         """ Returns the delta-cell """
         # Calculate the grid-distribution
-        dcell = np.empty([3, 3], np.float64)
-        shape = self.shape
-        dcell[0, :] = self.cell[0, :] / shape[0]
-        dcell[1, :] = self.cell[1, :] / shape[1]
-        dcell[2, :] = self.cell[2, :] / shape[2]
-        return dcell
+        shape = ensure_array(self.shape).reshape(1, -3)
+        return self.cell / shape
 
     @property
     def dvolume(self):
@@ -411,31 +409,33 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         coord : array_like or float
-            the coordinate of the axis
+            the coordinate of the axis. If a float is passed `axis` is
+            also required in which case it corresponds to the length along the
+            lattice vector corresponding to `axis`
         axis : int
             the axis direction of the index
         """
+        coord = ensure_array(coord, float64)
+        rcell = self.rcell / (2 * np.pi)
+
         # if the axis is none, we do this for all axes
         if axis is None:
-            rcell = self.rcell / (2. * np.pi)
-            # Loop over each direction
-            idx = _a.emptyi([3])
-            for i in [0, 1, 2]:
-                # get the coordinate along the direction of the cell vector
-                c = np.dot(rcell[i, :], coord) * self.cell[i, :]
-                # Calculate the index corresponding to this placement
-                idx[i] = self.index(c, i)
-            return idx
+            if len(coord) != 3:
+                raise ValueError(self.__class__.__name__ + '.index requires the '
+                                 'coordinate to be 3 values.')
+            # dot(rcell / 2pi, coord) is the fraction in the
+            # cell. So * l / (l / self.shape) will
+            # give the float of dcell lattice vectors (where l is the length of
+            # each lattice vector)
+            return rint(dot(rcell, coord) * self.shape).astype(int32)
 
-        # Ensure a 1D array
-        ac = np.atleast_1d(np.asarray(coord, np.float64))
-
-        # Calculate the index of the coord in the cell
-        dax = self.dcell[axis, :]
+        if len(coord) == 1:
+            c = (self.dcell[axis, :] ** 2).sum() ** 0.5
+            return int(round(coord / c))
 
         # Calculate how many indices are required to fulfil
         # the correct line cut
-        return int(np.rint((np.sum(ac ** 2) / np.sum(dax ** 2)) ** .5))
+        return int((rcell[axis, :] * coord).sum() * self.shape[axis])
 
     def append(self, other, axis):
         """ Appends other `Grid` to this grid along axis
@@ -516,27 +516,22 @@ class Grid(SuperCellChild):
             periodic = [periodic] * 3
 
         dcell = self.dcell
-        da = dcell[:, 0].reshape(1, 1, 1, -1)
-        db = dcell[:, 1].reshape(1, 1, 1, -1)
-        dc = dcell[:, 2].reshape(1, 1, 1, -1)
-        dA = da.sum() * 0.5
-        dB = db.sum() * 0.5
-        dC = dc.sum() * 0.5
+        da = dcell[:, 0].sum()
+        db = dcell[:, 1].sum()
+        dc = dcell[:, 2].sum()
+        dA = da * 0.5
+        dB = db * 0.5
+        dC = dc * 0.5
 
-        rc = self.rcell / (2. * np.pi) * self.cell
+        rc = self.rcell / (2. * np.pi) * ensure_array(self.shape).reshape(1, -1)
         def index(coord):
-            # Loop over each direction
-            idx = _a.emptyi([3])
-            for i in [0, 1, 2]:
-                # Calculate the index corresponding to this placement
-                idx[i] = int(np.rint((((rc[i, :] * coord) ** 2).sum() / (dcell[i, :] ** 2).sum()) ** .5))
-            return idx
+            return rint(dot(rc, coord)).astype(int32)
 
         def idx2R(ix, iy, iz, offset):
             R = _a.emptyd([ix.size, iy.size, iz.size, 3])
-            R[..., 0] = (ix[:, :, :, None] * da).sum(-1) + dA - offset[0]
-            R[..., 1] = (iy[:, :, :, None] * db).sum(-1) + dB - offset[1]
-            R[..., 2] = (iz[:, :, :, None] * dc).sum(-1) + dC - offset[2]
+            R[..., 0] = (dA - offset[0]) + ix * da
+            R[..., 1] = (dB - offset[1]) + iy * db
+            R[..., 2] = (dC - offset[2]) + iz * dc
             return R
 
         def min_max(idxm, idxM, idx):
@@ -617,7 +612,7 @@ class Grid(SuperCellChild):
 
                 # Now idxM/m contains max/min indices used
                 # Convert to a xyz-coordinate
-                ix, iy, iz = np.ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
+                ix, iy, iz = ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
 
                 if periodic[0]:
                     ix %= self.shape[0]
