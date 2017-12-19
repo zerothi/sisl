@@ -77,10 +77,6 @@ class Grid(SuperCellChild):
         """ Updates the grid contained """
         self.grid[key] = val
 
-    def dSuperCell(self):
-        """ Create a supercell with the size of the voxels """
-        return SuperCell(self.dcell)
-
     @property
     def geom(self):
         return self.geometry
