@@ -1998,7 +1998,7 @@ class Geometry(SuperCellChild):
                     idx = idx[ix]
                     dxa = dxa[ix, :]
         else:
-            ix = log_and.reduce(fabs(dxa[:, :]) <= max_R, axis=1)
+            ix = log_and.reduce(fabs(dxa) <= max_R, axis=1)
 
             if idx is None:
                 # This is because of the pre-check of the
