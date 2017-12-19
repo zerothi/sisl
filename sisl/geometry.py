@@ -8,6 +8,7 @@ from math import acos
 from itertools import product
 
 import numpy as np
+from numpy import square, sqrt
 
 import sisl._plot as plt
 import sisl._array as _a
@@ -291,7 +292,7 @@ class Geometry(SuperCellChild):
         if len(R.shape) == 1:
             return (R[0] ** 2. + R[1] ** 2 + R[2] ** 2) ** .5
 
-        return np.sqrt(np.sum(R ** 2, axis=1))
+        return sqrt(square(R).sum(1))
 
     def Rij(self, ia, ja):
         r""" Vector between atom `ia` and `ja`, atoms can be in super-cell indices
@@ -1166,7 +1167,7 @@ class Geometry(SuperCellChild):
             xi -= self.axyz(ref)[None, :]
         else:
             xi -= ensure_array(ref, np.float64)[None, :]
-        nx = (xi ** 2).sum(axis=1) ** .5
+        nx = sqrt(square(xi).sum(1))
         ang = np.where(nx > 1e-6, np.arccos((xi * dir).sum(axis=1) / nx), 0.)
         if rad:
             return ang
@@ -1841,7 +1842,7 @@ class Geometry(SuperCellChild):
 
         # Calculate distance
         if ret_rij:
-            d = np.sum((xa - off[None, :]) ** 2, axis=1) ** .5
+            d = sqrt(square(xa - off[None, :]).sum(1))
 
         # Create the initial lists that we will build up
         # Then finally, we will return the reversed lists
@@ -2043,11 +2044,11 @@ class Geometry(SuperCellChild):
         # After having reduced the dxa array, we may then
         # take the sqrt
         max_R = max_R * max_R
-        xaR = dxa[:, 0]**2 + dxa[:, 1]**2 + dxa[:, 2]**2
+        xaR = square(dxa).sum(1)
         ix = (xaR <= max_R).nonzero()[0]
 
         # Reduce search space and correct distances
-        d = xaR[ix] ** .5
+        d = sqrt(xaR[ix])
         if ret_xyz:
             xa = dxa[ix, :] + off[None, :]
         del xaR, dxa  # just because these arrays could be very big...
@@ -2716,7 +2717,7 @@ class Geometry(SuperCellChild):
                     o = self.cell[0, :] * ii + \
                         self.cell[1, :] * jj + \
                         self.cell[2, :] * kk
-                    maxR = max(maxR, np.sum((off + o) ** 2) ** 0.5)
+                    maxR = max(maxR, square(off + o).sum() ** 0.5)
 
             if R > maxR:
                 R = maxR
@@ -3103,7 +3104,7 @@ class Geometry(SuperCellChild):
                 if hasattr(ns, '_vector'):
                     v = getattr(ns, '_vector')
                     if getattr(ns, '_vector_scale', True):
-                        v /= np.max((v[:, 0]**2 + v[:, 1]**2 + v[:, 2]**2) ** .5)
+                        v /= np.max(sqrt(square(v).sum(1)))
                     kwargs['data'] = v
                 ns._geometry.write(value[0], **kwargs)
                 # Issue to the namespace that the geometry has been written, at least once.

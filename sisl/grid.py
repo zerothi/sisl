@@ -415,7 +415,6 @@ class Grid(SuperCellChild):
         axis : int
             the axis direction of the index
         """
-
         # if the axis is none, we do this for all axes
         if axis is None:
             rcell = self.rcell / (2. * np.pi)
@@ -486,7 +485,7 @@ class Grid(SuperCellChild):
             with get_sile(sile, 'w') as fh:
                 fh.write_grid(self, *args, **kwargs)
 
-    def psi(self, v, k=(0., 0., 0.), isc=(0, 0, 0)):
+    def psi(self, v, k=(0., 0., 0.), periodic=True):
         """ Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
         This routine takes a vector `v` which may be of complex values and calculates the
@@ -501,9 +500,8 @@ class Grid(SuperCellChild):
            the coefficients for all orbitals in the geometry
         k : array_like, optional
            k-point associated with the coefficients
-        isc : array_like, optional
-           which supercell index to plot if indices are ``None`` a summation of all
-           orbitals in the primary unit-cell will be performed.
+        periodic : bool or array_like, optional
+           whether grid points are wrapped around
         """
         v = ensure_array(v, np.float64)
         if len(v) != self.geometry.no:
@@ -514,35 +512,53 @@ class Grid(SuperCellChild):
         if any(k != 0.):
             raise NotImplementedError('Currently k-points are not available')
 
-        isc = ensure_array(isc, np.float64)
-        if any(isc != 0):
-            raise NotImplementedError('Currently non-primary unit-cells are not available')
+        if isinstance(periodic, bool):
+            periodic = [periodic] * 3
 
         dcell = self.dcell
         da = dcell[:, 0].reshape(1, 1, 1, -1)
         db = dcell[:, 1].reshape(1, 1, 1, -1)
         dc = dcell[:, 2].reshape(1, 1, 1, -1)
-        def idx2R(idx, offset):
-            R = _a.emptyd([idx[0].size, idx[1].size, idx[2].size, 3])
-            R[..., 0] = (idx[0][:, :, :, None] * da).sum(-1) + da.sum() * 0.5 - offset[0]
-            R[..., 1] = (idx[1][:, :, :, None] * db).sum(-1) + db.sum() * 0.5 - offset[1]
-            R[..., 2] = (idx[2][:, :, :, None] * dc).sum(-1) + dc.sum() * 0.5 - offset[2]
+        dA = da.sum() * 0.5
+        dB = db.sum() * 0.5
+        dC = dc.sum() * 0.5
+
+        rc = self.rcell / (2. * np.pi) * self.cell
+        def index(coord):
+            # Loop over each direction
+            idx = _a.emptyi([3])
+            for i in [0, 1, 2]:
+                # Calculate the index corresponding to this placement
+                idx[i] = int(np.rint((((rc[i, :] * coord) ** 2).sum() / (dcell[i, :] ** 2).sum()) ** .5))
+            return idx
+
+        def idx2R(ix, iy, iz, offset):
+            R = _a.emptyd([ix.size, iy.size, iz.size, 3])
+            R[..., 0] = (ix[:, :, :, None] * da).sum(-1) + dA - offset[0]
+            R[..., 1] = (iy[:, :, :, None] * db).sum(-1) + dB - offset[1]
+            R[..., 2] = (iz[:, :, :, None] * dc).sum(-1) + dC - offset[2]
             return R
 
         def min_max(idxm, idxM, idx):
-            idxm[0] = min(idxm[0], idx[0])
-            idxM[0] = max(idxM[0], idx[0])
-            idxm[1] = min(idxm[1], idx[1])
-            idxM[1] = max(idxM[1], idx[1])
-            idxm[2] = min(idxm[2], idx[2])
-            idxM[2] = max(idxM[2], idx[2])
+            if idxm[0] > idx[0]:
+                idxm[0] = idx[0]
+            if idxM[0] < idx[0]:
+                idxM[0] = idx[0]
+            if idxm[1] > idx[1]:
+                idxm[1] = idx[1]
+            if idxM[1] < idx[1]:
+                idxM[1] = idx[1]
+            if idxm[2] > idx[2]:
+                idxm[2] = idx[2]
+            if idxM[2] < idx[2]:
+                idxM[2] = idx[2]
 
         # Loop over all atoms
         io = -1
         for ia in self.geometry:
             # The coordinates are relative to origo, so we need to shift
             xyz = self.geometry.xyz[ia, :] - self.origo
-            IDX = self.index(xyz)
+            IDX = index(xyz)
 
             # Loop on orbitals on this atom
             for o in self.geometry.atom[ia]:
@@ -561,43 +577,58 @@ class Grid(SuperCellChild):
                 xyzR = xyz.copy()
 
                 xyzR[0] += R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[1] += R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[2] += R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[0] -= R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[1] -= R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[2] -= R
 
                 xyzR[0] -= R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[1] -= R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[2] -= R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[0] += R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
                 xyzR[1] += R
-                min_max(idxm, idxM, self.index(xyzR))
+                min_max(idxm, idxM, index(xyzR))
 
-                for i in (0, 1, 2):
-                    idxm[i] = max(0, idxm[i])
-                    idxM[i] = min(self.shape[i]-1, idxM[i])
+                if not periodic[0]:
+                    if idxm[0] < 0:
+                        idxm[0] = 0
+                    elif idxM[0] >= self.shape[0]:
+                        idxM[0] = self.shape[0] - 1
+                if not periodic[1]:
+                    if idxm[1] < 0:
+                        idxm[1] = 0
+                    elif idxM[1] >= self.shape[1]:
+                        idxM[1] = self.shape[1] - 1
+                if not periodic[2]:
+                    if idxm[2] < 0:
+                        idxm[2] = 0
+                    elif idxM[2] >= self.shape[2]:
+                        idxM[2] = self.shape[2] - 1
 
                 # Now idxM/m contains max/min indices used
                 # Convert to a xyz-coordinate
-                idx = np.ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
+                ix, iy, iz = np.ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
 
-                # Extract the vectors for this (note that we are subtracting xyz
-                # to concentrate the vector on the basis-orbital)
-                R = idx2R(idx, xyz)
+                if periodic[0]:
+                    ix %= self.shape[0]
+                if periodic[1]:
+                    iy %= self.shape[1]
+                if periodic[2]:
+                    iz %= self.shape[2]
 
                 # Evaluate the psi component of the wavefunction
                 # and add it directly to the grid
-                self.grid[idx[0], idx[1], idx[2]] += o.psi(R) * v[io]
+                self.grid[ix, iy, iz] += o.psi(idx2R(ix, iy, iz, xyz)) * v[io]
 
     def __repr__(self):
         """ Representation of object """

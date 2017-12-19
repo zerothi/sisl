@@ -3,9 +3,12 @@ from __future__ import print_function, division
 # To check for integers
 from numbers import Integral
 from math import pi
+from math import sqrt as msqrt
+from math import factorial as fact
 
 import numpy as np
-from scipy.misc import factorial
+from numpy import cos, sin, arctan2
+from numpy import take, sqrt, square
 from scipy.special import lpmv, sph_harm
 from scipy.interpolate import interp1d
 
@@ -16,7 +19,7 @@ import sisl._array as _a
 __all__ = ['Orbital', 'SphericalOrbital', 'AtomicOrbital']
 
 
-def xyz_spher_psi(r, maxR):
+def xyz_spher_psi(r, maxR, theta=True):
     r""" Transfer a vector to spherical coordinates
 
     Parameters
@@ -25,6 +28,8 @@ def xyz_spher_psi(r, maxR):
        the cartesian vectors
     maxR : float
        cutoff of the spherical coordinate calculations
+    theta : bool, optional
+       if ``True`` also calculate the theta angle and return it
 
     Returns
     -------
@@ -36,21 +41,25 @@ def xyz_spher_psi(r, maxR):
        radius in spherical coordinates
     theta : numpy.ndarray
        angle in the :math:`x-y` plane from :math:`x` (azimuthal)
+       Only returned if input `theta` is ``True``
     cos_phi : numpy.ndarray
        cosine to the angle from :math:`z` axis (polar)
     """
     r = ensure_array(r, np.float64)
     r.shape = (-1, 3)
     n = len(r)
-    rr = np.sqrt((r ** 2).sum(1))
-    idx = (rr <= maxR).nonzero()[0]
-    # Only calculate where we are interested
-    r = r[idx, :]
-    rr = rr[idx]
-    theta = np.arctan2(r[:, 1], r[:, 0])
-    cos_phi = _a.zerosd(len(idx))
-    idx2 = rr > 0
-    cos_phi[idx2] = r[idx2, 2] / rr[idx2]
+    rr = square(r).sum(1)
+    idx = (rr <= maxR ** 2).nonzero()[0]
+    r = take(r, idx, 0)
+    rr = sqrt(take(rr, idx))
+    if theta:
+        theta = arctan2(r[:, 1], r[:, 0])
+    else:
+        theta = None
+    cos_phi = r[:, 2] / rr
+    # Typically there will be few rr==0. values, so no need to
+    # create indices
+    cos_phi[rr == 0.] = 0.
     return n, idx, rr, theta, cos_phi
 
 
@@ -78,6 +87,9 @@ def spherical_harm(m, l, theta, phi):
     #return (-1) ** m * ( (2*l+1)/(4*pi) * factorial(l-m) / factorial(l+m) ) ** 0.5 \
     #    * lpmv(m, l, np.cos(theta)) * np.exp(1j * m * phi)
     return sph_harm(m, l, theta, phi) * (-1) ** m
+
+
+_pi4 = 4 * pi
 
 
 def rspherical_harm(m, l, theta, cos_phi):
@@ -109,12 +121,11 @@ def rspherical_harm(m, l, theta, cos_phi):
     # Currently this is a re-write of what Inelastica does and a combination of
     # learned lessons from Denchar.
     # As such the choice of these real spherical harmonics is that of Siesta.
-    P = lpmv(m, l, cos_phi)
     if m == 0:
-        return ((2*l + 1) / (4 * pi)) ** .5 * P
+        return msqrt((2*l + 1)/_pi4) * lpmv(m, l, cos_phi)
     elif m < 0:
-        return -(2 * (2*l + 1) / (4 * pi) * factorial(l-m) / factorial(l+m)) ** .5 * P * np.sin(m*theta) * (-1) ** m
-    return (2 * (2*l + 1) / (4 * pi) * factorial(l-m) / factorial(l+m)) ** .5 * P * np.cos(m*theta)
+        return -msqrt(2*(2*l + 1)/_pi4 * fact(l-m)/fact(l+m)) * lpmv(m, l, cos_phi) * sin(m*theta) * (-1) ** m
+    return msqrt(2*(2*l + 1)/_pi4 * fact(l-m)/fact(l+m)) * lpmv(m, l, cos_phi) * cos(m*theta)
 
 
 class Orbital(object):
@@ -358,7 +369,7 @@ class SphericalOrbital(Orbital):
             # 50 Ang (is this not fine? ;))
             # Precision of 0.05 A
             r = np.linspace(0.05, 50, 1000)
-            f = self.f(r) ** 2
+            f = square(self.f(r))
             # Find maximum R and focus around this point
             idx = (f > 0).nonzero()[0]
             if len(idx) > 0:
@@ -367,7 +378,7 @@ class SphericalOrbital(Orbital):
                 self.R = r[idx]
                 # This should give us a precision of 0.0001 A
                 r = np.linspace(r[idx]-0.025+0.0001, r[idx]+0.025, 500)
-                f = self.f(r) ** 2
+                f = square(self.f(r))
                 # Find minimum R and focus around this point
                 idx = (f > 0).nonzero()[0]
                 if len(idx) > 0:
@@ -424,14 +435,14 @@ class SphericalOrbital(Orbital):
         if is_radius:
             s = r.shape
         else:
-            r = np.sqrt((r ** 2).sum(-1))
+            r = sqrt(square(r).sum(-1))
             s = r.shape
         r.shape = (-1,)
         n = len(r)
         # Only calculate where it makes sense, all other points are removed and set to zero
         idx = (r <= self.R).nonzero()[0]
         # Reduce memory immediately
-        r = r[idx]
+        r = take(r, idx)
         p = _a.zerosd(n)
         if len(idx) > 0:
             p[idx] = self.f(r)
@@ -457,7 +468,7 @@ class SphericalOrbital(Orbital):
         r = ensure_array(r, np.float64)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        n, idx, r, theta, phi = xyz_spher_psi(r, self.R)
+        n, idx, r, theta, phi = xyz_spher_psi(r, self.R, theta=m != 0)
         p = _a.zerosd(n)
         if len(idx) > 0:
             p[idx] = self.f(r) * rspherical_harm(m, self.l, theta, phi)
