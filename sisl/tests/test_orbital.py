@@ -230,6 +230,27 @@ class Test_atomicorbital(object):
             a.name(True)
             repr(a)
 
+    def test_radial1(self):
+        rf = r_f(6)
+        r = np.linspace(0, 6, 100)
+        for l in range(5):
+            so = SphericalOrbital(l, rf)
+            sor = so.radial(r)
+            for m in range(-l, l+1):
+                o = AtomicOrbital(l=l, m=m, spherical=rf)
+                assert np.allclose(sor, o.radial(r))
+                o.set_radial(rf[0], rf[1])
+                assert np.allclose(sor, o.radial(r))
+
+    def test_phi1(self):
+        rf = r_f(6)
+        r = np.linspace(0, 6, 999).reshape(-1, 3)
+        for l in range(5):
+            so = SphericalOrbital(l, rf)
+            for m in range(-l, l+1):
+                o = AtomicOrbital(l=l, m=m, spherical=rf)
+                assert np.allclose(so.psi(r, m), o.psi(r))
+
     @pytest.mark.xfail(raises=ValueError)
     def test_init4(self):
         AtomicOrbital(5, 5, 0)

@@ -431,7 +431,7 @@ class Grid(SuperCellChild):
 
         if len(coord) == 1:
             c = (self.dcell[axis, :] ** 2).sum() ** 0.5
-            return int(round(coord / c))
+            return int(round(coord[0] / c))
 
         # Calculate how many indices are required to fulfil
         # the correct line cut
@@ -524,8 +524,6 @@ class Grid(SuperCellChild):
         dC = dc * 0.5
 
         rc = self.rcell / (2. * np.pi) * ensure_array(self.shape).reshape(1, -1)
-        def index(coord):
-            return rint(dot(rc, coord)).astype(int32)
 
         def idx2R(ix, iy, iz, offset):
             R = _a.emptyd([ix.size, iy.size, iz.size, 3])
@@ -553,7 +551,7 @@ class Grid(SuperCellChild):
         for ia in self.geometry:
             # The coordinates are relative to origo, so we need to shift
             xyz = self.geometry.xyz[ia, :] - self.origo
-            IDX = index(xyz)
+            IDX = rint(dot(rc, xyz)).astype(int32)
 
             # Loop on orbitals on this atom
             for o in self.geometry.atom[ia]:
@@ -572,27 +570,27 @@ class Grid(SuperCellChild):
                 xyzR = xyz.copy()
 
                 xyzR[0] += R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[1] += R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[2] += R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[0] -= R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[1] -= R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[2] -= R
 
                 xyzR[0] -= R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[1] -= R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[2] -= R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[0] += R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
                 xyzR[1] += R
-                min_max(idxm, idxM, index(xyzR))
+                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
 
                 if not periodic[0]:
                     if idxm[0] < 0:
