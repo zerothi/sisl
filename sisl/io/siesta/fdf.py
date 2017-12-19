@@ -496,7 +496,7 @@ class fdfSileSiesta(SileSiesta):
         3. <>.ion.xml
         """
         # First we will try and read from the systemlabel .nc file
-        f = self.get('SystemLabel', 'siesta')
+        f = self.get('SystemLabel', default='siesta')
         try:
             basis = ncSileSiesta(f + '.nc').read_basis()
             return basis
@@ -532,7 +532,7 @@ class fdfSileSiesta(SileSiesta):
 
     def read_hamiltonian(self, *args, **kwargs):
         """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files (in that order) """
-        sys = self.get('SystemLabel', 'siesta')
+        sys = self.get('SystemLabel', default='siesta')
 
         if isfile(sys + '.nc'):
             return ncSileSiesta(sys + '.nc').read_hamiltonian()
