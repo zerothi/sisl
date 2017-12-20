@@ -4,13 +4,14 @@ import warnings
 from numbers import Integral, Real
 
 import numpy as np
-from numpy import int32, float64
-from numpy import dot, sqrt, square, rint, ogrid
+from numpy import int32, float64, take
+from numpy import dot, sqrt, square, floor, ogrid
 
 from ._help import ensure_array
 import sisl._array as _a
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction
+from .orbital import cart2spher
 from .supercell import SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
@@ -423,15 +424,15 @@ class Grid(SuperCellChild):
             # cell. So * l / (l / self.shape) will
             # give the float of dcell lattice vectors (where l is the length of
             # each lattice vector)
-            return rint(dot(rcell, coord) * self.shape).astype(int32)
+            return floor(dot(rcell, coord) * self.shape).astype(int32)
 
         if len(coord) == 1:
             c = (self.dcell[axis, :] ** 2).sum() ** 0.5
-            return int(round(coord[0] / c))
+            return int(floor(coord[0] / c))
 
         # Calculate how many indices are required to fulfil
         # the correct line cut
-        return int((rcell[axis, :] * coord).sum() * self.shape[axis])
+        return int(floor((rcell[axis, :] * coord).sum() * self.shape[axis]))
 
     def append(self, other, axis):
         """ Appends other `Grid` to this grid along axis
@@ -481,7 +482,7 @@ class Grid(SuperCellChild):
             with get_sile(sile, 'w') as fh:
                 fh.write_grid(self, *args, **kwargs)
 
-    def psi(self, v, k=(0., 0., 0.), periodic=True):
+    def psi(self, v, k=(0., 0., 0.)):
         """ Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
         This routine takes a vector `v` which may be of complex values and calculates the
@@ -496,8 +497,6 @@ class Grid(SuperCellChild):
            the coefficients for all orbitals in the geometry
         k : array_like, optional
            k-point associated with the coefficients
-        periodic : bool or array_like, optional
-           whether grid points are wrapped around
         """
         v = ensure_array(v, np.float64)
         if len(v) != self.geometry.no:
@@ -505,27 +504,20 @@ class Grid(SuperCellChild):
                              "requires the coefficient to have length as the number of orbitals.")
 
         k = ensure_array(k, np.float64)
-        if any(k != 0.):
-            raise NotImplementedError('Currently k-points are not available')
+        kl = (k ** 2).sum() ** 0.5
+        has_k = kl > 0.000001
 
-        if isinstance(periodic, bool):
-            periodic = [periodic] * 3
-
+        # Extract sub variables used throughout the loop
         dcell = self.dcell
-        da = dcell[:, 0].sum()
-        db = dcell[:, 1].sum()
-        dc = dcell[:, 2].sum()
-        dA = da * 0.5
-        dB = db * 0.5
-        dC = dc * 0.5
-
+        dD = dcell.sum(0) * 0.5
         rc = self.rcell / (2. * np.pi) * ensure_array(self.shape).reshape(1, -1)
 
-        def idx2R(ix, iy, iz, offset):
+        def idx2R(ix, iy, iz, offset, dc):
+            """ Calculate the vector from (ix, iy, iz) * dcell - offset """
             R = _a.emptyd([ix.size, iy.size, iz.size, 3])
-            R[..., 0] = (dA - offset[0]) + ix * da
-            R[..., 1] = (dB - offset[1]) + iy * db
-            R[..., 2] = (dC - offset[2]) + iz * dc
+            R[:, :, :, 0] = ix * dc[0, 0] + iy * dc[1, 0] + iz * dc[2, 0] - offset[0]
+            R[:, :, :, 1] = ix * dc[0, 1] + iy * dc[1, 1] + iz * dc[2, 1] - offset[1]
+            R[:, :, :, 2] = ix * dc[0, 2] + iy * dc[1, 2] + iz * dc[2, 2] - offset[2]
             return R
 
         def min_max(idxm, idxM, idx):
@@ -542,82 +534,154 @@ class Grid(SuperCellChild):
             if idxM[2] < idx[2]:
                 idxM[2] = idx[2]
 
-        # Loop over all atoms
-        io = -1
-        for ia in self.geometry:
-            # The coordinates are relative to origo, so we need to shift
-            xyz = self.geometry.xyz[ia, :] - self.origo
-            IDX = rint(dot(rc, xyz)).astype(int32)
+        # Easier and shorter
+        geom = self.geometry
 
-            # Loop on orbitals on this atom
-            for o in self.geometry.atom[ia]:
-                io += 1
-                # Plotting this orbital now
-                R = o.R
-                if R < 0.:
-                    warnings.warn("Orbital '{}' does not have a wave-function, skipping orbital.".format(o))
-                    # Skip this one.
+        # Loop over all atoms in the full supercell structure
+        for IA in range(geom.na_s):
+
+            # The coordinates are relative to origo, so we need to shift (when writing a grid
+            # it is with respect to origo)
+            xyz = geom.axyz(IA) - self.origo
+            # Reduce to unit-cell atom
+            ia = geom.sc2uc(IA)
+            # Get current atom
+            atom = geom.atom[ia]
+
+            if ia == 0:
+                # start over for every new supercell
+                io = -1
+                isc = geom.a2isc(IA)
+                if has_k:
+                    phase = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), isc))
+                else:
+                    # do not force complex values for Gamma only (depends on user then)
+                    phase = 1
+
+            # Get grid-index of atom
+            IDX = floor(dot(rc, xyz)).astype(int32)
+
+            # Extract maximum R
+            R = atom.maxR()
+            if R <= 0.:
+                warnings.warn("Atom '{}' does not have a wave-function, skipping atom.".format(atom))
+                # Skip this atom
+                io += atom.no
+                continue
+
+            # Figure out the number of indices in each direction
+            idxm = IDX.copy()
+            idxM = IDX.copy()
+            xyzR = xyz.copy()
+
+            xyzR[0] += R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[1] += R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[2] += R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[0] -= R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[1] -= R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[2] -= R
+
+            xyzR[0] -= R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[1] -= R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[2] -= R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[0] += R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            xyzR[1] += R
+            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+
+            if idxm[0] < 0:
+                idxm[0] = 0
+            elif idxm[0] >= self.shape[0]:
+                io += atom.no
+                continue
+            if idxM[0] < 0:
+                io += atom.no
+                continue
+            elif idxM[0] >= self.shape[0]:
+                idxM[0] = self.shape[0] - 1
+            if idxm[1] < 0:
+                idxm[1] = 0
+            elif idxm[1] >= self.shape[1]:
+                io += atom.no
+                continue
+            if idxM[1] < 0:
+                io += atom.no
+                continue
+            elif idxM[1] >= self.shape[1]:
+                idxM[1] = self.shape[1] - 1
+            if idxm[2] < 0:
+                idxm[2] = 0
+            elif idxm[2] >= self.shape[2]:
+                io += atom.no
+                continue
+            if idxM[2] < 0:
+                io += atom.no
+                continue
+            elif idxM[2] >= self.shape[2]:
+                idxM[2] = self.shape[2] - 1
+
+            # Now idxM/m contains max/min indices used
+            # Convert to a xyz-coordinate
+            ix, iy, iz = ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
+            RR = idx2R(ix, iy, iz, xyz, dcell)
+
+            # Convert to spherical coordinates
+            n, idx, r, theta, phi = cart2spher(RR, R, cos_phi=True)
+
+            # Allocate a temporary array where we add the psi elements
+            psi = _a.zerosd(n)
+
+            # Loop on orbitals on this atom, grouped by radius
+            for os in atom.iter(True):
+
+                # Get the radius of orbitals (os)
+                oR = os[0].R
+
+                if oR <= 0.:
+                    warnings.warn("Orbital(s) '{}' does not have a wave-function, skipping orbital.".format(os))
+                    # Skip these orbitals
+                    io += len(os)
                     continue
 
-                idxm = IDX.copy()
-                idxM = IDX.copy()
+                # Downsize to the correct indices
+                if np.allclose(oR, R):
+                    idx1 = idx.view()
+                    r1 = r.view()
+                    theta1 = theta.view()
+                    phi1 = phi.view()
+                else:
+                    idx1 = (r <= oR).nonzero()[0]
+                    # Reduce arrays
+                    r1 = take(r, idx1)
+                    theta1 = take(theta, idx1)
+                    phi1 = take(phi, idx1)
+                    idx1 = take(idx, idx1)
 
-                # Figure out the number of indices in each direction
-                xyzR = xyz.copy()
+                # Loop orbitals with the same radius
+                for o in os:
+                    io += 1
 
-                xyzR[0] += R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[1] += R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[2] += R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[0] -= R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[1] -= R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[2] -= R
+                    # Evaluate psi component of the wavefunction
+                    # and add it for this atom
+                    psi[idx1] += o.psi_spher(r1, theta1, phi1, cos_phi=True) * (v[io] * phase)
 
-                xyzR[0] -= R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[1] -= R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[2] -= R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[0] += R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
-                xyzR[1] += R
-                min_max(idxm, idxM, rint(dot(rc, xyzR)).astype(int32))
+                # Clean-up
+                del idx1, r1, theta1, phi1
 
-                if not periodic[0]:
-                    if idxm[0] < 0:
-                        idxm[0] = 0
-                    elif idxM[0] >= self.shape[0]:
-                        idxM[0] = self.shape[0] - 1
-                if not periodic[1]:
-                    if idxm[1] < 0:
-                        idxm[1] = 0
-                    elif idxM[1] >= self.shape[1]:
-                        idxM[1] = self.shape[1] - 1
-                if not periodic[2]:
-                    if idxm[2] < 0:
-                        idxm[2] = 0
-                    elif idxM[2] >= self.shape[2]:
-                        idxM[2] = self.shape[2] - 1
+            # Convert to correct shape and add the current atoms contribution
+            psi.shape = (ix.size, iy.size, iz.size)
+            self.grid[ix, iy, iz] += psi
 
-                # Now idxM/m contains max/min indices used
-                # Convert to a xyz-coordinate
-                ix, iy, iz = ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
-
-                if periodic[0]:
-                    ix %= self.shape[0]
-                if periodic[1]:
-                    iy %= self.shape[1]
-                if periodic[2]:
-                    iz %= self.shape[2]
-
-                # Evaluate the psi component of the wavefunction
-                # and add it directly to the grid
-                self.grid[ix, iy, iz] += o.psi(idx2R(ix, iy, iz, xyz)) * v[io]
+            # Clean-up
+            del psi, idx, r, theta, phi
 
     def __repr__(self):
         """ Representation of object """

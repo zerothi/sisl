@@ -368,9 +368,9 @@ class SuperCell(object):
             n *= -1
 
         if origo:
-            return n, np.copy(self.origo)
+            return n, _a.zerosd([3])
         # We have to reverse the normal vector
-        return -n, up + self.origo
+        return -n, up
 
     @property
     def rcell(self):
@@ -443,7 +443,7 @@ class SuperCell(object):
         """ Returns the supercell offset of the supercell index """
         if isc is None:
             return _a.arrayd([0, 0, 0])
-        return np.dot(isc, self.cell) + self.origo
+        return np.dot(isc, self.cell)
 
     def add(self, other):
         """ Add two supercell lattice vectors to each other
@@ -607,8 +607,8 @@ class SuperCell(object):
     def center(self, axis=None):
         """ Returns center of the `SuperCell`, possibly with respect to an axis """
         if axis is None:
-            return np.sum(self.cell, axis=0) / 2 + self.origo
-        return self.cell[axis, :] / 2 + self.origo
+            return np.sum(self.cell, axis=0) / 2
+        return self.cell[axis, :] / 2
 
     @classmethod
     def tocell(cls, *args):

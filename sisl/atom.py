@@ -10,7 +10,7 @@ import numpy as np
 
 from ._help import array_fill_repeat, ensure_array, _str
 import sisl._array as _a
-from .orbital import Orbital
+from .orbital import Orbital, SphericalOrbital, AtomicOrbital
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
@@ -1067,10 +1067,41 @@ class Atom(with_metaclass(AtomMeta, object)):
         for o in self.orbital:
             yield o
 
+    def iter(self, group=False):
+        """ Loop on all orbitals in this atom
+
+        Parameters
+        ----------
+        group : bool, optional
+           if two orbitals share the same radius
+           one may be able to group two orbitals together
+
+        Returns
+        -------
+        Orbital : the current orbital, if `group` is ``True`` this is a list of orbitals,
+                  otherwise a single orbital is returned
+        """
+        if group:
+            i = 0
+            no = self.no - 1
+            while i <= no:
+                # Figure out how many share the same radial part
+                j = i + 1
+                while j <= no:
+                    if np.allclose(self.orbital[i].R, self.orbital[j].R):
+                        j += 1
+                    else:
+                        break
+                yield self.orbital[i:j]
+                i = j
+            return
+        for o in self.orbital:
+            yield o
+
     def __repr__(self):
         # Create orbitals output
         orbs = ',\n '.join([repr(o) for o in self.orbital])
-        return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5f}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
+        return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5g}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
 
     def __len__(self):
         """ Return number of orbitals in this atom """

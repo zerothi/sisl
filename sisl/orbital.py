@@ -7,7 +7,7 @@ from math import sqrt as msqrt
 from math import factorial as fact
 
 import numpy as np
-from numpy import cos, sin, arctan2
+from numpy import cos, sin, arctan2, arccos
 from numpy import take, sqrt, square
 from scipy.special import lpmv, sph_harm
 from scipy.interpolate import interp1d
@@ -17,10 +17,11 @@ import sisl._array as _a
 
 
 __all__ = ['Orbital', 'SphericalOrbital', 'AtomicOrbital']
+__all__ += ['cart2spher']
 
 
-def xyz_spher_psi(r, maxR, theta=True):
-    r""" Transfer a vector to spherical coordinates
+def cart2spher(r, maxR, theta=True, cos_phi=False):
+    r""" Transfer a vector to spherical coordinates with some possible differences
 
     Parameters
     ----------
@@ -30,6 +31,9 @@ def xyz_spher_psi(r, maxR, theta=True):
        cutoff of the spherical coordinate calculations
     theta : bool, optional
        if ``True`` also calculate the theta angle and return it
+    cos_phi : bool, optional
+       if ``True`` return :math:`\cos(\phi)` rather than :math:`\phi` which may
+       be useful in some subsequent mathematical calculations
 
     Returns
     -------
@@ -42,12 +46,15 @@ def xyz_spher_psi(r, maxR, theta=True):
     theta : numpy.ndarray
        angle in the :math:`x-y` plane from :math:`x` (azimuthal)
        Only returned if input `theta` is ``True``
-    cos_phi : numpy.ndarray
-       cosine to the angle from :math:`z` axis (polar)
+    phi : numpy.ndarray
+       If `cos_phi` is ``True`` this is :math:`\cos(\phi)`, otherwise
+       :math:`\phi` is returned (the polar angle from the :math:`z` axis)
     """
     r = ensure_array(r, np.float64)
+    if r.shape[-1] != 3:
+        raise ValueError("Vector does not end with shape 3.")
     r.shape = (-1, 3)
-    n = len(r)
+    n = r.shape[0]
     rr = square(r).sum(1)
     idx = (rr <= maxR ** 2).nonzero()[0]
     r = take(r, idx, 0)
@@ -56,11 +63,14 @@ def xyz_spher_psi(r, maxR, theta=True):
         theta = arctan2(r[:, 1], r[:, 0])
     else:
         theta = None
-    cos_phi = r[:, 2] / rr
+    if cos_phi:
+        phi = r[:, 2] / rr
+    else:
+        phi = arccos(r[:, 2] / rr)
     # Typically there will be few rr==0. values, so no need to
     # create indices
-    cos_phi[rr == 0.] = 0.
-    return n, idx, rr, theta, cos_phi
+    phi[rr == 0.] = 0.
+    return n, idx, rr, theta, phi
 
 
 def spherical_harm(m, l, theta, phi):
@@ -209,6 +219,9 @@ class Orbital(object):
         raise NotImplementedError
 
     def psi(self, r, *args, **kwargs):
+        raise NotImplementedError
+
+    def psi_spher(self, r, theta, phi, *args, **kwargs):
         raise NotImplementedError
 
     def toGrid(self, c=1., precision=0.05, R=None, dtype=np.float64):
@@ -468,14 +481,41 @@ class SphericalOrbital(Orbital):
         r = ensure_array(r, np.float64)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        n, idx, r, theta, phi = xyz_spher_psi(r, self.R, theta=m != 0)
+        n, idx, r, theta, phi = cart2spher(r, self.R, theta=m != 0, cos_phi=True)
         p = _a.zerosd(n)
         if len(idx) > 0:
-            p[idx] = self.f(r) * rspherical_harm(m, self.l, theta, phi)
+            p[idx] = self.psi_spher(r, theta, phi, m, cos_phi=True)
             # Reduce memory immediately
             del idx, r, theta, phi
         p.shape = s
         return p
+
+    def psi_spher(self, r, theta, phi, m=0, cos_phi=False):
+        r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+
+        This is equivalent to `psi` however, the input is given in spherical coordinates.
+
+        Parameters
+        -----------
+        r : array_like
+           the radius from the orbital origin
+        theta : array_like
+           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+        phi : array_like
+           polar angle from :math:`z` axis
+        m : int, optional
+           magnetic quantum number, must be in range ``-self.l <= m <= self.l``
+        cos_phi : bool, optional
+           whether `phi` is actually :math:`cos(\phi)` which will be faster because
+           `cos` is not necessary to call.
+
+        Returns
+        -------
+        psi : the orbital value at point `r`
+        """
+        if cos_phi:
+            return self.f(r) * rspherical_harm(m, self.l, theta, phi)
+        return self.f(r) * rspherical_harm(m, self.l, theta, cos(phi))
 
     def toAtomicOrbital(self, m=None, n=None, Z=1, P=False):
         """ Create a list of `AtomicOrbital` objects 
@@ -776,6 +816,29 @@ class AtomicOrbital(Orbital):
         psi : the orbital value at point `r`
         """
         return self.orb.psi(r, self.m)
+
+    def psi_spher(self, r, theta, phi, cos_phi=False):
+        r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+
+        This is equivalent to `psi` however, the input is given in spherical coordinates.
+
+        Parameters
+        -----------
+        r : array_like
+           the radius from the orbital origin
+        theta : array_like
+           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+        phi : array_like
+           polar angle from :math:`z` axis
+        cos_phi : bool, optional
+           whether `phi` is actually :math:`cos(\phi)` which will be faster because
+           `cos` is not necessary to call.
+
+        Returns
+        -------
+        psi : the orbital value at point `r`
+        """
+        return self.orb.psi_spher(r, theta, phi, self.m, cos_phi)
 
     def __getstate__(self):
         """ Return the state of this object """
