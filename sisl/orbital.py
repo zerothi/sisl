@@ -17,18 +17,40 @@ import sisl._array as _a
 
 
 __all__ = ['Orbital', 'SphericalOrbital', 'AtomicOrbital']
-__all__ += ['cart2spher']
+__all__ += ['cart2spher', 'spher2cart']
 
 
-def cart2spher(r, maxR, theta=True, cos_phi=False):
+def spher2cart(r, theta, phi):
+    """ Convert spherical coordinates to cartesian coordinates
+
+    Parameters
+    ----------
+    r : array_like
+       radius
+    theta : array_like
+       azimuthal angle in the :math:`x-y` plane
+    phi : array_like
+       polar angle from the :math:`z` axis
+    """
+    rx = r * cos(theta) * sin(phi)
+    R = _a.emptyd(rx.shape + (3, ))
+    R[..., 0] = rx
+    del rx
+    R[..., 1] = r * sin(theta) * sin(phi)
+    R[..., 2] = r * cos(phi)
+    return R
+
+
+def cart2spher(r, maxR=None, theta=True, cos_phi=False):
     r""" Transfer a vector to spherical coordinates with some possible differences
 
     Parameters
     ----------
     r : array_like
        the cartesian vectors
-    maxR : float
-       cutoff of the spherical coordinate calculations
+    maxR : float, optional
+       cutoff of the spherical coordinate calculations. If ``None``, calculate
+       and return for all.
     theta : bool, optional
        if ``True`` also calculate the theta angle and return it
     cos_phi : bool, optional
@@ -38,11 +60,11 @@ def cart2spher(r, maxR, theta=True, cos_phi=False):
     Returns
     -------
     n : int
-       number of total points
+       number of total points, only for `maxR` different from ``None``
     idx : numpy.ndarray
        indices of points with ``r <= maxR``
     r : numpy.ndarray
-       radius in spherical coordinates
+       radius in spherical coordinates, only for `maxR` different from ``None``
     theta : numpy.ndarray
        angle in the :math:`x-y` plane from :math:`x` (azimuthal)
        Only returned if input `theta` is ``True``
@@ -55,6 +77,13 @@ def cart2spher(r, maxR, theta=True, cos_phi=False):
         raise ValueError("Vector does not end with shape 3.")
     r.shape = (-1, 3)
     n = r.shape[0]
+    if maxR is None:
+        rr = sqrt(square(r).sum(1))
+        theta = arctan2(r[:, 1], r[:, 0])
+        phi = arccos(r[:, 2] / rr)
+        phi[rr == 0.] = 0.
+        return rr, theta, phi
+
     rr = square(r).sum(1)
     idx = (rr <= maxR ** 2).nonzero()[0]
     r = take(r, idx, 0)

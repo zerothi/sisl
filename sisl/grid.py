@@ -4,14 +4,16 @@ import warnings
 from numbers import Integral, Real
 
 import numpy as np
-from numpy import int32, float64, take
-from numpy import dot, sqrt, square, floor, ogrid
+from numpy import int32, float64, pi
+from numpy import take, ogrid
+from numpy import cos, sin
+from numpy import dot, sqrt, square, floor
 
 from ._help import ensure_array
 import sisl._array as _a
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction
-from .orbital import cart2spher
+from .orbital import cart2spher, spher2cart
 from .supercell import SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
@@ -509,6 +511,7 @@ class Grid(SuperCellChild):
 
         # Extract sub variables used throughout the loop
         dcell = self.dcell
+        dl = (dcell ** 2).sum(1) ** 0.5
         dD = dcell.sum(0) * 0.5
         rc = self.rcell / (2. * np.pi) * ensure_array(self.shape).reshape(1, -1)
 
@@ -520,22 +523,18 @@ class Grid(SuperCellChild):
             R[:, :, :, 2] = ix * dc[0, 2] + iy * dc[1, 2] + iz * dc[2, 2] - offset[2]
             return R
 
-        def min_max(idxm, idxM, idx):
-            if idxm[0] > idx[0]:
-                idxm[0] = idx[0]
-            if idxM[0] < idx[0]:
-                idxM[0] = idx[0]
-            if idxm[1] > idx[1]:
-                idxm[1] = idx[1]
-            if idxM[1] < idx[1]:
-                idxM[1] = idx[1]
-            if idxm[2] > idx[2]:
-                idxm[2] = idx[2]
-            if idxM[2] < idx[2]:
-                idxM[2] = idx[2]
-
         # Easier and shorter
         geom = self.geometry
+
+        # Figure out the max-min indices with a spacing of 2 radians
+        rad2 = np.pi / 90
+        # We pre-allocate these arrays since they are only
+        # 180, 90 in size (each times 2)
+        theta, phi = ogrid[-pi:pi:rad2, 0:pi:rad2]
+        CTHETA, STHETA = cos(theta), sin(theta)
+        CPHI, SPHI = cos(phi), sin(phi)
+        NCHECK = (theta.size, phi.size, 3)
+        del theta, phi, rad2
 
         # Loop over all atoms in the full supercell structure
         for IA in range(geom.na_s):
@@ -558,9 +557,6 @@ class Grid(SuperCellChild):
                     # do not force complex values for Gamma only (depends on user then)
                     phase = 1
 
-            # Get grid-index of atom
-            IDX = floor(dot(rc, xyz)).astype(int32)
-
             # Extract maximum R
             R = atom.maxR()
             if R <= 0.:
@@ -569,33 +565,20 @@ class Grid(SuperCellChild):
                 io += atom.no
                 continue
 
-            # Figure out the number of indices in each direction
-            idxm = IDX.copy()
-            idxM = IDX.copy()
-            xyzR = xyz.copy()
+            # Create the sphere circumference
+            rxyz = _a.emptyd(NCHECK)
+            rxyz[..., 0] = xyz[0] + R * CTHETA * SPHI
+            rxyz[..., 1] = xyz[1] + R * STHETA * SPHI
+            rxyz[..., 2] = xyz[2] + R * CPHI
+            # Reshape for dot-product
+            rxyz.shape = (-1, 3)
 
-            xyzR[0] += R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[1] += R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[2] += R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[0] -= R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[1] -= R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[2] -= R
-
-            xyzR[0] -= R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[1] -= R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[2] -= R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[0] += R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
-            xyzR[1] += R
-            min_max(idxm, idxM, floor(dot(rc, xyzR)))
+            # Get indices in the grid
+            idx = floor(dot(rc, rxyz.T))
+            idxm = idx.min(1).astype(int32)
+            idxM = idx.max(1).astype(int32)
+            # Clean up (180 * 90 * 3 arrays are simply not needed)
+            del rxyz, idx
 
             if idxm[0] < 0:
                 idxm[0] = 0
@@ -628,13 +611,16 @@ class Grid(SuperCellChild):
             elif idxM[2] >= self.shape[2]:
                 idxM[2] = self.shape[2] - 1
 
-            # Now idxM/m contains max/min indices used
-            # Convert to a xyz-coordinate
+            # Now idxm/M contains min/max indices used
+            # Convert to xyz-coordinate
             ix, iy, iz = ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
             RR = idx2R(ix, iy, iz, xyz, dcell)
 
             # Convert to spherical coordinates
             n, idx, r, theta, phi = cart2spher(RR, R, cos_phi=True)
+
+            # Clean-up the vectors
+            del RR
 
             # Allocate a temporary array where we add the psi elements
             psi = _a.zerosd(n)

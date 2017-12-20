@@ -6,12 +6,28 @@ import math as m
 import numpy as np
 from scipy.interpolate import interp1d
 
+from sisl.orbital import cart2spher, spher2cart
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
 
 
 def r_f(n):
     r = np.arange(n)
     return r, r
+
+
+@pytest.mark.orbital
+def test_spherical():
+    rad2 = np.pi / 45
+    r, theta, phi = np.ogrid[0.1:10:0.2, -np.pi:np.pi:rad2, 0:np.pi:rad2]
+    xyz = spher2cart(r, theta, phi)
+    s = xyz.shape[:-1]
+    r1, theta1, phi1 = cart2spher(xyz)
+    r1.shape = s
+    theta1.shape = s
+    phi1.shape = s
+    assert np.allclose(r, r1)
+    assert np.allclose(theta, theta1[1:2, :, 1:2])
+    assert np.allclose(phi, phi1[0:1, 0:1, :])
 
 
 @pytest.mark.orbital
