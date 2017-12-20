@@ -493,6 +493,12 @@ class Grid(SuperCellChild):
 
         This is an *in-place* operation that *adds* to the current values in the grid.
 
+        It may be instructive to check that an eigenstate is normalized:
+
+        >>> grid = Grid(...) # doctest: +SKIP
+        >>> grid.psi(...)
+        >>> (np.abs(grid.grid) ** 2).sum() * grid.dvolume == 1.
+
         Parameters
         ----------
         v : array_like
