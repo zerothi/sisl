@@ -500,6 +500,10 @@ class Grid(SuperCellChild):
         k : array_like, optional
            k-point associated with the coefficients
         """
+        if isinstance(v, Real):
+            v = ensure_array(v, np.float64)
+        else:
+            v = ensure_array(v, np.complex128)
         if len(v) != self.geometry.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
