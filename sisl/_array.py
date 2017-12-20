@@ -8,30 +8,42 @@ __all__ = []
 def _append(name, suffix=('i', 'l', 'f', 'd')):
     return [name + s for s in suffix]
 
+
+def _append_c(name, suffix=('i', 'l', 'f', 'd', 'c', 'z')):
+    return [name + s for s in suffix]
+
 # Create all partial objects for creating arrays
 zerosi = _partial(np.zeros, dtype=np.int32)
 zerosl = _partial(np.zeros, dtype=np.int64)
 zerosf = _partial(np.zeros, dtype=np.float32)
 zerosd = _partial(np.zeros, dtype=np.float64)
-__all__ += _append('zeros')
+zerosc = _partial(np.zeros, dtype=np.complex64)
+zerosz = _partial(np.zeros, dtype=np.complex128)
+__all__ += _append_c('zeros')
 
 onesi = _partial(np.ones, dtype=np.int32)
 onesl = _partial(np.ones, dtype=np.int64)
 onesf = _partial(np.ones, dtype=np.float32)
 onesd = _partial(np.ones, dtype=np.float64)
-__all__ += _append('ones')
+onesc = _partial(np.ones, dtype=np.complex64)
+onesz = _partial(np.ones, dtype=np.complex128)
+__all__ += _append_c('ones')
 
 emptyi = _partial(np.empty, dtype=np.int32)
 emptyl = _partial(np.empty, dtype=np.int64)
 emptyf = _partial(np.empty, dtype=np.float32)
 emptyd = _partial(np.empty, dtype=np.float64)
-__all__ += _append('empty')
+emptyc = _partial(np.empty, dtype=np.complex64)
+emptyz = _partial(np.empty, dtype=np.complex128)
+__all__ += _append_c('empty')
 
 arrayi = _partial(np.array, dtype=np.int32)
 arrayl = _partial(np.array, dtype=np.int64)
 arrayf = _partial(np.array, dtype=np.float32)
 arrayd = _partial(np.array, dtype=np.float64)
-__all__ += _append('array')
+arrayc = _partial(np.array, dtype=np.complex64)
+arrayz = _partial(np.array, dtype=np.complex128)
+__all__ += _append_c('array')
 
 asarrayi = _partial(np.asarray, dtype=np.int32)
 asarrayl = _partial(np.asarray, dtype=np.int64)

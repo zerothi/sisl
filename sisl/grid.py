@@ -496,18 +496,32 @@ class Grid(SuperCellChild):
         Parameters
         ----------
         v : array_like
-           the coefficients for all orbitals in the geometry
+           the coefficients for all orbitals in the geometry (real or complex)
         k : array_like, optional
            k-point associated with the coefficients
         """
-        v = ensure_array(v, np.float64)
         if len(v) != self.geometry.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
 
+        # Check for k-points
         k = ensure_array(k, np.float64)
         kl = (k ** 2).sum() ** 0.5
         has_k = kl > 0.000001
+
+        # Check that input/grid makes sense.
+        # If the coefficients are complex valued, then the grid *has* to be
+        # complex valued.
+        # Likewise if a k-point has been passed.
+        is_complex = np.iscomplexobj(v) or has_k
+        if is_complex and not np.iscomplexobj(self.grid):
+            raise ValueError(self.__class__.__name__ + ".psi "
+                             "has input coefficients as complex values but the grid is real.")
+
+        if is_complex:
+            psi_init = _a.zerosz
+        else:
+            psi_init = _a.zerosd
 
         # Extract sub variables used throughout the loop
         dcell = self.dcell
@@ -623,7 +637,7 @@ class Grid(SuperCellChild):
             del RR
 
             # Allocate a temporary array where we add the psi elements
-            psi = _a.zerosd(n)
+            psi = psi_init(n)
 
             # Loop on orbitals on this atom, grouped by radius
             for os in atom.iter(True):
