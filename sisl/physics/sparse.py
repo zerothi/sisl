@@ -189,7 +189,7 @@ class SparseOrbitalBZ(SparseOrbital):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -231,7 +231,7 @@ class SparseOrbitalBZ(SparseOrbital):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -271,7 +271,7 @@ class SparseOrbitalBZ(SparseOrbital):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -365,14 +365,14 @@ class SparseOrbitalBZ(SparseOrbital):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def eigh(self, k=(0, 0, 0), atoms=None, gauge='R',
+    def eigh(self, k=(0, 0, 0), atom=None, gauge='R',
              eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
 
@@ -392,7 +392,7 @@ class SparseOrbitalBZ(SparseOrbital):
                                       eigvals_only=eigvals_only, **kwargs)
             return eig
 
-        if atoms is None:
+        if atom is None:
             P = self.Pk(k=k, gauge=gauge, format='array')
             if not self.orthogonal:
                 S = self.Sk(k=k, gauge=gauge, format='array')
@@ -403,17 +403,17 @@ class SparseOrbitalBZ(SparseOrbital):
                 S = self.Sk(k=k, gauge=gauge)
 
             # Reduce sparsity pattern
-            orbs = self.a2o(atoms, all=True)
-            P = P[orbs, orbs].toarray()
+            orbs = self.a2o(atom, all=True).reshape(-1, 1)
+            P = P[orbs, orbs.T].toarray()
             if not self.orthogonal:
-                S = S[orbs, orbs].toarray()
+                S = S[orbs, orbs.T].toarray()
 
         if self.orthogonal:
             return lin.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
 
         return lin.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
-    def eigsh(self, k=(0, 0, 0), n=10, atoms=None, gauge='R',
+    def eigsh(self, k=(0, 0, 0), n=10, atom=None, gauge='R',
               eigvals_only=True, **kwargs):
         """ Calculates a subset of eigenvalues of the physical quantity  (default 10)
 
@@ -429,7 +429,7 @@ class SparseOrbitalBZ(SparseOrbital):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), n], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigsh(k_, n=n, atoms=atoms, gauge=gauge,
+                eig[i, :] = self.eigsh(k_, n=n, atom=atom, gauge=gauge,
                                        eigvals_only=eigvals_only, **kwargs)
             return eig
 
@@ -441,10 +441,10 @@ class SparseOrbitalBZ(SparseOrbital):
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
 
         # Reduce sparsity pattern
-        if not atoms is None:
-            orbs = self.a2o(atoms, all=True)
+        if not atom is None:
+            orbs = self.a2o(atom, all=True).reshape(-1, 1)
             # Reduce space
-            P = P[orbs, orbs]
+            P = P[orbs, orbs.T]
 
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
@@ -571,7 +571,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -587,7 +587,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         spin: int, optional
            the spin-index of the quantity
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -601,7 +601,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -650,7 +650,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -694,7 +694,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -743,7 +743,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -792,7 +792,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -833,7 +833,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -893,7 +893,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -937,7 +937,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -979,7 +979,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ----------
         k: array_like, optional
            k-point (default is Gamma point)
-        dtype : numpy.dtype
+        dtype : numpy.dtype, optional
            default to `numpy.complex128`
         gauge : {'R', 'r'}
            chosen gauge
@@ -1019,7 +1019,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         # It must be a sparse matrix we inquire
         return csr_matrix(S).asformat(format)
 
-    def eigh(self, k=(0, 0, 0), atoms=None, gauge='R',
+    def eigh(self, k=(0, 0, 0), atom=None, gauge='R',
              eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
 
@@ -1028,6 +1028,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         and calculate the eigenvalues.
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
+
+        Parameters
+        ----------
+        spin : int, optional
+           the spin-component to calculate the eigenvalue spectrum of, note that
+           this parameter is only valid for `Spin.POLARIZED` matrices.
         """
 
         # First we check if the k-point is a BrillouinZone object
@@ -1035,13 +1041,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), len(self)], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigh(k_, atoms=atoms, gauge=gauge,
+                eig[i, :] = self.eigh(k_, atom=atom, gauge=gauge,
                                       eigvals_only=eigvals_only, **kwargs)
             return eig
+        spin = kwargs.pop('spin', 0)
 
-        if atoms is None:
+        if atom is None:
             if self.spin.kind == Spin.POLARIZED:
-                P = self.Pk(k=k, gauge=gauge, spin=kwargs.pop('spin', 0), format='array')
+                P = self.Pk(k=k, gauge=gauge, spin=spin, format='array')
             else:
                 P = self.Pk(k=k, gauge=gauge, format='array')
             if not self.orthogonal:
@@ -1049,23 +1056,23 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         else:        # Reduce sparsity pattern
             if self.spin.kind == Spin.POLARIZED:
-                P = self.Pk(k=k, gauge=gauge, spin=kwargs.pop('spin', 0))
+                P = self.Pk(k=k, gauge=gauge, spin=spin)
             else:
                 P = self.Pk(k=k, gauge=gauge)
 
             # Reduce space
-            orbs = self.a2o(atoms, all=True)
+            orbs = self.a2o(atom, all=True).reshape(-1, 1)
 
-            P = P[orbs, orbs].toarray()
+            P = P[orbs, orbs.T].toarray()
             if not self.orthogonal:
-                S = self.Sk(k=k, gauge=gauge)[orbs, orbs].toarray()
+                S = self.Sk(k=k, gauge=gauge)[orbs, orbs.T].toarray()
 
         if self.orthogonal:
             return lin.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
 
         return lin.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
-    def eigsh(self, k=(0, 0, 0), n=10, atoms=None, gauge='R',
+    def eigsh(self, k=(0, 0, 0), n=10, atom=None, gauge='R',
               eigvals_only=True, **kwargs):
         """ Calculates a subset of eigenvalues of the physical quantity  (default 10)
 
@@ -1074,6 +1081,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         and calculate a subset of the eigenvalues using the sparse algorithms.
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigsh`
+
+        Parameters
+        ----------
+        spin : int, optional
+           the spin-component to calculate the eigenvalue spectrum of, note that
+           this parameter is only valid for `Spin.POLARIZED` matrices.
         """
 
         # First we check if the k-point is a BrillouinZone object
@@ -1081,24 +1094,25 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), n], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigsh(k_, n=n, atoms=atoms, gauge=gauge,
+                eig[i, :] = self.eigsh(k_, n=n, atom=atom, gauge=gauge,
                                        eigvals_only=eigvals_only, **kwargs)
             return eig
 
         # We always request the smallest eigenvalues...
+        spin = kwargs.pop('spin', 0)
         kwargs.update({'which': kwargs.get('which', 'SM')})
 
         if self.spin.kind == Spin.POLARIZED:
-            P = self.Pk(k=k, spin=kwargs.pop('spin', 0), gauge=gauge)
+            P = self.Pk(k=k, spin=spin, gauge=gauge)
         else:
             P = self.Pk(k=k, gauge=gauge)
         if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
 
         # Reduce sparsity pattern
-        if not atoms is None:
-            orbs = self.a2o(atoms, all=True)
+        if not atom is None:
+            orbs = self.a2o(atom, all=True).reshape(-1, 1)
             # Reduce space
-            P = P[orbs, orbs]
+            P = P[orbs, orbs.T]
 
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
