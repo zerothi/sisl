@@ -412,7 +412,7 @@ class BaseSile(object):
     def __getattr__(self, name):
         """ Override to check the handle """
         if name == 'fh':
-            raise AttributeError("The filehandle has not been opened yet...")
+            raise AttributeError("The filehandle for {} has not been opened yet...".format(self.file))
         return getattr(self.fh, name)
 
     @classmethod
