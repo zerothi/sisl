@@ -5,8 +5,8 @@ from numbers import Integral, Real
 
 import numpy as np
 from numpy import int32, float64, pi
-from numpy import take, ogrid
-from numpy import cos, sin
+from numpy import take, ogrid, add
+from numpy import cos, sin, arctan2
 from numpy import dot, sqrt, square, floor
 
 from ._help import ensure_array
@@ -506,10 +506,8 @@ class Grid(SuperCellChild):
         k : array_like, optional
            k-point associated with the coefficients
         """
-        if isinstance(v, Real):
-            v = ensure_array(v, np.float64)
-        else:
-            v = ensure_array(v, np.complex128)
+        # As array preserves data-type
+        v = np.asarray(v)
         if len(v) != self.geometry.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
@@ -539,32 +537,78 @@ class Grid(SuperCellChild):
         dD = dcell.sum(0) * 0.5
         rc = self.rcell / (2. * np.pi) * ensure_array(self.shape).reshape(1, -1)
 
-        def idx2R(ix, iy, iz, offset, dc):
-            """ Calculate the vector from (ix, iy, iz) * dcell - offset """
-            R = _a.emptyd([ix.size, iy.size, iz.size, 3])
-            R[:, :, :, 0] = ix * dc[0, 0] + iy * dc[1, 0] + iz * dc[2, 0] - offset[0]
-            R[:, :, :, 1] = ix * dc[0, 1] + iy * dc[1, 1] + iz * dc[2, 1] - offset[1]
-            R[:, :, :, 2] = ix * dc[0, 2] + iy * dc[1, 2] + iz * dc[2, 2] - offset[2]
-            return R
+        def idx2spherical(ix, iy, iz, offset, dc, R):
+            """ Calculate the spherical coordinates from indices """
+            rx = add(add(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0] - offset[0]).ravel()
+            ry = add(add(ix * dc[0, 1], iy * dc[1, 1]), iz * dc[2, 1] - offset[1]).ravel()
+            rz = add(add(ix * dc[0, 2], iy * dc[1, 2]), iz * dc[2, 2] - offset[2]).ravel()
+            # Total size of the indices
+            n = rx.size
+            # Calculate radius ** 2
+            rr = add(add(square(rx), square(ry)), square(rz))
+            idx = (rr <= R ** 2).nonzero()[0]
+            rx = take(rx, idx)
+            ry = take(ry, idx)
+            rz = take(rz, idx)
+            rr = sqrt(take(rr, idx))
+            theta = arctan2(ry, rx)
+            cos_phi = rz / rr
+            cos_phi[rr == 0.] = 0
+            return n, idx, rr, theta, cos_phi
 
         # Easier and shorter
         geom = self.geometry
 
-        # Figure out the max-min indices with a spacing of 2 radians
-        rad2 = np.pi / 90
-        # We pre-allocate these arrays since they are only
-        # 180, 90 in size (each times 2)
-        theta, phi = ogrid[-pi:pi:rad2, 0:pi:rad2]
-        CTHETA, STHETA = cos(theta), sin(theta)
-        CPHI, SPHI = cos(phi), sin(phi)
-        NCHECK = (theta.size, phi.size, 3)
-        del theta, phi, rad2
+        # Figure out the max-min indices with a spacing of 1 radians
+        rad1 = np.pi / 180
+        theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
+        ctheta, stheta = cos(theta), sin(theta)
+        cphi, sphi = cos(phi), sin(phi)
+        nrxyz = (theta.size, phi.size, 3)
+        del theta, phi, rad1
+
+        # First we calculate the min/max indices for all atoms
+        idx_mm = _a.emptyi([geom.na, 2, 3])
+        rxyz = _a.emptyd(nrxyz)
+        origo = geom.origo.reshape(1, -1)
+        for atom, ia in geom.atom.iter(True):
+            if len(ia) == 0:
+                continue
+            R = atom.maxR()
+
+            # Reshape
+            rxyz.shape = nrxyz
+            rxyz[..., 0] = R * ctheta * sphi
+            rxyz[..., 1] = R * stheta * sphi
+            rxyz[..., 2] = R * cphi
+            rxyz.shape = (-1, 3)
+
+            idx = dot(rc, rxyz.T)
+            idx_m = idx.min(1)
+            idx_M = idx.max(1)
+
+            # Now do it for all the atoms to get indices of the middle of
+            # the atoms
+            # The coordinates are relative to origo, so we need to shift (when writing a grid
+            # it is with respect to origo)
+            xyz = geom.xyz[ia, :] - origo
+            idx = dot(rc, xyz.T).T
+
+            # Get min-max for all atoms, note we should first do the floor here
+            idx_mm[ia, 0, :] = floor(idx_m.reshape(1, -3) + idx).astype(int32)
+            idx_mm[ia, 1, :] = floor(idx_M.reshape(1, -3) + idx).astype(int32)
+
+        # Now we have min-max for all atoms
+        # When we run the below loop all indices can be retrieved by looking
+        # up in the above table.
+
+        # Before continuing, we can easily clean up the temporary arrays
+        del ctheta, stheta, cphi, sphi, nrxyz, rxyz, origo, idx
 
         # Loop over all atoms in the full supercell structure
         for IA in range(geom.na_s):
 
-            # The coordinates are relative to origo, so we need to shift (when writing a grid
-            # it is with respect to origo)
+            # Get atomic coordinate
             xyz = geom.axyz(IA) - self.origo
             # Reduce to unit-cell atom
             ia = geom.sc2uc(IA)
@@ -578,7 +622,7 @@ class Grid(SuperCellChild):
                 if has_k:
                     phase = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), isc))
                 else:
-                    # do not force complex values for Gamma only (depends on user then)
+                    # do not force complex values for Gamma only (user is responsible)
                     phase = 1
 
             # Extract maximum R
@@ -589,62 +633,39 @@ class Grid(SuperCellChild):
                 io += atom.no
                 continue
 
-            # Create the sphere circumference
-            rxyz = _a.emptyd(NCHECK)
-            rxyz[..., 0] = xyz[0] + R * CTHETA * SPHI
-            rxyz[..., 1] = xyz[1] + R * STHETA * SPHI
-            rxyz[..., 2] = xyz[2] + R * CPHI
-            # Reshape for dot-product
-            rxyz.shape = (-1, 3)
+            # Get indices in the supercell grid
+            idxm = idx_mm[ia, 0, :] + self.shape * isc
+            idxM = idx_mm[ia, 1, :] + self.shape * isc
 
-            # Get indices in the grid
-            idx = floor(dot(rc, rxyz.T))
-            idxm = idx.min(1).astype(int32)
-            idxM = idx.max(1).astype(int32)
-            # Clean up (180 * 90 * 3 arrays are simply not needed)
-            del rxyz, idx
+            # Fast check whether we can skip this point
+            if idxm[0] >= self.shape[0] or \
+               idxm[1] >= self.shape[1] or \
+               idxm[2] >= self.shape[2] or \
+               idxM[0] < 0 or \
+               idxM[1] < 0 or \
+               idxM[2] < 0:
+                io += atom.no
+                continue
 
             if idxm[0] < 0:
                 idxm[0] = 0
-            elif idxm[0] >= self.shape[0]:
-                io += atom.no
-                continue
-            if idxM[0] < 0:
-                io += atom.no
-                continue
-            elif idxM[0] >= self.shape[0]:
+            if idxM[0] >= self.shape[0]:
                 idxM[0] = self.shape[0] - 1
             if idxm[1] < 0:
                 idxm[1] = 0
-            elif idxm[1] >= self.shape[1]:
-                io += atom.no
-                continue
-            if idxM[1] < 0:
-                io += atom.no
-                continue
-            elif idxM[1] >= self.shape[1]:
+            if idxM[1] >= self.shape[1]:
                 idxM[1] = self.shape[1] - 1
             if idxm[2] < 0:
                 idxm[2] = 0
-            elif idxm[2] >= self.shape[2]:
-                io += atom.no
-                continue
-            if idxM[2] < 0:
-                io += atom.no
-                continue
-            elif idxM[2] >= self.shape[2]:
+            if idxM[2] >= self.shape[2]:
                 idxM[2] = self.shape[2] - 1
 
             # Now idxm/M contains min/max indices used
             # Convert to xyz-coordinate
             ix, iy, iz = ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
-            RR = idx2R(ix, iy, iz, xyz, dcell)
 
             # Convert to spherical coordinates
-            n, idx, r, theta, phi = cart2spher(RR, R, cos_phi=True)
-
-            # Clean-up the vectors
-            del RR
+            n, idx, r, theta, phi = idx2spherical(ix, iy, iz, xyz, dcell, R)
 
             # Allocate a temporary array where we add the psi elements
             psi = psi_init(n)
@@ -683,8 +704,8 @@ class Grid(SuperCellChild):
                     # and add it for this atom
                     psi[idx1] += o.psi_spher(r1, theta1, phi1, cos_phi=True) * (v[io] * phase)
 
-                # Clean-up
-                del idx1, r1, theta1, phi1
+            # Clean-up
+            del idx1, r1, theta1, phi1
 
             # Convert to correct shape and add the current atoms contribution
             psi.shape = (ix.size, iy.size, iz.size)

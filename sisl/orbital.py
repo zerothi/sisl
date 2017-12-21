@@ -41,21 +41,21 @@ def spher2cart(r, theta, phi):
     return R
 
 
-def cart2spher(r, maxR=None, theta=True, cos_phi=False):
+def cart2spher(r, theta=True, cos_phi=False, maxR=None):
     r""" Transfer a vector to spherical coordinates with some possible differences
 
     Parameters
     ----------
     r : array_like
        the cartesian vectors
-    maxR : float, optional
-       cutoff of the spherical coordinate calculations. If ``None``, calculate
-       and return for all.
     theta : bool, optional
        if ``True`` also calculate the theta angle and return it
     cos_phi : bool, optional
        if ``True`` return :math:`\cos(\phi)` rather than :math:`\phi` which may
        be useful in some subsequent mathematical calculations
+    maxR : float, optional
+       cutoff of the spherical coordinate calculations. If ``None``, calculate
+       and return for all.
 
     Returns
     -------
@@ -282,7 +282,7 @@ class Orbital(object):
         g = Geometry([0] * 3, Atom(1, self), sc=sc)
         n = int(np.rint(2 * R / precision))
         G = Grid([n] * 3, dtype=dtype, geom=g)
-        G.psi(c)
+        G.psi([c])
         return G
 
     def __getstate__(self):
@@ -510,7 +510,7 @@ class SphericalOrbital(Orbital):
         r = ensure_array(r, np.float64)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        n, idx, r, theta, phi = cart2spher(r, self.R, theta=m != 0, cos_phi=True)
+        n, idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
         p = _a.zerosd(n)
         if len(idx) > 0:
             p[idx] = self.psi_spher(r, theta, phi, m, cos_phi=True)
