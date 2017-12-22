@@ -6,7 +6,7 @@ from numbers import Integral, Real
 import numpy as np
 from numpy import int32, float64, pi
 from numpy import take, ogrid, add
-from numpy import cos, sin, arctan2
+from numpy import cos, sin, arctan2, divide
 from numpy import dot, sqrt, square, floor
 
 from ._help import ensure_array
@@ -537,24 +537,31 @@ class Grid(SuperCellChild):
         dD = dcell.sum(0) * 0.5
         rc = self.rcell / (2. * np.pi) * ensure_array(self.shape).reshape(1, -1)
 
+        # In the following we don't care about division
+        # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
+        old_err = np.seterr(divide='ignore', invalid='ignore')
+
         def idx2spherical(ix, iy, iz, offset, dc, R):
             """ Calculate the spherical coordinates from indices """
-            rx = add(add(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0] - offset[0]).ravel()
-            ry = add(add(ix * dc[0, 1], iy * dc[1, 1]), iz * dc[2, 1] - offset[1]).ravel()
-            rz = add(add(ix * dc[0, 2], iy * dc[1, 2]), iz * dc[2, 2] - offset[2]).ravel()
+            rx = addouter(addouter(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0] - offset[0]).ravel()
+            ry = addouter(addouter(ix * dc[0, 1], iy * dc[1, 1]), iz * dc[2, 1] - offset[1]).ravel()
+            rz = addouter(addouter(ix * dc[0, 2], iy * dc[1, 2]), iz * dc[2, 2] - offset[2]).ravel()
             # Total size of the indices
             n = rx.size
             # Calculate radius ** 2
-            rr = add(add(square(rx), square(ry)), square(rz))
+            rr = square(rx)
+            add(rr, square(ry), out=rr)
+            add(rr, square(rz), out=rr)
+            # Reduce our arrays to where the radius is "fine"
             idx = (rr <= R ** 2).nonzero()[0]
             rx = take(rx, idx)
             ry = take(ry, idx)
+            arctan2(ry, rx, out=rx) # theta == rx
             rz = take(rz, idx)
-            rr = sqrt(take(rr, idx))
-            theta = arctan2(ry, rx)
-            cos_phi = rz / rr
-            cos_phi[rr == 0.] = 0
-            return n, idx, rr, theta, cos_phi
+            sqrt(take(rr, idx), out=ry) # rr == ry
+            divide(rz, ry, out=rz) # cos_phi == rz
+            rz[ry == 0.] = 0
+            return n, idx, ry, rx, rz
 
         # Easier and shorter
         geom = self.geometry
@@ -604,6 +611,9 @@ class Grid(SuperCellChild):
 
         # Before continuing, we can easily clean up the temporary arrays
         del ctheta, stheta, cphi, sphi, nrxyz, rxyz, origo, idx
+
+        aranged = _a.aranged
+        addouter = add.outer
 
         # Loop over all atoms in the full supercell structure
         for IA in range(geom.na_s):
@@ -662,10 +672,14 @@ class Grid(SuperCellChild):
 
             # Now idxm/M contains min/max indices used
             # Convert to xyz-coordinate
-            ix, iy, iz = ogrid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1]
+            sx = slice(idxm[0], idxM[0]+1)
+            sy = slice(idxm[1], idxM[1]+1)
+            sz = slice(idxm[2], idxM[2]+1)
 
             # Convert to spherical coordinates
-            n, idx, r, theta, phi = idx2spherical(ix, iy, iz, xyz, dcell, R)
+            n, idx, r, theta, phi = idx2spherical(aranged(idxm[0], idxM[0] + 0.5),
+                                                  aranged(idxm[1], idxM[1] + 0.5),
+                                                  aranged(idxm[2], idxM[2] + 0.5), xyz, dcell, R)
 
             # Allocate a temporary array where we add the psi elements
             psi = psi_init(n)
@@ -705,14 +719,14 @@ class Grid(SuperCellChild):
                     psi[idx1] += o.psi_spher(r1, theta1, phi1, cos_phi=True) * (v[io] * phase)
 
             # Clean-up
-            del idx1, r1, theta1, phi1
+            del idx1, r1, theta1, phi1, idx, r, theta, phi
 
-            # Convert to correct shape and add the current atoms contribution
-            psi.shape = (ix.size, iy.size, iz.size)
-            self.grid[ix, iy, iz] += psi
+            # Convert to correct shape and add the current atom contribution to the wavefunction
+            psi.shape = idxM - idxm + 1
+            self.grid[sx, sy, sz] += psi
 
-            # Clean-up
-            del psi, idx, r, theta, phi
+        # Reset the error code for division
+        np.seterr(**old_err)
 
     def __repr__(self):
         """ Representation of object """

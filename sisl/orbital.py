@@ -163,8 +163,8 @@ def rspherical_harm(m, l, theta, cos_phi):
     if m == 0:
         return msqrt((2*l + 1)/_pi4) * lpmv(m, l, cos_phi)
     elif m < 0:
-        return -msqrt(2*(2*l + 1)/_pi4 * fact(l-m)/fact(l+m)) * lpmv(m, l, cos_phi) * sin(m*theta) * (-1) ** m
-    return msqrt(2*(2*l + 1)/_pi4 * fact(l-m)/fact(l+m)) * lpmv(m, l, cos_phi) * cos(m*theta)
+        return (-msqrt(2*(2*l + 1)/_pi4 * fact(l-m)/fact(l+m)) * sin(m*theta) * (-1) ** m)* lpmv(m, l, cos_phi)
+    return (msqrt(2*(2*l + 1)/_pi4 * fact(l-m)/fact(l+m)) * cos(m*theta))* lpmv(m, l, cos_phi)
 
 
 class Orbital(object):
