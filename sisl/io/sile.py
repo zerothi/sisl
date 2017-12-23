@@ -190,8 +190,12 @@ def get_sile_class(file, *args, **kwargs):
         # Figure out if fcls is a valid sile, if not
         # do nothing (it may be part of the file name)
         # Which is REALLY obscure... but....)
+        fclsl = fcls.lower()
         for sile in __siles:
-            if sile.__name__.lower().startswith(fcls.lower()):
+            if fclsl in sile.__name__.lower():
+                cls = sile
+                file = tmp_file
+            elif sile.__name__.lower().startswith(fclsl):
                 cls = sile
                 # Make sure that {class-name} is
                 # removed from the file name
@@ -246,7 +250,8 @@ def get_sile_class(file, *args, **kwargs):
         import traceback as t
         t.print_exc()
         raise e
-    raise NotImplementedError("Sile for file '"+ file + "' could not be found, possibly the file has not been implemented.")
+    raise NotImplementedError("Sile for file '{}' could not be found, "
+                              "possibly the file has not been implemented.".format(file))
 
 
 def get_sile(file, *args, **kwargs):

@@ -24,6 +24,7 @@ def teardown_module(module):
 
 
 gs = get_sile
+gsc = get_sile_class
 
 
 def stdoutfile(f):
@@ -34,6 +35,27 @@ def stdoutfile(f):
 
 def _my_intersect(a, b):
     return list(set(get_siles(a)).intersection(get_siles(b)))
+
+
+@pytest.mark.io
+def test_get_sile1():
+    cls = gsc('test.xyz')
+    assert issubclass(cls, XYZSile)
+
+    cls = gsc('test.regardless{XYZ}')
+    assert issubclass(cls, XYZSile)
+
+    cls = gsc('test.fdf{XYZ}')
+    assert issubclass(cls, XYZSile)
+
+    cls = gsc('test.fdf{XYZ}')
+    assert issubclass(cls, XYZSile)
+
+
+@pytest.mark.io
+@pytest.mark.xfail(raises=NotImplementedError)
+def test_get_sile2():
+    gsc('test.this_file_does_not_exist')
 
 
 @pytest.mark.io
