@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from functools import partial
 import numpy as np
 
 # Import sile objects
@@ -72,7 +73,9 @@ class CUBESile(Sile):
         self.write_geometry(grid.geom, size=grid.grid.shape, *args, **kwargs)
 
         buffersize = kwargs.get('buffersize', min(6144, grid.grid.size))
+        buffersize += buffersize % 6 # ensure multiple of 6
 
+        # Whether we should write out the imaginary part of the array
         imag = kwargs.get('imag', False)
 
         # A CUBE file contains grid-points aligned like this:
@@ -80,15 +83,24 @@ class CUBESile(Sile):
         #   for y
         #     for z
         #       write...
-        _fmt = '{:' + fmt + '}\n'
+        _fmt1 = '{:' + fmt + '} '
+        _fmt6 = (_fmt1 * 6)[:-1] + '\n'
+        __fmt = _fmt6 * (buffersize // 6)
+
         if imag:
             for z in np.nditer(np.asarray(grid.grid.imag, order='C').reshape(-1), flags=['external_loop', 'buffered'],
                                op_flags=[['readonly']], order='C', buffersize=buffersize):
-                self._write((_fmt * z.shape[0]).format(*z.tolist()))
+                if z.shape[0] != buffersize:
+                    s = z.shape[0]
+                    __fmt = _fmt6 * (s // 6) + _fmt1 * (s % 6) + '\n'
+                self._write(__fmt.format(*z.tolist()))
         else:
             for z in np.nditer(np.asarray(grid.grid.real, order='C').reshape(-1), flags=['external_loop', 'buffered'],
                                op_flags=[['readonly']], order='C', buffersize=buffersize):
-                self._write((_fmt * z.shape[0]).format(*z.tolist()))
+                if z.shape[0] != buffersize:
+                    s = z.shape[0]
+                    __fmt = _fmt6 * (s // 6) + _fmt1 * (s % 6) + '\n'
+                self._write(__fmt.format(*z.tolist()))
 
         # Add a finishing line to ensure empty ending
         self._write('\n')

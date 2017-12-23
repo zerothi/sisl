@@ -108,7 +108,7 @@ class Grid(SuperCellChild):
         val : numpy.dtype
            all grid-points will have this value after execution
         """
-        self.grid[...] = val
+        self.grid.fill(val)
 
     def interp(self, shape, method='linear', **kwargs):
         """ Returns an interpolated version of the grid
@@ -213,7 +213,7 @@ class Grid(SuperCellChild):
         grid = self.__class__(np.copy(self.shape), bc=np.copy(self.bc),
                               dtype=self.dtype,
                               geom=self.geom.copy())
-        grid.grid[:, :, :] = self.grid[:, :, :]
+        grid.grid = self.grid.copy()
         return grid
 
     def swapaxes(self, a, b):
@@ -286,7 +286,7 @@ class Grid(SuperCellChild):
         grid.set_sc(cell)
 
         # Calculate sum (retain dimensions)
-        grid.grid[:, :, :] = np.sum(self.grid, axis=axis, keepdims=True)
+        np.sum(self.grid, axis=axis, keepdims=True, out=grid.grid)
         return grid
 
     def average(self, axis):
@@ -786,10 +786,10 @@ class Grid(SuperCellChild):
         Returns same shape with same cell as the first"""
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be subtracted')
-            grid.grid = self.grid - other.grid
+            np.subtract(self.grid, other.grid, out=grid.grid)
         else:
             grid = self.copy()
-            grid.grid = self.grid - other
+            np.subtract(self.grid, other, out=grid.grid)
         return grid
 
     def __isub__(self, other):
@@ -812,10 +812,10 @@ class Grid(SuperCellChild):
     def __truediv__(self, other):
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be divided')
-            grid.grid = self.grid / other.grid
+            np.divide(self.grid, other.grid, out=grid.grid)
         else:
             grid = self.copy()
-            grid.grid = self.grid / other
+            np.divide(self.grid, other, out=grid.grid)
         return grid
 
     def __itruediv__(self, other):
@@ -829,10 +829,10 @@ class Grid(SuperCellChild):
     def __mul__(self, other):
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be multiplied')
-            grid.grid = self.grid * other.grid
+            np.multiply(self.grid, other.grid, out=grid.grid)
         else:
             grid = self.copy()
-            grid.grid = self.grid * other
+            np.multiply(self.grid, other, out=grid.grid)
         return grid
 
     def __imul__(self, other):
