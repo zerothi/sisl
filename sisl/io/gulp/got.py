@@ -130,7 +130,7 @@ class gotSileGULP(SileGULP):
                         break
 
                     ls = l.split()
-                    Z.append({'Z': ls[1], 'orbs': 3})
+                    Z.append(Atom(ls[1], orbital=[-1] * 3))
                     xyz.append([float(x) for x in ls[3:6]])
 
                 # Convert to array and correct size
@@ -155,7 +155,7 @@ class gotSileGULP(SileGULP):
             xyz = np.dot(xyz, sc.cell)
 
         # Return the geometry
-        return Geometry(xyz, Atom[Z], sc=sc)
+        return Geometry(xyz, Z, sc=sc)
 
     def set_hessian_key(self, key):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """
