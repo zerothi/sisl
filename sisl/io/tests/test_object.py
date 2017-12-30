@@ -36,8 +36,10 @@ def stdoutfile(f):
 def _my_intersect(a, b):
     return list(set(get_siles(a)).intersection(get_siles(b)))
 
+
 def _fnames(base, variants):
     return [base + '.' + v if len(v) > 0 else base for v in variants]
+
 
 @pytest.mark.io
 def test_get_sile1():

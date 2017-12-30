@@ -6,6 +6,7 @@ import gzip
 import numpy as np
 
 from sisl.utils.misc import str_spec
+from sisl._help import _str
 from ._help import *
 
 
@@ -44,7 +45,65 @@ __sile_rules = []
 __siles = []
 
 
-def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
+class _sile_rule(object):
+    """ Internal data-structure to check whether a file is the same as this sile """
+
+    __slots__ = ('cls', 'case', 'suffix', 'gzip', 'bases')
+
+    def __init__(self, cls, suffix, case=True, gzip=False):
+        self.cls = cls
+        self.case = case
+        if not case:
+            self.suffix = suffix.lower()
+        else:
+            self.suffix = suffix
+        self.gzip = gzip
+        self.bases = self.build_bases()
+
+    def build_bases(self):
+        """ Return a list of all classes that this file is inheriting from (except Sile, SileBin or SileCDF) """
+        children = list(self.cls.__bases__) + [self.cls]
+        nl = -1
+        while len(children) != nl:
+            nl = len(children)
+            # Remove baseclasses everybody have
+            for obj in [object, BaseSile, Sile, SileBin, SileCDF]:
+                try:
+                    i = children.index(obj)
+                    children.pop(i)
+                except:
+                    pass
+            for child in list(children): # ensure we have a copy for infinite loops
+                for c in child.__bases__:
+                    if c not in children:
+                        children.append(c)
+
+        return children
+
+    def in_bases(self, base):
+        """ Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) """
+        for sub in self.bases:
+            n = sub.__name__.lower()
+            if n.startswith(base) or base in n:
+                return True
+        return False
+
+    def is_suffix(self, suffix):
+        if not self.case:
+            suffix = suffix.lower()
+        # Now check names and (possibly gzip)
+        my_suffix = self.suffix
+        if suffix == my_suffix:
+            return True
+        if not self.gzip:
+            return False
+        return suffix == (my_suffix + ".gz")
+
+    def is_class(self, cls):
+        return self.cls == cls
+
+
+def add_sile(suffix, cls, case=True, gzip=False):
     """ Add files to the global lookup table
 
     Public for attaching lookup tables for allowing
@@ -52,116 +111,39 @@ def add_sile(ending, cls, case=True, gzip=False, _parent_cls=None):
 
     Parameters
     ----------
-    ending : str
-         The file-name ending, it can be several file endings (.TBT.nc)
+    suffix : str
+         The file-name suffix, it can be several file endings (.TBT.nc)
     cls : child of BaseSile
          An object that is associated with the respective file.
          It must be inherited from `BaseSile`.
     case : bool, optional
-         Whether case sensitivity is applicable for determining
-         file.
+         Whether case sensitivity is applicable for determining file.
     gzip : bool, optional
          Whether files with ``.gz`` endings can be read.
          This option should only be given to files with ASCII text
          output.
-         It will automatically call:
-
-             add_sile(ending+'.gz',...,gzip=False)
-
-         to add the gzipped file to the list of possible files.
     """
     global __sile_rules, __siles
 
     # Only add pure suffixes...
-    if ending[0] == '.':
-        add_sile(ending[1:], cls, case=case, gzip=gzip, _parent_cls=_parent_cls)
-        return
-
-    # The parent_obj is the actual class used to construct
-    # the output file
-    if _parent_cls is None:
-        _parent_cls = cls
+    if suffix.startswith('.'):
+        suffix = suffix[1:]
 
     # If it isn't already in the list of
     # Siles, add it.
     if cls not in __siles:
         __siles.append(cls)
 
-    # These classes will never be added to the
-    # children. It makes no sense to
-    # have bases which are common for all files.
-    # Or does it?
-    # What if a file-extension may both represent a
-    # formatted, or a binary file?
-    # In that case should:
-    #  def_cls = [object, BaseSile]
-    def_cls = [object, BaseSile, Sile, SileBin, SileCDF]
-
-    # First we find the base-class
-    # This base class must not be
-    #  BaseSile
-    #  Sile
-    #  SileBin
-    #  SileCDF
-    def get_children(cls):
-        # List all childern
-        children = list(cls.__bases__)
-        for child in children:
-            cchildren = get_children(child)
-            for cchild in cchildren:
-                if cchild not in children:
-                    children.append(cchild)
-        remove_cls(children, def_cls)
-        return children
-
-    def remove_cls(l, clss):
-        for ccls in clss:
-            if ccls in l:
-                l.remove(ccls)
-
-    # Finally we append the child objects
-    inherited = get_children(cls)
-
-    # Now we should remove all objects which are descendants from
-    # another object in the list
-    # We also default this base-class to be removed
-    rem = [object, cls]
-    for ccls in inherited:
-        inh = get_children(ccls)
-        for cccls in inh:
-            if cccls in inherited:
-                rem.append(cccls)
-    remove_cls(inherited, rem)
-
-    # Now, we finally have a list of classes which
-    # are a single sub-class of the actual class.
-    for ccls in inherited:
-        add_sile(ending, ccls, case=case, gzip=gzip, _parent_cls=_parent_cls)
-
-    # If the gzip is none, we decide whether we can
-    # read gzipped files
-    # In particular, if the cls is a `Sile`, we allow
-    # such reading
-    if not case:
-        add_sile(ending.lower(), cls, gzip=gzip, _parent_cls=_parent_cls)
-        add_sile(ending.upper(), cls, gzip=gzip, _parent_cls=_parent_cls)
-
-    else:
-        # Add the rule of the sile to the list of rules.
-
-        # First loop and check that the sile does not exist
-        __sile_rules.append((ending, cls, _parent_cls))
-
-        if gzip:
-            add_sile(ending + '.gz', cls, case=case, _parent_cls=_parent_cls)
+    # Add the rule of the sile to the list of rules.
+    __sile_rules.append(_sile_rule(cls, suffix, case=case, gzip=gzip))
 
 
-def get_sile_class(file, *args, **kwargs):
+def get_sile_class(filename, *args, **kwargs):
     """ Retrieve a class from the global lookup table via filename and the extension
 
     Parameters
     ----------
-    file : str
+    filename : str
        the file to be quried for a correct file object.
        This file name may contain {<class-name>} which sets
        `cls` in case `cls` is not set.
@@ -170,7 +152,7 @@ def get_sile_class(file, *args, **kwargs):
           water.xyz
 
        will return an `XYZSile`.
-    cls : class
+    cls : class, optional
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.
        If there are several files with similar file-endings this
@@ -183,7 +165,7 @@ def get_sile_class(file, *args, **kwargs):
 
     # Split filename into proper file name and
     # the specification of the type
-    tmp_file, fcls = str_spec(file)
+    tmp_file, fcls = str_spec(filename)
 
     if cls is None and not fcls is None:
         # cls has not been set, and fcls is found
@@ -191,20 +173,15 @@ def get_sile_class(file, *args, **kwargs):
         # do nothing (it may be part of the file name)
         # Which is REALLY obscure... but....)
         fclsl = fcls.lower()
-        for sile in __siles:
-            if fclsl in sile.__name__.lower():
-                cls = sile
-                file = tmp_file
-            elif sile.__name__.lower().startswith(fclsl):
-                cls = sile
-                # Make sure that {class-name} is
-                # removed from the file name
-                file = tmp_file
+        for sr in __sile_rules:
+            if sr.in_bases(fclsl):
+                cls = sr.cls
+                filename = tmp_file
                 break
-
+        print(cls, filename)
     try:
         # Create list of endings on this file
-        f = file
+        f = filename
         end_list = []
         end = ''
 
@@ -227,31 +204,25 @@ def get_sile_class(file, *args, **kwargs):
 
         # First we check for class AND file ending
         for end in end_list:
-            for suf, base, fobj in __sile_rules:
-                if end != suf:
-                    continue
-                if cls is None:
-                    return fobj
-                elif cls == base:
-                    return fobj
+            for sr in __sile_rules:
+                if sr.is_suffix(end) or sr.is_class(cls):
+                    return sr.cls
 
         # Now we skip the limitation of the suffix,
         # now only the base-class is necessary.
-        for suf, base, fobj in __sile_rules:
-            if cls == base:
-                return fobj
+        if cls is not None:
+            for sr in __sile_rules:
+                if sr.in_bases(cls):
+                    return sr.cls
 
         del end_list
 
-        raise NotImplementedError('sile not implemented: {}'.format(file))
-    except NotImplementedError as e:
-        pass
     except Exception as e:
         import traceback as t
         t.print_exc()
         raise e
     raise NotImplementedError("Sile for file '{}' could not be found, "
-                              "possibly the file has not been implemented.".format(file))
+                              "possibly the file has not been implemented.".format(filename))
 
 
 def get_sile(file, *args, **kwargs):
