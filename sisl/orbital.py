@@ -733,8 +733,9 @@ class AtomicOrbital(Orbital):
             self.orb = SphericalOrbital(l, s)
 
         if self.orb is None:
-            raise ValueError(self.__class__.__name__ + " is not initialized with an "
-                             "orbital which contains the radial function.")
+            # Default orbital to none, this will not create any radial functions
+            # But any use of the orbital will still work
+            self.orb = Orbital(-1.)
 
         self.R = self.orb.R
 
