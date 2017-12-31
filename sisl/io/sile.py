@@ -48,7 +48,7 @@ __siles = []
 class _sile_rule(object):
     """ Internal data-structure to check whether a file is the same as this sile """
 
-    __slots__ = ('cls', 'case', 'suffix', 'gzip', 'bases')
+    __slots__ = ('cls', 'case', 'suffix', 'gzip', 'bases', 'base_names')
 
     def __init__(self, cls, suffix, case=True, gzip=False):
         self.cls = cls
@@ -59,6 +59,7 @@ class _sile_rule(object):
             self.suffix = suffix
         self.gzip = gzip
         self.bases = self.build_bases()
+        self.base_names = [c.__name__.lower() for c in self.bases]
 
     def build_bases(self):
         """ Return a list of all classes that this file is inheriting from (except Sile, SileBin or SileCDF) """
@@ -82,11 +83,30 @@ class _sile_rule(object):
 
     def in_bases(self, base):
         """ Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) """
-        for sub in self.bases:
-            n = sub.__name__.lower()
-            if n.startswith(base) or base in n:
+        if base is None:
+            return True
+        elif isinstance(base, object):
+            base = base.__name__.lower()
+        for b in self.base_names:
+            if b.startswith(base) or base in b:
                 return True
         return False
+
+    def get_base(self, base):
+        """ Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) """
+        if base is None:
+            return None
+        for bn, b in zip(self.base_names, self.bases):
+            if bn.startswith(base) or base in bn:
+                return b
+        return None
+
+    def in_class(self, base):
+        """ Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) """
+        if base is None:
+            return False
+        n = self.cls.__name__.lower()
+        return (n.startswith(base) or base in n)
 
     def is_suffix(self, suffix):
         if not self.case:
@@ -101,6 +121,9 @@ class _sile_rule(object):
 
     def is_class(self, cls):
         return self.cls == cls
+
+    def is_subclass(self, cls):
+        return issubclass(self.cls, cls)
 
 
 def add_sile(suffix, cls, case=True, gzip=False):
@@ -174,11 +197,14 @@ def get_sile_class(filename, *args, **kwargs):
         # Which is REALLY obscure... but....)
         fclsl = fcls.lower()
         for sr in __sile_rules:
-            if sr.in_bases(fclsl):
+            if sr.in_class(fclsl):
                 cls = sr.cls
+            else:
+                cls = sr.get_base(fclsl)
+            if cls is not None:
                 filename = tmp_file
                 break
-        print(cls, filename)
+
     try:
         # Create list of endings on this file
         f = filename
@@ -203,26 +229,32 @@ def get_sile_class(filename, *args, **kwargs):
         end_list = list(reversed(end_list))
 
         # First we check for class AND file ending
+        clss = None
         for end in end_list:
             for sr in __sile_rules:
-                if sr.is_suffix(end) or sr.is_class(cls):
+                if sr.is_class(cls):
+                    # class-specification has precedence
+                    # This should only occur when the
+                    # class-specification is exact (i.e. XYZSile)
                     return sr.cls
+                elif sr.is_suffix(end):
+                    if cls is None:
+                        return sr.cls
+                    elif sr.is_subclass(cls):
+                        return sr.cls
+                    clss = sr.cls
+            if clss is not None:
+                return clss
 
-        # Now we skip the limitation of the suffix,
-        # now only the base-class is necessary.
-        if cls is not None:
-            for sr in __sile_rules:
-                if sr.in_bases(cls):
-                    return sr.cls
-
-        del end_list
+        if clss is None:
+            raise NotImplementedError("Sile for file '{}' could not be found, "
+                                      "possibly the file has not been implemented.".format(filename))
+        return clss
 
     except Exception as e:
         import traceback as t
         t.print_exc()
         raise e
-    raise NotImplementedError("Sile for file '{}' could not be found, "
-                              "possibly the file has not been implemented.".format(filename))
 
 
 def get_sile(file, *args, **kwargs):

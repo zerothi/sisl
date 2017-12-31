@@ -55,6 +55,11 @@ def test_get_sile1():
     cls = gsc('test.fdf{XYZ}')
     assert issubclass(cls, XYZSile)
 
+    cls = gsc('test.xyz{fdf}')
+    assert issubclass(cls, fdfSileSiesta)
+    cls = gsc('test.cube{fdf}')
+    assert issubclass(cls, fdfSileSiesta)
+
 
 @pytest.mark.io
 @pytest.mark.xfail(raises=NotImplementedError)
