@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import re
 import numpy as np
 
 # Import sile objects
@@ -158,10 +159,10 @@ class TableSile(Sile):
 
         if line.startswith(self._comment[0]):
             header = line
+            line = self.readline()
 
         # Now we are ready to read the data
         dat = [[]]
-        line = self.readline()
 
         # First we need to figure out the separator:
         len_sep = 0
@@ -176,18 +177,21 @@ class TableSile(Sile):
                 raise ValueError(self.__class__.__name__ + '.read_data could not determine '
                                  'column separator...')
 
+        empty = re.compile(r'\s*\n')
         while len(line) > 0:
             # If we start a line by a comment, or a newline
             # then we have a new data set
-            if line.startswith('\n'):
-                dat[-1] = ensure_array(dat[-1], np.float64)
-                dat.append([])
+            if empty.match(line) is not None:
+                if len(dat[-1]) > 0:
+                    dat[-1] = ensure_array(dat[-1], np.float64)
+                    dat.append([])
             else:
                 line = [l for l in line.split(sep) if len(l) > 0]
                 dat[-1].append(ensure_array(map(float, line), np.float64))
 
             line = self.readline()
-        dat[-1] = ensure_array(dat[-1], np.float64)
+        if len(dat[-1]) > 0:
+            dat[-1] = ensure_array(dat[-1], np.float64)
 
         # Ensure we have no false positives
         dat = [d for d in dat if len(d) > 0]

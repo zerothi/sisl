@@ -52,7 +52,10 @@ class outSileSiesta(SileSiesta):
         atom = []
         while 'Species number:' in line:
             ls = line.split()
-            atom.append(Atom(int(ls[5]), tag=ls[7]))
+            if ls[3] == 'Atomic':
+                atom.append(Atom(int(ls[5]), tag=ls[7]))
+            else:
+                atom.append(Atom(int(ls[7]), tag=ls[4]))
             line = self.readline()
 
         return atom
