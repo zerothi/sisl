@@ -392,15 +392,16 @@ class SparseOrbitalBZ(SparseOrbital):
                                       eigvals_only=eigvals_only, **kwargs)
             return eig
 
+        dtype = kwargs.pop('dtype', None)
         if atom is None:
-            P = self.Pk(k=k, gauge=gauge, format='array')
+            P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
             if not self.orthogonal:
-                S = self.Sk(k=k, gauge=gauge, format='array')
+                S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
 
         else:
-            P = self.Pk(k=k, gauge=gauge)
+            P = self.Pk(k=k, dtype=dtype, gauge=gauge)
             if not self.orthogonal:
-                S = self.Sk(k=k, gauge=gauge)
+                S = self.Sk(k=k, dtype=dtype, gauge=gauge)
 
             # Reduce sparsity pattern
             orbs = self.a2o(atom, all=True).reshape(-1, 1)
@@ -436,7 +437,9 @@ class SparseOrbitalBZ(SparseOrbital):
         # We always request the smallest eigenvalues...
         kwargs.update({'which': kwargs.get('which', 'SM')})
 
-        P = self.Pk(k=k, gauge=gauge)
+        dtype = kwargs.pop('dtype', None)
+
+        P = self.Pk(k=k, dtype=dtype, gauge=gauge)
         if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
 
@@ -1045,27 +1048,28 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                                       eigvals_only=eigvals_only, **kwargs)
             return eig
         spin = kwargs.pop('spin', 0)
+        dtype = kwargs.pop('dtype', None)
 
         if atom is None:
             if self.spin.kind == Spin.POLARIZED:
-                P = self.Pk(k=k, gauge=gauge, spin=spin, format='array')
+                P = self.Pk(k=k, dtype=dtype, gauge=gauge, spin=spin, format='array')
             else:
-                P = self.Pk(k=k, gauge=gauge, format='array')
+                P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
             if not self.orthogonal:
-                S = self.Sk(k=k, gauge=gauge, format='array')
+                S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
 
         else:        # Reduce sparsity pattern
             if self.spin.kind == Spin.POLARIZED:
-                P = self.Pk(k=k, gauge=gauge, spin=spin)
+                P = self.Pk(k=k, dtype=dtype, gauge=gauge, spin=spin)
             else:
-                P = self.Pk(k=k, gauge=gauge)
+                P = self.Pk(k=k, dtype=dtype, gauge=gauge)
 
             # Reduce space
             orbs = self.a2o(atom, all=True).reshape(-1, 1)
 
             P = P[orbs, orbs.T].toarray()
             if not self.orthogonal:
-                S = self.Sk(k=k, gauge=gauge)[orbs, orbs.T].toarray()
+                S = self.Sk(k=k, dtype=dtype, gauge=gauge)[orbs, orbs.T].toarray()
 
         if self.orthogonal:
             return lin.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
@@ -1100,12 +1104,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         # We always request the smallest eigenvalues...
         spin = kwargs.pop('spin', 0)
+        dtype = kwargs.pop('dtype', None)
         kwargs.update({'which': kwargs.get('which', 'SM')})
 
         if self.spin.kind == Spin.POLARIZED:
-            P = self.Pk(k=k, spin=spin, gauge=gauge)
+            P = self.Pk(k=k, dtype=dtype, spin=spin, gauge=gauge)
         else:
-            P = self.Pk(k=k, gauge=gauge)
+            P = self.Pk(k=k, dtype=dtype, gauge=gauge)
         if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
 

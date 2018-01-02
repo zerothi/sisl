@@ -530,6 +530,22 @@ class fdfSileSiesta(SileSiesta):
                 atom[idx] = Atom(Z=Z, tag=lbl)
         return atom
 
+    def read_density_matrix(self, *args, **kwargs):
+        """ Try and read the density matrix by reading the <>.nc """
+        sys = self.get('SystemLabel', default='siesta')
+
+        if isfile(sys + '.nc'):
+            return ncSileSiesta(sys + '.nc').read_density_matrix()
+        raise ValueError("Could not find the density matrix from the *.nc.")
+
+    def read_energy_density_matrix(self, *args, **kwargs):
+        """ Try and read the energy density matrix by reading the <>.nc """
+        sys = self.get('SystemLabel', default='siesta')
+
+        if isfile(sys + '.nc'):
+            return ncSileSiesta(sys + '.nc').read_energy_density_matrix()
+        raise ValueError("Could not find the energy density matrix from the *.nc.")
+
     def read_hamiltonian(self, *args, **kwargs):
         """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files (in that order) """
         sys = self.get('SystemLabel', default='siesta')
@@ -543,8 +559,9 @@ class fdfSileSiesta(SileSiesta):
                 if len(s) == 0:
                     continue
                 # Only replace if the number of orbitals is correct
-                if a.no == H.geom.atom[s[0]].no:
-                    H.geom.atom.replace(H.geom.atom[s[0]], a)
+                i = s[0]
+                if a.no == H.geom.atom[i].no:
+                    H.geom.atom.replace(H.geom.atom[i], a)
             return H
         raise ValueError("Could not find the Hamiltonian from the *.nc, nor the *.TSHS file.")
 

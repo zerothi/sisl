@@ -168,7 +168,7 @@ class ncSileSiesta(SileCDFSiesta):
         return C
 
     def read_hamiltonian(self, **kwargs):
-        """ Returns a tight-binding model from the underlying NetCDF file """
+        """ Returns a Hamiltonian from the underlying NetCDF file """
         H = self._read_class_spin(Hamiltonian, **kwargs)
         S = H._csr._D[:, H.S_idx]
 
@@ -186,7 +186,11 @@ class ncSileSiesta(SileCDFSiesta):
         return H
 
     def read_hessian(self, **kwargs):
-        """ Returns a tight-binding model from the underlying NetCDF file """
+        """ Returns a Hessian from the underlying NetCDF file
+
+        This assumes that the Hessian is stored in the field "H" as would the
+        Hamiltonian. This is counter-intuitive but is required when using PHtrans.
+        """
         H = self._read_class_spin(Hessian, **kwargs)
 
         sp = self._crt_grp(self, 'SPARSE')
