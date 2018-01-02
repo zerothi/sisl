@@ -123,25 +123,9 @@ an orthogonal unit-cell by adding the flag `orthogonal=True` in the call:
 
 #### IO-manipulation ####
 
-sisl employs a variety of IO interfaces for managing geometries.
-
-The hard-coded file formats are:
-
-1. ___xyz___, standard coordinate format
- Note that the the _xyz_ file format does not _per see_ contain the cell size.
- The `XYZSile` writes the cell information in the `xyz` file comment section (2nd line). Hence if the file was written with sisl you retain the cell information.
-2. ___gout___, reads geometries from GULP output
-3. ___nc___, reads/writes NetCDF4 files created by SIESTA
-4. ___TBT.nc___/___PHT.nc___, reads NetCDF4 files created by TBtrans/PHtrans
-5. ___tb___, intrinsic file format for geometry/tight-binding models
-6. ___fdf___, SIESTA native format
-7. ___XV___, SIESTA coordinate format with velocities
-8. ___POSCAR___/___CONTCAR___, VASP coordinate format
-9. ___ASCII___, BigDFT coordinate format
-10. ___win___, Wannier90 Hamiltonian and Wannier centres
-11. ___xsf___, XCrySDen file format
-12. ScaleUP file formats
-
+sisl employs a variety of IO interfaces for managing different physical quantities.
+A large variety of files describing the geometry (atomic positions and species) are
+the main part of the IO routines.
 
 All text files can also be read from their gzipped file formats with transparency.
 

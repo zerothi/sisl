@@ -67,16 +67,23 @@ for subdir, dirs, files in os.walk('sisl'):
 
 
 def readme():
-    if osp.exists('README.md'):
+    if not osp.exists('README.md'):
+        return ""
+    try:
+        import codecs
+        from markdown import markdown
+        md = codecs.open("README.md", mode="r", encoding="utf-8").read()
+        html = markdown(md, output_format='html4')
+        return html
+    except:
         return open('README.md').read()
-    return ""
 
 metadata = dict(
     name='sisl',
     maintainer="Nick R. Papior",
     maintainer_email="nickpapior@gmail.com",
     description="Tight-binding models (interface to NEGF calculator TBtrans) and generic DFT output manipulation",
-    long_description="Documentation of sisl may be found here: https://zerothi.github.io/sisl\n\n\n" + readme(),
+    long_description=readme(),
     url="http://github.com/zerothi/sisl",
     download_url="http://github.com/zerothi/sisl/releases",
     license='LGPLv3',
