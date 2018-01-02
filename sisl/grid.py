@@ -169,6 +169,11 @@ class Grid(SuperCellChild):
         """ Returns the data-type of the grid """
         return self.grid.dtype
 
+    @property
+    def dkind(self):
+        """ The data-type of the grid (in str) """
+        return np.dtype(self.grid.dtype).kind
+
     def set_grid(self, shape, dtype=None):
         """ Create the internal grid of certain size.
         """
@@ -730,7 +735,7 @@ class Grid(SuperCellChild):
 
     def __repr__(self):
         """ Representation of object """
-        return self.__class__.__name__ + '{{[{} {} {}]}}'.format(*self.shape)
+        return self.__class__.__name__ + '{{kind={kind}, [{} {} {}]}}'.format(*self.shape, kind=self.dkind)
 
     def _check_compatibility(self, other, msg):
         """ Internal check for asserting two grids are commensurable """
