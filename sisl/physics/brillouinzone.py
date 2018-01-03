@@ -7,6 +7,7 @@ from numpy import pi
 import numpy as np
 from numpy import sum, dot
 
+import sisl._array as _a
 from sisl.supercell import SuperCell
 
 
@@ -443,7 +444,7 @@ class PathBZ(BrillouinZone):
 
         Parameters
         ----------
-        ticks : bool
+        ticks : bool, optional
            if `True` the ticks for the points are also returned
 
            xticks, label_ticks, lk = PathBZ.lineark(True)
@@ -451,37 +452,26 @@ class PathBZ(BrillouinZone):
         """
         # Calculate points
         k = [self.tocartesian(pnt) for pnt in self.point]
+        # Get difference between points
         dk = np.diff(k, axis=0)
+        # Calculate the cumultative distance between points
+        k_len = np.insert(_a.cumsumd((dk ** 2).sum(1) ** .5), 0, 0.)
         xtick = [None] * len(k)
         # Prepare output array
-        dK = np.empty(len(self), np.float64)
+        dK = _a.emptyd(len(self))
 
-        ii, add = 0, 0.
+        # short-hand
+        ls = np.linspace
+
+        xtick = np.insert(_a.cumsumi(self.division), 0, 0)
         for i in range(len(dk)):
-            xtick[i] = ii
             n = self.division[i]
+            end = i == len(dk) - 1
 
-            # Calculate the delta along this segment
-            delta = sum(dk[i, :] ** 2) ** .5
+            dK[xtick[i]:xtick[i+1]] = ls(k_len[i], k_len[i+1], n, dtype=np.float64, endpoint=end)
+        xtick[-1] -= 1
 
-            if i == len(dk) - 1:
-                # to get end-point correctly
-                delta /= n - 1
-            else:
-                delta /= n
-            dK[ii:ii+n] = np.linspace(add, add + delta * n, n, dtype=np.float64)
-            ii += n
-
-            # Calculate the next separation
-            # The addition is the latest delta point plus the
-            # missing delta to reach the starting point for the
-            # next point in the BZ
-            add = dK[ii-1] + delta
-
-        # Final tick-mark
-        xtick[len(dk)] = ii - 1
-
-        # Get label tick
+        # Get label tick, in case self.name is a single string 'ABCD'
         label_tick = [a for a in self.name]
         if ticks:
             return dK[xtick], label_tick, dK
