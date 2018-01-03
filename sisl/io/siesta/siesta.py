@@ -39,7 +39,7 @@ class ncSileSiesta(SileCDFSiesta):
     def read_basis(self):
         """ Returns a set of atoms corresponding to the basis-sets in the nc file """
         if 'BASIS' not in self.groups:
-            return []
+            return None
 
         basis = self.groups['BASIS']
         atom = [None] * len(basis.groups)

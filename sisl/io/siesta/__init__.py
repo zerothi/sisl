@@ -25,6 +25,7 @@ to the implicit relationship between the developer of sisl and `Siesta`_.
    TSGFSileSiesta - TranSiesta surface Green function files
    ncSileSiesta - NetCDF output file
    ionxmlSileSiesta - Basis-information from the ion.xml files
+   OrbIndxSileSiesta - Basis set information (no geometry information)
 
 """
 from .sile import *
@@ -34,6 +35,7 @@ from .basis import *
 from .binaries import *
 from .eig import *
 from .fdf import *
+from .orb_indx import *
 from .out import *
 from .pdos import *
 from .siesta import *
