@@ -25,14 +25,15 @@ class Grid(SuperCellChild):
     """ Object to retain grid information
 
     This grid object handles cell vectors and divisions of said grid.
-
-    A grid can be periodic and non-periodic.
     """
 
-    # Constant (should never be changed)
+    #: Constant for defining a periodic boundary condition
     PERIODIC = 1
+    #: Constant for defining a Neumann boundary condition
     NEUMANN = 2
+    #: Constant for defining a Dirichlet boundary condition
     DIRICHLET = 3
+    #: Constant for defining an open boundary condition
     OPEN = 4
 
     def __init__(self, shape, bc=None, sc=None, dtype=None, geom=None):

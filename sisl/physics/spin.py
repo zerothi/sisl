@@ -27,10 +27,21 @@ class Spin(object):
     usage of the different spin-components.
     """
 
+    #: Constant for an un-polarized spin configuration
     UNPOLARIZED = 0
+    #: Constant for a polarized spin configuration
     POLARIZED = 1
+    #: Constant for a non-colinear spin configuration
     NONCOLINEAR = 2
+    #: Constant for a spin-orbit spin configuration
     SPINORBIT = 3
+
+    #: The :math:`\sigma_x` Pauli matrix
+    PauliX = np.array([[0, 1],[1, 0]], np.complex128)
+    #: The :math:`\sigma_y` Pauli matrix
+    PauliY = np.array([[0, -1j],[1j, 0]], np.complex128)
+    #: The :math:`\sigma_z` Pauli matrix
+    PauliZ = np.array([[1, 0],[0, -1]], np.complex128)
 
     __slots__ = ['_spins', '_kind', '_dtype']
 
