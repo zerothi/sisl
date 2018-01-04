@@ -1,4 +1,5 @@
 .. Internal links:
+.. _sisl-git: http://github.com/zerothi/sisl/
 .. _pr: http://github.com/zerothi/sisl/pulls
 .. _issue: http://github.com/zerothi/sisl/issues
 .. _gh-releases: http://github.com/zerothi/sisl/releases
@@ -6,12 +7,15 @@
 .. _conda-releases: http://anaconda.org/zerothi/sisl
 
 .. These are external links:
+.. _Python: https://www.python.org/
 .. _six: https://pypi.python.org/pypi/six
 .. _setuptools: https://pypi.python.org/pypi/setuptools
 .. _NetCDF: https://www.unidata.ucar.edu/netcdf
 .. _netcdf4-py: http://github.com/Unidata/netcdf4-python
-.. _numpy: http://github.com/numpy/numpy
-.. _scipy: http://github.com/scipy/scipy
+.. _numpy: http://www.numpy.org/
+.. _scipy: https://scipy.org/scipylib/index.html
+.. _matplotlib: https://matplotlib.org/
+.. _pytest: https://docs.pytest.org/en/stable/
 
 .. DFT codes
 .. _Siesta: https://departments.icmab.es/leem/siesta

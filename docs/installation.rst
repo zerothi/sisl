@@ -5,6 +5,22 @@ Installation
 
 sisl is easy to install using any of your preferred methods.
 
+Required dependencies
+---------------------
+
+- `Python`_ 2.7, 3.4 or above
+- `six`_
+- `setuptools`_
+- `numpy`_ (1.9 or later)
+- `scipy`_
+- `netCDF4-python <netcdf4-py_>`_
+
+Optional dependencies:
+
+- `pytest`_ (for running the test suite)
+- `matplotlib`_
+- A Fortran compiler
+
 pip
 ---
 
@@ -13,6 +29,9 @@ Installing sisl using PyPi can be done using
 .. code-block:: bash
 
    pip install sisl
+
+:code:`pip` will automatically install the required dependencies. The optional dependencies
+will be used if later installed.
 
 conda
 -----
@@ -35,18 +54,12 @@ Manual installation
 -------------------
 
 sisl may be installed using the regular `setup.py` script.
-To do this the following packages are required to be in `PYTHONPATH`:
+Ensure the required dependencies are installed before proceeding with the
+manual installation (without `numpy`_ installed a spurious error message will
+appear).
 
-- `six`_
-- `setuptools`_
-- `numpy`_
-- `scipy`_
-- `netCDF4-python <netcdf4-py_>`_
-- A fortran compiler
-
-If the above listed items are installed, sisl can be installed by first
-downloading the latest release on `this page <gh-releases_>`_.
-Subsequently install sisl by
+Simply download the release tar from `this page <gh-releases_>`_, or clone
+the `git repository <sisl_git_>`_ for the latest developments
 
 .. code-block:: bash
 
@@ -56,9 +69,10 @@ Subsequently install sisl by
 Testing your installation
 -------------------------
 
-It may be good practice to test your installation using the shipped test-suite.
+After installation (by either of the above listed methods) you are encouraged
+to perform the shipped tests to ensure everything got installed correctly.
 
-To test `sisl`, ``pytest`` must be installed.
+Note that `pytest`_ needs to be installed to run the tests.
 Testing the installation may be done by:
 
 .. code-block:: bash
