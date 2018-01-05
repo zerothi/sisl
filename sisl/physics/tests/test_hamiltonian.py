@@ -9,6 +9,7 @@ import numpy as np
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, PathBZ
 from sisl import EigenState
 
+pytestmark = pytest.mark.hamiltonian
 
 @pytest.fixture
 def setup():
@@ -556,22 +557,16 @@ class TestHamiltonian(object):
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
             assert DOS.dtype.kind == 'f'
+            assert np.allclose(DOS, HS.DOS(E, k))
             repr(es)
 
     def test_dos2(self, setup):
         ES = EigenState(0, [0])
-        E = np.linspace(-6, 6, 4000)
-        dE = E[1] - E[0]
-        DOS = ES.DOS(E).sum()
-        assert np.allclose(DOS * dE, 1.)
-        DOS = ES.DOS(E, 'gaussian').sum()
+        E = np.linspace(-6, 6, 10)
+        DOS = ES.DOS(E, 'gaussian')
         assert DOS.dtype.kind == 'f'
-        assert np.allclose(DOS * dE, 1.)
-        # The Lorentzian has very broad features
-        l = ES.distribution('lorentzian', dE * 12)
-        DOS = ES.DOS(E, l).sum() * dE
+        DOS = ES.DOS(E, 'lorentzian')
         assert DOS.dtype.kind == 'f'
-        assert 0.998 < DOS and DOS <= 1.
 
     @pytest.mark.xfail(raises=ValueError)
     def test_dos3(self, setup):
@@ -589,6 +584,7 @@ class TestHamiltonian(object):
             assert PDOS.shape[0] == len(HS)
             assert PDOS.shape[1] == len(E)
             assert np.allclose(PDOS.sum(0), DOS)
+            assert np.allclose(PDOS, HS.PDOS(E, k))
 
     def test_pdos2(self, setup):
         H = setup.H.copy()
@@ -1046,3 +1042,13 @@ class TestHamiltonian(object):
         edge = H2.edges(orbital=[0, 2], exclude=[0, 1, 2, 3])
         assert len(edge) == 8
         assert len(H2.geom.o2a(edge, uniq=True)) == 4
+
+
+@pytest.mark.eigen
+def test_distribution1():
+    E = np.linspace(-2, 2, 10000)
+    dE = E[1] - E[0]
+    d = EigenState.distribution('gaussian', smearing=0.025)
+    assert d(E).sum() * dE == pytest.approx(1, abs=1e-6)
+    d = EigenState.distribution('lorentzian', smearing=1e-3)
+    assert d(E).sum() * dE == pytest.approx(1, abs=1e-3)

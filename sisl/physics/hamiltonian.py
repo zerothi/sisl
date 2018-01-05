@@ -176,13 +176,78 @@ class Hamiltonian(SparseOrbitalBZSpin):
             with get_sile(sile, 'w') as fh:
                 fh.write_hamiltonian(self, *args, **kwargs)
 
+    def DOS(self, E, k=(0, 0, 0), distribution=None, **kwargs):
+        r""" Calculate the DOS at the given energies for a specific `k` point
+
+        Parameters
+        ----------
+        E : array_like
+            energies to calculate the DOS from
+        k : array_like, optional
+            k-point at which the DOS is calculated
+        distribution : func, optional
+            a function that accepts :math:`E-\epsilon` as argument and calculates the
+            distribution function.
+            If ``None`` ``EigenState.distribution('gaussian')`` will be used.
+        **kwargs: optional
+            additional parameters passed to the `eigenstate` routine
+
+        See Also
+        --------
+        eigenstate : method used to calculate the eigenstates
+        PDOS : Calculate projected DOS
+        EigenState.DOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
+        EigenState.PDOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
+        """
+        return self.eigenstate(k, **kwargs).DOS(E, distribution)
+
+    def PDOS(self, E, k=(0, 0, 0), distribution=None, **kwargs):
+        r""" Calculate the projected DOS at the given energies for a specific `k` point
+
+        Parameters
+        ----------
+        E : array_like
+            energies to calculate the DOS from
+        k : array_like, optional
+            k-point at which the DOS is calculated
+        distribution : func, optional
+            a function that accepts :math:`E-\epsilon` as argument and calculates the
+            distribution function.
+            If ``None`` ``EigenState.distribution('gaussian')`` will be used.
+        **kwargs: optional
+            additional parameters passed to the `eigenstate` routine
+
+        See Also
+        --------
+        eigenstate : method used to calculate the eigenstates
+        DOS : Calculate total DOS
+        EigenState.DOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
+        EigenState.PDOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
+        """
+        return self.eigenstate(k, **kwargs).PDOS(E, distribution)
+
 
 class EigenState(EigenSystem):
     """ Eigenstates associated by an Hamiltonian """
 
     @classmethod
     def distribution(cls, method, smearing=0.1):
-        """ Create a distribution function for input in e.g. `DOS`. Gaussian, Lorentzian etc.
+        r""" Create a distribution function for input in e.g. `DOS`. Gaussian, Lorentzian etc.
+
+        In the following :math:`\epsilon` are the eigenvalues contained in this `EigenState`.
+
+        The Gaussian distribution is calculated as:
+        .. math::
+            G(E) = \sum_i \frac{1}{\sqrt{2\pi\sigma^2}\exp\big[- (E - \epsilon_i)^2 / (2\sigma^2)\big]
+
+        where :math:`\sigma` is the `smearing` parameter.
+
+        The Lorentzian distribution is calculated as:
+        .. math::
+            L(E) = \sum_i \frac{1}{\pi}\frac{\gamma}{(E - \epsilon_i)^2 + \gamma^2}
+
+        where :math:`\gamma` is the `smearing` parameter, note that here :math:`\gamma` is the
+        half-width at half-maximum (:math:`2\gamma` would be the full-width at half-maximum).
 
         Parameters
         ----------
@@ -202,9 +267,8 @@ class EigenState(EigenSystem):
             def func(E):
                 return exp(-E ** 2 / sigma2) / pisigma
         elif method.lower() in ['lorentz', 'lorentzian']:
-            s_half = smearing / 2
             def func(E):
-                return (s_half / np.pi) / (E ** 2 + s_half ** 2)
+                return (smearing / np.pi) / (E ** 2 + smearing ** 2)
         else:
             raise ValueError(cls.__name__ + ".distribution currently only implements 'gaussian' or "
                              "'lorentzian' distribution functions")
