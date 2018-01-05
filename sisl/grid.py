@@ -507,13 +507,20 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        v : array_like
-           the coefficients for all orbitals in the geometry (real or complex)
+        v : array_like or EigenState
+           the coefficients for all orbitals in the geometry (real or complex).
+           If an `EigenState` only the first eigenstate will be used.
         k : array_like, optional
            k-point associated with the coefficients
         """
+        from sisl.physics import EigenState
         # As array preserves data-type
-        v = np.asarray(v)
+        if isinstance(v, EigenState):
+            v = v.v[0, :]
+            # We do not necessarily require that the eigenstate.parent is
+            # equivalent to this geometry
+        else:
+            v = np.asarray(v)
         if len(v) != self.geometry.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")

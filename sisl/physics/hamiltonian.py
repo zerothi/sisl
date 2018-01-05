@@ -1,9 +1,11 @@
 from __future__ import print_function, division
 
 from sisl._help import _range as range
+from sisl.eigensystem import EigenSystem
 from .sparse import SparseOrbitalBZSpin
 
 __all__ = ['Hamiltonian', 'TightBinding']
+__all__ += ['EigenState']
 
 
 class Hamiltonian(SparseOrbitalBZSpin):
@@ -113,6 +115,27 @@ class Hamiltonian(SparseOrbitalBZSpin):
                 for j in range(min(self.spin.spins, 2)):
                     self[i, i, j] = self[i, i, j] + E
 
+    def eigenstate(self, k=(0, 0, 0), gauge='R', **kwargs):
+        """ Calculate the eigenstates at `k` and return an `EigenState` object containing all eigenstates
+
+        Parameters
+        ----------
+        k : array_like*3, optional
+            the k-point at which to evaluate the eigenstates at
+        gauge : str, optional
+            the gauge used for calculating the eigenstates
+        **kwargs : dict, optional
+            passed arguments to the `eigh` routines
+
+        Returns
+        -------
+        EigenState
+        """
+        e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
+        # Since eigh returns the eigenvectors [:, i] we have to transpose
+        # them
+        return EigenState(e, v.T, self)
+
     @staticmethod
     def read(sile, *args, **kwargs):
         """ Reads Hamiltonian from `Sile` using `read_hamiltonian`.
@@ -135,7 +158,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
                 return fh.read_hamiltonian(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs):
-        """ Writes a tight-binding model to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method """
+        """ Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method """
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import get_sile, BaseSile
@@ -144,6 +167,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             with get_sile(sile, 'w') as fh:
                 fh.write_hamiltonian(self, *args, **kwargs)
+
+
+class EigenState(EigenSystem):
+    """ Eigenstates associated by an Hamiltonian """
+    pass
 
 # For backwards compatibility we also use TightBinding
 # NOTE: that this is not sub-classed...

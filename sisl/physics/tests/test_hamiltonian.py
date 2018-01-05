@@ -523,7 +523,7 @@ class TestHamiltonian(object):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
         eig1 = HS.eigh()
-        for i in range(2):
+        for i in range(3): # to ensure all different algorithms has been used
             assert np.allclose(eig1, HS.eigh())
         setup.HS.empty()
 
@@ -535,6 +535,17 @@ class TestHamiltonian(object):
         assert len(setup.HS) == eigs.shape[1]
         eig2 = np.array([eig for eig in BS.yields().eigh()])
         assert np.allclose(eigs, eig2)
+        setup.HS.empty()
+
+    def test_eig4(self, setup):
+        # Test of eigenvalues vs eigenstate class
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        for k in ([0] *3, [0.2] * 3):
+            e, v = HS.eigh(k, eigvals_only=False)
+            es = HS.eigenstate(k)
+            assert np.allclose(e, es.e)
+            assert np.allclose(v, es.v.T)
         setup.HS.empty()
 
     def test_spin1(self, setup):

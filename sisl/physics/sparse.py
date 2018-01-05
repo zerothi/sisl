@@ -290,7 +290,7 @@ class SparseOrbitalBZ(SparseOrbital):
                 raise ValueError(self.__class__.__name__ + " setup at k different from Gamma requires a complex matrix")
 
         # sparse matrix dimension (self.no)
-        V = np.empty((len(self), len(self)), dtype=dtype)
+        V = np.empty([len(self), len(self)], dtype=dtype)
 
         # Calculate all phases
         phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
@@ -372,13 +372,11 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def eigh(self, k=(0, 0, 0), atom=None, gauge='R',
-             eigvals_only=True, **kwargs):
+    def eigh(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
 
         Setup the system and overlap matrix with respect to
-        the given k-point, then reduce the space to the specified atoms
-        and calculate the eigenvalues.
+        the given k-point and calculate the eigenvalues.
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
@@ -388,39 +386,24 @@ class SparseOrbitalBZ(SparseOrbital):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), len(self)], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigh(k_, atoms=atoms, gauge=gauge,
-                                      eigvals_only=eigvals_only, **kwargs)
+                eig[i, :] = self.eigh(k_, gauge=gauge, eigvals_only=eigvals_only, **kwargs)
             return eig
 
         dtype = kwargs.pop('dtype', None)
-        if atom is None:
-            P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
-            if not self.orthogonal:
-                S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
-
-        else:
-            P = self.Pk(k=k, dtype=dtype, gauge=gauge)
-            if not self.orthogonal:
-                S = self.Sk(k=k, dtype=dtype, gauge=gauge)
-
-            # Reduce sparsity pattern
-            orbs = self.a2o(atom, all=True).reshape(-1, 1)
-            P = P[orbs, orbs.T].toarray()
-            if not self.orthogonal:
-                S = S[orbs, orbs.T].toarray()
+        P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
+        if not self.orthogonal:
+            S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
 
         if self.orthogonal:
             return lin.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
 
         return lin.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
-    def eigsh(self, k=(0, 0, 0), n=10, atom=None, gauge='R',
-              eigvals_only=True, **kwargs):
+    def eigsh(self, k=(0, 0, 0), n=10, gauge='R', eigvals_only=True, **kwargs):
         """ Calculates a subset of eigenvalues of the physical quantity  (default 10)
 
         Setup the quantity and overlap matrix with respect to
-        the given k-point, then reduce the space to the specified atoms
-        and calculate a subset of the eigenvalues using the sparse algorithms.
+        the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigsh`
         """
@@ -430,8 +413,7 @@ class SparseOrbitalBZ(SparseOrbital):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), n], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigsh(k_, n=n, atom=atom, gauge=gauge,
-                                       eigvals_only=eigvals_only, **kwargs)
+                eig[i, :] = self.eigsh(k_, n=n, gauge=gauge, eigvals_only=eigvals_only, **kwargs)
             return eig
 
         # We always request the smallest eigenvalues...
@@ -442,12 +424,6 @@ class SparseOrbitalBZ(SparseOrbital):
         P = self.Pk(k=k, dtype=dtype, gauge=gauge)
         if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
-
-        # Reduce sparsity pattern
-        if not atom is None:
-            orbs = self.a2o(atom, all=True).reshape(-1, 1)
-            # Reduce space
-            P = P[orbs, orbs.T]
 
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
@@ -715,7 +691,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k.shape = (-1,)
 
         # sparse matrix dimension (2 * self.no)
-        V = np.empty((len(self), len(self)), dtype=dtype)
+        V = np.empty([len(self), len(self)], dtype=dtype)
 
         # Calculate all phases
         phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
@@ -854,7 +830,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k.shape = (-1,)
 
         # sparse matrix dimension (2 * self.no)
-        V = np.empty((len(self), len(self)), dtype=dtype)
+        V = np.empty([len(self), len(self)], dtype=dtype)
 
         # Calculate all phases
         phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
@@ -1000,7 +976,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k.shape = (-1,)
 
         # sparse matrix dimension (2 * self.no)
-        S = np.zeros((len(self), len(self)), dtype=dtype)
+        S = np.zeros([len(self), len(self)], dtype=dtype)
 
         # Calculate all phases
         phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
@@ -1022,13 +998,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         # It must be a sparse matrix we inquire
         return csr_matrix(S).asformat(format)
 
-    def eigh(self, k=(0, 0, 0), atom=None, gauge='R',
-             eigvals_only=True, **kwargs):
+    def eigh(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
 
         Setup the system and overlap matrix with respect to
-        the given k-point, then reduce the space to the specified atoms
-        and calculate the eigenvalues.
+        the given k-point and calculate the eigenvalues.
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
 
@@ -1044,45 +1018,28 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), len(self)], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigh(k_, atom=atom, gauge=gauge,
-                                      eigvals_only=eigvals_only, **kwargs)
+                eig[i, :] = self.eigh(k_, gauge=gauge, eigvals_only=eigvals_only, **kwargs)
             return eig
         spin = kwargs.pop('spin', 0)
         dtype = kwargs.pop('dtype', None)
 
-        if atom is None:
-            if self.spin.kind == Spin.POLARIZED:
-                P = self.Pk(k=k, dtype=dtype, gauge=gauge, spin=spin, format='array')
-            else:
-                P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
-            if not self.orthogonal:
-                S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
-
-        else:        # Reduce sparsity pattern
-            if self.spin.kind == Spin.POLARIZED:
-                P = self.Pk(k=k, dtype=dtype, gauge=gauge, spin=spin)
-            else:
-                P = self.Pk(k=k, dtype=dtype, gauge=gauge)
-
-            # Reduce space
-            orbs = self.a2o(atom, all=True).reshape(-1, 1)
-
-            P = P[orbs, orbs.T].toarray()
-            if not self.orthogonal:
-                S = self.Sk(k=k, dtype=dtype, gauge=gauge)[orbs, orbs.T].toarray()
+        if self.spin.kind == Spin.POLARIZED:
+            P = self.Pk(k=k, dtype=dtype, gauge=gauge, spin=spin, format='array')
+        else:
+            P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
+        if not self.orthogonal:
+            S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
 
         if self.orthogonal:
             return lin.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
 
         return lin.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
-    def eigsh(self, k=(0, 0, 0), n=10, atom=None, gauge='R',
-              eigvals_only=True, **kwargs):
+    def eigsh(self, k=(0, 0, 0), n=10, gauge='R', eigvals_only=True, **kwargs):
         """ Calculates a subset of eigenvalues of the physical quantity  (default 10)
 
         Setup the quantity and overlap matrix with respect to
-        the given k-point, then reduce the space to the specified atoms
-        and calculate a subset of the eigenvalues using the sparse algorithms.
+        the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigsh`
 
@@ -1098,8 +1055,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # Pre-allocate the eigenvalue spectrum
             eig = np.empty([len(k), n], np.float64)
             for i, k_ in enumerate(k):
-                eig[i, :] = self.eigsh(k_, n=n, atom=atom, gauge=gauge,
-                                       eigvals_only=eigvals_only, **kwargs)
+                eig[i, :] = self.eigsh(k_, n=n, gauge=gauge, eigvals_only=eigvals_only, **kwargs)
             return eig
 
         # We always request the smallest eigenvalues...
@@ -1113,11 +1069,5 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             P = self.Pk(k=k, dtype=dtype, gauge=gauge)
         if not self.orthogonal:
             raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
-
-        # Reduce sparsity pattern
-        if not atom is None:
-            orbs = self.a2o(atom, all=True).reshape(-1, 1)
-            # Reduce space
-            P = P[orbs, orbs.T]
 
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
