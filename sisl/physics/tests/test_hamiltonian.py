@@ -7,6 +7,7 @@ import math as m
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, PathBZ
+from sisl import EigenState
 
 
 @pytest.fixture
@@ -547,6 +548,28 @@ class TestHamiltonian(object):
             assert np.allclose(e, es.e)
             assert np.allclose(v, es.v.T)
         setup.HS.empty()
+
+    def test_dos1(self, setup):
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        E = np.linspace(-4, 4, 1000)
+        for k in ([0] *3, [0.2] * 3):
+            es = HS.eigenstate(k)
+            DOS = es.DOS(E)
+        setup.HS.empty()
+
+    def test_dos2(self, setup):
+        ES = EigenState(0, [0])
+        E = np.linspace(-6, 6, 4000)
+        dE = E[1] - E[0]
+        DOS = ES.DOS(E).sum()
+        assert np.allclose(DOS * dE, 1.)
+        DOS = ES.DOS(E, 'gaussian').sum()
+        assert np.allclose(DOS * dE, 1.)
+        # The Lorentzian has very broad features
+        l = ES.distribution('lorentzian', dE * 12)
+        DOS = ES.DOS(E, l).sum() * dE
+        assert 0.998 < DOS and DOS <= 1.
 
     def test_spin1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])

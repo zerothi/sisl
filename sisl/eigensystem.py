@@ -25,7 +25,7 @@ class EigenSystem(object):
     may be a subset of the true eigensystem.
     """
 
-    def __init__(self, e, v, parent=None):
+    def __init__(self, e, v, parent=None, **info):
         """ Define an eigensystem from given eigenvalues, `e`, and eigenvectors, `v`, with a possible parent object
 
         Parameters
@@ -36,12 +36,19 @@ class EigenSystem(object):
            eigenvectors with ``v[i, :]`` containing the i'th eigenvector
         parent : object, optional
            the parent object where the eigensystem is calculated from (e.g. `Hamiltonian` or another matrix form)
+        **info : dict, optional
+           an info dictionary that turns into an attribute on the object.
+           This `info` may contain anything that may be relevant for the EigenSystem
         """
         self.e = np.atleast_1d(e)
         self.v = np.atleast_1d(v) # will return v if already a vector/matrix
         # Ensure the shape is fixed
         self.v.shape = (len(self), -1)
         self.parent = parent
+        if info is None:
+            self.info = {}
+        else:
+            self.info = {} if info is None else info
 
     def __repr__(self):
         """ The string representation of this object """
@@ -79,7 +86,7 @@ class EigenSystem(object):
         key = ensure_array(key)
         if len(key) == 1:
             key = key[0]
-        return self.e[key], self.v[key, :]
+        return self.__class__(self.e[key], self.v[key, :], self.parent, **self.info)
 
     def iter(self, only_e=False, only_v=False):
         """ Return an iterator looping over the eigenvalues/vectors in this system
@@ -111,7 +118,7 @@ class EigenSystem(object):
                 yield v
         else:
             for i in range(len(self)):
-                yield self.__class__(self.e[i], self.v[i, :], self.parent)
+                yield self.__class__(self.e[i], self.v[i, :], self.parent, **self.info)
 
     def __iter__(self):
         """ Iterator for individual eigensystems """
@@ -120,7 +127,7 @@ class EigenSystem(object):
 
     def copy(self):
         """ Return a copy """
-        return self.__class__(self.e.copy(), self.v.copy(), self.parent)
+        return self.__class__(self.e.copy(), self.v.copy(), self.parent, **self.info)
 
     def sort(self):
         """ Sort eigenvalues and eigenvectors (in-place) ascending """
@@ -164,4 +171,4 @@ class EigenSystem(object):
         EigenSystem
         """
         idx = ensure_array(idx)
-        return self.__class__(self.e[idx], self.v[idx, :], self.parent)
+        return self.__class__(self.e[idx], self.v[idx, :], self.parent, **self.info)

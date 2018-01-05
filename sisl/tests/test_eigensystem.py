@@ -29,8 +29,8 @@ def test_len_size():
 
 def test_get():
     es = crt(10)
-    assert np.allclose(es.e[2], es[2][0])
-    assert np.allclose(es.v[2, :], es[2][1])
+    assert np.allclose(es.e[2], es[2].e)
+    assert np.allclose(es.v[2, :], es[2].v)
 
 
 def test_iter():

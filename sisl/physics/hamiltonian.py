@@ -1,6 +1,8 @@
 from __future__ import print_function, division
 
-from sisl._help import _range as range
+import numpy as np
+
+from sisl._help import _range as range, _str as str
 from sisl.eigensystem import EigenSystem
 from .sparse import SparseOrbitalBZSpin
 
@@ -134,7 +136,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
         # Since eigh returns the eigenvectors [:, i] we have to transpose
         # them
-        return EigenState(e, v.T, self)
+        return EigenState(e, v.T, self, k=k, gauge=gauge)
 
     @staticmethod
     def read(sile, *args, **kwargs):
@@ -171,7 +173,66 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
 class EigenState(EigenSystem):
     """ Eigenstates associated by an Hamiltonian """
-    pass
+
+    @classmethod
+    def distribution(cls, method, smearing=0.1):
+        """ Create a distribution function for input in e.g. `DOS`. Gaussian, Lorentzian etc.
+
+        Parameters
+        ----------
+        method : {'gaussian', 'lorentzian'}
+            the distribution function
+        smearing : float, optional
+            the smearing parameter for the method (:math:`\sigma` for Gaussian, etc.)
+
+        Returns
+        -------
+        func : a function which accepts one argument
+        """
+        if method.lower() in ['gauss', 'gaussian']:
+            exp = np.exp
+            sigma2 = 2 * smearing ** 2
+            pisigma = (np.pi * sigma2) ** .5
+            def func(E):
+                return exp(-E ** 2 / sigma2) / pisigma
+        elif method.lower() in ['lorentz', 'lorentzian']:
+            s_half = smearing / 2
+            def func(E):
+                return (s_half / np.pi) / (E ** 2 + s_half ** 2)
+        else:
+            raise ValueError(self.__class__.__name__ + ".distribution currently only implements 'gaussian' or "
+                             "'lorentzian' distribution functions")
+        return func
+
+    def DOS(self, E, distribution=None):
+        """ Calculate the DOS for the provided energies (`E`), using the supplied distribution function
+
+        Parameters
+        ----------
+        E : array_like
+            energies to calculate the DOS from
+        distribution : func, optional
+            a function that accepts :math:`E-\epsilon` as argument and calculates the
+            distribution function.
+            If ``None`` ``EigenState.distribution('gaussian')`` will be used.
+
+        See Also
+        --------
+        distribution : a selected set of implemented distribution functions
+
+        Returns
+        -------
+        numpy.ndarray : DOS calculated at energies, has same length as `E`
+        """
+        if distribution is None:
+            distribution = self.distribution('gaussian')
+        elif isinstance(distribution, str):
+            distribution = self.distribution(distribution)
+        DOS = distribution(E - self.e[0])
+        for i in range(1, len(self)):
+            DOS += distribution(E - self.e[i])
+        return DOS
+
 
 # For backwards compatibility we also use TightBinding
 # NOTE: that this is not sub-classed...
