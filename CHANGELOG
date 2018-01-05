@@ -1,6 +1,12 @@
 0.9.3
 =====
 
+- Added a new class EigenSystem which holds information regarding
+  eigenvalues and eigenvectors.
+
+  - Currently an EigenState class is also enabled which can currently
+    be used to calculate wavefunctions, DOS, PDOS and more to come.
+
 - Enabled plotting wavefunctions on grids.
 
 - Added siesta PDOS xml parsing, currently this is only scriptable

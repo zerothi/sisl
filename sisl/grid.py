@@ -7,7 +7,7 @@ import numpy as np
 from numpy import int32, float64, pi
 from numpy import take, ogrid, add
 from numpy import cos, sin, arctan2, divide
-from numpy import dot, sqrt, square, floor
+from numpy import dot, sqrt, square, floor, ceil
 
 from ._help import ensure_array
 import sisl._array as _a
@@ -616,7 +616,7 @@ class Grid(SuperCellChild):
 
             # Get min-max for all atoms, note we should first do the floor here
             idx_mm[ia, 0, :] = floor(idx_m.reshape(1, -3) + idx).astype(int32)
-            idx_mm[ia, 1, :] = floor(idx_M.reshape(1, -3) + idx).astype(int32)
+            idx_mm[ia, 1, :] = ceil(idx_M.reshape(1, -3) + idx).astype(int32)
 
         # Now we have min-max for all atoms
         # When we run the below loop all indices can be retrieved by looking

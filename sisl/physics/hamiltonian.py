@@ -1,9 +1,11 @@
 from __future__ import print_function, division
 
 import numpy as np
+from scipy.sparse import csr_matrix
 
 from sisl._help import _range as range, _str as str
 from sisl.eigensystem import EigenSystem
+from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
 
 __all__ = ['Hamiltonian', 'TightBinding']
@@ -129,6 +131,10 @@ class Hamiltonian(SparseOrbitalBZSpin):
         **kwargs : dict, optional
             passed arguments to the `eigh` routines
 
+        See Also
+        --------
+        eigh : the used eigenvalue routine
+
         Returns
         -------
         EigenState
@@ -232,6 +238,68 @@ class EigenState(EigenSystem):
         for i in range(1, len(self)):
             DOS += distribution(E - self.e[i])
         return DOS
+
+    def PDOS(self, E, distribution=None):
+        r""" Calculate the projected-DOS for the provided energies (`E`), using the supplied distribution function
+
+
+        The projected DOS is calculated as:
+        .. math::
+             \mathrm{PDOS}_\nu(E,k) = \sum_i [\langle \psi_{i,k} | \mathbf S_k | \psi_{i,k}\rangle]_\nu D(E-\epsilon_i)
+
+        where :math:`D(E)` is a distribution function.
+
+        Parameters
+        ----------
+        E : array_like
+            energies to calculate the projected-DOS from
+        distribution : func, optional
+            a function that accepts :math:`E-\epsilon` as argument and calculates the
+            distribution function.
+            If ``None`` ``EigenState.distribution('gaussian')`` will be used.
+
+        See Also
+        --------
+        distribution : a selected set of implemented distribution functions
+
+        Returns
+        -------
+        numpy.ndarray : projected DOS calculated at energies, has dimension ``(self.size, len(E))``
+        """
+        if distribution is None:
+            distribution = self.distribution('gaussian')
+        elif isinstance(distribution, str):
+            distribution = self.distribution(distribution)
+
+        # Retrieve options for the Sk calculation
+        k = self.info.get('k', (0, 0, 0))
+        opt = {'k': self.info.get('k', (0, 0, 0))}
+        if 'gauge' in self.info:
+            opt['gauge'] = self.info['gauge']
+
+        if isinstance(self.parent, Hamiltonian):
+            # Calculate the overlap matrix
+            Sk = self.parent.Sk(**opt)
+            if self.parent.spin > Spin('p'):
+                raise ValueError('Currently the PDOS for non-colinear and spin-orbit has not been checked')
+        else:
+            # Assume orthogonal basis set and Gamma-point
+            # TODO raise warning, should we do this here?
+
+            n = self.size()
+            Sk = csr_matrix((n, n), dtype=np.float64)
+            Sk.setdiag(1.)
+
+        # Short-hands
+        conj = np.conjugate
+        add = np.add
+
+        DOS = distribution(E - self.e[0]).reshape(1, -1)
+        PDOS = (conj(self.v[0, :]) * Sk.dot(self.v[0, :])).reshape(-1, 1) * DOS
+        for i in range(1, len(self)):
+            DOS = distribution(E - self.e[i]).reshape(1, -1)
+            add(PDOS, (conj(self.v[i, :]) * Sk.dot(self.v[i, :])).reshape(-1, 1) * DOS, out=PDOS)
+        return PDOS
 
 
 # For backwards compatibility we also use TightBinding

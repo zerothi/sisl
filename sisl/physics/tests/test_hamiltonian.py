@@ -547,7 +547,6 @@ class TestHamiltonian(object):
             es = HS.eigenstate(k)
             assert np.allclose(e, es.e)
             assert np.allclose(v, es.v.T)
-        setup.HS.empty()
 
     def test_dos1(self, setup):
         HS = setup.HS.copy()
@@ -557,7 +556,6 @@ class TestHamiltonian(object):
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
             repr(es)
-        setup.HS.empty()
 
     def test_dos2(self, setup):
         ES = EigenState(0, [0])
@@ -575,6 +573,60 @@ class TestHamiltonian(object):
     @pytest.mark.xfail(raises=ValueError)
     def test_dos3(self, setup):
         EigenState.distribution('unknown-function')
+
+    def test_pdos1(self, setup):
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
+        E = np.linspace(-4, 4, 1000)
+        for k in ([0] *3, [0.2] * 3):
+            es = HS.eigenstate(k)
+            DOS = es.DOS(E)
+            PDOS = es.PDOS(E)
+            assert PDOS.shape[0] == len(HS)
+            assert PDOS.shape[1] == len(E)
+            assert np.allclose(PDOS.sum(0), DOS)
+
+    def test_pdos2(self, setup):
+        H = setup.H.copy()
+        H.construct([(0.1, 1.5), (0., 0.1)])
+        E = np.linspace(-4, 4, 1000)
+        for k in ([0] *3, [0.2] * 3):
+            es = H.eigenstate(k)
+            DOS = es.DOS(E)
+            PDOS = es.PDOS(E)
+            assert np.allclose(PDOS.sum(0), DOS)
+
+    def test_pdos3(self, setup):
+        # check whether the default S(Gamma) works
+        # In this case we will assume an orthogonal
+        # basis, however, the basis is not orthogonal.
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
+        E = np.linspace(-4, 4, 1000)
+        es = HS.eigenstate()
+        es.parent = None
+        DOS = es.DOS(E)
+        PDOS = es.PDOS(E)
+        assert not np.allclose(PDOS.sum(0), DOS)
+
+    def test_pdos4(self, setup):
+        # check whether the default S(Gamma) works
+        # In this case we will assume an orthogonal
+        # basis. If the basis *is* orthogonal, then
+        # regardless of k, the PDOS will be correct.
+        H = setup.H.copy()
+        H.construct([(0.1, 1.5), (0., 0.1)])
+        E = np.linspace(-4, 4, 1000)
+        es = H.eigenstate()
+        es.parent = None
+        DOS = es.DOS(E)
+        PDOS = es.PDOS(E)
+        assert np.allclose(PDOS.sum(0), DOS)
+        es = H.eigenstate([0.25] * 3)
+        DOS = es.DOS(E)
+        es.parent = None
+        PDOS = es.PDOS(E)
+        assert np.allclose(PDOS.sum(0), DOS)
 
     def test_spin1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
