@@ -578,8 +578,8 @@ class TestHamiltonian(object):
         E = np.linspace(-4, 4, 1000)
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
-            DOS = es.DOS(E)
-            PDOS = es.PDOS(E)
+            DOS = es.DOS(E, 'lorentzian')
+            PDOS = es.PDOS(E, 'lorentzian')
             assert PDOS.dtype.kind == 'f'
             assert PDOS.shape[0] == len(HS)
             assert PDOS.shape[1] == len(E)

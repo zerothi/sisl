@@ -358,11 +358,11 @@ class EigenState(EigenSystem):
         conj = np.conjugate
         add = np.add
 
-        DOS = distribution(E - self.e[0]).reshape(1, -1)
-        PDOS = (conj(self.v[0, :]) * Sk.dot(self.v[0, :])).real.reshape(-1, 1) * DOS
+        w = distribution(E - self.e[0]).reshape(1, -1)
+        PDOS = (conj(self.v[0, :]) * Sk.dot(self.v[0, :])).real.reshape(-1, 1) * w
         for i in range(1, len(self)):
-            DOS = distribution(E - self.e[i]).reshape(1, -1)
-            add(PDOS, (conj(self.v[i, :]) * Sk.dot(self.v[i, :])).real.reshape(-1, 1) * DOS, out=PDOS)
+            w = distribution(E - self.e[i]).reshape(1, -1)
+            add(PDOS, (conj(self.v[i, :]) * Sk.dot(self.v[i, :])).real.reshape(-1, 1) * w, out=PDOS)
         return PDOS
 
 
