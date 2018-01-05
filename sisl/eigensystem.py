@@ -45,10 +45,7 @@ class EigenSystem(object):
         # Ensure the shape is fixed
         self.v.shape = (len(self), -1)
         self.parent = parent
-        if info is None:
-            self.info = {}
-        else:
-            self.info = {} if info is None else info
+        self.info = info
 
     def __repr__(self):
         """ The string representation of this object """

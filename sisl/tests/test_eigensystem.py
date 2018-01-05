@@ -62,3 +62,4 @@ def test_sort():
 def test_outer():
     es = crt(10)
     es.outer()
+    es.outer([1, 2])

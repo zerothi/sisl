@@ -556,6 +556,7 @@ class TestHamiltonian(object):
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
+            repr(es)
         setup.HS.empty()
 
     def test_dos2(self, setup):
@@ -570,6 +571,10 @@ class TestHamiltonian(object):
         l = ES.distribution('lorentzian', dE * 12)
         DOS = ES.DOS(E, l).sum() * dE
         assert 0.998 < DOS and DOS <= 1.
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_dos3(self, setup):
+        EigenState.distribution('unknown-function')
 
     def test_spin1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
