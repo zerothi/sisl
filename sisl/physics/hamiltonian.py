@@ -200,7 +200,7 @@ class EigenState(EigenSystem):
             def func(E):
                 return (s_half / np.pi) / (E ** 2 + s_half ** 2)
         else:
-            raise ValueError(self.__class__.__name__ + ".distribution currently only implements 'gaussian' or "
+            raise ValueError(cls.__name__ + ".distribution currently only implements 'gaussian' or "
                              "'lorentzian' distribution functions")
         return func
 
