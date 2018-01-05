@@ -555,6 +555,7 @@ class TestHamiltonian(object):
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
+            assert DOS.dtype.kind == 'f'
             repr(es)
 
     def test_dos2(self, setup):
@@ -564,10 +565,12 @@ class TestHamiltonian(object):
         DOS = ES.DOS(E).sum()
         assert np.allclose(DOS * dE, 1.)
         DOS = ES.DOS(E, 'gaussian').sum()
+        assert DOS.dtype.kind == 'f'
         assert np.allclose(DOS * dE, 1.)
         # The Lorentzian has very broad features
         l = ES.distribution('lorentzian', dE * 12)
         DOS = ES.DOS(E, l).sum() * dE
+        assert DOS.dtype.kind == 'f'
         assert 0.998 < DOS and DOS <= 1.
 
     @pytest.mark.xfail(raises=ValueError)
@@ -582,6 +585,7 @@ class TestHamiltonian(object):
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
             PDOS = es.PDOS(E)
+            assert PDOS.dtype.kind == 'f'
             assert PDOS.shape[0] == len(HS)
             assert PDOS.shape[1] == len(E)
             assert np.allclose(PDOS.sum(0), DOS)
@@ -594,6 +598,7 @@ class TestHamiltonian(object):
             es = H.eigenstate(k)
             DOS = es.DOS(E)
             PDOS = es.PDOS(E)
+            assert PDOS.dtype.kind == 'f'
             assert np.allclose(PDOS.sum(0), DOS)
 
     def test_pdos3(self, setup):
@@ -621,11 +626,13 @@ class TestHamiltonian(object):
         es.parent = None
         DOS = es.DOS(E)
         PDOS = es.PDOS(E)
+        assert PDOS.dtype.kind == 'f'
         assert np.allclose(PDOS.sum(0), DOS)
         es = H.eigenstate([0.25] * 3)
         DOS = es.DOS(E)
         es.parent = None
         PDOS = es.PDOS(E)
+        assert PDOS.dtype.kind == 'f'
         assert np.allclose(PDOS.sum(0), DOS)
 
     def test_spin1(self, setup):
