@@ -9,24 +9,29 @@ from sisl.eigensystem import EigenSystem
 
 pytestmark = pytest.mark.eigen
 
+
 def crt(n):
     e = np.random.rand(n)
     v = np.random.rand(n, n)
     return EigenSystem(e, v)
 
+
 def test_print():
     es = crt(10)
     print(es)
+
 
 def test_len_size():
     es = crt(10)
     assert len(es) == 10
     assert es.size() == 10
 
+
 def test_get():
     es = crt(10)
     assert np.allclose(es.e[2], es[2][0])
     assert np.allclose(es.v[2, :], es[2][1])
+
 
 def test_iter():
     ES = crt(10)
@@ -46,11 +51,13 @@ def test_iter():
         assert np.allclose(e, E[i])
         assert np.allclose(v, V[i])
 
+
 def test_sort():
     es = crt(10)
     es_copy = es.copy()
     es_copy.sort()
     assert np.allclose(np.sort(es.e), es_copy.e)
+
 
 def test_outer():
     es = crt(10)
