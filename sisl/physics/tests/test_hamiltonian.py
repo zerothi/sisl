@@ -7,7 +7,8 @@ import math as m
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, PathBZ
-from sisl import EigenState
+from sisl import Grid
+from sisl import SphericalOrbital, EigenState
 
 pytestmark = pytest.mark.hamiltonian
 
@@ -1044,6 +1045,40 @@ class TestHamiltonian(object):
         edge = H2.edges(orbital=[0, 2], exclude=[0, 1, 2, 3])
         assert len(edge) == 8
         assert len(H2.geom.o2a(edge, uniq=True)) == 4
+
+
+def test_psi1():
+    N = 50
+    o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
+    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
+    H = Hamiltonian(G)
+    R, param = [0.1, 1.5], [1., 0.1]
+    H.construct([R, param])
+    ES = H.eigenstate(dtype=np.float64)
+    # Plot in the full thing
+    grid = Grid(0.1, geom=H.geom)
+    grid.psi(ES.sub(0))
+    g1 = grid.copy()
+    grid.fill(0.)
+    ES.sub(0).psi(grid)
+    assert np.allclose(g1.grid, grid.grid)
+
+
+def test_psi2():
+    N = 50
+    o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
+    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
+    H = Hamiltonian(G)
+    R, param = [0.1, 1.5], [1., 0.1]
+    H.construct([R, param])
+    ES = H.eigenstate(dtype=np.float64)
+    # Plot in the full thing
+    grid = Grid(0.1, sc=SuperCell([2, 2, 2], origo=[2] * 3))
+    grid.psi(ES.sub(0))
+    g1 = grid.copy()
+    grid.fill(0.)
+    ES.sub(0).psi(grid)
+    assert np.allclose(g1.grid, grid.grid)
 
 
 @pytest.mark.eigen

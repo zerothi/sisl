@@ -191,7 +191,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Parameters
         ----------
         E : array_like
-            energies to calculate the DOS from
+            energies to calculate the DOS at
         k : array_like, optional
             k-point at which the DOS is calculated
         distribution : func, optional
@@ -216,9 +216,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Parameters
         ----------
         E : array_like
-            energies to calculate the DOS from
+            energies to calculate the projected DOS at
         k : array_like, optional
-            k-point at which the DOS is calculated
+            k-point at which the projected DOS is calculated
         distribution : func, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
@@ -251,12 +251,14 @@ class EigenState(EigenSystem):
         In the following :math:`\epsilon` are the eigenvalues contained in this `EigenState`.
 
         The Gaussian distribution is calculated as:
+
         .. math::
             G(E) = \sum_i \frac{1}{\sqrt{2\pi\sigma^2}\exp\big[- (E - \epsilon_i)^2 / (2\sigma^2)\big]
 
         where :math:`\sigma` is the `smearing` parameter.
 
         The Lorentzian distribution is calculated as:
+
         .. math::
             L(E) = \sum_i \frac{1}{\pi}\frac{\gamma}{(E - \epsilon_i)^2 + \gamma^2}
 
@@ -292,6 +294,7 @@ class EigenState(EigenSystem):
         r""" Calculate the DOS for the provided energies (`E`), using the supplied distribution function
 
         The Density Of States at a specific energy is calculated via the broadening function:
+
         .. math::
             \mathrm{DOS}(E) = \sum_i D(E-\epsilon_i) \approx\delta(E-\epsilon_i)
 
@@ -330,6 +333,7 @@ class EigenState(EigenSystem):
         r""" Calculate the projected-DOS for the provided energies (`E`), using the supplied distribution function
 
         The projected DOS is calculated as:
+
         .. math::
              \mathrm{PDOS}_\nu(E) = \sum_i [\langle \psi_{i} | \mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
 
@@ -339,6 +343,7 @@ class EigenState(EigenSystem):
 
         In case of an orthogonal basis set :math:`\mathbf S` is equal to the identity matrix.
         Note that `DOS` is the sum of the orbital projected DOS:
+
         .. math::
             \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS)_\nu(E)
 
@@ -394,6 +399,17 @@ class EigenState(EigenSystem):
             w = distribution(E - self.e[i]).reshape(1, -1)
             add(PDOS, (conj(self.v[i, :]) * Sk.dot(self.v[i, :])).real.reshape(-1, 1) * w, out=PDOS)
         return PDOS
+
+    def psi(self, grid):
+        """ Calculate the wavefunction on `grid`
+
+        Parameters
+        ----------
+        grid : Grid
+            the grid to calculate the wavefunctions on (need not be commensurate with
+            this parent objects geometry.
+        """
+        grid.psi(self, self.info.get('k', (0, 0, 0)))
 
 
 # For backwards compatibility we also use TightBinding

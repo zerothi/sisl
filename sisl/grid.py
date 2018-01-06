@@ -176,8 +176,7 @@ class Grid(SuperCellChild):
         return np.dtype(self.grid.dtype).kind
 
     def set_grid(self, shape, dtype=None):
-        """ Create the internal grid of certain size.
-        """
+        """ Create the internal grid of certain size. """
         if dtype is None:
             dtype = np.float64
         self.grid = np.zeros(shape, dtype=dtype)
@@ -491,7 +490,7 @@ class Grid(SuperCellChild):
                 fh.write_grid(self, *args, **kwargs)
 
     def psi(self, v, k=(0., 0., 0.)):
-        """ Add the wave-function (`Orbital.psi`) component of each orbital to the grid
+        r""" Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
         This routine takes a vector `v` which may be of complex values and calculates the
         real-space wave-function components in the specified grid. The length of `v` should
@@ -505,23 +504,51 @@ class Grid(SuperCellChild):
         >>> grid.psi(...)
         >>> (np.abs(grid.grid) ** 2).sum() * grid.dvolume == 1.
 
+        If `v` is an `EigenState` object the atomic geometry, and thus the real-space
+        orbitals will be inferred from that geometry. Otherwise, the geometry associated
+        with this `Grid` will be used.
+
+        Note: To calculate :math:`\psi(\mathbf r)` in a unit-cell different from the
+        originating geometry one *has* to pass an `EigenState`. This may be useful when
+        calculating the wavefunctions in a sub-region.
+
+        The wavefunctions are calculated in real-space via:
+
+        .. math::
+            \psi(\mathbf r) = \sum_i\phi(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
+
         Parameters
         ----------
         v : array_like or EigenState
            the coefficients for all orbitals in the geometry (real or complex).
-           If an `EigenState` only the first eigenstate will be used.
+           If an `EigenState` a sum over all eigenstates in the object will be used.
         k : array_like, optional
            k-point associated with the coefficients
         """
         from sisl.physics import EigenState
+
         # As array preserves data-type
+        geom = None
         if isinstance(v, EigenState):
-            v = v.v[0, :]
+            if isinstance(v.parent, Geometry):
+                geom = v.parent
+            else:
+                try:
+                    if isinstance(v.parent.geom, Geometry):
+                        geom = v.parent.geom
+                except:
+                    pass
+
+            # Do the sum over all eigenstates
+            v = v.v.sum(0)
             # We do not necessarily require that the eigenstate.parent is
             # equivalent to this geometry
         else:
             v = np.asarray(v)
-        if len(v) != self.geometry.no:
+
+        if geom is None:
+            geom = self.geometry
+        if len(v) != geom.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
 
@@ -548,12 +575,13 @@ class Grid(SuperCellChild):
         dcell = self.dcell
         dl = (dcell ** 2).sum(1) ** 0.5
         dD = dcell.sum(0) * 0.5
-        rc = self.rcell / (2. * np.pi) * ensure_array(self.shape).reshape(1, -1)
+        rc = self.sc.rcell / (2. * np.pi) * ensure_array(self.shape).reshape(1, -1)
 
         # In the following we don't care about division
         # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
         old_err = np.seterr(divide='ignore', invalid='ignore')
 
+        addouter = add.outer
         def idx2spherical(ix, iy, iz, offset, dc, R):
             """ Calculate the spherical coordinates from indices """
             rx = addouter(addouter(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0] - offset[0]).ravel()
@@ -576,9 +604,6 @@ class Grid(SuperCellChild):
             rz[ry == 0.] = 0
             return n, idx, ry, rx, rz
 
-        # Easier and shorter
-        geom = self.geometry
-
         # Figure out the max-min indices with a spacing of 1 radians
         rad1 = np.pi / 180
         theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
@@ -590,7 +615,7 @@ class Grid(SuperCellChild):
         # First we calculate the min/max indices for all atoms
         idx_mm = _a.emptyi([geom.na, 2, 3])
         rxyz = _a.emptyd(nrxyz)
-        origo = geom.origo.reshape(1, -1)
+        origo = self.sc.origo.reshape(1, -1)
         for atom, ia in geom.atom.iter(True):
             if len(ia) == 0:
                 continue
@@ -626,7 +651,6 @@ class Grid(SuperCellChild):
         del ctheta, stheta, cphi, sphi, nrxyz, rxyz, origo, idx
 
         aranged = _a.aranged
-        addouter = add.outer
 
         # Loop over all atoms in the full supercell structure
         for IA in range(geom.na_s):
@@ -643,7 +667,7 @@ class Grid(SuperCellChild):
                 io = -1
                 isc = geom.a2isc(IA)
                 if has_k:
-                    phase = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), isc))
+                    phase = np.exp(-1j * dot(dot(dot(geom.rcell, k), geom.cell), isc))
                 else:
                     # do not force complex values for Gamma only (user is responsible)
                     phase = 1
