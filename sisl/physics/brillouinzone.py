@@ -124,6 +124,7 @@ class BrillouinZone(object):
         yields : all output returned through an iterator
         average : take the average (with k-weights) of the Brillouin zone
         """
+
         def _call(self, *args, **kwargs):
             func = getattr(self.obj, self.__attr)
             for i, k in enumerate(self):
@@ -164,6 +165,7 @@ class BrillouinZone(object):
         array : all output as a single array
         average : take the average (with k-weights) of the Brillouin zone
         """
+
         def _call(self, *args, **kwargs):
             func = getattr(self.obj, self.__attr)
             for k in self:
@@ -198,6 +200,7 @@ class BrillouinZone(object):
         array : all output as a single array
         yields : all output returned through an iterator
         """
+
         def _call(self, *args, **kwargs):
             func = getattr(self.obj, self.__attr)
             w = self.weight[:]

@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
 import numpy as np
-from scipy.sparse import csr_matrix
 
 from sisl._help import _range as range, _str as str
 from sisl.eigensystem import EigenSystem
@@ -238,7 +237,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
 
 class EigenState(EigenSystem):
-    """ Eigenstates associated by an Hamiltonian """
+    """ Eigenstates associated by a Hamiltonian object
+
+    This object can be generated from a Hamiltonian via `Hamiltonian.eigenstate`.
+    Subsequent DOS calculations and/or wavefunction calculations (`Grid.psi`) may be
+    performed using this object.
+    """
 
     @classmethod
     def distribution(cls, method, smearing=0.1):
@@ -285,7 +289,15 @@ class EigenState(EigenSystem):
         return func
 
     def DOS(self, E, distribution=None):
-        """ Calculate the DOS for the provided energies (`E`), using the supplied distribution function
+        r""" Calculate the DOS for the provided energies (`E`), using the supplied distribution function
+
+        The Density Of States at a specific energy is calculated via the broadening function:
+        .. math::
+            \mathrm{DOS}(E) = \sum_i D(E-\epsilon_i) \approx\delta(E-\epsilon_i)
+
+        where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
+        used may be a user-defined function. Alternatively a distribution function may
+        be aquired from `EigenState.distribution`.
 
         Parameters
         ----------
@@ -299,6 +311,7 @@ class EigenState(EigenSystem):
         See Also
         --------
         distribution : a selected set of implemented distribution functions
+        PDOS : the projected DOS
 
         Returns
         -------
@@ -316,12 +329,18 @@ class EigenState(EigenSystem):
     def PDOS(self, E, distribution=None):
         r""" Calculate the projected-DOS for the provided energies (`E`), using the supplied distribution function
 
-
         The projected DOS is calculated as:
         .. math::
-             \mathrm{PDOS}_\nu(E,k) = \sum_i [\langle \psi_{i,k} | \mathbf S_k | \psi_{i,k}\rangle]_\nu D(E-\epsilon_i)
+             \mathrm{PDOS}_\nu(E) = \sum_i [\langle \psi_{i} | \mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
 
-        where :math:`D(E)` is a distribution function.
+        where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
+        used may be a user-defined function. Alternatively a distribution function may
+        be aquired from `EigenState.distribution`.
+
+        In case of an orthogonal basis set :math:`\mathbf S` is equal to the identity matrix.
+        Note that `DOS` is the sum of the orbital projected DOS:
+        .. math::
+            \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS)_\nu(E)
 
         Parameters
         ----------
@@ -335,6 +354,7 @@ class EigenState(EigenSystem):
         See Also
         --------
         distribution : a selected set of implemented distribution functions
+        DOS : the total DOS
 
         Returns
         -------
@@ -359,10 +379,10 @@ class EigenState(EigenSystem):
         else:
             # Assume orthogonal basis set and Gamma-point
             # TODO raise warning, should we do this here?
-
-            n = self.size()
-            Sk = csr_matrix((n, n), dtype=np.float64)
-            Sk.setdiag(1.)
+            class _K(object):
+                def dot(self, v):
+                    return v
+            Sk = _K()
 
         # Short-hands
         conj = np.conjugate

@@ -11,6 +11,7 @@ from sisl import EigenState
 
 pytestmark = pytest.mark.hamiltonian
 
+
 @pytest.fixture
 def setup():
     class t():

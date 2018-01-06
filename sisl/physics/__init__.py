@@ -50,6 +50,7 @@ Physical quantites
    EnergyDensityMatrix
    DensityMatrix
    Hamiltonian
+   EigenState
    Hessian
    SelfEnergy
    SemiInfinite
