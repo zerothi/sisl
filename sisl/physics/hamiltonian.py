@@ -128,21 +128,31 @@ class Hamiltonian(SparseOrbitalBZSpin):
             the k-point at which to evaluate the eigenstates at
         gauge : str, optional
             the gauge used for calculating the eigenstates
+        sparse : bool, optional
+            if ``True``, `eigsh` will be called, else `eigh` will be
+            called (default).
         **kwargs : dict, optional
-            passed arguments to the `eigh` routines
+            passed arguments to the `eigh` routine
 
         See Also
         --------
         eigh : the used eigenvalue routine
+        eigsh : the used eigenvalue routine
 
         Returns
         -------
         EigenState
         """
-        e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
+        if kwargs.pop('sparse', False):
+            e, v = self.eigsh(k, gauge=gauge, eigvals_only=False, **kwargs)
+        else:
+            e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
+        info = {'k': k,
+                'gauge': gauge}
+        if 'spin' in kwargs:
+            info['spin'] = kwargs['spin']
         # Since eigh returns the eigenvectors [:, i] we have to transpose
-        # them
-        return EigenState(e, v.T, self, k=k, gauge=gauge)
+        return EigenState(e, v.T, self, **info)
 
     @staticmethod
     def read(sile, *args, **kwargs):

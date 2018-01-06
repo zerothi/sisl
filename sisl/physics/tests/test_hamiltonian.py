@@ -584,7 +584,7 @@ class TestHamiltonian(object):
             assert PDOS.shape[0] == len(HS)
             assert PDOS.shape[1] == len(E)
             assert np.allclose(PDOS.sum(0), DOS)
-            assert np.allclose(PDOS, HS.PDOS(E, k))
+            assert np.allclose(PDOS, HS.PDOS(E, k, 'lorentzian'))
 
     def test_pdos2(self, setup):
         H = setup.H.copy()
@@ -596,6 +596,7 @@ class TestHamiltonian(object):
             PDOS = es.PDOS(E)
             assert PDOS.dtype.kind == 'f'
             assert np.allclose(PDOS.sum(0), DOS)
+            assert np.allclose(PDOS, H.PDOS(E, k))
 
     def test_pdos3(self, setup):
         # check whether the default S(Gamma) works

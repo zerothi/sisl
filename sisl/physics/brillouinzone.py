@@ -124,12 +124,11 @@ class BrillouinZone(object):
         yields : all output returned through an iterator
         average : take the average (with k-weights) of the Brillouin zone
         """
-
         def _call(self, *args, **kwargs):
             func = getattr(self.obj, self.__attr)
             for i, k in enumerate(self):
                 if i == 0:
-                    v = func(k, *args, **kwargs)
+                    v = func(*args, k=k, **kwargs)
                     if len(self) == 1:
                         return v
                     shp = [len(self)]
@@ -138,7 +137,7 @@ class BrillouinZone(object):
                     a[i, :] = v[:]
                     del v
                 else:
-                    a[i, :] = func(k, *args, **kwargs)
+                    a[i, :] = func(*args, k=k, **kwargs)
             return a
         # Set instance __call__
         self.__call__ = types.MethodType(_call, self)
@@ -165,11 +164,10 @@ class BrillouinZone(object):
         array : all output as a single array
         average : take the average (with k-weights) of the Brillouin zone
         """
-
         def _call(self, *args, **kwargs):
             func = getattr(self.obj, self.__attr)
             for k in self:
-                yield func(k, *args, **kwargs).astype(dtype, copy=False)
+                yield func(*args, k=k, **kwargs).astype(dtype, copy=False)
         # Set instance __call__
         self.__call__ = types.MethodType(_call, self)
         return self
@@ -188,27 +186,26 @@ class BrillouinZone(object):
         Examples
         --------
         >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
-        >>> obj.average().eigh() # doctest: +SKIP
+        >>> obj.average().DOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
 
         >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
         >>> obj.average() # doctest: +SKIP
-        >>> obj.eigh() # doctest: +SKIP
-        >>> obj.eighs() # doctest: +SKIP
+        >>> obj.DOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
+        >>> obj.PDOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
 
         See Also
         --------
         array : all output as a single array
         yields : all output returned through an iterator
         """
-
         def _call(self, *args, **kwargs):
             func = getattr(self.obj, self.__attr)
             w = self.weight[:]
             for i, k in enumerate(self):
                 if i == 0:
-                    v = func(k, *args, **kwargs) * w[i]
+                    v = func(*args, k=k, **kwargs) * w[i]
                 else:
-                    v += func(k, *args, **kwargs) * w[i]
+                    v += func(*args, k=k, **kwargs) * w[i]
             return v
         # Set instance __call__
         self.__call__ = types.MethodType(_call, self)
@@ -221,10 +218,10 @@ class BrillouinZone(object):
 
         Parameters
         ----------
-        *args :
-            arguments passed to the attribute call, note that the first argument
-            will *always* be `k`
-        **kwargs :
+        *args : optional
+            arguments passed to the attribute call, note that an argument `k=k` will be
+            added by this routine as a way to loop the k-points.
+        **kwargs : optional
             keyword arguments passed to the attribute call, note that the first argument
             will *always* be `k`
 

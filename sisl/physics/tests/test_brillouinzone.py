@@ -69,6 +69,24 @@ class TestBrillouinZone(object):
         # Average
         assert np.allclose(bz.average().eigh(), np.arange(3))
 
+    def test_class3(self, setup):
+        class Test(SuperCellChild):
+            def __init__(self, sc):
+                self.set_supercell(sc)
+            def eigh(self, k, *args, **kwargs):
+                return np.arange(3)
+            def eig(self, k, *args, **kwargs):
+                return np.arange(3) - 1
+        bz = MonkhorstPackBZ(Test(setup.s1), [2] * 3)
+        # Yields
+        bz.yields()
+        for val in bz.eigh():
+            assert np.allclose(val, np.arange(3))
+        for val in bz.eig():
+            assert np.allclose(val, np.arange(3) - 1)
+        # Average
+        assert np.allclose(bz.average().eigh(), np.arange(3))
+
     def test_mp1(self, setup):
         bz = MonkhorstPackBZ(setup.s1, [2] * 3)
         assert len(bz) == 8
