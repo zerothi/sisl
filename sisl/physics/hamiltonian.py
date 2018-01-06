@@ -253,7 +253,7 @@ class EigenState(EigenSystem):
         The Gaussian distribution is calculated as:
 
         .. math::
-            G(E) = \sum_i \frac{1}{\sqrt{2\pi\sigma^2}\exp\big[- (E - \epsilon_i)^2 / (2\sigma^2)\big]
+            G(E) = \sum_i \frac{1}{\sqrt{2\pi\sigma^2}}\exp\big[- (E - \epsilon_i)^2 / (2\sigma^2)\big]
 
         where :math:`\sigma` is the `smearing` parameter.
 
@@ -335,7 +335,7 @@ class EigenState(EigenSystem):
         The projected DOS is calculated as:
 
         .. math::
-             \mathrm{PDOS}_\nu(E) = \sum_i [\langle \psi_{i} | \mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+             \mathrm{PDOS}_\nu(E) = \sum_i \psi_{i,\nu} [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
 
         where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
         used may be a user-defined function. Alternatively a distribution function may
@@ -345,7 +345,7 @@ class EigenState(EigenSystem):
         Note that `DOS` is the sum of the orbital projected DOS:
 
         .. math::
-            \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS)_\nu(E)
+            \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS}_\nu(E)
 
         Parameters
         ----------
