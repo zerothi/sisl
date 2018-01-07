@@ -1,4 +1,1 @@
 ---
-
-exclude_paths:
-   - '**/tests/*.py'

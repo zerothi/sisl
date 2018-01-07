@@ -1,7 +1,6 @@
 ignore:
   - benchmarks
   - data
-  - **/tests/test_*.py
 
 coverage:
   notify:
