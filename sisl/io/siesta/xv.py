@@ -54,8 +54,14 @@ class XVSileSiesta(SileSiesta):
         return SuperCell(cell)
 
     @Sile_fh_open
-    def read_geometry(self):
-        """ Returns Geometry object from the XV file
+    def read_geometry(self, species_Z=False):
+        """ Returns a `Geometry` object from the XV file
+
+        Parameters
+        ----------
+        species_Z : bool, optional
+           if ``True`` the atomic numbers are the species indices (useful when
+           reading the ChemicalSpeciesLabel block simultaneously).
         """
         sc = self.read_supercell()
 
@@ -66,7 +72,10 @@ class XVSileSiesta(SileSiesta):
         line = np.empty(8, np.float64)
         for ia in range(na):
             line[:] = list(map(float, self.readline().split()[:8]))
-            atms[ia] = Atom(int(line[1]))
+            if species_Z:
+                atms[ia] = Atom(int(line[0]))
+            else:
+                atms[ia] = Atom(int(line[1]))
             xyz[ia, :] = line[2:5]
         xyz *= Bohr2Ang
 

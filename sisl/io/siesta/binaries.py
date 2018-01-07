@@ -24,12 +24,13 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
 __all__ = ['TSHSSileSiesta']
+__all__ += ['HSXSileSiesta']
 __all__ += ['GridSileSiesta', 'EnergyGridSileSiesta']
 __all__ += ['_GFSileSiesta', 'TSGFSileSiesta']
 
 
 class TSHSSileSiesta(SileBinSiesta):
-    """ TranSiesta file object """
+    """ TranSiesta TSHS file object """
 
     def read_supercell(self):
         """ Returns a SuperCell object from a siesta.TSHS file """
@@ -155,6 +156,54 @@ class TSHSSileSiesta(SileBinSiesta):
                               cell.T, xyz.T, H.geom.firsto,
                               csr.ncol, csr.col + 1, h, s, isc.T,
                               nspin=len(H.spin), na_u=H.geom.na, no_u=H.geom.no, nnz=H.nnz)
+
+
+class HSXSileSiesta(SileBinSiesta):
+    """ Siesta HSX file object """
+
+    def read_hamiltonian(self, **kwargs):
+        """ Returns the electronic structure from the siesta.TSHS file """
+
+        # Now read the sizes used...
+        Gamma, sizes = _siesta.read_hsx_sizes(self.file)
+        no = sizes[0]
+        n_s = sizes[1] / no
+        spin = sizes[2]
+        nnz = sizes[3]
+        ncol, col, dH, dS, dxij = _siesta.read_hsx(self.file, Gamma, no, no * n_s, spin, nnz)
+
+        # Try and immediately attach a geometry
+        geom = kwargs.get('geom', kwargs.get('geometry', None))
+        if geom is None:
+            # We have *no* clue about the
+            if np.allclose(xij, 0.):
+                # We truly, have no clue,
+                # Just generate a boxed system
+                xyz = [[x, 0, 0] for x in range(no)]
+                geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
+            else:
+                # Try to figure out the supercell
+                raise NotImplementedError("Currently we can not currently calculate atomic positions from"
+                                          " xij array.")
+        if geom.no != no:
+            raise ValueError("Reading HSX files requires the input geometry to have the "
+                             "correct number of orbitals.")
+
+        # Create the Hamiltonian container
+        H = Hamiltonian(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
+
+        # Create the new sparse matrix
+        H._csr.ncol = ncol.astype(np.int32, copy=False)
+        H._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        # Correct fortran indices
+        H._csr.col = col.astype(np.int32, copy=False) - 1
+        H._csr._nnz = len(col)
+
+        H._csr._D = np.empty([nnz, spin+1], np.float32)
+        H._csr._D[:, :spin] = dH[:, :]
+        H._csr._D[:, spin] = dS[:]
+
+        return H
 
 
 class GridSileSiesta(SileBinSiesta):

@@ -386,6 +386,14 @@ class fdfSileSiesta(SileSiesta):
 
         return SuperCell(cell)
 
+    def _r_supercell_XV(self, *args, **kwargs):
+        """ Returns `SuperCell` object from the FDF file """
+        f = self.get('SystemLabel', default='siesta')
+        sc = None
+        if isfile(f + '.XV'):
+            sc = XVSileSiesta(f + .'XV').read_supercell()
+        return sc
+
     def read_geometry(self, *args, **kwargs):
         """ Returns Geometry object from the FDF file
 
@@ -487,6 +495,21 @@ class fdfSileSiesta(SileSiesta):
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
 
+    def _r_geometry_XV(self, *args, **kwargs):
+        """ Returns `SuperCell` object from the FDF file """
+        f = self.get('SystemLabel', default='siesta')
+        geom = None
+        if isfile(f + '.XV'):
+            basis = self.read_basis()
+            # The basis has correct ordering
+            if len(basis) > 0:
+                geom = XVSileSiesta(f + .'XV').read_geometry(species_Z=True)
+                for atom, _ in geom.atom.iter(True):
+                    geom.atom.replace(atom, basis[atom.Z-1])
+            else:
+                geom = XVSileSiesta(f + .'XV').read_geometry()
+        return geom
+
     def read_basis(self):
         """ Read the atomic species and figure out the number of atomic orbitals in their basis
 
@@ -566,12 +589,14 @@ class fdfSileSiesta(SileSiesta):
         raise ValueError("Could not find the energy density matrix from the *.nc.")
 
     def read_hamiltonian(self, *args, **kwargs):
-        """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files (in that order) """
+        """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order) """
         sys = self.get('SystemLabel', default='siesta')
 
         if isfile(sys + '.nc'):
             return ncSileSiesta(sys + '.nc').read_hamiltonian()
         elif isfile(sys + '.TSHS'):
+            # We prefer the atomic positions in the TSHS file, however,
+            # the species etc. may not necessarily be good.
             H = TSHSSileSiesta(sys + '.TSHS').read_hamiltonian()
             geom = self.read_geometry()
             for a, s in geom.atom.iter(True):
@@ -581,6 +606,12 @@ class fdfSileSiesta(SileSiesta):
                 i = s[0]
                 if a.no == H.geom.atom[i].no:
                     H.geom.atom.replace(H.geom.atom[i], a)
+            return H
+        elif isfile(sys + '.HSX'):
+            # Read the intrinsic geometry, then HSX will fail
+            # if we can't figure out the correct number of orbitals
+            geom = self.read_geometry()
+            H = HSXSileSiesta(sys + '.HSX').read_hamiltonian(geom=geom)
             return H
         raise ValueError("Could not find the Hamiltonian from the *.nc, nor the *.TSHS file.")
 
