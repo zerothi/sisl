@@ -537,7 +537,7 @@ class TestHamiltonian(object):
         eigs = BS.asarray().eigh()
         assert len(BS) == eigs.shape[0]
         assert len(setup.HS) == eigs.shape[1]
-        eig2 = np.array([eig for eig in BS.yields().eigh()])
+        eig2 = np.array([eig for eig in BS.asyield().eigh()])
         assert np.allclose(eigs, eig2)
         setup.HS.empty()
 
