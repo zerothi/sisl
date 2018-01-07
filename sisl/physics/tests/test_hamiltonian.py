@@ -534,7 +534,7 @@ class TestHamiltonian(object):
     def test_eig3(self, setup):
         setup.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
         BS = PathBZ(setup.HS, [[0, 0, 0], [0.5, 0.5, 0]], 10)
-        eigs = BS.array().eigh()
+        eigs = BS.asarray().eigh()
         assert len(BS) == eigs.shape[0]
         assert len(setup.HS) == eigs.shape[1]
         eig2 = np.array([eig for eig in BS.yields().eigh()])

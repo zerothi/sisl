@@ -53,7 +53,7 @@ class BrillouinZone(object):
         self._w = _a.onesd(1)
 
         # Instantiate the array call
-        self.array()
+        self.asarray()
 
     def __repr__(self):
         """ String representation of the BrillouinZone """
@@ -111,7 +111,7 @@ class BrillouinZone(object):
                 attr, self.parent.__class__.__name__))
 
     # Implement wrapper calls
-    def array(self, dtype=np.float64):
+    def asarray(self, dtype=np.float64):
         """ Return `self` with `numpy.ndarray` returned quantities
 
         This forces the `__call__` routine to return a single array.
@@ -124,12 +124,12 @@ class BrillouinZone(object):
         Examples
         --------
         >>> obj = BrillouinZone(...) # doctest: +SKIP
-        >>> obj.array().eigh() # doctest: +SKIP
+        >>> obj.asarray().eigh() # doctest: +SKIP
 
         See Also
         --------
-        yields : all output returned through an iterator
-        average : take the average (with k-weights) of the Brillouin zone
+        asyield : all output returned through an iterator
+        asaverage : take the average (with k-weights) of the Brillouin zone
         """
 
         def _call(self, *args, **kwargs):
@@ -151,7 +151,7 @@ class BrillouinZone(object):
         self.__call__ = types.MethodType(_call, self)
         return self
 
-    def yields(self, dtype=np.float64):
+    def asyield(self, dtype=np.float64):
         """ Return `self` with yielded quantities
 
         This forces the `__call__` routine to return a an iterator which may
@@ -165,12 +165,12 @@ class BrillouinZone(object):
         Examples
         --------
         >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
-        >>> obj.yields().eigh() # doctest: +SKIP
+        >>> obj.asyield().eigh() # doctest: +SKIP
 
         See Also
         --------
-        array : all output as a single array
-        average : take the average (with k-weights) of the Brillouin zone
+        asarray : all output as a single array
+        asaverage : take the average (with k-weights) of the Brillouin zone
         """
 
         def _call(self, *args, **kwargs):
@@ -181,7 +181,7 @@ class BrillouinZone(object):
         self.__call__ = types.MethodType(_call, self)
         return self
 
-    def average(self, dtype=np.float64):
+    def asaverage(self, dtype=np.float64):
         """ Return `self` with yielded quantities
 
         This forces the `__call__` routine to return a an iterator which may
@@ -195,17 +195,17 @@ class BrillouinZone(object):
         Examples
         --------
         >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
-        >>> obj.average().DOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
+        >>> obj.asaverage().DOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
 
         >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
-        >>> obj.average() # doctest: +SKIP
+        >>> obj.asaverage() # doctest: +SKIP
         >>> obj.DOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
         >>> obj.PDOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
 
         See Also
         --------
-        array : all output as a single array
-        yields : all output returned through an iterator
+        asarray : all output as a single array
+        asyield : all output returned through an iterator
         """
 
         def _call(self, *args, **kwargs):
@@ -221,7 +221,7 @@ class BrillouinZone(object):
         self.__call__ = types.MethodType(_call, self)
         return self
 
-    mean = average
+    asmean = asaverage
 
     def __call__(self, *args, **kwargs):
         """ Calls the given attribute of the internal object and returns the quantity
@@ -327,16 +327,6 @@ class MonkhorstPackBZ(BrillouinZone):
         N = len(self._k)
         # We have to correct for the size of the Brillouin zone
         self._w = np.ones([N], np.float64) * np.prod(size) / N
-
-    def __iter__(self):
-        """ Iterate through the Monkhorst pack-grid
-
-        Yields
-        ------
-        k, w : k-point and associated weight
-        """
-        for i in range(len(self)):
-            yield self._k[i], self._w[i]
 
 
 class PathBZ(BrillouinZone):
