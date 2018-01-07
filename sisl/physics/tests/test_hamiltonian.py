@@ -550,6 +550,7 @@ class TestHamiltonian(object):
             es = HS.eigenstate(k)
             assert np.allclose(e, es.e)
             assert np.allclose(v, es.v.T)
+            assert np.allclose(es.norm().sum(0), 1)
 
     def test_dos1(self, setup):
         HS = setup.HS.copy()
@@ -560,6 +561,7 @@ class TestHamiltonian(object):
             DOS = es.DOS(E)
             assert DOS.dtype.kind == 'f'
             assert np.allclose(DOS, HS.DOS(E, k))
+            assert np.allclose(es.norm().sum(0), 1)
             repr(es)
 
     def test_dos2(self, setup):
@@ -582,6 +584,7 @@ class TestHamiltonian(object):
             es = HS.eigenstate(k)
             DOS = es.DOS(E, 'lorentzian')
             PDOS = es.PDOS(E, 'lorentzian')
+            assert np.allclose(es.norm().sum(0), 1)
             assert PDOS.dtype.kind == 'f'
             assert PDOS.shape[0] == len(HS)
             assert PDOS.shape[1] == len(E)
@@ -594,6 +597,7 @@ class TestHamiltonian(object):
         E = np.linspace(-4, 4, 1000)
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
+            assert np.allclose(es.norm().sum(0), 1)
             DOS = es.DOS(E)
             PDOS = es.PDOS(E)
             assert PDOS.dtype.kind == 'f'
