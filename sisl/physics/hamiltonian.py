@@ -1,8 +1,10 @@
 from __future__ import print_function, division
 
 import numpy as np
+from numpy import conj
 
 from sisl._help import _range as range, _str as str
+from sisl._help import ensure_array
 from sisl.eigensystem import EigenSystem
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
@@ -208,7 +210,10 @@ class Hamiltonian(SparseOrbitalBZSpin):
         EigenState.DOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
         EigenState.PDOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
         """
-        return self.eigenstate(k, **kwargs).DOS(E, distribution)
+        # Calculate the eigenvalues to create the EigenState without the
+        # eigenvectors
+        e = self.eigh(k, **kwargs)
+        return EigenState(e, e, self, k=k, **kwargs).DOS(E, distribution)
 
     def PDOS(self, E, k=(0, 0, 0), distribution=None, **kwargs):
         r""" Calculate the projected DOS at the given energies for a specific `k` point
@@ -290,6 +295,48 @@ class EigenState(EigenSystem):
                              "'lorentzian' distribution functions")
         return func
 
+    def norm(self, idx=None):
+        r""" Return the individual orbital norms for each eigenstate, possibly only for a subset of eigenstates
+
+        The norm is calculated as:
+
+        .. math::
+            |\psi|_\nu = \psi^*_\nu [\mathbf S | \psi\rangle]_\nu
+
+        while the sum :math:`\sum_\nu\psi_nu\equiv1`.
+
+        Parameters
+        ----------
+        idx : int or array_like
+           only return for the selected indices
+        """
+        if idx is None:
+            idx = range(len(self))
+        idx = ensure_array(idx)
+
+        # Now create the correct normalization for each
+        k = self.info.get('k', (0, 0, 0))
+        opt = {'k': self.info.get('k', (0, 0, 0))}
+        if 'gauge' in self.info:
+            opt['gauge'] = self.info['gauge']
+
+        if isinstance(self.parent, Hamiltonian):
+            # Calculate the overlap matrix
+            Sk = self.parent.Sk(**opt)
+            if self.parent.spin > Spin('p'):
+                raise ValueError('Currently the PDOS for non-colinear and spin-orbit has not been checked')
+        else:
+            # Assume orthogonal basis set and Gamma-point
+            # TODO raise warning, should we do this here?
+            class _K(object):
+                def dot(self, v):
+                    return v
+            Sk = _K()
+
+        # A true normalization should only be real, hence we force this.
+        # TODO, perhaps check that it is correct...
+        return (conj(self.v[idx, :].T) * Sk.dot(self.v[idx, :].T)).real.T
+
     def DOS(self, E, distribution=None):
         r""" Calculate the DOS for the provided energies (`E`), using the supplied distribution function
 
@@ -335,7 +382,7 @@ class EigenState(EigenSystem):
         The projected DOS is calculated as:
 
         .. math::
-             \mathrm{PDOS}_\nu(E) = \sum_i \psi_{i,\nu} [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+             \mathrm{PDOS}_\nu(E) = \sum_i \psi^*_{i,\nu} [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
 
         where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
         used may be a user-defined function. Alternatively a distribution function may
@@ -390,7 +437,6 @@ class EigenState(EigenSystem):
             Sk = _K()
 
         # Short-hands
-        conj = np.conjugate
         add = np.add
 
         w = distribution(E - self.e[0]).reshape(1, -1)

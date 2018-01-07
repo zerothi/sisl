@@ -148,7 +148,7 @@ class BrillouinZone(object):
                     a[i, :] = func(*args, k=k, **kwargs)
             return a
         # Set instance __call__
-        self.__call__ = types.MethodType(_call, self)
+        setattr(self, '__call__', types.MethodType(_call, self))
         return self
 
     def asyield(self, dtype=np.float64):
@@ -178,7 +178,7 @@ class BrillouinZone(object):
             for k in self:
                 yield func(*args, k=k, **kwargs).astype(dtype, copy=False)
         # Set instance __call__
-        self.__call__ = types.MethodType(_call, self)
+        setattr(self, '__call__', types.MethodType(_call, self))
         return self
 
     def asaverage(self, dtype=np.float64):
@@ -218,7 +218,7 @@ class BrillouinZone(object):
                     v += func(*args, k=k, **kwargs) * w[i]
             return v
         # Set instance __call__
-        self.__call__ = types.MethodType(_call, self)
+        setattr(self, '__call__', types.MethodType(_call, self))
         return self
 
     asmean = asaverage
@@ -306,6 +306,9 @@ class MonkhorstPackBZ(BrillouinZone):
 
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt)
+        if np.any(Dn) == 0:
+            raise ValueError(self.__class__.__name__ + ' *must* be initialized with '
+                             'diagonal elements different from 0.')
 
         # Correct for 1's where it does not
         # make sense to reduce the BZ
@@ -423,8 +426,17 @@ class PathBZ(BrillouinZone):
                 yield self.point[i] + j * delta
 
     def lineartick(self):
-        """ The tick-marks corresponding to the linear-k values """
-        return self.lineark(True)[0:2]
+        """ The tick-marks corresponding to the linear-k values
+
+        Returns
+        -------
+        linear_k : The positions in reciprocal space determined by the distance between points
+
+        See Also
+        --------
+        lineark : Routine used to calculate the tick-marks.
+        """
+        return self.lineark(True)[1:3]
 
     def lineark(self, ticks=False):
         """ A 1D array which corresponds to the delta-k values of the path
@@ -437,15 +449,27 @@ class PathBZ(BrillouinZone):
         >>> p = PathBZ(...) # doctest: +SKIP
         >>> eigs = Hamiltonian.eigh(p) # doctest: +SKIP
         >>> for i in range(len(Hamiltonian)): # doctest: +SKIP
-        >>>     pyplot.plot(p.lineark(), eigs[:, i]) # doctest: +SKIP
+        ...     plt.plot(p.lineark(), eigs[:, i]) # doctest: +SKIP
+
+        >>> p = PathBZ(...) # doctest: +SKIP
+        >>> eigs = Hamiltonian.eigh(p) # doctest: +SKIP
+        >>> lk, kt, kl = p.lineark(True)
+        >>> plt.xticks(kt, kl)
+        >>> for i in range(len(Hamiltonian)): # doctest: +SKIP
+        ...     plt.plot(lk, eigs[:, i]) # doctest: +SKIP
 
         Parameters
         ----------
         ticks : bool, optional
            if `True` the ticks for the points are also returned
 
-           xticks, label_ticks, lk = PathBZ.lineark(True)
+           lk, xticks, label_ticks, lk = PathBZ.lineark(True)
 
+        Returns
+        -------
+        linear_k : The positions in reciprocal space determined by the distance between points
+        k_tick : Linear k-positions of the points, only returned if `ticks` is ``True``
+        k_label : Labels at `k_tick`, only returned if `ticks` is ``True``
         """
         # Calculate points
         k = [self.tocartesian(pnt) for pnt in self.point]
@@ -471,7 +495,7 @@ class PathBZ(BrillouinZone):
         # Get label tick, in case self.name is a single string 'ABCD'
         label_tick = [a for a in self.name]
         if ticks:
-            return dK[xtick], label_tick, dK
+            return dK, dK[xtick], label_tick
         return dK
 
     def __len__(self):
