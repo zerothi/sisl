@@ -31,28 +31,35 @@ class BrillouinZone(object):
     details).
     """
 
-    def __init__(self, obj):
+    def __init__(self, parent):
         """ Initialize a `BrillouinZone` object from a given `SuperCell`
 
         Parameters
         ----------
-        obj : object or array_like
-           An object with associated `obj.cell` and `obj.rcell` or
+        parent : object or array_like
+           An object with associated ``parent.cell`` and ``parent.rcell`` or
            an array of floats which may be turned into a `SuperCell`
         """
         try:
-            obj.cell
-            obj.rcell
-            self.obj = obj
+            # It probably has the supercell attached
+            parent.cell
+            parent.rcell
+            self.parent = parent
         except:
-            self.obj = SuperCell(obj)
+            self.parent = SuperCell(parent)
 
         # Gamma point
-        self._k = np.zeros([1, 3], np.float64)
-        self._w = np.ones(1, np.float64)
+        self._k = _a.zerosd([1, 3])
+        self._w = _a.onesd(1)
 
         # Instantiate the array call
         self.array()
+
+    def __repr__(self):
+        """ String representation of the BrillouinZone """
+        if isinstance(self.parent, SuperCell):
+            return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), repr(self.parent).replace('\n', '\n '))
+        return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), repr(self.parent.sc).replace('\n', '\n '))
 
     @property
     def k(self):
@@ -66,11 +73,11 @@ class BrillouinZone(object):
 
     @property
     def cell(self):
-        return self.obj.cell
+        return self.parent.cell
 
     @property
     def rcell(self):
-        return self.obj.rcell
+        return self.parent.rcell
 
     def tocartesian(self, k):
         """ Transfer a k-point in reduced coordinates to the Cartesian coordinates
@@ -96,12 +103,12 @@ class BrillouinZone(object):
 
     def __getattr__(self, attr):
         try:
-            getattr(self.obj, attr)
+            getattr(self.parent, attr)
             self.__attr = attr
             return self
         except AttributeError:
             raise AttributeError("'{}' does not exist in class '{}'".format(
-                attr, self.obj.__class__.__name__))
+                attr, self.parent.__class__.__name__))
 
     # Implement wrapper calls
     def array(self, dtype=np.float64):
@@ -126,7 +133,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.obj, self.__attr)
+            func = getattr(self.parent, self.__attr)
             for i, k in enumerate(self):
                 if i == 0:
                     v = func(*args, k=k, **kwargs)
@@ -167,7 +174,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.obj, self.__attr)
+            func = getattr(self.parent, self.__attr)
             for k in self:
                 yield func(*args, k=k, **kwargs).astype(dtype, copy=False)
         # Set instance __call__
@@ -202,7 +209,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.obj, self.__attr)
+            func = getattr(self.parent, self.__attr)
             w = self.weight[:]
             for i, k in enumerate(self):
                 if i == 0:
@@ -361,12 +368,12 @@ class PathBZ(BrillouinZone):
 
         # If the array has fewer points we try and determine
         if self.point.shape[1] < 3:
-            if self.point.shape[1] != np.sum(self.obj.nsc > 1):
+            if self.point.shape[1] != np.sum(self.parent.nsc > 1):
                 raise ValueError('Could not determine the non-periodic direction')
 
             # fix the points where there are no periodicity
             for i in [0, 1, 2]:
-                if self.obj.nsc[i] == 1:
+                if self.parent.nsc[i] == 1:
                     self.point = np.insert(self.point, i, 0., axis=1)
 
         # Ensure the shape is correct

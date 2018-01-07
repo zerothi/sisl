@@ -391,7 +391,7 @@ class fdfSileSiesta(SileSiesta):
         f = self.get('SystemLabel', default='siesta')
         sc = None
         if isfile(f + '.XV'):
-            sc = XVSileSiesta(f + .'XV').read_supercell()
+            sc = XVSileSiesta(f + '.XV').read_supercell()
         return sc
 
     def read_geometry(self, *args, **kwargs):
@@ -503,11 +503,11 @@ class fdfSileSiesta(SileSiesta):
             basis = self.read_basis()
             # The basis has correct ordering
             if len(basis) > 0:
-                geom = XVSileSiesta(f + .'XV').read_geometry(species_Z=True)
+                geom = XVSileSiesta(f + '.XV').read_geometry(species_Z=True)
                 for atom, _ in geom.atom.iter(True):
                     geom.atom.replace(atom, basis[atom.Z-1])
             else:
-                geom = XVSileSiesta(f + .'XV').read_geometry()
+                geom = XVSileSiesta(f + '.XV').read_geometry()
         return geom
 
     def read_basis(self):

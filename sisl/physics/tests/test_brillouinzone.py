@@ -29,6 +29,7 @@ class TestBrillouinZone(object):
 
     def test_bz1(self, setup):
         bz = BrillouinZone(1.)
+        repr(bz)
         bz.weight
         bz = BrillouinZone(setup.s1)
         assert len(bz) == 1
@@ -48,6 +49,7 @@ class TestBrillouinZone(object):
             def eig(self, k, *args, **kwargs):
                 return np.arange(3) - 1
         bz = BrillouinZone(Test(setup.s1))
+        repr(bz)
         assert np.allclose(bz.eigh(), np.arange(3))
         assert np.allclose(bz.eig(), np.arange(3)-1)
 

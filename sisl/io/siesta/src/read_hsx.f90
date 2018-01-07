@@ -43,7 +43,7 @@ subroutine read_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
   character(len=*), intent(in) :: fname
   logical, intent(in) :: Gamma
   integer, intent(in) :: no_u, no_s, nspin, maxnh
-  integer, intent(out) :: listh(maxnh), numh(no_u), listhptr(no_u)
+  integer, intent(out) :: numh(no_u), listh(maxnh)
   real(sp), intent(out) :: H(maxnh,nspin), S(maxnh), xij(3,maxnh)
   
 ! Define f2py intents
@@ -55,7 +55,7 @@ subroutine read_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
 ! Internal variables and arrays
   integer :: iu
   integer :: is, ih, im
-  integer :: listh(maxnh)
+  integer :: listhptr(maxnh)
 
   ! Local readables
   logical :: lGamma
@@ -118,7 +118,7 @@ subroutine read_hsx( fname, Gamma, no_u, no_s, nspin, maxnh, &
   read(iu) !Qtot,temp
 
   if ( Gamma ) then
-     xyz = 0._sp
+     xij = 0._sp
   else
      do ih = 1 , no_u
         im = numh(ih)
