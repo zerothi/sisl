@@ -16,6 +16,13 @@ Below is a list of the current tutorials:
 .. toctree::
    :maxdepth: 1
 
+   tutorials/tutorial_es_1.ipynb
+
+Older, to-be deprecated tutorials once they are moved to the IPython notebook schemes:
+
+.. toctree::
+   :maxdepth: 1
+
    Geometry creation -- part 1 <tutorials/tutorial_01>
    Geometry creation -- part 2 <tutorials/tutorial_02>
    Supercells <tutorials/tutorial_04>

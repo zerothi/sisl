@@ -49,12 +49,13 @@ extensions = [
 ]
 
 # Enable plots in documentation
-#extensions += [
-#    'matplotlib.sphinxext.only_directives',
-#    'matplotlib.sphinxext.plot_directive',
-#    'matplotlib.sphinxext.ipython_directive',
-#    'matplotlib.sphinxext.ipython_console_highlighting'
-#]
+extensions += [
+    'matplotlib.sphinxext.only_directives',
+    'matplotlib.sphinxext.plot_directive',
+    'nbsphinx',
+    'IPython.sphinxext.ipython_directive',
+    'IPython.sphinxext.ipython_console_highlighting',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -84,7 +85,7 @@ autosummary_generate = [f for f in autosummary_generate if 'api-generated' not i
 
 # General information about the project.
 project = u'sisl'
-copyright = u'2015-2017, Nick R. Papior'
+copyright = u'2015-2018, Nick R. Papior'
 author = u'Nick R. Papior'
 
 
@@ -354,8 +355,21 @@ intersphinx_mapping = {
     'python': ('http://docs.python.org/dev', None),
     'numpy': ('https://docs.scipy.org/doc/numpy', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
-    'matplotlib': ('http://matplotlib.org', None),
+    'matplotlib': ('https://matplotlib.org', None),
 }
+
+# Tell nbsphinx to wait, at least 60 seconds for each cell
+nbsphinx_timeout = 60
+
+# Insert a link to download the IPython notebook
+nbsphinx_prolog = r"""
+{% set docname = env.doc2path(env.docname, base='docs') %}
+
+.. only:: html
+
+     Download IPython notebook `here <https://raw.githubusercontent.com/zerothi/sisl/master/{{ docname }}>`_.
+
+"""
 
 
 # My custom detailed instructions for not documenting stuff
