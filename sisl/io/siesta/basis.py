@@ -6,7 +6,7 @@ except ImportError:
     from xml.etree.ElementTree import ElementTree
 
 from sisl.atom import Atom
-from sisl.orbital import SphericalOrbital, AtomicOrbital
+from sisl.orbital import SphericalOrbital
 from sisl.io import add_sile
 from sisl._array import arrayd, aranged
 from sisl.unit.siesta import unit_convert

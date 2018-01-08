@@ -1,10 +1,17 @@
 from __future__ import print_function, division
 
+import warnings
+
 import numpy as np
-from numpy import conj
+from numpy import int32, float64, pi
+from numpy import take, ogrid, add
+from numpy import cos, sin, arctan2, divide, conj
+from numpy import dot, sqrt, square, floor, ceil
 
 from sisl._help import _range as range, _str as str
 from sisl._help import ensure_array
+import sisl._array as _a
+from sisl import Geometry
 from sisl.eigensystem import EigenSystem
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
@@ -284,12 +291,12 @@ class EigenState(EigenSystem):
         if method.lower() in ['gauss', 'gaussian']:
             exp = np.exp
             sigma2 = 2 * smearing ** 2
-            pisigma = (np.pi * sigma2) ** .5
+            pisigma = (pi * sigma2) ** .5
             def func(E):
                 return exp(-E ** 2 / sigma2) / pisigma
         elif method.lower() in ['lorentz', 'lorentzian']:
             def func(E):
-                return (smearing / np.pi) / (E ** 2 + smearing ** 2)
+                return (smearing / pi) / (E ** 2 + smearing ** 2)
         else:
             raise ValueError(cls.__name__ + ".distribution currently only implements 'gaussian' or "
                              "'lorentzian' distribution functions")
@@ -315,7 +322,6 @@ class EigenState(EigenSystem):
         idx = ensure_array(idx)
 
         # Now create the correct normalization for each
-        k = self.info.get('k', (0, 0, 0))
         opt = {'k': self.info.get('k', (0, 0, 0))}
         if 'gauge' in self.info:
             opt['gauge'] = self.info['gauge']
@@ -418,7 +424,6 @@ class EigenState(EigenSystem):
             distribution = self.distribution(distribution)
 
         # Retrieve options for the Sk calculation
-        k = self.info.get('k', (0, 0, 0))
         opt = {'k': self.info.get('k', (0, 0, 0))}
         if 'gauge' in self.info:
             opt['gauge'] = self.info['gauge']
@@ -436,9 +441,6 @@ class EigenState(EigenSystem):
                     return v
             Sk = _K()
 
-        # Short-hands
-        add = np.add
-
         w = distribution(E - self.e[0]).reshape(1, -1)
         PDOS = (conj(self.v[0, :]) * Sk.dot(self.v[0, :])).real.reshape(-1, 1) * w
         for i in range(1, len(self)):
@@ -446,16 +448,270 @@ class EigenState(EigenSystem):
             add(PDOS, (conj(self.v[i, :]) * Sk.dot(self.v[i, :])).real.reshape(-1, 1) * w, out=PDOS)
         return PDOS
 
-    def psi(self, grid):
-        """ Calculate the wavefunction on `grid`
+    def psi(self, grid, k=None):
+        r""" Add the wave-function (`Orbital.psi`) component of each orbital to the grid
+
+        This routine calculates the real-space wave-function components in the
+        specified grid. 
+
+        This is an *in-place* operation that *adds* to the current values in the grid.
+
+        It may be instructive to check that an eigenstate is normalized:
+
+        >>> grid = Grid(...) # doctest: +SKIP
+        >>> es = EigenState(...) # doctest: +SKIP
+        >>> es.sub(0).psi(grid)
+        >>> (np.abs(grid.grid) ** 2).sum() * grid.dvolume == 1.
+
+        Note: To calculate :math:`\psi(\mathbf r)` in a unit-cell different from the
+        originating geometry, simply pass a grid with a unit-cell smaller than the originating
+        supercell.
+
+        The wavefunctions are calculated in real-space via:
+
+        .. math::
+            \psi(\mathbf r) = \sum_i\phi(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
 
         Parameters
         ----------
-        grid : Grid
-            the grid to calculate the wavefunctions on (need not be commensurate with
-            this parent objects geometry.
+        gridv : Grid
+           the coefficients for all orbitals in the geometry (real or complex).
+           If an `EigenState` a sum over all eigenstates in the object will be used.
+        k : array_like, optional
+           k-point associated with the coefficients, by default the inherent k-point used
+           to calculate the eigenstate will be used.
         """
-        grid.psi(self, self.info.get('k', (0, 0, 0)))
+        geom = None
+        if isinstance(self.parent, Geometry):
+            geom = self.parent
+        else:
+            try:
+                if isinstance(self.parent.geom, Geometry):
+                    geom = self.parent.geom
+            except:
+                pass
+        if geom is None:
+            geom = grid.geometry
+
+        # Do the sum over all eigenstates
+        v = self.v.sum(0)
+        if len(v) != geom.no:
+            raise ValueError(self.__class__.__name__ + ".psi "
+                             "requires the coefficient to have length as the number of orbitals.")
+
+        # Check for k-points
+        if k is None:
+            k = self.info.get('k', (0, 0, 0))
+        k = ensure_array(k, float64)
+        kl = (k ** 2).sum() ** 0.5
+        has_k = kl > 0.000001
+
+        # Check that input/grid makes sense.
+        # If the coefficients are complex valued, then the grid *has* to be
+        # complex valued.
+        # Likewise if a k-point has been passed.
+        is_complex = np.iscomplexobj(v) or has_k
+        if is_complex and not np.iscomplexobj(grid.grid):
+            raise ValueError(self.__class__.__name__ + ".psi "
+                             "has input coefficients as complex values but the grid is real.")
+
+        if is_complex:
+            psi_init = _a.zerosz
+        else:
+            psi_init = _a.zerosd
+
+        # Extract sub variables used throughout the loop
+        shape = ensure_array(grid.shape)
+        dcell = grid.dcell
+        rc = grid.sc.rcell / (2. * pi) * shape.reshape(1, -1)
+
+        # In the following we don't care about division
+        # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
+        old_err = np.seterr(divide='ignore', invalid='ignore')
+
+        addouter = add.outer
+        def idx2spherical(ix, iy, iz, offset, dc, R):
+            """ Calculate the spherical coordinates from indices """
+            rx = addouter(addouter(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0] - offset[0]).ravel()
+            ry = addouter(addouter(ix * dc[0, 1], iy * dc[1, 1]), iz * dc[2, 1] - offset[1]).ravel()
+            rz = addouter(addouter(ix * dc[0, 2], iy * dc[1, 2]), iz * dc[2, 2] - offset[2]).ravel()
+            # Total size of the indices
+            n = rx.size
+            # Calculate radius ** 2
+            rr = square(rx)
+            add(rr, square(ry), out=rr)
+            add(rr, square(rz), out=rr)
+            # Reduce our arrays to where the radius is "fine"
+            idx = (rr <= R ** 2).nonzero()[0]
+            rx = take(rx, idx)
+            ry = take(ry, idx)
+            arctan2(ry, rx, out=rx) # theta == rx
+            rz = take(rz, idx)
+            sqrt(take(rr, idx), out=ry) # rr == ry
+            divide(rz, ry, out=rz) # cos_phi == rz
+            rz[ry == 0.] = 0
+            return n, idx, ry, rx, rz
+
+        # Figure out the max-min indices with a spacing of 1 radians
+        rad1 = pi / 180
+        theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
+        ctheta, stheta = cos(theta), sin(theta)
+        cphi, sphi = cos(phi), sin(phi)
+        nrxyz = (theta.size, phi.size, 3)
+        del theta, phi, rad1
+
+        # First we calculate the min/max indices for all atoms
+        idx_mm = _a.emptyi([geom.na, 2, 3])
+        rxyz = _a.emptyd(nrxyz)
+        origo = grid.sc.origo.reshape(1, -1)
+        for atom, ia in geom.atom.iter(True):
+            if len(ia) == 0:
+                continue
+            R = atom.maxR()
+
+            # Reshape
+            rxyz.shape = nrxyz
+            rxyz[..., 0] = R * ctheta * sphi
+            rxyz[..., 1] = R * stheta * sphi
+            rxyz[..., 2] = R * cphi
+            rxyz.shape = (-1, 3)
+
+            idx = dot(rc, rxyz.T)
+            idx_m = idx.min(1)
+            idx_M = idx.max(1)
+
+            # Now do it for all the atoms to get indices of the middle of
+            # the atoms
+            # The coordinates are relative to origo, so we need to shift (when writing a grid
+            # it is with respect to origo)
+            xyz = geom.xyz[ia, :] - origo
+            idx = dot(rc, xyz.T).T
+
+            # Get min-max for all atoms, note we should first do the floor here
+            idx_mm[ia, 0, :] = floor(idx_m.reshape(1, -3) + idx).astype(int32)
+            idx_mm[ia, 1, :] = ceil(idx_M.reshape(1, -3) + idx).astype(int32)
+
+        # Now we have min-max for all atoms
+        # When we run the below loop all indices can be retrieved by looking
+        # up in the above table.
+
+        # Before continuing, we can easily clean up the temporary arrays
+        del ctheta, stheta, cphi, sphi, nrxyz, rxyz, origo, idx
+
+        aranged = _a.aranged
+
+        # Loop over all atoms in the full supercell structure
+        for IA in range(geom.na_s):
+
+            # Get atomic coordinate
+            xyz = geom.axyz(IA) - grid.origo
+            # Reduce to unit-cell atom
+            ia = geom.sc2uc(IA)
+            # Get current atom
+            atom = geom.atom[ia]
+
+            if ia == 0:
+                # start over for every new supercell
+                io = -1
+                isc = geom.a2isc(IA)
+                if has_k:
+                    phase = np.exp(-1j * dot(dot(dot(geom.rcell, k), geom.cell), isc))
+                else:
+                    # do not force complex values for Gamma only (user is responsible)
+                    phase = 1
+
+            # Extract maximum R
+            R = atom.maxR()
+            if R <= 0.:
+                warnings.warn("Atom '{}' does not have a wave-function, skipping atom.".format(atom))
+                # Skip this atom
+                io += atom.no
+                continue
+
+            # Get indices in the supercell grid
+            idxm = idx_mm[ia, 0, :] + shape * isc
+            idxM = idx_mm[ia, 1, :] + shape * isc
+
+            # Fast check whether we can skip this point
+            if idxm[0] >= shape[0] or \
+               idxm[1] >= shape[1] or \
+               idxm[2] >= shape[2] or \
+               idxM[0] < 0 or \
+               idxM[1] < 0 or \
+               idxM[2] < 0:
+                io += atom.no
+                continue
+
+            if idxm[0] < 0:
+                idxm[0] = 0
+            if idxM[0] >= shape[0]:
+                idxM[0] = shape[0] - 1
+            if idxm[1] < 0:
+                idxm[1] = 0
+            if idxM[1] >= shape[1]:
+                idxM[1] = shape[1] - 1
+            if idxm[2] < 0:
+                idxm[2] = 0
+            if idxM[2] >= shape[2]:
+                idxM[2] = shape[2] - 1
+
+            # Now idxm/M contains min/max indices used
+            # Convert to xyz-coordinate
+            sx = slice(idxm[0], idxM[0]+1)
+            sy = slice(idxm[1], idxM[1]+1)
+            sz = slice(idxm[2], idxM[2]+1)
+
+            # Convert to spherical coordinates
+            n, idx, r, theta, phi = idx2spherical(aranged(idxm[0], idxM[0] + 0.5),
+                                                  aranged(idxm[1], idxM[1] + 0.5),
+                                                  aranged(idxm[2], idxM[2] + 0.5), xyz, dcell, R)
+
+            # Allocate a temporary array where we add the psi elements
+            psi = psi_init(n)
+
+            # Loop on orbitals on this atom, grouped by radius
+            for os in atom.iter(True):
+
+                # Get the radius of orbitals (os)
+                oR = os[0].R
+
+                if oR <= 0.:
+                    warnings.warn("Orbital(s) '{}' does not have a wave-function, skipping orbital.".format(os))
+                    # Skip these orbitals
+                    io += len(os)
+                    continue
+
+                # Downsize to the correct indices
+                if np.allclose(oR, R):
+                    idx1 = idx.view()
+                    r1 = r.view()
+                    theta1 = theta.view()
+                    phi1 = phi.view()
+                else:
+                    idx1 = (r <= oR).nonzero()[0]
+                    # Reduce arrays
+                    r1 = take(r, idx1)
+                    theta1 = take(theta, idx1)
+                    phi1 = take(phi, idx1)
+                    idx1 = take(idx, idx1)
+
+                # Loop orbitals with the same radius
+                for o in os:
+                    io += 1
+
+                    # Evaluate psi component of the wavefunction
+                    # and add it for this atom
+                    psi[idx1] += o.psi_spher(r1, theta1, phi1, cos_phi=True) * (v[io] * phase)
+
+            # Clean-up
+            del idx1, r1, theta1, phi1, idx, r, theta, phi
+
+            # Convert to correct shape and add the current atom contribution to the wavefunction
+            psi.shape = idxM - idxm + 1
+            grid.grid[sx, sy, sz] += psi
+
+        # Reset the error code for division
+        np.seterr(**old_err)
 
 
 # For backwards compatibility we also use TightBinding

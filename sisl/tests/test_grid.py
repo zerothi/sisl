@@ -184,18 +184,3 @@ class TestGrid(object):
 
     def test_argumentparser(self, setup):
         setup.g.ArgumentParser()
-
-    def test_psi1(self):
-        N = 50
-        o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
-        o2 = SphericalOrbital(1, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
-        G = Geometry([[1] * 3, [2] * 3], Atom(1, [o1, o2]), sc=[4, 4, 4])
-        g = Grid(0.4, geom=G)
-        g.fill(0)
-        v = np.array([0.5, 0.4, 0.5, 0.3])
-        g.psi(v)
-        g1 = g.copy()
-        g1.fill(0)
-        es = EigenState(0, v)
-        g1.psi(es)
-        assert np.allclose(g.grid, g1.grid)

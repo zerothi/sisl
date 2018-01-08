@@ -11,7 +11,7 @@ from .sile import SileSiesta
 from sisl._array import arrayd, emptyd
 from sisl.atom import PeriodicTable, Atom, Atoms
 from sisl.geometry import Geometry
-from sisl.orbital import Orbital, AtomicOrbital
+from sisl.orbital import AtomicOrbital
 from sisl.unit.siesta import unit_convert
 
 

@@ -241,7 +241,7 @@ class BrillouinZone(object):
         """
         try:
             call = getattr(self, '__call__')
-        except Exception as e:
+        except Exception:
             raise NotImplementedError("Could not call the object it self")
         return call(*args, **kwargs)
 

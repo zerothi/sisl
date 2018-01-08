@@ -1061,11 +1061,8 @@ def test_psi1():
     ES = H.eigenstate(dtype=np.float64)
     # Plot in the full thing
     grid = Grid(0.1, geom=H.geom)
-    grid.psi(ES.sub(0))
-    g1 = grid.copy()
     grid.fill(0.)
     ES.sub(0).psi(grid)
-    assert np.allclose(g1.grid, grid.grid)
 
 
 def test_psi2():
@@ -1078,11 +1075,8 @@ def test_psi2():
     ES = H.eigenstate(dtype=np.float64)
     # Plot in the full thing
     grid = Grid(0.1, sc=SuperCell([2, 2, 2], origo=[2] * 3))
-    grid.psi(ES.sub(0))
-    g1 = grid.copy()
     grid.fill(0.)
     ES.sub(0).psi(grid)
-    assert np.allclose(g1.grid, grid.grid)
 
 
 @pytest.mark.eigen
