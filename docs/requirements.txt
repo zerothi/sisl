@@ -1,4 +1,5 @@
 numpydoc
+mock
 # For running
 six
 setuptools

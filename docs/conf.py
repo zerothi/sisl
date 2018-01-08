@@ -88,6 +88,21 @@ project = u'sisl'
 copyright = u'2015-2018, Nick R. Papior'
 author = u'Nick R. Papior'
 
+# If building this on RTD, mock out fortran sources
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+if on_rtd:
+    if sys.version >= (3, 3):
+        from unittest.mock import MagicMock
+    else:
+        from mock import Mock as MagicMock
+
+    class Mock(MagicMock):
+        @classmethod
+        def __getattr__(cls, name):
+            return MagicMock()
+
+    MOCK_MODULES = ['_siesta']
+    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
