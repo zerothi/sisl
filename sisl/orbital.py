@@ -253,15 +253,15 @@ class Orbital(object):
     def psi_spher(self, r, theta, phi, *args, **kwargs):
         raise NotImplementedError
 
-    def toGrid(self, c=1., precision=0.05, R=None, dtype=np.float64):
+    def toGrid(self, precision=0.05, c=1., R=None, dtype=np.float64):
         """ Create a Grid with *only* this orbital wavefunction on it
 
         Parameters
         ----------
-        c : float or complex, optional
-           coefficient for the orbital
         precision : float, optional
            used separation in the `Grid` between voxels (in Ang)
+        c : float or complex, optional
+           coefficient for the orbital
         R : float, optional
             box size of the grid (default to the orbital range)
         dtype : numpy.dtype, optional

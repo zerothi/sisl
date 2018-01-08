@@ -212,10 +212,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         See Also
         --------
+        distribution : setup a distribution function, see details regarding the `distribution` argument
         eigenstate : method used to calculate the eigenstates
         PDOS : Calculate projected DOS
-        EigenState.DOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
-        EigenState.PDOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
+        EigenState.DOS : Underlying method used to calculate the DOS
+        EigenState.PDOS : Underlying method used to calculate the projected DOS
         """
         # Calculate the eigenvalues to create the EigenState without the
         # eigenvectors
@@ -240,10 +241,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         See Also
         --------
+        distribution : setup a distribution function, see details regarding the `distribution` argument
         eigenstate : method used to calculate the eigenstates
         DOS : Calculate total DOS
-        EigenState.DOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
-        EigenState.PDOS : Underlying method used to calculate the DOS, see details regarding the `distribution` argument
+        EigenState.DOS : Underlying method used to calculate the DOS
+        EigenState.PDOS : Underlying method used to calculate the projected DOS
         """
         return self.eigenstate(k, **kwargs).PDOS(E, distribution)
 
@@ -310,7 +312,7 @@ class EigenState(EigenSystem):
         .. math::
             |\psi|_\nu = \psi^*_\nu [\mathbf S | \psi\rangle]_\nu
 
-        while the sum :math:`\sum_\nu\psi_nu\equiv1`.
+        while the sum :math:`\sum_\nu|\psi|_\nu\equiv1`.
 
         Parameters
         ----------
@@ -470,7 +472,7 @@ class EigenState(EigenSystem):
         The wavefunctions are calculated in real-space via:
 
         .. math::
-            \psi(\mathbf r) = \sum_i\phi(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
+            \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
 
         Parameters
         ----------
