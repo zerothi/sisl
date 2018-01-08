@@ -113,6 +113,28 @@ class pdosSileSiesta(SileSiesta):
 
         if nspin == 1:
             pdos.shape = (atoms.no, ne)
+        elif nspin == 2:
+            # Re-calculate PDOS(qtot), PDOS(z)
+            t = pdos.sum(0)
+            np.subtract(pdos[0, :, :], pdos[1, :, :], out=pdos[1, :, :])
+            pdos[0, :, :] = t
+        elif nspin == 4:
+            def DM2q(DM):
+                """ Convert spin-box DM to total charge, and spin-vector """
+                D = np.empty(DM.shape, DM.dtype)
+                np.add(DM[0], DM[1], out=D[0, :, :])
+                dz = DM[0] - DM[1]
+                dxy = 2 * np.absolute(np.sqrt(DM[2]**2 + DM[3]**2))
+                S = (dz ** 2 + dxy ** 2) ** .5
+                costh = dz / S
+                Ssinth = S * (1 - costh ** 2) ** .5 * 2
+                np.multiply(Ssinth, DM[2], out=D[1, :, :])
+                np.divide(D[1, :, :], dxy, out=D[1, :, :])
+                np.multiply(Ssinth, DM[3], out=D[2, :, :])
+                np.divide(D[2, :, :], dxy, out=D[2, :, :])
+                np.multiply(S, costh, out=D[3, :, :])
+                return D
+            pdos = DM2q(pdos)
 
         return geom, E, pdos
 

@@ -418,7 +418,7 @@ class EigenState(EigenSystem):
 
         Returns
         -------
-        numpy.ndarray : projected DOS calculated at energies, has dimension ``(self.size, len(E))``
+        numpy.ndarray : projected DOS calculated at energies, has dimension ``(self.size, len(E))``.
         """
         if distribution is None:
             distribution = self.distribution('gaussian')
@@ -430,10 +430,14 @@ class EigenState(EigenSystem):
         if 'gauge' in self.info:
             opt['gauge'] = self.info['gauge']
 
+        is_nc = False
         if isinstance(self.parent, Hamiltonian):
             # Calculate the overlap matrix
             Sk = self.parent.Sk(**opt)
-            if self.parent.spin > Spin('p'):
+            is_nc = self.parent.spin > Spin('p')
+            if is_nc:
+                # Downscale because Sk is only diagonal
+                Sk = Sk[::2, ::2]
                 raise ValueError('Currently the PDOS for non-colinear and spin-orbit has not been checked')
         else:
             # Assume orthogonal basis set and Gamma-point
@@ -443,11 +447,49 @@ class EigenState(EigenSystem):
                     return v
             Sk = _K()
 
-        w = distribution(E - self.e[0]).reshape(1, -1)
-        PDOS = (conj(self.v[0, :]) * Sk.dot(self.v[0, :])).real.reshape(-1, 1) * w
-        for i in range(1, len(self)):
-            w = distribution(E - self.e[i]).reshape(1, -1)
-            add(PDOS, (conj(self.v[i, :]) * Sk.dot(self.v[i, :])).real.reshape(-1, 1) * w, out=PDOS)
+        if is_nc:
+            # We must transform the vectors to be able to use dot
+            self.v.shape = (len(self), -1, 2)
+
+            def DM2q(D11, D22, D12):
+                """ Convert spin-box DM to total charge, and spin-vector """
+                D = np.empty([D11.size, 1, 4], D11.dtype)
+                D[:, 0, 0] = D11 + D22
+                dz = D11 - D22
+                dxy = 2 * np.absolute(D12)
+                S = (dz ** 2 + dxy ** 2) ** .5
+                costh = dz / S
+                Ssinth = S * (1 - costh ** 2) ** .5 * 2
+                D[:, 0, 1] = Ssinth * D12.real / dxy
+                D[:, 0, 2] = - Ssinth * D12.imag / dxy
+                D[:, 0, 3] = S * costh
+                return D
+
+            w = distribution(E - self.e[0]).reshape(1, -1, 1)
+            D11 = (conj(self.v[0, :, 0]) * Sk.dot(self.v[0, :, 0])).real
+            D22 = (conj(self.v[0, :, 1]) * Sk.dot(self.v[0, :, 1])).real
+            D12 = conj(self.v[0, :, 1]) * Sk.dot(self.v[0, :, 0])
+            PDOS = np.empty([w.size, tmp1.size, 4], dtype=tmp.dtype)
+            np.multiply(DM2q(D11, D22, D12), w, out=PDOS)
+            for i in range(1, len(self)):
+                w = distribution(E - self.e[i]).reshape(1, -1, 1)
+                D11 = (conj(self.v[0, :, 0]) * Sk.dot(self.v[0, :, 0])).real
+                D22 = (conj(self.v[0, :, 1]) * Sk.dot(self.v[0, :, 1])).real
+                D12 = conj(self.v[0, :, 1]) * Sk.dot(self.v[0, :, 0])
+                add(PDOS, DM2q(D11, D22, D12) * w, out=PDOS)
+
+            # Clean-up
+            del w, D11, D22, D12
+
+            self.v.shape = (len(self), -1)
+        else:
+
+            w = distribution(E - self.e[0]).reshape(1, -1)
+            PDOS = (conj(self.v[0, :]) * Sk.dot(self.v[0, :])).real.reshape(-1, 1) * w
+            for i in range(1, len(self)):
+                w = distribution(E - self.e[i]).reshape(1, -1)
+                add(PDOS, (conj(self.v[i]) * Sk.dot(self.v[i])).real.reshape(-1, 1) * w, out=PDOS)
+
         return PDOS
 
     def psi(self, grid, k=None):
