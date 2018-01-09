@@ -49,7 +49,9 @@ class Geometry(SuperCellChild):
        >>> print(square)
        Geometry{na: 1, no: 1,
         Atoms{species: 1,
-          Atom{H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000}: 1, 
+         Atom{H, Z: 1, mass(au): 1.0079, maxR: -1.00000,
+          Orbital{R: -1.0}
+         }: 1,
         },
         nsc: [3, 3, 1], maxR: -1.0
        }
@@ -68,8 +70,6 @@ class Geometry(SuperCellChild):
         geometry
     no: int
         total number of orbitals in the geometry
-    maxR : float np.max([a.maxR() for a in self.atom])
-        maximum orbital range
 
     Parameters
     ----------

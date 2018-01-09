@@ -85,8 +85,8 @@ autosummary_generate = [f for f in autosummary_generate if 'api-generated' not i
 
 # General information about the project.
 project = u'sisl'
-copyright = u'2015-2018, Nick R. Papior'
 author = u'Nick R. Papior'
+copyright = u'2015-2018, ' + author
 
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
@@ -142,7 +142,7 @@ autodoc_default_flags = ['members', 'undoc-members',
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['**/setupegg.py', '**/setup.rst', '**/tests']
+exclude_patterns = ['build', '**/setupegg.py', '**/setup.rst', '**/tests', '**.ipynb_checkpoints']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -352,7 +352,6 @@ texinfo_documents = [
 
 
 #####
-#####
 # Custom sisl documentation stuff down here
 #####
 
@@ -382,7 +381,9 @@ nbsphinx_prolog = r"""
 
 .. only:: html
 
+     <div align="right">
      Download IPython notebook `here <https://raw.githubusercontent.com/zerothi/sisl/master/{{ docname }}>`_.
+     </div>
 
 """
 
@@ -392,6 +393,12 @@ def sisl_skip(app, what, name, obj, skip, options):
     # When adding routines here, please also add them
     # to the _templates/autosummary/class.rst file to limit
     # the documentation.
+    try:
+        if obj.__class__.__name__ == 'Grid':
+            if name in 'psi':
+                return True
+    except:
+        pass
     if name in ['read_es', 'read_geom', 'read_sc',
                 'write_es', 'write_geom', 'write_sc',
                 'ArgumentParser', 'ArgumentParser_out']:

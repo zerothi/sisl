@@ -21,10 +21,9 @@ def configuration(parent_package='', top_path=None):
         'write_grid.f90',
         'write_gf.f90',
     ]
-    if environ.get('READTHEDOCS') != 'True':
-        config.add_extension('_siesta',
-                             sources = [osp_join('src', s) for s in sources],
-                             extra_info = all_info)
+    config.add_extension('_siesta',
+                         sources = [osp_join('src', s) for s in sources],
+                         extra_info = all_info)
     config.make_config_py()  # installs __config__.py
     return config
 

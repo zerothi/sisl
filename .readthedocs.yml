@@ -3,8 +3,5 @@ requirements_file: docs/requirements.txt
 formats:
     - htmlzip
 
-python:
-    setup_py_install: true
-
 #conda:
 #    file: docs/conda.yml
