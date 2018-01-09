@@ -91,6 +91,7 @@ copyright = u'2015-2018, ' + author
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
+    nbsphinx_allow_errors = True
     if sys.version >= (3, 3):
         from unittest.mock import MagicMock
     else:
