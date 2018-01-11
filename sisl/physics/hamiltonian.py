@@ -14,6 +14,7 @@ from sisl._help import ensure_array
 import sisl._array as _a
 from sisl import Geometry
 from sisl.eigensystem import EigenSystem
+from .distribution_function import distribution as dist_func
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
 
@@ -207,13 +208,13 @@ class Hamiltonian(SparseOrbitalBZSpin):
         distribution : func, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-            If ``None`` ``EigenState.distribution('gaussian')`` will be used.
+            If ``None`` ``sisl.physics.distribution('gaussian')`` will be used.
         **kwargs: optional
             additional parameters passed to the `eigenstate` routine
 
         See Also
         --------
-        distribution : setup a distribution function, see details regarding the `distribution` argument
+        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
         eigenstate : method used to calculate the eigenstates
         PDOS : Calculate projected DOS
         EigenState.DOS : Underlying method used to calculate the DOS
@@ -236,13 +237,13 @@ class Hamiltonian(SparseOrbitalBZSpin):
         distribution : func, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-            If ``None`` ``EigenState.distribution('gaussian')`` will be used.
+            If ``None`` ``sisl.physics.distribution('gaussian')`` will be used.
         **kwargs: optional
             additional parameters passed to the `eigenstate` routine
 
         See Also
         --------
-        distribution : setup a distribution function, see details regarding the `distribution` argument
+        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
         eigenstate : method used to calculate the eigenstates
         DOS : Calculate total DOS
         EigenState.DOS : Underlying method used to calculate the DOS
@@ -258,52 +259,6 @@ class EigenState(EigenSystem):
     Subsequent DOS calculations and/or wavefunction calculations (`Grid.psi`) may be
     performed using this object.
     """
-
-    @classmethod
-    def distribution(cls, method, smearing=0.1):
-        r""" Create a distribution function for input in e.g. `DOS`. Gaussian, Lorentzian etc.
-
-        In the following :math:`\epsilon` are the eigenvalues contained in this `EigenState`.
-
-        The Gaussian distribution is calculated as:
-
-        .. math::
-            G(E) = \sum_i \frac{1}{\sqrt{2\pi\sigma^2}}\exp\big[- (E - \epsilon_i)^2 / (2\sigma^2)\big]
-
-        where :math:`\sigma` is the `smearing` parameter.
-
-        The Lorentzian distribution is calculated as:
-
-        .. math::
-            L(E) = \sum_i \frac{1}{\pi}\frac{\gamma}{(E - \epsilon_i)^2 + \gamma^2}
-
-        where :math:`\gamma` is the `smearing` parameter, note that here :math:`\gamma` is the
-        half-width at half-maximum (:math:`2\gamma` would be the full-width at half-maximum).
-
-        Parameters
-        ----------
-        method : {'gaussian', 'lorentzian'}
-            the distribution function
-        smearing : float, optional
-            the smearing parameter for the method (:math:`\sigma` for Gaussian, etc.)
-
-        Returns
-        -------
-        func : a function which accepts one argument
-        """
-        if method.lower() in ['gauss', 'gaussian']:
-            exp = np.exp
-            sigma2 = 2 * smearing ** 2
-            pisigma = (pi * sigma2) ** .5
-            def func(E):
-                return exp(-E ** 2 / sigma2) / pisigma
-        elif method.lower() in ['lorentz', 'lorentzian']:
-            def func(E):
-                return (smearing / pi) / (E ** 2 + smearing ** 2)
-        else:
-            raise ValueError(cls.__name__ + ".distribution currently only implements 'gaussian' or "
-                             "'lorentzian' distribution functions")
-        return func
 
     def norm(self, idx=None):
         r""" Return the individual orbital norms for each eigenstate, possibly only for a subset of eigenstates
@@ -356,7 +311,7 @@ class EigenState(EigenSystem):
 
         where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
         used may be a user-defined function. Alternatively a distribution function may
-        be aquired from `EigenState.distribution`.
+        be aquired from `sisl.physics.distribution`.
 
         Parameters
         ----------
@@ -365,11 +320,11 @@ class EigenState(EigenSystem):
         distribution : func, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-            If ``None`` ``EigenState.distribution('gaussian')`` will be used.
+            If ``None`` ``sisl.physics.distribution('gaussian')`` will be used.
 
         See Also
         --------
-        distribution : a selected set of implemented distribution functions
+        sisl.physics.distribution : a selected set of implemented distribution functions
         PDOS : the projected DOS
 
         Returns
@@ -377,9 +332,9 @@ class EigenState(EigenSystem):
         numpy.ndarray : DOS calculated at energies, has same length as `E`
         """
         if distribution is None:
-            distribution = self.distribution('gaussian')
+            distribution = dist_func('gaussian')
         elif isinstance(distribution, str):
-            distribution = self.distribution(distribution)
+            distribution = dist_func(distribution)
         DOS = distribution(E - self.e[0])
         for i in range(1, len(self)):
             DOS += distribution(E - self.e[i])
@@ -395,7 +350,7 @@ class EigenState(EigenSystem):
 
         where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
         used may be a user-defined function. Alternatively a distribution function may
-        be aquired from `EigenState.distribution`.
+        be aquired from `sisl.physics.distribution`.
 
         In case of an orthogonal basis set :math:`\mathbf S` is equal to the identity matrix.
         Note that `DOS` is the sum of the orbital projected DOS:
@@ -410,11 +365,11 @@ class EigenState(EigenSystem):
         distribution : func, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-            If ``None`` ``EigenState.distribution('gaussian')`` will be used.
+            If ``None`` ``sisl.physics.distribution('gaussian')`` will be used.
 
         See Also
         --------
-        distribution : a selected set of implemented distribution functions
+        sisl.physics.distribution : a selected set of implemented distribution functions
         DOS : the total DOS
 
         Returns
@@ -422,9 +377,9 @@ class EigenState(EigenSystem):
         numpy.ndarray : projected DOS calculated at energies, has dimension ``(self.size, len(E))``.
         """
         if distribution is None:
-            distribution = self.distribution('gaussian')
+            distribution = dist_func('gaussian')
         elif isinstance(distribution, str):
-            distribution = self.distribution(distribution)
+            distribution = dist_func(distribution)
 
         # Retrieve options for the Sk calculation
         opt = {'k': self.info.get('k', (0, 0, 0))}

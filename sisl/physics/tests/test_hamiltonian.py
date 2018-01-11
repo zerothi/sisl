@@ -572,10 +572,6 @@ class TestHamiltonian(object):
         DOS = ES.DOS(E, 'lorentzian')
         assert DOS.dtype.kind == 'f'
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_dos3(self, setup):
-        EigenState.distribution('unknown-function')
-
     def test_pdos1(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
@@ -1077,13 +1073,3 @@ def test_psi2():
     grid = Grid(0.1, sc=SuperCell([2, 2, 2], origo=[2] * 3))
     grid.fill(0.)
     ES.sub(0).psi(grid)
-
-
-@pytest.mark.eigen
-def test_distribution1():
-    E = np.linspace(-2, 2, 10000)
-    dE = E[1] - E[0]
-    d = EigenState.distribution('gaussian', smearing=0.025)
-    assert d(E).sum() * dE == pytest.approx(1, abs=1e-6)
-    d = EigenState.distribution('lorentzian', smearing=1e-3)
-    assert d(E).sum() * dE == pytest.approx(1, abs=1e-3)

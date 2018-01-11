@@ -56,8 +56,20 @@ Physical quantites
    SemiInfinite
    RecursiveSI
 
+
+Distribution functions
+======================
+
+.. autosummary::
+   :toctree:
+
+   distribution
+   gaussian
+   lorentzian
+
 """
 
+from .distribution_function import *
 from .brillouinzone import *
 from .spin import *
 from .sparse import *
