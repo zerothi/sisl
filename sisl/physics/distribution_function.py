@@ -4,7 +4,7 @@ from functools import partial
 
 import numpy as np
 pi = np.pi
-pi_sqrt = pi ** 0.5
+sqrt_2pi = (2 * pi) ** 0.5
 
 __all__ = ['distribution', 'gaussian', 'lorentzian']
 
@@ -12,19 +12,17 @@ __all__ = ['distribution', 'gaussian', 'lorentzian']
 def distribution(method, smearing=0.1):
     r""" Create a distribution function for input in e.g. `DOS`. Gaussian, Lorentzian etc.
 
-    In the following :math:`\epsilon` are the eigenvalues contained in this `EigenState`.
-
     The Gaussian distribution is calculated as:
 
     .. math::
-        G(E) = \sum_i \frac{1}{\sqrt{2\pi\sigma^2}}\exp\big[- (E - \epsilon_i)^2 / (2\sigma^2)\big]
+        G(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\big[- x^2 / (2\sigma^2)\big]
 
     where :math:`\sigma` is the `smearing` parameter.
 
     The Lorentzian distribution is calculated as:
 
     .. math::
-        L(E) = \sum_i \frac{1}{\pi}\frac{\gamma}{(E - \epsilon_i)^2 + \gamma^2}
+        L(x) = \frac{1}{\pi}\frac{\gamma}{x^2 + \gamma^2}
 
     where :math:`\gamma` is the `smearing` parameter, note that here :math:`\gamma` is the
     half-width at half-maximum (:math:`2\gamma` would be the full-width at half-maximum).
@@ -44,10 +42,8 @@ def distribution(method, smearing=0.1):
         return partial(gaussian, sigma=smearing)
     elif method.lower() in ['lorentz', 'lorentzian']:
         return partial(lorentzian, gamma=smearing)
-    else:
-        raise ValueError("distribution currently only implements 'gaussian' or "
-                         "'lorentzian' distribution functions")
-    return func
+    raise ValueError("distribution currently only implements 'gaussian' or "
+                     "'lorentzian' distribution functions")
 
 
 def gaussian(x, sigma=0.1):
@@ -70,7 +66,7 @@ def gaussian(x, sigma=0.1):
     y : array_like
         the Gaussian distribution, same length as `x`
     """
-    return np.exp(-x ** 2 / (2 * sigma ** 2)) / ((2 * pi) ** 0.5 * sigma)
+    return np.exp(-x ** 2 / (2 * sigma ** 2)) / (sqrt_2pi * sigma)
 
 
 def lorentzian(x, gamma=0.1):
