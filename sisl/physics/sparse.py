@@ -615,8 +615,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             V[1::2, 1::2] += v[1][:, sl] * phase
 
             # off-diagonal elements
-            V[1::2, ::2] += (v[2][:, sl] - 1j * v[3][:, sl]) * phase
-            V[::2, 1::2] += (v[2][:, sl] + 1j * v[3][:, sl]) * phase
+            vv = v[2][:, sl] - 1j * v[3][:, sl]
+            V[1::2, ::2] += vv * phase
+            V[::2, 1::2] += vv.conj() * phase
 
         del v
 

@@ -285,7 +285,9 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
         idx = idx + ncol(i)
      end do
      ! Move to Ef = 0
-     H(:,is) = H(:,is) - Ef * S(:)
+     if ( is <= 2 ) then
+        H(:,is) = H(:,is) - Ef * S(:)
+     end if
      ! Change to eV
      H(:,is) = H(:,is) * eV
   end do

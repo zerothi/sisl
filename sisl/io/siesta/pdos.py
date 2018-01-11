@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import numpy as np
+
 try:
     from defusedxml import ElementTree
 except ImportError:
@@ -100,41 +102,32 @@ class pdosSileSiesta(SileSiesta):
             # it is formed like : spin-1, spin-2 (however already in eV)
             d = arrayd(map(float, orb.find('data').text.split())).reshape(-1, nspin)
             # Transpose and copy to get the corret size
-            data.append((i, d.T.copy(order='C').reshape(nspin, -1)))
+            data.append((i, d))
 
         # Now we need to parse the data
         # First reduce the atom
         atoms = [[o for o in a if o] for a in atoms]
         atoms = Atoms([Atom(Z, os) for Z, os in zip(atom_species, atoms)])
         geom = Geometry(arrayd(xyz) * Bohr2Ang, atoms)
-        pdos = emptyd([nspin, atoms.no, ne])
+        pdos = emptyd([atoms.no, ne, nspin])
         for i, dos in data:
-            pdos[:, i, :] = dos[:, :]
+            pdos[i, :, :] = dos[:, :]
 
         if nspin == 1:
             pdos.shape = (atoms.no, ne)
         elif nspin == 2:
-            # Re-calculate PDOS(qtot), PDOS(z)
-            t = pdos.sum(0)
-            np.subtract(pdos[0, :, :], pdos[1, :, :], out=pdos[1, :, :])
-            pdos[0, :, :] = t
+            # do nothing
+            pass
         elif nspin == 4:
-            def DM2q(DM):
+            def pdosq(DM):
                 """ Convert spin-box DM to total charge, and spin-vector """
                 D = np.empty(DM.shape, DM.dtype)
-                np.add(DM[0], DM[1], out=D[0, :, :])
-                dz = DM[0] - DM[1]
-                dxy = 2 * np.absolute(np.sqrt(DM[2]**2 + DM[3]**2))
-                S = (dz ** 2 + dxy ** 2) ** .5
-                costh = dz / S
-                Ssinth = S * (1 - costh ** 2) ** .5 * 2
-                np.multiply(Ssinth, DM[2], out=D[1, :, :])
-                np.divide(D[1, :, :], dxy, out=D[1, :, :])
-                np.multiply(Ssinth, DM[3], out=D[2, :, :])
-                np.divide(D[2, :, :], dxy, out=D[2, :, :])
-                np.multiply(S, costh, out=D[3, :, :])
+                D[:, :, 0] = DM[:, :, 0] + DM[:, :, 1]
+                D[:, :, 1] = DM[:, :, 2]
+                D[:, :, 2] = DM[:, :, 3]
+                D[:, :, 3] = DM[:, :, 0] - DM[:, :, 1]
                 return D
-            pdos = DM2q(pdos)
+            pdos = pdosq(pdos)
 
         return geom, E, pdos
 

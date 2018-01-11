@@ -4,8 +4,9 @@ import warnings
 
 import numpy as np
 from numpy import int32, float64, pi
-from numpy import take, ogrid, add
-from numpy import cos, sin, arctan2, divide, conj
+from numpy import take, ogrid
+from numpy import add, subtract, multiply, divide
+from numpy import cos, sin, arctan2, conj
 from numpy import dot, sqrt, square, floor, ceil
 
 from sisl._help import _range as range, _str as str
@@ -436,9 +437,7 @@ class EigenState(EigenSystem):
             Sk = self.parent.Sk(**opt)
             is_nc = self.parent.spin > Spin('p')
             if is_nc:
-                # Downscale because Sk is only diagonal
                 Sk = Sk[::2, ::2]
-                raise ValueError('Currently the PDOS for non-colinear and spin-orbit has not been checked')
         else:
             # Assume orthogonal basis set and Gamma-point
             # TODO raise warning, should we do this here?
@@ -448,47 +447,38 @@ class EigenState(EigenSystem):
             Sk = _K()
 
         if is_nc:
-            # We must transform the vectors to be able to use dot
-            self.v.shape = (len(self), -1, 2)
+            def W2M(WD, W12):
+                """ Convert spin-box wave-function product to total Q and S(x), S(y), S(z) """
+                W = np.empty([W12.size, 1, 4], WD.dtype)
+                WD.shape = (-1, 2)
+                add(WD[:, 0], WD[:, 1], out=W[:, 0, 0])
+                multiply(W12.real, 2, out=W[:, 0, 1])
+                multiply(W12.imag, 2, out=W[:, 0, 2])
+                subtract(WD[:, 0], WD[:, 1], out=W[:, 0, 3])
+                return W
 
-            def DM2q(D11, D22, D12):
-                """ Convert spin-box DM to total charge, and spin-vector """
-                D = np.empty([D11.size, 1, 4], D11.dtype)
-                D[:, 0, 0] = D11 + D22
-                dz = D11 - D22
-                dxy = 2 * np.absolute(D12)
-                S = (dz ** 2 + dxy ** 2) ** .5
-                costh = dz / S
-                Ssinth = S * (1 - costh ** 2) ** .5 * 2
-                D[:, 0, 1] = Ssinth * D12.real / dxy
-                D[:, 0, 2] = - Ssinth * D12.imag / dxy
-                D[:, 0, 3] = S * costh
-                return D
+            # Make short-hand
+            V = self.v
 
-            w = distribution(E - self.e[0]).reshape(1, -1, 1)
-            D11 = (conj(self.v[0, :, 0]) * Sk.dot(self.v[0, :, 0])).real
-            D22 = (conj(self.v[0, :, 1]) * Sk.dot(self.v[0, :, 1])).real
-            D12 = conj(self.v[0, :, 1]) * Sk.dot(self.v[0, :, 0])
-            PDOS = np.empty([w.size, tmp1.size, 4], dtype=tmp.dtype)
-            np.multiply(DM2q(D11, D22, D12), w, out=PDOS)
+            v = Sk.dot(V[0].reshape(-1, 2))
+            PDOS = W2M((conj(V[0]) * v.ravel()).real, conj(V[0, 1::2]) * v[:, 0]) \
+                   * distribution(E - self.e[0]).reshape(1, -1, 1)
             for i in range(1, len(self)):
-                w = distribution(E - self.e[i]).reshape(1, -1, 1)
-                D11 = (conj(self.v[0, :, 0]) * Sk.dot(self.v[0, :, 0])).real
-                D22 = (conj(self.v[0, :, 1]) * Sk.dot(self.v[0, :, 1])).real
-                D12 = conj(self.v[0, :, 1]) * Sk.dot(self.v[0, :, 0])
-                add(PDOS, DM2q(D11, D22, D12) * w, out=PDOS)
+                v = Sk.dot(V[i].reshape(-1, 2))
+                add(PDOS, W2M((conj(V[i]) * v.ravel()).real, conj(V[i, 1::2]) * v[:, 0])
+                    * distribution(E - self.e[i]).reshape(1, -1, 1),
+                    out=PDOS)
 
             # Clean-up
-            del w, D11, D22, D12
+            del v, V
 
-            self.v.shape = (len(self), -1)
         else:
 
-            w = distribution(E - self.e[0]).reshape(1, -1)
-            PDOS = (conj(self.v[0, :]) * Sk.dot(self.v[0, :])).real.reshape(-1, 1) * w
+            PDOS = (conj(self.v[0, :]) * Sk.dot(self.v[0, :])).real.reshape(-1, 1) \
+                   * distribution(E - self.e[0]).reshape(1, -1)
             for i in range(1, len(self)):
-                w = distribution(E - self.e[i]).reshape(1, -1)
-                add(PDOS, (conj(self.v[i]) * Sk.dot(self.v[i])).real.reshape(-1, 1) * w, out=PDOS)
+                add(PDOS, (conj(self.v[i]) * Sk.dot(self.v[i])).real.reshape(-1, 1)
+                    *distribution(E - self.e[i]).reshape(1, -1), out=PDOS)
 
         return PDOS
 

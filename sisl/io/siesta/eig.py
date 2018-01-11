@@ -44,6 +44,7 @@ class eigSileSiesta(SileSiesta):
                     tmp_E[s:e] = E
             tmp_E.shape = (ns, no)
             eigs[:, ik, :] = tmp_E
+
         return eigs - Ef
 
     @default_ArgumentParser(description="Manipulate EIG file in sisl.")
