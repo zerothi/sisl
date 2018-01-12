@@ -689,7 +689,7 @@ class TestHamiltonian(object):
                 H[i, i+1, 1] = 1.
         eig1 = H.eigh()
         # Check TimeSelector
-        for i in range(2):
+        for i in range(4):
             assert np.allclose(H.eigh(), eig1)
         assert len(eig1) == len(H)
 
@@ -709,9 +709,17 @@ class TestHamiltonian(object):
         assert H1.spsame(H)
         eig1 = H1.eigh()
         # Check TimeSelector
-        for i in range(2):
+        for i in range(4):
             assert np.allclose(H1.eigh(), eig1)
         assert np.allclose(H.eigh(), H1.eigh())
+
+        es = H1.eigenstate()
+        assert np.allclose(es.e, eig1)
+        assert np.allclose(es.norm().sum(-1), 1)
+
+        PDOS = es.PDOS(np.linspace(-1, 1, 100))
+        DOS = es.DOS(np.linspace(-1, 1, 100))
+        assert np.allclose(PDOS.sum(0)[:, 0], DOS)
 
     def test_so1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
@@ -757,6 +765,14 @@ class TestHamiltonian(object):
         for i in range(2):
             assert np.allclose(H1.eigh(), eig1)
         assert np.allclose(H.eigh(), H1.eigh())
+
+        es = H.eigenstate()
+        assert np.allclose(es.e, eig1)
+        assert np.allclose(es.norm().sum(-1), 1)
+
+        PDOS = es.PDOS(np.linspace(-1, 1, 100))
+        DOS = es.DOS(np.linspace(-1, 1, 100))
+        assert np.allclose(PDOS.sum(0)[:, 0], DOS)
 
     def test_finalized(self, setup):
         assert not setup.H.finalized

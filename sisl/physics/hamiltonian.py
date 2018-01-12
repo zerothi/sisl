@@ -284,11 +284,11 @@ class EigenState(EigenSystem):
         if 'gauge' in self.info:
             opt['gauge'] = self.info['gauge']
 
+        is_nc = False
         if isinstance(self.parent, Hamiltonian):
             # Calculate the overlap matrix
             Sk = self.parent.Sk(**opt)
-            if self.parent.spin > Spin('p'):
-                raise ValueError('Currently the PDOS for non-colinear and spin-orbit has not been checked')
+            is_nc = self.parent.spin > Spin('p')
         else:
             # Assume orthogonal basis set and Gamma-point
             # TODO raise warning, should we do this here?
@@ -299,6 +299,8 @@ class EigenState(EigenSystem):
 
         # A true normalization should only be real, hence we force this.
         # TODO, perhaps check that it is correct...
+        if is_nc:
+            return (conj(self.v[idx, :].T) * Sk.dot(self.v[idx, :].T)).real.T.reshape(len(idx), -1, 2).sum(-1)
         return (conj(self.v[idx, :].T) * Sk.dot(self.v[idx, :].T)).real.T
 
     def DOS(self, E, distribution=None):
