@@ -297,7 +297,7 @@ class Orbital(object):
 
 
 class SphericalOrbital(Orbital):
-    r""" An arbitrary orbital class where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
+    r""" An *arbitrary* orbital class where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
 
     Note that in this case the used spherical harmonics is:
 
@@ -583,7 +583,33 @@ class SphericalOrbital(Orbital):
 
 
 class AtomicOrbital(Orbital):
-    r""" A projected atomic orbital made of real  """
+    r""" A projected atomic orbital made of real harmonics
+
+    The `AtomicOrbital` is a specification of the `SphericalOrbital` by
+    assigning the magnetic quantum number :math:`m` to the object.
+
+    `AtomicOrbital` should always be preferred over the
+    `SphericalOrbital` because it explicitly contains *all* quantum numbers.
+
+    Attributes
+    ----------
+    R : float
+        the maximum orbital range
+    n : int
+        principal quantum number
+    l : int
+        azimuthal quantum number
+    m : int
+        magnetic quantum number
+    Z : int
+        zeta shell
+    P : int
+        whether this corresponds to a polarized shell (``True``)
+    f : func
+        the interpolation function that returns `f(r)` for the provided data
+    tag : str or None
+        a tag for this orbital
+    """
 
     # All of these follow standard notation:
     #   n = principal quantum number

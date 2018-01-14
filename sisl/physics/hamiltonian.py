@@ -266,7 +266,7 @@ class EigenState(EigenSystem):
         The norm is calculated as:
 
         .. math::
-            |\psi|_\nu = \psi^*_\nu [\mathbf S | \psi\rangle]_\nu
+            |\psi|_\nu = \psi^*_\nu [\mathbf S | \psi]_\nu
 
         while the sum :math:`\sum_\nu|\psi|_\nu\equiv1`.
 
@@ -473,8 +473,12 @@ class EigenState(EigenSystem):
            to calculate the eigenstate will be used.
         """
         geom = None
+        is_nc = False
         if isinstance(self.parent, Geometry):
             geom = self.parent
+        elif isinstance(self.parent, Hamiltonian):
+            geom = self.parent.geom
+            is_nc = self.parent.spin > Spin('p')
         else:
             try:
                 if isinstance(self.parent.geom, Geometry):
@@ -486,6 +490,8 @@ class EigenState(EigenSystem):
 
         # Do the sum over all eigenstates
         v = self.v.sum(0)
+        if is_nc:
+            v = v.reshape(-1, 2).sum(1)
         if len(v) != geom.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
