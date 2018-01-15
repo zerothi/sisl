@@ -733,7 +733,7 @@ class Grid(SuperCellChild):
             n = A.indptr[idx_p1+1] - A.indptr[idx_p1]
             s = array_arange(A.indptr[idx_p1], n=n)
             n = np.split(A.data[s], np.cumsum(n)[:-1])
-            n = np.array(map(np.sum, n))
+            n = ensure_array(map(np.sum, n))
             A[idx_p1, idx_p1] = -n
             A.eliminate_zeros()
         def Dirichlet(idx):
