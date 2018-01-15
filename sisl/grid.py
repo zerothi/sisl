@@ -11,6 +11,7 @@ from ._help import ensure_array
 import sisl._array as _a
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction
+from .utils import array_arange
 from .supercell import SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
@@ -42,13 +43,15 @@ class Grid(SuperCellChild):
         ----------
         shape : list of ints or float
            the size of each grid dimension, if a float it is the grid-spacing in Ang
-        bc : int, optional
-           the boundary condition (``Grid.PERIODIC/Grid.NEUMANN/Grid.DIRICHLET/Grid.OPEN``)
+        bc : int or list of int, optional
+           the boundary condition (`Grid.PERIODIC`/`Grid.NEUMANN`/`Grid.DIRICHLET`/`Grid.OPEN`).
+           This should be a (3, 2) list of values corresponding to each grid-direction.
+           The first/second value for each direction is the lower/upper part of the grid.
         sc : SuperCell or list, optional
            the associated supercell
         """
         if bc is None:
-            bc = self.PERIODIC
+            bc = [[self.PERIODIC] * 2] * 3
 
         self.set_supercell(sc)
 
@@ -183,26 +186,35 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        boundary: (3, ) or int, optional
+        boundary: (3, 2) or (3, ) or int, optional
            boundary condition for all boundaries (or the same for all)
-        a: int, optional
+        a: int or list of int, optional
            boundary condition for the first unit-cell vector direction
-        b: int, optional
+        b: int or list of int, optional
            boundary condition for the second unit-cell vector direction
-        c: int, optional
+        c: int or list of int, optional
            boundary condition for the third unit-cell vector direction
         """
         if not boundary is None:
             if isinstance(boundary, Integral):
-                self.bc = _a.arrayi([boundary] * 3)
+                self.bc = _a.arrayi([[boundary] * 2] * 3)
             else:
                 self.bc = _a.asarrayi(boundary)
         if not a is None:
-            self.bc[0] = a
+            self.bc[0, :] = a
         if not b is None:
-            self.bc[1] = b
+            self.bc[1, :] = b
         if not c is None:
-            self.bc[2] = c
+            self.bc[2, :] = c
+
+        # shorthand for bc
+        bc = self.bc[:, :]
+        for i in range(3):
+            if (bc[i, 0] == self.PERIODIC and bc[i, 1] != self.PERIODIC) or \
+               (bc[i, 0] != self.PERIODIC and bc[i, 1] == self.PERIODIC):
+                raise ValueError(self.__class__.__name__ + '.set_bc has a one non-periodic and '
+                                 'one periodic direction. If one direction is periodic, both instances '
+                                 'must have that BC.')
 
     # Aliases
     set_boundary = set_bc
@@ -600,6 +612,206 @@ class Grid(SuperCellChild):
         else:
             self.grid *= other
         return self
+
+    # Here comes additional supplementary routines which enables an easy
+    # work-through case with other programs.
+    def mgrid(self, *slices):
+        """ Return a list of indices corresponding to the slices
+
+        This is equivalent to the `numpy.mgrid` method which allows
+        creating full grids.
+
+        Parameters
+        ----------
+        *slices : slice or list of int or int
+            return a linear list of indices that points to the collective slice
+            made by the passed arguments
+
+        Returns
+        -------
+        indices : (*, 3), linear indices for each of the sliced values
+        """
+        if len(slices) == 1:
+            g = np.mgrid[slices[0]]
+        else:
+            g = np.mgrid[slices]
+        indices = np.empty(g.size, np.int32).reshape(-1, 3)
+        indices[:, 0] = g[0].flatten()
+        indices[:, 1] = g[1].flatten()
+        indices[:, 2] = g[2].flatten()
+        del g
+        return indices
+
+    def pyamg_index(self, index):
+        """ Calculate `pyamg` matrix indices from a list of grid indices
+
+        Parameters
+        ----------
+        index : (*,3) of int
+            a list of indices of the grid
+
+        Returns
+        -------
+        pyamg linear indices for the matrix
+        """
+        index = ensure_array(index).reshape(-1, 3)
+        grid = self.shape[:]
+        for i, g in enumerate(grid):
+            if np.any(index[:, i] >= g):
+                raise ValueError(self.__class__.__name + '.pyamg_index erroneous values for grid indices')
+        cp = np.append(np.cumprod(grid[::-1])[:-1][::-1], 1).reshape(-1, 3)
+        return (cp * index).sum(1)
+
+    def pyamg_source(self, b, pyamg_indices, value):
+        """ Fix the source term to `value`.
+
+        Parameters
+        ----------
+        b : numpy.ndarray
+           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+        pyamg_indices : list of int
+           the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
+           correspond to returned quantities from `pyamg_indices`.
+        """
+        b[ensure_array(pyamg_indices)] = value
+
+    def pyamg_fix(self, A, b, pyamg_indices, value):
+        """ Fix values for the stencil to `value`.
+
+        Parameters
+        ----------
+        A : scipy.sparse.csr_matrix
+           sparse matrix describing the LHS for the linear system of equations
+        b : numpy.ndarray
+           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+        pyamg_indices : list of int
+           the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
+           correspond to returned quantities from `pyamg_indices`.
+        value : float
+           the value of the grid to fix the value at
+        """
+        pyamg_indices = ensure_array(pyamg_indices)
+        s = array_arange(A.indptr[pyamg_indices], A.indptr[pyamg_indices+1])
+        A.data[s] = 0
+        # clean-up
+        del s
+        A.eliminate_zeros()
+        # Specify that these indices are not to be tampered with
+        A[pyamg_indices, pyamg_indices] = 1.
+        # force RHS value
+        self.pyamg_source(b, pyamg_indices, value)
+        A.prune() # try and clean-up unneccessary memory
+
+    def pyamg_boundary_condition(self, A, b, bc=None):
+        """ Attach boundary conditions to the `pyamg` grid-matrix `A` with default boundary conditions as specified for this `Grid`
+
+        Parameters
+        ----------
+        A : scipy.sparse.csr_matrix
+           sparse matrix describing the grid
+        b : numpy.ndarray
+           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+        bc : list of BC, optional
+           the specified boundary conditions.
+           Default to the grid's boundary conditions, else `bc` *must* be a list of elements
+           with elements corresponding to `Grid.PERIODIC`/`Grid.NEUMANN`...
+        """
+        C = -1
+        def Neumann(idx_bc, idx_p1):
+            # Calculate number of connections per element
+            s = array_arange(A.indptr[idx_bc], A.indptr[idx_bc+1])
+            A.data[s] = 0
+            # force the boundary cells to equal the neighbouring cell
+            A[idx_bc, idx_p1] = C
+            # ensure the neighbouring cell doesn't connect to the boundary (no propagation)
+            A[idx_p1, idx_bc] = 0
+            # Ensure the sum of the source for the neighbouring cells equals 0
+            # To make it easy to figure out the diagonal elements we first
+            # set it to 0, then sum off-diagonal terms, and set the diagonal
+            # equal to the sum.
+            A[idx_p1, idx_p1] = 0
+            n = A.indptr[idx_p1+1] - A.indptr[idx_p1]
+            s = array_arange(A.indptr[idx_p1], n=n)
+            n = np.split(A.data[s], np.cumsum(n)[:-1])
+            n = np.array(map(np.sum, n))
+            A[idx_p1, idx_p1] = -n
+            A.eliminate_zeros()
+        def Dirichlet(idx):
+            # Default pyamg Poisson matrix has Dirichlet BC
+            b[idx] = 0.
+        def Periodic(idx1, idx2):
+            A[idx1, idx2] = C
+            A[idx2, idx1] = C
+
+        def sl2idx(sl):
+            return self.pyamg_index(self.mgrid(sl))
+
+        # Create slices
+        sl = [slice(0, g) for g in self.shape]
+
+        for i in range(3):
+            # We have a periodic direction
+            new_sl = sl[:]
+
+            # LOWER BOUNDARY
+            bc = self.bc[i, 0]
+            new_sl[i] = slice(0, 1)
+            idx1 = sl2idx(new_sl) # lower
+
+            if self.bc[i, 0] == self.PERIODIC or \
+               self.bc[i, 1] == self.PERIODIC:
+                if self.bc[i, 0] != self.bc[i, 1]:
+                    raise ValueError('*Must* not happen')
+                new_sl[i] = slice(self.shape[i]-1, self.shape[i])
+                idx2 = sl2idx(new_sl) # upper
+                Periodic(idx1, idx2)
+                del idx2
+                continue
+
+            if bc == self.NEUMANN:
+                # Retrieve next index
+                new_sl[i] = slice(1, 2)
+                idx2 = sl2idx(new_sl) # lower + 1
+                Neumann(idx1, idx2)
+                del idx2
+            elif bc == self.DIRICHLET:
+                Dirichlet(idx1)
+
+            # UPPER BOUNDARY
+            bc = self.bc[i, 1]
+            new_sl[i] = slice(self.shape[i]-1, self.shape[i])
+            idx1 = sl2idx(new_sl) # upper
+
+            if bc == self.NEUMANN:
+                # Retrieve next index
+                new_sl[i] = slice(self.shape[i]-2, self.shape[i]-1)
+                idx2 = sl2idx(new_sl) # upper - 1
+                Neumann(idx1, idx2)
+                del idx2
+            elif bc == self.DIRICHLET:
+                Dirichlet(idx1)
+
+        A.prune()
+
+    def topyamg(self):
+        """ Create a `pyamg` stencil matrix to be used in pyamg
+
+        This allows retrieving the grid matrix equivalent of the real-space grid.
+        Subsequently the returned matrix may be used in pyamg for solutions etc.
+
+        Returns
+        -------
+        A : scipy.sparse.csr_matrix which contains the grid stencil for a `pyamg` solver.
+        b : numpy.ndarray containing RHS of the linear system of equations.
+        """
+        from pyamg.gallery import poisson
+        # Initially create the CSR matrix
+        A = poisson(self.shape, format='csr')
+        b = np.zeros(A.shape[0], dtype=A.dtype)
+
+        # Now apply the boundary conditions
+        self.pyamg_boundary_condition(A, b)
+        return A, b
 
     @classmethod
     def _ArgumentParser_args_single(cls):

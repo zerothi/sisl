@@ -4,6 +4,7 @@ import pytest
 
 import math as m
 import numpy as np
+from scipy.sparse import csr_matrix
 
 from sisl import SuperCell, SphericalOrbital, Atom, Geometry
 from sisl import EigenState
@@ -182,5 +183,53 @@ class TestGrid(object):
         setup.g.set_bc(setup.g.PERIODIC)
         assert np.all(setup.g.bc == setup.g.PERIODIC)
 
+    def test_bc2(self, setup):
+        g = setup.g.copy()
+        P = g.PERIODIC
+        D = g.DIRICHLET
+        N = g.NEUMANN
+        assert np.all(g.bc == P)
+        g.set_bc(N)
+        assert np.all(g.bc == setup.g.NEUMANN)
+        bc = [[P, P], [N, D], [D, N]]
+        g.set_bc(bc)
+        assert np.all(g.bc == bc)
+
     def test_argumentparser(self, setup):
         setup.g.ArgumentParser()
+
+    def test_pyamg1(self, setup):
+        g = setup.g.copy()
+        g.set_bc(g.PERIODIC) # periodic boundary conditions
+        n = np.prod(g.shape)
+        A = csr_matrix((n, n))
+        b = np.zeros(A.shape[0])
+
+        lb = g.mgrid(slice(0, 1), slice(0, g.shape[1]), slice(0, g.shape[2]))
+        lb2 = g.mgrid([slice(0, 1), slice(0, g.shape[1]), slice(0, g.shape[2])])
+        assert np.allclose(lb, lb2)
+        del lb2
+
+        # Retrieve linear indices
+        index = g.pyamg_index(lb)
+        g.pyamg_source(b, index, 1)
+        assert int(b.sum()) == len(index)
+        b[:] = 0
+
+        g.pyamg_fix(A, b, index, 1)
+        assert int(b.sum()) == len(index)
+        assert A.getnnz() == len(index)
+
+    def test_pyamg2(self, setup):
+        # Currently this simply runs the stuff.
+        # Nothing is actually tested other than succesfull run,
+        # the correctness of the values are not.
+        g = setup.g.copy()
+        bc = [[g.PERIODIC] * 2,
+              [g.NEUMANN, g.DIRICHLET],
+              [g.DIRICHLET, g.NEUMANN]]
+        g.set_bc(bc)
+        n = np.prod(g.shape)
+        A = csr_matrix((n, n))
+        b = np.zeros(A.shape[0])
+        g.pyamg_boundary_condition(A, b)
