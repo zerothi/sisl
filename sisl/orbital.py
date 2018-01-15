@@ -181,7 +181,7 @@ class Orbital(object):
     """
     __slots__ = ['R', 'tag']
 
-    def __init__(self, R, tag=None):
+    def __init__(self, R, tag=''):
         """ Initialize the orbital class with a radius (`R`) and a tag (`tag`)
 
         Parameters
@@ -196,12 +196,13 @@ class Orbital(object):
 
     def __repr__(self):
         """ A string representation of the object """
-        tag = self.tag
-        if tag is None:
-            tag = ''
-        if len(tag) > 0:
-            return self.__class__.__name__ + '{{R: {0}, tag: {1}}}'.format(self.R, tag)
+        if len(self.tag) > 0:
+            return self.__class__.__name__ + '{{R: {0}, tag: {1}}}'.format(self.R, self.tag)
         return self.__class__.__name__ + '{{R: {0}}}'.format(self.R)
+
+    def name(self, tex=False):
+        """ Return a named specification of the orbital (`tag`) """
+        return self.tag
 
     def equal(self, other, psi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
@@ -324,13 +325,13 @@ class SphericalOrbital(Orbital):
         azimuthal quantum number
     f : func
         the interpolation function that returns `f(r)` for the provided data
-    tag : str or None
+    tag : str, optional
         a tag for this orbital
     """
     # Additional slots (inherited classes retain the same slots)
     __slots__ = ['l', 'f']
 
-    def __init__(self, l, rf_or_func, tag=None):
+    def __init__(self, l, rf_or_func, tag=''):
         """ Initialize a spherical orbital via a radial grid
 
         Parameters
@@ -452,11 +453,8 @@ class SphericalOrbital(Orbital):
 
     def __repr__(self):
         """ A string representation of the object """
-        tag = self.tag
-        if tag is None:
-            tag = ''
-        if len(tag) > 0:
-            return self.__class__.__name__ + '{{l: {0}, R: {1}, tag: {2}}}'.format(self.l, self.R, tag)
+        if len(self.tag) > 0:
+            return self.__class__.__name__ + '{{l: {0}, R: {1}, tag: {2}}}'.format(self.l, self.R, self.tag)
         return self.__class__.__name__ + '{{l: {0}, R: {1}}}'.format(self.l, self.R)
 
     def radial(self, r, is_radius=True):
@@ -632,7 +630,7 @@ class AtomicOrbital(Orbital):
            the provided tag of the orbital
         """
         # Immediately setup R and tag
-        super(AtomicOrbital, self).__init__(0., kwargs.get('tag', None))
+        super(AtomicOrbital, self).__init__(0., kwargs.get('tag', ''))
         # Ensure args is a list (to be able to pop)
         args = list(args)
         self.orb = None
@@ -826,11 +824,8 @@ class AtomicOrbital(Orbital):
 
     def __repr__(self):
         """ A string representation of the object """
-        tag = self.tag
-        if tag is None:
-            tag = ''
-        if len(tag) > 0:
-            return self.__class__.__name__ + '{{{0}, tag: {1}, {2}}}'.format(self.name(), tag, repr(self.orb))
+        if len(self.tag) > 0:
+            return self.__class__.__name__ + '{{{0}, tag: {1}, {2}}}'.format(self.name(), self.tag, repr(self.orb))
         return self.__class__.__name__ + '{{{0}, {1}}}'.format(self.name(), repr(self.orb))
 
     def set_radial(self, *args):
