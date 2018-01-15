@@ -16,7 +16,7 @@ def test_spin1():
                 'non-colinear', 'nc', Spin.NONCOLINEAR,
                 'spin-orbit', 'so', Spin.SPINORBIT]:
         s = Spin(val)
-        repr(s)
+        print(repr(s))
         s1 = s.copy()
         assert s == s1
 
@@ -181,8 +181,8 @@ def test_pauli():
         [0, 1], # M_z = -1
     ])
     x = np.array([1, -1, 1, -1, 0, 0, 0, 0, 0, 0])
-    assert np.allclose(x, (np.conj(W)*S.PauliX.dot(W.T).T).sum(1).real)
+    assert np.allclose(x, (np.conj(W)*S.X.dot(W.T).T).sum(1).real)
     y = np.array([0, 0, 0, 0, 1, -1, 1, -1, 0, 0])
-    assert np.allclose(y, (np.conj(W)*S.PauliY.dot(W.T).T).sum(1).real)
+    assert np.allclose(y, (np.conj(W)*np.dot(S.Y, W.T).T).sum(1).real)
     z = np.array([0, 0, 0, 0, 0, 0, 0, 0, 1, -1])
-    assert np.allclose(z, (np.conj(W)*S.PauliZ.dot(W.T).T).sum(1).real)
+    assert np.allclose(z, (np.conj(W)*np.dot(S.Z, W.T).T).sum(1).real)

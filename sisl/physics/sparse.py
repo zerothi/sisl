@@ -40,7 +40,7 @@ class SparseOrbitalBZ(SparseOrbital):
     def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
         """Create SparseOrbitalB model from geometry
 
-        Initializes an object using the ``geom`` object
+        Initializes an object using the `geom` object
         as the underlying geometry for the parameters that connects orbital elements.
         """
         self._geom = geom
@@ -462,6 +462,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             spin = kwargs.get('spin')
         self._spin = Spin(spin, dtype)
 
+        print(geom, self.spin, len(self.spin), nnzpr)
         super(SparseOrbitalBZSpin, self).__init__(geom, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
 
         # _Pk is already created in the SparseOrbitalBZ __init__

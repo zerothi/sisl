@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 # We need this for python3 support PY3
 import warnings as warn
-from six import with_metaclass
+from six import add_metaclass
 
 from numbers import Integral, Real
 
@@ -938,7 +938,8 @@ class AtomMeta(type):
 # The designation of metaclass in python3 is actually:
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
-class Atom(with_metaclass(AtomMeta, object)):
+@add_metaclass(AtomMeta)
+class Atom(object):
     """ Atomic information, mass, name number of orbitals and ranges
 
     Object to handle atomic mass, name, number of orbitals and

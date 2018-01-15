@@ -182,7 +182,7 @@ class BrillouinZone(object):
         return self
 
     def asaverage(self, dtype=np.float64):
-        """ Return `self` with yielded quantities
+        """ Return `self` with k-averaged quantities
 
         This forces the `__call__` routine to return a an iterator which may
         yield the quantities calculated.
@@ -220,8 +220,6 @@ class BrillouinZone(object):
         # Set instance __call__
         setattr(self, '__call__', types.MethodType(_call, self))
         return self
-
-    asmean = asaverage
 
     def __call__(self, *args, **kwargs):
         """ Calls the given attribute of the internal object and returns the quantity

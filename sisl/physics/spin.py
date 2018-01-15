@@ -37,11 +37,11 @@ class Spin(object):
     SPINORBIT = 3
 
     #: The :math:`\sigma_x` Pauli matrix
-    PauliX = np.array([[0, 1], [1, 0]], np.complex128)
+    X = np.array([[0, 1], [1, 0]], np.complex128)
     #: The :math:`\sigma_y` Pauli matrix
-    PauliY = np.array([[0, -1j], [1j, 0]], np.complex128)
+    Y = np.array([[0, -1j], [1j, 0]], np.complex128)
     #: The :math:`\sigma_z` Pauli matrix
-    PauliZ = np.array([[1, 0], [0, -1]], np.complex128)
+    Z = np.array([[1, 0], [0, -1]], np.complex128)
 
     __slots__ = ['_spins', '_kind', '_dtype']
 
