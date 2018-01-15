@@ -138,6 +138,14 @@ class TestGrid(object):
         idx = setup.g.index(setup.sc.center())
         assert np.all(mid == idx)
 
+        for i in range(3):
+            idx = setup.g.index(setup.sc.center(), axis=i)
+            assert idx == mid[i]
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_index_fail(self, setup):
+        setup.g.index([0.1, 0.2])
+
     def test_sum(self, setup):
         for i in range(3):
             assert setup.g.sum(i).shape[i] == 1
@@ -157,6 +165,11 @@ class TestGrid(object):
     def test_remove_part(self, setup):
         for i in range(3):
             assert setup.g.remove_part(1, i, above=True).shape[i] == 1
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_sub_fail(self, setup):
+        g = Grid(np.array(setup.g.shape) // 2 + 1, sc=setup.g.sc.copy())
+        g.sub([], 0)
 
     def test_sub_part(self, setup):
         for i in range(3):
