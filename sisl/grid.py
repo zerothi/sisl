@@ -718,12 +718,14 @@ class Grid(SuperCellChild):
         """
         C = -1
         def Neumann(idx_bc, idx_p1):
-            # Calculate number of connections per element
+            # TODO check this BC
+            # Set all boundary equations to 0
             s = array_arange(A.indptr[idx_bc], A.indptr[idx_bc+1])
             A.data[s] = 0
             # force the boundary cells to equal the neighbouring cell
+            A[idx_bc, idx_bc] = -C # I am not sure this is correct, but setting it to 0 does NOT work
             A[idx_bc, idx_p1] = C
-            # ensure the neighbouring cell doesn't connect to the boundary (no propagation)
+            # ensure the neighbouring cell doesn't connect to the boundary (no back propagation)
             A[idx_p1, idx_bc] = 0
             # Ensure the sum of the source for the neighbouring cells equals 0
             # To make it easy to figure out the diagonal elements we first
@@ -734,8 +736,11 @@ class Grid(SuperCellChild):
             s = array_arange(A.indptr[idx_p1], n=n)
             n = np.split(A.data[s], np.cumsum(n)[:-1])
             n = ensure_array(map(np.sum, n))
+            # update diagonal
             A[idx_p1, idx_p1] = -n
+            del s, n
             A.eliminate_zeros()
+            b[idx_bc] = 0.
         def Dirichlet(idx):
             # Default pyamg Poisson matrix has Dirichlet BC
             b[idx] = 0.
@@ -806,7 +811,7 @@ class Grid(SuperCellChild):
         """
         from pyamg.gallery import poisson
         # Initially create the CSR matrix
-        A = poisson(self.shape, format='csr')
+        A = poisson(self.shape, dtype=self.dtype, format='csr')
         b = np.zeros(A.shape[0], dtype=A.dtype)
 
         # Now apply the boundary conditions
