@@ -19,6 +19,7 @@ to the implicit relationship between the developer of sisl and `Siesta`_.
    eigSileSiesta - EIG file
    pdosSileSiesta - PDOS file
    GridSileSiesta - Grid charge information (binary)
+   TSVSileSiesta - TranSiesta potential solution input file
    gridncSileSiesta - NetCDF grid output files (netcdf)
    EnergyGridSileSiesta - Grid potential information
    TSHSSileSiesta - TranSiesta Hamiltonian
@@ -40,6 +41,7 @@ from .out import *
 from .pdos import *
 from .siesta import *
 from .siesta_grid import *
+from .transiesta_grid import *
 from .xv import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
