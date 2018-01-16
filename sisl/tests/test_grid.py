@@ -133,7 +133,7 @@ class TestGrid(object):
         # grid... Perhaps this is ok, but not good... :(
         assert np.allclose(setup.g.grid, g1.grid)
 
-    def test_index1(self, setup):
+    def test_index_ndim1(self, setup):
         mid = np.array(setup.g.shape, np.int32) // 2
         idx = setup.g.index(setup.sc.center())
         assert np.all(mid == idx)
@@ -146,7 +146,7 @@ class TestGrid(object):
     def test_index_fail(self, setup):
         setup.g.index([0.1, 0.2])
 
-    def test_index2(self, setup):
+    def test_index_ndim2(self, setup):
         mid = np.array(setup.g.shape, np.int32) // 2
         idx = setup.g.index([[0]*3, setup.sc.center()])
         assert np.allclose([[0] * 3, mid], idx)
