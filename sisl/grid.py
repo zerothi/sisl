@@ -421,34 +421,44 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        coord : array_like or float
+        coord : (*, 3) or float
             the coordinate of the axis. If a float is passed `axis` is
             also required in which case it corresponds to the length along the
             lattice vector corresponding to `axis`
         axis : int
             the axis direction of the index
         """
-        coord = ensure_array(coord, float64)
         rcell = self.rcell / (2 * np.pi)
 
-        # if the axis is none, we do this for all axes
-        if axis is None:
-            if len(coord) != 3:
+        coord = ensure_array(coord, float64)
+        if coord.size == 1: # float
+            if axis is None:
                 raise ValueError(self.__class__.__name__ + '.index requires the '
-                                 'coordinate to be 3 values.')
-            # dot(rcell / 2pi, coord) is the fraction in the
-            # cell. So * l / (l / self.shape) will
-            # give the float of dcell lattice vectors (where l is the length of
-            # each lattice vector)
-            return floor(dot(rcell, coord) * self.shape).astype(int32)
+                                 'coordinate to be 3 values when an axis has not '
+                                 'been specified.')
 
-        if len(coord) == 1:
             c = (self.dcell[axis, :] ** 2).sum() ** 0.5
             return int(floor(coord[0] / c))
 
-        # Calculate how many indices are required to fulfil
-        # the correct line cut
-        return int(floor((rcell[axis, :] * coord).sum() * self.shape[axis]))
+        # Ensure we return values in the same dimensionality
+        ndim = coord.ndim
+        coord.shape = (-1, 3)
+
+        shape = np.array(self.shape).reshape(3, -1)
+
+        # dot(rcell / 2pi, coord) is the fraction in the
+        # cell. So * l / (l / self.shape) will
+        # give the float of dcell lattice vectors (where l is the length of
+        # each lattice vector)
+        if axis is None:
+            if ndim == 1:
+                return floor(dot(rcell, coord.T) * shape).astype(int32).reshape(3)
+            else:
+                return floor(dot(rcell, coord.T) * shape).T.astype(int32)
+        if ndim == 1:
+            return floor(dot(rcell[axis, :], coord.T) * shape[axis]).astype(int32)[0]
+        else:
+            return floor(dot(rcell[axis, :], coord.T) * shape[axis]).T.astype(int32)
 
     def append(self, other, axis):
         """ Appends other `Grid` to this grid along axis

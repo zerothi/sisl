@@ -146,6 +146,15 @@ class TestGrid(object):
     def test_index_fail(self, setup):
         setup.g.index([0.1, 0.2])
 
+    def test_index2(self, setup):
+        mid = np.array(setup.g.shape, np.int32) // 2
+        idx = setup.g.index([[0]*3, setup.sc.center()])
+        assert np.allclose([[0] * 3, mid], idx)
+
+        for i in range(3):
+            idx = setup.g.index([[0]*3, setup.sc.center()], axis=i)
+            assert np.allclose([[0, 0, 0][i], mid[i]], idx)
+
     def test_sum(self, setup):
         for i in range(3):
             assert setup.g.sum(i).shape[i] == 1
