@@ -18,6 +18,7 @@ def test_create_ellipsoid():
     v1 = [1., -0.2, 1.0]
     v2 = [1., -0.2, -1.0]
     el = Ellipsoid([v0, v1, v2])
+    print(el)
 
 
 @pytest.mark.xfail(raises=ValueError)

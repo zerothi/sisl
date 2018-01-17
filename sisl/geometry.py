@@ -1807,7 +1807,7 @@ class Geometry(SuperCellChild):
         # Get indices and coordinates of the largest shape
         # The largest part of the calculation are to calculate
         # the content in the largest shape.
-        ix = shapes[-1].iwithin(xa)
+        ix = shapes[-1].within_index(xa)
         # Reduce search space
         xa = xa[ix, :]
 
@@ -1865,7 +1865,7 @@ class Geometry(SuperCellChild):
         ixS = []
         cum = np.array([], idx.dtype)
         for i, s in enumerate(shapes):
-            x = s.iwithin(xa)
+            x = s.within_index(xa)
             if i > 0:
                 x = np.setdiff1d(x, cum, assume_unique=True)
             # Update elements to remove in next loop

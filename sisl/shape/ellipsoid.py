@@ -20,10 +20,10 @@ class Ellipsoid(PureShape):
 
     Parameters
     ----------
-    v : (3, ) or (3, 3)
+    v : float or (3,) or (3, 3)
        radius/vectors defining the ellipsoid. For 3 values it corresponds to a Cartesian
        oriented ellipsoid.
-    center : (3, ), optional
+    center : (3,), optional
        the center of the ellipsoid. Defaults to the origo.
 
     Examples
@@ -56,17 +56,14 @@ class Ellipsoid(PureShape):
         # Create the reciprocal cell
         self._iv = np.linalg.inv(self._v).T
 
+    def copy(self):
+        return self.__class__(self._v, self.center)
+
     def __repr__(self):
-        cr = np.array([self.center, self.radius])[:]
+        cr = np.array([self.center, self.radius])
         return self.__class__.__name__ + ('{{c({0:.2f} {1:.2f} {2:.2f}) '
-                                          'r({3:.2f} {4:.2f} {5:.2f})}}').format(*cr)
+                                          'r({3:.2f} {4:.2f} {5:.2f})}}').format(*cr.ravel())
 
-    @property
-    def radius(self):
-        """ Return the radius of the Ellipsoid """
-        return fnorm(self._v)
-
-    @property
     def volume(self):
         """ Return the volume of the shape """
         return 4. / 3. * pi * np.product(self.radius)
@@ -88,20 +85,6 @@ class Ellipsoid(PureShape):
         """ Change the center of the object """
         super(Ellipsoid, self).__init__(center)
 
-    def within(self, other):
-        """ Return whether the points are within the shape """
-        other = ensure_array(other, np.float64)
-        ndim = other.ndim
-        other.shape = (-1, 3)
-
-        idx = self.within_index(other)
-        within = np.empty(len(other), dtype='bool')
-        within[:] = False
-        within[idx] = True
-        if ndim == 1 and other.size == 3:
-            return within[0]
-        return within
-
     def within_index(self, other):
         """ Return indices of the points that are within the shape """
         other = ensure_array(other, np.float64)
@@ -114,7 +97,6 @@ class Ellipsoid(PureShape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        print(tmp)
         within = logical_and.reduce(fabs(tmp) <= 1, axis=1).nonzero()[0]
 
         # Now only check exactly on those that are possible candidates
@@ -122,6 +104,11 @@ class Ellipsoid(PureShape):
         wtmp = (fnorm2(tmp) <= 1).nonzero()[0]
 
         return within[wtmp]
+
+    @property
+    def radius(self):
+        """ Return the radius of the Ellipsoid """
+        return fnorm(self._v)
 
 
 class Sphere(Ellipsoid):
