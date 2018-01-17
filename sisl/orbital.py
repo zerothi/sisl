@@ -21,7 +21,7 @@ __all__ += ['cart2spher', 'spher2cart']
 
 
 def spher2cart(r, theta, phi):
-    """ Convert spherical coordinates to cartesian coordinates
+    r""" Convert spherical coordinates to cartesian coordinates
 
     Parameters
     ----------
@@ -389,7 +389,7 @@ class SphericalOrbital(Orbital):
         return same
 
     def set_radial(self, *args):
-        """ Update the internal radial function used as a :math:`f(|\mathbf r|)`
+        r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
         This can be called in several ways:
 
@@ -829,7 +829,7 @@ class AtomicOrbital(Orbital):
         return self.__class__.__name__ + '{{{0}, {1}}}'.format(self.name(), repr(self.orb))
 
     def set_radial(self, *args):
-        """ Update the internal radial function used as a :math:`f(|\mathbf r|)`
+        r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
         See `SphericalOrbital.set_radial` where these arguments are passed to.
         """

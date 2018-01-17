@@ -504,7 +504,7 @@ class EigenState(EigenSystem):
         # Do the sum over all eigenstates
         v = self.v.sum(0)
         if is_nc:
-            # Select spinor
+            # Select spinor component
             v = v.reshape(-1, 2)[:, spinor]
         if len(v) != geom.no:
             raise ValueError(self.__class__.__name__ + ".psi "

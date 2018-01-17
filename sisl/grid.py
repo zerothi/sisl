@@ -237,12 +237,9 @@ class Grid(SuperCellChild):
     set_boundary_condition = set_bc
 
     def copy(self):
-        """
-        Returns a copy of the object.
-        """
+        """ Returns a copy of the object. """
         grid = self.__class__(np.copy(self.shape), bc=np.copy(self.bc),
-                              dtype=self.dtype,
-                              geom=self.geom.copy())
+                              dtype=self.dtype, geom=self.geom.copy())
         grid.grid = self.grid.copy()
         return grid
 
@@ -553,10 +550,22 @@ class Grid(SuperCellChild):
         """ Returns whether two grids have the same shape """
         return not (self == other)
 
+    def __abs__(self):
+        r""" Return the absolute value :math:`|grid|` """
+        dtype = self.dtype
+        if dtype == np.complex128:
+            dtype = np.float64
+        elif dtype == np.complex64:
+            dtype = np.float32
+        a = self.copy()
+        a.grid = np.absolute(self.grid).astype(dtype, copy=False)
+        return a
+
     def __add__(self, other):
         """ Returns a new grid with the addition of two grids
 
-        Returns same shape with same cell as the first"""
+        Returns same shape with same cell as the first
+        """
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be added')
             grid.grid = self.grid + other.grid
@@ -568,7 +577,8 @@ class Grid(SuperCellChild):
     def __iadd__(self, other):
         """ Returns a new grid with the addition of two grids
 
-        Returns same shape with same cell as the first"""
+        Returns same shape with same cell as the first
+        """
         if isinstance(other, Grid):
             self._check_compatibility(other, 'they cannot be added')
             self.grid += other.grid
@@ -579,7 +589,8 @@ class Grid(SuperCellChild):
     def __sub__(self, other):
         """ Returns a new grid with the difference of two grids
 
-        Returns same shape with same cell as the first"""
+        Returns same shape with same cell as the first
+        """
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be subtracted')
             np.subtract(self.grid, other.grid, out=grid.grid)
@@ -591,7 +602,8 @@ class Grid(SuperCellChild):
     def __isub__(self, other):
         """ Returns a same grid with the difference of two grids
 
-        Returns same shape with same cell as the first"""
+        Returns same shape with same cell as the first
+        """
         if isinstance(other, Grid):
             self._check_compatibility(other, 'they cannot be subtracted')
             self.grid -= other.grid
@@ -689,7 +701,7 @@ class Grid(SuperCellChild):
         return (cp * index).sum(1)
 
     def pyamg_source(self, b, pyamg_indices, value):
-        """ Fix the source term to `value`.
+        r""" Fix the source term to `value`.
 
         Parameters
         ----------
@@ -702,7 +714,7 @@ class Grid(SuperCellChild):
         b[ensure_array(pyamg_indices)] = value
 
     def pyamg_fix(self, A, b, pyamg_indices, value):
-        """ Fix values for the stencil to `value`.
+        r""" Fix values for the stencil to `value`.
 
         Parameters
         ----------
@@ -729,7 +741,7 @@ class Grid(SuperCellChild):
         A.prune() # try and clean-up unneccessary memory
 
     def pyamg_boundary_condition(self, A, b, bc=None):
-        """ Attach boundary conditions to the `pyamg` grid-matrix `A` with default boundary conditions as specified for this `Grid`
+        r""" Attach boundary conditions to the `pyamg` grid-matrix `A` with default boundary conditions as specified for this `Grid`
 
         Parameters
         ----------
