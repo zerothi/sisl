@@ -209,7 +209,6 @@ Wannier90 (:mod:`sisl.io.wannier90`)
    wannier90
 
 """
-
 from .sile import *
 
 # Import the different Sile objects
@@ -229,9 +228,4 @@ from .xsf import *
 from .xyz import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-
-#for rm in ['sile', 'bigdft', 'cube', 'gulp',
-#           'ham', 'molden', 'scaleup', 'siesta',
-#           'tbtrans', 'vasp', 'wannier90', 'xsf',
-#           'xyz']:
-#    __all__.remove(rm)
+del s

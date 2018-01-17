@@ -68,7 +68,6 @@ Distribution functions
    lorentzian
 
 """
-
 from .distribution_function import *
 from .brillouinzone import *
 from .spin import *
@@ -81,8 +80,4 @@ from .hessian import *
 from .self_energy import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-
-#for rm in ['brillouinzone', 'spin', 'sparse',
-#           'energydensitymatrix', 'densitymatrix',
-#           'hamiltonian', 'hessian', 'self_energy']:
-#    __all__.remove(rm)
+del s

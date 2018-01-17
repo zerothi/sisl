@@ -1,11 +1,41 @@
 from __future__ import print_function, division
 
-from math import pi
-import math as m
-import numpy as np
 from numbers import Integral
+from math import pi
+from math import factorial as fact
+import math as m
 
-__all__ = ['orthogonalize', 'spher2cart', 'cart2spher', 'spherical_harm']
+import numpy as np
+from numpy import dot, asarray
+from numpy import cos, sin, arctan2, arccos
+from numpy import take, sqrt, square
+
+from sisl import _array as _a
+from sisl._help import ensure_array
+
+__all__ = ['fnorm', 'fnorm2', 'orthogonalize', 'spher2cart', 'cart2spher', 'spherical_harm']
+
+
+def fnorm(array):
+    r""" Fast calculation of the norm of a vector
+
+    Parameters
+    ----------
+    array : (..., *)
+       the vector/matrix to perform the norm on, norm performed on last axis
+    """
+    return sqrt(square(array).sum(-1))
+
+
+def fnorm2(array):
+    r""" Fast calculation of the squared norm of a vector
+
+    Parameters
+    ----------
+    array : (..., *)
+       the vector/matrix to perform the squared norm on, norm performed on last axis
+    """
+    return square(array).sum(-1)
 
 
 def orthogonalize(ref, vector):
@@ -19,7 +49,7 @@ def orthogonalize(ref, vector):
     .. math::
        V_{\perp} = V - \hat R (\hat R \cdot V)
 
-    which is subtracting the :math:`R` 
+    which is subtracting the projected part from :math:`V`.
 
     Parameters
     ----------
@@ -36,13 +66,13 @@ def orthogonalize(ref, vector):
     ------
     ValueError : if `vector` is parallel to `ref`
     """
-    ref = np.asarray(ref).ravel()
-    nr = m.sqrt((ref ** 2).sum())
-    vector = np.asarray(vector).ravel()
-    d = np.dot(ref, vector) / nr
-    if abs(d) < 1e-7:
-        raise ValueError("orthogonalize: requires non-parallel vectors to perform an orthogonalization")
-    return vector - ref / nr * d
+    ref = asarray(ref).ravel()
+    nr = fnorm(ref)
+    vector = asarray(vector).ravel()
+    d = dot(ref, vector) / nr
+    if abs(1. - abs(d) / fnorm(vector)) < 1e-7:
+        raise ValueError("orthogonalize: requires non-parallel vectors to perform an orthogonalization: {}".format(d))
+    return vector - ref * d / nr
 
 
 def spher2cart(r, theta, phi):

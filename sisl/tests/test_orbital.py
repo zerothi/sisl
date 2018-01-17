@@ -6,7 +6,7 @@ import math as m
 import numpy as np
 from scipy.interpolate import interp1d
 
-from sisl.orbital import cart2spher, spher2cart
+from sisl.utils.mathematics import cart2spher, spher2cart
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
 
 

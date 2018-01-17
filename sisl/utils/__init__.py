@@ -34,12 +34,10 @@ Miscellaneous routines
    math_eval
 
 """
-
 from .cmd import *
 from .misc import *
 from .ranges import *
+from . import mathematics as math
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-
-#for rm in ['cmd', 'misc', 'ranges']:
-#    __all__.remove(rm)
+del s

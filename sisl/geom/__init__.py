@@ -37,13 +37,10 @@ Nanotube
    nanotube - a nanotube (default to carbon)
 
 """
-
 from .basic import *
 from .flat import *
 from .nanotube import *
 from .special import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-
-#for rm in ['basic', 'flat', 'special']:
-#    __all__.remove(rm)
+del s

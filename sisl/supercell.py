@@ -8,6 +8,7 @@ import math
 import numpy as np
 from numbers import Integral
 
+from sisl.utils.mathematics import fnorm
 import sisl._array as _a
 import sisl.linalg as lin
 import sisl._plot as plt
@@ -258,7 +259,7 @@ class SuperCell(object):
         # Figure out the displacements from integers
         # Then reduce search space by removing those coordinates
         # that are more than the tolerance.
-        dist = np.sqrt(np.sum(np.dot(cell.T, (x - ix).T) ** 2, axis=0))
+        dist = np.sqrt((np.dot(cell.T, (x - ix).T) ** 2).sum(0))
         idx = (dist <= tol).nonzero()[0]
         if len(idx) == 0:
             raise ValueError(('Could not fit the cell parameters to the coordinates '
@@ -427,7 +428,7 @@ class SuperCell(object):
              only rotate the designated cell vectors.
         """
         vn = np.copy(np.asarray(v, dtype=np.float64)[:])
-        vn /= np.sum(vn ** 2) ** .5
+        vn /= fnorm(vn)
         q = Quaternion(angle, vn, rad=rad)
         q /= q.norm()  # normalize the quaternion
         cell = np.copy(self.cell)
@@ -476,10 +477,9 @@ class SuperCell(object):
            the lattice vector to add vacuum along
         """
         cell = np.copy(self.cell)
-        d = cell[axis, :]
+        d = cell[axis, :].copy()
         # normalize to get direction vector
-        d = d / np.sum(d ** 2) ** .5
-        cell[axis, :] += d * vacuum
+        cell[axis, :] += d * (vacuum / fnorm(d))
         return self.copy(cell)
 
     def sc_index(self, sc_off):
@@ -598,8 +598,9 @@ class SuperCell(object):
         # use that
         cell = np.copy(self.cell)
         p = np.empty([3], np.float64)
+        cl = fnorm(cell)
         for i in range(3):
-            p[i] = abs(np.sum(cell[i, :] * v)) / np.sum(cell[i, :]**2)**.5
+            p[i] = abs(np.sum(cell[i, :] * v)) / cl[i]
         cell[np.argmax(p), :] += v
         return self.copy(cell)
     translate = move
@@ -675,9 +676,10 @@ class SuperCell(object):
         """ Returns true if the cell vectors are orthogonal """
         # Convert to unit-vector cell
         cell = np.copy(self.cell)
-        cell[0, :] = cell[0, :] / np.sum(cell[0, :]**2) ** .5
-        cell[1, :] = cell[1, :] / np.sum(cell[1, :]**2) ** .5
-        cell[2, :] = cell[2, :] / np.sum(cell[2, :]**2) ** .5
+        cl = fnorm(cell)
+        cell[0, :] = cell[0, :] / cl[0]
+        cell[1, :] = cell[1, :] / cl[1]
+        cell[2, :] = cell[2, :] / cl[2]
         i_s = np.dot(cell[0, :], cell[1, :]) < 0.001
         i_s = np.dot(cell[0, :], cell[2, :]) < 0.001 and i_s
         i_s = np.dot(cell[1, :], cell[2, :]) < 0.001 and i_s
@@ -696,8 +698,8 @@ class SuperCell(object):
         axis = ensure_array(axis)
         # Convert to unit-vector cell
         for i in axis:
-            a = self.cell[i, :] / np.sum(self.cell[i, :]**2) ** .5
-            b = other.cell[i, :] / np.sum(other.cell[i, :]**2) ** .5
+            a = self.cell[i, :] / fnorm(self.cell[i, :])
+            b = other.cell[i, :] / fnorm(other.cell[i, :])
             if abs(np.dot(a, b) - 1) > 0.001:
                 return False
         return True
@@ -714,7 +716,7 @@ class SuperCell(object):
         rad : bool, optional
            whether the returned value is in radians
         """
-        n = np.sum(self.cell[[i, j], :]**2, axis=1) ** .5
+        n = fnorm(self.cell[[i, j], :])
         ang = math.acos(np.dot(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
         if rad:
             return ang
