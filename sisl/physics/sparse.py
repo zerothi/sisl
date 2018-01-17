@@ -462,7 +462,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             spin = kwargs.get('spin')
         self._spin = Spin(spin, dtype)
 
-        print(geom, self.spin, len(self.spin), nnzpr)
         super(SparseOrbitalBZSpin, self).__init__(geom, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
 
         # _Pk is already created in the SparseOrbitalBZ __init__
