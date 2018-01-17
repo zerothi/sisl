@@ -1157,6 +1157,14 @@ class Atoms(object):
     This is convenient when having geometries with millions of atoms
     because it will not duplicate the `Atom` object, only a list index.
 
+    Parameters
+    ----------
+    atom : list of Atom
+       atoms to be contained in this list of atoms
+    na : int or None
+       total number of atoms, if ``len(atom)`` is smaller than `na` it will
+       be repeated to match `na`.
+
     Attributes
     ----------
     atom : list of Atom

@@ -20,9 +20,25 @@ __all__ = ['Grid', 'sgrid']
 
 
 class Grid(SuperCellChild):
-    """ Object to retain grid information
+    """ Real-space grid information with associated geometry.
 
     This grid object handles cell vectors and divisions of said grid.
+
+    Parameters
+    ----------
+    shape : float or (3,) of int
+        the shape of the grid. A ``float`` specifies the grid spacing in Angstrom, while
+        a list of integers specifies the exact grid size.
+    bc : list of int (3, 2) or (3, ), optional
+        the boundary conditions for each of the cell's planes. Default to periodic BC.
+    sc : SuperCell, optional
+        the supercell that this grid represents. `sc` has precedence if both `geom` and `sc`
+        has been specified. Default to ``[1, 1, 1]``.
+    dtype : numpy.dtype, optional
+        the data-type of the grid, default to `numpy.float64`.
+    geom : Geometry, optional
+        associated geometry with the grid. If `sc` has not been passed the supercell will
+        be taken from this geometry.
     """
 
     #: Constant for defining a periodic boundary condition

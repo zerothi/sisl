@@ -61,7 +61,7 @@ class Geometry(SuperCellChild):
     ----------
     na : int
         number of atoms, ``len(self)``
-    xyz : ndarray
+    xyz : ndarray (*, 3)
         atomic coordinates
     atom : Atoms
         the atomic objects associated with each atom (indexable)
@@ -85,8 +85,7 @@ class Geometry(SuperCellChild):
     Examples
     --------
 
-    An atomic lattice consisting of Hydrogen atoms.
-    An atomic square lattice of Hydrogen atoms
+    An atomic cubic lattice of Hydrogen atoms
 
     >>> xyz = [[0, 0, 0],
     ...        [1, 1, 1]]
