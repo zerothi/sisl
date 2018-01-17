@@ -439,7 +439,7 @@ class EigenState(EigenSystem):
 
         return PDOS
 
-    def psi(self, grid, k=None):
+    def psi(self, grid, k=None, spinor=0):
         r""" Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
         This routine calculates the real-space wave-function components in the
@@ -463,6 +463,14 @@ class EigenState(EigenSystem):
         .. math::
             \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
 
+        While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
+        spinor component (`spinor`)
+
+        .. math::
+            \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(-i\mathbf k \mathbf R)
+
+        where ``spinor==0|1`` determines :math:`\alpha` or :math:`\beta`, respectively.
+
         Parameters
         ----------
         gridv : Grid
@@ -471,6 +479,11 @@ class EigenState(EigenSystem):
         k : array_like, optional
            k-point associated with the coefficients, by default the inherent k-point used
            to calculate the eigenstate will be used.
+        spinor : int, optional
+           the spinor for non-colinear/spin-orbit calculations. This is only used if the
+           eigenstate object has been created from a parent object with a `Spin` object
+           contained, *and* if the spin-configuration is non-colinear or spin-orbit coupling.
+           Default to the first spinor component.
         """
         geom = None
         is_nc = False
@@ -491,7 +504,8 @@ class EigenState(EigenSystem):
         # Do the sum over all eigenstates
         v = self.v.sum(0)
         if is_nc:
-            v = v.reshape(-1, 2).sum(1)
+            # Select spinor
+            v = v.reshape(-1, 2)[:, spinor]
         if len(v) != geom.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
