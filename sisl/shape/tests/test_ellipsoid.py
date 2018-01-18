@@ -21,6 +21,13 @@ def test_create_ellipsoid():
     print(el)
 
 
+def test_tosphere():
+    el = Ellipsoid([1., 1., 1.])
+    assert el.toSphere().radius[0] == pytest.approx(1)
+    el = Ellipsoid([1., 2., 3.])
+    assert el.toSphere().radius[0] == pytest.approx(3)
+
+
 @pytest.mark.xfail(raises=ValueError)
 def test_create_ellipsoid_fail():
     v0 = [1., 0.2, 1.0]

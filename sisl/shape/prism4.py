@@ -97,6 +97,12 @@ class Cuboid(PureShape):
             raise ValueError(self.__class__.__name__ + '.expand requires the length to be either (1,) or (3,)')
         return self.__class__([v0, v1, v2], self.center)
 
+    def toSphere(self):
+        """ Return a sphere that encompass this cube """
+        e = self.edge_length.max()
+        from .ellipsoid import Sphere
+        return Sphere(e * 2 ** .5, self.center.copy())
+
     def within_index(self, other):
         """ Return indices of the `other` object which are contained in the shape
 

@@ -21,6 +21,15 @@ def test_create_cuboid():
     print(cube)
 
 
+def test_tosphere():
+    cube = Cube(1.)
+    assert cube.toSphere().radius[0] == pytest.approx(2 ** 0.5)
+    cube = Cube(3.)
+    assert cube.toSphere().radius[0] == pytest.approx(3 * 2 ** 0.5)
+    cube = Cuboid([1., 2., 3.])
+    assert cube.toSphere().radius[0] == pytest.approx(3 * 2 ** 0.5)
+
+
 def test_create_cube():
     cube = Cube(1.0)
     cube = Cube(1.0, [1.]*3)

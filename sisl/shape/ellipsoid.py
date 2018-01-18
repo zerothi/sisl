@@ -102,6 +102,11 @@ class Ellipsoid(PureShape):
             raise ValueError(self.__class__.__name__ + '.expand requires the radius to be either (1,) or (3,)')
         return self.__class__([v0, v1, v2], self.center)
 
+    def toSphere(self):
+        """ Return a sphere with a radius equal to the largest radial vector """
+        r = self.radius.max()
+        return Sphere(r, self.center)
+
     def set_center(self, center):
         """ Change the center of the object """
         super(Ellipsoid, self).__init__(center)
@@ -146,3 +151,7 @@ class Sphere(Ellipsoid):
     def __init__(self, radius, center=None):
         radius = ensure_array(radius, np.float64).ravel()[0]
         super(Sphere, self).__init__(radius, center=center)
+
+    def toSphere(self):
+        """ Return a copy of it-self """
+        return self.copy()

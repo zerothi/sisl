@@ -1,4 +1,5 @@
 from __future__ import print_function, division
+from math import sqrt as msqrt
 
 import numpy as np
 from numpy import union1d, intersect1d, setdiff1d, setxor1d
@@ -8,6 +9,7 @@ from numpy import logical_xor as log_xor
 from numpy import logical_not as log_not
 
 from sisl._help import ensure_array
+from sisl.utils.mathematics import fnorm
 
 
 __all__ = ['Shape', 'PureShape']
@@ -41,7 +43,7 @@ class Shape(object):
 
     Subclassed shapes may have additional methods by which they are defined.
 
-    Any `BaseShape` may be used to construct other shapes by applying set operations.
+    Any `Shape` may be used to construct other shapes by applying set operations.
     Currently implemented binary operators are:
 
     `__or__`/`__add__` : set union, either `|` or `+` operator (not `or`)
@@ -70,6 +72,10 @@ class Shape(object):
     def scale(self, scale):
         """ Return a new Shape with a scaled size """
         raise NotImplementedError('scale has not been implemented in: '+self.__class__.__name__)
+
+    def toSphere(self):
+        """ Create a sphere which is surely encompassing the *full* shape """
+        raise NotImplementedError('toSphere has not been implemented in: '+self.__class__.__name__)
 
     def within(self, other):
         """ Return ``True`` if `other` is fully within `self`
@@ -129,9 +135,9 @@ class CompositeShape(Shape):
 
     Parameters
     ----------
-    A : BaseShape
+    A : Shape
        the left hand side of the set operation
-    B : BaseShape
+    B : Shape
        the right hand side of the set operation
     op : {_OR, _AND, _SUB, _XOR}
        the operator defining the sets relation
@@ -149,14 +155,79 @@ class CompositeShape(Shape):
         self.B = B.copy()
         self.op = op
 
+    @property
     def center(self):
         """ Average center of composite shapes """
-        return (self.A.center() + self.B.center()) * 0.5
+        return (self.A.center + self.B.center) * 0.5
 
     def volume(self):
         # The volume for these set operators cannot easily be defined, so
         # we should rather not do anything about it.
         return -1.
+
+    def toSphere(self):
+        """ Create a sphere which is surely encompassing the *full* shape """
+        from .ellipsoid import Sphere
+
+        # Retrieve spheres
+        A = self.A.toSphere()
+        Ar = A.radius[0]
+        Ac = A.center
+        B = self.B.toSphere()
+        Br = B.radius[0]
+        Bc = B.center
+
+        if self.op == self._AND:
+            # If one is fully enclosed in the other, we can simply neglect the other
+            # Calculate the distance between the spheres
+            dist = fnorm(Ac - Bc)
+
+            if dist + Ar < Br:
+                # A is fully enclosed in B
+                return A
+
+            elif dist + Br < Ar:
+                # B is fully enclosed in A
+                return B
+
+            elif dist < Ar and Ar > Br:
+                # B is centered inside A and smaller than A, simply return B
+                return B
+
+            elif dist < Br and Br > Ar:
+                # A is centered inside B and smaller than B, simply return A
+                return A
+
+            elif dist < (Ar + Br):
+                # We can reduce the sphere drastically because only the overlapping region is important
+                # i_r defines the intersection radius, search for Sphere-Sphere Intersection
+                dx = (dist ** 2 - Br ** 2 + Ar ** 2) / (2 * dist)
+                i_r = msqrt(4 * (dist * Ar) ** 2 - (dist ** 2 - Br ** 2 + Ar ** 2) ** 2) / (2 * dist)
+
+                # Now we simply need to find the dx point along the vector Bc - Ac
+                # Then we can easily calculate the point from A
+                center = Bc - Ac
+                center = Ac + center / fnorm(center) * dx
+                A = i_r
+                B = i_r
+
+            else:
+                # In this case there is actually no overlap. So perhaps we should
+                # create an infinitisemal sphere such that no point will ever be found
+                # Or we should return a new Shape which *always* return False for indices etc.
+                center = (Ac + Bc) * 0.5
+                # Currently we simply use a very small sphere and put it in the middle between
+                # the spheres
+                # This should at least speed up comparisons
+                A = 0.001
+                B = 0.001
+
+        else:
+            center = (Ac + Bc) * 0.5
+            A = Ar + fnorm(center - Ac)
+            B = Br + fnorm(center - Bc)
+
+        return Sphere(max(A, B), center)
 
     # within is defined in Shape to use within_index
     # So no need to doubly implement it
