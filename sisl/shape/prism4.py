@@ -63,7 +63,7 @@ class Cuboid(PureShape):
         super(Cuboid, self).__init__(center)
 
     def scale(self, scale):
-        """ Scale the cuboid
+        """ Scale the cuboid box size (center is retained)
 
         Parameters
         ----------

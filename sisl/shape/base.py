@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 import numpy as np
+from numpy import union1d, intersect1d, setdiff1d, setxor1d
 from numpy import logical_and as log_and
 from numpy import logical_or as log_or
 from numpy import logical_xor as log_xor
@@ -122,15 +123,15 @@ class CompositeShape(Shape):
     This should take 2 shapes as arguments and a binary operator to define
     how the shapes are related.
 
-
     Parameters
     ----------
     A : BaseShape
        the left hand side of the set operation
-    A : BaseShape
-       the left hand side of the set operation
+    B : BaseShape
+       the right hand side of the set operation
+    op : {_OR, _AND, _SUB, _XOR}
+       the operator defining the sets relation
     """
-
     # Internal variables to handle set-operations
     _OR = 0
     _AND = 1
@@ -153,24 +154,27 @@ class CompositeShape(Shape):
         # we should rather not do anything about it.
         return -1.
 
-    def within(self, *args, **kwargs):
-        A = self.A.within(*args, **kwargs)
-        B = self.B.within(*args, **kwargs)
+    # within is defined in Shape to use within_index
+    # So no need to doubly implement it
+
+    def within_index(self, *args, **kwargs):
+        A = self.A.within_index(*args, **kwargs)
+        B = self.B.within_index(*args, **kwargs)
         op = self.op
         if op == self._OR:
-            return log_or(A, B)
+            return union1d(A, B)
         elif op == self._AND:
-            return log_and(A, B)
+            return intersect1d(A, B, assume_unique=True)
         elif op == self._SUB:
-            return log_and(A, log_not(B))
+            return setdiff1d(A, B, assume_unique=True)
         elif op == self._XOR:
-            return log_xor(A, B)
+            return setxor1d(A, B, assume_unique=True)
 
     def __repr__(self):
         A = repr(self.A).replace('\n', '\n ')
         B = repr(self.B).replace('\n', '\n ')
         op = {self._OR: 'OR', self._AND: 'AND', self._SUB: 'SUB', self._XOR: 'XOR'}.get(self.op)
-        return '{0}{{op: {1},\n {2},\n {3}\n}}'.format(self.__class__.__name__, op, A, B)
+        return '{0}{{{1},\n {2},\n {3}\n}}'.format(self.__class__.__name__, op, A, B)
 
     def scale(self, scale):
         return self.__class__(self.A.scale(scale), self.B.scale(scale), self.op)
