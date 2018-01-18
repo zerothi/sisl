@@ -44,10 +44,14 @@ class Shape(object):
     Any `BaseShape` may be used to construct other shapes by applying set operations.
     Currently implemented binary operators are:
 
-    `__or__`/`__add__` : set union
-    `__and__` : set intersection
-    `__sub__` : set complement
-    `__xor__` : set disjunctive union
+    `__or__`/`__add__` : set union, either `|` or `+` operator (not `or`)
+
+    `__and__` : set intersection, `&` operator (not `and`)
+
+    `__sub__` : set complement, `-` operator
+
+    `__xor__` : set disjunctive union, `^` operator
+
     """
     __slots__ = ('_center', )
 
