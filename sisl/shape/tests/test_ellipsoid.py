@@ -54,7 +54,7 @@ def test_create_sphere():
     assert el.expand(2).volume() == pytest.approx(4/3 * np.pi * 3 ** 3)
 
 
-def test_expand1():
+def test_scale1():
     e1 = Ellipsoid([1., 1., 1.])
     e2 = e1.scale(1.1)
     assert np.allclose(e1.radius + 0.1, e2.radius)
@@ -62,6 +62,22 @@ def test_expand1():
     assert np.allclose(e1.radius + 0.1, e2.radius)
     e2 = e1.scale([1.1, 2.1, 3.1])
     assert np.allclose(e1.radius + [0.1, 1.1, 2.1], e2.radius)
+
+
+def test_expand1():
+    e1 = Ellipsoid([1., 1., 1.])
+    e2 = e1.expand(1.1)
+    assert np.allclose(e1.radius + 1.1, e2.radius)
+    e2 = e1.expand([1.1] * 3)
+    assert np.allclose(e1.radius + 1.1, e2.radius)
+    e2 = e1.expand([1.1, 2.1, 3.1])
+    assert np.allclose(e1.radius + [1.1, 2.1, 3.1], e2.radius)
+
+
+@pytest.mark.xfail(raises=ValueError)
+def test_expand_fail():
+    el = Ellipsoid(1)
+    el.expand([1, 2])
 
 
 def test_within1():
