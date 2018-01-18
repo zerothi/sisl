@@ -13,7 +13,8 @@ from numpy import take, sqrt, square
 from sisl import _array as _a
 from sisl._help import ensure_array
 
-__all__ = ['fnorm', 'fnorm2', 'orthogonalize', 'spher2cart', 'cart2spher', 'spherical_harm']
+__all__ = ['fnorm', 'fnorm2', 'expand', 'orthogonalize']
+__all__ += ['spher2cart', 'cart2spher', 'spherical_harm']
 
 
 def fnorm(array):
@@ -36,6 +37,28 @@ def fnorm2(array):
        the vector/matrix to perform the squared norm on, norm performed on last axis
     """
     return square(array).sum(-1)
+
+
+def expand(vector, length):
+    r""" Expand `vector` by `length` such that the norm of the vector is increased by `length`
+
+    The expansion of the vector can be written as:
+
+    .. math::
+        V' = V + \hat V l
+
+    Parameters
+    ----------
+    vector : array_like
+        original vector
+    length : float
+        the length to be added along the vector
+
+    Returns
+    -------
+    new_vector : the new vector with increased length
+    """
+    return vector * (1 + length / fnorm(vector))
 
 
 def orthogonalize(ref, vector):

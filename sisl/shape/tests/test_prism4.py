@@ -24,6 +24,9 @@ def test_create_cuboid():
 def test_create_cube():
     cube = Cube(1.0)
     cube = Cube(1.0, [1.]*3)
+    assert cube.volume() == pytest.approx(1.)
+    assert cube.scale(2).volume() == pytest.approx(2 ** 3)
+    assert cube.expand(2).volume() == pytest.approx(3 ** 3)
 
 
 def test_vol1():

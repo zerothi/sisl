@@ -193,5 +193,9 @@ class PureShape(Shape):
       return the volume of the shape.
     """
 
-    def volume(self):
+    def volume(self, *args, **kwargs):
         raise NotImplementedError('volume has not been implemented in: '+self.__class__.__name__)
+
+    def expand(self, c):
+        """ Expand the shape by a constant value """
+        raise NotImplementedError('expand has not been implemented in: '+self.__class__.__name__)

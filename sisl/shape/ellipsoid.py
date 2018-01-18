@@ -7,7 +7,7 @@ from numpy import fabs, logical_and
 
 from sisl._help import ensure_array
 import sisl._array as _a
-from sisl.utils.mathematics import orthogonalize, fnorm, fnorm2
+from sisl.utils.mathematics import orthogonalize, fnorm, fnorm2, expand
 
 from .base import PureShape
 
@@ -39,9 +39,9 @@ class Ellipsoid(PureShape):
         super(Ellipsoid, self).__init__(center)
         v = ensure_array(v, np.float64)
         if v.size == 1:
-            self._v = np.identity(3) * v # actually a Sphere
+            self._v = np.identity(3) * v # a "Euclidean" sphere
         elif v.size == 3:
-            self._v = np.diag(v.ravel()) # an "Euclidean" ellipsoid
+            self._v = np.diag(v.ravel()) # a "Euclidean" ellipsoid
         elif v.size == 9:
             self._v = v.reshape(3, 3).astype(np.float64)
         else:
@@ -80,6 +80,27 @@ class Ellipsoid(PureShape):
         if scale.size == 3:
             scale.shape = (3, 1)
         return self.__class__(self._v * scale, self.center)
+
+    def expand(self, radius):
+        """ Expand ellipsoid by a constant value along each radial vector
+
+        Parameters
+        ----------
+        radius : float or (3,)
+           the extension in Ang per ellipsoid radial vector
+        """
+        radius = ensure_array(radius, np.float64)
+        if radius.size == 1:
+            v0 = expand(self._v[0, :], radius[0])
+            v1 = expand(self._v[1, :], radius[0])
+            v2 = expand(self._v[2, :], radius[0])
+        elif radius.size == 3:
+            v0 = expand(self._v[0, :], radius[0])
+            v1 = expand(self._v[1, :], radius[1])
+            v2 = expand(self._v[2, :], radius[2])
+        else:
+            raise ValueError(self.__class__.__name__ + '.expand requires the radius to be either (1,) or (3,)')
+        return self.__class__([v0, v1, v2], self.center)
 
     def set_center(self, center):
         """ Change the center of the object """
@@ -123,4 +144,5 @@ class Sphere(Ellipsoid):
     """
 
     def __init__(self, radius, center=None):
+        radius = ensure_array(radius, np.float64).ravel()[0]
         super(Sphere, self).__init__(radius, center=center)

@@ -43,7 +43,7 @@ class XYZSile(Sile):
     def read_geometry(self):
         """ Returns Geometry object from the XYZ file
 
-        NOTE: Unit-cell is the Eucledian 3D space.
+        NOTE: Unit-cell is the Euclidean 3D space.
         """
 
         cell = np.asarray(np.diagflat([1] * 3), np.float64)

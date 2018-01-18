@@ -32,6 +32,9 @@ def test_create_ellipsoid_fail():
 def test_create_sphere():
     el = Sphere(1.)
     el = Sphere(1., center=[1.]*3)
+    assert el.volume() == pytest.approx(4/3 * np.pi)
+    assert el.scale(2).volume() == pytest.approx(4/3 * np.pi * 2 ** 3)
+    assert el.expand(2).volume() == pytest.approx(4/3 * np.pi * 3 ** 3)
 
 
 def test_expand1():

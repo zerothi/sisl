@@ -6,6 +6,7 @@ from numpy import dot, cross
 from numpy import fabs, logical_and
 
 from sisl._help import ensure_array
+from sisl.utils.mathematics import fnorm, expand
 
 from .base import PureShape
 
@@ -37,9 +38,9 @@ class Cuboid(PureShape):
         super(Cuboid, self).__init__(center)
         v = ensure_array(v, np.float64)
         if v.size == 1:
-            self._v = np.identity(3) * v # actually a Cube
+            self._v = np.identity(3) * v # a "Euclidean" cube
         elif v.size == 3:
-            self._v = np.diag(v.ravel()) # an "Euclidean" rectangle
+            self._v = np.diag(v.ravel()) # a "Euclidean" rectangle
         elif v.size == 9:
             self._v = v.reshape(3, 3).astype(np.float64)
         else:
@@ -75,6 +76,27 @@ class Cuboid(PureShape):
             scale.shape = (3, 1)
         return self.__class__(self._v * scale, self.center)
 
+    def expand(self, length):
+        """ Expand the cuboid by a constant value along side vectors
+
+        Parameters
+        ----------
+        length : float or (3,)
+           the extension in Ang per cuboid vector.
+        """
+        length = ensure_array(length, np.float64)
+        if length.size == 1:
+            v0 = expand(self._v[0, :], length[0])
+            v1 = expand(self._v[1, :], length[0])
+            v2 = expand(self._v[2, :], length[0])
+        elif length.size == 3:
+            v0 = expand(self._v[0, :], length[0])
+            v1 = expand(self._v[1, :], length[1])
+            v2 = expand(self._v[2, :], length[2])
+        else:
+            raise ValueError(self.__class__.__name__ + '.expand requires the length to be either (1,) or (3,)')
+        return self.__class__([v0, v1, v2], self.center)
+
     def within_index(self, other):
         """ Return indices of the `other` object which are contained in the shape
 
@@ -107,6 +129,11 @@ class Cuboid(PureShape):
         """ Re-setting the origo can sometimes be necessary """
         super(Cuboid, self).__init__(origo + (self._v * 0.5).sum(0))
 
+    @property
+    def edge_length(self):
+        """ The lengths of each of the vector that defines the cuboid """
+        return fnorm(self._v)
+
 
 class Cube(Cuboid):
     """ 3D Cube with equal sides
@@ -120,4 +147,5 @@ class Cube(Cuboid):
     """
 
     def __init__(self, side, center=None):
+        side = ensure_array(side, np.float64).ravel()[0]
         super(Cube, self).__init__(side, center)

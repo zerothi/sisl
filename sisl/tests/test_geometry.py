@@ -6,7 +6,7 @@ import math as m
 import numpy as np
 import warnings as warn
 
-from sisl import Sphere
+from sisl import Cube, Sphere
 from sisl import Geometry, Atom, SuperCell
 
 
@@ -412,6 +412,10 @@ class TestGeometry(object):
         for ias, _ in g.iter_block(method='cube'):
             i += len(ias)
         assert i == len(g)
+        i = 0
+        for ias, _ in g.iter_block_shape(Cube(g.maxR() * 20)):
+            i += len(ias)
+        assert i == len(g)
 
     @pytest.mark.slow
     def test_iter_shape3(self, setup):
@@ -422,6 +426,10 @@ class TestGeometry(object):
         assert i == len(g)
         i = 0
         for ias, _ in g.iter_block(method='cube'):
+            i += len(ias)
+        assert i == len(g)
+        i = 0
+        for ias, _ in g.iter_block_shape(Sphere(g.maxR() * 20)):
             i += len(ias)
         assert i == len(g)
 

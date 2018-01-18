@@ -600,13 +600,12 @@ class Geometry(SuperCellChild):
         # We implement yields as we can then do nested iterators
         # create a boolean array
         na = len(self)
-        not_passed = np.empty(na, dtype='b')
         if atom is not None:
+            not_passed = np.zeros(na, dtype=bool)
             # Reverse the values
-            not_passed[:] = False
             not_passed[atom] = True
         else:
-            not_passed[:] = True
+            not_passed = np.ones(na, dtype=bool)
 
         # Figure out how many we need to loop on
         not_passed_N = np.sum(not_passed)
@@ -617,9 +616,12 @@ class Geometry(SuperCellChild):
             dS = (Cube(R * (iR - 1.975)),
                   Cube(R * (iR + 0.025)))
         else:
-            dS = tuple(shape)
+            if isinstance(shape, Shape):
+                dS = (shape,)
+            else:
+                dS = tuple(shape)
             if len(dS) == 1:
-                dS += dS[0].expand(R)
+                dS += (dS[0].expand(R + 0.01), )
         if len(dS) != 2:
             raise ValueError('Number of Shapes *must* be one or two')
 
@@ -630,12 +632,22 @@ class Geometry(SuperCellChild):
         xyz_M = np.amax(self.xyz, axis=0)
         dxyz = xyz_M - xyz_m
 
+        # Currently iterating different shapes only works for
+        # Sphere and Cube
+        for s in dS:
+            if not isinstance(s, (Cube, Sphere)):
+                raise ValueError(self.__class__.__name__ + '.iter_block_shape currently only works for '
+                                 'Cube or Sphere objects. Please change sources.')
+
         # Retrieve the internal diameter
-        ir = dS[0].displacement
+        if isinstance(dS[0], Cube):
+            ir = dS[0].edge_length
+        elif isinstance(dS[0], Sphere):
+            ir = dS[0].radius * 0.5 ** 0.5 * 2
 
         # Figure out number of segments in each iteration
         # (minimum 1)
-        ixyz = np.array(np.ceil(dxyz / ir + 0.0001), np.int32)
+        ixyz = _a.arrayi(np.ceil(dxyz / ir + 0.0001))
 
         # Calculate the steps required for each iteration
         for i in [0, 1, 2]:
@@ -656,9 +668,7 @@ class Geometry(SuperCellChild):
         append = np.append
 
         # Now we loop in each direction
-        for x, y, z in product(range(ixyz[0]),
-                               range(ixyz[1]),
-                               range(ixyz[2])):
+        for x, y, z in product(range(ixyz[0]), range(ixyz[1]), range(ixyz[2])):
 
             # Create the new center
             center = xyz_m + [x * dxyz[0], y * dxyz[1], z * dxyz[2]]
