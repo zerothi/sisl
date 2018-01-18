@@ -116,7 +116,6 @@ from . import geom
 
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]
-__all__ += ['__{}__'.format(r) for r in ['bibtex', 'version', 'major', 'minor', 'micro']]
-__all__ += ['__{}__'.format(r) for r in ['git_revision']]
-__all__ += ['__{}__'.format(r) for r in ['author', 'copyright']]
-del s, r
+__all__ += ['__{}__'.format(s) for s in ['bibtex', 'version', 'major', 'minor', 'micro']]
+__all__ += ['__{}__'.format(s) for s in ['git_revision']]
+__all__ += ['__{}__'.format(s) for s in ['author', 'copyright']]

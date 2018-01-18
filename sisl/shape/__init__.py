@@ -25,4 +25,3 @@ from .ellipsoid import *
 from .prism4 import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-del s

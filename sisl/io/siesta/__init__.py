@@ -45,4 +45,3 @@ from .transiesta_grid import *
 from .xv import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-del s

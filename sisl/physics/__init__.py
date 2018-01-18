@@ -80,4 +80,3 @@ from .hessian import *
 from .self_energy import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-del s

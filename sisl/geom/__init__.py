@@ -43,4 +43,3 @@ from .nanotube import *
 from .special import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-del s

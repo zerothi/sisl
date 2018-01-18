@@ -38,7 +38,6 @@ This subpackage implements the unit conversions used in `Siesta`_.
 from .base import unit_group, unit_convert, unit_default
 
 __all__ = [s for s in dir() if not s.startswith('_')]
-del s
 
 # Enable the siesta unit-conversion
 from . import siesta
