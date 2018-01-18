@@ -19,6 +19,9 @@ def test_binary_op():
 
     new = new - new
     new = new & (new | e) ^ s
+    new.center
+
+    assert new.volume() < 0.
     print(new)
 
 
@@ -82,6 +85,9 @@ def test_binary_op_toSphere():
     new = (c ^ e)
     assert new.toSphere().radius.max() == pytest.approx(r)
 
+    new = (c ^ e)
+    assert new.scale(2).toSphere().radius.max() == pytest.approx(r * 2)
+
 
 def test_toSphere_and():
     left = Sphere(1.)
@@ -107,3 +113,10 @@ def test_toSphere_and():
     # Assert it also works for displaced centers
     assert np.allclose(s.radius, s2.radius)
     assert np.allclose(s.center, s2.center - 10)
+
+    left = Sphere(2.)
+    right = Sphere(1., center=[10.5] * 3)
+
+    new = left & right
+    s = new.toSphere()
+    assert s.radius.max() < 0.01

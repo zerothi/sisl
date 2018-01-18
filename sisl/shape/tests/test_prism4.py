@@ -21,6 +21,15 @@ def test_create_cuboid():
     print(cube)
 
 
+@pytest.mark.xfail(raises=ValueError)
+def test_create_fail():
+    v0 = [1., 0.2, 1.0]
+    v1 = [1., 0.2, 1.0]
+    v2 = [1., -0.2, -1.0]
+    v3 = [1., -0.2, -1.0]
+    el = Cuboid([v0, v1, v2, v3])
+
+
 def test_tosphere():
     cube = Cube(1.)
     assert cube.toSphere().radius[0] == pytest.approx(2 ** 0.5)
@@ -35,7 +44,15 @@ def test_create_cube():
     cube = Cube(1.0, [1.]*3)
     assert cube.volume() == pytest.approx(1.)
     assert cube.scale(2).volume() == pytest.approx(2 ** 3)
+    assert cube.scale([2] * 3).volume() == pytest.approx(2 ** 3)
     assert cube.expand(2).volume() == pytest.approx(3 ** 3)
+    assert cube.expand([2] * 3).volume() == pytest.approx(3 ** 3)
+
+
+@pytest.mark.xfail(raises=ValueError)
+def test_expand_fail():
+    cube = Cube(1.0)
+    cube.expand([2, 1])
 
 
 def test_vol1():
@@ -51,6 +68,13 @@ def test_vol1():
     v2 = [0, 0, a]
     cube = Cuboid([v0, v1, v2])
     assert cube.volume() == 1.
+
+
+def test_origo():
+    cube = Cuboid([1.0]*3)
+    assert np.allclose(cube.origo, -0.5)
+    cube.set_origo(1)
+    assert np.allclose(cube.origo, 1)
 
 
 def test_within1():
