@@ -2,13 +2,16 @@ from __future__ import print_function, division
 
 import warnings
 from numbers import Integral, Real
+from math import pi
 
 import numpy as np
 from numpy import int32, float64
-from numpy import floor, dot
+from numpy import floor, dot, add, cos, sin
+from numpy import ogrid, stack, take
 
 from ._help import ensure_array
 import sisl._array as _a
+from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction
 from .utils import array_arange
@@ -429,18 +432,84 @@ class Grid(SuperCellChild):
         ret_idx = np.delete(_a.arangei(self.shape[axis]), ensure_array(idx))
         return self.sub(ret_idx, axis)
 
+    def _index_shape(self, shape):
+        """ Internal routine for shape-indices """
+        # First grab the sphere, subsequent indices will be reduced
+        # by the actual shape
+        sphere = shape.toSphere()
+        R = sphere.radius[0]
+
+        # Figure out the max-min indices with a spacing of 1 radians
+        rad1 = pi / 180
+        theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
+        nrxyz = (theta.size, phi.size, 3)
+
+        rxyz = _a.emptyd(nrxyz)
+        rxyz[..., 2] = R * cos(phi) + sphere.center[2]
+        sin(phi, out=phi)
+        rxyz[..., 0] = R * cos(theta) * phi + sphere.center[0]
+        rxyz[..., 1] = R * sin(theta) * phi + sphere.center[1]
+        del theta, phi, nrxyz
+
+        # Get all indices of the spherical circumference
+        idx = self.index(rxyz)
+        del rxyz
+
+        # Get min/max
+        idx_min = idx.min(0)
+        idx_max = idx.max(0)
+        del idx
+
+        dc = self.dcell
+
+        # Now to find the actual points inside the shape
+        # First create all points in the square and then retrieve all indices
+        # within.
+        # TODO, see if we can optimize this a bit.
+        addouter = add.outer
+        ix = _a.aranged(idx_min[0], idx_max[0] + 0.5)
+        iy = _a.aranged(idx_min[1], idx_max[1] + 0.5)
+        iz = _a.aranged(idx_min[2], idx_max[2] + 0.5)
+        output_shape = (ix.size, iy.size, iz.size, 3)
+        rx = addouter(addouter(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0])
+        ry = addouter(addouter(ix * dc[0, 1], iy * dc[1, 1]), iz * dc[2, 1])
+        rz = addouter(addouter(ix * dc[0, 2], iy * dc[1, 2]), iz * dc[2, 2])
+        rxyz = _a.emptyd(output_shape)
+        rxyz[:, :, :, 0] = rx
+        rxyz[:, :, :, 1] = ry
+        rxyz[:, :, :, 2] = rz
+        del rx, ry, rz
+        idx = shape.within_index(rxyz.reshape(-1, 3))
+        del rxyz
+        i = _a.emptyi(output_shape)
+        i[:, :, :, 0] = ix.reshape(-1, 1, 1)
+        i[:, :, :, 1] = iy.reshape(1, -1, 1)
+        i[:, :, :, 2] = iz.reshape(1, 1, -1)
+        del ix, iy, iz
+        i.shape = (-1, 3)
+        i = take(i, idx, axis=0)
+        del idx
+
+        return i
+
     def index(self, coord, axis=None):
         """ Returns the index along axis `axis` where `coord` exists
 
         Parameters
         ----------
-        coord : (*, 3) or float
+        coord : (*, 3) or float or Shape
             the coordinate of the axis. If a float is passed `axis` is
             also required in which case it corresponds to the length along the
-            lattice vector corresponding to `axis`
+            lattice vector corresponding to `axis`.
+            If a Shape a list of coordinates that fits the voxel positions
+            are returned (all internal points also).
         axis : int
             the axis direction of the index
         """
+        if isinstance(coord, Shape):
+            # We have to do something differently
+            return self._index_shape(coord)
+
         rcell = self.rcell / (2 * np.pi)
 
         coord = ensure_array(coord, float64)

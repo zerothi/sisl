@@ -5,6 +5,7 @@ import pytest
 import math as m
 import numpy as np
 
+from sisl.utils.mathematics import fnorm
 from sisl.shape.ellipsoid import *
 
 pytestmark = pytest.mark.shape
@@ -108,3 +109,40 @@ def test_within_index1():
     assert not o.within_index([-1.]*3) == [0]
     assert o.within_index([.2]*3) == [0]
     assert o.within_index([.5]*3) == [0]
+
+
+def test_sphere_and():
+    # For all intersections after
+    v = np.array([1.] * 3)
+    v /= fnorm(v)
+    D = np.linspace(0, 5, 50)
+    inside = np.ones(len(D), dtype=bool)
+
+    A = Sphere(2.)
+    is_first = True
+    inside[:] = True
+    for i, d in enumerate(D):
+        B = Sphere(1., center=v * d)
+        C = (A & B).toSphere()
+        if is_first and C.radius[0] < B.radius[0]:
+            is_first = False
+            inside[i:] = False
+        if inside[i]:
+            assert C.radius[0] == pytest.approx(B.radius[0])
+        else:
+            assert C.radius[0] < B.radius[0]
+
+    A = Sphere(0.5)
+    is_first = True
+    inside[:] = True
+    for i, d in enumerate(D):
+        B = Sphere(1., center=v * d)
+        C = (A & B).toSphere()
+        print(A, B, C)
+        if is_first and C.radius[0] < A.radius[0]:
+            inside[i:] = False
+            is_first = False
+        if inside[i]:
+            assert C.radius[0] == pytest.approx(A.radius[0])
+        else:
+            assert C.radius[0] < A.radius[0]

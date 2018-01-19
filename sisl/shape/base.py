@@ -182,26 +182,26 @@ class CompositeShape(Shape):
             # Calculate the distance between the spheres
             dist = fnorm(Ac - Bc)
 
-            if dist + Ar < Br:
-                # A is fully enclosed in B
+            if dist + Ar <= Br:
+                # A is fully enclosed in B (or they are the same)
                 return A
 
-            elif dist + Br < Ar:
-                # B is fully enclosed in A
+            elif dist + Br <= Ar:
+                # B is fully enclosed in A (or they are the same)
                 return B
-
-            elif dist < Ar and Ar > Br:
-                # B is centered inside A and smaller than A, simply return B
-                return B
-
-            elif dist < Br and Br > Ar:
-                # A is centered inside B and smaller than B, simply return A
-                return A
 
             elif dist < (Ar + Br):
                 # We can reduce the sphere drastically because only the overlapping region is important
                 # i_r defines the intersection radius, search for Sphere-Sphere Intersection
                 dx = (dist ** 2 - Br ** 2 + Ar ** 2) / (2 * dist)
+
+                if dx > dist:
+                    # the intersection is placed after the radius of B
+                    # And in this case B is smaller (otherwise dx < 0)
+                    return B
+                elif dx < 0:
+                    return A
+
                 i_r = msqrt(4 * (dist * Ar) ** 2 - (dist ** 2 - Br ** 2 + Ar ** 2) ** 2) / (2 * dist)
 
                 # Now we simply need to find the dx point along the vector Bc - Ac
