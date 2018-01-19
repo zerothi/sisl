@@ -65,6 +65,7 @@ class ncSileSiesta(SileCDFSiesta):
             orb_n = a.variables['orbnl_n'][:] # principal quantum number
             orb_z = a.variables['orbnl_z'][:] # zeta
             orb_P = a.variables['orbnl_ispol'][:] > 0 # polarization shell, or not
+            orb_q0 = a.variables['orbnl_pop'][:] # q0 for the orbitals
             orb_delta = a.variables['delta'][:] # delta for the functions
             orb_psi = a.variables['orb'][:, :]
 
@@ -98,7 +99,7 @@ class ncSileSiesta(SileCDFSiesta):
                 psi = orb_psi[io, :] * r ** l / Bohr2Ang ** (3./2.)
 
                 # Create the sphericalorbital and then the atomicorbital
-                sorb = SphericalOrbital(l, (r * Bohr2Ang, psi))
+                sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), orb_q0[io])
 
                 # This will be -l:l (this is the way siesta does it)
                 orbital.extend(sorb.toAtomicOrbital(n=n, Z=z, P=P))

@@ -49,6 +49,8 @@ class ionxmlSileSiesta(SileSiesta):
             l = int(orb.get('l'))
             z = int(orb.get('z')) # zeta
 
+            q0 = float(orb.get('population'))
+
             P = not int(orb.get('ispol')) == 0
 
             # Radial components
@@ -74,7 +76,7 @@ class ionxmlSileSiesta(SileSiesta):
             psi = arrayd(dat[1::2]) * r ** l / Bohr2Ang ** (3./2.)
 
             # Create the sphericalorbital and then the atomicorbital
-            sorb = SphericalOrbital(l, (r * Bohr2Ang, psi))
+            sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), q0)
 
             # This will be -l:l (this is the way siesta does it)
             orbital.extend(sorb.toAtomicOrbital(n=n, Z=z, P=P))
@@ -105,6 +107,7 @@ class ionncSileSiesta(SileCDFSiesta):
         orb_n = self._variable('orbnl_n')[:] # principal quantum number
         orb_z = self._variable('orbnl_z')[:] # zeta
         orb_P = self._variable('orbnl_ispol')[:] > 0 # polarization shell, or not
+        orb_q0 = self._variable('orbnl_pop')[:] # q0 for the orbitals
         orb_delta = self._variable('delta')[:] # delta for the functions
         orb_psi = self._variable('orb')[:, :]
 
@@ -136,7 +139,7 @@ class ionncSileSiesta(SileCDFSiesta):
             psi = orb_psi[io, :] * r ** l / Bohr2Ang ** (3./2.)
 
             # Create the sphericalorbital and then the atomicorbital
-            sorb = SphericalOrbital(l, (r * Bohr2Ang, psi))
+            sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), orb_q0[io])
 
             # This will be -l:l (this is the way siesta does it)
             orbital.extend(sorb.toAtomicOrbital(n=n, Z=z, P=P))

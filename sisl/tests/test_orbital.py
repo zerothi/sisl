@@ -35,12 +35,16 @@ class Test_orbital(object):
 
     def test_init1(self):
         assert Orbital(1.) == Orbital(1.)
-        assert Orbital(1., 'none') != Orbital(1.)
+        assert Orbital(1., tag='none') != Orbital(1.)
+        assert Orbital(1., 1.) != Orbital(1.)
+        assert Orbital(1., 1.) != Orbital(1., 1., tag='none')
 
     def test_basic1(self):
         orb = Orbital(1.)
         repr(orb)
-        orb = Orbital(1., 'none')
+        orb = Orbital(1., tag='none')
+        repr(orb)
+        orb = Orbital(1., 1., tag='none')
         repr(orb)
         assert orb == orb.copy()
         assert orb != 1.
@@ -62,7 +66,7 @@ class Test_orbital(object):
     def test_pickle1(self):
         import pickle as p
         o0 = Orbital(1.)
-        o1 = Orbital(1., 'none')
+        o1 = Orbital(1., tag='none')
         p0 = p.dumps(o0)
         p1 = p.dumps(o1)
         l0 = p.loads(p0)
@@ -188,6 +192,19 @@ class Test_sphericalorbital(object):
         orb = SphericalOrbital(1, rf)
         ao = orb.toAtomicOrbital(2)
 
+    def test_toatomicorbital_q0(self):
+        rf = r_f(6)
+        orb = SphericalOrbital(0, rf, 2.)
+        ao = orb.toAtomicOrbital()
+        assert len(ao) == 1
+        assert ao[0].q0 == 2.
+
+        # Check m and l
+        for l in range(1, 5):
+            orb = SphericalOrbital(l, rf, 2.)
+            ao = orb.toAtomicOrbital()
+            assert ao[0].q0 == pytest.approx(2. / (2*l+1))
+
     def test_pickle1(self):
         rf = r_f(6)
         import pickle as p
@@ -274,7 +291,7 @@ class Test_atomicorbital(object):
     def test_pickle1(self):
         import pickle as p
         rf = r_f(6)
-        o0 = AtomicOrbital(2, 1, 0, 1, True, rf)
+        o0 = AtomicOrbital(2, 1, 0, 1, True, rf, tag='hello', q0=1.)
         o1 = AtomicOrbital(l=1, m=0, Z=1, P=False, spherical=rf)
         p0 = p.dumps(o0)
         p1 = p.dumps(o1)

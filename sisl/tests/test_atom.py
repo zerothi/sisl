@@ -51,6 +51,7 @@ class TestAtom(object):
     def test4(self, setup):
         assert setup.C.mass > 0
         assert setup.Au.mass > 0
+        assert setup.Au.q0 == pytest.approx(0)
 
     def test5(self, setup):
         assert Atom(Z=1, mass=12).R < 0
@@ -133,6 +134,11 @@ class TestAtom(object):
         a = Atom(5, r)
         for i, o in enumerate(a.iter(True)):
             assert len(o) == 2
+
+    def test_charge(self):
+        r = [1, 1, 2, 2]
+        a = Atom(5, [Orbital(1., 1.), Orbital(1., 1.), Orbital(2.), Orbital(2.)])
+        assert a.q0.sum() == pytest.approx(2)
 
     def test_pickle(self, setup):
         import pickle as p

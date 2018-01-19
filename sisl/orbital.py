@@ -64,33 +64,39 @@ class Orbital(object):
 
     The orbital class is still in an experimental stage and will probably evolve over some time.
 
+    Parameters
+    ----------
+    R : float
+        the orbital radius
+    q0 : float, optional
+        the orbital initial charge
+    tag : str, optional
+        the provided tag of the orbital
+
     Attributes
     ----------
     R : float
         the maximum orbital range, any query on values beyond this range should return 0.
+    q0 : float
+        the charge on the orbital, (only for initialization purposes)
     tag :
         the assigned tag for this orbital
     """
-    __slots__ = ['R', 'tag']
+    __slots__ = ['R', 'tag', 'q0']
 
-    def __init__(self, R, tag=''):
+    def __init__(self, R, q0=0., tag=''):
         """ Initialize the orbital class with a radius (`R`) and a tag (`tag`)
 
-        Parameters
-        ----------
-        R : float
-           the orbital radius
-        tag : str, optional
-           the provided tag of the orbital
         """
         self.R = R
+        self.q0 = q0
         self.tag = tag
 
     def __repr__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
-            return self.__class__.__name__ + '{{R: {0}, tag: {1}}}'.format(self.R, self.tag)
-        return self.__class__.__name__ + '{{R: {0}}}'.format(self.R)
+            return self.__class__.__name__ + '{{R: {0}, q0: {1}, tag: {2}}}'.format(self.R, self.q0, self.tag)
+        return self.__class__.__name__ + '{{R: {0}, q0: {1}}}'.format(self.R, self.q0)
 
     def name(self, tex=False):
         """ Return a named specification of the orbital (`tag`) """
@@ -110,7 +116,7 @@ class Orbital(object):
         """
         if not isinstance(other, Orbital):
             return False
-        same = np.isclose(self.R, other.R)
+        same = np.isclose(self.R, other.R) and np.isclose(self.q0, other.q0)
         if not same:
             # Quick return
             return False
@@ -125,14 +131,14 @@ class Orbital(object):
 
     def copy(self):
         """ Create an exact copy of this object """
-        return self.__class__(self.R, self.tag)
+        return self.__class__(self.R, self.q0, self.tag)
 
     def scale(self, scale):
         """ Scale the orbital by extending R by `scale` """
         R = self.R * scale
         if R < 0:
             R = -1.
-        return self.__class__(R, self.tag)
+        return self.__class__(R, self.q0, self.tag)
 
     def __eq__(self, other):
         return self.equal(other)
@@ -182,11 +188,11 @@ class Orbital(object):
 
     def __getstate__(self):
         """ Return the state of this object """
-        return {'R': self.R, 'tag': self.tag}
+        return {'R': self.R, 'q0': self.q0, 'tag': self.tag}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['R'], d['tag'])
+        self.__init__(d['R'], d['q0'], d['tag'])
 
 
 class SphericalOrbital(Orbital):
@@ -213,6 +219,8 @@ class SphericalOrbital(Orbital):
     ----------
     R : float
         the maximum orbital range
+    q0 : float
+        the charge on the orbital, (only for initialization purposes)
     l : int
         azimuthal quantum number
     f : func
@@ -223,7 +231,7 @@ class SphericalOrbital(Orbital):
     # Additional slots (inherited classes retain the same slots)
     __slots__ = ['l', 'f']
 
-    def __init__(self, l, rf_or_func, tag=''):
+    def __init__(self, l, rf_or_func, q0=0., tag=''):
         """ Initialize a spherical orbital via a radial grid
 
         Parameters
@@ -233,6 +241,8 @@ class SphericalOrbital(Orbital):
         rf_or_func : tuple of (r, f) or func
            the radial components as a tuple/list, or the function which can interpolate to any R
            See `set_radial` for details.
+        q0 : float, optional
+           the orbital initial charge
         tag : str, optional
            tag of the orbital
 
@@ -255,11 +265,11 @@ class SphericalOrbital(Orbital):
         # Initialize R and tag through the parent
         # Note that the maximum range of the orbital will be the
         # maximum value in r.
-        super(SphericalOrbital, self).__init__(self.R, tag)
+        super(SphericalOrbital, self).__init__(self.R, q0, tag)
 
     def copy(self):
         """ Create an exact copy of this object """
-        return self.__class__(self.l, self.f, self.tag)
+        return self.__class__(self.l, self.f, self.q0, self.tag)
 
     def equal(self, other, psi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
@@ -346,8 +356,8 @@ class SphericalOrbital(Orbital):
     def __repr__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
-            return self.__class__.__name__ + '{{l: {0}, R: {1}, tag: {2}}}'.format(self.l, self.R, self.tag)
-        return self.__class__.__name__ + '{{l: {0}, R: {1}}}'.format(self.l, self.R)
+            return self.__class__.__name__ + '{{l: {0}, R: {1}, q0: {2}, tag: {3}}}'.format(self.l, self.R, self.q0, self.tag)
+        return self.__class__.__name__ + '{{l: {0}, R: {1}, q0: {2}}}'.format(self.l, self.R, self.q0)
 
     def radial(self, r, is_radius=True):
         r""" Calculate the radial part of the wavefunction :math:`f(\mathbf R)`
@@ -438,8 +448,8 @@ class SphericalOrbital(Orbital):
             return self.f(r) * rspherical_harm(m, self.l, theta, phi)
         return self.f(r) * rspherical_harm(m, self.l, theta, cos(phi))
 
-    def toAtomicOrbital(self, m=None, n=None, Z=1, P=False):
-        """ Create a list of `AtomicOrbital` objects 
+    def toAtomicOrbital(self, m=None, n=None, Z=1, P=False, q0=None):
+        r""" Create a list of `AtomicOrbital` objects
 
         This defaults to create a list of `AtomicOrbital` objects for every `m` (for m in -l:l).
         One may optionally specify the sub-set of `m` to retrieve.
@@ -452,12 +462,17 @@ class SphericalOrbital(Orbital):
            the specified zeta-shell
         P : bool, optional
            whether the orbitals are polarized.
+        q0 : float, optional
+           the initial charge per orbital, initially :math:`q_0 / (2l+1)` with :math:`q_0` from this object
         """
+        # Initial charge
+        if q0 is None:
+            q0 = self.q0 / (2 * self.l + 1)
         if m is None:
             m = range(-self.l, self.l + 1)
         elif isinstance(m, Integral):
-            return AtomicOrbital(n=n, l=self.l, m=m, Z=Z, P=P, spherical=self)
-        return [AtomicOrbital(n=n, l=self.l, m=mm, Z=Z, P=P, spherical=self) for mm in m]
+            return AtomicOrbital(n=n, l=self.l, m=m, Z=Z, P=P, spherical=self, q0=q0)
+        return [AtomicOrbital(n=n, l=self.l, m=mm, Z=Z, P=P, spherical=self, q0=q0) for mm in m]
 
     def __getstate__(self):
         """ Return the state of this object """
@@ -465,11 +480,11 @@ class SphericalOrbital(Orbital):
         # data which *should* ensure the correct pickable state (to close agreement)
         r = np.linspace(0, self.R, 1000)
         f = self.f(r)
-        return {'l': self.l, 'r': r, 'f': f, 'tag': self.tag}
+        return {'l': self.l, 'r': r, 'f': f, 'q0': self.q0, 'tag': self.tag}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['l'], (d['r'], d['f']), d['tag'])
+        self.__init__(d['l'], (d['r'], d['f']), d['q0'], d['tag'])
 
 
 class AtomicOrbital(Orbital):
@@ -497,6 +512,8 @@ class AtomicOrbital(Orbital):
         whether this corresponds to a polarized shell (``True``)
     f : func
         the interpolation function that returns `f(r)` for the provided data
+    q0 : float
+        the charge on the orbital, (only for initialization purposes)
     tag : str or None
         a tag for this orbital
     """
@@ -522,7 +539,8 @@ class AtomicOrbital(Orbital):
            the provided tag of the orbital
         """
         # Immediately setup R and tag
-        super(AtomicOrbital, self).__init__(0., kwargs.get('tag', ''))
+        super(AtomicOrbital, self).__init__(0., kwargs.get('q0', 0.), kwargs.get('tag', ''))
+
         # Ensure args is a list (to be able to pop)
         args = list(args)
         self.orb = None
@@ -717,8 +735,8 @@ class AtomicOrbital(Orbital):
     def __repr__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
-            return self.__class__.__name__ + '{{{0}, tag: {1}, {2}}}'.format(self.name(), self.tag, repr(self.orb))
-        return self.__class__.__name__ + '{{{0}, {1}}}'.format(self.name(), repr(self.orb))
+            return self.__class__.__name__ + '{{{0}, q0: {1}, tag: {2}, {3}}}'.format(self.name(), self.q0, self.tag, repr(self.orb))
+        return self.__class__.__name__ + '{{{0}, q0: {1}, {2}}}'.format(self.name(), self.q0, repr(self.orb))
 
     def set_radial(self, *args):
         r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`
@@ -791,8 +809,8 @@ class AtomicOrbital(Orbital):
         # data which *should* ensure the correct pickable state (to close agreement)
         r = np.linspace(0, self.R, 1000)
         f = self.orb.f(r)
-        return {'name': self.name(), 'r': r, 'f': f, 'tag': self.tag}
+        return {'name': self.name(), 'r': r, 'f': f, 'q0': self.q0, 'tag': self.tag}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['name'], (d['r'], d['f']), d['tag'])
+        self.__init__(d['name'], (d['r'], d['f']), q0=d['tag'], tag=d['tag'])

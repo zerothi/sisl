@@ -963,6 +963,8 @@ class Atom(object):
         number of orbitals belonging to the `Atom`
     R : numpy.ndarray
         the range of each orbital associated with this `Atom` (see `Orbital.R` for details)
+    q0 : numpy.ndarray
+        the charge of each orbital associated with this `Atom` (see `Orbital.q0` for details)
     mass : float
         mass of `Atom`
 
@@ -1024,6 +1026,11 @@ class Atom(object):
     def R(self):
         """ Orbital radius """
         return _a.arrayd([o.R for o in self.orbital])
+
+    @property
+    def q0(self):
+        """ Orbital initial charge """
+        return _a.arrayd([o.q0 for o in self.orbital])
 
     def copy(self, Z=None, orbital=None, mass=None, tag=None):
         """ Return copy of this object """
@@ -1293,6 +1300,12 @@ class Atoms(object):
     def lasto(self):
         """ The lasto orbital of the corresponding atom in the consecutive list of orbitals """
         return self._firsto[1:] - 1
+
+    @property
+    def q0(self):
+        """ Return total charge on these atoms """
+        q0 = _a.arrayd([a.q0 for a in self.atom])
+        return q0[self.specie[:]].sum()
 
     def maxR(self, all=False):
         """ The maximum radius of the atoms
