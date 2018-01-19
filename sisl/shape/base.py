@@ -18,7 +18,7 @@ __all__ = ['Shape', 'PureShape']
 class Shape(object):
     """ Baseclass for all shapes. Logical operations are implemented on this class.
 
-    **This class *must* be sub classed.**
+    **This class must be sub classed.**
 
     Also all the required methods are predefined although they issue an error if they are
     not implemented in the sub-classed class.

@@ -16,16 +16,16 @@ implements the necessary routines to ensure correct operation.
 
 Currently these mathematical/boolean operators are implemented:
 
-`&`
+`A & B`
     intersection of shapes
 
-`|`/`+`
+`A | B` or `A + B`
     union of shapes
 
-`^`
+`A ^ B`
     the disjunction union
 
-'-'
+`A - B`
     complementary shape
 
 .. autosummary::
