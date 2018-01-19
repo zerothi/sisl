@@ -1278,11 +1278,6 @@ class Atoms(object):
         """ Return the total number of orbitals in this list of atoms """
         uorbs = _a.arrayi([a.no for a in self.atom])
         return uorbs[self.specie].sum()
-        values, counts = np.unique(self.specie, return_counts=True)
-        no = 0
-        for v, c in zip(values, counts):
-            no += c * uorbs[v]
-        return no
 
     @property
     def orbitals(self):

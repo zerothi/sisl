@@ -61,6 +61,7 @@ class TestAtom(object):
     def test6(self, setup):
         assert Atom(1, [-1] * 3).no == 3
         assert len(Atom(1, [-1] * 3)) == 3
+        assert Atom(1, 1.4).R == 1.4
         assert Atom(Z=1, R=1.4).R == 1.4
         assert Atom(Z=1, R=1.4).maxR() == 1.4
         assert Atom(Z=1, R=[1.4, 1.8]).no == 2
@@ -118,6 +119,20 @@ class TestAtom(object):
         assert a.symbol == 'fa'
         assert a.tag == 'fa'
         assert a.Z == -1
+
+    def test_iter1(self):
+        r = [1, 2]
+        a = Atom(5, r)
+        for i, o in enumerate(a):
+            assert o.R == r[i]
+        for i, o in enumerate(a.iter()):
+            assert o.R == r[i]
+
+    def test_iter2(self):
+        r = [1, 1, 2, 2]
+        a = Atom(5, r)
+        for i, o in enumerate(a.iter(True)):
+            assert len(o) == 2
 
     def test_pickle(self, setup):
         import pickle as p
