@@ -16,7 +16,7 @@ if [ $succeed -eq 0 -a -d latest ]; then
     mkdir latest
     pushd latest
     cp -rf ../build/html/* .
-    rm -rf _sources api-generated
+    rm -rf _sources
     # Clean all rst.dummy files in the
     for f in `find ./ -name "*rst.dummy"`
     do
