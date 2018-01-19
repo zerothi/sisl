@@ -10,7 +10,7 @@ from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
-from .binaries import TSHSSileSiesta
+from .binaries import TSHSSileSiesta, DMSileSiesta
 from .siesta import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import OrbIndxSileSiesta
@@ -578,7 +578,16 @@ class fdfSileSiesta(SileSiesta):
 
         if isfile(sys + '.nc'):
             return ncSileSiesta(sys + '.nc').read_density_matrix()
-        raise ValueError("Could not find the density matrix from the *.nc.")
+        elif isfile(sys + '.DM'):
+            geom = self.read_geometry()
+            DM = DMSileSiesta(sys + '.DM').read_density_matrix()
+            if geom.no == DM.no:
+                DM._geom = geom
+            else:
+                warn.warn('The density matrix is read from *.DM without being able to read '
+                          'a geometry with the correct orbitals.')
+            return DM
+        raise RuntimeError("Could not find the density matrix from the *.nc, *.DM.")
 
     def read_energy_density_matrix(self, *args, **kwargs):
         """ Try and read the energy density matrix by reading the <>.nc """
@@ -586,7 +595,7 @@ class fdfSileSiesta(SileSiesta):
 
         if isfile(sys + '.nc'):
             return ncSileSiesta(sys + '.nc').read_energy_density_matrix()
-        raise ValueError("Could not find the energy density matrix from the *.nc.")
+        raise RuntimeError("Could not find the energy density matrix from the *.nc.")
 
     def read_hamiltonian(self, *args, **kwargs):
         """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order) """
@@ -613,7 +622,7 @@ class fdfSileSiesta(SileSiesta):
             geom = self.read_geometry()
             H = HSXSileSiesta(sys + '.HSX').read_hamiltonian(geom=geom)
             return H
-        raise ValueError("Could not find the Hamiltonian from the *.nc, nor the *.TSHS file.")
+        raise RuntimeError("Could not find the Hamiltonian from the *.nc, nor the *.TSHS file.")
 
     @default_ArgumentParser(description="Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):

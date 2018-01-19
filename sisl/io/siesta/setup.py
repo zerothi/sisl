@@ -14,6 +14,7 @@ def configuration(parent_package='', top_path=None):
         'free_unit.f90',
         'write_hsx.f90',
         'read_hsx.f90',
+        'read_dm.f90',
         'read_hs.f90',
         'read_tshs.f90',
         'write_tshs.f90',

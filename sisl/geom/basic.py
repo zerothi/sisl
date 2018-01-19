@@ -65,7 +65,7 @@ def bcc(alat, atom, orthogonal=False):
 
 
 def fcc(alat, atom, orthogonal=False):
-    """ Face centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
+    """ Face centered cubic lattice with 1 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ def fcc(alat, atom, orthogonal=False):
     atom : Atom
         the atom in the FCC lattice
     orthogonal : bool, optional
-        whether the lattice is orthogonal (2 atoms)
+        whether the lattice is orthogonal (4 atoms)
     """
     if orthogonal:
         sc = SuperCell(np.array([[1, 0, 0],
