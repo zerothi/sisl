@@ -196,6 +196,7 @@ class Grid(SuperCellChild):
 
     def set_grid(self, shape, dtype=None):
         """ Create the internal grid of certain size. """
+        shape = ensure_array(shape).ravel()
         if dtype is None:
             dtype = np.float64
         self.grid = np.zeros(shape, dtype=dtype)
@@ -213,6 +214,10 @@ class Grid(SuperCellChild):
            boundary condition for the second unit-cell vector direction
         c: int or list of int, optional
            boundary condition for the third unit-cell vector direction
+
+        Raises
+        ------
+        ValueError : if specifying periodic one one boundary, so must the opposite side.
         """
         if not boundary is None:
             if isinstance(boundary, Integral):
@@ -386,6 +391,10 @@ class Grid(SuperCellChild):
            the indices of the grid axis `axis` to be retained
         axis : int
            the axis segment from which we retain the indices `idx`
+
+        Raises
+        ------
+        ValueError : if the length of the indices is 0
         """
         idx = ensure_array(idx).flatten()
 
@@ -543,9 +552,7 @@ class Grid(SuperCellChild):
             return floor(dot(rcell[axis, :], coord.T) * shape[axis]).T.astype(int32)
 
     def append(self, other, axis):
-        """ Appends other `Grid` to this grid along axis
-
-        """
+        """ Appends other `Grid` to this grid along axis """
         shape = list(self.shape)
         shape[axis] += other.shape[axis]
         return self.__class__(shape, bc=np.copy(self.bc),
@@ -725,8 +732,8 @@ class Grid(SuperCellChild):
     def mgrid(self, *slices):
         """ Return a list of indices corresponding to the slices
 
-        This is equivalent to the `numpy.mgrid` method which allows
-        creating full grids.
+        The returned values are equivalent to `numpy.mgrid` but they are returned
+        in a (*, 3) array.
 
         Parameters
         ----------
@@ -750,23 +757,32 @@ class Grid(SuperCellChild):
         return indices
 
     def pyamg_index(self, index):
-        """ Calculate `pyamg` matrix indices from a list of grid indices
+        r""" Calculate `pyamg` matrix indices from a list of grid indices
 
         Parameters
         ----------
         index : (*,3) of int
-            a list of indices of the grid
+            a list of indices of the grid along each grid axis
 
         Returns
         -------
         pyamg linear indices for the matrix
+
+        See Also
+        --------
+        index : query indices from coordinates (directly passable to this method)
+        mgrid : Grid equivalent to `numpy.mgrid`. Grid.mgrid returns indices in shapes (*, 3), contrary to `numpy`
+
+        Raises
+        ------
+        ValueError : if any of the passed indices are below 0 or above the number of elements per axis
         """
         index = ensure_array(index).reshape(-1, 3)
-        grid = self.shape[:]
-        for i, g in enumerate(grid):
-            if np.any(index[:, i] >= g):
-                raise ValueError(self.__class__.__name + '.pyamg_index erroneous values for grid indices')
-        cp = np.append(np.cumprod(grid[::-1])[:-1][::-1], 1).reshape(-1, 3)
+        grid = _a.arrayi(self.shape[:])
+        if np.any(index < 0) or np.any(index >= grid.reshape(1, 3)):
+            raise ValueError(self.__class__.__name__ + '.pyamg_index erroneous values for grid indices')
+        # Skipping factor per element
+        cp = _a.arrayi([[grid[1] * grid[2], grid[2], 1]])
         return (cp * index).sum(1)
 
     def pyamg_source(self, b, pyamg_indices, value):
