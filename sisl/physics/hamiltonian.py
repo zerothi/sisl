@@ -473,12 +473,13 @@ class EigenState(EigenSystem):
 
         Parameters
         ----------
-        gridv : Grid
-           the coefficients for all orbitals in the geometry (real or complex).
-           If an `EigenState` a sum over all eigenstates in the object will be used.
+        grid : Grid
+           grid on which the wavefunction will be plotted.
+           If multiple eigenstates are in this object, they will be summed.
         k : array_like, optional
-           k-point associated with the coefficients, by default the inherent k-point used
-           to calculate the eigenstate will be used.
+           k-point associated with wavefunction, by default the inherent k-point used
+           to calculate the eigenstate will be used (generally shouldn't be used unless the `EigenState` object
+           has not been created via `Hamiltonian.eigenstate`).
         spinor : int, optional
            the spinor for non-colinear/spin-orbit calculations. This is only used if the
            eigenstate object has been created from a parent object with a `Spin` object

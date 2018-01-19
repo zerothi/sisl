@@ -60,9 +60,9 @@ class Shape(object):
     def __init__(self, center):
         """ Initialize the Shape with a center """
         if center is None:
-            self._center = np.zeros(3, np.float64)
+            self._center = np.zeros(3, np.float64).ravel()
         else:
-            self._center = np.array(center, np.float64)
+            self._center = np.array(center, np.float64).ravel()
 
     @property
     def center(self):

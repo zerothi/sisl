@@ -5,7 +5,9 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, DensityMatrix
+from sisl import Geometry, Atom, SphericalOrbital, SuperCell
+from sisl import Grid
+from sisl import DensityMatrix
 
 
 @pytest.fixture
@@ -18,7 +20,11 @@ def setup():
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
-            C = Atom(Z=6, R=[bond * 1.01] * 3)
+            n = 60
+            rf = np.linspace(0, bond * 1.01, n)
+            rf = (rf, rf)
+            orb = SphericalOrbital(1, rf, 2.)
+            C = Atom(6, orb.toAtomicOrbital())
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
                               atom=C, sc=self.sc)
@@ -78,3 +84,9 @@ class TestDensityMatrix(object):
         assert setup.D[0, 0] == 1.
         assert setup.D[1, 0] == 0.
         setup.D.empty()
+
+    def test_rho1(self, setup):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        grid = Grid(0.2, geom=setup.D.geom)
+        D.rho(grid)

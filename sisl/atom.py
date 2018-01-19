@@ -10,6 +10,7 @@ import numpy as np
 
 from ._help import array_fill_repeat, ensure_array, _str
 import sisl._array as _a
+from .shape import Sphere
 from .orbital import Orbital, SphericalOrbital, AtomicOrbital
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
@@ -1115,6 +1116,14 @@ class Atom(object):
         """ Return number of orbitals in this atom """
         return self.no
 
+    def toSphere(self):
+        """ Return a sphere with the maximum orbital radius equal
+
+        Returns
+        -------
+        Sphere : the sphere with a radius equal to the maximum radius of the orbitals"""
+        return Sphere(self.maxR())
+
     def equal(self, other, R=True, psi=False):
         """ True if `other` is the same as this atomic specie
 
@@ -1306,6 +1315,15 @@ class Atoms(object):
         """ Return total charge on these atoms """
         q0 = _a.arrayd([a.q0 for a in self.atom])
         return q0[self.specie[:]].sum()
+
+    def orbital(self, io):
+        """ Return an array of orbital of the contained objects """
+        io = ensure_array(io) % self.no
+        a = np.argmax(io.reshape(-1, 1) <= self.lasto, axis=1)
+        io = io - self.firsto[a]
+        a = self.specie[a]
+        # Now extract the list of orbitals
+        return [self.atom[ia].orbital[o] for ia, o in zip(a, io)]
 
     def maxR(self, all=False):
         """ The maximum radius of the atoms

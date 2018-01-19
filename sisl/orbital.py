@@ -13,6 +13,7 @@ from scipy.special import lpmv, sph_harm
 from scipy.interpolate import interp1d
 
 from ._help import ensure_array, _str
+from .shape import Sphere
 import sisl._array as _a
 from sisl.utils.mathematics import cart2spher
 
@@ -101,6 +102,14 @@ class Orbital(object):
     def name(self, tex=False):
         """ Return a named specification of the orbital (`tag`) """
         return self.tag
+
+    def toSphere(self):
+        """ Return a sphere with radius equal to the orbital size
+
+        Returns
+        -------
+        Sphere : the sphere with a radius equal to the radius of this orbital"""
+        return Sphere(self.R)
 
     def equal(self, other, psi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions

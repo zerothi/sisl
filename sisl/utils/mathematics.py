@@ -158,7 +158,10 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
     if maxR is None:
         rr = sqrt(square(r).sum(1))
         theta = arctan2(r[:, 1], r[:, 0])
-        phi = arccos(r[:, 2] / rr)
+        if cos_phi:
+            phi = r[:, 2] / rr
+        else:
+            phi = arccos(r[:, 2] / rr)
         phi[rr == 0.] = 0.
         return rr, theta, phi
 
