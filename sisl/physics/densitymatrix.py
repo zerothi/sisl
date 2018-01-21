@@ -1,8 +1,9 @@
 from __future__ import print_function, division
 
+from numbers import Integral
 from functools import partial
 import numpy as np
-from numpy import dot
+from numpy import dot, argsort, where, mod
 
 import sisl._array as _a
 from sisl._help import _zip as zip
@@ -86,8 +87,8 @@ class DensityMatrix(SparseOrbitalBZSpin):
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
         spin : int, optional
-           if the Hamiltonian is a spin polarized one can extract the specific spin direction
-           matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`
+           if the density matrix is a spin polarized one can extract the specific spin direction
+           matrix by passing an integer (0 or 1). If the density matrix is not `Spin.POLARIZED`
            this keyword is ignored.
         """
         pass
@@ -103,7 +104,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
     D = property(_get_D, _set_D)
 
-    def rho(self, grid, spinor=1.):
+    def rho(self, grid, spinor=None):
         r""" Expand the density matrix to a density on the grid
 
         This routine calculates the real-space density components in the
@@ -131,9 +132,12 @@ class DensityMatrix(SparseOrbitalBZSpin):
         Parameters
         ----------
         grid : Grid
-           the grid on which to add the density.
-        spinor : (2, 2), optional
-           the spinor matrix to obtain the diagonal components of the density.
+           the grid on which to add the density (the density is in ``e/Ang^3``)
+        spinor : (2, ) or (2, 2), optional
+           the spinor matrix to obtain the diagonal components of the density. For un-polarized density matrices
+           this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of
+           length 2 (defaults to total density).
+           For non-colinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
         """
         geom = self.geom
         if geom is None:
@@ -148,30 +152,84 @@ class DensityMatrix(SparseOrbitalBZSpin):
         # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
         old_err = np.seterr(divide='ignore', invalid='ignore')
 
-        if self.spin > Spin('p'):
-            raise NotImplementedError('currently NC/SOC does not work')
-        elif self.orthogonal:
-            def extract_row_DM(io):
-                sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
-                col = csr.col[sl]
-                DM = csr._D[sl, :].sum(1)
-                idx = DM.nonzero()[0]
-                return col[idx], DM[idx]
+        spin_pol = Spin('p')
+
+        if self.spin > spin_pol:
+            if spinor is None:
+                spinor = _a.arrayz([[1., 0], [0., 1.]])
+            if spinor.size != 4 or spinor.ndim != 2:
+                raise ValueError(self.__class__.__name__ + '.rho with NC/SO spin, requires a 2x2 matrix.')
+
+            # TODO I am not sure whether the below dot product
+            # requires dot(DM, spinor) or dot(DM, spinor.T)
+            # I think it has to be spinor.T
+            if self.spin == Spin('NC'):
+                def extract_row_DM(io):
+                    """ First construct the spin-box DM, then do DM . spinor, and lastly, sum diagonals """
+                    sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
+                    col = csr.col[sl]
+                    DM = _a.emptyz([csr.ncol[io], 2, 2])
+                    DM[:, 0, 0] = csr._D[sl, 0]
+                    DM[:, 1, 1] = csr._D[sl, 1]
+                    DM[:, 1, 0] = csr._D[sl, 2] - 1j * csr._D[sl, 3]
+                    DM[:, 0, 1] = np.conj(DM[:, 1, 0])
+                    DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
+                    idx = DM.nonzero()[0]
+                    return col[idx], DM[idx]
+            else:
+                def extract_row_DM(io):
+                    """ First construct the spin-box DM, then do DM . spinor, and lastly, sum diagonals """
+                    sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
+                    col = csr.col[sl]
+                    DM = _a.emptyz([csr.ncol[io], 2, 2])
+                    DM[:, 0, 0] = csr._D[sl, 0] + 1j * csr._D[sl, 4]
+                    DM[:, 1, 1] = csr._D[sl, 1] + 1j * csr._D[sl, 5]
+                    DM[:, 1, 0] = csr._D[sl, 2] - 1j * csr._D[sl, 3]
+                    DM[:, 0, 1] = csr._D[sl, 6] + 1j * csr._D[sl, 7]
+                    DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
+                    idx = DM.nonzero()[0]
+                    return col[idx], DM[idx]
+
+        elif self.spin == spin_pol:
+            if spinor is None:
+                spinor = _a.arrayd([1., 1.])
+            if isinstance(spinor, Integral):
+                # extract the provided spin-polarization
+                s = [0.] * 2
+                s[spinor] = 1.
+                spinor = s
+            spinor = _a.arrayd(spinor)
+
+            if spinor.size != 2:
+                raise ValueError(self.__class__.__name__ + '.rho with polarized spin, requires an integer, or a vector of length 2')
+
+            if self.orthogonal:
+                def extract_row_DM(io):
+                    sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
+                    col = csr.col[sl]
+                    DM = dot(csr._D[sl, :], spinor)
+                    idx = DM.nonzero()[0]
+                    return col[idx], DM[idx]
+            else:
+                def extract_row_DM(io):
+                    sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
+                    col = csr.col[sl]
+                    DM = dot(csr._D[sl, :-1], spinor)
+                    idx = DM.nonzero()[0]
+                    return col[idx], DM[idx]
+
         else:
+            # spin-unpolarized
             def extract_row_DM(io):
                 sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
                 col = csr.col[sl]
-                DM = csr._D[sl, :-1].sum(1)
+                DM = csr._D[sl, 0]
                 idx = DM.nonzero()[0]
                 return col[idx], DM[idx]
 
         log_and = np.logical_and
         log_andr = log_and.reduce
         shape = _a.arrayi(grid.shape).reshape(1, 3)
-        def index_mod(idx):
-            i = log_and(log_andr(0 <= idx, axis=1),
-                        log_andr(idx < shape, axis=1))
-            return idx[i, :]
 
         all_xyz = (geom.axyz(np.arange(geom.na_s)) - grid.origo.reshape(1, 3)).reshape(-1, 1, 3)
         c2s = partial(cart2spher, cos_phi=True)
@@ -186,17 +244,20 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
                 # Create the unified sphere
                 s2 = orb2.toSphere()
-                jxyz = all_xyz[ja, :, :]
-                s2.set_center(jxyz)
+                xyz2 = all_xyz[ja, :, :]
+                s2.set_center(xyz2)
                 s = s0 & s2
 
-                # Find indices of overlap
-                idx = index_mod(grid.index(s))
+                # Find indices of overlapping spheres
+                idx = grid.index(s)
+                if len(idx) == 0:
+                    continue
 
-                rxyz = dot(dcell, idx.T).T
-                grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += (
+                rxyz = dot(idx, dcell)
+                mod(idx, shape, out=idx)
+                grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += DM * (
                     orb.psi_spher(*c2s(rxyz - xyz), cos_phi=True) *
-                    orb2.psi_spher(*c2s(rxyz - jxyz), cos_phi=True)) * DM
+                    orb2.psi_spher(*c2s(rxyz - xyz2), cos_phi=True))
 
         # Loop over all atoms in supercell structure
         io = -1
@@ -230,7 +291,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 # Loop orbitals with the same radius
                 for o in os:
                     io += 1
-                    print(io)
+                    #print('{} / {}'.format(io, geom.no))
 
                     # Now loop each connection orbital
                     add_DM(xyz, io, o)

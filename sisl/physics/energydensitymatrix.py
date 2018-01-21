@@ -77,8 +77,8 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
         spin : int, optional
-           if the Hamiltonian is a spin polarized one can extract the specific spin direction
-           matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`
+           if the energy density matrix is a spin polarized one can extract the specific spin direction
+           matrix by passing an integer (0 or 1). If the energy density matrix is not `Spin.POLARIZED`
            this keyword is ignored.
         """
         pass

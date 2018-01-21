@@ -204,6 +204,7 @@ class ncSileSiesta(SileCDFSiesta):
 
     def read_density_matrix(self, **kwargs):
         """ Returns a density matrix from the underlying NetCDF file """
+        # This also adds the spin matrix
         DM = self._read_class_spin(DensityMatrix, **kwargs)
         sp = self._crt_grp(self, 'SPARSE')
         for i in range(len(DM.spin)):

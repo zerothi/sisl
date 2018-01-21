@@ -178,10 +178,10 @@ class CompositeShape(Shape):
         Bc = B.center
 
         if self.op == self._AND:
-            # If one is fully enclosed in the other, we can simply neglect the other
             # Calculate the distance between the spheres
             dist = fnorm(Ac - Bc)
 
+            # If one is fully enclosed in the other, we can simply neglect the other
             if dist + Ar <= Br:
                 # A is fully enclosed in B (or they are the same)
                 return A
@@ -190,7 +190,7 @@ class CompositeShape(Shape):
                 # B is fully enclosed in A (or they are the same)
                 return B
 
-            elif dist < (Ar + Br):
+            elif dist <= (Ar + Br):
                 # We can reduce the sphere drastically because only the overlapping region is important
                 # i_r defines the intersection radius, search for Sphere-Sphere Intersection
                 dx = (dist ** 2 - Br ** 2 + Ar ** 2) / (2 * dist)
