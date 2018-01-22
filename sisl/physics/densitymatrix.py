@@ -204,9 +204,10 @@ class DensityMatrix(SparseOrbitalBZSpin):
             idx = array_arange(csr.ptr[:-1], n=csr.ncol)
             DM = csr._D[idx, 0]
 
-        # Create the DM csr matrix
-        csrDM = csr_matrix((DM, csr.col[idx], np.insert(np.cumsum(csr.ncol), 0, 0)), shape=(self.shape[:2]),
-                           dtype=DM.dtype)
+        # Create the DM csr matrix.
+        # TODO add a tolerance value to remove all DM values below a certain value
+        csrDM = csr_matrix((DM, csr.col[idx], np.insert(np.cumsum(csr.ncol), 0, 0)),
+                           shape=(self.shape[:2]), dtype=DM.dtype)
         csrDM.eliminate_zeros()
         csrDM.sort_indices()
         csrDM.prune()
@@ -219,17 +220,17 @@ class DensityMatrix(SparseOrbitalBZSpin):
         all_xyz = (geom.axyz(np.arange(geom.na_s)) - grid.origo.reshape(1, 3)).reshape(-1, 1, 3)
         c2s = partial(cart2spher, cos_phi=True)
 
-        def add_DM(ia, atomi, xyzi, ja, atomj, xyzj, s):
+        def add_DM(ia, atomi, xyzi, icscDM, ja, atomj, xyzj, s):
             # Find all indices for the grid (they may be outside the cell).
             idx = grid.index(s)
             if len(idx) == 0:
                 return
 
             # Figure out orbitals
-            o = geom.a2o([ia, ia+1, ja, ja+1])
+            o1, o2 = geom.a2o([ja, ja+1])
 
             # Retrieve the matrix that connects the two atoms (i in unit-cell, j in supercell)
-            ijDM = csrDM[o[0]:o[1], o[2]:o[3]]
+            ijDM = cscDM[:, o1:o2]
 
             # Calculate the positions
             rxyz = dot(idx, dcell)
@@ -241,16 +242,16 @@ class DensityMatrix(SparseOrbitalBZSpin):
             # Get the two atoms spherical coordinates
             rri, thetai, cos_phii = c2s(rxyz - xyzi)
             rrj, thetaj, cos_phij = c2s(rxyz - xyzj)
-            # Clean-up for reduced memory...
-            del rxyz, o
+            # Clean-up to reduce memory...
+            del rxyz
 
             # Now loop on all connections between the two atoms
             psi = _a.emptyd(rri.shape)
-            for r in range(ijDM.shape[0]):
+            for c in range(ijDM.shape[1]):
                 psi.fill(0.)
-                for ind in range(ijDM.indptr[r], ijDM.indptr[r+1]):
-                    psi += ijDM.data[ind] * atomj.orbital[ijDM.indices[ind]].psi_spher(rrj, thetaj, cos_phij, cos_phi=True)
-                grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += psi * atomi.orbital[r].psi_spher(rri, thetai, cos_phii, cos_phi=True)
+                for ind in range(ijDM.indptr[c], ijDM.indptr[c+1]):
+                    psi += ijDM.data[ind] * atomi.orbital[ijDM.indices[ind]].psi_spher(rri, thetai, cos_phii, cos_phi=True)
+                grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += psi * atomj.orbital[c].psi_spher(rrj, thetaj, cos_phij, cos_phi=True)
 
         def skip_atom(a):
             if a.maxR() <= 0.:
@@ -278,9 +279,11 @@ class DensityMatrix(SparseOrbitalBZSpin):
             si = atomi.toSphere()
             si.set_center(xyzi)
 
+            # Extract all connections to this atom.
+            cscDM = csrDM[geom.firsto[ia]:geom.lasto[ia] + 1, :].tocsc()
+
             # Figure out all connecting atoms
-            jas = unique_atom_edge(ia)
-            for ja in jas:
+            for ja in unique_atom_edge(ia):
                 # Get connecting atom (in supercell format)
                 atomj = geom.atom[ja]
 
@@ -290,7 +293,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 sj.set_center(xyzj)
 
                 # Add the density matrix for atom ia -> ja
-                add_DM(ia, atomi, xyzi, ja, atomj, xyzj, si & sj)
+                add_DM(ia, atomi, xyzi, cscDM, ja, atomj, xyzj, si & sj)
 
         # Reset the error code for division
         np.seterr(**old_err)
