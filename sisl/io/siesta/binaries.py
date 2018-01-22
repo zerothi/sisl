@@ -274,7 +274,6 @@ class GridSileSiesta(SileBinSiesta):
         # Read the cell and grid
         cell = _siesta.read_grid_cell(self.file)
         grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
-        print(grid.shape)
 
         if isinstance(spin, Integral):
             grid = grid[:, :, :, spin]
