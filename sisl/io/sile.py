@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 
+from functools import wraps
 from os.path import splitext, isfile
 import gzip
 
@@ -458,7 +459,7 @@ def Sile_fh_open(func):
     """ Method decorator for objects to directly implement opening of the
     file-handle upon entry (if it isn't already).
     """
-
+    @wraps(func)
     def pre_open(self, *args, **kwargs):
         if hasattr(self, "fh"):
             return func(self, *args, **kwargs)

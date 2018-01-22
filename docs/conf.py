@@ -391,19 +391,22 @@ nbsphinx_prolog = r"""
 
 # My custom detailed instructions for not documenting stuff
 def sisl_skip(app, what, name, obj, skip, options):
+    import sisl
     # When adding routines here, please also add them
     # to the _templates/autosummary/class.rst file to limit
     # the documentation.
-    try:
-        if obj.__class__.__name__ == 'Grid':
-            if name in 'psi':
-                return True
-    except:
-        pass
-    if name in ['read_es', 'read_geom', 'read_sc',
-                'write_es', 'write_geom', 'write_sc',
-                'ArgumentParser', 'ArgumentParser_out']:
-        return True
+    if what == 'class':
+        if name in ['is_keys', 'key2case', 'keys2case',
+                    'line_has_key', 'line_has_keys', 'readline',
+                    'step_either', 'step_to']:
+            return True
+        if name in ['isDataset', 'isDimension', 'isGroup',
+                    'isRoot', 'isVariable']:
+            return True
+        if name in ['read_es', 'read_geom', 'read_sc',
+                    'write_es', 'write_geom', 'write_sc',
+                    'ArgumentParser', 'ArgumentParser_out']:
+            return True
     return skip
 
 

@@ -17,7 +17,14 @@ class eigSileSiesta(SileSiesta):
 
     @Sile_fh_open
     def read_data(self):
-        """ Returns data associated with the EIG file """
+        r""" Read eigenvalues, as calculated and written by Siesta
+
+        Returns
+        -------
+        numpy.ndarray : all eigenvalues, shifted to :math:`E_F = 0`, shape ``(ns, nk, no)``
+                        where ``ns`` number of spin-components, ``nk`` number of k-points and
+                        ``no`` number of orbitals.
+        """
 
         # Luckily the data is in eV
         Ef = float(self.readline())

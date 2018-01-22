@@ -23,7 +23,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class pdosSileSiesta(SileSiesta):
-    """ PDOS Siesta file object
+    """ PDOS as calculated by Siesta
 
     Data file containing the PDOS as calculated by Siesta.
     """
