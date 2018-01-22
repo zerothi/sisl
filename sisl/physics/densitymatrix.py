@@ -285,7 +285,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
             # Figure out all connecting atoms
             for ja in unique_atom_edge(ia):
                 # Get connecting atom (in supercell format)
-                atomj = geom.atom[ja]
+                atomj = geom.atom[ja % geom.na]
 
                 # Get information about this atom
                 xyzj = all_xyz[ja, :, :]
