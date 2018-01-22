@@ -154,7 +154,6 @@ class TestDensityMatrix(object):
         D = DensityMatrix(g, spin=Spin('P'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.1)]])
         grid = Grid(0.2, geom=D.geom)
-        D.rho(grid)
         D.rho(grid, [1., -1, 0.])
 
     @pytest.mark.xfail(raises=ValueError)
@@ -174,8 +173,7 @@ class TestDensityMatrix(object):
                                     [1., 0., 0.]], np.float64) * bond,
                         atom=C, sc=sc)
 
-        D = DensityMatrix(g, spin=Spin('P'))
-        D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.1)]])
+        D = DensityMatrix(g, spin=Spin('NC'))
+        D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.1, 0.1, 0.1)]])
         grid = Grid(0.2, geom=D.geom)
-        D.rho(grid)
-        D.rho(grid, [1., -1, 0.])
+        D.rho(grid, [1., 0.])
