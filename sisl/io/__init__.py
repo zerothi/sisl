@@ -129,6 +129,7 @@ Siesta (:mod:`sisl.io.siesta`)
    HSXSileSiesta - Hamiltonian and overlap matrix information
    ncSileSiesta - NetCDF output file
    ionxmlSileSiesta - Basis-information from the ion.xml files
+   ionncSileSiesta - Basis-information from the ion.nc files
    OrbIndxSileSiesta - Basis set information (no geometry information)
 
 
