@@ -168,6 +168,10 @@ class ncSileSiesta(SileCDFSiesta):
 
         return C
 
+    def read_overlap(self, **kwargs):
+        """ Returns a overlap matrix from the underlying NetCDF file """
+        raise NotImplementedError('Currently not implemented')
+
     def read_hamiltonian(self, **kwargs):
         """ Returns a Hamiltonian from the underlying NetCDF file """
         H = self._read_class_spin(Hamiltonian, **kwargs)

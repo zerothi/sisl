@@ -115,6 +115,34 @@ class TSHSSileSiesta(SileBinSiesta):
 
         return H
 
+    def read_overlap(self, **kwargs):
+        """ Returns the overlap matrix from the siesta.TSHS file """
+
+        # First read the geometry
+        geom = self.read_geometry()
+
+        # Now read the sizes used...
+        sizes = _siesta.read_tshs_sizes(self.file)
+        spin = sizes[0]
+        no = sizes[2]
+        nnz = sizes[4]
+        ncol, col, dS = _siesta.read_tshs_s(self.file, spin, no, nnz)
+
+        # Create the Hamiltonian container
+        S = SparseOrbitalBZ(geom, nnzpr=1)
+
+        # Create the new sparse matrix
+        S._csr.ncol = ncol.astype(np.int32, copy=False)
+        S._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        # Correct fortran indices
+        S._csr.col = col.astype(np.int32, copy=False) - 1
+        S._csr._nnz = len(col)
+
+        S._csr._D = np.empty([nnz, 1], np.float64)
+        S._csr._D[:, 0] = dS[:]
+
+        return S
+
     def write_hamiltonian(self, H, **kwargs):
         """ Writes the Hamiltonian to a `TSHS` file """
         # Ensure the Hamiltonian is finalized

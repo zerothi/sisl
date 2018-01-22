@@ -296,3 +296,75 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
 
 end subroutine read_tshs_hs
 
+subroutine read_tshs_s(fname, nspin, no_u, nnz, ncol, list_col, S)
+
+  implicit none
+
+  integer, parameter :: sp = selected_real_kind(p=6)
+  integer, parameter :: dp = selected_real_kind(p=15)
+  real(dp), parameter :: eV = 13.60580_dp
+  real(dp), parameter :: Ang = 0.529177_dp
+
+  ! Input parameters
+  character(len=*), intent(in) :: fname
+  integer, intent(in) :: nspin, no_u, nnz
+  integer, intent(out) :: ncol(no_u), list_col(nnz)
+  real(dp), intent(out) :: S(nnz)
+
+! Define f2py intents
+!f2py intent(in)  :: fname
+!f2py intent(in)  :: nspin, no_u, nnz
+!f2py intent(out) :: ncol, list_col
+!f2py intent(out) :: S
+
+! Internal variables and arrays
+  integer :: iu, i, is, idx
+  integer :: version, tmp(5)
+  real(dp) :: Ef
+  logical :: Gamma
+
+  call read_tshs_version(fname, version)
+
+  if ( version /= 1 ) then
+
+     ncol = -1
+     list_col = -1
+     S = 0._dp
+
+     return
+
+  end if
+
+  call free_unit(iu)
+  open(iu,file=trim(fname),status='old',form='unformatted')
+  read(iu) ! version
+  ! Now we may read the sizes
+  read(iu) tmp
+
+  ! Read the stuff...
+  read(iu) ! nsc
+  read(iu) ! cell, xa
+  read(iu) Gamma ! TSGamma, onlyS
+  read(iu) ! kscell, kdispl
+  read(iu) Ef ! Qtot, Temp
+  read(iu) ! istep, ia1
+  read(iu) ! lasto
+
+  ! Sparse pattern
+  read(iu) ncol
+  idx = 0
+  do i = 1 , tmp(2)
+     read(iu) list_col(idx+1:idx+ncol(i))
+     idx = idx + ncol(i)
+  end do
+  ! Overlap matrix
+  idx = 0
+  do i = 1 , tmp(2)
+     read(iu) S(idx+1:idx+ncol(i))
+     idx = idx + ncol(i)
+  end do
+
+  close(iu)
+
+end subroutine read_tshs_s
+
