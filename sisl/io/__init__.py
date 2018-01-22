@@ -43,6 +43,7 @@ are missing, please create an issue :ref:`here <issue>`.
 - :ref:`toc-io-gulp`
 - :ref:`toc-io-scaleup`
 - :ref:`toc-io-siesta`
+- :ref:`toc-io-transiesta`
 - :ref:`toc-io-tbtrans`
 - :ref:`toc-io-vasp`
 - :ref:`toc-io-wannier90`
@@ -121,12 +122,28 @@ Siesta (:mod:`sisl.io.siesta`)
    XVSileSiesta - xyz and vxyz file
    bandsSileSiesta - band structure information
    eigSileSiesta - EIG file
+   pdosSileSiesta - PDOS file
    GridSileSiesta - Grid charge information (binary)
    gridncSileSiesta - NetCDF grid output files (netcdf)
-   EnergyGridSileSiesta - Grid potential information
-   TSHSSileSiesta - TranSiesta Hamiltonian
-   TSGFSileSiesta - TranSiesta surface Green function files
+   DMSileSiesta - density matrix information
+   HSXSileSiesta - Hamiltonian and overlap matrix information
    ncSileSiesta - NetCDF output file
+   ionxmlSileSiesta - Basis-information from the ion.xml files
+   OrbIndxSileSiesta - Basis set information (no geometry information)
+
+
+.. _toc-io-transiesta:
+
+TranSiesta (:mod:`sisl.io.siesta`)
+----------------------------------
+
+.. autosummary::
+   :toctree:
+
+   TSHSSileSiesta - TranSiesta Hamiltonian
+   TSDESileSiesta - TranSiesta (energy) density matrix
+   TSGFSileSiesta - TranSiesta surface Green function files
+   TSVncSileSiesta - TranSiesta specific Hartree potential file
 
 
 .. _toc-io-tbtrans:

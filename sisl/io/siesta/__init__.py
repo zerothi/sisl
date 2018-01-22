@@ -8,6 +8,8 @@ Siesta (:mod:`sisl.io.siesta`)
 
 The interaction between sisl and `Siesta`_ is one of the main goals due
 to the implicit relationship between the developer of sisl and `Siesta`_.
+Additionally the TranSiesta output files are also intrinsically handled by
+sisl.
 
 
 .. autosummary::
@@ -19,14 +21,22 @@ to the implicit relationship between the developer of sisl and `Siesta`_.
    eigSileSiesta - EIG file
    pdosSileSiesta - PDOS file
    GridSileSiesta - Grid charge information (binary)
-   TSVSileSiesta - TranSiesta potential solution input file
    gridncSileSiesta - NetCDF grid output files (netcdf)
-   EnergyGridSileSiesta - Grid potential information
-   TSHSSileSiesta - TranSiesta Hamiltonian
-   TSGFSileSiesta - TranSiesta surface Green function files
+   DMSileSiesta - density matrix information
+   HSXSileSiesta - Hamiltonian and overlap matrix information
    ncSileSiesta - NetCDF output file
    ionxmlSileSiesta - Basis-information from the ion.xml files
    OrbIndxSileSiesta - Basis set information (no geometry information)
+
+
+The TranSiesta specific output files are:
+
+.. autosummary::
+
+   TSHSSileSiesta - TranSiesta Hamiltonian
+   TSDESileSiesta - TranSiesta TSDE
+   TSGFSileSiesta - TranSiesta surface Green function files
+   TSVncSileSiesta - TranSiesta potential solution input file
 
 """
 from .sile import *

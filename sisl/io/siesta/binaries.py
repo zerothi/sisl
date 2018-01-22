@@ -316,7 +316,7 @@ class HSXSileSiesta(SileBinSiesta):
 
 
 class GridSileSiesta(SileBinSiesta):
-    """ Grid file object from a binary Siesta output file """
+    """ Siesta grid binary file """
 
     def read_supercell(self, *args, **kwargs):
 
