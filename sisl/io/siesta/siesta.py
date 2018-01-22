@@ -1,7 +1,7 @@
 from __future__ import print_function
 
+from numbers import Integral
 import numpy as np
-
 
 # Import sile objects
 from .sile import SileCDFSiesta
@@ -241,8 +241,11 @@ class ncSileSiesta(SileCDFSiesta):
         ----------
         name : str
            name of the grid variable to read
-        spin : int
-           the spin-index
+        spin : int or array_like, optional
+           the spin-index for retrieving one of the components. If a vector
+           is passed it refers to the fraction per indexed component. I.e.
+           ``[0.5, 0.5]`` will return sum of half the first two components.
+           Default to the first component.
         """
         # Swap as we swap back in the end
         geom = self.read_geometry().swapaxes(0, 2)
@@ -276,8 +279,15 @@ class ncSileSiesta(SileCDFSiesta):
 
         if len(v[:].shape) == 3:
             grid.grid = v[:, :, :] * unit.get(name, 1.)
-        else:
+        elif isinstance(spin, Integral):
             grid.grid = v[spin, :, :, :] * unit.get(name, 1.)
+        else:
+            if len(spin) > v.shape[0]:
+                raise ValueError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
+                                 'an array of length equal to the number of spin components.')
+            grid.grid[:, :, :] = v[0, :, :, :] * spin[0]
+            for i, scale in enumerate(spin[1:]):
+                grid.grid[:, :, :] += v[1+i, :, :, :] * scale
 
         try:
             u = v.unit

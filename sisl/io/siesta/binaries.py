@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from numbers import Integral
 import numpy as np
 
 try:
@@ -262,16 +263,29 @@ class GridSileSiesta(SileBinSiesta):
 
         Parameters
         ----------
-        spin : int, optional
-           the returned spin
+        spin : int or array_like, optional
+           the spin-index for retrieving one of the components. If a vector
+           is passed it refers to the fraction per indexed component. I.e.
+           ``[0.5, 0.5]`` will return sum of half the first two components.
+           Default to the first component.
         """
         # Read the sizes
         nspin, mesh = _siesta.read_grid_sizes(self.file)
         # Read the cell and grid
-        cell, grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
+        cell = _siesta.read_grid_cell(self.file)
+        grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
+        print(grid.shape)
 
-        if grid.ndim == 4:
-            grid = grid[spin, :, :, :]
+        if isinstance(spin, Integral):
+            grid = grid[:, :, :, spin]
+        else:
+            if len(spin) > grid.shape[0]:
+                raise ValueError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
+                                 'an array of length equal to the number of spin components.')
+            g = grid[:, :, :, 0] * spin[0]
+            for i, scale in enumerate(spin[1:]):
+                g += grid[:, :, :, 1+i] * scale
+            grid = g
 
         cell = np.array(cell.T, np.float64)
         cell.shape = (3, 3)

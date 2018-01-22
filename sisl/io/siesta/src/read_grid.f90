@@ -63,7 +63,7 @@ subroutine read_grid_cell(fname, cell)
 
 end subroutine read_grid_cell
 
-subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
+subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
 
   implicit none
 
@@ -75,8 +75,7 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
   ! Input parameters
   character(len=*), intent(in) :: fname
   integer, intent(in) :: nspin, mesh1, mesh2, mesh3
-  real(dp), intent(out) :: cell(3,3)
-  real(sp), intent(out) :: grid(mesh1,mesh2,mesh3)
+  real(sp), intent(out) :: grid(mesh1,mesh2,mesh3,nspin)
   
 ! Define f2py intents
 !f2py intent(in) :: fname
@@ -93,8 +92,7 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
   call free_unit(iu)
   open(iu,file=trim(fname),status='old',form='unformatted')
 
-  read(iu) cell(:,:)
-  cell = cell * Ang
+  read(iu) ! cell
 
   read(iu) lmesh, lnspin
   if ( lnspin /= nspin ) stop 'Error in reading data, not allocated, nspin'
@@ -106,7 +104,7 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
 
      do iz = 1, mesh3
         do iy = 1, mesh2
-           read(iu) grid(:,iy,iz)
+           read(iu) grid(:,iy,iz,is)
         end do
      end do
      

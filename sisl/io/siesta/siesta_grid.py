@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from numbers import Integral
 import numpy as np
 
 # Import sile objects
@@ -41,10 +42,17 @@ class gridncSileSiesta(SileCDFSiesta):
         v.unit = 'Bohr'
         v[:, :] = sc.cell[:, :] / Bohr2Ang
 
-    def read_grid(self, name='gridfunc', idx=0, *args, **kwargs):
+    def read_grid(self, spin=0, name='gridfunc', *args, **kwargs):
         """ Reads a grid in the current Siesta.grid.nc file
 
         Enables the reading and processing of the grids created by Siesta
+
+        Parameters
+        ----------
+        spin : int or array_like, optional
+            specify the retrieved values
+        name : str, optional
+            the name for the grid-function (do not supply for standard Siesta output)
         """
         # Swap as we swap back in the end
         sc = self.read_supercell().swapaxes(0, 2)
@@ -62,16 +70,23 @@ class gridncSileSiesta(SileCDFSiesta):
         # Create the grid, Siesta uses periodic, always
         grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, sc=sc, dtype=v.dtype)
 
-        if len(v.shape) == 3:
+        if v.ndim == 3:
             grid.grid[:, :, :] = v[:, :, :]
+        elif isinstance(spin, Integral):
+            grid.grid[:, :, :] = v[spin, :, :, :]
         else:
-            grid.grid[:, :, :] = v[idx, :, :, :]
+            if len(spin) > v.shape[0]:
+                raise ValueError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
+                                 'an array of length equal to the number of spin components.')
+            grid.grid[:, :, :] = v[0, :, :, :] * spin[0]
+            for i, scale in enumerate(spin[1:]):
+                grid.grid[:, :, :] += v[1+i, :, :, :] * scale
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
         return grid.swapaxes(0, 2)
 
-    def write_grid(self, grid, ispin=0, nspin=None):
+    def write_grid(self, grid, spin=0, nspin=None):
         """ Write a grid to the grid.nc file """
         sile_raise_write(self)
 
@@ -93,7 +108,7 @@ class gridncSileSiesta(SileCDFSiesta):
         if nspin is None:
             v[:, :, :] = np.swapaxes(grid.grid, 0, 2)
         else:
-            v[ispin, :, :, :] = np.swapaxes(grid.grid, 0, 2)
+            v[spin, :, :, :] = np.swapaxes(grid.grid, 0, 2)
 
 
 add_sile('grid.nc', gridncSileSiesta)
