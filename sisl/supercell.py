@@ -5,12 +5,12 @@ This class is the basis of many different objects.
 from __future__ import print_function, division
 
 import math
-import numpy as np
 from numbers import Integral
+import numpy as np
+from numpy import dot
 
 from sisl.utils.mathematics import fnorm
 import sisl._array as _a
-import sisl.linalg as lin
 import sisl._plot as plt
 from ._help import ensure_array
 from .quaternion import Quaternion
@@ -67,8 +67,8 @@ class SuperCell(object):
         self.set_nsc(nsc=nsc)
 
     def _update_vol(self):
-        self.volume = np.abs(np.dot(self.cell[0, :],
-                                    np.cross(self.cell[1, :], self.cell[2, :])
+        self.volume = np.abs(dot(self.cell[0, :],
+                                 np.cross(self.cell[1, :], self.cell[2, :])
         ))
 
     def _fill(self, non_filled, dtype=None):
@@ -249,8 +249,8 @@ class SuperCell(object):
 
         cell = np.copy(self.cell[:, :])
 
-        # Solve to get the divisions in the current cell
-        x = lin.solve(cell.T, xyz.T).T
+        # Get fractional coordinates to get the divisions in the current cell
+        x = dot(xyz, self.rcell.T / (2 * np.pi))
 
         # Now we should figure out the correct repetitions
         # by rounding to integer positions of the cell vectors
@@ -259,7 +259,7 @@ class SuperCell(object):
         # Figure out the displacements from integers
         # Then reduce search space by removing those coordinates
         # that are more than the tolerance.
-        dist = np.sqrt((np.dot(cell.T, (x - ix).T) ** 2).sum(0))
+        dist = np.sqrt((dot(cell.T, (x - ix).T) ** 2).sum(0))
         idx = (dist <= tol).nonzero()[0]
         if len(idx) == 0:
             raise ValueError(('Could not fit the cell parameters to the coordinates '
@@ -394,7 +394,6 @@ class SuperCell(object):
         rcell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
         rcell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]
         rcell[2, 2] = cell[0, 0] * cell[1, 1] - cell[0, 1] * cell[1, 0]
-        dot = np.dot
         rcell[0, :] = rcell[0, :] / dot(rcell[0, :], cell[0, :])
         rcell[1, :] = rcell[1, :] / dot(rcell[1, :], cell[1, :])
         rcell[2, :] = rcell[2, :] / dot(rcell[2, :], cell[2, :])
@@ -444,7 +443,7 @@ class SuperCell(object):
         """ Returns the supercell offset of the supercell index """
         if isc is None:
             return _a.arrayd([0, 0, 0])
-        return np.dot(isc, self.cell)
+        return dot(isc, self.cell)
 
     def add(self, other):
         """ Add two supercell lattice vectors to each other
@@ -680,9 +679,9 @@ class SuperCell(object):
         cell[0, :] = cell[0, :] / cl[0]
         cell[1, :] = cell[1, :] / cl[1]
         cell[2, :] = cell[2, :] / cl[2]
-        i_s = np.dot(cell[0, :], cell[1, :]) < 0.001
-        i_s = np.dot(cell[0, :], cell[2, :]) < 0.001 and i_s
-        i_s = np.dot(cell[1, :], cell[2, :]) < 0.001 and i_s
+        i_s = dot(cell[0, :], cell[1, :]) < 0.001
+        i_s = dot(cell[0, :], cell[2, :]) < 0.001 and i_s
+        i_s = dot(cell[1, :], cell[2, :]) < 0.001 and i_s
         return i_s
 
     def parallel(self, other, axis=(0, 1, 2)):
@@ -700,7 +699,7 @@ class SuperCell(object):
         for i in axis:
             a = self.cell[i, :] / fnorm(self.cell[i, :])
             b = other.cell[i, :] / fnorm(other.cell[i, :])
-            if abs(np.dot(a, b) - 1) > 0.001:
+            if abs(dot(a, b) - 1) > 0.001:
                 return False
         return True
 
@@ -717,7 +716,7 @@ class SuperCell(object):
            whether the returned value is in radians
         """
         n = fnorm(self.cell[[i, j], :])
-        ang = math.acos(np.dot(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
+        ang = math.acos(dot(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
         if rad:
             return ang
         return math.degrees(ang)

@@ -142,6 +142,11 @@ class DensityMatrix(SparseOrbitalBZSpin):
            For non-colinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
         """
         geom = self.geom
+        rcell = geom.rcell
+        # If all cell coordinates are the same, we don't have to do anything.
+        # Otherwise, we have to do tricks to check coordinates within the
+        # grid-cell
+        apply_reduction = not np.allclose(geom.cell, grid.cell, atol=1.e-6)
         if geom is None:
             geom = grid.geometry
 
@@ -206,7 +211,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
             DM = csr._D[idx, 0]
 
         # Create the DM csr matrix.
-        # TODO add a tolerance value to remove all DM values below a certain value
         csrDM = csr_matrix((DM, csr.col[idx], np.insert(np.cumsum(csr.ncol), 0, 0)),
                            shape=(self.shape[:2]), dtype=DM.dtype)
         csrDM.eliminate_zeros()
@@ -217,9 +221,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         del idx, DM
 
         shape = _a.arrayi(grid.shape).reshape(1, 3)
-
         all_xyz = (geom.axyz(np.arange(geom.na_s)) - grid.origo.reshape(1, 3)).reshape(-1, 1, 3)
-        c2s = partial(cart2spher, cos_phi=True)
 
         def add_DM(ia, atomi, xyzi, icscDM, ja, atomj, xyzj, s):
             # Find all indices for the grid (they may be outside the cell).
@@ -232,17 +234,26 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
             # Retrieve the matrix that connects the two atoms (i in unit-cell, j in supercell)
             ijDM = cscDM[:, o1:o2]
+            ijptr = ijDM.indptr.view()
+            ijind = ijDM.indices.view()
+            ijdm = ijDM.data.view()
 
             # Calculate the positions
             rxyz = dot(idx, dcell)
-            # Ensure the indices are within the unit-cell
-            # This needs to be adapted. I.e. if the grid is smaller
-            # than the originating geometry cell we have to do mod on rxyz
-            mod(idx, shape, out=idx)
+            # If the cell is too small, then reduce
+            if apply_reduction:
+                # Ensure the indices are within the unit-cell
+                # This needs to be adapted. I.e. if the grid is smaller
+                # than the originating geometry cell we have to do mod on rxyz
+                raise ValueError
+            else:
+                # The grid unit-cell and the geometry unit-cell are the same
+                # I.e. we can move the indices much simpler...
+                mod(idx, shape, out=idx)
 
             # Get the two atoms spherical coordinates
-            rri, thetai, cos_phii = c2s(rxyz - xyzi)
-            rrj, thetaj, cos_phij = c2s(rxyz - xyzj)
+            rri, thetai, cos_phii = cart2spher(rxyz - xyzi, cos_phi=True)
+            rrj, thetaj, cos_phij = cart2spher(rxyz - xyzj, cos_phi=True)
             # Clean-up to reduce memory...
             del rxyz
 
@@ -250,8 +261,9 @@ class DensityMatrix(SparseOrbitalBZSpin):
             psi = _a.emptyd(rri.shape)
             for c in range(ijDM.shape[1]):
                 psi.fill(0.)
-                for ind in range(ijDM.indptr[c], ijDM.indptr[c+1]):
-                    psi += ijDM.data[ind] * atomi.orbital[ijDM.indices[ind]].psi_spher(rri, thetai, cos_phii, cos_phi=True)
+                sl = slice(ijptr[c], ijptr[c+1])
+                for r, dm in zip(ijind[sl], ijdm[sl]):
+                    psi += dm * atomi.orbital[r].psi_spher(rri, thetai, cos_phii, cos_phi=True)
                 grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += psi * atomj.orbital[c].psi_spher(rrj, thetaj, cos_phij, cos_phi=True)
 
         def skip_atom(a):

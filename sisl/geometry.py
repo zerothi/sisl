@@ -8,7 +8,7 @@ from math import acos
 from itertools import product
 
 import numpy as np
-from numpy import square, sqrt
+from numpy import dot, square, sqrt
 
 import sisl._plot as plt
 import sisl._array as _a
@@ -159,7 +159,7 @@ class Geometry(SuperCellChild):
 
             dist = self.xyz[closest, :] - self.xyz[0, :][None, :]
             # Project onto the direction
-            dd = np.abs(np.dot(dist, cart))
+            dd = np.abs(dot(dist, cart))
 
             # Remove all below .4
             tmp_idx = (dd >= .4).nonzero()[0]
@@ -1406,7 +1406,7 @@ class Geometry(SuperCellChild):
             g = self.sub(ensure_array(atom))
         if 'mass' in what:
             mass = self.mass
-            return np.dot(mass, g.xyz) / np.sum(mass)
+            return dot(mass, g.xyz) / np.sum(mass)
         if not ('xyz' in what or 'position' in what):
             raise ValueError(
                 'Unknown what, not one of [xyz,position,mass,cell]')
@@ -1690,7 +1690,7 @@ class Geometry(SuperCellChild):
     @property
     def fxyz(self):
         """ Returns geometry coordinates in fractional coordinates """
-        return lin.solve(self.cell.T, self.xyz.T).T
+        return dot(self.xyz, self.rcell.T / (2. * np.pi))
 
     def axyz(self, atom=None, isc=None):
         """ Return the atomic coordinates in the supercell of a given atom.
@@ -2906,7 +2906,7 @@ class Geometry(SuperCellChild):
                     # Change all coordinates using the reciprocal cell and move to unit-cell (% 1.)
                     fxyz = g.fxyz % 1.
                     fxyz -= np.amin(fxyz, axis=0)
-                    ns._geometry.xyz[:, :] = np.dot(fxyz, g.cell)
+                    ns._geometry.xyz[:, :] = dot(fxyz, g.cell)
         p.add_argument(*opts('--unit-cell', '-uc'), choices=['translate', 'tr', 't', 'mod'],
                        action=MoveUnitCell,
                        help='Moves the coordinates into the unit-cell by translation or the mod-operator')

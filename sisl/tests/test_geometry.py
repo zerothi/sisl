@@ -225,8 +225,9 @@ class TestGeometry(object):
         assert len(setup.g.sub(range(2))) == 2
 
     def test_fxyz(self, setup):
-        assert np.allclose(setup.g.fxyz, [[0,    0, 0],
-                                          [1./3, 1./3, 0]])
+        fxyz = setup.g.fxyz
+        assert np.allclose(fxyz, [[0, 0, 0], [1./3, 1./3, 0]])
+        assert np.allclose(np.dot(fxyz, setup.g.cell), setup.g.xyz)
 
     def test_axyz(self, setup):
         assert np.allclose(setup.g[:], setup.g.xyz[:])
