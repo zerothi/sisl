@@ -22,7 +22,18 @@ class XSFSile(Sile):
 
     @Sile_fh_open
     def write_geometry(self, geom, fmt='.8f', data=None):
-        """ Writes the geometry to the contained file """
+        """ Writes the geometry to the contained file
+
+        Parameters
+        ----------
+        geom : Geometry
+           the geometry to be written
+        fmt : str, optional
+           used format for the precision of the data
+        data : (geom.na, 3), optional
+           auxiliary data associated with the geometry to be saved
+           along side. Internally in XCrySDen this data is named *Forces*
+        """
 
         # Implemntation notice!
         # The XSF files are compatible with Vesta, but ONLY
@@ -81,8 +92,8 @@ class XSFSile(Sile):
 
         Parameters
         ----------
-        data: bool, False
-           in case the XSF file has forces or additional coordinate information, return that as well.
+        data: bool, optional
+           in case the XSF file has auxiliary data, return that as well.
         """
         # Prepare containers...
         cell = np.zeros([3, 3], np.float64)
@@ -137,7 +148,28 @@ class XSFSile(Sile):
 
     @Sile_fh_open
     def write_grid(self, *args, **kwargs):
-        """ Write a grid data to an XSF file """
+        """ Store grid(s) data to an XSF file
+
+        Examples
+        --------
+        >>> g1 = Grid(0.1, sc=2.)
+        >>> g2 = Grid(0.1, sc=2.)
+        >>> get_sile('output.xsf', 'w').write_grid(g1, g2)
+
+        Parameters
+        ----------
+        *args : Grid
+            a list of data-grids to be written to the XSF file.
+            Each argument gets the field name "?grid_<>" where <> starts
+            with the integer 0, and *?* is "real_"/"imag_" for complex
+            valued grids.
+        geometry : Geometry, optional
+            the geometry stored in the file, defaults to ``args[0].geometry``
+        fmt : str, optional
+            floating point format for data (.5e)
+        buffersize : int, optional
+            size of the buffer while writing the data, (6144)
+        """
         sile_raise_write(self)
 
         geom = kwargs.get('geometry', args[0].geom)

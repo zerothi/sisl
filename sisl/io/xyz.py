@@ -20,7 +20,15 @@ class XYZSile(Sile):
 
     @Sile_fh_open
     def write_geometry(self, geom, fmt='.8f'):
-        """ Writes the geometry to the contained file """
+        """ Writes the geometry to the contained file
+
+        Parameters
+        ----------
+        geom : Geometry
+           the geometry to be written
+        fmt : str, optional
+           used format for the precision of the data
+        """
         # Check that we can write to the file
         sile_raise_write(self)
 
@@ -41,10 +49,7 @@ class XYZSile(Sile):
 
     @Sile_fh_open
     def read_geometry(self):
-        """ Returns Geometry object from the XYZ file
-
-        NOTE: Unit-cell is the Euclidean 3D space.
-        """
+        """ Returns Geometry object from the XYZ file """
 
         cell = np.asarray(np.diagflat([1] * 3), np.float64)
         nsc = [1, 1, 1]

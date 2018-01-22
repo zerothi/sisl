@@ -19,10 +19,21 @@ class CUBESile(Sile):
     """ CUBE file object """
 
     @Sile_fh_open
-    def write_geometry(self, geom, size=None,
-            fmt='15.10e', origo=None,
+    def write_geometry(self, geom, fmt='15.10e', size=None, origo=None,
             *args, **kwargs):
-        """ Writes the `Geometry` object attached to this grid """
+        """ Writes `Geometry` object attached to this grid
+
+        Parameters
+        ----------
+        geom : Geometry
+            geometry to be written
+        fmt : str, optional
+            floating point format for stored values
+        size : (3, ), optional
+            shape of the stored grid (``[1, 1, 1]``)
+        origo : (3, ), optional
+            origo of the cell (``[0, 0, 0]``)
+        """
         sile_raise_write(self)
 
         # Write header
@@ -53,8 +64,8 @@ class CUBESile(Sile):
             self._write(_fmt.format(geom.atom[ia].Z, *geom.xyz[ia, :] * Ang2Bohr))
 
     @Sile_fh_open
-    def write_grid(self, grid, fmt='.5e', *args, **kwargs):
-        """ Writes the geometry to the contained file
+    def write_grid(self, grid, fmt='.5e', imag=False, *args, **kwargs):
+        """ Write `Grid` to the contained file
 
         Parameters
         ----------
@@ -63,8 +74,10 @@ class CUBESile(Sile):
         fmt : str, optional
            format used for precision output
         imag : bool, optional
-           write the imaginary part of the grid, default to only writing the
-           real part
+           write only imaginary part of the grid, default to only writing the
+           real part.
+        buffersize : int, optional
+           size of the buffer while writing the data, (6144)
         """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -74,9 +87,6 @@ class CUBESile(Sile):
 
         buffersize = kwargs.get('buffersize', min(6144, grid.grid.size))
         buffersize += buffersize % 6 # ensure multiple of 6
-
-        # Whether we should write out the imaginary part of the array
-        imag = kwargs.get('imag', False)
 
         # A CUBE file contains grid-points aligned like this:
         # for x
