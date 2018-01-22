@@ -2,11 +2,13 @@ from __future__ import print_function, division
 
 from numbers import Integral
 from functools import partial
+from scipy.sparse import csr_matrix
 import numpy as np
 from numpy import dot, argsort, where, mod
 
 import sisl._array as _a
-from sisl._help import _zip as zip
+from sisl.utils.ranges import array_arange
+from sisl._help import _zip as zip, _range as range
 from sisl.utils.mathematics import cart2spher
 from sisl.shape import Sphere
 from .spin import Spin
@@ -154,41 +156,30 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
         spin_pol = Spin('p')
 
+        DM = None
         if self.spin > spin_pol:
             if spinor is None:
                 spinor = _a.arrayz([[1., 0], [0., 1.]])
             if spinor.size != 4 or spinor.ndim != 2:
                 raise ValueError(self.__class__.__name__ + '.rho with NC/SO spin, requires a 2x2 matrix.')
 
-            # TODO I am not sure whether the below dot product
-            # requires dot(DM, spinor) or dot(DM, spinor.T)
-            # I think it has to be spinor.T
+            DM = _a.emptyz([self.nnz, 2, 2])
+            idx = array_arange(csr.ptr[:-1], n=csr.ncol)
             if self.spin == Spin('NC'):
-                def extract_row_DM(io):
-                    """ First construct the spin-box DM, then do DM . spinor, and lastly, sum diagonals """
-                    sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
-                    col = csr.col[sl]
-                    DM = _a.emptyz([csr.ncol[io], 2, 2])
-                    DM[:, 0, 0] = csr._D[sl, 0]
-                    DM[:, 1, 1] = csr._D[sl, 1]
-                    DM[:, 1, 0] = csr._D[sl, 2] - 1j * csr._D[sl, 3]
-                    DM[:, 0, 1] = np.conj(DM[:, 1, 0])
-                    DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
-                    idx = DM.nonzero()[0]
-                    return col[idx], DM[idx]
+                # non-colinear
+                DM[:, 0, 0] = csr._D[idx, 0]
+                DM[:, 1, 1] = csr._D[idx, 1]
+                DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3]
+                DM[:, 0, 1] = np.conj(DM[:, 1, 0])
             else:
-                def extract_row_DM(io):
-                    """ First construct the spin-box DM, then do DM . spinor, and lastly, sum diagonals """
-                    sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
-                    col = csr.col[sl]
-                    DM = _a.emptyz([csr.ncol[io], 2, 2])
-                    DM[:, 0, 0] = csr._D[sl, 0] + 1j * csr._D[sl, 4]
-                    DM[:, 1, 1] = csr._D[sl, 1] + 1j * csr._D[sl, 5]
-                    DM[:, 1, 0] = csr._D[sl, 2] - 1j * csr._D[sl, 3]
-                    DM[:, 0, 1] = csr._D[sl, 6] + 1j * csr._D[sl, 7]
-                    DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
-                    idx = DM.nonzero()[0]
-                    return col[idx], DM[idx]
+                # spin-orbit
+                DM[:, 0, 0] = csr._D[idx, 0] + 1j * csr._D[idx, 4]
+                DM[:, 1, 1] = csr._D[idx, 1] + 1j * csr._D[idx, 5]
+                DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3]
+                DM[:, 0, 1] = csr._D[idx, 6] + 1j * csr._D[idx, 7]
+
+            # Reduce spin-operator
+            DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
 
         elif self.spin == spin_pol:
             if spinor is None:
@@ -200,101 +191,106 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 spinor = s
             spinor = _a.arrayd(spinor)
 
-            if spinor.size != 2:
+            if spinor.size != 2 or spinor.ndim != 1:
                 raise ValueError(self.__class__.__name__ + '.rho with polarized spin, requires an integer, or a vector of length 2')
 
-            if self.orthogonal:
-                def extract_row_DM(io):
-                    sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
-                    col = csr.col[sl]
-                    DM = dot(csr._D[sl, :], spinor)
-                    idx = DM.nonzero()[0]
-                    return col[idx], DM[idx]
-            else:
-                def extract_row_DM(io):
-                    sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
-                    col = csr.col[sl]
-                    DM = dot(csr._D[sl, :-1], spinor)
-                    idx = DM.nonzero()[0]
-                    return col[idx], DM[idx]
+            DM = _a.emptyd([self.nnz, 2])
+            idx = array_arange(csr.ptr[:-1], n=csr.ncol)
+            DM[:, 0] = csr._D[idx, 0]
+            DM[:, 1] = csr._D[idx, 1]
+            DM = dot(DM, spinor)
 
         else:
-            # spin-unpolarized
-            def extract_row_DM(io):
-                sl = slice(csr.ptr[io], csr.ptr[io] + csr.ncol[io])
-                col = csr.col[sl]
-                DM = csr._D[sl, 0]
-                idx = DM.nonzero()[0]
-                return col[idx], DM[idx]
+            idx = array_arange(csr.ptr[:-1], n=csr.ncol)
+            DM = csr._D[idx, 0]
 
-        log_and = np.logical_and
-        log_andr = log_and.reduce
+        # Create the DM csr matrix
+        csrDM = csr_matrix((DM, csr.col[idx], np.insert(np.cumsum(csr.ncol), 0, 0)), shape=(self.shape[:2]),
+                           dtype=DM.dtype)
+        csrDM.eliminate_zeros()
+        csrDM.sort_indices()
+        csrDM.prune()
+
+        # Clean-up
+        del idx, DM
+
         shape = _a.arrayi(grid.shape).reshape(1, 3)
 
         all_xyz = (geom.axyz(np.arange(geom.na_s)) - grid.origo.reshape(1, 3)).reshape(-1, 1, 3)
         c2s = partial(cart2spher, cos_phi=True)
-        def add_DM(xyz, io, orb):
-            s0 = orb.toSphere()
-            s0.set_center(xyz)
 
-            # Now loop on all connections (and skip the diagonal, since it is in the above loop)
-            # Note that extract_row_DM also removes the diagonal element
-            col, DM_col = extract_row_DM(io)
-            for ja, orb2, DM in zip(o2a(col), geom.atom.orbital(col), DM_col):
+        def add_DM(ia, atomi, xyzi, ja, atomj, xyzj, s):
+            # Find all indices for the grid (they may be outside the cell).
+            idx = grid.index(s)
+            if len(idx) == 0:
+                return
 
-                # Create the unified sphere
-                s2 = orb2.toSphere()
-                xyz2 = all_xyz[ja, :, :]
-                s2.set_center(xyz2)
-                s = s0 & s2
+            # Figure out orbitals
+            o = geom.a2o([ia, ia+1, ja, ja+1])
 
-                # Find indices of overlapping spheres
-                idx = grid.index(s)
-                if len(idx) == 0:
-                    continue
+            # Retrieve the matrix that connects the two atoms (i in unit-cell, j in supercell)
+            ijDM = csrDM[o[0]:o[1], o[2]:o[3]]
 
-                rxyz = dot(idx, dcell)
-                mod(idx, shape, out=idx)
-                grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += DM * (
-                    orb.psi_spher(*c2s(rxyz - xyz), cos_phi=True) *
-                    orb2.psi_spher(*c2s(rxyz - xyz2), cos_phi=True))
+            # Calculate the positions
+            rxyz = dot(idx, dcell)
+            # Ensure the indices are within the unit-cell
+            # This needs to be adapted. I.e. if the grid is smaller
+            # than the originating geometry cell we have to do mod on rxyz
+            mod(idx, shape, out=idx)
 
-        # Loop over all atoms in supercell structure
-        io = -1
-        for ia in geom:
+            # Get the two atoms spherical coordinates
+            rri, thetai, cos_phii = c2s(rxyz - xyzi)
+            rrj, thetaj, cos_phij = c2s(rxyz - xyzj)
+            # Clean-up for reduced memory...
+            del rxyz, o
 
-            # Get atomic coordinate
-            xyz = all_xyz[ia, :, :]
-            # Get current atom
-            atom = geom.atom[ia]
+            # Now loop on all connections between the two atoms
+            psi = _a.emptyd(rri.shape)
+            for r in range(ijDM.shape[0]):
+                psi.fill(0.)
+                for ind in range(ijDM.indptr[r], ijDM.indptr[r+1]):
+                    psi += ijDM.data[ind] * atomj.orbital[ijDM.indices[ind]].psi_spher(rrj, thetaj, cos_phij, cos_phi=True)
+                grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += psi * atomi.orbital[r].psi_spher(rri, thetai, cos_phii, cos_phi=True)
 
-            # Extract maximum R
-            R = atom.maxR()
-            if R <= 0.:
-                warnings.warn("Atom '{}' does not have a wave-function, skipping atom.".format(atom))
+        def skip_atom(a):
+            if a.maxR() <= 0.:
+                warnings.warn("Atom '{}' does not have a wave-function, skipping atom.".format(a))
                 # Skip this atom
-                io += atom.no
+                return True
+            return False
+
+        def unique_atom_edge(ia):
+            slo = slice(csrDM.indptr[geom.firsto[ia]],
+                        csrDM.indptr[geom.lasto[ia] + 1])
+            return geom.o2a(csrDM.indices[slo], uniq=True)
+
+        # Loop over all atoms in unitcell
+        for ia in geom:
+            # Get current atom
+            atomi = geom.atom[ia]
+            if skip_atom(atomi):
+                # Note we don't check atomj, because they should be the
+                # same.
                 continue
 
-            # Loop on orbitals on this atom, grouped by radius
-            for os in atom.iter(True):
+            # Get information about this atom
+            xyzi = all_xyz[ia, :, :]
+            si = atomi.toSphere()
+            si.set_center(xyzi)
 
-                # Get the radius of orbitals (os)
-                oR = os[0].R
+            # Figure out all connecting atoms
+            jas = unique_atom_edge(ia)
+            for ja in jas:
+                # Get connecting atom (in supercell format)
+                atomj = geom.atom[ja]
 
-                if oR <= 0.:
-                    warnings.warn("Orbital(s) '{}' does not have a wave-function, skipping orbital.".format(os))
-                    # Skip these orbitals
-                    io += len(os)
-                    continue
+                # Get information about this atom
+                xyzj = all_xyz[ja, :, :]
+                sj = atomj.toSphere()
+                sj.set_center(xyzj)
 
-                # Loop orbitals with the same radius
-                for o in os:
-                    io += 1
-                    #print('{} / {}'.format(io, geom.no))
-
-                    # Now loop each connection orbital
-                    add_DM(xyz, io, o)
+                # Add the density matrix for atom ia -> ja
+                add_DM(ia, atomi, xyzi, ja, atomj, xyzj, si & sj)
 
         # Reset the error code for division
         np.seterr(**old_err)
