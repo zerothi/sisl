@@ -17,6 +17,7 @@ from .sile import SileBinSiesta
 import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
+from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
 
 Ang2Bohr = unit_convert('Ang', 'Bohr')
@@ -123,10 +124,9 @@ class TSHSSileSiesta(SileBinSiesta):
 
         # Now read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
-        spin = sizes[0]
         no = sizes[2]
         nnz = sizes[4]
-        ncol, col, dS = _siesta.read_tshs_s(self.file, spin, no, nnz)
+        ncol, col, dS = _siesta.read_tshs_s(self.file, no, nnz)
 
         # Create the Hamiltonian container
         S = SparseOrbitalBZ(geom, nnzpr=1)

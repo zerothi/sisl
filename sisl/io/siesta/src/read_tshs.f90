@@ -296,7 +296,7 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
 
 end subroutine read_tshs_hs
 
-subroutine read_tshs_s(fname, nspin, no_u, nnz, ncol, list_col, S)
+subroutine read_tshs_s(fname, no_u, nnz, ncol, list_col, S)
 
   implicit none
 
@@ -307,21 +307,19 @@ subroutine read_tshs_s(fname, nspin, no_u, nnz, ncol, list_col, S)
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  integer, intent(in) :: nspin, no_u, nnz
+  integer, intent(in) :: no_u, nnz
   integer, intent(out) :: ncol(no_u), list_col(nnz)
   real(dp), intent(out) :: S(nnz)
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
-!f2py intent(in)  :: nspin, no_u, nnz
+!f2py intent(in)  :: no_u, nnz
 !f2py intent(out) :: ncol, list_col
 !f2py intent(out) :: S
 
 ! Internal variables and arrays
-  integer :: iu, i, is, idx
+  integer :: iu, i, idx
   integer :: version, tmp(5)
-  real(dp) :: Ef
-  logical :: Gamma
 
   call read_tshs_version(fname, version)
 
@@ -344,9 +342,9 @@ subroutine read_tshs_s(fname, nspin, no_u, nnz, ncol, list_col, S)
   ! Read the stuff...
   read(iu) ! nsc
   read(iu) ! cell, xa
-  read(iu) Gamma ! TSGamma, onlyS
+  read(iu) ! Gamma, TSGamma, onlyS
   read(iu) ! kscell, kdispl
-  read(iu) Ef ! Qtot, Temp
+  read(iu) ! Ef, Qtot, Temp
   read(iu) ! istep, ia1
   read(iu) ! lasto
 
