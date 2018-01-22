@@ -160,6 +160,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         if self.spin > spin_pol:
             if spinor is None:
                 spinor = _a.arrayz([[1., 0], [0., 1.]])
+            spinor = _a.arrayz(spinor)
             if spinor.size != 4 or spinor.ndim != 2:
                 raise ValueError(self.__class__.__name__ + '.rho with NC/SO spin, requires a 2x2 matrix.')
 
@@ -178,7 +179,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3]
                 DM[:, 0, 1] = csr._D[idx, 6] + 1j * csr._D[idx, 7]
 
-            # Reduce spin-operator
+            # Perform dot-product with spinor, and take out the diagonal real part
             DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
 
         elif self.spin == spin_pol:

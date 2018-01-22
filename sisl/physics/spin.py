@@ -2,6 +2,9 @@ from __future__ import print_function, division
 
 import numpy as np
 
+from sisl._help import _str
+
+
 __all__ = ['Spin']
 
 
@@ -56,6 +59,9 @@ class Spin(object):
         # Copy data-type
         self._dtype = dtype
 
+        if isinstance(kind, _str):
+            kind = kind.lower()
+
         kind = {'unpolarized': Spin.UNPOLARIZED, '': Spin.UNPOLARIZED,
                 Spin.UNPOLARIZED: Spin.UNPOLARIZED,
                 'polarized': Spin.POLARIZED, 'p': Spin.POLARIZED,
@@ -64,6 +70,9 @@ class Spin(object):
                 Spin.NONCOLINEAR: Spin.NONCOLINEAR,
                 'spin-orbit': Spin.SPINORBIT, 'so': Spin.SPINORBIT,
                 Spin.SPINORBIT: Spin.SPINORBIT}.get(kind)
+        if kind is None:
+            raise ValueError(self.__class__.__name__ + ' initialization went wrong because of wrong '
+                             'kind specification. Could not determine the kind of spin!')
 
         # Now assert the checks
         self._kind = kind

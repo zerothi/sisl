@@ -459,7 +459,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                         4: Spin.NONCOLINEAR,
                         8: Spin.SPINORBIT}.get(dim)
         else:
-            spin = kwargs.get('spin')
+            spin = kwargs.pop('spin')
         self._spin = Spin(spin, dtype)
 
         super(SparseOrbitalBZSpin, self).__init__(geom, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
