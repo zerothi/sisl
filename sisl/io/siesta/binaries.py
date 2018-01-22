@@ -17,14 +17,14 @@ from .sile import SileBinSiesta
 import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
-from sisl.physics import Hamiltonian, DensityMatrix
+from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
 
 Ang2Bohr = unit_convert('Ang', 'Bohr')
 eV2Ry = unit_convert('eV', 'Ry')
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
-__all__ = ['TSHSSileSiesta']
+__all__ = ['TSHSSileSiesta', 'TSDESileSiesta']
 __all__ += ['HSXSileSiesta', 'DMSileSiesta']
 __all__ += ['GridSileSiesta']
 __all__ += ['_GFSileSiesta', 'TSGFSileSiesta']
@@ -181,7 +181,7 @@ class DMSileSiesta(SileBinSiesta):
             raise ValueError("Reading DM files requires the input geometry to have the "
                              "correct number of orbitals.")
 
-        # Create the Hamiltonian container
+        # Create the density matrix container
         DM = DensityMatrix(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
 
         # Create the new sparse matrix
@@ -197,6 +197,46 @@ class DMSileSiesta(SileBinSiesta):
         DM._csr._D[:, spin] = 0.
 
         return DM
+
+
+class TSDESileSiesta(DMSileSiesta):
+    """ TranSiesta TSDE file object """
+
+    def read_energy_density_matrix(self, **kwargs):
+        """ Returns the energy density matrix from the siesta.DM file """
+
+        # Now read the sizes used...
+        spin, no, nnz = _siesta.read_tsde_sizes(self.file)
+        ncol, col, dEDM = _siesta.read_tsde_edm(self.file, spin, no, nnz)
+
+        # Try and immediately attach a geometry
+        geom = kwargs.get('geom', kwargs.get('geometry', None))
+        if geom is None:
+            # We truly, have no clue,
+            # Just generate a boxed system
+            xyz = [[x, 0, 0] for x in range(no)]
+            geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
+
+        if geom.no != no:
+            raise ValueError("Reading EDM files requires the input geometry to have the "
+                             "correct number of orbitals.")
+
+        # Create the energy density matrix container
+        EDM = EnergyDensityMatrix(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
+
+        # Create the new sparse matrix
+        EDM._csr.ncol = ncol.astype(np.int32, copy=False)
+        EDM._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        # Correct fortran indices
+        EDM._csr.col = col.astype(np.int32, copy=False) - 1
+        EDM._csr._nnz = len(col)
+
+        EDM._csr._D = np.empty([nnz, spin+1], np.float32)
+        EDM._csr._D[:, :spin] = dEDM[:, :]
+        # EDM file does not contain overlap matrix... so neglect it for now.
+        EDM._csr._D[:, spin] = 0.
+
+        return EDM
 
 
 class HSXSileSiesta(SileBinSiesta):
@@ -428,6 +468,7 @@ TSGFSileSiesta = _type("TSGFSileSiesta", _GFSileSiesta)
 
 if found_module:
     add_sile('TSHS', TSHSSileSiesta)
+    add_sile('TSDE', TSDESileSiesta)
     add_sile('DM', DMSileSiesta)
     # These have unit-conversions
     BohrC2AngC = Bohr2Ang ** 3

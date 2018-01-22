@@ -17,6 +17,7 @@ def configuration(parent_package='', top_path=None):
         'read_dm.f90',
         'read_hs.f90',
         'read_tshs.f90',
+        'read_tsde.f90',
         'write_tshs.f90',
         'read_grid.f90',
         'write_grid.f90',
