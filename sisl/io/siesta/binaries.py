@@ -25,7 +25,7 @@ Ry2eV = unit_convert('Ry', 'eV')
 
 __all__ = ['TSHSSileSiesta']
 __all__ += ['HSXSileSiesta', 'DMSileSiesta']
-__all__ += ['GridSileSiesta', 'EnergyGridSileSiesta']
+__all__ += ['GridSileSiesta']
 __all__ += ['_GFSileSiesta', 'TSGFSileSiesta']
 
 
@@ -249,9 +249,6 @@ class HSXSileSiesta(SileBinSiesta):
 class GridSileSiesta(SileBinSiesta):
     """ Grid file object from a binary Siesta output file """
 
-    def _setup(self, *args, **kwargs):
-        self.grid_unit = 1.
-
     def read_supercell(self, *args, **kwargs):
 
         cell = _siesta.read_grid_cell(self.file)
@@ -282,13 +279,6 @@ class GridSileSiesta(SileBinSiesta):
         g = Grid(mesh, sc=SuperCell(cell), dtype=np.float32)
         g.grid = np.array(grid.swapaxes(0, 2), np.float32) * self.grid_unit
         return g
-
-
-class EnergyGridSileSiesta(GridSileSiesta):
-    """ Energy grid file object from a binary Siesta output file """
-
-    def _setup(self, *args, **kwargs):
-        self.grid_unit = Ry2eV
 
 
 class _GFSileSiesta(SileBinSiesta):
@@ -415,8 +405,10 @@ class _GFSileSiesta(SileBinSiesta):
         self._close_gf()
 
 
-def _type(name, obj):
-    return type(name, (obj, ), {})
+def _type(name, obj, dic=None):
+    if dic is None:
+        dic = {}
+    return type(name, (obj, ), dic)
 
 # Faster than class ... \ pass
 TSGFSileSiesta = _type("TSGFSileSiesta", _GFSileSiesta)
@@ -424,13 +416,14 @@ TSGFSileSiesta = _type("TSGFSileSiesta", _GFSileSiesta)
 if found_module:
     add_sile('TSHS', TSHSSileSiesta)
     add_sile('DM', DMSileSiesta)
-    add_sile('RHO', _type("RhoSileSiesta", GridSileSiesta))
-    add_sile('RHOINIT', _type("RhoInitSileSiesta", GridSileSiesta))
-    add_sile('DRHO', _type("dRhoSileSiesta", GridSileSiesta))
-    add_sile('IOCH', _type("IoRhoSileSiesta", GridSileSiesta))
-    add_sile('TOCH', _type("TotalRhoSileSiesta", GridSileSiesta))
-    add_sile('VH', _type("HartreeSileSiesta", EnergyGridSileSiesta))
-    add_sile('VNA', _type("NeutralAtomHartreeSileSiesta", EnergyGridSileSiesta))
-    add_sile('VT', _type("TotalHartreeSileSiesta", EnergyGridSileSiesta))
-
+    # These have unit-conversions
+    BohrC2AngC = Bohr2Ang ** 3
+    add_sile('RHO', _type("RhoSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('RHOINIT', _type("RhoInitSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('DRHO', _type("dRhoSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('IOCH', _type("IoRhoSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('TOCH', _type("TotalRhoSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('VH', _type("HartreeSileSiesta", GridSileSiesta, {'grid_unit': Ry2eV}))
+    add_sile('VNA', _type("NeutralAtomHartreeSileSiesta", GridSileSiesta, {'grid_unit': Ry2eV}))
+    add_sile('VT', _type("TotalHartreeSileSiesta", GridSileSiesta, {'grid_unit': Ry2eV}))
     add_sile('TSGF', TSGFSileSiesta)

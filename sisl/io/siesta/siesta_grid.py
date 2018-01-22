@@ -60,8 +60,7 @@ class gridncSileSiesta(SileCDFSiesta):
             v = self._variable(name)
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, sc=sc,
-                    dtype=v.dtype)
+        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, sc=sc, dtype=v.dtype)
 
         if len(v.shape) == 3:
             grid.grid[:, :, :] = v[:, :, :]

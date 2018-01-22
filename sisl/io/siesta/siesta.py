@@ -261,10 +261,23 @@ class ncSileSiesta(SileCDFSiesta):
         # Create the grid, Siesta uses periodic, always
         grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, dtype=v.dtype)
 
+        # Unit-conversion
+        BohrC2AngC = Bohr2Ang ** 3
+
+        unit = {'Rho': 1. / BohrC2AngC,
+                'RhoInit': 1. / BohrC2AngC,
+                'RhoTot': 1. / BohrC2AngC,
+                'RhoDelta': 1. / BohrC2AngC,
+                'RhoXC': 1. / BohrC2AngC,
+                'RhoBader': 1. / BohrC2AngC,
+                'RhoBader': 1. / BohrC2AngC,
+                'Chlocal': 1. / BohrC2AngC,
+        }
+
         if len(v[:].shape) == 3:
-            grid.grid = v[:, :, :]
+            grid.grid = v[:, :, :] * unit.get(name, 1.)
         else:
-            grid.grid = v[spin, :, :, :]
+            grid.grid = v[spin, :, :, :] * unit.get(name, 1.)
 
         try:
             u = v.unit
