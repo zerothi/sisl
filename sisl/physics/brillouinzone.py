@@ -11,7 +11,8 @@ import sisl._array as _a
 from sisl.supercell import SuperCell
 
 
-__all__ = ['BrillouinZone', 'MonkhorstPackBZ', 'PathBZ']
+__all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
+__all__ += ['MonkhorstPackBZ', 'PackBZ']
 
 
 class BrillouinZone(object):
@@ -255,11 +256,11 @@ class BrillouinZone(object):
         return len(self._k)
 
 
-class MonkhorstPackBZ(BrillouinZone):
+class MonkhorstPack(BrillouinZone):
     """ Create a Monkhorst-Pack grid for the Brillouin zone """
 
     def __init__(self, obj, nkpt, symmetry=True, displacement=None, size=None):
-        r""" Instantiate the `MonkhorstPackBZ` by a number of points in each direction
+        r""" Instantiate the `MonkhorstPack` by a number of points in each direction
 
         Parameters
         ----------
@@ -281,7 +282,7 @@ class MonkhorstPackBZ(BrillouinZone):
            Note that this will also reduce the weights such that the weights
            are normalized to the entire BZ.
         """
-        super(MonkhorstPackBZ, self).__init__(obj)
+        super(MonkhorstPack, self).__init__(obj)
 
         if isinstance(nkpt, Integral):
             nkpt = np.diag([nkpt] * 3)
@@ -290,7 +291,7 @@ class MonkhorstPackBZ(BrillouinZone):
 
         # Now we have a matrix of k-points
         if np.any(nkpt - np.diag(np.diag(nkpt)) != 0):
-            raise NotImplementedError("MonkhorstPackBZ with off-diagonal components is not implemented yet")
+            raise NotImplementedError("MonkhorstPack with off-diagonal components is not implemented yet")
 
         if displacement is None:
             displacement = np.zeros(3, np.float64)
@@ -330,11 +331,14 @@ class MonkhorstPackBZ(BrillouinZone):
         self._w = np.ones([N], np.float64) * np.prod(size) / N
 
 
-class PathBZ(BrillouinZone):
+MonkhorstPackBZ = MonkhorstPack
+
+
+class BandStructure(BrillouinZone):
     """ Create a path in the Brillouin zone for plotting band-structures etc. """
 
     def __init__(self, obj, point, division, name=None):
-        """ Instantiate the `PathBZ` by a set of special `points` separated in `divisions`
+        """ Instantiate the `BandStructure` by a set of special `points` separated in `divisions`
 
         Parameters
         ----------
@@ -352,7 +356,7 @@ class PathBZ(BrillouinZone):
         name : array_like of str
            the associated names of the points on the Brillouin Zone path
         """
-        super(PathBZ, self).__init__(obj)
+        super(BandStructure, self).__init__(obj)
 
         # Copy over points
         self.point = np.array(point, dtype=np.float64)
@@ -444,12 +448,12 @@ class PathBZ(BrillouinZone):
         Examples
         --------
 
-        >>> p = PathBZ(...) # doctest: +SKIP
+        >>> p = BandStructure(...) # doctest: +SKIP
         >>> eigs = Hamiltonian.eigh(p) # doctest: +SKIP
         >>> for i in range(len(Hamiltonian)): # doctest: +SKIP
         ...     plt.plot(p.lineark(), eigs[:, i]) # doctest: +SKIP
 
-        >>> p = PathBZ(...) # doctest: +SKIP
+        >>> p = BandStructure(...) # doctest: +SKIP
         >>> eigs = Hamiltonian.eigh(p) # doctest: +SKIP
         >>> lk, kt, kl = p.lineark(True)
         >>> plt.xticks(kt, kl)
@@ -461,7 +465,7 @@ class PathBZ(BrillouinZone):
         ticks : bool, optional
            if `True` the ticks for the points are also returned
 
-           lk, xticks, label_ticks, lk = PathBZ.lineark(True)
+           lk, xticks, label_ticks, lk = BandStructure.lineark(True)
 
         Returns
         -------
@@ -498,3 +502,6 @@ class PathBZ(BrillouinZone):
 
     def __len__(self):
         return sum(self.division)
+
+
+PackBZ = BandStructure

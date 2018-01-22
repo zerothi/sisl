@@ -6,8 +6,8 @@ import math as m
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, SuperCellChild
-from sisl import BrillouinZone, PathBZ
-from sisl import MonkhorstPackBZ
+from sisl import BrillouinZone, BandStructure
+from sisl import MonkhorstPack
 
 
 @pytest.fixture
@@ -79,7 +79,7 @@ class TestBrillouinZone(object):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
                 return np.arange(3) - 1
-        bz = MonkhorstPackBZ(Test(setup.s1), [2] * 3)
+        bz = MonkhorstPack(Test(setup.s1), [2] * 3)
         # Try the yield method
         bz.asyield()
         for val in bz.eigh():
@@ -90,35 +90,35 @@ class TestBrillouinZone(object):
         assert np.allclose(bz.asaverage().eigh(), np.arange(3))
 
     def test_mp1(self, setup):
-        bz = MonkhorstPackBZ(setup.s1, [2] * 3)
+        bz = MonkhorstPack(setup.s1, [2] * 3)
         assert len(bz) == 8
         assert bz.weight[0] == 1. / 8
 
     def test_mp2(self, setup):
-        bz1 = MonkhorstPackBZ(setup.s1, [2] * 3)
+        bz1 = MonkhorstPack(setup.s1, [2] * 3)
         assert len(bz1) == 8
-        bz2 = MonkhorstPackBZ(setup.s1, [2] * 3, displacement=[.5] * 3)
+        bz2 = MonkhorstPack(setup.s1, [2] * 3, displacement=[.5] * 3)
         assert len(bz2) == 8
         assert not np.allclose(bz1.k, bz2.k)
 
     def test_mp3(self, setup):
-        bz1 = MonkhorstPackBZ(setup.s1, [2] * 3, size=0.5)
+        bz1 = MonkhorstPack(setup.s1, [2] * 3, size=0.5)
         assert len(bz1) == 8
         assert np.all(bz1.k < 0.25)
 
     def test_pbz1(self, setup):
-        bz = PathBZ(setup.s1, [[0]*3, [.5]*3], 300)
+        bz = BandStructure(setup.s1, [[0]*3, [.5]*3], 300)
         assert len(bz) == 300
 
-        bz2 = PathBZ(setup.s1, [[0]*2, [.5]*2], 300, ['A', 'C'])
+        bz2 = BandStructure(setup.s1, [[0]*2, [.5]*2], 300, ['A', 'C'])
         assert len(bz) == 300
 
-        bz3 = PathBZ(setup.s1, [[0]*2, [.5]*2], [150] * 2)
+        bz3 = BandStructure(setup.s1, [[0]*2, [.5]*2], [150] * 2)
         assert len(bz) == 300
         bz.lineartick()
         bz.lineark()
         bz.lineark(True)
 
     def test_pbz2(self, setup):
-        bz = PathBZ(setup.s1, [[0]*3, [.25]*3, [.5]*3], 300)
+        bz = BandStructure(setup.s1, [[0]*3, [.25]*3, [.5]*3], 300)
         assert len(bz) == 300

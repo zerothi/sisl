@@ -20,7 +20,7 @@ H[0, 0, (0, -1)] = 1.
 print(H)
 
 # Create band-structure for the supercell.
-band = PathBZ(H, [[0., 0.], [0.5, 0.], [0.5, 0.5], [0., 0.]], 300)
+band = BandStructure(H, [[0., 0.], [0.5, 0.], [0.5, 0.5], [0., 0.]], 300)
 
 # Calculate eigenvalues of the band-structure
 eigs = band.eigh()

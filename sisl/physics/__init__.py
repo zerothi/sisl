@@ -20,8 +20,8 @@ Brillouin zone
    :toctree:
 
    BrillouinZone - base class
-   MonkhorstPackBZ - MP class
-   PathBZ - bandstructure class
+   MonkhorstPack - MP class
+   BandStructure - bandstructure class
 
 Spin configurations
 ===================
