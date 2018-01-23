@@ -16,7 +16,7 @@ class Quaternion(object):
         if rad:
             half = angle / 2
         else:
-            half = angle / 180 * m.pi / 2
+            half = angle / 360 * m.pi
         self._v = np.empty([4], np.float64)
         self._v[0] = m.cos(half)
         if v is None:
@@ -42,7 +42,7 @@ class Quaternion(object):
     @property
     def degree(self):
         """ Returns the angle associated with this quaternion (in degree)"""
-        return m.acos(self._v[0]) * 2. / m.pi * 180.
+        return m.acos(self._v[0]) * 360. / m.pi
 
     @property
     def radian(self):

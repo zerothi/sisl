@@ -94,7 +94,7 @@ def orthogonalize(ref, vector):
     vector = asarray(vector).ravel()
     d = dot(ref, vector) / nr
     if abs(1. - abs(d) / fnorm(vector)) < 1e-7:
-        raise ValueError("orthogonalize: requires non-parallel vectors to perform an orthogonalization: {}".format(d))
+        raise ValueError("orthogonalize: requires non-parallel vectors to perform an orthogonalization: ref.vector = {}".format(d))
     return vector - ref * d / nr
 
 
@@ -150,10 +150,9 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
        If `cos_phi` is ``True`` this is :math:`\cos(\phi)`, otherwise
        :math:`\phi` is returned (the polar angle from the :math:`z` axis)
     """
-    r = ensure_array(r, np.float64)
+    r = ensure_array(r, np.float64).reshape(-1, 3)
     if r.shape[-1] != 3:
         raise ValueError("Vector does not end with shape 3.")
-    r.shape = (-1, 3)
     n = r.shape[0]
     if maxR is None:
         rr = sqrt(square(r).sum(1))
