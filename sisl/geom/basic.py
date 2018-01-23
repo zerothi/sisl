@@ -101,7 +101,7 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
     alat : float
         lattice parameter
     atom : Atom
-        the atom in the FCC lattice
+        the atom in the HCP lattice
     orthogonal : bool, optional
         whether the lattice is orthogonal (4 atoms)
     """
