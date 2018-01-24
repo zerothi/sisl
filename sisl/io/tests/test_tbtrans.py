@@ -9,7 +9,7 @@ import os.path as osp
 import math as m
 import numpy as np
 
-import common as tc
+from . import common as tc
 
 _C = type('Temporary', (object, ), {})
 

@@ -13,7 +13,7 @@ import math as m
 import numpy as np
 from scipy.sparse import SparseWarning
 
-import common as tc
+from . import common as tc
 
 _C = type('Temporary', (object, ), {})
 

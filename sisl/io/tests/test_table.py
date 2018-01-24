@@ -7,8 +7,7 @@ import numpy as np
 
 from sisl.io.table import *
 
-
-import common as tc
+from . import common as tc
 
 _C = type('Temporary', (object, ), {})
 

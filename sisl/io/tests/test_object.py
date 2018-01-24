@@ -10,7 +10,7 @@ from sisl.io import *
 from sisl.io.tbtrans._cdf import *
 from sisl import Geometry, Grid, Hamiltonian
 
-import common as tc
+from . import common as tc
 
 _C = type('Temporary', (object, ), {})
 
