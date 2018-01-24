@@ -186,7 +186,11 @@ class fdfSileSiesta(SileSiesta):
             return default
 
         # The keyword is found...
-        if fdf.lower().startswith('%block'):
+        fdfl = fdf.lower()
+        # We need to check both start and end of block, in case
+        # we are "skipping" forward a line and finds endblock
+        # first.
+        if fdfl.startswith('%block') or fdfl.startswith('%endblock'):
             if fdf.find('<') >= 0:
                 # We have a full file to read because the block
                 # is from this file
@@ -197,8 +201,7 @@ class fdfSileSiesta(SileSiesta):
             found, fdf = self._read_block(key)
             if not found:
                 return default
-            else:
-                return fdf
+            return fdf
 
         # We need to process the returned value further.
         fdfl = fdf.split()
@@ -376,6 +379,7 @@ class fdfSileSiesta(SileSiesta):
             # Return a re-read
             return self._read_block(key, force=force)
 
+        print('Reading block', key)
         li = []
         while True:
             l = self.readline()
@@ -433,23 +437,24 @@ class fdfSileSiesta(SileSiesta):
     def read_supercell(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
         s = self.get('LatticeConstant', 'Ang')
+        if s is None:
+            raise SileError('Could not find LatticeConstant in file')
 
         # Read in cell
         cell = np.empty([3, 3], np.float64)
 
-        f, lc = self._read_block('LatticeVectors')
-        if f:
+        lc = self.get('LatticeVectors')
+        if lc:
             for i in range(3):
                 cell[i, :] = [float(k) for k in lc[i].split()[:3]]
         else:
-            f, lc = self._read_block('LatticeParameters')
-            if f:
+            lc = self.get('LatticeParameters')
+            if lc:
                 tmp = [float(k) for k in lc[0].split()[:6]]
                 cell = SuperCell.tocell(*tmp)
-        if not f:
+        if lc is None:
             # the fdf file contains neither the latticevectors or parameters
-            raise SileError(
-                'Could not find LatticeVectors or LatticeParameters block in file')
+            raise SileError('Could not find LatticeVectors or LatticeParameters block in file')
         cell *= s
 
         return SuperCell(cell)
@@ -467,33 +472,20 @@ class fdfSileSiesta(SileSiesta):
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
-        f, lc = self._read('LatticeConstant')
-        if not f:
-            raise ValueError('Could not find LatticeConstant in fdf file.')
-        s = float(lc.split()[1])
-        if 'ang' in lc.lower():
-            pass
-        elif 'bohr' in lc.lower():
-            s *= Bohr2Ang
-
         sc = self.read_supercell(*args, **kwargs)
 
         # No fractional coordinates
         is_frac = False
 
         # Read atom scaling
-        f, lc = self._read('AtomicCoordinatesFormat')
-        if not f:
-            raise ValueError(
-                'Could not find AtomicCoordinatesFormat in fdf file.')
-        lc = lc.lower()
+        lc = self.get('AtomicCoordinatesFormat', default='Bohr').lower()
         if 'ang' in lc or 'notscaledcartesianang' in lc:
             s = 1.
         elif 'bohr' in lc or 'notscaledcartesianbohr' in lc:
             s = Bohr2Ang
         elif 'scaledcartesian' in lc:
             # the same scaling as the lattice-vectors
-            pass
+            s = self.get('LatticeConstant', 'Ang')
         elif 'fractional' in lc or 'scaledbylatticevectors' in lc:
             # no scaling of coordinates as that is entirely
             # done by the latticevectors
@@ -503,8 +495,8 @@ class fdfSileSiesta(SileSiesta):
         # If the user requests a shifted geometry
         # we correct for this
         origo = np.zeros([3], np.float64)
-        f, lor = self._read_block('AtomicCoordinatesOrigin')
-        if f:
+        lor = self.get('AtomicCoordinatesOrigin')
+        if lor:
             if kwargs.get('origin', True):
                 origo = ensure_array(map(float, lor[0].split()[:3])) * s
         # Origo cannot be interpreted with fractional coordinates
@@ -514,13 +506,13 @@ class fdfSileSiesta(SileSiesta):
         f, atms = self._read_block('AtomicCoordinatesAndAtomicSpecies', force=True)
 
         # Read number of atoms and block
-        f, l = self._read('NumberOfAtoms')
-        if not f:
+        na = self.get('NumberOfAtoms')
+        if na:
+            na = int(na)
+        else:
             # We default to the number of elements in the
             # AtomicCoordinatesAndAtomicSpecies block
             na = len(atms)
-        else:
-            na = int(l.split()[1])
 
         # Reduce space if number of atoms specified
         if na != len(atms):
@@ -543,10 +535,7 @@ class fdfSileSiesta(SileSiesta):
         xyz += origo
 
         # Now we read in the species
-        f, l = self._read('NumberOfSpecies')
-        ns = 0
-        if f:
-            ns = int(l.split()[1])
+        ns = int(self.get('NumberOfSpecies', default=0))
 
         # Read the block (not strictly needed, if so we simply set all atoms to
         # H)
@@ -610,10 +599,10 @@ class fdfSileSiesta(SileSiesta):
 
     def _read_basis_ion(self):
         # Read basis from <>.ion.nc file or <>.ion.xml
-        f, spcs = self._read_block('ChemicalSpeciesLabel')
-        if not f:
-            f, spcs = self._read_block('Chemical_Species_Label')
-        if not f:
+        spcs = self.get('ChemicalSpeciesLabel')
+        if spcs is None:
+            spcs = self.get('Chemical_Species_Label')
+        if spcs is None:
             # We haven't found the chemical and species label,
             # so return nothing
             return None
