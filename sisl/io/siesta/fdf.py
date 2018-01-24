@@ -49,6 +49,9 @@ class fdfSileSiesta(SileSiesta):
         if len(self._directory) == 0:
             self._directory = '.'
 
+    def __repr__(self):
+        return ''.join([self.__class__.__name__, '(', self.file, ', base=', self._directory, ')'])
+
     @property
     def file(self):
         """ Return the current file name (without the directory prefix) """
@@ -66,32 +69,65 @@ class fdfSileSiesta(SileSiesta):
 
     @Sile_fh_open
     def includes(self):
-        """ Return a list of all include files """
-
-        includes = [self.fh.name]
-        l = self.readline()
-        while l != '':
-            for inc in self._parent_fh:
-                if inc.name not in includes:
-                    includes.append(inc.name)
-
-        # Now remove prefixes make it smaller
-        includes = [inc.replace(self._directory, '') for inc in includes]
-        return includes
-
-    def readline(self, comment=False):
-        """ Reads the next line of the file """
-        # Call the parent readline function
-        l = super(fdfSileSiesta, self).readline(comment=comment)
+        """ Return a list of all files that are *included* or otherwise necessary for reading the fdf file """
 
         # In FDF files, %include marks files that progress
         # down in a tree structure
-        if '%include' in l:
+        def add(f):
+            f = osp.join(self._directory, f)
+            if f not in includes:
+                includes.append(f)
+        includes = []
+        l = self.readline(_pure=True)
+        while l != '':
+            ls = l.split()
+            if '%include' == ls[0].lower():
+                add(ls[1])
+            elif '<' in ls:
+                add(ls[ls.index('<')+1])
+            l = self.readline(_pure=True)
+        return includes
+
+    def readline(self, comment=False, _pure=False):
+        """ Reads the next line of the file
+
+        Parameters
+        ----------
+        comment : bool, optional
+           allow reading a comment-line.
+        """
+        # Call the parent readline function
+        l = super(fdfSileSiesta, self).readline(comment=comment)
+
+        ls = l.split()
+        if len(ls) < 1:
+            ls.append('')
+
+        # In FDF files, %include marks files that progress
+        # down in a tree structure
+        if '%include' == ls[0].lower():
             # Split for reading tree file
             self._parent_fh.append(self.fh)
-            self.fh = open(self._directory + osp.sep + l.split()[1], self._mode)
+            self.fh = open(self._directory + osp.sep + ls[1], self._mode)
+            if _pure:
+                # even if returning the include line, we should still open
+                # the included file.
+                return l
             # Read the following line in the new file
             return self.readline(comment)
+
+        elif '<' in ls:
+            # Split for reading tree file
+            # There are two cases
+            # 1. this line starts with %block
+            #    In which case the entire file is read, as is (without comments)
+            # 2. a set of labels is specified.
+            #    This means that *only* these labels are read from the corresponding
+            #    file.
+            # However, since we can't know for sure whether this means what the user
+            # requests, we will not return such data...
+            # We will simply return the line as is.
+            pass
 
         if len(self._parent_fh) > 0 and l == '':
             # l == '' marks the end of the file
@@ -132,7 +168,13 @@ class fdfSileSiesta(SileSiesta):
             return None
 
     def get(self, key, unit=None, default=None, with_unit=False):
-        """ Retrieve fdf-keyword from the file """
+        """ Retrieve fdf-keyword from the file
+
+        Parameters
+        ----------
+        key : str
+            the fdf-label to search for
+        """
 
         # First split into specification and key
         key, tmp_unit = str_spec(key)
@@ -144,7 +186,14 @@ class fdfSileSiesta(SileSiesta):
             return default
 
         # The keyword is found...
-        if fdf.startswith('%block'):
+        if fdf.lower().startswith('%block'):
+            if fdf.find('<') >= 0:
+                # We have a full file to read because the block
+                # is from this file
+                f = fdf.split('<')[1].replace('\n', '').strip()
+                l = open(osp.join(self._directory, f), 'r').readlines()
+                # Remove all lines starting with a comment
+                return [ll for ll in l if not (ll.split()[0][0] in self._comment)]
             found, fdf = self._read_block(key)
             if not found:
                 return default
@@ -269,15 +318,40 @@ class fdfSileSiesta(SileSiesta):
     @Sile_fh_open
     def _read(self, key):
         """ Returns the arguments following the keyword in the FDF file """
+        # This routine will simply find a line where key exists
+        # However, if the key is not placed according to the
+        # fdf specifications we have to search for a new place.
         found, fdf = self.step_to(key, case=False)
 
-        # Check whether the key is piped
-        if found and fdf.find('<') >= 0:
-            # Create new fdf-file
-            sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n', '').strip())
-            return sub_fdf._read(key)
+        # Easy case when it is not found, anywhere
+        # Then, for sure it is not found.
+        if not found:
+            return False, fdf
 
-        return found, fdf
+        # Check whether the key has the appropriate position in
+        # the specification
+        fdfs = [f.lower() for f in fdf.split()]
+
+        if fdfs[0] == '%block':
+            # It is a block
+            if fdfs[1] == key.lower():
+                return True, fdf
+            # Try again, this may result in an infinite loop
+            return self._read_block(key)
+
+        # Else we have to check if '<' is in the list
+        if '<' in fdfs:
+            # It just have to be left of '<'
+            idx = fdfs.index('<')
+            if key.lower() in fdfs[:idx]:
+                # Create new fdf-file
+                f = fdf.split()[idx+1].replace('\n', '').strip()
+                sub_fdf = fdfSileSiesta(osp.join(self._directory, f), 'r')
+                return sub_fdf._read(key)
+            # Try again, this may result in an infinite loop
+            return self._read(key)
+
+        return True, fdf
 
     @Sile_fh_open
     def _read_block(self, key, force=False):

@@ -8,8 +8,8 @@ def configuration(parent_package='', top_path=None):
                 'siesta', 'tbtrans',
                 'vasp', 'wannier90']:
         config.add_subpackage(sub)
-    config.make_config_py()  # installs __config__.py
     config.add_data_dir('tests')
+    config.make_config_py()
     return config
 
 if __name__ == '__main__':

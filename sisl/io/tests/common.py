@@ -1,5 +1,4 @@
-"""Tests suite for XVSileSiesta
-"""
+"""Common utilities for io routines"""
 from __future__ import print_function, division
 
 from tempfile import mkstemp, mkdtemp

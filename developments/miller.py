@@ -10,6 +10,7 @@ ortho = si.utils.math.orthogonalize
 # This is not functional, yet, but could be useful to generate
 # lattices etc.
 
+
 def get_miller(rcell, hkl):
     # Get direction normal to the plane (Miller direction
     hkl = np.array(hkl, np.int32).reshape(3)
@@ -26,7 +27,7 @@ def get_miller(rcell, hkl):
     # Now create the other directions which are orthogonal to the
     # Miller direction
     # If any of the Miller indices are negative,
-    
+
     ortho = si.utils.math.orthogonalize
     # Figure out which directions we can use
     # decide on a lattice vector
@@ -36,7 +37,7 @@ def get_miller(rcell, hkl):
         # We already now have the two vectors
         v1 = rcell[idx[0], :]
         v2 = rcell[idx[1], :]
-                
+
     elif len(idx) == 1:
         v1 = rcell[idx[0], :]
         hkl2 = np.delete(hkl, idx[0])
@@ -63,6 +64,5 @@ def get_miller(rcell, hkl):
     rv = np.where(np.abs(rv) < 1e-10, 0, rv)
     v = np.linalg.inv(rv) * 2. * np.pi
     print(v)
-    
-    
+
     return q.rotate(v)

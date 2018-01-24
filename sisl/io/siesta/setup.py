@@ -26,7 +26,8 @@ def configuration(parent_package='', top_path=None):
     config.add_extension('_siesta',
                          sources = [osp_join('src', s) for s in sources],
                          extra_info = all_info)
-    config.make_config_py()  # installs __config__.py
+    config.add_data_dir('tests')
+    config.make_config_py()
     return config
 
 if __name__ == '__main__':
