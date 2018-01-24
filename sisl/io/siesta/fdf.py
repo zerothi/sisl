@@ -432,13 +432,7 @@ class fdfSileSiesta(SileSiesta):
 
     def read_supercell(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
-        f, lc = self._read('LatticeConstant')
-
-        s = float(lc.split()[1])
-        if 'ang' in lc.lower():
-            pass
-        elif 'bohr' in lc.lower():
-            s *= Bohr2Ang
+        s = self.get('LatticeConstant', 'Ang')
 
         # Read in cell
         cell = np.empty([3, 3], np.float64)
