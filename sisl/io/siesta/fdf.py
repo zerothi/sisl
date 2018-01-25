@@ -11,6 +11,8 @@ from ..sile import *
 from sisl.io._help import *
 
 from .binaries import TSHSSileSiesta, DMSileSiesta
+from .eig import eigSileSiesta
+from .pdos import pdosSileSiesta
 from .siesta import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import OrbIndxSileSiesta
@@ -67,6 +69,10 @@ class fdfSileSiesta(SileSiesta):
         self._parent_fh = []
         self._directory = '.'
 
+    def _tofile(self, f):
+        """ Make `f` refer to the file with the appropriate base directory """
+        return osp.join(self._directory, f)
+
     @Sile_fh_open
     def includes(self):
         """ Return a list of all files that are *included* or otherwise necessary for reading the fdf file """
@@ -74,7 +80,7 @@ class fdfSileSiesta(SileSiesta):
         # In FDF files, %include marks files that progress
         # down in a tree structure
         def add(f):
-            f = osp.join(self._directory, f)
+            f = self._tofile(f)
             if f not in includes:
                 includes.append(f)
         includes = []
@@ -108,7 +114,7 @@ class fdfSileSiesta(SileSiesta):
         if '%include' == ls[0].lower():
             # Split for reading tree file
             self._parent_fh.append(self.fh)
-            self.fh = open(self._directory + osp.sep + ls[1], self._mode)
+            self.fh = open(self._tofile(ls[1]), self._mode)
             if _pure:
                 # even if returning the include line, we should still open
                 # the included file.
@@ -195,7 +201,7 @@ class fdfSileSiesta(SileSiesta):
                 # We have a full file to read because the block
                 # is from this file
                 f = fdf.split('<')[1].replace('\n', '').strip()
-                l = open(osp.join(self._directory, f), 'r').readlines()
+                l = open(self._tofile(f), 'r').readlines()
                 # Remove all lines starting with a comment
                 return [ll for ll in l if not (ll.split()[0][0] in self._comment)]
             found, fdf = self._read_block(key)
@@ -349,7 +355,7 @@ class fdfSileSiesta(SileSiesta):
             if key.lower() in fdfs[:idx]:
                 # Create new fdf-file
                 f = fdf.split()[idx+1].replace('\n', '').strip()
-                sub_fdf = fdfSileSiesta(osp.join(self._directory, f), 'r')
+                sub_fdf = fdfSileSiesta(self._tofile(f), 'r')
                 return sub_fdf._read(key)
             # Try again, this may result in an infinite loop
             return self._read(key)
@@ -540,7 +546,7 @@ class fdfSileSiesta(SileSiesta):
         # Read the block (not strictly needed, if so we simply set all atoms to
         # H)
         atom = self.read_basis()
-        if len(atom) == 0:
+        if atom is None:
             warn.warn('The block ChemicalSpeciesLabel does not exist, cannot determine the basis.')
             # Default atom (hydrogen)
             atom = Atom(1)
@@ -558,13 +564,12 @@ class fdfSileSiesta(SileSiesta):
         geom = None
         if isfile(f + '.XV'):
             basis = self.read_basis()
-            # The basis has correct ordering
-            if len(basis) > 0:
+            if basis is None:
+                geom = XVSileSiesta(f + '.XV').read_geometry()
+            else:
                 geom = XVSileSiesta(f + '.XV').read_geometry(species_Z=True)
                 for atom, _ in geom.atom.iter(True):
                     geom.atom.replace(atom, basis[atom.Z-1])
-            else:
-                geom = XVSileSiesta(f + '.XV').read_geometry()
         return geom
 
     def read_basis(self):
@@ -577,18 +582,14 @@ class fdfSileSiesta(SileSiesta):
         3. <>.ion.xml
         4. <>.ORB_INDX
         """
-        basis = self._read_basis_nc()
-        if basis is not None:
-            return basis
-        basis = self._read_basis_ion()
-        if basis is not None:
-            return basis
-        basis = self._read_basis_orb_indx()
-        if basis is not None:
-            return basis
-        return []
+        basis = self._r_basis_nc()
+        if basis is None:
+            basis = self._r_basis_ion()
+        if basis is None:
+            basis = self._r_basis_orb_indx()
+        return basis
 
-    def _read_basis_nc(self):
+    def _r_basis_nc(self):
         # Read basis from <>.nc file
         f = self.get('SystemLabel', default='siesta')
         try:
@@ -597,7 +598,7 @@ class fdfSileSiesta(SileSiesta):
             pass
         return None
 
-    def _read_basis_ion(self):
+    def _r_basis_ion(self):
         # Read basis from <>.ion.nc file or <>.ion.xml
         spcs = self.get('ChemicalSpeciesLabel')
         if spcs is None:
@@ -625,7 +626,7 @@ class fdfSileSiesta(SileSiesta):
                 atom[idx] = Atom(Z=Z, tag=lbl)
         return atom
 
-    def _read_basis_orb_indx(self):
+    def _r_basis_orb_indx(self):
         f = self.get('SystemLabel', default='siesta')
         return OrbIndxSileSiesta(f + '.ORB_INDX').read_basis()
 
@@ -767,21 +768,35 @@ class fdfSileSiesta(SileSiesta):
         f = label + '.bands'
         if osp.isfile(f):
             tmp_p = sp.add_parser('band',
-                                  help="Manipulate the bands file from the Siesta simulation")
+                                  help="Manipulate bands file from the Siesta simulation")
             tmp_p, tmp_ns = sis.bandsSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+
+        f = label + '.PDOS.xml'
+        if osp.isfile(f):
+            tmp_p = sp.add_parser('pdos',
+                                  help="Manipulate PDOS.xml file from the Siesta simulation")
+            tmp_p, tmp_ns = sis.pdosSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            namespace = merge_instances(namespace, tmp_ns)
+
+        f = label + '.EIG'
+        if osp.isfile(f):
+            tmp_p = sp.add_parser('eig',
+                                  help="Manipulate EIG file from the Siesta simulation")
+            tmp_p, tmp_ns = sis.eigSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.TBT.nc'
         if osp.isfile(f):
             tmp_p = sp.add_parser('tbt',
-                                  help="Manipulate the tbtrans output file")
+                                  help="Manipulate tbtrans output file")
             tmp_p, tmp_ns = sis.tbtncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.TBT.Proj.nc'
         if osp.isfile(f):
             tmp_p = sp.add_parser('tbt-proj',
-                                  help="Manipulate the tbtrans projection output file")
+                                  help="Manipulate tbtrans projection output file")
             tmp_p, tmp_ns = sis.tbtprojncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
@@ -795,14 +810,14 @@ class fdfSileSiesta(SileSiesta):
         f = label + '.PHT.Proj.nc'
         if osp.isfile(f):
             tmp_p = sp.add_parser('pht-proj',
-                                  help="Manipulate the phtrans projection output file")
+                                  help="Manipulate phtrans projection output file")
             tmp_p, tmp_ns = sis.phtprojncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.nc'
         if osp.isfile(f):
             tmp_p = sp.add_parser('nc',
-                                  help="Manipulate the Siesta output file")
+                                  help="Manipulate Siesta NetCDF output file")
             tmp_p, tmp_ns = sis.ncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
