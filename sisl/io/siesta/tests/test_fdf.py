@@ -243,3 +243,29 @@ def test_xv_preference():
     assert np.allclose(g.cell, g2.cell)
     g2.xyz[0, 0] += 1.
     assert np.allclose(g.xyz, g2.xyz)
+
+
+def test_geom_order():
+    gfdf = geom.graphene()
+    gxv = gfdf.copy()
+    gxv.xyz[0, 0] += 0.5
+    gnc = gfdf.copy()
+    gnc.xyz[0, 0] += 0.5
+
+    gfdf.write(d('siesta.fdf'))
+
+    # Create fdf-file
+    fdf = fdfSileSiesta(d('siesta.fdf'))
+    assert fdf.read_geometry(order=['nc']) is None
+    gxv.write(d('siesta.XV'))
+    gnc.write(d('siesta.nc'))
+
+    # Should read from XV
+    g = fdf.read_geometry()
+    assert np.allclose(g.xyz, gxv.xyz)
+    g = fdf.read_geometry(order=['nc', 'fdf'])
+    assert np.allclose(g.xyz, gnc.xyz)
+    g = fdf.read_geometry(order=['fdf', 'nc'])
+    assert np.allclose(g.xyz, gfdf.xyz)
+    g = fdf.read_geometry(order=['xv', 'nc'])
+    assert np.allclose(g.xyz, gxv.xyz)
