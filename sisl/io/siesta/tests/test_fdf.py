@@ -16,7 +16,7 @@ from sisl.io.tests import common as tc
 
 _C = type('Temporary', (object, ), {})
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta]
+pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.fdf]
 
 
 def setup_module(module):
@@ -182,6 +182,7 @@ def test_include():
         fh.write('# Flag3 is read through < from file hello\n')
         fh.write('Flag3 Sub < hello\n')
         fh.write('Test 1. eV\n')
+        fh.write('TestRy 1. Ry\n')
         fh.write('%block Hello < hello\n')
         fh.write(' %INCLUDE file2.fdf\n')
 
@@ -206,11 +207,17 @@ def test_include():
     assert fdf.get('Flag3') == 'test'
     assert fdf.get('Flag4') == 'non'
     assert fdf.get('FLAG4') == 'non'
-    assert fdf.get('test') == pytest.approx(unit_convert('eV', 'Ry'))
     assert fdf.get('test', 'eV') == pytest.approx(1.)
+    assert fdf.get('test', with_unit=True)[0] == pytest.approx(1.)
+    assert fdf.get('test', with_unit=True)[1] == 'eV'
+    assert fdf.get('test', 'Ry') == pytest.approx(unit_convert('eV', 'Ry'))
+    assert fdf.get('testRy') == pytest.approx(unit_convert('Ry', 'eV'))
+    assert fdf.get('testRy', with_unit=True)[0] == pytest.approx(1.)
+    assert fdf.get('testRy', with_unit=True)[1] == 'Ry'
+    assert fdf.get('testRy', 'Ry') == pytest.approx(1.)
     assert fdf.get('Sub') == 'sub-test'
     assert fdf.get('Third') == 'level'
     # Read a block
     ll = open(d('hello')).readlines()
     ll.pop(1)
-    assert fdf.get('Hello') == ll
+    assert fdf.get('Hello') == [l.replace('\n', '').strip() for l in ll]

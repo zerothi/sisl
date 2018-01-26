@@ -28,8 +28,8 @@ def test_unit_convert(tbl):
 @pytest.mark.parametrize('tbl', [None, unit_table_siesta])
 def test_default(tbl):
     assert unit_default('mass', tbl) == 'amu'
-    assert unit_default('energy', tbl) == 'Ry'
-    assert unit_default('force', tbl) == 'Ry/Bohr'
+    assert unit_default('energy', tbl) == 'eV'
+    assert unit_default('force', tbl) == 'eV/Ang'
 
 
 @pytest.mark.xfail(raises=ValueError)

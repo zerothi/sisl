@@ -73,173 +73,292 @@ class fdfSileSiesta(SileSiesta):
         """ Make `f` refer to the file with the appropriate base directory """
         return osp.join(self._directory, f)
 
+    def _pushfile(self, f):
+        self._parent_fh.append(self.fh)
+        self.fh = open(self._tofile(f), self._mode)
+
+    def _popfile(self):
+        if len(self._parent_fh) > 0:
+            self.fh.close()
+            self.fh = self._parent_fh.pop()
+            return True
+        return False
+
+    def _seek(self):
+        """ Closes all files, and starts over from beginning """
+        try:
+            while len(self._parent_fh) > 1:
+                self._popfile()
+            self.fh.seek(0)
+        except:
+            pass
+
     @Sile_fh_open
     def includes(self):
         """ Return a list of all files that are *included* or otherwise necessary for reading the fdf file """
-
+        self._seek()
         # In FDF files, %include marks files that progress
         # down in a tree structure
         def add(f):
             f = self._tofile(f)
             if f not in includes:
                 includes.append(f)
+        # List of includes
         includes = []
-        l = self.readline(_pure=True)
+
+        l = self.readline()
         while l != '':
             ls = l.split()
             if '%include' == ls[0].lower():
                 add(ls[1])
+                self._pushfile(ls[1])
             elif '<' in ls:
+                # TODO, in principle the < could contain
+                # include if this line is not a %block.
                 add(ls[ls.index('<')+1])
-            l = self.readline(_pure=True)
+            l = self.readline()
+            while l == '':
+                # last line of file
+                if self._popfile():
+                    l = self.readline()
+                else:
+                    break
+
         return includes
 
-    def readline(self, comment=False, _pure=False):
-        """ Reads the next line of the file
+    @Sile_fh_open
+    def _read_label(self, label):
+        """ Try and read the first occurence of a key
+
+        This will take care of blocks, labels and piped in labels
 
         Parameters
         ----------
-        comment : bool, optional
-           allow reading a comment-line.
+        label : str
+           label to find in the fdf file
         """
-        # Call the parent readline function
-        l = super(fdfSileSiesta, self).readline(comment=comment)
+        self._seek()
+        def tolabel(label):
+            return label.lower().replace('_', '').replace('-', '').replace('.', '')
+        labell = tolabel(label)
 
-        ls = l.split()
-        if len(ls) < 1:
-            ls.append('')
+        def valid_line(line):
+            ls = line.strip()
+            if len(ls) == 0:
+                return False
+            return not (ls[0] in self._comment)
 
-        # In FDF files, %include marks files that progress
-        # down in a tree structure
-        if '%include' == ls[0].lower():
-            # Split for reading tree file
-            self._parent_fh.append(self.fh)
-            self.fh = open(self._tofile(ls[1]), self._mode)
-            if _pure:
-                # even if returning the include line, we should still open
-                # the included file.
-                return l
-            # Read the following line in the new file
-            return self.readline(comment)
+        def process_line(line):
+            # Split line by spaces
+            ls = line.split()
+            if len(ls) == 0:
+                return None
 
-        elif '<' in ls:
-            # Split for reading tree file
-            # There are two cases
-            # 1. this line starts with %block
-            #    In which case the entire file is read, as is (without comments)
-            # 2. a set of labels is specified.
-            #    This means that *only* these labels are read from the corresponding
-            #    file.
-            # However, since we can't know for sure whether this means what the user
-            # requests, we will not return such data...
-            # We will simply return the line as is.
-            pass
+            # Make a lower equivalent of ls
+            lsl = list(map(tolabel, ls))
 
-        if len(self._parent_fh) > 0 and l == '':
-            # l == '' marks the end of the file
-            self.fh.close()
-            self.fh = self._parent_fh.pop()
-            return self.readline(comment)
+            # Check if there is a pipe in the line
+            if '<' in lsl:
+                idx = lsl.index('<')
+                # Now there are two cases
+
+                # 1. It is a block, in which case
+                #    the full block is piped into the label
+                #    %block Label < file
+                if lsl[0] == '%block' and lsl[1] == labell:
+                    # Correct line found
+                    # Read the file content, removing any empty and/or comment lines
+                    lines = open(self._tofile(ls[3]), 'r').readlines()
+                    return [l.strip() for l in lines if valid_line(l)]
+
+                # 2. There are labels that should be read from a subsequent file
+                #    Label1 Label2 < other.fdf
+                if labell in lsl[:idx]:
+                    # Valid line, read key from other.fdf
+                    return fdfSileSiesta(self._tofile(ls[idx+1]), base=self._directory)._read_label(label)
+
+                # It is not in this line, either key is
+                # on the RHS of <, or the key could be "block". Say.
+                return None
+
+            # The last case is if the label is the first word on the line
+            # In that case we have found what we are looking for
+            if lsl[0] == labell:
+                return (' '.join(ls[1:])).strip()
+
+            elif lsl[0] == '%block':
+                if lsl[1] == labell:
+                    # Read in the block content
+                    lines = []
+
+                    # Now read lines
+                    l = self.readline().strip()
+                    while not tolabel(l).startswith('%endblock'):
+                        if len(l) > 0:
+                            lines.append(l)
+                        l = self.readline().strip()
+                    return lines
+
+            elif lsl[0] == '%include':
+
+                # We have to open a new file
+                self._pushfile(ls[1])
+
+            return None
+
+        # Perform actual reading of line
+        l = self.readline()
+        if len(l) == 0:
+            return None
+        l = process_line(l)
+        while l is None:
+            l = self.readline()
+            if len(l) == 0:
+                return None
+            l = process_line(l)
 
         return l
 
-    def type(self, key):
-        """ Return the type of the fdf-keyword """
-        found, fdf = self._read(key)
-        if not found:
+    def _type(self, value):
+        """ Determine the type by the value
+
+        Parameters
+        ----------
+        value : str or list or numpy.ndarray
+            the value to check for fdf-type
+        """
+        if value is None:
             return None
 
-        if fdf.startswith('%block'):
+        if isinstance(value, list):
+            # A block, %block ...
             return 'B'
 
+        if isinstance(value, np.ndarray):
+            # A list, Label [...]
+            return 'a'
+
         # Grab the entire line (beside the key)
-        fdf = fdf.split()[1:]
-        if len(fdf) == 1:
-            fdf = fdf[0].lower()
-            if fdf in __LOGICAL:
+        values = value.split()
+        if len(values) == 1:
+            fdf = values[0].lower()
+            if fdf in _LOGICAL:
+                # logical
                 return 'b'
 
             if '.' in fdf:
+                # a real number
                 return 'r'
-            return 'i'
+            try:
+                int(fdf)
+                return 'i'
+            except:
+                pass
+            # fall-back to name with everything
+        elif len(values) == 2:
+            # possibly a physical value
+            try:
+                float(values[0])
+                return 'p'
+            except:
+                pass
 
         return 'n'
 
-    def key(self, key):
-        """ Return the key as written in the fdf-file. If not found, returns `None`. """
-        found, fdf = self._read(key)
-        if found:
-            return fdf.split()[0]
-        else:
-            return None
+    @Sile_fh_open
+    def type(self, label):
+        """ Return the type of the fdf-keyword
 
-    def get(self, key, unit=None, default=None, with_unit=False):
+        Parameters
+        ----------
+        label : str
+            the label to look-up
+        """
+        self._seek()
+        return self._type(self._read_label(label))
+
+    @Sile_fh_open
+    def get(self, label, unit=None, default=None, with_unit=False):
         """ Retrieve fdf-keyword from the file
 
         Parameters
         ----------
-        key : str
+        label : str
             the fdf-label to search for
+        unit : str, optional
+            unit of the physical quantity to return
+        default : *, optional
+            if the label is not found, this will be the returned value (default to ``None``)
+        with_unit : bool, optional
+            whether the physical quantity gets returned with the found unit in the fdf file.
+
+        Returns
+        -------
+        value : the value of the fdf-label. If the label is a block, a `list` is returned, for
+                a real value a `float` (or if the default is of `float`), for an integer, an
+                `int` is returned.
+        unit : if `with_unit` is true this will contain the associated unit if it is specified
+
+        Examples
+        --------
+        >>> print(open(...).readlines()) # doctest: +SKIP
+        LabeleV 1. eV
+        LabelRy 1. Ry
+        Label name
+        %block Hello
+        line 1
+        line2
+        %endblock
+        >>> fdf.get('LabeleV') == 1. # default unit is eV
+        >>> fdf.get('LabelRy') == unit.siesta.unit_convert('Ry', 'eV')
+        >>> fdf.get('LabelRy', 'Ry') == 1.
+        >>> fdf.get('LabelRy', with_unit=True) == (1., 'Ry')
+        >>> fdf.get('LabeleV', with_unit=True) == (1., 'eV')
+        >>> fdf.get('Label', with_unit=True) == 'name' # no unit present on line
+        >>> fdf.get('Hello') == ['line 1', 'line2']
         """
+        # Try and read a line
+        value = self._read_label(label)
 
-        # First split into specification and key
-        key, tmp_unit = str_spec(key)
-        if unit is None:
-            unit = tmp_unit
-
-        found, fdf = self._read(key)
-        if not found:
+        # Simply return the default value if not found
+        if value is None:
             return default
 
-        # The keyword is found...
-        fdfl = fdf.lower()
-        # We need to check both start and end of block, in case
-        # we are "skipping" forward a line and finds endblock
-        # first.
-        if fdfl.startswith('%block') or fdfl.startswith('%endblock'):
-            if fdf.find('<') >= 0:
-                # We have a full file to read because the block
-                # is from this file
-                f = fdf.split('<')[1].replace('\n', '').strip()
-                l = open(self._tofile(f), 'r').readlines()
-                # Remove all lines starting with a comment
-                return [ll for ll in l if not (ll.split()[0][0] in self._comment)]
-            found, fdf = self._read_block(key)
-            if not found:
-                return default
-            return fdf
+        # Figure out what it is
+        t = self._type(value)
 
-        # We need to process the returned value further.
-        fdfl = fdf.split()
-        # Check whether this is a logical flag
-        if len(fdfl) == 1:
-            # This *MUST* be a boolean
-            #   SCF.Converge.H
-            # defaults to .true.
-            return True
-        elif fdfl[1] in _LOGICAL_TRUE:
-            return True
-        elif fdfl[1] in _LOGICAL_FALSE:
-            return False
+        # We will only do something if it is a real, int, or physical.
+        # Else we simply return, as-is
+        if t == 'r':
+            if default is None:
+                return float(value)
+            t = type(default)
+            return t(value)
 
-        # It is something different.
-        # Try and figure out what it is
-        if len(fdfl) == 3:
-            # We expect it to be a unit
+        elif t == 'i':
+            if default is None:
+                return int(value)
+            t = type(default)
+            return t(value)
+
+        elif t == 'p':
+            value = value.split()
+            if with_unit:
+                # Simply return, as is. Let the user do whatever.
+                return float(value[0]), value[1]
             if unit is None:
-                # Get group of unit
-                group = unit_group(fdfl[2])
-                # return in default sisl units
-                unit = unit_default(group)
+                default = unit_default(unit_group(value[1]))
+            else:
+                if unit_group(value[1]) != unit_group(unit):
+                    raise ValueError("Requested unit for {} is not the same type. "
+                                     "Found/Requested {}/{}'".format(label, value[1], unit))
+                default = unit
+            return float(value[0]) * unit_convert(value[1], default)
 
-            if with_unit and tmp_unit is not None:
-                # The user has specifically requested the unit:
-                #  key{unit}
-                return '{0:.4f} {1}'.format(float(fdfl[1]) * unit_convert(fdfl[2], unit), unit)
-            elif not with_unit:
-                return float(fdfl[1]) * unit_convert(fdfl[2], unit)
+        elif t == 'b':
+            return value.lower() in _LOGICAL_TRUE
 
-        return ' '.join(fdfl[1:])
+        return value
 
     def set(self, key, value, keep=True):
         """ Add the key and value to the FDF file
@@ -323,79 +442,6 @@ class fdfSileSiesta(SileSiesta):
         else:
             s = '{} {}'.format(key, value)
         return s
-
-    @Sile_fh_open
-    def _read(self, key):
-        """ Returns the arguments following the keyword in the FDF file """
-        # This routine will simply find a line where key exists
-        # However, if the key is not placed according to the
-        # fdf specifications we have to search for a new place.
-        found, fdf = self.step_to(key, case=False)
-
-        # Easy case when it is not found, anywhere
-        # Then, for sure it is not found.
-        if not found:
-            return False, fdf
-
-        # Check whether the key has the appropriate position in
-        # the specification
-        fdfs = [f.lower() for f in fdf.split()]
-
-        if fdfs[0] == '%block':
-            # It is a block
-            if fdfs[1] == key.lower():
-                return True, fdf
-            # Try again, this may result in an infinite loop
-            return self._read_block(key)
-
-        # Else we have to check if '<' is in the list
-        if '<' in fdfs:
-            # It just have to be left of '<'
-            idx = fdfs.index('<')
-            if key.lower() in fdfs[:idx]:
-                # Create new fdf-file
-                f = fdf.split()[idx+1].replace('\n', '').strip()
-                sub_fdf = fdfSileSiesta(self._tofile(f), 'r')
-                return sub_fdf._read(key)
-            # Try again, this may result in an infinite loop
-            return self._read(key)
-
-        return True, fdf
-
-    @Sile_fh_open
-    def _read_block(self, key, force=False):
-        """ Returns the arguments following the keyword in the FDF file """
-        k = key.lower()
-        f, fdf = self.step_to(k, case=False)
-        if not f:
-            if force:
-                # The user requests that the block *MUST* be found
-                raise SileError(('Requested forced block could not be found: ' +
-                                 str(key) + '.'), self)
-            return False, []  # not found
-
-        # If the block is piped in from another file...
-        if '<' in fdf:
-            # Create new fdf-file
-            sub_fdf = fdfSileSiesta(fdf.split('<')[1].replace('\n', '').strip())
-            return sub_fdf._read_block(key, force)
-
-        # Check whether we have accidentially found the endblock construct
-        if self.line_has_key(fdf, '%endblock', case=False):
-            # Return a re-read
-            return self._read_block(key, force=force)
-
-        print('Reading block', key)
-        li = []
-        while True:
-            l = self.readline()
-            if self.line_has_key(l, '%endblock', case=False) or \
-               self.line_has_key(l, k, case=False):
-                return True, li
-            # Append list
-            li.append(l)
-        raise SileError(('Error on reading block: ' + str(key) +
-                         ' could not find start/end.'))
 
     @Sile_fh_open
     def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
@@ -509,7 +555,9 @@ class fdfSileSiesta(SileSiesta):
         # hence, it is not transformed.
 
         # Read atom block
-        f, atms = self._read_block('AtomicCoordinatesAndAtomicSpecies', force=True)
+        atms = self.get('AtomicCoordinatesAndAtomicSpecies')
+        if atms is None:
+            raise SileError('AtomicCoordinatesAndAtomicSpecies block could not be found')
 
         # Read number of atoms and block
         na = self.get('NumberOfAtoms')
@@ -526,7 +574,7 @@ class fdfSileSiesta(SileSiesta):
             atms = atms[:na]
 
         if na == 0:
-            raise ValueError('NumberOfAtoms has been determined to be zero, no atoms.')
+            raise SileError('NumberOfAtoms has been determined to be zero, no atoms.')
 
         # Create array
         xyz = np.empty([na, 3], np.float64)
@@ -541,7 +589,7 @@ class fdfSileSiesta(SileSiesta):
         xyz += origo
 
         # Now we read in the species
-        ns = int(self.get('NumberOfSpecies', default=0))
+        ns = self.get('NumberOfSpecies', default=0)
 
         # Read the block (not strictly needed, if so we simply set all atoms to
         # H)
@@ -732,15 +780,15 @@ class fdfSileSiesta(SileSiesta):
             def __call__(self, parser, ns, value, option_string=None):
                 # Retrieve the value in standard units
                 # Currently, we write out the unit "as-is"
-                try:
-                    val = ns._fdf.get(value[0], with_unit = True)
-                except:
-                    val = ns._fdf.get(value[0])
+                val = ns._fdf.get(value[0], with_unit=True)
                 if val is None:
                     print('# {} is currently not in the FDF file '.format(value[0]))
                     return
 
-                print(ns._fdf.print(value[0], val))
+                if isinstance(val, tuple):
+                    print(ns._fdf.print(value[0], '{} {}'.format(*val)))
+                else:
+                    print(ns._fdf.print(value[0], val))
 
         ep.add_argument('--get', '-g', nargs=1, metavar='KEY',
                         action=FDFGet,

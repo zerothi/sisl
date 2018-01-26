@@ -22,7 +22,7 @@ unit_table_siesta = {
         'amu': 1.66054e-27,
         },
     'length': {
-        'DEFAULT': 'Bohr',
+        'DEFAULT': 'Ang',
         'm': 1.,
         'cm': 0.01,
         'nm': 1.e-9,
@@ -45,7 +45,7 @@ unit_table_siesta = {
         'days': 86400.,
         },
     'energy': {
-        'DEFAULT': 'Ry',
+        'DEFAULT': 'eV',
         'J': 1.,
         'erg': 1.e-7,
         'meV': 1.60219e-22,
@@ -64,7 +64,7 @@ unit_table_siesta = {
         'cm^-1': 1.986e-23,
         },
     'force': {
-        'DEFAULT': 'Ry/Bohr',
+        'DEFAULT': 'eV/Ang',
         'N': 1.,
         'eV/Ang': 1.60219e-9,
         'eV/Bohr': 1.60219e-9*0.529177,
