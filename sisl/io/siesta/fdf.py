@@ -490,6 +490,27 @@ class fdfSileSiesta(SileSiesta):
         self._write('%endblock ChemicalSpeciesLabel\n')
 
     def read_supercell(self, *args, **kwargs):
+        """ Returns SuperCell object by reading Siesta output related files.
+
+        The order of the read is shown below.
+
+        One can limit the tried files to only one file by passing
+        only a single file ending.
+
+        Parameters
+        ----------
+        order: list of str, optional
+            the order of which to try and read the supercell.
+            By default this is ``['XV', 'nc', 'fdf']``
+        """
+        order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
+        for f in order:
+            v = getattr(self, '_r_supercell_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
+
+    def _r_supercell_fdf(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
         s = self.get('LatticeConstant', 'Ang')
         if s is None:
@@ -514,48 +535,60 @@ class fdfSileSiesta(SileSiesta):
 
         return SuperCell(cell)
 
-    def _r_supercell_XV(self, *args, **kwargs):
+    def _r_supercell_nc(self):
+        # Read supercell from <>.nc file
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_supercell()
+        return None
+
+    def _r_supercell_xv(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
-        f = self._tofile(self.get('SystemLabel', default='siesta'))
-        if isfile(f + '.XV'):
-            return XVSileSiesta(f + '.XV').read_supercell()
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.XV'
+        if isfile(f):
+            return XVSileSiesta(f).read_supercell()
         return None
 
     def read_geometry(self, *args, **kwargs):
-        """ Returns Geometry object from the FDF file
+        """ Returns Geometry object by reading Siesta output related files.
 
-        The reading order of the geometry is:
+        The order of the read is shown below.
 
-        1) <>.XV file
-        2) <>.nc file
-        3) <>.fdf file
+        One can limit the tried files to only one file by passing
+        only a single file ending.
+
+        Parameters
+        ----------
+        order: list of str, optional
+            the order of which to try and read the geometry.
+            By default this is ``['XV', 'nc', 'fdf']``
         """
-        geom = self._r_geometry_XV(*args, **kwargs)
-        if geom is None:
-            geom = self._r_geometry_nc(*args, **kwargs)
-        if geom is None:
-            geom = self._r_geometry_fdf(*args, **kwargs)
-        return geom
+        order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
+        for f in order:
+            v = getattr(self, '_r_geometry_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
 
-    def _r_geometry_XV(self, *args, **kwargs):
+    def _r_geometry_xv(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
-        f = self._tofile(self.get('SystemLabel', default='siesta'))
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.XV'
         geom = None
-        if isfile(f + '.XV'):
+        if isfile(f):
             basis = self.read_basis()
             if basis is None:
-                geom = XVSileSiesta(f + '.XV').read_geometry()
+                geom = XVSileSiesta(f).read_geometry()
             else:
-                geom = XVSileSiesta(f + '.XV').read_geometry(species_Z=True)
+                geom = XVSileSiesta(f).read_geometry(species_Z=True)
                 for atom, _ in geom.atom.iter(True):
                     geom.atom.replace(atom, basis[atom.Z-1])
         return geom
 
     def _r_geometry_nc(self):
-        # Read basis from <>.nc file
-        f = self._tofile(self.get('SystemLabel', default='siesta'))
-        if isfile(f + '.nc'):
-            return ncSileSiesta(f + '.nc').read_geometry()
+        # Read geometry from <>.nc file
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_geometry()
         return None
 
     def _r_geometry_fdf(self, *args, **kwargs):
@@ -642,28 +675,32 @@ class fdfSileSiesta(SileSiesta):
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
 
-    def read_basis(self):
+    def read_basis(self, *args, **kwargs):
         """ Read the atomic species and figure out the number of atomic orbitals in their basis
 
-        This will try and read the basis from 3 different instances (following is order of preference):
+        The order of the read is shown below.
 
-        1. <systemlabel>.nc
-        2. <>.ion.nc
-        3. <>.ion.xml
-        4. <>.ORB_INDX
+        One can limit the tried files to only one file by passing
+        only a single file ending.
+
+        Parameters
+        ----------
+        order: list of str, optional
+            the order of which to try and read the basis information.
+            By default this is ``['nc', 'ion', 'ORB_INDX']``
         """
-        basis = self._r_basis_nc()
-        if basis is None:
-            basis = self._r_basis_ion()
-        if basis is None:
-            basis = self._r_basis_orb_indx()
-        return basis
+        order = kwargs.pop('order', ['nc', 'ion', 'ORB_INDX'])
+        for f in order:
+            v = getattr(self, '_r_basis_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
 
     def _r_basis_nc(self):
         # Read basis from <>.nc file
-        f = self._tofile(self.get('SystemLabel', default='siesta'))
-        if isfile(f + '.nc'):
-            return ncSileSiesta(f + '.nc').read_basis()
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_basis()
         return None
 
     def _r_basis_ion(self):
@@ -694,20 +731,19 @@ class fdfSileSiesta(SileSiesta):
         return atom
 
     def _r_basis_orb_indx(self):
-        f = self._tofile(self.get('SystemLabel', default='siesta'))
-        if isfile(f + '.ORB_INDX'):
-            return OrbIndxSileSiesta(f + '.ORB_INDX').read_basis()
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
+        if isfile(f):
+            return OrbIndxSileSiesta(f).read_basis()
         return None
 
     def read_density_matrix(self, *args, **kwargs):
         """ Try and read the density matrix by reading the <>.nc """
-        sys = self._tofile(self.get('SystemLabel', default='siesta'))
-
-        if isfile(sys + '.nc'):
-            return ncSileSiesta(sys + '.nc').read_density_matrix()
-        elif isfile(sys + '.DM'):
+        f = self._tofile(self.get('SystemLabel', default='siesta'))
+        if isfile(f + '.nc'):
+            return ncSileSiesta(f + '.nc').read_density_matrix()
+        elif isfile(f + '.DM'):
             geom = self.read_geometry()
-            DM = DMSileSiesta(sys + '.DM').read_density_matrix()
+            DM = DMSileSiesta(f + '.DM').read_density_matrix()
             if geom.no == DM.no:
                 DM._geom = geom
             else:
@@ -718,22 +754,22 @@ class fdfSileSiesta(SileSiesta):
 
     def read_energy_density_matrix(self, *args, **kwargs):
         """ Try and read the energy density matrix by reading the <>.nc """
-        sys = self._tofile(self.get('SystemLabel', default='siesta'))
+        f = self._tofile(self.get('SystemLabel', default='siesta'))
 
-        if isfile(sys + '.nc'):
-            return ncSileSiesta(sys + '.nc').read_energy_density_matrix()
+        if isfile(f + '.nc'):
+            return ncSileSiesta(f + '.nc').read_energy_density_matrix()
         raise RuntimeError("Could not find the energy density matrix from the *.nc.")
 
     def read_hamiltonian(self, *args, **kwargs):
         """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order) """
-        sys = self._tofile(self.get('SystemLabel', default='siesta'))
+        f = self._tofile(self.get('SystemLabel', default='siesta'))
 
-        if isfile(sys + '.nc'):
-            return ncSileSiesta(sys + '.nc').read_hamiltonian()
-        elif isfile(sys + '.TSHS'):
+        if isfile(f + '.nc'):
+            return ncSileSiesta(f + '.nc').read_hamiltonian()
+        elif isfile(f + '.TSHS'):
             # We prefer the atomic positions in the TSHS file, however,
             # the species etc. may not necessarily be good.
-            H = TSHSSileSiesta(sys + '.TSHS').read_hamiltonian()
+            H = TSHSSileSiesta(f + '.TSHS').read_hamiltonian()
             geom = self.read_geometry()
             for a, s in geom.atom.iter(True):
                 if len(s) == 0:
@@ -743,11 +779,11 @@ class fdfSileSiesta(SileSiesta):
                 if a.no == H.geom.atom[i].no:
                     H.geom.atom.replace(H.geom.atom[i], a)
             return H
-        elif isfile(sys + '.HSX'):
+        elif isfile(f + '.HSX'):
             # Read the intrinsic geometry, then HSX will fail
             # if we can't figure out the correct number of orbitals
             geom = self.read_geometry()
-            H = HSXSileSiesta(sys + '.HSX').read_hamiltonian(geom=geom)
+            H = HSXSileSiesta(f + '.HSX').read_hamiltonian(geom=geom)
             return H
         raise RuntimeError("Could not find the Hamiltonian from the *.nc, nor the *.TSHS file.")
 

@@ -238,3 +238,8 @@ def test_xv_preference():
     g2 = fdfSileSiesta(d('file.fdf')).read_geometry()
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
+
+    g2 = fdfSileSiesta(d('file.fdf')).read_geometry(order=['fdf'])
+    assert np.allclose(g.cell, g2.cell)
+    g2.xyz[0, 0] += 1.
+    assert np.allclose(g.xyz, g2.xyz)
