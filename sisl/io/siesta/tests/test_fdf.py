@@ -4,6 +4,7 @@ import pytest
 
 from tempfile import mkstemp, mkdtemp
 
+from sisl import geom
 from sisl import Geometry, Atom
 from sisl.io import fdfSileSiesta, SileError
 from sisl.unit.siesta import unit_convert
@@ -28,6 +29,8 @@ def teardown_module(module):
 
 
 def d(f):
+    if f == '':
+        return _C.d
     return osp.join(_C.d, f)
 
 
@@ -181,6 +184,7 @@ def test_include():
         fh.write('Flag2 date2\n')
         fh.write('# Flag3 is read through < from file hello\n')
         fh.write('Flag3 Sub < hello\n')
+        fh.write('FakeInt 1\n')
         fh.write('Test 1. eV\n')
         fh.write('TestRy 1. Ry\n')
         fh.write('%block Hello < hello\n')
@@ -207,6 +211,8 @@ def test_include():
     assert fdf.get('Flag3') == 'test'
     assert fdf.get('Flag4') == 'non'
     assert fdf.get('FLAG4') == 'non'
+    assert fdf.get('Fakeint') == 1
+    assert fdf.get('Fakeint', default='0') == '1'
     assert fdf.get('test', 'eV') == pytest.approx(1.)
     assert fdf.get('test', with_unit=True)[0] == pytest.approx(1.)
     assert fdf.get('test', with_unit=True)[1] == 'eV'
@@ -221,3 +227,14 @@ def test_include():
     ll = open(d('hello')).readlines()
     ll.pop(1)
     assert fdf.get('Hello') == [l.replace('\n', '').strip() for l in ll]
+
+
+def test_xv_preference():
+    g = geom.graphene()
+    g.write(d('file.fdf'))
+    g.xyz[0, 0] += 1.
+    g.write(d('siesta.XV'))
+
+    g2 = fdfSileSiesta(d('file.fdf')).read_geometry()
+    assert np.allclose(g.cell, g2.cell)
+    assert np.allclose(g.xyz, g2.xyz)

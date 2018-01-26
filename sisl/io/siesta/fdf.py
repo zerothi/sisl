@@ -16,6 +16,7 @@ from .pdos import pdosSileSiesta
 from .siesta import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import OrbIndxSileSiesta
+from .xv import XVSileSiesta
 from sisl import Geometry, Atom, SuperCell
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
@@ -305,6 +306,7 @@ class fdfSileSiesta(SileSiesta):
         LabeleV 1. eV
         LabelRy 1. Ry
         Label name
+        FakeInt 1
         %block Hello
         line 1
         line2
@@ -313,6 +315,7 @@ class fdfSileSiesta(SileSiesta):
         >>> fdf.get('LabelRy') == unit.siesta.unit_convert('Ry', 'eV')
         >>> fdf.get('LabelRy', 'Ry') == 1.
         >>> fdf.get('LabelRy', with_unit=True) == (1., 'Ry')
+        >>> fdf.get('FakeInt', default='0') == '1'
         >>> fdf.get('LabeleV', with_unit=True) == (1., 'eV')
         >>> fdf.get('Label', with_unit=True) == 'name' # no unit present on line
         >>> fdf.get('Hello') == ['line 1', 'line2']
@@ -513,13 +516,49 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_supercell_XV(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
-        f = self.get('SystemLabel', default='siesta')
-        sc = None
+        f = self._tofile(self.get('SystemLabel', default='siesta'))
         if isfile(f + '.XV'):
-            sc = XVSileSiesta(f + '.XV').read_supercell()
-        return sc
+            return XVSileSiesta(f + '.XV').read_supercell()
+        return None
 
     def read_geometry(self, *args, **kwargs):
+        """ Returns Geometry object from the FDF file
+
+        The reading order of the geometry is:
+
+        1) <>.XV file
+        2) <>.nc file
+        3) <>.fdf file
+        """
+        geom = self._r_geometry_XV(*args, **kwargs)
+        if geom is None:
+            geom = self._r_geometry_nc(*args, **kwargs)
+        if geom is None:
+            geom = self._r_geometry_fdf(*args, **kwargs)
+        return geom
+
+    def _r_geometry_XV(self, *args, **kwargs):
+        """ Returns `SuperCell` object from the FDF file """
+        f = self._tofile(self.get('SystemLabel', default='siesta'))
+        geom = None
+        if isfile(f + '.XV'):
+            basis = self.read_basis()
+            if basis is None:
+                geom = XVSileSiesta(f + '.XV').read_geometry()
+            else:
+                geom = XVSileSiesta(f + '.XV').read_geometry(species_Z=True)
+                for atom, _ in geom.atom.iter(True):
+                    geom.atom.replace(atom, basis[atom.Z-1])
+        return geom
+
+    def _r_geometry_nc(self):
+        # Read basis from <>.nc file
+        f = self._tofile(self.get('SystemLabel', default='siesta'))
+        if isfile(f + '.nc'):
+            return ncSileSiesta(f + '.nc').read_geometry()
+        return None
+
+    def _r_geometry_fdf(self, *args, **kwargs):
         """ Returns Geometry object from the FDF file
 
         NOTE: Interaction range of the Atoms are currently not read.
@@ -560,20 +599,17 @@ class fdfSileSiesta(SileSiesta):
             raise SileError('AtomicCoordinatesAndAtomicSpecies block could not be found')
 
         # Read number of atoms and block
-        na = self.get('NumberOfAtoms')
-        if na:
-            na = int(na)
-        else:
-            # We default to the number of elements in the
-            # AtomicCoordinatesAndAtomicSpecies block
-            na = len(atms)
+        # We default to the number of elements in the
+        # AtomicCoordinatesAndAtomicSpecies block
+        na = self.get('NumberOfAtoms', default=len(atms))
 
         # Reduce space if number of atoms specified
-        if na != len(atms):
+        if na < len(atms):
             # align number of atoms and atms array
             atms = atms[:na]
-
-        if na == 0:
+        elif na > len(atms):
+            raise SileError('NumberOfAtoms is larger than the atoms defined in the blocks')
+        elif na == 0:
             raise SileError('NumberOfAtoms has been determined to be zero, no atoms.')
 
         # Create array
@@ -606,20 +642,6 @@ class fdfSileSiesta(SileSiesta):
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
 
-    def _r_geometry_XV(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the FDF file """
-        f = self.get('SystemLabel', default='siesta')
-        geom = None
-        if isfile(f + '.XV'):
-            basis = self.read_basis()
-            if basis is None:
-                geom = XVSileSiesta(f + '.XV').read_geometry()
-            else:
-                geom = XVSileSiesta(f + '.XV').read_geometry(species_Z=True)
-                for atom, _ in geom.atom.iter(True):
-                    geom.atom.replace(atom, basis[atom.Z-1])
-        return geom
-
     def read_basis(self):
         """ Read the atomic species and figure out the number of atomic orbitals in their basis
 
@@ -639,20 +661,16 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_basis_nc(self):
         # Read basis from <>.nc file
-        f = self.get('SystemLabel', default='siesta')
-        try:
+        f = self._tofile(self.get('SystemLabel', default='siesta'))
+        if isfile(f + '.nc'):
             return ncSileSiesta(f + '.nc').read_basis()
-        except:
-            pass
         return None
 
     def _r_basis_ion(self):
         # Read basis from <>.ion.nc file or <>.ion.xml
         spcs = self.get('ChemicalSpeciesLabel')
         if spcs is None:
-            spcs = self.get('Chemical_Species_Label')
-        if spcs is None:
-            # We haven't found the chemical and species label,
+            # We haven't found the chemical and species label
             # so return nothing
             return None
 
@@ -663,24 +681,27 @@ class fdfSileSiesta(SileSiesta):
             idx = int(idx) - 1 # F-indexing
             Z = int(Z)
             lbl = lbl.strip()
+            f = self._tofile(lbl)
 
             # now try and read the basis
-            if isfile(lbl + '.ion.nc'):
-                atom[idx] = ionncSileSiesta(lbl + '.ion.nc').read_basis()
-            elif isfile(lbl + '.ion.xml'):
-                atom[idx] = ionxmlSileSiesta(lbl + '.ion.xml').read_basis()
+            if isfile(f + '.ion.nc'):
+                atom[idx] = ionncSileSiesta(f + '.ion.nc').read_basis()
+            elif isfile(f + '.ion.xml'):
+                atom[idx] = ionxmlSileSiesta(f + '.ion.xml').read_basis()
             else:
                 # default the atom to not have a range, and no associated orbitals
                 atom[idx] = Atom(Z=Z, tag=lbl)
         return atom
 
     def _r_basis_orb_indx(self):
-        f = self.get('SystemLabel', default='siesta')
-        return OrbIndxSileSiesta(f + '.ORB_INDX').read_basis()
+        f = self._tofile(self.get('SystemLabel', default='siesta'))
+        if isfile(f + '.ORB_INDX'):
+            return OrbIndxSileSiesta(f + '.ORB_INDX').read_basis()
+        return None
 
     def read_density_matrix(self, *args, **kwargs):
         """ Try and read the density matrix by reading the <>.nc """
-        sys = self.get('SystemLabel', default='siesta')
+        sys = self._tofile(self.get('SystemLabel', default='siesta'))
 
         if isfile(sys + '.nc'):
             return ncSileSiesta(sys + '.nc').read_density_matrix()
@@ -697,7 +718,7 @@ class fdfSileSiesta(SileSiesta):
 
     def read_energy_density_matrix(self, *args, **kwargs):
         """ Try and read the energy density matrix by reading the <>.nc """
-        sys = self.get('SystemLabel', default='siesta')
+        sys = self._tofile(self.get('SystemLabel', default='siesta'))
 
         if isfile(sys + '.nc'):
             return ncSileSiesta(sys + '.nc').read_energy_density_matrix()
@@ -705,7 +726,7 @@ class fdfSileSiesta(SileSiesta):
 
     def read_hamiltonian(self, *args, **kwargs):
         """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order) """
-        sys = self.get('SystemLabel', default='siesta')
+        sys = self._tofile(self.get('SystemLabel', default='siesta'))
 
         if isfile(sys + '.nc'):
             return ncSileSiesta(sys + '.nc').read_hamiltonian()
@@ -745,7 +766,7 @@ class fdfSileSiesta(SileSiesta):
         sp = p.add_subparsers(help="Determine which part of the fdf-file that should be processed.")
 
         # Get the label which retains all the sub-modules
-        label = self.get('SystemLabel', default='siesta')
+        label = self._tofile(self.get('SystemLabel', default='siesta'))
 
         # The default on all sub-parsers are the retrieval and setting
 
@@ -799,7 +820,7 @@ class fdfSileSiesta(SileSiesta):
         # a warning in that case)
         f = label + '.XV'
         try:
-            if osp.isfile(f):
+            if isfile(f):
                 geom = sis.XVSileSiesta(f).read_geometry()
                 warn.warn("Reading geometry from the XV file instead of the fdf-file!")
             else:
@@ -814,56 +835,56 @@ class fdfSileSiesta(SileSiesta):
             pass
 
         f = label + '.bands'
-        if osp.isfile(f):
+        if isfile(f):
             tmp_p = sp.add_parser('band',
                                   help="Manipulate bands file from the Siesta simulation")
             tmp_p, tmp_ns = sis.bandsSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.PDOS.xml'
-        if osp.isfile(f):
+        if isfile(f):
             tmp_p = sp.add_parser('pdos',
                                   help="Manipulate PDOS.xml file from the Siesta simulation")
             tmp_p, tmp_ns = sis.pdosSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.EIG'
-        if osp.isfile(f):
+        if isfile(f):
             tmp_p = sp.add_parser('eig',
                                   help="Manipulate EIG file from the Siesta simulation")
             tmp_p, tmp_ns = sis.eigSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.TBT.nc'
-        if osp.isfile(f):
+        if isfile(f):
             tmp_p = sp.add_parser('tbt',
                                   help="Manipulate tbtrans output file")
             tmp_p, tmp_ns = sis.tbtncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.TBT.Proj.nc'
-        if osp.isfile(f):
+        if isfile(f):
             tmp_p = sp.add_parser('tbt-proj',
                                   help="Manipulate tbtrans projection output file")
             tmp_p, tmp_ns = sis.tbtprojncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.PHT.nc'
-        if osp.isfile(f):
+        if isfile(f):
             tmp_p = sp.add_parser('pht',
                                   help="Manipulate the phtrans output file")
             tmp_p, tmp_ns = sis.phtncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.PHT.Proj.nc'
-        if osp.isfile(f):
+        if isfile(f):
             tmp_p = sp.add_parser('pht-proj',
                                   help="Manipulate phtrans projection output file")
             tmp_p, tmp_ns = sis.phtprojncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.nc'
-        if osp.isfile(f):
+        if isfile(f):
             tmp_p = sp.add_parser('nc',
                                   help="Manipulate Siesta NetCDF output file")
             tmp_p, tmp_ns = sis.ncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
