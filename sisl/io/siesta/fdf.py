@@ -489,21 +489,34 @@ class fdfSileSiesta(SileSiesta):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
-    def read_supercell(self, *args, **kwargs):
-        """ Returns SuperCell object by reading Siesta output related files.
-
-        The order of the read is shown below.
+    def read_supercell(self, output=False, *args, **kwargs):
+        """ Returns SuperCell object by reading fdf or Siesta output related files.
 
         One can limit the tried files to only one file by passing
         only a single file ending.
 
         Parameters
         ----------
+        output: bool, optional
+            whether to read supercell from output files (default to read from
+            the fdf file).
         order: list of str, optional
             the order of which to try and read the supercell.
-            By default this is ``['XV', 'nc', 'fdf']``
+            By default this is ``['XV', 'nc', 'fdf']`` if `output` is true.
+            If `order` is present `output` is disregarded.
+
+        Examples
+        --------
+        >>> fdf = get_sile('RUN.fdf') # doctest: +SKIP
+        >>> fdf.read_supercell() # read from fdf
+        >>> fdf.read_supercell(True) # read from [XV, nc, fdf]
+        >>> fdf.read_supercell(order=['nc']) # read from [nc]
+        >>> fdf.read_supercell(True, order=['nc']) # read from [nc]
         """
-        order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
+        if output:
+            order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
+        else:
+            order = kwargs.pop('order', ['fdf'])
         for f in order:
             v = getattr(self, '_r_supercell_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -549,21 +562,34 @@ class fdfSileSiesta(SileSiesta):
             return XVSileSiesta(f).read_supercell()
         return None
 
-    def read_geometry(self, *args, **kwargs):
-        """ Returns Geometry object by reading Siesta output related files.
-
-        The order of the read is shown below.
+    def read_geometry(self, output=False, *args, **kwargs):
+        """ Returns Geometry object by reading fdf or Siesta output related files.
 
         One can limit the tried files to only one file by passing
         only a single file ending.
 
         Parameters
         ----------
+        output: bool, optional
+            whether to read geometry from output files (default to read from
+            the fdf file).
         order: list of str, optional
             the order of which to try and read the geometry.
-            By default this is ``['XV', 'nc', 'fdf']``
+            By default this is ``['XV', 'nc', 'fdf']`` if `output` is true
+            If `order` is present `output` is disregarded.
+
+        Examples
+        --------
+        >>> fdf = get_sile('RUN.fdf') # doctest: +SKIP
+        >>> fdf.read_geometry() # read from fdf
+        >>> fdf.read_geometry(True) # read from [XV, nc, fdf]
+        >>> fdf.read_geometry(order=['nc']) # read from [nc]
+        >>> fdf.read_geometry(True, order=['nc']) # read from [nc]
         """
-        order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
+        if output:
+            order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
+        else:
+            order = kwargs.pop('order', ['fdf'])
         for f in order:
             v = getattr(self, '_r_geometry_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -596,7 +622,7 @@ class fdfSileSiesta(SileSiesta):
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
-        sc = self.read_supercell(*args, **kwargs)
+        sc = self.read_supercell(order=['fdf'])
 
         # No fractional coordinates
         is_frac = False
@@ -742,7 +768,7 @@ class fdfSileSiesta(SileSiesta):
         if isfile(f + '.nc'):
             return ncSileSiesta(f + '.nc').read_density_matrix()
         elif isfile(f + '.DM'):
-            geom = self.read_geometry()
+            geom = self.read_geometry(True)
             DM = DMSileSiesta(f + '.DM').read_density_matrix()
             if geom.no == DM.no:
                 DM._geom = geom
@@ -758,7 +784,16 @@ class fdfSileSiesta(SileSiesta):
 
         if isfile(f + '.nc'):
             return ncSileSiesta(f + '.nc').read_energy_density_matrix()
-        raise RuntimeError("Could not find the energy density matrix from the *.nc.")
+        elif isfile(f + '.TSDE'):
+            geom = self.read_geometry(True)
+            EDM = TSDESileSiesta(f + '.TSDE').read_energy_density_matrix()
+            if geom.no == EDM.no:
+                EDM._geom = geom
+            else:
+                warn.warn('The energy density matrix is read from *.TSDE without being able to read '
+                          'a geometry with the correct orbitals.')
+            return
+        raise RuntimeError("Could not find the energy density matrix from the *.nc/*.TSDE.")
 
     def read_hamiltonian(self, *args, **kwargs):
         """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order) """
@@ -770,7 +805,7 @@ class fdfSileSiesta(SileSiesta):
             # We prefer the atomic positions in the TSHS file, however,
             # the species etc. may not necessarily be good.
             H = TSHSSileSiesta(f + '.TSHS').read_hamiltonian()
-            geom = self.read_geometry()
+            geom = self.read_geometry(True)
             for a, s in geom.atom.iter(True):
                 if len(s) == 0:
                     continue
@@ -782,7 +817,7 @@ class fdfSileSiesta(SileSiesta):
         elif isfile(f + '.HSX'):
             # Read the intrinsic geometry, then HSX will fail
             # if we can't figure out the correct number of orbitals
-            geom = self.read_geometry()
+            geom = self.read_geometry(True)
             H = HSXSileSiesta(f + '.HSX').read_hamiltonian(geom=geom)
             return H
         raise RuntimeError("Could not find the Hamiltonian from the *.nc, nor the *.TSHS file.")
@@ -856,11 +891,7 @@ class fdfSileSiesta(SileSiesta):
         # a warning in that case)
         f = label + '.XV'
         try:
-            if isfile(f):
-                geom = sis.XVSileSiesta(f).read_geometry()
-                warn.warn("Reading geometry from the XV file instead of the fdf-file!")
-            else:
-                geom = self.read_geometry()
+            geom = self.read_geometry(True)
 
             tmp_p = sp.add_parser('geom',
                                   help="Edit the contained geometry in the file")
