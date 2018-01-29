@@ -562,9 +562,12 @@ class SparseCSR(object):
         new : int or array_like
            new column indices
         """
-        # Sort the columns
         old = ensure_array(old)
         new = ensure_array(new)
+
+        if len(old) != len(new):
+            raise ValueError(self.__class__.__name__+".translate_columns requires input and output columns with "
+                             "equal length")
 
         if np.any(old >= self.shape[1]):
             raise ValueError(self.__class__.__name__+".translate_columns has non-existing old column values")

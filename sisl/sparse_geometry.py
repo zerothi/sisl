@@ -140,6 +140,38 @@ class _SparseGeometry(object):
         """ Number of non-zero elements """
         return self._csr.nnz
 
+    def _translate_cells(self, old, new):
+        """ Translates all columns in the `old` cell indices to the `new` cell indices
+
+        Since the physical matrices are stored in a CSR form, with shape ``(no, no * n_s)`` each
+        block of ``(no, no)`` refers to supercell matrices with an offset according to the internal
+        supercell index.
+        This routine may be used to translate from one sorting of the columns to another sorting of the columns.
+
+        Parameters
+        ----------
+        old : list of int
+           integer list of supercell indices (all smaller than `n_s`) that the current blocks of matrices
+           belong to.
+        new : list of int
+           integer list of supercell indices (all smaller than `n_s`) that the current blocks of matrices
+           are being transferred to. Must have same length as `old`.
+        """
+        old = ensure_array(old)
+        new = ensure_array(new)
+
+        if len(old) != len(new):
+            raise ValueError(self.__class__.__name__+".translate_cells requires input and output indices with "
+                             "equal length")
+
+        no = self.no
+        # Number of elements per matrix
+        n = _a.emptyi(len(old))
+        n.fill(no)
+        old = array_arange(old * no, n=n)
+        new = array_arange(new * no, n=n)
+        self._csr.translate_columns(old, new)
+
     def edges(self, atom, exclude=None):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
