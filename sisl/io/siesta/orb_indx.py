@@ -18,6 +18,33 @@ class OrbIndxSileSiesta(SileSiesta):
     """ .ORB_INDX file object """
 
     @Sile_fh_open
+    def read_supercell_nsc(self):
+        """ Reads the supercell number of supercell information """
+        # First line contains no no_s
+        line = self.readline().split()
+        no_s = int(line[1])
+        self.readline()
+        # two non-used lines
+        self.readline()
+        self.readline()
+        nsc = [0] * 3
+
+        def int_abs(i):
+            return abs(int(i))
+
+        for io in range(no_s):
+            line = self.readline().split()
+            isc = list(map(int_abs, line[12:15]))
+            if isc[0] > nsc[0]:
+                nsc[0] = isc[0]
+            if isc[1] > nsc[1]:
+                nsc[1] = isc[1]
+            if isc[2] > nsc[2]:
+                nsc[2] = isc[2]
+
+        return [n * 2 + 1 for n in nsc]
+
+    @Sile_fh_open
     def read_basis(self):
         """ Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file
 
