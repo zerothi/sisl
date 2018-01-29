@@ -117,12 +117,7 @@ if not osp.exists(osp.join(cwd, 'PKG-INFO')):
 
 # Generate configuration
 def configuration(parent_package='', top_path=None):
-    try:
-        from numpy.distutils.misc_util import Configuration
-    except:
-        print("\n\nsisl installation requires numpy to be installed, please "
-              "install numpy before installing sisl!\n\n")
-        raise ImportError("numpy is required for sisl installation")
+    from numpy.distutils.misc_util import Configuration
     config = Configuration(None, parent_package, top_path)
     config.set_options(ignore_setup_xxx_py=True,
                        assume_default_configuration=True,
@@ -130,13 +125,10 @@ def configuration(parent_package='', top_path=None):
                        quiet=True)
 
     config.add_subpackage('sisl')
+    config.get_version('sisl/info.py')
 
     return config
 
-
-metadata['version'] = VERSION
-if not ISRELEASED:
-    metadata['version'] = VERSION + '-dev'
 
 # With credits from NUMPY developers we use this
 # routine to get the git-tag
@@ -197,7 +189,7 @@ micro   = {version[2]}
 version = '.'.join(map(str,[major, minor, micro]))
 release = version
 
-if not released:
+if git_count > 2 and not released:
     # Add git-revision to the version string
     version += '+' + git_count
 
@@ -251,9 +243,16 @@ if __name__ == '__main__':
     # Be sure to import this before numpy setup
     from setuptools import setup
 
-    # Now we import numpy distutils for installation.
-    from numpy.distutils.core import setup
-    metadata['configuration'] = configuration
+    try:
+        # Now we import numpy distutils for installation.
+        # Note that this should work, also when
+        from numpy.distutils.core import setup
+        metadata['configuration'] = configuration
+    except:
+        if ISRELEASED:
+            metadata['version'] = VERSION
+        else:
+            metadata['version'] = VERSION + '-dev'
 
     # Main setup of python modules
     setup(**metadata)
