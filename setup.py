@@ -180,7 +180,7 @@ released = {released}
 # Git information (specific commit, etc.)
 git_revision = '{git}'
 git_revision_short = git_revision[:7]
-git_count = '{count}'
+git_count = {count}
 
 # Version information
 major   = {version[0]}
@@ -191,7 +191,7 @@ release = version
 
 if git_count > 2 and not released:
     # Add git-revision to the version string
-    version += '+' + git_count
+    version += '+' + str(git_count)
 
 # BibTeX information if people wish to cite
 bibtex = '''@misc{{{{zerothi_sisl,
