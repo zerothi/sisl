@@ -509,13 +509,15 @@ class fdfSileSiesta(SileSiesta):
         """
         if spgeom.na != geom.na and spgeom.no == geom.no:
             # In this case we cannot compare individiual atoms # of orbitals.
-            # I.e. we
+            # I.e. we suspect the incoming geometry to be correct.
             spgeom._geom = geom
             return True
         elif spgeom.na != geom.na:
             warn.warn('cannot replace geometry due to insufficient information regarding number of '
                       'atoms and orbitals, ensuring correct geometry failed...')
 
+        print('SPGEOM: ', spgeom.geom)
+        print('GEOM: ', geom)
         no_no = spgeom.no == geom.no
         # Loop and make sure the number of orbitals is consistent
         for a, idx in geom.atom.iter(True):
@@ -526,7 +528,7 @@ class fdfSileSiesta(SileSiesta):
                 # Make sure the atom we replace with retains the same information
                 # *except* the number of orbitals.
                 a = Atom(a.Z, Sa.orbital, mass=a.mass, tag=a.tag)
-            S.geom.atom.replace(idx, a)
+            spgeom.geom.atom.replace(idx, a)
         return no_no
 
     def read_supercell(self, output=False, *args, **kwargs):
@@ -646,8 +648,10 @@ class fdfSileSiesta(SileSiesta):
                 geom = XVSileSiesta(f).read_geometry()
             else:
                 geom = XVSileSiesta(f).read_geometry(species_Z=True)
-                for atom, _ in geom.atom.iter(True):
-                    geom.atom.replace(atom, basis[atom.Z-1])
+                with warn.catch_warnings():
+                    warn.simplefilter('ignore')
+                    for atom, _ in geom.atom.iter(True):
+                        geom.atom.replace(atom, basis[atom.Z-1])
         return geom
 
     def _r_geometry_nc(self):
@@ -828,7 +832,7 @@ class fdfSileSiesta(SileSiesta):
             return ncSileSiesta(f).read_density_matrix(*args, **kwargs)
         return None
 
-    def _r_density_matrix_TSDE(self, *args, **kwargs):
+    def _r_density_matrix_tsde(self, *args, **kwargs):
         """ Read density matrix from the TSDE file """
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
         DM = None
@@ -838,7 +842,7 @@ class fdfSileSiesta(SileSiesta):
             self._SpGeom_replace_geom(DM, geom)
         return DM
 
-    def _r_density_matrix_DM(self, *args, **kwargs):
+    def _r_density_matrix_dm(self, *args, **kwargs):
         """ Read density matrix from the DM file """
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.DM'
         DM = None
@@ -874,7 +878,7 @@ class fdfSileSiesta(SileSiesta):
             return ncSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
         return None
 
-    def _r_energy_density_matrix_TSDE(self, *args, **kwargs):
+    def _r_energy_density_matrix_tsde(self, *args, **kwargs):
         """ Read energy density matrix from the TSDE file """
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
         DM = None
@@ -910,7 +914,7 @@ class fdfSileSiesta(SileSiesta):
             return ncSileSiesta(f).read_hamiltonian(*args, **kwargs)
         return None
 
-    def _r_hamiltonian_TSHS(self, *args, **kwargs):
+    def _r_hamiltonian_tshs(self, *args, **kwargs):
         """ Read Hamiltonian from the TSHS file """
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSHS'
         H = None
@@ -920,7 +924,7 @@ class fdfSileSiesta(SileSiesta):
             self._SpGeom_replace_geom(H, geom)
         return H
 
-    def _r_hamiltonian_HSX(self, *args, **kwargs):
+    def _r_hamiltonian_hsx(self, *args, **kwargs):
         """ Read Hamiltonian from the HSX file """
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.HSX'
         H = None

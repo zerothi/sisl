@@ -1373,36 +1373,42 @@ class Atoms(object):
                 return i
         raise KeyError('Could not find `atom` in the list of atoms.')
 
-    def reorder(self):
-        """ Reorders the atoms and species index so that they are ascending """
-        smin = np.zeros(len(self.atom), np.int32)
-        for i in range(len(self.atom)):
-            lst = (self.specie == i).nonzero()[0]
-            if len(lst) == 0:
-                # means it is not in use
-                smin[i] = len(self.specie)
-            else:
-                smin[i] = lst[0]
+    def reorder(self, in_place=False):
+        """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists """
+
+        # Contains the minimum atomic index for a given specie
+        smin = _a.emptyi(len(self.atom))
+        smin.fill(len(self))
+        for a in range(len(self.atom)):
+            lst = (self.specie == a).nonzero()[0]
+            if len(lst) > 0:
+                smin[a] = lst.min()
 
         # Now swap indices into correct place
+        # This will give the indices of the species
+        # in the ascending order
         isort = np.argsort(smin)
         if np.all(np.diff(isort) == 0):
             # No swaps required
             return self.copy()
 
         # We need to swap something
-        atoms = self.copy()
-        for os, ns in zip(range(len(isort)), isort):
-            # Reorder the atom array as well.
-            atoms._atom[ns] = self._atom[os].copy()
-            atoms._specie[self.specie == os] = ns
+        if in_place:
+            atoms = self
+        else:
+            atoms = self.copy()
+        atoms._atom[:] = [atoms._atom[i] for i in isort]
+        atoms._specie[:] = isort[atoms._specie]
 
         atoms._update_orbitals()
         return atoms
 
-    def reduce(self):
+    def reduce(self, in_place=False):
         """ Returns a new `Atoms` object by removing non-used atoms """
-        atoms = self.copy()
+        if in_place:
+            atoms = self
+        else:
+            atoms = self.copy()
         atom = atoms._atom
         specie = atoms._specie
 
@@ -1638,7 +1644,9 @@ class Atoms(object):
         for ius in np.unique(self._specie[index]):
             a = self._atom[ius]
             if a.no != atom.no:
-                warn.warn('Substituting atom {} to {} with a different number of orbitals!'.format(a, atom))
+                a1 = '  ' + repr(a).replace('\n', '\n  ')
+                a2 = '  ' + repr(atom).replace('\n', '\n  ')
+                warn.warn('Substituting atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
         self._specie[index] = specie
         # Update orbital counts...
         self._update_orbitals()
@@ -1674,7 +1682,9 @@ class Atoms(object):
         for i, atom in enumerate(self.atom):
             if atom == atom_from:
                 if atom.no != atom_to.no:
-                    warn.warn('Replacing atom {} to {} with a different number of orbitals!'.format(atom, atom_to))
+                    a1 = '  ' + repr(atom).replace('\n', '\n  ')
+                    a2 = '  ' + repr(atom_to).replace('\n', '\n  ')
+                    warn.warn('Replacing atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
                 self._atom[i] = atom_to
 
     def hassame(self, other, R=True):
