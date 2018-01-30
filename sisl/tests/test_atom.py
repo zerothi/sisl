@@ -253,6 +253,30 @@ class TestAtoms(object):
         for i in range(10, 12):
             assert atom[i] == Atom('B')
 
+    def test_replace2(self):
+        # Add new atoms to the set
+        atom = Atoms(['C'] * 10 + ['B'] * 2)
+        atom.replace(range(1, 4), Atom('Au', [-1] * 2))
+        assert atom[0] == Atom('C')
+        for i in range(1, 4):
+            assert atom[i] != Atom('Au')
+            assert atom[i] == Atom('Au', [-1] * 2)
+        assert atom[4] != Atom('Au')
+        assert atom[4] != Atom('Au', [-1] * 2)
+        assert len(atom.atom) == 3
+
+        # Second replace call (equivalent to replace_atom)
+        atom.replace(atom[0], Atom('C', [-1] * 2))
+        assert atom[0] == Atom('C', [-1] * 2)
+        assert len(atom.atom) == 3
+        assert atom[0] == Atom('C', [-1] * 2)
+        for i in range(4, 10):
+            assert atom[i] == Atom('C', [-1] * 2)
+        for i in range(1, 4):
+            assert atom[i] == Atom('Au', [-1] * 2)
+        for i in range(10, 12):
+            assert atom[i] == Atom('B')
+
     def test_append1(self):
         # Add new atoms to the set
         atom1 = Atoms(['C', 'C'])

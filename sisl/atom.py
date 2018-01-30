@@ -1185,12 +1185,19 @@ class Atoms(object):
     ----------
     atom : list of Atom
         a list of unique atoms in this object
-    specie : numpy.ndarray
+    specie : (na, )
         a list of unique specie indices
-    firsto : numpy.ndarray
+    no : int
+        total number of orbitals
+    q0 : (no, )
+        initial charge on each orbital
+    mass : (na, )
+        mass for each atom
+    firsto : (no + 1,)
         a list of orbital indices for each atom, this corresponds to the first
-        orbital on each of the atoms.
-    lasto : numpy.ndarray
+        orbital on each of the atoms. The last element is the total number of
+        orbitals and is equivalent to `no`.
+    lasto : (no, )
         a list of orbital indices for each atom, this corresponds to the last
         orbital on each of the atoms.
     """
@@ -1364,7 +1371,7 @@ class Atoms(object):
         for i, a in enumerate(self.atom):
             if a == atom:
                 return i
-        raise KeyError('Could not find `atom`')
+        raise KeyError('Could not find `atom` in the list of atoms.')
 
     def reorder(self):
         """ Reorders the atoms and species index so that they are ascending """
@@ -1456,7 +1463,17 @@ class Atoms(object):
         return atoms
 
     def append(self, other):
-        """ Append `other` to this list of atoms and return the appended version """
+        """ Append `other` to this list of atoms and return the appended version
+
+        Parameters
+        ----------
+        other : Atoms or Atom
+           new atoms to be added
+
+        Returns
+        -------
+        Atoms : a merging of this objects atoms and the `other` objects atoms.
+        """
         if not isinstance(other, Atoms):
             other = Atoms(other)
         else:
@@ -1589,13 +1606,48 @@ class Atoms(object):
             self._specie[key[s_i]] = self.index(atom)
         self._update_orbitals()
 
-    def replace(self, atom_from, atom_to):
+    def replace(self, index, atom):
+        """ Replace all atomic indices `index` with the atom `atom` (in-place)
+
+        This is the preferred way of replacing atoms in geometries.
+
+        Parameters
+        ----------
+        index : list of int or Atom
+           the indices of the atoms that should be replaced by the new atom.
+           If an `Atom` is passed, this routine defers its call to `replace_atom`.
+        atom : Atom
+           the replacement atom.
+        """
+        if isinstance(index, Atom):
+            self.replace_atom(index, atom)
+            return
+        if not isinstance(atom, Atom):
+            raise ValueError(self.__class__.__name__ + '.replace requires input arguments to '
+                             'be of the class Atom')
+        index = ensure_array(index)
+
+        # Be sure to add the atom
+        if atom not in self.atom:
+            self._atom.append(atom)
+
+        # Get specie index of the atom
+        specie = self.index(atom)
+
+        # Loop unique species and check that we have the correct number of orbitals
+        for ius in np.unique(self._specie[index]):
+            a = self._atom[ius]
+            if a.no != atom.no:
+                warn.warn('Substituting atom {} to {} with a different number of orbitals!'.format(a, atom))
+        self._specie[index] = specie
+        # Update orbital counts...
+        self._update_orbitals()
+
+    def replace_atom(self, atom_from, atom_to):
         """ Replace all atoms equivalent to `atom_from` with `atom_to` (in-place)
 
         I.e. this is the preferred way of adapting all atoms of a specific type
         with another one.
-
-        This is an *in-place* operation.
 
         If the two atoms does not have the same number of orbitals a warning will
         be raised.
@@ -1607,12 +1659,16 @@ class Atoms(object):
            of atoms, nothing will happen.
         atom_to : Atom
            the replacement atom.
+
+        Raises
+        ------
+        UserWarning : if the atoms does not have the same number of orbitals.
         """
         if not isinstance(atom_from, Atom):
-            raise ValueError(self.__class__.__name__ + '.replace requires input arguments to '
+            raise ValueError(self.__class__.__name__ + '.replace_atom requires input arguments to '
                              'be of the class Atom')
         if not isinstance(atom_to, Atom):
-            raise ValueError(self.__class__.__name__ + '.replace requires input arguments to '
+            raise ValueError(self.__class__.__name__ + '.replace_atom requires input arguments to '
                              'be of the class Atom')
 
         for i, atom in enumerate(self.atom):

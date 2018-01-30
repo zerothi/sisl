@@ -10,7 +10,8 @@ from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
-from .binaries import TSHSSileSiesta, DMSileSiesta
+from .binaries import TSHSSileSiesta, TSDESileSiesta
+from .binaries import DMSileSiesta, HSXSileSiesta
 from .eig import eigSileSiesta
 from .pdos import pdosSileSiesta
 from .siesta import ncSileSiesta
@@ -489,6 +490,45 @@ class fdfSileSiesta(SileSiesta):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
+    @staticmethod
+    def _SpGeom_replace_geom(spgeom, geom):
+        """ Replace all atoms in spgeom with the atom in geom while retaining the number of orbitals
+
+        Currently we need some way of figuring out whether the number of atoms and orbitals are
+        consistent.
+
+        Parameters
+        ----------
+        spgeom : SparseGeometry
+           the sparse object with attached geometry
+        geom : Geometry
+           geometry to grab atoms from
+        full_replace : bool, optional
+           whether the full geometry may be replaced in case ``spgeom.na != geom.na && spgeom.no == geom.no``.
+           This is required when `spgeom` does not contain information about atoms.
+        """
+        if spgeom.na != geom.na and spgeom.no == geom.no:
+            # In this case we cannot compare individiual atoms # of orbitals.
+            # I.e. we
+            spgeom._geom = geom
+            return True
+        elif spgeom.na != geom.na:
+            warn.warn('cannot replace geometry due to insufficient information regarding number of '
+                      'atoms and orbitals, ensuring correct geometry failed...')
+
+        no_no = spgeom.no == geom.no
+        # Loop and make sure the number of orbitals is consistent
+        for a, idx in geom.atom.iter(True):
+            if len(idx) == 0:
+                continue
+            Sa = spgeom.geom.atom[idx[0]]
+            if Sa.no != a.no:
+                # Make sure the atom we replace with retains the same information
+                # *except* the number of orbitals.
+                a = Atom(a.Z, Sa.orbital, mass=a.mass, tag=a.tag)
+            S.geom.atom.replace(idx, a)
+        return no_no
+
     def read_supercell(self, output=False, *args, **kwargs):
         """ Returns SuperCell object by reading fdf or Siesta output related files.
 
@@ -763,71 +803,139 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def read_density_matrix(self, *args, **kwargs):
+        """ Try and read density matrix by reading the <>.nc, <>.TSDE files, <>.DM (in that order)
+
+        One can limit the tried files to only one file by passing
+        only a single file ending.
+
+        Parameters
+        ----------
+        order: list of str, optional
+            the order of which to try and read the density matrix
+            By default this is ``['nc', 'TSDE', 'DM']``.
+        """
+        order = kwargs.pop('order', ['nc', 'TSDE', 'DM'])
+        for f in order:
+            v = getattr(self, '_r_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
+
+    def _r_density_matrix_nc(self, *args, **kwargs):
         """ Try and read the density matrix by reading the <>.nc """
-        f = self._tofile(self.get('SystemLabel', default='siesta'))
-        if isfile(f + '.nc'):
-            return ncSileSiesta(f + '.nc').read_density_matrix()
-        elif isfile(f + '.DM'):
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_density_matrix(*args, **kwargs)
+        return None
+
+    def _r_density_matrix_TSDE(self, *args, **kwargs):
+        """ Read density matrix from the TSDE file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
+        DM = None
+        if isfile(f):
             geom = self.read_geometry(True)
-            DM = DMSileSiesta(f + '.DM').read_density_matrix()
-            if geom.no == DM.no:
-                DM._geom = geom
-            else:
-                warn.warn('The density matrix is read from *.DM without being able to read '
-                          'a geometry with the correct orbitals.')
-            return DM
-        raise RuntimeError("Could not find the density matrix from the *.nc, *.DM.")
+            DM = TSDESileSiesta(f).read_density_matrix(*args, **kwargs)
+            self._SpGeom_replace_geom(DM, geom)
+        return DM
+
+    def _r_density_matrix_DM(self, *args, **kwargs):
+        """ Read density matrix from the DM file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.DM'
+        DM = None
+        if isfile(f):
+            geom = self.read_geometry(True)
+            DM = DMSileSiesta(f).read_density_matrix(*args, **kwargs)
+            self._SpGeom_replace_geom(DM, geom)
+        return DM
 
     def read_energy_density_matrix(self, *args, **kwargs):
-        """ Try and read the energy density matrix by reading the <>.nc """
-        f = self._tofile(self.get('SystemLabel', default='siesta'))
+        """ Try and read energy density matrix by reading the <>.nc or <>.TSDE files (in that order)
 
-        if isfile(f + '.nc'):
-            return ncSileSiesta(f + '.nc').read_energy_density_matrix()
-        elif isfile(f + '.TSDE'):
+        One can limit the tried files to only one file by passing
+        only a single file ending.
+
+        Parameters
+        ----------
+        order: list of str, optional
+            the order of which to try and read the density matrix
+            By default this is ``['nc', 'TSDE']``.
+        """
+        order = kwargs.pop('order', ['nc', 'TSDE'])
+        for f in order:
+            v = getattr(self, '_r_energy_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
+
+    def _r_energy_density_matrix_nc(self, *args, **kwargs):
+        """ Read energy density matrix by reading the <>.nc """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
+        return None
+
+    def _r_energy_density_matrix_TSDE(self, *args, **kwargs):
+        """ Read energy density matrix from the TSDE file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
+        DM = None
+        if isfile(f):
             geom = self.read_geometry(True)
-            EDM = TSDESileSiesta(f + '.TSDE').read_energy_density_matrix()
-            if geom.no == EDM.no:
-                EDM._geom = geom
-            else:
-                warn.warn('The energy density matrix is read from *.TSDE without being able to read '
-                          'a geometry with the correct orbitals.')
-            return
-        raise RuntimeError("Could not find the energy density matrix from the *.nc/*.TSDE.")
+            DM = TSDESileSiesta(f).read_energy_density_matrix(*args, **kwargs)
+            self._SpGeom_replace_geom(DM, geom)
+        return DM
 
     def read_hamiltonian(self, *args, **kwargs):
-        """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order) """
-        f = self._tofile(self.get('SystemLabel', default='siesta'))
+        """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order)
 
-        if isfile(f + '.nc'):
-            return ncSileSiesta(f + '.nc').read_hamiltonian()
-        elif isfile(f + '.TSHS'):
-            # We prefer the atomic positions in the TSHS file, however,
-            # the species etc. may not necessarily be good.
-            H = TSHSSileSiesta(f + '.TSHS').read_hamiltonian()
+        One can limit the tried files to only one file by passing
+        only a single file ending.
+
+        Parameters
+        ----------
+        order: list of str, optional
+            the order of which to try and read the Hamiltonian.
+            By default this is ``['nc', 'TSHS', 'HSX']``.
+        """
+        order = kwargs.pop('order', ['nc', 'TSHS', 'HSX'])
+        for f in order:
+            v = getattr(self, '_r_hamiltonian_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
+
+    def _r_hamiltonian_nc(self, *args, **kwargs):
+        """ Read Hamiltonian from the nc file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_hamiltonian(*args, **kwargs)
+        return None
+
+    def _r_hamiltonian_TSHS(self, *args, **kwargs):
+        """ Read Hamiltonian from the TSHS file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSHS'
+        H = None
+        if isfile(f):
             geom = self.read_geometry(True)
-            for a, s in geom.atom.iter(True):
-                if len(s) == 0:
-                    continue
-                # Only replace if the number of orbitals is correct
-                i = s[0]
-                if a.no == H.geom.atom[i].no:
-                    H.geom.atom.replace(H.geom.atom[i], a)
-            return H
-        elif isfile(f + '.HSX'):
-            # Read the intrinsic geometry, then HSX will fail
-            # if we can't figure out the correct number of orbitals
+            H = TSHSSileSiesta(f).read_hamiltonian(*args, **kwargs)
+            self._SpGeom_replace_geom(H, geom)
+        return H
+
+    def _r_hamiltonian_HSX(self, *args, **kwargs):
+        """ Read Hamiltonian from the HSX file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.HSX'
+        H = None
+        if isfile(f):
             geom = self.read_geometry(True)
-            H = HSXSileSiesta(f + '.HSX').read_hamiltonian(geom=geom)
-            return H
-        raise RuntimeError("Could not find the Hamiltonian from the *.nc, nor the *.TSHS file.")
+            H = HSXSileSiesta(f).read_hamiltonian(*args, **kwargs)
+            self._SpGeom_replace_geom(H, geom)
+        return H
 
     @default_ArgumentParser(description="Manipulate a FDF file.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         import argparse
 
-        # We must by-pass this fdf-file
+        # We must by-pass this fdf-file for importing
         import sisl.io.siesta as sis
 
         # The fdf parser is more complicated
