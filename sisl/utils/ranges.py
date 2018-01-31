@@ -36,7 +36,7 @@ def strmap(func, s, start=None, end=None, sep='b'):
     [(1, 2)]
     >>> strmap(int, '1-')
     [(1, None)]
-    >>> strmap(int, '1-', 4)
+    >>> strmap(int, '1-', end=4)
     [(1, 4)]
     >>> strmap(int, '1-10[2-3]')
     [((1, 10), [(2, 3)])]
@@ -123,7 +123,7 @@ def strseq(cast, s, start=None, end=None):
     >>> strseq(int, '3:2:', end=8)
     (3, 2, 8)
     >>> strseq(int, ':2:', start=2)
-    (2, 2, 8)
+    (2, 2, None)
     >>> strseq(float, '3.2:6.3')
     (3.2, 6.3)
     """

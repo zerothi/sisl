@@ -114,6 +114,8 @@ class Orbital(object):
     def equal(self, other, psi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
+        When comparing two orbital radius they are considered *equal* with a precision of 1e-4 Ang.
+
         Parameters
         ----------
         other : Orbital
@@ -125,7 +127,7 @@ class Orbital(object):
         """
         if not isinstance(other, Orbital):
             return False
-        same = np.isclose(self.R, other.R) and np.isclose(self.q0, other.q0)
+        same = abs(self.R - other.R) <= 1e-4 and abs(self.q0 - other.q0) < 1e-4
         if not same:
             # Quick return
             return False
@@ -258,9 +260,10 @@ class SphericalOrbital(Orbital):
         Examples
         --------
         >>> from scipy.interpolate import interp1d
-        >>> orb = SphericalOrbital(1, (np.arange(10), np.arange(10)))
-        >>> orb.equal(SphericalOrbital(1, interp1d(np.arange(10), np.arange(10),
-        ...       fill_value=(0., 0.), kind='cubic')))
+        >>> orb = SphericalOrbital(1, (np.arange(10.), np.arange(10.)))
+        >>> orb.equal(SphericalOrbital(1, interp1d(np.arange(10.), np.arange(10.),
+        ...       fill_value=(0., 0.), kind='cubic', bounds_error=False)))
+        True
         """
         self.l = l
 
@@ -330,16 +333,22 @@ class SphericalOrbital(Orbital):
             idx = (f > 0).nonzero()[0]
             if len(idx) > 0:
                 idx = idx.max()
-                # Preset
+                # Assert that we actually hit where there are zeros
+                if idx < len(r) - 1:
+                    idx += 1
+                # Preset R
                 self.R = r[idx]
                 # This should give us a precision of 0.0001 A
-                r = np.linspace(r[idx]-0.025+0.0001, r[idx]+0.025, 500)
+                r = np.linspace(r[idx]-0.055+0.0001, r[idx]+0.055, 1100)
                 f = square(self.f(r))
                 # Find minimum R and focus around this point
                 idx = (f > 0).nonzero()[0]
                 if len(idx) > 0:
                     idx = idx.max()
+                    if idx < len(r) - 1:
+                        idx += 1
                     self.R = r[idx]
+
             else:
                 # The orbital radius
                 # Is undefined, no values are above 0 in a range
@@ -355,10 +364,9 @@ class SphericalOrbital(Orbital):
             idx = np.argsort(r)
             r = r[idx]
             f = f[idx]
-            # Also update R to the maximum R value
-            self.R = r[-1]
 
-            self.f = interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False, assume_sorted=True)
+            # Make sure setting R is consistent with the above algorithm
+            self.set_radial(interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False, assume_sorted=True))
         else:
             raise ValueError('Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial')
 

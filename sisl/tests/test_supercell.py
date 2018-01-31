@@ -291,7 +291,6 @@ class TestSuperCell(object):
         gbig = g.repeat(40, 0).repeat(40, 1)
         assert g.sc.angle(0, 1) == 90
 
-    @pytest.mark.only
     def test_angle2(self, setup):
         sc = SuperCell([1, 1, 1])
         assert sc.angle(0, 1) == 90

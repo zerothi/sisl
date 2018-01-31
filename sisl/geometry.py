@@ -50,7 +50,7 @@ class Geometry(SuperCellChild):
        Geometry{na: 1, no: 1,
         Atoms{species: 1,
          Atom{H, Z: 1, mass(au): 1.0079, maxR: -1.00000,
-          Orbital{R: -1.0}
+          Orbital{R: -1.0, q0: 0.0}
          }: 1,
         },
         nsc: [3, 3, 1], maxR: -1.0
@@ -412,12 +412,12 @@ class Geometry(SuperCellChild):
         This iterator is the same as:
 
         >>> for ia in range(len(self)): # doctest: +SKIP
-        ...    <do something>
+        ...    <do something> # doctest: +SKIP
 
         or equivalently
 
         >>> for ia in self: # doctest: +SKIP
-        ...    <do something>
+        ...    <do something> # doctest: +SKIP
 
         See Also
         --------
@@ -433,9 +433,9 @@ class Geometry(SuperCellChild):
         """ Iterator over all atoms (or a subset) and species as a tuple in this geometry
 
         >>> for ia, a, idx_specie in self.iter_species(): # doctest: +SKIP
-        ...     isinstance(ia, int) == True
-        ...     isinstance(a, Atom) == True
-        ...     isinstance(idx_specie, int) == True
+        ...     isinstance(ia, int) == True # doctest: +SKIP
+        ...     isinstance(a, Atom) == True # doctest: +SKIP
+        ...     isinstance(idx_specie, int) == True # doctest: +SKIP
 
         with ``ia`` being the atomic index, ``a`` the `Atom` object, ``idx_specie``
         is the index of the specie
@@ -719,8 +719,8 @@ class Geometry(SuperCellChild):
         I.e. the loop would look like this:
 
         >>> for ias, idxs in self.iter_block(): # doctest: +SKIP
-        ...    for ia in ias:
-        ...        idx_a = self.close(ia, R = R, idx = idxs)
+        ...    for ia in ias: # doctest: +SKIP
+        ...        idx_a = self.close(ia, R = R, idx = idxs) # doctest: +SKIP
 
         This iterator is intended for systems with more than 1000 atoms.
 
@@ -937,21 +937,21 @@ class Geometry(SuperCellChild):
         --------
         >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
         >>> g = geom.tile(2,axis=0)
-        >>> print(g.xyz)
-        [[ 0.   0.   0. ]
-         [ 0.5  0.   0. ]
-         [ 1.   0.   0. ]
-         [ 1.5  0.   0. ]]
+        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
+        [[0.   0.   0. ]
+         [0.5  0.   0. ]
+         [1.   0.   0. ]
+         [1.5  0.   0. ]]
         >>> g = geom.tile(2,0).tile(2,axis=1)
-        >>> print(g.xyz)
-        [[ 0.   0.   0. ]
-         [ 0.5  0.   0. ]
-         [ 1.   0.   0. ]
-         [ 1.5  0.   0. ]
-         [ 0.   1.   0. ]
-         [ 0.5  1.   0. ]
-         [ 1.   1.   0. ]
-         [ 1.5  1.   0. ]]
+        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
+        [[0.   0.   0. ]
+         [0.5  0.   0. ]
+         [1.   0.   0. ]
+         [1.5  0.   0. ]
+         [0.   1.   0. ]
+         [0.5  1.   0. ]
+         [1.   1.   0. ]
+         [1.5  1.   0. ]]
 
         See Also
         --------
@@ -987,10 +987,10 @@ class Geometry(SuperCellChild):
         algorithm:
 
         >>> ja = 0 # doctest: +SKIP
-        >>> for ia in range(self.na):
-        ...     for id,r in args:
-        ...        for i in range(r):
-        ...           ja = ia + cell[id,:] * i
+        >>> for ia in range(self.na): # doctest: +SKIP
+        ...     for id,r in args: # doctest: +SKIP
+        ...        for i in range(r): # doctest: +SKIP
+        ...           ja = ia + cell[id,:] * i # doctest: +SKIP
 
         This method allows to utilise Bloch's theorem when creating
         Hamiltonian parameter sets for TBtrans.
@@ -1012,21 +1012,21 @@ class Geometry(SuperCellChild):
         --------
         >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1)
         >>> g = geom.repeat(2,axis=0)
-        >>> print(g.xyz)
-        [[ 0.   0.   0. ]
-         [ 1.   0.   0. ]
-         [ 0.5  0.   0. ]
-         [ 1.5  0.   0. ]]
+        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
+        [[0.   0.   0. ]
+         [1.   0.   0. ]
+         [0.5  0.   0. ]
+         [1.5  0.   0. ]]
         >>> g = geom.repeat(2,0).repeat(2,1)
-        >>> print(g.xyz)
-        [[ 0.   0.   0. ]
-         [ 0.   1.   0. ]
-         [ 1.   0.   0. ]
-         [ 1.   1.   0. ]
-         [ 0.5  0.   0. ]
-         [ 0.5  1.   0. ]
-         [ 1.5  0.   0. ]
-         [ 1.5  1.   0. ]]
+        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
+        [[0.   0.   0. ]
+         [0.   1.   0. ]
+         [1.   0.   0. ]
+         [1.   1.   0. ]
+         [0.5  0.   0. ]
+         [0.5  1.   0. ]
+         [1.5  0.   0. ]
+         [1.5  1.   0. ]]
 
         See Also
         --------
@@ -1420,8 +1420,8 @@ class Geometry(SuperCellChild):
         The basic algorithm is this:
 
         >>> oxa = other.xyz + self.cell[axis,:][None,:] # doctest: +SKIP
-        >>> self.xyz = np.append(self.xyz,oxa)
-        >>> self.cell[axis,:] += other.cell[axis,:]
+        >>> self.xyz = np.append(self.xyz,oxa) # doctest: +SKIP
+        >>> self.cell[axis,:] += other.cell[axis,:] # doctest: +SKIP
 
         NOTE: The cell appended is only in the axis that
         is appended, which means that the other cell directions
@@ -1465,8 +1465,8 @@ class Geometry(SuperCellChild):
         The basic algorithm is this:
 
         >>> oxa = other.xyz # doctest: +SKIP
-        >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:])
-        >>> self.cell[axis,:] += other.cell[axis,:]
+        >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:]) # doctest: +SKIP
+        >>> self.cell[axis,:] += other.cell[axis,:] # doctest: +SKIP
 
         NOTE: The cell prepended is only in the axis that
         is prependend, which means that the other cell directions
@@ -1568,9 +1568,9 @@ class Geometry(SuperCellChild):
         --------
 
         >>> A + B == A.add(B) # doctest: +SKIP
-        >>> A + (B, 1) == A.append(B, 1)
-        >>> A + (B, 2) == A.append(B, 2)
-        >>> (A, 1) + B == A.prepend(B, 1)
+        >>> A + (B, 1) == A.append(B, 1) # doctest: +SKIP
+        >>> A + (B, 2) == A.append(B, 2) # doctest: +SKIP
+        >>> (A, 1) + B == A.prepend(B, 1) # doctest: +SKIP
 
         See Also
         --------
@@ -1709,13 +1709,13 @@ class Geometry(SuperCellChild):
         Examples
         --------
         >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
-        >>> print(geom.axyz(isc=[1,0,0]))
-        [[ 1.   0.   0. ]
-         [ 1.5  0.   0. ]]
+        >>> print(geom.axyz(isc=[1,0,0])) # doctest: +NORMALIZE_WHITESPACE
+        [[1.   0.   0. ]
+         [1.5  0.   0. ]]
 
         >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
-        >>> print(geom.axyz(0))
-        [ 0.  0.  0.]
+        >>> print(geom.axyz(0)) # doctest: +NORMALIZE_WHITESPACE
+        [0.  0.  0.]
 
         """
         if atom is None and isc is None:
@@ -2683,14 +2683,14 @@ class Geometry(SuperCellChild):
         Examples
         --------
         >>> geom = Geometry([0]*3, Atom(1, R=1.), sc=SuperCell(1., nsc=[5, 5, 1]))
-        >>> geom.distance() # use geom.maxR()
-        array([ 1.])
+        >>> geom.distance() # use geom.maxR() # doctest: +NORMALIZE_WHITESPACE
+        array([1.])
         >>> geom.distance(tol=[0.5, 0.4, 0.3, 0.2])
-        array([ 1.])
-        >>> geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2])
-        array([ 1.        ,  1.41421356,  2.        ])
-        >>> geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged
-        array([ 1.20710678,  2.        ])
+        array([1.])
+        >>> geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2]) # doctest: +NORMALIZE_WHITESPACE
+        array([1.        ,  1.41421356,  2.        ])
+        >>> geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged # doctest: +NORMALIZE_WHITESPACE
+        array([1.20710678,  2.        ])
 
         Returns
         -------

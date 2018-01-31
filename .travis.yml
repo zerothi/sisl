@@ -48,7 +48,6 @@ script:
         pytest --cov=sisl ;
     else
         pytest --doctest-modules sisl ;
-        pytest --pyargs sisl ;
     fi
 
 after_success:

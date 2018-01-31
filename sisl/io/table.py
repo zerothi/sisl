@@ -54,12 +54,12 @@ class TableSile(Sile):
 
         >>> tbl = TableSile('test.dat', 'w')
         >>> tbl.write_data(range(2), range(1, 3), comment='A comment', header=['index', 'value'])
-        >>> print(open('test.dat').readlines())
+        >>> print(''.join(open('test.dat').readlines())) # doctest: +NORMALIZE_WHITESPACE
         # A comment
         #index    value
-        0        1
-        1        2
-
+        0.00000e+00 1.00000e+00
+        1.00000e+00 2.00000e+00
+        <BLANKLINE>
         """
         sile_raise_write(self)
 

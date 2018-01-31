@@ -28,10 +28,9 @@ class Ellipsoid(PureShape):
 
     Examples
     --------
-    >>> xyz = [0, 2, 0]
     >>> shape = Ellipsoid([2, 2.2, 2])
-    >>> shape.within(xyz)
-    array([ True], dtype=bool)
+    >>> shape.within([0, 2, 0])
+    True
     """
     __slots__ = ('_v', '_iv')
 

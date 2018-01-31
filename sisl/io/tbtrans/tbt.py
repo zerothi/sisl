@@ -1238,8 +1238,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         Examples
         --------
         >>> COOP = tbt.orbital_COOP(-1.0) # COOP @ E = -1 eV  # doctest: +SKIP
-        >>> COOP[10, 11] # COOP value between the 11th and 12th orbital
-        >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.DOS(sum=False)[tbt.Eindex(-1.0)]
+        >>> COOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
+        >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.DOS(sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
 
         See Also
         --------
@@ -1291,8 +1291,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         Examples
         --------
         >>> COOP = tbt.orbital_ACOOP(0, -1.0) # COOP @ E = -1 eV from ``0`` spectral function # doctest: +SKIP
-        >>> COOP[10, 11] # COOP value between the 11th and 12th orbital
-        >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)]
+        >>> COOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
+        >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
 
         See Also
         --------
@@ -1436,7 +1436,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         Examples
         --------
         >>> COHP = tbt.orbital_COHP(-1.0) # COHP @ E = -1 eV  # doctest: +SKIP
-        >>> COHP[10, 11] # COHP value between the 11th and 12th orbital
+        >>> COHP[10, 11] # COHP value between the 11th and 12th orbital # doctest: +SKIP
 
         See Also
         --------

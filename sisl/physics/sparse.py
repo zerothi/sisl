@@ -31,7 +31,7 @@ class SparseOrbitalBZ(SparseOrbital):
     standard `numpy` assignments:
 
     >>> S = SparseOrbitalBZ(...) # doctest: +SKIP
-    >>> S[1,2] = 0.1
+    >>> S[1,2] = 0.1 # doctest: +SKIP
 
     which assigns 0.1 as the element between orbital 2 and 3.
     (remember that Python is 0-based elements).
@@ -437,7 +437,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
     standard `numpy` assignments::
 
     >>> S = SparseOrbitalBZSpin(...) # doctest: +SKIP
-    >>> S[1,2] = 0.1
+    >>> S[1,2] = 0.1 # doctest: +SKIP
 
     which assigns 0.1 as the element between orbital 2 and 3.
     (remember that Python is 0-based elements).

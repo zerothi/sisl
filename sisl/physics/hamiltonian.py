@@ -451,8 +451,8 @@ class EigenState(EigenSystem):
 
         >>> grid = Grid(...) # doctest: +SKIP
         >>> es = EigenState(...) # doctest: +SKIP
-        >>> es.sub(0).psi(grid)
-        >>> (np.abs(grid.grid) ** 2).sum() * grid.dvolume == 1.
+        >>> es.sub(0).psi(grid) # doctest: +SKIP
+        >>> (np.abs(grid.grid) ** 2).sum() * grid.dvolume == 1. # doctest: +SKIP
 
         Note: To calculate :math:`\psi(\mathbf r)` in a unit-cell different from the
         originating geometry, simply pass a grid with a unit-cell smaller than the originating

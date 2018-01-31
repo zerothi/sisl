@@ -304,22 +304,22 @@ class fdfSileSiesta(SileSiesta):
         Examples
         --------
         >>> print(open(...).readlines()) # doctest: +SKIP
-        LabeleV 1. eV
-        LabelRy 1. Ry
-        Label name
-        FakeInt 1
-        %block Hello
-        line 1
-        line2
-        %endblock
-        >>> fdf.get('LabeleV') == 1. # default unit is eV
-        >>> fdf.get('LabelRy') == unit.siesta.unit_convert('Ry', 'eV')
-        >>> fdf.get('LabelRy', 'Ry') == 1.
-        >>> fdf.get('LabelRy', with_unit=True) == (1., 'Ry')
-        >>> fdf.get('FakeInt', default='0') == '1'
-        >>> fdf.get('LabeleV', with_unit=True) == (1., 'eV')
-        >>> fdf.get('Label', with_unit=True) == 'name' # no unit present on line
-        >>> fdf.get('Hello') == ['line 1', 'line2']
+        LabeleV 1. eV # doctest: +SKIP
+        LabelRy 1. Ry # doctest: +SKIP
+        Label name # doctest: +SKIP
+        FakeInt 1 # doctest: +SKIP
+        %block Hello # doctest: +SKIP
+        line 1 # doctest: +SKIP
+        line2 # doctest: +SKIP
+        %endblock # doctest: +SKIP
+        >>> fdf.get('LabeleV') == 1. # default unit is eV # doctest: +SKIP
+        >>> fdf.get('LabelRy') == unit.siesta.unit_convert('Ry', 'eV') # doctest: +SKIP
+        >>> fdf.get('LabelRy', 'Ry') == 1. # doctest: +SKIP
+        >>> fdf.get('LabelRy', with_unit=True) == (1., 'Ry') # doctest: +SKIP
+        >>> fdf.get('FakeInt', default='0') == '1' # doctest: +SKIP
+        >>> fdf.get('LabeleV', with_unit=True) == (1., 'eV') # doctest: +SKIP
+        >>> fdf.get('Label', with_unit=True) == 'name' # no unit present on line # doctest: +SKIP
+        >>> fdf.get('Hello') == ['line 1', 'line2'] # doctest: +SKIP
         """
         # Try and read a line
         value = self._read_label(label)
@@ -548,10 +548,10 @@ class fdfSileSiesta(SileSiesta):
         Examples
         --------
         >>> fdf = get_sile('RUN.fdf') # doctest: +SKIP
-        >>> fdf.read_supercell() # read from fdf
-        >>> fdf.read_supercell(True) # read from [XV, nc, fdf]
-        >>> fdf.read_supercell(order=['nc']) # read from [nc]
-        >>> fdf.read_supercell(True, order=['nc']) # read from [nc]
+        >>> fdf.read_supercell() # read from fdf # doctest: +SKIP
+        >>> fdf.read_supercell(True) # read from [XV, nc, fdf] # doctest: +SKIP
+        >>> fdf.read_supercell(order=['nc']) # read from [nc] # doctest: +SKIP
+        >>> fdf.read_supercell(True, order=['nc']) # read from [nc] # doctest: +SKIP
         """
         if output:
             order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
@@ -621,10 +621,10 @@ class fdfSileSiesta(SileSiesta):
         Examples
         --------
         >>> fdf = get_sile('RUN.fdf') # doctest: +SKIP
-        >>> fdf.read_geometry() # read from fdf
-        >>> fdf.read_geometry(True) # read from [XV, nc, fdf]
-        >>> fdf.read_geometry(order=['nc']) # read from [nc]
-        >>> fdf.read_geometry(True, order=['nc']) # read from [nc]
+        >>> fdf.read_geometry() # read from fdf # doctest: +SKIP
+        >>> fdf.read_geometry(True) # read from [XV, nc, fdf] # doctest: +SKIP
+        >>> fdf.read_geometry(order=['nc']) # read from [nc] # doctest: +SKIP
+        >>> fdf.read_geometry(True, order=['nc']) # read from [nc] # doctest: +SKIP
         """
         if output:
             order = kwargs.pop('order', ['XV', 'nc', 'fdf'])

@@ -27,10 +27,11 @@ class Cuboid(PureShape):
 
     Examples
     --------
-    >>> xyz = [0, 2.1, 0]
     >>> shape = Cuboid([2, 2.2, 2])
-    >>> shape.within(xyz)
-    array([ True], dtype=bool)
+    >>> shape.within([0, 2.1, 0])
+    False
+    >>> shape.within([0, 1.1, 0])
+    True
     """
     __slots__ = ('_v', '_iv')
 

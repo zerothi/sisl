@@ -455,8 +455,8 @@ class BandStructure(BrillouinZone):
 
         >>> p = BandStructure(...) # doctest: +SKIP
         >>> eigs = Hamiltonian.eigh(p) # doctest: +SKIP
-        >>> lk, kt, kl = p.lineark(True)
-        >>> plt.xticks(kt, kl)
+        >>> lk, kt, kl = p.lineark(True) # doctest: +SKIP
+        >>> plt.xticks(kt, kl) # doctest: +SKIP
         >>> for i in range(len(Hamiltonian)): # doctest: +SKIP
         ...     plt.plot(lk, eigs[:, i]) # doctest: +SKIP
 

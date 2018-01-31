@@ -146,7 +146,7 @@ class Test_sphericalorbital(object):
     def test_same1(self):
         rf = r_f(6)
         o0 = SphericalOrbital(0, rf)
-        o1 = Orbital(5.)
+        o1 = Orbital(5.0)
         assert o0.equal(o1)
         assert not o0.equal(Orbital(3.))
 
