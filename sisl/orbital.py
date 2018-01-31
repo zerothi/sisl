@@ -366,7 +366,9 @@ class SphericalOrbital(Orbital):
             f = f[idx]
 
             # Make sure setting R is consistent with the above algorithm
-            self.set_radial(interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False, assume_sorted=True))
+            self.set_radial(interp1d(r, f, kind='cubic',
+                                     fill_value=(f[0], 0.),
+                                     bounds_error=False, assume_sorted=True))
         else:
             raise ValueError('Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial')
 
