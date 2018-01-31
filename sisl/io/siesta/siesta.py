@@ -380,15 +380,19 @@ class ncSileSiesta(SileCDFSiesta):
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = geom.lasto + 1
 
+    def write_overlap(self, **kwargs):
+        """ Write the overlap matrix to the NetCDF file """
+        raise NotImplementedError('Currently not implemented')
+
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
 
         Parameters
         ----------
-        H : `Hamiltonian` model
+        H : Hamiltonian
            the model to be saved in the NC file
-        Ef : double=0
-           the Fermi level of the electronic structure (in eV)
+        Ef : float, optional
+           the Fermi level of the electronic structure (in eV), default to 0.
         """
         if H.nnz == 0:
             raise ValueError(self.__class__.__name__ + '.write_hamiltonian + cannot write a Hamiltonian '
@@ -411,7 +415,7 @@ class ncSileSiesta(SileCDFSiesta):
         v[:] = kwargs.get('Ef', 0.) / Ry2eV
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
-        v[:] = 0.
+        v[:] = np.sum(H.geom.atom.q0)
         if 'Qtot' in kwargs:
             v[:] = kwargs['Qtot']
         if 'Q' in kwargs:
@@ -461,6 +465,185 @@ class ncSileSiesta(SileCDFSiesta):
         v.unit = "Ry"
         for i in range(len(H.spin)):
             v[i, :] = H._csr._D[:, i] / Ry2eV
+
+        # Create the settings
+        st = self._crt_grp(self, 'SETTINGS')
+        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
+        v.info = "Electronic temperature used for smearing DOS"
+        v.unit = "Ry"
+        v[:] = 0.025 / Ry2eV
+        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
+        v.info = "Grid used for the Brillouin zone integration"
+        v[:] = np.identity(3) * 2
+        v = self._crt_var(st, 'BZ_displ', 'i4', ('xyz',))
+        v.info = "Monkhorst-Pack k-grid displacements"
+        v.unit = "b**-1"
+        v[:] = np.zeros([3], np.float64)
+
+    def write_density_matrix(self, DM, **kwargs):
+        """ Writes density matrix model to file
+
+        Parameters
+        ----------
+        DM : DensityMatrix
+           the model to be saved in the NC file
+        """
+        if DM.nnz == 0:
+            raise ValueError(self.__class__.__name__ + '.write_density_matrix + cannot write a DensityMatrix '
+                             'with zero non-zero elements!')
+
+        # Ensure finalizations
+        DM.finalize()
+
+        # Ensure that the geometry is written
+        self.write_geometry(DM.geom)
+
+        self._crt_dim(self, 'spin', len(DM.spin))
+
+        if DM.dkind != 'f':
+            raise NotImplementedError('Currently we only allow writing a floating point density matrix to the Siesta format')
+
+        v = self._crt_var(self, 'Qtot', 'f8', ('one',))
+        v.info = 'Total charge'
+        v[:] = np.sum(DM.geom.atom.q0)
+        if 'Qtot' in kwargs:
+            v[:] = kwargs['Qtot']
+        if 'Q' in kwargs:
+            v[:] = kwargs['Q']
+
+        # Append the sparsity pattern
+        # Create basis group
+        sp = self._crt_grp(self, 'SPARSE')
+
+        self._crt_dim(sp, 'nnzs', DM._csr.col.shape[0])
+        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
+        v.info = "Number of non-zero elements per row"
+        v[:] = DM._csr.ncol[:]
+        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
+                          chunksizes=(len(DM._csr.col),), **self._cmp_args)
+        v.info = "Supercell column indices in the sparse format"
+        v[:] = DM._csr.col[:] + 1  # correct for fortran indices
+        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
+        v.info = "Index of supercell coordinates"
+        v[:] = DM.geom.sc.sc_off[:, :]
+
+        # Save tight-binding parameters
+        v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
+                          chunksizes=(len(DM._csr.col),), **self._cmp_args)
+        v.info = "Overlap matrix"
+        if DM.orthogonal:
+            # We need to create the orthogonal pattern
+            tmp = DM._csr.copy(dims=[0])
+            tmp.empty(keep_nnz=True)
+            for i in range(tmp.shape[0]):
+                tmp[i, i] = 1.
+
+            if tmp.nnz != DM.nnz:
+                # We have added more stuff, something that we currently do not allow.
+                raise ValueError(self.__class__.__name__ + '.write_density_matrix '
+                                 'is trying to write a density matrix in Siesta format with '
+                                 'not all on-site terms defined. Please correct. '
+                                 'I.e. add explicitly *all* on-site terms.')
+
+            v[:] = tmp._D[:, 0]
+            del tmp
+        else:
+            v[:] = DM._csr._D[:, DM.S_idx]
+        v = self._crt_var(sp, 'DM', 'f8', ('spin', 'nnzs'),
+                          chunksizes=(1, len(DM._csr.col)), **self._cmp_args)
+        v.info = "Density matrix"
+        for i in range(len(DM.spin)):
+            v[i, :] = DM._csr._D[:, i]
+
+        # Create the settings
+        st = self._crt_grp(self, 'SETTINGS')
+        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
+        v.info = "Electronic temperature used for smearing DOS"
+        v.unit = "Ry"
+        v[:] = 0.025 / Ry2eV
+        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
+        v.info = "Grid used for the Brillouin zone integration"
+        v[:] = np.identity(3) * 2
+        v = self._crt_var(st, 'BZ_displ', 'i4', ('xyz',))
+        v.info = "Monkhorst-Pack k-grid displacements"
+        v.unit = "b**-1"
+        v[:] = np.zeros([3], np.float64)
+
+    def write_energy_density_matrix(self, EDM, **kwargs):
+        """ Writes energy density matrix model to file
+
+        Parameters
+        ----------
+        EDM : EnergyDensityMatrix
+           the model to be saved in the NC file
+        """
+        if EDM.nnz == 0:
+            raise ValueError(self.__class__.__name__ + '.write_density_matrix + cannot write a DensityMatrix '
+                             'with zero non-zero elements!')
+
+        # Ensure finalizations
+        EDM.finalize()
+
+        # Ensure that the geometry is written
+        self.write_geometry(EDM.geom)
+
+        self._crt_dim(self, 'spin', len(EDM.spin))
+
+        if EDM.dkind != 'f':
+            raise NotImplementedError('Currently we only allow writing a floating point density matrix to the Siesta format')
+
+        v = self._crt_var(self, 'Qtot', 'f8', ('one',))
+        v.info = 'Total charge'
+        v[:] = np.sum(EDM.geom.atom.q0)
+        if 'Qtot' in kwargs:
+            v[:] = kwargs['Qtot']
+        if 'Q' in kwargs:
+            v[:] = kwargs['Q']
+
+        # Append the sparsity pattern
+        # Create basis group
+        sp = self._crt_grp(self, 'SPARSE')
+
+        self._crt_dim(sp, 'nnzs', EDM._csr.col.shape[0])
+        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
+        v.info = "Number of non-zero elements per row"
+        v[:] = EDM._csr.ncol[:]
+        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
+                          chunksizes=(len(EDM._csr.col),), **self._cmp_args)
+        v.info = "Supercell column indices in the sparse format"
+        v[:] = EDM._csr.col[:] + 1  # correct for fortran indices
+        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
+        v.info = "Index of supercell coordinates"
+        v[:] = EDM.geom.sc.sc_off[:, :]
+
+        # Save tight-binding parameters
+        v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
+                          chunksizes=(len(EDM._csr.col),), **self._cmp_args)
+        v.info = "Overlap matrix"
+        if EDM.orthogonal:
+            # We need to create the orthogonal pattern
+            tmp = EDM._csr.copy(dims=[0])
+            tmp.empty(keep_nnz=True)
+            for i in range(tmp.shape[0]):
+                tmp[i, i] = 1.
+
+            if tmp.nnz != EDM.nnz:
+                # We have added more stuff, something that we currently do not allow.
+                raise ValueError(self.__class__.__name__ + '.write_energy_density_matrix '
+                                 'is trying to write a density matrix in Siesta format with '
+                                 'not all on-site terms defined. Please correct. '
+                                 'I.e. add explicitly *all* on-site terms.')
+
+            v[:] = tmp._D[:, 0]
+            del tmp
+        else:
+            v[:] = EDM._csr._D[:, EDM.S_idx]
+        v = self._crt_var(sp, 'EDM', 'f8', ('spin', 'nnzs'),
+                          chunksizes=(1, len(EDM._csr.col)), **self._cmp_args)
+        v.info = "Energy density matrix"
+        v.unit = "Ry"
+        for i in range(len(EDM.spin)):
+            v[i, :] = EDM._csr._D[:, i] / Ry2eV
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')

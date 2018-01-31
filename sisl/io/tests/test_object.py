@@ -9,6 +9,8 @@ from tempfile import mkstemp
 from sisl.io import *
 from sisl.io.tbtrans._cdf import *
 from sisl import Geometry, Grid, Hamiltonian
+from sisl import DensityMatrix, EnergyDensityMatrix
+
 
 from . import common as tc
 
@@ -254,6 +256,52 @@ class TestObject(object):
         try:
             h = Hamiltonian.read(sile(f, mode='r'))
             assert H.spsame(h)
+        except UnicodeDecodeError as e:
+            pass
+        # Clean-up file
+        os.remove(f)
+
+    @pytest.mark.parametrize("sile", _my_intersect(['read_density_matrix'], ['write_density_matrix']))
+    def test_read_write_density_matrix(self, sile):
+        G = _C.g.rotatec(-30)
+        DM = DensityMatrix(G, orthogonal=True)
+        DM.construct([[0.1, 1.45], [0.1, -2.7]])
+        f = mkstemp(dir=_C.d)[1]
+        # Write
+        sile(f, mode='w').write_density_matrix(DM)
+        # Read 1
+        try:
+            dm = sile(f, mode='r').read_density_matrix(geometry=DM.geom)
+            assert DM.spsame(dm)
+        except UnicodeDecodeError as e:
+            pass
+        # Read 2
+        try:
+            dm = DensityMatrix.read(sile(f, mode='r'), geometry=DM.geom)
+            assert DM.spsame(dm)
+        except UnicodeDecodeError as e:
+            pass
+        # Clean-up file
+        os.remove(f)
+
+    @pytest.mark.parametrize("sile", _my_intersect(['read_energy_density_matrix'], ['write_energy_density_matrix']))
+    def test_read_write_energy_density_matrix(self, sile):
+        G = _C.g.rotatec(-30)
+        EDM = EnergyDensityMatrix(G, orthogonal=True)
+        EDM.construct([[0.1, 1.45], [0.1, -2.7]])
+        f = mkstemp(dir=_C.d)[1]
+        # Write
+        sile(f, mode='w').write_energy_density_matrix(EDM)
+        # Read 1
+        try:
+            edm = sile(f, mode='r').read_energy_density_matrix(geometry=EDM.geom)
+            assert EDM.spsame(edm)
+        except UnicodeDecodeError as e:
+            pass
+        # Read 2
+        try:
+            edm = EnergyDensityMatrix.read(sile(f, mode='r'), geometry=EDM.geom)
+            assert EDM.spsame(edm)
         except UnicodeDecodeError as e:
             pass
         # Clean-up file

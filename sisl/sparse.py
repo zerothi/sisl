@@ -616,11 +616,9 @@ class SparseCSR(object):
         if (sncol == oncol).sum() != self.shape[0]:
             return False
 
-        llen = len
-        lintersect1d = intersect1d
         for r in range(self.shape[0]):
-            if llen(lintersect1d(scol[sptr[r]:sptr[r]+sncol[r]],
-                                 ocol[optr[r]:optr[r]+oncol[r]])) != sncol[r]:
+            if len(intersect1d(scol[sptr[r]:sptr[r]+sncol[r]],
+                               ocol[optr[r]:optr[r]+oncol[r]])) != sncol[r]:
                 return False
         return True
 

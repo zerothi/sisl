@@ -144,7 +144,7 @@ class TSHSSileSiesta(SileBinSiesta):
         return S
 
     def write_hamiltonian(self, H, **kwargs):
-        """ Writes the Hamiltonian to a `TSHS` file """
+        """ Writes the Hamiltonian to a siesta.TSHS file """
         # Ensure the Hamiltonian is finalized
         H.finalize()
 
@@ -210,7 +210,7 @@ class DMSileSiesta(SileBinSiesta):
                              "correct number of orbitals.")
 
         # Create the density matrix container
-        DM = DensityMatrix(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
+        DM = DensityMatrix(geom, spin, nnzpr=1, dtype=np.float64, orthogonal=False)
 
         # Create the new sparse matrix
         DM._csr.ncol = ncol.astype(np.int32, copy=False)
@@ -219,12 +219,35 @@ class DMSileSiesta(SileBinSiesta):
         DM._csr.col = col.astype(np.int32, copy=False) - 1
         DM._csr._nnz = len(col)
 
-        DM._csr._D = np.empty([nnz, spin+1], np.float32)
-        DM._csr._D[:, :spin] = dDM[:, :]
+        DM._csr._D = np.empty([nnz, spin+1], np.float64)
+        DM._csr._D[:, :] = dDM[:, :]
         # DM file does not contain overlap matrix... so neglect it for now.
         DM._csr._D[:, spin] = 0.
 
         return DM
+
+    def write_density_matrix(self, DM, **kwargs):
+        """ Writes the density matrix to a siesta.DM file """
+        # Ensure the density matrix is finalized
+        DM.finalize()
+
+        # Pointer to CSR matrix
+        csr = DM._csr
+
+        # Get H and S
+        if DM.orthogonal:
+            dm = csr._D.view()
+        else:
+            dm = csr._D[:, :DM.S_idx]
+
+        # Ensure shapes (say if only 1 spin)
+        dm.shape = (-1, len(DM.spin))
+
+        # I can't seem to figure out the usage of f2py
+        # Below I get an error if xyz is not transposed and h is transposed,
+        # however, they are both in C-contiguous arrays and this is indeed weird... :(
+        _siesta.write_dm(self.file, csr.ncol, csr.col + 1, dm,
+                              nspin=len(DM.spin), no_u=DM.geom.no, nnz=DM.nnz)
 
 
 class TSDESileSiesta(DMSileSiesta):

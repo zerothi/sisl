@@ -516,8 +516,6 @@ class fdfSileSiesta(SileSiesta):
             warn.warn('cannot replace geometry due to insufficient information regarding number of '
                       'atoms and orbitals, ensuring correct geometry failed...')
 
-        print('SPGEOM: ', spgeom.geom)
-        print('GEOM: ', geom)
         no_no = spgeom.no == geom.no
         # Loop and make sure the number of orbitals is consistent
         for a, idx in geom.atom.iter(True):

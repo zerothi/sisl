@@ -1,4 +1,4 @@
-subroutine read_dm_sizes(fname,nspin,no_u, nnz)
+subroutine read_dm_sizes(fname, nspin, no_u, nnz)
 
   implicit none
   
@@ -27,8 +27,7 @@ subroutine read_dm_sizes(fname,nspin,no_u, nnz)
 
 end subroutine read_dm_sizes
 
-subroutine read_dm(fname, nspin, no_u, nnz, &
-     ncol,list_col,DM)
+subroutine read_dm(fname, nspin, no_u, nnz, ncol, list_col, DM)
 
   implicit none
 
