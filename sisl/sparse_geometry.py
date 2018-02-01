@@ -532,6 +532,13 @@ class _SparseGeometry(object):
         t0 = time()
         name = self.__class__.__name__
 
+        def wstdout(st):
+            # Write-out initial line to inform user of the function running
+            stdout.write(st)
+            stdout.flush()
+
+        wstdout(name + ".construct() ETA = ?????h ??m ?????s\r")
+
         # Do the loop
         for ias, idxs in self.geom.iter_block(iR=iR, method=method):
 
@@ -550,15 +557,13 @@ class _SparseGeometry(object):
                 # calculate hours, minutes, seconds
                 m, s = divmod((time()-t0)/na_run * na, 60)
                 h, m = divmod(m, 60)
-                stdout.write(name + ".construct() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
-                stdout.flush()
+                wstdout(name + ".construct() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
 
         if eta:
             # calculate hours, minutes, seconds spend on the computation
             m, s = divmod((time()-t0), 60)
             h, m = divmod(m, 60)
-            stdout.write(name + ".construct() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
-            stdout.flush()
+            wstdout(name + ".construct() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
 
     @property
     def finalized(self):
