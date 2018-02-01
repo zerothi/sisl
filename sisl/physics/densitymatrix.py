@@ -1,10 +1,14 @@
 from __future__ import print_function, division
 
+from warnings import warn
 from numbers import Integral
 from functools import partial
 from scipy.sparse import csr_matrix
 import numpy as np
-from numpy import dot, argsort, where, mod
+from numpy import int32
+from numpy import dot, argsort, where, mod, floor
+from numpy import logical_and as log_and
+
 
 import sisl._array as _a
 from sisl.utils.ranges import array_arange
@@ -142,18 +146,25 @@ class DensityMatrix(SparseOrbitalBZSpin):
            For non-colinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
         """
         geom = self.geom
-        rcell = geom.rcell
+        cell = self.geom.cell
+        prcell = geom.rcell
+
         # If all cell coordinates are the same, we don't have to do anything.
         # Otherwise, we have to do tricks to check coordinates within the
         # grid-cell
         apply_reduction = not np.allclose(geom.cell, grid.cell, atol=1.e-6)
         if geom is None:
             geom = grid.geometry
+        if apply_reduction:
+            # We need the fractional cell to figure out
+            # if coordinates are actually within the
+            pfrcell = prcell.T / (2 * np.pi)
 
         # Extract sub variables used throughout the loop
         csr = self._csr
         o2a = geom.o2a
         dcell = grid.dcell
+        frcell = grid.rcell.T / (2 * np.pi)
 
         # In the following we don't care about division
         # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
@@ -220,16 +231,22 @@ class DensityMatrix(SparseOrbitalBZSpin):
         # Clean-up
         del idx, DM
 
+        # The shape of the grid, in a reshaped version
         shape = _a.arrayi(grid.shape).reshape(1, 3)
-        all_xyz = (geom.axyz(np.arange(geom.na_s)) - grid.origo.reshape(1, 3)).reshape(-1, 1, 3)
+        # Retrieve all supercell atoms' coordinates
+        origo = grid.origo.reshape(1, 3)
+        all_xyz = (geom.axyz(np.arange(geom.na_s)) - origo).reshape(-1, 1, 3)
 
         def add_DM(ia, atomi, xyzi, icscDM, ja, atomj, xyzj, s):
+
             # Find all indices for the grid (they may be outside the cell).
             idx = grid.index(s)
             if len(idx) == 0:
                 return
 
-            # Figure out orbitals
+            # Figure out orbitals, instead of using all=True, we
+            # do it like this because it is fancy indexing which is easier
+            # on memory.
             o1, o2 = geom.a2o([ja, ja+1])
 
             # Retrieve the matrix that connects the two atoms (i in unit-cell, j in supercell)
@@ -238,22 +255,45 @@ class DensityMatrix(SparseOrbitalBZSpin):
             ijind = ijDM.indices.view()
             ijdm = ijDM.data.view()
 
-            # Calculate the positions
+            # Calculate the positions of the indices in according to the grid
+            # voxel cells
             rxyz = dot(idx, dcell)
+
             # If the cell is too small, then reduce
             if apply_reduction:
                 # Ensure the indices are within the unit-cell
                 # This needs to be adapted. I.e. if the grid is smaller
                 # than the originating geometry cell we have to do mod on rxyz
-                raise ValueError
-            else:
-                # The grid unit-cell and the geometry unit-cell are the same
-                # I.e. we can move the indices much simpler...
-                mod(idx, shape, out=idx)
+
+                # 1. Move coordinates to the original cell
+                # Get fractional coordinates to get the divisions in the current cell
+                # and move them into the primary unit cell
+                idx2 = dot(dot(rxyz + origo, pfrcell) % 1., cell)
+
+                # Transfer the coordinates (moved into the primary
+                # unit cell) back into the grid index form.
+                idx2 = floor(dot(idx2, frcell) * shape).astype(int32)
+
+                # Take out only the indices where idx2 is within the shape bounds
+                idx2 = log_and(log_and.reduce(0 <= idx2, axis=1),
+                               log_and.reduce(idx2 < shape, axis=1)).nonzero()[0]
+
+                # Shrink indices to the points we know are correct.
+                idx = idx[idx2]
+                rxyz = rxyz[idx2, :]
+
+                del idx2
+
+                warn(self.__class__.__name__ + '.rho untested waters...')
+
+            # The grid unit-cell and the geometry unit-cell are the same
+            # I.e. we can move the indices much simpler...
+            mod(idx, shape, out=idx)
 
             # Get the two atoms spherical coordinates
             rri, thetai, cos_phii = cart2spher(rxyz - xyzi, cos_phi=True)
             rrj, thetaj, cos_phij = cart2spher(rxyz - xyzj, cos_phi=True)
+
             # Clean-up to reduce memory...
             del rxyz
 

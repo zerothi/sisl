@@ -134,6 +134,13 @@ class TestDensityMatrix(object):
         D.rho(grid, Spin.Y)
         D.rho(grid, Spin.Z)
 
+    def test_rho_smaller_grid1(self, setup):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        sc = setup.D.geom.cell.copy() / 2
+        grid = Grid(0.2, geom=setup.D.geom.copy(), sc=sc)
+        D.rho(grid)
+
     @pytest.mark.xfail(raises=ValueError)
     def test_rho_fail_p(self, setup):
         bond = 1.42
