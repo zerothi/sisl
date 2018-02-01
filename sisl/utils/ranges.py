@@ -287,10 +287,9 @@ def array_arange(start, end=None, n=None, dtype=int32):
     # Tests show that the below code is faster than
     # implicit for-loops, or list-comprehensions
     # concatenate(map(..)
-    # This below is much faster and does not require _any_
-    # loops
+    # The below is much faster and does not require _any_ loops
     if n is None:
-        # We really do need n to speed things up
+        # We need n to speed things up
         n = ensure_array(end, dtype) - ensure_array(start, dtype)
     else:
         n = ensure_array(n, dtype)
@@ -305,7 +304,8 @@ def array_arange(start, end=None, n=None, dtype=int32):
     start = take(start, idx)
     n = take(n, idx)
 
-    # Create array
+    # Create array of 1's.
+    # The 1's are important when issuing the cumultative sum
     a = ones(n.sum(), dtype=dtype)
 
     # set pointers such that we can
