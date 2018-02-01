@@ -3,3 +3,5 @@ build
 index.rst
 docs/build
 docs/sisl
+sisl/info.py
+sisl/io/siesta/_siesta.so
