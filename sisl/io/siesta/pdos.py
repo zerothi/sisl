@@ -35,7 +35,8 @@ class pdosSileSiesta(SileSiesta):
         -------
         geom : Geometry instance with positions, atoms and orbitals. The
                orbitals of these atoms are `AtomicOrbital` instances.
-        E : the energies at which the PDOS has been evaluated at
+        E : the energies at which the PDOS has been evaluated at (if the Fermi-level is present the energies
+            are shifted to E - Ef = 0, this will *only* be done from Siesta 4.0.2 and later).
         PDOS : an array of DOS, for non-polarized calculations it has dimension ``(atom.no, len(E))``,
                else it has dimension ``(nspin, atom.no, len(E))``.
         """
@@ -45,7 +46,13 @@ class pdosSileSiesta(SileSiesta):
 
         # Get number of orbitals
         nspin = int(root.find('nspin').text)
-        E = arrayd(map(float, root.find('energy_values').text.split()))
+        # Try and find the fermi-level
+        Ef = root.find('fermi_energy')
+        if Ef is None:
+            Ef = 0
+        else:
+            Ef = float(Ef.text)
+        E = arrayd(map(float, root.find('energy_values').text.split())) - Ef
         ne = len(E)
 
         # All coordinate, atoms and species data
