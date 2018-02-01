@@ -274,3 +274,22 @@ class PureShape(Shape):
     def expand(self, c):
         """ Expand the shape by a constant value """
         raise NotImplementedError('expand has not been implemented in: '+self.__class__.__name__)
+
+
+class NullShape(PureShape):
+    """ A unique shape which has no spatial extend, volume or center
+
+    This special shape is used when composite shapes turns out to have
+    a null space.
+
+    The center will be equivalent to the(maximum floating point value
+    divided by 100
+    """
+
+    def __init__(self, *args, **kwargs):
+        """ Initialize the NullShape """
+        max4 = np.finfo(np.float64).max / 100
+        self._center = np.zeros(3, np.float64).ravel() + max4
+
+    def volume(self, *args, **kwargs):
+        return 0.
