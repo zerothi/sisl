@@ -4,7 +4,7 @@ import pytest
 
 import math as m
 import numpy as np
-from scipy.interpolate import interp1d
+from scipy import interpolate as interp
 
 from sisl.utils.mathematics import cart2spher, spher2cart
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
@@ -85,7 +85,7 @@ class Test_sphericalorbital(object):
         rf = np.arange(n)
         rf = (rf, rf)
         assert SphericalOrbital(1, rf) == SphericalOrbital(1, rf)
-        f = interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
+        f = interp.interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
         rf = [rf[0], rf[0]]
         assert SphericalOrbital(1, rf) == SphericalOrbital(1, f)
         assert SphericalOrbital(1, rf, tag='none') != SphericalOrbital(1, rf)
@@ -142,6 +142,42 @@ class Test_sphericalorbital(object):
         p0 = orb0.psi(r, -1)
         p1 = orb1.psi(r, 1)
         assert not np.allclose(p0, p1)
+
+    def test_radial_func1(self):
+        r = np.linspace(0, 4, 300)
+        f = np.exp(-r)
+        o = SphericalOrbital(1, (r, f))
+        print(o)
+        def i_univariate(r, f):
+            return interp.UnivariateSpline(r, f, k=5, s=0, ext=1, check_finite=False)
+        def i_interp1d(r, f):
+            return interp.interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False)
+        def i_spline(r, f):
+            from functools import partial
+            tck = interp.splrep(r, f, k=5, s=0)
+            return partial(interp.splev, tck=tck, der=0, ext=1)
+
+        # Interpolation radius
+        R = np.linspace(0, 5, 400)
+
+        assert np.allclose(o.f(r), f)
+        f_default = o.f(R)
+
+        o.set_radial(r, f, interp=i_univariate)
+        assert np.allclose(o.f(r), f)
+        f_univariate = o.f(R)
+        o.set_radial(r, f, interp=i_interp1d)
+        assert np.allclose(o.f(r), f)
+        f_interp1d = o.f(R)
+
+        o.set_radial(r, f, interp=i_spline)
+        assert np.allclose(o.f(r), f)
+        f_spline = o.f(R)
+
+        # Checks that they are equal
+        assert np.allclose(f_univariate, f_interp1d)
+        assert np.allclose(f_univariate, f_spline)
+        assert np.allclose(f_univariate, f_default)
 
     def test_same1(self):
         rf = r_f(6)

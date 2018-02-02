@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 # To check for integers
+from functools import partial
 from numbers import Integral
 from math import pi
 from math import sqrt as msqrt
@@ -10,7 +11,8 @@ import numpy as np
 from numpy import cos, sin, arctan2, arccos
 from numpy import take, sqrt, square
 from scipy.special import lpmv, sph_harm
-from scipy.interpolate import interp1d
+from scipy.interpolate import UnivariateSpline
+
 
 from ._help import ensure_array, _str
 from .shape import Sphere
@@ -19,7 +21,6 @@ from sisl.utils.mathematics import cart2spher
 
 
 __all__ = ['Orbital', 'SphericalOrbital', 'AtomicOrbital']
-
 
 
 # Create the factor table for the real spherical harmonics
@@ -323,14 +324,14 @@ class SphericalOrbital(Orbital):
             same &= self.l == other.l
         return same
 
-    def set_radial(self, *args):
+    def set_radial(self, *args, **kwargs):
         r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
         This can be called in several ways:
 
               set_radial(r, f)
-                    which uses ``scipy.interpolate.interp1d(r, f, bounds_error=False, kind='cubic')``
-                    to define the interpolation function.
+                    which uses ``scipy.interpolate.UnivariateSpline(r, f, k=5, s=0, ext=1, check_finite=False)``
+                    to define the interpolation function (see `interp` keyword).
                     Here the maximum radius of the orbital is the maximum `r` value,
                     regardless of ``f(r)`` is zero for smaller `r`.
 
@@ -338,6 +339,47 @@ class SphericalOrbital(Orbital):
                     which sets the interpolation function directly.
                     The maximum orbital range is determined automatically to a precision
                     of 0.0001 AA.
+
+        Parameters
+        ----------
+        r, f : numpy.ndarray
+            the radial positions and the radial function values at `r`.
+        func : callable
+            a function which enables evaluation of the radial function. The function should
+            accept a single array and return a single array.
+        interp : callable, optional
+            When two non-keyword arguments are passed this keyword will be used.
+            It is the interpolation function which should return the equivalent of
+            `func`. By using this one can define a custom interpolation routine.
+            It should accept two arguments, ``interp(r, f)`` and return a callable
+            that returns interpolation values.
+            See examples for different interpolation routines.
+
+        Examples
+        --------
+        >>> from scipy import interpolate as interp
+        >>> o = SphericalOrbital(1, lambda x:x)
+        >>> r = np.linspace(0, 4, 300)
+        >>> f = np.exp(-r)
+        >>> def i_univariate(r, f):
+        ...    return interp.UnivariateSpline(r, f, k=5, s=0, ext=1, check_finite=False)
+        >>> def i_interp1d(r, f):
+        ...    return interp.interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False)
+        >>> def i_spline(r, f):
+        ...    from functools import partial
+        ...    tck = interp.splrep(r, f, k=5, s=0)
+        ...    return partial(interp.splev, tck=tck, der=0, ext=1)
+        >>> R = np.linspace(0, 4, 400)
+        >>> o.set_radial(r, f, interp=i_univariate)
+        >>> f_univariate = o.f(R)
+        >>> o.set_radial(r, f, interp=i_interp1d)
+        >>> f_interp1d = o.f(R)
+        >>> o.set_radial(r, f, interp=i_spline)
+        >>> f_spline = o.f(R)
+        >>> np.allclose(f_univariate, f_interp1d)
+        True
+        >>> np.allclose(f_univariate, f_spline)
+        True
         """
         if len(args) == 0:
             # Return immediately
@@ -386,10 +428,15 @@ class SphericalOrbital(Orbital):
             r = r[idx]
             f = f[idx]
 
-            # Make sure setting R is consistent with the above algorithm
-            self.set_radial(interp1d(r, f, kind='cubic',
-                                     fill_value=(f[0], 0.),
-                                     bounds_error=False, assume_sorted=True))
+            # k = 3 == cubic spline
+            # ext = 1 == return zero outside of bounds.
+            # s, smoothing factor. If 0, smooth through all points
+            # I can see that this function is *much* faster than
+            # interp1d, AND it yields same results with these arguments.
+            interp = partial(UnivariateSpline, k=5, s=0, ext=1, check_finite=False)
+            interp = kwargs.get('interp', interp)
+
+            self.set_radial(interp(r, f))
         else:
             raise ValueError('Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial')
 

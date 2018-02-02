@@ -237,7 +237,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         origo = grid.origo.reshape(1, 3)
         all_xyz = (geom.axyz(np.arange(geom.na_s)) - origo).reshape(-1, 1, 3)
 
-        def add_DM(ia, atomi, xyzi, icscDM, ja, atomj, xyzj, s):
+        def add_DM(ia, atomi, xyzi, cscDM, ja, atomj, xyzj, s):
 
             # Find all indices for the grid (they may be outside the cell).
             idx = grid.index(s)
@@ -292,7 +292,12 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
             # Get the two atoms spherical coordinates
             rri, thetai, cos_phii = cart2spher(rxyz - xyzi, cos_phi=True)
-            rrj, thetaj, cos_phij = cart2spher(rxyz - xyzj, cos_phi=True)
+            if ia == ja:
+                rrj = rri.view()
+                thetaj = thetai.view()
+                cos_phij = cos_phii.view()
+            else:
+                rrj, thetaj, cos_phij = cart2spher(rxyz - xyzj, cos_phi=True)
 
             # Clean-up to reduce memory...
             del rxyz
@@ -313,13 +318,14 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 return True
             return False
 
-        def unique_atom_edge(ia):
+        def unique_atom_edge(csrDM, ia):
             slo = slice(csrDM.indptr[geom.firsto[ia]],
                         csrDM.indptr[geom.lasto[ia] + 1])
             return geom.o2a(csrDM.indices[slo], uniq=True)
 
         # Loop over all atoms in unitcell
         for ia in geom:
+
             # Get current atom
             atomi = geom.atom[ia]
             if skip_atom(atomi):
@@ -332,11 +338,12 @@ class DensityMatrix(SparseOrbitalBZSpin):
             si = atomi.toSphere()
             si.set_center(xyzi)
 
-            # Extract all connections to this atom.
+            # Extract all connections to this atom and convert to CSC matrix
+            # This is just because we can then loop on the atom orbitals in add_DM
             cscDM = csrDM[geom.firsto[ia]:geom.lasto[ia] + 1, :].tocsc()
 
             # Figure out all connecting atoms
-            for ja in unique_atom_edge(ia):
+            for ja in unique_atom_edge(csrDM, ia):
                 # Get connecting atom (in supercell format)
                 atomj = geom.atom[ja % geom.na]
 
