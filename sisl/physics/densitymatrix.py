@@ -321,7 +321,8 @@ class DensityMatrix(SparseOrbitalBZSpin):
         def unique_atom_edge(csrDM, ia):
             slo = slice(csrDM.indptr[geom.firsto[ia]],
                         csrDM.indptr[geom.lasto[ia] + 1])
-            return geom.o2a(csrDM.indices[slo], uniq=True)
+            ja = geom.o2a(csrDM.indices[slo], uniq=True)
+            return zip(ja, ja % geom.na)
 
         # Loop over all atoms in unitcell
         for ia in geom:
@@ -343,9 +344,9 @@ class DensityMatrix(SparseOrbitalBZSpin):
             cscDM = csrDM[geom.firsto[ia]:geom.lasto[ia] + 1, :].tocsc()
 
             # Figure out all connecting atoms
-            for ja in unique_atom_edge(csrDM, ia):
+            for ja, JA in unique_atom_edge(csrDM, ia):
                 # Get connecting atom (in supercell format)
-                atomj = geom.atom[ja % geom.na]
+                atomj = geom.atom[JA]
 
                 # Get information about this atom
                 xyzj = all_xyz[ja, :, :]
