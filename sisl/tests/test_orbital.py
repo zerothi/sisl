@@ -274,7 +274,7 @@ class Test_atomicorbital(object):
         a = []
         a.append(AtomicOrbital(2, 1, 0, 1, True, rf))
         a.append(AtomicOrbital(l=1, m=0, Z=1, P=True, spherical=rf))
-        f = interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
+        f = interp.interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
         a.append(AtomicOrbital(l=1, m=0, Z=1, P=True, spherical=f))
         a.append(AtomicOrbital('pzP', f))
         a.append(AtomicOrbital('pzP', rf))
