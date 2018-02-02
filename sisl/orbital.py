@@ -21,7 +21,25 @@ from sisl.utils.mathematics import cart2spher
 __all__ = ['Orbital', 'SphericalOrbital', 'AtomicOrbital']
 
 
-_pi4 = 4 * pi
+
+# Create the factor table for the real spherical harmonics
+def _rfact(l, m):
+    pi4 = 4 * pi
+    if m == 0:
+        return msqrt((2*l + 1)/pi4)
+    elif m < 0:
+        return -msqrt(2*(2*l + 1)/pi4 * fact(l-m)/fact(l+m)) * (-1) ** m
+    return msqrt(2*(2*l + 1)/pi4 * fact(l-m)/fact(l+m))
+
+# This is a list of dict
+#  [0]{0} is l==0, m==0
+#  [1]{-1} is l==1, m==-1
+#  [1]{1} is l==1, m==1
+# and so on.
+# Calculate it up to l == 5 which is the h shell
+_rspher_harm_fact = [{m: _rfact(l, m) for m in range(-l, l+1)} for l in range(6)]
+# Clean-up
+del _rfact
 
 
 def rspherical_harm(m, l, theta, cos_phi):
@@ -54,10 +72,10 @@ def rspherical_harm(m, l, theta, cos_phi):
     # learned lessons from Denchar.
     # As such the choice of these real spherical harmonics is that of Siesta.
     if m == 0:
-        return msqrt((2*l + 1)/_pi4) * lpmv(m, l, cos_phi)
+        return _rspher_harm_fact[l][m] * lpmv(m, l, cos_phi)
     elif m < 0:
-        return (-msqrt(2*(2*l + 1)/_pi4 * fact(l-m)/fact(l+m)) * sin(m*theta) * (-1) ** m)* lpmv(m, l, cos_phi)
-    return (msqrt(2*(2*l + 1)/_pi4 * fact(l-m)/fact(l+m)) * cos(m*theta))* lpmv(m, l, cos_phi)
+        return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * sin(m*theta))
+    return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * cos(m*theta))
 
 
 class Orbital(object):
@@ -155,6 +173,9 @@ class Orbital(object):
         return self.equal(other)
 
     def radial(self, r, *args, **kwargs):
+        raise NotImplementedError
+
+    def spher(self, theta, phi, *args, **kwargs):
         raise NotImplementedError
 
     def psi(self, r, *args, **kwargs):
@@ -440,6 +461,29 @@ class SphericalOrbital(Orbital):
         p.shape = s
         return p
 
+    def spher(self, theta, phi, m=0, cos_phi=False):
+        r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
+
+        Parameters
+        -----------
+        theta : array_like
+           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+        phi : array_like
+           polar angle from :math:`z` axis
+        m : int, optional
+           magnetic quantum number, must be in range ``-self.l <= m <= self.l``
+        cos_phi : bool, optional
+           whether `phi` is actually :math:`cos(\phi)` which will be faster because
+           `cos` is not necessary to call.
+
+        Returns
+        -------
+        spher : the spherical harmonics at angles :math:`\theta` and :math:`\phi`.
+        """
+        if cos_phi:
+            return rspherical_harm(m, self.l, theta, phi)
+        return rspherical_harm(m, self.l, theta, cos(phi))
+
     def psi_spher(self, r, theta, phi, m=0, cos_phi=False):
         r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
 
@@ -463,9 +507,7 @@ class SphericalOrbital(Orbital):
         -------
         psi : the orbital value at point `r`
         """
-        if cos_phi:
-            return self.f(r) * rspherical_harm(m, self.l, theta, phi)
-        return self.f(r) * rspherical_harm(m, self.l, theta, cos(phi))
+        return self.f(r) * self.spher(theta, phi, m, cos_phi)
 
     def toAtomicOrbital(self, m=None, n=None, Z=1, P=False, q0=None):
         r""" Create a list of `AtomicOrbital` objects
@@ -798,6 +840,27 @@ class AtomicOrbital(Orbital):
         psi : the orbital value at point `r`
         """
         return self.orb.psi(r, self.m)
+
+    def spher(self, theta, phi, m=0, cos_phi=False):
+        r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
+
+        Parameters
+        -----------
+        theta : array_like
+           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+        phi : array_like
+           polar angle from :math:`z` axis
+        m : int, optional
+           magnetic quantum number, must be in range ``-self.l <= m <= self.l``
+        cos_phi : bool, optional
+           whether `phi` is actually :math:`cos(\phi)` which will be faster because
+           `cos` is not necessary to call.
+
+        Returns
+        -------
+        spher : the spherical harmonics at angles :math:`\theta` and :math:`\phi`.
+        """
+        return self.orb.spher(theta, phi, self.m, cos_phi)
 
     def psi_spher(self, r, theta, phi, cos_phi=False):
         r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
