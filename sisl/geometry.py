@@ -1387,6 +1387,7 @@ class Geometry(SuperCellChild):
         By specifying `what` one can control whether it should be:
 
         * ``xyz|position``: Center of coordinates (default)
+        * ``mm(xyz)``: Center of minimum/maximum of coordinates
         * ``mass``: Center of mass
         * ``cell``: Center of cell
 
@@ -1394,19 +1395,21 @@ class Geometry(SuperCellChild):
         ----------
         atom : array_like
             list of atomic indices to find center of
-        what : {'xyz', 'mass', 'cell'}
+        what : {'xyz', 'mm(xyz)', 'mass', 'cell'}
             determine whether center should be of 'cell', mass-centered ('mass'),
-            or absolute center of the positions.
+            center of minimum/maximum position of atoms or absolute center of the positions.
         """
-        if 'cell' in what:
+        if 'cell' == what:
             return self.sc.center()
         if atom is None:
             g = self
         else:
             g = self.sub(ensure_array(atom))
-        if 'mass' in what:
+        if 'mass' == what:
             mass = self.mass
             return dot(mass, g.xyz) / np.sum(mass)
+        if 'mm(xyz)' == what:
+            return (self.xyz.min(0) + self.xyz.max(0)) / 2
         if not ('xyz' in what or 'position' in what):
             raise ValueError(
                 'Unknown what, not one of [xyz,position,mass,cell]')

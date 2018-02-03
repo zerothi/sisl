@@ -471,6 +471,7 @@ class TestGeometry(object):
         al = setup.g.center()
         assert np.allclose(np.mean(setup.g.xyz, axis=0), al)
         al = setup.g.center(what='mass')
+        al = setup.g.center(what='mm(xyz)')
 
     @pytest.mark.xfail(raises=ValueError)
     def test_center_raise(self, setup):
