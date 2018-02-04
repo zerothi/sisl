@@ -6,7 +6,7 @@ from functools import partial
 from scipy.sparse import csr_matrix
 import numpy as np
 from numpy import int32
-from numpy import dot, argsort, where, mod, floor
+from numpy import dot, argsort, where, floor
 from numpy import logical_and as log_and
 
 
@@ -244,23 +244,13 @@ class DensityMatrix(SparseOrbitalBZSpin):
             if len(idx) == 0:
                 return
 
-            # Figure out orbitals, instead of using all=True, we
-            # do it like this because it is fancy indexing which is easier
-            # on memory.
-            o1, o2 = geom.a2o([ja, ja+1])
-
-            # Retrieve the matrix that connects the two atoms (i in unit-cell, j in supercell)
-            ijDM = cscDM[:, o1:o2]
-            ijptr = ijDM.indptr.view()
-            ijind = ijDM.indices.view()
-            ijdm = ijDM.data.view()
-
-            # Calculate the positions of the indices in according to the grid
-            # voxel cells
-            rxyz = dot(idx, dcell)
-
             # If the cell is too small, then reduce
             if apply_reduction:
+
+                # Calculate the positions of the indices according to the grid
+                # voxel cells
+                rxyz = dot(idx, dcell)
+
                 # Ensure the indices are within the unit-cell
                 # This needs to be adapted. I.e. if the grid is smaller
                 # than the originating geometry cell we have to do mod on rxyz
@@ -278,17 +268,42 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 idx2 = log_and(log_and.reduce(0 <= idx2, axis=1),
                                log_and.reduce(idx2 < shape, axis=1)).nonzero()[0]
 
+                if len(idx2) == 0:
+                    return
+
                 # Shrink indices to the points we know are correct.
                 idx = idx[idx2]
                 rxyz = rxyz[idx2, :]
 
-                del idx2
-
                 warn(self.__class__.__name__ + '.rho untested waters...')
 
-            # The grid unit-cell and the geometry unit-cell are the same
-            # I.e. we can move the indices much simpler...
-            mod(idx, shape, out=idx)
+            else:
+
+                # The grid unit-cell and the geometry unit-cell are the same
+                # Hence we can easily determine whether they are inside or out
+                idx2 = log_and(log_and.reduce(0 <= idx, axis=1),
+                               log_and.reduce(idx < shape, axis=1)).nonzero()[0]
+                idx = idx[idx2, :]
+
+                if len(idx2) == 0:
+                    return
+
+                # Calculate the positions of the indices according to the grid
+                # voxel cells
+                rxyz = dot(idx, dcell)
+
+            del idx2
+
+            # Figure out orbitals, instead of using all=True, we
+            # do it like this because it is fancy indexing which is easier
+            # on memory.
+            o1, o2 = geom.a2o([ja, ja+1])
+
+            # Retrieve the matrix that connects the two atoms (i in unit-cell, j in supercell)
+            ijDM = cscDM[:, o1:o2]
+            ijptr = ijDM.indptr.view()
+            ijind = ijDM.indices.view()
+            ijdm = ijDM.data.view()
 
             # Get the two atoms spherical coordinates
             rri, thetai, cos_phii = cart2spher(rxyz - xyzi, cos_phi=True)
