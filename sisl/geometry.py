@@ -2498,43 +2498,43 @@ class Geometry(SuperCellChild):
         """
         return self.sc.offset(self.o2isc(o))
 
-    def __plot__(self, fig_axes=False, axes=None, plot_sc=True, *args, **kwargs):
+    def __plot__(self, axis=None, supercell=True, axes=False, *args, **kwargs):
         """ Plot the geometry in a specified ``matplotlib.Axes`` object.
 
         Parameters
         ----------
-        fig_axes : bool or matplotlib.Axes, optional
+        axis : array_like, optional
+           only plot a subset of the axis, defaults to all axis
+        supercell : bool, optional
+           If `True` also plot the supercell structure
+        axes : bool or matplotlib.Axes, optional
            the figure axes to plot in (if ``matplotlib.Axes`` object).
            If `True` it will create a new figure to plot in.
            If `False` it will try and grap the current figure and the current axes.
-        axes : array_like, optional
-           only plot a subset of the axis, defaults to all axes"
-        plot_sc : bool, optional
-           If `True` also plot the supercell structure
-           only plot a subset of the axis, defaults to all axes"
         """
         # Default dictionary for passing to newly created figures
         d = dict()
 
-        if plot_sc:
-            self.sc.__plot__(fig_axes, axes, *args, **kwargs)
-            if fig_axes is True:
-                fig_axes = False
+        # Start by plotting the supercell
+        if supercell:
+            self.sc.__plot__(axis, axes=axes, *args, **kwargs)
+            if axes is True:
+                axes = False
 
-        if axes is None:
-            axes = [0, 1, 2]
+        if axis is None:
+            axis = [0, 1, 2]
 
         # Ensure we have a new 3D Axes3D
         if len(axes) == 3:
             d['projection'] = '3d'
 
-        if fig_axes is False:
+        if axes is False:
             try:
-                fig_axes = plt.mlibplt.gca()
+                axes = plt.mlibplt.gca()
             except Exception:
-                fig_axes = plt.mlibplt.figure().add_subplot(111, **d)
-        elif fig_axes is True:
-            fig_axes = plt.mlibplt.figure().add_subplot(111, **d)
+                axes = plt.mlibplt.figure().add_subplot(111, **d)
+        elif axes is True:
+            axes = plt.mlibplt.figure().add_subplot(111, **d)
 
         colors = np.linspace(0, 1, num=len(self.atom.atom), endpoint=False)
         colors = colors[self.atom.specie]
@@ -2543,17 +2543,17 @@ class Geometry(SuperCellChild):
         area[:] *= 20 * np.pi / ma
         area = area[self.atom.specie]
 
-        xyz = self.xyz.view()
+        xyz = self.xyz
 
-        if isinstance(fig_axes, plt.mlib3d.Axes3D):
+        if isinstance(axes, plt.mlib3d.Axes3D):
             # We should plot in 3D plots
-            fig_axes.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], s=area, c=colors, alpha=0.8)
-            plt.mlibplt.zlabel('Ang')
+            axes.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], s=area, c=colors, alpha=0.8)
+            axes.set_zlabel('Ang')
         else:
-            fig_axes.scatter(xyz[:, axes[0]], xyz[:, axes[1]], s=area, c=colors, alpha=0.8)
+            axes.scatter(xyz[:, axes[0]], xyz[:, axes[1]], s=area, c=colors, alpha=0.8)
 
-        plt.mlibplt.xlabel('Ang')
-        plt.mlibplt.ylabel('Ang')
+        axes.set_xlabel('Ang')
+        axes.set_ylabel('Ang')
 
     @classmethod
     def fromASE(cls, aseg):
@@ -2563,7 +2563,7 @@ class Geometry(SuperCellChild):
         ----------
         aseg : ASE ``Atoms`` object which contains the following routines:
             ``get_atomic_numbers``, ``get_positions``, ``get_cell``.
-            From those methods a `sisl` object will be created.
+            From those methods a `Geometry` object will be created.
         """
         Z = aseg.get_atomic_numbers()
         xyz = aseg.get_positions()

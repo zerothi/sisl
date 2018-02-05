@@ -63,7 +63,7 @@ from .info import cite
 from .selector import *
 
 # Import plot routine
-from . import _plot as plot
+from ._plot import plot as plot
 
 # load the most commonly, and basic classes
 # The unit contain the SI standard conversions using
