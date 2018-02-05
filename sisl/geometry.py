@@ -2525,7 +2525,7 @@ class Geometry(SuperCellChild):
             axis = [0, 1, 2]
 
         # Ensure we have a new 3D Axes3D
-        if len(axes) == 3:
+        if len(axis) == 3:
             d['projection'] = '3d'
 
         if axes is False:
@@ -2550,7 +2550,7 @@ class Geometry(SuperCellChild):
             axes.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], s=area, c=colors, alpha=0.8)
             axes.set_zlabel('Ang')
         else:
-            axes.scatter(xyz[:, axes[0]], xyz[:, axes[1]], s=area, c=colors, alpha=0.8)
+            axes.scatter(xyz[:, axis[0]], xyz[:, axis[1]], s=area, c=colors, alpha=0.8)
 
         axes.set_xlabel('Ang')
         axes.set_ylabel('Ang')

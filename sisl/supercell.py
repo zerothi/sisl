@@ -66,6 +66,36 @@ class SuperCell(object):
         # Set the super-cell
         self.set_nsc(nsc=nsc)
 
+    def cell_parameter(self, rad=False):
+        """ Return the cell-parameters of this cell. I.e. lattice vector lengths and angles
+
+        Parameters
+        ----------
+        rad : bool, optional
+           whether the angles are returned in radians
+        """
+        if not rad:
+            f = 180 / np.pi
+        else:
+            f = 1.
+
+        # Figure out which vectors has the largest component along Cartesian x
+        c = self.copy()
+        cc = c.cell.copy()
+        fn = fnorm(cc)
+        x_frac = np.abs(cc[:, 0]) / fn
+        # Figure out which has the largest component
+        ix = np.argsort(-x_frac)[0]
+
+        # Now we have the largest x-component.
+        # Rotate 'ix' vector to be along x vector
+        from math import acos, asin
+        ax = acos(_dot(cc[ix, :], np.array([1., 0, 0])) / fn[ix])
+
+        # First we need to rotate the cell etc.
+        # Al
+        pass
+
     def _update_vol(self):
         self.volume = np.abs(dot(self.cell[0, :],
                                  np.cross(self.cell[1, :], self.cell[2, :])
@@ -812,7 +842,6 @@ class SuperCell(object):
             axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], v0[1, 2] + v1[:, 2], *args, **kwargs)
 
             axes.set_zlabel('Ang')
-            raise NotImplementedError('Not implemented for 3D plots')
 
         else:
             for vv in v:
