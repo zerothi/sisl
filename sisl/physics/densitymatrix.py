@@ -6,7 +6,7 @@ from functools import partial
 from scipy.sparse import csr_matrix
 import numpy as np
 from numpy import int32
-from numpy import dot, argsort, where, floor
+from numpy import dot, argsort, where, floor, take
 from numpy import logical_and as log_and
 
 
@@ -147,18 +147,9 @@ class DensityMatrix(SparseOrbitalBZSpin):
         """
         geom = self.geom
         cell = self.geom.cell
-        prcell = geom.rcell
 
-        # If all cell coordinates are the same, we don't have to do anything.
-        # Otherwise, we have to do tricks to check coordinates within the
-        # grid-cell
-        apply_reduction = not np.allclose(geom.cell, grid.cell, atol=1.e-6)
         if geom is None:
             geom = grid.geometry
-        if apply_reduction:
-            # We need the fractional cell to figure out
-            # if coordinates are actually within the
-            pfrcell = prcell.T / (2 * np.pi)
 
         # Extract sub variables used throughout the loop
         csr = self._csr
@@ -244,53 +235,21 @@ class DensityMatrix(SparseOrbitalBZSpin):
             if len(idx) == 0:
                 return
 
-            # If the cell is too small, then reduce
-            if apply_reduction:
+            # TODO currently we don't allow unit-cells larger than the calculating one
+            # becouse we would then need to figure out the relative atomic indices
 
-                # Calculate the positions of the indices according to the grid
-                # voxel cells
-                rxyz = dot(idx, dcell)
+            # The grid unit-cell and the geometry unit-cell are the same
+            # Hence we can easily determine whether they are inside or out
+            idx2 = log_and(log_and.reduce(0 <= idx, axis=1),
+                           log_and.reduce(idx < shape, axis=1)).nonzero()[0]
+            if len(idx2) == 0:
+                return
 
-                # Ensure the indices are within the unit-cell
-                # This needs to be adapted. I.e. if the grid is smaller
-                # than the originating geometry cell we have to do mod on rxyz
+            idx = take(idx, idx2, axis=0)
 
-                # 1. Move coordinates to the original cell
-                # Get fractional coordinates to get the divisions in the current cell
-                # and move them into the primary unit cell
-                idx2 = dot(dot(rxyz + origo, pfrcell) % 1., cell)
-
-                # Transfer the coordinates (moved into the primary
-                # unit cell) back into the grid index form.
-                idx2 = floor(dot(idx2, frcell) * shape).astype(int32)
-
-                # Take out only the indices where idx2 is within the shape bounds
-                idx2 = log_and(log_and.reduce(0 <= idx2, axis=1),
-                               log_and.reduce(idx2 < shape, axis=1)).nonzero()[0]
-
-                if len(idx2) == 0:
-                    return
-
-                # Shrink indices to the points we know are correct.
-                idx = idx[idx2]
-                rxyz = rxyz[idx2, :]
-
-                warn(self.__class__.__name__ + '.rho untested waters...')
-
-            else:
-
-                # The grid unit-cell and the geometry unit-cell are the same
-                # Hence we can easily determine whether they are inside or out
-                idx2 = log_and(log_and.reduce(0 <= idx, axis=1),
-                               log_and.reduce(idx < shape, axis=1)).nonzero()[0]
-                idx = idx[idx2, :]
-
-                if len(idx2) == 0:
-                    return
-
-                # Calculate the positions of the indices according to the grid
-                # voxel cells
-                rxyz = dot(idx, dcell)
+            # Calculate the positions of the indices according to the grid
+            # voxel cells
+            rxyz = dot(idx, dcell)
 
             del idx2
 
