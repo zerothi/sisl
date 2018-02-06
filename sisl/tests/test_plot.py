@@ -6,7 +6,9 @@ import numpy as np
 
 import sisl
 
+mlib = pytest.importorskip('matplotlib')
 plt = pytest.importorskip('matplotlib.pyplot')
+mlib3d = pytest.importorskip('mpl_toolkits.mplot3d')
 
 
 def test_supercell_2d():

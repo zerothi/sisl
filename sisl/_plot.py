@@ -1,5 +1,4 @@
-"""
-An interface routine for plotting the different systems in sisl
+""" An interface routine for plotting different classes in sisl
 
 It merely calls the `<>.__plot__(**)` routine and returns immediately
 """
@@ -30,3 +29,6 @@ if has_matplotlib:
 else:
     def plot(obj, *args, **kwargs):
         raise _matplotlib_import_exception
+
+# Clean up
+del has_matplotlib
