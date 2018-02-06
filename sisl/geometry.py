@@ -260,7 +260,7 @@ class Geometry(SuperCellChild):
         -----
         This is an in-place operation.
         """
-        self._atom = self._atom.reorder()
+        self._atom = self._atom.reorder(in_place=True)
 
     def reduce(self):
         """ Remove all atoms not currently used in the ``self.atom`` object
@@ -269,7 +269,7 @@ class Geometry(SuperCellChild):
         -----
         This is an in-place operation.
         """
-        self._atom = self._atom.reduce()
+        self._atom = self._atom.reduce(in_place=True)
 
     def rij(self, ia, ja):
         r""" Distance between atom `ia` and `ja`, atoms can be in super-cell indices

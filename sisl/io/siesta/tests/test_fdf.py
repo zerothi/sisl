@@ -186,9 +186,9 @@ def test_include():
         fh.write('Flag3 Sub < hello\n')
         fh.write('FakeInt 1\n')
         fh.write('Test 1. eV\n')
+        fh.write(' %INCLUDE file2.fdf\n')
         fh.write('TestRy 1. Ry\n')
         fh.write('%block Hello < hello\n')
-        fh.write(' %INCLUDE file2.fdf\n')
 
     with open(d('hello'), 'w') as fh:
         fh.write('Flag4 hello\n')

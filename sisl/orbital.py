@@ -623,6 +623,11 @@ class SphericalOrbital(Orbital):
            whether the orbitals are polarized.
         q0 : float, optional
            the initial charge per orbital, initially :math:`q_0 / (2l+1)` with :math:`q_0` from this object
+
+        Returns
+        -------
+        AtomicOrbital : for passed `m` an atomic orbital will be returned
+        list of AtomicOrbital : for each :math:`m\in[-l;l]` an atomic orbital will be returned in the list
         """
         # Initial charge
         if q0 is None:
@@ -818,7 +823,9 @@ class AtomicOrbital(Orbital):
         if self.l > 4:
             raise ValueError(self.__class__.__name__ + ' does not implement shell h and above!')
 
+        # Retrieve user-passed spherical orbital
         s = kwargs.get('spherical', None)
+
         if s is None:
             # Expect the orbital to already be set
             pass

@@ -216,7 +216,8 @@ class fdfSileSiesta(SileSiesta):
         while l is None:
             l = self.readline()
             if len(l) == 0:
-                return None
+                if not self._popfile():
+                    return None
             l = process_line(l)
 
         return l
@@ -527,6 +528,7 @@ class fdfSileSiesta(SileSiesta):
                 # *except* the number of orbitals.
                 a = Atom(a.Z, Sa.orbital, mass=a.mass, tag=a.tag)
             spgeom.geom.atom.replace(idx, a)
+            spgeom.geom.reduce()
         return no_no
 
     def read_supercell(self, output=False, *args, **kwargs):
@@ -650,6 +652,7 @@ class fdfSileSiesta(SileSiesta):
                     warn.simplefilter('ignore')
                     for atom, _ in geom.atom.iter(True):
                         geom.atom.replace(atom, basis[atom.Z-1])
+                    geom.reduce()
         return geom
 
     def _r_geometry_nc(self):
@@ -1022,7 +1025,7 @@ class fdfSileSiesta(SileSiesta):
         if isfile(f):
             tmp_p = sp.add_parser('pdos',
                                   help="Manipulate PDOS.xml file from the Siesta simulation")
-            tmp_p, tmp_ns = sis.pdosSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = pdosSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.EIG'
