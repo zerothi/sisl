@@ -9,8 +9,7 @@ try:
     import matplotlib.pyplot as mlibplt
     import mpl_toolkits.mplot3d as mlib3d
     has_matplotlib = True
-except Exception as e:
-    print(e)
+except Exception as _matplotlib_import_exception:
     mlib = NotImplementedError
     mlibplt = NotImplementedError
     mlib3d = NotImplementedError
@@ -30,5 +29,4 @@ if has_matplotlib:
     plot = _plot
 else:
     def plot(obj, *args, **kwargs):
-        raise ModuleNotFoundError("sisl could not import matplotlib. "
-                                  "Please ensure you have matplotlib installed and it can be imported without problems.")
+        raise _matplotlib_import_exception
