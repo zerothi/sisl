@@ -9,7 +9,7 @@ try:
     import matplotlib.pyplot as mlibplt
     import mpl_toolkits.mplot3d as mlib3d
     has_matplotlib = True
-except e:
+except Exception as e:
     print(e)
     mlib = NotImplementedError
     mlibplt = NotImplementedError
