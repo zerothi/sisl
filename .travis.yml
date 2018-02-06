@@ -36,25 +36,28 @@ matrix:
 
 install:
   - conda install hdf4 libnetcdf
-  - if [[ ${COVERAGE:-false} != false ]]; then
-       pip install coverage codacy-coverage ;
+  - |
+    if [[ ${COVERAGE:-false} != false ]]; then
+       pip install coverage codacy-coverage
     fi
   - pip install pytest pytest-cov
   - python setup.py install
 
 script:
-  - if [[ ${COVERAGE:-false} != false ]]; then
-        pip install -e . ;
-        pytest --cov=sisl ;
+  - |
+    if [[ ${COVERAGE:-false} != false ]]; then
+        pip install -e .
+        pytest --cov=sisl
     else
-        pytest --doctest-modules sisl ;
-        pytest --pyargs sisl ;
+        pytest --doctest-modules sisl
+        pytest --pyargs sisl
     fi
 
 after_success:
-  - if [[ ${COVERAGE:-false} != false ]]; then
-       bash <(curl -s https://codecov.io/bash) ;
-       python-codacy-coverage -r coverage.xml ;
+  - |
+    if [[ ${COVERAGE:-false} != false ]]; then
+       bash <(curl -s https://codecov.io/bash)
+       python-codacy-coverage -r coverage.xml
     fi
 
 
@@ -73,12 +76,13 @@ addons:
       - eatmydata
 
 before_install:
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-        wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh ;
+  - |
+    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+        wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
     elif [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]]; then
-        wget http://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-x86_64.sh -O miniconda.sh ;
+        wget http://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-x86_64.sh -O miniconda.sh
     else
-        wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh ;
+        wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
     fi
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH=$HOME/miniconda/bin:$PATH
@@ -93,4 +97,6 @@ before_script:
   - |
     if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
         export DISPLAY=:99.0
+        sh -e /etc/init.d/xvfb start
+        sleep 2
     fi
