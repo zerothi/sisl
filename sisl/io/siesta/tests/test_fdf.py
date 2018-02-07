@@ -189,6 +189,7 @@ def test_include():
         fh.write(' %INCLUDE file2.fdf\n')
         fh.write('TestRy 1. Ry\n')
         fh.write('%block Hello < hello\n')
+        fh.write('TestLast 1. eV\n')
 
     with open(d('hello'), 'w') as fh:
         fh.write('Flag4 hello\n')
@@ -223,6 +224,8 @@ def test_include():
     assert fdf.get('testRy', 'Ry') == pytest.approx(1.)
     assert fdf.get('Sub') == 'sub-test'
     assert fdf.get('Third') == 'level'
+    assert fdf.get('test-last', with_unit=True)[0] == pytest.approx(1.)
+    assert fdf.get('test-last', with_unit=True)[1] == 'eV'
     # Read a block
     ll = open(d('hello')).readlines()
     ll.pop(1)

@@ -2,7 +2,6 @@ from __future__ import print_function, division
 
 import pytest
 
-import warnings
 import math as m
 import numpy as np
 

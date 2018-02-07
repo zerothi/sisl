@@ -1,13 +1,13 @@
 from __future__ import print_function
 
 import numpy as np
-import warnings as warn
 
 # Import sile objects
 from .sile import SileVASP
 from ..sile import *
 
 # Import the geometry object
+from sisl.messages import warn
 from sisl import Geometry, PeriodicTable, Atom, SuperCell
 
 __all__ = ['CARSileVASP', 'POSCARSileVASP', 'CONTCARSileVASP']
@@ -99,7 +99,7 @@ class CARSileVASP(SileVASP):
                 "  <Specie-1> <Specie-2>",
                 "  <#Specie-1> <#Specie-2>",
                 "Format not found, the species are defaulted to the first elements of the periodic table."])
-            warn.warn(err)
+            warn(SileWarning(err))
 
         # Create list of atoms to be used subsequently
         atom = [Atom[spec]

@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-import warnings
 from numbers import Integral
 from collections import Iterable
 
@@ -20,6 +19,7 @@ from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
 import sisl._array as _a
+from .messages import warn
 from ._help import array_fill_repeat, ensure_array, get_dtype
 from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
@@ -399,8 +399,8 @@ class SparseCSR(object):
 
         # Check that all column indices are within the expected shape
         if np.any(self.shape[1] <= self.col):
-            warnings.warn("Sparse matrix contains column indices outside the shape "
-                          "of the matrix. Data may not represent what you had expected")
+            warn("Sparse matrix contains column indices outside the shape "
+                 "of the matrix. Data may not represent what is expected!")
 
         # Signal that we indeed have finalized the data
         self._finalized = True

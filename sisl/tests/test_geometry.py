@@ -4,8 +4,8 @@ import pytest
 
 import math as m
 import numpy as np
-import warnings as warn
 
+from sisl import SislWarning
 from sisl import Cube, Sphere
 from sisl import Geometry, Atom, SuperCell
 
@@ -257,14 +257,14 @@ class TestGeometry(object):
         assert np.allclose(setup.g.oRij(0, 2), [1.42, 0, 0])
 
     def test_cut(self, setup):
-        with pytest.warns(UserWarning) as warns:
+        with pytest.warns(SislWarning) as warns:
             assert len(setup.g.cut(1, 1)) == 2
             assert len(setup.g.cut(2, 1)) == 1
             assert len(setup.g.cut(2, 1, 1)) == 1
         assert len(warns) == 2
 
     def test_cut2(self, setup):
-        with pytest.warns(UserWarning) as warns:
+        with pytest.warns(SislWarning) as warns:
             c1 = setup.g.cut(2, 1)
             c2 = setup.g.cut(2, 1, 1)
         assert len(warns) == 2

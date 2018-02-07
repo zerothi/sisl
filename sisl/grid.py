@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-import warnings
 from numbers import Integral, Real
 from math import pi
 

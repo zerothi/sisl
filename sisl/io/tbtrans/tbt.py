@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-import warnings
 from numbers import Integral
 try:
     from StringIO import StringIO
@@ -16,13 +15,14 @@ from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
 # Import sile objects
-from ..sile import add_sile, sile_raise_write
+from ..sile import add_sile, sile_raise_write, SileWarning
 from ._cdf import _devncSileTBtrans
 from sisl.utils import *
 import sisl._array as _a
 
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
+from sisl.messages import warn
 from sisl._help import _str, ensure_array
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
@@ -672,10 +672,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             max_e = max(mu_from + kt_from * 3, mu_to + kt_to * 3)
             s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format('dFermi function', min_e, max_e)
 
-            warnings.warn((self.__class__.__name__ + ".current_parameter cannot "
-                           "accurately calculate the current due to the calculated energy range. "
-                           "I.e. increase your calculated energy-range.\n" + s),
-                          UserWarning)
+            warn((SileWarning(self.__class__.__name__ + ".current_parameter cannot "
+                              "accurately calculate the current due to the calculated energy range. "
+                              "I.e. increase your calculated energy-range.\n" + s)))
 
         def nf(E, mu, kT):
             return 1. / (np.exp((E - mu) / kT) + 1.)

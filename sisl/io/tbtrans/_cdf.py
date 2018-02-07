@@ -1,13 +1,12 @@
 from __future__ import print_function, division
 
-import warnings
 from numbers import Integral
 
 import numpy as np
 from numpy import in1d
 
 # Import sile objects
-from ..sile import sile_raise_write
+from ..sile import sile_raise_write, SileWarning
 from .sile import SileCDFTBtrans
 from sisl.utils import *
 import sisl._array as _a
@@ -201,10 +200,12 @@ class _ncSileTBtrans(SileCDFTBtrans):
             E = float(E)
         idxE = np.abs(self.E - E).argmin()
         ret_E = self.E[idxE]
-        if abs(ret_E - E) > 1e-3:
-            warnings.warn(self.__class__.__name__ + " requesting energy " +
-                          "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E),
-                          UserWarning)
+        if abs(ret_E - E) > 5e-3:
+            warn(SileWarning(self.__class__.__name__ + " requesting energy " +
+                             "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E)))
+        elif abs(ret_E - E) > 1e-3:
+            warn(SileInfo(self.__class__.__name__ + " requesting energy " +
+                          "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E)))
         return idxE
 
     def kindex(self, k):
@@ -223,11 +224,10 @@ class _ncSileTBtrans(SileCDFTBtrans):
         ik = np.sum(np.abs(self.k - _a.asarrayd(k)[None, :]), axis=1).argmin()
         ret_k = self.k[ik, :]
         if not np.allclose(ret_k, k, atol=0.0001):
-            warnings.warn(self.__class__.__name__ + " requesting k-point " +
-                          "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*k) +
-                          " found " +
-                          "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*ret_k),
-                          UserWarning)
+            warn(SileWarning(self.__class__.__name__ + " requesting k-point " +
+                             "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*k) +
+                             " found " +
+                             "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*ret_k)))
         return ik
 
 

@@ -1,9 +1,10 @@
 from __future__ import print_function, division
 
-import warnings
 
 import numpy as np
 from numpy import dot
+
+from sisl.messages import warn
 from sisl.utils.ranges import array_arange
 import sisl._array as _a
 import sisl.linalg as lin
@@ -83,8 +84,7 @@ class SemiInfinite(SelfEnergy):
 
         # Check that the Hamiltonian does have a non-zero V along the semi-infinite direction
         if spgeom.geom.sc.nsc[self.semi_inf] == 1:
-            warnings.warn('Creating a semi-infinite self-energy with no couplings along the semi-infinite direction',
-                          UserWarning)
+            warn('Creating a semi-infinite self-energy with no couplings along the semi-infinite direction')
 
         # Finalize the setup by calling the class specific routine
         self._setup(spgeom)
@@ -130,8 +130,8 @@ class RecursiveSI(SemiInfinite):
         # Already now limit the sparse matrices
         self.spgeom1.set_nsc(nsc)
         if self.spgeom1.nnz < old_nnz:
-            warnings.warn(("RecursiveSI: SparseGeometry has connections across the first neighbouring cell. "
-                           "These values will be forced to 0 as the principal cell-interaction is a requirement"))
+            warn("RecursiveSI: SparseGeometry has connections across the first neighbouring cell. "
+                 "These values will be forced to 0 as the principal cell-interaction is a requirement")
 
         # I.e. we will delete all interactions that are un-important
         n_s = self.spgeom1.geom.sc.n_s

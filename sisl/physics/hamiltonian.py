@@ -1,7 +1,5 @@
 from __future__ import print_function, division
 
-import warnings
-
 import numpy as np
 from numpy import int32, float64, pi
 from numpy import take, ogrid
@@ -9,6 +7,7 @@ from numpy import add, subtract, multiply, divide
 from numpy import cos, sin, arctan2, conj
 from numpy import dot, sqrt, square, floor, ceil
 
+from sisl.messages import warn
 from sisl._help import _range as range, _str as str
 from sisl._help import ensure_array
 import sisl._array as _a
@@ -635,7 +634,7 @@ class EigenState(EigenSystem):
             # Extract maximum R
             R = atom.maxR()
             if R <= 0.:
-                warnings.warn("Atom '{}' does not have a wave-function, skipping atom.".format(atom))
+                warn("Atom '{}' does not have a wave-function, skipping atom.".format(atom))
                 # Skip this atom
                 io += atom.no
                 continue
@@ -686,7 +685,7 @@ class EigenState(EigenSystem):
                 oR = os[0].R
 
                 if oR <= 0.:
-                    warnings.warn("Orbital(s) '{}' does not have a wave-function, skipping orbital.".format(os))
+                    warn("Orbital(s) '{}' does not have a wave-function, skipping orbital.".format(os))
                     # Skip these orbitals
                     io += len(os)
                     continue

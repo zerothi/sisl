@@ -65,6 +65,12 @@ from .selector import *
 # Import plot routine
 from ._plot import plot as plot
 
+# Import warning classes
+# We currently do not import warn and info
+# as they are too generic names in case one does from sisl import *
+# Perhaps we should simply remove them from __all__?
+from .messages import SislException, SislWarning, SislInfo, warn
+
 # load the most commonly, and basic classes
 # The unit contain the SI standard conversions using
 # all digits (not program specific)
@@ -119,3 +125,6 @@ __all__ = [s for s in dir() if not s.startswith('_')]
 __all__ += ['__{}__'.format(s) for s in ['bibtex', 'version', 'major', 'minor', 'micro']]
 __all__ += ['__{}__'.format(s) for s in ['git_revision']]
 __all__ += ['__{}__'.format(s) for s in ['author', 'copyright']]
+
+# Remove warn from __all__
+__all__.pop(__all__.index('warn'))

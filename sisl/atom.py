@@ -1,13 +1,13 @@
 from __future__ import print_function, division
 
 # We need this for python3 support PY3
-import warnings as warn
 from six import add_metaclass
 
 from numbers import Integral, Real
 
 import numpy as np
 
+from .messages import info
 from ._help import array_fill_repeat, ensure_array, _str
 import sisl._array as _a
 from .shape import Sphere
@@ -1646,7 +1646,7 @@ class Atoms(object):
             if a.no != atom.no:
                 a1 = '  ' + repr(a).replace('\n', '\n  ')
                 a2 = '  ' + repr(atom).replace('\n', '\n  ')
-                warn.warn('Substituting atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
+                info('Substituting atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
         self._specie[index] = specie
         # Update orbital counts...
         self._update_orbitals()
@@ -1684,7 +1684,7 @@ class Atoms(object):
                 if atom.no != atom_to.no:
                     a1 = '  ' + repr(atom).replace('\n', '\n  ')
                     a2 = '  ' + repr(atom_to).replace('\n', '\n  ')
-                    warn.warn('Replacing atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
+                    info('Replacing atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
                 self._atom[i] = atom_to
 
     def hassame(self, other, R=True):

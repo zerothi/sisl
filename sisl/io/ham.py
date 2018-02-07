@@ -6,6 +6,7 @@ import numpy as np
 from .sile import *
 
 # Import the geometry object
+from sisl.messages import warn
 from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
@@ -256,9 +257,8 @@ class HamiltonianSile(Sile):
                 diff.eliminate_zeros()
                 if np.any(np.abs(diff.data) > herm_acc):
                     amax = np.amax(np.abs(diff.data))
-                    warnings.warn(
-                        'The model could not be asserted to be Hermitian within the accuracy required ({0}).'.format(amax),
-                        UserWarning)
+                    warn(SileWarning('The model could not be asserted to be Hermitian '
+                                     'within the accuracy required ({0}).'.format(amax)))
                     hermitian = False
                 del diff
 

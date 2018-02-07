@@ -1,11 +1,11 @@
 from __future__ import print_function, division
 
 import warnings
-
 import functools as ftool
 import numpy as np
 
 import sisl._array as _a
+from .messages import warn
 from ._help import get_dtype, ensure_array
 from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
@@ -940,14 +940,13 @@ class SparseAtom(_SparseGeometry):
             geom = self.geom.cut(seps, axis, *args, **kwargs)
             # Check whether the warning exists
             if len(w) > 0:
-                if issubclass(w[-1].category, UserWarning):
+                if issubclass(w[-1].category, SislWarning):
                     new_w = str(w[-1].message)
                     new_w += ("\n---\n"
                               "The sparse atom cannot be cut as the structure "
                               "cannot be tiled accordingly. ANY use of the model has been "
                               "relieved from sisl.")
-        if new_w:
-            warnings.warn(new_w, UserWarning)
+                    warn(new_w)
 
         # Now we need to re-create number of supercells
         na = self.na
@@ -990,9 +989,7 @@ class SparseAtom(_SparseGeometry):
             nsc[axis] = isc[axis] * seps + i
 
             if out:
-                warnings.warn(
-                    'Cut the connection at nsc={0} in direction {1}.'.format(
-                        nsc[axis], axis), UserWarning)
+                warn('Cut the connection at nsc={0} in direction {1}.'.format(nsc[axis], axis))
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1
@@ -1400,14 +1397,13 @@ class SparseOrbital(_SparseGeometry):
             geom = self.geom.cut(seps, axis, *args, **kwargs)
             # Check whether the warning exists
             if len(w) > 0:
-                if issubclass(w[-1].category, UserWarning):
+                if issubclass(w[-1].category, SislWarning):
                     new_w = str(w[-1].message)
                     new_w += ("\n---\n"
                               "The sparse orbital cannot be cut as the structure "
                               "cannot be tiled accordingly. ANY use of the model has been "
                               "relieved from sisl.")
-        if new_w:
-            warnings.warn(new_w, UserWarning)
+                    warn(new_w)
 
         # Now we need to re-create number of supercells
         no = self.no
@@ -1450,9 +1446,7 @@ class SparseOrbital(_SparseGeometry):
             nsc[axis] = isc[axis] * seps + i
 
             if out:
-                warnings.warn(
-                    'Cut the connection at nsc={0} in direction {1}.'.format(
-                        nsc[axis], axis), UserWarning)
+                warn('Cut the connection at nsc={0} in direction {1}.'.format(nsc[axis], axis))
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1

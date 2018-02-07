@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-import warnings
 try:
     from StringIO import StringIO
 except Exception:
@@ -9,7 +8,7 @@ except Exception:
 import numpy as np
 
 # Import sile objects
-from ..sile import add_sile, sile_raise_write
+from ..sile import add_sile, sile_raise_write, SileWarning
 from .sile import SileCDFTBtrans
 from sisl.utils import *
 import sisl._array as _a
@@ -17,6 +16,7 @@ import sisl._array as _a
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl import SparseOrbitalBZSpin
+from sisl.messages import warn
 from sisl._help import _str, ensure_array
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
@@ -325,11 +325,11 @@ class deltancSileTBtrans(SileCDFTBtrans):
             # point, this warning will proceed...
             # I.e. even though the variable has not been set, it will WARN
             # Hence we out-comment this for now...
-            warnings.warn('Overwriting k-point {0} and energy point {1} correction.'.format(ik, iE), UserWarning)
+            warn(SileWarning('Overwriting k-point {0} and energy point {1} correction.'.format(ik, iE)))
         elif ilvl == 3 and warn_E:
-            warnings.warn('Overwriting energy point {0} correction.'.format(iE), UserWarning)
+            warn(SileWarning('Overwriting energy point {0} correction.'.format(iE)))
         elif ilvl == 2 and warn_k:
-            warnings.warn('Overwriting k-point {0} correction.'.format(ik), UserWarning)
+            warn(SileWarning('Overwriting k-point {0} correction.'.format(ik)))
 
         if ilvl == 1:
             dim = ('spin', 'nnzs')
@@ -536,11 +536,11 @@ class dHncSileTBtrans(deltancSileTBtrans):
             # point, this warning will proceed...
             # I.e. even though the variable has not been set, it will WARN
             # Hence we out-comment this for now...
-            warnings.warn('Overwriting k-point {0} and energy point {1} correction.'.format(ik, iE), UserWarning)
+            warn(SileWarning('Overwriting k-point {0} and energy point {1} correction.'.format(ik, iE)))
         elif ilvl == 3 and warn_E:
-            warnings.warn('Overwriting energy point {0} correction.'.format(iE), UserWarning)
+            warn(SileWarning('Overwriting energy point {0} correction.'.format(iE)))
         elif ilvl == 2 and warn_k:
-            warnings.warn('Overwriting k-point {0} correction.'.format(ik), UserWarning)
+            warn(SileWarning('Overwriting k-point {0} correction.'.format(ik)))
 
         if ilvl == 1:
             dim = ('spin', 'nnzs')

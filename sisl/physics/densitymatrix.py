@@ -1,8 +1,6 @@
 from __future__ import print_function, division
 
-from warnings import warn
 from numbers import Integral
-from functools import partial
 from scipy.sparse import csr_matrix
 import numpy as np
 from numpy import int32
@@ -11,8 +9,9 @@ from numpy import logical_and as log_and
 
 
 import sisl._array as _a
-from sisl.utils.ranges import array_arange
+from sisl.messages import warn
 from sisl._help import _zip as zip, _range as range
+from sisl.utils.ranges import array_arange
 from sisl.utils.mathematics import cart2spher
 from sisl.shape import Sphere
 from .spin import Spin
@@ -287,7 +286,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
         def skip_atom(a):
             if a.maxR() <= 0.:
-                warnings.warn("Atom '{}' does not have a wave-function, skipping atom.".format(a))
+                warn("Atom '{}' does not have a wave-function, skipping atom.".format(a))
                 # Skip this atom
                 return True
             return False

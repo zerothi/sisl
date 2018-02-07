@@ -2,10 +2,11 @@ from __future__ import print_function, division
 
 import os.path as osp
 import numpy as np
-import warnings as warn
+import warnings
 
 # Import sile objects
 from sisl._help import _str, ensure_array
+from sisl.messages import warn, info
 from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
@@ -209,12 +210,12 @@ class fdfSileSiesta(SileSiesta):
             return None
 
         # Perform actual reading of line
-        l = self.readline()
+        l = self.readline().split('#')[0]
         if len(l) == 0:
             return None
         l = process_line(l)
         while l is None:
-            l = self.readline()
+            l = self.readline().split('#')[0]
             if len(l) == 0:
                 if not self._popfile():
                     return None
@@ -514,8 +515,8 @@ class fdfSileSiesta(SileSiesta):
             spgeom._geom = geom
             return True
         elif spgeom.na != geom.na:
-            warn.warn('cannot replace geometry due to insufficient information regarding number of '
-                      'atoms and orbitals, ensuring correct geometry failed...')
+            warn(SileWarning('cannot replace geometry due to insufficient information regarding number of '
+                                    'atoms and orbitals, ensuring correct geometry failed...'))
 
         no_no = spgeom.no == geom.no
         # Loop and make sure the number of orbitals is consistent
@@ -567,7 +568,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_supercell_fdf(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
-        s = self.get('LatticeConstant', 'Ang')
+        s = self.get('LatticeConstant', unit='Ang')
         if s is None:
             raise SileError('Could not find LatticeConstant in file')
 
@@ -648,8 +649,8 @@ class fdfSileSiesta(SileSiesta):
                 geom = XVSileSiesta(f).read_geometry()
             else:
                 geom = XVSileSiesta(f).read_geometry(species_Z=True)
-                with warn.catch_warnings():
-                    warn.simplefilter('ignore')
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore')
                     for atom, _ in geom.atom.iter(True):
                         geom.atom.replace(atom, basis[atom.Z-1])
                     geom.reduce()
@@ -731,11 +732,11 @@ class fdfSileSiesta(SileSiesta):
         # Now we read in the species
         ns = self.get('NumberOfSpecies', default=0)
 
-        # Read the block (not strictly needed, if so we simply set all atoms to
-        # H)
+        # Read the block (not strictly needed, if so we simply set all atoms to H)
         atom = self.read_basis()
         if atom is None:
-            warn.warn('The block ChemicalSpeciesLabel does not exist, cannot determine the basis.')
+            warn(SileWarning('Block ChemicalSpeciesLabel does not exist, cannot determine the basis.'))
+
             # Default atom (hydrogen)
             atom = Atom(1)
             # Force number of species to 1
@@ -758,9 +759,9 @@ class fdfSileSiesta(SileSiesta):
         ----------
         order: list of str, optional
             the order of which to try and read the basis information.
-            By default this is ``['nc', 'ion', 'ORB_INDX']``
+            By default this is ``['nc', 'ion', 'ORB_INDX', 'fdf']``
         """
-        order = kwargs.pop('order', ['nc', 'ion', 'ORB_INDX'])
+        order = kwargs.pop('order', ['nc', 'ion', 'ORB_INDX', 'fdf'])
         for f in order:
             v = getattr(self, '_r_basis_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -784,6 +785,8 @@ class fdfSileSiesta(SileSiesta):
 
         # Now spcs contains the block of the chemicalspecieslabel
         atom = [None] * len(spcs)
+        found_one = False
+        found_all = True
         for spc in spcs:
             idx, Z, lbl = spc.split()[:3]
             idx = int(idx) - 1 # F-indexing
@@ -794,18 +797,45 @@ class fdfSileSiesta(SileSiesta):
             # now try and read the basis
             if isfile(f + '.ion.nc'):
                 atom[idx] = ionncSileSiesta(f + '.ion.nc').read_basis()
+                found_one = True
             elif isfile(f + '.ion.xml'):
                 atom[idx] = ionxmlSileSiesta(f + '.ion.xml').read_basis()
+                found_one = True
             else:
                 # default the atom to not have a range, and no associated orbitals
                 atom[idx] = Atom(Z=Z, tag=lbl)
+                found_all = False
+        if found_one and not found_all:
+            warn(SileWarning('Siesta basis information could not read all ion.nc/ion.xml files. Only a subset of the basis information is accessible.'))
+        elif not found_one:
+            return None
         return atom
 
     def _r_basis_orb_indx(self):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
         if isfile(f):
+            showinfo(SileInfo('Siesta basis information is read from {}, the radial functions are in accessible.'.format(f)))
             return OrbIndxSileSiesta(f).read_basis()
         return None
+
+    def _r_basis_fdf(self):
+        # Read basis from fdf file
+        spcs = self.get('ChemicalSpeciesLabel')
+        if spcs is None:
+            # We haven't found the chemical and species label
+            # so return nothing
+            return None
+
+        # Now spcs contains the block of the chemicalspecieslabel
+        atom = [None] * len(spcs)
+        for spc in spcs:
+            idx, Z, lbl = spc.split()[:3]
+            idx = int(idx) - 1 # F-indexing
+            Z = int(Z)
+            lbl = lbl.strip()
+
+            atom[idx] = Atom(Z=Z, tag=lbl)
+        return atom
 
     def read_density_matrix(self, *args, **kwargs):
         """ Try and read density matrix by reading the <>.nc, <>.TSDE files, <>.DM (in that order)

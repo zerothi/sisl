@@ -3,7 +3,6 @@ from __future__ import print_function, division
 import pytest
 
 from tempfile import mkstemp, mkdtemp
-import warnings as warn
 
 from sisl import Geometry, Atom
 from sisl.io.ham import *
@@ -11,7 +10,6 @@ from sisl.io.ham import *
 import os.path as osp
 import math as m
 import numpy as np
-from scipy.sparse import SparseWarning
 
 from . import common as tc
 

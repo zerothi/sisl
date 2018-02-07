@@ -49,8 +49,9 @@ For the above same functions we may do::
 """
 from __future__ import print_function, division
 
-import warnings
 import time
+
+from .messages import warn
 
 
 __all__ = ['Selector', 'TimeSelector']
@@ -221,9 +222,9 @@ class Selector(object):
                     self._best = r
                     break
             if self.best is None:
-                warnings.warn((self.__class__.__name__ + ' selection of '
-                               'optimal routine is not in the list of available '
-                               'routines. Will not select a routine.'), UserWarning)
+                warn(self.__class__.__name__ + ' selection of '
+                     'optimal routine is not in the list of available '
+                     'routines. Will not select a routine.')
         else:
             self._best = routine
 

@@ -6,6 +6,7 @@ import gzip
 
 import numpy as np
 
+from sisl.messages import SislException, SislWarning, SislInfo
 from sisl.utils.misc import str_spec
 from sisl._help import _str
 from ._help import *
@@ -24,6 +25,8 @@ __all__ += [
     'SileCDF',
     'SileBin',
     'SileError',
+    'SileWarning',
+    'SileInfo',
     ]
 
 # Decorators or sile-specific functions
@@ -994,3 +997,17 @@ def sile_raise_read(self, ok=('r', 'a')):
         raise SileError('Reading file not possible allowed '
                         'modes={0}, used mode={1}'.format(
                             ok, self._mode), self)
+
+
+class SileWarning(SislWarning):
+    """ Warnings that informs users of things to be carefull about when using their retrieved data
+
+    These warnings should be issued whenever a read/write routine is unable to retrieve all information
+    but are non-influential in the sense that sisl is still able to perform the action.
+    """
+    pass
+
+
+class SileInfo(SislInfo):
+    """ Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning. """
+    pass

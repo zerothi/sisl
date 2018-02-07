@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
 # To check for integers
-import warnings
 from numbers import Integral, Real
 from six import string_types
 from math import acos
@@ -14,6 +13,7 @@ import sisl._plot as plt
 import sisl._array as _a
 import sisl.linalg as lin
 
+from .messages import warn
 from ._help import _str
 from ._help import _range as range
 from ._help import ensure_array, ensure_dtype
@@ -898,7 +898,7 @@ class Geometry(SuperCellChild):
                            rtol=rtol, atol=atol):
             st = 'The cut structure cannot be re-created by tiling'
             st += '\nThe difference between the coordinates can be altered using rtol, atol'
-            warnings.warn(st, UserWarning)
+            warn(st)
         return new
 
     def remove(self, atom):
