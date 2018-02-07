@@ -40,15 +40,11 @@ Installing sisl using conda can be done by
 
 .. code-block:: bash
 
-    conda install -c zerothi sisl
+    conda config --add channels conda-forge
+    conda install sisl
 
-On conda, sisl is also shipped in a developer installation for more
-up-to-date releases, this may be installed using:
-
-.. code-block:: bash
-
-   conda install -c zerothi sisl-dev
-
+To find more information about the conda-forge installation please see
+`here <https://github.com/conda-forge/sisl-feedstock>`_.
 
 Manual installation
 -------------------

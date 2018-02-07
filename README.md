@@ -30,7 +30,7 @@ Installing sisl using PyPi or Conda is the easiest:
 
     pip install sisl
     # or
-    conda install -c zerothi sisl
+    conda install -c conda-forge sisl
 
 If performing a manual installation, these packages are required:
 
