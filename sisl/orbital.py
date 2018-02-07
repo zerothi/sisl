@@ -234,7 +234,7 @@ class Orbital(object):
             axes.plot(r, f, *args, **kwargs)
             axes.set_xlim(left=0)
             axes.set_xlabel('Radius [Ang]')
-            axes.set_ylabel('f(r) [e^(1/2)/Ang^3]')
+            axes.set_ylabel(r'$f(r)$ [1/Ang$^{3/2}$]')
 
     def toGrid(self, precision=0.05, c=1., R=None, dtype=np.float64):
         """ Create a Grid with *only* this orbital wavefunction on it
