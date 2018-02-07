@@ -4,7 +4,7 @@
 .. _issue: http://github.com/zerothi/sisl/issues
 .. _gh-releases: http://github.com/zerothi/sisl/releases
 .. _pypi-releases: http://pypi.python.org/pypi/sisl
-.. _conda-releases: http://anaconda.org/zerothi/sisl
+.. _conda-releases: https://anaconda.org/conda-forge/sisl
 
 .. These are external links:
 .. _Python: https://www.python.org/

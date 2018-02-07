@@ -44,7 +44,7 @@ Installing sisl using conda can be done by
     conda install sisl
 
 To find more information about the conda-forge installation please see
-`here <https://github.com/conda-forge/sisl-feedstock>`_.
+`here <conda-releases_>`_.
 
 Manual installation
 -------------------
@@ -55,7 +55,7 @@ manual installation (without `numpy`_ installed a spurious error message will
 appear).
 
 Simply download the release tar from `this page <gh-releases_>`_, or clone
-the `git repository <sisl_git_>`_ for the latest developments
+the `git repository <sisl-git_>`_ for the latest developments
 
 .. code-block:: bash
 
