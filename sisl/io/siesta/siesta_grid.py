@@ -8,6 +8,7 @@ from .sile import SileCDFSiesta
 from ..sile import *
 
 # Import the geometry object
+from sisl.messages import info
 from sisl import SuperCell, Grid
 from sisl.unit.siesta import unit_convert
 
@@ -81,6 +82,7 @@ class gridncSileSiesta(SileCDFSiesta):
             grid.grid[:, :, :] = v[0, :, :, :] * spin[0]
             for i, scale in enumerate(spin[1:]):
                 grid.grid[:, :, :] += v[1+i, :, :, :] * scale
+        info(SileInfo(self.__class__.__name__ + '.read_grid cannot determine the units of the grid. The units may not be in sisl units.'))
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
