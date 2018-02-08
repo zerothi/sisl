@@ -514,6 +514,7 @@ class fdfSileSiesta(SileSiesta):
             # I.e. we suspect the incoming geometry to be correct.
             spgeom._geom = geom
             return True
+
         elif spgeom.na != geom.na:
             warn(SileWarning('cannot replace geometry due to insufficient information regarding number of '
                                     'atoms and orbitals, ensuring correct geometry failed...'))
@@ -735,7 +736,7 @@ class fdfSileSiesta(SileSiesta):
         # Read the block (not strictly needed, if so we simply set all atoms to H)
         atom = self.read_basis()
         if atom is None:
-            warn(SileWarning('Block ChemicalSpeciesLabel does not exist, cannot determine the basis.'))
+            warn(SileWarning('Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all Hydrogen).'))
 
             # Default atom (hydrogen)
             atom = Atom(1)
@@ -805,8 +806,10 @@ class fdfSileSiesta(SileSiesta):
                 # default the atom to not have a range, and no associated orbitals
                 atom[idx] = Atom(Z=Z, tag=lbl)
                 found_all = False
+
         if found_one and not found_all:
-            warn(SileWarning('Siesta basis information could not read all ion.nc/ion.xml files. Only a subset of the basis information is accessible.'))
+            warn(SileWarning('Siesta basis information could not read all ion.nc/ion.xml files. '
+                             'Only a subset of the basis information is accessible.'))
         elif not found_one:
             return None
         return atom
@@ -880,7 +883,8 @@ class fdfSileSiesta(SileSiesta):
         if isfile(f):
             geom = self.read_geometry(True)
             DM = DMSileSiesta(f).read_density_matrix(*args, **kwargs)
-            self._SpGeom_replace_geom(DM, geom)
+            if not self._SpGeom_replace_geom(DM, geom):
+                warn(SileWarning('DM from {} will most likely have a wrong supercell specification.'.format(f)))
         return DM
 
     def read_energy_density_matrix(self, *args, **kwargs):
@@ -912,12 +916,13 @@ class fdfSileSiesta(SileSiesta):
     def _r_energy_density_matrix_tsde(self, *args, **kwargs):
         """ Read energy density matrix from the TSDE file """
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
-        DM = None
+        EDM = None
         if isfile(f):
             geom = self.read_geometry(True)
-            DM = TSDESileSiesta(f).read_energy_density_matrix(*args, **kwargs)
-            self._SpGeom_replace_geom(DM, geom)
-        return DM
+            EDM = TSDESileSiesta(f).read_energy_density_matrix(*args, **kwargs)
+            if not self._SpGeom_replace_geom(EDM, geom):
+                warn(SileWarning('EDM from {} will most likely have a wrong supercell specification.'.format(f)))
+        return EDM
 
     def read_hamiltonian(self, *args, **kwargs):
         """ Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order)
@@ -962,7 +967,8 @@ class fdfSileSiesta(SileSiesta):
         if isfile(f):
             geom = self.read_geometry(True)
             H = HSXSileSiesta(f).read_hamiltonian(*args, **kwargs)
-            self._SpGeom_replace_geom(H, geom)
+            if not self._SpGeom_replace_geom(H, geom):
+                warn(SileWarning('H from {} will most likely have a wrong supercell specification.'.format(f)))
         return H
 
     @default_ArgumentParser(description="Manipulate a FDF file.")
