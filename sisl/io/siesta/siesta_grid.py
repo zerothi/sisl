@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import os.path as osp
 from numbers import Integral
 import numpy as np
 
@@ -15,6 +16,7 @@ from sisl.unit.siesta import unit_convert
 __all__ = ['gridncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
+Ry2eV = unit_convert('Ry', 'eV')
 
 
 class gridncSileSiesta(SileCDFSiesta):
@@ -55,6 +57,36 @@ class gridncSileSiesta(SileCDFSiesta):
         name : str, optional
             the name for the grid-function (do not supply for standard Siesta output)
         """
+        # Determine the name of this file
+        f = osp.basename(self.file)
+
+        # File names are made up of
+        #  ElectrostaticPotential.grid.nc
+        # So the first one should be ElectrostaticPotential
+        base = f.split('.')[0]
+
+        # Unit-conversion
+        BohrC2AngC = Bohr2Ang ** 3
+
+        unit = {'Rho': 1. / BohrC2AngC,
+                'DeltaRho': 1. / BohrC2AngC,
+                'RhoXC': 1. / BohrC2AngC,
+                'RhoInit': 1. / BohrC2AngC,
+                'Chlocal': 1. / BohrC2AngC,
+                'TotalCharge': 1. / BohrC2AngC,
+                'BaderCharge': 1. / BohrC2AngC,
+                'ElectrostaticPotential': Ry2eV,
+                'TotalPotential': Ry2eV,
+                'Vna': Ry2eV,
+        }.get(base, None)
+
+        # Fall-back
+        if unit is None:
+            unit = 1.
+            show_info = True
+        else:
+            show_info = False
+
         # Swap as we swap back in the end
         sc = self.read_supercell().swapaxes(0, 2)
 
@@ -72,17 +104,19 @@ class gridncSileSiesta(SileCDFSiesta):
         grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, sc=sc, dtype=v.dtype)
 
         if v.ndim == 3:
-            grid.grid[:, :, :] = v[:, :, :]
+            grid.grid[:, :, :] = v[:, :, :] * unit
         elif isinstance(spin, Integral):
-            grid.grid[:, :, :] = v[spin, :, :, :]
+            grid.grid[:, :, :] = v[spin, :, :, :] * unit
         else:
             if len(spin) > v.shape[0]:
                 raise ValueError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
                                  'an array of length equal to the number of spin components.')
-            grid.grid[:, :, :] = v[0, :, :, :] * spin[0]
+            grid.grid[:, :, :] = v[0, :, :, :] * spin[0] * unit
             for i, scale in enumerate(spin[1:]):
-                grid.grid[:, :, :] += v[1+i, :, :, :] * scale
-        info(SileInfo(self.__class__.__name__ + '.read_grid cannot determine the units of the grid. The units may not be in sisl units.'))
+                grid.grid[:, :, :] += v[1+i, :, :, :] * scale * unit
+        if show_info:
+            info(SileInfo(self.__class__.__name__ + '.read_grid cannot determine the units of the grid. '
+                          'The units may not be in sisl units.'))
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2

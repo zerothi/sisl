@@ -277,7 +277,6 @@ class ncSileSiesta(SileCDFSiesta):
                 'RhoDelta': 1. / BohrC2AngC,
                 'RhoXC': 1. / BohrC2AngC,
                 'RhoBader': 1. / BohrC2AngC,
-                'RhoBader': 1. / BohrC2AngC,
                 'Chlocal': 1. / BohrC2AngC,
         }
 
