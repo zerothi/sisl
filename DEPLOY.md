@@ -59,30 +59,13 @@ The release cycle should be performed like this:
 		twine upload dist/sisl-VERSION*.tar.gz
 		twine upload dist/sisl-VERSION*.whl
 
-7. Create conda uploads:
+7. Create conda uploads.
 
-		# Ensure no upload
-		conda config --set anaconda_upload no
-		rm -rf dist-conda
-		conda build --output-folder dist-conda conda --python 2.7
-		source activate python3 # or your env for python 3
-		conda build --output-folder dist-conda conda --python 3.5
-		anaconda login
-		anaconda upload dist-conda/*.tar.bz2
+   The conda uploads are based on conda-forge and an associated
+   sisl-feedstock is used. To update it, follow these steps:
 
-
-Development release
--------------------
-
-Essentially the development release may be performed on every commit.
-
-1. Create conda uploads:
-
-		# Ensure no upload
-		conda config --set anaconda_upload no
-		rm -rf dist-conda-dev
-		conda build --output-folder dist-conda-dev conda-dev --python 2.7
-		source activate python3 # or your env for python 3
-		conda build --output-folder dist-conda-dev conda-dev --python 3.5
-		anaconda login
-		anaconda upload dist-conda-dev/*.tar.bz2
+   1. branch off https://github.com/conda-forge/sisl-feedstock
+   2. Edit recipe/meta.yaml by updating version and sha256
+   3. Propose merge-request.
+   4. Check CI succeeds.
+   5. Accept merge and the new version will be uploaded.

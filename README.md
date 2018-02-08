@@ -6,7 +6,7 @@
 [![Join the chat at https://gitter.im/sisl-tool/Lobby](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/sisl-tool/Lobby)
 <!--- [![Documentation on RTD](https://readthedocs.org/projects/docs/badge/?version=latest)](http://sisl.readthedocs.io/en/latest/) -->
 [![Install sisl using PyPI](https://badge.fury.io/py/sisl.svg)](https://badge.fury.io/py/sisl)
-[![Install sisl using conda](https://anaconda.org/zerothi/sisl/badges/installer/conda.svg)](https://anaconda.org/zerothi/sisl)
+[![Install sisl using conda](https://anaconda.org/conda-forge/sisl/badges/version.svg)](https://anaconda.org/conda-forge/sisl)
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
 [![sisl Codacy](https://api.codacy.com/project/badge/Grade/8b0a94eba3ec4434a676883b40a08850)](https://www.codacy.com/app/nickpapior/sisl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zerothi/sisl&amp;utm_campaign=Badge_Grade)
 [![Donate money to support development of sisl](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NGNU2AA3JXX94&lc=DK&item_name=Papior%2dCodes&item_number=codes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)

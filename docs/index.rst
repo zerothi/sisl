@@ -110,8 +110,8 @@ Indices
 .. |license| image:: https://img.shields.io/badge/License-LGPL%20v3-blue.svg
 .. _license: https://www.gnu.org/licenses/lgpl-3.0
 
-.. |conda| image:: https://anaconda.org/zerothi/sisl/badges/installer/conda.svg
-.. _conda: https://anaconda.org/zerothi/sisl
+.. |conda| image:: https://anaconda.org/conda-forge/sisl/badges/installer/conda.svg
+.. _conda: https://anaconda.org/conda-forge/sisl
 
 .. |codecov| image:: https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg
 .. _codecov: https://codecov.io/gh/zerothi/sisl
