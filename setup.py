@@ -54,7 +54,7 @@ def generate_cython():
     if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
-build_requires = ['six', 'setuptools', 'numpy>=1.9', 'scipy', 'netCDF4']
+install_requires = ['setuptools', 'numpy>=1.9']
 
 # Create list of all sub-directories with
 #   __init__.py files...
@@ -82,7 +82,7 @@ metadata = dict(
     name='sisl',
     maintainer="Nick R. Papior",
     maintainer_email="nickpapior@gmail.com",
-    description="Tight-binding models (interface to NEGF calculator TBtrans) and generic DFT output manipulation",
+    description="Python interface for tight-binding model creation and analysis of DFT output. Input mechanism for large scale transport calculations using NEGF TBtrans (TranSiesta)",
     long_description=readme(),
     url="http://github.com/zerothi/sisl",
     download_url="http://github.com/zerothi/sisl/releases",
@@ -96,7 +96,7 @@ metadata = dict(
     },
     classifiers=[_f.strip() for _f in CLASSIFIERS.split('\n') if _f],
     platforms=['Unix', 'Linux', 'Mac OS-X', 'Windows'],
-    install_requires=build_requires,
+    install_requires=install_requires,
     tests_require=['pytest'],
     zip_safe=False,
 )
