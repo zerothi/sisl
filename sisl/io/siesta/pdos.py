@@ -28,8 +28,16 @@ class pdosSileSiesta(SileSiesta):
     Data file containing the PDOS as calculated by Siesta.
     """
 
-    def read_data(self):
+    def read_data(self, as_dataarray=False):
         """ Returns data associated with the PDOS file
+
+        Parameters
+        ----------
+        as_dataarray: bool, optional
+           If True the returned PDOS is a `xarray.DataArray` with energy, spin
+           and orbital information as coordinates in the data.
+           The geometry, unit and Fermi level are stored as attributes in the
+           DataArray.
 
         Returns
         -------
@@ -39,6 +47,8 @@ class pdosSileSiesta(SileSiesta):
             are shifted to E - Ef = 0, this will *only* be done from Siesta 4.0.2 and later).
         PDOS : an array of DOS, for non-polarized calculations it has dimension ``(atom.no, len(E))``,
                else it has dimension ``(nspin, atom.no, len(E))``.
+        DataArray : if `as_dataarray` is True, only this data array is returned, in this case
+               all data can be post-processed using the `xarray` selection routines.
         """
         # Get the element-tree
         ET = ElementTree('pdos', self.file)
@@ -49,10 +59,10 @@ class pdosSileSiesta(SileSiesta):
         # Try and find the fermi-level
         Ef = root.find('fermi_energy')
         if Ef is None:
-            Ef = 0
+            E = arrayd(map(float, root.find('energy_values').text.split()))
         else:
             Ef = float(Ef.text)
-        E = arrayd(map(float, root.find('energy_values').text.split())) - Ef
+            E = arrayd(map(float, root.find('energy_values').text.split())) - Ef
         ne = len(E)
 
         # All coordinate, atoms and species data
@@ -69,8 +79,48 @@ class pdosSileSiesta(SileSiesta):
             while len(atoms[ia]) <= i:
                 atoms[ia].append(None)
 
-        data = []
+        if nspin == 4:
+            def process(D):
+                tmp = np.empty(D.shape[0], D.dtype)
+                tmp[:] = D[:, 3]
+                D[:, 3] = D[:, 0] - D[:, 1]
+                D[:, 0] = D[:, 0] + D[:, 1]
+                D[:, 1] = D[:, 2]
+                D[:, 2] = tmp[:]
+                return D
+        else:
+            def process(D):
+                return D
+
+        if as_dataarray:
+            import xarray as xr
+            if nspin == 1:
+                spin = ['sum']
+            elif nspin == 2:
+                spin = ['up', 'down']
+            elif nspin == 4:
+                spin = ['sum', 'x', 'y' 'z']
+
+            # Dimensions of the PDOS data-array
+            dims = ['E', 'spin', 'n', 'l', 'm', 'zeta', 'polarization']
+
+            shape = (ne, nspin, 1, 1, 1, 1, 1)
+            def to(o, DOS):
+                # Coordinates for this dataarray
+                coords = [E, spin,
+                          [o.n], [o.l], [o.m], [o.Z], [o.P]]
+
+                return xr.DataArray(data=process(DOS).reshape(shape),
+                                    dims=dims, coords=coords, name='PDOS')
+
+        else:
+            def to(o, DOS):
+                return process(DOS)
+
+        D = []
         for orb in root.findall('orbital'):
+
+            # Short-hand function to retrieve integers for the attributes
             def oi(name):
                 return int(orb.get(name))
 
@@ -90,15 +140,16 @@ class pdosSileSiesta(SileSiesta):
                     # Unknown
                     Z = -1
 
-            ensure_size(ia)
-            xyz[ia] = list(map(float, orb.get('position').split()))
-            atom_species[ia] = Z
-
-            # "sadly" it doesn't contain information about polarization
             try:
                 P = orb.get('P') == 'true'
             except:
                 P = False
+
+            ensure_size(ia)
+            xyz[ia] = list(map(float, orb.get('position').split()))
+            atom_species[ia] = Z
+
+            # Construct the atomic orbital
             O = AtomicOrbital(n=oi('n'), l=oi('l'), m=oi('m'), Z=oi('z'), P=P)
 
             # We know that the index is far too high. However,
@@ -107,36 +158,35 @@ class pdosSileSiesta(SileSiesta):
             atoms[ia][i] = O
 
             # it is formed like : spin-1, spin-2 (however already in eV)
-            d = arrayd(map(float, orb.find('data').text.split())).reshape(-1, nspin)
-            # Transpose and copy to get the corret size
-            data.append((i, d))
+            DOS = arrayd(map(float, orb.find('data').text.split())).reshape(-1, nspin)
+
+            if as_dataarray:
+                if len(D) == 0:
+                    D = to(O, DOS)
+                else:
+                    D = D.combine_first(to(O, DOS))
+            else:
+                D.append(process(DOS))
 
         # Now we need to parse the data
         # First reduce the atom
         atoms = [[o for o in a if o] for a in atoms]
         atoms = Atoms([Atom(Z, os) for Z, os in zip(atom_species, atoms)])
         geom = Geometry(arrayd(xyz) * Bohr2Ang, atoms)
-        pdos = emptyd([atoms.no, ne, nspin])
-        for i, dos in data:
-            pdos[i, :, :] = dos[:, :]
 
-        if nspin == 1:
-            pdos.shape = (atoms.no, ne)
-        elif nspin == 2:
-            # do nothing
-            pass
-        elif nspin == 4:
-            def pdosq(DM):
-                """ Convert spin-box DM to total charge, and spin-vector """
-                D = np.empty(DM.shape, DM.dtype)
-                D[:, :, 0] = DM[:, :, 0] + DM[:, :, 1]
-                D[:, :, 1] = DM[:, :, 2]
-                D[:, :, 2] = DM[:, :, 3]
-                D[:, :, 3] = DM[:, :, 0] - DM[:, :, 1]
-                return D
-            pdos = pdosq(pdos)
+        if as_dataarray:
+            # Add attributes
+            D.attrs['geometry'] = geom
+            D.attrs['units'] = '1/eV'
+            if Ef is None:
+                D.attrs['Ef'] = 'Unknown'
+            else:
+                D.attrs['Ef'] = Ef
 
-        return geom, E, pdos
+            return D
+
+        return geom, E, np.stack(D, axis=0)
+
 
 # PDOS files are:
 # They contain the same file (same xml-data)
