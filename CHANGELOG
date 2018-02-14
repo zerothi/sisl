@@ -1,19 +1,67 @@
 0.9.3
 =====
 
+- Added many SislWarning raises which are used to notify the user of
+	potentially important things (say if sisl knows there should be a unit
+	associated but it couldn't find it).
+
+- Fixed shapes. (backward compatibility broken). They now allow much
+	more complex operations. One may now create unions and other set operations
+	on shapes to create arbitrary shapes.
+
+- Added TSDE file reading in sisl.
+
+- Renamed PathBZ to BandStructure.
+
+- Renamed MonkhorstPackBZ to MonkhorstPack.
+
+- Siesta reading of grid-related data is now much *smarter*. It will
+	try and recognize the units of the data so the units become sisl
+	intrinsics (Ry -> eV, Bohr -> Ang, etc.).
+	This means that typically one does not need to do manual unit-conversion.
+	There are however a few cases where sisl cannot figure out the
+	units. Particularly if the files are renamed.
+
 - Added a new class EigenSystem which holds information regarding
   eigenvalues and eigenvectors.
 
   - Currently an EigenState class is also enabled which can currently
     be used to calculate wavefunctions, DOS, PDOS and more to come.
 
+- Fixed lots of bugs in fdf-reading quantities.
+	Now one is also able to read Hamiltonian and other physical
+	quantities from the fdf-object directly. There is pre-defined
+	orders of which files to read from if there are multiple files
+	eligeble.
+
+	Reading the geometry now defaults to the fdf file, but one can query
+	the output files by a boolean.
+
+- Enabled PDOS calculations for the Hamiltonian. Together
+	with the MonkhorstPack class one can easily calculate
+	k-averaged PDOS quantities.
+
+- Fixed cube reading/writing of multi-column data.
+
 - Enabled plotting wavefunctions on grids.
+
+- Enabled plotting charge density on grids.
 
 - Added siesta PDOS xml parsing, currently this is only scriptable
   but it manages easy extraction of quantities without the PDOSXML utility.
+	This also enables retrieving the PDOS as an xarray.DataArray.
 
 - Added TBT.SE.nc file to enable easy extraction of self-energies
   from TBtrans
+
+- Added COOP and COHP extraction to the TBT.nc files.
+
+- Fixed grid initialization to create grid spacings fixed by a real.
+  I.e. the voxel spacing.
+
+      >>> Grid([10, 10, 10]) # 10 points per lattice vector
+			>>> Grid(0.1) # 0.1 Angstrom spacing
+
 
 - Reorganized the TBtrans netcdf files (internal changes only)
 

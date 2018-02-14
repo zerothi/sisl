@@ -99,6 +99,9 @@ metadata = dict(
     install_requires=install_requires,
     tests_require=['pytest'],
     zip_safe=False,
+    extras_require={
+        'xarray': ['xarray>=0.10.0']
+    },
 )
 
 # If pytest is installed, add it to setup_requires
