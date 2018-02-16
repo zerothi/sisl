@@ -7,6 +7,7 @@ from math import acos
 from itertools import product
 
 import numpy as np
+from numpy import int32
 from numpy import dot, square, sqrt
 
 import sisl._plot as plt
@@ -21,6 +22,7 @@ from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd
 from .utils import angle, direction
 from .utils import lstranges, strmap, array_arange
+from .utils.mathematics import fnorm
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
@@ -291,7 +293,7 @@ class Geometry(SuperCellChild):
         if len(R.shape) == 1:
             return (R[0] ** 2. + R[1] ** 2 + R[2] ** 2) ** .5
 
-        return sqrt(square(R).sum(1))
+        return fnorm(R)
 
     def Rij(self, ia, ja):
         r""" Vector between atom `ia` and `ja`, atoms can be in super-cell indices
@@ -794,28 +796,42 @@ class Geometry(SuperCellChild):
         if R is None:
             R = self.maxR()
         if R < 0:
-            raise ValueError((self.__class__.__name__ +
-                              ".optimize_nsc could not determine the radius from the "
-                              "internal atoms. Provide a radius as an argument."))
+            R = 0.00001
+            warn(self.__class__.__name__ +
+                 ".optimize_nsc could not determine the radius from the "
+                 "internal atoms (defaulting to zero radius).")
 
-        # Now we need to find the number of supercells
-        nsc = np.copy(self.nsc)
-        # Reset the number of supercells of the wanted optimized
-        # directions to 1
-        nsc[axis] = 1
+        rc = self.rcell / (2 * np.pi)
+        nrc = 1 / fnorm(rc)
+        idiv = np.floor(np.maximum(nrc / (2 * R), 1.1)).astype(np.int32)
+        rmcell = rc * idiv.reshape(-1, 1)
+
+        # We know this is the maximum
+        nsc = self.nsc.copy()
+        # We need to subtract one to ensure we are not taking into account
+        # too big supercell connections.
+        # I don't think we need anything other than this.
+        # However, until I am sure that this wouldn't change, regardless of the
+        # cell. I will keep it.
+        Rrmcell = R * fnorm(rmcell)[axis]
+        nsc[axis] = (np.floor(Rrmcell) + np.ceil(Rrmcell % 0.5 - 0.5)).astype(np.int32)
+        # Since for 1 it is not sure that it is a connection or not, we limit the search by
+        # removing it.
+        nsc[axis] = np.where(nsc[axis] > 1, nsc[axis], 0)
         for i in axis:
             # Initialize the isc for this direction
             # (note we do not take non-orthogonal directions
             #  into account)
             isc = _a.zerosi(3)
+            isc[i] = nsc[i]
             # Initialize the actual number of supercell connections
             # along this direction.
-            prev_isc = 0
+            prev_isc = isc[i]
             while prev_isc == isc[i]:
                 # Try next supercell connection
                 isc[i] += 1
                 for ia in self:
-                    idx = self.close_sc(ia, isc=isc, R=R)
+                    idx, r = self.close_sc(ia, isc=isc, R=R, ret_rij=True)
                     if len(idx) > 0:
                         prev_isc = isc[i]
                         break
@@ -1171,7 +1187,7 @@ class Geometry(SuperCellChild):
             dir = ensure_array(dir, np.float64)
         # Normalize so we don't have to have this in the
         # below formula
-        dir /= (dir ** 2).sum() ** .5
+        dir /= fnorm(dir)
         # Broad-casting
         dir.shape = (1, -1)
 
@@ -1263,7 +1279,7 @@ class Geometry(SuperCellChild):
 
         # Ensure the normal vector is normalized...
         vn = np.copy(_a.asarrayd(v))
-        vn /= (vn ** 2).sum() ** .5
+        vn /= fnorm(vn)
 
         # Prepare quaternion...
         q = Quaternion(angle, vn, rad=rad)
@@ -1295,12 +1311,12 @@ class Geometry(SuperCellChild):
         cp = _a.arrayd([m[1] * v[2] - m[2] * v[1],
                         m[2] * v[0] - m[0] * v[2],
                         m[0] * v[1] - m[1] * v[0]])
-        cp /= (cp ** 2).sum() ** .5
+        cp /= fnorm(cp)
 
         lm = _a.arrayd(m)
-        lm /= (lm ** 2).sum() ** .5
+        lm /= fnorm(lm)
         lv = _a.arrayd(v)
-        lv /= (lv ** 2).sum() ** .5
+        lv /= fnorm(lv)
 
         # Now rotate the angle between them
         a = acos(np.sum(lm * lv))
@@ -2116,6 +2132,94 @@ class Geometry(SuperCellChild):
             return ret
         return ret[0]
 
+    def __currently_not_used_close_rec(self, xyz_ia, R=None,
+                 idx=None, idx_xyz=None,
+                 ret_xyz=False, ret_rij=False):
+        """ Indices of atoms in a given supercell within a given radius from a given coordinate
+
+        This returns a set of atomic indices which are within a
+        sphere of radius `R`.
+
+        If `R` is a tuple/list/array it will return the indices:
+        in the ranges:
+
+        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] ) # doctest: +SKIP
+
+        Parameters
+        ----------
+        xyz_ia : array_like of floats or int
+            Either a point in space or an index of an atom.
+            If an index is passed it is the equivalent of passing
+            the atomic coordinate ``close_rec(self.xyz[xyz_ia,:])``.
+        R : float or array_like, optional
+            The radii parameter to where the atomic connections are found.
+            If `R` is an array it will return the indices:
+            in the ranges ``( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )``.
+            If a single float it will return ``x <= R``.
+        idx : array_like of int, optional
+            List of atoms that will be considered. This can
+            be used to only take out a certain atoms.
+        idx_xyz : array_like of float, optional
+            The atomic coordinates of the equivalent `idx` variable (`idx` must also be passed)
+        ret_xyz : bool, optional
+            If True this method will return the coordinates
+            for each of the couplings.
+        ret_rij : bool, optional
+            If True this method will return the distance
+            for each of the couplings.
+        """
+
+        # Common numpy used functions (reduces function look-ups)
+        log_and = np.logical_and
+        fabs = np.fabs
+
+        if R is None:
+            R = np.array([self.maxR()], np.float64)
+        elif not isndarray(R):
+            R = ensure_array(R, np.float64)
+
+        # Maximum distance queried
+        max_R = R[-1]
+
+        # This way of calculating overlapping regions is heavily inspired by
+        # initial work by Jose Soler from Siesta.
+
+        # Retrieve reciprocal lattice to divide the mesh into reciprocal divisions.
+        rcell = self.rcell / (2 * np.pi)
+
+        # Calculate number of mesh-divisions
+        divisions = np.maximum(2. / fnorm(rcell) / max_R, 1).floor().astype(int32)
+        divisions.shape = (-1, 1)
+        celld = self.cell / divisions
+        rdcell = divisions * rcell
+
+        # Calculate mesh indices for atoms
+        xyz = self.xyz.view()
+        mesh_a = dot(xyz, rmcell.T) # dmx
+        mesh_i = mesh_a.floor().astype(int32)
+        subtract(mesh_a, mesh_i, out=mesh_a)
+        mesh_i = mesh_i.astype(int32) # imx
+        mod(mesh_i, divisions.T, out=mesh_i)
+
+        # Calculate atomic positions in the mesh
+        a_pos = dot(mesh_a, celld)
+
+        if isinstance(xyz_ia, Integral):
+            coord = self.xyz[xyz_ia, :]
+        elif not isndarray(xyz_ia):
+            coord = ensure_array(xyz_ia, np.float64)
+        else:
+            coord = xyz_ia
+
+        # Transform into cell-mesh divisions
+        c_a = dot(coord, rmcell.T) # dmx
+        c_i = c_a.floor().astype(int32)
+        c_a = c_a - c_i
+        c_i = c_i.astype(int32) # imx
+        mod(c_i, divisions.ravel(), out=c_i)
+        c_pos = dot(c_a, celld)
+
+
     def bond_correct(self, ia, atom, method='calc'):
         """ Corrects the bond between `ia` and the `atom`.
 
@@ -2720,7 +2824,7 @@ class Geometry(SuperCellChild):
                                   "The internal `maxR()` is negative and thus not set. "
                                   "Set an explicit value for `R`."))
         elif np.any(self.nsc > 1):
-            maxR = (self.cell.sum(-1) ** 2).sum() ** .5
+            maxR = fnorm(self.cell).max()
             # These loops could be leveraged if we look at angles...
             for i, j, k in product([0, self.nsc[0] // 2],
                                    [0, self.nsc[1] // 2],
@@ -2734,7 +2838,7 @@ class Geometry(SuperCellChild):
                     o = self.cell[0, :] * ii + \
                         self.cell[1, :] * jj + \
                         self.cell[2, :] * kk
-                    maxR = max(maxR, square(off + o).sum() ** 0.5)
+                    maxR = max(maxR, fnorm(off + o))
 
             if R > maxR:
                 R = maxR
