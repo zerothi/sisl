@@ -31,17 +31,35 @@ eV2Ry = unit_convert('eV', 'Ry')
 
 # The delta nc file
 class deltancSileTBtrans(SileCDFTBtrans):
-    r""" TBtrans delta file object
+    r""" TBtrans :math:`\delta` file object
 
     The :math:`\delta` file object is an extension enabled in `TBtrans`_ which
-    enables changing the Hamiltonian in transport problems.
-
-    Its main functionality is in the change of Hamiltonian via either :math:`\delta H` or
-    :math:`\delta \Sigma` terms:
+    allows changing the Hamiltonian in transport problems.
 
     .. math::
-        \mathbf H'(\mathbf k) = \mathbf H(\mathbf k) + \delta\mathbf H + \delta\mathbf\Sigma
+        \mathbf H'(\mathbf k) = \mathbf H(\mathbf k) +
+            \delta\mathbf H(E, \mathbf k) + \delta\mathbf\Sigma(E, \mathbf k)
 
+    This file may either be used directly as the :math:`\delta\mathbf H` or the
+    :math:`\delta\mathbf\Sigma`.
+
+    When writing :math:`\delta` terms using `write_delta` one may add ``k`` or ``E`` arguments
+    to make the :math:`\delta` dependent on ``k`` and/or ``E``.
+
+    Refer to the TBtrans manual on how to use this feature.
+
+    Examples
+    --------
+    >>> H = Hamiltonian(geom.graphene(), dtype=np.complex128)
+    >>> H[0, 0] = 1j
+    >>> dH = get_sile('deltaH.dH.nc', 'w')
+    >>> dH.write_delta(H)
+    >>> H[1, 1] = 1.
+    >>> dH.write_delta(H, k=[0, 0, 0]) # Gamma only
+    >>> H[0, 0] += 1.
+    >>> dH.write_delta(H, E=1.) # only at 1 eV
+    >>> H[1, 1] += 1.j
+    >>> dH.write_delta(H, E=1., k=[0, 0, 0]) # only at 1 eV and Gamma-point
     """
 
     def read_supercell(self):
@@ -242,7 +260,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         return lvl
 
     def write_delta(self, delta, **kwargs):
-        r""" Writes a :math:`\delta` term
+        r""" Writes a :math:`\delta` Hamiltonian to the file
 
         This term may be of
 
@@ -259,7 +277,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
            a specific k-point :math:`\delta` term. I.e. only save the :math:`\delta` term for
            the given k-point. May be combined with `E` for a specific k and energy point.
         E : float, optional
-           a specific energy-point :math:`\delta` term. I.e. only save the :math:`\delta` term for
+           an energy dependent :math:`\delta` term. I.e. only save the :math:`\delta` term for
            the given energy. May be combined with `k` for a specific k and energy point.
         """
         # Ensure finalization

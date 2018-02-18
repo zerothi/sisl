@@ -2219,7 +2219,6 @@ class Geometry(SuperCellChild):
         mod(c_i, divisions.ravel(), out=c_i)
         c_pos = dot(c_a, celld)
 
-
     def bond_correct(self, ia, atom, method='calc'):
         """ Corrects the bond between `ia` and the `atom`.
 
