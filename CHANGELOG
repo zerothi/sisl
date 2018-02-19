@@ -1,6 +1,8 @@
 0.9.3
 =====
 
+- Added shot-noise calculation (and Fano factor). Currently un-tested!
+
 - Added many SislWarning raises which are used to notify the user of
 	potentially important things (say if sisl knows there should be a unit
 	associated but it couldn't find it).

@@ -672,15 +672,93 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             max_e = max(mu_from + kt_from * 3, mu_to + kt_to * 3)
             s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format('dFermi function', min_e, max_e)
 
-            warn((SileWarning(self.__class__.__name__ + ".current_parameter cannot "
-                              "accurately calculate the current due to the calculated energy range. "
-                              "I.e. increase your calculated energy-range.\n" + s)))
+            warn(self.__class__.__name__ + ".current_parameter cannot "
+                 "accurately calculate the current due to the calculated energy range. "
+                 "I.e. increase your calculated energy-range.\n" + s)
 
         def nf(E, mu, kT):
             return 1. / (np.exp((E - mu) / kT) + 1.)
 
         I = _a.sumd(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
+
+    def shot_noise(self, elec_from=0, elec_to=1, classical=False, kavg=True):
+        r""" Shot-noise term `from` to `to` using the k-weights and energy spacings in the file.
+
+        Calculates the shot-noise term according to `classical` (also known as the Poisson value). If `classical` is True the shot-noise calculated is:
+
+        .. math::
+           S_P(E, V) = \frac{2e^2}{h}|V|\sum_n T_n(E) = \frac{2e^3}{h}|V|T(E)
+
+        while for `classical` False the Fermi-Dirac statistics is taken into account:
+
+        .. math::
+           S(E, V) = \frac{2e^2}{h}|V|\sum_n T_n(E) (1 - T_n(E))
+
+        Raises
+        ------
+        SislWarning: If *all* of the calculated :math:`T_n(E)` values in the file are above 0.001.
+
+        Parameters
+        ----------
+        elec_from: str, int, optional
+           the originating electrode
+        elec_to: str, int, optional
+           the absorbing electrode (different from `elec_from`)
+        classical: bool, optional
+           which shot-noise to calculate
+        kavg: bool, int or array_like, optional
+           whether the returned shot-noise is k-averaged, an explicit k-point
+           or a selection of k-points
+
+        See Also
+        --------
+        fano_factor : the ratio between the quantum mechanial and the classical shot noise.
+        """
+        elec_from = self._elec(elec_from)
+        elec_to = self._elec(elec_to)
+        mu_f = self.chemical_potential(elec_from)
+        mu_t = self.chemical_potential(elec_to)
+        # The applied bias between the two electrodes
+        V = abs(mu_f - mu_t)
+        # Pre-factor
+        e2OVERhV = 2 * 1.6021766208e-19 ** 2 / 4.135667662e-15 * V
+        if classical:
+            # Calculate the Poisson shot-noise
+            return e3OVERhV * self.transmission(elec_from, elec_to, kavg=kavg)
+        else:
+            T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
+            # Check that at least one value is below the 0.001 limit
+            if np.any(np.logical_and.reduce(T > 0.001, axis=-1)):
+                warn(self.__class__.__name__ + ".shot_noise does possibly not have all relevant transmission eigenvalues in the "
+                     "calculation. For some energy values all transmission eigenvalues are above 0.001")
+            return e2OVERhV * (T * (1 - T)).sum(-1)
+
+    def fano(self, elec_from=0, elec_to=1, kavg=True):
+        r""" The Fano-factor for the calculation (requires calculated transmission eigenvalues)
+
+        Calculate the Fano factor defined as:
+
+        .. math::
+           F(E) = \frac{\sum_n T_n(1 - T_n)}{\sum_n T_n} = S(E, V) / S_P(E, V)
+
+        Parameters
+        ----------
+        elec_from: str, int, optional
+           the originating electrode
+        elec_to: str, int, optional
+           the absorbing electrode (different from `elec_from`)
+        kavg: bool, int or array_like, optional
+           whether the returned Fano factor is k-averaged, an explicit k-point
+           or a selection of k-points
+
+        See Also
+        --------
+        shot_noise : internal routine to calculate the Fano factors (:math:`S(E, V)` and :math: `S_P(E, V)` are calculated in that routine)
+        """
+        elec_from = self._elec(elec_from)
+        elec_to = self._elec(elec_to)
+        return self.shot_noise(elec_from, elec_to, kavg=kavg) / self.shot_noise(elec_from, elec_to, classical=True, kavg=kavg)
 
     def _sparse_data(self, data, elec, E, kavg=True, isc=None):
         """ Internal routine for retrieving sparse data (orbital current, COOP) """
