@@ -114,10 +114,7 @@ class ncSileSiesta(SileCDFSiesta):
         return atom
 
     def read_geometry(self):
-        """ Returns Geometry object from a Siesta.nc file
-
-        NOTE: Interaction range of the Atoms are currently not read.
-        """
+        """ Returns Geometry object from a Siesta.nc file """
 
         # Read supercell
         sc = self.read_supercell()
@@ -137,6 +134,10 @@ class ncSileSiesta(SileCDFSiesta):
         # Create and return geometry object
         geom = Geometry(xyz, atom, sc=sc)
         return geom
+
+    def read_force(self):
+        """ Returns a vector with final forces from the *.nc file. """
+        return np.array(self._value('xa'), np.float64) * Ry2eV / Bohr2Ang
 
     def _read_class_spin(self, cls, **kwargs):
         # Get the default spin channel

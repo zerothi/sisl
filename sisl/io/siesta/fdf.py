@@ -13,6 +13,7 @@ from sisl.io._help import *
 
 from .binaries import TSHSSileSiesta, TSDESileSiesta
 from .binaries import DMSileSiesta, HSXSileSiesta
+from .fa import faSileSiesta
 from .eig import eigSileSiesta
 from .pdos import pdosSileSiesta
 from .siesta import ncSileSiesta
@@ -604,6 +605,46 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.XV'
         if isfile(f):
             return XVSileSiesta(f).read_supercell()
+        return None
+
+    def read_force(self, *args, **kwargs):
+        """ Read forces from the output of the calculation (forces are not defined in the input)
+
+        Parameters
+        ----------
+        order : list of str, optional
+           the order of the forces we are trying to read, default to ``['FA', 'nc']``
+
+        Returns
+        -------
+        (*, 3) : vector with forces for each of the atoms
+        """
+        order = kwargs.pop('order', ['FA', 'nc'])
+        for f in order:
+            v = getattr(self, '_r_force_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
+
+    def _r_force_fa(self, *args, **kwargs):
+        """ Read forces from the FA file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.FA'
+        if isfile(f):
+            return faSileSiesta(f).read_force()
+        return None
+
+    def _r_force_fac(self, *args, **kwargs):
+        """ Read forces from the FAC file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.FAC'
+        if isfile(f):
+            return faSileSiesta(f).read_force()
+        return None
+
+    def _r_force_nc(self, *args, **kwargs):
+        """ Read forces from the nc file """
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_force()
         return None
 
     def read_geometry(self, output=False, *args, **kwargs):

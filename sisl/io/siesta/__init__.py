@@ -28,7 +28,7 @@ sisl.
    ionxmlSileSiesta - Basis-information from the ion.xml files
    ionncSileSiesta - Basis-information from the ion.nc files
    OrbIndxSileSiesta - Basis set information (no geometry information)
-
+   faSileSiesta - Forces on atoms
 
 The TranSiesta specific output files are:
 
@@ -46,6 +46,7 @@ from .bands import *
 from .basis import *
 from .binaries import *
 from .eig import *
+from .fa import *
 from .fdf import *
 from .orb_indx import *
 from .out import *
