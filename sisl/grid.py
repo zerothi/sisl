@@ -748,7 +748,7 @@ class Grid(SuperCellChild):
             g = np.mgrid[slices[0]]
         else:
             g = np.mgrid[slices]
-        indices = np.empty(g.size, np.int32).reshape(-1, 3)
+        indices = _a.emptyi(g.size).reshape(-1, 3)
         indices[:, 0] = g[0].flatten()
         indices[:, 1] = g[1].flatten()
         indices[:, 2] = g[2].flatten()
@@ -770,7 +770,7 @@ class Grid(SuperCellChild):
         See Also
         --------
         index : query indices from coordinates (directly passable to this method)
-        mgrid : Grid equivalent to `numpy.mgrid`. Grid.mgrid returns indices in shapes (*, 3), contrary to `numpy`
+        mgrid : Grid equivalent to `numpy.mgrid`. Grid.mgrid returns indices in shapes (*, 3), contrary to numpy's `numpy.mgrid`
 
         Raises
         ------
@@ -921,15 +921,38 @@ class Grid(SuperCellChild):
         A.prune()
 
     def topyamg(self):
-        """ Create a `pyamg` stencil matrix to be used in pyamg
+        r""" Create a `pyamg` stencil matrix to be used in pyamg
 
         This allows retrieving the grid matrix equivalent of the real-space grid.
         Subsequently the returned matrix may be used in pyamg for solutions etc.
+
+        The `pyamg` suite is it-self a rather complicated code with many options.
+        For details we refer to `pyamg <pyamg https://github.com/pyamg/pyamg/>`_.
 
         Returns
         -------
         A : scipy.sparse.csr_matrix which contains the grid stencil for a `pyamg` solver.
         b : numpy.ndarray containing RHS of the linear system of equations.
+
+        Examples
+        --------
+        This example proves the best method for a variety of cases in regards of the 3D Poisson problem:
+
+        >>> grid = Grid(0.01)
+        >>> A, b = grid.topyamg() # automatically setups the current boundary conditions
+        >>> # add terms etc. to A and/or b
+        >>> import pyamg
+        >>> from scipy.sparse.linalg import cg
+        >>> ml = pyamg.aggregation.smoothed_aggregation_solver(A, max_levels=1000)
+        >>> M = ml.aspreconditioner(cycle='W') # pre-conditioner
+        >>> x, info = cg(A, b, tol=1e-12, M=M)
+
+        See Also
+        --------
+        pyamg_index : convert grid indices into the sparse matrix indices for ``A``
+        pyamg_fix : fixes stencil for indices and fixes the source for the RHS matrix (uses `pyamg_source`)
+        pyamg_source : fix the RHS matrix ``b`` to a constant value
+        pyamg_boundary_condition : setup the sparse matrix ``A`` to given boundary conditions (called in this routine)
         """
         from pyamg.gallery import poisson
         # Initially create the CSR matrix
