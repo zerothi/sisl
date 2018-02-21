@@ -19,11 +19,11 @@ Below is a list of the current tutorials:
    tutorials/tutorial_es_1.ipynb
 
 
-TranSiesta support
-------------------
+Siesta/TranSiesta support
+-------------------------
 
-sisl was initiated around the `TranSiesta`_ code. And thus it may be *very* educational to
-look at the `TranSiesta`_ tutorial located: `here <https://github.com/zerothi/ts-tbt-sisl-tutorial/>`_.
+sisl was initiated around the `Siesta`_/`TranSiesta`_ code. And thus it may be *very* educational to
+look at the sisl+TBtrans+TranSiesta tutorial located `here <https://github.com/zerothi/ts-tbt-sisl-tutorial/>`_.
 
 
 Deprecated tutorials
