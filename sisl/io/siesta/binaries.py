@@ -10,7 +10,8 @@ except Exception as e:
     found_module = False
 
 # Import sile objects
-from ..sile import add_sile
+from sisl.messages import SislError
+from ..sile import add_sile, SileError
 from .sile import SileBinSiesta
 
 # Import the geometry object
@@ -164,8 +165,8 @@ class TSHSSileSiesta(SileBinSiesta):
             s.align(csr)
             s.finalize()
             if s.nnz != len(h):
-                raise ValueError(("The diagonal elements of your orthogonal Hamiltonian have not been defined, "
-                                  "this is a requirement."))
+                raise SislError("The diagonal elements of your orthogonal Hamiltonian have not been defined, "
+                                "this is a requirement.")
             s = s._D[:, 0]
         else:
             h = csr._D[:, :H.S_idx] * eV2Ry

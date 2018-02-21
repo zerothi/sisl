@@ -15,14 +15,14 @@ __main__:1: UserWarning: Help!
 :sisl: UserWarning: Help!
 
 We prefer the later which is particularly useful when the installation path is
-complex
+complex.
 """
 import sys
 import warnings
 
 
-__all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException',
-           'warn', 'info']
+__all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
+__all__ += ['warn', 'info']
 
 # The local registry for warnings issued
 _sisl_warn_registry = {}
@@ -45,6 +45,11 @@ class SislWarning(UserWarning):
 
 class SislException(Exception):
     """ Sisl exception """
+    pass
+
+
+class SislError(Exception):
+    """ Sisl error """
     pass
 
 

@@ -3311,10 +3311,24 @@ lattice vector.
                                 formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description=description)
 
+    # Add default sisl version stuff
+    cmd.add_sisl_version_cite_arg(p)
+
     # First read the input "Sile"
+    stdout_geom = True
     if geom is None:
+        from os.path import isfile
         argv, input_file = cmd.collect_input(argv)
-        geom = get_sile(input_file).read_geometry()
+        if input_file is None:
+            stdout_geom = False
+            geom = Geometry([0] * 3)
+        elif isfile(input_file):
+            geom = get_sile(input_file).read_geometry()
+        elif not isfile(input_file):
+            from .messages import info
+            info("Cannot find file '{}'!".format(input_file))
+            geom = Geometry
+            stdout_geom = False
 
     elif isinstance(geom, Geometry):
         # Do nothing, the geometry is already created
@@ -3346,7 +3360,7 @@ lattice vector.
     args = p.parse_args(argv, namespace=ns)
     g = args._geometry
 
-    if not args._stored_geometry:
+    if stdout_geom and not args._stored_geometry:
         # We should write out the information to the stdout
         # This is merely for testing purposes and may not be used for anything.
         print('Cell:')

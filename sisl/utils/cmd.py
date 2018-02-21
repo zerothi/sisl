@@ -4,6 +4,7 @@ from sisl.utils.ranges import strmap, strseq
 
 __all__ = ['argv_negative_fix', 'default_namespace']
 __all__ += ['collect_input', 'collect_arguments']
+__all__ += ['add_sisl_version_cite_arg']
 __all__ += ['default_ArgumentParser']
 __all__ += ['collect_action', 'run_collect_action']
 __all__ += ['run_actions']
@@ -87,6 +88,30 @@ def collect_input(argv):
     args, argv = p.parse_known_args(argv)
 
     return argv, args.input_file
+
+
+def add_sisl_version_cite_arg(parser):
+    """ Add a sisl version and citation argument to the ArgumentParser for printing (to stdout) the used sisl version
+
+    Parameters
+    ----------
+    parser: `argparse.ArgumentParser`
+       the parser to add the version string too
+    """
+    import argparse
+    from sisl.info import version, git_revision, git_count, bibtex
+
+    class PrintVersion(argparse.Action):
+        def __call__(self, parser, ns, values, option_string=None):
+            print("sisl: {} + {}\nrevision: {}".format(version, git_count, git_revision))
+    parser.add_argument('--version', nargs=0, action=PrintVersion,
+                        help='Show detailed sisl version information (v{})'.format(version))
+
+    class PrintCite(argparse.Action):
+        def __call__(self, parser, ns, values, option_string=None):
+            print("BibTeX:\n{}".format(bibtex))
+    parser.add_argument('--cite', nargs=0, action=PrintCite,
+                        help='Show the citation required when using sisl')
 
 
 def collect_arguments(argv, input=False,

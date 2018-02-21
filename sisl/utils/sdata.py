@@ -93,6 +93,9 @@ changing ways. It handles files dependent on type AND content.
                                 formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description=description, conflict_handler='resolve')
 
+    # Add default sisl version stuff
+    cmd.add_sisl_version_cite_arg(p)
+
     # Patch the parser to allow namespace passing in subparsers...
     argparse_patch(p)
 

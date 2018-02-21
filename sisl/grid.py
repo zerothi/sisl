@@ -1224,6 +1224,9 @@ This may be unexpected but enables one to do advanced manipulations.
                            formatter_class=argparse.RawDescriptionHelpFormatter,
                            description=description)
 
+    # Add default sisl version stuff
+    cmd.add_sisl_version_cite_arg(p)
+
     # First read the input "Sile"
     if grid is None:
         argv, input_file = cmd.collect_input(argv)
