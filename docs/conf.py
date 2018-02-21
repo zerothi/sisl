@@ -92,7 +92,7 @@ copyright = u'2015-2018, ' + author
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     nbsphinx_allow_errors = True
-    if sys.version >= (3, 3):
+    if tuple(sys.version_info[:2]) >= (3, 3):
         from unittest.mock import MagicMock
     else:
         from mock import Mock as MagicMock
