@@ -106,6 +106,11 @@ class Ellipsoid(PureShape):
         r = self.radius.max()
         return Sphere(r, self.center)
 
+    def toCuboid(self):
+        """ Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors """
+        from .prism4 import Cuboid
+        return Cuboid(self._v * 2, self.center)
+
     def set_center(self, center):
         """ Change the center of the object """
         super(Ellipsoid, self).__init__(center)

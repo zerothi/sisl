@@ -9,7 +9,7 @@ from scipy.sparse import csr_matrix
 from sisl import SuperCell, SphericalOrbital, Atom, Geometry
 from sisl import EigenState
 from sisl import Grid
-from sisl import Ellipsoid
+from sisl import Ellipsoid, Cuboid
 
 
 @pytest.fixture
@@ -176,6 +176,31 @@ class TestGrid(object):
         for d in [10, 15, 20, 60, 100, 340]:
             idx = g.index(v * d)
             s = Ellipsoid(1., center=v * d)
+            idx1 = g.index(s)
+            idx1.sort(0)
+            assert len(idx1) == len(idx0)
+            assert np.all(idx0 == idx1 - idx.reshape(1, 3))
+
+    def test_index_shape2(self, setup):
+        g = setup.g.copy()
+        n = 0
+        for r in [0.5, 1., 1.5]:
+            s = Cuboid(r)
+            idx = g.index(s)
+            assert len(idx) > n
+            n = len(idx)
+
+        # Check that if we place the sphere an integer
+        # amount of cells away we retain an equal amount of indices
+        # Also we can check whether they are the same if we add the
+        # offset
+        v = g.dcell.sum(0)
+        s = Cuboid(1.)
+        idx0 = g.index(s)
+        idx0.sort(0)
+        for d in [10, 15, 20, 60, 100, 340]:
+            idx = g.index(v * d)
+            s = Cuboid(1., center=v * d)
             idx1 = g.index(s)
             idx1.sort(0)
             assert len(idx1) == len(idx0)

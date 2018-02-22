@@ -104,6 +104,10 @@ class Cuboid(PureShape):
         from .ellipsoid import Sphere
         return Sphere(e * 2 ** .5, self.center.copy())
 
+    def toCuboid(self):
+        """ Return a copy of itself """
+        return self.copy()
+
     def within_index(self, other):
         """ Return indices of the `other` object which are contained in the shape
 

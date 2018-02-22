@@ -14,6 +14,8 @@ from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction
 from .utils import array_arange
+from .utils.mathematics import fnorm
+
 from .supercell import SuperCellChild
 from .atom import Atom
 from .geometry import Geometry
@@ -445,28 +447,11 @@ class Grid(SuperCellChild):
         # First grab the sphere, subsequent indices will be reduced
         # by the actual shape
         sphere = shape.toSphere()
-        R = sphere.radius[0]
-
-        # Figure out the max-min indices with a spacing of 1 radians
-        rad1 = pi / 180
-        theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
-        nrxyz = (theta.size, phi.size, 3)
-
-        rxyz = _a.emptyd(nrxyz)
-        rxyz[..., 2] = R * cos(phi) + sphere.center[2]
-        sin(phi, out=phi)
-        rxyz[..., 0] = R * cos(theta) * phi + sphere.center[0]
-        rxyz[..., 1] = R * sin(theta) * phi + sphere.center[1]
-        del theta, phi, nrxyz
-
-        # Get all indices of the spherical circumference
-        idx = self.index(rxyz)
-        del rxyz
-
-        # Get min/max
-        idx_min = idx.min(0)
-        idx_max = idx.max(0)
-        del idx
+        cuboid = shape.toCuboid()
+        if sphere.volume() > cuboid.volume():
+            imin, imax = self._index_shape_cuboid(shape, cuboid)
+        else:
+            imin, imax = self._index_shape_sphere(shape, sphere)
 
         dc = self.dcell
 
@@ -475,9 +460,9 @@ class Grid(SuperCellChild):
         # within.
         # TODO, see if we can optimize this a bit.
         addouter = add.outer
-        ix = _a.aranged(idx_min[0], idx_max[0] + 0.5)
-        iy = _a.aranged(idx_min[1], idx_max[1] + 0.5)
-        iz = _a.aranged(idx_min[2], idx_max[2] + 0.5)
+        ix = _a.aranged(imin[0], imax[0] + 0.5)
+        iy = _a.aranged(imin[1], imax[1] + 0.5)
+        iz = _a.aranged(imin[2], imax[2] + 0.5)
         output_shape = (ix.size, iy.size, iz.size, 3)
         rx = addouter(addouter(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0])
         ry = addouter(addouter(ix * dc[0, 1], iy * dc[1, 1]), iz * dc[2, 1])
@@ -499,6 +484,87 @@ class Grid(SuperCellChild):
         del idx
 
         return i
+
+    def _index_shape_cuboid(self, shape, cuboid):
+        """ Internal routine for cuboid shape-indices """
+        # Construct all points on the outer rim of the cuboids
+        # We use the minimum delta in this shape
+        min_d = fnorm(self.dcell).min()
+
+        # Retrieve cuboids edge-lengths
+        v = cuboid.edge_length
+        # Create normalized cuboid vectors (because we expan via the lengths below
+        vn = cuboid._v / fnorm(cuboid._v).reshape(-1, 1)
+        LL = (cuboid.center - cuboid._v.sum(0) / 2).reshape(1, 3)
+        UR = (cuboid.center + cuboid._v.sum(0) / 2).reshape(1, 3)
+
+        # Create coordinates
+        a = vn[0, :].reshape(1, -1) * np.arange(0., v[0] + min_d, min_d).reshape(-1, 1)
+        b = vn[1, :].reshape(1, -1) * np.arange(0., v[1] + min_d, min_d).reshape(-1, 1)
+        c = vn[2, :].reshape(1, -1) * np.arange(0., v[2] + min_d, min_d).reshape(-1, 1)
+
+        # Now create all sides
+        sa = a.shape[0]
+        sb = b.shape[0]
+        sc = c.shape[0]
+
+        addouter = add.outer
+        def plane(v1, v2, c):
+            return (v1.reshape(-1, 1, 3) + v2.reshape(1, -1, 3)).reshape(-1, 3) + c
+
+        rxyz = _a.emptyd([sa * (sb + sc) * 2 + sb * sc * 2, 3])
+        i = 0
+        rxyz[i:sa * sb, :] = plane(a, b, LL) # A-B plane (LL)
+        i += sa * sb
+        rxyz[i:i + sa * sc, :] = plane(a, c, LL) # A-C plane (LL)
+        i += sa * sc
+        rxyz[i:i + sb * sc, :] = plane(b, c, LL) # B-C plane (LL)
+        i += sb * sc
+        rxyz[i:i + sa * sb, :] = plane(a, b, UR) # A-B plane (UR)
+        i += sa * sb
+        rxyz[i:i + sa * sc, :] = plane(a, c, UR) # A-C plane (UR)
+        i += sa * sc
+        rxyz[i:i + sb * sc, :] = plane(b, c, UR) # B-C plane (UR)
+        del a, b, c, sa, sb, sc
+
+        # Get all indices of the cuboids circumference
+        idx = self.index(rxyz)
+        del rxyz
+
+        # Get min/max
+        idx_min = idx.min(0)
+        idx_max = idx.max(0)
+        del idx
+
+        return idx_min, idx_max
+
+    def _index_shape_sphere(self, shape, sphere):
+        """ Internal routine for spherical shape-indices """
+        # First grab the sphere, subsequent indices will be reduced
+        # by the actual shape
+        R = sphere.radius[0]
+
+        # Figure out the max-min indices with a spacing of 1 radians
+        rad1 = pi / 180
+        theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
+
+        rxyz = _a.emptyd([theta.size, phi.size, 3])
+        rxyz[..., 2] = R * cos(phi) + sphere.center[2]
+        sin(phi, out=phi)
+        rxyz[..., 0] = R * cos(theta) * phi + sphere.center[0]
+        rxyz[..., 1] = R * sin(theta) * phi + sphere.center[1]
+        del theta, phi
+
+        # Get all indices of the spherical circumference
+        idx = self.index(rxyz)
+        del rxyz
+
+        # Get min/max
+        idx_min = idx.min(0)
+        idx_max = idx.max(0)
+        del idx
+
+        return idx_min, idx_max
 
     def index(self, coord, axis=None):
         """ Returns the index along axis `axis` where `coord` exists

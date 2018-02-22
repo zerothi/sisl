@@ -77,6 +77,10 @@ class Shape(object):
         """ Create a sphere which is surely encompassing the *full* shape """
         raise NotImplementedError('toSphere has not been implemented in: '+self.__class__.__name__)
 
+    def toCuboid(self):
+        """ Create a cuboid which is surely encompassing the *full* shape """
+        raise NotImplementedError('toCuboid has not been implemented in: '+self.__class__.__name__)
+
     def within(self, other):
         """ Return ``True`` if `other` is fully within `self`
 
@@ -164,6 +168,10 @@ class CompositeShape(Shape):
         # The volume for these set operators cannot easily be defined, so
         # we should rather not do anything about it.
         return -1.
+
+    def toCuboid(self):
+        """ Create a cuboid which is surely encompassing the *full* shape """
+        return self.toSphere().toCuboid()
 
     def toSphere(self):
         """ Create a sphere which is surely encompassing the *full* shape """
