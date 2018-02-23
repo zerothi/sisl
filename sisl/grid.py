@@ -508,24 +508,23 @@ class Grid(SuperCellChild):
         sb = b.shape[0]
         sc = c.shape[0]
 
-        addouter = add.outer
-        def plane(v1, v2, c):
-            return (v1.reshape(-1, 1, 3) + v2.reshape(1, -1, 3)).reshape(-1, 3) + c
+        def plane(v1, v2):
+            return (v1.reshape(-1, 1, 3) + v2.reshape(1, -1, 3)).reshape(1, -1, 3)
 
-        rxyz = _a.emptyd([sa * (sb + sc) * 2 + sb * sc * 2, 3])
+        # Allocate for the 6 faces of the cuboid
+        rxyz = _a.emptyd([2, sa * sb + sa * sc + sb * sc, 3])
+        # Define the LL and UR
+        rxyz[0, :, :] = LL
+        rxyz[1, :, :] = UR
+
         i = 0
-        rxyz[i:sa * sb, :] = plane(a, b, LL) # A-B plane (LL)
+        rxyz[:, i:i + sa * sb, :] += plane(a, b)
         i += sa * sb
-        rxyz[i:i + sa * sc, :] = plane(a, c, LL) # A-C plane (LL)
+        rxyz[:, i:i + sa * sc, :] += plane(a, c)
         i += sa * sc
-        rxyz[i:i + sb * sc, :] = plane(b, c, LL) # B-C plane (LL)
-        i += sb * sc
-        rxyz[i:i + sa * sb, :] = plane(a, b, UR) # A-B plane (UR)
-        i += sa * sb
-        rxyz[i:i + sa * sc, :] = plane(a, c, UR) # A-C plane (UR)
-        i += sa * sc
-        rxyz[i:i + sb * sc, :] = plane(b, c, UR) # B-C plane (UR)
+        rxyz[:, i:i + sb * sc, :] += plane(b, c)
         del a, b, c, sa, sb, sc
+        rxyz.shape = (-1, 3)
 
         # Get all indices of the cuboids circumference
         idx = self.index(rxyz)
