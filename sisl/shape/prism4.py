@@ -98,11 +98,19 @@ class Cuboid(PureShape):
             raise ValueError(self.__class__.__name__ + '.expand requires the length to be either (1,) or (3,)')
         return self.__class__([v0, v1, v2], self.center)
 
+    def toEllipsoid(self):
+        """ Return an ellipsoid that encompass this cuboid """
+        # We know each of the vectors are correct
+        # Simply re-scale them
+        from .ellipsoid import Ellipsoid
+
+        return Ellipsoid(self._v / 2 * 3 ** .5, self.center.copy())
+
     def toSphere(self):
-        """ Return a sphere that encompass this cube """
-        e = self.edge_length.max()
+        """ Return a sphere that encompass this cuboid """
         from .ellipsoid import Sphere
-        return Sphere(e * 2 ** .5, self.center.copy())
+
+        return Sphere(self.edge_length.max() / 2 * 3 ** .5, self.center.copy())
 
     def toCuboid(self):
         """ Return a copy of itself """

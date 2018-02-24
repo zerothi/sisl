@@ -67,7 +67,7 @@ def test_binary_op_toSphere():
     e = Ellipsoid(.5)
     c = Cube(1.)
 
-    r = 2 ** .5
+    r = 0.5 * 3 ** .5
     new = e + c
     assert new.toSphere().radius.max() == pytest.approx(r)
 

@@ -102,6 +102,10 @@ class Ellipsoid(PureShape):
             raise ValueError(self.__class__.__name__ + '.expand requires the radius to be either (1,) or (3,)')
         return self.__class__([v0, v1, v2], self.center)
 
+    def toEllipsoid(self):
+        """ Return an ellipsoid that encompass this shape (a copy) """
+        return self.copy()
+
     def toSphere(self):
         """ Return a sphere with a radius equal to the largest radial vector """
         r = self.radius.max()
