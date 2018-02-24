@@ -449,29 +449,29 @@ class Grid(SuperCellChild):
         sphere = shape.toSphere()
         cuboid = shape.toCuboid()
         if sphere.volume() > cuboid.volume():
-            imin, imax = self._index_shape_cuboid(shape, cuboid)
+            idx = self._index_shape_cuboid(shape, cuboid)
         else:
-            imin, imax = self._index_shape_sphere(shape, sphere)
+            idx = self._index_shape_sphere(shape, sphere)
+
+        # Get min/max
+        imin = idx.min(0)
+        imax = idx.max(0)
+        del idx
 
         dc = self.dcell
 
         # Now to find the actual points inside the shape
         # First create all points in the square and then retrieve all indices
         # within.
-        # TODO, see if we can optimize this a bit.
-        addouter = add.outer
         ix = _a.aranged(imin[0], imax[0] + 0.5)
         iy = _a.aranged(imin[1], imax[1] + 0.5)
         iz = _a.aranged(imin[2], imax[2] + 0.5)
         output_shape = (ix.size, iy.size, iz.size, 3)
-        rx = addouter(addouter(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0])
-        ry = addouter(addouter(ix * dc[0, 1], iy * dc[1, 1]), iz * dc[2, 1])
-        rz = addouter(addouter(ix * dc[0, 2], iy * dc[1, 2]), iz * dc[2, 2])
         rxyz = _a.emptyd(output_shape)
-        rxyz[:, :, :, 0] = rx
-        rxyz[:, :, :, 1] = ry
-        rxyz[:, :, :, 2] = rz
-        del rx, ry, rz
+        ao = add.outer
+        ao(ao(ix * dc[0, 0], iy * dc[1, 0]), iz * dc[2, 0], out=rxyz[:, :, :, 0])
+        ao(ao(ix * dc[0, 1], iy * dc[1, 1]), iz * dc[2, 1], out=rxyz[:, :, :, 1])
+        ao(ao(ix * dc[0, 2], iy * dc[1, 2]), iz * dc[2, 2], out=rxyz[:, :, :, 2])
         idx = shape.within_index(rxyz.reshape(-1, 3))
         del rxyz
         i = _a.emptyi(output_shape)
@@ -527,15 +527,7 @@ class Grid(SuperCellChild):
         rxyz.shape = (-1, 3)
 
         # Get all indices of the cuboids circumference
-        idx = self.index(rxyz)
-        del rxyz
-
-        # Get min/max
-        idx_min = idx.min(0)
-        idx_max = idx.max(0)
-        del idx
-
-        return idx_min, idx_max
+        return self.index(rxyz)
 
     def _index_shape_sphere(self, shape, sphere):
         """ Internal routine for spherical shape-indices """
@@ -555,15 +547,27 @@ class Grid(SuperCellChild):
         del theta, phi
 
         # Get all indices of the spherical circumference
-        idx = self.index(rxyz)
-        del rxyz
+        return self.index(rxyz)
 
-        # Get min/max
-        idx_min = idx.min(0)
-        idx_max = idx.max(0)
-        del idx
+    def _index_shape_ellipsoid(self, shape, ellipsoid):
+        """ Internal routine for spherical shape-indices """
+        # First grab the sphere, subsequent indices will be reduced
+        # by the actual shape
+        abc = fnorm(ellipsoid._v.T)
 
-        return idx_min, idx_max
+        # Figure out the max-min indices with a spacing of 1 radians
+        rad1 = pi / 180
+        theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
+
+        rxyz = _a.emptyd([theta.size, phi.size, 3])
+        rxyz[..., 2] = abc[2] * cos(phi) + ellipsoid.center[2]
+        sin(phi, out=phi)
+        rxyz[..., 0] = abc[0] * cos(theta) * phi + ellipsoid.center[0]
+        rxyz[..., 1] = abc[1] * sin(theta) * phi + ellipsoid.center[1]
+        del theta, phi
+
+        # Get all indices of the ellipsoid circumference
+        return self.index(rxyz)
 
     def index(self, coord, axis=None):
         """ Returns the index along axis `axis` where `coord` exists

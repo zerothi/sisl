@@ -22,7 +22,8 @@ class Ellipsoid(PureShape):
     ----------
     v : float or (3,) or (3, 3)
        radius/vectors defining the ellipsoid. For 3 values it corresponds to a Cartesian
-       oriented ellipsoid.
+       oriented ellipsoid. If the vectors are *not* orthogonal they will be orthogonalized
+       through `sisl.utils.mathematics.orthogonalize`
     center : (3,), optional
        the center of the ellipsoid. Defaults to the origo.
 
