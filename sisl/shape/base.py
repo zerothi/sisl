@@ -12,7 +12,7 @@ from sisl._help import ensure_array
 from sisl.utils.mathematics import fnorm
 
 
-__all__ = ['Shape', 'PureShape']
+__all__ = ['Shape', 'PureShape', 'NullShape']
 
 
 class Shape(object):
@@ -76,6 +76,10 @@ class Shape(object):
     def toSphere(self):
         """ Create a sphere which is surely encompassing the *full* shape """
         raise NotImplementedError('toSphere has not been implemented in: '+self.__class__.__name__)
+
+    def toEllipsoid(self):
+        """ Create an ellipsoid which is surely encompassing the *full* shape """
+        raise NotImplementedError('toEllipsoid has not been implemented in: '+self.__class__.__name__)
 
     def toCuboid(self):
         """ Create a cuboid which is surely encompassing the *full* shape """
@@ -237,6 +241,10 @@ class CompositeShape(Shape):
 
         return Sphere(max(A, B), center)
 
+    def toEllipsoid(self):
+        """ Create an ellipsoid which is surely encompassing the *full* shape """
+        return self.toSphere().toEllipsoid()
+
     # within is defined in Shape to use within_index
     # So no need to doubly implement it
 
@@ -296,8 +304,27 @@ class NullShape(PureShape):
 
     def __init__(self, *args, **kwargs):
         """ Initialize the NullShape """
-        max4 = np.finfo(np.float64).max / 100
-        self._center = np.zeros(3, np.float64).ravel() + max4
+        M = np.finfo(np.float64).max / 100
+        self._center = np.zeros(3, np.float64).ravel() + M
+
+    def within_index(self, other):
+        """ Always returns a zero length array """
+        return np.empty(0, dtype=np.int32)
+
+    def toEllipsoid(self):
+        """ Return an ellipsoid with radius of size 1e-64 """
+        from .ellipsoid import Ellipsoid
+        return Ellipsoid(1.e-64, center=self.center.copy())
+
+    def toSphere(self):
+        """ Return a sphere with radius of size 1e-64 """
+        from .ellipsoid import Sphere
+        return Sphere(1.e-64, center=self.center.copy())
+
+    def toCuboid(self):
+        """ Return a cuboid with side-lengths 1e-64 """
+        from .prism4 import Cuboid
+        return Cuboid(1.e-64, center=self.center.copy())
 
     def volume(self, *args, **kwargs):
         return 0.

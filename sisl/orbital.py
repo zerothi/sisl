@@ -44,7 +44,7 @@ _rspher_harm_fact = [{m: _rfact(l, m) for m in range(-l, l+1)} for l in range(6)
 del _rfact
 
 
-def rspherical_harm(m, l, theta, cos_phi):
+def _rspherical_harm(m, l, theta, cos_phi):
     r""" Calculates the real spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf R\to \{r, \theta, \varphi\}`.
 
     These real spherical harmonics are via these equations:
@@ -579,8 +579,8 @@ class SphericalOrbital(Orbital):
         spher : the spherical harmonics at angles :math:`\theta` and :math:`\phi`.
         """
         if cos_phi:
-            return rspherical_harm(m, self.l, theta, phi)
-        return rspherical_harm(m, self.l, theta, cos(phi))
+            return _rspherical_harm(m, self.l, theta, phi)
+        return _rspherical_harm(m, self.l, theta, cos(phi))
 
     def psi_spher(self, r, theta, phi, m=0, cos_phi=False):
         r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)

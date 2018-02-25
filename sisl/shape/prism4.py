@@ -100,10 +100,9 @@ class Cuboid(PureShape):
 
     def toEllipsoid(self):
         """ Return an ellipsoid that encompass this cuboid """
-        # We know each of the vectors are correct
-        # Simply re-scale them
         from .ellipsoid import Ellipsoid
 
+        # Rescale each vector
         return Ellipsoid(self._v / 2 * 3 ** .5, self.center.copy())
 
     def toSphere(self):

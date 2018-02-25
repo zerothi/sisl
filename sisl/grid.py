@@ -446,12 +446,12 @@ class Grid(SuperCellChild):
         """ Internal routine for shape-indices """
         # First grab the sphere, subsequent indices will be reduced
         # by the actual shape
-        sphere = shape.toSphere()
         cuboid = shape.toCuboid()
-        if sphere.volume() > cuboid.volume():
-            idx = self._index_shape_cuboid(shape, cuboid)
+        ellipsoid = shape.toEllipsoid()
+        if ellipsoid.volume() > cuboid.volume():
+            idx = self._index_shape_cuboid(cuboid)
         else:
-            idx = self._index_shape_sphere(shape, sphere)
+            idx = self._index_shape_ellipsoid(ellipsoid)
 
         # Get min/max
         imin = idx.min(0)
@@ -485,10 +485,9 @@ class Grid(SuperCellChild):
 
         return i
 
-    def _index_shape_cuboid(self, shape, cuboid):
+    def _index_shape_cuboid(self, cuboid):
         """ Internal routine for cuboid shape-indices """
         # Construct all points on the outer rim of the cuboids
-        # We use the minimum delta in this shape
         min_d = fnorm(self.dcell).min()
 
         # Retrieve cuboids edge-lengths
@@ -529,7 +528,7 @@ class Grid(SuperCellChild):
         # Get all indices of the cuboids circumference
         return self.index(rxyz)
 
-    def _index_shape_sphere(self, shape, sphere):
+    def _index_shape_sphere(self, sphere):
         """ Internal routine for spherical shape-indices """
         # First grab the sphere, subsequent indices will be reduced
         # by the actual shape
@@ -549,11 +548,12 @@ class Grid(SuperCellChild):
         # Get all indices of the spherical circumference
         return self.index(rxyz)
 
-    def _index_shape_ellipsoid(self, shape, ellipsoid):
-        """ Internal routine for spherical shape-indices """
+    def _index_shape_ellipsoid(self, ellipsoid):
+        """ Internal routine for ellipsoid shape-indices """
         # First grab the sphere, subsequent indices will be reduced
         # by the actual shape
-        abc = fnorm(ellipsoid._v.T)
+        return self._index_shape_sphere(ellipsoid.toSphere())
+        abc, T, P = cart2spher(ellipsoid._v)
 
         # Figure out the max-min indices with a spacing of 1 radians
         rad1 = pi / 180

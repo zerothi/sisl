@@ -25,6 +25,16 @@ def test_binary_op():
     print(new)
 
 
+def test_null():
+    null = NullShape()
+    assert null.volume() == 0.
+    assert len(null.within_index(np.random.rand(1000, 3))) == 0
+
+    assert null.toEllipsoid().volume() < 1e-64
+    assert null.toCuboid().volume() < 1e-64
+    assert null.toSphere().volume() < 1e-64
+
+
 def test_binary_op_within():
     e = Ellipsoid(.5)
     c = Cube(1.)
@@ -120,3 +130,69 @@ def test_toSphere_and():
     new = left & right
     s = new.toSphere()
     assert s.radius.max() < 0.01
+
+
+def test_toEllipsoid_and():
+    left = Ellipsoid(1.)
+    right = Ellipsoid(1., center=[0.6] * 3)
+
+    new = left & right
+    s = new.toEllipsoid()
+    assert s.radius.max() < .9
+
+    left = Ellipsoid(2.)
+    right = Ellipsoid(1., center=[0.5] * 3)
+
+    new = left & right
+    s = new.toEllipsoid()
+    assert s.radius.max() == pytest.approx(1.)
+
+    left = Ellipsoid(2., center=[10, 10, 10])
+    right = Ellipsoid(1., center=[10.5] * 3)
+
+    new = left & right
+    s2 = new.toEllipsoid()
+    assert s2.radius.max() == pytest.approx(1.)
+    # Assert it also works for displaced centers
+    assert np.allclose(s.radius, s2.radius)
+    assert np.allclose(s.center, s2.center - 10)
+
+    left = Ellipsoid(2.)
+    right = Ellipsoid(1., center=[10.5] * 3)
+
+    new = left & right
+    s = new.toEllipsoid()
+    assert s.radius.max() < 0.01
+
+
+def test_toCuboid_and():
+    left = Cuboid(1.)
+    right = Cuboid(1., center=[0.6] * 3)
+
+    new = left & right
+    s = new.toCuboid()
+    assert s.edge_length.max() < .9 * 2
+
+    left = Cuboid(2.)
+    right = Cuboid(1., center=[0.5] * 3)
+
+    new = left & right
+    s = new.toCuboid()
+    assert s.edge_length.max() >= 1.5
+
+    left = Cuboid(2., center=[10, 10, 10])
+    right = Cuboid(1., center=[10.5] * 3)
+
+    new = left & right
+    s2 = new.toCuboid()
+    assert s2.edge_length.max() > 1.5
+    # Assert it also works for displaced centers
+    assert np.allclose(s.edge_length, s2.edge_length)
+    assert np.allclose(s.center, s2.center - 10)
+
+    left = Cuboid(2.)
+    right = Cuboid(1., center=[10.5] * 3)
+
+    new = left & right
+    s = new.toCuboid()
+    assert s.edge_length.max() < 0.01
