@@ -5,6 +5,7 @@ import pytest
 import math as m
 import numpy as np
 
+from sisl.quaternion import Quaternion
 from sisl.utils.mathematics import fnorm
 from sisl.shape.ellipsoid import *
 
@@ -12,6 +13,7 @@ pytestmark = pytest.mark.shape
 
 
 def test_create_ellipsoid():
+    el = Ellipsoid(1.)
     el = Ellipsoid([1., 1., 1.])
     el = Ellipsoid([1., 1., 1.], [1.] * 3)
     el = Ellipsoid([1., 2., 3.])
@@ -19,6 +21,10 @@ def test_create_ellipsoid():
     v1 = [1., -0.2, 1.0]
     v2 = [1., -0.2, -1.0]
     el = Ellipsoid([v0, v1, v2])
+    q = Quaternion(45, [1, 0, 0])
+    eye = np.identity(3)
+    eye = q.rotate(eye)
+    el = Ellipsoid(eye)
     print(el)
 
 

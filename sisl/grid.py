@@ -498,9 +498,9 @@ class Grid(SuperCellChild):
         UR = (cuboid.center + cuboid._v.sum(0) / 2).reshape(1, 3)
 
         # Create coordinates
-        a = vn[0, :].reshape(1, -1) * np.arange(0., v[0] + min_d, min_d).reshape(-1, 1)
-        b = vn[1, :].reshape(1, -1) * np.arange(0., v[1] + min_d, min_d).reshape(-1, 1)
-        c = vn[2, :].reshape(1, -1) * np.arange(0., v[2] + min_d, min_d).reshape(-1, 1)
+        a = vn[0, :].reshape(1, -1) * _a.aranged(0, v[0] + min_d, min_d).reshape(-1, 1)
+        b = vn[1, :].reshape(1, -1) * _a.aranged(0, v[1] + min_d, min_d).reshape(-1, 1)
+        c = vn[2, :].reshape(1, -1) * _a.aranged(0, v[2] + min_d, min_d).reshape(-1, 1)
 
         # Now create all sides
         sa = a.shape[0]
@@ -525,45 +525,21 @@ class Grid(SuperCellChild):
         del a, b, c, sa, sb, sc
         rxyz.shape = (-1, 3)
 
-        # Get all indices of the cuboids circumference
-        return self.index(rxyz)
-
-    def _index_shape_sphere(self, sphere):
-        """ Internal routine for spherical shape-indices """
-        # First grab the sphere, subsequent indices will be reduced
-        # by the actual shape
-        R = sphere.radius[0]
-
-        # Figure out the max-min indices with a spacing of 1 radians
-        rad1 = pi / 180
-        theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
-
-        rxyz = _a.emptyd([theta.size, phi.size, 3])
-        rxyz[..., 2] = R * cos(phi) + sphere.center[2]
-        sin(phi, out=phi)
-        rxyz[..., 0] = R * cos(theta) * phi + sphere.center[0]
-        rxyz[..., 1] = R * sin(theta) * phi + sphere.center[1]
-        del theta, phi
-
-        # Get all indices of the spherical circumference
+        # Get all indices of the cuboid planes
         return self.index(rxyz)
 
     def _index_shape_ellipsoid(self, ellipsoid):
         """ Internal routine for ellipsoid shape-indices """
-        # First grab the sphere, subsequent indices will be reduced
-        # by the actual shape
-        return self._index_shape_sphere(ellipsoid.toSphere())
-        abc, T, P = cart2spher(ellipsoid._v)
-
-        # Figure out the max-min indices with a spacing of 1 radians
+        # Figure out the points on the ellipsoid
         rad1 = pi / 180
         theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
 
         rxyz = _a.emptyd([theta.size, phi.size, 3])
-        rxyz[..., 2] = abc[2] * cos(phi) + ellipsoid.center[2]
+        rxyz[..., 2] = cos(phi)
         sin(phi, out=phi)
-        rxyz[..., 0] = abc[0] * cos(theta) * phi + ellipsoid.center[0]
-        rxyz[..., 1] = abc[1] * sin(theta) * phi + ellipsoid.center[1]
+        rxyz[..., 0] = cos(theta) * phi
+        rxyz[..., 1] = sin(theta) * phi
+        rxyz = dot(rxyz, ellipsoid._v) + ellipsoid.center.reshape(1, 3)
         del theta, phi
 
         # Get all indices of the ellipsoid circumference

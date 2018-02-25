@@ -6,6 +6,7 @@ from numpy import dot, cross
 from numpy import fabs, logical_and
 
 from sisl._help import ensure_array
+from sisl.linalg import inv
 from sisl.utils.mathematics import fnorm, expand
 
 from .base import PureShape
@@ -48,7 +49,7 @@ class Cuboid(PureShape):
             raise ValueError(self.__class__.__name__ + " requires initialization with 3 vectors defining the cuboid")
 
         # Create the reciprocal cell
-        self._iv = np.linalg.inv(self._v).T
+        self._iv = inv(self._v)
 
     def copy(self):
         return self.__class__(self._v, self.center)
@@ -128,7 +129,7 @@ class Cuboid(PureShape):
         other.shape = (-1, 3)
 
         # Offset origo
-        tmp = dot(other - self.origo[None, :], self._iv.T)
+        tmp = dot(other - self.origo[None, :], self._iv)
 
         # First reject those that are definitely not inside
         within = logical_and.reduce(tmp >= 0., axis=1).nonzero()[0]
