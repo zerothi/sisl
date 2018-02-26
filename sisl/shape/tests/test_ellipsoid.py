@@ -25,14 +25,21 @@ def test_create_ellipsoid():
     eye = np.identity(3)
     eye = q.rotate(eye)
     el = Ellipsoid(eye)
+    e2 = el.scale(1.1)
+    assert np.allclose(el.radius + 0.1, e2.radius)
+    e2 = el.scale([1.1] * 3)
+    assert np.allclose(el.radius + 0.1, e2.radius)
+    e2 = el.scale([1.1, 2.1, 3.1])
+    assert np.allclose(el.radius + [0.1, 1.1, 2.1], e2.radius)
+    assert el.expand(2).volume() == pytest.approx(4/3 * np.pi * 3 ** 3)
     print(el)
 
 
 def test_tosphere():
     el = Ellipsoid([1., 1., 1.])
-    assert el.toSphere().radius[0] == pytest.approx(1)
+    assert el.toSphere().radius == pytest.approx(1)
     el = Ellipsoid([1., 2., 3.])
-    assert el.toSphere().radius[0] == pytest.approx(3)
+    assert el.toSphere().radius == pytest.approx(3)
 
 
 @pytest.mark.xfail(raises=ValueError)
@@ -57,7 +64,6 @@ def test_create_sphere():
     el = Sphere(1., center=[1.]*3)
     assert el.volume() == pytest.approx(4/3 * np.pi)
     assert el.scale(2).volume() == pytest.approx(4/3 * np.pi * 2 ** 3)
-    assert el.scale([2] * 3).volume() == pytest.approx(4/3 * np.pi * 2 ** 3)
     assert el.expand(2).volume() == pytest.approx(4/3 * np.pi * 3 ** 3)
 
 
@@ -130,13 +136,13 @@ def test_sphere_and():
     for i, d in enumerate(D):
         B = Sphere(1., center=v * d)
         C = (A & B).toSphere()
-        if is_first and C.radius[0] < B.radius[0]:
+        if is_first and C.radius < B.radius:
             is_first = False
             inside[i:] = False
         if inside[i]:
-            assert C.radius[0] == pytest.approx(B.radius[0])
+            assert C.radius == pytest.approx(B.radius)
         else:
-            assert C.radius[0] < B.radius[0]
+            assert C.radius < B.radius
 
     A = Sphere(0.5)
     is_first = True
@@ -145,10 +151,10 @@ def test_sphere_and():
         B = Sphere(1., center=v * d)
         C = (A & B).toSphere()
         print(A, B, C)
-        if is_first and C.radius[0] < A.radius[0]:
+        if is_first and C.radius < A.radius:
             inside[i:] = False
             is_first = False
         if inside[i]:
-            assert C.radius[0] == pytest.approx(A.radius[0])
+            assert C.radius == pytest.approx(A.radius)
         else:
-            assert C.radius[0] < A.radius[0]
+            assert C.radius < A.radius

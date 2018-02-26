@@ -50,9 +50,10 @@ class Ellipsoid(PureShape):
             raise ValueError(self.__class__.__name__ + " requires initialization with 3 vectors defining the ellipsoid")
 
         # The vectors are not orthogonal, orthogonalize them
-        if np.fabs(np.dot(self._v, self._v.T) - np.identity(3)).sum() > 1e-12:
+        if np.fabs(np.dot(self._v, self._v.T) - np.identity(3)).sum() > 1e-9:
             warn(self.__class__.__name__ + ' principal vectors are not orthogonal. '
                  'sisl orthogonalizes the vectors (retaining 1st vector).')
+
         self._v[1, :] = orthogonalize(self._v[0, :], self._v[1, :])
         self._v[2, :] = orthogonalize(self._v[0, :], self._v[2, :])
         self._v[2, :] = orthogonalize(self._v[1, :], self._v[2, :])
@@ -153,8 +154,6 @@ class Ellipsoid(PureShape):
 class Sphere(Ellipsoid):
     """ 3D Sphere
 
-    Equivalent to ``Ellipsoid([r, r, r])``.
-
     Parameters
     ----------
     r : float
@@ -162,9 +161,53 @@ class Sphere(Ellipsoid):
     """
 
     def __init__(self, radius, center=None):
-        radius = ensure_array(radius, np.float64).ravel()[0]
+        radius = ensure_array(radius, np.float64).ravel()
+        if len(radius) > 1:
+            raise ValueError(self.__class__.__name__ + ' is defined via a single radius. '
+                             'An array with more than 1 element is not an allowed argument '
+                             'to __init__.')
         super(Sphere, self).__init__(radius, center=center)
+
+    def __repr__(self):
+        return self.__class__.__name__ + ('{{c({1:.2f} {2:.2f} {3:.2f}) '
+                                          'r({0:.2f})}}').format(self.radius, *self.center)
+
+    def copy(self):
+        return self.__class__(self.radius, self.center)
+
+    def volume(self):
+        """ Return the volume of the sphere """
+        return 4. / 3. * pi * self.radius ** 3
+
+    def scale(self, scale):
+        """ Return a new sphere with a larger radius
+
+        Parameters
+        ----------
+        scale : float
+            the scale parameter for the radius
+        """
+        return self.__class__(self.radius * scale, self.center)
+
+    def expand(self, radius):
+        """ Expand sphere by a constant radius
+
+        Parameters
+        ----------
+        radius : float
+           the extension in Ang per ellipsoid radial vector
+        """
+        return self.__class__(self.radius + radius, self.center)
+
+    @property
+    def radius(self):
+        """ Return the radius of the Sphere """
+        return self._v[0, 0]
 
     def toSphere(self):
         """ Return a copy of it-self """
         return self.copy()
+
+    def toEllipsoid(self):
+        """ Convert this sphere into an ellipsoid """
+        return Ellipsoid(self.radius, self.center)

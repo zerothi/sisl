@@ -645,12 +645,12 @@ class Geometry(SuperCellChild):
         if isinstance(dS[0], Cube):
             ir = dS[0].edge_length
         elif isinstance(dS[0], Sphere):
-            ir = dS[0].radius * 0.5 ** 0.5 * 2
+            ir = [dS[0].radius * 0.5 ** 0.5 * 2] * 3
         elif isinstance(dS[0], Shape):
             # Convert to spheres (which probably should be cubes for performance)
             dS = [s.toSphere() for s in dS]
             # Now do the same with spheres
-            ir = dS[0].radius * 0.5 ** 0.5 * 2
+            ir = [dS[0].radius * 0.5 ** 0.5 * 2] * 3
 
         # Figure out number of segments in each iteration
         # (minimum 1)

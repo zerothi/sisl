@@ -566,8 +566,10 @@ class EigenState(EigenSystem):
         # Figure out the max-min indices with a spacing of 1 radians
         rad1 = pi / 180
         theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
-        ctheta, stheta = cos(theta), sin(theta)
         cphi, sphi = cos(phi), sin(phi)
+        ctheta_sphi = cos(theta) * sphi
+        stheta_sphi = sin(theta) * sphi
+        del sphi
         nrxyz = (theta.size, phi.size, 3)
         del theta, phi, rad1
 
@@ -582,14 +584,14 @@ class EigenState(EigenSystem):
 
             # Reshape
             rxyz.shape = nrxyz
-            rxyz[..., 0] = R * ctheta * sphi
-            rxyz[..., 1] = R * stheta * sphi
-            rxyz[..., 2] = R * cphi
+            rxyz[..., 0] = ctheta_sphi
+            rxyz[..., 1] = stheta_sphi
+            rxyz[..., 2] = cphi
             rxyz.shape = (-1, 3)
 
             idx = dot(rc, rxyz.T)
-            idx_m = idx.min(1)
-            idx_M = idx.max(1)
+            idx_m = idx.min(1) * R
+            idx_M = idx.max(1) * R
 
             # Now do it for all the atoms to get indices of the middle of
             # the atoms
@@ -607,7 +609,7 @@ class EigenState(EigenSystem):
         # up in the above table.
 
         # Before continuing, we can easily clean up the temporary arrays
-        del ctheta, stheta, cphi, sphi, nrxyz, rxyz, origo, idx
+        del ctheta_sphi, stheta_sphi, cphi, nrxyz, rxyz, origo, idx
 
         aranged = _a.aranged
 

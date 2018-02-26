@@ -183,10 +183,10 @@ class CompositeShape(Shape):
 
         # Retrieve spheres
         A = self.A.toSphere()
-        Ar = A.radius[0]
+        Ar = A.radius
         Ac = A.center
         B = self.B.toSphere()
-        Br = B.radius[0]
+        Br = B.radius
         Bc = B.center
 
         if self.op == self._AND:
