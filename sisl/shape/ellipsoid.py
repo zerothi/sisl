@@ -49,10 +49,11 @@ class Ellipsoid(PureShape):
         else:
             raise ValueError(self.__class__.__name__ + " requires initialization with 3 vectors defining the ellipsoid")
 
-        # The vectors are not orthogonal, orthogonalize them
-        if np.fabs(np.dot(self._v, self._v.T) - np.identity(3)).sum() > 1e-9:
+        # If the vectors are not orthogonal, orthogonalize them and issue a warning
+        vv = np.fabs(np.dot(self._v, self._v.T) - np.diag(fnorm2(self._v)))
+        if vv.sum() > 1e-9:
             warn(self.__class__.__name__ + ' principal vectors are not orthogonal. '
-                 'sisl orthogonalizes the vectors (retaining 1st vector).')
+                 'sisl orthogonalizes the vectors (retaining 1st vector)!')
 
         self._v[1, :] = orthogonalize(self._v[0, :], self._v[1, :])
         self._v[2, :] = orthogonalize(self._v[0, :], self._v[2, :])
