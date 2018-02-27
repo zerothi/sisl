@@ -70,8 +70,8 @@ If used to produce scientific contributions, please use this [DOI][doi] for cita
 
 ### Scripts ###
 
-sisl contain a utility to easily convert geometries from existing files
-to other formats. After installing the executable `sgeom` is available which
+sisl contains a utility to easily convert geometries from existing files
+to other formats. After installation the executable `sgeom` is available which
 enables the conversion between all formats accessible as `Sile` objects.
 
 To convert a SIESTA FDF file to `xyz` _and_ an `XV` file one does
@@ -83,7 +83,7 @@ Try `sgeom -h` for additional features such as repeating the structure.
 
 ### Geometry manipulation ###
 
-sisl contain a class for manipulating geometries in a consistent and easy
+sisl contains a class for manipulating geometries in a consistent and easy
 way. Without using any other feature this enables you to easily create and
 manipulate structures in a consistent manner. 
 
@@ -212,7 +212,7 @@ format. To calculate the dispersion you diagonalize and plot the eigenvalues
         plt.plot(eigs[:,i])
 
 Very large tight-binding models are notoriously slow to create, however, sisl
-implement a much faster method to loop over huge geometries
+implements a much faster method to loop over huge geometries
 
     for ias, idxs in tb.geom.iter_block(iR = 10):
         for ia in ias:
@@ -237,8 +237,8 @@ explicit overlap matrix the following procedure is necessary:
         idx_a = tb.close(ia, R)
         tb.H[ia,idx_a[0]] = 0.
         tb.S[ia,idx_a[0]] = 1.
-        tb.H[ia,idx_a[1]] = 0. # still orthogonal (fake overlap matrix)
-        tb.S[ia,idx_a[1]] = -2.7
+        tb.H[ia,idx_a[1]] = -2.7
+        tb.S[ia,idx_a[1]] = 0. # still orthogonal (fake overlap matrix)
     Hk = tb.Hk(k=[0., 0.5, 0])
     Sk = tb.Sk(k=[0., 0.5, 0])
     eigs = sli.eigh(Hk.todense(), Sk.todense(), eigvals_only=True)
