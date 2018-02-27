@@ -17,8 +17,7 @@ from .distribution_function import distribution as dist_func
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
 
-__all__ = ['Hamiltonian', 'TightBinding']
-__all__ += ['EigenState']
+__all__ = ['Hamiltonian', 'EigenState']
 
 
 class Hamiltonian(SparseOrbitalBZSpin):
@@ -667,11 +666,6 @@ class EigenState(EigenSystem):
                 idxM[2] = shape[2] - 1
 
             # Now idxm/M contains min/max indices used
-            # Convert to xyz-coordinate
-            sx = slice(idxm[0], idxM[0]+1)
-            sy = slice(idxm[1], idxM[1]+1)
-            sz = slice(idxm[2], idxM[2]+1)
-
             # Convert to spherical coordinates
             n, idx, r, theta, phi = idx2spherical(aranged(idxm[0], idxM[0] + 0.5),
                                                   aranged(idxm[1], idxM[1] + 0.5),
@@ -687,7 +681,7 @@ class EigenState(EigenSystem):
                 oR = os[0].R
 
                 if oR <= 0.:
-                    warn("Orbital(s) '{}' does not have a wave-function, skipping orbital.".format(os))
+                    warn("Orbital(s) '{}' does not have a wave-function, skipping orbital!".format(os))
                     # Skip these orbitals
                     io += len(os)
                     continue
@@ -718,15 +712,10 @@ class EigenState(EigenSystem):
 
             # Convert to correct shape and add the current atom contribution to the wavefunction
             psi.shape = idxM - idxm + 1
-            grid.grid[sx, sy, sz] += psi
+            grid.grid[idxm[0]:idxM[0]+1, idxm[1]:idxM[1]+1, idxm[2]:idxM[2]+1] += psi
 
             # Clean-up
             del psi
 
         # Reset the error code for division
         np.seterr(**old_err)
-
-
-# For backwards compatibility we also use TightBinding
-# NOTE: that this is not sub-classed...
-TightBinding = Hamiltonian

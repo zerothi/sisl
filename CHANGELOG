@@ -1,6 +1,8 @@
 0.9.3
 =====
 
+- Removed deprecated TightBinding class (use Hamiltonian instead)
+
 - Added shot-noise calculation (and Fano factor). Currently un-tested!
 
 - Added many SislWarning raises which are used to notify the user of
