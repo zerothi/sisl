@@ -2,6 +2,7 @@ from __future__ import print_function, division
 
 import pytest
 
+from itertools import product
 import math as m
 import numpy as np
 
@@ -105,6 +106,20 @@ class TestBrillouinZone(object):
         bz1 = MonkhorstPack(setup.s1, [2] * 3, size=0.5)
         assert len(bz1) == 8
         assert np.all(bz1.k < 0.25)
+
+    def test_mp_gamma_centered(self, setup):
+        for x, y, z in product(np.arange(10) + 1, np.arange(20) + 1, np.arange(6) + 1):
+            bz = MonkhorstPack(setup.s1, [x, y, z])
+            assert len(bz) == x * y * z
+            assert ((bz.k == 0.).sum(1).astype(np.int32) == 3).sum() == 1
+
+    def test_mp_gamma_centered_displ(self, setup):
+        for x, y, z in product(np.arange(10) + 1, np.arange(20) + 1, np.arange(6) + 1):
+            bz = MonkhorstPack(setup.s1, [x, y, z], displacement=[0.2, 0, 0])
+            k = bz.k.copy()
+            k[:, 0] -= 0.2
+            assert len(bz) == x * y * z
+            assert ((k == 0.).sum(1).astype(np.int32) == 3).sum() == 1
 
     def test_pbz1(self, setup):
         bz = BandStructure(setup.s1, [[0]*3, [.5]*3], 300)

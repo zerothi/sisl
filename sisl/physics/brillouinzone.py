@@ -314,6 +314,8 @@ class MonkhorstPack(BrillouinZone):
         size = np.where(Dn == 1, 1., size)
 
         def link(n, d, s):
+            if n % 2 == 0:
+                return (np.arange(n) * 2 - n) * s / (2 * n) + d
             return (np.arange(n) * 2 - n + 1) * s / (2 * n) + d
 
         # Now we are ready to create the list of k-points
