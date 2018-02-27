@@ -8,6 +8,7 @@ from .sile import SileCDFSiesta
 from ..sile import *
 
 from sisl._array import aranged
+from sisl.messages import info
 from sisl.unit.siesta import unit_convert
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
 from sisl.physics import DensityMatrix
@@ -178,7 +179,16 @@ class ncSileSiesta(SileCDFSiesta):
         H = self._read_class_spin(Hamiltonian, **kwargs)
         S = H._csr._D[:, H.S_idx]
 
-        Ef = float(self._value('Ef')[0]) * Ry2eV
+        Ef = self._value('Ef')[:] * Ry2eV
+        if Ef.size == 1:
+            Ef = np.tile(Ef, 2)
+        else:
+            dEf = np.diff(Ef)[0]
+            info(repr(self) + '.read_hamiltonian found a calculation with spin-dependent Fermi-levels: '
+                 'dEf={:.4f} eV. '
+                 'Both spin configurations are shifted to 0. This may change in future '
+                 'versions of sisl.'.format(dEf))
+
         sp = self._crt_grp(self, 'SPARSE')
 
         for i in range(len(H.spin)):
@@ -186,7 +196,7 @@ class ncSileSiesta(SileCDFSiesta):
             h = np.array(sp.variables['H'][i, :], np.float64) * Ry2eV
             # Correct for the Fermi-level, Ef == 0
             if i < 2:
-                h -= Ef * S[:]
+                h -= Ef[i] * S[:]
             H._csr._D[:, i] = h[:]
 
         return H

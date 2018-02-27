@@ -114,18 +114,22 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        E : float
-           the energy (in eV) to shift the electronic structure
+        E : float or (2,)
+           the energy (in eV) to shift the electronic structure, if two values are passed
+           the two first spin-components get shifted individually.
         """
+        E = ensure_array(E, np.float64)
+        if E.size == 1:
+            E = np.tile(ensure_array(E, np.float64), 2)
         if not self.orthogonal:
             # For non-colinear and SO only the diagonal (real) components
             # should be shifted.
             for i in range(min(self.spin.spins, 2)):
-                self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E
+                self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E[i]
         else:
             for i in range(self.shape[0]):
                 for j in range(min(self.spin.spins, 2)):
-                    self[i, i, j] = self[i, i, j] + E
+                    self[i, i, j] = self[i, i, j] + E[i]
 
     def eigenstate(self, k=(0, 0, 0), gauge='R', **kwargs):
         """ Calculate the eigenstates at `k` and return an `EigenState` object containing all eigenstates

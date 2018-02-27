@@ -1012,6 +1012,19 @@ class TestHamiltonian(object):
         H.shift(0.2)
         assert H.eigh()[0] == pytest.approx(eig0 + 0.2)
 
+    def test_shift3(self, setup):
+        R, param = [0.1, 1.5], [(1., -1., 1.), (0.1, 0.1, 0.1)]
+        H = Hamiltonian(setup.g.copy(), spin=Spin('P'), orthogonal=False)
+        H.construct([R, param])
+        eig0_0 = H.eigh(spin=0)[0]
+        eig1_0 = H.eigh(spin=1)[0]
+        H.shift(0.2)
+        assert H.eigh(spin=0)[0] == pytest.approx(eig0_0 + 0.2)
+        assert H.eigh(spin=1)[0] == pytest.approx(eig1_0 + 0.2)
+        H.shift([0, -0.2])
+        assert H.eigh(spin=0)[0] == pytest.approx(eig0_0 + 0.2)
+        assert H.eigh(spin=1)[0] == pytest.approx(eig1_0)
+
     def test_edges1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         H = Hamiltonian(setup.g)
