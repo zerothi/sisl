@@ -12,7 +12,6 @@ from numpy import dot
 from sisl.utils.mathematics import fnorm
 import sisl._array as _a
 import sisl._plot as plt
-from ._help import ensure_array
 from .quaternion import Quaternion
 
 __all__ = ['SuperCell', 'SuperCellChild']
@@ -456,7 +455,8 @@ class SuperCell(object):
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
         """
-        vn = np.copy(np.asarray(v, dtype=np.float64)[:])
+        # flatte => copy
+        vn = np.asarray(v, dtype=np.float64).flatten()
         vn /= fnorm(vn)
         q = Quaternion(angle, vn, rad=rad)
         q /= q.norm()  # normalize the quaternion
@@ -656,7 +656,7 @@ class SuperCell(object):
         The angles should be provided in degree (not radians).
         """
         # Convert into true array (flattened)
-        args = np.asarray(args, np.float64).flatten()
+        args = _a.asarrayd(args).ravel()
         nargs = len(args)
 
         # A square-box
@@ -695,8 +695,7 @@ class SuperCell(object):
 
         # A complete cell
         if nargs == 9:
-            args.shape = (3, 3)
-            return np.copy(args)
+            return args.copy().reshape(3, 3)
 
         raise ValueError(
             "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.")
@@ -724,7 +723,7 @@ class SuperCell(object):
         axis : int or array_like
            only check the specified axis (default to all)
         """
-        axis = ensure_array(axis)
+        axis = _a.asarrayi(axis).ravel()
         # Convert to unit-vector cell
         for i in axis:
             a = self.cell[i, :] / fnorm(self.cell[i, :])

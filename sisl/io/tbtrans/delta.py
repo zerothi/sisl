@@ -17,7 +17,7 @@ import sisl._array as _a
 from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl import SparseOrbitalBZSpin
 from sisl.messages import warn
-from sisl._help import _str, ensure_array
+from sisl._help import _str
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
 
@@ -192,7 +192,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # Determine the type of dH we are storing...
         k = kwargs.get('k', None)
         if k is not None:
-            k = ensure_array(k, np.float64).flatten()
+            k = _a.asarrayd(k).flatten()
         E = kwargs.get('E', None)
 
         if (k is None) and (E is None):

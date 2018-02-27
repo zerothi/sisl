@@ -4,8 +4,7 @@ import re
 from itertools import groupby
 
 from numpy import zeros, ones, cumsum, take, int32
-
-from sisl._help import ensure_array
+from numpy import asarray
 
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2str', 'fileindex']
 __all__ += ['array_arange']
@@ -290,9 +289,9 @@ def array_arange(start, end=None, n=None, dtype=int32):
     # The below is much faster and does not require _any_ loops
     if n is None:
         # We need n to speed things up
-        n = ensure_array(end, dtype) - ensure_array(start, dtype)
+        n = asarray(end, dtype) - asarray(start, dtype)
     else:
-        n = ensure_array(n, dtype)
+        n = asarray(n, dtype)
     # The below algorithm only works for non-zero n
     idx = n.nonzero()[0]
 

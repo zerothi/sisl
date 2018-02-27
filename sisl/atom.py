@@ -8,7 +8,7 @@ from numbers import Integral, Real
 import numpy as np
 
 from .messages import info
-from ._help import array_fill_repeat, ensure_array, _str
+from ._help import array_fill_repeat, _str
 import sisl._array as _a
 from .shape import Sphere
 from .orbital import Orbital, SphericalOrbital, AtomicOrbital
@@ -814,7 +814,7 @@ class PeriodicTable(object):
         >>> 6 == PeriodicTable().Z('Carbon')
         True
         """
-        key = np.asarray([key]).flatten()
+        key = np.asarray(key).ravel()
         get = self._Z_int.get
         if len(key) == 1:
             return get(key[0], key[0])
@@ -839,7 +839,7 @@ class PeriodicTable(object):
             The atomic short name corresponding to `key`, if `key`
             is array_like, so will the returned value be.
         """
-        ak = np.asarray([key]).flatten()
+        ak = np.asarray(key).ravel()
         get = self._Z_short.get
         if len(ak) == 1:
             return get(ak[0], 'fa')
@@ -1003,7 +1003,7 @@ class Atom(object):
         if self.orbital is None:
             if 'R' in kwargs:
                 # backwards compatibility (possibly remove this in the future)
-                R = ensure_array(kwargs['R'], np.float64)
+                R = _a.asarrayd(kwargs['R']).ravel()
                 self.orbital = [Orbital(r) for r in R]
             else:
                 self.orbital = [Orbital(-1.)]
@@ -1325,7 +1325,7 @@ class Atoms(object):
 
     def orbital(self, io):
         """ Return an array of orbital of the contained objects """
-        io = ensure_array(io) % self.no
+        io = _a.asarrayi(io).ravel() % self.no
         a = np.argmax(io.reshape(-1, 1) <= self.lasto, axis=1)
         io = io - self.firsto[a]
         a = self.specie[a]
@@ -1430,7 +1430,7 @@ class Atoms(object):
 
     def sub(self, atom):
         """ Return a subset of the list """
-        atom = ensure_array(atom).flatten()
+        atom = _a.asarrayi(atom).ravel()
         atoms = Atoms()
         atoms._atom = self._atom[:]
         atoms._specie = self._specie[atom]
@@ -1439,7 +1439,7 @@ class Atoms(object):
 
     def remove(self, atom):
         """ Remove a set of atoms """
-        atom = ensure_array(atom).flatten()
+        atom = _a.asarrayi(atom).ravel()
         idx = np.setdiff1d(np.arange(len(self)), atom, assume_unique=True)
         return self.sub(idx)
 
@@ -1459,8 +1459,8 @@ class Atoms(object):
 
     def swap(self, a, b):
         """ Swaps atoms """
-        a = ensure_array(a)
-        b = ensure_array(b)
+        a = _a.asarrayi(a)
+        b = _a.asarrayi(b)
         atoms = self.copy()
         spec = np.copy(atoms._specie)
         atoms._specie[a] = spec[b]
@@ -1591,7 +1591,7 @@ class Atoms(object):
             return [self.atom[self._specie[s]] for s in range(sl[0], sl[1], sl[2])]
         elif isinstance(key, Integral):
             return self.atom[self._specie[key]]
-        return [self.atom[i] for i in self._specie[ensure_array(key)]]
+        return [self.atom[i] for i in self._specie[_a.asarrayi(key).ravel()]]
 
     def __setitem__(self, key, value):
         """ Overwrite an `Atom` object corresponding to the key(s) """
@@ -1600,7 +1600,7 @@ class Atoms(object):
             sl = key.indices(len(self))
             key = _a.arangei(sl[0], sl[1], sl[2])
         else:
-            key = ensure_array(key)
+            key = _a.asarrayi(key).ravel()
 
         # Create new atoms object to iterate
         other = Atoms(value, na=len(key))
@@ -1631,7 +1631,7 @@ class Atoms(object):
         if not isinstance(atom, Atom):
             raise ValueError(self.__class__.__name__ + '.replace requires input arguments to '
                              'be of the class Atom')
-        index = ensure_array(index)
+        index = _a.asarrayi(index).ravel()
 
         # Be sure to add the atom
         if atom not in self.atom:

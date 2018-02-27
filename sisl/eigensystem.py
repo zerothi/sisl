@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from sisl._help import ensure_array
+import sisl._array as _a
 from sisl._help import _zip as zip, _range as range
 
 
@@ -45,8 +45,8 @@ class EigenSystem(object):
            an info dictionary that turns into an attribute on the object.
            This `info` may contain anything that may be relevant for the EigenSystem
         """
-        self.e = np.atleast_1d(e)
-        self.v = np.atleast_1d(v) # will return v if already a vector/matrix
+        self.e = _a.asarray(e).ravel()
+        self.v = _a.asarray(v).ravel() # will return v if already a vector/matrix
         # Ensure the shape is fixed
         self.v.shape = (len(self), -1)
         self.parent = parent
@@ -85,9 +85,7 @@ class EigenSystem(object):
         v : array_like
             the eigenvectors at indices `key`
         """
-        key = ensure_array(key)
-        if len(key) == 1:
-            key = key[0]
+        key = _a.asarrayi(key)
         es = self.__class__(self.e[key], self.v[key, :], self.parent)
         es.info = self.info
         return es
@@ -167,7 +165,7 @@ class EigenSystem(object):
             for i in range(1, len(self)):
                 m += _outer(self.e[i], self.v[i, :])
             return m
-        idx = ensure_array(idx)
+        idx = _a.asarrayi(idx).ravel()
         m = _outer(self.e[idx[0]], self.v[idx[0], :])
         for i in idx[1:]:
             m += _outer(self.e[i], self.v[i, :])
@@ -185,7 +183,7 @@ class EigenSystem(object):
         -------
         EigenSystem
         """
-        idx = ensure_array(idx)
+        idx = _a.asarrayi(idx)
         sub = self.__class__(self.e[idx], self.v[idx, :], self.parent)
         sub.info = self.info
         return sub

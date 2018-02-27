@@ -5,8 +5,8 @@ from .sile import SileScaleUp
 from ..sile import *
 
 # Import the geometry object
+import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell
-from sisl._help import ensure_array
 from sisl.unit import unit_convert
 
 import numpy as np
@@ -24,10 +24,10 @@ class REFSileScaleUp(SileScaleUp):
     def read_supercell(self):
         """ Reads a supercell from the Sile """
         # 1st line is number of supercells
-        nsc = ensure_array(map(int, self.readline().split()[:3]), np.int32)
+        nsc = _a.fromiteri(map(int, self.readline().split()[:3]))
         self.readline() # natoms, nspecies
         self.readline() # species
-        cell = ensure_array(map(float, self.readline().split()[:9]), np.float64)
+        cell = _a.fromiterd(map(float, self.readline().split()[:9]))
         # Typically ScaleUp uses very large unit-cells
         # so supercells will typically be restricted to [3, 3, 3]
         return SuperCell(cell * Bohr2Ang, nsc=nsc)
@@ -36,7 +36,7 @@ class REFSileScaleUp(SileScaleUp):
     def read_geometry(self, primary=False, **kwargs):
         """ Reads a geometry from the Sile """
         # 1st line is number of supercells
-        nsc = ensure_array(map(int, self.readline().split()[:3]), np.int32)
+        nsc = _a.fromiteri(map(int, self.readline().split()[:3]))
         na, ns = map(int, self.readline().split()[:2])
         # Convert species to atom objects
         try:
@@ -51,7 +51,7 @@ class REFSileScaleUp(SileScaleUp):
         else:
             ns = np.prod(nsc)
 
-        cell = ensure_array(map(float, self.readline().split()), np.float64)
+        cell = _a.fromiterd(map(float, self.readline().split()))
         try:
             cell.shape = (3, 3)
             if primary:
@@ -84,7 +84,7 @@ class REFSileScaleUp(SileScaleUp):
             line = self.readline().split()
 
             atoms[ia] = species[int(line[4]) - 1]
-            xyz[ia, :] = ensure_array(map(float, line[5:8]), np.float64)
+            xyz[ia, :] = _a.fromiterd(map(float, line[5:8]))
 
         return Geometry(xyz * Bohr2Ang, atoms, sc=sc)
 

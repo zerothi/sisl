@@ -5,7 +5,7 @@ import numpy as np
 from numpy import dot, cross
 from numpy import fabs, logical_and
 
-from sisl._help import ensure_array
+import sisl._array as _a
 from sisl.linalg import inv
 from sisl.utils.mathematics import fnorm, expand
 
@@ -38,7 +38,7 @@ class Cuboid(PureShape):
 
     def __init__(self, v, center=None):
         super(Cuboid, self).__init__(center)
-        v = ensure_array(v, np.float64)
+        v = _a.asarrayd(v)
         if v.size == 1:
             self._v = np.identity(3) * v # a "Euclidean" cube
         elif v.size == 3:
@@ -73,7 +73,7 @@ class Cuboid(PureShape):
         scale : float or (3,)
             the scale parameter for each of the vectors defining the `Cuboid`
         """
-        scale = ensure_array(scale, np.float64)
+        scale = _a.asarrayd(scale)
         if scale.size == 3:
             scale.shape = (3, 1)
         return self.__class__(self._v * scale, self.center)
@@ -86,11 +86,11 @@ class Cuboid(PureShape):
         length : float or (3,)
            the extension in Ang per cuboid vector.
         """
-        length = ensure_array(length, np.float64)
+        length = _a.asarrayd(length)
         if length.size == 1:
-            v0 = expand(self._v[0, :], length[0])
-            v1 = expand(self._v[1, :], length[0])
-            v2 = expand(self._v[2, :], length[0])
+            v0 = expand(self._v[0, :], length)
+            v1 = expand(self._v[1, :], length)
+            v2 = expand(self._v[2, :], length)
         elif length.size == 3:
             v0 = expand(self._v[0, :], length[0])
             v1 = expand(self._v[1, :], length[1])
@@ -124,7 +124,7 @@ class Cuboid(PureShape):
         other : array_like
            the object that is checked for containment
         """
-        other = ensure_array(other, np.float64)
+        other = _a.asarrayd(other)
         ndim = other.ndim
         other.shape = (-1, 3)
 
@@ -166,5 +166,5 @@ class Cube(Cuboid):
     """
 
     def __init__(self, side, center=None):
-        side = ensure_array(side, np.float64).ravel()[0]
+        side = _a.asarrayd(side).ravel()[0]
         super(Cube, self).__init__(side, center)

@@ -6,7 +6,7 @@ import numpy as np
 
 import sisl._array as _a
 from .messages import warn
-from ._help import get_dtype, ensure_array
+from ._help import get_dtype
 from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
 from .sparse import SparseCSR
@@ -157,8 +157,8 @@ class _SparseGeometry(object):
            integer list of supercell indices (all smaller than `n_s`) that the current blocks of matrices
            are being transferred to. Must have same length as `old`.
         """
-        old = ensure_array(old)
-        new = ensure_array(new)
+        old = _a.asarrayi(old).ravel()
+        new = _a.asarrayi(new).ravel()
 
         if len(old) != len(new):
             raise ValueError(self.__class__.__name__+".translate_cells requires input and output indices with "
@@ -624,8 +624,8 @@ class _SparseGeometry(object):
         b : array_like
              the second list of atomic coordinates
         """
-        a = ensure_array(a)
-        b = ensure_array(b)
+        a = _a.asarrayi(a)
+        b = _a.asarrayi(b)
         # Create full index list
         full = _a.arangei(len(self.geom))
         # Regardless of whether swapping or new indices are requested
@@ -895,7 +895,7 @@ class SparseAtom(_SparseGeometry):
             only loop on the non-zero elements coinciding with the atoms
         """
         if not atom is None:
-            atom = ensure_array(atom)
+            atom = _a.asarrayi(atom).ravel()
             for i, j in self._csr.iter_nnz(atom):
                 yield i, j
         else:
@@ -1351,7 +1351,7 @@ class SparseOrbital(_SparseGeometry):
         if not atom is None:
             orbital = self.geom.a2o(atom)
         elif not orbital is None:
-            orbital = ensure_array(orbital)
+            orbital = _a.asarrayi(orbital)
         if not orbital is None:
             for i, j in self._csr.iter_nnz(orbital):
                 yield i, j

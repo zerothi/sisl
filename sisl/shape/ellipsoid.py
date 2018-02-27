@@ -6,7 +6,6 @@ from numpy import dot
 from numpy import fabs, logical_and
 
 from sisl.messages import warn
-from sisl._help import ensure_array
 import sisl._array as _a
 from sisl.utils.mathematics import orthogonalize, fnorm, fnorm2, expand
 
@@ -39,7 +38,7 @@ class Ellipsoid(PureShape):
 
     def __init__(self, v, center=None):
         super(Ellipsoid, self).__init__(center)
-        v = ensure_array(v, np.float64)
+        v = _a.asarrayd(v)
         if v.size == 1:
             self._v = np.identity(3, np.float64) * v # a "Euclidean" sphere
         elif v.size == 3:
@@ -82,7 +81,7 @@ class Ellipsoid(PureShape):
         scale : float or (3,)
             the scale parameter for each of the vectors defining the `Ellipsoid`
         """
-        scale = ensure_array(scale, np.float64)
+        scale = _a.asarrayd(scale)
         if scale.size == 3:
             scale.shape = (3, 1)
         return self.__class__(self._v * scale, self.center)
@@ -95,11 +94,11 @@ class Ellipsoid(PureShape):
         radius : float or (3,)
            the extension in Ang per ellipsoid radial vector
         """
-        radius = ensure_array(radius, np.float64)
+        radius = _a.asarrayd(radius)
         if radius.size == 1:
-            v0 = expand(self._v[0, :], radius[0])
-            v1 = expand(self._v[1, :], radius[0])
-            v2 = expand(self._v[2, :], radius[0])
+            v0 = expand(self._v[0, :], radius)
+            v1 = expand(self._v[1, :], radius)
+            v2 = expand(self._v[2, :], radius)
         elif radius.size == 3:
             v0 = expand(self._v[0, :], radius[0])
             v1 = expand(self._v[1, :], radius[1])
@@ -128,7 +127,7 @@ class Ellipsoid(PureShape):
 
     def within_index(self, other):
         """ Return indices of the points that are within the shape """
-        other = ensure_array(other, np.float64)
+        other = _a.asarrayd(other)
         ndim = other.ndim
         other.shape = (-1, 3)
 
@@ -162,7 +161,7 @@ class Sphere(Ellipsoid):
     """
 
     def __init__(self, radius, center=None):
-        radius = ensure_array(radius, np.float64).ravel()
+        radius = _a.asarrayd(radius).ravel()
         if len(radius) > 1:
             raise ValueError(self.__class__.__name__ + ' is defined via a single radius. '
                              'An array with more than 1 element is not an allowed argument '

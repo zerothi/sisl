@@ -20,7 +20,7 @@ from scipy.sparse import isspmatrix_lil
 
 import sisl._array as _a
 from .messages import warn
-from ._help import array_fill_repeat, ensure_array, get_dtype
+from ._help import array_fill_repeat, get_dtype
 from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
 
@@ -418,11 +418,11 @@ class SparseCSR(object):
            remove edges which are in the `exclude` list.
            Default to `row`.
         """
-        row = unique(ensure_array(row))
+        row = unique(_a.asarrayi(row))
         if exclude is None:
             exclude = row.view()
         else:
-            exclude = unique(ensure_array(exclude))
+            exclude = unique(_a.asarrayi(exclude))
 
         # Now get the edges
         ptr = self.ptr.view()
@@ -450,7 +450,7 @@ class SparseCSR(object):
         cnz = count_nonzero
 
         # Sort the columns
-        columns = unique(ensure_array(columns))
+        columns = unique(_a.asarrayi(columns))
         n_cols = cnz(columns < self.shape[1])
 
         # Grab pointers
@@ -463,7 +463,7 @@ class SparseCSR(object):
         # Convert to boolean array where we have columns to be deleted
         lidx = in1d(col[idx], columns)
         # Count number of deleted entries per row
-        ndel = ensure_array(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
+        ndel = _a.fromiteri(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
         # Backconvert lidx to deleted indices
         lidx = idx[lidx]
         del idx
@@ -532,7 +532,7 @@ class SparseCSR(object):
         # Convert to boolean array where we have columns to be deleted
         lidx = col[idx] >= nc
         # Count number of deleted entries per row
-        ndel = ensure_array(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
+        ndel = _a.fromiteri(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
         # Backconvert lidx to deleted indices
         lidx = idx[lidx]
         del idx
@@ -562,8 +562,8 @@ class SparseCSR(object):
         new : int or array_like
            new column indices
         """
-        old = ensure_array(old)
-        new = ensure_array(new)
+        old = _a.asarrayi(old)
+        new = _a.asarrayi(new)
 
         if len(old) != len(new):
             raise ValueError(self.__class__.__name__+".translate_columns requires input and output columns with "
@@ -686,7 +686,7 @@ class SparseCSR(object):
                 for c in self.col[ptr:ptr+n]:
                     yield r, c
         else:
-            for r in ensure_array(row):
+            for r in _a.asarrayi(row).ravel():
                 n = self.ncol[r]
                 ptr = self.ptr[r]
                 for c in self.col[ptr:ptr+n]:
@@ -729,7 +729,7 @@ class SparseCSR(object):
         #                     "However, multiple columns at a time are allowed.")
 
         # Ensure flattened array...
-        j = ensure_array(j)
+        j = _a.asarrayi(j).ravel()
         if len(j) == 0:
             return _a.arrayi([])
 
@@ -833,7 +833,7 @@ class SparseCSR(object):
         """
 
         # Ensure flattened array...
-        j = _a.asarrayi(j).flatten()
+        j = _a.asarrayi(j).ravel()
 
         # Make it a little easier
         ptr = self.ptr[i]
@@ -1007,7 +1007,7 @@ class SparseCSR(object):
                     rows[j:j+N] = r
                     j += N
         else:
-            row = ensure_array(row)
+            row = _a.asarrayi(row).ravel()
             idx = array_arange(self.ptr[row], n=self.ncol[row])
             if not only_col:
                 N = _a.sumi(self.ncol[row])
@@ -1123,7 +1123,7 @@ class SparseCSR(object):
         indices : array_like
            the indices of the rows *and* columns that are removed in the sparse pattern
         """
-        indices = ensure_array(indices)
+        indices = _a.asarrayi(indices)
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] >= self.shape[1]:
@@ -1142,7 +1142,7 @@ class SparseCSR(object):
         indices : array_like
            the indices of the rows *and* columns that are retained in the sparse pattern
         """
-        indices = ensure_array(indices)
+        indices = _a.asarrayi(indices).ravel()
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] == self.shape[1]:
@@ -1200,8 +1200,8 @@ class SparseCSR(object):
 
         # Count number of entries
         idx_take = col_data[1, :] >= 0
-        ncol1[:] = ensure_array(map(count_nonzero,
-                                    split(idx_take, ptr1[1:-1])))
+        ncol1[:] = _a.fromiteri(map(count_nonzero,
+                                    split(idx_take, ptr1[1:-1]))).ravel()
 
         # Convert to indices
         idx_take = idx_take.nonzero()[0]

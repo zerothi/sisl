@@ -14,7 +14,7 @@ import sisl._array as _a
 
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
-from sisl._help import _str, ensure_array
+from sisl._help import _str
 from sisl.unit.siesta import unit_convert
 
 __all__ = ['_ncSileTBtrans', '_devncSileTBtrans']

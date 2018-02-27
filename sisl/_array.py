@@ -45,11 +45,18 @@ arrayc = _partial(np.array, dtype=np.complex64)
 arrayz = _partial(np.array, dtype=np.complex128)
 __all__ += _append_c('array')
 
+asarray = np.asarray
 asarrayi = _partial(np.asarray, dtype=np.int32)
 asarrayl = _partial(np.asarray, dtype=np.int64)
 asarrayf = _partial(np.asarray, dtype=np.float32)
 asarrayd = _partial(np.asarray, dtype=np.float64)
-__all__ += _append('asarray')
+__all__ += _append('asarray') + ['asarray']
+
+fromiteri = _partial(np.fromiter, dtype=np.int32)
+fromiterl = _partial(np.fromiter, dtype=np.int64)
+fromiterf = _partial(np.fromiter, dtype=np.float32)
+fromiterd = _partial(np.fromiter, dtype=np.float64)
+__all__ += _append('fromiter')
 
 sumi = _partial(np.sum, dtype=np.int32)
 suml = _partial(np.sum, dtype=np.int64)

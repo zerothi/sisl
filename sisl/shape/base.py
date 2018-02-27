@@ -8,7 +8,7 @@ from numpy import logical_or as log_or
 from numpy import logical_xor as log_xor
 from numpy import logical_not as log_not
 
-from sisl._help import ensure_array
+import sisl._array as _a
 from sisl.utils.mathematics import fnorm
 
 
@@ -95,7 +95,7 @@ class Shape(object):
         other : array_like
            the array/object that is checked for containment
         """
-        other = ensure_array(other, np.float64)
+        other = _a.asarrayd(other)
         ndim = other.ndim
         other.shape = (-1, 3)
 

@@ -5,7 +5,8 @@ import numpy as np
 import warnings
 
 # Import sile objects
-from sisl._help import _str, ensure_array
+import sisl._array as _a
+from sisl._help import _str
 from sisl.messages import warn, info
 from .sile import SileSiesta
 from ..sile import *
@@ -736,7 +737,7 @@ class fdfSileSiesta(SileSiesta):
         lor = self.get('AtomicCoordinatesOrigin')
         if lor:
             if kwargs.get('origin', True):
-                origo = ensure_array(map(float, lor[0].split()[:3])) * s
+                origo = _a.asarrayd(map(float, lor[0].split()[:3])) * s
         # Origo cannot be interpreted with fractional coordinates
         # hence, it is not transformed.
 

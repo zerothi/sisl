@@ -17,7 +17,6 @@ import sisl.linalg as lin
 from .messages import warn
 from ._help import _str
 from ._help import _range as range
-from ._help import ensure_array, ensure_dtype
 from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd
 from .utils import angle, direction
@@ -111,8 +110,8 @@ class Geometry(SuperCellChild):
     def __init__(self, xyz, atom=None, sc=None):
 
         # Create the geometry coordinate
-        self.xyz = np.copy(np.asarray(xyz, dtype=np.float64))
-        self.xyz.shape = (-1, 3)
+        # We need flatten to ensure a copy
+        self.xyz = _a.asarrayd(xyz).flatten().reshape(-1, 3)
 
         # Default value
         if atom is None:
@@ -456,7 +455,7 @@ class Geometry(SuperCellChild):
             for ia in self:
                 yield ia, self.atom[ia], self.atom.specie[ia]
         else:
-            for ia in ensure_array(atom):
+            for ia in _a.asarrayi(atom).ravel():
                 yield ia, self.atom[ia], self.atom.specie[ia]
 
     def iter_orbitals(self, atom=None, local=True):
@@ -491,7 +490,7 @@ class Geometry(SuperCellChild):
                     for io in range(IO[0], IO[1]):
                         yield ia, io
         else:
-            atom = ensure_array(atom)
+            atom = _a.asarrayi(atom).ravel()
             if local:
                 for ia, io1, io2 in zip(atom, self.firsto[atom], self.lasto[atom] + 1):
                     for io in range(io2 - io1):
@@ -791,7 +790,7 @@ class Geometry(SuperCellChild):
         if axis is None:
             axis = [0, 1, 2]
         else:
-            axis = ensure_array(axis)
+            axis = _a.asarrayi(axis).ravel()
 
         if R is None:
             R = self.maxR()
@@ -1180,11 +1179,11 @@ class Geometry(SuperCellChild):
         rad : bool, optional
            whether the returned value is in radians
         """
-        xi = self.axyz(ensure_array(atom))
+        xi = self.axyz(_a.asarrayi(atom))
         if isinstance(dir, (_str, Integral)):
             dir = self.cell[direction(dir), :]
         else:
-            dir = ensure_array(dir, np.float64)
+            dir = _a.asarrayd(dir)
         # Normalize so we don't have to have this in the
         # below formula
         dir /= fnorm(dir)
@@ -1196,7 +1195,7 @@ class Geometry(SuperCellChild):
         elif isinstance(ref, Integral):
             xi -= self.axyz(ref)[None, :]
         else:
-            xi -= ensure_array(ref, np.float64)[None, :]
+            xi -= _a.asarrayd(ref)[None, :]
         nx = sqrt(square(xi).sum(1))
         ang = np.where(nx > 1e-6, np.arccos((xi * dir).sum(axis=1) / nx), 0.)
         if rad:
@@ -1271,14 +1270,14 @@ class Geometry(SuperCellChild):
             origo = [0., 0., 0.]
         elif isinstance(origo, Integral):
             origo = self.axyz(origo)
-        origo = ensure_array(origo, np.float64)
+        origo = _a.asarrayd(origo)
 
         if not atom is None:
             # Only rotate the unique values
             atom = self.sc2uc(atom, uniq=True)
 
-        # Ensure the normal vector is normalized...
-        vn = np.copy(_a.asarrayd(v))
+        # Ensure the normal vector is normalized... (flatten == copy)
+        vn = _a.asarrayd(v).flatten()
         vn /= fnorm(vn)
 
         # Prepare quaternion...
@@ -1343,7 +1342,7 @@ class Geometry(SuperCellChild):
         if atom is None:
             g.xyz[:, :] += np.asarray(v, g.xyz.dtype)[None, :]
         else:
-            g.xyz[ensure_array(atom), :] += np.asarray(v, g.xyz.dtype)[None, :]
+            g.xyz[_a.asarrayi(atom).ravel(), :] += np.asarray(v, g.xyz.dtype)[None, :]
         if cell:
             g.set_supercell(g.sc.translate(v))
         return g
@@ -1361,8 +1360,8 @@ class Geometry(SuperCellChild):
         b : array_like
              the second list of atomic coordinates
         """
-        a = ensure_array(a)
-        b = ensure_array(b)
+        a = _a.asarrayi(a)
+        b = _a.asarrayi(b)
         xyz = np.copy(self.xyz)
         xyz[a, :] = self.xyz[b, :]
         xyz[b, :] = self.xyz[a, :]
@@ -1420,7 +1419,7 @@ class Geometry(SuperCellChild):
         if atom is None:
             g = self
         else:
-            g = self.sub(ensure_array(atom))
+            g = self.sub(_a.asarrayi(atom))
         if 'mass' == what:
             mass = self.mass
             return dot(mass, g.xyz) / np.sum(mass)
@@ -1685,7 +1684,7 @@ class Geometry(SuperCellChild):
         if atom is None:
             xyz = self.xyz[::-1, :]
         else:
-            atom = ensure_array(atom)
+            atom = _a.asarrayi(atom).ravel()
             xyz = np.copy(self.xyz)
             xyz[atom, :] = self.xyz[atom[::-1], :]
         return self.__class__(xyz, atom=self.atom.reverse(atom), sc=self.sc.copy())
@@ -1693,7 +1692,7 @@ class Geometry(SuperCellChild):
     def mirror(self, plane, atom=None):
         """ Mirrors the structure around the center of the atoms """
         if not atom is None:
-            atom = ensure_array(atom)
+            atom = _a.asarrayi(atom)
         else:
             atom = slice(None)
         g = self.copy()
@@ -1816,7 +1815,7 @@ class Geometry(SuperCellChild):
         # Convert to actual array
         if idx is not None:
             if not isndarray(idx):
-                idx = ensure_array(idx)
+                idx = _a.asarrayi(idx).ravel()
         else:
             # If idx is None, then idx_xyz cannot be used!
             # So we force it to None
@@ -1907,7 +1906,7 @@ class Geometry(SuperCellChild):
             ixS.append(x)
 
         # Do for the first shape
-        ret = [[ensure_array(idx[ixS[0]])]]
+        ret = [[_a.asarrayi(idx[ixS[0]]).ravel()]]
         rc = 0
         if ret_xyz:
             rc = rc + 1
@@ -1916,7 +1915,7 @@ class Geometry(SuperCellChild):
             rd = rc + 1
             ret.append([d[ixS[0]]])
         for i in range(1, nshapes):
-            ret[0].append(ensure_array(idx[ixS[i]]))
+            ret[0].append(_a.asarrayi(idx[ixS[i]]).ravel())
             if ret_xyz:
                 ret[rc].append(xa[ixS[i], :])
             if ret_rij:
@@ -1972,7 +1971,7 @@ class Geometry(SuperCellChild):
         if R is None:
             R = np.array([self.maxR()], np.float64)
         elif not isndarray(R):
-            R = ensure_array(R, np.float64)
+            R = _a.asarrayd(R).ravel()
 
         # Maximum distance queried
         max_R = R[-1]
@@ -1980,7 +1979,7 @@ class Geometry(SuperCellChild):
         # Convert to actual array
         if idx is not None:
             if not isndarray(idx):
-                idx = ensure_array(idx)
+                idx = _a.asarrayi(idx).ravel()
         else:
             # If idx is None, then idx_xyz cannot be used!
             idx_xyz = None
@@ -1988,7 +1987,7 @@ class Geometry(SuperCellChild):
         if isinstance(xyz_ia, Integral):
             off = self.xyz[xyz_ia, :]
         elif not isndarray(xyz_ia):
-            off = ensure_array(xyz_ia, np.float64)
+            off = _a.asarrayd(xyz_ia)
         else:
             off = xyz_ia
 
@@ -2106,7 +2105,7 @@ class Geometry(SuperCellChild):
         # We only do "one" heavy duty search,
         # then we immediately reduce search space to this subspace
         tidx = (d <= R[0]).nonzero()[0]
-        ret = [[ensure_array(idx[ix[tidx]])]]
+        ret = [[_a.asarrayi(idx[ix[tidx]]).ravel()]]
         i = 0
         if ret_xyz:
             rc = i + 1
@@ -2122,7 +2121,7 @@ class Geometry(SuperCellChild):
             # allow the same indice to be in two ranges (due to
             # numerics)
             tidx = log_and(R[i - 1] < d, d <= R[i]).nonzero()[0]
-            ret[0].append(ensure_array(idx[ix[tidx]]))
+            ret[0].append(_a.asarrayi(idx[ix[tidx]]).ravel())
             if ret_xyz:
                 ret[rc].append(xa[tidx])
             if ret_rij:
@@ -2176,7 +2175,7 @@ class Geometry(SuperCellChild):
         if R is None:
             R = np.array([self.maxR()], np.float64)
         elif not isndarray(R):
-            R = ensure_array(R, np.float64)
+            R = _a.asarrayd(R).ravel()
 
         # Maximum distance queried
         max_R = R[-1]
@@ -2207,7 +2206,7 @@ class Geometry(SuperCellChild):
         if isinstance(xyz_ia, Integral):
             coord = self.xyz[xyz_ia, :]
         elif not isndarray(xyz_ia):
-            coord = ensure_array(xyz_ia, np.float64)
+            coord = _a.asarrayd(xyz_ia)
         else:
             coord = xyz_ia
 
@@ -2410,13 +2409,13 @@ class Geometry(SuperCellChild):
         """
         if R is None:
             R = self.maxR()
-        R = ensure_array(R, np.float64)
+        R = _a.asarrayd(R).ravel()
 
         # Convert inedx coordinate to point
         if isinstance(xyz_ia, Integral):
             xyz_ia = self.xyz[xyz_ia, :]
         elif not isndarray(xyz_ia):
-            xyz_ia = ensure_array(xyz_ia, np.float64)
+            xyz_ia = _a.asarrayd(xyz_ia)
 
         # Get global calls
         # Is faster for many loops
@@ -2530,7 +2529,7 @@ class Geometry(SuperCellChild):
                 return np.unique(np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na)
             return np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na
 
-        a = _a.asarrayi(io) % self.no
+        a = _a.asarrayi(io).ravel() % self.no
         # Use b-casting rules
         a.shape = (-1, 1)
         a = np.argmax(a <= self.lasto, axis=1)
@@ -2548,7 +2547,7 @@ class Geometry(SuperCellChild):
         uniq : bool, optional
            If True the returned indices are unique and sorted.
         """
-        atom = ensure_dtype(atom) % self.na
+        atom = _a.asarrayi(atom) % self.na
         if uniq:
             return np.unique(atom)
         return atom
@@ -2564,7 +2563,7 @@ class Geometry(SuperCellChild):
         uniq : bool, optional
            If True the returned indices are unique and sorted.
         """
-        orb = ensure_dtype(orb) % self.no
+        orb = _a.asarrayi(orb) % self.no
         if uniq:
             return np.unique(orb)
         return orb
@@ -2574,7 +2573,7 @@ class Geometry(SuperCellChild):
 
         Returns a vector of 3 numbers with integers.
         """
-        idx = ensure_dtype(ia) // self.na
+        idx = _a.asarrayi(ia) // self.na
         return self.sc.sc_off[idx, :]
 
     # This function is a bit weird, it returns a real array,
@@ -2592,7 +2591,7 @@ class Geometry(SuperCellChild):
 
         Returns a vector of 3 numbers with integers.
         """
-        idx = ensure_dtype(io) // self.no
+        idx = _a.asarrayi(io) // self.no
         return self.sc.sc_off[idx, :]
 
     def o2sc(self, o):
@@ -2812,7 +2811,7 @@ class Geometry(SuperCellChild):
         if atom is None:
             atom = _a.arangei(len(self))
         else:
-            atom = ensure_array(atom)
+            atom = _a.asarrayi(atom).ravel()
 
         # Figure out maximum distance
         if R is None:
@@ -2843,7 +2842,7 @@ class Geometry(SuperCellChild):
                 R = maxR
 
         # Convert to list
-        tol = ensure_array(tol, np.float64)
+        tol = _a.asarrayd(tol).ravel()
         if len(tol) == 1:
             # Now we are in a position to determine the sizes
             dR = _a.aranged(tol[0] * .5, R + tol[0] * .55, tol[0])

@@ -4,7 +4,7 @@ import re
 import numpy as np
 
 # Import sile objects
-from sisl._help import ensure_array
+import sisl._array as _a
 from .sile import Sile, add_sile, Sile_fh_open, sile_raise_write
 
 __all__ = ['TableSile']
@@ -183,19 +183,18 @@ class TableSile(Sile):
             # then we have a new data set
             if empty.match(line) is not None:
                 if len(dat[-1]) > 0:
-                    dat[-1] = ensure_array(dat[-1], np.float64)
+                    dat[-1] = _a.asarrayd(dat[-1])
                     dat.append([])
             else:
                 line = [l for l in line.split(sep) if len(l) > 0]
-                dat[-1].append(ensure_array(map(float, line), np.float64))
+                dat[-1].append(_a.fromiterd(map(float, line)))
 
             line = self.readline()
         if len(dat[-1]) > 0:
-            dat[-1] = ensure_array(dat[-1], np.float64)
+            dat[-1] = _a.asarrayd(dat[-1])
 
         # Ensure we have no false positives
-        dat = [d for d in dat if len(d) > 0]
-        dat = ensure_array(dat, np.float64)
+        dat = _a.asarrayd([d for d in dat if len(d) > 0])
         if dat.shape[0] == 1:
             s = list(dat.shape)
             s.pop(0)

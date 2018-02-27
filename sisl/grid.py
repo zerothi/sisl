@@ -8,7 +8,6 @@ from numpy import int32, float64
 from numpy import floor, dot, add, cos, sin
 from numpy import ogrid, stack, take
 
-from ._help import ensure_array
 import sisl._array as _a
 from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
@@ -197,7 +196,7 @@ class Grid(SuperCellChild):
 
     def set_grid(self, shape, dtype=None):
         """ Create the internal grid of certain size. """
-        shape = ensure_array(shape).ravel()
+        shape = _a.asarrayi(shape)
         if dtype is None:
             dtype = np.float64
         self.grid = np.zeros(shape, dtype=dtype)
@@ -273,7 +272,7 @@ class Grid(SuperCellChild):
     def dcell(self):
         """ Returns the delta-cell """
         # Calculate the grid-distribution
-        shape = ensure_array(self.shape).reshape(1, -3)
+        shape = _a.asarrayi(self.shape).reshape(1, -3)
         return self.cell / shape
 
     @property
@@ -286,7 +285,7 @@ class Grid(SuperCellChild):
 
         Remark: This API entry might change to handle arbitrary
         cuts via rotation of the axis """
-        idx = ensure_array(idx).flatten()
+        idx = _a.asarrayi(idx).ravel()
         # First calculate the new shape
         shape = list(self.shape)
         cell = np.copy(self.cell)
@@ -397,7 +396,7 @@ class Grid(SuperCellChild):
         ------
         ValueError : if the length of the indices is 0
         """
-        idx = ensure_array(idx).flatten()
+        idx = _a.asarrayi(idx).ravel()
 
         # Calculate new shape
         shape = list(self.shape)
@@ -439,7 +438,7 @@ class Grid(SuperCellChild):
         axis : int
            the axis segment from which we remove all indices `idx`
         """
-        ret_idx = np.delete(_a.arangei(self.shape[axis]), ensure_array(idx))
+        ret_idx = np.delete(_a.arangei(self.shape[axis]), _a.asarrayi(idx))
         return self.sub(ret_idx, axis)
 
     def _index_shape(self, shape):
@@ -565,7 +564,7 @@ class Grid(SuperCellChild):
 
         rcell = self.rcell / (2 * np.pi)
 
-        coord = ensure_array(coord, float64)
+        coord = _a.asarrayd(coord)
         if coord.size == 1: # float
             if axis is None:
                 raise ValueError(self.__class__.__name__ + '.index requires the '
@@ -573,7 +572,7 @@ class Grid(SuperCellChild):
                                  'been specified.')
 
             c = (self.dcell[axis, :] ** 2).sum() ** 0.5
-            return int(floor(coord[0] / c))
+            return int(floor(coord / c))
 
         # Ensure we return values in the same dimensionality
         ndim = coord.ndim
@@ -821,7 +820,7 @@ class Grid(SuperCellChild):
         ------
         ValueError : if any of the passed indices are below 0 or above the number of elements per axis
         """
-        index = ensure_array(index).reshape(-1, 3)
+        index = _a.asarrayi(index).reshape(-1, 3)
         grid = _a.arrayi(self.shape[:])
         if np.any(index < 0) or np.any(index >= grid.reshape(1, 3)):
             raise ValueError(self.__class__.__name__ + '.pyamg_index erroneous values for grid indices')
@@ -840,7 +839,7 @@ class Grid(SuperCellChild):
            the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
            correspond to returned quantities from `pyamg_indices`.
         """
-        b[ensure_array(pyamg_indices)] = value
+        b[_a.asarrayi(pyamg_indices)] = value
 
     def pyamg_fix(self, A, b, pyamg_indices, value):
         r""" Fix values for the stencil to `value`.
@@ -857,7 +856,7 @@ class Grid(SuperCellChild):
         value : float
            the value of the grid to fix the value at
         """
-        pyamg_indices = ensure_array(pyamg_indices)
+        pyamg_indices = _a.asarrayi(pyamg_indices)
         s = array_arange(A.indptr[pyamg_indices], A.indptr[pyamg_indices+1])
         A.data[s] = 0
         # clean-up
@@ -902,7 +901,7 @@ class Grid(SuperCellChild):
             n = A.indptr[idx_p1+1] - A.indptr[idx_p1]
             s = array_arange(A.indptr[idx_p1], n=n)
             n = np.split(A.data[s], np.cumsum(n)[:-1])
-            n = ensure_array(map(np.sum, n))
+            n = _a.fromiteri(map(np.sum, n))
             # update diagonal
             A[idx_p1, idx_p1] = -n
             del s, n

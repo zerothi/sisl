@@ -11,7 +11,6 @@ from numpy import cos, sin, arctan2, arccos
 from numpy import take, sqrt, square
 
 from sisl import _array as _a
-from sisl._help import ensure_array
 
 __all__ = ['fnorm', 'fnorm2', 'expand', 'orthogonalize']
 __all__ += ['spher2cart', 'cart2spher', 'spherical_harm']
@@ -150,7 +149,7 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
        If `cos_phi` is ``True`` this is :math:`\cos(\phi)`, otherwise
        :math:`\phi` is returned (the polar angle from the :math:`z` axis)
     """
-    r = ensure_array(r, np.float64).reshape(-1, 3)
+    r = _a.asarrayd(r).reshape(-1, 3)
     if r.shape[-1] != 3:
         raise ValueError("Vector does not end with shape 3.")
     n = r.shape[0]

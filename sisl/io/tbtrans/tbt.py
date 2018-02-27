@@ -23,7 +23,6 @@ import sisl._array as _a
 # Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl.messages import warn
-from sisl._help import _str, ensure_array
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
 

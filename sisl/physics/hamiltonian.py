@@ -9,7 +9,6 @@ from numpy import dot, sqrt, square, floor, ceil
 
 from sisl.messages import warn
 from sisl._help import _range as range, _str as str
-from sisl._help import ensure_array
 import sisl._array as _a
 from sisl import Geometry
 from sisl.eigensystem import EigenSystem
@@ -118,9 +117,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the energy (in eV) to shift the electronic structure, if two values are passed
            the two first spin-components get shifted individually.
         """
-        E = ensure_array(E, np.float64)
+        E = _a.asarrayd(E)
         if E.size == 1:
-            E = np.tile(ensure_array(E, np.float64), 2)
+            E = np.tile(_a.asarrayd(E), 2)
         if not self.orthogonal:
             # For non-colinear and SO only the diagonal (real) components
             # should be shifted.
@@ -279,7 +278,7 @@ class EigenState(EigenSystem):
         """
         if idx is None:
             idx = range(len(self))
-        idx = ensure_array(idx)
+        idx = _a.asarrayi(idx)
 
         # Now create the correct normalization for each
         opt = {'k': self.info.get('k', (0, 0, 0))}
@@ -516,7 +515,7 @@ class EigenState(EigenSystem):
         # Check for k-points
         if k is None:
             k = self.info.get('k', (0, 0, 0))
-        k = ensure_array(k, float64)
+        k = _a.asarrayd(k)
         kl = (k ** 2).sum() ** 0.5
         has_k = kl > 0.000001
 
@@ -535,7 +534,7 @@ class EigenState(EigenSystem):
             psi_init = _a.zerosd
 
         # Extract sub variables used throughout the loop
-        shape = ensure_array(grid.shape)
+        shape = _a.asarrayi(grid.shape)
         dcell = grid.dcell
         rc = grid.sc.rcell / (2. * pi) * shape.reshape(1, -1)
 

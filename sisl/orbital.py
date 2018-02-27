@@ -15,7 +15,7 @@ from scipy.interpolate import UnivariateSpline
 
 
 from . import _plot as plt
-from ._help import ensure_array, _str
+from ._help import _str
 from .shape import Sphere
 import sisl._array as _a
 from sisl.utils.mathematics import cart2spher
@@ -472,8 +472,8 @@ class SphericalOrbital(Orbital):
         elif len(args) > 1:
 
             # A radial and function component has been passed
-            r = ensure_array(args[0], np.float64)
-            f = ensure_array(args[1], np.float64)
+            r = _a.asarrayd(args[0])
+            f = _a.asarrayd(args[1])
             # Sort r and f
             idx = np.argsort(r)
             r = r[idx]
@@ -513,11 +513,11 @@ class SphericalOrbital(Orbital):
         -------
         f : the orbital value at point `r`
         """
-        r = ensure_array(r, np.float64)
+        r = _a.asarrayd(r).ravel()
         if is_radius:
             s = r.shape
         else:
-            r = sqrt(square(r).sum(-1))
+            r = sqrt(square(r.reshape(-1, 3)).sum(-1))
             s = r.shape
         r.shape = (-1,)
         n = len(r)
@@ -538,7 +538,7 @@ class SphericalOrbital(Orbital):
 
         Parameters
         -----------
-        r : array_like
+        r : array_like of (*, 3)
            the vector from the orbital origin
         m : int, optional
            magnetic quantum number, must be in range ``-self.l <= m <= self.l``
@@ -547,7 +547,7 @@ class SphericalOrbital(Orbital):
         -------
         psi : the orbital value at point `r`
         """
-        r = ensure_array(r, np.float64)
+        r = _a.asarrayd(r)
         s = r.shape[:-1]
         # Convert to spherical coordinates
         n, idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
