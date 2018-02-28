@@ -829,7 +829,7 @@ class Geometry(SuperCellChild):
                 # Try next supercell connection
                 isc[i] += 1
                 for ia in self:
-                    idx, r = self.close_sc(ia, isc=isc, R=R, ret_rij=True)
+                    idx = self.close_sc(ia, isc=isc, R=R)
                     if len(idx) > 0:
                         prev_isc = isc[i]
                         break

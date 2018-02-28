@@ -11,7 +11,7 @@ from .messages import info
 from ._help import array_fill_repeat, _str
 import sisl._array as _a
 from .shape import Sphere
-from .orbital import Orbital, AtomicOrbital
+from .orbital import Orbital
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 

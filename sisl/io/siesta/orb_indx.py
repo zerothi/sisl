@@ -32,7 +32,7 @@ class OrbIndxSileSiesta(SileSiesta):
         def int_abs(i):
             return abs(int(i))
 
-        for io in range(no_s):
+        for _ in range(no_s):
             line = self.readline().split()
             isc = list(map(int_abs, line[12:15]))
             if isc[0] > nsc[0]:
