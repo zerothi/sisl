@@ -221,6 +221,24 @@ class TestSuperCell(object):
     def test_creation5(self, setup):
         setup.sc.tocell([3, 4, 5, 6, 7, 6, 7])
 
+    def test_creation_rotate(self, setup):
+        # cell parameters
+        param = np.array([1, 2, 3, 45, 60, 80], np.float64)
+        parama = param.copy()
+        parama[3:] *= np.pi / 180
+        sc = SuperCell(param)
+        assert np.allclose(param, sc.parameters())
+        assert np.allclose(parama, sc.parameters(True))
+        for ang in range(0, 91, 5):
+            s = sc.rotatea(ang).rotateb(ang).rotatec(ang)
+            assert np.allclose(param, s.parameters())
+            assert np.allclose(parama, s.parameters(True))
+
+            # TODO
+            # Don't check this just yet. We need to sort according
+            # to weight on x, y, z
+            s.parameters(sort_norm=True)
+
     def test_rcell(self, setup):
         # LAPACK inverse algorithm implicitly does
         # a transpose.

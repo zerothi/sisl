@@ -65,35 +65,50 @@ class SuperCell(object):
         # Set the super-cell
         self.set_nsc(nsc=nsc)
 
-    def cell_parameter(self, rad=False):
-        """ Return the cell-parameters of this cell. I.e. lattice vector lengths and angles
+    def parameters(self, rad=False, sort_norm=False):
+        r""" Return the cell-parameters of this cell. I.e. lattice vector lengths and angles
 
         Parameters
         ----------
         rad : bool, optional
-           whether the angles are returned in radians
+           whether the angles are returned in radians (otherwise in degree)
+        sort_norm : bool, optional
+           if True the cell parameters are calculated as though the lattice vectors
+           are swapped to have the largest Cartesian :math:`x` component as the first
+           lattice vector, the second lattice vector has the largest :math:`y` component.
         """
-        if not rad:
-            f = 180 / np.pi
-        else:
+        if rad:
             f = 1.
+        else:
+            f = 180 / np.pi
 
         # Figure out which vectors has the largest component along Cartesian x
-        c = self.copy()
-        cc = c.cell.copy()
-        fn = fnorm(cc)
-        x_frac = np.abs(cc[:, 0]) / fn
-        # Figure out which has the largest component
-        ix = np.argsort(-x_frac)[0]
+        cell = self.cell.copy()
+        abc = fnorm(cell)
+        if sort_norm:
+            x_frac = np.abs(cell[:, 0]) / abc
+            y_frac = np.abs(cell[:, 1]) / abc
+            # Figure out which has the largest component
+            ix = np.argmax(x_frac)
+            y_frac[ix] = -1.
+            # Figure out which has the largest component
+            iy = np.argmax(y_frac)
+            # The last component has to be this:
+            iz = 3 - ix - iy
+        else:
+            ix = 0
+            iy = 1
+            iz = 2
 
         # Now we have the largest x-component.
         # Rotate 'ix' vector to be along x vector
-        from math import acos, asin
-        ax = acos(_dot(cc[ix, :], np.array([1., 0, 0])) / fn[ix])
+        from math import acos
+        cell = cell / abc.reshape(-1, 1)
+        alpha = acos(_dot(cell[iy, :], cell[iz, :])) * f
+        beta = acos(_dot(cell[ix, :], cell[iz, :])) * f
+        gamma = acos(_dot(cell[ix, :], cell[iy, :])) * f
 
-        # First we need to rotate the cell etc.
-        # Al
-        pass
+        return abc[ix], abc[iy], abc[iz], alpha, beta, gamma
 
     def _update_vol(self):
         self.volume = np.abs(dot(self.cell[0, :],
@@ -669,7 +684,7 @@ class SuperCell(object):
 
         # Cell parameters
         if nargs == 6:
-            cell = np.zeros([3, 3], np.float64)
+            cell = _a.zerosd([3, 3])
             a = args[0]
             b = args[1]
             c = args[2]
@@ -677,20 +692,23 @@ class SuperCell(object):
             beta = args[4]
             gamma = args[5]
 
+            from math import sqrt, cos, sin, pi
+            pi180 = pi / 180.
+
             cell[0, 0] = a
-            g = gamma * np.pi / 180.
-            cg = np.cos(g)
-            sg = np.sin(g)
+            g = gamma * pi180
+            cg = cos(g)
+            sg = sin(g)
             cell[1, 0] = b * cg
             cell[1, 1] = b * sg
-            b = beta * np.pi / 180.
-            cb = np.cos(b)
-            sb = np.sin(b)
+            b = beta * pi180
+            cb = cos(b)
+            sb = sin(b)
             cell[2, 0] = c * cb
-            a = alpha * np.pi / 180.
-            d = (np.cos(a) - cb * cg) / sg
+            a = alpha * pi180
+            d = (cos(a) - cb * cg) / sg
             cell[2, 1] = c * d
-            cell[2, 2] = c * np.sqrt(sb**2 - d**2)
+            cell[2, 2] = c * sqrt(sb ** 2 - d ** 2)
             return cell
 
         # A complete cell

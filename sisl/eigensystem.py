@@ -141,10 +141,10 @@ class EigenSystem(object):
         ascending : bool, optional
             sort the contained elements ascending, else they will be sorced descending
         """
-        idx = np.argsort(self.e)
-        if not ascending:
-            # Revert sorting
-            idx = np.flip(idx, axis=0)
+        if ascending:
+            idx = np.argsort(self.e)
+        else:
+            idx = np.argsort(-self.e)
         self.e = self.e[idx]
         self.v = self.v[idx, :]
 
