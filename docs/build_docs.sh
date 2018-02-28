@@ -18,7 +18,7 @@ if [ $succeed -eq 0 -a -d latest ]; then
     cp -rf ../build/html/* .
     rm -rf _sources
     # Clean all rst.dummy files in the
-    for f in `find ./ -name "*rst.dummy"`
+    for f in $(find ./ -name "*rst.dummy")
     do
 	rm $f
     done

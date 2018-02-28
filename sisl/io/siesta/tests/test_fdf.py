@@ -123,7 +123,7 @@ def test_supercell_fail():
     ]
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
-    sc = fdfSileSiesta(f).read_supercell()
+    fdfSileSiesta(f).read_supercell()
 
 
 def test_geometry():

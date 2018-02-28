@@ -77,7 +77,7 @@ fi
 v=$MAJOR.$MINOR.$MICRO
 
 # Git revision
-rev=`git rev-parse HEAD`
+rev=$(git rev-parse HEAD)
 
 # Message for release
 MSG="Releasing v$v"

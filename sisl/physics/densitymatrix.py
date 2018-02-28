@@ -145,7 +145,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
            For non-colinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
         """
         geom = self.geom
-        cell = self.geom.cell
 
         if geom is None:
             geom = grid.geometry

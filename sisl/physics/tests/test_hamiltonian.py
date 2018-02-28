@@ -3,7 +3,6 @@ from __future__ import print_function, division
 import pytest
 
 import warnings
-import math as m
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure
