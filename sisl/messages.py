@@ -17,7 +17,6 @@ __main__:1: UserWarning: Help!
 We prefer the later which is particularly useful when the installation path is
 complex.
 """
-import sys
 import warnings
 
 

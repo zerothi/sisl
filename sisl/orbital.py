@@ -8,7 +8,7 @@ from math import sqrt as msqrt
 from math import factorial as fact
 
 import numpy as np
-from numpy import cos, sin, arccos
+from numpy import cos, sin
 from numpy import take, sqrt, square
 from scipy.special import lpmv, sph_harm
 from scipy.interpolate import UnivariateSpline

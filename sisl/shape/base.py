@@ -3,10 +3,6 @@ from math import sqrt as msqrt
 
 import numpy as np
 from numpy import union1d, intersect1d, setdiff1d, setxor1d
-from numpy import logical_and as log_and
-from numpy import logical_or as log_or
-from numpy import logical_xor as log_xor
-from numpy import logical_not as log_not
 
 import sisl._array as _a
 from sisl.utils.mathematics import fnorm

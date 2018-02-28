@@ -3,8 +3,7 @@ from __future__ import print_function, division
 from numbers import Integral
 from scipy.sparse import csr_matrix
 import numpy as np
-from numpy import int32
-from numpy import dot, argsort, where, floor, take
+from numpy import dot, where, floor, take
 from numpy import logical_and as log_and
 
 
@@ -13,7 +12,6 @@ from sisl.messages import warn
 from sisl._help import _zip as zip, _range as range
 from sisl.utils.ranges import array_arange
 from sisl.utils.mathematics import cart2spher
-from sisl.shape import Sphere
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
 

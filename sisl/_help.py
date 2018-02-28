@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
 import sys
-from numbers import Complex
 import collections
 
 import numpy as np

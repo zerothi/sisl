@@ -6,9 +6,8 @@ import gzip
 
 import numpy as np
 
-from sisl.messages import SislException, SislWarning, SislInfo
+from sisl.messages import SislWarning, SislInfo
 from sisl.utils.misc import str_spec
-from sisl._help import _str
 from ._help import *
 
 

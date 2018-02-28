@@ -1,11 +1,7 @@
 from __future__ import print_function, division
 
 from numbers import Integral
-from math import pi
-from math import factorial as fact
-import math as m
 
-import numpy as np
 from numpy import dot, asarray
 from numpy import cos, sin, arctan2, arccos
 from numpy import take, sqrt, square

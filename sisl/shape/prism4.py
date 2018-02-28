@@ -1,9 +1,8 @@
 from __future__ import print_function, division
 
-from math import pi, sqrt
 import numpy as np
 from numpy import dot, cross
-from numpy import fabs, logical_and
+from numpy import logical_and
 
 import sisl._array as _a
 from sisl.linalg import inv

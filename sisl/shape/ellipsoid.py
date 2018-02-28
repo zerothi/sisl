@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from math import pi, sqrt
+from math import pi
 import numpy as np
 from numpy import dot
 from numpy import fabs, logical_and

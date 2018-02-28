@@ -15,13 +15,12 @@ from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
 # Import sile objects
-from ..sile import add_sile, sile_raise_write, SileWarning
+from ..sile import add_sile, sile_raise_write
 from ._cdf import _devncSileTBtrans
 from sisl.utils import *
 import sisl._array as _a
 
-# Import the geometry object
-from sisl import Geometry, Atom, Atoms, SuperCell
+from sisl import Geometry, Atoms, SuperCell
 from sisl.messages import warn
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert

@@ -6,14 +6,14 @@ import numpy as np
 from numpy import in1d
 
 # Import sile objects
-from ..sile import sile_raise_write, SileWarning, SileInfo
+from ..sile import SileWarning, SileInfo
 from .sile import SileCDFTBtrans
 from sisl.messages import warn
 from sisl.utils import *
 import sisl._array as _a
 
 # Import the geometry object
-from sisl import Geometry, Atom, Atoms, SuperCell
+from sisl import Geometry, Atom, SuperCell
 from sisl._help import _str
 from sisl.unit.siesta import unit_convert
 

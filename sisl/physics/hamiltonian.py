@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import int32, float64, pi
+from numpy import pi, int32
 from numpy import take, ogrid
 from numpy import add, subtract, multiply, divide
 from numpy import cos, sin, arctan2, conj

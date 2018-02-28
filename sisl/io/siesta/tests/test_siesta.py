@@ -2,11 +2,10 @@ from __future__ import print_function, division
 
 import pytest
 
-from sisl import Geometry, Atom, Hamiltonian
+from sisl import Atom, Hamiltonian
 from sisl.io.siesta import *
 
 import os.path as osp
-import math as m
 import numpy as np
 
 from sisl.io.tests import common as tc

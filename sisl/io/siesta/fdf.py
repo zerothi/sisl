@@ -7,7 +7,7 @@ import warnings
 # Import sile objects
 import sisl._array as _a
 from sisl._help import _str
-from sisl.messages import warn, info
+from sisl.messages import warn
 from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
@@ -15,7 +15,6 @@ from sisl.io._help import *
 from .binaries import TSHSSileSiesta, TSDESileSiesta
 from .binaries import DMSileSiesta, HSXSileSiesta
 from .fa import faSileSiesta
-from .eig import eigSileSiesta
 from .pdos import pdosSileSiesta
 from .siesta import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta

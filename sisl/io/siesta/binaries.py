@@ -11,7 +11,7 @@ except Exception as e:
 
 # Import sile objects
 from sisl.messages import SislError
-from ..sile import add_sile, SileError
+from ..sile import add_sile
 from .sile import SileBinSiesta
 
 # Import the geometry object

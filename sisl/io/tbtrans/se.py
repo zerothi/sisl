@@ -10,7 +10,7 @@ from sisl.utils import *
 import sisl._array as _a
 
 # Import the geometry object
-from sisl import Atom, Atoms, SuperCell
+from sisl import Atoms, SuperCell
 from sisl.unit.siesta import unit_convert
 
 

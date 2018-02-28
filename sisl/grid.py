@@ -4,9 +4,9 @@ from numbers import Integral, Real
 from math import pi
 
 import numpy as np
-from numpy import int32, float64
+from numpy import int32
 from numpy import floor, dot, add, cos, sin
-from numpy import ogrid, stack, take
+from numpy import ogrid, take
 
 import sisl._array as _a
 from .shape import Shape
