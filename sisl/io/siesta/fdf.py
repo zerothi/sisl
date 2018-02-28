@@ -224,7 +224,8 @@ class fdfSileSiesta(SileSiesta):
 
         return l
 
-    def _type(self, value):
+    @classmethod
+    def _type(cls, value):
         """ Determine the type by the value
 
         Parameters
@@ -771,9 +772,6 @@ class fdfSileSiesta(SileSiesta):
         xyz *= s
         xyz += origo
 
-        # Now we read in the species
-        ns = self.get('NumberOfSpecies', default=0)
-
         # Read the block (not strictly needed, if so we simply set all atoms to H)
         atom = self.read_basis()
         if atom is None:
@@ -781,8 +779,6 @@ class fdfSileSiesta(SileSiesta):
 
             # Default atom (hydrogen)
             atom = Atom(1)
-            # Force number of species to 1
-            ns = 1
         else:
             atom = [atom[i] for i in species]
 

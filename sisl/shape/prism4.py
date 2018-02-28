@@ -124,7 +124,6 @@ class Cuboid(PureShape):
            the object that is checked for containment
         """
         other = _a.asarrayd(other)
-        ndim = other.ndim
         other.shape = (-1, 3)
 
         # Offset origo

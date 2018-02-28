@@ -128,7 +128,6 @@ class Ellipsoid(PureShape):
     def within_index(self, other):
         """ Return indices of the points that are within the shape """
         other = _a.asarrayd(other)
-        ndim = other.ndim
         other.shape = (-1, 3)
 
         # First check

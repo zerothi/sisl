@@ -74,7 +74,7 @@ class OrbIndxSileSiesta(SileSiesta):
         orbs = []
         specs = []
         ia = 1
-        for io in range(no):
+        for _ in range(no):
             line = self.readline().split()
 
             i_a = int(line[1])

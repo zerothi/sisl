@@ -111,7 +111,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         r""" Expand the density matrix to a density on the grid
 
         This routine calculates the real-space density components in the
-        specified grid. 
+        specified grid.
 
         This is an *in-place* operation that *adds* to the current values in the grid.
 
@@ -149,7 +149,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
         # Extract sub variables used throughout the loop
         csr = self._csr
-        o2a = geom.o2a
         dcell = grid.dcell
         frcell = grid.rcell.T / (2 * np.pi)
 

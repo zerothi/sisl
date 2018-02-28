@@ -1599,8 +1599,6 @@ class Geometry(SuperCellChild):
             return self.add(b)
         return self.append(b[0], b[1])
 
-        raise ValueError('Arguments for adding (add/append/prepend) are incorrect')
-
     def __radd__(self, b):
         """ Merge two geometries (or geometry and supercell)
 

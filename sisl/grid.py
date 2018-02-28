@@ -772,7 +772,8 @@ class Grid(SuperCellChild):
 
     # Here comes additional supplementary routines which enables an easy
     # work-through case with other programs.
-    def mgrid(self, *slices):
+    @classmethod
+    def mgrid(cls, *slices):
         """ Return a list of indices corresponding to the slices
 
         The returned values are equivalent to `numpy.mgrid` but they are returned

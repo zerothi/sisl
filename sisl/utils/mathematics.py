@@ -1,7 +1,5 @@
 from __future__ import print_function, division
 
-from numbers import Integral
-
 from numpy import dot, asarray
 from numpy import cos, sin, arctan2, arccos
 from numpy import take, sqrt, square

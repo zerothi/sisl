@@ -255,8 +255,6 @@ class _SparseGeometry(object):
         # Conversion before doing Rij on geometry
         # We default to expect atoms
         conv = lambda val: val
-        # Always only keep unique entries
-        col_conv = np.unique
 
         if what == 'atom':
             cls = SparseAtom

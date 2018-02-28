@@ -147,7 +147,6 @@ class TableSile(Sile):
         self._comment = [kwargs.get('comment', self._comment[0])]
 
         # Skip to next line
-        lines = []
         comment = []
         header = ''
 

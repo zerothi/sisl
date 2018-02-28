@@ -22,8 +22,8 @@ class bandsSileSiesta(SileSiesta):
 
         # Luckily the data is in eV
         Ef = float(self.readline())
-        # Read the total length of the path
-        minl, maxl = map(float, self.readline().split())
+        # Read the total length of the path (not used)
+        _, _ = map(float, self.readline().split())
         l = self.readline()
         try:
             _, _ = map(float, l.split())

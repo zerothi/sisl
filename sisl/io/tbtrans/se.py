@@ -4,13 +4,12 @@ import numpy as np
 from numpy import in1d, argsort
 
 # Import sile objects
-from ..sile import add_sile, sile_raise_write
+from ..sile import add_sile
 from ._cdf import _devncSileTBtrans
 from sisl.utils import *
 import sisl._array as _a
 
 # Import the geometry object
-from sisl import Atoms, SuperCell
 from sisl.unit.siesta import unit_convert
 
 
@@ -102,7 +101,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             return 0.
 
     def pivot(self, elec=None, in_device=False, sort=False):
-        """ Return the pivoting indices for a specific electrode 
+        """ Return the pivoting indices for a specific electrode
 
         Parameters
         ----------

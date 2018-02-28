@@ -1247,7 +1247,6 @@ class SparseCSR(object):
             ret = empty([self.shape[0], self.shape[2]], dtype=self.dtype)
             ptr = self.ptr.view()
             ncol = self.ncol.view()
-            col = self.col.view()
             for r in range(self.shape[0]):
                 ret[r, :] = self._D[ptr[r]:ptr[r]+ncol[r], :].sum(0)
 

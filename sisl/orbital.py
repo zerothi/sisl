@@ -10,7 +10,7 @@ from math import factorial as fact
 import numpy as np
 from numpy import cos, sin
 from numpy import take, sqrt, square
-from scipy.special import lpmv, sph_harm
+from scipy.special import lpmv
 from scipy.interpolate import UnivariateSpline
 
 

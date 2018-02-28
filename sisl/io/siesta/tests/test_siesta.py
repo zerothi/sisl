@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import pytest
 
-from sisl import Atom, Hamiltonian
+from sisl import Hamiltonian
 from sisl.io.siesta import *
 
 import os.path as osp

@@ -294,7 +294,8 @@ class EigenState(EigenSystem):
             # Assume orthogonal basis set and Gamma-point
             # TODO raise warning, should we do this here?
             class _K(object):
-                def dot(self, v):
+                @staticmethod
+                def dot(v):
                     return v
             Sk = _K()
 
@@ -444,7 +445,7 @@ class EigenState(EigenSystem):
         r""" Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
         This routine calculates the real-space wave-function components in the
-        specified grid. 
+        specified grid.
 
         This is an *in-place* operation that *adds* to the current values in the grid.
 

@@ -20,7 +20,7 @@ from ._cdf import _devncSileTBtrans
 from sisl.utils import *
 import sisl._array as _a
 
-from sisl import Geometry, Atoms, SuperCell
+from sisl import Geometry, Atoms
 from sisl.messages import warn
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
