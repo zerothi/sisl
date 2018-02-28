@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from numbers import Integral
 from scipy.sparse import csr_matrix
 import numpy as np
-from numpy import dot, where, floor, take
+from numpy import dot, take
 from numpy import logical_and as log_and
 
 
