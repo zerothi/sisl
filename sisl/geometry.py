@@ -12,7 +12,6 @@ from numpy import dot, square, sqrt
 
 import sisl._plot as plt
 import sisl._array as _a
-import sisl.linalg as lin
 
 from .messages import warn
 from ._help import _str
@@ -1570,12 +1569,12 @@ class Geometry(SuperCellChild):
         atoms = self.atom.insert(atom, geom.atom)
         return self.__class__(xyz, atom=atoms, sc=self.sc.copy())
 
-    def __add__(a, b):
+    def __add__(self, b):
         """ Merge two geometries (or geometry and supercell)
 
         Parameters
         ----------
-        a, b : Geometry or SuperCell or tuple or list
+        self, b : Geometry or SuperCell or tuple or list
            when adding a Geometry with a Geometry it defaults to using `add` function
            with the LHS retaining the cell-vectors.
            a tuple/list may be of length 2 with the first element being a Geometry and the second
@@ -1596,16 +1595,41 @@ class Geometry(SuperCellChild):
         append : appending geometries
         prepend : prending geometries
         """
-        if isinstance(a, Geometry):
-            if isinstance(b, (SuperCell, Geometry)):
-                return a.add(b)
-            return a.append(b[0], b[1])
-        elif isinstance(b, Geometry):
-            return b.prepend(a[0], a[1])
+        if isinstance(b, (SuperCell, Geometry)):
+            return self.add(b)
+        return self.append(b[0], b[1])
 
         raise ValueError('Arguments for adding (add/append/prepend) are incorrect')
 
-    __radd__ = __add__
+    def __radd__(self, b):
+        """ Merge two geometries (or geometry and supercell)
+
+        Parameters
+        ----------
+        self, b : Geometry or SuperCell or tuple or list
+           when adding a Geometry with a Geometry it defaults to using `add` function
+           with the LHS retaining the cell-vectors.
+           a tuple/list may be of length 2 with the first element being a Geometry and the second
+           being an integer specifying the lattice vector where it is appended.
+           One may also use a `SuperCell` instead of a `Geometry` which behaves similarly.
+
+        Examples
+        --------
+
+        >>> A + B == A.add(B) # doctest: +SKIP
+        >>> A + (B, 1) == A.append(B, 1) # doctest: +SKIP
+        >>> A + (B, 2) == A.append(B, 2) # doctest: +SKIP
+        >>> (A, 1) + B == A.prepend(B, 1) # doctest: +SKIP
+
+        See Also
+        --------
+        add : add geometries
+        append : appending geometries
+        prepend : prending geometries
+        """
+        if isinstance(b, (SuperCell, Geometry)):
+            return b.add(self)
+        return self + b
 
     def attach(self, s_idx, other, o_idx, dist='calc', axis=None):
         """ Attaches another `Geometry` at the `s_idx` index with respect to `o_idx` using different methods.
@@ -1963,7 +1987,6 @@ class Geometry(SuperCellChild):
             If True this method will return the distance
             for each of the couplings.
         """
-
         # Common numpy used functions (reduces function look-ups)
         log_and = np.logical_and
         fabs = np.fabs
@@ -2167,11 +2190,6 @@ class Geometry(SuperCellChild):
             If True this method will return the distance
             for each of the couplings.
         """
-
-        # Common numpy used functions (reduces function look-ups)
-        log_and = np.logical_and
-        fabs = np.fabs
-
         if R is None:
             R = np.array([self.maxR()], np.float64)
         elif not isndarray(R):

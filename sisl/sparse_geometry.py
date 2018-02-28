@@ -5,7 +5,7 @@ import functools as ftool
 import numpy as np
 
 import sisl._array as _a
-from .messages import warn
+from .messages import warn, SislError
 from ._help import get_dtype
 from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
@@ -346,7 +346,8 @@ class _SparseGeometry(object):
                 # Not found, i.e. new, so no need to translate
                 pass
 
-        assert len(old) in [self.n_s, sc.n_s], "Not all supercells are accounted for"
+        if len(old) not in [self.n_s, sc.n_s]:
+            raise SislError("Not all supercells are accounted for")
 
         # 1. Ensure that any one of the *old* supercells that
         #    are now deleted are put in the end
@@ -361,9 +362,12 @@ class _SparseGeometry(object):
         new = _a.arrayi(new)
 
         # Assert that there are only unique values
-        assert len(np.unique(old)) == len(old), "non-unique values in old set_nsc"
-        assert len(np.unique(new)) == len(new), "non-unique values in new set_nsc"
-        assert self.n_s == len(old), "non-valid size of in old set_nsc"
+        if len(np.unique(old)) != len(old):
+            raise SislError("non-unique values in old set_nsc")
+        if len(np.unique(new)) != len(new):
+            raise SislError("non-unique values in new set_nsc")
+        if self.n_s != len(old):
+            raise SislError("non-valid size of in old set_nsc")
 
         # Figure out if we need to do any work
         keep = (old != new).nonzero()[0]
@@ -1000,7 +1004,7 @@ class SparseAtom(_SparseGeometry):
         # Reduce the sparsity pattern, first create the new one
         S = self.__class__(geom, self.dim, self.dtype, np.amax(self._csr.ncol), **self._cls_kwargs())
 
-        def sca2sca(M, a, m, seps, axis):
+        def _sca2sca(M, a, m, seps, axis):
             # Converts an o from M to m
             isc = np.array(M.a2isc(a), np.int32, copy=True)
             isc[axis] = isc[axis] * seps
@@ -1020,7 +1024,7 @@ class SparseAtom(_SparseGeometry):
         for ja, ia in self.iter_nnz(range(geom.na)):
 
             # Get the equivalent orbital in the smaller cell
-            a, afp, afm = sca2sca(self.geom, ia, S.geom, seps, axis)
+            a, afp, afm = _sca2sca(self.geom, ia, S.geom, seps, axis)
             if a is None:
                 continue
             S[ja, a + afp] = self[ja, ia]
@@ -1457,7 +1461,7 @@ class SparseOrbital(_SparseGeometry):
         # Reduce the sparsity pattern, first create the new one
         S = self.__class__(geom, self.dim, self.dtype, np.amax(self._csr.ncol), **self._cls_kwargs())
 
-        def sco2sco(M, o, m, seps, axis):
+        def _sco2sco(M, o, m, seps, axis):
             # Converts an o from M to m
             isc = _a.arrayi(M.o2isc(o), copy=True)
             isc[axis] = isc[axis] * seps
@@ -1477,7 +1481,7 @@ class SparseOrbital(_SparseGeometry):
         for jo, io in self.iter_nnz(orbital=range(geom.no)):
 
             # Get the equivalent orbital in the smaller cell
-            o, ofp, ofm = sco2sco(self.geom, io, S.geom, seps, axis)
+            o, ofp, ofm = _sco2sco(self.geom, io, S.geom, seps, axis)
             if o is None:
                 continue
             d = self[jo, io]

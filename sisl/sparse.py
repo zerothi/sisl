@@ -19,7 +19,7 @@ from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
 import sisl._array as _a
-from .messages import warn
+from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype
 from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
@@ -394,8 +394,9 @@ class SparseCSR(object):
         # Since map puts it on the stack, we have to force the evaluation.
         list(map(func, range(self.shape[0])))
 
-        assert len(col) == self.nnz, ('Final size in the sparse matrix finalization '
-                                      'went wrong.')
+        if len(col) != self.nnz:
+            raise SislError('Final size in the sparse matrix finalization '
+                            'went wrong.')
 
         # Check that all column indices are within the expected shape
         if np.any(self.shape[1] <= self.col):
