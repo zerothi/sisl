@@ -9,6 +9,7 @@ from numpy import floor, dot, add, cos, sin
 from numpy import ogrid, take
 
 import sisl._array as _a
+from ._help import dtype_complex_to_real
 from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction
@@ -671,11 +672,7 @@ class Grid(SuperCellChild):
 
     def __abs__(self):
         r""" Return the absolute value :math:`|grid|` """
-        dtype = self.dtype
-        if dtype == np.complex128:
-            dtype = np.float64
-        elif dtype == np.complex64:
-            dtype = np.float32
+        dtype = dtype_complex_to_real(self.dtype)
         a = self.copy()
         a.grid = np.absolute(self.grid).astype(dtype, copy=False)
         return a
