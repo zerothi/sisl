@@ -829,7 +829,8 @@ class Grid(SuperCellChild):
         cp = _a.arrayi([[grid[1] * grid[2], grid[2], 1]])
         return (cp * index).sum(1)
 
-    def pyamg_source(self, b, pyamg_indices, value):
+    @classmethod
+    def pyamg_source(cls, b, pyamg_indices, value):
         r""" Fix the source term to `value`.
 
         Parameters

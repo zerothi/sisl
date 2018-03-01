@@ -164,7 +164,9 @@ class CompositeShape(Shape):
         """ Average center of composite shapes """
         return (self.A.center + self.B.center) * 0.5
 
-    def volume(self):
+    @staticmethod
+    def volume():
+        """ Volume of a composite shape is current undefined, so a negative number is returned (may change) """
         # The volume for these set operators cannot easily be defined, so
         # we should rather not do anything about it.
         return -1.
@@ -323,4 +325,5 @@ class NullShape(PureShape):
         return Cuboid(1.e-64, center=self.center.copy())
 
     def volume(self, *args, **kwargs):
+        """ The volume of a null shape is exactly 0. """
         return 0.
