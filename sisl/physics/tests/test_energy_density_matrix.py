@@ -5,7 +5,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, EnergyDensityMatrix
+from sisl import Geometry, Atom, SuperCell, EnergyDensityMatrix, Spin
 
 
 @pytest.fixture
@@ -61,11 +61,19 @@ def setup():
 
 
 @pytest.mark.density_matrix
+@pytest.mark.energydensity_matrix
 class TestEnergyDensityMatrix(object):
 
     def test_objects(self, setup):
         assert len(setup.E.xyz) == 2
         assert setup.g.no == len(setup.E)
+
+    def test_spin(self, setup):
+        g = setup.g.copy()
+        EnergyDensityMatrix(g)
+        EnergyDensityMatrix(g, spin=Spin('P'))
+        EnergyDensityMatrix(g, spin=Spin('NC'))
+        EnergyDensityMatrix(g, spin=Spin('SO'))
 
     def test_dtype(self, setup):
         assert setup.E.dtype == np.float64

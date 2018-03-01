@@ -234,11 +234,6 @@ class TestSuperCell(object):
             assert np.allclose(param, s.parameters())
             assert np.allclose(parama, s.parameters(True))
 
-            # TODO
-            # Don't check this just yet. We need to sort according
-            # to weight on x, y, z
-            s.parameters(sort_norm=True)
-
     def test_rcell(self, setup):
         # LAPACK inverse algorithm implicitly does
         # a transpose.

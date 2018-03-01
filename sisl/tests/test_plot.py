@@ -62,3 +62,11 @@ def test_orbital_harmonics():
     o = sisl.SphericalOrbital(2, (r, f))
     sisl.plot(o, harmonics=True)
     plt.close('all')
+
+
+@pytest.mark.xfail(raises=NotImplementedError)
+def test_not_implemented():
+    class Test(object):
+        pass
+    t = Test()
+    sisl.plot(t)

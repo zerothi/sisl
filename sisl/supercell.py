@@ -36,7 +36,7 @@ class SuperCell(object):
     """
 
     # We limit the scope of this SuperCell object.
-    __slots__ = ('cell', 'origo', 'volume', 'nsc', 'n_s', '_sc_off', '_isc_off')
+    __slots__ = ('cell', '_origo', 'volume', 'nsc', 'n_s', '_sc_off', '_isc_off')
 
     def __init__(self, cell, nsc=None, origo=None):
         """ Initialize a `SuperCell` object from initial quantities
@@ -52,10 +52,10 @@ class SuperCell(object):
         self.cell = self.tocell(cell)
 
         if origo is None:
-            self.origo = _a.zerosd(3)
+            self._origo = _a.zerosd(3)
         else:
-            self.origo = _a.arrayd(origo)
-            if self.origo.size != 3:
+            self._origo = _a.arrayd(origo)
+            if self._origo.size != 3:
                 raise ValueError("Origo *must* be 3 numbers.")
 
         # Set the volume
@@ -65,50 +65,55 @@ class SuperCell(object):
         # Set the super-cell
         self.set_nsc(nsc=nsc)
 
-    def parameters(self, rad=False, sort_norm=False):
-        r""" Return the cell-parameters of this cell. I.e. lattice vector lengths and angles
+    @property
+    def origo(self):
+        """ Origo for the cell """
+        return self._origo
+
+    @origo.setter
+    def origo(self, origo):
+        """ Set origo """
+        self._origo[:] = origo
+
+    def parameters(self, rad=False):
+        r""" Return the cell-parameters of this cell
+
+        Notes
+        -----
+        Since we return the length and angles between vectors it may not be possible to
+        recreate the same cell. Only in the case where the first lattice vector *only*
+        has a Cartesian :math:`x` component will this be the case
 
         Parameters
         ----------
         rad : bool, optional
            whether the angles are returned in radians (otherwise in degree)
-        sort_norm : bool, optional
-           if True the cell parameters are calculated as though the lattice vectors
-           are swapped to have the largest Cartesian :math:`x` component as the first
-           lattice vector, the second lattice vector has the largest :math:`y` component.
+
+        Returns
+        -------
+        a : length of first lattice vector
+        b : length of second lattice vector
+        c : length of third lattice vector
+        alpha : angle between b and c vectors
+        beta : angle between a and c vectors
+        gamma : angle between a and b vectors
         """
         if rad:
             f = 1.
         else:
             f = 180 / np.pi
 
-        # Figure out which vectors has the largest component along Cartesian x
+        # Calculate length of each lattice vector
         cell = self.cell.copy()
         abc = fnorm(cell)
-        if sort_norm:
-            x_frac = np.abs(cell[:, 0]) / abc
-            y_frac = np.abs(cell[:, 1]) / abc
-            # Figure out which has the largest component
-            ix = np.argmax(x_frac)
-            y_frac[ix] = -1.
-            # Figure out which has the largest component
-            iy = np.argmax(y_frac)
-            # The last component has to be this:
-            iz = 3 - ix - iy
-        else:
-            ix = 0
-            iy = 1
-            iz = 2
 
-        # Now we have the largest x-component.
-        # Rotate 'ix' vector to be along x vector
         from math import acos
         cell = cell / abc.reshape(-1, 1)
-        alpha = acos(_dot(cell[iy, :], cell[iz, :])) * f
-        beta = acos(_dot(cell[ix, :], cell[iz, :])) * f
-        gamma = acos(_dot(cell[ix, :], cell[iy, :])) * f
+        alpha = acos(_dot(cell[1, :], cell[2, :])) * f
+        beta = acos(_dot(cell[0, :], cell[2, :])) * f
+        gamma = acos(_dot(cell[0, :], cell[1, :])) * f
 
-        return abc[ix], abc[iy], abc[iz], alpha, beta, gamma
+        return abc[0], abc[1], abc[2], alpha, beta, gamma
 
     def _update_vol(self):
         self.volume = np.abs(dot(self.cell[0, :],
@@ -845,9 +850,10 @@ class SuperCell(object):
             axes = plt.mlibplt.figure().add_subplot(111, **d)
 
         # Create vector objects
+        o = self.origo
         v = []
         for a in axis:
-            v.append(np.vstack(([0.]*len(axis), self.cell[a, axis])))
+            v.append(np.vstack((o[axis], o[axis] + self.cell[a, axis])))
         v = np.array(v)
 
         if isinstance(axes, plt.mlib3d.Axes3D):
@@ -855,7 +861,7 @@ class SuperCell(object):
             for vv in v:
                 axes.plot(vv[:, 0], vv[:, 1], vv[:, 2], *args, **kwargs)
 
-            v0, v1 = v[0], v[1]
+            v0, v1 = v[0], v[1] - o
             axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], v0[1, 2] + v1[:, 2], *args, **kwargs)
 
             axes.set_zlabel('Ang')
@@ -864,7 +870,7 @@ class SuperCell(object):
             for vv in v:
                 axes.plot(vv[:, 0], vv[:, 1], *args, **kwargs)
 
-            v0, v1 = v[0], v[1]
+            v0, v1 = v[0], v[1] - o[axis]
             axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], *args, **kwargs)
             axes.plot(v1[1, 0] + v0[:, 0], v1[1, 1] + v0[:, 1], *args, **kwargs)
 
