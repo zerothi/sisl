@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import dot
 
 import sisl._array as _a
 from sisl._help import dtype_complex_to_real
@@ -10,6 +9,7 @@ from sisl._help import _zip as zip, _range as range
 
 __all__ = ['State', 'CState']
 
+_dot = np.dot
 _conj = np.conjugate
 _outer_ = np.outer
 
@@ -19,7 +19,7 @@ def _outer(v):
 
 
 def _idot(v):
-    return dot(_conj(v), v)
+    return _dot(_conj(v), v)
 
 
 def _couter(c, v):
