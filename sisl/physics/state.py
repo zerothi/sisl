@@ -133,7 +133,7 @@ class State(object):
         n = np.empty(len(self), dtype=dtype)
 
         for i in range(len(self)):
-            n[i] = _idot(self.state[i, :]).astype(n.dtype, copy=False)
+            n[i] = _idot(self.state[i, :]).astype(n.dtype)
         return np.sqrt(n)
 
     def normalize(self):
@@ -228,7 +228,7 @@ class State(object):
         state = np.empty(self.shape, dtype=self.dtype)
 
         for i in range(n):
-            c[i] = (_idot(self.state[i, :]).astype(c.dtype, copy=False) / norm[i]) ** 0.5
+            c[i] = (_idot(self.state[i, :]).astype(c.dtype) / norm[i]) ** 0.5
             state[i, :] = self.state[i, :] / c[i]
 
         cs = CState(c, state, parent=self.parent)
