@@ -26,7 +26,7 @@ def test_state_creation1():
     state = State(ar(6))
     assert len(state) == 1
     assert state.shape == (1, 6)
-    assert state.norm()[0] == pytest.approx((ar(6) ** 2).sum() ** .5)
+    assert state.norm()[0] == pytest.approx((ar(6) ** 2).sum())
     state_c = state.copy()
     assert len(state) == len(state_c)
     repr(state)
@@ -96,9 +96,9 @@ def test_state_toCState2():
     state = State(ar(10).reshape(2, -1)).toCState()
     assert np.allclose(state.norm(), 1.)
     state = State(ar(10).reshape(2, -1)).toCState(norm=[0.5, 0.5])
-    assert np.allclose(state.norm() ** 2, 0.5)
+    assert np.allclose(state.norm(), 0.5)
     state = State(ar(10).reshape(2, -1)).toCState(norm=[0.25, 0.75])
-    assert np.allclose(state.norm() ** 2, [0.25, 0.75])
+    assert np.allclose(state.norm(), [0.25, 0.75])
 
 
 @pytest.mark.xfail(raises=ValueError)

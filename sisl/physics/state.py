@@ -123,7 +123,7 @@ class State(object):
         return copy
 
     def norm(self):
-        r""" Return a vector with the norm of each state :math:`\sqrt{\langle\psi|\psi\rangle}`
+        r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Returns
         -------
@@ -134,7 +134,7 @@ class State(object):
 
         for i in range(len(self)):
             n[i] = _idot(self.state[i, :]).astype(n.dtype)
-        return np.sqrt(n)
+        return n
 
     def normalize(self):
         r""" Return a normalized state where each state has :math:`|\psi|^2=1`
@@ -149,7 +149,7 @@ class State(object):
         -------
         state : a new state with all states normalized, otherwise equal to this
         """
-        n = self.norm()
+        n = np.sqrt(self.norm())
         s = self.__class__(self.state / n.reshape(-1, 1), parent=self.parent)
         s.info = self.info
         return s
@@ -200,8 +200,8 @@ class State(object):
         This is an easy method to renormalize the state vectors to a common (or state dependent) normalization constant.
 
         .. math::
-            c_i &= \sqrt{\langle \psi_i | \psi_i\rangle} / \mathrm{norm}
-            |\psi_i\rangle &= | \psi_i\rangle / c_i
+            c_i &= \sqrt{\langle \psi_i | \psi_i\rangle} / \mathrm{norm} \\
+              |\psi_i\rangle &= | \psi_i\rangle / c_i
 
         Parameters
         ----------
@@ -317,3 +317,5 @@ class CState(State):
         sub = self.__class__(self.c[idx], self.state[idx, :], self.parent)
         sub.info = self.info
         return sub
+
+    toCState = None
