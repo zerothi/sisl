@@ -123,6 +123,15 @@ class State(object):
         return copy
 
     def norm(self):
+        r""" Return a vector with the norm of each state :math:`\sqrt{\langle\psi|\psi\rangle}`
+
+        Returns
+        -------
+        np.ndarray : the normalization for each state
+        """
+        return np.sqrt(self.norm2())
+
+    def norm2(self):
         r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Returns
@@ -130,10 +139,19 @@ class State(object):
         np.ndarray : the normalization for each state
         """
         dtype = dtype_complex_to_real(self.dtype)
-        n = np.empty(len(self), dtype=dtype)
+        shape = self.shape[:-1]
+        n = np.empty(shape, dtype=dtype)
 
-        for i in range(len(self)):
-            n[i] = _idot(self.state[i, :]).astype(n.dtype)
+        # A state should only be up to
+        if len(shape) == 1:
+            for i in range(shape[0]):
+                n[i] = _idot(self.state[i, :]).astype(n.dtype)
+        elif len(shape) == 2:
+            for i in range(shape[0]):
+                for j in range(shape[1]):
+                    n[i, j] = _idot(self.state[i, j, :]).astype(n.dtype)
+        else:
+            raise SislError(self.__class__.__name__ + '.norm2 does not implement more than 2 dimensions on states.')
         return n
 
     def normalize(self):
@@ -142,15 +160,15 @@ class State(object):
         This is roughly equivalent to:
 
         >>> state = State(np.arange(10))
-        >>> n = np.sqrt(state.norm())
+        >>> n = state.norm()
         >>> norm_state = State(state.state / n.reshape(-1, 1))
 
         Returns
         -------
         state : a new state with all states normalized, otherwise equal to this
         """
-        n = np.sqrt(self.norm())
-        s = self.__class__(self.state / n.reshape(-1, 1), parent=self.parent)
+        n = self.norm()
+        s = self.__class__(self.state / n.reshape(n.shape + (1,)), parent=self.parent)
         s.info = self.info
         return s
 
@@ -189,8 +207,8 @@ class State(object):
         -------
         state : a new state only containing the requested elements
         """
-        idx = _a.asarrayi(idx)
-        sub = self.__class__(self.state[idx, :].copy(), self.parent)
+        idx = _a.asarrayi(idx).ravel() # this ensures that the first dimension is preserved
+        sub = self.__class__(self.state[idx].copy(), self.parent)
         sub.info = self.info
         return sub
 
@@ -218,6 +236,8 @@ class State(object):
             norm = np.tile(norm, n)
         elif norm.size != n:
             raise ValueError(self.__class__.__name__ + '.toCState requires the input norm to be a single float or having equal length to the state!')
+
+        # Correct data-type
         if norm.dtype in [np.complex64, np.complex128]:
             cdtype = norm.dtype
         else:
@@ -228,8 +248,8 @@ class State(object):
         state = np.empty(self.shape, dtype=self.dtype)
 
         for i in range(n):
-            c[i] = (_idot(self.state[i, :]).astype(c.dtype) / norm[i]) ** 0.5
-            state[i, :] = self.state[i, :] / c[i]
+            c[i] = (_idot(self.state[i].ravel()).astype(c.dtype) / norm[i]) ** 0.5
+            state[i, ...] = self.state[i, ...] / c[i]
 
         cs = CState(c, state, parent=self.parent)
         cs.info = self.info
@@ -267,10 +287,11 @@ class CState(State):
            This `info` may contain anything that may be relevant for the state.
         """
         self.c = np.asarray(c).ravel()
-        self.state = np.asarray(state)
-        self.state.shape = (len(self.c), -1)
-        self.parent = parent
-        self.info = info
+        super(CState, self).__init__(state, parent, **info)
+
+    def __len__(self):
+        """ Length of `CState` """
+        return len(self.c)
 
     def copy(self):
         """ Return a copy (only the coefficients and states are copied). Parent and info are passed by reference """
@@ -291,14 +312,14 @@ class CState(State):
         np.ndarray : a matrix with the sum of outer state products
         """
         if idx is None:
-            m = _couter(self.c[0], self.state[0, :])
+            m = _couter(self.c[0], self.state[0].ravel())
             for i in range(1, len(self)):
-                m += _couter(self.c[i], self.state[i, :])
+                m += _couter(self.c[i], self.state[i].ravel())
             return m
         idx = _a.asarrayi(idx).ravel()
-        m = _couter(self.c[idx[0]], self.state[idx[0], :])
+        m = _couter(self.c[idx[0]], self.state[idx[0]].ravel())
         for i in idx[1:]:
-            m += _couter(self.c[i], self.state[i, :])
+            m += _couter(self.c[i], self.state[i].ravel())
         return m
 
     def sort(self, ascending=True):
@@ -327,8 +348,8 @@ class CState(State):
         -------
         CState : a new object with a subset of the states
         """
-        idx = _a.asarrayi(idx)
-        sub = self.__class__(self.c[idx], self.state[idx, :], self.parent)
+        idx = _a.asarrayi(idx).ravel()
+        sub = self.__class__(self.c[idx], self.state[idx, ...], self.parent)
         sub.info = self.info
         return sub
 
