@@ -107,7 +107,7 @@ class BrillouinZone(object):
         k : list of float
            k-point in reduced coordinates
         """
-        return dot(self.rcell, k)
+        return dot(k, self.rcell)
 
     def toreduced(self, k):
         """ Transfer a k-point in Cartesian coordinates to the reduced coordinates
@@ -347,7 +347,7 @@ class MonkhorstPack(BrillouinZone):
             size = _a.zerosd(3) + size
 
         # Retrieve the diagonal number of values
-        Dn = np.diag(nkpt)
+        Dn = np.diag(nkpt).astype(np.int32)
         if np.any(Dn) == 0:
             raise ValueError(self.__class__.__name__ + ' *must* be initialized with '
                              'diagonal elements different from 0.')
@@ -414,7 +414,7 @@ class MonkhorstPack(BrillouinZone):
             else:
                 # Even case, we do not have Gamma, but we shift to Gamma
                 # All points except Gamma and edge have weights doubled
-                k = _a.aranged(n_half + 1) * size / (n_half + 1)  + displ
+                k = _a.aranged(n_half + 1) * size / n  + displ
                 # Weights are all twice (except Gamma and band-edge)
                 w = _a.onesd(len(k)) / n * size
                 w[1:-1] *= 2
@@ -506,6 +506,8 @@ class BandStructure(BrillouinZone):
             self.name = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(self.point)]
         else:
             self.name = name
+
+        self._k = _a.arrayd([k for k in self])
 
     def __iter__(self):
         """ Iterate through the path """
