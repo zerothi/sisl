@@ -301,6 +301,20 @@ class CState(State):
             m += _couter(self.c[i], self.state[i, :])
         return m
 
+    def sort(self, ascending=True):
+        """ Sort and return a new `CState` by sorting the coefficients (default to ascending)
+
+        Parameters
+        ----------
+        ascending : bool, optional
+            sort the contained elements ascending, else they will be sorced descending
+        """
+        if ascending:
+            idx = np.argsort(self.c)
+        else:
+            idx = np.argsort(-self.c)
+        return self.sub(idx)
+
     def sub(self, idx):
         """ Return a new state with only the specified states
 
@@ -311,7 +325,7 @@ class CState(State):
 
         Returns
         -------
-        CState
+        CState : a new object with a subset of the states
         """
         idx = _a.asarrayi(idx)
         sub = self.__class__(self.c[idx], self.state[idx, :], self.parent)

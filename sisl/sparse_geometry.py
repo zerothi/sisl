@@ -18,7 +18,7 @@ def _get_eta(obj, desc, eta):
     """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object """
     if eta:
         from tqdm import tqdm
-        eta = tqdm(total=obj.na, desc=obj.__class__.__name__ + desc)
+        eta = tqdm(total=obj.na, desc=obj.__class__.__name__ + desc, unit='atoms')
     else:
         class Fake(object):
             __slots__ = []

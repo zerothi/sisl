@@ -132,6 +132,13 @@ def test_cstate_sub1():
         assert sub.norm()[0] == norm[i]
 
 
+def test_cstate_sort1():
+    state = ar(100).reshape(-1, 10).T
+    state = State(state).toCState()
+    sort = state.sort()
+    assert len(state) == len(sort)
+
+
 def test_cstate_outer1():
     state = ar(100).reshape(10, -1)
     state = CState(ar(10), state)

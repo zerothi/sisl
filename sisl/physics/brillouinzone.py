@@ -20,7 +20,7 @@ def _get_eta(bz, desc, kwargs):
     eta = kwargs.pop('eta', False)
     if eta:
         from tqdm import tqdm
-        eta = tqdm(total=len(bz), desc=bz.__class__.__name__ + desc)
+        eta = tqdm(total=len(bz), desc=bz.__class__.__name__ + desc, unit='k')
     else:
         class Fake(object):
             __slots__ = []
