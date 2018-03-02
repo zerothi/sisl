@@ -14,6 +14,24 @@ from .sparse import SparseCSR
 __all__ = ['SparseAtom', 'SparseOrbital']
 
 
+def _get_eta(obj, desc, eta):
+    """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object """
+    if eta:
+        from tqdm import tqdm
+        eta = tqdm(total=obj.na, desc=obj.__class__.__name__ + desc)
+    else:
+        class Fake(object):
+            __slots__ = []
+            def __init__(self):
+                pass
+            def update(self, n=1):
+                pass
+            def close(self):
+                pass
+        eta = Fake()
+    return eta
+
+
 class _SparseGeometry(object):
     """ Sparse object containing sparse elements for a given geometry.
 
@@ -525,21 +543,8 @@ class _SparseGeometry(object):
 
         iR = self.geom.iR(na_iR)
 
-        # Get number of atoms
-        na = self.na
-        na_run = 0
-
-        from time import time
-        from sys import stdout
-        t0 = time()
-        name = self.__class__.__name__
-
-        def wstdout(st):
-            # Write-out initial line to inform user of the function running
-            stdout.write(st)
-            stdout.flush()
-
-        wstdout(name + ".construct() ETA = ?????h ??m ?????s\r")
+        # Create eta-object
+        eta = _get_eta(self, '.construct()', eta)
 
         # Do the loop
         for ias, idxs in self.geom.iter_block(iR=iR, method=method):
@@ -552,20 +557,9 @@ class _SparseGeometry(object):
             for ia in ias:
                 func(self, ia, idxs, idxs_xyz)
 
-            if eta:
-                # calculate the remaining atoms to process
-                na_run += len(ias)
-                na -= len(ias)
-                # calculate hours, minutes, seconds
-                m, s = divmod((time()-t0)/na_run * na, 60)
-                h, m = divmod(m, 60)
-                wstdout(name + ".construct() ETA = {0:5d}h {1:2d}m {2:5.2f}s\r".format(int(h), int(m), s))
+            eta.update(len(ias))
 
-        if eta:
-            # calculate hours, minutes, seconds spend on the computation
-            m, s = divmod((time()-t0), 60)
-            h, m = divmod(m, 60)
-            wstdout(name + ".construct() finished after {0:d}h {1:d}m {2:.1f}s\n".format(int(h), int(m), s))
+        eta.close()
 
     @property
     def finalized(self):

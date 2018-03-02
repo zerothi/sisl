@@ -15,6 +15,25 @@ __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
 __all__ += ['MonkhorstPackBZ', 'PackBZ']
 
 
+def _get_eta(bz, desc, kwargs):
+    """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object """
+    eta = kwargs.pop('eta', False)
+    if eta:
+        from tqdm import tqdm
+        eta = tqdm(total=len(bz), desc=bz.__class__.__name__ + desc)
+    else:
+        class Fake(object):
+            __slots__ = []
+            def __init__(self):
+                pass
+            def update(self):
+                pass
+            def close(self):
+                pass
+        eta = Fake()
+    return eta
+
+
 class BrillouinZone(object):
     """ A class to construct Brillouin zone related quantities
 
@@ -117,6 +136,11 @@ class BrillouinZone(object):
 
         This forces the `__call__` routine to return a single array.
 
+        Notes
+        -----
+        All subsequent invokations of sub-methods are provided an additional keyword
+        ``eta`` which prints, to stdout a progress bar.
+
         Parameters
         ----------
         dtype : numpy.dtype, optional
@@ -125,7 +149,7 @@ class BrillouinZone(object):
         Examples
         --------
         >>> obj = BrillouinZone(...) # doctest: +SKIP
-        >>> obj.asarray().eigh() # doctest: +SKIP
+        >>> obj.asarray().eigh(eta=True) # doctest: +SKIP
 
         See Also
         --------
@@ -135,6 +159,7 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
+            eta = _get_eta(self, '.asarray()', kwargs)
             for i, k in enumerate(self):
                 if i == 0:
                     v = func(*args, k=k, **kwargs)
@@ -147,6 +172,8 @@ class BrillouinZone(object):
                     del v
                 else:
                     a[i, :] = func(*args, k=k, **kwargs)
+                eta.update()
+            eta.close()
             return a
         # Set instance __call__
         setattr(self, '__call__', types.MethodType(_call, self))
@@ -158,6 +185,11 @@ class BrillouinZone(object):
         This forces the `__call__` routine to return a an iterator which may
         yield the quantities calculated.
 
+        Notes
+        -----
+        All subsequent invokations of sub-methods are provided an additional keyword
+        ``eta`` which prints, to stdout a progress bar.
+
         Parameters
         ----------
         dtype : numpy.dtype, optional
@@ -166,7 +198,7 @@ class BrillouinZone(object):
         Examples
         --------
         >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
-        >>> obj.asyield().eigh() # doctest: +SKIP
+        >>> obj.asyield().eigh(eta=True) # doctest: +SKIP
 
         See Also
         --------
@@ -176,8 +208,11 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
+            eta = _get_eta(self, '.asyield()', kwargs)
             for k in self:
                 yield func(*args, k=k, **kwargs).astype(dtype, copy=False)
+                eta.update()
+            eta.close()
         # Set instance __call__
         setattr(self, '__call__', types.MethodType(_call, self))
         return self
@@ -187,6 +222,11 @@ class BrillouinZone(object):
 
         This forces the `__call__` routine to return a an iterator which may
         yield the quantities calculated.
+
+        Notes
+        -----
+        All subsequent invokations of sub-methods are provided an additional keyword
+        ``eta`` which prints, to stdout a progress bar.
 
         Parameters
         ----------
@@ -201,7 +241,7 @@ class BrillouinZone(object):
         >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
         >>> obj.asaverage() # doctest: +SKIP
         >>> obj.DOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
-        >>> obj.PDOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
+        >>> obj.PDOS(np.linspace(-2, 2, 100), eta=True) # doctest: +SKIP
 
         See Also
         --------
@@ -211,12 +251,15 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            w = self.weight[:]
+            eta = _get_eta(self, '.asaverage()', kwargs)
+            w = self.weight.view()
             for i, k in enumerate(self):
                 if i == 0:
                     v = func(*args, k=k, **kwargs) * w[i]
                 else:
                     v += func(*args, k=k, **kwargs) * w[i]
+                eta.update()
+            eta.close()
             return v
         # Set instance __call__
         setattr(self, '__call__', types.MethodType(_call, self))
@@ -259,30 +302,30 @@ class BrillouinZone(object):
 class MonkhorstPack(BrillouinZone):
     """ Create a Monkhorst-Pack grid for the Brillouin zone """
 
-    def __init__(self, obj, nkpt, symmetry=True, displacement=None, size=None):
+    def __init__(self, parent, nkpt, displacement=None, size=None, trs=True):
         r""" Instantiate the `MonkhorstPack` by a number of points in each direction
 
         Parameters
         ----------
-        obj : object or array_like
-           An object with associated `obj.cell` and `obj.rcell` or
+        parent : object or array_like
+           An object with associated `parent.cell` and `parent.rcell` or
            an array of floats which may be turned into a `SuperCell`
         nktp : array_like of ints
            a list of number of k-points along each cell direction
-        symmetry : bool, optional
-           whether symmetry exists in the Brillouin zone.
         displacement : float or array_like of float, optional
            the displacement of the evenly spaced grid, a single floating
            number is the displacement for the 3 directions, else they
            are the individual displacements
         size : float or array_like of float, optional
            the size of the Brillouin zone sampled. This reduces the boundaries
-           of the Brillouin zone to the fraction specified. I.e. `size` must
-           be of values :math:`]0 ; 1]`. Default to the entire BZ.
+           of the Brillouin zone around the displacement to the fraction specified.
+           I.e. `size` must be of values :math:`]0 ; 1]`. Default to the entire BZ.
            Note that this will also reduce the weights such that the weights
            are normalized to the entire BZ.
+        trs : bool, optional
+           whether time-reversal symmetry exists in the Brillouin zone.
         """
-        super(MonkhorstPack, self).__init__(obj)
+        super(MonkhorstPack, self).__init__(parent)
 
         if isinstance(nkpt, Integral):
             nkpt = np.diag([nkpt] * 3)
@@ -291,7 +334,7 @@ class MonkhorstPack(BrillouinZone):
 
         # Now we have a matrix of k-points
         if np.any(nkpt - np.diag(np.diag(nkpt)) != 0):
-            raise NotImplementedError("MonkhorstPack with off-diagonal components is not implemented yet")
+            raise NotImplementedError(self.__class__.__name__ + " with off-diagonal components is not implemented yet")
 
         if displacement is None:
             displacement = np.zeros(3, np.float64)
@@ -299,9 +342,9 @@ class MonkhorstPack(BrillouinZone):
             displacement = np.zeros(3, np.float64) + displacement
 
         if size is None:
-            size = np.ones(3, np.float64)
+            size = _a.onesd(3)
         elif isinstance(size, Real):
-            size = np.zeros(3, np.float64) + size
+            size = _a.zerosd(3) + size
 
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt)
@@ -309,28 +352,81 @@ class MonkhorstPack(BrillouinZone):
             raise ValueError(self.__class__.__name__ + ' *must* be initialized with '
                              'diagonal elements different from 0.')
 
-        # Correct for 1's where it does not
-        # make sense to reduce the BZ
-        size = np.where(Dn == 1, 1., size)
+        i_trs = -1
+        if trs:
+            # Figure out which direction to TRS
+            nmax = 0
+            for i in [0, 1, 2]:
+                if displacement[i] == 0. and Dn[i] > nmax:
+                    nmax = Dn[i]
+                    i_trs = i
+        kw = [self.grid(Dn[i], displacement[i], size[i], i == i_trs) for i in (0, 1, 2)]
 
-        def link(n, d, s):
-            if n % 2 == 0:
-                return (np.arange(n) * 2 - n) * s / (2 * n) + d
-            return (np.arange(n) * 2 - n + 1) * s / (2 * n) + d
+        self._k = _a.emptyd((kw[0][0].size, kw[1][0].size, kw[2][0].size, 3))
+        self._w = _a.onesd(self._k.shape[:-1])
+        for i in (0, 1, 2):
+            k = kw[i][0].reshape(-1, 1, 1)
+            w = kw[i][1].reshape(-1, 1, 1)
+            self._k[..., i] = np.rollaxis(k, 0, i + 1)
+            self._w[...] *= np.rollaxis(w, 0, i + 1)
 
-        # Now we are ready to create the list of k-points
-        self._k = np.empty([np.prod(Dn), 3], np.float64)
-        self._k.shape = (Dn[0], Dn[1], Dn[2], 3)
-        self._k[..., 0] = link(Dn[0], displacement[0], size[0]).reshape(-1, 1, 1)
-        self._k[..., 1] = link(Dn[1], displacement[1], size[1]).reshape(1, -1, 1)
-        self._k[..., 2] = link(Dn[2], displacement[2], size[2]).reshape(1, 1, -1)
-
-        # Return to original shape
+        del kw
         self._k.shape = (-1, 3)
         self._k = np.where(self._k > .5, self._k - 1, self._k)
-        N = len(self._k)
-        # We have to correct for the size of the Brillouin zone
-        self._w = np.ones([N], np.float64) * np.prod(size) / N
+        self._w.shape = (-1,)
+
+    @staticmethod
+    def grid(n, displ=0., size=1., trs=False):
+        r""" Create a grid of `n` points with an offset of `displ` and sampling `size` around `displ`
+
+        The :math:`k`-points are :math:`\Gamma` centered.
+
+        Parameters
+        ----------
+        n : int
+           number of points in the grid. If `trs` is ``True`` this may be smaller than `n`
+        displ : float, optional
+           the displacement of the grid
+        size : float, optional
+           the total size of the Brillouin zone to sample
+        trs : bool, optional
+           whether time-reversal-symmetry is applied
+
+        Returns
+        -------
+        k : np.ndarray
+           the list of k-points in the Brillouin zone to be sampled
+        w : np.ndarray
+           weights for the k-points
+        """
+        # First ensure that displ is in the Brillouin
+        displ = displ % 1.
+        if displ > 0.5:
+            displ -= 1.
+        if trs and displ == 0.:
+            n_half = n // 2
+            if n % 2 == 1:
+                # Odd case, we have Gamma and remove all negative values
+                k = _a.aranged(n_half + 1) * size / n + displ
+                # Weights are all twice (except Gamma)
+                w = _a.onesd(len(k)) / n * size
+                w[1:] *= 2
+            else:
+                # Even case, we do not have Gamma, but we shift to Gamma
+                # All points except Gamma and edge have weights doubled
+                k = _a.aranged(n_half + 1) * size / (n_half + 1)  + displ
+                # Weights are all twice (except Gamma and band-edge)
+                w = _a.onesd(len(k)) / n * size
+                w[1:-1] *= 2
+        else:
+            # Not TRS
+            if n % 2 == 0:
+                k = (_a.aranged(n) * 2 - n) * size / (2 * n) + displ
+            else:
+                k = (_a.aranged(n) * 2 - n + 1) * size / (2 * n) + displ
+            w = _a.onesd(n) * size / n
+        # Return values
+        return k, w
 
 
 MonkhorstPackBZ = MonkhorstPack
@@ -339,13 +435,13 @@ MonkhorstPackBZ = MonkhorstPack
 class BandStructure(BrillouinZone):
     """ Create a path in the Brillouin zone for plotting band-structures etc. """
 
-    def __init__(self, obj, point, division, name=None):
+    def __init__(self, parent, point, division, name=None):
         """ Instantiate the `BandStructure` by a set of special `points` separated in `divisions`
 
         Parameters
         ----------
-        obj : object or array_like
-           An object with associated `obj.cell` and `obj.rcell` or
+        parent : object or array_like
+           An object with associated `parentcell` and `parent.rcell` or
            an array of floats which may be turned into a `SuperCell`
         point : array_like of float
            a list of points that are the *corners* of the path
@@ -358,10 +454,10 @@ class BandStructure(BrillouinZone):
         name : array_like of str
            the associated names of the points on the Brillouin Zone path
         """
-        super(BandStructure, self).__init__(obj)
+        super(BandStructure, self).__init__(parent)
 
         # Copy over points
-        self.point = np.array(point, dtype=np.float64)
+        self.point = _a.arrayd(point)
 
         # If the array has fewer points we try and determine
         if self.point.shape[1] < 3:
@@ -387,7 +483,7 @@ class BandStructure(BrillouinZone):
                 dists = sum(np.diff(kpts, axis=0)**2, axis=1) ** .5
             dist = sum(dists)
 
-            div = np.array(np.floor(dists / dist * division), np.int32)
+            div = np.floor(dists / dist * division).astype(np.int32)
             n = sum(div)
             if n < division:
                 div[-1] +=1
@@ -403,7 +499,7 @@ class BandStructure(BrillouinZone):
 
             division = div[:]
 
-        self.division = np.array(division, np.int32)
+        self.division = _a.arrayi(division)
         self.division.shape = (-1,)
 
         if name is None:

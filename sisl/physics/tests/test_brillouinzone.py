@@ -91,31 +91,39 @@ class TestBrillouinZone(object):
         assert np.allclose(bz.asaverage().eigh(), np.arange(3))
 
     def test_mp1(self, setup):
-        bz = MonkhorstPack(setup.s1, [2] * 3)
+        bz = MonkhorstPack(setup.s1, [2] * 3, trs=False)
         assert len(bz) == 8
         assert bz.weight[0] == 1. / 8
 
     def test_mp2(self, setup):
-        bz1 = MonkhorstPack(setup.s1, [2] * 3)
+        bz1 = MonkhorstPack(setup.s1, [2] * 3, trs=False)
         assert len(bz1) == 8
-        bz2 = MonkhorstPack(setup.s1, [2] * 3, displacement=[.5] * 3)
+        bz2 = MonkhorstPack(setup.s1, [2] * 3, displacement=[.5] * 3, trs=False)
         assert len(bz2) == 8
         assert not np.allclose(bz1.k, bz2.k)
 
     def test_mp3(self, setup):
-        bz1 = MonkhorstPack(setup.s1, [2] * 3, size=0.5)
+        bz1 = MonkhorstPack(setup.s1, [2] * 3, size=0.5, trs=False)
         assert len(bz1) == 8
         assert np.all(bz1.k < 0.25)
 
-    def test_mp_gamma_centered(self, setup):
+    def test_trs(self, setup):
+        size = [0.05, 0.5, 0.9]
         for x, y, z in product(np.arange(10) + 1, np.arange(20) + 1, np.arange(6) + 1):
             bz = MonkhorstPack(setup.s1, [x, y, z])
+            assert bz.weight.sum() == pytest.approx(1.)
+            bz = MonkhorstPack(setup.s1, [x, y, z], size=size)
+            assert bz.weight.sum() == pytest.approx(np.prod(size))
+
+    def test_mp_gamma_centered(self, setup):
+        for x, y, z in product(np.arange(10) + 1, np.arange(20) + 1, np.arange(6) + 1):
+            bz = MonkhorstPack(setup.s1, [x, y, z], trs=False)
             assert len(bz) == x * y * z
             assert ((bz.k == 0.).sum(1).astype(np.int32) == 3).sum() == 1
 
     def test_mp_gamma_centered_displ(self, setup):
         for x, y, z in product(np.arange(10) + 1, np.arange(20) + 1, np.arange(6) + 1):
-            bz = MonkhorstPack(setup.s1, [x, y, z], displacement=[0.2, 0, 0])
+            bz = MonkhorstPack(setup.s1, [x, y, z], displacement=[0.2, 0, 0], trs=False)
             k = bz.k.copy()
             k[:, 0] -= 0.2
             assert len(bz) == x * y * z
