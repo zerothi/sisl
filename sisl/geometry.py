@@ -799,10 +799,10 @@ class Geometry(SuperCellChild):
                  ".optimize_nsc could not determine the radius from the "
                  "internal atoms (defaulting to zero radius).")
 
-        rc = self.rcell / (2 * np.pi)
-        nrc = 1 / fnorm(rc)
-        idiv = np.floor(np.maximum(nrc / (2 * R), 1.1)).astype(np.int32)
-        rmcell = rc * idiv.reshape(-1, 1)
+        ic = self.icell
+        nrc = 1 / fnorm(ic)
+        idiv = np.floor(np.maximum(nrc / (2 * R), 1.1)).astype(np.int32, copy=False)
+        imcell = ic * idiv.reshape(-1, 1)
 
         # We know this is the maximum
         nsc = self.nsc.copy()
@@ -811,8 +811,8 @@ class Geometry(SuperCellChild):
         # I don't think we need anything other than this.
         # However, until I am sure that this wouldn't change, regardless of the
         # cell. I will keep it.
-        Rrmcell = R * fnorm(rmcell)[axis]
-        nsc[axis] = (np.floor(Rrmcell) + np.ceil(Rrmcell % 0.5 - 0.5)).astype(np.int32)
+        Rimcell = R * fnorm(imcell)[axis]
+        nsc[axis] = (np.floor(Rimcell) + np.ceil(Rimcell % 0.5 - 0.5)).astype(np.int32)
         # Since for 1 it is not sure that it is a connection or not, we limit the search by
         # removing it.
         nsc[axis] = np.where(nsc[axis] > 1, nsc[axis], 0)
@@ -1730,7 +1730,7 @@ class Geometry(SuperCellChild):
     @property
     def fxyz(self):
         """ Returns geometry coordinates in fractional coordinates """
-        return dot(self.xyz, self.rcell.T / (2. * np.pi))
+        return dot(self.xyz, self.icell.T)
 
     def axyz(self, atom=None, isc=None):
         """ Return the atomic coordinates in the supercell of a given atom.
@@ -2200,18 +2200,18 @@ class Geometry(SuperCellChild):
         # initial work by Jose Soler from Siesta.
 
         # Retrieve reciprocal lattice to divide the mesh into reciprocal divisions.
-        rcell = self.rcell / (2 * np.pi)
+        icell = self.icell
 
         # Calculate number of mesh-divisions
-        divisions = np.maximum(2. / fnorm(rcell) / max_R, 1).floor().astype(int32)
+        divisions = np.maximum(2. / fnorm(icell) / max_R, 1).floor(dtype=int32)
         divisions.shape = (-1, 1)
         celld = self.cell / divisions
-        rdcell = divisions * rcell
+        idcell = divisions * icell
 
         # Calculate mesh indices for atoms
         xyz = self.xyz.view()
-        mesh_a = dot(xyz, rmcell.T) # dmx
-        mesh_i = mesh_a.floor().astype(int32)
+        mesh_a = dot(xyz, imcell.T) # dmx
+        mesh_i = mesh_a.floor(dtype=int32)
         subtract(mesh_a, mesh_i, out=mesh_a)
         mesh_i = mesh_i.astype(int32) # imx
         mod(mesh_i, divisions.T, out=mesh_i)
@@ -2228,7 +2228,7 @@ class Geometry(SuperCellChild):
 
         # Transform into cell-mesh divisions
         c_a = dot(coord, rmcell.T) # dmx
-        c_i = c_a.floor().astype(int32)
+        c_i = c_a.floor(dtype=int32)
         c_a = c_a - c_i
         c_i = c_i.astype(int32) # imx
         mod(c_i, divisions.ravel(), out=c_i)

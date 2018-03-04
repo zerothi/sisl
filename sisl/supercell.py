@@ -299,7 +299,7 @@ class SuperCell(object):
         cell = np.copy(self.cell[:, :])
 
         # Get fractional coordinates to get the divisions in the current cell
-        x = dot(xyz, self.rcell.T / (2 * np.pi))
+        x = dot(xyz, self.icell.T)
 
         # Now we should figure out the correct repetitions
         # by rounding to integer positions of the cell vectors
@@ -423,8 +423,8 @@ class SuperCell(object):
         return -n, up
 
     @property
-    def rcell(self):
-        """ Returns the reciprocal cell for the `SuperCell` without ``2*np.pi``
+    def icell(self):
+        """ Returns the reciprocal (inverse) cell for the `SuperCell` without factor ``2*np.pi``
 
         Note: The returned vectors are still in [0, :] format
         and not as returned by an inverse LAPACK algorithm.
@@ -433,20 +433,29 @@ class SuperCell(object):
         # This should probably be changed and checked for
         # transposition
         cell = self.cell
-        rcell = np.empty([3, 3], dtype=cell.dtype)
-        rcell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
-        rcell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
-        rcell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]
-        rcell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]
-        rcell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]
-        rcell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]
-        rcell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
-        rcell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]
-        rcell[2, 2] = cell[0, 0] * cell[1, 1] - cell[0, 1] * cell[1, 0]
-        rcell[0, :] = rcell[0, :] / dot(rcell[0, :], cell[0, :])
-        rcell[1, :] = rcell[1, :] / dot(rcell[1, :], cell[1, :])
-        rcell[2, :] = rcell[2, :] / dot(rcell[2, :], cell[2, :])
-        return rcell * 2. * np.pi
+        icell = np.empty([3, 3], dtype=cell.dtype)
+        icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
+        icell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
+        icell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]
+        icell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]
+        icell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]
+        icell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]
+        icell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
+        icell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]
+        icell[2, 2] = cell[0, 0] * cell[1, 1] - cell[0, 1] * cell[1, 0]
+        icell[0, :] = icell[0, :] / dot(icell[0, :], cell[0, :])
+        icell[1, :] = icell[1, :] / dot(icell[1, :], cell[1, :])
+        icell[2, :] = icell[2, :] / dot(icell[2, :], cell[2, :])
+        return icell
+
+    @property
+    def rcell(self):
+        """ Returns the reciprocal cell for the `SuperCell` with ``2*np.pi``
+
+        Note: The returned vectors are still in [0, :] format
+        and not as returned by an inverse LAPACK algorithm.
+        """
+        return self.icell * 2 * np.pi
 
     def rotatea(self, angle, only='abc', rad=False):
         return self.rotate(angle, self.cell[0, :], only=only, rad=rad)
@@ -504,7 +513,7 @@ class SuperCell(object):
            the lattice vectors of the other supercell to add
         """
         if not isinstance(other, SuperCell):
-            other = self.tocell(other)
+            other = SuperCell(other)
         cell = self.cell + other.cell
         origo = self.origo + other.origo
         nsc = np.where(self.nsc > other.nsc, self.nsc, other.nsc)
@@ -933,6 +942,11 @@ class SuperCellChild(object):
     def cell(self):
         """ Returns the inherent `SuperCell` objects `cell` """
         return self.sc.cell
+
+    @property
+    def icell(self):
+        """ Returns the inherent `SuperCell` objects `icell` """
+        return self.sc.icell
 
     @property
     def rcell(self):

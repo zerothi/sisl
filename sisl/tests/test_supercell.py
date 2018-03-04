@@ -91,6 +91,12 @@ class TestSuperCell(object):
             ax += ax / np.sum(ax ** 2) ** .5 * 10
             assert np.allclose(ax, s.cell[i, :])
 
+    def test_add1(self, setup):
+        sc = setup.sc.copy()
+        for R in range(1, 10):
+            s = sc + R
+            assert np.allclose(s.cell, sc.cell + np.diag([R] * 3))
+
     def test_rotation1(self, setup):
         rot = setup.sc.rotate(180, [0, 0, 1])
         rot.cell[2, 2] *= -1
@@ -239,6 +245,10 @@ class TestSuperCell(object):
         # a transpose.
         rcell = lin.inv(setup.sc.cell) * 2. * np.pi
         assert np.allclose(rcell.T, setup.sc.rcell)
+        assert np.allclose(rcell.T / (2 * np.pi), setup.sc.icell)
+
+    def test_icell(self, setup):
+        assert np.allclose(setup.sc.rcell, setup.sc.icell * 2 * np.pi)
 
     def test_translate1(self, setup):
         sc = setup.sc.translate([0, 0, 10])

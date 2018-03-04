@@ -563,8 +563,6 @@ class Grid(SuperCellChild):
             # We have to do something differently
             return self._index_shape(coord)
 
-        rcell = self.rcell / (2 * np.pi)
-
         coord = _a.asarrayd(coord)
         if coord.size == 1: # float
             if axis is None:
@@ -575,25 +573,27 @@ class Grid(SuperCellChild):
             c = (self.dcell[axis, :] ** 2).sum() ** 0.5
             return int(floor(coord / c))
 
+        icell = self.icell
+
         # Ensure we return values in the same dimensionality
         ndim = coord.ndim
         coord.shape = (-1, 3)
 
         shape = np.array(self.shape).reshape(3, -1)
 
-        # dot(rcell / 2pi, coord) is the fraction in the
+        # dot(icell, coord) is the fraction in the
         # cell. So * l / (l / self.shape) will
         # give the float of dcell lattice vectors (where l is the length of
         # each lattice vector)
         if axis is None:
             if ndim == 1:
-                return floor(dot(rcell, coord.T) * shape).astype(int32).reshape(3)
+                return floor(dot(icell, coord.T) * shape).reshape(3).astype(int32, copy=False)
             else:
-                return floor(dot(rcell, coord.T) * shape).T.astype(int32)
+                return floor(dot(icell, coord.T) * shape).T.astype(int32, copy=False)
         if ndim == 1:
-            return floor(dot(rcell[axis, :], coord.T) * shape[axis]).astype(int32)[0]
+            return floor(dot(icell[axis, :], coord.T) * shape[axis]).astype(int32, copy=False)[0]
         else:
-            return floor(dot(rcell[axis, :], coord.T) * shape[axis]).T.astype(int32)
+            return floor(dot(icell[axis, :], coord.T) * shape[axis]).T.astype(int32, copy=False)
 
     def append(self, other, axis):
         """ Appends other `Grid` to this grid along axis """

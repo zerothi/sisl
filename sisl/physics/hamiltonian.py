@@ -503,6 +503,7 @@ class EigenState(EigenSystem):
                 pass
         if geom is None:
             geom = grid.geometry
+            warn(self.__class__.__name__ + '.psi could not find a geometry associated, will use the Grid geometry.')
 
         # Do the sum over all eigenstates
         v = self.v.sum(0)
@@ -537,7 +538,7 @@ class EigenState(EigenSystem):
         # Extract sub variables used throughout the loop
         shape = _a.asarrayi(grid.shape)
         dcell = grid.dcell
-        rc = grid.sc.rcell / (2. * pi) * shape.reshape(1, -1)
+        ic = grid.sc.icell * shape.reshape(1, -1)
 
         # In the following we don't care about division
         # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
@@ -579,40 +580,39 @@ class EigenState(EigenSystem):
         # First we calculate the min/max indices for all atoms
         idx_mm = _a.emptyi([geom.na, 2, 3])
         rxyz = _a.emptyd(nrxyz)
+        rxyz[..., 0] = ctheta_sphi
+        rxyz[..., 1] = stheta_sphi
+        rxyz[..., 2] = cphi
+        # Reshape
+        rxyz.shape = (-1, 3)
+        idx = dot(ic, rxyz.T)
+        idx_m = idx.min(1)
+        idx_M = idx.max(1)
+        del ctheta_sphi, stheta_sphi, cphi, idx, rxyz, nrxyz
+
         origo = grid.sc.origo.reshape(1, -1)
         for atom, ia in geom.atom.iter(True):
             if len(ia) == 0:
                 continue
             R = atom.maxR()
 
-            # Reshape
-            rxyz.shape = nrxyz
-            rxyz[..., 0] = ctheta_sphi
-            rxyz[..., 1] = stheta_sphi
-            rxyz[..., 2] = cphi
-            rxyz.shape = (-1, 3)
-
-            idx = dot(rc, rxyz.T)
-            idx_m = idx.min(1) * R
-            idx_M = idx.max(1) * R
-
             # Now do it for all the atoms to get indices of the middle of
             # the atoms
             # The coordinates are relative to origo, so we need to shift (when writing a grid
             # it is with respect to origo)
             xyz = geom.xyz[ia, :] - origo
-            idx = dot(rc, xyz.T).T
+            idx = dot(ic, xyz.T).T
 
             # Get min-max for all atoms, note we should first do the floor here
-            idx_mm[ia, 0, :] = floor(idx_m.reshape(1, -3) + idx).astype(int32)
-            idx_mm[ia, 1, :] = ceil(idx_M.reshape(1, -3) + idx).astype(int32)
+            idx_mm[ia, 0, :] = floor(idx_m.reshape(1, -3) * R + idx).astype(int32)
+            idx_mm[ia, 1, :] = ceil(idx_M.reshape(1, -3) * R + idx).astype(int32)
 
         # Now we have min-max for all atoms
         # When we run the below loop all indices can be retrieved by looking
         # up in the above table.
 
         # Before continuing, we can easily clean up the temporary arrays
-        del ctheta_sphi, stheta_sphi, cphi, nrxyz, rxyz, origo, idx
+        del origo, idx
 
         aranged = _a.aranged
 

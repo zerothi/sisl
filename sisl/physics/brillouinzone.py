@@ -483,7 +483,7 @@ class BandStructure(BrillouinZone):
                 dists = sum(np.diff(kpts, axis=0)**2, axis=1) ** .5
             dist = sum(dists)
 
-            div = np.floor(dists / dist * division).astype(np.int32)
+            div = np.floor(dists / dist * division).astype(dtype=np.int32)
             n = sum(div)
             if n < division:
                 div[-1] +=1
