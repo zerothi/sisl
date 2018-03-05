@@ -668,6 +668,11 @@ class TestGeometry(object):
                 assert np.allclose(xa[j], xai[j])
                 assert np.allclose(d[j], di[j])
 
+    def test_inf_within1(self, setup):
+        g = setup.g.copy()
+        sc_3x3 = g.sc.tile(3, 0).tile(3, 1)
+        assert len(g.inf_within(sc_3x3)[0]) == len(g) * 3 ** 2
+
     def test_close_sizes(self, setup):
         point = 0
 

@@ -2925,6 +2925,72 @@ class Geometry(SuperCellChild):
 
         return d
 
+    def inf_within(self, sc, periodic=None):
+        """ Find all atoms within a provided supercell
+
+        Note this function is rather different from `close` and `within`.
+        Specifically this routine is returning *all* indices for the infinite
+        periodic system (where ``self.nsc > 1`` or `periodic` is true).
+
+        Notes
+        -----
+        The name of this function may change. Currently it should only be used
+        internally in sisl.
+
+        Parameters
+        ----------
+        sc : SuperCell or SuperCellChild
+            the supercell in which this geometry should be expanded into.
+        periodic : list of bool
+            explicitly define the periodic directions, by default the periodic
+            directions are only where ``self.nsc > 1``.
+        """
+        if periodic is None:
+            periodic = self.nsc > 1
+        else:
+            periodic = list(periodic)
+
+        # First we should figure out which atoms we are dealing with
+        idx = np.dot(self.icell.T, sc.cell)
+        tile_min = np.floor(idx.min(0)).astype(dtype=int32)
+        tile_max = np.ceil(idx.max(0)).astype(dtype=int32)
+
+        # Minimize tile to 0 where nsc == 1
+        tile_min = np.where(periodic, tile_min, 0)
+        tile_max = np.where(periodic, tile_max, 1)
+
+        big_origo = (tile_min.reshape(-1, 1) * self.cell).sum(0)
+
+        # The xyz geometry that fully encompass the (possibly) larger supercell
+        tile = tile_max - tile_min
+        # We displace *all* atoms 0.1 Ang along each lattice vector.
+        # This should take care of numerical accuracy in the fxyz routine
+        small_fxyz = 0.1 / fnorm(self.cell)
+        min_xyz = dot(small_fxyz - self.fxyz.min(0), self.cell)
+        full_geom = (self.translate(min_xyz) * tile).translate(big_origo)
+
+        # Now we have to figure out all atomic coordinates within
+        cuboid = sc.toCuboid()
+
+        # Now retrieve all atomic coordinates from the full geometry
+        xyz = full_geom.axyz(_a.arangei(full_geom.na_s))
+        idx = cuboid.within_index(xyz)
+        del full_geom
+
+        # Figure out supercell connections in the smaller indices
+        # Since we have shifted all coordinates into the primary unit cell we
+        # are sure that these fxyz are [0:1[
+        fxyz = dot(xyz[idx, :], self.icell.T)
+
+        # Reduce atomic coordinates (and shift back to "correct" coordinates)
+        xyz = xyz[idx, :] - min_xyz.reshape(-1, 3)
+        # Convert to supercell indices
+        isc = np.floor(fxyz).astype(int32)
+
+        # Convert indices to unit-cell indices and also return coordinates and
+        # infinite supercell indices
+        return self.sc2uc(idx), xyz, isc
+
     # Create pickling routines
     def __getstate__(self):
         """ Returns the state of this object """
