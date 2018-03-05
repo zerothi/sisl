@@ -248,6 +248,18 @@ class TestGrid(object):
         for i in range(3):
             assert setup.g.remove([1, 2], i).shape[i] == setup.g.shape[i]-2
 
+    def test_set_grid1(self, setup):
+        g = setup.g.copy()
+        g.set_grid([2, 2, 2])
+        assert np.all(np.array(g.shape) == 2)
+        g.set_grid([2, 2, 3])
+        assert np.all(np.array(g.shape) == [2, 2, 3])
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_set_grid2(self, setup):
+        g = setup.g.copy()
+        g.set_grid([2, 2, 2, 4])
+
     def test_bc1(self, setup):
         assert np.all(setup.g.bc == setup.g.PERIODIC)
         setup.g.set_bc(a=setup.g.NEUMANN)

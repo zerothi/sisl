@@ -197,9 +197,11 @@ class Grid(SuperCellChild):
 
     def set_grid(self, shape, dtype=None):
         """ Create the internal grid of certain size. """
-        shape = _a.asarrayi(shape)
+        shape = _a.asarrayi(shape).ravel()
         if dtype is None:
             dtype = np.float64
+        if shape.size != 3:
+            raise ValueError(self.__class__.__name__ + '.set_grid requires shape to be of length 3')
         self.grid = np.zeros(shape, dtype=dtype)
 
     def set_bc(self, boundary=None, a=None, b=None, c=None):
