@@ -10,7 +10,7 @@ def _append(name, suffix=('i', 'l', 'f', 'd')):
 
 
 def _append_c(name, suffix=('i', 'l', 'f', 'd', 'c', 'z')):
-    return [name + s for s in suffix]
+    return _append(name, suffix)
 
 # Create all partial objects for creating arrays
 zerosi = _partial(np.zeros, dtype=np.int32)
@@ -74,7 +74,9 @@ arangei = _partial(np.arange, dtype=np.int32)
 arangel = _partial(np.arange, dtype=np.int64)
 arangef = _partial(np.arange, dtype=np.float32)
 aranged = _partial(np.arange, dtype=np.float64)
-__all__ += _append('arange')
+arangec = _partial(np.arange, dtype=np.complex64)
+arangez = _partial(np.arange, dtype=np.complex128)
+__all__ += _append_c('arange')
 
 prodi = _partial(np.prod, dtype=np.int32)
 prodl = _partial(np.prod, dtype=np.int64)
@@ -88,3 +90,6 @@ fulll = _partial(np.full, dtype=np.int64)
 fullf = _partial(np.full, dtype=np.float32)
 fulld = _partial(np.full, dtype=np.float64)
 __all__ += _append('full')
+
+
+del _append_c, _append
