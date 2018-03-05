@@ -132,15 +132,16 @@ class Ellipsoid(PureShape):
 
         # First check
         tmp = dot(other - self.center[None, :], self._iv)
+        tol = 1.e-12
 
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        within = logical_and.reduce(fabs(tmp) <= 1, axis=1).nonzero()[0]
+        within = logical_and.reduce(fabs(tmp) <= 1 + tol, axis=1).nonzero()[0]
 
         # Now only check exactly on those that are possible candidates
         tmp = tmp[within, :]
-        wtmp = (fnorm2(tmp) <= 1).nonzero()[0]
+        wtmp = (fnorm2(tmp) <= 1 + tol).nonzero()[0]
 
         return within[wtmp]
 

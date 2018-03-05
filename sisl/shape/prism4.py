@@ -123,17 +123,20 @@ class Cuboid(PureShape):
         other : array_like
            the object that is checked for containment
         """
-        other = _a.asarrayd(other)
-        other.shape = (-1, 3)
+        other = _a.asarrayd(other).reshape(-1, 3)
 
         # Offset origo
         tmp = dot(other - self.origo[None, :], self._iv)
+        tol = 1.e-12
 
         # First reject those that are definitely not inside
-        within = logical_and.reduce(tmp >= 0., axis=1).nonzero()[0]
+        # The proximity is 1e-12 of the inverse cell.
+        # So, sadly, the bigger the cell the bigger the tolerance
+        # However due to numerics this is probably best anyway
+        within = logical_and.reduce(tmp >= -tol, axis=1).nonzero()[0]
 
         tmp = tmp[within, :]
-        wtmp = logical_and.reduce(tmp <= 1., axis=1).nonzero()[0]
+        wtmp = logical_and.reduce(tmp <= 1. + tol, axis=1).nonzero()[0]
 
         return within[wtmp]
 
