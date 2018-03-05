@@ -12,6 +12,7 @@ from numpy import dot
 from sisl.utils.mathematics import fnorm
 import sisl._array as _a
 import sisl._plot as plt
+from sisl.shape.prism4 import Cuboid
 from .quaternion import Quaternion
 
 __all__ = ['SuperCell', 'SuperCellChild']
@@ -74,6 +75,11 @@ class SuperCell(object):
     def origo(self, origo):
         """ Set origo """
         self._origo[:] = origo
+
+    def toCuboid(self):
+        """ Return a cuboid with vectors as this unit-cell """
+        origo = self.center() + self.origo
+        return Cuboid(self.cell.copy(), origo)
 
     def parameters(self, rad=False):
         r""" Return the cell-parameters of this cell
