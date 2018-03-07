@@ -139,6 +139,8 @@ class XSFSile(Sile):
 
         if len(atom) == 0:
             geom = Geometry(xyz, sc=SuperCell(cell))
+        elif len(atom) == 1 and atom[0].Z == -999:
+            geom = None
         else:
             geom = Geometry(xyz, atom=atom, sc=SuperCell(cell))
 
@@ -173,6 +175,8 @@ class XSFSile(Sile):
         sile_raise_write(self)
 
         geom = kwargs.get('geometry', args[0].geom)
+        if geom is None:
+            geom = Geometry([0, 0, 0], Atom(-999), sc=args[0].sc)
         self.write_geometry(geom)
 
         # Buffer size for writing

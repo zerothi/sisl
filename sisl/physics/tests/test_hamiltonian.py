@@ -1097,7 +1097,8 @@ def test_psi2():
     R, param = [0.1, 1.5], [1., 0.1]
     H.construct([R, param])
     ES = H.eigenstate(dtype=np.float64)
-    # Plot in the full thing
+    # This is effectively plotting outside where no atoms exists
+    # (there could however still be psi weight).
     grid = Grid(0.1, sc=SuperCell([2, 2, 2], origo=[2] * 3))
     grid.fill(0.)
     ES.sub(0).psi(grid)
@@ -1113,6 +1114,6 @@ def test_psi3():
     H.construct([R, param])
     ES = H.eigenstate()
     # Plot in the full thing
-    grid = Grid(0.1, dtype=np.complex128, sc=SuperCell([2, 2, 2], origo=[2] * 3))
+    grid = Grid(0.1, dtype=np.complex128, sc=SuperCell([2, 2, 2], origo=[-1] * 3))
     grid.fill(0.)
     ES.sub(0).psi(grid)

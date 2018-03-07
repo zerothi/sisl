@@ -90,7 +90,8 @@ class Grid(SuperCellChild):
 
         # If the user sets the super-cell, that has precedence.
         if sc is not None:
-            self.geom.set_sc(sc)
+            if not self.geometry is None:
+                self.geometry.set_sc(sc)
             self.set_sc(sc)
 
     def __getitem__(self, key):
@@ -111,11 +112,11 @@ class Grid(SuperCellChild):
         Setting the `Geometry` for the grid is a possibility
         to attach atoms to the grid.
 
-        It is not a necessary entity.
+        It is not a necessary entity, so passing `None` is a viable option.
         """
         if geometry is None:
             # Fake geometry
-            self.set_geometry(Geometry([0, 0, 0], Atom['H'], sc=self.sc))
+            self.geometry = None
         else:
             self.geometry = geometry
             self.set_sc(geometry.sc)
@@ -247,10 +248,19 @@ class Grid(SuperCellChild):
     set_boundary = set_bc
     set_boundary_condition = set_bc
 
+    def __sc_geom_dict(self, copy=True):
+        """ Internal routine for copying the SuperCell and Geometry """
+        d = dict()
+        d['sc'] = self.sc.copy()
+        if not self.geometry is None:
+            d['geom'] = self.geometry.copy()
+        return d
+
     def copy(self):
         """ Returns a copy of the object. """
+        d = self.__sc_geom_dict()
         grid = self.__class__(np.copy(self.shape), bc=np.copy(self.bc),
-                              dtype=self.dtype, geom=self.geom.copy())
+                              dtype=self.dtype, **d)
         grid.grid = self.grid.copy()
         return grid
 
@@ -264,9 +274,11 @@ class Grid(SuperCellChild):
         idx[b] = a
         idx[a] = b
         s = np.copy(self.shape)
+        geom = self.geometry
+        d = self.__sc_geom_dict()
+        d['sc'] = d['sc'].swapaxes(a, b)
         grid = self.__class__(s[idx], bc=self.bc[idx],
-                              sc=self.sc.swapaxes(a, b), dtype=self.dtype,
-                              geom=self.geom.copy())
+                              dtype=self.dtype, **d)
         # We need to force the C-order or we loose the contiguity
         grid.grid = np.copy(np.swapaxes(self.grid, a, b), order='C')
         return grid
@@ -295,7 +307,7 @@ class Grid(SuperCellChild):
         # Down-scale cell
         cell[axis, :] /= shape[axis]
         shape[axis] = 1
-        grid = self.__class__(shape, bc=np.copy(self.bc), geom=self.geom.copy())
+        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geom_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
@@ -319,7 +331,7 @@ class Grid(SuperCellChild):
         cell[axis, :] /= shape[axis]
         shape[axis] = 1
 
-        grid = self.__class__(shape, bc=np.copy(self.bc), geom=self.geom.copy())
+        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geom_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
@@ -414,7 +426,7 @@ class Grid(SuperCellChild):
         # Down-scale cell
         cell[axis, :] = cell[axis, :] / old_N * shape[axis]
 
-        grid = self.__class__(shape, bc=np.copy(self.bc), geom=self.geom.copy())
+        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geom_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
@@ -601,8 +613,13 @@ class Grid(SuperCellChild):
         """ Appends other `Grid` to this grid along axis """
         shape = list(self.shape)
         shape[axis] += other.shape[axis]
-        return self.__class__(shape, bc=np.copy(self.bc),
-                              geom=self.geom.append(other.geom, axis))
+        d = self.__sc_geom_dict()
+        if 'geom' in d:
+            if not other.geometry is None:
+                d['geom'] = d['geom'].append(other.geometry, axis)
+        else:
+            d['geom'] = other.geometry
+        return self.__class__(shape, bc=np.copy(self.bc), **d)
 
     @staticmethod
     def read(sile, *args, **kwargs):

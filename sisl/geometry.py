@@ -2951,7 +2951,8 @@ class Geometry(SuperCellChild):
             periodic = list(periodic)
 
         # First we should figure out which atoms we are dealing with
-        idx = np.dot(self.icell.T, sc.cell)
+        idx = dot(self.icell.T, sc.cell + np.diag(sc.origo))
+        idx_origo = dot(self.icell.T, np.diag(sc.origo))
         tile_min = np.floor(idx.min(0)).astype(dtype=int32)
         tile_max = np.ceil(idx.max(0)).astype(dtype=int32)
 
@@ -2975,15 +2976,16 @@ class Geometry(SuperCellChild):
         # Now retrieve all atomic coordinates from the full geometry
         xyz = full_geom.axyz(_a.arangei(full_geom.na_s))
         idx = cuboid.within_index(xyz)
+        xyz = xyz[idx, :]
         del full_geom
 
         # Figure out supercell connections in the smaller indices
         # Since we have shifted all coordinates into the primary unit cell we
         # are sure that these fxyz are [0:1[
-        fxyz = dot(xyz[idx, :], self.icell.T)
+        fxyz = dot(xyz, self.icell.T)
 
         # Reduce atomic coordinates (and shift back to "correct" coordinates)
-        xyz = xyz[idx, :] - min_xyz.reshape(-1, 3)
+        xyz -= min_xyz.reshape(-1, 3)
         # Convert to supercell indices
         isc = np.floor(fxyz).astype(int32)
 

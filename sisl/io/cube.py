@@ -81,8 +81,12 @@ class CUBESile(Sile):
         # Check that we can write to the file
         sile_raise_write(self)
 
+        geom = grid.geometry
+        if geom is None:
+            geom = Geometry([0, 0, 0], Atom(-999), sc=grid.sc)
+
         # Write the geometry
-        self.write_geometry(grid.geom, size=grid.grid.shape, *args, **kwargs)
+        self.write_geometry(geom, size=grid.grid.shape, *args, **kwargs)
 
         buffersize = kwargs.get('buffersize', min(6144, grid.grid.size))
         buffersize += buffersize % 6 # ensure multiple of 6
@@ -159,6 +163,8 @@ class CUBESile(Sile):
             xyz[ia, 2] = float(tmp[4])
 
         xyz /= Ang2Bohr
+        if na == 1 and atom[0].Z == -999:
+            return None
         return Geometry(xyz, atom, sc=sc)
 
     @Sile_fh_open
