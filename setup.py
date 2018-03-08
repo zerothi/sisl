@@ -35,12 +35,12 @@ MINOR = 9
 MICRO = 2
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION = "60dcab7b1b345fdcc6573de4df050b37192ee414"
+GIT_REVISION = "1c929df0fb344c0256b15e2cfdc3f5c1eed4b4f7"
 
 # The MANIFEST should be updated (which it only is
 # if it does not exist...)
 # So we try and delete it...
-if os.path.exists('MANIFEST'):
+if osp.exists('MANIFEST'):
     os.remove('MANIFEST')
 
 
@@ -155,18 +155,23 @@ def git_version():
         env['LC_ALL'] = 'C'
         out = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE, env=env).communicate()[0]
-        return out
+        return out.strip().decode('ascii')
+
+    current_path = osp.dirname(osp.realpath(__file__))
 
     try:
+        # Get top-level directory
+        git_dir = _minimal_ext_cmd(['git', 'rev-parse', '--show-toplevel'])
+        # Assert that the git-directory is consistent with this setup.py script
+        if git_dir != current_path:
+            raise ValueError('Not executing the top-setup.py script')
+
         # Get latest revision tag
-        out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
-        rev = out.strip().decode('ascii')
+        rev = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
         # Get latest tag
-        out = _minimal_ext_cmd(['git', 'describe', '--abbrev=0'])
-        tag = out.strip().decode('ascii')
+        tag = _minimal_ext_cmd(['git', 'describe', '--abbrev=0'])
         # Get number of commits since tag
-        out = _minimal_ext_cmd(['git', 'rev-list', tag + '..', '--count'])
-        count = out.strip().decode('ascii')
+        count = _minimal_ext_cmd(['git', 'rev-list', tag + '..', '--count'])
         if len(count) == 0:
             count = '1'
     except:
