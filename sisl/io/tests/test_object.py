@@ -14,6 +14,9 @@ from sisl import DensityMatrix, EnergyDensityMatrix
 
 from . import common as tc
 
+pytestmark = pytest.mark.io
+
+
 _C = type('Temporary', (object, ), {})
 
 
@@ -29,12 +32,6 @@ gs = get_sile
 gsc = get_sile_class
 
 
-def stdoutfile(f):
-    with open(f, 'r') as fh:
-        for line in fh:
-            print(line.replace('\n', ''))
-
-
 def _my_intersect(a, b):
     return list(set(get_siles(a)).intersection(get_siles(b)))
 
@@ -43,7 +40,6 @@ def _fnames(base, variants):
     return [base + '.' + v if len(v) > 0 else base for v in variants]
 
 
-@pytest.mark.io
 def test_get_sile1():
     cls = gsc('test.xyz')
     assert issubclass(cls, XYZSile)
@@ -63,13 +59,11 @@ def test_get_sile1():
     assert issubclass(cls, fdfSileSiesta)
 
 
-@pytest.mark.io
 @pytest.mark.xfail(raises=NotImplementedError)
 def test_get_sile2():
     gsc('test.this_file_does_not_exist')
 
 
-@pytest.mark.io
 class TestObject(object):
 
     def test_siesta_sources(self):
