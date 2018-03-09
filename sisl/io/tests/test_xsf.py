@@ -7,7 +7,7 @@ from sisl.io.xsf import *
 
 import numpy as np
 
-pytestmark = pytest.mark.only
+pytestmark = pytest.mark.io
 
 
 def test_default(dir_test):
