@@ -27,28 +27,28 @@ __all__ += ['warn', 'info']
 _sisl_warn_registry = {}
 
 
-class SislDeprecation(UserWarning):
-    """ Sisl deprecation informations """
-    pass
-
-
-class SislInfo(UserWarning):
-    """ Sisl informations """
-    pass
-
-
-class SislWarning(UserWarning):
-    """ Sisl warnings """
-    pass
-
-
 class SislException(Exception):
     """ Sisl exception """
     pass
 
 
-class SislError(Exception):
+class SislError(SislException):
     """ Sisl error """
+    pass
+
+
+class SislWarning(SislException, UserWarning):
+    """ Sisl warnings """
+    pass
+
+
+class SislDeprecation(SislWarning):
+    """ Sisl deprecation informations """
+    pass
+
+
+class SislInfo(SislWarning):
+    """ Sisl informations """
     pass
 
 
