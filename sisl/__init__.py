@@ -69,7 +69,8 @@ from ._plot import plot as plot
 # We currently do not import warn and info
 # as they are too generic names in case one does from sisl import *
 # Perhaps we should simply remove them from __all__?
-from .messages import SislException, SislWarning, SislInfo, warn
+from .messages import SislException, SislWarning, SislInfo, SislError
+from .messages import SislDeprecation, warn
 
 # load the most commonly, and basic classes
 # The unit contain the SI standard conversions using

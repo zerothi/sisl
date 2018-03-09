@@ -6,7 +6,7 @@ import numpy as np
 from sisl.io.sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell, Grid
+from sisl import Geometry, Atom, SuperCell, Grid, SislError
 from sisl.unit import unit_convert
 
 __all__ = ['CUBESile']
@@ -168,8 +168,18 @@ class CUBESile(Sile):
         return Geometry(xyz, atom, sc=sc)
 
     @Sile_fh_open
-    def read_grid(self):
-        """ Returns `Grid` object from the CUBE file """
+    def read_grid(self, imag=None):
+        """ Returns `Grid` object from the CUBE file
+
+        Parameters
+        ----------
+        imag : str or Sile or Grid
+            the imaginary part of the grid. If the geometries does not match
+            an error will be raised.
+        """
+        if not imag is None:
+            if not isinstance(imag, Grid):
+                imag = Grid.read(imag)
         geom = self.read_geometry()
 
         # Now seek behind to read grid sizes
@@ -198,6 +208,20 @@ class CUBESile(Sile):
         lines = [item for sublist in self.fh.readlines() for item in sublist.split()]
         grid.grid[:] = np.array(lines).astype(grid.dtype)
         grid.grid.shape = ngrid
+
+        if imag is None:
+            return grid
+
+        # We are expecting an imaginary part
+        if not grid.geometry.equal(imag.geometry):
+            raise SislError(repr(self) + ' and its imaginary part does not have the same '
+                            'geometry. Hence a combined complex Grid cannot be formed.')
+        if grid != imag:
+            raise SislError(repr(self) + ' and its imaginary part does not have the same '
+                            'shape. Hence a combined complex Grid cannot be formed.')
+
+        # Now we have a complex grid
+        grid.grid = grid.grid + 1j * imag.grid
 
         return grid
 
