@@ -1,23 +1,57 @@
 0.9.3
 =====
 
-- Removed deprecated TightBinding class (use Hamiltonian instead)
+- Fixed Gamma-point periodic wavefunction storage.
+	Creating grids with wave-functions is fully functional
+	for arbitrarily big supercells.
 
-- Added shot-noise calculation (and Fano factor). Currently un-tested!
+- BrillouinZone objects:
+
+  - Renamed PathBZ to BandStructure
+
+  - Renamed MonkhorstPackBZ to MonkhorstPack
+
+  - Enabled MonkhorstPack symmetry. This will reduce the number of
+    k-points to roughly half (note symmetry is by default *on*)
+
+  - Forced MonkhorstPack to create a k-grid which is Gamma centered
+
+- Shapes (backward compatibility broken)
+
+  - Complete re-write of Shapes
+
+  - Skewed Cuboids, Ellipsoids
+
+  - Set combinations of Shapes (unions, difference sets, etc.)
+
+- Grid
+
+  - Enabled Grid.index for shapes.
+
+  - Fixed grid initialization to create grid spacings fixed by a real.
+    I.e. the voxel spacing.
+
+
+        >>> Grid([10, 10, 10]) # 10 points per lattice vector
+        >>> Grid(0.1) # 0.1 Angstrom spacing
+				
+  - Enabled plotting wavefunctions on grids.
+
+  - Enabled plotting charge density on grids.
+
+- Enabled tqdm usage for progressbar. It is fast and easy to use
+	and a small requirement. (still optional)
+
+- Added intrinsic Sisl exceptions which will be used throughout
+  (at some point)
+
+- Removed deprecated TightBinding class (use Hamiltonian instead)
 
 - Added many SislWarning raises which are used to notify the user of
 	potentially important things (say if sisl knows there should be a unit
 	associated but it couldn't find it).
 
-- Fixed shapes. (backward compatibility broken). They now allow much
-	more complex operations. One may now create unions and other set operations
-	on shapes to create arbitrary shapes.
-
 - Added TSDE file reading in sisl.
-
-- Renamed PathBZ to BandStructure.
-
-- Renamed MonkhorstPackBZ to MonkhorstPack.
 
 - Siesta reading of grid-related data is now much *smarter*. It will
 	try and recognize the units of the data so the units become sisl
@@ -47,27 +81,21 @@
 
 - Fixed cube reading/writing of multi-column data.
 
-- Enabled plotting wavefunctions on grids.
-
-- Enabled plotting charge density on grids.
-
 - Added siesta PDOS xml parsing, currently this is only scriptable
   but it manages easy extraction of quantities without the PDOSXML utility.
 	This also enables retrieving the PDOS as an xarray.DataArray.
 
-- Added TBT.SE.nc file to enable easy extraction of self-energies
-  from TBtrans
+- TBtrans / TBT.nc file:
 
-- Added COOP and COHP extraction to the TBT.nc files.
+  - Added TBT.SE.nc file to enable easy extraction of self-energies
+    from TBtrans
 
-- Fixed grid initialization to create grid spacings fixed by a real.
-  I.e. the voxel spacing.
+  - Added COOP and COHP extraction to the TBT.nc files.
 
-      >>> Grid([10, 10, 10]) # 10 points per lattice vector
-			>>> Grid(0.1) # 0.1 Angstrom spacing
+  - Reorganized the TBtrans netcdf files (internal changes only)
 
+  - Added shot-noise calculation (and Fano factor). Currently un-tested!
 
-- Reorganized the TBtrans netcdf files (internal changes only)
 
 0.9.2
 =====
