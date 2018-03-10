@@ -1117,3 +1117,18 @@ def test_psi3():
     grid = Grid(0.1, dtype=np.complex128, sc=SuperCell([2, 2, 2], origo=[-1] * 3))
     grid.fill(0.)
     ES.sub(0).psi(grid)
+
+
+def test_psi_eta():
+    N = 50
+    o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
+    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
+    H = Hamiltonian(G, spin=Spin('nc'))
+    R, param = [0.1, 1.5], [[0., 0., 0.1, -0.1],
+                            [1., 1., 0.1, -0.1]]
+    H.construct([R, param])
+    ES = H.eigenstate()
+    # Plot in the full thing
+    grid = Grid(0.1, dtype=np.complex128, sc=SuperCell([2, 2, 2], origo=[-1] * 3))
+    grid.fill(0.)
+    ES.sub(0).psi(grid, eta=True)

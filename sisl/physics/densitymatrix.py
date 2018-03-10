@@ -8,7 +8,7 @@ from numpy import logical_and as log_and
 
 
 import sisl._array as _a
-from sisl.messages import warn
+from sisl.messages import warn, tqdm_eta
 from sisl._help import _zip as zip, _range as range
 from sisl.utils.ranges import array_arange
 from sisl.utils.mathematics import cart2spher
@@ -107,7 +107,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
     D = property(_get_D, _set_D)
 
-    def rho(self, grid, spinor=None):
+    def rho(self, grid, spinor=None, eta=False):
         r""" Expand the density matrix to a density on the grid
 
         This routine calculates the real-space density components in the
@@ -293,6 +293,9 @@ class DensityMatrix(SparseOrbitalBZSpin):
             ja = geom.o2a(csrDM.indices[slo], uniq=True)
             return zip(ja, ja % geom.na)
 
+        # Retrieve progressbar
+        eta = tqdm_eta(len(geom), self.__class__.__name__ + '.rho', 'atoms', eta)
+
         # Loop over all atoms in unitcell
         for ia in geom:
 
@@ -324,6 +327,9 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
                 # Add the density matrix for atom ia -> ja
                 add_DM(ia, atomi, xyzi, cscDM, ja, atomj, xyzj, si & sj)
+
+            eta.update()
+        eta.close()
 
         # Reset the error code for division
         np.seterr(**old_err)

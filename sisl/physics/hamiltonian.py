@@ -7,7 +7,7 @@ from numpy import add, subtract, multiply, divide
 from numpy import cos, sin, arctan2, conj
 from numpy import dot, sqrt, square, floor, ceil
 
-from sisl.messages import warn
+from sisl.messages import warn, tqdm_eta
 from sisl._help import _range as range, _str as str
 import sisl._array as _a
 from sisl import Geometry
@@ -17,24 +17,6 @@ from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
 
 __all__ = ['Hamiltonian', 'EigenState']
-
-
-def _get_eta(obj, na, desc, eta):
-    """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object """
-    if eta:
-        from tqdm import tqdm
-        eta = tqdm(total=na, desc=obj.__class__.__name__ + desc, unit='atoms')
-    else:
-        class Fake(object):
-            __slots__ = []
-            def __init__(self):
-                pass
-            def update(self, n=1):
-                pass
-            def close(self):
-                pass
-        eta = Fake()
-    return eta
 
 
 class Hamiltonian(SparseOrbitalBZSpin):
@@ -667,7 +649,7 @@ class EigenState(EigenSystem):
         phase = 1
 
         # Retrieve progressbar
-        eta = _get_eta(self, len(IA), '.psi', eta)
+        eta = tqdm_eta(len(IA), self.__class__.__name__ + '.psi', 'atoms', eta)
 
         # Loop over all atoms in the full supercell structure
         for ia, xyz, isc in zip(IA, XYZ - grid.origo.reshape(1, 3), ISC):

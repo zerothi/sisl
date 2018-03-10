@@ -71,6 +71,7 @@ class TestBrillouinZone(object):
             assert np.allclose(val, np.arange(3) - 1)
         # Average
         assert np.allclose(bz.asaverage().eigh(), np.arange(3))
+        assert np.allclose(bz.asaverage().eigh(eta=True), np.arange(3))
 
     def test_class3(self, setup):
         class Test(SuperCellChild):

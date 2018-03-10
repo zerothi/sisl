@@ -134,6 +134,12 @@ class TestDensityMatrix(object):
         D.rho(grid, Spin.Y)
         D.rho(grid, Spin.Z)
 
+    def test_rho_eta(self, setup):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        grid = Grid(0.2, geom=setup.D.geom)
+        D.rho(grid, eta=True)
+
     def test_rho_smaller_grid1(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)

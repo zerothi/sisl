@@ -1,6 +1,9 @@
 0.9.3
 =====
 
+- Made better progress-bars. Using eta= now relies on tqdm
+  It is however still an optional dependency.
+
 - Fixed Gamma-point periodic wavefunction storage.
 	Creating grids with wave-functions is fully functional
 	for arbitrarily big supercells.
@@ -34,7 +37,7 @@
 
         >>> Grid([10, 10, 10]) # 10 points per lattice vector
         >>> Grid(0.1) # 0.1 Angstrom spacing
-				
+
   - Enabled plotting wavefunctions on grids.
 
   - Enabled plotting charge density on grids.

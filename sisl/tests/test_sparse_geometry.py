@@ -182,6 +182,10 @@ class TestSparseAtom(object):
             assert s1.spsame(s2)
             assert len(s2) == len(sub)
 
+    def test_construct_eta(self, setup):
+        s = setup.s1.copy()
+        s.construct([[0.1, 1.5], [1, 2]], eta=True)
+
     def test_tile1(self, setup):
         setup.s1.construct([[0.1, 1.5], [1, 2]])
         setup.s1.finalize()

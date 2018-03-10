@@ -5,31 +5,13 @@ import functools as ftool
 import numpy as np
 
 import sisl._array as _a
-from .messages import warn, SislError
+from .messages import warn, SislError, tqdm_eta
 from ._help import get_dtype
 from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
 from .sparse import SparseCSR
 
 __all__ = ['SparseAtom', 'SparseOrbital']
-
-
-def _get_eta(obj, desc, eta):
-    """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object """
-    if eta:
-        from tqdm import tqdm
-        eta = tqdm(total=obj.na, desc=obj.__class__.__name__ + desc, unit='atoms')
-    else:
-        class Fake(object):
-            __slots__ = []
-            def __init__(self):
-                pass
-            def update(self, n=1):
-                pass
-            def close(self):
-                pass
-        eta = Fake()
-    return eta
 
 
 class _SparseGeometry(object):
@@ -544,7 +526,7 @@ class _SparseGeometry(object):
         iR = self.geom.iR(na_iR)
 
         # Create eta-object
-        eta = _get_eta(self, '.construct()', eta)
+        eta = tqdm_eta(self.na, self.__class__.__name__ + '.construct()', 'atom', eta)
 
         # Do the loop
         for ias, idxs in self.geom.iter_block(iR=iR, method=method):
