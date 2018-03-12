@@ -106,6 +106,7 @@ try:
 except ImportError:
     # Notify user
     info('Please install tqdm for better looking progress bars')
+
     class tqdm(object):
         """ Fake tqdm progress-bar. I should update this to also work in regular instances """
         __slots__ = []

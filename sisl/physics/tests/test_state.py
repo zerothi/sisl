@@ -11,7 +11,8 @@ from sisl import geom, State, CState
 
 
 def ar(*args):
-    return np.arange(*args, dtype=np.float64)
+    l = np.prod(args)
+    return np.arange(l, dtype=np.float64).reshape(args)
 
 
 def outer(v):
@@ -55,7 +56,7 @@ def test_state_norm1():
 
 
 def test_state_sub1():
-    state = ar(100).reshape(10, -1)
+    state = ar(10, 10)
     state = State(state)
     assert len(state) == 10
     norm = state.norm()
@@ -71,7 +72,7 @@ def test_state_sub1():
 
 
 def test_state_outer1():
-    state = ar(100).reshape(10, -1)
+    state = ar(10, 10)
     state = State(state)
     out = state.outer()
     o = out.copy()
@@ -96,33 +97,44 @@ def test_state_toCState1():
 
 
 def test_state_toCState2():
-    state = State(ar(10).reshape(2, -1)).toCState()
+    state = State(ar(2, 5)).toCState()
     assert np.allclose(state.norm2(), 1.)
-    state = State(ar(10).reshape(2, -1)).toCState(norm=[0.5, 0.5])
+    state = State(ar(2, 5)).toCState(norm=[0.5, 0.5])
     assert np.allclose(state.norm2(), 0.5)
-    state = State(ar(10).reshape(2, -1)).toCState(norm=[0.25, 0.75])
+    state = State(ar(2, 5)).toCState(norm=[0.25, 0.75])
     assert np.allclose(state.norm2(), [0.25, 0.75])
 
 
 @pytest.mark.xfail(raises=ValueError)
 def test_state_toCState_fail():
-    State(ar(10).reshape(2, -1)).toCState(norm=[0.2, 0.5, 0.5])
+    State(ar(2, 5)).toCState(norm=[0.2, 0.5, 0.5])
 
 
 def test_cstate_creation1():
     state = CState(1, ar(6))
+    assert len(state) == 1
+    state = CState(ar(6), ar(6, 6))
+    assert len(state) == 6
+    assert np.allclose(state.c, ar(6))
+
+
+def test_cstate_create_none():
+    state = CState(ar(6), None)
+    assert len(state) == 6
+    assert np.allclose(state.c, ar(6))
 
 
 def test_cstate_repr1():
     state = CState(1, ar(6))
+    assert len(state) == 1
     repr(state)
     state = CState(1, ar(6), parent=geom.graphene())
     repr(state)
+    assert len(state) == 1
 
 
 def test_cstate_sub1():
-    state = ar(100).reshape(10, -1)
-    state = State(state).toCState().copy()
+    state = State(ar(10, 10)).toCState().copy()
     assert len(state) == 10
     norm = state.norm()
     for i in range(len(state)):
@@ -136,14 +148,13 @@ def test_cstate_sub1():
 
 
 def test_cstate_sort1():
-    state = ar(100).reshape(-1, 10).T
-    state = State(state).toCState()
+    state = State(ar(10, 10)).toCState()
     sort = state.sort()
     assert len(state) == len(sort)
 
 
 def test_cstate_outer1():
-    state = ar(100).reshape(10, -1)
+    state = ar(10, 10)
     state = CState(ar(10), state)
     out = state.outer()
     o = out.copy()

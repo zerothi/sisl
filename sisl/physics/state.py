@@ -287,6 +287,12 @@ class CState(State):
            This `info` may contain anything that may be relevant for the state.
         """
         self.c = np.asarray(c).ravel()
+        if state is None:
+            # We have to fake a state.
+            # Since we create it empty, it will be random numbers
+            # But sometimes numpy will not do anything but reserve the
+            # memory so its performance is good!
+            state = _a.emptyi([len(c), 1])
         super(CState, self).__init__(state, parent, **info)
 
     def __len__(self):
