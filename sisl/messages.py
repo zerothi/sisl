@@ -21,7 +21,8 @@ import warnings
 
 
 __all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
-__all__ += ['warn', 'info']
+__all__ += ['warn', 'info', 'deprecate']
+__all__ += ['tqdm_eta']
 
 # The local registry for warnings issued
 _sisl_warn_registry = {}
