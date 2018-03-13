@@ -13,7 +13,6 @@ from sisl.selector import TimeSelector
 from sisl.sparse import isspmatrix
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
-from .brillouinzone import BrillouinZone
 
 __all__ = ['SparseOrbitalBZ', 'SparseOrbitalBZSpin']
 
@@ -380,15 +379,6 @@ class SparseOrbitalBZ(SparseOrbital):
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigh`
         """
-
-        # First we check if the k-point is a BrillouinZone object
-        if isinstance(k, BrillouinZone):
-            # Pre-allocate the eigenvalue spectrum
-            eig = np.empty([len(k), len(self)], np.float64)
-            for i, k_ in enumerate(k):
-                eig[i, :] = self.eigh(k_, gauge=gauge, eigvals_only=eigvals_only, **kwargs)
-            return eig
-
         dtype = kwargs.pop('dtype', None)
         P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
         if not self.orthogonal:
@@ -407,15 +397,6 @@ class SparseOrbitalBZ(SparseOrbital):
 
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eigsh`
         """
-
-        # First we check if the k-point is a BrillouinZone object
-        if isinstance(k, BrillouinZone):
-            # Pre-allocate the eigenvalue spectrum
-            eig = np.empty([len(k), n], np.float64)
-            for i, k_ in enumerate(k):
-                eig[i, :] = self.eigsh(k_, n=n, gauge=gauge, eigvals_only=eigvals_only, **kwargs)
-            return eig
-
         # We always request the smallest eigenvalues...
         kwargs.update({'which': kwargs.get('which', 'SM')})
 
@@ -1013,14 +994,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            the spin-component to calculate the eigenvalue spectrum of, note that
            this parameter is only valid for `Spin.POLARIZED` matrices.
         """
-
-        # First we check if the k-point is a BrillouinZone object
-        if isinstance(k, BrillouinZone):
-            # Pre-allocate the eigenvalue spectrum
-            eig = np.empty([len(k), len(self)], np.float64)
-            for i, k_ in enumerate(k):
-                eig[i, :] = self.eigh(k_, gauge=gauge, eigvals_only=eigvals_only, **kwargs)
-            return eig
         spin = kwargs.pop('spin', 0)
         dtype = kwargs.pop('dtype', None)
 
@@ -1050,15 +1023,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            the spin-component to calculate the eigenvalue spectrum of, note that
            this parameter is only valid for `Spin.POLARIZED` matrices.
         """
-
-        # First we check if the k-point is a BrillouinZone object
-        if isinstance(k, BrillouinZone):
-            # Pre-allocate the eigenvalue spectrum
-            eig = np.empty([len(k), n], np.float64)
-            for i, k_ in enumerate(k):
-                eig[i, :] = self.eigsh(k_, n=n, gauge=gauge, eigvals_only=eigvals_only, **kwargs)
-            return eig
-
         # We always request the smallest eigenvalues...
         spin = kwargs.pop('spin', 0)
         dtype = kwargs.pop('dtype', None)
