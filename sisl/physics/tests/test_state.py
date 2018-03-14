@@ -7,7 +7,7 @@ pytestmark = pytest.mark.state
 import math as m
 import numpy as np
 
-from sisl import geom, State, CState
+from sisl import geom, State, CoeffState
 
 
 def ar(*args):
@@ -89,52 +89,52 @@ def test_state_outer1():
     assert np.allclose(out, o)
 
 
-def test_state_toCState1():
-    state = State(ar(6)).toCState()
+def test_state_toCoeffState1():
+    state = State(ar(6)).toCoeffState()
     assert len(state) == 1
     assert state.c[0] == pytest.approx((ar(6) ** 2).sum() ** .5)
     assert state.norm()[0] == pytest.approx(1)
 
 
-def test_state_toCState2():
-    state = State(ar(2, 5)).toCState()
+def test_state_toCoeffState2():
+    state = State(ar(2, 5)).toCoeffState()
     assert np.allclose(state.norm2(), 1.)
-    state = State(ar(2, 5)).toCState(norm=[0.5, 0.5])
+    state = State(ar(2, 5)).toCoeffState(norm=[0.5, 0.5])
     assert np.allclose(state.norm2(), 0.5)
-    state = State(ar(2, 5)).toCState(norm=[0.25, 0.75])
+    state = State(ar(2, 5)).toCoeffState(norm=[0.25, 0.75])
     assert np.allclose(state.norm2(), [0.25, 0.75])
 
 
 @pytest.mark.xfail(raises=ValueError)
-def test_state_toCState_fail():
-    State(ar(2, 5)).toCState(norm=[0.2, 0.5, 0.5])
+def test_state_toCoeffState_fail():
+    State(ar(2, 5)).toCoeffState(norm=[0.2, 0.5, 0.5])
 
 
 def test_cstate_creation1():
-    state = CState(1, ar(6))
+    state = CoeffState(1, ar(6))
     assert len(state) == 1
-    state = CState(ar(6), ar(6, 6))
+    state = CoeffState(ar(6), ar(6, 6))
     assert len(state) == 6
     assert np.allclose(state.c, ar(6))
 
 
 def test_cstate_create_none():
-    state = CState(ar(6), None)
+    state = CoeffState(ar(6), None)
     assert len(state) == 6
     assert np.allclose(state.c, ar(6))
 
 
 def test_cstate_repr1():
-    state = CState(1, ar(6))
+    state = CoeffState(1, ar(6))
     assert len(state) == 1
     repr(state)
-    state = CState(1, ar(6), parent=geom.graphene())
+    state = CoeffState(1, ar(6), parent=geom.graphene())
     repr(state)
     assert len(state) == 1
 
 
 def test_cstate_sub1():
-    state = State(ar(10, 10)).toCState().copy()
+    state = State(ar(10, 10)).toCoeffState().copy()
     assert len(state) == 10
     norm = state.norm()
     for i in range(len(state)):
@@ -148,14 +148,14 @@ def test_cstate_sub1():
 
 
 def test_cstate_sort1():
-    state = State(ar(10, 10)).toCState()
+    state = State(ar(10, 10)).toCoeffState()
     sort = state.sort()
     assert len(state) == len(sort)
 
 
 def test_cstate_outer1():
     state = ar(10, 10)
-    state = CState(ar(10), state)
+    state = CoeffState(ar(10), state)
     out = state.outer()
     o = out.copy()
     o1 = out.copy()

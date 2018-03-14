@@ -7,7 +7,7 @@ from sisl._help import dtype_complex_to_real
 from sisl._help import _zip as zip, _range as range
 
 
-__all__ = ['State', 'CState']
+__all__ = ['State', 'CoeffState']
 
 _dot = np.dot
 _conj = np.conjugate
@@ -53,10 +53,15 @@ class State(object):
            an info dictionary that turns into an attribute on the object.
            This `info` may contain anything that may be relevant for the state.
         """
-        self.state = _a.asarray(state)
-        # Correct for vector
-        if self.state.ndim == 1:
-            self.state.shape = (1, -1)
+        if state is None:
+            # This is simply to allow coefficient states to
+            # have no state information
+            self.state = None
+        else:
+            self.state = _a.asarray(state)
+            # Correct for vector
+            if self.state.ndim == 1:
+                self.state.shape = (1, -1)
         self.parent = parent
         self.info = info
 
@@ -212,8 +217,8 @@ class State(object):
         sub.info = self.info
         return sub
 
-    def toCState(self, norm=1.):
-        r""" Transforms the states into normalized values equal to `norm` and specifies the coefficients in `CState` as the norm
+    def toCoeffState(self, norm=1.):
+        r""" Transforms the states into normalized values equal to `norm` and specifies the coefficients in `CoeffState` as the norm
 
         This is an easy method to renormalize the state vectors to a common (or state dependent) normalization constant.
 
@@ -228,14 +233,14 @@ class State(object):
 
         Returns
         -------
-        CState : a new coefficient state object with associated coefficients
+        CoeffState : a new coefficient state object with associated coefficients
         """
         n = len(self)
         norm = _a.asarray(norm).ravel()
         if norm.size == 1 and n > 1:
             norm = np.tile(norm, n)
         elif norm.size != n:
-            raise ValueError(self.__class__.__name__ + '.toCState requires the input norm to be a single float or having equal length to the state!')
+            raise ValueError(self.__class__.__name__ + '.toCoeffState requires the input norm to be a single float or having equal length to the state!')
 
         # Correct data-type
         if norm.dtype in [np.complex64, np.complex128]:
@@ -251,12 +256,12 @@ class State(object):
             c[i] = (_idot(self.state[i].ravel()).astype(c.dtype) / norm[i]) ** 0.5
             state[i, ...] = self.state[i, ...] / c[i]
 
-        cs = CState(c, state, parent=self.parent)
+        cs = CoeffState(c, state, parent=self.parent)
         cs.info = self.info
         return cs
 
 
-class CState(State):
+class CoeffState(State):
     """ An object handling a set of vectors describing a given *state* with associated coefficients `c`
 
     Notes
@@ -287,21 +292,19 @@ class CState(State):
            This `info` may contain anything that may be relevant for the state.
         """
         self.c = np.asarray(c).ravel()
-        if state is None:
-            # We have to fake a state.
-            # Since we create it empty, it will be random numbers
-            # But sometimes numpy will not do anything but reserve the
-            # memory so its performance is good!
-            state = _a.emptyi([len(c), 1])
-        super(CState, self).__init__(state, parent, **info)
+        super(CoeffState, self).__init__(state, parent)
+        self.info = info
 
     def __len__(self):
-        """ Length of `CState` """
+        """ Length of `CoeffState` """
         return len(self.c)
 
     def copy(self):
         """ Return a copy (only the coefficients and states are copied). Parent and info are passed by reference """
-        copy = self.__class__(self.c.copy(), self.state.copy(), self.parent)
+        if self.state is None:
+            copy = self.__class__(self.c.copy(), None, self.parent)
+        else:
+            copy = self.__class__(self.c.copy(), self.state.copy(), self.parent)
         copy.info = self.info
         return copy
 
@@ -329,7 +332,7 @@ class CState(State):
         return m
 
     def sort(self, ascending=True):
-        """ Sort and return a new `CState` by sorting the coefficients (default to ascending)
+        """ Sort and return a new `CoeffState` by sorting the coefficients (default to ascending)
 
         Parameters
         ----------
@@ -352,11 +355,11 @@ class CState(State):
 
         Returns
         -------
-        CState : a new object with a subset of the states
+        CoeffState : a new object with a subset of the states
         """
         idx = _a.asarrayi(idx).ravel()
         sub = self.__class__(self.c[idx], self.state[idx, ...], self.parent)
         sub.info = self.info
         return sub
 
-    toCState = None
+    toCoeffState = None
