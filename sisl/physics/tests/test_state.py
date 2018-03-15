@@ -116,6 +116,7 @@ def test_cstate_creation1():
     state = CoeffState(ar(6), ar(6, 6))
     assert len(state) == 6
     assert np.allclose(state.c, ar(6))
+    repr(state)
 
 
 def test_cstate_create_none():
@@ -151,6 +152,13 @@ def test_cstate_sort1():
     state = State(ar(10, 10)).toCoeffState()
     sort = state.sort()
     assert len(state) == len(sort)
+
+
+def test_cstate_norm1():
+    state = State(ar(10, 10)).toCoeffState().normalize()
+    assert len(state) == 10
+    assert np.allclose(state.norm(), 1)
+    assert np.allclose(state.norm2(), 1)
 
 
 def test_cstate_outer1():

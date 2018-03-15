@@ -53,17 +53,18 @@ class State(object):
            an info dictionary that turns into an attribute on the object.
            This `info` may contain anything that may be relevant for the state.
         """
-        if state is None:
-            # This is simply to allow coefficient states to
-            # have no state information
-            self.state = None
-        else:
-            self.state = _a.asarray(state)
+        self.state = state
+        self.parent = parent
+        self.info = info
+        self.__state_finalize__()
+
+    def __state_finalize__(self):
+        """ Finalizer for the state object. """
+        if not self.state is None:
+            self.state = _a.asarray(self.state)
             # Correct for vector
             if self.state.ndim == 1:
                 self.state.shape = (1, -1)
-        self.parent = parent
-        self.info = info
 
     def __repr__(self):
         """ The string representation of this object """
@@ -307,6 +308,24 @@ class CoeffState(State):
             copy = self.__class__(self.c.copy(), self.state.copy(), self.parent)
         copy.info = self.info
         return copy
+
+    def normalize(self):
+        r""" Return a normalized state where each state has :math:`|\psi|^2=1`
+
+        This is roughly equivalent to:
+
+        >>> state = CoeffState(1, np.arange(10))
+        >>> n = state.norm()
+        >>> norm_state = CoeffState(state.c.copy(), state.state / n.reshape(-1, 1))
+
+        Returns
+        -------
+        state : a new state with all states normalized, otherwise equal to this
+        """
+        n = self.norm()
+        s = self.__class__(self.c.copy(), self.state / n.reshape(n.shape + (1,)), parent=self.parent)
+        s.info = self.info
+        return s
 
     def outer(self, idx=None):
         r""" Return the outer product for the indices `idx` (or all if ``None``) by :math:`\sum_i|\psi_i\rangle c_i\langle\psi_i|`
