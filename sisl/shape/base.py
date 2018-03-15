@@ -50,11 +50,14 @@ class Shape(object):
 
     `__xor__` : set disjunctive union, `^` operator
 
+    Parameters
+    ----------
+    center : (3,)
+       the center of the shape
     """
     __slots__ = ('_center', )
 
     def __init__(self, center):
-        """ Initialize the Shape with a center """
         if center is None:
             self._center = np.zeros(3, np.float64).ravel()
         else:
@@ -298,10 +301,12 @@ class NullShape(PureShape):
 
     The center will be equivalent to the(maximum floating point value
     divided by 100
+
+    Initialization of the NullShape takes no (or any) arguments.
+    Since it has no volume of point in space, it does nothing.
     """
 
     def __init__(self, *args, **kwargs):
-        """ Initialize the NullShape """
         M = np.finfo(np.float64).max / 100
         self._center = np.zeros(3, np.float64).ravel() + M
 

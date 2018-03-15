@@ -59,17 +59,19 @@ class Geometry(SuperCellChild):
 
     Attributes
     ----------
-    na : int
-        number of atoms, ``len(self)``
+    na
     xyz : ndarray (*, 3)
         atomic coordinates
-    atom : Atoms
-        the atomic objects associated with each atom (indexable)
+    atom
+    orbitals
     sc : SuperCell
         the supercell describing the periodicity of the
         geometry
-    no: int
-        total number of orbitals in the geometry
+    no
+    n_s: int
+        total number of supercells in the supercell
+    no_s: int
+        total number of orbitals in the geometry times number of supercells
 
     Parameters
     ----------

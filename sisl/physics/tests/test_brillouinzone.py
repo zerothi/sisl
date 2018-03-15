@@ -107,6 +107,7 @@ class TestBrillouinZone(object):
         bz1 = MonkhorstPack(setup.s1, [2] * 3, size=0.5, trs=False)
         assert len(bz1) == 8
         assert np.all(bz1.k < 0.25)
+        assert bz1.weight.sum() == pytest.approx(0.5 ** 3)
 
     def test_trs(self, setup):
         size = [0.05, 0.5, 0.9]

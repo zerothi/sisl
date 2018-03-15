@@ -345,6 +345,8 @@ class MonkhorstPack(BrillouinZone):
                 if displacement[i] == 0. and Dn[i] > nmax:
                     nmax = Dn[i]
                     i_trs = i
+
+        # Calculate k-points and weights along all directions
         kw = [self.grid(Dn[i], displacement[i], size[i], i == i_trs) for i in (0, 1, 2)]
 
         self._k = _a.emptyd((kw[0][0].size, kw[1][0].size, kw[2][0].size, 3))

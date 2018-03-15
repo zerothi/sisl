@@ -106,9 +106,6 @@ class Orbital(object):
     __slots__ = ['R', 'tag', 'q0']
 
     def __init__(self, R, q0=0., tag=''):
-        """ Initialize the orbital class with a radius (`R`) and a tag (`tag`)
-
-        """
         self.R = R
         self.q0 = q0
         self.tag = tag

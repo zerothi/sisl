@@ -31,20 +31,40 @@ def _dot(u, v):
 
 
 class SuperCell(object):
-    """ Object to retain a super-cell and its nested values.
+    r""" A cell class to retain lattice vectors and a supercell structure
 
-    This supercell object handles cell vectors and its supercell mirrors.
+    The supercell structure is comprising the *primary* unit-cell and neighbouring
+    unit-cells. The number of supercells is given by the attribute `nsc` which
+    is a vector with 3 elements, one per lattice vector. It describes *how many*
+    times the primary unit-cell is extended along the i'th lattice vector.
+    For ``nsc[i] == 3`` the supercell is made up of 3 unit-cells. One *behind*, the
+    primary unit-cell and one *after*.
+
+    Parameters
+    ----------
+    cell : array_like
+       the lattice parameters of the unit cell (the actual cell
+       is returned from `tocell`.
+    nsc : array_like of int
+       number of supercells along each latticevector
+    origo : (3,) of float
+       the origo of the supercell.
+
+    Attributes
+    ----------
+    cell : (3, 3) of float
+       the lattice vectors (``cell[i, :]`` is the i'th vector)
+    icell : (3, 3) of float
+       the inverse lattice vectors (``icell[i, :]`` is the i'th vector inverse lattice vector)
+    rcell : (3, 3) of float
+       the reciprocal lattice vectors, equivalent to ``icell * 2 * pi``
     """
 
     # We limit the scope of this SuperCell object.
     __slots__ = ('cell', '_origo', 'volume', 'nsc', 'n_s', '_sc_off', '_isc_off')
 
     def __init__(self, cell, nsc=None, origo=None):
-        """ Initialize a `SuperCell` object from initial quantities
 
-        Initialize a `SuperCell` object with cell information
-        and number of supercells in each direction.
-        """
         if nsc is None:
             nsc = [1, 1, 1]
 
@@ -677,18 +697,35 @@ class SuperCell(object):
 
     @classmethod
     def tocell(cls, *args):
-        """ Returns a 3x3 unit-cell dependent on the input
+        r""" Returns a 3x3 unit-cell dependent on the input
 
-        If you supply a single argument it is regarded as either
-        a) a proper unit-cell
-        b) the diagonal elements in the unit-cell
+        1 argument
+          a unit-cell along Cartesian coordinates with side-length
+          equal to the argument.
 
-        If you supply 3 arguments it will be the same as the
-        diagonal elements of the unit-cell
+        3 arguments
+          the diagonal components of a Cartesian unit-cell
 
-        If you supply 6 arguments it will be the same as the
-        cell parameters, a, b, c, alpha, beta, gamma.
-        The angles should be provided in degree (not radians).
+        6 arguments
+          the cell parameters give by :math:`a`, :math:`b`, :math:`c`,
+          :math:`\alpha`, :math:`\beta` and :math:`\gamma` (angles
+          in degrees).
+
+        9 arguments
+          a 3x3 unit-cell.
+
+        Parameters
+        ----------
+        *args : float
+            May be either, 1, 3, 6 or 9 elements.
+            Note that the arguments will be put into an array and flattened
+            before checking the number of arguments.
+
+        Examples
+        --------
+        >>> cell_1_1_1 = SuperCell.tocell(1.)
+        >>> cell_1_2_3 = SuperCell.tocell(1., 2., 3.)
+        >>> cell_1_2_3 = SuperCell.tocell([1., 2., 3.]) # same as above
         """
         # Convert into true array (flattened)
         args = _a.asarrayd(args).ravel()

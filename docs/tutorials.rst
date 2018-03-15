@@ -22,7 +22,7 @@ Below is a list of the current tutorials:
 Siesta/TranSiesta support
 -------------------------
 
-sisl was initiated around the `Siesta`_/`TranSiesta`_ code. And thus it may be *very* educational to
+sisl was initiated around the `Siesta`_/`TranSiesta`_ code. And it may be *very* educational to
 look at the sisl+TBtrans+TranSiesta tutorial located `here <https://github.com/zerothi/ts-tbt-sisl-tutorial/>`_.
 
 
