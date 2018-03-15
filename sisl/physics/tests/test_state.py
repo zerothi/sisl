@@ -152,6 +152,9 @@ def test_cstate_sort1():
     state = State(ar(10, 10)).toCoeffState()
     sort = state.sort()
     assert len(state) == len(sort)
+    c = sort.c[::-1]
+    sort_descending = sort.sort(False)
+    assert np.allclose(c, sort_descending.c)
 
 
 def test_cstate_norm1():
