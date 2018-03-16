@@ -14,8 +14,7 @@ import sisl._array as _a
 import sisl._plot as plt
 from sisl.shape.prism4 import Cuboid
 from .quaternion import Quaternion
-from ._supercell import cross as _cross
-from ._supercell import dot as _dot
+from ._math_small import cross3, dot3
 from ._supercell import cell_invert, cell_reciprocal
 
 
@@ -127,14 +126,14 @@ class SuperCell(object):
 
         from math import acos
         cell = cell / abc.reshape(-1, 1)
-        alpha = acos(_dot(cell[1, :], cell[2, :])) * f
-        beta = acos(_dot(cell[0, :], cell[2, :])) * f
-        gamma = acos(_dot(cell[0, :], cell[1, :])) * f
+        alpha = acos(dot3(cell[1, :], cell[2, :])) * f
+        beta = acos(dot3(cell[0, :], cell[2, :])) * f
+        gamma = acos(dot3(cell[0, :], cell[1, :])) * f
 
         return abc[0], abc[1], abc[2], alpha, beta, gamma
 
     def _update_vol(self):
-        self.volume = abs(_dot(self.cell[0, :], _cross(self.cell[1, :], self.cell[2, :])))
+        self.volume = abs(dot3(self.cell[0, :], cross3(self.cell[1, :], self.cell[2, :])))
 
     def _fill(self, non_filled, dtype=None):
         """ Return a zero filled array of length 3 """
@@ -419,9 +418,9 @@ class SuperCell(object):
         Hence this may be used to further reduce certain computations.
         """
         cell = self.cell
-        n = _cross(cell[ax1, :], cell[ax2, :])
+        n = cross3(cell[ax1, :], cell[ax2, :])
         # Normalize
-        n /= _dot(n, n) ** 0.5
+        n /= dot3(n, n) ** 0.5
         # Now we need to figure out if the normal vector
         # is pointing outwards
         # Take the cell center
@@ -430,7 +429,7 @@ class SuperCell(object):
 
         # If d is positive then the normal vector is pointing towards
         # the center, so rotate 180
-        if _dot(n, up / 2) > 0.:
+        if dot3(n, up / 2) > 0.:
             n *= -1
 
         if origo:
@@ -756,9 +755,9 @@ class SuperCell(object):
         cell[0, :] = cell[0, :] / cl[0]
         cell[1, :] = cell[1, :] / cl[1]
         cell[2, :] = cell[2, :] / cl[2]
-        i_s = _dot(cell[0, :], cell[1, :]) < 0.001
-        i_s = _dot(cell[0, :], cell[2, :]) < 0.001 and i_s
-        i_s = _dot(cell[1, :], cell[2, :]) < 0.001 and i_s
+        i_s = dot3(cell[0, :], cell[1, :]) < 0.001
+        i_s = dot3(cell[0, :], cell[2, :]) < 0.001 and i_s
+        i_s = dot3(cell[1, :], cell[2, :]) < 0.001 and i_s
         return i_s
 
     def parallel(self, other, axis=(0, 1, 2)):
@@ -776,7 +775,7 @@ class SuperCell(object):
         for i in axis:
             a = self.cell[i, :] / fnorm(self.cell[i, :])
             b = other.cell[i, :] / fnorm(other.cell[i, :])
-            if abs(_dot(a, b) - 1) > 0.001:
+            if abs(dot3(a, b) - 1) > 0.001:
                 return False
         return True
 
@@ -793,7 +792,7 @@ class SuperCell(object):
            whether the returned value is in radians
         """
         n = fnorm(self.cell[[i, j], :])
-        ang = math.acos(_dot(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
+        ang = math.acos(dot3(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
         if rad:
             return ang
         return math.degrees(ang)

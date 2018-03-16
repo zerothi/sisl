@@ -9,33 +9,6 @@ cimport numpy.math as npmath
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef cross(np.ndarray[np.float64_t, ndim=1] u, np.ndarray[np.float64_t, ndim=1] v):
-    if u.shape[0] != v.shape[0]:
-        raise ValueError('cross: sizes of vectors are incompatible.')
-    if u.shape[0] != 3:
-        raise ValueError('cross: sizes of vectors are only implemented for dimension 3.')
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty([u.shape[0]], dtype=np.float64)
-    y[0] = u[1] * v[2] - u[2] * v[1]
-    y[1] = u[2] * v[0] - u[0] * v[2]
-    y[2] = u[0] * v[1] - u[1] * v[0]
-    return y
-
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef dot(np.ndarray[np.float64_t, ndim=1] u, np.ndarray[np.float64_t, ndim=1] v):
-    if u.shape[0] != v.shape[0]:
-        raise ValueError('dot: sizes of vectors are incompatible.')
-    cdef double res = 0.
-    cdef int n = u.shape[0]
-    cdef int i
-    for i in range(n):
-        res += u[i] * v[i]
-    return res
-
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
 cpdef cell_invert(np.ndarray[np.float64_t, ndim=2] cell):
     cdef np.ndarray[np.float64_t, ndim=2] icell = np.empty([3, 3], dtype=np.float64)
     icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]

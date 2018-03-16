@@ -1,12 +1,12 @@
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import dot, cross
-from numpy import logical_and
+from numpy import dot, logical_and
 
 import sisl._array as _a
 from sisl.linalg import inv
 from sisl.utils.mathematics import fnorm, expand
+from sisl._math_small import dot3, cross3
 
 from .base import PureShape
 
@@ -58,7 +58,7 @@ class Cuboid(PureShape):
 
     def volume(self):
         """ Return volume of Cuboid """
-        return dot(self._v[0, :], cross(self._v[1, :], self._v[2, :]))
+        return abs(dot3(self._v[0, :], cross3(self._v[1, :], self._v[2, :])))
 
     def set_center(self, center):
         """ Re-setting the center can sometimes be necessary """

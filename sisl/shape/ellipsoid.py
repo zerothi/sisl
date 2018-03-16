@@ -8,6 +8,7 @@ from numpy import fabs, logical_and
 from sisl.messages import warn
 import sisl._array as _a
 from sisl.utils.mathematics import orthogonalize, fnorm, fnorm2, expand
+from sisl._math_small import product3
 
 from .base import PureShape
 
@@ -71,7 +72,7 @@ class Ellipsoid(PureShape):
 
     def volume(self):
         """ Return the volume of the shape """
-        return 4. / 3. * pi * np.product(self.radius)
+        return 4. / 3. * pi * product3(self.radius)
 
     def scale(self, scale):
         """ Return a new shape with a larger corresponding to `scale`

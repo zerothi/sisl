@@ -13,7 +13,8 @@ def configuration(parent_package='', top_path=None):
     config.add_subpackage('unit')
     config.add_subpackage('utils')
 
-    # Add Cython extension
+    # Add Cython extensions
+    config.add_extension('_math_small', sources=['_math_small.c'])
     config.add_extension('_supercell', sources=['_supercell.c'])
 
     config.add_data_dir('tests')
