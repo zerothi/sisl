@@ -44,16 +44,6 @@ if osp.exists('MANIFEST'):
     os.remove('MANIFEST')
 
 
-def generate_cython():
-    cwd = osp.abspath(osp.dirname(__file__))
-    print("Cythonizing sources")
-    p = subprocess.call([sys.executable,
-                         osp.join(cwd, 'tools', 'cythonize.py'),
-                         'sisl'],
-                        cwd=cwd)
-    if p != 0:
-        raise RuntimeError("Running cythonize failed!")
-
 install_requires = ['setuptools', 'numpy>=1.9']
 
 # Create list of all sub-directories with

@@ -14,20 +14,12 @@ import sisl._array as _a
 import sisl._plot as plt
 from sisl.shape.prism4 import Cuboid
 from .quaternion import Quaternion
+from ._supercell import cross as _cross
+from ._supercell import dot as _dot
+from ._supercell import cell_invert, cell_reciprocal
+
 
 __all__ = ['SuperCell', 'SuperCellChild']
-
-
-def _cross(u, v):
-    """ Cross product u x v """
-    return np.array([u[1] * v[2] - u[2] * v[1],
-                     u[2] * v[0] - u[0] * v[2],
-                     u[0] * v[1] - u[1] * v[0]])
-
-
-def _dot(u, v):
-    """ Dot product u . v """
-    return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
 
 
 class SuperCell(object):
@@ -142,9 +134,7 @@ class SuperCell(object):
         return abc[0], abc[1], abc[2], alpha, beta, gamma
 
     def _update_vol(self):
-        self.volume = np.abs(dot(self.cell[0, :],
-                                 np.cross(self.cell[1, :], self.cell[2, :])
-        ))
+        self.volume = abs(_dot(self.cell[0, :], _cross(self.cell[1, :], self.cell[2, :])))
 
     def _fill(self, non_filled, dtype=None):
         """ Return a zero filled array of length 3 """
@@ -431,7 +421,7 @@ class SuperCell(object):
         cell = self.cell
         n = _cross(cell[ax1, :], cell[ax2, :])
         # Normalize
-        n /= _dot(n, n) ** .5
+        n /= _dot(n, n) ** 0.5
         # Now we need to figure out if the normal vector
         # is pointing outwards
         # Take the cell center
@@ -450,29 +440,12 @@ class SuperCell(object):
 
     @property
     def icell(self):
-        """ Returns the reciprocal (inverse) cell for the `SuperCell` without factor ``2*np.pi``
+        """ Returns the reciprocal (inverse) cell for the `SuperCell`.
 
-        Note: The returned vectors are still in [0, :] format
+        Note: The returned vectors are still in ``[0, :]`` format
         and not as returned by an inverse LAPACK algorithm.
         """
-        # Calculate the reciprocal cell
-        # This should probably be changed and checked for
-        # transposition
-        cell = self.cell
-        icell = np.empty([3, 3], dtype=cell.dtype)
-        icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
-        icell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
-        icell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]
-        icell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]
-        icell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]
-        icell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]
-        icell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
-        icell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]
-        icell[2, 2] = cell[0, 0] * cell[1, 1] - cell[0, 1] * cell[1, 0]
-        icell[0, :] = icell[0, :] / dot(icell[0, :], cell[0, :])
-        icell[1, :] = icell[1, :] / dot(icell[1, :], cell[1, :])
-        icell[2, :] = icell[2, :] / dot(icell[2, :], cell[2, :])
-        return icell
+        return cell_invert(self.cell)
 
     @property
     def rcell(self):
@@ -481,7 +454,7 @@ class SuperCell(object):
         Note: The returned vectors are still in [0, :] format
         and not as returned by an inverse LAPACK algorithm.
         """
-        return self.icell * 2 * np.pi
+        return cell_reciprocal(self.cell)
 
     def rotatea(self, angle, only='abc', rad=False):
         return self.rotate(angle, self.cell[0, :], only=only, rad=rad)
@@ -783,9 +756,9 @@ class SuperCell(object):
         cell[0, :] = cell[0, :] / cl[0]
         cell[1, :] = cell[1, :] / cl[1]
         cell[2, :] = cell[2, :] / cl[2]
-        i_s = dot(cell[0, :], cell[1, :]) < 0.001
-        i_s = dot(cell[0, :], cell[2, :]) < 0.001 and i_s
-        i_s = dot(cell[1, :], cell[2, :]) < 0.001 and i_s
+        i_s = _dot(cell[0, :], cell[1, :]) < 0.001
+        i_s = _dot(cell[0, :], cell[2, :]) < 0.001 and i_s
+        i_s = _dot(cell[1, :], cell[2, :]) < 0.001 and i_s
         return i_s
 
     def parallel(self, other, axis=(0, 1, 2)):
@@ -803,7 +776,7 @@ class SuperCell(object):
         for i in axis:
             a = self.cell[i, :] / fnorm(self.cell[i, :])
             b = other.cell[i, :] / fnorm(other.cell[i, :])
-            if abs(dot(a, b) - 1) > 0.001:
+            if abs(_dot(a, b) - 1) > 0.001:
                 return False
         return True
 
@@ -820,7 +793,7 @@ class SuperCell(object):
            whether the returned value is in radians
         """
         n = fnorm(self.cell[[i, j], :])
-        ang = math.acos(dot(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
+        ang = math.acos(_dot(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
         if rad:
             return ang
         return math.degrees(ang)

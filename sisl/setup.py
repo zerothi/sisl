@@ -3,6 +3,7 @@ from __future__ import print_function, division
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
+
     config = Configuration('sisl', parent_package, top_path)
     config.add_subpackage('geom')
     config.add_subpackage('io')
@@ -11,6 +12,10 @@ def configuration(parent_package='', top_path=None):
     config.add_subpackage('shape')
     config.add_subpackage('unit')
     config.add_subpackage('utils')
+
+    # Add Cython extension
+    config.add_extension('_supercell', sources=['_supercell.c'])
+
     config.add_data_dir('tests')
     config.make_config_py()
     return config

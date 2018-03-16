@@ -135,12 +135,12 @@ class TestGrid(object):
         assert np.allclose(setup.g.grid, g1.grid)
 
     def test_index_ndim1(self, setup):
-        mid = np.array(setup.g.shape, np.int32) // 2
-        idx = setup.g.index(setup.sc.center())
+        mid = np.array(setup.g.shape, np.int32) // 2 - 1
+        v = [0.001, 0., 0.001]
+        idx = setup.g.index(setup.sc.center() - v)
         assert np.all(mid == idx)
-
         for i in range(3):
-            idx = setup.g.index(setup.sc.center(), axis=i)
+            idx = setup.g.index(setup.sc.center() - v, axis=i)
             assert idx == mid[i]
 
     @pytest.mark.xfail(raises=ValueError)
@@ -148,12 +148,13 @@ class TestGrid(object):
         setup.g.index([0.1, 0.2])
 
     def test_index_ndim2(self, setup):
-        mid = np.array(setup.g.shape, np.int32) // 2
-        idx = setup.g.index([[0]*3, setup.sc.center()])
+        mid = np.array(setup.g.shape, np.int32) // 2 - 1
+        v = [0.001, 0., 0.001]
+        idx = setup.g.index([[0]*3, setup.sc.center() - v])
         assert np.allclose([[0] * 3, mid], idx)
 
         for i in range(3):
-            idx = setup.g.index([[0]*3, setup.sc.center()], axis=i)
+            idx = setup.g.index([[0]*3, setup.sc.center() - v], axis=i)
             assert np.allclose([[0, 0, 0][i], mid[i]], idx)
 
     def test_index_shape1(self, setup):
@@ -170,12 +171,13 @@ class TestGrid(object):
         # Also we can check whether they are the same if we add the
         # offset
         v = g.dcell.sum(0)
+        vd = v * 0.001
         s = Ellipsoid(1.)
         idx0 = g.index(s)
         idx0.sort(0)
         for d in [10, 15, 20, 60, 100, 340]:
-            idx = g.index(v * d)
-            s = Ellipsoid(1., center=v * d)
+            idx = g.index(v * d + vd)
+            s = Ellipsoid(1., center=v * d + vd)
             idx1 = g.index(s)
             idx1.sort(0)
             assert len(idx1) == len(idx0)
@@ -195,12 +197,13 @@ class TestGrid(object):
         # Also we can check whether they are the same if we add the
         # offset
         v = g.dcell.sum(0)
+        vd = v * 0.001
         s = Cuboid(1.)
         idx0 = g.index(s)
         idx0.sort(0)
         for d in [10, 15, 20, 60, 100, 340]:
-            idx = g.index(v * d)
-            s = Cuboid(1., center=v * d)
+            idx = g.index(v * d + vd)
+            s = Cuboid(1., center=v * d + vd)
             idx1 = g.index(s)
             idx1.sort(0)
             assert len(idx1) == len(idx0)
