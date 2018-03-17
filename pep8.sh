@@ -10,7 +10,9 @@ select="E101,E20,E211,E231,E301,E302,E303,E304,E309,W291,W293,W391"
 select="$select,E711,E712"
 # Imports on single lines
 select="$select,E401"
-autopep8 --select "$select" --in-place -r --exclude build,dist .
+autopep8 -j -1 --select "$select" --in-place -r --exclude build,dist . **/*.pyx
 
 # Non-Python files
 autopep8 --select "W291,W293" --in-place CHANGELOG
+
+
