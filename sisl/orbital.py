@@ -81,27 +81,27 @@ def _rspherical_harm(m, l, theta, cos_phi):
 
 
 class Orbital(object):
-    """ Base class for orbital information. This base class holds nothing but the *tag* and the orbital radius
+    """ Base class for orbital information.
 
     The orbital class is still in an experimental stage and will probably evolve over some time.
 
     Parameters
     ----------
     R : float
-        the orbital radius
+        maximum radius
     q0 : float, optional
-        the orbital initial charge
+        initial charge
     tag : str, optional
-        the provided tag of the orbital
+        user defined tag
 
     Attributes
     ----------
     R : float
-        the maximum orbital range, any query on values beyond this range should return 0.
+        maximum radius (in Ang)
     q0 : float
-        the charge on the orbital, (only for initialization purposes)
-    tag :
-        the assigned tag for this orbital
+        initial electronic charge
+    tag : str
+        user defined tag
     """
     __slots__ = ['R', 'tag', 'q0']
 
@@ -296,45 +296,44 @@ class SphericalOrbital(Orbital):
     number :math:`n` is not necessary as that value is implicit in the
     :math:`\phi_{ln}(|\mathbf r|)` function.
 
+
+    Parameters
+    ----------
+    l : int
+       azimuthal quantum number
+    rf_or_func : tuple of (r, f) or func
+       radial components as a tuple/list, or the function which can interpolate to any R
+       See `set_radial` for details.
+    q0 : float, optional
+       initial charge
+    tag : str, optional
+       user defined tag
+
     Attributes
     ----------
     R : float
-        the maximum orbital range
+        maximum radius (in Ang)
     q0 : float
-        the charge on the orbital, (only for initialization purposes)
+        initial electronic charge
     l : int
         azimuthal quantum number
     f : func
-        the interpolation function that returns `f(r)` for the provided data
-    tag : str, optional
-        a tag for this orbital
+        interpolation function that returns `f(r)` for a given radius
+    tag : str
+       user defined tag
+
+    Examples
+    --------
+    >>> from scipy.interpolate import interp1d
+    >>> orb = SphericalOrbital(1, (np.arange(10.), np.arange(10.)))
+    >>> orb.equal(SphericalOrbital(1, interp1d(np.arange(10.), np.arange(10.),
+    ...       fill_value=(0., 0.), kind='cubic', bounds_error=False)))
+    True
     """
     # Additional slots (inherited classes retain the same slots)
     __slots__ = ['l', 'f']
 
     def __init__(self, l, rf_or_func, q0=0., tag=''):
-        """ Initialize a spherical orbital via a radial grid
-
-        Parameters
-        ----------
-        l : int
-           azimuthal quantum number
-        rf_or_func : tuple of (r, f) or func
-           the radial components as a tuple/list, or the function which can interpolate to any R
-           See `set_radial` for details.
-        q0 : float, optional
-           the orbital initial charge
-        tag : str, optional
-           tag of the orbital
-
-        Examples
-        --------
-        >>> from scipy.interpolate import interp1d
-        >>> orb = SphericalOrbital(1, (np.arange(10.), np.arange(10.)))
-        >>> orb.equal(SphericalOrbital(1, interp1d(np.arange(10.), np.arange(10.),
-        ...       fill_value=(0., 0.), kind='cubic', bounds_error=False)))
-        True
-        """
         self.l = l
 
         # Set the internal function
@@ -649,7 +648,7 @@ class SphericalOrbital(Orbital):
 
 
 class AtomicOrbital(Orbital):
-    r""" A projected atomic orbital made of real harmonics
+    r""" A projected atomic orbital consisting of real harmonics
 
     The `AtomicOrbital` is a specification of the `SphericalOrbital` by
     assigning the magnetic quantum number :math:`m` to the object.
@@ -657,10 +656,19 @@ class AtomicOrbital(Orbital):
     `AtomicOrbital` should always be preferred over the
     `SphericalOrbital` because it explicitly contains *all* quantum numbers.
 
+    Parameters
+    ----------
+    *args : list of arguments
+        list of arguments can be in different input options
+    q0 : float, optional
+        initial charge
+    tag : str, optional
+        user defined tag
+
     Attributes
     ----------
     R : float
-        the maximum orbital range
+        maximum radius (in Ang)
     n : int
         principal quantum number
     l : int
@@ -669,14 +677,22 @@ class AtomicOrbital(Orbital):
         magnetic quantum number
     Z : int
         zeta shell
-    P : int
+    P : bool
         whether this corresponds to a polarized shell (``True``)
     f : func
-        the interpolation function that returns `f(r)` for the provided data
+        interpolation function that returns `f(r)` for a given radius
     q0 : float
-        the charge on the orbital, (only for initialization purposes)
-    tag : str or None
-        a tag for this orbital
+        initial electronic charge
+    tag : str
+        user defined tag
+
+    Examples
+    --------
+    >>> r = np.linspace(0, 5, 50)
+    >>> f = np.exp(-r)
+    >>> #                    n, l, m, [Z, [P]]
+    >>> orb1 = AtomicOrbital(2, 1, 0, 1, (r, f))
+    >>> orb2 = AtomicOrbital(n=2, l=1, m=0, Z=1, (r, f))
     """
 
     # All of these follow standard notation:
@@ -692,12 +708,6 @@ class AtomicOrbital(Orbital):
     def __init__(self, *args, **kwargs):
         """ Initialize the orbital class with a radius (`R`) and a tag (`tag`)
 
-        Parameters
-        ----------
-        *args : list of arguments
-           the list of arguments can be in different input options
-        tag : str, optional
-           the provided tag of the orbital
         """
         # Immediately setup R and tag
         super(AtomicOrbital, self).__init__(0., kwargs.get('q0', 0.), kwargs.get('tag', ''))
