@@ -44,16 +44,16 @@ def indices(np.ndarray[np.int32_t, ndim=1] search, np.ndarray[np.int32_t, ndim=1
     """
     cdef int n_search = search.shape[0]
     cdef int n_value = value.shape[0]
-    
+
     # Ensure contiguous arrays
-    cdef int [::1] SEARCH = search
-    cdef int [::1] VALUE = value
-    
+    cdef int[::1] SEARCH = search
+    cdef int[::1] VALUE = value
+
     cdef np.ndarray[np.int32_t, ndim=1] indices = np.empty([n_value], dtype=np.int32)
-    cdef int [::1] IDX = indices
+    cdef int[::1] IDX = indices
 
     _indices(n_search, SEARCH, n_value, VALUE, offset, IDX)
-    
+
     return indices
 
 
