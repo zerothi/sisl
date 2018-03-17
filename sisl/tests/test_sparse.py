@@ -8,6 +8,7 @@ import scipy as sc
 
 from sisl.utils.ranges import array_arange
 from sisl.sparse import *
+from sisl.sparse import indices
 
 
 @pytest.fixture
@@ -22,6 +23,20 @@ def setup():
 
 @pytest.mark.sparse
 class TestSparseCSR(object):
+
+    def test_indices(self):
+        search = np.array([1, 4, 5, 0], np.int32)
+        val = np.array([0, 5], np.int32)
+        idx = indices(search, val, 0)
+        assert np.allclose(idx, [3, 2])
+        val = np.array([0, 1, 5], np.int32)
+        idx = indices(search, val, 0)
+        assert np.allclose(idx, [3, 0, 2])
+        idx = indices(search, val, 20)
+        assert np.allclose(idx, [23, 20, 22])
+        val = np.array([-1, 0, 1, 5, 10], np.int32)
+        idx = indices(search, val, 20)
+        assert np.allclose(idx, [-1, 23, 20, 22, -1])
 
     @pytest.mark.xfail(raises=ValueError)
     def test_fail_init1(self):

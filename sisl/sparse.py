@@ -19,6 +19,7 @@ from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
 import sisl._array as _a
+from ._math_small import indices
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype
 from ._help import _range as range, _zip as zip, _map as map
@@ -28,22 +29,6 @@ from .utils.ranges import array_arange
 # we use it slightly differently and thus require this new sparse pattern.
 
 __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
-
-
-def indices_single(col, value, offset=0):
-    """ Return indices of values in col with a possible offset """
-    w = (col == value).nonzero()[0]
-    if len(w) == 0:
-        return -1
-    else:
-        return offset + w[0]
-
-# Vectorize the function,
-# The return-type is always numpy.int32
-# The column indices are passed "as-is" via the
-# excluded keyword
-indices = np.vectorize(indices_single, otypes=[np.int32],
-                       excluded=[0, 'col'])
 
 
 class SparseCSR(object):
