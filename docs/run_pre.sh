@@ -18,13 +18,3 @@ mkdir -p build
 
 # Clean-up autosummary docs
 rm -rf api-generated
-
-exit 0
-# Simple documentation script to generate the documentation
-rm -rf sisl-api
-mkdir sisl-api
-if [ -e ../setup.py ]; then
-    sphinx-apidoc -fMeET -o sisl-api ../sisl ../sisl/**/setup.py ../sisl/**/tests/*
-elif [ -e ../../setup.py ]; then
-    sphinx-apidoc -fMeET -o sisl-api ../../sisl ../../sisl/**/setup.py ../../sisl/**/tests/*
-fi

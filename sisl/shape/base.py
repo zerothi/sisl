@@ -8,7 +8,7 @@ import sisl._array as _a
 from sisl.utils.mathematics import fnorm
 
 
-__all__ = ['Shape', 'PureShape', 'NullShape']
+__all__ = ['Shape', 'CompositeShape', 'PureShape', 'NullShape']
 
 
 class Shape(object):
@@ -176,7 +176,7 @@ class CompositeShape(Shape):
 
     def toCuboid(self):
         """ Create a cuboid which is surely encompassing the *full* shape """
-        return self.toSphere().toCuboid()
+        return self.toEllipsoid().toCuboid()
 
     def toSphere(self):
         """ Create a sphere which is surely encompassing the *full* shape """
