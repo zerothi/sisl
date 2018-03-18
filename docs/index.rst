@@ -79,8 +79,15 @@ Indices
    :maxdepth: 2
 
    introduction
-   cite
    other.rst
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Publications
+
+   cite
+   publications
 
 .. toctree::
    :hidden:

@@ -1,7 +1,7 @@
 .. _citing:
 
-Citing
-======
+Citing sisl
+===========
 
 sisl is an open-source software package intended for the scientific community. It is
 released under the LGPL-3 license.
