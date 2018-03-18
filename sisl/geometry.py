@@ -2039,19 +2039,14 @@ class Geometry(SuperCellChild):
             dxa = dxa[ix, :]
             del ix
 
-        # Create default return
-        ret = [[_a.emptyi([0])] * len(R)]
-        i = 0
-        if ret_xyz:
-            i += 1
-            rc = i
-            ret.append([_a.emptyd([0, 3])] * len(R))
-        if ret_rij:
-            i += 1
-            rc = i
-            ret.append([_a.emptyd([0])] * len(R))
-
         if len(dxa) == 0:
+            # Create default return
+            ret = [[_a.emptyi([0])] * len(R)]
+            if ret_xyz:
+                ret.append([_a.emptyd([0, 3])] * len(R))
+            if ret_rij:
+                ret.append([_a.emptyd([0])] * len(R))
+
             # Quick return if there are
             # no entries...
             if len(R) == 1:
@@ -2089,26 +2084,38 @@ class Geometry(SuperCellChild):
         # then we immediately reduce search space to this subspace
         tidx = indices_below(d, R[0])
         ret = [[idx[tidx]]]
-        i = 0
+        r_app = ret[0].append
         if ret_xyz:
-            rc = i + 1
-            i += 1
             ret.append([xa[tidx]])
+            r_appx = ret[1].append
         if ret_rij:
-            rd = i + 1
-            i += 1
             ret.append([d[tidx]])
-        for i in range(1, len(R)):
-            # Search in the sub-space
-            # Notice that this sub-space reduction will never
-            # allow the same indice to be in two ranges (due to
-            # numerics)
-            tidx = indices_between(d, R[i-1], R[i])
-            ret[0].append(idx[tidx])
-            if ret_xyz:
-                ret[rc].append(xa[tidx])
-            if ret_rij:
-                ret[rd].append(d[tidx])
+            r_appd = ret[-1].append
+
+        if ret_xyz and ret_rij:
+            for i in range(1, len(R)):
+                # Search in the sub-space
+                # Notice that this sub-space reduction will never
+                # allow the same indice to be in two ranges (due to
+                # numerics)
+                tidx = indices_between(d, R[i-1], R[i])
+                r_app(idx[tidx])
+                r_appx(xa[tidx])
+                r_appd(d[tidx])
+        elif ret_xyz:
+            for i in range(1, len(R)):
+                tidx = indices_between(d, R[i-1], R[i])
+                r_app(idx[tidx])
+                r_appx(xa[tidx])
+        elif ret_rij:
+            for i in range(1, len(R)):
+                tidx = indices_between(d, R[i-1], R[i])
+                r_app(idx[tidx])
+                r_appd(d[tidx])
+        else:
+            for i in range(1, len(R)):
+                tidx = indices_between(d, R[i-1], R[i])
+                r_app(idx[tidx])
 
         if ret_xyz or ret_rij:
             return ret
