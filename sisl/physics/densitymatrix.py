@@ -294,7 +294,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
             return zip(ja, ja % geom.na)
 
         # Retrieve progressbar
-        eta = tqdm_eta(len(geom), self.__class__.__name__ + '.rho', 'atoms', eta)
+        eta = tqdm_eta(len(geom), self.__class__.__name__ + '.rho', 'atom', eta)
 
         # Loop over all atoms in unitcell
         for ia in geom:

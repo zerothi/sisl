@@ -649,7 +649,7 @@ class EigenState(EigenSystem):
         phase = 1
 
         # Retrieve progressbar
-        eta = tqdm_eta(len(IA), self.__class__.__name__ + '.psi', 'atoms', eta)
+        eta = tqdm_eta(len(IA), self.__class__.__name__ + '.psi', 'atom', eta)
 
         # Loop over all atoms in the full supercell structure
         for ia, xyz, isc in zip(IA, XYZ - grid.origo.reshape(1, 3), ISC):
