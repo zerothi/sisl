@@ -26,14 +26,13 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    Computer Physics Communications **212**, `8 (2017) <https://doi.org/10.1016/j.cpc.2016.09.022>`_
 
 
-
 arXiv publications
 ------------------
 
 These publications are as far as we know in the review process.
 
-#. `*Exfoliation of single layer BiTeI flakes* <https://arxiv.org/abs/1709.09732>`_
+#. `Exfoliation of single layer BiTeI flakes <https://arxiv.org/abs/1709.09732>`_
 
-#. `*Simple LCAO basis sets for the first unoccupied bands in graphene* <https://arxiv.org/abs/1803.01568>`_
+#. `Simple LCAO basis sets for the first unoccupied bands in graphene <https://arxiv.org/abs/1803.01568>`_
 
-#. `*Charge transport in doped zigzag phosphorene nanoribbons* <https://arxiv.org/abs/1803.00751>`_
+#. `Charge transport in doped zigzag phosphorene nanoribbons <https://arxiv.org/abs/1803.00751>`_
