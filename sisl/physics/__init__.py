@@ -64,7 +64,7 @@ States
    :toctree:
 
    State
-   CState
+   CoeffState
 
 Distribution functions
 ======================
