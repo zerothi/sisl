@@ -13,14 +13,13 @@ from sisl.supercell import SuperCell
 
 
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
-__all__ += ['MonkhorstPackBZ', 'PackBZ']
 
 
 class BrillouinZone(object):
     """ A class to construct Brillouin zone related quantities
 
-    It takes any object as an argument and can then return
-    the k-points in non-reduced units from reduced units.
+    It takes any object (which has access to cell-vectors) as an argument
+    and can then return the k-points in non-reduced units from reduced units.
 
     The object associated with the BrillouinZone object *has* to implement
     at least two different properties:
@@ -31,17 +30,15 @@ class BrillouinZone(object):
     The object may also be an array of floats in which case an internal
     `SuperCell` object will be created from the cell vectors (see `SuperCell` for
     details).
+
+    Parameters
+    ----------
+    parent : object or array_like
+       An object with associated ``parent.cell`` and ``parent.rcell`` or
+       an array of floats which may be turned into a `SuperCell`
     """
 
     def __init__(self, parent):
-        """ Initialize a `BrillouinZone` object from a given `SuperCell`
-
-        Parameters
-        ----------
-        parent : object or array_like
-           An object with associated ``parent.cell`` and ``parent.rcell`` or
-           an array of floats which may be turned into a `SuperCell`
-        """
         try:
             # It probably has the supercell attached
             parent.cell
@@ -285,31 +282,37 @@ class BrillouinZone(object):
 
 
 class MonkhorstPack(BrillouinZone):
-    """ Create a Monkhorst-Pack grid for the Brillouin zone """
+    r""" Create a Monkhorst-Pack grid for the Brillouin zone
+
+    Parameters
+    ----------
+    parent : object or array_like
+       An object with associated `parent.cell` and `parent.rcell` or
+       an array of floats which may be turned into a `SuperCell`
+    nktp : array_like of ints
+       a list of number of k-points along each cell direction
+    displacement : float or array_like of float, optional
+       the displacement of the evenly spaced grid, a single floating
+       number is the displacement for the 3 directions, else they
+       are the individual displacements
+    size : float or array_like of float, optional
+       the size of the Brillouin zone sampled. This reduces the boundaries
+       of the Brillouin zone around the displacement to the fraction specified.
+       I.e. `size` must be of values :math:`]0 ; 1]`. Default to the entire BZ.
+       Note that this will also reduce the weights such that the weights
+       are normalized to the entire BZ.
+    trs : bool, optional
+       whether time-reversal symmetry exists in the Brillouin zone.
+
+    Examples
+    --------
+    >>> sc = SuperCell(3.)
+    >>> MonkhorstPack(sc, 10) # 10 x 10 x 10 (with TRS)
+    >>> MonkhorstPack(sc, [10, 5, 5]) # 10 x 5 x 5 (with TRS)
+    >>> MonkhorstPack(sc, [10, 5, 5], trs=False) # 10 x 5 x 5 (without TRS)
+    """
 
     def __init__(self, parent, nkpt, displacement=None, size=None, trs=True):
-        r""" Instantiate the `MonkhorstPack` by a number of points in each direction
-
-        Parameters
-        ----------
-        parent : object or array_like
-           An object with associated `parent.cell` and `parent.rcell` or
-           an array of floats which may be turned into a `SuperCell`
-        nktp : array_like of ints
-           a list of number of k-points along each cell direction
-        displacement : float or array_like of float, optional
-           the displacement of the evenly spaced grid, a single floating
-           number is the displacement for the 3 directions, else they
-           are the individual displacements
-        size : float or array_like of float, optional
-           the size of the Brillouin zone sampled. This reduces the boundaries
-           of the Brillouin zone around the displacement to the fraction specified.
-           I.e. `size` must be of values :math:`]0 ; 1]`. Default to the entire BZ.
-           Note that this will also reduce the weights such that the weights
-           are normalized to the entire BZ.
-        trs : bool, optional
-           whether time-reversal symmetry exists in the Brillouin zone.
-        """
         super(MonkhorstPack, self).__init__(parent)
 
         if isinstance(nkpt, Integral):
@@ -416,31 +419,34 @@ class MonkhorstPack(BrillouinZone):
         return k, w
 
 
-MonkhorstPackBZ = MonkhorstPack
-
-
 class BandStructure(BrillouinZone):
-    """ Create a path in the Brillouin zone for plotting band-structures etc. """
+    """ Create a path in the Brillouin zone for plotting band-structures etc.
+
+    Parameters
+    ----------
+    parent : object or array_like
+       An object with associated `parentcell` and `parent.rcell` or
+       an array of floats which may be turned into a `SuperCell`
+    point : array_like of float
+       a list of points that are the *corners* of the path
+    division : int or array_like of int
+       number of divisions in each segment.
+       If a single integer is passed it is the total number
+       of points on the path (equally separated).
+       If it is an array_like input it must have length one
+       less than `point`.
+    name : array_like of str
+       the associated names of the points on the Brillouin Zone path
+
+    Examples
+    --------
+    >>> sc = SuperCell(10)
+    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3], 200)
+    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200)
+    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
+    """
 
     def __init__(self, parent, point, division, name=None):
-        """ Instantiate the `BandStructure` by a set of special `points` separated in `divisions`
-
-        Parameters
-        ----------
-        parent : object or array_like
-           An object with associated `parentcell` and `parent.rcell` or
-           an array of floats which may be turned into a `SuperCell`
-        point : array_like of float
-           a list of points that are the *corners* of the path
-        division : int or array_like of int
-           number of divisions in each segment.
-           If a single integer is passed it is the total number
-           of points on the path (equally separated).
-           If it is an array_like input it must have length one
-           less than `point`.
-        name : array_like of str
-           the associated names of the points on the Brillouin Zone path
-        """
         super(BandStructure, self).__init__(parent)
 
         # Copy over points
@@ -589,6 +595,3 @@ class BandStructure(BrillouinZone):
 
     def __len__(self):
         return sum(self.division)
-
-
-PackBZ = BandStructure
