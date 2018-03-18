@@ -721,6 +721,7 @@ class SparseCSR(object):
 
         # fast reference
         ptr = self.ptr
+        ptr_i = ptr[i]
         ncol = self.ncol
         col = self.col
 
@@ -732,7 +733,7 @@ class SparseCSR(object):
             # Checks whether any non-zero elements are
             # already in the sparse pattern
             # If so we remove those from the j
-            exists = intersect1d(j, col[ptr[i]:ptr[i]+ncol[i]],
+            exists = intersect1d(j, col[ptr_i:ptr_i+ncol[i]],
                                  assume_unique=True)
         else:
             exists = _a.arrayi([])
@@ -743,7 +744,7 @@ class SparseCSR(object):
 
         # Check how many elements cannot fit in the currently
         # allocated sparse matrix...
-        new_nnz = ncol[i] + new_n - (ptr[i + 1] - ptr[i])
+        new_nnz = ncol[i] + new_n - (ptr[i + 1] - ptr_i)
 
         if new_nnz > 0:
 
@@ -759,12 +760,9 @@ class SparseCSR(object):
 
             # ...expand size of the sparsity pattern...
 
-            # Insert pointer of new data
-            iptr = ptr[i] + ncol[i]
-
             # Insert new empty elements in the column index
             # after the column
-            self.col = insert(self.col, iptr,
+            self.col = insert(self.col, ptr_i + ncol[i],
                               empty(ns, self.col.dtype))
 
             # update reference
@@ -784,7 +782,7 @@ class SparseCSR(object):
             # Ensure that we write the new elements to the matrix...
 
             # new data begins from this index location
-            old_ptr = ptr[i] + ncol[i]
+            old_ptr = ptr_i + ncol[i]
 
             # assign the column indices for the new entries
             # NOTE that this may not assign them in the order
@@ -801,7 +799,7 @@ class SparseCSR(object):
         # information that is required...
 
         # ... retrieve the indices and return
-        return indices(col[ptr[i]:ptr[i] + ncol[i]], j, ptr[i])
+        return indices(col[ptr_i:ptr_i + ncol[i]], j, ptr_i)
 
     def _get(self, i, j):
         """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``
