@@ -632,7 +632,7 @@ class EigenState(EigenSystem):
             # Create the actual geometry that encompass the grid
             ia, xyz, _ = geom.inf_within(sc)
             if len(ia) > 0:
-                grid.set_geometry(Geometry(xyz, geom.atom[ia], sc=grid.sc))
+                grid.set_geometry(Geometry(xyz, geom.atom[ia], sc=sc))
 
         # Instead of looping all atoms in the supercell we find the exact atoms
         # and their supercell indices.

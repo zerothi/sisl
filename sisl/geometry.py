@@ -2936,8 +2936,7 @@ class Geometry(SuperCellChild):
         tile = tile_max - tile_min
         # We displace *all* atoms 0.1 Ang along each lattice vector.
         # This should take care of numerical accuracy in the fxyz routine
-        small_fxyz = 0.1 / fnorm(self.cell)
-        min_xyz = dot(small_fxyz - self.fxyz.min(0), self.cell)
+        min_xyz = dot(0.1 / fnorm(self.cell), self.cell)
         full_geom = (self.translate(min_xyz) * tile).translate(big_origo)
 
         # Now we have to figure out all atomic coordinates within
