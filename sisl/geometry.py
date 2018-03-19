@@ -13,6 +13,7 @@ from numpy import dot, square, sqrt
 import sisl._plot as plt
 import sisl._array as _a
 
+from ._math_small import is_ascending
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from .messages import warn
 from ._help import _str
@@ -2016,12 +2017,12 @@ class Geometry(SuperCellChild):
 
         # Get atomic coordinate in principal cell
         if idx_xyz is None:
-            dxa = self[idx, :] + foff[None, :]
+            dxa = np.add(self.axyz(idx), foff.reshape(1, 3))
         else:
             # For extremely large systems re-using the
             # idx_xyz is faster than indexing
             # a very large array
-            dxa = idx_xyz[:, :] + foff[None, :]
+            dxa = np.add(idx_xyz, foff.reshape(1, 3))
 
         # Immediately downscale by easy checking
         # This will reduce the computation of the vector-norm
@@ -2075,9 +2076,9 @@ class Geometry(SuperCellChild):
                 return ret
             return ret[0]
 
-        if np.any(np.diff(R) < 0.):
-            raise ValueError(('Proximity checks for several quantities '
-                              'at a time requires ascending R values.'))
+        if not is_ascending(R):
+            raise ValueError(self.__class__.__name__ + '.close_sc proximity checks for several '
+                             'quantities at a time requires ascending R values.')
 
         # The more neigbours you wish to find the faster this becomes
         # We only do "one" heavy duty search,
