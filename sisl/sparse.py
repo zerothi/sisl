@@ -130,8 +130,8 @@ class SparseCSR(object):
                                   **kwargs)
 
             elif len(arg1) != 3:
-                raise ValueError(('The sparse array *must* be created '
-                                  'with data, indices, indptr'))
+                raise ValueError('The sparse array *must* be created '
+                                 'with data, indices, indptr')
             else:
 
                 # Correct dimension according to passed array
@@ -362,8 +362,8 @@ class SparseCSR(object):
                 ccol = col[sl].view()
                 DD = D[sl, :].view()
                 if unique(ccol).shape[0] != ptr2 - ptr1:
-                    raise ValueError(('You cannot have two elements between the same ' +
-                                      'i,j index ({}), something has went terribly wrong.'.format(ptr1)))
+                    raise ValueError('You cannot have two elements between the same ' +
+                                     'i,j index ({}), something has went terribly wrong.'.format(ptr1))
                 idx = argsort(ccol)
                 # Do in-place sorting
                 ccol[:] = ccol[idx]
@@ -374,8 +374,8 @@ class SparseCSR(object):
                 ptr1 = ptr[r]
                 ptr2 = ptr[r+1]
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
-                    raise ValueError(('You cannot have two elements between the same ' +
-                                      'i,j index ({}), something has went terribly wrong.'.format(ptr1)))
+                    raise ValueError('You cannot have two elements between the same ' +
+                                     'i,j index ({}), something has went terribly wrong.'.format(ptr1))
         # Since map puts it on the stack, we have to force the evaluation.
         list(map(func, range(self.shape[0])))
 
@@ -389,7 +389,7 @@ class SparseCSR(object):
                  "of the matrix. Data may not represent what is expected!")
 
         # Signal that we indeed have finalized the data
-        self._finalized = True
+        self._finalized = sort
 
     def edges(self, row, exclude=None):
         """ Retrieve edges (connections) of a given `row` or list of `row`'s

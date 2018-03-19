@@ -225,6 +225,22 @@ class TestSparseCSR(object):
         setup.s1.empty()
         assert not setup.s1.finalized
 
+    def test_finalize2(self, setup):
+        setup.s1[0, [1, 2, 3]] = 1
+        setup.s1[2, [1, 2, 3]] = 1.
+        setup.s1[1, [3, 2, 1]] = 1.
+        assert not setup.s1.finalized
+        p = setup.s1.ptr.view()
+        n = setup.s1.ncol.view()
+        # Assert that the ordering is good
+        assert np.allclose(setup.s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
+        setup.s1.finalize(False)
+        # This also asserts that we do not change the memory-locations
+        # of the pointers and ncol
+        assert np.allclose(setup.s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
+        assert not setup.s1.finalized
+        assert len(setup.s1.col) == 9
+
     def test_iterator1(self, setup):
         setup.s1[0, [1, 2, 3]] = 1
         setup.s1[2, [1, 2, 4]] = 1.
