@@ -673,6 +673,16 @@ class TestGeometry(object):
         sc_3x3 = g.sc.tile(3, 0).tile(3, 1)
         assert len(g.inf_within(sc_3x3)[0]) == len(g) * 3 ** 2
 
+    def test_inf_within2(self, setup):
+        g = setup.mol.copy()
+        sc = SuperCell(1.5)
+        for o in range(10):
+            origo = [o - 0.5, -0.5, -0.5]
+            sc.origo = origo
+            idx = g.inf_within(sc)[0]
+            assert len(idx) == 1
+            assert idx[0] == o
+
     def test_close_sizes(self, setup):
         point = 0
 
