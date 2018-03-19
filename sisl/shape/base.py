@@ -78,11 +78,11 @@ class Shape(object):
 
     def toEllipsoid(self):
         """ Create an ellipsoid which is surely encompassing the *full* shape """
-        raise NotImplementedError('toEllipsoid has not been implemented in: '+self.__class__.__name__)
+        return self.toSphere().toEllipsoid()
 
     def toCuboid(self):
         """ Create a cuboid which is surely encompassing the *full* shape """
-        raise NotImplementedError('toCuboid has not been implemented in: '+self.__class__.__name__)
+        return self.toEllipsoid().toCuboid()
 
     def within(self, other):
         """ Return ``True`` if `other` is fully within `self`
@@ -174,10 +174,6 @@ class CompositeShape(Shape):
         # we should rather not do anything about it.
         return -1.
 
-    def toCuboid(self):
-        """ Create a cuboid which is surely encompassing the *full* shape """
-        return self.toEllipsoid().toCuboid()
-
     def toSphere(self):
         """ Create a sphere which is surely encompassing the *full* shape """
         from .ellipsoid import Sphere
@@ -241,10 +237,6 @@ class CompositeShape(Shape):
             B = Br + fnorm(center - Bc)
 
         return Sphere(max(A, B), center)
-
-    def toEllipsoid(self):
-        """ Create an ellipsoid which is surely encompassing the *full* shape """
-        return self.toSphere().toEllipsoid()
 
     # within is defined in Shape to use within_index
     # So no need to doubly implement it

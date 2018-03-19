@@ -9,6 +9,8 @@ from sisl.messages import warn
 import sisl._array as _a
 from sisl.utils.mathematics import orthogonalize, fnorm, fnorm2, expand
 from sisl._math_small import product3
+from sisl._indices import indices_in_sphere
+
 
 from .base import PureShape
 
@@ -138,13 +140,7 @@ class Ellipsoid(PureShape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        within = logical_and.reduce(fabs(tmp) <= 1 + tol, axis=1).nonzero()[0]
-
-        # Now only check exactly on those that are possible candidates
-        tmp = tmp[within, :]
-        wtmp = (fnorm2(tmp) <= 1 + tol).nonzero()[0]
-
-        return within[wtmp]
+        return indices_in_sphere(tmp, 1. + tol)
 
     @property
     def radius(self):

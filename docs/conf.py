@@ -20,6 +20,8 @@ import shlex
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 _this_dir = os.path.dirname(__file__)
+
+
 def _add(p):
     sys.path.insert(0, os.path.abspath(_this_dir))
 _add(_this_dir)

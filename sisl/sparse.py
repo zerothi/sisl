@@ -19,7 +19,7 @@ from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
 import sisl._array as _a
-from ._math_small import indices
+from ._indices import indices
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype
 from ._help import _range as range, _zip as zip, _map as map

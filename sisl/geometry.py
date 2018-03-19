@@ -13,7 +13,7 @@ from numpy import dot, square, sqrt
 import sisl._plot as plt
 import sisl._array as _a
 
-from ._math_small import indices_max_radius, indices_below, indices_between
+from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from .messages import warn
 from ._help import _str
 from ._help import _range as range
@@ -2031,10 +2031,10 @@ class Geometry(SuperCellChild):
         # For smaller ones this will actually be a slower
         # method..
         if idx is None:
-            idx, d = indices_max_radius(dxa, max_R)
+            idx, d = indices_in_sphere_with_dist(dxa, max_R)
             dxa = dxa[idx, :]
         else:
-            ix, d = indices_max_radius(dxa, max_R)
+            ix, d = indices_in_sphere_with_dist(dxa, max_R)
             idx = idx[ix]
             dxa = dxa[ix, :]
             del ix
@@ -2082,7 +2082,7 @@ class Geometry(SuperCellChild):
         # The more neigbours you wish to find the faster this becomes
         # We only do "one" heavy duty search,
         # then we immediately reduce search space to this subspace
-        tidx = indices_below(d, R[0])
+        tidx = indices_le(d, R[0])
         ret = [[idx[tidx]]]
         r_app = ret[0].append
         if ret_xyz:
@@ -2098,23 +2098,23 @@ class Geometry(SuperCellChild):
                 # Notice that this sub-space reduction will never
                 # allow the same indice to be in two ranges (due to
                 # numerics)
-                tidx = indices_between(d, R[i-1], R[i])
+                tidx = indices_gt_le(d, R[i-1], R[i])
                 r_app(idx[tidx])
                 r_appx(xa[tidx])
                 r_appd(d[tidx])
         elif ret_xyz:
             for i in range(1, len(R)):
-                tidx = indices_between(d, R[i-1], R[i])
+                tidx = indices_gt_le(d, R[i-1], R[i])
                 r_app(idx[tidx])
                 r_appx(xa[tidx])
         elif ret_rij:
             for i in range(1, len(R)):
-                tidx = indices_between(d, R[i-1], R[i])
+                tidx = indices_gt_le(d, R[i-1], R[i])
                 r_app(idx[tidx])
                 r_appd(d[tidx])
         else:
             for i in range(1, len(R)):
-                tidx = indices_between(d, R[i-1], R[i])
+                tidx = indices_gt_le(d, R[i-1], R[i])
                 r_app(idx[tidx])
 
         if ret_xyz or ret_rij:

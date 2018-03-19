@@ -2,6 +2,7 @@
 
 files="
 _math_small.pyx
+_indices.pyx
 _supercell.pyx
 "
 
@@ -11,6 +12,6 @@ do
     d=$(dirname $file)
     f=$(basename $file)
     pushd sisl/$d 2>/dev/null
-    cythonize $f
+    cythonize -a $f
     popd 2>/dev/null
 done

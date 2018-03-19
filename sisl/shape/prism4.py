@@ -7,6 +7,8 @@ import sisl._array as _a
 from sisl.linalg import inv
 from sisl.utils.mathematics import fnorm, expand
 from sisl._math_small import dot3, cross3
+from sisl._indices import indices_gt_le
+
 
 from .base import PureShape
 
@@ -133,12 +135,7 @@ class Cuboid(PureShape):
         # The proximity is 1e-12 of the inverse cell.
         # So, sadly, the bigger the cell the bigger the tolerance
         # However due to numerics this is probably best anyway
-        within = logical_and.reduce(tmp >= -tol, axis=1).nonzero()[0]
-
-        tmp = tmp[within, :]
-        wtmp = logical_and.reduce(tmp <= 1. + tol, axis=1).nonzero()[0]
-
-        return within[wtmp]
+        return indices_gt_le(tmp, -tol, 1. + tol)
 
     @property
     def origo(self):
