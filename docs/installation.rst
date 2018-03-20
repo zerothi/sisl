@@ -5,6 +5,7 @@ Installation
 
 sisl is easy to install using any of your preferred methods.
 
+
 Required dependencies
 ---------------------
 
@@ -14,12 +15,21 @@ Required dependencies
 - `numpy`_ (1.9 or later)
 - `scipy`_
 - `netCDF4-python <netcdf4-py_>`_
+- A C- and fortran-compiler
 
 Optional dependencies:
 
 - `pytest`_ (for running the test suite)
 - `matplotlib`_
-- A Fortran compiler
+- `tqdm`_ (for displaying progress-bars)
+- `xarray`_ (for advanced table data structures in certain methods)
+
+
+sisl implements certain methods in Cython which speeds up the execution.
+Cython is required if one wishes to re-generate the C-sources with a different
+Cython version. Note that this is not a necessary step and should typically only
+be considered by developers of Cython modules.
+
 
 pip
 ---
@@ -29,9 +39,16 @@ Installing sisl using PyPi can be done using
 .. code-block:: bash
 
    pip install sisl
+   # or
+   pip install sisl[analysis]
 
 :code:`pip` will automatically install the required dependencies. The optional dependencies
 will be used if later installed.
+
+The latter installation call also installs :code:`tqdm` and :code:`xarray` which are part of
+extended analysis methods. These are not required and may be installed later if their usage
+is desired.
+
 
 conda
 -----
@@ -45,6 +62,7 @@ Installing sisl using conda can be done by
 
 To find more information about the conda-forge installation please see
 `here <conda-releases_>`_.
+
 
 Manual installation
 -------------------

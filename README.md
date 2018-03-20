@@ -29,18 +29,22 @@ systems of millions of atoms.
 Installing sisl using PyPi or Conda is the easiest:
 
     pip install sisl
+    pip install sisl[analysis] # also installs tqdm and xarray
     # or
     conda install -c conda-forge sisl
 
 If performing a manual installation, these packages are required:
 
+   - A C- and fortran-compiler
    - __six__
    - __numpy__
    - __scipy__
    - __netCDF4__, this module is only required if you need interface to construct
     the transport tight-binding model for `TBtrans`
    - __setuptools__
-   - A fortran compiler
+
+You are encouraged to also install `matplotlib` and `tqdm` for plotting utilities and
+progress-bar support.
 
 Subsequently manual installation may be done using this command:
 

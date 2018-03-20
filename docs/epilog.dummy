@@ -16,6 +16,8 @@
 .. _scipy: https://scipy.org/scipylib/index.html
 .. _matplotlib: https://matplotlib.org/
 .. _pytest: https://docs.pytest.org/en/stable/
+.. _tqdm: https://github.com/tqdm/tqdm
+.. _xarray: http://xarray.pydata.org/en/stable/index.html
 
 .. DFT codes
 .. _Siesta: https://departments.icmab.es/leem/siesta
