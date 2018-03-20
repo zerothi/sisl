@@ -27,6 +27,7 @@ matrix:
      env: PYTHONOPTIMIZE=0
    - python: 2.7
      env: PYTHONOPTIMIZE=1
+     env: OPTIONAL_DEPENDENCIES=true
    - python: 2.7
      env: PYTHONOPTIMIZE=2
    - python: 3.5
@@ -90,7 +91,12 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
 # Do actual package installations
   - conda info -a
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file .travis_requirements.txt
+  - |
+    if [[ ${OPTIONAL_DEPENDENCIES:-false} == true ]]; then
+       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file .travis_requirements.txt
+    else
+       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file requirements.txt
+    fi
   - source activate test-environment
 
 before_script:
