@@ -19,7 +19,7 @@
 
   - Forced MonkhorstPack to create a k-grid which is Gamma centered
 
-- Shapes (backward compatibility broken)
+- Shapes (backwards compatibility broken)
 
   - Complete re-write of Shapes
 
@@ -87,6 +87,8 @@
 - Added siesta PDOS xml parsing, currently this is only scriptable
   but it manages easy extraction of quantities without the PDOSXML utility.
 	This also enables retrieving the PDOS as an xarray.DataArray.
+
+- Fixed a bug in writing XV files (only for -100/-200 species)
 
 - TBtrans / TBT.nc file:
 

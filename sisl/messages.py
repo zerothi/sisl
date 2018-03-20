@@ -103,23 +103,41 @@ def info(message, category=None):
 # If so, simply use the progressbar class there.
 # Otherwise, create a fake one.
 try:
-    from tqdm import tqdm
+    from tqdm import tqdm as _tqdm
 except ImportError:
-    # Notify user
-    info('Please install tqdm for better looking progress bars')
+    # Notify user of better option
+    info('Please install tqdm (pip install tqdm) for better looking progress bars')
 
-    class tqdm(object):
+    # Necessary methods used
+    from time import time as _time
+    from sys import stdout as _stdout
+
+    class _tqdm(object):
         """ Fake tqdm progress-bar. I should update this to also work in regular instances """
-        __slots__ = []
+        __slots__ = ["total", "desc", "t0", "n", "l"]
 
         def __init__(self, total, desc, unit):
-            pass
+            self.total = total
+            self.desc = desc
+            _stdout.write(self.desc + "  ETA = ?????h ??m ????s\r".format(total))
+            _stdout.flush()
+            self.t0 = _time()
+            self.n = 0
+            self.l = total
 
         def update(self, n=1):
-            pass
+            self.n += n
+            self.l -= n
+            m, s = divmod((_time() - self.t0) / self.n * self.l, 60)
+            h, m = divmod(m, 60)
+            _stdout.write("{0}  ETA = {1:5d}h {2:2d}m {3:4.1f}s\r".format(self.desc, int(h), int(m), s))
+            _stdout.flush()
 
         def close(self):
-            pass
+            m, s = divmod(_time() - self.t0, 60)
+            h, m = divmod(m, 60)
+            _stdout.write("{0} finished after {1:d}h {2:d}m {3:.1f}s\n".format(self.desc, int(h), int(m), s))
+            _stdout.flush()
 
 
 def tqdm_eta(count, desc, unit, eta):
@@ -134,9 +152,15 @@ def tqdm_eta(count, desc, unit, eta):
     unit : str
        unit shown in the progressbar
     eta : bool
-       if True a ``tqdm`` progressbar is returned. Else a fake instance is returned."""
+       if True a ``tqdm`` progressbar is returned. Else a fake instance is returned.
+
+    Returns
+    -------
+    bar : object
+       progress bar if `eta` is true, otherwise an object which does nothing
+    """
     if eta:
-        eta = tqdm(total=count, desc=desc, unit=unit)
+        bar = _tqdm(total=count, desc=desc, unit=unit)
     else:
         # Since the eta bar is not needed we simply create a fake object which
         # has the required 2 methods, update and close.
@@ -146,5 +170,5 @@ def tqdm_eta(count, desc, unit, eta):
                 pass
             def close(self):
                 pass
-        eta = Fake()
-    return eta
+        bar = Fake()
+    return bar
