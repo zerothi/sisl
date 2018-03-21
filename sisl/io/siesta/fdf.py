@@ -38,14 +38,27 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class fdfSileSiesta(SileSiesta):
-    """ FDF file object """
+    """ Initialize an FDF file from the filename
+
+    By supplying base you can reference files in other directories.
+    By default the ``base`` is the directory given in the file name.
+
+    Parameters
+    ----------
+    filename: str
+       fdf file
+    mode : str, optional
+       opening mode, default to read-only
+    base : str, optional
+       base-directory to read output files from.
+
+    Examples
+    --------
+    >>> fdf = fdfSileSiesta('tmp/RUN.fdf') # reads output files in 'tmp/' folder
+    >>> fdf = fdfSileSiesta('tmp/RUN.fdf', base='.') # reads output files in './' folder
+    """
 
     def __init__(self, filename, mode='r', base=None):
-        """ Initialize an FDF file from the filename
-
-        By supplying base you can reference files in other directories.
-        By default the ``base`` is the directory given in the file name.
-        """
         super(fdfSileSiesta, self).__init__(filename, mode=mode)
         if base is None:
             # Extract from filename

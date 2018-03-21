@@ -11,7 +11,6 @@ class Hessian(SparseOrbitalBZ):
     """ Dynamical matrix of a geometry """
 
     def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        """ Initializes the dynamical matrix from a geometry """
         super(Hessian, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
 
         self.Dk = self._Pk

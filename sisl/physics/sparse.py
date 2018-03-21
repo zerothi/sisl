@@ -34,14 +34,27 @@ class SparseOrbitalBZ(SparseOrbital):
 
     which assigns 0.1 as the element between orbital 2 and 3.
     (remember that Python is 0-based elements).
+
+    Parameters
+    ----------
+    geom : Geometry
+      parent geometry to create a sparse matrix from. The matrix will
+      have size equivalent to the number of orbitals in the geometry
+    dim : int or Spin, optional
+      number of components per element, may be a `Spin` object
+    dtype : np.dtype, optional
+      data type contained in the matrix. See details of `Spin` for default values.
+    nnzpr : int, optional
+      number of initially allocated memory per orbital in the matrix.
+      For increased performance this should be larger than the actual number of entries
+      per orbital.
+    orthogonal : bool, optional
+      whether the matrix corresponds to a non-orthogonal basis. In this case
+      the dimensionality of the matrix is one more than `dim`.
+      This is a keyword-only argument.
     """
 
     def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        """Create SparseOrbitalB model from geometry
-
-        Initializes an object using the `geom` object
-        as the underlying geometry for the parameters that connects orbital elements.
-        """
         self._geom = geom
 
         self._orthogonal = kwargs.get('orthogonal', True)
@@ -422,14 +435,29 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     which assigns 0.1 as the element between orbital 2 and 3.
     (remember that Python is 0-based elements).
+
+    Parameters
+    ----------
+    geom : Geometry
+      parent geometry to create a sparse matrix from. The matrix will
+      have size equivalent to the number of orbitals in the geometry
+    dim : int or Spin, optional
+      number of components per element, may be a `Spin` object
+    dtype : np.dtype, optional
+      data type contained in the matrix. See details of `Spin` for default values.
+    nnzpr : int, optional
+      number of initially allocated memory per orbital in the matrix.
+      For increased performance this should be larger than the actual number of entries
+      per orbital.
+    spin : Spin, optional
+      equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.
+    orthogonal : bool, optional
+      whether the matrix corresponds to a non-orthogonal basis. In this case
+      the dimensionality of the matrix is one more than `dim`.
+      This is a keyword-only argument.
     """
 
     def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        """Create SparseOrbitalBZSpin model from geometry
-
-        Initializes an object using the ``geom`` object
-        as the underlying geometry for the parameters that connects orbital elements.
-        """
         # Check that the passed parameters are correct
         if 'spin' not in kwargs:
             if isinstance(dim, Spin):

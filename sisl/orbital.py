@@ -706,9 +706,6 @@ class AtomicOrbital(Orbital):
     __slots__ = ['n', 'l', 'm', 'Z', 'P', 'orb']
 
     def __init__(self, *args, **kwargs):
-        """ Initialize the orbital class with a radius (`R`) and a tag (`tag`)
-
-        """
         # Immediately setup R and tag
         super(AtomicOrbital, self).__init__(0., kwargs.get('q0', 0.), kwargs.get('tag', ''))
 

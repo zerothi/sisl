@@ -33,23 +33,32 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
     which assigns 0.1 as the density element between orbital 2 and 3.
     (remember that Python is 0-based elements).
+
+    Parameters
+    ----------
+    geom : Geometry
+      parent geometry to create a density matrix from. The density matrix will
+      have size equivalent to the number of orbitals in the geometry
+    dim : int or Spin, optional
+      number of components per element, may be a `Spin` object
+    dtype : np.dtype, optional
+      data type contained in the density matrix. See details of `Spin` for default values.
+    nnzpr : int, optional
+      number of initially allocated memory per orbital in the density matrix.
+      For increased performance this should be larger than the actual number of entries
+      per orbital.
+    spin : Spin, optional
+      equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.
+    orthogonal : bool, optional
+      whether the density matrix corresponds to a non-orthogonal basis. In this case
+      the dimensionality of the density matrix is one more than `dim`.
+      This is a keyword-only argument.
     """
 
     def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        """Create DensityMatrix model from geometry
-
-        Initializes a DensityMatrix using the ``geom`` object.
-        """
         super(DensityMatrix, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
 
-        if self.spin.is_unpolarized:
-            self.Dk = self._Pk_unpolarized
-        elif self.spin.is_polarized:
-            self.Dk = self._Pk_polarized
-        elif self.spin.is_noncolinear:
-            self.Dk = self._Pk_non_colinear
-        elif self.spin.is_spinorbit:
-            self.Dk = self._Pk_spin_orbit
+        self.Dk = self.Pk
 
     def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the density matrix for a given k-point

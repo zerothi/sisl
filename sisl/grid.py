@@ -43,6 +43,19 @@ class Grid(SuperCellChild):
     geom : Geometry, optional
         associated geometry with the grid. If `sc` has not been passed the supercell will
         be taken from this geometry.
+
+    Examples
+    --------
+    >>> grid1 = Grid(0.1, sc=10)
+    >>> grid2 = Grid(0.1, sc=SuperCell(10))
+    >>> grid3 = Grid(0.1, sc=SuperCell([10] * 3))
+    >>> grid1 == grid2
+    True
+    >>> grid1 == grid3
+    True
+    >>> grid = Grid(0.1, sc=10, dtype=np.complex128)
+    >>> grid == grid1
+    False
     """
 
     #: Constant for defining a periodic boundary condition
@@ -55,21 +68,6 @@ class Grid(SuperCellChild):
     OPEN = 4
 
     def __init__(self, shape, bc=None, sc=None, dtype=None, geom=None):
-        """ Initialize a `Grid` object.
-
-        Initialize a `Grid` object.
-
-        Parameters
-        ----------
-        shape : list of ints or float
-           the size of each grid dimension, if a float it is the grid-spacing in Ang
-        bc : int or list of int, optional
-           the boundary condition (`Grid.PERIODIC`/`Grid.NEUMANN`/`Grid.DIRICHLET`/`Grid.OPEN`).
-           This should be a (3, 2) list of values corresponding to each grid-direction.
-           The first/second value for each direction is the lower/upper part of the grid.
-        sc : SuperCell or list, optional
-           the associated supercell
-        """
         if bc is None:
             bc = [[self.PERIODIC] * 2] * 3
 

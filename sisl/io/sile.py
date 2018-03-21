@@ -479,7 +479,6 @@ class Sile(BaseSile):
     """
 
     def __init__(self, filename, mode='r', comment='#'):
-
         self._file = filename
         self._mode = mode
         if isinstance(comment, (list, tuple)):
@@ -663,22 +662,20 @@ def _import_netCDF4():
 
 
 class SileCDF(BaseSile):
-    """ Base class for NetCDF files """
+    """ Creates/Opens a SileCDF
+
+    Opens a SileCDF with `mode` and compression level `lvl`.
+    If `mode` is in read-mode (r) the compression level
+    is ignored.
+
+    The final `access` parameter sets how the file should be
+    open and subsequently accessed.
+
+    0) means direct file access for every variable read
+    1) means stores certain variables in the object.
+    """
 
     def __init__(self, filename, mode='r', lvl=0, access=1, _open=True):
-        """ Creates/Opens a SileCDF
-
-        Opens a SileCDF with `mode` and compression level `lvl`.
-        If `mode` is in read-mode (r) the compression level
-        is ignored.
-
-        The final `access` parameter sets how the file should be
-        open and subsequently accessed.
-
-        0) means direct file access for every variable read
-        1) means stores certain variables in the object.
-        """
-
         self._file = filename
         # Open mode
         self._mode = mode
@@ -928,15 +925,13 @@ class SileCDF(BaseSile):
 
 
 class SileBin(BaseSile):
-    """ Base class for binary files """
+    """ Creates/Opens a SileBin
+
+    Opens a SileBin with `mode` (b).
+    If `mode` is in read-mode (r).
+    """
 
     def __init__(self, filename, mode='r'):
-        """ Creates/Opens a SileBin
-
-        Opens a SileBin with `mode` (b).
-        If `mode` is in read-mode (r).
-        """
-
         self._file = filename
         # Open mode
         self._mode = mode.replace('b', '') + 'b'
