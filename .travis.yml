@@ -24,21 +24,21 @@ matrix:
    - python: 2.7
      env: COVERAGE=true
    - python: 2.7
-     env: PYTHONOPTIMIZE=0
-   - python: 2.7
-     env: PYTHONOPTIMIZE=1
+     env: COVERAGE=true
      env: OPTIONAL_DEPENDENCIES=true
    - python: 2.7
      env: PYTHONOPTIMIZE=2
    - python: 3.5
      env: COVERAGE=true
    - python: 3.6
+     env: COVERAGE=true
+     env: OPTIONAL_DEPENDENCIES=true
    
 
 install:
   - conda install hdf4 libnetcdf
   - |
-    if [[ ${COVERAGE:-false} != false ]]; then
+    if [[ ${COVERAGE:-false} == true ]]; then
        pip install coverage codacy-coverage
     fi
   - pip install pytest pytest-cov
@@ -46,7 +46,7 @@ install:
 
 script:
   - |
-    if [[ ${COVERAGE:-false} != false ]]; then
+    if [[ ${COVERAGE:-false} == true ]]; then
         pip install -e .
         pytest --cov=sisl
     else
@@ -56,7 +56,7 @@ script:
 
 after_success:
   - |
-    if [[ ${COVERAGE:-false} != false ]]; then
+    if [[ ${COVERAGE:-false} == true ]]; then
        bash <(curl -s https://codecov.io/bash)
        python-codacy-coverage -r coverage.xml
     fi
