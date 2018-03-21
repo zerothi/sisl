@@ -24,16 +24,17 @@ matrix:
    - python: 2.7
      env: COVERAGE=true
    - python: 2.7
-     env: COVERAGE=true
-     env: OPTIONAL_DEPENDENCIES=true
+     env:
+       - COVERAGE=true
+       - OPTIONAL_DEPENDENCIES=true
    - python: 2.7
      env: PYTHONOPTIMIZE=2
    - python: 3.5
      env: COVERAGE=true
    - python: 3.6
-     env: COVERAGE=true
-     env: OPTIONAL_DEPENDENCIES=true
-   
+     env:
+       - COVERAGE=true
+       - OPTIONAL_DEPENDENCIES=true
 
 install:
   - conda install hdf4 libnetcdf
