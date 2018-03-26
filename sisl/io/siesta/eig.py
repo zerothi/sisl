@@ -38,17 +38,17 @@ class eigSileSiesta(SileSiesta):
 
         for ik in range(nk):
             # The first line is special
-            E = map(float, self.readline().split()[1:])
+            E = list(map(float, self.readline().split()[1:]))
             s = 0
             e = len(E)
             tmp_E = np.empty([ns*no], np.float32)
             tmp_E[s:e] = E
             for _ in range(ns):
                 while e < ns*no:
-                    E = map(float, self.readline().split())
+                    E = list(map(float, self.readline().split()))
                     s = e
                     e += len(E)
-                    tmp_E[s:e] = list(E)
+                    tmp_E[s:e] = E
             tmp_E.shape = (ns, no)
             eigs[:, ik, :] = tmp_E
 
