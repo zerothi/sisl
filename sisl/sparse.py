@@ -10,6 +10,7 @@ from numpy import empty, zeros, asarray, arange
 from numpy import insert, take, delete, copyto, split
 from numpy import intersect1d, setdiff1d, unique, in1d
 from numpy import diff, count_nonzero
+from numpy import any as np_any
 from numpy import argsort
 
 from scipy.sparse import isspmatrix
@@ -356,17 +357,15 @@ class SparseCSR(object):
         if sort:
             def func(r):
                 """ Sort and check whether there are double entries """
-                ptr1 = ptr[r]
-                ptr2 = ptr[r+1]
-                sl = slice(ptr1, ptr2)
+                sl = slice(ptr[r], ptr[r+1])
                 ccol = col[sl].view()
                 DD = D[sl, :].view()
-                if unique(ccol).shape[0] != ptr2 - ptr1:
-                    raise ValueError('You cannot have two elements between the same ' +
-                                     'i,j index ({}), something has went terribly wrong.'.format(ptr1))
                 idx = argsort(ccol)
                 # Do in-place sorting
                 ccol[:] = ccol[idx]
+                if (ccol[1:] == ccol[:-1]).any():
+                    raise SislError('You cannot have two elements between the same ' +
+                                    'i,j index (i={}), something has went terribly wrong.'.format(r))
                 DD[:, :] = DD[idx, :]
 
         else:
@@ -374,8 +373,8 @@ class SparseCSR(object):
                 ptr1 = ptr[r]
                 ptr2 = ptr[r+1]
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
-                    raise ValueError('You cannot have two elements between the same ' +
-                                     'i,j index ({}), something has went terribly wrong.'.format(ptr1))
+                    raise SislError('You cannot have two elements between the same ' +
+                                    'i,j index (i={}), something has went terribly wrong.'.format(r))
         # Since map puts it on the stack, we have to force the evaluation.
         list(map(func, range(self.shape[0])))
 
@@ -384,7 +383,7 @@ class SparseCSR(object):
                             'went wrong.')
 
         # Check that all column indices are within the expected shape
-        if np.any(self.shape[1] <= self.col):
+        if np_any(self.shape[1] <= self.col):
             warn("Sparse matrix contains column indices outside the shape "
                  "of the matrix. Data may not represent what is expected!")
 
@@ -478,7 +477,7 @@ class SparseCSR(object):
         update_col = not keep_shape
         if update_col:
             # Check that we really do have to update
-            update_col = np.any(columns < self.shape[1] - n_cols)
+            update_col = np_any(columns < self.shape[1] - n_cols)
 
         # Correct number of elements per column, and the pointers
         ncol[:] -= ndel
@@ -555,11 +554,11 @@ class SparseCSR(object):
             raise ValueError(self.__class__.__name__+".translate_columns requires input and output columns with "
                              "equal length")
 
-        if np.any(old >= self.shape[1]):
+        if np_any(old >= self.shape[1]):
             raise ValueError(self.__class__.__name__+".translate_columns has non-existing old column values")
 
         end_clean = False
-        if np.any(new >= self.shape[1]):
+        if np_any(new >= self.shape[1]):
             end_clean = True
 
         # Now do the translation
