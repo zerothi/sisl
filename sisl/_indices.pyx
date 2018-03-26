@@ -401,3 +401,39 @@ cdef int _indices_gt_le2(const double[:, ::1] a, const double V1, const double V
             idx[n] = i
             n += 1
     return n
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def sorted_unique(np.ndarray[np.int32_t, ndim=1, mode='c'] a):
+    """ Return True/False if all elements of the sorted array `a` are unique
+
+    Parameters
+    ----------
+    a : np.ndarray(np.int32)
+        sorted array to check
+
+    Returns
+    int : 0 if not unique, otherwise 1.
+    """
+    # Ensure contiguous arrays
+    cdef int[::1] A = a
+    cdef int n_a = A.shape[0]
+
+    return _sorted_unique(n_a, A)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef int _sorted_unique(const int n_a, const int[::1] a) nogil:
+    cdef int i
+
+    # Fast return
+    if n_a <= 1:
+        return 1
+
+    for i in range(n_a - 1):
+        if a[i] == a[i+1]:
+            return 0
+    return 1

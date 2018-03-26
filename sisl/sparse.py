@@ -20,7 +20,7 @@ from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
 import sisl._array as _a
-from ._indices import indices
+from ._indices import indices, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype
 from ._help import _range as range, _zip as zip, _map as map
@@ -363,7 +363,7 @@ class SparseCSR(object):
                 idx = argsort(ccol)
                 # Do in-place sorting
                 ccol[:] = ccol[idx]
-                if (ccol[1:] == ccol[:-1]).any():
+                if not sorted_unique(ccol):
                     raise SislError('You cannot have two elements between the same ' +
                                     'i,j index (i={}), something has went terribly wrong.'.format(r))
                 DD[:, :] = DD[idx, :]
