@@ -48,7 +48,7 @@ class eigSileSiesta(SileSiesta):
                     E = map(float, self.readline().split())
                     s = e
                     e += len(E)
-                    tmp_E[s:e] = E
+                    tmp_E[s:e] = list(E)
             tmp_E.shape = (ns, no)
             eigs[:, ik, :] = tmp_E
 
