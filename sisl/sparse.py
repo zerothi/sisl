@@ -375,8 +375,10 @@ class SparseCSR(object):
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
                     raise SislError('You cannot have two elements between the same ' +
                                     'i,j index (i={}), something has went terribly wrong.'.format(r))
-        # Since map puts it on the stack, we have to force the evaluation.
-        list(map(func, range(self.shape[0])))
+
+        # Run func for all rows
+        for r in range(self.shape[0]):
+            func(r)
 
         if len(col) != self.nnz:
             raise SislError('Final size in the sparse matrix finalization '
