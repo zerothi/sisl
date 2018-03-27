@@ -6,8 +6,6 @@ import numpy as np
 from .sile import SileVASP
 from ..sile import *
 
-# Import the geometry object
-from sisl.messages import warn
 
 __all__ = ['EigenvalSileVASP']
 

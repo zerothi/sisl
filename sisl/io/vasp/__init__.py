@@ -12,6 +12,7 @@ VASP files.
    :toctree:
 
    CARSileVASP
+   DOSCARSileVASP
    POSCARSileVASP
    CONTCARSileVASP
    EigenvalSileVASP
@@ -20,6 +21,7 @@ VASP files.
 from .sile import *
 from .car import *
 from .eigenval import *
+from .doscar import *
 
 
 __all__ = [s for s in dir() if not s.startswith('_')]
