@@ -355,8 +355,8 @@ class SparseCSR(object):
 
         # We truncate all the connections
         if sort:
-            def func(r):
-                """ Sort and check whether there are double entries """
+            for r in range(self.shape[0]):
+                # Sort and check whether there are double entries
                 sl = slice(ptr[r], ptr[r+1])
                 ccol = col[sl].view()
                 DD = D[sl, :].view()
@@ -369,16 +369,12 @@ class SparseCSR(object):
                 DD[:, :] = DD[idx, :]
 
         else:
-            def func(r):
+            for r in range(self.shape[0]):
                 ptr1 = ptr[r]
                 ptr2 = ptr[r+1]
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
                     raise SislError('You cannot have two elements between the same ' +
                                     'i,j index (i={}), something has went terribly wrong.'.format(r))
-
-        # Run func for all rows
-        for r in range(self.shape[0]):
-            func(r)
 
         if len(col) != self.nnz:
             raise SislError('Final size in the sparse matrix finalization '
