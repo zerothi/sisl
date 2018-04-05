@@ -15,7 +15,7 @@ import sisl._array as _a
 
 from ._math_small import is_ascending
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
-from .messages import warn
+from .messages import warn, SislError
 from ._help import _str
 from ._help import _range as range
 from ._help import isndarray
@@ -514,6 +514,10 @@ class Geometry(SuperCellChild):
            initial `iR` value, which the sphere is estitametd from
         R : float, optional
            the value used for atomic range (defaults to ``self.maxR()``)
+
+        Returns
+        -------
+        int : number of radius needed to contain `na` atoms. Minimally 2 will be returned.
         """
         ia = np.random.randint(len(self))
 
@@ -529,7 +533,7 @@ class Geometry(SuperCellChild):
         # Convert to na atoms spherical radii
         iR = int(4 / 3 * np.pi * R ** 3 / naiR * na)
 
-        return iR
+        return max(2, iR)
 
     def iter_block_rand(self, iR=20, R=None, atom=None):
         """ Perform the *random* block-iteration by randomly selecting the next center of block """
@@ -547,6 +551,9 @@ class Geometry(SuperCellChild):
 
         # Figure out how many we need to loop on
         not_passed_N = np.sum(not_passed)
+
+        if iR < 2:
+            raise SislError(self.__class__.__name__ + '.iter_block_rand too small iR!')
 
         if R is None:
             R = self.maxR()
@@ -574,7 +581,6 @@ class Geometry(SuperCellChild):
 
             # get all elements within two radii
             all_idx = self.close(idx, R=R)
-
             # Get unit-cell atoms
             all_idx[0] = self.sc2uc(all_idx[0], uniq=True)
             # First extend the search-space (before reducing)
@@ -583,7 +589,7 @@ class Geometry(SuperCellChild):
             # Only select those who have not been runned yet
             all_idx[0] = all_idx[0][not_passed[all_idx[0]].nonzero()[0]]
             if len(all_idx[0]) == 0:
-                raise ValueError('Internal error, please report to the developers')
+                raise SislError('Internal error, please report to the developers')
 
             # Tell the next loop to skip those passed
             not_passed[all_idx[0]] = False
@@ -596,7 +602,9 @@ class Geometry(SuperCellChild):
             yield all_idx[0], all_idx[1]
 
         if np.any(not_passed):
-            raise ValueError('Error on iterations. Not all atoms has been visited.')
+            print(not_passed.nonzero()[0])
+            print(np.sum(not_passed), len(self))
+            raise SislError(self.__class__.__name__ + '.iter_block_rand error on iterations. Not all atoms have been visited.')
 
     def iter_block_shape(self, shape=None, iR=20, atom=None):
         """ Perform the *grid* block-iteration by looping a grid """
@@ -613,6 +621,9 @@ class Geometry(SuperCellChild):
 
         # Figure out how many we need to loop on
         not_passed_N = np.sum(not_passed)
+
+        if iR < 2:
+            raise SislError(self.__class__.__name__ + '.iter_block_shape too small iR!')
 
         R = self.maxR()
         if shape is None:
@@ -713,7 +724,7 @@ class Geometry(SuperCellChild):
         if np.any(not_passed):
             print(not_passed.nonzero()[0])
             print(np.sum(not_passed), len(self))
-            raise ValueError('Error on iterations. Not all atoms has been visited.')
+            raise SislError(self.__class__.__name__ + '.iter_block_shape error on iterations. Not all atoms have been visited.')
 
     def iter_block(self, iR=20, R=None, atom=None, method='rand'):
         """ Iterator for performance critical loops
@@ -752,6 +763,9 @@ class Geometry(SuperCellChild):
         Two lists with ``[0]`` being a list of atoms to be looped and ``[1]`` being the atoms that
         need searched.
         """
+        if iR < 2:
+            raise SislError(self.__class__.__name__ + '.iter_block too small iR!')
+
         method = method.lower()
         if method == 'rand' or method == 'random':
             for ias, idxs in self.iter_block_rand(iR, R, atom):
@@ -2033,14 +2047,14 @@ class Geometry(SuperCellChild):
         # method..
         if idx is None:
             idx, d = indices_in_sphere_with_dist(dxa, max_R)
-            dxa = dxa[idx, :]
+            dxa = dxa[idx, :].reshape(-1, 3)
         else:
             ix, d = indices_in_sphere_with_dist(dxa, max_R)
             idx = idx[ix]
-            dxa = dxa[ix, :]
+            dxa = dxa[ix, :].reshape(-1, 3)
             del ix
 
-        if len(dxa) == 0:
+        if len(idx) == 0:
             # Create default return
             ret = [[_a.emptyi([0])] * len(R)]
             if ret_xyz:
