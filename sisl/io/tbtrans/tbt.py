@@ -1753,6 +1753,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         prnt("  - atoms with DOS (fortran indices):")
         prnt("     " + list2str(self.a_dev + 1))
         truefalse('DOS' in self.variables, "DOS Green function", ['TBT.DOS.Gf'])
+        truefalse('COOP' in self.variables, "COOP Green function", ['TBT.COOP.Gf'])
+        truefalse('COHP' in self.variables, "COHP Green function", ['TBT.COHP.Gf'])
         if elec is None:
             elecs = self.elecs
         else:
@@ -1775,6 +1777,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
                 truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
                 truefalse('J' in gelec.variables, "orbital-current", ['TBT.DOS.A', 'TBT.Current.Orb'])
+                truefalse('COOP' in gelec.variables, "COOP spectral", ['TBT.COOP.A'])
+                truefalse('COHP' in gelec.variables, "COHP spectral", ['TBT.COHP.A'])
                 truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
                 truefalse(elec + '.T' in gelec.variables, "transmission out", ['TBT.T.Out'])
                 truefalse(elec + '.C' in gelec.variables, "transmission out correction", ['TBT.T.Out'])
