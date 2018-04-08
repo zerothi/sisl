@@ -21,7 +21,7 @@ from sisl.utils import *
 import sisl._array as _a
 
 from sisl import Geometry, Atoms
-from sisl.messages import warn
+from sisl.messages import warn, info
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
 
@@ -672,7 +672,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             warn(self.__class__.__name__ + ".current_parameter cannot "
                  "accurately calculate the current due to the calculated energy range. "
-                 "I.e. increase your calculated energy-range.\n" + s)
+                 "Increase the calculated energy-range.\n" + s)
 
         def nf(E, mu, kT):
             return 1. / (np.exp((E - mu) / kT) + 1.)
@@ -695,7 +695,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Raises
         ------
-        SislWarning: If *all* of the calculated :math:`T_n(E)` values in the file are above 0.001.
+        SislInfo: If *all* of the calculated :math:`T_n(E)` values in the file are above 0.001.
 
         Parameters
         ----------
@@ -723,13 +723,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         e2OVERhV = 2 * 1.6021766208e-19 ** 2 / 4.135667662e-15 * V
         if classical:
             # Calculate the Poisson shot-noise
-            return e3OVERhV * self.transmission(elec_from, elec_to, kavg=kavg)
+            return e2OVERhV * self.transmission(elec_from, elec_to, kavg=kavg)
         else:
             T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
             # Check that at least one value is below the 0.001 limit
             if np.any(np.logical_and.reduce(T > 0.001, axis=-1)):
-                warn(self.__class__.__name__ + ".shot_noise does possibly not have all relevant transmission eigenvalues in the "
-                     "calculation. For some energy values all transmission eigenvalues are above 0.001")
+                info(self.__class__.__name__ + ".shot_noise does possibly not have all relevant transmission eigenvalues in the "
+                     "calculation. For some energy values all transmission eigenvalues are above 0.001!")
             return e2OVERhV * (T * (1 - T)).sum(-1)
 
     def fano(self, elec_from=0, elec_to=1, kavg=True):
@@ -738,7 +738,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         Calculate the Fano factor defined as:
 
         .. math::
-           F(E) = \frac{\sum_n T_n(1 - T_n)}{\sum_n T_n} = S(E, V) / S_P(E, V)
+           F(E) = \frac{\sum_n T_n(1 - T_n)}{\sum_n T_n}
 
         Parameters
         ----------
@@ -752,11 +752,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         See Also
         --------
-        shot_noise : internal routine to calculate the Fano factors (:math:`S(E, V)` and :math: `S_P(E, V)` are calculated in that routine)
+        shot_noise : routine to calculate the shot-noise
         """
-        elec_from = self._elec(elec_from)
-        elec_to = self._elec(elec_to)
-        return self.shot_noise(elec_from, elec_to, kavg=kavg) / self.shot_noise(elec_from, elec_to, classical=True, kavg=kavg)
+        TE = self.transmission_eig(elec_from, elec_to, kavg=kavg)
+        if np.any(np.logical_and.reduce(TE > 0.001, axis=-1)):
+            info(self.__class__.__name__ + ".fano does possibly not have all relevant transmission eigenvalues in the "
+                 "calculation. For some energy values all transmission eigenvalues are above 0.001!")
+        return (TE * (1 - TE)).sum(-1) / self.transmission(elec_from, elec_to, kavg=kavg)
 
     def _sparse_data(self, data, elec, E, kavg=True, isc=None):
         """ Internal routine for retrieving sparse data (orbital current, COOP) """
