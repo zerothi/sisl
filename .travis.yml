@@ -46,6 +46,7 @@ install:
   - python setup.py install
 
 script:
+  - export SISL_FILES_TESTS=$(pwd)/files/tests
   - |
     if [[ ${COVERAGE:-false} == true ]]; then
         pip install -e .
