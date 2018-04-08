@@ -8,7 +8,7 @@ from numpy import in1d
 # Import sile objects
 from ..sile import SileWarning, SileInfo
 from .sile import SileCDFTBtrans
-from sisl.messages import warn
+from sisl.messages import warn, info
 from sisl.utils import *
 import sisl._array as _a
 
@@ -202,11 +202,11 @@ class _ncSileTBtrans(SileCDFTBtrans):
         idxE = np.abs(self.E - E).argmin()
         ret_E = self.E[idxE]
         if abs(ret_E - E) > 5e-3:
-            warn(SileWarning(self.__class__.__name__ + " requesting energy " +
-                             "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E)))
+            warn(self.__class__.__name__ + " requesting energy " +
+                 "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E))
         elif abs(ret_E - E) > 1e-3:
-            warn(SileInfo(self.__class__.__name__ + " requesting energy " +
-                          "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E)))
+            info(self.__class__.__name__ + " requesting energy " +
+                 "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E))
         return idxE
 
     def kindex(self, k):
