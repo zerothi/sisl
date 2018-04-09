@@ -265,7 +265,7 @@ def test_1_graphene_all_content(files):
 
 
 @pytest.mark.slow
-def test_1_graphene_all_tbtav(dir_test, files):
+def test_1_graphene_all_tbtav(files, dir_test):
     tbt = sisl.get_sile(osp.join(files, '1_graphene_all.TBT.nc'))
     f = dir_test.file('1_graphene_all.TBT.AV.nc')
     tbt.write_tbtav(f)
