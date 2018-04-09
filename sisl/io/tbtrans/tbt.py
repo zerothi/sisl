@@ -21,7 +21,7 @@ from sisl.utils import *
 import sisl._array as _a
 
 from sisl import Geometry, Atoms
-from sisl.messages import warn, info
+from sisl.messages import warn, info, SislError
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
 
@@ -70,8 +70,17 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         This command will overwrite any previous file with the ending TBT.AV.nc and thus
         will not take notice of any older files.
+
+        Parameters
+        ----------
+        file : str
+            output filename
         """
-        tbtavncSileTBtrans(self._file.replace('.nc', '.AV.nc'), mode='w', access=0).write(tbtav=self)
+        f = self._file.replace('.nc', '.AV.nc')
+        if len(args) > 0:
+            f = args[0]
+        f = kwargs.get('file', f)
+        tbtavncSileTBtrans(f, mode='w', access=0).write_tbtav(self)
 
     def _value_avg(self, name, tree=None, kavg=False):
         """ Local method for obtaining the data from the SileCDF.
@@ -237,7 +246,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
         if elec_from == elec_to:
-            raise ValueError("Supplied elec_from and elec_to must not be the same.")
+            raise ValueError(self.__class__.__name__ + ".transmission elec_from and elec_to must not be the same.")
 
         return self._value_avg(elec_to + '.T', elec_from, kavg=kavg)
 
@@ -262,8 +271,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
         if elec_from == elec_to:
-            raise ValueError(
-                "Supplied elec_from and elec_to must not be the same.")
+            raise ValueError(self.__class__.__name__ + ".transmission_eig elec_from and elec_to must not be the same.")
 
         return self._value_avg(elec_to + '.T.Eig', elec_from, kavg=kavg)
 
@@ -326,7 +334,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elif norm in ['all', 'atom', 'orbital']:
             NORM = float(self.no_d)
         else:
-            raise ValueError('Error on norm keyword in when requesting normalization')
+            raise ValueError(self.__class__.__name__ + '.norm error on norm keyword in when requesting normalization!')
 
         if atom is None and orbital is None:
             return NORM
@@ -2281,7 +2289,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
         elif len(args) > 0:
             tbt = args[0]
         else:
-            raise ValueError("tbtncSileTBtrans has not been passed to write the averaged file")
+            raise SislError("tbtncSileTBtrans has not been passed to write the averaged file")
 
         if not isinstance(tbt, tbtncSileTBtrans):
             raise ValueError('first argument of tbtavncSileTBtrans.write *must* be a tbtncSileTBtrans object')
@@ -2386,6 +2394,9 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
         # Update the source attribute to signal the originating file
         self.setncattr('source', 'k-average of: ' + tbt._file)
         self.sync()
+
+    # Denote default writing routine
+    _write_default = write_tbtav
 
 
 add_sile('TBT.AV.nc', tbtavncSileTBtrans)

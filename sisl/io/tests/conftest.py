@@ -6,7 +6,7 @@ from tempfile import mkstemp, mkdtemp
 import os
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def dir_test(request, tmpdir_factory):
     class FileFactory(object):
         def __init__(self):

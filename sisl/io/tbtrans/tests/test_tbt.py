@@ -12,7 +12,7 @@ pytestmark = pytest.mark.tbtrans
 
 
 @pytest.mark.slow
-def test_1_graphene_all(files):
+def test_1_graphene_all_content(files):
     """ This tests manifolds itself as:
 
     sisl.geom.graphene(orthogonal=True).tile(3, 0).tile(5, 1)
@@ -108,6 +108,7 @@ def test_1_graphene_all(files):
     for elec in elecs:
         assert tbt.chemical_potential(elec) == pytest.approx(0.)
         assert tbt.electronic_temperature(elec) == pytest.approx(300., abs=1)
+        assert tbt.eta(elec) == pytest.approx(1e-4, abs=1e-6)
 
     # Check electrode relevant stuff
     left = elecs[0]
@@ -206,9 +207,65 @@ def test_1_graphene_all(files):
     # Check orbital currents
     E = 201
     # Sum of orbital current should be 0 (in == out)
-    orb = tbt.orbital_current(left, E)
-    assert orb.sum() == pytest.approx(0., abs=1e-7)
+    orb_left = tbt.orbital_current(left, E)
+    orb_right = tbt.orbital_current(right, E)
+    assert orb_left.sum() == pytest.approx(0., abs=1e-7)
+    assert orb_right.sum() == pytest.approx(0., abs=1e-7)
 
     d1 = np.arange(12, 24).reshape(-1, 1)
     d2 = np.arange(24, 36).reshape(-1, 1)
-    assert orb[d1, d2.T].sum() == pytest.approx(tbt.transmission(left, right)[E])
+    assert orb_left[d1, d2.T].sum() == pytest.approx(tbt.transmission(left, right)[E])
+    assert orb_left[d1, d2.T].sum() == pytest.approx(-orb_left[d2, d1.T].sum())
+    assert orb_right[d2, d1.T].sum() == pytest.approx(tbt.transmission(right, left)[E])
+    assert orb_right[d2, d1.T].sum() == pytest.approx(-orb_right[d1, d2.T].sum())
+
+    orb_left.sort_indices()
+    atom_left = tbt.bond_current(left, E, sum='all')
+    atom_left.sort_indices()
+    assert np.allclose(orb_left.data, atom_left.data)
+    assert np.allclose(orb_left.data, tbt.bond_current_from_orbital(orb_left, sum='all').data)
+    orb_right.sort_indices()
+    atom_right = tbt.bond_current(right, E, sum='all')
+    atom_right.sort_indices()
+    assert np.allclose(orb_right.data, atom_right.data)
+    assert np.allclose(orb_right.data, tbt.bond_current_from_orbital(orb_right, sum='all').data)
+
+    # Calculate the atom current
+    # For 1-orbital systems the activity and non-activity are equivalent
+    assert np.allclose(tbt.atom_current(left, E), tbt.atom_current(left, E, activity=False))
+    tbt.vector_current(left, E)
+    assert np.allclose(tbt.vector_current_from_bond(atom_left) / 2, tbt.vector_current(left, E, sum='all'))
+
+    # Check COOP curves
+    coop = tbt.orbital_COOP(E)
+    coop_l = tbt.orbital_ACOOP(left, E)
+    coop_r = tbt.orbital_ACOOP(right, E)
+    assert np.allclose(coop.data, (coop_l + coop_r).data)
+
+    coop = tbt.atom_COOP(E)
+    coop_l = tbt.atom_ACOOP(left, E)
+    coop_r = tbt.atom_ACOOP(right, E)
+    assert np.allclose(coop.data, (coop_l + coop_r).data)
+
+    # Check COHP curves
+    coop = tbt.orbital_COHP(E)
+    coop_l = tbt.orbital_ACOHP(left, E)
+    coop_r = tbt.orbital_ACOHP(right, E)
+    assert np.allclose(coop.data, (coop_l + coop_r).data)
+
+    coop = tbt.atom_COHP(E)
+    coop_l = tbt.atom_ACOHP(left, E)
+    coop_r = tbt.atom_ACOHP(right, E)
+    assert np.allclose(coop.data, (coop_l + coop_r).data)
+
+    # Simply print out information
+    tbt.info()
+    for elec in elecs:
+        tbt.info(elec)
+
+
+@pytest.mark.slow
+def test_1_graphene_all_tbtav(dir_test, files):
+    tbt = sisl.get_sile(osp.join(files, '1_graphene_all.TBT.nc'))
+    f = dir_test.file('1_graphene_all.TBT.AV.nc')
+    tbt.write_tbtav(f)
