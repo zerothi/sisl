@@ -265,15 +265,16 @@ class fdfSileSiesta(SileSiesta):
                 # logical
                 return 'b'
 
-            if '.' in fdf:
-                # a real number
-                return 'r'
             try:
-                int(fdf)
+                float(fdf)
+                if '.' in fdf:
+                    # a real number (otherwise an integer)
+                    return 'r'
                 return 'i'
             except:
                 pass
             # fall-back to name with everything
+
         elif len(values) == 2:
             # possibly a physical value
             try:

@@ -199,11 +199,13 @@ def test_include():
 
     with open(d('file2.fdf'), 'w') as fh:
         fh.write('Flag4 non\n')
+        fh.write('FakeReal 2.\n')
         fh.write('  %incLude file3.fdf')
 
     with open(d('file3.fdf'), 'w') as fh:
         fh.write('Sub level\n')
-        fh.write('Third level')
+        fh.write('Third level\n')
+        fh.write('MyList [1 , 2 , 3]\n')
 
     fdf = fdfSileSiesta(f, base=_C.d)
     assert fdf.includes() == [d('hello'), d('file2.fdf'), d('file3.fdf')]
@@ -214,6 +216,8 @@ def test_include():
     assert fdf.get('FLAG4') == 'non'
     assert fdf.get('Fakeint') == 1
     assert fdf.get('Fakeint', default='0') == '1'
+    assert fdf.get('Fakereal') == 2.
+    assert fdf.get('Fakereal', default=0.) == 2.
     assert fdf.get('test', 'eV') == pytest.approx(1.)
     assert fdf.get('test', with_unit=True)[0] == pytest.approx(1.)
     assert fdf.get('test', with_unit=True)[1] == 'eV'
@@ -226,6 +230,11 @@ def test_include():
     assert fdf.get('Third') == 'level'
     assert fdf.get('test-last', with_unit=True)[0] == pytest.approx(1.)
     assert fdf.get('test-last', with_unit=True)[1] == 'eV'
+
+    # Currently lists are not implemented
+    #assert np.allclose(fdf.get('MyList'), np.arange(3) + 1)
+    #assert np.allclose(fdf.get('MyList', default=[]), np.arange(3) + 1)
+
     # Read a block
     ll = open(d('hello')).readlines()
     ll.pop(1)
