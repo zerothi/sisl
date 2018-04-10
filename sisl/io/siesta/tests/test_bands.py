@@ -17,3 +17,16 @@ def test_fe(sisl_files):
     assert k.shape == (131, )
     assert eig.shape == (131, 2, 15)
     assert len(labels[0]) == 5
+
+
+def test_fe_ArgumentParser(sisl_files):
+    try:
+        import matplotlib
+    except ImportError:
+        pytest.skip('matplotlib not available')
+    png = sisl_files(_dir, 'fe.bands.png')
+    si = sisl.get_sile(sisl_files(_dir, 'fe.bands'))
+    p, ns = si.ArgumentParser()
+    p.parse_args([], namespace=ns)
+    p.parse_args(['--energy', ' -2:2'], namespace=ns)
+    p.parse_args(['--energy', ' -2:2', '--plot', png], namespace=ns)
