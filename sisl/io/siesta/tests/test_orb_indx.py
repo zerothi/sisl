@@ -1,0 +1,20 @@
+from __future__ import print_function, division
+
+import pytest
+
+from sisl.io.siesta.orb_indx import *
+
+import numpy as np
+
+pytestmark = pytest.mark.io
+_dir = 'sisl/io/siesta'
+
+
+def test_si_pdos_kgrid_orb_indx(sisl_files):
+    f = sisl_files(_dir, 'si_pdos_kgrid.ORB_INDX')
+    nsc = OrbIndxSileSiesta(f).read_supercell_nsc()
+    atoms = OrbIndxSileSiesta(f).read_basis()
+
+    assert len(atoms) == 2
+    assert len(atoms[0]) == 13
+    assert len(atoms[1]) == 13

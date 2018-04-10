@@ -19,12 +19,12 @@ def test_fe(sisl_files):
     assert len(labels[0]) == 5
 
 
-def test_fe_ArgumentParser(sisl_files):
+def test_fe_ArgumentParser(sisl_files, sisl_tmp):
     try:
         import matplotlib
     except ImportError:
         pytest.skip('matplotlib not available')
-    png = sisl_files(_dir, 'fe.bands.png')
+    png = sisl_tmp('fe.bands.png', _dir)
     si = sisl.get_sile(sisl_files(_dir, 'fe.bands'))
     p, ns = si.ArgumentParser()
     p.parse_args([], namespace=ns)

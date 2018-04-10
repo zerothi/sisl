@@ -23,7 +23,6 @@ class OrbIndxSileSiesta(SileSiesta):
         # First line contains no no_s
         line = self.readline().split()
         no_s = int(line[1])
-        self.readline()
         # two non-used lines
         self.readline()
         self.readline()

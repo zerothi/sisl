@@ -20,7 +20,7 @@ class faSileSiesta(SileSiesta):
 
         f = np.empty([na, 3], np.float64)
         for ia in range(na):
-            f[ia, :] = map(float, self.readline().split()[1:])
+            f[ia, :] = list(map(float, self.readline().split()[1:]))
 
         # Units are already eV / Ang
         return f
