@@ -62,7 +62,7 @@ class ionxmlSileSiesta(SileSiesta):
             delta = float(rad.find('delta').text)
 
             # Read in data to a list
-            dat = map(float, rad.find('data').text.split())
+            dat = list(map(float, rad.find('data').text.split()))
 
             # Since the readed data has fewer significant digits we
             # might as well re-create the table of the radial component.
