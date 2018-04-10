@@ -50,7 +50,7 @@ def sisl_tmp(request, tmpdir_factory):
                 D = os.path.join(D, d)
                 baseD = self.base.join(D)
                 if baseD not in self.dirs:
-                    if os.path.isdir(baseD):
+                    if os.path.isdir(str(baseD)):
                         self.dirs.append(baseD)
                     else:
                         self.dirs.append(tmpdir_factory.mktemp(D, numbered=False))
