@@ -7,10 +7,10 @@ from .sile import *
 from sisl import Geometry
 
 
-__all__ = ['MoldenSile']
+__all__ = ['moldenSile']
 
 
-class MoldenSile(Sile):
+class moldenSile(Sile):
     """ Molden file object """
 
     @Sile_fh_open
@@ -51,4 +51,4 @@ class MoldenSile(Sile):
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-add_sile('molf', MoldenSile, case=False, gzip=True)
+add_sile('molf', moldenSile, case=False, gzip=True)

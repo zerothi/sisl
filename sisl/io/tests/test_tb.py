@@ -12,8 +12,8 @@ _dir = 'sisl/io'
 
 def test_ham1(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.ham', _dir)
-    sisl_system.g.write(HamiltonianSile(f, 'w'))
-    g = HamiltonianSile(f).read_geometry()
+    sisl_system.g.write(hamiltonianSile(f, 'w'))
+    g = hamiltonianSile(f).read_geometry()
 
     # Assert they are the same
     assert np.allclose(g.cell, sisl_system.g.cell)
@@ -23,6 +23,6 @@ def test_ham1(sisl_tmp, sisl_system):
 
 def test_ham2(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.ham', _dir)
-    sisl_system.ham.write(HamiltonianSile(f, 'w'))
-    ham = HamiltonianSile(f).read_hamiltonian()
+    sisl_system.ham.write(hamiltonianSile(f, 'w'))
+    ham = hamiltonianSile(f).read_hamiltonian()
     assert ham.spsame(sisl_system.ham)

@@ -9,7 +9,7 @@ BigDFT (:mod:`sisl.io.bigdft`)
 .. autosummary::
    :toctree:
 
-   ASCIISileBigDFT - the input for BigDFT
+   asciiSileBigDFT - the input for BigDFT
 
 """
 from .sile import *

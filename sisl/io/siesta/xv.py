@@ -12,10 +12,10 @@ from sisl.unit.siesta import unit_convert
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
-__all__ = ['XVSileSiesta']
+__all__ = ['xvSileSiesta']
 
 
-class XVSileSiesta(SileSiesta):
+class xvSileSiesta(SileSiesta):
     """ XV file object """
 
     @Sile_fh_open
@@ -87,4 +87,4 @@ class XVSileSiesta(SileSiesta):
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-add_sile('XV', XVSileSiesta, gzip=True)
+add_sile('XV', xvSileSiesta, gzip=True)

@@ -9,7 +9,7 @@ ScaleUp (:mod:`sisl.io.scaleup`)
 .. autosummary::
 
    orboccSileScaleUp - orbital information
-   REFSileScaleUp - reference coordinates
+   refSileScaleUp - reference coordinates
    rhamSileScaleUp - Hamiltonian file
 
 """

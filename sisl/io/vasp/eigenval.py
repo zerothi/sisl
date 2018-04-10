@@ -7,10 +7,10 @@ from .sile import SileVASP
 from ..sile import *
 
 
-__all__ = ['EigenvalSileVASP']
+__all__ = ['eigenvalSileVASP']
 
 
-class EigenvalSileVASP(SileVASP):
+class eigenvalSileVASP(SileVASP):
     """ VASP eigenvalue output """
 
     @Sile_fh_open
@@ -44,4 +44,5 @@ class EigenvalSileVASP(SileVASP):
                 eigs[:, ik, ib] = list(E)
         return eigs
 
-add_sile('EIGENVAL', EigenvalSileVASP, gzip=True)
+
+add_sile('EIGENVAL', eigenvalSileVASP, gzip=True)

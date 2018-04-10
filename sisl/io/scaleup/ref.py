@@ -11,13 +11,13 @@ from sisl.unit import unit_convert
 
 import numpy as np
 
-__all__ = ['REFSileScaleUp', 'restartSileScaleUp']
+__all__ = ['refSileScaleUp', 'restartSileScaleUp']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ang2Bohr = unit_convert('Ang', 'Bohr')
 
 
-class REFSileScaleUp(SileScaleUp):
+class refSileScaleUp(SileScaleUp):
     """ REF file object for ScaleUp """
 
     @Sile_fh_open
@@ -139,7 +139,7 @@ class REFSileScaleUp(SileScaleUp):
 
 
 # The restart file is _equivalent_ but with displacements
-class restartSileScaleUp(REFSileScaleUp):
+class restartSileScaleUp(refSileScaleUp):
 
     @Sile_fh_open
     def read_geometry(self, *args, **kwargs):
@@ -169,5 +169,5 @@ class restartSileScaleUp(REFSileScaleUp):
         return restart
 
 
-add_sile('REF', REFSileScaleUp, case=False, gzip=True)
+add_sile('REF', refSileScaleUp, case=False, gzip=True)
 add_sile('restart', restartSileScaleUp, case=False, gzip=True)

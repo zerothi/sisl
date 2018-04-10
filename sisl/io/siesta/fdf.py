@@ -12,14 +12,14 @@ from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
-from .binaries import TSHSSileSiesta, TSDESileSiesta
-from .binaries import DMSileSiesta, HSXSileSiesta
+from .binaries import tshsSileSiesta, tsdeSileSiesta
+from .binaries import dmSileSiesta, hsxSileSiesta
 from .fa import faSileSiesta
 from .pdos import pdosSileSiesta
 from .siesta import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
-from .orb_indx import OrbIndxSileSiesta
-from .xv import XVSileSiesta
+from .orb_indx import orbindxSileSiesta
+from .xv import xvSileSiesta
 from sisl import Geometry, Atom, SuperCell
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
@@ -619,7 +619,7 @@ class fdfSileSiesta(SileSiesta):
         """ Returns `SuperCell` object from the FDF file """
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.XV'
         if isfile(f):
-            return XVSileSiesta(f).read_supercell()
+            return xvSileSiesta(f).read_supercell()
         return None
 
     def read_force(self, *args, **kwargs):
@@ -703,9 +703,9 @@ class fdfSileSiesta(SileSiesta):
         if isfile(f):
             basis = self.read_basis()
             if basis is None:
-                geom = XVSileSiesta(f).read_geometry()
+                geom = xvSileSiesta(f).read_geometry()
             else:
-                geom = XVSileSiesta(f).read_geometry(species_Z=True)
+                geom = xvSileSiesta(f).read_geometry(species_Z=True)
                 with warnings.catch_warnings():
                     warnings.simplefilter('ignore')
                     for atom, _ in geom.atom.iter(True):
@@ -869,7 +869,7 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
         if isfile(f):
             showinfo(SileInfo('Siesta basis information is read from {}, the radial functions are in accessible.'.format(f)))
-            return OrbIndxSileSiesta(f).read_basis()
+            return orbindxSileSiesta(f).read_basis()
         return None
 
     def _r_basis_fdf(self):
@@ -923,7 +923,7 @@ class fdfSileSiesta(SileSiesta):
         DM = None
         if isfile(f):
             geom = self.read_geometry(True)
-            DM = TSDESileSiesta(f).read_density_matrix(*args, **kwargs)
+            DM = tsdeSileSiesta(f).read_density_matrix(*args, **kwargs)
             self._SpGeom_replace_geom(DM, geom)
         return DM
 
@@ -933,7 +933,7 @@ class fdfSileSiesta(SileSiesta):
         DM = None
         if isfile(f):
             geom = self.read_geometry(True)
-            DM = DMSileSiesta(f).read_density_matrix(*args, **kwargs)
+            DM = dmSileSiesta(f).read_density_matrix(*args, **kwargs)
             if not self._SpGeom_replace_geom(DM, geom):
                 warn(SileWarning('DM from {} will most likely have a wrong supercell specification.'.format(f)))
         return DM
@@ -970,7 +970,7 @@ class fdfSileSiesta(SileSiesta):
         EDM = None
         if isfile(f):
             geom = self.read_geometry(True)
-            EDM = TSDESileSiesta(f).read_energy_density_matrix(*args, **kwargs)
+            EDM = tsdeSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
             if not self._SpGeom_replace_geom(EDM, geom):
                 warn(SileWarning('EDM from {} will most likely have a wrong supercell specification.'.format(f)))
         return EDM
@@ -1007,7 +1007,7 @@ class fdfSileSiesta(SileSiesta):
         H = None
         if isfile(f):
             geom = self.read_geometry(True)
-            H = TSHSSileSiesta(f).read_hamiltonian(*args, **kwargs)
+            H = tshsSileSiesta(f).read_hamiltonian(*args, **kwargs)
             self._SpGeom_replace_geom(H, geom)
         return H
 
@@ -1017,7 +1017,7 @@ class fdfSileSiesta(SileSiesta):
         H = None
         if isfile(f):
             geom = self.read_geometry(True)
-            H = HSXSileSiesta(f).read_hamiltonian(*args, **kwargs)
+            H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
             if not self._SpGeom_replace_geom(H, geom):
                 warn(SileWarning('H from {} will most likely have a wrong supercell specification.'.format(f)))
         return H

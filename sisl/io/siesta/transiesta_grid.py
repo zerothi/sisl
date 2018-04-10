@@ -10,13 +10,13 @@ from ..sile import *
 from sisl import Grid
 from sisl.unit.siesta import unit_convert
 
-__all__ = ['TSVncSileSiesta']
+__all__ = ['tsvncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 eV2Ry = unit_convert('eV', 'Ry')
 
 
-class TSVncSileSiesta(SileCDFSiesta):
+class tsvncSileSiesta(SileCDFSiesta):
     """ TranSiesta potential input Grid file object
 
     This potential input file is mainly intended for the Hartree solution
@@ -70,4 +70,4 @@ class TSVncSileSiesta(SileCDFSiesta):
         v[:, :, :] = np.swapaxes(grid.grid, 0, 2) * eV2Ry
 
 
-add_sile('TSV.nc', TSVncSileSiesta)
+add_sile('TSV.nc', tsvncSileSiesta)

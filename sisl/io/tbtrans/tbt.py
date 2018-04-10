@@ -2171,8 +2171,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     print("No data has been collected in the arguments, nothing will be written, have you forgotten arguments?")
                     return
 
-                from sisl.io import TableSile
-                TableSile(out, mode='w').write(*ns._data,
+                from sisl.io import tableSile
+                tableSile(out, mode='w').write(*ns._data,
                                                comment=ns._data_description,
                                                header=ns._data_header)
                 # Clean all data

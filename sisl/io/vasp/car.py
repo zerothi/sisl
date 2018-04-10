@@ -10,16 +10,16 @@ from ..sile import *
 from sisl.messages import warn
 from sisl import Geometry, PeriodicTable, Atom, SuperCell
 
-__all__ = ['CARSileVASP', 'POSCARSileVASP', 'CONTCARSileVASP']
+__all__ = ['carSileVASP', 'poscarSileVASP', 'contcarSileVASP']
 
 
-class CARSileVASP(SileVASP):
+class carSileVASP(SileVASP):
     """ CAR file object
     This file-object handles both POSCAR and CONTCAR files
     """
 
     def _setup(self, *args, **kwargs):
-        """ Setup the `POSCARSile` after initialization """
+        """ Setup the `poscarSile` after initialization """
         self._scale = 1.
 
     @Sile_fh_open
@@ -143,14 +143,14 @@ class CARSileVASP(SileVASP):
 
 
 # Equivalent classes
-class POSCARSileVASP(CARSileVASP):
+class poscarSileVASP(carSileVASP):
     pass
 
 
-class CONTCARSileVASP(CARSileVASP):
+class contcarSileVASP(carSileVASP):
     pass
 
 
-add_sile('CAR', CARSileVASP, gzip=True)
-add_sile('POSCAR', POSCARSileVASP, gzip=True)
-add_sile('CONTCAR', CONTCARSileVASP, gzip=True)
+add_sile('CAR', carSileVASP, gzip=True)
+add_sile('POSCAR', poscarSileVASP, gzip=True)
+add_sile('CONTCAR', contcarSileVASP, gzip=True)

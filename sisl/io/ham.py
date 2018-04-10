@@ -13,10 +13,10 @@ from sisl.physics import Hamiltonian
 from sisl._help import _range as range
 
 
-__all__ = ['HamiltonianSile']
+__all__ = ['hamiltonianSile']
 
 
-class HamiltonianSile(Sile):
+class hamiltonianSile(Sile):
     """ Hamiltonian file object """
 
     @Sile_fh_open
@@ -342,4 +342,5 @@ class HamiltonianSile(Sile):
                         self._write(fmt2_str.format(jo, io, h, s))
             self._write('end matrix {0:d} {1:d} {2:d}\n'.format(*isc))
 
-add_sile('ham', HamiltonianSile, case=False, gzip=True)
+
+add_sile('ham', hamiltonianSile, case=False, gzip=True)

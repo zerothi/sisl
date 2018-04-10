@@ -147,5 +147,6 @@ class ionncSileSiesta(SileCDFSiesta):
         # Now create the atom and return
         return Atom(Z, orbital, mass=mass, tag=label)
 
+
 add_sile('ion.xml', ionxmlSileSiesta, case=False, gzip=True)
 add_sile('ion.nc', ionncSileSiesta, case=False)

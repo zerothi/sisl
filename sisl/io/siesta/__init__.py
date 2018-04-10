@@ -16,28 +16,28 @@ sisl.
 
    fdfSileSiesta - input file
    outSileSiesta - output file
-   XVSileSiesta - xyz and vxyz file
+   xvSileSiesta - xyz and vxyz file
    bandsSileSiesta - band structure information
    eigSileSiesta - EIG file
    pdosSileSiesta - PDOS file
-   GridSileSiesta - Grid charge information (binary)
+   gridSileSiesta - Grid charge information (binary)
    gridncSileSiesta - NetCDF grid output files (netcdf)
-   DMSileSiesta - density matrix information
-   HSXSileSiesta - Hamiltonian and overlap matrix information
+   dmSileSiesta - density matrix information
+   hsxSileSiesta - Hamiltonian and overlap matrix information
    ncSileSiesta - NetCDF output file
    ionxmlSileSiesta - Basis-information from the ion.xml files
    ionncSileSiesta - Basis-information from the ion.nc files
-   OrbIndxSileSiesta - Basis set information (no geometry information)
+   orbindxSileSiesta - Basis set information (no geometry information)
    faSileSiesta - Forces on atoms
 
 The TranSiesta specific output files are:
 
 .. autosummary::
 
-   TSHSSileSiesta - TranSiesta Hamiltonian
-   TSDESileSiesta - TranSiesta TSDE
-   TSGFSileSiesta - TranSiesta surface Green function files
-   TSVncSileSiesta - TranSiesta potential solution input file
+   tshsSileSiesta - TranSiesta Hamiltonian
+   tsdeSileSiesta - TranSiesta TSDE
+   tsgfSileSiesta - TranSiesta surface Green function files
+   tsvncSileSiesta - TranSiesta potential solution input file
 
 """
 from .sile import *

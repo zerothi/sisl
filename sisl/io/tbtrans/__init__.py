@@ -48,7 +48,8 @@ Support files to complement TBtrans
 -----------------------------------
 - `deltancSileTBtrans` adding :math:`\delta H` or :math:`\delta\Sigma` elements
   to a TBtrans calculation
-- `dHncSileTBtrans` adding :math:`\delta H` elements to a TBtrans calculation
+- `tbtgfSileTBtrans` manual creation of the self-energies for TBtrans.
+- `dhncSileTBtrans` adding :math:`\delta H` elements to a TBtrans calculation
   (this class is deprecated by `deltancSileTBtrans` which is generic for
   :math:`\delta H` and :math:`\delta\Sigma`)
 

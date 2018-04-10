@@ -7,14 +7,15 @@ import numpy as np
 import sisl._array as _a
 from .sile import Sile, add_sile, Sile_fh_open, sile_raise_write
 
-__all__ = ['TableSile']
+
+__all__ = ['tableSile', 'TableSile']
 
 
-class TableSile(Sile):
+class tableSile(Sile):
     """ ASCII tabular formatted data """
 
     def _setup(self, *args, **kwargs):
-        """ Setup the `TableSile` after initialization """
+        """ Setup the `tableSile` after initialization """
         self._comment = ['#']
 
     @Sile_fh_open
@@ -52,7 +53,7 @@ class TableSile(Sile):
         Examples
         --------
 
-        >>> tbl = TableSile('test.dat', 'w')
+        >>> tbl = tableSile('test.dat', 'w')
         >>> tbl.write_data(range(2), range(1, 3), comment='A comment', header=['index', 'value'])
         >>> print(''.join(open('test.dat').readlines())) # doctest: +NORMALIZE_WHITESPACE
         # A comment
@@ -210,5 +211,7 @@ class TableSile(Sile):
     _write_default = write_data
 
 
-add_sile('table', TableSile, case=False, gzip=True)
-add_sile('dat', TableSile, case=False, gzip=True)
+TableSile = tableSile
+
+add_sile('table', tableSile, case=False, gzip=True)
+add_sile('dat', tableSile, case=False, gzip=True)

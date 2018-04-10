@@ -9,12 +9,12 @@ from sisl.io.sile import *
 from sisl import Geometry, Atom, SuperCell, Grid, SislError
 from sisl.unit import unit_convert
 
-__all__ = ['CUBESile']
+__all__ = ['cubeSile']
 
 Ang2Bohr = unit_convert('Ang', 'Bohr')
 
 
-class CUBESile(Sile):
+class cubeSile(Sile):
     """ CUBE file object """
 
     @Sile_fh_open
@@ -226,4 +226,4 @@ class CUBESile(Sile):
         return grid
 
 
-add_sile('cube', CUBESile, case=False, gzip=True)
+add_sile('cube', cubeSile, case=False, gzip=True)

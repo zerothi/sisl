@@ -28,16 +28,16 @@ def _fnames(base, variants):
 
 def test_get_sile1():
     cls = gsc('test.xyz')
-    assert issubclass(cls, XYZSile)
+    assert issubclass(cls, xyzSile)
 
-    cls = gsc('test.regardless{XYZ}')
-    assert issubclass(cls, XYZSile)
+    cls = gsc('test.regardless{xyz}')
+    assert issubclass(cls, xyzSile)
 
-    cls = gsc('test.fdf{XYZ}')
-    assert issubclass(cls, XYZSile)
+    cls = gsc('test.fdf{xyz}')
+    assert issubclass(cls, xyzSile)
 
-    cls = gsc('test.fdf{XYZ}')
-    assert issubclass(cls, XYZSile)
+    cls = gsc('test.fdf{xyz}')
+    assert issubclass(cls, xyzSile)
 
     cls = gsc('test.xyz{fdf}')
     assert issubclass(cls, fdfSileSiesta)
@@ -58,13 +58,13 @@ class TestObject(object):
     @pytest.mark.parametrize("sile", _fnames('test', ['cube', 'CUBE', 'cube.gz', 'CUBE.gz']))
     def test_cube(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, CUBESile]:
+        for obj in [BaseSile, Sile, cubeSile]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['ascii', 'ascii.gz', 'ascii.gz']))
     def test_bigdft_ascii(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, SileBigDFT, ASCIISileBigDFT]:
+        for obj in [BaseSile, Sile, SileBigDFT, asciiSileBigDFT]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['gout', 'gout.gz']))
@@ -76,7 +76,7 @@ class TestObject(object):
     @pytest.mark.parametrize("sile", _fnames('test', ['REF', 'REF.gz']))
     def test_scaleup_REF(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, SileScaleUp, REFSileScaleUp]:
+        for obj in [BaseSile, Sile, SileScaleUp, refSileScaleUp]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['restart', 'restart.gz']))
@@ -116,13 +116,13 @@ class TestObject(object):
     @pytest.mark.parametrize("sile", _fnames('test', ['XV', 'XV.gz']))
     def test_siesta_xv(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, SileSiesta, XVSileSiesta]:
+        for obj in [BaseSile, Sile, SileSiesta, xvSileSiesta]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['XV', 'XV.gz']))
     def test_siesta_xv_base(self, sile):
         s = gs(sile, cls=SileSiesta)
-        for obj in [BaseSile, Sile, SileSiesta, XVSileSiesta]:
+        for obj in [BaseSile, Sile, SileSiesta, xvSileSiesta]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['PDOS.xml', 'pdos.xml', 'PDOS.xml.gz', 'pdos.xml.gz']))
@@ -134,7 +134,7 @@ class TestObject(object):
     @pytest.mark.parametrize("sile", _fnames('test', ['ham', 'HAM', 'HAM.gz']))
     def test_ham(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, HamiltonianSile]:
+        for obj in [BaseSile, Sile, hamiltonianSile]:
             assert isinstance(s, obj)
 
     def test_tbtrans_nc(self):
@@ -150,31 +150,31 @@ class TestObject(object):
     @pytest.mark.parametrize("sile", _fnames('CONTCAR', ['', 'gz']))
     def test_vasp_contcar(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, SileVASP, CARSileVASP, CONTCARSileVASP]:
+        for obj in [BaseSile, Sile, SileVASP, carSileVASP, contcarSileVASP]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('POSCAR', ['', 'gz']))
     def test_vasp_poscar(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, SileVASP, CARSileVASP, POSCARSileVASP]:
+        for obj in [BaseSile, Sile, SileVASP, carSileVASP, poscarSileVASP]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['xyz', 'XYZ', 'xyz.gz', 'XYZ.gz']))
     def test_xyz(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, XYZSile]:
+        for obj in [BaseSile, Sile, xyzSile]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['molf', 'MOLF', 'molf.gz', 'MOLF.gz']))
     def test_molf(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, MoldenSile]:
+        for obj in [BaseSile, Sile, moldenSile]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['xsf', 'XSF', 'xsf.gz', 'XSF.gz']))
     def test_xsf(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, XSFSile]:
+        for obj in [BaseSile, Sile, xsfSile]:
             assert isinstance(s, obj)
 
     def test_wannier90_seed(self):
@@ -188,7 +188,7 @@ class TestObject(object):
         f = sisl_tmp('test_write', _dir)
         for sile in get_siles(['write_geometry']):
             # It is not yet an instance, hence issubclass
-            if issubclass(sile, (HamiltonianSile, _ncSileTBtrans, deltancSileTBtrans)):
+            if issubclass(sile, (hamiltonianSile, _ncSileTBtrans, deltancSileTBtrans)):
                 continue
             # Write
             sile(f, mode='w').write_geometry(G)

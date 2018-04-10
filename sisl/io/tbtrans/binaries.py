@@ -2,11 +2,12 @@ from __future__ import print_function
 
 from ..sile import add_sile
 
-from sisl.io.siesta import _GFSileSiesta
+from sisl.io.siesta import _gfSileSiesta
 
-__all__ = ['TBTGFSileTBtrans']
+__all__ = ['tbtgfSileTBtrans', 'TBTGFSileTBtrans']
 
 
-TBTGFSileTBtrans = type("TBTGFSileTBtrans", (_GFSileSiesta, ), {})
+tbtgfSileTBtrans = type("tbtgfSileTBtrans", (_gfSileSiesta, ), {})
+TBTGFSileTBtrans = tbtgfSileTBtrans
 
-add_sile('TBTGF', TBTGFSileTBtrans)
+add_sile('TBTGF', tbtgfSileTBtrans)

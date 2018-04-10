@@ -149,7 +149,7 @@ use the specific `get_sile` routine to retrieve the `Sile` object:
     import sisl
     fxyz = sisl.get_sile('file.xyz')
 
-which returns an `XYZSile` file object that enables reading the geometry in
+which returns an `xyzSile` file object that enables reading the geometry in
 `file.xyz`. Subsequently you may read the geometry and obtain a geometry object
 using
 
@@ -161,19 +161,19 @@ Even though these are hard coded you can easily extend your own file format
 
     sisl.add_sile(<file ending>, <SileObject>)
 
-for instance the `XYZSile` is hooked using:
+for instance the `xyzSile` is hooked using:
 
-    sisl.add_sile('xyz', XYZSile, case=False)
+    sisl.add_sile('xyz', xyzSile, case=False)
 
 which means that `sisl.get_sile` understands files `*.xyz` and `*.XYZ` files as
-an `XYZSile` object. You can put whatever file-endings here and classes to retain API
+an `xyzSile` object. You can put whatever file-endings here and classes to retain API
 compatibility. See the `sisl.io` package for more information. Note that a call to
 `add_sile` with an already existing file ending results in overwriting the initial
 meaning of that file object.
 
-__NOTE__: if you know the file is in _xyz_ file format but the ending is erroneous, you can force the `XYZSile` by instantiating using that class
+__NOTE__: if you know the file is in _xyz_ file format but the ending is erroneous, you can force the `xyzSile` by instantiating using that class
 
-    sisl.io.XYZSile(<filename>)
+    sisl.io.xyzSile(<filename>)
 
 which disregards the ending check. 
 

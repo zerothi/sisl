@@ -26,13 +26,13 @@ eV2Ry = unit_convert('eV', 'Ry')
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
-__all__ = ['TSHSSileSiesta', 'TSDESileSiesta']
-__all__ += ['HSXSileSiesta', 'DMSileSiesta']
-__all__ += ['GridSileSiesta']
-__all__ += ['_GFSileSiesta', 'TSGFSileSiesta']
+__all__ = ['tshsSileSiesta', 'tsdeSileSiesta']
+__all__ += ['hsxSileSiesta', 'dmSileSiesta']
+__all__ += ['gridSileSiesta']
+__all__ += ['_gfSileSiesta', 'tsgfSileSiesta']
 
 
-class TSHSSileSiesta(SileBinSiesta):
+class tshsSileSiesta(SileBinSiesta):
     """ TranSiesta TSHS file object """
 
     def read_supercell(self):
@@ -188,7 +188,7 @@ class TSHSSileSiesta(SileBinSiesta):
                               nspin=len(H.spin), na_u=H.geom.na, no_u=H.geom.no, nnz=H.nnz)
 
 
-class DMSileSiesta(SileBinSiesta):
+class dmSileSiesta(SileBinSiesta):
     """ Siesta DM file object """
 
     def read_density_matrix(self, **kwargs):
@@ -251,7 +251,7 @@ class DMSileSiesta(SileBinSiesta):
                               nspin=len(DM.spin), no_u=DM.geom.no, nnz=DM.nnz)
 
 
-class TSDESileSiesta(DMSileSiesta):
+class tsdeSileSiesta(dmSileSiesta):
     """ TranSiesta TSDE file object """
 
     def read_energy_density_matrix(self, **kwargs):
@@ -291,7 +291,7 @@ class TSDESileSiesta(DMSileSiesta):
         return EDM
 
 
-class HSXSileSiesta(SileBinSiesta):
+class hsxSileSiesta(SileBinSiesta):
     """ Siesta HSX file object """
 
     def read_hamiltonian(self, **kwargs):
@@ -339,7 +339,7 @@ class HSXSileSiesta(SileBinSiesta):
         return H
 
 
-class GridSileSiesta(SileBinSiesta):
+class gridSileSiesta(SileBinSiesta):
     """ Siesta grid binary file """
 
     def read_supercell(self, *args, **kwargs):
@@ -386,7 +386,7 @@ class GridSileSiesta(SileBinSiesta):
         return g
 
 
-class _GFSileSiesta(SileBinSiesta):
+class _gfSileSiesta(SileBinSiesta):
     """ Surface Green function file for inclusion in TranSiesta and TBtrans """
 
     def _setup(self, *args, **kwargs):
@@ -516,20 +516,20 @@ def _type(name, obj, dic=None):
     return type(name, (obj, ), dic)
 
 # Faster than class ... \ pass
-TSGFSileSiesta = _type("TSGFSileSiesta", _GFSileSiesta)
+tsgfSileSiesta = _type("tsgfSileSiesta", _gfSileSiesta)
 
 if found_module:
-    add_sile('TSHS', TSHSSileSiesta)
-    add_sile('TSDE', TSDESileSiesta)
-    add_sile('DM', DMSileSiesta)
+    add_sile('TSHS', tshsSileSiesta)
+    add_sile('TSDE', tsdeSileSiesta)
+    add_sile('DM', dmSileSiesta)
     # These have unit-conversions
     BohrC2AngC = Bohr2Ang ** 3
-    add_sile('RHO', _type("RhoSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('RHOINIT', _type("RhoInitSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('DRHO', _type("dRhoSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('IOCH', _type("IoRhoSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('TOCH', _type("TotalRhoSileSiesta", GridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('VH', _type("HartreeSileSiesta", GridSileSiesta, {'grid_unit': Ry2eV}))
-    add_sile('VNA', _type("NeutralAtomHartreeSileSiesta", GridSileSiesta, {'grid_unit': Ry2eV}))
-    add_sile('VT', _type("TotalHartreeSileSiesta", GridSileSiesta, {'grid_unit': Ry2eV}))
-    add_sile('TSGF', TSGFSileSiesta)
+    add_sile('RHO', _type("rhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('RHOINIT', _type("rhoinitSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('DRHO', _type("drhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('IOCH', _type("iorhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('TOCH', _type("totalrhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('VH', _type("hartreeSileSiesta", gridSileSiesta, {'grid_unit': Ry2eV}))
+    add_sile('VNA', _type("neutralatomhartreeSileSiesta", gridSileSiesta, {'grid_unit': Ry2eV}))
+    add_sile('VT', _type("totalhartreeSileSiesta", gridSileSiesta, {'grid_unit': Ry2eV}))
+    add_sile('TSGF', tsgfSileSiesta)

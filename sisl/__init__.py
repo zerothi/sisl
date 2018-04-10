@@ -105,7 +105,7 @@ from .physics import *
 # Hence, we *must* import it last.
 # This makes one able to get files through:
 #  import sisl
-#  sisl.io.TBTGFSileSiesta
+#  sisl.io.tbtgfSileTBtrans
 # or
 #  sisl.get_sile
 # This will reduce the cluttering of the separate entities

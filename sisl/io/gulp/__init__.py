@@ -10,7 +10,7 @@ GULP (:mod:`sisl.io.gulp`)
    :toctree:
 
    gotSileGULP - the output from GULP
-   HessianSileGULP - Hessian output from GULP
+   hessianSileGULP - Hessian output from GULP
 
 """
 from .sile import *

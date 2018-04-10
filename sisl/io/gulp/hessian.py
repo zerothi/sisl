@@ -9,10 +9,10 @@ from ..sile import *
 
 import numpy as np
 
-__all__ = ['HessianSileGULP']
+__all__ = ['hessianSileGULP']
 
 
-class HessianSileGULP(SileGULP):
+class hessianSileGULP(SileGULP):
     """ GULP output file object """
 
     @Sile_fh_open
@@ -81,4 +81,4 @@ class HessianSileGULP(SileGULP):
         return dyn
 
 
-add_sile('FORCE_CONSTANTS_2ND', HessianSileGULP, gzip=True)
+add_sile('FORCE_CONSTANTS_2ND', hessianSileGULP, gzip=True)

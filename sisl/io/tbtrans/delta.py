@@ -16,7 +16,7 @@ from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
 
 
-__all__ = ['deltancSileTBtrans', 'dHncSileTBtrans']
+__all__ = ['deltancSileTBtrans', 'dhncSileTBtrans']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
@@ -468,11 +468,11 @@ add_sile('dSE.nc', deltancSileTBtrans)
 
 
 # The deltaH nc file
-class dHncSileTBtrans(deltancSileTBtrans):
+class dhncSileTBtrans(deltancSileTBtrans):
     """ TBtrans delta-H file object (deprecated by `deltancSileTBtrans`)
 
     This class is not made globally visible through `get_sile` because of its deprecation.
-    If required please use `sisl.io.dHncSileTBtrans` explicitly.
+    If required please use `sisl.io.dhncSileTBtrans` explicitly.
     """
 
     def write_hamiltonian(self, H, **kwargs):

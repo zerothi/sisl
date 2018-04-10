@@ -381,9 +381,9 @@ def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     out = p.parse_args(['--transmission', 'Left', 'Right', '--out', f1,
                         '--dos', '--atom', '12:2:48', '--dos', 'Right', '--ados', 'Left', '--out', f2], namespace=copy(ns))
 
-    d = sisl.io.TableSile(f1).read_data()
+    d = sisl.io.tableSile(f1).read_data()
     assert len(d) == 2
-    d = sisl.io.TableSile(f2).read_data()
+    d = sisl.io.tableSile(f2).read_data()
     assert len(d) == 4
     assert np.allclose(d[1, :], d[2, :] * 2)
     assert np.allclose(d[2, :], d[3, :])

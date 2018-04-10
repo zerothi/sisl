@@ -10,14 +10,14 @@ from .sile import *
 from sisl import Geometry, Atom, SuperCell
 
 
-__all__ = ['XSFSile']
+__all__ = ['xsfSile']
 
 
-class XSFSile(Sile):
+class xsfSile(Sile):
     """ XSF file for XCrySDen """
 
     def _setup(self, *args, **kwargs):
-        """ Setup the `XSFSile` after initialization """
+        """ Setup the `xsfSile` after initialization """
         self._comment = ['#']
 
     @Sile_fh_open
@@ -335,4 +335,4 @@ Any arguments inbetween are passed to the `read_data` function (in order).
                        help='Store the geometry/grid (plus any vector fields) the out file.')
 
 
-add_sile('xsf', XSFSile, case=False, gzip=True)
+add_sile('xsf', xsfSile, case=False, gzip=True)

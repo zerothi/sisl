@@ -23,7 +23,7 @@ class gotSileGULP(SileGULP):
     """ GULP output file object """
 
     def _setup(self, *args, **kwargs):
-        """ Setup `GULPgoutSile` after initialization """
+        """ Setup `goutSileGULP` after initialization """
 
         self._keys = {
             'sc': 'Final Cartesian lattice vectors',
@@ -64,7 +64,7 @@ class gotSileGULP(SileGULP):
         f, _ = self.step_to(self._keys['sc'])
         if not f:
             raise ValueError(
-                ('GULPSile tries to lookup the SuperCell vectors '
+                ('SileGULP tries to lookup the SuperCell vectors '
                  'using key "' + self._keys['sc'] + '". \n'
                  'Use ".set_supercell_key(...)" to search for different name.\n'
                  'This could not be found found in file: "' + self.file + '".'))
@@ -95,7 +95,7 @@ class gotSileGULP(SileGULP):
             f, ki, _ = self.step_either([self._keys['sc'], self._keys['geometry']])
             if not f and ki == 0:
                 raise ValueError(
-                    ('GULPSile tries to lookup the SuperCell vectors '
+                    ('SileGULP tries to lookup the SuperCell vectors '
                      'using key "' + self._keys['sc'] + '". \n'
                      'Use ".set_supercell_key(...)" to search for different name.\n'
                      'This could not be found found in file: "' + self.file + '".'))
@@ -112,7 +112,7 @@ class gotSileGULP(SileGULP):
 
             elif not f and ki == 1:
                 raise ValueError(
-                    ('GULPSile tries to lookup the Geometry coordinates '
+                    ('SileGULP tries to lookup the Geometry coordinates '
                      'using key "' + self._keys['geometry'] + '". \n'
                      'Use ".set_geom_key(...)" to search for different name.\n'
                      'This could not be found found in file: "' + self.file + '".'))
@@ -144,7 +144,7 @@ class gotSileGULP(SileGULP):
             elif not f:
                 # could not find either cell or geometry
                 raise ValueError(
-                    ('GULPSile tries to lookup the SuperCell or Geometry.\n'
+                    ('SileGULP tries to lookup the SuperCell or Geometry.\n'
                      'None succeeded, ensure file has correct format.\n'
                      'This could not be found found in file: "' + self.file + '".'))
 
@@ -220,7 +220,7 @@ class gotSileGULP(SileGULP):
         f, _ = self.step_to(self._keys['dyn'])
         if not f:
             raise ValueError(
-                ('GULPSile tries to lookup the Dynamical matrix '
+                ('SileGULP tries to lookup the Dynamical matrix '
                  'using key "' + self._keys['dyn'] + '". '
                  'Use .set_dyn_key(...) to search for different name.'
                  'This could not be found found in file: "' + self.file + '".'))

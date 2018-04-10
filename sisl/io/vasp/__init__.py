@@ -11,11 +11,11 @@ VASP files.
 .. autosummary::
    :toctree:
 
-   CARSileVASP
-   DOSCARSileVASP
-   POSCARSileVASP
-   CONTCARSileVASP
-   EigenvalSileVASP
+   carSileVASP
+   doscarSileVASP
+   poscarSileVASP
+   contcarSileVASP
+   eigenvalSileVASP
 
 """
 from .sile import *

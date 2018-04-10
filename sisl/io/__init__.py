@@ -58,11 +58,11 @@ given code.
 .. autosummary::
    :toctree:
 
-   ~xyz.XYZSile - atomic coordinate file
-   ~cube.CUBESile - atomic coordinates *and* 3D grid values
-   ~table.TableSile - data file in tabular form
-   ~molden.MoldenSile - atomic coordinate file specific for Molden
-   ~xsf.XSFSile - atomic coordinate file specific for XCrySDen
+   ~xyz.xyzSile - atomic coordinate file
+   ~cube.cubeSile - atomic coordinates *and* 3D grid values
+   ~table.tableSile - data file in tabular form
+   ~molden.moldenSile - atomic coordinate file specific for Molden
+   ~xsf.xsfSile - atomic coordinate file specific for XCrySDen
 
 
 .. _toc-io-bigdft:
@@ -75,7 +75,7 @@ BigDFT (:mod:`sisl.io.bigdft`)
 .. autosummary::
    :toctree:
 
-   ASCIISileBigDFT - the input for BigDFT
+   asciiSileBigDFT - the input for BigDFT
 
 
 .. _toc-io-gulp:
@@ -89,7 +89,7 @@ GULP (:mod:`sisl.io.gulp`)
    :toctree:
 
    gotSileGULP - the output from GULP
-   HessianSileGULP - Hessian output from GULP
+   hessianSileGULP - Hessian output from GULP
 
 
 .. _toc-io-scaleup:
@@ -103,7 +103,7 @@ ScaleUp (:mod:`sisl.io.scaleup`)
    :toctree:
 
    orboccSileScaleUp - orbital information
-   REFSileScaleUp - reference coordinates
+   refSileScaleUp - reference coordinates
    rhamSileScaleUp - Hamiltonian file
 
 
@@ -119,18 +119,18 @@ Siesta (:mod:`sisl.io.siesta`)
 
    fdfSileSiesta - input file
    outSileSiesta - output file
-   XVSileSiesta - xyz and vxyz file
+   xvSileSiesta - xyz and vxyz file
    bandsSileSiesta - band structure information
    eigSileSiesta - EIG file
    pdosSileSiesta - PDOS file
-   GridSileSiesta - Grid charge information (binary)
+   gridSileSiesta - Grid charge information (binary)
    gridncSileSiesta - NetCDF grid output files (netcdf)
-   DMSileSiesta - density matrix information
-   HSXSileSiesta - Hamiltonian and overlap matrix information
+   dmSileSiesta - density matrix information
+   hsxSileSiesta - Hamiltonian and overlap matrix information
    ncSileSiesta - NetCDF output file
    ionxmlSileSiesta - Basis-information from the ion.xml files
    ionncSileSiesta - Basis-information from the ion.nc files
-   OrbIndxSileSiesta - Basis set information (no geometry information)
+   orbindxSileSiesta - Basis set information (no geometry information)
 
 
 .. _toc-io-transiesta:
@@ -141,10 +141,10 @@ TranSiesta (:mod:`sisl.io.siesta`)
 .. autosummary::
    :toctree:
 
-   TSHSSileSiesta - TranSiesta Hamiltonian
-   TSDESileSiesta - TranSiesta (energy) density matrix
-   TSGFSileSiesta - TranSiesta surface Green function files
-   TSVncSileSiesta - TranSiesta specific Hartree potential file
+   tshsSileSiesta - TranSiesta Hamiltonian
+   tsdeSileSiesta - TranSiesta (energy) density matrix
+   tsgfSileSiesta - TranSiesta surface Green function files
+   tsvncSileSiesta - TranSiesta specific Hartree potential file
 
 
 .. _toc-io-tbtrans:
@@ -159,7 +159,7 @@ TBtrans (:mod:`sisl.io.tbtrans`)
 
    tbtncSileTBtrans
    deltancSileTBtrans
-   TBTGFSileTBtrans - TBtrans surface Green function files
+   tbtgfSileTBtrans - TBtrans surface Green function files
    tbtsencSileTBtrans
    tbtavncSileTBtrans
 
@@ -176,7 +176,7 @@ Additionally the PHtrans code also has these files
    :toctree:
    :hidden:
 
-   dHncSileTBtrans
+   dhncSileTBtrans
 
 
 .. _toc-io-vasp:
@@ -189,9 +189,11 @@ VASP (:mod:`sisl.io.vasp`)
 .. autosummary::
    :toctree:
 
-   CARSileVASP
-   POSCARSileVASP
-   CONTCARSileVASP
+   carSileVASP
+   doscarSileVASP
+   poscarSileVASP
+   contcarSileVASP
+   eigenvalSileVASP
 
 
 .. _toc-io-wannier90:

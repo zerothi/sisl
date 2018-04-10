@@ -7,10 +7,10 @@ from .sile import SileVASP
 from ..sile import *
 
 
-__all__ = ['DOSCARSileVASP']
+__all__ = ['doscarSileVASP']
 
 
-class DOSCARSileVASP(SileVASP):
+class doscarSileVASP(SileVASP):
     """ VASP DOS output """
 
     @Sile_fh_open
@@ -47,4 +47,5 @@ class DOSCARSileVASP(SileVASP):
             DOS[:, ie] = line[1:ns+1]
         return E - Ef, DOS
 
-add_sile('DOSCAR', DOSCARSileVASP, gzip=True)
+
+add_sile('DOSCAR', doscarSileVASP, gzip=True)

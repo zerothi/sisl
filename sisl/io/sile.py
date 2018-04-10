@@ -177,7 +177,7 @@ def get_sile_class(filename, *args, **kwargs):
 
           water.xyz
 
-       will return an `XYZSile`.
+       will return an `xyzSile`.
     cls : class, optional
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.
@@ -238,7 +238,7 @@ def get_sile_class(filename, *args, **kwargs):
                 if sr.is_class(cls):
                     # class-specification has precedence
                     # This should only occur when the
-                    # class-specification is exact (i.e. XYZSile)
+                    # class-specification is exact (i.e. xyzSile)
                     return sr.cls
                 elif sr.is_suffix(end):
                     if cls is None:
@@ -273,9 +273,9 @@ def get_sile(file, *args, **kwargs):
        `cls` in case `cls` is not set.
        For instance:
 
-          water.dat{XYZSile}
+          water.dat{xyzSile}
 
-       will read the file ``water.dat` using the `XYZSile` class.
+       will read the file ``water.dat` using the `xyzSile` class.
     cls : class
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.

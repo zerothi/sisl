@@ -12,8 +12,8 @@ _dir = 'sisl/io/siesta'
 
 def test_xv1(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.XV', _dir)
-    sisl_system.g.write(XVSileSiesta(f, 'w'))
-    g = XVSileSiesta(f).read_geometry()
+    sisl_system.g.write(xvSileSiesta(f, 'w'))
+    g = xvSileSiesta(f).read_geometry()
 
     # Assert they are the same
     assert np.allclose(g.cell, sisl_system.g.cell)
