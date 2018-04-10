@@ -1,0 +1,19 @@
+""" pytest test configures """
+from __future__ import print_function
+
+import pytest
+import numpy as np
+
+import sisl
+
+
+pytestmark = [pytest.mark.io, pytest.mark.siesta]
+_dir = 'sisl/io/siesta'
+
+
+def test_fe(sisl_files):
+    si = sisl.get_sile(sisl_files(_dir, 'fe.bands'))
+    labels, k, eig = si.read_data()
+    assert k.shape == (131, )
+    assert eig.shape == (131, 2, 15)
+    assert len(labels[0]) == 5

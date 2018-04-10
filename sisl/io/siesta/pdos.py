@@ -58,11 +58,10 @@ class pdosSileSiesta(SileSiesta):
         nspin = int(root.find('nspin').text)
         # Try and find the fermi-level
         Ef = root.find('fermi_energy')
-        if Ef is None:
-            E = arrayd(map(float, root.find('energy_values').text.split()))
-        else:
+        E = arrayd(list(map(float, root.find('energy_values').text.split())))
+        if Ef is not None:
             Ef = float(Ef.text)
-            E = arrayd(map(float, root.find('energy_values').text.split())) - Ef
+            E -= Ef
         ne = len(E)
 
         # All coordinate, atoms and species data
@@ -158,7 +157,7 @@ class pdosSileSiesta(SileSiesta):
             atoms[ia][i] = O
 
             # it is formed like : spin-1, spin-2 (however already in eV)
-            DOS = arrayd(map(float, orb.find('data').text.split())).reshape(-1, nspin)
+            DOS = arrayd(list(map(float, orb.find('data').text.split()))).reshape(-1, nspin)
 
             if as_dataarray:
                 if len(D) == 0:
@@ -185,7 +184,7 @@ class pdosSileSiesta(SileSiesta):
 
             return D
 
-        return geom, E, np.stack(D, axis=0)
+        return geom, E, np.moveaxis(np.stack(D, axis=0), 2, 0)
 
 
 # PDOS files are:
