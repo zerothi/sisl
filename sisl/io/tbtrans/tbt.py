@@ -1879,8 +1879,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                         E.append(range(ns._tbt.Eindex(begin), ns._tbt.Eindex(end)+1))
                 # Issuing unique also sorts the entries
                 ns._Erng = np.unique(_a.arrayi(E).flatten())
-        p.add_argument('--energy', '-E',
-                       action=ERange,
+        p.add_argument('--energy', '-E', action=ERange,
                        help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
 
                        This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called""")
@@ -1892,8 +1891,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             def __call__(self, parser, ns, value, option_string=None):
                 ns._krng = lstranges(strmap(int, value))
         if not self._k_avg:
-            p.add_argument('--kpoint', '-k',
-                           action=kRange,
+            p.add_argument('--kpoint', '-k', action=kRange,
                            help="""Denote the sub-section of k-indices that are extracted.
 
                            This flag takes effect on all k-resolved quantities and is reset whenever --plot or --out is called""")

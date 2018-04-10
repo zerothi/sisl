@@ -16,7 +16,9 @@ __env = 'SISL_FILES_TESTS'
 def pytest_collection_modifyitems(config, items):
     sisl_files_tests = os.environ.get(__env, '_THIS_DIRECTORY_DOES_NOT_EXIST_')
     if os.path.isdir(sisl_files_tests):
-        return
+        if os.path.isdir(os.path.join(sisl_files_tests, 'sisl')):
+            return
+        print('pytest-sisl: Could not locate sisl directory in: {}'.format(sisl_files_tests))
 
     skip_sisl_files = pytest.mark.skip(reason="requires env(SISL_FILES_TESTS) pointing to clone of: https://github.com/zerothi/sisl-files")
     for item in items:

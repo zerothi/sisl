@@ -267,5 +267,123 @@ def test_1_graphene_all_content(sisl_files):
 @pytest.mark.slow
 def test_1_graphene_all_tbtav(sisl_files, sisl_tmp):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
-    f = sisl_tmp('1_graphene_all.TBT.AV.nc', _dir.replace('/', '-'))
+    f = sisl_tmp('1_graphene_all.TBT.AV.nc', _dir)
     tbt.write_tbtav(f)
+
+
+@pytest.mark.only
+def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
+    try:
+        import matplotlib
+    except ImportError:
+        pytest.skip('matplotlib not available')
+
+    # Create copy function
+    from copy import deepcopy
+    def copy(ns):
+        if hasattr(ns, '_tbt'):
+            del ns._tbt
+        new = deepcopy(ns)
+        new._tbt = tbt
+        return new
+
+    # Local routine to run the collected actions
+    def run(ns):
+        ns._actions_run = True
+        # Run all so-far collected actions
+        for A, Aargs, Akwargs in ns._actions:
+            A(*Aargs, **Akwargs)
+        ns._actions_run = False
+        ns._actions = []
+
+    tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
+    p, ns = tbt.ArgumentParser()
+
+    p.parse_args([], namespace=copy(ns))
+    out = p.parse_args(['--energy', ' -2:2'], namespace=copy(ns))
+    assert not out._actions_run
+    run(out)
+
+    out = p.parse_args(['--kpoint', '0,1,10-12'], namespace=copy(ns))
+    assert out._krng
+    run(out)
+    assert out._krng == [0, 1, 10, 11, 12]
+
+    out = p.parse_args(['--norm', 'orbital'], namespace=copy(ns))
+    run(out)
+    assert out._norm == 'orbital'
+
+    out = p.parse_args(['--norm', 'atom'], namespace=copy(ns))
+    run(out)
+    assert out._norm == 'atom'
+
+    out = p.parse_args(['--kpoint', '0,1,10-12', '--norm', 'orbital'], namespace=copy(ns))
+    run(out)
+    assert out._krng == [0, 1, 10, 11, 12]
+    assert out._norm == 'orbital'
+
+    out = p.parse_args(['--atom', '10:11,14'], namespace=copy(ns))
+    run(out)
+    assert out._Ovalue == '10:11,14'
+    # Only atom 14 is in the device region
+    assert np.all(out._Orng + 1 == [14])
+
+    out = p.parse_args(['--atom', '10:11,12,14:20'], namespace=copy(ns))
+    run(out)
+    assert out._Ovalue == '10:11,12,14:20'
+    # Only 13-48 is in the device
+    assert np.all(out._Orng + 1 == [14, 15, 16, 17, 18, 19, 20])
+
+    out = p.parse_args(['--transmission', 'Left', 'Right'], namespace=copy(ns))
+    run(out)
+    assert len(out._data) == 2
+    assert out._data_header[0][0] == 'E'
+    assert out._data_header[1][0] == 'T'
+
+    out = p.parse_args(['--transmission', 'Left', 'Right',
+                        '--transmission-bulk', 'Left'], namespace=copy(ns))
+    run(out)
+    assert len(out._data) == 3
+    assert out._data_header[0][0] == 'E'
+    assert out._data_header[1][0] == 'T'
+    assert out._data_header[2][:2] == 'BT'
+
+    out = p.parse_args(['--dos', '--dos', 'Left', '--ados', 'Right'], namespace=copy(ns))
+    run(out)
+    assert len(out._data) == 4
+    assert out._data_header[0][0] == 'E'
+    assert out._data_header[1][0] == 'D'
+    assert out._data_header[2][:2] == 'AD'
+    assert out._data_header[3][:2] == 'AD'
+
+    out = p.parse_args(['--bulk-dos', 'Left', '--ados', 'Right'], namespace=copy(ns))
+    run(out)
+    assert len(out._data) == 3
+    assert out._data_header[0][0] == 'E'
+    assert out._data_header[1][:2] == 'BD'
+    assert out._data_header[2][:2] == 'AD'
+
+    out = p.parse_args(['--transmission-eig', 'Left', 'Right'], namespace=copy(ns))
+    run(out)
+    assert out._data_header[0][0] == 'E'
+    for i in range(1, len(out._data)):
+        assert out._data_header[i][:4] == 'Teig'
+
+    out = p.parse_args(['--info'], namespace=copy(ns))
+
+    # Test output
+    f = sisl_tmp('1_graphene_all.dat', _dir)
+    out = p.parse_args(['--transmission-eig', 'Left', 'Right', '--out', f], namespace=copy(ns))
+    assert len(out._data) == 0
+
+    f1 = sisl_tmp('1_graphene_all_1.dat', _dir)
+    f2 = sisl_tmp('1_graphene_all_2.dat', _dir)
+    out = p.parse_args(['--transmission', 'Left', 'Right', '--out', f1,
+                        '--dos', '--atom', '12:2:48', '--dos', 'Right', '--ados', 'Left', '--out', f2], namespace=copy(ns))
+
+    d = sisl.io.TableSile(f1).read_data()
+    assert len(d) == 2
+    d = sisl.io.TableSile(f2).read_data()
+    assert len(d) == 4
+    assert np.allclose(d[1, :], d[2, :] * 2)
+    assert np.allclose(d[2, :], d[3, :])
