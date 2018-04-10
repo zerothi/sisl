@@ -85,7 +85,7 @@ script:
   - |
     if [[ ${COVERAGE:-false} == true ]]; then
         pip install -e .
-        pytest --cov=sisl
+        pytest --cov=sisl --pyargs sisl
     else
         pytest --doctest-modules sisl
         pytest --pyargs sisl

@@ -28,6 +28,15 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture(scope='function')
 def sisl_tmp(request, tmpdir_factory):
+    """ sisl specific temporary file and directory creator.
+
+        sisl_tmp(file, dir_name='sisl')
+        sisl_tmp.file(file, dir_name='sisl')
+        sisl_tmp.dir('sisl')
+
+    The scope of the `sisl_tmp` fixture is at a function level to
+    clean up after each function.
+    """
     class FileFactory(object):
         def __init__(self):
             self.base = tmpdir_factory.getbasetemp()
@@ -88,6 +97,14 @@ def sisl_tmp(request, tmpdir_factory):
 
 @pytest.fixture(scope='session')
 def sisl_files():
+    """ Environment catcher for the large files hosted in a different repository.
+
+    If SISL_FILES_TESTS has been defined in the environment variable the directory
+    will be used for the tests with this as a fixture.
+
+    If the environment variable is empty and a test has this fixture, it will
+    be skipped.
+    """
     env = os.environ[__env]
     def _path(path, file):
         return os.path.join(os.environ[__env], path, file)
@@ -96,7 +113,7 @@ def sisl_files():
 
 @pytest.fixture(scope='session')
 def sisl_system():
-    """ This fixture has a default set of systems etc. """
+    """ A preset list of geometries/Hamiltonians. """
     class System(object):
         pass
 
