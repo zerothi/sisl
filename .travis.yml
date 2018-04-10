@@ -85,11 +85,9 @@ script:
   - |
     if [[ ${COVERAGE:-false} == true ]]; then
         echo "Running coverage tests..."
-        pytest --fixtures --pyargs sisl
         pytest --cov=sisl --pyargs sisl
     else
         echo "Running non-coverage tests..."
-        pytest --fixtures --pyargs sisl
         pytest --doctest-modules sisl
         pytest --pyargs sisl
     fi
