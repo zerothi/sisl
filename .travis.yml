@@ -85,7 +85,6 @@ script:
   - |
     if [[ ${COVERAGE:-false} == true ]]; then
         echo "Running coverage tests..."
-        pip install -e .
         pytest --fixtures --pyargs sisl
         pytest --cov=sisl --pyargs sisl
     else
