@@ -2,17 +2,17 @@
 from __future__ import print_function
 
 import pytest
-import os.path as osp
 import numpy as np
 
 import sisl
 
 
-pytestmark = pytest.mark.tbtrans
+pytestmark = [pytest.mark.io, pytest.mark.tbtrans]
+_dir = 'sisl/io/tbtrans'
 
 
 @pytest.mark.slow
-def test_1_graphene_all_content(files):
+def test_1_graphene_all_content(sisl_files):
     """ This tests manifolds itself as:
 
     sisl.geom.graphene(orthogonal=True).tile(3, 0).tile(5, 1)
@@ -42,7 +42,7 @@ def test_1_graphene_all_content(files):
     TBT.k [100 1 1]
     ### FDF ###
     """
-    tbt = sisl.get_sile(osp.join(files, '1_graphene_all.TBT.nc'))
+    tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
     assert tbt.E.min() > -2.
     assert tbt.E.max() < 2.
     # We have 400 energy-points
@@ -265,7 +265,7 @@ def test_1_graphene_all_content(files):
 
 
 @pytest.mark.slow
-def test_1_graphene_all_tbtav(files, dir_test):
-    tbt = sisl.get_sile(osp.join(files, '1_graphene_all.TBT.nc'))
-    f = dir_test.file('1_graphene_all.TBT.AV.nc')
+def test_1_graphene_all_tbtav(sisl_files, sisl_tmp):
+    tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
+    f = sisl_tmp('1_graphene_all.TBT.AV.nc', _dir.replace('/', '-'))
     tbt.write_tbtav(f)

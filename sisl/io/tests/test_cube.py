@@ -9,9 +9,11 @@ import numpy as np
 
 pytestmark = pytest.mark.io
 
+_dir = 'sisl/io'
 
-def test_default(dir_test):
-    f = dir_test.file('GRID.cube')
+
+def test_default(sisl_tmp):
+    f = sisl_tmp('GRID.cube', _dir)
     grid = Grid(0.2)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
@@ -21,8 +23,8 @@ def test_default(dir_test):
     assert read.geometry is None
 
 
-def test_default_size(dir_test):
-    f = dir_test.file('GRID.cube')
+def test_default_size(sisl_tmp):
+    f = sisl_tmp('GRID.cube', _dir)
     grid = Grid(0.2, sc=2.0)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
@@ -32,8 +34,8 @@ def test_default_size(dir_test):
     assert read.geometry is None
 
 
-def test_geometry(dir_test):
-    f = dir_test.file('GRID.cube')
+def test_geometry(sisl_tmp):
+    f = sisl_tmp('GRID.cube', _dir)
     geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geom=geom)
     grid.grid = np.random.rand(*grid.shape)
@@ -45,9 +47,9 @@ def test_geometry(dir_test):
     assert grid.geometry == read.geometry
 
 
-def test_imaginary(dir_test):
-    fr = dir_test.file('GRID_real.cube')
-    fi = dir_test.file('GRID_imag.cube')
+def test_imaginary(sisl_tmp):
+    fr = sisl_tmp('GRID_real.cube', _dir)
+    fi = sisl_tmp('GRID_imag.cube', _dir)
     geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geom=geom, dtype=np.complex128)
     grid.grid = np.random.rand(*grid.shape) + 1j*np.random.rand(*grid.shape)
@@ -69,9 +71,9 @@ def test_imaginary(dir_test):
 
 
 @pytest.mark.xfail(raises=SislError)
-def test_imaginary_fail_shape(dir_test):
-    fr = dir_test.file('GRID_real.cube')
-    fi = dir_test.file('GRID_imag.cube')
+def test_imaginary_fail_shape(sisl_tmp):
+    fr = sisl_tmp('GRID_real.cube', _dir)
+    fi = sisl_tmp('GRID_imag.cube', _dir)
     geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geom=geom, dtype=np.complex128)
     grid.grid = np.random.rand(*grid.shape) + 1j*np.random.rand(*grid.shape)
@@ -84,9 +86,9 @@ def test_imaginary_fail_shape(dir_test):
 
 
 @pytest.mark.xfail(raises=SislError)
-def test_imaginary_fail_geometry(dir_test):
-    fr = dir_test.file('GRID_real.cube')
-    fi = dir_test.file('GRID_imag.cube')
+def test_imaginary_fail_geometry(sisl_tmp):
+    fr = sisl_tmp('GRID_real.cube', _dir)
+    fi = sisl_tmp('GRID_imag.cube', _dir)
     geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geom=geom, dtype=np.complex128)
     grid.grid = np.random.rand(*grid.shape) + 1j*np.random.rand(*grid.shape)

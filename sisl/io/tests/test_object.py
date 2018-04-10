@@ -3,29 +3,15 @@ from __future__ import print_function, division
 import pytest
 
 import numpy as np
-import os
 
-from tempfile import mkstemp
 from sisl.io import *
 from sisl.io.tbtrans._cdf import *
 from sisl import Geometry, Grid, Hamiltonian
 from sisl import DensityMatrix, EnergyDensityMatrix
 
 
-from . import common as tc
-
 pytestmark = pytest.mark.io
-
-
-_C = type('Temporary', (object, ), {})
-
-
-def setup_module(module):
-    tc.setup(module._C)
-
-
-def teardown_module(module):
-    tc.teardown(module._C)
+_dir = 'sisl/io'
 
 
 gs = get_sile
@@ -196,10 +182,10 @@ class TestObject(object):
         for obj in [BaseSile, Sile, SileWannier90, winSileWannier90]:
             assert isinstance(sile, obj)
 
-    def test_write(self):
-        G = _C.g.rotatec(-30)
+    def test_write(self, sisl_tmp, sisl_system):
+        G = sisl_system.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
-        f = mkstemp(dir=_C.d)[1]
+        f = sisl_tmp('test_write', _dir)
         for sile in get_siles(['write_geometry']):
             # It is not yet an instance, hence issubclass
             if issubclass(sile, (HamiltonianSile, _ncSileTBtrans, deltancSileTBtrans)):
@@ -208,10 +194,10 @@ class TestObject(object):
             sile(f, mode='w').write_geometry(G)
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_geometry'], ['write_geometry']))
-    def test_read_write_geom(self, sile):
-        G = _C.g.rotatec(-30)
+    def test_read_write_geom(self, sisl_tmp, sisl_system, sile):
+        G = sisl_system.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
-        f = mkstemp(dir=_C.d)[1] + '.win'
+        f = sisl_tmp('test_read_write_geom.win', _dir)
         # These files does not store the atomic species
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
             return
@@ -229,15 +215,13 @@ class TestObject(object):
             assert g.equal(G, R=False)
         except UnicodeDecodeError as e:
             pass
-        # Clean-up file
-        os.remove(f)
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_hamiltonian'], ['write_hamiltonian']))
-    def test_read_write_hamiltonian(self, sile):
-        G = _C.g.rotatec(-30)
+    def test_read_write_hamiltonian(self, sisl_tmp, sisl_system, sile):
+        G = sisl_system.g.rotatec(-30)
         H = Hamiltonian(G)
         H.construct([[0.1, 1.45], [0.1, -2.7]])
-        f = mkstemp(dir=_C.d)[1]
+        f = sisl_tmp('test_read_write_hamiltonian.win', _dir)
         # Write
         sile(f, mode='w').write_hamiltonian(H)
         # Read 1
@@ -252,15 +236,13 @@ class TestObject(object):
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
-        # Clean-up file
-        os.remove(f)
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_density_matrix'], ['write_density_matrix']))
-    def test_read_write_density_matrix(self, sile):
-        G = _C.g.rotatec(-30)
+    def test_read_write_density_matrix(self, sisl_tmp, sisl_system, sile):
+        G = sisl_system.g.rotatec(-30)
         DM = DensityMatrix(G, orthogonal=True)
         DM.construct([[0.1, 1.45], [0.1, -2.7]])
-        f = mkstemp(dir=_C.d)[1]
+        f = sisl_tmp('test_read_write_density_matrix.win', _dir)
         # Write
         sile(f, mode='w').write_density_matrix(DM)
         # Read 1
@@ -275,15 +257,13 @@ class TestObject(object):
             assert DM.spsame(dm)
         except UnicodeDecodeError as e:
             pass
-        # Clean-up file
-        os.remove(f)
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_energy_density_matrix'], ['write_energy_density_matrix']))
-    def test_read_write_energy_density_matrix(self, sile):
-        G = _C.g.rotatec(-30)
+    def test_read_write_energy_density_matrix(self, sisl_tmp, sisl_system, sile):
+        G = sisl_system.g.rotatec(-30)
         EDM = EnergyDensityMatrix(G, orthogonal=True)
         EDM.construct([[0.1, 1.45], [0.1, -2.7]])
-        f = mkstemp(dir=_C.d)[1]
+        f = sisl_tmp('test_read_write_energy_density_matrix.win', _dir)
         # Write
         sile(f, mode='w').write_energy_density_matrix(EDM)
         # Read 1
@@ -298,15 +278,13 @@ class TestObject(object):
             assert EDM.spsame(edm)
         except UnicodeDecodeError as e:
             pass
-        # Clean-up file
-        os.remove(f)
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_hamiltonian'], ['write_hamiltonian']))
-    def test_read_write_hamiltonian_overlap(self, sile):
-        G = _C.g.rotatec(-30)
+    def test_read_write_hamiltonian_overlap(self, sisl_tmp, sisl_system, sile):
+        G = sisl_system.g.rotatec(-30)
         H = Hamiltonian(G, orthogonal=False)
         H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])
-        f = mkstemp(dir=_C.d)[1]
+        f = sisl_tmp('test_read_write_hamiltonian_overlap.win', _dir)
         # Write
         sile(f, mode='w').write_hamiltonian(H)
         # Read 1
@@ -321,16 +299,14 @@ class TestObject(object):
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
-        # Clean-up file
-        os.remove(f)
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_grid'], ['write_grid']))
-    def test_read_write_grid(self, sile):
-        g = _C.g.rotatec(-30)
+    def test_read_write_grid(self, sisl_tmp, sisl_system, sile):
+        g = sisl_system.g.rotatec(-30)
         G = Grid([10, 11, 12])
         G[:, :, :] = np.random.rand(10, 11, 12)
 
-        f = mkstemp(dir=_C.d)[1]
+        f = sisl_tmp('test_read_write_grid.win', _dir)
         # Write
         try:
             sile(f, mode='w').write_grid(G)
@@ -348,19 +324,17 @@ class TestObject(object):
             assert np.allclose(g.grid, G.grid, atol=1e-5)
         except UnicodeDecodeError as e:
             pass
-        # Clean-up file
-        os.remove(f)
 
-    def test_arg_parser1(self):
-        f = mkstemp(dir=_C.d)[1]
+    def test_arg_parser1(self, sisl_tmp):
+        f = sisl_tmp('something', _dir)
         for sile in get_siles(['ArgumentParser']):
             try:
                 sile(f).ArgumentParser()
             except:
                 pass
 
-    def test_arg_parser2(self):
-        f = mkstemp(dir=_C.d)[1]
+    def test_arg_parser2(self, sisl_tmp):
+        f = sisl_tmp('something', _dir)
         for sile in get_siles(['ArgumentParser_out']):
             try:
                 sile(f).ArgumentParser()

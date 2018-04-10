@@ -8,25 +8,14 @@ from sisl.io.siesta import *
 import os.path as osp
 import numpy as np
 
-from sisl.io.tests import common as tc
-
-_C = type('Temporary', (object, ), {})
-
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
+_dir = 'sisl/io/siesta'
 
 
-def setup_module(module):
-    tc.setup(module._C)
-
-
-def teardown_module(module):
-    tc.teardown(module._C)
-
-
-def test_nc1():
-    f = osp.join(_C.d, 'gr.nc')
-    tb = Hamiltonian(_C.gtb)
-    tb.construct([_C.R, _C.t])
+def test_nc1(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.nc', _dir)
+    tb = Hamiltonian(sisl_system.gtb)
+    tb.construct([sisl_system.R, sisl_system.t])
     tb.write(ncSileSiesta(f, 'w'))
 
     ntb = ncSileSiesta(f).read_hamiltonian()
@@ -35,13 +24,13 @@ def test_nc1():
     assert np.allclose(tb.cell, ntb.cell)
     assert np.allclose(tb.xyz, ntb.xyz)
     assert np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0])
-    assert _C.g.atom.equal(ntb.atom, R=False)
+    assert sisl_system.g.atom.equal(ntb.atom, R=False)
 
 
-def test_nc2():
-    f = osp.join(_C.d, 'grS.nc')
-    tb = Hamiltonian(_C.gtb, orthogonal=False)
-    tb.construct([_C.R, _C.tS])
+def test_nc2(sisl_tmp, sisl_system):
+    f = sisl_tmp('grS.nc', _dir)
+    tb = Hamiltonian(sisl_system.gtb, orthogonal=False)
+    tb.construct([sisl_system.R, sisl_system.tS])
     tb.write(ncSileSiesta(f, 'w'))
 
     ntb = ncSileSiesta(f).read_hamiltonian()
@@ -50,4 +39,4 @@ def test_nc2():
     assert np.allclose(tb.cell, ntb.cell)
     assert np.allclose(tb.xyz, ntb.xyz)
     assert np.allclose(tb._csr._D, ntb._csr._D)
-    assert _C.g.atom.equal(ntb.atom, R=False)
+    assert sisl_system.g.atom.equal(ntb.atom, R=False)

@@ -2,41 +2,21 @@ from __future__ import print_function, division
 
 import pytest
 
-from tempfile import mkstemp, mkdtemp
-
 from sisl import geom
 from sisl import Geometry, Atom
 from sisl.io import fdfSileSiesta, SileError
 from sisl.unit.siesta import unit_convert
 
-import os.path as osp
-import math as m
 import numpy as np
 
-from sisl.io.tests import common as tc
-
-_C = type('Temporary', (object, ), {})
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.fdf]
+_dir = 'sisl/io/siesta'
 
 
-def setup_module(module):
-    tc.setup(module._C)
-
-
-def teardown_module(module):
-    tc.teardown(module._C)
-
-
-def d(f):
-    if f == '':
-        return _C.d
-    return osp.join(_C.d, f)
-
-
-def test_fdf1():
-    f = d('gr.fdf')
-    _C.g.write(fdfSileSiesta(f, 'w'))
+def test_fdf1(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.fdf', _dir)
+    sisl_system.g.write(fdfSileSiesta(f, 'w'))
 
     fdf = fdfSileSiesta(f)
     print(fdf)
@@ -53,21 +33,21 @@ def test_fdf1():
         fdf.read_geometry()
 
 
-def test_fdf2():
-    f = d('gr.fdf')
-    _C.g.write(fdfSileSiesta(f, 'w'))
+def test_fdf2(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.fdf', _dir)
+    sisl_system.g.write(fdfSileSiesta(f, 'w'))
     g = fdfSileSiesta(f).read_geometry()
 
     # Assert they are the same
-    assert np.allclose(g.cell, _C.g.cell)
-    assert np.allclose(g.xyz, _C.g.xyz)
+    assert np.allclose(g.cell, sisl_system.g.cell)
+    assert np.allclose(g.xyz, sisl_system.g.xyz)
     for ia in g:
-        assert g.atom[ia].Z == _C.g.atom[ia].Z
-        assert g.atom[ia].tag == _C.g.atom[ia].tag
+        assert g.atom[ia].Z == sisl_system.g.atom[ia].Z
+        assert g.atom[ia].tag == sisl_system.g.atom[ia].tag
 
 
-def test_supercell():
-    f = d('file.fdf')
+def test_supercell(sisl_tmp):
+    f = sisl_tmp('file.fdf', _dir)
     lines = [
         'Latticeconstant 1. Ang',
         '%block Latticevectors',
@@ -112,8 +92,8 @@ def test_supercell():
 
 
 @pytest.mark.xfail(raises=SileError)
-def test_supercell_fail():
-    f = d('file.fdf')
+def test_supercell_fail(sisl_tmp):
+    f = sisl_tmp('file.fdf', _dir)
     lines = [
         '%block Latticevectors',
         ' 1. 1. 1.',
@@ -126,8 +106,8 @@ def test_supercell_fail():
     fdfSileSiesta(f).read_supercell()
 
 
-def test_geometry():
-    f = d('file.fdf')
+def test_geometry(sisl_tmp):
+    f = sisl_tmp('file.fdf', _dir)
     sc_lines = [
         'Latticeconstant 1. Ang',
         '%block latticeparameters',
@@ -152,7 +132,7 @@ def test_geometry():
         fh.write('\n'.join(sc_lines) + '\n')
         fh.write('\n'.join(lines))
 
-    fdf = fdfSileSiesta(f, base=_C.d)
+    fdf = fdfSileSiesta(f, base=sisl_tmp.getbase())
     g = fdf.read_geometry()
     assert g.na == 2
     assert np.allclose(g.xyz, [[1.] * 3,
@@ -165,7 +145,7 @@ def test_geometry():
         fh.write('\n'.join(sc_lines) + '\n')
         fh.write('\n'.join(lines[1:]))
 
-    fdf = fdfSileSiesta(f, base=_C.d)
+    fdf = fdfSileSiesta(f, base=sisl_tmp.getbase())
     g = fdf.read_geometry()
     assert g.na == 3
     assert np.allclose(g.xyz, [[1.] * 3,
@@ -176,8 +156,8 @@ def test_geometry():
     assert g.atom[2].Z == 12
 
 
-def test_include():
-    f = d('file.fdf')
+def test_include(sisl_tmp):
+    f = sisl_tmp('file.fdf', _dir)
     with open(f, 'w') as fh:
         fh.write('Flag1 date\n')
         fh.write('# Flag2 comment\n')
@@ -191,24 +171,27 @@ def test_include():
         fh.write('%block Hello < hello\n')
         fh.write('TestLast 1. eV\n')
 
-    with open(d('hello'), 'w') as fh:
+    hello = sisl_tmp('hello', _dir)
+    with open(hello, 'w') as fh:
         fh.write('Flag4 hello\n')
         fh.write('# Comments should be discarded\n')
         fh.write('Flag3 test\n')
         fh.write('Sub sub-test\n')
 
-    with open(d('file2.fdf'), 'w') as fh:
+    file2 = sisl_tmp('file2.fdf', _dir)
+    with open(file2, 'w') as fh:
         fh.write('Flag4 non\n')
         fh.write('FakeReal 2.\n')
         fh.write('  %incLude file3.fdf')
 
-    with open(d('file3.fdf'), 'w') as fh:
+    file3 = sisl_tmp('file3.fdf', _dir)
+    with open(file3, 'w') as fh:
         fh.write('Sub level\n')
         fh.write('Third level\n')
         fh.write('MyList [1 , 2 , 3]\n')
 
-    fdf = fdfSileSiesta(f, base=_C.d)
-    assert fdf.includes() == [d('hello'), d('file2.fdf'), d('file3.fdf')]
+    fdf = fdfSileSiesta(f, base=sisl_tmp.getbase())
+    assert fdf.includes() == [hello, file2, file3]
     assert fdf.get('Flag1') == 'date'
     assert fdf.get('Flag2') == 'date2'
     assert fdf.get('Flag3') == 'test'
@@ -236,41 +219,41 @@ def test_include():
     #assert np.allclose(fdf.get('MyList', default=[]), np.arange(3) + 1)
 
     # Read a block
-    ll = open(d('hello')).readlines()
+    ll = open(sisl_tmp('hello', _dir)).readlines()
     ll.pop(1)
     assert fdf.get('Hello') == [l.replace('\n', '').strip() for l in ll]
 
 
-def test_xv_preference():
+def test_xv_preference(sisl_tmp):
     g = geom.graphene()
-    g.write(d('file.fdf'))
+    g.write(sisl_tmp('file.fdf', _dir))
     g.xyz[0, 0] += 1.
-    g.write(d('siesta.XV'))
+    g.write(sisl_tmp('siesta.XV', _dir))
 
-    g2 = fdfSileSiesta(d('file.fdf')).read_geometry(True)
+    g2 = fdfSileSiesta(sisl_tmp('file.fdf', _dir)).read_geometry(True)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
 
-    g2 = fdfSileSiesta(d('file.fdf')).read_geometry(order=['fdf'])
+    g2 = fdfSileSiesta(sisl_tmp('file.fdf', _dir)).read_geometry(order=['fdf'])
     assert np.allclose(g.cell, g2.cell)
     g2.xyz[0, 0] += 1.
     assert np.allclose(g.xyz, g2.xyz)
 
 
-def test_geom_order():
+def test_geom_order(sisl_tmp):
     gfdf = geom.graphene()
     gxv = gfdf.copy()
     gxv.xyz[0, 0] += 0.5
     gnc = gfdf.copy()
     gnc.xyz[0, 0] += 0.5
 
-    gfdf.write(d('siesta.fdf'))
+    gfdf.write(sisl_tmp('siesta.fdf', _dir))
 
     # Create fdf-file
-    fdf = fdfSileSiesta(d('siesta.fdf'))
+    fdf = fdfSileSiesta(sisl_tmp('siesta.fdf', _dir))
     assert fdf.read_geometry(True, order=['nc']) is None
-    gxv.write(d('siesta.XV'))
-    gnc.write(d('siesta.nc'))
+    gxv.write(sisl_tmp('siesta.XV', _dir))
+    gnc.write(sisl_tmp('siesta.nc', _dir))
 
     # Should read from XV
     g = fdf.read_geometry(True)

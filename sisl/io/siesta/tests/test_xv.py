@@ -2,19 +2,18 @@ from __future__ import print_function, division
 
 import pytest
 
-from sisl.io.xyz import *
+from sisl.io.siesta.xv import *
 
 import numpy as np
 
-
 pytestmark = pytest.mark.io
-_dir = 'sisl/io'
+_dir = 'sisl/io/siesta'
 
 
-def test_xyz1(sisl_tmp, sisl_system):
-    f = sisl_tmp('gr.xyz', _dir)
-    sisl_system.g.write(XYZSile(f, 'w'))
-    g = XYZSile(f).read_geometry()
+def test_xv1(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.XV', _dir)
+    sisl_system.g.write(XVSileSiesta(f, 'w'))
+    g = XVSileSiesta(f).read_geometry()
 
     # Assert they are the same
     assert np.allclose(g.cell, sisl_system.g.cell)
