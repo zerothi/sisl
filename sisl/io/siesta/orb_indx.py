@@ -7,6 +7,7 @@ from ..sile import add_sile, Sile_fh_open
 # Import the geometry object
 from sisl import Orbital, AtomicOrbital
 from sisl import PeriodicTable, Atom, Atoms
+from sisl._array import arrayi
 from sisl.unit.siesta import unit_convert
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
@@ -23,7 +24,6 @@ class orbindxSileSiesta(SileSiesta):
         # First line contains no no_s
         line = self.readline().split()
         no_s = int(line[1])
-        # two non-used lines
         self.readline()
         self.readline()
         nsc = [0] * 3
@@ -41,7 +41,7 @@ class orbindxSileSiesta(SileSiesta):
             if isc[2] > nsc[2]:
                 nsc[2] = isc[2]
 
-        return [n * 2 + 1 for n in nsc]
+        return arrayi([n * 2 + 1 for n in nsc])
 
     @Sile_fh_open
     def read_basis(self):
@@ -54,8 +54,6 @@ class orbindxSileSiesta(SileSiesta):
         # First line contains no no_s
         line = self.readline().split()
         no = int(line[0])
-
-        # Read two new lines
         self.readline()
         self.readline()
 
