@@ -84,40 +84,40 @@ class Quaternion(object):
         nv.shape = s
         return nv
 
-    def __eq__(a, b):
+    def __eq__(self, other):
         """ Returns whether two Quaternions are equal """
-        return np.allclose(a._v, b._v)
+        return np.allclose(self._v, other._v)
 
-    def __neg__(a):
+    def __neg__(self):
         """ Returns the negative quaternion """
-        q = a.copy()
+        q = self.copy()
         q._v = -q._v
         return q
 
-    def __add__(a, b):
+    def __add__(self, other):
         """ Returns the added quantity """
-        q = a.copy()
-        if isinstance(b, Quaternion):
-            q._v += b._v
+        q = self.copy()
+        if isinstance(other, Quaternion):
+            q._v += other._v
         else:
-            q._v += b
+            q._v += other
         return q
 
-    def __sub__(a, b):
+    def __sub__(self, other):
         """ Returns the subtracted quantity """
-        q = a.copy()
-        if isinstance(b, Quaternion):
-            q._v -= b._v
+        q = self.copy()
+        if isinstance(other, Quaternion):
+            q._v -= other._v
         else:
-            q._v -= b
+            q._v -= other
         return q
 
-    def __mul__(a, b):
+    def __mul__(self, other):
         """ Multiplies with another instance or scalar """
-        q = a.copy()
-        if isinstance(b, Quaternion):
-            v1 = np.copy(a._v)
-            v2 = b._v
+        q = self.copy()
+        if isinstance(other, Quaternion):
+            v1 = np.copy(self._v)
+            v2 = other._v
             q._v[0] = v1[0] * v2[0] - v1[1] * \
                 v2[1] - v1[2] * v2[2] - v1[3] * v2[3]
             q._v[1] = v1[0] * v2[1] + v1[1] * \
@@ -127,57 +127,57 @@ class Quaternion(object):
             q._v[3] = v1[0] * v2[3] + v1[1] * \
                 v2[2] - v1[2] * v2[1] + v1[3] * v2[0]
         else:
-            q._v *= b
+            q._v *= other
         return q
 
-    def __div__(a, b):
+    def __div__(self, other):
         """ Divides with a scalar """
-        if isinstance(b, Quaternion):
+        if isinstance(other, Quaternion):
             raise ValueError("Do not know how to divide a quaternion " +
                              "with a quaternion.")
-        return a * (1. / b)
+        return self * (1. / other)
     __truediv__ = __div__
 
-    def __iadd__(a, b):
+    def __iadd__(self, other):
         """ In-place addition """
-        if isinstance(b, Quaternion):
-            a._v += b._v
+        if isinstance(other, Quaternion):
+            self._v += other._v
         else:
-            a._v += b
-        return a
+            self._v += other
+        return self
 
-    def __isub__(a, b):
+    def __isub__(self, other):
         """ In-place subtraction """
-        if isinstance(b, Quaternion):
-            a._v -= b._v
+        if isinstance(other, Quaternion):
+            self._v -= other._v
         else:
-            a._v -= b
-        return a
+            self._v -= other
+        return self
 
     # The in-place operators
-    def __imul__(a, b):
+    def __imul__(self, other):
         """ In-place multiplication """
-        if isinstance(b, Quaternion):
-            v1 = np.copy(a._v)
-            v2 = b._v
-            a._v[0] = v1[0] * v2[0] - v1[1] * \
+        if isinstance(other, Quaternion):
+            v1 = np.copy(self._v)
+            v2 = other._v
+            self._v[0] = v1[0] * v2[0] - v1[1] * \
                 v2[1] - v1[2] * v2[2] - v1[3] * v2[3]
-            a._v[1] = v1[0] * v2[1] + v1[1] * \
+            self._v[1] = v1[0] * v2[1] + v1[1] * \
                 v2[0] + v1[2] * v2[3] - v1[3] * v2[2]
-            a._v[2] = v1[0] * v2[2] - v1[1] * \
+            self._v[2] = v1[0] * v2[2] - v1[1] * \
                 v2[3] + v1[2] * v2[0] + v1[3] * v2[1]
-            a._v[3] = v1[0] * v2[3] + v1[1] * \
+            self._v[3] = v1[0] * v2[3] + v1[1] * \
                 v2[2] - v1[2] * v2[1] + v1[3] * v2[0]
         else:
-            a._v *= b
-        return a
+            self._v *= other
+        return self
 
-    def __idiv__(a, b):
+    def __idiv__(self, other):
         """ In-place division """
-        if isinstance(b, Quaternion):
+        if isinstance(other, Quaternion):
             raise ValueError("Do not know how to divide a quaternion " +
                              "with a quaternion.")
         # use imul
-        a._v /= b
-        return a
+        self._v /= other
+        return self
     __itruediv__ = __idiv__

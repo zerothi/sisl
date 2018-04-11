@@ -151,20 +151,20 @@ class Spin(object):
         return self._spins
 
     # Comparisons
-    def __lt__(a, b):
-        return a.kind < b.kind
+    def __lt__(self, other):
+        return self.kind < other.kind
 
-    def __le__(a, b):
-        return a.kind <= b.kind
+    def __le__(self, other):
+        return self.kind <= other.kind
 
-    def __eq__(a, b):
-        return a.kind == b.kind
+    def __eq__(self, other):
+        return self.kind == other.kind
 
-    def __ne__(a, b):
-        return not a == b
+    def __ne__(self, other):
+        return not self == other
 
-    def __gt__(a, b):
-        return a.kind > b.kind
+    def __gt__(self, other):
+        return self.kind > other.kind
 
-    def __ge__(a, b):
-        return a.kind >= b.kind
+    def __ge__(self, other):
+        return self.kind >= other.kind
