@@ -17,7 +17,6 @@ from .utils import array_arange
 from .utils.mathematics import fnorm
 
 from .supercell import SuperCellChild
-from .atom import Atom
 from .geometry import Geometry
 
 __all__ = ['Grid', 'sgrid']
@@ -272,7 +271,6 @@ class Grid(SuperCellChild):
         idx[b] = a
         idx[a] = b
         s = np.copy(self.shape)
-        geom = self.geometry
         d = self.__sc_geom_dict()
         d['sc'] = d['sc'].swapaxes(a, b)
         grid = self.__class__(s[idx], bc=self.bc[idx],

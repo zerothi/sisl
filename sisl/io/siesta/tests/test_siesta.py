@@ -1,12 +1,11 @@
 from __future__ import print_function, division
 
 import pytest
+import numpy as np
 
 from sisl import Hamiltonian
 from sisl.io.siesta import *
 
-import os.path as osp
-import numpy as np
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = 'sisl/io/siesta'

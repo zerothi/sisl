@@ -71,7 +71,6 @@ def test_tbt_dH_fail(sisl_tmp, sisl_system):
 
     with deltancSileTBtrans(f, 'w') as sile:
         sile.write_delta(H, k=[0.] * 3)
-        nnz = H.nnz
         for i in range(H.no_s):
             H[0, i] = 1.
         sile.write_delta(H, k=[0.2] * 3)

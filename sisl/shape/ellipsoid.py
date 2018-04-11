@@ -3,15 +3,12 @@ from __future__ import print_function, division
 from math import pi
 import numpy as np
 from numpy import dot
-from numpy import fabs, logical_and
 
 from sisl.messages import warn
 import sisl._array as _a
 from sisl.utils.mathematics import orthogonalize, fnorm, fnorm2, expand
 from sisl._math_small import product3
 from sisl._indices import indices_in_sphere
-
-
 from .base import PureShape
 
 

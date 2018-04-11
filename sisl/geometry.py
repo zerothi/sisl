@@ -2936,7 +2936,7 @@ class Geometry(SuperCellChild):
 
         # First we should figure out which atoms we are dealing with
         idx = dot(self.icell.T, sc.cell + np.diag(sc.origo))
-        idx_origo = dot(self.icell.T, np.diag(sc.origo))
+        #idx_origo = dot(self.icell.T, np.diag(sc.origo))
         tile_min = np.floor(idx.min(0)).astype(dtype=int32)
         tile_max = np.ceil(idx.max(0)).astype(dtype=int32)
 

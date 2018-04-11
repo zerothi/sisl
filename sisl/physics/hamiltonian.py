@@ -5,7 +5,7 @@ from numpy import pi, int32
 from numpy import take, ogrid
 from numpy import add, subtract, multiply, divide
 from numpy import cos, sin, arctan2, conj
-from numpy import dot, sqrt, square, floor, ceil
+from numpy import dot, sqrt, square, ceil
 
 from sisl.messages import warn, tqdm_eta
 from sisl._help import _range as range, _str as str
@@ -523,7 +523,6 @@ class EigenState(EigenSystem):
             warn(self.__class__.__name__ + '.psi could not find a geometry associated, will use the Grid geometry.')
         if geom is None:
             raise SislError(self.__class__.__name__ + '.psi can not find a geometry associated!')
-            geom = grid.geometry
 
         # Do the sum over all eigenstates
         v = self.v.sum(0)

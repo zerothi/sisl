@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import dot, logical_and
+from numpy import dot
 
 import sisl._array as _a
 from sisl.linalg import inv

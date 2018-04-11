@@ -6,7 +6,7 @@ import numpy as np
 from numpy import in1d
 
 # Import sile objects
-from ..sile import SileWarning, SileInfo
+from ..sile import SileWarning
 from .sile import SileCDFTBtrans
 from sisl.messages import warn, info
 from sisl.utils import *
