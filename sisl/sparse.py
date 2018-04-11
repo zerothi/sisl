@@ -377,8 +377,7 @@ class SparseCSR(object):
                                     'i,j index (i={}), something has went terribly wrong.'.format(r))
 
         if len(col) != self.nnz:
-            raise SislError('Final size in the sparse matrix finalization '
-                            'went wrong.')
+            raise SislError('Final size in the sparse matrix finalization went wrong.') # pragma: no cover
 
         # Check that all column indices are within the expected shape
         if np_any(self.shape[1] <= self.col):
