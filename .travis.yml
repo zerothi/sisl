@@ -88,8 +88,8 @@ script:
     if [[ ${COVERAGE:-false} == true ]]; then
         echo "Running coverage tests..."
         pytest --cov=sisl --cov-config=../.coveragerc --pyargs sisl
-	# Move the coverage information to top-directory
-	mv .coverage ..
+        # Move the coverage information to top-directory
+        mv .coverage ..
     else
         echo "Running non-coverage tests..."
         pytest --doctest-modules sisl
