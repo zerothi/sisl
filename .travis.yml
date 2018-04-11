@@ -83,17 +83,13 @@ install:
 
 script:
   - |
-    pwd
-    mkdir travis-sisl-test-directory
-    cd travis-sisl-test-directory
-    pwd
     if [[ ${COVERAGE:-false} == true ]]; then
         echo "Running coverage tests..."
-        pytest --cov=sisl --pyargs sisl
+        pytest --cov=sisl sisl
     else
         echo "Running non-coverage tests..."
         pytest --doctest-modules sisl
-        pytest --pyargs sisl
+        pytest sisl
     fi
 
 after_success:
