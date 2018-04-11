@@ -107,20 +107,16 @@ changing ways. It handles files dependent on type AND content.
     # and we will sort out if the input options
     # is only a help option.
     if not hasattr(ns, '_input_file'):
+        bypassed_args = ['--help', '-h', '--version', '--cite']
         # Then there are no input files...
         # It is difficult to create an adaptable script
         # with no adaptee... ;)
-        if not (('--help' in argv) or ('-h' in argv)):
+        found = False
+        for arg in bypassed_args:
+            found = found or arg in argv
+        if not found:
             # Re-create the argument parser with the help description
             argv = ['--help']
-        description += """
-
-One *must* supply a file before a help menu can be generated.
-The help menu depends on the type of Sile that is specified.
-        """
-        p = argparse.ArgumentParser("Manipulates sisl Sile's for manipulation.",
-                                    formatter_class=argparse.RawDescriptionHelpFormatter,
-                                    description=description)
 
     # We are good to go!!!
     p.parse_args(argv, namespace=ns)

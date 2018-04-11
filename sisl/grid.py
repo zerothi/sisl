@@ -1288,19 +1288,24 @@ This may be unexpected but enables one to do advanced manipulations.
     cmd.add_sisl_version_cite_arg(p)
 
     # First read the input "Sile"
+    stdout_grid = True
     if grid is None:
+        from os.path import isfile
         argv, input_file = cmd.collect_input(argv)
-        with get_sile(input_file) as fh:
-            grid = fh.read_grid()
+        if input_file is None:
+            grid = Grid(0.1)
+            stdout_grid = False
 
-    elif isinstance(grid, Grid):
-        # Do nothing, the grid is already created
-        pass
+        elif isfile(input_file):
+            grid = get_sile(input_file).read_grid()
+        elif not isfile(input_file):
+            from .messages import info
+            info("Cannot find file '{}'!".format(input_file))
 
     elif isinstance(grid, BaseSile):
-        grid = grid.read_grid()
         # Store the input file...
         input_file = grid.file
+        grid = grid.read_grid()
 
     # Do the argument parser
     p, ns = grid.ArgumentParser(p, **grid._ArgumentParser_args_single())
@@ -1323,7 +1328,7 @@ This may be unexpected but enables one to do advanced manipulations.
     args = p.parse_args(argv, namespace=ns)
     g = args._grid
 
-    if not args._stored_grid:
+    if stdout_grid and not args._stored_grid:
         # We should write out the information to the stdout
         # This is merely for testing purposes and may not be used for anything.
         print(g)
