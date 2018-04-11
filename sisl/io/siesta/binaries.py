@@ -221,7 +221,7 @@ class dmSileSiesta(SileBinSiesta):
         DM._csr._nnz = len(col)
 
         DM._csr._D = np.empty([nnz, spin+1], np.float64)
-        DM._csr._D[:, :] = dDM[:, :]
+        DM._csr._D[:, :spin] = dDM[:, :]
         # DM file does not contain overlap matrix... so neglect it for now.
         DM._csr._D[:, spin] = 0.
 
