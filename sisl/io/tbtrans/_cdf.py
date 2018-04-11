@@ -310,7 +310,11 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return pvt
 
     def a2p(self, atom):
-        """ Return the pivoting indices (0-based) for the atoms
+        """ Return the pivoting orbital indices (0-based) for the atoms
+
+        This is equivalent to:
+
+        >>> p = self.o2p(self.geom.a2o(atom, True)) # doctest: +SKIP
 
         Parameters
         ----------
