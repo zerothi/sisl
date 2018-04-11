@@ -103,6 +103,8 @@ def test_1_graphene_all_content(sisl_files):
     assert len(tbt.elecs) == 2
     elecs = tbt.elecs[:]
     assert elecs == ['Left', 'Right']
+    for i, elec in enumerate(elecs):
+        assert tbt._elec(i) == elec
 
     # Check the chemical potentials
     for elec in elecs:
@@ -129,6 +131,9 @@ def test_1_graphene_all_content(sisl_files):
     with pytest.raises(ValueError):
         tbt.transmission_eig(left, left)
 
+    assert np.allclose(tbt.transmission(left, right, kavg=False),
+                       tbt.transmission(right, left, kavg=False))
+
     # Also check for each k
     for ik in range(nk):
         assert np.allclose(tbt.transmission(left, right, ik),
@@ -138,6 +143,11 @@ def test_1_graphene_all_content(sisl_files):
         assert np.all(tbt.transmission(left, right, ik) + 1e-7 >= tbt.transmission_eig(left, right, ik).sum(-1))
         assert np.all(tbt.transmission(right, left, ik) + 1e-7 >= tbt.transmission_eig(right, left, ik).sum(-1))
         assert np.allclose(tbt.DOS(kavg=ik), tbt.ADOS(left, kavg=ik) + tbt.ADOS(right, kavg=ik))
+        assert np.allclose(tbt.DOS(E=0.2, kavg=ik), tbt.ADOS(left, E=0.2, kavg=ik) + tbt.ADOS(right, E=0.2, kavg=ik))
+
+    kavg = list(range(10))
+    assert np.allclose(tbt.DOS(kavg=kavg), tbt.ADOS(left, kavg=kavg) + tbt.ADOS(right, kavg=kavg))
+    assert np.allclose(tbt.DOS(E=0.2, kavg=kavg), tbt.ADOS(left, E=0.2, kavg=kavg) + tbt.ADOS(right, E=0.2, kavg=kavg))
 
     # Check that norm returns correct values
     assert tbt.norm() == 1
@@ -166,6 +176,8 @@ def test_1_graphene_all_content(sisl_files):
     assert high_low > 0.
     assert low_high < 0.
     assert - high_low == pytest.approx(low_high)
+    with pytest.warns(sisl.SislWarning):
+        tbt.current_parameter(left, -10., 0.0025, right, 10., 0.0025)
 
     # Since this is a perfect system there should be *no* QM shot-noise
     # Also, the shot-noise is related to the applied bias, so NO shot-noise
