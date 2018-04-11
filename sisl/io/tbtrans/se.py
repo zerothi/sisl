@@ -131,7 +131,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         """
         if elec is None:
             if in_device and sort:
-                pvt = _a.arangei(self.no_d)
+                return _a.arangei(self.no_d)
             pvt = self._value('pivot') - 1
             if in_device:
                 # Count number of elements that we need to subtract from each orbital
@@ -160,6 +160,37 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             # translate to the device indices
             se_pvt = in1d(pvt, se_pvt, assume_unique=True).nonzero()[0]
         return se_pvt
+
+    def a2p(self, atom, elec=None):
+        """ Return the pivoting orbital indices (0-based) for the atoms, possibly on an electrode
+
+        This is equivalent to:
+
+        >>> p = self.o2p(self.geom.a2o(atom, True)) # doctest: +SKIP
+
+        Parameters
+        ----------
+        atom : array_like or int
+           atomic indices (0-based)
+        elec : str or int or None
+           electrode to return pivoting indices of (if None it is the
+           device pivoting indices).
+        """
+        orbs = self.geom.a2o(atom, True)
+        return self.o2p(orbs, elec=elec)
+
+    def o2p(self, orbital, elec=None):
+        """ Return the pivoting indices (0-based) for the orbitals, possibly on an electrode
+
+        Parameters
+        ----------
+        orbital : array_like or int
+           orbital indices (0-based)
+        elec : str or int or None
+           electrode to return pivoting indices of (if None it is the
+           device pivoting indices).
+        """
+        return in1d(self.pivot(elec=elec), orbital).nonzero()[0]
 
     def self_energy(self, elec, E, k, sort=False):
         """ Return the self-energy from the electrode `elec`
