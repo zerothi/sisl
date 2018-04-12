@@ -141,6 +141,16 @@ class TestAtom(object):
         assert len(a.q0) == 4
         assert a.q0.sum() == pytest.approx(2)
 
+    def test_charge_diff(self):
+        o1 = Orbital(1., 1.)
+        o2 = Orbital(1., .5)
+        a1 = Atom(5, [o1, o2, o1, o2])
+        a2 = Atom(5, [o1, o2, o1, o2, o1, o1])
+        assert len(a1.q0) == 4
+        assert len(a2.q0) == 6
+        assert a1.q0.sum() == pytest.approx(3)
+        assert a2.q0.sum() == pytest.approx(5)
+
     def test_pickle(self, setup):
         import pickle as p
         sC = p.dumps(setup.C)
@@ -391,6 +401,16 @@ class TestAtoms(object):
         atom = Atoms(['C', 'Au'])
         assert len(atom.q0) == 2
         assert atom.q0.sum() == pytest.approx(0.)
+
+    def test_charge_diff(self):
+        o1 = Orbital(1., 1.)
+        o2 = Orbital(1., .5)
+        a1 = Atom(5, [o1, o2, o1, o2])
+        a2 = Atom(5, [o1, o2, o1, o2, o1, o1])
+        a = Atoms([a1, a2])
+        assert len(a.q0) == 2
+        assert a.q0.sum() == pytest.approx(8)
+        assert np.allclose(a.q0, [3, 5])
 
     @pytest.mark.xfail(raises=KeyError)
     def test_index1(self):
