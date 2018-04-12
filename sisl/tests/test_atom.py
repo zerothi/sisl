@@ -138,6 +138,7 @@ class TestAtom(object):
     def test_charge(self):
         r = [1, 1, 2, 2]
         a = Atom(5, [Orbital(1., 1.), Orbital(1., 1.), Orbital(2.), Orbital(2.)])
+        assert len(a.q0) == 4
         assert a.q0.sum() == pytest.approx(2)
 
     def test_pickle(self, setup):
@@ -187,6 +188,7 @@ class TestAtoms(object):
     def test_len(self, setup):
         atom = Atoms([setup.C, setup.C3, setup.Au])
         assert len(atom) == 3
+        assert len(atom.q0) == 3
 
     def test_get1(self):
         atoms = Atoms(['C', 'C', 'Au'])
@@ -384,6 +386,11 @@ class TestAtoms(object):
         atom1 = Atoms(['C', 'Au'])
         atom2 = atom1.reorder()
         assert atom1 == atom2
+
+    def test_charge1(self):
+        atom = Atoms(['C', 'Au'])
+        assert len(atom.q0) == 2
+        assert atom.q0.sum() == pytest.approx(0.)
 
     @pytest.mark.xfail(raises=KeyError)
     def test_index1(self):

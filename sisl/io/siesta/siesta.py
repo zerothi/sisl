@@ -425,11 +425,7 @@ class ncSileSiesta(SileCDFSiesta):
         v[:] = kwargs.get('Ef', 0.) / Ry2eV
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
-        v[:] = np.sum(H.geom.atom.q0)
-        if 'Qtot' in kwargs:
-            v[:] = kwargs['Qtot']
-        if 'Q' in kwargs:
-            v[:] = kwargs['Q']
+        v[0] = kwargs.get('Q', kwargs.get('Qtot', H.geom.q0))
 
         # Append the sparsity pattern
         # Create basis group

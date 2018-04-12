@@ -1030,7 +1030,7 @@ class Atom(object):
 
     @property
     def q0(self):
-        """ Orbital initial charge """
+        """ Orbital initial charges """
         return _a.arrayd([o.q0 for o in self.orbital])
 
     def copy(self, Z=None, orbital=None, mass=None, tag=None):
@@ -1319,9 +1319,9 @@ class Atoms(object):
 
     @property
     def q0(self):
-        """ Return total charge on these atoms """
-        q0 = _a.arrayd([a.q0 for a in self.atom])
-        return q0[self.specie[:]].sum()
+        """ Initial charge per atom """
+        q0 = _a.arrayd([a.q0.sum() for a in self.atom])
+        return q0[self.specie]
 
     def orbital(self, io):
         """ Return an array of orbital of the contained objects """
