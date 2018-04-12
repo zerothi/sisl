@@ -109,14 +109,14 @@ class gridncSileSiesta(SileCDFSiesta):
             grid.grid[:, :, :] = v[spin, :, :, :] * unit
         else:
             if len(spin) > v.shape[0]:
-                raise ValueError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
-                                 'an array of length equal to the number of spin components.')
+                raise SileError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
+                                'an array of length equal to the number of spin components.')
             grid.grid[:, :, :] = v[0, :, :, :] * spin[0] * unit
             for i, scale in enumerate(spin[1:]):
                 grid.grid[:, :, :] += v[1+i, :, :, :] * scale * unit
         if show_info:
-            info(SileInfo(self.__class__.__name__ + '.read_grid cannot determine the units of the grid. '
-                          'The units may not be in sisl units.'))
+            info(self.__class__.__name__ + '.read_grid cannot determine the units of the grid. '
+                 'The units may not be in sisl units.')
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2

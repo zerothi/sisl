@@ -12,7 +12,7 @@ import sisl._array as _a
 from ._help import dtype_complex_to_real
 from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
-from .utils import cmd, strseq, direction
+from .utils import cmd, strseq, direction, str_spec
 from .utils import array_arange
 from .utils.mathematics import fnorm
 
@@ -634,6 +634,12 @@ class Grid(SuperCellChild):
         if isinstance(sile, BaseSile):
             return sile.read_grid(*args, **kwargs)
         else:
+            sile, spec = str_spec(sile)
+            if spec is not None:
+                if ',' in spec:
+                    kwargs['spin'] = list(map(float, spec.split(',')))
+                else:
+                    kwargs['spin'] = int(spec)
             with get_sile(sile) as fh:
                 return fh.read_grid(*args, **kwargs)
 
@@ -1290,12 +1296,23 @@ This may be unexpected but enables one to do advanced manipulations.
     if grid is None:
         from os.path import isfile
         argv, input_file = cmd.collect_input(argv)
+
+        # Extract specification of the input file
+        input_file, spec = str_spec(input_file)
+        kwargs = {}
+        if spec is not None:
+            if ',' in spec:
+                kwargs['spin'] = list(map(float, spec.split(',')))
+            else:
+                kwargs['spin'] = int(spec)
+
         if input_file is None:
             grid = Grid(0.1)
             stdout_grid = False
 
         elif isfile(input_file):
-            grid = get_sile(input_file).read_grid()
+            grid = get_sile(input_file).read_grid(**kwargs)
+
         elif not isfile(input_file):
             from .messages import info
             info("Cannot find file '{}'!".format(input_file))
