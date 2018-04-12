@@ -5,7 +5,7 @@ import pytest
 from sisl.io.siesta.basis import *
 
 
-pytestmark = pytest.mark.io
+pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = 'sisl/io/siesta'
 
 

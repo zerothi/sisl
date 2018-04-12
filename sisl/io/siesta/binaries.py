@@ -10,7 +10,7 @@ except Exception as e:
     found_module = False
 
 # Import sile objects
-from sisl.messages import SislError
+from sisl.messages import warn, SislError
 from ..sile import add_sile
 from .sile import SileBinSiesta
 
@@ -29,7 +29,7 @@ Ry2eV = unit_convert('Ry', 'eV')
 __all__ = ['tshsSileSiesta', 'tsdeSileSiesta']
 __all__ += ['hsxSileSiesta', 'dmSileSiesta']
 __all__ += ['gridSileSiesta']
-__all__ += ['_gfSileSiesta', 'tsgfSileSiesta']
+__all__ += ['tsgfSileSiesta']
 
 
 class tshsSileSiesta(SileBinSiesta):
@@ -298,29 +298,25 @@ class hsxSileSiesta(SileBinSiesta):
         """ Returns the electronic structure from the siesta.TSHS file """
 
         # Now read the sizes used...
-        Gamma, sizes = _siesta.read_hsx_sizes(self.file)
-        no = sizes[0]
-        n_s = sizes[1] / no
-        spin = sizes[2]
-        nnz = sizes[3]
-        ncol, col, dH, dS, dxij = _siesta.read_hsx(self.file, Gamma, no, no * n_s, spin, nnz)
+        Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        ncol, col, dH, dS, dxij = _siesta.read_hsx_hsx(self.file, Gamma, spin, no, no_s, nnz)
 
         # Try and immediately attach a geometry
-        geom = kwargs.get('geom', kwargs.get('geometry', None))
+        geom = kwargs.get('geometry', kwargs.get('geom', None))
         if geom is None:
             # We have *no* clue about the
-            if np.allclose(xij, 0.):
+            if np.allclose(dxij, 0.):
                 # We truly, have no clue,
                 # Just generate a boxed system
                 xyz = [[x, 0, 0] for x in range(no)]
                 geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
             else:
                 # Try to figure out the supercell
-                raise NotImplementedError("Currently we can not currently calculate atomic positions from"
-                                          " xij array.")
+                warn(self.__class__.__name__ + ".read_hamiltonian (currently we can not currently calculate atomic positions from"
+                     " xij array)")
         if geom.no != no:
             raise ValueError("Reading HSX files requires the input geometry to have the "
-                             "correct number of orbitals.")
+                             "correct number of orbitals {} / {}.".format(no, geom.no))
 
         # Create the Hamiltonian container
         H = Hamiltonian(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
@@ -337,6 +333,34 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr._D[:, spin] = dS[:]
 
         return H
+
+    def read_overlap(self, **kwargs):
+        """ Returns the overlap matrix from the siesta.HSX file """
+        # Now read the sizes used...
+        Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        ncol, col, dS = _siesta.read_hsx_s(self.file, Gamma, spin, no, no_s, nnz)
+
+        geom = kwargs.get('geometry', kwargs.get('geom', None))
+        if geom is None:
+            warn(self.__class__.__name__ + ".read_overlap requires input geometry to assign S")
+        if geom.no != no:
+            raise ValueError("Reading HSX files requires the input geometry to have the "
+                             "correct number of orbitals {} / {}.".format(no, geom.no))
+
+        # Create the Hamiltonian container
+        S = SparseOrbitalBZ(geom, nnzpr=1)
+
+        # Create the new sparse matrix
+        S._csr.ncol = ncol.astype(np.int32, copy=False)
+        S._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        # Correct fortran indices
+        S._csr.col = col.astype(np.int32, copy=False) - 1
+        S._csr._nnz = len(col)
+
+        S._csr._D = np.empty([nnz, 1], np.float32)
+        S._csr._D[:, 0] = dS[:]
+
+        return S
 
 
 class gridSileSiesta(SileBinSiesta):
@@ -522,6 +546,7 @@ if found_module:
     add_sile('TSHS', tshsSileSiesta)
     add_sile('TSDE', tsdeSileSiesta)
     add_sile('DM', dmSileSiesta)
+    add_sile('HSX', hsxSileSiesta)
     # These have unit-conversions
     BohrC2AngC = Bohr2Ang ** 3
     add_sile('RHO', _type("rhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))

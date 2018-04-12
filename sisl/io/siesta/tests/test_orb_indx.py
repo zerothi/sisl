@@ -6,7 +6,7 @@ from sisl.io.siesta.orb_indx import *
 
 import numpy as np
 
-pytestmark = pytest.mark.io
+pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = 'sisl/io/siesta'
 
 
