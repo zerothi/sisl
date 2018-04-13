@@ -719,7 +719,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         See Also
         --------
-        fano_factor : the ratio between the quantum mechanial and the classical shot noise.
+        fano : the ratio between the quantum mechanial and the classical shot noise.
         """
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)

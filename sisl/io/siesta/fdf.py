@@ -307,7 +307,7 @@ class fdfSileSiesta(SileSiesta):
             the fdf-label to search for
         unit : str, optional
             unit of the physical quantity to return
-        default : *, optional
+        default : optional
             if the label is not found, this will be the returned value (default to ``None``)
         with_unit : bool, optional
             whether the physical quantity gets returned with the found unit in the fdf file.
