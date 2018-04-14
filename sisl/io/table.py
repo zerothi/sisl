@@ -27,14 +27,13 @@ class tableSile(Sile):
         *args : array_like or list of array_like
             the different columns in the tabular data.
             This may either be several 1D data, or 2D arrays.
-
             Internally the data is stacked via `numpy.vstack` and for
             any dimension higher than 2 it gets separated by two newline
             characters (like gnuplot acceptable data).
         fmt : str, optional
             The formatting string, defaults to ``'.5e'``.
         fmts : str, optional
-            The formatting string (for all columns), defaults to ``fmt * len(args)`.
+            The formatting string (for all columns), defaults to ``fmt * len(args)``.
             `fmts` has precedence over `fmt`.
         newline : str, optional
             Defaults to ``'\n'``.

@@ -162,8 +162,8 @@ class xsfSile(Sile):
         ----------
         *args : Grid
             a list of data-grids to be written to the XSF file.
-            Each argument gets the field name "?grid_<>" where <> starts
-            with the integer 0, and *?* is "real_"/"imag_" for complex
+            Each argument gets the field name ``?grid_<>`` where <> starts
+            with the integer 0, and *?* is ``real_``/``imag_`` for complex
             valued grids.
         geometry : Geometry, optional
             the geometry stored in the file, defaults to ``args[0].geometry``
