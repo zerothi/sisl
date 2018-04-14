@@ -560,7 +560,7 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        coord : (*, 3) or float or Shape
+        coord : (:, 3) or float or Shape
             the coordinate of the axis. If a float is passed `axis` is
             also required in which case it corresponds to the length along the
             lattice vector corresponding to `axis`.
@@ -795,7 +795,7 @@ class Grid(SuperCellChild):
         """ Return a list of indices corresponding to the slices
 
         The returned values are equivalent to `numpy.mgrid` but they are returned
-        in a (*, 3) array.
+        in a (:, 3) array.
 
         Parameters
         ----------
@@ -805,7 +805,7 @@ class Grid(SuperCellChild):
 
         Returns
         -------
-        indices : (*, 3), linear indices for each of the sliced values
+        indices : (:, 3), linear indices for each of the sliced values
         """
         if len(slices) == 1:
             g = np.mgrid[slices[0]]
@@ -823,7 +823,7 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        index : (*,3) of int
+        index : (:, 3) of int
             a list of indices of the grid along each grid axis
 
         Returns
@@ -833,7 +833,7 @@ class Grid(SuperCellChild):
         See Also
         --------
         index : query indices from coordinates (directly passable to this method)
-        mgrid : Grid equivalent to `numpy.mgrid`. Grid.mgrid returns indices in shapes (*, 3), contrary to numpy's `numpy.mgrid`
+        mgrid : Grid equivalent to `numpy.mgrid`. Grid.mgrid returns indices in shapes (:, 3), contrary to numpy's `numpy.mgrid`
 
         Raises
         ------

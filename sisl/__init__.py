@@ -4,6 +4,7 @@ sisl (:mod:`sisl`)
 ==================
 
 .. module:: sisl
+   :noindex:
 
 sisl is an electronic structure package which may interact with tight-binding
 and DFT matrices alike.

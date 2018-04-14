@@ -553,7 +553,7 @@ class SphericalOrbital(Orbital):
 
         Parameters
         -----------
-        r : array_like of (*, 3)
+        r : array_like of (:, 3)
            the vector from the orbital origin
         m : int, optional
            magnetic quantum number, must be in range ``-self.l <= m <= self.l``

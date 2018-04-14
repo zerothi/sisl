@@ -44,7 +44,7 @@ class Geometry(SuperCellChild):
     All lengths are assumed to be in units of Angstrom, however, as
     long as units are kept same the exact units are irrespective.
 
-    .. code::
+    .. code:: python
 
        >>> square = Geometry([[0.5, 0.5, 0.5]], Atom(1),
        ...                   sc=SuperCell([1, 1, 10], nsc=[3, 3, 1]))
@@ -62,7 +62,7 @@ class Geometry(SuperCellChild):
     Attributes
     ----------
     na
-    xyz : ndarray (*, 3)
+    xyz : ndarray
         atomic coordinates
     atom
     orbitals

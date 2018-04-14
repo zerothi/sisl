@@ -86,7 +86,7 @@ author = u'Nick R. Papior'
 copyright = u'2015-2018, ' + author
 
 # If building this on RTD, mock out fortran sources
-on_rtd = os.environ.get('READTHEDOCS').lower() == 'true'
+on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
 if on_rtd:
     nbsphinx_allow_errors = True
     if tuple(sys.version_info[:2]) >= (3, 3):

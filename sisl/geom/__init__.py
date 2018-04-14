@@ -4,6 +4,7 @@ Common geometries (:mod:`sisl.geom`)
 ====================================
 
 .. module:: sisl.geom
+   :noindex:
 
 A variety of default geometries.
 
