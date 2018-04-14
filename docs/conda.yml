@@ -4,6 +4,7 @@ dependencies:
   - numpy
   - scipy
   - netCDF4
+  - matplotlib
   - sphinx_rtd_theme
   - numpydoc
   - jinja2
