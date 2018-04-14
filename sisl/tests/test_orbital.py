@@ -299,6 +299,22 @@ class Test_atomicorbital(object):
             a.name(True)
             repr(a)
 
+    def test_init4(self):
+        rf = r_f(6)
+        o1 = AtomicOrbital(2, 1, 0, 1, True, rf)
+        o2 = AtomicOrbital('pzP', rf)
+        o3 = AtomicOrbital('pzZP', rf)
+        o4 = AtomicOrbital('pzZ1P', rf)
+        o5 = AtomicOrbital('2pzZ1P', rf)
+        assert o1 == o2
+        assert o1 == o3
+        assert o1 == o4
+        assert o1 == o5
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_init5(self):
+        AtomicOrbital(5, 5, 0)
+
     def test_radial1(self):
         rf = r_f(6)
         r = np.linspace(0, 6, 100)
@@ -319,10 +335,6 @@ class Test_atomicorbital(object):
             for m in range(-l, l+1):
                 o = AtomicOrbital(l=l, m=m, spherical=rf)
                 assert np.allclose(so.psi(r, m), o.psi(r))
-
-    @pytest.mark.xfail(raises=ValueError)
-    def test_init4(self):
-        AtomicOrbital(5, 5, 0)
 
     def test_pickle1(self):
         import pickle as p

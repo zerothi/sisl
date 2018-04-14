@@ -102,12 +102,26 @@ class Orbital(object):
         initial electronic charge
     tag : str
         user defined tag
+
+    Examples
+    --------
+    >>> orb = Orbital(1)
+    >>> orb_tag = Orbital(2, tag='range=2')
+    >>> orb.R == orb_tag.R / 2
+    True
+    >>> orbq = Orbital(2, 1)
+    >>> orbq.q0
+    1.
     """
     __slots__ = ['R', 'tag', 'q0']
 
     def __init__(self, R, q0=0., tag=''):
-        self.R = R
-        self.q0 = q0
+        """ Initialize orbital object """
+        if R < 0:
+            self.R = int(R)
+        else:
+            self.R = float(R)
+        self.q0 = float(q0)
         self.tag = tag
 
     def __repr__(self):
@@ -172,15 +186,19 @@ class Orbital(object):
         return self.equal(other)
 
     def radial(self, r, *args, **kwargs):
+        r""" Calculate the radial part of the wavefunction :math:`f(\mathbf R)` """
         raise NotImplementedError
 
     def spher(self, theta, phi, *args, **kwargs):
+        r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates) """
         raise NotImplementedError
 
     def psi(self, r, *args, **kwargs):
+        r""" Calculate :math:`\phi(\mathbf R)` for Cartesian coordinates """
         raise NotImplementedError
 
     def psi_spher(self, r, theta, phi, *args, **kwargs):
+        r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` for spherical coordinates """
         raise NotImplementedError
 
     def __plot__(self, harmonics=False, axes=False, *args, **kwargs):
@@ -273,7 +291,7 @@ class Orbital(object):
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['R'], d['q0'], d['tag'])
+        self.__init__(d['R'], q0=d['q0'], tag=d['tag'])
 
 
 class SphericalOrbital(Orbital):
@@ -334,6 +352,7 @@ class SphericalOrbital(Orbital):
     __slots__ = ['l', 'f']
 
     def __init__(self, l, rf_or_func, q0=0., tag=''):
+        """ Initialize spherical orbital object """
         self.l = l
 
         # Set the internal function
@@ -644,7 +663,7 @@ class SphericalOrbital(Orbital):
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['l'], (d['r'], d['f']), d['q0'], d['tag'])
+        self.__init__(d['l'], (d['r'], d['f']), q0=d['q0'], tag=d['tag'])
 
 
 class AtomicOrbital(Orbital):
@@ -693,6 +712,15 @@ class AtomicOrbital(Orbital):
     >>> #                    n, l, m, [Z, [P]]
     >>> orb1 = AtomicOrbital(2, 1, 0, 1, (r, f))
     >>> orb2 = AtomicOrbital(n=2, l=1, m=0, Z=1, (r, f))
+    >>> orb3 = AtomicOrbital('2pzZ', (r, f))
+    >>> orb4 = AtomicOrbital('2pzZ1', (r, f))
+    >>> orb5 = AtomicOrbital('pz', (r, f))
+    >>> orb2 == orb3
+    True
+    >>> orb2 == orb4
+    True
+    >>> orb2 == orb5
+    True
     """
 
     # All of these follow standard notation:
@@ -706,8 +734,8 @@ class AtomicOrbital(Orbital):
     __slots__ = ['n', 'l', 'm', 'Z', 'P', 'orb']
 
     def __init__(self, *args, **kwargs):
-        # Immediately setup R and tag
-        super(AtomicOrbital, self).__init__(0., kwargs.get('q0', 0.), kwargs.get('tag', ''))
+        """ Initialize atomic orbital object """
+        super(AtomicOrbital, self).__init__(0., q0=kwargs.get('q0', 0.), tag=kwargs.get('tag', ''))
 
         # Ensure args is a list (to be able to pop)
         args = list(args)
@@ -764,9 +792,13 @@ class AtomicOrbital(Orbital):
                     # Currently we know that we are limited to 9 zeta shells.
                     # However, for now we assume this is enough (could easily
                     # be extended by a reg-exp)
-                    Z = int(s[iZ+1])
-                    # Remove Z + int
-                    s = s[:iZ] + s[iZ+2:]
+                    try:
+                        Z = int(s[iZ+1])
+                        # Remove Z + int
+                        s = s[:iZ] + s[iZ+2:]
+                    except:
+                        Z = 1
+                        s = s[:iZ] + s[iZ+1:]
 
                 # We should be left with m specification
                 m = _m.get(s)
@@ -1002,4 +1034,4 @@ class AtomicOrbital(Orbital):
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['name'], (d['r'], d['f']), q0=d['tag'], tag=d['tag'])
+        self.__init__(d['name'], (d['r'], d['f']), q0=d['q0'], tag=d['tag'])
