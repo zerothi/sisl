@@ -21,12 +21,7 @@ import shlex
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 _this_dir = os.path.dirname(__file__)
 
-
-def _add(p):
-    sys.path.insert(0, os.path.abspath(p))
-_add(_this_dir)
-_add(os.path.dirname(_this_dir))
-del _add
+sys.path.insert(0, os.path.dirname(_this_dir))
 
 # -- General configuration ------------------------------------------------
 
