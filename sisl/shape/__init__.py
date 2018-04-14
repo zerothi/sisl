@@ -4,6 +4,7 @@ Shapes (:mod:`sisl.shape`)
 ==========================
 
 .. module:: sisl.shape
+   :noindex:
 
 A variety of default shapes.
 

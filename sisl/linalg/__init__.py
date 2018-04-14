@@ -4,6 +4,7 @@ Linear algebra (:mod:`sisl.linalg`)
 ===================================
 
 .. module:: sisl.linalg
+   :noindex:
 
 Although `numpy` and `scipy` provides a large set of
 linear algebra routines, sisl re-implements many of them with
@@ -23,19 +24,6 @@ like `numpy` and `scipy`.
    svd
    eigs
    eigsh
-
-.. autosummary::
-   :toctree:
-   :hidden:
-
-   inv
-   solve
-   eig
-   eigh
-   svd
-   eigs
-   eigsh
-
 """
 from .base import *
 

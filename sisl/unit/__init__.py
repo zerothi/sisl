@@ -4,6 +4,7 @@ Unit conversion (:mod:`sisl.unit`)
 ===================================
 
 .. module:: sisl.unit
+   :noindex:
 
 Generic conversion utility between different units.
 

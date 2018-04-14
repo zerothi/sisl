@@ -4,7 +4,7 @@ GULP (:mod:`sisl.io.gulp`)
 ==========================
 
 .. module:: sisl.io.gulp
-
+   :noindex:
 
 .. autosummary::
    :toctree:

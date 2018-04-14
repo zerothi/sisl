@@ -4,6 +4,7 @@ TBtrans (:mod:`sisl.io.tbtrans`)
 ================================
 
 .. module:: sisl.io.tbtrans
+   :noindex:
 
 File objects for interaction with the `TBtrans`_ code.
 

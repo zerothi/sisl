@@ -4,6 +4,7 @@ Physical objects (:mod:`sisl.physics`)
 ======================================
 
 .. module:: sisl.physics
+   :noindex:
 
 Implementations of various DFT and tight-binding related quantities
 are defined. The implementations range from simple Brillouin zone

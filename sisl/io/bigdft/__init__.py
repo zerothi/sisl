@@ -4,7 +4,7 @@ BigDFT (:mod:`sisl.io.bigdft`)
 ==============================
 
 .. module:: sisl.io.bigdft
-
+   :noindex:
 
 .. autosummary::
    :toctree:

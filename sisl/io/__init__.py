@@ -4,6 +4,7 @@ Input/Output (:mod:`sisl.io`)
 =============================
 
 .. module:: sisl.io
+   :noindex:
 
 Available files for reading/writing
 

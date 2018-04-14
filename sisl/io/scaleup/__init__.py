@@ -4,7 +4,7 @@ ScaleUp (:mod:`sisl.io.scaleup`)
 ================================
 
 .. module:: sisl.io.scaleup
-
+   :noindex:
 
 .. autosummary::
 

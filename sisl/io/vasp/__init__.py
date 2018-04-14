@@ -4,9 +4,9 @@ VASP (:mod:`sisl.io.vasp`)
 ==========================
 
 .. module:: sisl.io.vasp
+   :noindex:
 
 VASP files.
-
 
 .. autosummary::
    :toctree:

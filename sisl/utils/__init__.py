@@ -4,6 +4,7 @@ Utility routines (:mod:`sisl.utils`)
 ====================================
 
 .. module:: sisl.utils
+   :noindex:
 
 Several utility functions are used throughout sisl.
 

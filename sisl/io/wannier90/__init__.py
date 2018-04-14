@@ -4,7 +4,7 @@ Wannier90 (:mod:`sisl.io.wannier90`)
 ====================================
 
 .. module:: sisl.io.wannier90
-
+   :noindex:
 
 Wannier90 files.
 

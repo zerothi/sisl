@@ -4,7 +4,7 @@ Siesta (:mod:`sisl.io.siesta`)
 ==============================
 
 .. module:: sisl.io.siesta
-
+   :noindex:
 
 The interaction between sisl and `Siesta`_ is one of the main goals due
 to the implicit relationship between the developer of sisl and `Siesta`_.
