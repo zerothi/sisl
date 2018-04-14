@@ -1,2 +1,16 @@
+name: sisl_docs
 dependencies:
   - gcc
+  - numpy
+  - scipy
+  - netCDF4
+  - sphinx_rtd_theme
+  - jinja2
+  - tornado
+  - nbformat
+  - jupyter_client
+  - ipykernel
+  - pip:
+    - sphinx
+    - nbsphinx
+    - send2Trash
