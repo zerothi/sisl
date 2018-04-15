@@ -19,6 +19,7 @@ different routines for electronic structure calculations.
 
 .. autosummary::
    :toctree: api-generated
+   :hidden:
 
    sisl
    sisl.geom
