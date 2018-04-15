@@ -1,5 +1,8 @@
 requirements_file: docs/requirements.txt
 
+python:
+   setup_py_install: true
+
 formats:
    - epub
 
