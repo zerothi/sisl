@@ -70,7 +70,11 @@ Manual installation
 sisl may be installed using the regular `setup.py` script.
 Ensure the required dependencies are installed before proceeding with the
 manual installation (without `numpy`_ installed a spurious error message will
-appear).
+appear). The dependencies may be installed using this :code:`pip` command:
+
+.. code-block:: bash
+   pip install -r requirements.txt
+
 
 Simply download the release tar from `this page <gh-releases_>`_, or clone
 the `git repository <sisl-git_>`_ for the latest developments
