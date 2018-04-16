@@ -379,10 +379,10 @@ nbsphinx_timeout = 60
 nbsphinx_prolog = r"""
 {% set docname = env.doc2path(env.docname, base='docs') %}
 
-.. only:: html
+.. raw:: html
 
      <div align="right">
-     Download IPython notebook `here <https://raw.githubusercontent.com/zerothi/sisl/master/{{ docname }}>`_.
+     Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sisl/master/{{ docname }}"> here</a>.
      </div>
 
 """
