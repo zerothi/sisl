@@ -5,7 +5,7 @@ import functools as ftool
 import numpy as np
 
 import sisl._array as _a
-from .messages import warn, SislError, tqdm_eta
+from .messages import warn, SislError, SislWarning, tqdm_eta
 from ._help import get_dtype
 from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
