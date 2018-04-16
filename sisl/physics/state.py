@@ -7,7 +7,7 @@ from sisl._help import dtype_complex_to_real
 from sisl._help import _zip as zip, _range as range
 
 
-__all__ = ['State', 'CoeffState']
+__all__ = ['Coefficient', 'State', 'StateC']
 
 _dot = np.dot
 _conj = np.conjugate
@@ -26,49 +26,154 @@ def _couter(c, v):
     return _outer_(v * c, _conj(v))
 
 
-class State(object):
+class ParentContainer(object):
+    """ A container for parent and information """
+    __slots__ = ['parent', 'info']
+
+    def __init__(self, parent, **info):
+        self.parent = parent
+        self.info = info
+
+
+class Coefficient(ParentContainer):
+    """ An object holding coefficients for a parent with info
+
+    Parameters
+    ----------
+    c : array_like
+       coefficients
+    parent : obj, optional
+       a parent object that defines the origin of the coefficient
+    **info : dict, optional
+       an info dictionary that turns into an attribute on the object.
+       This `info` may contain anything that may be relevant for the coefficient.
+    """
+    __slots__ = ['c']
+
+    def __init__(self, c, parent=None, **info):
+        super(Coefficient, self).__init__(parent, **info)
+        self.c = np.atleast_1d(c)
+
+    def __repr__(self):
+        """ The string representation of this object """
+        s = self.__class__.__name__ + '{{coefficients: {0}'.format(len(self))
+        if self.parent is None:
+            s += '}}'
+        else:
+            s += '\n {}}}'.format(repr(self.parent).replace('\n', '\n '))
+        return s
+
+    def __len__(self):
+        """ Number of coefficients """
+        return self.shape[0]
+
+    @property
+    def dtype(self):
+        """ Data-type for the coefficients """
+        return self.c.dtype
+
+    @property
+    def dkind(self):
+        """ The data-type of the coefficient (in str) """
+        return np.dtype(self.c.dtype).kind
+
+    @property
+    def shape(self):
+        """ Returns the shape of the coefficients """
+        return self.c.shape
+
+    def copy(self):
+        """ Return a copy (only the coefficients are copied). ``parent`` and ``info`` are passed by reference """
+        copy = self.__class__(self.c.copy(), self.parent)
+        copy.info = self.info
+        return copy
+
+    def sub(self, idx):
+        """ Return a new coefficient with only the specified coefficients
+
+        Parameters
+        ----------
+        idx : int or array_like
+            indices that are retained in the returned object
+
+        Returns
+        -------
+        Coefficient
+            a new coefficient only containing the requested elements
+        """
+        idx = _a.asarrayi(idx).ravel() # this ensures that the first dimension is preserved
+        sub = self.__class__(self.c[idx].copy(), self.parent)
+        sub.info = self.info
+        return sub
+
+    def __getitem__(self, key):
+        """ Return a new coefficient object with only one associated coefficient
+
+        Parameters
+        ----------
+        key : int or array_like
+           the indices for the returned coefficients
+
+        Returns
+        -------
+        Coefficient
+            a new coefficient *only* with the indexed values
+        """
+        return self.sub(key)
+
+    def iter(self, asarray=False):
+        """ An iterator looping over the coefficients in this system
+
+        Parameters
+        ----------
+        asarray: bool, optional
+           if true the yielded values are the coefficient vectors, i.e. a numpy array.
+           Otherwise an equivalent object is yielded.
+
+        Yields
+        ------
+        coeff: Coefficent
+           the current coefficent as an object, only returned if `asarray` is false.
+        coeff: numpy.ndarray
+           the current the coefficient as an array, only returned if `asarray` is true.
+        """
+        if asarray:
+            for i in range(len(self)):
+                yield self.c[i]
+        else:
+            for i in range(len(self)):
+                yield self.sub(i)
+
+    __iter__ = iter
+
+
+class State(ParentContainer):
     """ An object handling a set of vectors describing a given *state*
+
+    Parameters
+    ----------
+    state : array_like
+       state vectors ``state[i, :]`` containing the i'th state vector
+    parent : obj, optional
+       a parent object that defines the origin of the state.
+    **info : dict, optional
+       an info dictionary that turns into an attribute on the object.
+       This `info` may contain anything that may be relevant for the state.
 
     Notes
     -----
     This class should be subclassed!
-
-    See Also
-    --------
-    StateAtom : a state defined on each atomic site
-    StateOrbital : a state defined on each orbital
     """
-    __slots__ = ['state', 'parent', 'info']
+    __slots__ = ['state']
 
     def __init__(self, state, parent=None, **info):
-        """ Define a state container with a given set of states
-
-        Parameters
-        ----------
-        state : array_like
-           state vectors ``state[i, :]`` containing the i'th state vector
-        parent : obj, optional
-           a parent object that defines the origin of the state.
-        **info : dict, optional
-           an info dictionary that turns into an attribute on the object.
-           This `info` may contain anything that may be relevant for the state.
-        """
-        self.state = state
-        self.parent = parent
-        self.info = info
-        self.__state_finalize__()
-
-    def __state_finalize__(self):
-        """ Finalizer for the state object. """
-        if not self.state is None:
-            self.state = _a.asarray(self.state)
-            # Correct for vector
-            if self.state.ndim == 1:
-                self.state.shape = (1, -1)
+        """ Define a state container with a given set of states """
+        super(State, self).__init__(parent, **info)
+        self.state = np.atleast_2d(state)
 
     def __repr__(self):
         """ The string representation of this object """
-        s = self.__class__.__name__ + '{{dim: {0}'.format(len(self))
+        s = self.__class__.__name__ + '{{states: {0}'.format(len(self))
         if self.parent is None:
             s += '}}'
         else:
@@ -94,6 +199,30 @@ class State(object):
         """ Returns the shape of the state """
         return self.state.shape
 
+    def copy(self):
+        """ Return a copy (only the state is copied). ``parent`` and ``info`` are passed by reference """
+        copy = self.__class__(self.state.copy(), self.parent)
+        copy.info = self.info
+        return copy
+
+    def sub(self, idx):
+        """ Return a new state with only the specified states
+
+        Parameters
+        ----------
+        idx : int or array_like
+            indices that are retained in the returned object
+
+        Returns
+        -------
+        State
+           a new state only containing the requested elements
+        """
+        idx = _a.asarrayi(idx).ravel() # this ensures that the first dimension is preserved
+        sub = self.__class__(self.state[idx].copy(), self.parent)
+        sub.info = self.info
+        return sub
+
     def __getitem__(self, key):
         """ Return a new state with only one associated state
 
@@ -104,36 +233,43 @@ class State(object):
 
         Returns
         -------
-        state : State
+        State
             a new state *only* with the indexed values
         """
         return self.sub(key)
 
-    def iter(self):
-        """ Return an iterator looping over the states in this system
+    def iter(self, asarray=False):
+        """ An iterator looping over the states in this system
+
+        Parameters
+        ----------
+        asarray: bool, optional
+           if true the yielded values are the state vectors, i.e. a numpy array.
+           Otherwise an equivalent object is yielded.
 
         Yields
         ------
         state : State
-           a state *only* containing individual elements
+           a state *only* containing individual elements, if `asarray` is false
+        state : numpy.ndarray
+           a state *only* containing individual elements, if `asarray` is true
         """
-        for i in range(len(self)):
-            yield self.sub(i)
+        if asarray:
+            for i in range(len(self)):
+                yield self.state[i]
+        else:
+            for i in range(len(self)):
+                yield self.sub(i)
 
     __iter__ = iter
-
-    def copy(self):
-        """ Return a copy (only the state is copied). ``parent`` and ``info`` are passed by reference """
-        copy = self.__class__(self.state.copy(), self.parent)
-        copy.info = self.info
-        return copy
 
     def norm(self):
         r""" Return a vector with the norm of each state :math:`\sqrt{\langle\psi|\psi\rangle}`
 
         Returns
         -------
-        np.ndarray : the normalization for each state
+        numpy.ndarray
+            the normalization for each state
         """
         return np.sqrt(self.norm2())
 
@@ -142,7 +278,8 @@ class State(object):
 
         Returns
         -------
-        np.ndarray : the normalization for each state
+        numpy.ndarray
+            the normalization for each state
         """
         dtype = dtype_complex_to_real(self.dtype)
         shape = self.shape[:-1]
@@ -171,7 +308,8 @@ class State(object):
 
         Returns
         -------
-        state : a new state with all states normalized, otherwise equal to this
+        State
+            a new state with all states normalized, otherwise equal to this
         """
         n = self.norm()
         s = self.__class__(self.state / n.reshape(n.shape + (1,)), parent=self.parent)
@@ -188,7 +326,8 @@ class State(object):
 
         Returns
         -------
-        np.ndarray : a matrix with the sum of outer state products
+        numpy.ndarray
+            a matrix with the sum of outer state products
         """
         if idx is None:
             m = _outer(self.state[0, :])
@@ -201,111 +340,86 @@ class State(object):
             m += _outer(self.state[i, :])
         return m
 
-    def sub(self, idx):
-        """ Return a new state with only the specified states
+    # def toStateC(self, norm=1.):
+    #     r""" Transforms the states into normalized values equal to `norm` and specifies the coefficients in `StateC` as the norm
 
-        Parameters
-        ----------
-        idx : int or array_like
-            indices that are retained in the returned object
+    #     This is an easy method to renormalize the state vectors to a common (or state dependent) normalization constant.
 
-        Returns
-        -------
-        state : a new state only containing the requested elements
-        """
-        idx = _a.asarrayi(idx).ravel() # this ensures that the first dimension is preserved
-        sub = self.__class__(self.state[idx].copy(), self.parent)
-        sub.info = self.info
-        return sub
+    #     .. math::
+    #         c_i &= \sqrt{\langle \psi_i | \psi_i\rangle} / \mathrm{norm} \\
+    #           |\psi_i\rangle &= | \psi_i\rangle / c_i
 
-    def toCoeffState(self, norm=1.):
-        r""" Transforms the states into normalized values equal to `norm` and specifies the coefficients in `CoeffState` as the norm
+    #     Parameters
+    #     ----------
+    #     norm : value, array_like
+    #         the resulting norm of all (or individual states)
 
-        This is an easy method to renormalize the state vectors to a common (or state dependent) normalization constant.
+    #     Returns
+    #     -------
+    #     StateC
+    #        a new coefficient state object with associated coefficients
+    #     """
+    #     n = len(self)
+    #     norm = _a.asarray(norm).ravel()
+    #     if norm.size == 1 and n > 1:
+    #         norm = np.tile(norm, n)
+    #     elif norm.size != n:
+    #         raise ValueError(self.__class__.__name__ + '.toStateC requires the input norm to be a single float or having equal length as this state!')
 
-        .. math::
-            c_i &= \sqrt{\langle \psi_i | \psi_i\rangle} / \mathrm{norm} \\
-              |\psi_i\rangle &= | \psi_i\rangle / c_i
+    #     # Correct data-type
+    #     if norm.dtype in [np.complex64, np.complex128]:
+    #         dtype = norm.dtype
+    #     else:
+    #         dtype = dtype_complex_to_real(self.dtype)
 
-        Parameters
-        ----------
-        norm : value, array_like
-            the resulting norm of all (or individual states)
+    #     # TODO check datatype if norm is complex but state is real
+    #     c = np.empty(n, dtype=dtype)
+    #     state = np.empty(self.shape, dtype=self.dtype)
 
-        Returns
-        -------
-        CoeffState : a new coefficient state object with associated coefficients
-        """
-        n = len(self)
-        norm = _a.asarray(norm).ravel()
-        if norm.size == 1 and n > 1:
-            norm = np.tile(norm, n)
-        elif norm.size != n:
-            raise ValueError(self.__class__.__name__ + '.toCoeffState requires the input norm to be a single float or having equal length to the state!')
+    #     for i in range(n):
+    #         c[i] = (_idot(self.state[i].ravel()).astype(dtype) / norm[i]) ** 0.5
+    #         state[i, ...] = self.state[i, ...] / c[i]
 
-        # Correct data-type
-        if norm.dtype in [np.complex64, np.complex128]:
-            cdtype = norm.dtype
-        else:
-            cdtype = dtype_complex_to_real(self.dtype)
-
-        # TODO check datatype if norm is complex but state is real
-        c = np.empty(n, dtype=cdtype)
-        state = np.empty(self.shape, dtype=self.dtype)
-
-        for i in range(n):
-            c[i] = (_idot(self.state[i].ravel()).astype(c.dtype) / norm[i]) ** 0.5
-            state[i, ...] = self.state[i, ...] / c[i]
-
-        cs = CoeffState(c, state, parent=self.parent)
-        cs.info = self.info
-        return cs
+    #     cs = StateC(state, c, parent=self.parent)
+    #     cs.info = self.info
+    #     return cs
 
 
-class CoeffState(State):
+# Although the StateC could inherit from both Coefficient and State
+# there are problems with __slots__ and multiple inheritance schemes.
+# I.e. we are forced to do *one* inheritance, which we choose to be State.
+class StateC(State):
     """ An object handling a set of vectors describing a given *state* with associated coefficients `c`
+
+    Parameters
+    ----------
+    state : array_like
+       state vectors ``state[i, :]`` containing the i'th state vector
+    c : array_like
+       coefficients for the states ``c[i]`` containing the i'th coefficient
+    parent : obj, optional
+       a parent object that defines the origin of the state.
+    **info : dict, optional
+       an info dictionary that turns into an attribute on the object.
+       This `info` may contain anything that may be relevant for the state.
 
     Notes
     -----
     This class should be subclassed!
-
-    See Also
-    --------
-    State
-    StateAtom : a state defined on each atomic site
-    StateOrbital : a state defined on each orbital
     """
     __slots__ = ['c']
 
-    def __init__(self, c, state, parent=None, **info):
-        """ Define a state container with a given set of states and coefficients for the states
-
-        Parameters
-        ----------
-        c : array_like
-           coefficients for the states ``c[i]`` containing the i'th coefficient
-        state : array_like
-           state vectors ``state[i, :]`` containing the i'th state vector
-        parent : obj, optional
-           a parent object that defines the origin of the state.
-        **info : dict, optional
-           an info dictionary that turns into an attribute on the object.
-           This `info` may contain anything that may be relevant for the state.
-        """
-        self.c = np.asarray(c).ravel()
-        super(CoeffState, self).__init__(state, parent)
-        self.info = info
-
-    def __len__(self):
-        """ Length of `CoeffState` """
-        return len(self.c)
+    def __init__(self, state, c, parent=None, **info):
+        """ Define a state container with a given set of states and coefficients for the states """
+        super(StateC, self).__init__(state, parent, **info)
+        self.c = np.atleast_1d(c)
+        if len(self.c) != len(self.state):
+            raise ValueError(self.__class__.__name__ + ' could not be created with coefficients and states '
+                             'having unequal length.')
 
     def copy(self):
-        """ Return a copy (only the coefficients and states are copied). Parent and info are passed by reference """
-        if self.state is None:
-            copy = self.__class__(self.c.copy(), None, self.parent)
-        else:
-            copy = self.__class__(self.c.copy(), self.state.copy(), self.parent)
+        """ Return a copy (only the coefficients and states are copied), ``parent`` and ``info`` are passed by reference """
+        copy = self.__class__(self.state.copy(), self.c.copy(), self.parent)
         copy.info = self.info
         return copy
 
@@ -314,16 +428,17 @@ class CoeffState(State):
 
         This is roughly equivalent to:
 
-        >>> state = CoeffState(1, np.arange(10))
+        >>> state = StateC(np.arange(10), 1)
         >>> n = state.norm()
-        >>> norm_state = CoeffState(state.c.copy(), state.state / n.reshape(-1, 1))
+        >>> norm_state = StateC(state.state / n.reshape(-1, 1), state.c.copy())
+        >>> norm_state.c[0] == 1
 
         Returns
         -------
         state : a new state with all states normalized, otherwise equal to this
         """
         n = self.norm()
-        s = self.__class__(self.c.copy(), self.state / n.reshape(n.shape + (1,)), parent=self.parent)
+        s = self.__class__(self.state / n.reshape(n.shape + (1,)), self.c.copy(), parent=self.parent)
         s.info = self.info
         return s
 
@@ -337,7 +452,7 @@ class CoeffState(State):
 
         Returns
         -------
-        np.ndarray : a matrix with the sum of outer state products
+        numpy.ndarray : a matrix with the sum of outer state products
         """
         if idx is None:
             m = _couter(self.c[0], self.state[0].ravel())
@@ -351,12 +466,12 @@ class CoeffState(State):
         return m
 
     def sort(self, ascending=True):
-        """ Sort and return a new `CoeffState` by sorting the coefficients (default to ascending)
+        """ Sort and return a new `StateC` by sorting the coefficients (default to ascending)
 
         Parameters
         ----------
         ascending : bool, optional
-            sort the contained elements ascending, else they will be sorced descending
+            sort the contained elements ascending, else they will be sorted descending
         """
         if ascending:
             idx = np.argsort(self.c)
@@ -374,11 +489,19 @@ class CoeffState(State):
 
         Returns
         -------
-        CoeffState : a new object with a subset of the states
+        StateC : a new object with a subset of the states
         """
         idx = _a.asarrayi(idx).ravel()
-        sub = self.__class__(self.c[idx], self.state[idx, ...], self.parent)
+        sub = self.__class__(self.state[idx, ...], self.c[idx], self.parent)
         sub.info = self.info
         return sub
 
-    toCoeffState = None
+    def asState(self):
+        s = State(self.state.copy(), self.parent)
+        s.info = self.info
+        return s
+
+    def asCoefficient(self):
+        c = Coefficient(self.c.copy(), self.parent)
+        c.info = self.info
+        return c
