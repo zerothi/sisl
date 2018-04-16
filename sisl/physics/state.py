@@ -282,19 +282,12 @@ class State(ParentContainer):
             the normalization for each state
         """
         dtype = dtype_complex_to_real(self.dtype)
-        shape = self.shape[:-1]
-        n = np.empty(shape, dtype=dtype)
+        N = len(self)
+        n = np.empty(N, dtype=dtype)
 
-        # A state should only be up to
-        if len(shape) == 1:
-            for i in range(shape[0]):
-                n[i] = _idot(self.state[i, :]).astype(n.dtype)
-        elif len(shape) == 2:
-            for i in range(shape[0]):
-                for j in range(shape[1]):
-                    n[i, j] = _idot(self.state[i, j, :]).astype(n.dtype)
-        else:
-            raise SislError(self.__class__.__name__ + '.norm2 does not implement more than 2 dimensions on states.')
+        for i in range(N):
+            n[i] = _idot(self.state[i, :]).astype(n.dtype)
+
         return n
 
     def normalize(self):
@@ -312,7 +305,7 @@ class State(ParentContainer):
             a new state with all states normalized, otherwise equal to this
         """
         n = self.norm()
-        s = self.__class__(self.state / n.reshape(n.shape + (1,)), parent=self.parent)
+        s = self.__class__(self.state / n.reshape(-1, 1), parent=self.parent)
         s.info = self.info
         return s
 
@@ -438,7 +431,7 @@ class StateC(State):
         state : a new state with all states normalized, otherwise equal to this
         """
         n = self.norm()
-        s = self.__class__(self.state / n.reshape(n.shape + (1,)), self.c.copy(), parent=self.parent)
+        s = self.__class__(self.state / n.reshape(-1, 1), self.c.copy(), parent=self.parent)
         s.info = self.info
         return s
 

@@ -1,13 +1,11 @@
 from __future__ import print_function, division
 
 import pytest
-
-pytestmark = pytest.mark.state
-
-import math as m
 import numpy as np
 
-from sisl import geom, State, StateC
+from sisl import geom, Coefficient, State, StateC
+
+pytestmark = pytest.mark.state
 
 
 def ar(*args):
@@ -21,6 +19,44 @@ def outer(v):
 
 def couter(c, v):
     return np.outer(v * c, np.conjugate(v))
+
+
+def test_coefficient_creation1():
+    c = Coefficient(ar(6))
+    repr(c)
+    assert len(c) == 6
+    assert c.shape == (6, )
+    assert c.dtype == np.float64
+    assert c.dkind == 'f'
+    assert len(c.sub(1)) == 1
+    assert np.allclose(c.sub(1).c, 1)
+    assert len(c.sub([1, 4])) == 2
+    assert np.allclose(c.sub([1, 4]).c, [1, 4])
+    assert np.allclose(c[1, 4].c, [1, 4])
+
+
+def test_coefficient_creation2():
+    c = Coefficient(ar(6), geom.graphene(), k='HELLO')
+    assert np.allclose(c.parent.xyz, geom.graphene().xyz)
+    assert c.info['k'] == 'HELLO'
+
+
+def test_coefficient_copy():
+    c = Coefficient(ar(6), geom.graphene(), k='HELLO', test='test')
+    cc = c.copy()
+    assert cc.info['k'] == 'HELLO'
+    assert cc.info['test'] == 'test'
+
+
+def test_coefficient_iter():
+    c = Coefficient(ar(6))
+    i = 0
+    for C in c:
+        assert len(C) == 1
+        i += 1
+    assert i == 6
+    for i, C in enumerate(c.iter(True)):
+        assert C == c.c[i]
 
 
 def test_state_creation1():
@@ -70,6 +106,9 @@ def test_state_sub1():
         assert len(sub) == 1
         assert sub.norm()[0] == norm[i]
 
+    for i, sub in enumerate(state.iter(True)):
+        assert (sub ** 2).sum() ** .5 == norm[i]
+
 
 def test_state_outer1():
     state = ar(10, 10)
@@ -117,6 +156,13 @@ def test_cstate_creation1():
     assert len(state) == 6
     assert np.allclose(state.c, ar(6))
     repr(state)
+    state2 = state.copy()
+    assert np.allclose(state2.c, state.c)
+    assert np.allclose(state2.state, state.state)
+    state2 = state.asState()
+    assert np.allclose(state2.state, state.state)
+    state2 = state.asCoefficient()
+    assert np.allclose(state2.c, state.c)
 
 
 def test_cstate_repr1():
