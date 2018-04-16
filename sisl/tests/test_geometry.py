@@ -272,6 +272,25 @@ class TestGeometry(object):
         assert np.allclose(c1.xyz[0, :], setup.g.xyz[0, :])
         assert np.allclose(c2.xyz[0, :], setup.g.xyz[1, :])
 
+    def test_cut3(self, setup):
+        nr = range(2, 5)
+        g = setup.g.copy()
+        for x in nr:
+            gx = g.tile(x, 0)
+            for y in nr:
+                gy = gx.tile(y, 1)
+                for z in nr:
+                    gz = gy.tile(z, 2)
+                    G = gz.cut(z, 2)
+                    assert np.allclose(G.xyz, gy.xyz)
+                    assert np.allclose(G.cell, gy.cell)
+                G = gy.cut(y, 1)
+                assert np.allclose(G.xyz, gx.xyz)
+                assert np.allclose(G.cell, gx.cell)
+            G = gx.cut(x, 0)
+            assert np.allclose(G.xyz, g.xyz)
+            assert np.allclose(G.cell, g.cell)
+
     def test_remove1(self, setup):
         assert len(setup.g.remove([0])) == 1
         assert len(setup.g.remove([])) == 2

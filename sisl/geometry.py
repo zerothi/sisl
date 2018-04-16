@@ -891,11 +891,9 @@ class Geometry(SuperCellChild):
                               atom=self.atom.sub(atms), sc=cell)
 
     def cut(self, seps, axis, seg=0, rtol=1e-4, atol=1e-4):
-        """ Returns a subset of atoms from the geometry by cutting the
-        geometry into ``seps`` parts along the direction ``axis``.
-        It will then _only_ return the first cut.
+        """ Returns a subset of atoms from the geometry by cutting the geometry into `seps` parts along the direction `axis`.
 
-        This will effectively change the unit-cell in the ``axis`` as-well
+        This will effectively change the unit-cell in the `axis` as-well
         as removing ``self.na/seps`` atoms.
         It requires that ``self.na % seps == 0``.
 
@@ -905,6 +903,8 @@ class Geometry(SuperCellChild):
         Doing ``geom.cut(2, 1).tile(2, 1)``, could for symmetric setups,
         be equivalent to a no-op operation. A ``UserWarning`` will be issued
         if this is not the case.
+
+        This method may be regarded as the opposite of `tile`.
 
         Parameters
         ----------
@@ -918,6 +918,18 @@ class Geometry(SuperCellChild):
             this may change in the future.
         rtol : (tolerance for checking tiling, see `numpy.allclose`)
         atol : (tolerance for checking tiling, see `numpy.allclose`)
+
+        Examples
+        --------
+        >>> g = sisl.geom.graphene()
+        >>> gxyz = g.tile(4, 0).tile(3, 1).tile(2, 2)
+        >>> G = gxyz.cut(2, 2).cut(3, 1).cut(4, 0)
+        >>> np.allclose(g.xyz, G.xyz)
+        True
+
+        See Also
+        --------
+        tile : opposite method of this
         """
         if self.na % seps != 0:
             raise ValueError(
@@ -931,8 +943,7 @@ class Geometry(SuperCellChild):
         n = self.na // seps
         off = n * lseg
         new = self.sub(_a.arangei(off, off + n), cell=sc)
-        if not np.allclose(new.tile(seps, axis).xyz, self.xyz,
-                           rtol=rtol, atol=atol):
+        if not np.allclose(new.tile(seps, axis).xyz, self.xyz, rtol=rtol, atol=atol):
             st = 'The cut structure cannot be re-created by tiling'
             st += '\nThe difference between the coordinates can be altered using rtol, atol'
             warn(st)
@@ -993,6 +1004,7 @@ class Geometry(SuperCellChild):
         See Also
         --------
         repeat : equivalent but different ordering of final structure
+        cut : opposite method of this
         """
         if reps < 1:
             raise ValueError(self.__class__.__name__ + '.tile() requires a repetition above 0')
