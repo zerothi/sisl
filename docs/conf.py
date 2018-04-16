@@ -390,7 +390,6 @@ nbsphinx_prolog = r"""
 
 # My custom detailed instructions for not documenting stuff
 def sisl_skip(app, what, name, obj, skip, options):
-    import sisl
     # When adding routines here, please also add them
     # to the _templates/autosummary/class.rst file to limit
     # the documentation.
