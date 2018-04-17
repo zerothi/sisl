@@ -5,7 +5,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl.physics.distribution_function import *
+from sisl.physics.distributions import *
 
 pytestmark = pytest.mark.distributions
 

@@ -12,7 +12,7 @@ from sisl._help import _range as range, _str as str
 import sisl._array as _a
 from sisl import Geometry
 from sisl.eigensystem import EigenSystem
-from .distribution_function import distribution as dist_func
+from .distributions import distribution as dist_func
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
 

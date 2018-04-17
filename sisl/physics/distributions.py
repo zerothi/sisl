@@ -1,10 +1,26 @@
+"""
+==========================================================
+Distribution funcitons (:mod:`sisl.physics.distributions`)
+==========================================================
+
+.. module:: sisl.physics.distributions
+   :noindex:
+
+.. autosummary::
+   :toctree:
+
+   distribution
+   gaussian
+   lorentzian
+
+"""
 from __future__ import print_function, division
 
 from functools import partial
 
 import numpy as np
-pi = np.pi
-sqrt_2pi = (2 * pi) ** 0.5
+_pi = np.pi
+_sqrt_2pi = (2 * pi) ** 0.5
 
 __all__ = ['distribution', 'gaussian', 'lorentzian']
 
@@ -15,28 +31,29 @@ def distribution(method, smearing=0.1):
     The Gaussian distribution is calculated as:
 
     .. math::
-        G(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\big[- x^2 / (2\sigma^2)\big]
+        G(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- x^2}{2\sigma^2}\Big]
 
-    where :math:`\sigma` is the `smearing` parameter.
+    where: math: `\sigma` is the `smearing` parameter.
 
     The Lorentzian distribution is calculated as:
 
     .. math::
         L(x) = \frac{1}{\pi}\frac{\gamma}{x^2 + \gamma^2}
 
-    where :math:`\gamma` is the `smearing` parameter, note that here :math:`\gamma` is the
-    half-width at half-maximum (:math:`2\gamma` would be the full-width at half-maximum).
+    where: math: `\gamma` is the `smearing` parameter, note that here: math: `\gamma` is the
+    half-width at half-maximum(: math: `2\gamma` the full-width at half-maximum).
 
     Parameters
     ----------
-    method : {'gaussian', 'lorentzian'}
+    method: {'gaussian', 'lorentzian'}
         the distribution function
-    smearing : float, optional
-        the smearing parameter for the method (:math:`\sigma` for Gaussian, etc.)
+    smearing: float, optional
+        the smearing parameter for the method(: math: `\sigma` for Gaussian, : math: `\gamma` for Lorenztian etc.)
 
     Returns
     -------
-    func : a function which accepts one argument
+    callable
+        a function which accepts one argument
     """
     if method.lower() in ['gauss', 'gaussian']:
         return partial(gaussian, sigma=smearing)
@@ -52,21 +69,21 @@ def gaussian(x, sigma=0.1):
     The Gaussian distribution is calculated as:
 
     .. math::
-        G(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\big[- x^2 / (2\sigma^2)\big]
+        G(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- x^2}{2\sigma^2}\Big]
 
     Parameters
     ----------
-    x : array_like
+    x: array_like
         the points at which the Gaussian distribution is calculated
-    sigma : float, optional
+    sigma: float, optional
         the spread of the Gaussian
 
     Returns
     -------
-    y : array_like
+    numpy.ndarray
         the Gaussian distribution, same length as `x`
     """
-    return np.exp(-x ** 2 / (2 * sigma ** 2)) / (sqrt_2pi * sigma)
+    return np.exp(-x ** 2 / (2 * sigma ** 2)) / (_sqrt_2pi * sigma)
 
 
 def lorentzian(x, gamma=0.1):
@@ -79,14 +96,14 @@ def lorentzian(x, gamma=0.1):
 
     Parameters
     ----------
-    x : array_like
+    x: array_like
         the points at which the Lorentzian distribution is calculated
-    gamma : float, optional
+    gamma: float, optional
         the spread of the Lorentzian
 
     Returns
     -------
-    y : array_like
+    numpy.ndarray
         the Lorentzian distribution, same length as `x`
     """
-    return (gamma / pi) / (x ** 2 + gamma ** 2)
+    return (gamma / _pi) / (x ** 2 + gamma ** 2)

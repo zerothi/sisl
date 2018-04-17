@@ -67,8 +67,8 @@ States
    State
    StateC
 
-Distribution functions
-======================
+Distribution functions (:mod:`sisl.physics.distributions`)
+==========================================================
 
 .. autosummary::
    :toctree:
@@ -78,7 +78,7 @@ Distribution functions
    lorentzian
 
 """
-from .distribution_function import *
+from .distributions import *
 from .brillouinzone import *
 from .spin import *
 from .sparse import *
