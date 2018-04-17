@@ -20,7 +20,7 @@ from functools import partial
 
 import numpy as np
 _pi = np.pi
-_sqrt_2pi = (2 * pi) ** 0.5
+_sqrt_2pi = (2 * _pi) ** 0.5
 
 __all__ = ['distribution', 'gaussian', 'lorentzian']
 

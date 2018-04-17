@@ -212,7 +212,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             with get_sile(sile, 'w') as fh:
                 fh.write_hamiltonian(self, *args, **kwargs)
 
-    def DOS(self, E, k=(0, 0, 0), distribution=None, **kwargs):
+    def DOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
         r""" Calculate the DOS at the given energies for a specific `k` point
 
         Parameters
@@ -221,10 +221,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
             energies to calculate the DOS at
         k : array_like, optional
             k-point at which the DOS is calculated
-        distribution : func, optional
+        distribution : func or str, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-            If ``None`` ``sisl.physics.distribution('gaussian')`` will be used.
         **kwargs: optional
             additional parameters passed to the `eigenstate` routine
 
@@ -241,7 +240,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         e = self.eigh(k, **kwargs)
         return EigenState(e, e, self, k=k, **kwargs).DOS(E, distribution)
 
-    def PDOS(self, E, k=(0, 0, 0), distribution=None, **kwargs):
+    def PDOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
         r""" Calculate the projected DOS at the given energies for a specific `k` point
 
         Parameters
@@ -250,10 +249,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
             energies to calculate the projected DOS at
         k : array_like, optional
             k-point at which the projected DOS is calculated
-        distribution : func, optional
+        distribution : func or str, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-            If ``None`` ``sisl.physics.distribution('gaussian')`` will be used.
         **kwargs: optional
             additional parameters passed to the `eigenstate` routine
 
@@ -320,7 +318,7 @@ class EigenState(EigenSystem):
             return (conj(self.v[idx, :].T) * Sk.dot(self.v[idx, :].T)).real.T.reshape(len(idx), -1, 2).sum(-1)
         return (conj(self.v[idx, :].T) * Sk.dot(self.v[idx, :].T)).real.T
 
-    def DOS(self, E, distribution=None):
+    def DOS(self, E, distribution='gaussian'):
         r""" Calculate the DOS for the provided energies (`E`), using the supplied distribution function
 
         The Density Of States at a specific energy is calculated via the broadening function:
@@ -336,10 +334,9 @@ class EigenState(EigenSystem):
         ----------
         E : array_like
             energies to calculate the DOS from
-        distribution : func, optional
+        distribution : func or str, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-            If ``None`` ``sisl.physics.distribution('gaussian')`` will be used.
 
         See Also
         --------
@@ -350,16 +347,14 @@ class EigenState(EigenSystem):
         -------
         numpy.ndarray : DOS calculated at energies, has same length as `E`
         """
-        if distribution is None:
-            distribution = dist_func('gaussian')
-        elif isinstance(distribution, str):
+        if isinstance(distribution, str):
             distribution = dist_func(distribution)
         DOS = distribution(E - self.e[0])
         for i in range(1, len(self)):
             DOS += distribution(E - self.e[i])
         return DOS
 
-    def PDOS(self, E, distribution=None):
+    def PDOS(self, E, distribution='gaussian'):
         r""" Calculate the projected-DOS for the provided energies (`E`), using the supplied distribution function
 
         The projected DOS is calculated as:
@@ -381,10 +376,9 @@ class EigenState(EigenSystem):
         ----------
         E : array_like
             energies to calculate the projected-DOS from
-        distribution : func, optional
+        distribution : func or str, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-            If ``None`` ``sisl.physics.distribution('gaussian')`` will be used.
 
         See Also
         --------
@@ -393,11 +387,10 @@ class EigenState(EigenSystem):
 
         Returns
         -------
-        numpy.ndarray : projected DOS calculated at energies, has dimension ``(self.size, len(E))``.
+        numpy.ndarray
+            projected DOS calculated at energies, has dimension ``(self.size, len(E))``.
         """
-        if distribution is None:
-            distribution = dist_func('gaussian')
-        elif isinstance(distribution, str):
+        if isinstance(distribution, str):
             distribution = dist_func(distribution)
 
         # Retrieve options for the Sk calculation
