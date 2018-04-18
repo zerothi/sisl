@@ -9,8 +9,6 @@ from .spin import Spin
 from .state import Coefficient, State, StateC
 
 
-
-
 def DOS(E, eig, distribution='gaussian'):
     r""" Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function
 

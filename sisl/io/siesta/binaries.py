@@ -312,7 +312,7 @@ class hsxSileSiesta(SileBinSiesta):
                 geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
             else:
                 # Try to figure out the supercell
-                warn(self.__class__.__name__ + ".read_hamiltonian (currently we can not currently calculate atomic positions from"
+                warn(self.__class__.__name__ + ".read_hamiltonian (currently we can not calculate atomic positions from"
                      " xij array)")
         if geom.no != no:
             raise ValueError("Reading HSX files requires the input geometry to have the "
