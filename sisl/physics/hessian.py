@@ -10,8 +10,8 @@ __all__ = ['Hessian', 'DynamicalMatrix']
 class Hessian(SparseOrbitalBZ):
     """ Dynamical matrix of a geometry """
 
-    def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        super(Hessian, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        super(Hessian, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
 
         self.Dk = self._Pk
 
@@ -93,7 +93,7 @@ class Hessian(SparseOrbitalBZ):
         om = np.sqrt(self.mass)
         MM = np.empty([len(om)], np.float64)
 
-        for ja in self.geom:
+        for ja in self.geometry:
 
             # Create conversion to force-constant, and revert back
             # after correcting

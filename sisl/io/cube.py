@@ -18,13 +18,13 @@ class cubeSile(Sile):
     """ CUBE file object """
 
     @Sile_fh_open
-    def write_geometry(self, geom, fmt='15.10e', size=None, origo=None,
+    def write_geometry(self, geometry, fmt='15.10e', size=None, origo=None,
             *args, **kwargs):
         """ Writes `Geometry` object attached to this grid
 
         Parameters
         ----------
-        geom : Geometry
+        geometry : Geometry
             geometry to be written
         fmt : str, optional
             floating point format for stored values
@@ -42,25 +42,25 @@ class cubeSile(Sile):
         if size is None:
             size = np.ones([3], np.int32)
         if origo is None:
-            origo = geom.origo[:]
+            origo = geometry.origo[:]
 
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
         # Add #-of atoms and origo
-        self._write(_fmt.format(len(geom), *(origo * Ang2Bohr)))
+        self._write(_fmt.format(len(geometry), *(origo * Ang2Bohr)))
 
         # Write the cell and voxels
         dcell = np.empty([3, 3], np.float64)
         for ix in range(3):
-            dcell[ix, :] = geom.cell[ix, :] / size[ix] * Ang2Bohr
+            dcell[ix, :] = geometry.cell[ix, :] / size[ix] * Ang2Bohr
         self._write(_fmt.format(size[0], *dcell[0, :]))
         self._write(_fmt.format(size[1], *dcell[1, :]))
         self._write(_fmt.format(size[2], *dcell[2, :]))
 
         tmp = ' {:' + fmt + '}'
         _fmt = '{:d} 0.0' + tmp + tmp + tmp + '\n'
-        for ia in geom:
-            self._write(_fmt.format(geom.atom[ia].Z, *geom.xyz[ia, :] * Ang2Bohr))
+        for ia in geometry:
+            self._write(_fmt.format(geometry.atom[ia].Z, *geometry.xyz[ia, :] * Ang2Bohr))
 
     @Sile_fh_open
     def write_grid(self, grid, fmt='.5e', imag=False, *args, **kwargs):
@@ -199,7 +199,7 @@ class cubeSile(Sile):
         for i in range(na):
             self.readline()
 
-        grid = Grid(ngrid, dtype=np.float64, geom=geom)
+        grid = Grid(ngrid, dtype=np.float64, geometry=geom)
         grid.grid.shape = (-1,)
 
         # TODO check performance of this

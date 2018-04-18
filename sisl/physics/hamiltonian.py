@@ -39,7 +39,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     Parameters
     ----------
-    geom : Geometry
+    geometry : Geometry
       parent geometry to create a density matrix from. The density matrix will
       have size equivalent to the number of orbitals in the geometry
     dim : int or Spin, optional
@@ -58,8 +58,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
       This is a keyword-only argument.
     """
 
-    def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        super(Hamiltonian, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        super(Hamiltonian, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
 
         self.Hk = self.Pk
 
@@ -498,23 +498,23 @@ class EigenState(EigenSystem):
         eta : bool, optional
            Display a progressbar. (Requires tqdm)
         """
-        geom = None
+        geometry = None
         is_nc = False
         if isinstance(self.parent, Geometry):
-            geom = self.parent
+            geometry = self.parent
         elif isinstance(self.parent, Hamiltonian):
-            geom = self.parent.geom
+            geometry = self.parent.geometry
             is_nc = self.parent.spin > Spin('p')
         else:
             try:
-                if isinstance(self.parent.geom, Geometry):
-                    geom = self.parent.geom
+                if isinstance(self.parent.geometry, Geometry):
+                    geometry = self.parent.geometry
             except:
                 pass
-        if geom is None:
-            geom = grid.geometry
+        if geometry is None:
+            geometry = grid.geometry
             warn(self.__class__.__name__ + '.psi could not find a geometry associated, will use the Grid geometry.')
-        if geom is None:
+        if geometry is None:
             raise SislError(self.__class__.__name__ + '.psi can not find a geometry associated!')
 
         # Do the sum over all eigenstates
@@ -522,7 +522,7 @@ class EigenState(EigenSystem):
         if is_nc:
             # Select spinor component
             v = v.reshape(-1, 2)[:, spinor]
-        if len(v) != geom.no:
+        if len(v) != geometry.no:
             raise ValueError(self.__class__.__name__ + ".psi "
                              "requires the coefficient to have length as the number of orbitals.")
 
@@ -553,7 +553,7 @@ class EigenState(EigenSystem):
         shape = _a.asarrayi(grid.shape)
         dcell = grid.dcell
         ic = grid.sc.icell * shape.reshape(1, -1)
-        geom_shape = dot(ic, geom.cell.T).T
+        geometry_shape = dot(ic, geometry.cell.T).T
 
         # In the following we don't care about division
         # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
@@ -593,7 +593,7 @@ class EigenState(EigenSystem):
         del theta, phi, rad1
 
         # First we calculate the min/max indices for all atoms
-        idx_mm = _a.emptyi([geom.na, 2, 3])
+        idx_mm = _a.emptyi([geometry.na, 2, 3])
         rxyz = _a.emptyd(nrxyz)
         rxyz[..., 0] = ctheta_sphi
         rxyz[..., 1] = stheta_sphi
@@ -606,7 +606,7 @@ class EigenState(EigenSystem):
         del ctheta_sphi, stheta_sphi, cphi, idx, rxyz, nrxyz
 
         origo = grid.sc.origo.reshape(1, -1)
-        for atom, ia in geom.atom.iter(True):
+        for atom, ia in geometry.atom.iter(True):
             if len(ia) == 0:
                 continue
             R = atom.maxR()
@@ -615,7 +615,7 @@ class EigenState(EigenSystem):
             # the atoms
             # The coordinates are relative to origo, so we need to shift (when writing a grid
             # it is with respect to origo)
-            xyz = geom.xyz[ia, :] - origo
+            xyz = geometry.xyz[ia, :] - origo
             idx = dot(ic, xyz.T).T
 
             # Get min-max for all atoms, note we should first do the floor here
@@ -637,22 +637,22 @@ class EigenState(EigenSystem):
         sc = grid.sc.copy()
         if grid.geometry is None:
             # Create the actual geometry that encompass the grid
-            ia, xyz, _ = geom.inf_within(sc)
+            ia, xyz, _ = geometry.inf_within(sc)
             if len(ia) > 0:
-                grid.set_geometry(Geometry(xyz, geom.atom[ia], sc=sc))
+                grid.set_geometry(Geometry(xyz, geometry.atom[ia], sc=sc))
 
         # Instead of looping all atoms in the supercell we find the exact atoms
         # and their supercell indices.
-        add_R = _a.zerosd(3) + geom.maxR()
+        add_R = _a.zerosd(3) + geometry.maxR()
         sc = sc + np.diag(add_R * 2)
         sc.origo = sc.origo[:] - add_R
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)
-        IA, XYZ, ISC = geom.inf_within(sc)
+        IA, XYZ, ISC = geometry.inf_within(sc)
 
-        r_k = dot(geom.rcell, k)
-        r_k_cell = dot(r_k, geom.cell)
+        r_k = dot(geometry.rcell, k)
+        r_k_cell = dot(r_k, geometry.cell)
         phase = 1
 
         # Retrieve progressbar
@@ -661,7 +661,7 @@ class EigenState(EigenSystem):
         # Loop over all atoms in the full supercell structure
         for ia, xyz, isc in zip(IA, XYZ - grid.origo.reshape(1, 3), ISC):
             # Get current atom
-            atom = geom.atom[ia]
+            atom = geometry.atom[ia]
 
             # Extract maximum R
             R = atom.maxR()
@@ -671,7 +671,7 @@ class EigenState(EigenSystem):
                 continue
 
             # Get indices in the supercell grid
-            idx = (isc.reshape(3, 1) * geom_shape).sum(0)
+            idx = (isc.reshape(3, 1) * geometry_shape).sum(0)
             idxm = (idx_mm[ia, 0, :] + idx).astype(int32)
             idxM = (idx_mm[ia, 1, :] + idx).astype(int32) + 1
 
@@ -702,7 +702,7 @@ class EigenState(EigenSystem):
                                                   aranged(idxm[2], idxM[2]), xyz, dcell, R)
 
             # Get initial orbital
-            io = geom.a2o(ia)
+            io = geometry.a2o(ia)
 
             if has_k:
                 phase = np.exp(-1j * (dot(r_k_cell, isc)))

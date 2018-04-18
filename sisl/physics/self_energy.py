@@ -83,7 +83,7 @@ class SemiInfinite(SelfEnergy):
             self.semi_inf = 2
 
         # Check that the Hamiltonian does have a non-zero V along the semi-infinite direction
-        if spgeom.geom.sc.nsc[self.semi_inf] == 1:
+        if spgeom.geometry.sc.nsc[self.semi_inf] == 1:
             warn('Creating a semi-infinite self-energy with no couplings along the semi-infinite direction')
 
         # Finalize the setup by calling the class specific routine
@@ -118,7 +118,7 @@ class RecursiveSI(SemiInfinite):
 
         # Create spgeom0 and spgeom1
         self.spgeom0 = spgeom.copy()
-        nsc = np.copy(spgeom.geom.sc.nsc)
+        nsc = np.copy(spgeom.geometry.sc.nsc)
         nsc[self.semi_inf] = 1
         self.spgeom0.set_nsc(nsc)
 
@@ -134,14 +134,14 @@ class RecursiveSI(SemiInfinite):
                  "These values will be forced to 0 as the principal cell-interaction is a requirement")
 
         # I.e. we will delete all interactions that are un-important
-        n_s = self.spgeom1.geom.sc.n_s
+        n_s = self.spgeom1.geometry.sc.n_s
         n = self.spgeom1.shape[0]
         # Figure out the matrix columns we should set to zero
         nsc = [None] * 3
         nsc[self.semi_inf] = self.semi_inf_dir
         # Get all supercell indices that we should delete
         idx = np.delete(_a.arangei(n_s),
-                        _a.arrayi(spgeom.geom.sc.sc_index(nsc)))
+                        _a.arrayi(spgeom.geometry.sc.sc_index(nsc)))
 
         cols = array_arange(idx * n, (idx + 1) * n)
         # Delete all values in columns, but keep them to retain the supercell information

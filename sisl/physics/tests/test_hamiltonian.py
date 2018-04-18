@@ -1145,7 +1145,7 @@ def test_psi1():
     H.construct([R, param])
     ES = H.eigenstate(dtype=np.float64)
     # Plot in the full thing
-    grid = Grid(0.1, geom=H.geom)
+    grid = Grid(0.1, geometry=H.geom)
     grid.fill(0.)
     ES.sub(0).psi(grid)
 

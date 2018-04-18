@@ -36,7 +36,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
     Parameters
     ----------
-    geom : Geometry
+    geometry : Geometry
       parent geometry to create a density matrix from. The density matrix will
       have size equivalent to the number of orbitals in the geometry
     dim : int or Spin, optional
@@ -55,8 +55,8 @@ class DensityMatrix(SparseOrbitalBZSpin):
       This is a keyword-only argument.
     """
 
-    def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        super(DensityMatrix, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        super(DensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
 
         self.Dk = self.Pk
 
@@ -151,7 +151,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
            length 2 (defaults to total density).
            For non-colinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
         """
-        geom = self.geom
+        geom = self.geometry
 
         if geom is None:
             geom = grid.geometry

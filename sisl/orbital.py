@@ -280,7 +280,7 @@ class Orbital(object):
         sc = SuperCell(R*2, origo=[-R] * 3)
         g = Geometry([0] * 3, Atom(1, self), sc=sc)
         n = int(np.rint(2 * R / precision))
-        G = Grid([n] * 3, dtype=dtype, geom=g)
+        G = Grid([n] * 3, dtype=dtype, geometry=g)
         es = EigenState(0, [c], g)
         es.psi(G)
         return G
