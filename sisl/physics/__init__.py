@@ -78,6 +78,7 @@ Electrons (:mod:`sisl.physics.electron`)
    DOS
    PDOS
    spin_moment
+   wavefunction
    CoefficientElectron
    StateElectron
    StateCElectron

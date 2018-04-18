@@ -276,13 +276,12 @@ class Orbital(object):
         from .geometry import Geometry
         from .grid import Grid
         from .atom import Atom
-        from .physics.hamiltonian import EigenState
+        from .physics.electron import wavefunction
         sc = SuperCell(R*2, origo=[-R] * 3)
         g = Geometry([0] * 3, Atom(1, self), sc=sc)
         n = int(np.rint(2 * R / precision))
         G = Grid([n] * 3, dtype=dtype, geometry=g)
-        es = EigenState(0, [c], g)
-        es.psi(G)
+        wavefunction(np.ones(1), G, geometry=g)
         return G
 
     def __getstate__(self):

@@ -2,12 +2,12 @@ from __future__ import print_function, division
 
 import numpy as np
 from numpy import conj, dot, take, ogrid
-from numpy import arctan2, cos, sin
+from numpy import arctan2, cos, sin, pi, int32
 from numpy import add, sqrt, divide
 
 from sisl.geometry import Geometry
 import sisl._array as _a
-from sisl.messages import info, warn
+from sisl.messages import info, warn, tqdm_eta
 from sisl._help import dtype_complex_to_real, _range as range
 from .distributions import distribution as dist_func
 from .spin import Spin
@@ -136,16 +136,13 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
 
     # Figure out whether we are dealing with a non-colinear calculation
     if S is None:
-        class S(object):
+        class __S(object):
             __slots__ = []
-            @property
-            @staticmethod
-            def shape():
-                n = eig_v.shape[1]
-                return (n, n)
+            shape = (eig_v.shape[1], eig_v.shape[1])
             @staticmethod
             def dot(v):
                 return v
+        S = __S()
 
     if spin is None:
         if S.shape[1] == eig_v.shape[1] // 2:
@@ -162,12 +159,12 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
             # to more easily get the mixed states, we can reduce the overlap matrix
             S = S[::2, ::2]
 
-        # Initialize
-        PDOS = np.empty([4, eig_v.shape[0], len(E)], dtype=dtype_complex_to_real(eig_v.dtype))
+        # Initialize data
+        PDOS = np.empty([4, eig_v.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(eig_v.dtype))
 
         d = distribution(E - eig[0]).reshape(1, -1)
         v = S.dot(eig_v[0].reshape(-1, 2))
-        D = (conj(eig_v[0]) * v.ravel()).reshape(-1, 2) # diagonal PDOS
+        D = (conj(eig_v[0]) * v.ravel()).real.reshape(-1, 2) # diagonal PDOS
         PDOS[0, :, :] = D.sum(1).reshape(-1, 1) * d # total DOS
         PDOS[3, :, :] = (D[:, 0] - D[:, 1]).reshape(-1, 1) * d # z-dos
         D = (conj(eig_v[0, 1::2]) * 2 * v[:, 0]).reshape(-1, 1) # psi_down * psi_up * 2
@@ -176,7 +173,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
         for i in range(1, len(eig)):
             d = distribution(E - eig[i]).reshape(1, -1)
             v = S.dot(eig_v[i].reshape(-1, 2))
-            D = (conj(eig_v[i]) * v.ravel()).reshape(-1, 2)
+            D = (conj(eig_v[i]) * v.ravel()).real.reshape(-1, 2)
             PDOS[0, :, :] += D.sum(1).reshape(-1, 1) * d
             PDOS[3, :, :] += (D[:, 0] - D[:, 1]).reshape(-1, 1) * d
             D = (conj(eig_v[i, 1::2]) * 2 * v[:, 0]).reshape(-1, 1)
@@ -244,16 +241,13 @@ def spin_moment(eig_v, S=None):
         spin moments per eigenvector with final dimension ``(4, eig_v.shape[0])``.
     """
     if S is None:
-        class S(object):
+        class __S(object):
             __slots__ = []
-            @property
-            @staticmethod
-            def shape():
-                n = eig_v.shape[1] // 2
-                return (n, n)
+            shape = (eig_v.shape[1] // 2, eig_v.shape[1] // 2)
             @staticmethod
             def dot(v):
                 return v
+        S = __S()
 
     if S.shape[1] == eig_v.shape[1]:
         S = S[::2, ::2]
@@ -266,7 +260,7 @@ def spin_moment(eig_v, S=None):
     # TODO dot products in one go and then use b-casting rules. Should be much faster
     # TODO but also way more memory demanding!
     v = S.dot(eig_v[0].reshape(-1, 2))
-    D = (conj(eig_v[0]) * v.ravel()).reshape(-1, 2) # diagonal elements
+    D = (conj(eig_v[0]) * v.ravel()).real.reshape(-1, 2) # diagonal elements
     s[0, 0] = D.sum() # total spin moment
     s[3, 0] = (D[:, 0] - D[:, 1]).sum() # S_z
     D = 2 * (conj(eig_v[0, 1::2]) * v[:, 0]).sum() # psi_down * psi_up * 2
@@ -274,7 +268,7 @@ def spin_moment(eig_v, S=None):
     s[2, 0] = D.imag # S_y
     for i in range(1, len(eig_v)):
         v = S.dot(eig_v[i].reshape(-1, 2))
-        D = (conj(eig_v[i]) * v.ravel()).reshape(-1, 2)
+        D = (conj(eig_v[i]) * v.ravel()).real.reshape(-1, 2)
         s[0, i] += D.sum()
         s[3, i] += (D[:, 0] - D[:, 1]).sum()
         D = 2 * (conj(eig_v[i, 1::2]) * v[:, 0]).sum()
@@ -627,30 +621,22 @@ class _common_State(object):
         class __FakeSk(object):
             """ Replacement object which superseedes a matrix """
             __slots__ = []
-            @staticmethod
-            @property
-            def shape():
-                n = self.shape[1]
-                return (n, n)
+            shape = (self.shape[1], self.shape[1])
             @staticmethod
             def dot(v):
                 return v
 
         if spin is None:
-            return __FakeSk
+            return __FakeSk()
         if spin.kind > Spin.POLARIZED:
             class __FakeSk(object):
                 """ Replacement object which superseedes a matrix """
                 __slots__ = []
-                @staticmethod
-                @property
-                def shape():
-                    n = self.shape[1] // 2
-                    return (n, n)
+                shape = (self.shape[1] // 2, self.shape[1] // 2)
                 @staticmethod
                 def dot(v):
                     return v
-        return __FakeSk
+        return __FakeSk()
 
     def spin_moment(self):
         r""" Calculate spin moment

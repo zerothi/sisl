@@ -7,7 +7,6 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 from sisl import SuperCell, SphericalOrbital, Atom, Geometry
-from sisl import EigenState
 from sisl import Grid
 from sisl import Ellipsoid, Cuboid
 
