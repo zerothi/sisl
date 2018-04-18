@@ -913,7 +913,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             sl = slice(si*no, (si+1) * no, None)
 
             S[::2, ::2] += s[:, sl] * phase
-            S[1::2, 1::2] += s[:, sl] * phase
+        S[1::2, 1::2] = S[::2, ::2]
 
         del s
 
