@@ -559,8 +559,7 @@ class TestHamiltonian(object):
             es = HS.eigenstate(k)
             assert np.allclose(e, es.eig)
             assert np.allclose(v, es.state.T)
-            #TODO
-            #assert np.allclose(es.norm().sum(0), 1)
+            assert np.allclose(es.norm2(), 1)
 
     def test_dos1(self, setup):
         HS = setup.HS.copy()
@@ -571,8 +570,7 @@ class TestHamiltonian(object):
             DOS = es.DOS(E)
             assert DOS.dtype.kind == 'f'
             assert np.allclose(DOS, HS.DOS(E, k))
-            #TODO
-            #assert np.allclose(es.norm().sum(0), 1)
+            assert np.allclose(es.norm2(), 1)
             repr(es)
 
     def test_pdos1(self, setup):

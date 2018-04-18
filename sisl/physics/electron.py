@@ -591,6 +591,14 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 class _common_State(object):
     __slots__ = []
 
+    def __is_nc(self):
+        """ Internal routine to check whether this is a non-colinear calculation """
+        try:
+            spin = self.parent.spin
+        except:
+            spin = Spin()
+        return spin.kind > Spin.POLARIZED
+
     def Sk(self, format='csr', spin=None):
         r""" Retrieve the overlap matrix corresponding to the originating parent structure.
 
@@ -638,6 +646,32 @@ class _common_State(object):
                     return v
         return __FakeSk()
 
+    def norm2(self, sum=True):
+        r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
+
+        Parameters
+        ----------
+        sum : bool, optional
+           if true the summed orbital square is returned (a vector). For false a matrix
+           with normalization squared per orbital is returned.
+
+        Returns
+        -------
+        numpy.ndarray
+            the normalization on each orbital for each state
+        """
+        # Retrieve the overlap matrix (FULL S is required for NC)
+        S = self.Sk()
+
+        # TODO, perhaps check that it is correct... and fix multiple transposes
+        if sum:
+            if self.__is_nc():
+                return (conj(self.state) * S.dot(self.state.T).T).real.reshape(len(self), -1, 2).sum(-1).sum(0)
+            return (conj(self.state) * S.dot(self.state.T).T).real.sum(0)
+        if self.__is_nc():
+            return (conj(self.state) * S.dot(self.state.T).T).real.reshape(len(self), -1, 2).sum(-1)
+        return (conj(self.state) * S.dot(self.state.T).T).real
+
     def spin_moment(self):
         r""" Calculate spin moment
 
@@ -676,6 +710,7 @@ class _common_State(object):
         wavefunction(self.state, grid, geometry=geometry, k=k, spinor=spinor,
                      spin=spin, eta=eta)
 
+    # TODO to be deprecated
     psi = wavefunction
 
 
@@ -683,11 +718,11 @@ class CoefficientElectron(Coefficient):
     __slots__ = []
 
 
-class StateElectron(State, _common_State):
+class StateElectron(_common_State, State):
     __slots__ = []
 
 
-class StateCElectron(StateC, _common_State):
+class StateCElectron(_common_State, StateC):
     __slots__ = []
 
 

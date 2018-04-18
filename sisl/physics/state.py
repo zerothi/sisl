@@ -273,20 +273,30 @@ class State(ParentContainer):
         """
         return np.sqrt(self.norm2())
 
-    def norm2(self):
+    def norm2(self, sum=True):
         r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
+
+        Parameters
+        ----------
+        sum : bool, optional
+           if true the summed site square is returned (a vector). For false a matrix
+           with normalization squared per site is returned.
 
         Returns
         -------
         numpy.ndarray
             the normalization for each state
         """
+        if not sum:
+            return (conj(self.state) * self.state.T).real
+
         dtype = dtype_complex_to_real(self.dtype)
+
         N = len(self)
         n = np.empty(N, dtype=dtype)
 
         for i in range(N):
-            n[i] = _idot(self.state[i, :]).astype(n.dtype)
+            n[i] = _idot(self.state[i, :]).real
 
         return n
 
