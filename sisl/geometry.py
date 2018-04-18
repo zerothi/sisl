@@ -3324,7 +3324,7 @@ class Geometry(SuperCellChild):
         return p, namespace
 
 
-def sgeom(geom=None, argv=None, ret_geometry=False):
+def sgeom(geometry=None, argv=None, ret_geometry=False):
     """ Main script for sgeom.
 
     This routine may be called with `argv` and/or a `Sile` which is the geometry at hand.
@@ -3399,31 +3399,31 @@ lattice vector.
 
     # First read the input "Sile"
     stdout_geom = True
-    if geom is None:
+    if geometry is None:
         from os.path import isfile
         argv, input_file = cmd.collect_input(argv)
         if input_file is None:
             stdout_geom = False
-            geom = Geometry([0] * 3)
+            geometry = Geometry([0] * 3)
         elif isfile(input_file):
-            geom = get_sile(input_file).read_geometry()
+            geometry = get_sile(input_file).read_geometry()
         elif not isfile(input_file):
             from .messages import info
             info("Cannot find file '{}'!".format(input_file))
-            geom = Geometry
+            geometry = Geometry
             stdout_geom = False
 
-    elif isinstance(geom, Geometry):
+    elif isinstance(geometry, Geometry):
         # Do nothing, the geometry is already created
         pass
 
-    elif isinstance(geom, BaseSile):
-        geom = geom.read_geometry()
+    elif isinstance(geometry, BaseSile):
+        geometry = geometry.read_geometry()
         # Store the input file...
-        input_file = geom.file
+        input_file = geometry.file
 
     # Do the argument parser
-    p, ns = geom.ArgumentParser(p, **geom._ArgumentParser_args_single())
+    p, ns = geometry.ArgumentParser(p, **geometry._ArgumentParser_args_single())
 
     # Now the arguments should have been populated
     # and we will sort out if the input options

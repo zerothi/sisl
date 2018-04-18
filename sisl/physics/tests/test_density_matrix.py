@@ -88,7 +88,7 @@ class TestDensityMatrix(object):
     def test_rho1(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)
-        grid = Grid(0.2, geom=setup.D.geom)
+        grid = Grid(0.2, geometry=setup.D.geom)
         D.rho(grid)
 
     def test_rho2(self, setup):
@@ -108,12 +108,12 @@ class TestDensityMatrix(object):
                         atom=C, sc=sc)
         D = DensityMatrix(g)
         D.construct([[0.1, bond + 0.01], [1., 0.1]])
-        grid = Grid(0.2, geom=D.geom)
+        grid = Grid(0.2, geometry=D.geom)
         D.rho(grid)
 
         D = DensityMatrix(g, spin=Spin('P'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.1)]])
-        grid = Grid(0.2, geom=D.geom)
+        grid = Grid(0.2, geometry=D.geom)
         D.rho(grid)
         D.rho(grid, [1., -1])
         D.rho(grid, 0)
@@ -121,13 +121,13 @@ class TestDensityMatrix(object):
 
         D = DensityMatrix(g, spin=Spin('NC'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.1, 0.1, 0.1)]])
-        grid = Grid(0.2, geom=D.geom)
+        grid = Grid(0.2, geometry=D.geom)
         D.rho(grid)
         D.rho(grid, [[1., 0.], [0., -1]])
 
         D = DensityMatrix(g, spin=Spin('SO'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0., 0.), (0.1, 0.1, 0.1, 0.1, 0., 0., 0., 0.)]])
-        grid = Grid(0.2, geom=D.geom)
+        grid = Grid(0.2, geometry=D.geom)
         D.rho(grid)
         D.rho(grid, [[1., 0.], [0., -1]])
         D.rho(grid, Spin.X)
@@ -137,14 +137,14 @@ class TestDensityMatrix(object):
     def test_rho_eta(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)
-        grid = Grid(0.2, geom=setup.D.geom)
+        grid = Grid(0.2, geometry=setup.D.geom)
         D.rho(grid, eta=True)
 
     def test_rho_smaller_grid1(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)
         sc = setup.D.geom.cell.copy() / 2
-        grid = Grid(0.2, geom=setup.D.geom.copy(), sc=sc)
+        grid = Grid(0.2, geometry=setup.D.geom.copy(), sc=sc)
         D.rho(grid)
 
     @pytest.mark.xfail(raises=ValueError)
@@ -166,7 +166,7 @@ class TestDensityMatrix(object):
 
         D = DensityMatrix(g, spin=Spin('P'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.1)]])
-        grid = Grid(0.2, geom=D.geom)
+        grid = Grid(0.2, geometry=D.geom)
         D.rho(grid, [1., -1, 0.])
 
     @pytest.mark.xfail(raises=ValueError)
@@ -188,5 +188,5 @@ class TestDensityMatrix(object):
 
         D = DensityMatrix(g, spin=Spin('NC'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.1, 0.1, 0.1)]])
-        grid = Grid(0.2, geom=D.geom)
+        grid = Grid(0.2, geometry=D.geom)
         D.rho(grid, [1., 0.])

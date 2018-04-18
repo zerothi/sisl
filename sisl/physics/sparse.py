@@ -37,7 +37,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
     Parameters
     ----------
-    geom : Geometry
+    geometry : Geometry
       parent geometry to create a sparse matrix from. The matrix will
       have size equivalent to the number of orbitals in the geometry
     dim : int or Spin, optional
@@ -54,8 +54,8 @@ class SparseOrbitalBZ(SparseOrbital):
       This is a keyword-only argument.
     """
 
-    def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        self._geom = geom
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        self._geometry = geometry
 
         self._orthogonal = kwargs.get('orthogonal', True)
 
@@ -98,7 +98,7 @@ class SparseOrbitalBZ(SparseOrbital):
     def __repr__(self):
         """ Representation of the model """
         s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, orthogonal: {2}\n '.format(self.dim, self.nnz, self.orthogonal)
-        s += repr(self.geom).replace('\n', '\n ')
+        s += repr(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
     def _get_S(self):
@@ -116,7 +116,7 @@ class SparseOrbitalBZ(SparseOrbital):
     S = property(_get_S, _set_S)
 
     @classmethod
-    def fromsp(cls, geom, P, S=None):
+    def fromsp(cls, geometry, P, S=None):
         """ Read and return the object with possible overlap """
         # Calculate maximum number of connections per row
         nc = 0
@@ -139,7 +139,7 @@ class SparseOrbitalBZ(SparseOrbital):
             nc = max(nc, P[0][i, :].getnnz())
 
         # Create the sparse object
-        p = cls(geom, dim, P[0].dtype, nc, orthogonal=S is None)
+        p = cls(geometry, dim, P[0].dtype, nc, orthogonal=S is None)
 
         if p._size != P[0].shape[0]:
             raise ValueError(cls.__name__ + '.fromsp cannot create a new class, the geometry ' + \
@@ -189,7 +189,7 @@ class SparseOrbitalBZ(SparseOrbital):
            whether the orbital index is the global index, or the local index relative to
            the atom it resides on.
         """
-        for ia, io in self.geom.iter_orbitals(local=local):
+        for ia, io in self.geometry.iter_orbitals(local=local):
             yield ia, io
 
     __iter__ = iter
@@ -438,7 +438,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     Parameters
     ----------
-    geom : Geometry
+    geometry : Geometry
       parent geometry to create a sparse matrix from. The matrix will
       have size equivalent to the number of orbitals in the geometry
     dim : int or Spin, optional
@@ -457,7 +457,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
       This is a keyword-only argument.
     """
 
-    def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         # Check that the passed parameters are correct
         if 'spin' not in kwargs:
             if isinstance(dim, Spin):
@@ -471,7 +471,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             spin = kwargs.pop('spin')
         self._spin = Spin(spin, dtype)
 
-        super(SparseOrbitalBZSpin, self).__init__(geom, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
+        super(SparseOrbitalBZSpin, self).__init__(geometry, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
 
         # _Pk is already created in the SparseOrbitalBZ __init__
         self._Pk_non_colinear = TimeSelector([self._Pk_non_colinear_accummulate,
@@ -549,7 +549,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """ Representation of the model """
         s = self.__class__.__name__ + '{{non-zero: {0}, orthogonal: {1},\n '.format(self.nnz, self.orthogonal)
         s += repr(self.spin).replace('\n', '\n ') + ',\n '
-        s += repr(self.geom).replace('\n', '\n ')
+        s += repr(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
     def _Pk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
@@ -913,7 +913,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             sl = slice(si*no, (si+1) * no, None)
 
             S[::2, ::2] += s[:, sl] * phase
-            S[1::2, 1::2] += s[:, sl] * phase
+        S[1::2, 1::2] = S[::2, ::2]
 
         del s
 

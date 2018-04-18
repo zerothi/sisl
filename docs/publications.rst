@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. C. Moreno, M. Vila-Varela, B. Kretz, A. Garcia-Lekue, M.V. Costache, M. Paradinas, M. Panighel, G. Ceballos, S.O. Valenzuela, D. Pena and A.M. Mugarza,
+   *Bottom-up synthesis of multifunctional nanoporous graphene*,
+   Science **360**, `6385 (2018) <http://www.sciencemag.org/lookup/doi/10.1126/science.aar2009>`_
+
 #. P. Bøggild, J.M. Caridad, C. Stampfer, G. Calogero, N.R. Papior and M. Brandbyge,
    *A two-dimensional Dirac fermion microscope*,
    Nature Communications **8**, `15783 (2017) <http://www.nature.com/doifinder/10.1038/ncomms15783>`_
@@ -17,6 +21,10 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    *A tunable electronic beam splitter realized with crossed graphene nanoribbons*,
    Journal of Chemical Physics **146**, `092318 (2017) <http://aip.scitation.org/doi/10.1063/1.4974895>`_.
 
+#. V. Obersteiner, G. Huhs, N. Papior and E. Zojer,
+   *Unconventional Current Scaling and Edge Effects for Charge Transport through Molecular Clusters*,
+   Nano Letters **17**, `12 (2017) <https://pubs.acs.org/doi/10.1021/acs.nanolett.7b03066>`_.
+   
 #. T. Groizard, N.R. Papior, B. Le Guennic, V. Robert and M. Kepenekian,
    *Enhanced Cooperativity in Supported Spin-Crossover Metal-Organic Frameworks*,
    Journal of Physical Chemistry Letters **8**, `3415 (2017) <http://pubs.acs.org/doi/abs/10.1021/acs.jpclett.7b01248>`_

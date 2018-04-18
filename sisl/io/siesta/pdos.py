@@ -29,7 +29,10 @@ class pdosSileSiesta(SileSiesta):
     """
 
     def read_data(self, as_dataarray=False):
-        """ Returns data associated with the PDOS file
+        r""" Returns data associated with the PDOS file
+
+        For spin-polarized calculations the returned values are up/down, orbitals, energy.
+        For non-colinear calculations the returned values are sum/x/y/z, orbitals, energy.
 
         Parameters
         ----------
@@ -44,7 +47,7 @@ class pdosSileSiesta(SileSiesta):
         geom : Geometry instance with positions, atoms and orbitals. The
                orbitals of these atoms are `AtomicOrbital` instances.
         E : the energies at which the PDOS has been evaluated at (if the Fermi-level is present the energies
-            are shifted to E - Ef = 0, this will *only* be done from Siesta 4.0.2 and later).
+            are shifted to :math:`E - E_F = 0`, this will *only* be done from Siesta 4.0.2 and later).
         PDOS : an array of DOS, for non-polarized calculations it has dimension ``(atom.no, len(E))``,
                else it has dimension ``(nspin, atom.no, len(E))``.
         DataArray : if `as_dataarray` is True, only this data array is returned, in this case

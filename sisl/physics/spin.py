@@ -11,7 +11,7 @@ __all__ = ['Spin']
 class Spin(object):
     r""" Spin class to determine configurations and spin components.
 
-    The basic class ``Spin`` implements a generic method to determine a spin configuration.
+    The basic class `Spin` implements a generic method to determine a spin configuration.
 
     Its usage can be summarized in these few examples:
 
@@ -28,6 +28,13 @@ class Spin(object):
     that the data-type is used in the configuration, but merely that it helps
     any sub-classed or classes who use the spin-object to determine the
     usage of the different spin-components.
+
+    Parameters
+    ----------
+    kind : str or int, Spin, optional
+       specify the spin kind
+    dtype : numpy.dtype, optional
+       the data-type used for the spin-component.
     """
 
     #: Constant for an un-polarized spin configuration
@@ -102,6 +109,7 @@ class Spin(object):
         return s + '{{spin-orbit, kind={}}}'.format(self.dkind)
 
     def copy(self):
+        """ Create a copy of the spin-object """
         return Spin(self.kind, self.dtype)
 
     @property

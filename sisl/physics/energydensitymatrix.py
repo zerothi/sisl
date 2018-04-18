@@ -23,7 +23,7 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
 
     Parameters
     ----------
-    geom : Geometry
+    geometry : Geometry
       parent geometry to create a energy density matrix from. The energy density matrix will
       have size equivalent to the number of orbitals in the geometry
     dim : int or Spin, optional
@@ -42,8 +42,8 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
       This is a keyword-only argument.
     """
 
-    def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
-        super(EnergyDensityMatrix, self).__init__(geom, dim, dtype, nnzpr, **kwargs)
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        super(EnergyDensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
 
         self.Ek = self.Pk
 

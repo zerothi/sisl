@@ -159,7 +159,7 @@ class tshsSileSiesta(SileBinSiesta):
 
         # Get H and S
         if H.orthogonal:
-            h = csr._D * eV2Ry
+            h = (csr._D * eV2Ry).astype(np.float64, 'C', copy=False)
             s = csr.diags(1., dim=1)
             # Ensure all data is correctly formatted (i.e. have the same sparsity pattern
             s.align(csr)
@@ -167,10 +167,10 @@ class tshsSileSiesta(SileBinSiesta):
             if s.nnz != len(h):
                 raise SislError("The diagonal elements of your orthogonal Hamiltonian have not been defined, "
                                 "this is a requirement.")
-            s = s._D[:, 0]
+            s = (s._D[:, 0]).astype(np.float64, 'C', copy=False)
         else:
-            h = csr._D[:, :H.S_idx] * eV2Ry
-            s = csr._D[:, H.S_idx]
+            h = (csr._D[:, :H.S_idx] * eV2Ry).astype(np.float64, 'C', copy=False)
+            s = (csr._D[:, H.S_idx]).astype(np.float64, 'C', copy=False)
         # Ensure shapes (say if only 1 spin)
         h.shape = (-1, len(H.spin))
         s.shape = (-1,)
@@ -312,7 +312,7 @@ class hsxSileSiesta(SileBinSiesta):
                 geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
             else:
                 # Try to figure out the supercell
-                warn(self.__class__.__name__ + ".read_hamiltonian (currently we can not currently calculate atomic positions from"
+                warn(self.__class__.__name__ + ".read_hamiltonian (currently we can not calculate atomic positions from"
                      " xij array)")
         if geom.no != no:
             raise ValueError("Reading HSX files requires the input geometry to have the "
@@ -488,22 +488,27 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,
                                 bloch, 0, mu, k.T, w, self._E, **sizes)
 
-    def write_hamiltonian(self, H, S):
+    def write_hamiltonian(self, H, S=None):
         """ Write the current energy, k-point and H and S to the file
 
         Parameters
         ----------
         H : matrix
            a square matrix corresponding to the Hamiltonian
-        S : matrix
-           a square matrix corresponding to the overlap
+        S : matrix, optional
+           a square matrix corresponding to the overlap, for efficiency reasons
+           it may be advantageous to specify this argument, even if `S` is the identity
+           matrix.
         """
         # Step k
         self._ik += 1
         self._ie = 1
         no = len(H)
+        if S is None:
+            S = np.eye(no, dtype=np.complex128)
         _siesta.write_gf_hs(self._iu, self._ik, self._ie, self._E[self._ie-1],
-                            H.T * eV2Ry, S.T, no_u=no)
+                            H.astype(np.complex128, 'C', copy=False).T * eV2Ry,
+                            S.astype(np.complex128, 'C', copy=False).T, no_u=no)
 
     def write_self_energy(self, SE):
         """ Write the current energy, k-point and H and S to the file
@@ -515,7 +520,8 @@ class _gfSileSiesta(SileBinSiesta):
         """
         no = len(SE)
         _siesta.write_gf_se(self._iu, self._ik, self._ie,
-                            self._E[self._ie-1], SE.T * eV2Ry, no_u=no)
+                            self._E[self._ie-1],
+                            SE.astype(np.complex128, 'C', copy=False).T * eV2Ry, no_u=no)
         # Step energy counter
         self._ie += 1
 

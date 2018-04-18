@@ -63,7 +63,7 @@ def deprecate(message):
     warnings.warn_explicit(message, SislDeprecation, 'dep', 0, registry=_sisl_warn_registry)
 
 
-def warn(message, category=None):
+def warn(message, category=None, register=False):
     """ Show warnings in short context form with sisl
 
     Parameters
@@ -73,15 +73,20 @@ def warn(message, category=None):
     category: Warning, optional
        the category of the warning to issue. Default to `SislWarning', unless `message` is
        a subclass of `Warning`
+    register: bool, optional
+       whether the warning is registered to limit the number of times this is output
     """
     if isinstance(message, Warning):
         category = message.__class__
     elif category is None:
         category = SislWarning
-    warnings.warn_explicit(message, category, 'warn', 0, registry=_sisl_warn_registry)
+    if register:
+        warnings.warn_explicit(message, category, 'warn', 0, registry=_sisl_warn_registry)
+    else:
+        warnings.warn_explicit(message, category, 'warn', 0)
 
 
-def info(message, category=None):
+def info(message, category=None, register=False):
     """ Show info in short context form with sisl
 
     Parameters
@@ -91,12 +96,17 @@ def info(message, category=None):
     category: Warning, optional
        the category of the warning to issue. Default to `SislInfo', unless `message` is
        a subclass of `Warning`
+    register: bool, optional
+       whether the information is registered to limit the number of times this is output
     """
     if isinstance(message, Warning):
         category = message.__class__
     elif category is None:
         category = SislInfo
-    warnings.warn_explicit(message, category, 'info', 0, registry=_sisl_warn_registry)
+    if register:
+        warnings.warn_explicit(message, category, 'info', 0, registry=_sisl_warn_registry)
+    else:
+        warnings.warn_explicit(message, category, 'info', 0)
 
 
 # Figure out if we can import tqdm.
@@ -106,7 +116,7 @@ try:
     from tqdm import tqdm as _tqdm
 except ImportError:
     # Notify user of better option
-    info('Please install tqdm (pip install tqdm) for better looking progress bars')
+    info('Please install tqdm (pip install tqdm) for better looking progress bars', register=True)
 
     # Necessary methods used
     from time import time as _time

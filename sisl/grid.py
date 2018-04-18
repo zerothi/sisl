@@ -35,11 +35,11 @@ class Grid(SuperCellChild):
     bc : list of int (3, 2) or (3, ), optional
         the boundary conditions for each of the cell's planes. Default to periodic BC.
     sc : SuperCell, optional
-        the supercell that this grid represents. `sc` has precedence if both `geom` and `sc`
+        the supercell that this grid represents. `sc` has precedence if both `geometry` and `sc`
         has been specified. Default to ``[1, 1, 1]``.
     dtype : numpy.dtype, optional
         the data-type of the grid, default to `numpy.float64`.
-    geom : Geometry, optional
+    geometry : Geometry, optional
         associated geometry with the grid. If `sc` has not been passed the supercell will
         be taken from this geometry.
 
@@ -66,14 +66,14 @@ class Grid(SuperCellChild):
     #: Constant for defining an open boundary condition
     OPEN = 4
 
-    def __init__(self, shape, bc=None, sc=None, dtype=None, geom=None):
+    def __init__(self, shape, bc=None, sc=None, dtype=None, geometry=None):
         if bc is None:
             bc = [[self.PERIODIC] * 2] * 3
 
         self.set_supercell(sc)
 
         # Create the atomic structure in the grid, if possible
-        self.set_geometry(geom)
+        self.set_geometry(geometry)
 
         if isinstance(shape, Real):
             d = (self.cell ** 2).sum(1) ** 0.5
@@ -245,17 +245,17 @@ class Grid(SuperCellChild):
     set_boundary = set_bc
     set_boundary_condition = set_bc
 
-    def __sc_geom_dict(self, copy=True):
+    def __sc_geometry_dict(self, copy=True):
         """ Internal routine for copying the SuperCell and Geometry """
         d = dict()
         d['sc'] = self.sc.copy()
         if not self.geometry is None:
-            d['geom'] = self.geometry.copy()
+            d['geometry'] = self.geometry.copy()
         return d
 
     def copy(self):
         """ Returns a copy of the object. """
-        d = self.__sc_geom_dict()
+        d = self.__sc_geometry_dict()
         grid = self.__class__(np.copy(self.shape), bc=np.copy(self.bc),
                               dtype=self.dtype, **d)
         grid.grid = self.grid.copy()
@@ -271,7 +271,7 @@ class Grid(SuperCellChild):
         idx[b] = a
         idx[a] = b
         s = np.copy(self.shape)
-        d = self.__sc_geom_dict()
+        d = self.__sc_geometry_dict()
         d['sc'] = d['sc'].swapaxes(a, b)
         grid = self.__class__(s[idx], bc=self.bc[idx],
                               dtype=self.dtype, **d)
@@ -303,7 +303,7 @@ class Grid(SuperCellChild):
         # Down-scale cell
         cell[axis, :] /= shape[axis]
         shape[axis] = 1
-        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geom_dict())
+        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
@@ -327,7 +327,7 @@ class Grid(SuperCellChild):
         cell[axis, :] /= shape[axis]
         shape[axis] = 1
 
-        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geom_dict())
+        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
@@ -422,7 +422,7 @@ class Grid(SuperCellChild):
         # Down-scale cell
         cell[axis, :] = cell[axis, :] / old_N * shape[axis]
 
-        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geom_dict())
+        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
 
@@ -609,12 +609,12 @@ class Grid(SuperCellChild):
         """ Appends other `Grid` to this grid along axis """
         shape = list(self.shape)
         shape[axis] += other.shape[axis]
-        d = self.__sc_geom_dict()
-        if 'geom' in d:
+        d = self.__sc_geometry_dict()
+        if 'geometry' in d:
             if not other.geometry is None:
-                d['geom'] = d['geom'].append(other.geometry, axis)
+                d['geometry'] = d['geometry'].append(other.geometry, axis)
         else:
-            d['geom'] = other.geometry
+            d['geometry'] = other.geometry
         return self.__class__(shape, bc=np.copy(self.bc), **d)
 
     @staticmethod

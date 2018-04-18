@@ -64,11 +64,31 @@ States
 .. autosummary::
    :toctree:
 
+   Coefficient
    State
-   CoeffState
+   StateC
 
-Distribution functions
-======================
+
+Electrons (:mod:`sisl.physics.electron`)
+========================================
+
+.. autosummary::
+   :toctree:
+
+   DOS
+   PDOS
+   spin_moment
+   wavefunction
+   CoefficientElectron
+   StateElectron
+   StateCElectron
+   EigenvalueElectron
+   EigenvectorElectron
+   EigenstateElectron
+
+
+Distribution functions (:mod:`sisl.physics.distributions`)
+==========================================================
 
 .. autosummary::
    :toctree:
@@ -78,12 +98,15 @@ Distribution functions
    lorentzian
 
 """
-from .distribution_function import *
+from .distributions import *
 from .brillouinzone import *
 from .spin import *
 from .sparse import *
 from .state import *
 
+from . import electron
+from .electron import CoefficientElectron, StateElectron, StateCElectron
+from .electron import EigenvalueElectron, EigenvectorElectron, EigenstateElectron
 
 from .energydensitymatrix import *
 from .densitymatrix import *

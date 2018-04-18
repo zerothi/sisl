@@ -29,17 +29,23 @@ class _SparseGeometry(object):
 
     """
 
-    def __init__(self, geom, dim=1, dtype=None, nnzpr=None, **kwargs):
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Create sparse object with element between orbitals """
-        self._geom = geom
+        self._geometry = geometry
 
         # Initialize the sparsity pattern
         self.reset(dim, dtype, nnzpr)
 
     @property
+    def geometry(self):
+        """ Associated geometry """
+        return self._geometry
+    geom = geometry
+
+    @property
     def _size(self):
         """ The size of the sparse object """
-        return self.geom.na
+        return self.geometry.na
 
     def __len__(self):
         """ Number of rows in the basis """
@@ -76,7 +82,7 @@ class _SparseGeometry(object):
         # We check the first atom and its neighbours, we then
         # select max(5,len(nc) * 4)
         if nnzpr is None:
-            nnzpr = self.geom.close(0)
+            nnzpr = self.geometry.close(0)
             if nnzpr is None:
                 nnzpr = 8
             else:
@@ -84,7 +90,7 @@ class _SparseGeometry(object):
 
         # query dimension of sparse matrix
         s = self._size
-        self._csr = SparseCSR((s, s * self.geom.n_s, dim), nnzpr=nnzpr, dtype=dtype)
+        self._csr = SparseCSR((s, s * self.geometry.n_s, dim), nnzpr=nnzpr, dtype=dtype)
 
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
@@ -104,16 +110,10 @@ class _SparseGeometry(object):
         """
         if dtype is None:
             dtype = self.dtype
-        new = self.__class__(self.geom.copy(), self.dim, dtype, 1, **self._cls_kwargs())
+        new = self.__class__(self.geometry.copy(), self.dim, dtype, 1, **self._cls_kwargs())
         # Be sure to copy the content of the SparseCSR object
         new._csr = self._csr.copy(dtype=dtype)
         return new
-
-    @property
-    def geometry(self):
-        """ Associated geometry """
-        return self._geom
-    geom = geometry
 
     @property
     def dim(self):
@@ -176,7 +176,7 @@ class _SparseGeometry(object):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
-        in supercell indices (i.e. ``0 <= edge < self.geom.na_s``).
+        in supercell indices (i.e. ``0 <= edge < self.geometry.na_s``).
 
         Parameters
         ----------
@@ -243,7 +243,7 @@ class _SparseGeometry(object):
             else:
                 what = 'atom'
 
-        geom = self.geom
+        geom = self.geometry
 
         if isinstance(self, SparseAtom):
             Rij = geom.Rij
@@ -289,7 +289,7 @@ class _SparseGeometry(object):
     def __repr__(self):
         """ Representation of the sparse model """
         s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, kind={2}\n '.format(self.dim, self.nnz, self.dkind)
-        s += repr(self.geom).replace('\n', '\n ')
+        s += repr(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
     def __getattr__(self, attr):
@@ -298,7 +298,7 @@ class _SparseGeometry(object):
         Any attribute not found in the sparse class will
         be looked up in the hosting geometry.
         """
-        return getattr(self.geom, attr)
+        return getattr(self.geometry, attr)
 
     # Make the indicis behave on the contained sparse matrix
     def __delitem__(self, key):
@@ -392,7 +392,7 @@ class _SparseGeometry(object):
         if len(delete) > 0:
             self._csr.delete_columns(delete)
 
-        self.geom.set_nsc(*args, **kwargs)
+        self.geometry.set_nsc(*args, **kwargs)
 
     def spalign(self, other):
         """ See `SparseCSR.align` for details """
@@ -433,7 +433,7 @@ class _SparseGeometry(object):
         Basically this returns a function:
 
         >>> def func(self, ia, idxs, idxs_xyz=None): # doctest: +SKIP
-        ...     idx = self.geom.close(ia, R=R, idx=idxs) # doctest: +SKIP
+        ...     idx = self.geometry.close(ia, R=R, idx=idxs) # doctest: +SKIP
         ...     for ix, p in zip(idx, param): # doctest: +SKIP
         ...         self[ia, ix] = p # doctest: +SKIP
 
@@ -460,7 +460,7 @@ class _SparseGeometry(object):
         """
 
         def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geom.close(ia, R=R, idx=idxs, idx_xyz=idxs_xyz)
+            idx = self.geometry.close(ia, R=R, idx=idxs, idx_xyz=idxs_xyz)
             for ix, p in zip(idx, param):
                 self[ia, ix] = p
 
@@ -492,7 +492,7 @@ class _SparseGeometry(object):
            An example `func` could be:
 
            >>> def func(self, ia, idxs, idxs_xyz=None): # doctest: +SKIP
-           ...     idx = self.geom.close(ia, R=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz) # doctest: +SKIP
+           ...     idx = self.geometry.close(ia, R=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz) # doctest: +SKIP
            ...     self[ia, idx[0]] = 0 # doctest: +SKIP
            ...     self[ia, idx[1]] = -2.7 # doctest: +SKIP
 
@@ -515,7 +515,7 @@ class _SparseGeometry(object):
             if not isinstance(func, (tuple, list)):
                 raise ValueError('Passed `func` which is not a function, nor tuple/list of `R, param`')
 
-            if np.any(np.diff(self.geom.lasto) > 1):
+            if np.any(np.diff(self.geometry.lasto) > 1):
                 raise ValueError("Automatically setting a sparse model "
                               "for systems with atoms having more than 1 "
                               "orbital *must* be done by your-self. You have to define a corresponding `func`.")
@@ -523,17 +523,17 @@ class _SparseGeometry(object):
             # Convert to a proper function
             func = self.create_construct(func[0], func[1])
 
-        iR = self.geom.iR(na_iR)
+        iR = self.geometry.iR(na_iR)
 
         # Create eta-object
         eta = tqdm_eta(self.na, self.__class__.__name__ + '.construct()', 'atom', eta)
 
         # Do the loop
-        for ias, idxs in self.geom.iter_block(iR=iR, method=method):
+        for ias, idxs in self.geometry.iter_block(iR=iR, method=method):
 
             # Get all the indexed atoms...
             # This speeds up the searching for coordinates...
-            idxs_xyz = self.geom[idxs, :]
+            idxs_xyz = self.geometry[idxs, :]
 
             # Loop the atoms inside
             for ia in ias:
@@ -605,7 +605,7 @@ class _SparseGeometry(object):
         a = _a.asarrayi(a)
         b = _a.asarrayi(b)
         # Create full index list
-        full = _a.arangei(len(self.geom))
+        full = _a.arangei(len(self.geometry))
         # Regardless of whether swapping or new indices are requested
         # this should work.
         full[a] = b
@@ -809,9 +809,9 @@ class SparseAtom(_SparseGeometry):
             # This may be a specification of supercell indices
             if isinstance(key[-1], tuple):
                 # We guess it is the supercell index
-                off = self.geom.sc_index(key[-1]) * self.na
+                off = self.geometry.sc_index(key[-1]) * self.na
                 key = [el for el in key[:-1]]
-                key[1] = self.geom.sc2uc(key[1]) + off
+                key[1] = self.geometry.sc2uc(key[1]) + off
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
@@ -829,9 +829,9 @@ class SparseAtom(_SparseGeometry):
             # This may be a specification of supercell indices
             if isinstance(key[-1], tuple):
                 # We guess it is the supercell index
-                off = self.geom.sc_index(key[-1]) * self.na
+                off = self.geometry.sc_index(key[-1]) * self.na
                 key = [el for el in key[:-1]]
-                key[1] = self.geom.sc2uc(key[1]) + off
+                key[1] = self.geometry.sc2uc(key[1]) + off
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
@@ -839,7 +839,7 @@ class SparseAtom(_SparseGeometry):
 
     @property
     def _size(self):
-        return self.geom.na
+        return self.geometry.na
 
     def nonzero(self, atom=None, only_col=False):
         """ Indices row and column indices where non-zero elements exists
@@ -915,7 +915,7 @@ class SparseAtom(_SparseGeometry):
             # Cause all warnings to always be triggered.
             warnings.simplefilter("always")
             # Create new cut geometry
-            geom = self.geom.cut(seps, axis, *args, **kwargs)
+            geom = self.geometry.cut(seps, axis, *args, **kwargs)
             # Check whether the warning exists
             if len(w) > 0:
                 if issubclass(w[-1].category, SislWarning):
@@ -998,7 +998,7 @@ class SparseAtom(_SparseGeometry):
         for ja, ia in self.iter_nnz(range(geom.na)):
 
             # Get the equivalent orbital in the smaller cell
-            a, afp, afm = _sca2sca(self.geom, ia, S.geom, seps, axis)
+            a, afp, afm = _sca2sca(self.geometry, ia, S.geom, seps, axis)
             if a is None:
                 continue
             S[ja, a + afp] = self[ja, ia]
@@ -1026,7 +1026,7 @@ class SparseAtom(_SparseGeometry):
         remove : the negative of `sub`, i.e. remove a subset of atoms
         """
         atom = self.sc2uc(atom)
-        geom = self.geom.sub(atom)
+        geom = self.geometry.sub(atom)
 
         idx = np.tile(atom, self.n_s)
         # Use broadcasting rules
@@ -1068,13 +1068,13 @@ class SparseAtom(_SparseGeometry):
         repeat: a different ordering of the final geometry
         """
         # Create the new sparse object
-        g = self.geom.tile(reps, axis)
+        g = self.geometry.tile(reps, axis)
         S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
         # regarding the current Hamiltonian sparse matrix
-        geom = self.geom
+        geom = self.geometry
         na = self.na
         ncol = self._csr.ncol
         if self.finalized:
@@ -1147,13 +1147,13 @@ class SparseAtom(_SparseGeometry):
         tile: a different ordering of the final geometry
         """
         # Create the new sparse object
-        g = self.geom.repeat(reps, axis)
+        g = self.geometry.repeat(reps, axis)
         S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
         # regarding the current Hamiltonian sparse matrix
-        geom = self.geom
+        geom = self.geometry
         na = self.na
         ncol = self._csr.ncol
         if self.finalized:
@@ -1228,9 +1228,9 @@ class SparseOrbital(_SparseGeometry):
             # This may be a specification of supercell indices
             if isinstance(key[-1], tuple):
                 # We guess it is the supercell index
-                off = self.geom.sc_index(key[-1]) * self.no
+                off = self.geometry.sc_index(key[-1]) * self.no
                 key = [el for el in key[:-1]]
-                key[1] = self.geom.osc2uc(key[1]) + off
+                key[1] = self.geometry.osc2uc(key[1]) + off
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
@@ -1248,9 +1248,9 @@ class SparseOrbital(_SparseGeometry):
             # This may be a specification of supercell indices
             if isinstance(key[-1], tuple):
                 # We guess it is the supercell index
-                off = self.geom.sc_index(key[-1]) * self.no
+                off = self.geometry.sc_index(key[-1]) * self.no
                 key = [el for el in key[:-1]]
-                key[1] = self.geom.osc2uc(key[1]) + off
+                key[1] = self.geometry.osc2uc(key[1]) + off
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
@@ -1258,13 +1258,13 @@ class SparseOrbital(_SparseGeometry):
 
     @property
     def _size(self):
-        return self.geom.no
+        return self.geometry.no
 
     def edges(self, atom=None, exclude=None, orbital=None):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
-        in supercell indices (i.e. ``0 <= edge < self.geom.no_s``).
+        in supercell indices (i.e. ``0 <= edge < self.geometry.no_s``).
 
         Parameters
         ----------
@@ -1284,7 +1284,7 @@ class SparseOrbital(_SparseGeometry):
         if atom is None and orbital is None:
             raise ValueError(self.__class__.__name__ + '.edges must have either "atom" or "orbital" keyword defined.')
         if orbital is None:
-            return np.unique(self.geom.o2a(self._csr.edges(self.geom.a2o(atom, True), exclude)))
+            return np.unique(self.geometry.o2a(self._csr.edges(self.geometry.a2o(atom, True), exclude)))
         return self._csr.edges(orbital, exclude)
 
     def nonzero(self, atom=None, only_col=False):
@@ -1304,7 +1304,7 @@ class SparseOrbital(_SparseGeometry):
         """
         if atom is None:
             return self._csr.nonzero(only_col=only_col)
-        row = self.geom.a2o(atom, all=True)
+        row = self.geometry.a2o(atom, all=True)
         return self._csr.nonzero(row=row, only_col=only_col)
 
     def iter_nnz(self, atom=None, orbital=None):
@@ -1327,7 +1327,7 @@ class SparseOrbital(_SparseGeometry):
             (not compatible with the ``atom`` keyword)
         """
         if not atom is None:
-            orbital = self.geom.a2o(atom)
+            orbital = self.geometry.a2o(atom)
         elif not orbital is None:
             orbital = _a.asarrayi(orbital)
         if not orbital is None:
@@ -1372,7 +1372,7 @@ class SparseOrbital(_SparseGeometry):
             # Cause all warnings to always be triggered.
             warnings.simplefilter("always")
             # Create new cut geometry
-            geom = self.geom.cut(seps, axis, *args, **kwargs)
+            geom = self.geometry.cut(seps, axis, *args, **kwargs)
             # Check whether the warning exists
             if len(w) > 0:
                 if issubclass(w[-1].category, SislWarning):
@@ -1455,7 +1455,7 @@ class SparseOrbital(_SparseGeometry):
         for jo, io in self.iter_nnz(orbital=range(geom.no)):
 
             # Get the equivalent orbital in the smaller cell
-            o, ofp, ofm = _sco2sco(self.geom, io, S.geom, seps, axis)
+            o, ofp, ofm = _sco2sco(self.geometry, io, S.geom, seps, axis)
             if o is None:
                 continue
             d = self[jo, io]
@@ -1484,7 +1484,7 @@ class SparseOrbital(_SparseGeometry):
         """
         atom = self.sc2uc(atom)
         orbs = self.a2o(atom, all=True)
-        geom = self.geom.sub(atom)
+        geom = self.geometry.sub(atom)
 
         idx = np.tile(orbs, self.n_s)
         # Use broadcasting rules
@@ -1521,13 +1521,13 @@ class SparseOrbital(_SparseGeometry):
         repeat: a different ordering of the final geometry
         """
         # Create the new sparse object
-        g = self.geom.tile(reps, axis)
+        g = self.geometry.tile(reps, axis)
         S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
         # regarding the current Hamiltonian sparse matrix
-        geom = self.geom
+        geom = self.geometry
         no = self.no
         ncol = self._csr.ncol
         if self.finalized:
@@ -1600,13 +1600,13 @@ class SparseOrbital(_SparseGeometry):
         tile: a different ordering of the final geometry
         """
         # Create the new sparse object
-        g = self.geom.repeat(reps, axis)
+        g = self.geometry.repeat(reps, axis)
         S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
         # regarding the current Hamiltonian sparse matrix
-        geom = self.geom
+        geom = self.geometry
         no = self.no
         ncol = self._csr.ncol
         if self.finalized:

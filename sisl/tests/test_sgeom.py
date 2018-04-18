@@ -27,16 +27,16 @@ def setup():
 
             def sg_g(**kwargs):
                 kwargs['ret_geometry'] = True
-                if 'geom' not in kwargs:
-                    kwargs['geom'] = self.g
+                if 'geometry' not in kwargs:
+                    kwargs['geometry'] = self.g
                 return sgeom(**kwargs)
 
             self.sg_g = sg_g
 
             def sg_mol(**kwargs):
                 kwargs['ret_geometry'] = True
-                if 'geom' not in kwargs:
-                    kwargs['geom'] = self.mol
+                if 'geometry' not in kwargs:
+                    kwargs['geometry'] = self.mol
                 return sgeom(**kwargs)
 
             self.sg_mol = sg_mol
@@ -54,11 +54,11 @@ class TestGeometry(object):
             assert np.allclose(cell, tx.sc.cell)
         cell[1, :] *= 2
         for tile in ['tile 2 y', 'tile-y 2']:
-            ty = setup.sg_g(geom=tx, argv=('--' + tile).split())
+            ty = setup.sg_g(geometry=tx, argv=('--' + tile).split())
             assert np.allclose(cell, ty.sc.cell)
         cell[2, :] *= 2
         for tile in ['tile 2 z', 'tile-z 2']:
-            tz = setup.sg_g(geom=ty, argv=('--' + tile).split())
+            tz = setup.sg_g(geometry=ty, argv=('--' + tile).split())
             assert np.allclose(cell, tz.sc.cell)
 
     def test_tile2(self, setup):
@@ -82,11 +82,11 @@ class TestGeometry(object):
             assert np.allclose(cell, tx.sc.cell)
         cell[1, :] *= 2
         for repeat in ['repeat 2 y', 'repeat-y 2']:
-            ty = setup.sg_g(geom=tx, argv=('--' + repeat).split())
+            ty = setup.sg_g(geometry=tx, argv=('--' + repeat).split())
             assert np.allclose(cell, ty.sc.cell)
         cell[2, :] *= 2
         for repeat in ['repeat 2 z', 'repeat-z 2']:
-            tz = setup.sg_g(geom=ty, argv=('--' + repeat).split())
+            tz = setup.sg_g(geometry=ty, argv=('--' + repeat).split())
             assert np.allclose(cell, tz.sc.cell)
 
     def test_repeat2(self, setup):
