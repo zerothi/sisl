@@ -69,8 +69,8 @@ States
    StateC
 
 
-Electrons
-=========
+Electrons (:mod:`sisl.physics.electron`)
+========================================
 
 .. autosummary::
    :toctree:
@@ -81,6 +81,9 @@ Electrons
    CoefficientElectron
    StateElectron
    StateCElectron
+   EigenvalueElectron
+   EigenvectorElectron
+   EigenstateElectron
 
 
 Distribution functions (:mod:`sisl.physics.distributions`)
@@ -100,7 +103,9 @@ from .spin import *
 from .sparse import *
 from .state import *
 
-from .electrons import *
+from . import electron
+from .electron import CoefficientElectron, StateElectron, StateCElectron
+from .electron import EigenvalueElectron, EigenvectorElectron, EigenstateElectron
 
 from .energydensitymatrix import *
 from .densitymatrix import *
