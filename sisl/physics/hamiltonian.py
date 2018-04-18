@@ -2,12 +2,9 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from sisl._help import _range as range, _str as str
+from sisl._help import _range as range
 import sisl._array as _a
-from sisl import Geometry
 from .electron import EigenvalueElectron, EigenstateElectron
-from .distributions import distribution as dist_func
-from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
 
 __all__ = ['Hamiltonian']

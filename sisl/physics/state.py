@@ -88,20 +88,6 @@ class Coefficient(ParentContainer):
         copy.info = self.info
         return copy
 
-    def sort(self, ascending=True):
-        """ Sort internal representation of the coefficients
-
-        Parameters
-        ----------
-        ascending : bool, optional
-            sort the contained elements ascending, else they will be sorced descending
-        """
-        if ascending:
-            idx = np.argsort(self.c)
-        else:
-            idx = np.argsort(-self.c)
-        self.c = self.c[idx]
-
     def sub(self, idx):
         """ Return a new coefficient with only the specified coefficients
 
@@ -429,21 +415,6 @@ class StateC(State):
         copy = self.__class__(self.state.copy(), self.c.copy(), self.parent)
         copy.info = self.info
         return copy
-
-    def sort(self, ascending=True):
-        """ Sort internal representation of the coefficients (and states will be sorted accordingly)
-
-        Parameters
-        ----------
-        ascending : bool, optional
-            sort the contained elements ascending, else they will be sorced descending
-        """
-        if ascending:
-            idx = np.argsort(self.c)
-        else:
-            idx = np.argsort(-self.c)
-        self.c = self.c[idx]
-        self.state = self.state[idx]
 
     def normalize(self):
         r""" Return a normalized state where each state has :math:`|\psi|^2=1`
