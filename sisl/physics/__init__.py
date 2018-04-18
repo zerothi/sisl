@@ -64,8 +64,24 @@ States
 .. autosummary::
    :toctree:
 
+   Coefficient
    State
    StateC
+
+
+Electrons
+=========
+
+.. autosummary::
+   :toctree:
+
+   DOS
+   PDOS
+   spin_moment
+   CoefficientElectron
+   StateElectron
+   StateCElectron
+
 
 Distribution functions (:mod:`sisl.physics.distributions`)
 ==========================================================
@@ -84,6 +100,7 @@ from .spin import *
 from .sparse import *
 from .state import *
 
+from .electrons import *
 
 from .energydensitymatrix import *
 from .densitymatrix import *

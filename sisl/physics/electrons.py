@@ -5,7 +5,10 @@ from numpy import add, conj
 
 from sisl._help import dtype_complex_to_real, _range as range
 from .distributions import distribution as dist_func
+from .spin import Spin
 from .state import Coefficient, State, StateC
+
+
 
 
 def DOS(E, eig, distribution='gaussian'):
@@ -43,7 +46,7 @@ def DOS(E, eig, distribution='gaussian'):
         distribution = dist_func(distribution)
 
     DOS = distribution(E - eig[0])
-    for i in range(1, len(self)):
+    for i in range(1, len(eig)):
         DOS += distribution(E - eig[i])
     return DOS
 
@@ -124,13 +127,15 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
 
     # Figure out whether we are dealing with a non-colinear calculation
     if S is None:
-        class _S(object):
+        class S(object):
             @property
-            def shape(self):
-                return eig_v.shape
-            def dot(self, v):
+            @staticmethod
+            def shape():
+                n = eig_v.shape[1]
+                return (n, n)
+            @staticmethod
+            def dot(v):
                 return v
-        S = _S()
 
     if spin is None:
         if S.shape[1] == eig_v.shape[1] // 2:
@@ -213,6 +218,11 @@ def spin_moment(eig_v, S=None):
        matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
        have been evaluated at.
 
+    Notes
+    -----
+    This routine cannot check whether the input eigenvectors originate from a non-colinear calculation.
+    If a non-polarized eigenvector is passed to this routine, the output will have no physical meaning.
+
     See Also
     --------
     DOS : total DOS
@@ -221,39 +231,191 @@ def spin_moment(eig_v, S=None):
     Returns
     -------
     numpy.ndarray
-        spin moments per eigenvector with dimension ``(4, self.size, len(E))``.
-        For non-colinear calculations it will be ``(4, self.size, len(E))``, ordered as
-        indicated it the above list.
+        spin moments per eigenvector with final dimension ``(4, eig_v.shape[0])``.
     """
     if S is None:
-        class _S(object):
+        class S(object):
             @property
-            def shape(self):
-                return eig_v.shape
-            def dot(self, v):
+            @staticmethod
+            def shape():
+                n = eig_v.shape[1] // 2
+                return (n, n)
+            @staticmethod
+            def dot(v):
                 return v
-        S = _S()
 
-    if S.shape[1] == eig_v.shape[1] // 2:
+    if S.shape[1] == eig_v.shape[1]:
         S = S[::2, ::2]
 
     # Initialize
     s = np.empty([4, eig_v.shape[0]], dtype=dtype_complex_to_real(eig_v.dtype))
 
+    # TODO consider doing this all in a few lines
+    # TODO Since there are no energy dependencies here we can actually do all
+    # TODO dot products in one go and then use b-casting rules. Should be much faster
+    # TODO but also way more memory demanding!
     v = S.dot(eig_v[0].reshape(-1, 2))
     D = (conj(eig_v[0]) * v.ravel()).reshape(-1, 2) # diagonal elements
-    s[0, :] = D.sum(1) # total spin moment
-    s[3, :] = D[:, 0] - D[:, 1] # S_z
-    D = (conj(eig_v[0, 1::2]) * 2 * v[:, 0]) # psi_down * psi_up * 2
-    s[1, :] = D.real # S_x
-    s[2, :] = D.imag # S_y
+    s[0, 0] = D.sum() # total spin moment
+    s[3, 0] = (D[:, 0] - D[:, 1]).sum() # S_z
+    D = 2 * (conj(eig_v[0, 1::2]) * v[:, 0]).sum() # psi_down * psi_up * 2
+    s[1, 0] = D.real # S_x
+    s[2, 0] = D.imag # S_y
     for i in range(1, len(eig_v)):
         v = S.dot(eig_v[i].reshape(-1, 2))
         D = (conj(eig_v[i]) * v.ravel()).reshape(-1, 2)
-        s[0, :] += D.sum(1)
-        s[3, :] += D[:, 0] - D[:, 1]
-        D = conj(eig_v[i, 1::2]) * 2 * v[:, 0]
-        s[1, :] += D.real
-        s[2, :] += D.imag
+        s[0, i] += D.sum()
+        s[3, i] += (D[:, 0] - D[:, 1]).sum()
+        D = 2 * (conj(eig_v[i, 1::2]) * v[:, 0]).sum()
+        s[1, i] += D.real
+        s[2, i] += D.imag
 
     return s
+
+
+class _common_State(object):
+    __slots__ = []
+
+    def Sk(self, format='csr', spin=None):
+        r""" Retrieve the overlap matrix corresponding to the originating parent structure.
+
+        When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(k)` for the
+        :math:`k`-point these eigenstates originate from
+
+        Parameters
+        ----------
+        format: str, optional
+           the returned format of the overlap matrix. This only takes effect for
+           non-orthogonal parents.
+        spin : Spin, optional
+           for non-colinear spin configurations the *fake* overlap matrix returned
+           will have halve the size of the input matrix. If you want the *full* overlap
+           matrix, simply do not specify the `spin` argument.
+        """
+        from .hamiltonian import Hamiltonian
+
+        if isinstance(self.parent, Hamiltonian):
+            # Calculate the overlap matrix
+            if not self.parent.orthogonal:
+                opt = {'k': self.info.get('k', (0, 0, 0)),
+                       'format': format}
+                if 'gauge' in self.info:
+                    opt['gauge'] = self.info['gauge']
+                return self.parent.Sk(**opt)
+
+        class __FakeSk(object):
+            """ Replacement object which superseedes a matrix """
+            __slots__ = []
+            @staticmethod
+            @property
+            def shape():
+                n = self.shape[1]
+                return (n, n)
+            @staticmethod
+            def dot(v):
+                return v
+
+        if spin is None:
+            return __FakeSk
+        if spin.kind > Spin.POLARIZED:
+            class __FakeSk(object):
+                """ Replacement object which superseedes a matrix """
+                __slots__ = []
+                @staticmethod
+                @property
+                def shape():
+                    n = self.shape[1] // 2
+                    return (n, n)
+                @staticmethod
+                def dot(v):
+                    return v
+        return __FakeSk
+
+    def spin_moment(self):
+        r""" Calculate spin moment
+
+        This routine calls `sisl.physics.electrons.spin_moment` with appropriate arguments
+        and returns the spin moment.
+
+        See `sisl.physics.electrons.spin_moment` for argument details.
+        """
+        try:
+            spin = self.parent.spin
+        except:
+            spin = None
+        return spin_moment(self.state, self.Sk(spin=spin))
+
+
+class CoefficientElectron(Coefficient):
+    pass
+
+
+class StateElectron(State, _common_State):
+    pass
+
+
+class StateCElectron(StateC, _common_State):
+    pass
+
+
+class EigenvalueElectron(CoefficientElectron):
+    """ Eigenvalues of electronic states, no eigenvectors retained
+
+    This holds routines that enable the calculation of density of states.
+    """
+    @property
+    def eig(self):
+        return self.c
+
+    def DOS(self, E, distribution='gaussian'):
+        r""" Calculate DOS for provided energies, `E`.
+
+        This routine calls `sisl.physics.electrons.DOS` with appropriate arguments
+        and returns the DOS.
+
+        See `sisl.physics.electrons.DOS` for argument details.
+        """
+        return DOS(E, self.eig, distribution)
+
+
+class EigenvectorsElectron(StateElectron):
+    """ Eigenvectors of electronic states, no eigenvalues retained
+
+    This holds routines that enable the calculation of spin moments.
+    """
+    pass
+
+
+class EigenStateElectron(StateCElectron):
+    """ Eigen states of electrons with eigenvectors and eigenvalues.
+
+    This holds routines that enable the calculation of (projected) density of states,
+    spin moments (spin texture).
+    """
+    @property
+    def eig(self):
+        return self.c
+
+    def DOS(self, E, distribution='gaussian'):
+        r""" Calculate DOS for provided energies, `E`.
+
+        This routine calls `sisl.physics.electrons.DOS` with appropriate arguments
+        and returns the DOS.
+
+        See `sisl.physics.electrons.DOS` for argument details.
+        """
+        return DOS(E, self.eig, distribution)
+
+    def PDOS(self, E, distribution='gaussian'):
+        r""" Calculate PDOS for provided energies, `E`.
+
+        This routine calls `sisl.physics.electrons.PDOS` with appropriate arguments
+        and returns the PDOS.
+
+        See `sisl.physics.electrons.PDOS` for argument details.
+        """
+        try:
+            spin = self.parent.spin
+        except:
+            spin = None
+        return PDOS(E, self.eig, self.state, self.Sk(spin=spin), distribution, spin)
