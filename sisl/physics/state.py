@@ -4,7 +4,7 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._help import dtype_complex_to_real
-from sisl._help import _zip as zip, _range as range
+from sisl._help import _range as range
 
 
 __all__ = ['Coefficient', 'State', 'StateC']
