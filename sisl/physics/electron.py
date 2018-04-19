@@ -293,21 +293,14 @@ def spin_moment(eig_v, S=None):
     # TODO Since there are no energy dependencies here we can actually do all
     # TODO dot products in one go and then use b-casting rules. Should be much faster
     # TODO but also way more memory demanding!
-    v = S.dot(eig_v[0].reshape(-1, 2))
-    D = (conj(eig_v[0]) * v.ravel()).real.reshape(-1, 2) # diagonal elements
-    s[0, 0] = D.sum() # total spin moment
-    s[3, 0] = (D[:, 0] - D[:, 1]).sum() # S_z
-    D = 2 * (conj(eig_v[0, 1::2]) * v[:, 0]).sum() # psi_down * psi_up * 2
-    s[1, 0] = D.real # S_x
-    s[2, 0] = D.imag # S_y
-    for i in range(1, len(eig_v)):
+    for i in range(len(eig_v)):
         v = S.dot(eig_v[i].reshape(-1, 2))
         D = (conj(eig_v[i]) * v.ravel()).real.reshape(-1, 2)
-        s[0, i] += D.sum()
-        s[3, i] += (D[:, 0] - D[:, 1]).sum()
+        s[0, i] = D.sum()
+        s[3, i] = (D[:, 0] - D[:, 1]).sum()
         D = 2 * (conj(eig_v[i, 1::2]) * v[:, 0]).sum()
-        s[1, i] += D.real
-        s[2, i] += D.imag
+        s[1, i] = D.real
+        s[2, i] = D.imag
 
     return s
 
@@ -717,7 +710,7 @@ class _common_State(object):
         return (conj(self.state) * S.dot(self.state.T).T).real
 
     def spin_moment(self):
-        r""" Calculate spin moment
+        r""" Calculate spin moment from the states
 
         This routine calls `sisl.physics.electrons.spin_moment` with appropriate arguments
         and returns the spin moment.
