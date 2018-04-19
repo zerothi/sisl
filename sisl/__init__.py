@@ -9,6 +9,10 @@ sisl (:mod:`sisl`)
 sisl is an electronic structure package which may interact with tight-binding
 and DFT matrices alike.
 
+The full sisl package consistent of a large variety of classes and methods
+which enables large-scale tight-binding calculations as well as post-processing
+DFT calculations.
+
 Below a set of classes that are the basis of *everything* in sisl is present.
 
 Generic classes

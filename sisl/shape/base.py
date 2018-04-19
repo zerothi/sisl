@@ -286,21 +286,23 @@ class PureShape(Shape):
 
 
 class NullShape(PureShape):
-    """ A unique shape which has no spatial extend, volume or center
+    """ A unique shape which has no well-defined spatial extend, volume or center
 
     This special shape is used when composite shapes turns out to have
     a null space.
 
-    The center will be equivalent to the(maximum floating point value
-    divided by 100
+    The center will be equivalent to the maximum floating point value
+    divided by 100.
 
     Initialization of the NullShape takes no (or any) arguments.
-    Since it has no volume of point in space, it does nothing.
+    Since it has no volume of point in space, none of the arguments
+    has any meaning.
     """
 
     def __init__(self, *args, **kwargs):
+        """ Initialize a null-shape """
         M = np.finfo(np.float64).max / 100
-        self._center = np.zeros(3, np.float64).ravel() + M
+        self._center = np.array([M, M, M], np.float64)
 
     def within_index(self, other):
         """ Always returns a zero length array """

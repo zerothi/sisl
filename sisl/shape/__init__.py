@@ -1,7 +1,5 @@
-"""
-==========================
-Shapes (:mod:`sisl.shape`)
-==========================
+"""Shapes
+=========
 
 .. module:: sisl.shape
    :noindex:
@@ -37,6 +35,7 @@ Currently these mathematical/boolean operators are implemented:
    Cube - 3d box
    Ellipsoid
    Sphere
+   NullShape
 
 """
 from .base import *

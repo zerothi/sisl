@@ -1,12 +1,10 @@
-"""
-=====================================================================
-Electron related functions and classes (:mod:`sisl.physics.electron`)
-=====================================================================
+"""Electron related functions and classes
+=========================================
 
 .. module:: sisl.physics.electron
    :noindex:
 
-In :mod:`sisl` electronic structure calculations are relying on routines
+In sisl electronic structure calculations are relying on routines
 specific for electrons. For instance density of states calculations from
 electronic eigenvalues and other quantities.
 
@@ -55,8 +53,8 @@ def DOS(E, eig, distribution='gaussian'):
     r""" Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{DOS}(E)` is calculated as:
-    .. math::
 
+    .. math::
        \mathrm{DOS}(E) = \sum_i D(E-\epsilon_i) \approx\delta(E-\epsilon_i)
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
@@ -96,8 +94,8 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     r""" Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{PDOS}(E)` is calculated as:
-    .. math::
 
+    .. math::
        \mathrm{PDOS}_\nu(E) = \sum_i \psi^*_{i,\nu} [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
@@ -108,7 +106,6 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     Note that `DOS` is the sum of the orbital projected DOS:
 
     .. math::
-
        \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS}_\nu(E)
 
     For non-colinear calculations (this includes spin-orbit calculations) the PDOS is additionally
@@ -119,19 +116,19 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     - Projected spin magnetic moment along :math:`y` direction
     - Projected spin magnetic moment along :math:`z` direction
 
-    These are calculated using the Pauli matrices :math:`\sigma_x`, :math:`\sigma_y` and :math:`\sigma_z`:
+    These are calculated using the Pauli matrices :math:`\boldsymbol\sigma_x`, :math:`\boldsymbol\sigma_y` and :math:`\boldsymbol\sigma_z`:
 
     .. math::
 
-       \mathrm{PDOS}_\nu^\sigma(E) &= \sum_i \psi^*_{i,\nu} \sigma_z \sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_\nu^\sigma(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
        \\
-       \mathrm{PDOS}_\nu^x(E) &= \sum_i \psi^*_{i,\nu} \sigma_x [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_\nu^x(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_x [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
        \\
-       \mathrm{PDOS}_\nu^y(E) &= \sum_i \psi^*_{i,\nu} \sigma_y [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_\nu^y(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_y [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
        \\
-       \mathrm{PDOS}_\nu^z(E) &= \sum_i \psi^*_{i,\nu} \sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_\nu^z(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
 
-    Note that the total PDOS may be calculated using :math:`\sigma_i\sigma_i` where :math:`i` may be either of :math:`x`,
+    Note that the total PDOS may be calculated using :math:`\boldsymbol\sigma_i\boldsymbol\sigma_i` where :math:`i` may be either of :math:`x`,
     :math:`y` or :math:`z`.
 
     Parameters
@@ -143,7 +140,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     eig_v : array_like
        eigenvectors
     S : array_like, optional
-       overlap matrix used in the :math:`\rangle\psi^*|\mathbf S|\psi\langle` calculation. If `None` the identity
+       overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. For non-colinear calculations this matrix may be halve the size of ``len(eig_v[0, :])`` to
        trigger the non-colinear calculation of PDOS.
     distribution : func or str, optional
@@ -237,27 +234,28 @@ def spin_moment(eig_v, S=None):
     - Spin magnetic moment along :math:`y` direction
     - Spin magnetic moment along :math:`z` direction
 
-    These are calculated using the Pauli matrices :math:`\sigma_x`, :math:`\sigma_y` and :math:`\sigma_z`:
+    These are calculated using the Pauli matrices :math:`\boldsymbol\sigma_x`, :math:`\boldsymbol\sigma_y` and :math:`\boldsymbol\sigma_z`:
 
     .. math::
 
-       \mathbf{S}_i^\sigma &= \sum_i \langle \psi^*_i |\sigma_z \mathbf S \sigma_z | \psi_i \rangle
+       \mathbf{S}_i &= \sum_i \langle \psi_i |\boldsymbol\sigma_z \mathbf S \boldsymbol\sigma_z | \psi_i \rangle
        \\
-       \mathbf{S}_i^x(E) &= \sum_i \langle \psi^*_i | \sigma_x \mathbf S | \psi_i \rangle
+       \mathbf{S}_i^x(E) &= \sum_i \langle \psi_i | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle
        \\
-       \mathbf{S}_i^y(E) &= \sum_i \langle \psi^*_i | \sigma_y \mathbf S | \psi_i \rangle
+       \mathbf{S}_i^y(E) &= \sum_i \langle \psi_i | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle
        \\
-       \mathbf{S}_i^z(E) &= \sum_i \langle \psi^*_i | \sigma_z \mathbf S | \psi_i \rangle
+       \mathbf{S}_i^z(E) &= \sum_i \langle \psi_i | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
 
-    Note that the total spin magnetic moment, S may be calculated using
-    :math:`\sigma_i\sigma_i` where :math:`i` may be either of :math:`x`, :math:`y` or :math:`z`.
+    Note that the total spin magnetic moment, :math:`\mathbf S` may be calculated using
+    :math:`\boldsymbol\sigma_i\boldsymbol\sigma_i` where :math:`i` may be either of :math:`x`, :math:`y` or :math:`z`
+    as indicated in the first equation above.
 
     Parameters
     ----------
     eig_v : array_like
        eigenvectors
     S : array_like, optional
-       overlap matrix used in the :math:`\rangle\psi^*|\mathbf S|\psi\langle` calculation. If `None` the identity
+       overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
        have been evaluated at.
 
@@ -335,14 +333,12 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     The wavefunctions are calculated in real-space via:
 
     .. math::
-
        \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
 
     While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
     spinor component (`spinor`)
 
     .. math::
-
        \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(-i\mathbf k \mathbf R)
 
     where ``spinor in [0, 1]`` determines :math:`\alpha` or :math:`\beta`, respectively.
@@ -353,18 +349,28 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     Parameters
     ----------
+    v : array_like
+       coefficients for the orbital expansion on the real-space grid.
+       If `v` is a complex array then the `grid` *must* be complex as well.
     grid : Grid
        grid on which the wavefunction will be plotted.
        If multiple eigenstates are in this object, they will be summed.
+    geometry : Geometry, optional
+       geometry where the orbitals are defined. This geometry's orbital count must match
+       the number of elements in `v`.
+       If this is ``None`` the geometry associated with `grid` will be used instead.
     k : array_like, optional
        k-point associated with wavefunction, by default the inherent k-point used
-       to calculate the eigenstate will be used (generally shouldn't be used unless the `EigenState` object
+       to calculate the eigenstate will be used (generally shouldn't be used unless the `EigenstateElectron` object
        has not been created via `Hamiltonian.eigenstate`).
     spinor : int, optional
        the spinor for non-colinear/spin-orbit calculations. This is only used if the
        eigenstate object has been created from a parent object with a `Spin` object
        contained, *and* if the spin-configuration is non-colinear or spin-orbit coupling.
        Default to the first spinor component.
+    spin : Spin, optional
+       specification of the spin configuration of the orbital coefficients. This only has
+       influence for non-colinear wavefunctions where `spinor` choice is important.
     eta : bool, optional
        Display a console progressbar.
     """
@@ -753,14 +759,17 @@ class _common_State(object):
 
 
 class CoefficientElectron(Coefficient):
+    """ Coefficients describing some physical quantity related to electrons """
     __slots__ = []
 
 
 class StateElectron(_common_State, State):
+    """ A state describing a physical quantity related to electrons """
     __slots__ = []
 
 
 class StateCElectron(_common_State, StateC):
+    """ A state describing a physical quantity related to electrons, with associated coefficients of the state """
     __slots__ = []
 
 

@@ -74,18 +74,10 @@ Electrons (:mod:`sisl.physics.electron`)
 .. autosummary::
    :toctree:
 
-   sisl.physics.electron
-
-.. autosummary::
-   :toctree:
-
    ~electron.DOS
    ~electron.PDOS
    ~electron.spin_moment
    ~electron.wavefunction
-   CoefficientElectron
-   StateElectron
-   StateCElectron
    EigenvalueElectron
    EigenvectorElectron
    EigenstateElectron
@@ -100,6 +92,14 @@ Distribution functions (:mod:`sisl.physics.distributions`)
    distribution
    gaussian
    lorentzian
+
+
+.. autosummary::
+   :toctree:
+   :hidden:
+
+   sisl.physics.electron
+   sisl.physics.distributions
 
 """
 from .distributions import *

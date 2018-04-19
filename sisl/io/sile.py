@@ -271,11 +271,8 @@ def get_sile(file, *args, **kwargs):
        the file to be quried for a correct `Sile` object.
        This file name may contain {<class-name>} which sets
        `cls` in case `cls` is not set.
-       For instance:
-
-          water.dat{xyzSile}
-
-       will read the file ``water.dat` using the `xyzSile` class.
+       For instance ``get_sile("water.dat{xyzSile}")``
+       will read the file ``water.dat`` using the `xyzSile` class.
     cls : class
        In case there are several files with similar file-suffixes
        you may query the exact base-class that should be chosen.
@@ -326,7 +323,7 @@ class BaseSile(object):
 
         Parameters
         ----------
-        **kwargs :
+        kwargs :
           keyword arguments will try and search for the attribute ``read_<>``
           and call it with the remaining ``**kwargs`` as arguments.
         """
@@ -337,23 +334,11 @@ class BaseSile(object):
                 # Call read
                 return func(kwargs[key], **kwargs)
 
-    def read_sc(self, *args, **kwargs):
-        """ Deprecated function which is superseeded by `read_supercell` """
-        if getattr(self, 'read_supercell'):
-            return self.read_supercell(*args, **kwargs)
-        raise ValueError('read_sc is deprecated, please use read_supercell')
-
     def read_geom(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `read_geometry` """
         if getattr(self, 'read_geometry'):
             return self.read_geometry(*args, **kwargs)
         raise ValueError('read_geom is deprecated, please use read_geometry')
-
-    def read_es(self, *args, **kwargs):
-        """ Deprecated function which is superseeded by `read_hamiltonian` """
-        if getattr(self, 'read_hamiltonian'):
-            return self.read_hamiltonian(*args, **kwargs)
-        raise ValueError('read_es is deprecated, please use read_hamiltonian')
 
     # Options for writing
     # The default routine for writing
@@ -383,23 +368,11 @@ class BaseSile(object):
                 # Call write
                 func(kwargs[key], **kwargs)
 
-    def write_sc(self, *args, **kwargs):
-        """ Deprecated function which is superseeded by `write_supercell` """
-        if getattr(self, 'write_supercell'):
-            return self.write_supercell(*args, **kwargs)
-        raise ValueError('write_sc is deprecated, please use write_supercell')
-
     def write_geom(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `write_geometry` """
         if getattr(self, 'write_geometry'):
             return self.write_geometry(*args, **kwargs)
         raise ValueError('write_geom is deprecated, please use write_geometry')
-
-    def write_es(self, *args, **kwargs):
-        """ Deprecated function which is superseeded by `write_hamiltonian` """
-        if getattr(self, 'write_hamiltonian'):
-            return self.write_hamiltonian(*args, **kwargs)
-        raise ValueError('write_es is deprecated, please use write_hamiltonian')
 
     def _setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization

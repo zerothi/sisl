@@ -8,8 +8,8 @@ Common geometries (:mod:`sisl.geom`)
 
 A variety of default geometries.
 
-Basic
-=====
+Basic (:mod:`sisl.geom.basic`)
+==============================
 
 .. autosummary::
    :toctree:
@@ -21,7 +21,7 @@ Basic
    diamond - a diamond lattice
 
 2D materials
-============
+================================
 
 .. autosummary::
    :toctree:
@@ -36,6 +36,13 @@ Nanotube
    :toctree:
 
    nanotube - a nanotube (default to carbon)
+
+
+.. autosummary::
+   :toctree:
+   :hidden:
+
+   sisl.geom.basic
 
 """
 from .basic import *

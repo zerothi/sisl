@@ -38,7 +38,7 @@ External code in/out put supported
 ==================================
 
 List the relevant codes that `sisl` can interact with. If there are files you think
-are missing, please create an issue :ref:`here <issue>`.
+are missing, please create an issue `here <issue>`_.
 
 - :ref:`toc-io-bigdft`
 - :ref:`toc-io-gulp`

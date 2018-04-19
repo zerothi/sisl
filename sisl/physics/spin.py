@@ -46,11 +46,11 @@ class Spin(object):
     #: Constant for a spin-orbit spin configuration
     SPINORBIT = 3
 
-    #: The :math:`\sigma_x` Pauli matrix
+    #: The :math:`\boldsymbol\sigma_x` Pauli matrix
     X = np.array([[0, 1], [1, 0]], np.complex128)
-    #: The :math:`\sigma_y` Pauli matrix
+    #: The :math:`\boldsymbol\sigma_y` Pauli matrix
     Y = np.array([[0, -1j], [1j, 0]], np.complex128)
-    #: The :math:`\sigma_z` Pauli matrix
+    #: The :math:`\boldsymbol\sigma_z` Pauli matrix
     Z = np.array([[1, 0], [0, -1]], np.complex128)
 
     __slots__ = ['_spins', '_kind', '_dtype']

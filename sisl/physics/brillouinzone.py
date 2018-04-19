@@ -127,7 +127,7 @@ class BrillouinZone(object):
            if true a progress-bar is created, default false.
         wraps : callable, optional
            a function that accepts the output of the given routine and post-process
-           it. Default to ``lambda x: x``.
+           it. Defaults to ``lambda x: x``.
 
         Parameters
         ----------
@@ -183,7 +183,7 @@ class BrillouinZone(object):
            if true a progress-bar is created, default false.
         wraps : callable, optional
            a function that accepts the output of the given routine and post-process
-           it. Default to ``lambda x: x``.
+           it. Defaults to ``lambda x: x``.
 
         Examples
         --------
@@ -226,7 +226,7 @@ class BrillouinZone(object):
            if true a progress-bar is created, default false.
         wraps : callable, optional
            a function that accepts the output of the given routine and post-process
-           it. Default to ``lambda x: x``.
+           it. Defaults to ``lambda x: x``.
 
         Parameters
         ----------
@@ -272,7 +272,7 @@ class BrillouinZone(object):
            if true a progress-bar is created, default false.
         wraps : callable, optional
            a function that accepts the output of the given routine and post-process
-           it. Default to ``lambda x: x``.
+           it. Defaults to ``lambda x: x``.
 
         Parameters
         ----------
@@ -365,7 +365,7 @@ class MonkhorstPack(BrillouinZone):
     size : float or array_like of float, optional
        the size of the Brillouin zone sampled. This reduces the boundaries
        of the Brillouin zone around the displacement to the fraction specified.
-       I.e. `size` must be of values :math:`]0 ; 1]`. Default to the entire BZ.
+       I.e. `size` must be of values :math:`]0 ; 1]`. Defaults to the entire BZ.
        Note that this will also reduce the weights such that the weights
        are normalized to the entire BZ.
     trs : bool, optional
