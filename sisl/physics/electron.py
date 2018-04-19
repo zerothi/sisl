@@ -274,6 +274,9 @@ def spin_moment(eig_v, S=None):
     numpy.ndarray
         spin moments per eigenvector with final dimension ``(4, eig_v.shape[0])``.
     """
+    if eig_v.ndim == 1:
+        return spin_moment(eig_v.reshape(1, -1), S).reshape(4)
+
     if S is None:
         class __S(object):
             __slots__ = []
