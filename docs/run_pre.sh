@@ -2,7 +2,12 @@
 
 # Ensure the version file exists
 pushd ..
-python setup.py only-version
+which python3
+if [ $? -eq 0 ]; then
+   python3 setup.py only-version
+else
+   python setup.py only-version
+fi
 popd
 
 # Create the top-level index.rst file
