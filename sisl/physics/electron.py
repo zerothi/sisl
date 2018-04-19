@@ -75,7 +75,7 @@ def DOS(E, eig, distribution='gaussian'):
     --------
     sisl.physics.distribution : a selected set of implemented distribution functions
     PDOS : projected DOS (same as this, but projected onto each orbital)
-    spin_moment: spin moment of eigenvectors
+    spin_moment: spin moment for states
 
     Returns
     -------
@@ -120,7 +120,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
 
     .. math::
 
-       \mathrm{PDOS}_\nu^\sigma(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_\nu^\Sigma(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
        \\
        \mathrm{PDOS}_\nu^x(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_x [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
        \\
@@ -154,7 +154,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     --------
     sisl.physics.distribution : a selected set of implemented distribution functions
     DOS : total DOS (same as summing over orbitals)
-    spin_moment: spin moment of eigenvectors
+    spin_moment: spin moment for states
 
     Returns
     -------
@@ -229,7 +229,6 @@ def spin_moment(eig_v, S=None):
 
     The returned quantities are given in this order:
 
-    - Normalization of the state (for eigenstates this should be exactly 1)
     - Spin magnetic moment along :math:`x` direction
     - Spin magnetic moment along :math:`y` direction
     - Spin magnetic moment along :math:`z` direction
@@ -238,18 +237,16 @@ def spin_moment(eig_v, S=None):
 
     .. math::
 
-       |\psi_i|^2 &= \langle \psi_i |\mathbf S | \psi_i \rangle
+       \mathbf{S}_i^x &= \langle \psi_i | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle
        \\
-       \mathbf{S}_i^x(E) &= \langle \psi_i | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle
+       \mathbf{S}_i^y &= \langle \psi_i | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle
        \\
-       \mathbf{S}_i^y(E) &= \langle \psi_i | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle
-       \\
-       \mathbf{S}_i^z(E) &= \langle \psi_i | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
+       \mathbf{S}_i^z &= \langle \psi_i | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
 
     Parameters
     ----------
     eig_v : array_like
-       eigenvectors
+       vectors describing the electronic states
     S : array_like, optional
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
@@ -268,10 +265,10 @@ def spin_moment(eig_v, S=None):
     Returns
     -------
     numpy.ndarray
-        spin moments per eigenvector with final dimension ``(4, eig_v.shape[0])``.
+        spin moments per eigenvector with final dimension ``(3, eig_v.shape[0])``.
     """
     if eig_v.ndim == 1:
-        return spin_moment(eig_v.reshape(1, -1), S).reshape(4)
+        return spin_moment(eig_v.reshape(1, -1), S).ravel()
 
     if S is None:
         class __S(object):
@@ -286,7 +283,7 @@ def spin_moment(eig_v, S=None):
         S = S[::2, ::2]
 
     # Initialize
-    s = np.empty([4, eig_v.shape[0]], dtype=dtype_complex_to_real(eig_v.dtype))
+    s = np.empty([3, eig_v.shape[0]], dtype=dtype_complex_to_real(eig_v.dtype))
 
     # TODO consider doing this all in a few lines
     # TODO Since there are no energy dependencies here we can actually do all
@@ -295,11 +292,10 @@ def spin_moment(eig_v, S=None):
     for i in range(len(eig_v)):
         v = S.dot(eig_v[i].reshape(-1, 2))
         D = (conj(eig_v[i]) * v.ravel()).real.reshape(-1, 2)
-        s[0, i] = D.sum() # same as norm2
-        s[3, i] = (D[:, 0] - D[:, 1]).sum()
+        s[2, i] = (D[:, 0] - D[:, 1]).sum()
         D = 2 * (conj(eig_v[i, 1::2]) * v[:, 0]).sum()
-        s[1, i] = D.real
-        s[2, i] = D.imag
+        s[0, i] = D.real
+        s[1, i] = D.imag
 
     return s
 
