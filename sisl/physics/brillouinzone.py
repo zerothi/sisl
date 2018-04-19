@@ -15,6 +15,10 @@ from sisl.supercell import SuperCell
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
 
 
+def _do_nothing(x):
+    return x
+
+
 class BrillouinZone(object):
     """ A class to construct Brillouin zone related quantities
 
@@ -117,8 +121,13 @@ class BrillouinZone(object):
 
         Notes
         -----
-        All subsequent invokations of sub-methods are provided an additional keyword
-        ``eta`` which prints, to stdout a progress bar.
+        All invocations of sub-methods are added these keyword-only arguments:
+
+        eta : bool, optional
+           if true a progress-bar is created, default false.
+        wraps : callable, optional
+           a function that accepts the output of the given routine and post-process
+           it. Default to ``lambda x: x``.
 
         Parameters
         ----------
@@ -139,11 +148,12 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
+            wraps = kwargs.pop('wraps', _do_nothing)
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray()',
                            'k', kwargs.pop('eta', False))
             for i, k in enumerate(self):
                 if i == 0:
-                    v = func(*args, k=k, **kwargs)
+                    v = wraps(func(*args, k=k, **kwargs))
                     if len(self) == 1:
                         return v
                     shp = [len(self)]
@@ -152,7 +162,7 @@ class BrillouinZone(object):
                     a[i, :] = v[:]
                     del v
                 else:
-                    a[i, :] = func(*args, k=k, **kwargs)
+                    a[i, :] = wraps(func(*args, k=k, **kwargs))
                 eta.update()
             eta.close()
             return a
@@ -167,8 +177,13 @@ class BrillouinZone(object):
 
         Notes
         -----
-        All subsequent invokations of sub-methods are provided an additional keyword
-        ``eta`` which prints, to stdout a progress bar.
+        All invocations of sub-methods are added these keyword-only arguments:
+
+        eta : bool, optional
+           if true a progress-bar is created, default false.
+        wraps : callable, optional
+           a function that accepts the output of the given routine and post-process
+           it. Default to ``lambda x: x``.
 
         Examples
         --------
@@ -184,11 +199,12 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
+            wraps = kwargs.pop('wraps', _do_nothing)
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist()',
                            'k', kwargs.pop('eta', False))
             a = [None] * len(self)
             for i, k in enumerate(self):
-                a[i] = func(*args, k=k, **kwargs)
+                a[i] = wraps(func(*args, k=k, **kwargs))
                 eta.update()
             eta.close()
             return a
@@ -204,8 +220,13 @@ class BrillouinZone(object):
 
         Notes
         -----
-        All subsequent invokations of sub-methods are provided an additional keyword
-        ``eta`` which prints, to stdout a progress bar.
+        All invocations of sub-methods are added these keyword-only arguments:
+
+        eta : bool, optional
+           if true a progress-bar is created, default false.
+        wraps : callable, optional
+           a function that accepts the output of the given routine and post-process
+           it. Default to ``lambda x: x``.
 
         Parameters
         ----------
@@ -226,10 +247,11 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
+            wraps = kwargs.pop('wraps', _do_nothing)
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield()',
                            'k', kwargs.pop('eta', False))
             for k in self:
-                yield func(*args, k=k, **kwargs).astype(dtype, copy=False)
+                yield wraps(func(*args, k=k, **kwargs).astype(dtype, copy=False))
                 eta.update()
             eta.close()
         # Set instance __call__
@@ -244,8 +266,13 @@ class BrillouinZone(object):
 
         Notes
         -----
-        All subsequent invokations of sub-methods are provided an additional keyword
-        ``eta`` which prints, to stdout a progress bar.
+        All invocations of sub-methods are added these keyword-only arguments:
+
+        eta : bool, optional
+           if true a progress-bar is created, default false.
+        wraps : callable, optional
+           a function that accepts the output of the given routine and post-process
+           it. Default to ``lambda x: x``.
 
         Parameters
         ----------
@@ -271,14 +298,15 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
+            wraps = kwargs.pop('wraps', _do_nothing)
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage()',
                            'k', kwargs.pop('eta', False))
             w = self.weight.view()
             for i, k in enumerate(self):
                 if i == 0:
-                    v = func(*args, k=k, **kwargs) * w[i]
+                    v = wraps(func(*args, k=k, **kwargs)) * w[i]
                 else:
-                    v += func(*args, k=k, **kwargs) * w[i]
+                    v += wraps(func(*args, k=k, **kwargs)) * w[i]
                 eta.update()
             eta.close()
             return v

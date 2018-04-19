@@ -150,3 +150,47 @@ class TestBrillouinZone(object):
     def test_pbz2(self, setup):
         bz = BandStructure(setup.s1, [[0]*3, [.25]*3, [.5]*3], 300)
         assert len(bz) == 300
+
+    def test_as_simple(self):
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False)
+        assert len(bz) == 2 ** 3
+
+        # Assert that as* all does the same
+        asarray = bz.asarray().eigh()
+        aslist = np.array(bz.aslist().eigh())
+        asyield = np.array([a for a in bz.asyield().eigh()])
+        asaverage = bz.asaverage().eigh()
+        assert np.allclose(asarray, aslist)
+        assert np.allclose(asarray, asyield)
+        # Average needs to be performed
+        assert np.allclose((asarray / len(bz)).sum(0), asaverage)
+
+    def test_as_wraps(self):
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False)
+        assert len(bz) == 2 ** 3
+
+        # Check with a wraps function
+        def wrap_reverse(arg):
+            return arg[::-1]
+        asarray = bz.asarray().eigh(wraps=wrap_reverse)
+        aslist = np.array(bz.aslist().eigh(wraps=wrap_reverse))
+        asyield = np.array([a for a in bz.asyield().eigh(wraps=wrap_reverse)])
+        asaverage = bz.asaverage().eigh(wraps=wrap_reverse)
+        assert np.allclose(asarray, aslist)
+        assert np.allclose(asarray, asyield)
+        # Average needs to be performed
+        assert np.allclose((asarray / len(bz)).sum(0), asaverage)
+
+        # Now we should check whether the reverse is doing its magic!
+        mylist = [wrap_reverse(H.eigh(k=k)) for k in bz]
+        assert np.allclose(aslist, mylist)
