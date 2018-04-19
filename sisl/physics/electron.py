@@ -56,6 +56,7 @@ def DOS(E, eig, distribution='gaussian'):
 
     The :math:`\mathrm{DOS}(E)` is calculated as:
     .. math::
+
        \mathrm{DOS}(E) = \sum_i D(E-\epsilon_i) \approx\delta(E-\epsilon_i)
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
@@ -96,6 +97,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
 
     The :math:`\mathrm{PDOS}(E)` is calculated as:
     .. math::
+
        \mathrm{PDOS}_\nu(E) = \sum_i \psi^*_{i,\nu} [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
@@ -106,6 +108,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     Note that `DOS` is the sum of the orbital projected DOS:
 
     .. math::
+
        \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS}_\nu(E)
 
     For non-colinear calculations (this includes spin-orbit calculations) the PDOS is additionally
@@ -119,6 +122,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     These are calculated using the Pauli matrices :math:`\sigma_x`, :math:`\sigma_y` and :math:`\sigma_z`:
 
     .. math::
+
        \mathrm{PDOS}_\nu^\sigma(E) &= \sum_i \psi^*_{i,\nu} \sigma_z \sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
        \\
        \mathrm{PDOS}_\nu^x(E) &= \sum_i \psi^*_{i,\nu} \sigma_x [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
@@ -236,6 +240,7 @@ def spin_moment(eig_v, S=None):
     These are calculated using the Pauli matrices :math:`\sigma_x`, :math:`\sigma_y` and :math:`\sigma_z`:
 
     .. math::
+
        \mathbf{S}_i^\sigma &= \sum_i \langle \psi^*_i |\sigma_z \mathbf S \sigma_z | \psi_i \rangle
        \\
        \mathbf{S}_i^x(E) &= \sum_i \langle \psi^*_i | \sigma_x \mathbf S | \psi_i \rangle
@@ -330,12 +335,14 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     The wavefunctions are calculated in real-space via:
 
     .. math::
+
        \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
 
     While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
     spinor component (`spinor`)
 
     .. math::
+
        \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(-i\mathbf k \mathbf R)
 
     where ``spinor in [0, 1]`` determines :math:`\alpha` or :math:`\beta`, respectively.

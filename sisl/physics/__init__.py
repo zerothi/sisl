@@ -74,6 +74,11 @@ Electrons (:mod:`sisl.physics.electron`)
 .. autosummary::
    :toctree:
 
+   sisl.physics.electron
+
+.. autosummary::
+   :toctree:
+
    ~electron.DOS
    ~electron.PDOS
    ~electron.spin_moment

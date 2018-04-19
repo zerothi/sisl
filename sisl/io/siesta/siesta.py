@@ -26,8 +26,7 @@ class ncSileSiesta(SileCDFSiesta):
     """ Siesta file object """
 
     def read_supercell(self):
-        """ Returns a SuperCell object from a Siesta.nc file
-        """
+        """ Returns a SuperCell object from a Siesta.nc file """
         cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
@@ -137,7 +136,7 @@ class ncSileSiesta(SileCDFSiesta):
         return geom
 
     def read_force(self):
-        """ Returns a vector with final forces from the *.nc file. """
+        """ Returns a vector with final forces contained. """
         return np.array(self._value('xa'), np.float64) * Ry2eV / Bohr2Ang
 
     def _read_class_spin(self, cls, **kwargs):
@@ -351,9 +350,7 @@ class ncSileSiesta(SileCDFSiesta):
                 ba.Number_of_orbitals = np.int32(a.no)
 
     def write_geometry(self, geom):
-        """
-        Creates the NetCDF file and writes the geometry information
-        """
+        """ Creates the NetCDF file and writes the geometry information """
         sile_raise_write(self)
 
         # Create initial dimensions
@@ -670,7 +667,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         Parameters
         ----------
-        H : `Hessian` model
+        H : Hessian
            the model to be saved in the NC file
         """
         # Ensure finalizations

@@ -73,6 +73,7 @@ manual installation (without `numpy`_ installed a spurious error message will
 appear). The dependencies may be installed using this :code:`pip` command:
 
 .. code-block:: bash
+
    pip install -r requirements.txt
 
 

@@ -31,17 +31,17 @@ class tableSile(Sile):
             any dimension higher than 2 it gets separated by two newline
             characters (like gnuplot acceptable data).
         fmt : str, optional
-            The formatting string, defaults to ``'.5e'``.
+            The formatting string, defaults to ``.5e``.
         fmts : str, optional
             The formatting string (for all columns), defaults to ``fmt * len(args)``.
             `fmts` has precedence over `fmt`.
         newline : str, optional
-            Defaults to ``'\n'``.
+            Defaults to ``\n``.
         delimiter : str, optional
-            Defaults to ``'\t'``.
+            Defaults to ``\t``.
         comment : str or list of str, optional
             A pre-header text at the top of the file.
-            This comment is automatically prepended a ``'#'`` at the
+            This comment is automatically prepended a ``#`` at the
             start of new lines, for lists each item corresponds to a newline
             which is automatically appended.
         header : str or list of str, optional

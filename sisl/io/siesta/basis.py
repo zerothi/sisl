@@ -19,8 +19,8 @@ __all__ = ['ionxmlSileSiesta', 'ionncSileSiesta']
 class ionxmlSileSiesta(SileSiesta):
     """ Siesta basis set information
 
-    Note that the *.ion files are equivalent to the *.ion.xml files.
-    However, the former has less precision and thus ion.xml files are
+    Note that the ``ion`` files are equivalent to the ``ion.xml`` files.
+    However, the former has less precision and thus ``ion.xml`` files are
     preferred.
     """
 
@@ -88,8 +88,8 @@ class ionxmlSileSiesta(SileSiesta):
 class ionncSileSiesta(SileCDFSiesta):
     """ Siesta basis set information
 
-    Note that the *.ion.nc files are equivalent to the *.ion.xml files.
-    However, the former has higher precision and thus ion.nc files are
+    Note that the ``ion.nc`` files are equivalent to the ``ion.xml`` files.
+    However, the former has higher precision and thus ``ion.nc`` files are
     preferred.
     """
 
