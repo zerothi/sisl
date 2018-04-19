@@ -240,7 +240,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     def _setup(self, *args, **kwargs):
         """ Setup the special object for data containing """
-        super(_ncSileTBtrans, self)._setup(*args, **kwargs)
+        super(_devncSileTBtrans, self)._setup(*args, **kwargs)
 
         if self._access > 0:
 
