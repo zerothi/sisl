@@ -74,10 +74,10 @@ Electrons (:mod:`sisl.physics.electron`)
 .. autosummary::
    :toctree:
 
-   DOS
-   PDOS
-   spin_moment
-   wavefunction
+   ~electron.DOS
+   ~electron.PDOS
+   ~electron.spin_moment
+   ~electron.wavefunction
    CoefficientElectron
    StateElectron
    StateCElectron
