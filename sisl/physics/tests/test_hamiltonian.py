@@ -692,7 +692,7 @@ class TestHamiltonian(object):
             assert np.allclose(H.eigh(), eig1)
         assert len(eig1) == len(H)
 
-        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-colinear'))
+        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
         for i in range(10):
             j = range(i*4, i*4+3)
             H1[i, i, 0] = 0.
@@ -742,7 +742,7 @@ class TestHamiltonian(object):
             assert np.allclose(H.eigh(), eig1)
         assert len(eig1) == len(H)
 
-        H1 = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin('non-colinear'))
+        H1 = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin('non-collinear'))
         for i in range(10):
             j = range(i*4, i*4+3)
             H1[i, i, 0] = 0.

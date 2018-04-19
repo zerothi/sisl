@@ -127,7 +127,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if E.size == 1:
             E = np.tile(_a.asarrayd(E), 2)
         if not self.orthogonal:
-            # For non-colinear and SO only the diagonal (real) components
+            # For non-collinear and SO only the diagonal (real) components
             # should be shifted.
             for i in range(min(self.spin.spins, 2)):
                 self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E[i]

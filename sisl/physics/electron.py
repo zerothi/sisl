@@ -9,7 +9,7 @@ specific for electrons. For instance density of states calculations from
 electronic eigenvalues and other quantities.
 
 This module implements the necessary tools required for calculating
-DOS, PDOS, spin moments of non-colinear calculations and plotting
+DOS, PDOS, spin moments of non-collinear calculations and plotting
 real-space wavefunctions.
 
 .. autosummary::
@@ -108,7 +108,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     .. math::
        \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS}_\nu(E)
 
-    For non-colinear calculations (this includes spin-orbit calculations) the PDOS is additionally
+    For non-collinear calculations (this includes spin-orbit calculations) the PDOS is additionally
     separated into 4 components (in this order):
 
     - Total projected DOS
@@ -141,13 +141,13 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
        eigenvectors
     S : array_like, optional
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
-       matrix is assumed. For non-colinear calculations this matrix may be halve the size of ``len(eig_v[0, :])`` to
-       trigger the non-colinear calculation of PDOS.
+       matrix is assumed. For non-collinear calculations this matrix may be halve the size of ``len(eig_v[0, :])`` to
+       trigger the non-collinear calculation of PDOS.
     distribution : func or str, optional
        a function that accepts :math:`E-\epsilon` as argument and calculates the
        distribution function.
     spin : str or Spin, optional
-       the spin configuration. This is generally only needed when the eigenvectors correspond to a non-colinear
+       the spin configuration. This is generally only needed when the eigenvectors correspond to a non-collinear
        calculation.
 
     See Also
@@ -160,13 +160,13 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     -------
     numpy.ndarray
         projected DOS calculated at energies, has dimension ``(eig_v.shape[1], len(E))``.
-        For non-colinear calculations it will be ``(4, eig_v.shape[1] // 2, len(E))``, ordered as
+        For non-collinear calculations it will be ``(4, eig_v.shape[1] // 2, len(E))``, ordered as
         indicated in the above list.
     """
     if isinstance(distribution, str):
         distribution = dist_func(distribution)
 
-    # Figure out whether we are dealing with a non-colinear calculation
+    # Figure out whether we are dealing with a non-collinear calculation
     if S is None:
         class __S(object):
             __slots__ = []
@@ -183,7 +183,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
         else:
             spin = Spin()
 
-    # check for non-colinear (or SO)
+    # check for non-collinear (or SO)
     if spin.kind > Spin.POLARIZED:
         # Non colinear eigenvectors
         if S.shape[1] == eig_v.shape[1]:
@@ -225,7 +225,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
 def spin_moment(eig_v, S=None):
     r""" Calculate the spin magnetic moment (also known as spin texture)
 
-    This calculation only makes sense for non-colinear calculations.
+    This calculation only makes sense for non-collinear calculations.
 
     The returned quantities are given in this order:
 
@@ -261,7 +261,7 @@ def spin_moment(eig_v, S=None):
 
     Notes
     -----
-    This routine cannot check whether the input eigenvectors originate from a non-colinear calculation.
+    This routine cannot check whether the input eigenvectors originate from a non-collinear calculation.
     If a non-polarized eigenvector is passed to this routine, the output will have no physical meaning.
 
     See Also
@@ -335,7 +335,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     .. math::
        \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
 
-    While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
+    While for non-collinear/spin-orbit calculations the wavefunctions are determined from the
     spinor component (`spinor`)
 
     .. math::
@@ -364,13 +364,13 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
        to calculate the eigenstate will be used (generally shouldn't be used unless the `EigenstateElectron` object
        has not been created via `Hamiltonian.eigenstate`).
     spinor : int, optional
-       the spinor for non-colinear/spin-orbit calculations. This is only used if the
+       the spinor for non-collinear/spin-orbit calculations. This is only used if the
        eigenstate object has been created from a parent object with a `Spin` object
-       contained, *and* if the spin-configuration is non-colinear or spin-orbit coupling.
+       contained, *and* if the spin-configuration is non-collinear or spin-orbit coupling.
        Default to the first spinor component.
     spin : Spin, optional
        specification of the spin configuration of the orbital coefficients. This only has
-       influence for non-colinear wavefunctions where `spinor` choice is important.
+       influence for non-collinear wavefunctions where `spinor` choice is important.
     eta : bool, optional
        Display a console progressbar.
     """
@@ -386,12 +386,12 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     if spin is None:
         if len(v) // 2 == geometry.no:
-            # We can see from the input that the vector *must* be a non-colinear calculation
+            # We can see from the input that the vector *must* be a non-collinear calculation
             v = v.reshape(-1, 2)[:, spinor]
-            info('psi assumes the input wavefunction coefficients to originate from a non-colinear calculation!')
+            info('psi assumes the input wavefunction coefficients to originate from a non-collinear calculation!')
 
     elif spin.kind > Spin.POLARIZED:
-        # For non-colinear cases the user selects the spinor component.
+        # For non-collinear cases the user selects the spinor component.
         v = v.reshape(-1, 2)[:, spinor]
 
     if len(v) != geometry.no:
@@ -636,7 +636,7 @@ class _common_State(object):
     __slots__ = []
 
     def __is_nc(self):
-        """ Internal routine to check whether this is a non-colinear calculation """
+        """ Internal routine to check whether this is a non-collinear calculation """
         try:
             spin = self.parent.spin
         except:
@@ -655,7 +655,7 @@ class _common_State(object):
            the returned format of the overlap matrix. This only takes effect for
            non-orthogonal parents.
         spin : Spin, optional
-           for non-colinear spin configurations the *fake* overlap matrix returned
+           for non-collinear spin configurations the *fake* overlap matrix returned
            will have halve the size of the input matrix. If you want the *full* overlap
            matrix, simply do not specify the `spin` argument.
         """

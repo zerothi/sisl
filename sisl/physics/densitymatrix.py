@@ -133,7 +133,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         .. math::
             \psi(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \mathbf \rho_{\nu\mu}
 
-        While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
+        While for non-collinear/spin-orbit calculations the wavefunctions are determined from the
         spinor component (`spinor`) by
 
         .. math::
@@ -149,7 +149,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
            the spinor matrix to obtain the diagonal components of the density. For un-polarized density matrices
            this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of
            length 2 (defaults to total density).
-           For non-colinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
+           For non-collinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
         """
         geom = self.geometry
 
@@ -178,7 +178,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
             DM = _a.emptyz([self.nnz, 2, 2])
             idx = array_arange(csr.ptr[:-1], n=csr.ncol)
             if self.spin == Spin('NC'):
-                # non-colinear
+                # non-collinear
                 DM[:, 0, 0] = csr._D[idx, 0]
                 DM[:, 1, 1] = csr._D[idx, 1]
                 DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3]

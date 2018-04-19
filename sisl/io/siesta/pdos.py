@@ -32,7 +32,7 @@ class pdosSileSiesta(SileSiesta):
         r""" Returns data associated with the PDOS file
 
         For spin-polarized calculations the returned values are up/down, orbitals, energy.
-        For non-colinear calculations the returned values are sum/x/y/z, orbitals, energy.
+        For non-collinear calculations the returned values are sum/x/y/z, orbitals, energy.
 
         Parameters
         ----------

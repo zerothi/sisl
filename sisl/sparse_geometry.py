@@ -1002,7 +1002,7 @@ class SparseAtom(_SparseGeometry):
             if a is None:
                 continue
             S[ja, a + afp] = self[ja, ia]
-            # TODO check that we indeed have Hermiticity for non-colinear and spin-orbit
+            # TODO check that we indeed have Hermiticity for non-collinear and spin-orbit
             S[a, ja + afm] = self[ja, ia]
 
         return S

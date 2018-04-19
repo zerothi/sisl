@@ -13,7 +13,7 @@ from sisl import Spin
 def test_spin1():
     for val in ['unpolarized', '', Spin.UNPOLARIZED,
                 'polarized', 'p', Spin.POLARIZED,
-                'non-colinear', 'nc', Spin.NONCOLINEAR,
+                'non-collinear', 'nc', Spin.NONCOLINEAR,
                 'spin-orbit', 'so', Spin.SPINORBIT]:
         s = Spin(val)
         print(repr(s))

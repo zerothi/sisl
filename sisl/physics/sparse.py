@@ -92,7 +92,7 @@ class SparseOrbitalBZ(SparseOrbital):
         return not self._orthogonal
 
     def __len__(self):
-        """ Returns number of rows in the basis (if non-colinear or spin-orbit, twice the number of orbitals) """
+        """ Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) """
         return self.no
 
     def __repr__(self):
@@ -523,7 +523,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 self.M12 = 2
                 self.M21 = 3
                 raise ValueError('Currently not implemented')
-            # The overlap is the same as non-colinear
+            # The overlap is the same as non-collinear
             self.Pk = self._Pk_spin_orbit
             self.Sk = self._Sk_non_colinear
 
@@ -540,7 +540,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return self._spin
 
     def __len__(self):
-        """ Returns number of rows in the basis (if non-colinear or spin-orbit, twice the number of orbitals) """
+        """ Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) """
         if self.spin.spins > 2:
             return self.no * 2
         return self.no
@@ -583,7 +583,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
 
     def _Pk_non_colinear_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
+        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -633,7 +633,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return V.asformat(format)
 
     def _Pk_non_colinear_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
+        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -677,7 +677,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return V.asformat(format)
 
     def _Pk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Dense at `k` for a non-colinear system
+        """ Dense at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -876,7 +876,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
     def _Sk_non_colinear_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
+        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -920,7 +920,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return S.asformat(format)
 
     def _Sk_non_colinear_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
+        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -962,7 +962,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return S.asformat(format)
 
     def _Sk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-colinear system
+        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
         ----------
