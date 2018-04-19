@@ -89,9 +89,11 @@ Distribution functions (:mod:`sisl.physics.distributions`)
 .. autosummary::
    :toctree:
 
-   distribution
-   gaussian
-   lorentzian
+   ~distributions.distribution
+   ~distributions.gaussian
+   ~distributions.lorentzian
+   ~distributions.fermi_dirac
+   ~distributions.bose_einstein
 
 
 .. autosummary::
@@ -102,7 +104,7 @@ Distribution functions (:mod:`sisl.physics.distributions`)
    sisl.physics.distributions
 
 """
-from .distributions import *
+from . import distributions
 from .brillouinzone import *
 from .spin import *
 from .sparse import *

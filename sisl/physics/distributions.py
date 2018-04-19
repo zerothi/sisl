@@ -12,10 +12,17 @@ Various distributions using different smearing techniques.
    distribution
    gaussian
    lorentzian
+   fermi_dirac
+   bose_einstein
+
 
 .. autofunction:: gaussian
    :noindex:
 .. autofunction:: lorentzian
+   :noindex:
+.. autofunction:: fermi_dirac
+   :noindex:
+.. autofunction:: bose_einstein
    :noindex:
 
 """
@@ -27,7 +34,7 @@ import numpy as np
 _pi = np.pi
 _sqrt_2pi = (2 * _pi) ** 0.5
 
-__all__ = ['distribution', 'gaussian', 'lorentzian']
+__all__ = ['distribution', 'gaussian', 'lorentzian', 'fermi_dirac', 'bose_einstein']
 
 
 def distribution(method, smearing=0.1):
@@ -112,3 +119,53 @@ def lorentzian(x, gamma=0.1):
         the Lorentzian distribution, same length as `x`
     """
     return (gamma / _pi) / (x ** 2 + gamma ** 2)
+
+
+def fermi_dirac(E, kT=0.1, mu=0.):
+    r""" Fermi-Dirac distribution function
+
+    The Fermi distribution is calculated as:
+
+    .. math::
+        n_F(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] + 1}
+
+    Parameters
+    ----------
+    E: array_like
+        energy evaluation points
+    kT: float, optional
+        temperature broadening
+    mu: float, optional
+        chemical potential
+
+    Returns
+    -------
+    numpy.ndarray
+        the Fermi-Dirac distribution, same length as `E`
+    """
+    return 1. / (np.exp((E - mu) / kT) + 1.)
+
+
+def bose_einstein(E, kT=0.1, mu=0.):
+    r""" Bose-Einstein distribution function
+
+    The Bose-Einstein distribution is calculated as:
+
+    .. math::
+        n_B(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] - 1}
+
+    Parameters
+    ----------
+    E: array_like
+        energy evaluation points
+    kT: float, optional
+        temperature broadening
+    mu: float, optional
+        chemical potential
+
+    Returns
+    -------
+    numpy.ndarray
+        the Bose-Einstein distribution, same length as `E`
+    """
+    return 1. / (np.exp((E - mu) / kT) - 1.)

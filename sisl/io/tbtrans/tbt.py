@@ -24,6 +24,7 @@ from sisl import Geometry, Atoms
 from sisl.messages import warn, info, SislError
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
+from sisl.physics.distributions import fermi_dirac
 
 
 __all__ = ['tbtncSileTBtrans', 'phtncSileTBtrans']
@@ -682,10 +683,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                  "accurately calculate the current due to the calculated energy range. "
                  "Increase the calculated energy-range.\n" + s)
 
-        def nf(E, mu, kT):
-            return 1. / (np.exp((E - mu) / kT) + 1.)
-
-        I = _a.sumd(T * dE * (nf(E, mu_from, kt_from) - nf(E, mu_to, kt_to)))
+        I = _a.sumd(T * dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to)))
         return I * 1.6021766208e-19 / 4.135667662e-15
 
     def shot_noise(self, elec_from=0, elec_to=1, classical=False, kavg=True):
