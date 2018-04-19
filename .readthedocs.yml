@@ -5,7 +5,7 @@ python:
    version: 3.5
 
 formats:
-   - epub
+   - none
 
 conda:
     file: docs/conda.yml
