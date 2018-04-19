@@ -229,7 +229,7 @@ def spin_moment(eig_v, S=None):
 
     The returned quantities are given in this order:
 
-    - Total spin magnetic moment
+    - Normalization of the state (for eigenstates this should be exactly 1)
     - Spin magnetic moment along :math:`x` direction
     - Spin magnetic moment along :math:`y` direction
     - Spin magnetic moment along :math:`z` direction
@@ -238,17 +238,13 @@ def spin_moment(eig_v, S=None):
 
     .. math::
 
-       \mathbf{S}_i &= \sum_i \langle \psi_i |\boldsymbol\sigma_z \mathbf S \boldsymbol\sigma_z | \psi_i \rangle
+       |\psi_i|^2 &= \langle \psi_i |\mathbf S | \psi_i \rangle
        \\
-       \mathbf{S}_i^x(E) &= \sum_i \langle \psi_i | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle
+       \mathbf{S}_i^x(E) &= \langle \psi_i | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle
        \\
-       \mathbf{S}_i^y(E) &= \sum_i \langle \psi_i | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle
+       \mathbf{S}_i^y(E) &= \langle \psi_i | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle
        \\
-       \mathbf{S}_i^z(E) &= \sum_i \langle \psi_i | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
-
-    Note that the total spin magnetic moment, :math:`\mathbf S` may be calculated using
-    :math:`\boldsymbol\sigma_i\boldsymbol\sigma_i` where :math:`i` may be either of :math:`x`, :math:`y` or :math:`z`
-    as indicated in the first equation above.
+       \mathbf{S}_i^z(E) &= \langle \psi_i | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
 
     Parameters
     ----------
@@ -299,7 +295,7 @@ def spin_moment(eig_v, S=None):
     for i in range(len(eig_v)):
         v = S.dot(eig_v[i].reshape(-1, 2))
         D = (conj(eig_v[i]) * v.ravel()).real.reshape(-1, 2)
-        s[0, i] = D.sum()
+        s[0, i] = D.sum() # same as norm2
         s[3, i] = (D[:, 0] - D[:, 1]).sum()
         D = 2 * (conj(eig_v[i, 1::2]) * v[:, 0]).sum()
         s[1, i] = D.real
