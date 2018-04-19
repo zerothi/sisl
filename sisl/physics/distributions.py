@@ -1,6 +1,6 @@
 """
 ==========================================================
-Distribution funcitons (:mod:`sisl.physics.distributions`)
+Distribution functions (:mod:`sisl.physics.distributions`)
 ==========================================================
 
 .. module:: sisl.physics.distributions
