@@ -1,3 +1,34 @@
+"""
+=====================================================================
+Electron related functions and classes (:mod:`sisl.physics.electron`)
+=====================================================================
+
+.. module:: sisl.physics.electron
+   :noindex:
+
+In :mod:`sisl` electronic structure calculations are relying on routines
+specific for electrons. For instance density of states calculations from
+electronic eigenvalues and other quantities.
+
+This module implements the necessary tools required for calculating
+DOS, PDOS, spin moments of non-colinear calculations and plotting
+real-space wavefunctions.
+
+.. autosummary::
+   :toctree:
+
+   DOS
+   PDOS
+   spin_moment
+   wavefunction
+   CoefficientElectron
+   StateElectron
+   StateCElectron
+   EigenvalueElectron
+   EigenvectorElectron
+   EigenstateElectron
+
+"""
 from __future__ import print_function, division
 
 import numpy as np

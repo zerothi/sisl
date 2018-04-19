@@ -1,5 +1,6 @@
 name: sisl_docs
 dependencies:
+  - python=3.5
   - gcc
   - numpy
   - scipy
