@@ -134,6 +134,7 @@ class BrillouinZone(object):
         --------
         asyield : all output returned through an iterator
         asaverage : take the average (with k-weights) of the Brillouin zone
+        aslist : all output returned as a Python list
         """
 
         def _call(self, *args, **kwargs):
@@ -152,6 +153,42 @@ class BrillouinZone(object):
                     del v
                 else:
                     a[i, :] = func(*args, k=k, **kwargs)
+                eta.update()
+            eta.close()
+            return a
+        # Set instance __call__
+        setattr(self, '__call__', types.MethodType(_call, self))
+        return self
+
+    def aslist(self):
+        """ Return `self` with `list` returned quantities
+
+        This forces the `__call__` routine to return a list with returned values.
+
+        Notes
+        -----
+        All subsequent invokations of sub-methods are provided an additional keyword
+        ``eta`` which prints, to stdout a progress bar.
+
+        Examples
+        --------
+        >>> obj = BrillouinZone(...) # doctest: +SKIP
+        >>> obj.aslist().eigenstate(eta=True) # doctest: +SKIP
+
+        See Also
+        --------
+        asarray : all output as a single array
+        asyield : all output returned through an iterator
+        asaverage : take the average (with k-weights) of the Brillouin zone
+        """
+
+        def _call(self, *args, **kwargs):
+            func = getattr(self.parent, self.__attr)
+            eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist()',
+                           'k', kwargs.pop('eta', False))
+            a = [None] * len(self)
+            for i, k in enumerate(self):
+                a[i] = func(*args, k=k, **kwargs)
                 eta.update()
             eta.close()
             return a
@@ -184,6 +221,7 @@ class BrillouinZone(object):
         --------
         asarray : all output as a single array
         asaverage : take the average (with k-weights) of the Brillouin zone
+        aslist : all output returned as a Python list
         """
 
         def _call(self, *args, **kwargs):
@@ -228,6 +266,7 @@ class BrillouinZone(object):
         --------
         asarray : all output as a single array
         asyield : all output returned through an iterator
+        aslist : all output returned as a Python list
         """
 
         def _call(self, *args, **kwargs):

@@ -63,7 +63,10 @@ class TestBrillouinZone(object):
             def eig(self, k, *args, **kwargs):
                 return np.arange(3) - 1
         bz = BrillouinZone(Test(setup.s1))
-        # Try the yield method
+        # Try the list/yield method
+        bz.aslist()
+        for val in bz.eigh():
+            assert np.allclose(val, np.arange(3))
         bz.asyield()
         for val in bz.eigh():
             assert np.allclose(val, np.arange(3))
