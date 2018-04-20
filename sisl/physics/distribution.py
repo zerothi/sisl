@@ -179,8 +179,8 @@ def cold(E, kT=0.1, mu=0.):
     r""" Cold smearing function, Marzari-Vanderbilt, PRL 82, 16, 1999
 
     .. math::
-        C(E,k_BT,\mu) = \frac12 + \mathrm{erf}\Big(-\frac{E-\mu}{k_BT}-\frac1{\sqrt{2}}\Big)
-        + \frac1{\sqrt{2\pi} \exp\Bigg\{-\Big[\frac{E-\mu}{k_BT}+\frac1{\sqrt{2}}\Big]^2\Bigg\}
+        C(E,k_BT,\mu) = \frac12 + \mathrm{erf}\Big(-\frac{E-\mu}{k_BT}-\frac1{\sqrt2}\Big)
+        + \frac1{\sqrt{2\pi}} \exp\Bigg\{-\Big[\frac{E-\mu}{k_BT}+\frac1{\sqrt2}\Big]^2\Bigg\}
 
     Parameters
     ----------
