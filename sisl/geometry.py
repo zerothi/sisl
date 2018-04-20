@@ -2926,7 +2926,7 @@ class Geometry(SuperCellChild):
 
         return d
 
-    def within_inf(self, sc, periodic=None, ftol=1e-6):
+    def within_inf(self, sc, periodic=None, tol=1e-5):
         """ Find all atoms within a provided supercell
 
         Note this function is rather different from `close` and `within`.
@@ -2949,8 +2949,10 @@ class Geometry(SuperCellChild):
         periodic : list of bool
             explicitly define the periodic directions, by default the periodic
             directions are only where ``self.nsc > 1``.
-        ftol : float, optional
-            tolerance for the fractional coordinates to be on a duplicate site.
+        tol : float, optional
+            length tolerance for the fractional coordinates to be on a duplicate site (in Ang).
+            This allows atoms within `tol` of the cell boundaries to be taken as *inside* the
+            cell.
 
         Returns
         -------
@@ -3004,7 +3006,8 @@ class Geometry(SuperCellChild):
 
         # Since there are numerical errors for the above operation
         # we *have* to account for possible sign-errors
-
+        # This is done by a length tolerance
+        ftol = tol / fnorm(self.cell).reshape(1, 3)
         isc = np.floor(fxyz - ftol).astype(int32)
 
         # Now we can extract the indices where the two are non-matching.
