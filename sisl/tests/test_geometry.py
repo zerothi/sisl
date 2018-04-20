@@ -702,6 +702,11 @@ class TestGeometry(object):
             assert len(idx) == 1
             assert idx[0] == o
 
+    def test_within_inf_duplicates(self, setup):
+        g = setup.g.copy()
+        sc_3x3 = g.sc.tile(3, 0).tile(3, 1)
+        assert len(g.within_inf(sc_3x3)[0]) == len(g) * 3 ** 2 + 7 # 3 per vector and 1 in the upper right corner
+
     def test_close_sizes(self, setup):
         point = 0
 
