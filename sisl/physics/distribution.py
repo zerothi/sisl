@@ -55,7 +55,7 @@ def get_distribution(method, smearing=0.1, x0=0.):
     The Lorentzian distribution is calculated as:
 
     .. math::
-        L(x,\sigma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
+        L(x,\gamma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
 
     where :math:`\gamma` is the `smearing` parameter, note that here :math:`\gamma` is the
     half-width at half-maximum (:math:`2\gamma` the full-width at half-maximum).
@@ -110,7 +110,7 @@ def lorentzian(x, gamma=0.1, x0=0.):
     r""" Lorentzian distribution function
 
     .. math::
-        L(x,\sigma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
+        L(x,\gamma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
 
     Parameters
     ----------
