@@ -145,7 +145,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         ----------
         grid : Grid
            the grid on which to add the density (the density is in ``e/Ang^3``)
-        spinor : (2, ) or (2, 2), optional
+        spinor : (2,) or (2, 2), optional
            the spinor matrix to obtain the diagonal components of the density. For un-polarized density matrices
            this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of
            length 2 (defaults to total density).
@@ -165,10 +165,9 @@ class DensityMatrix(SparseOrbitalBZSpin):
         # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
         old_err = np.seterr(divide='ignore', invalid='ignore')
 
-        spin_pol = Spin('p')
-
+        # Placeholder for the resulting coefficients
         DM = None
-        if self.spin > spin_pol:
+        if self.spin.kind > Spin.POLARIZED:
             if spinor is None:
                 spinor = _a.arrayz([[1., 0], [0., 1.]])
             spinor = _a.arrayz(spinor)
@@ -193,7 +192,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
             # Perform dot-product with spinor, and take out the diagonal real part
             DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
 
-        elif self.spin == spin_pol:
+        elif self.spin.kind == Spin.POLARIZED:
             if spinor is None:
                 spinor = _a.arrayd([1., 1.])
             if isinstance(spinor, Integral):
@@ -240,7 +239,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 return
 
             # TODO currently we don't allow unit-cells larger than the calculating one
-            # becouse we would then need to figure out the relative atomic indices
+            # because we would then need to figure out the relative atomic indices
 
             # The grid unit-cell and the geometry unit-cell are the same
             # Hence we can easily determine whether they are inside or out
