@@ -687,18 +687,18 @@ class TestGeometry(object):
                 assert np.allclose(xa[j], xai[j])
                 assert np.allclose(d[j], di[j])
 
-    def test_inf_within1(self, setup):
-        g = setup.g.copy()
+    def test_within_inf1(self, setup):
+        g = setup.g.translate([0.05] * 3)
         sc_3x3 = g.sc.tile(3, 0).tile(3, 1)
-        assert len(g.inf_within(sc_3x3)[0]) == len(g) * 3 ** 2
+        assert len(g.within_inf(sc_3x3)[0]) == len(g) * 3 ** 2
 
-    def test_inf_within2(self, setup):
-        g = setup.mol.copy()
+    def test_within_inf2(self, setup):
+        g = setup.mol.translate([0.05] * 3)
         sc = SuperCell(1.5)
         for o in range(10):
             origo = [o - 0.5, -0.5, -0.5]
             sc.origo = origo
-            idx = g.inf_within(sc)[0]
+            idx = g.within_inf(sc)[0]
             assert len(idx) == 1
             assert idx[0] == o
 

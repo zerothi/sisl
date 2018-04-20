@@ -88,9 +88,8 @@ class SuperCell(object):
         self._origo[:] = origo
 
     def toCuboid(self):
-        """ Return a cuboid with vectors as this unit-cell """
-        origo = self.center() + self.origo
-        return Cuboid(self.cell.copy(), origo)
+        """ A cuboid with vectors as this unit-cell and center with respect to its origo """
+        return Cuboid(self.cell.copy(), self.center() + self.origo)
 
     def parameters(self, rad=False):
         r""" Return the cell-parameters of this cell

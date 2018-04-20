@@ -2926,12 +2926,16 @@ class Geometry(SuperCellChild):
 
         return d
 
-    def inf_within(self, sc, periodic=None):
+    def within_inf(self, sc, periodic=None, ftol=1e-6):
         """ Find all atoms within a provided supercell
 
         Note this function is rather different from `close` and `within`.
         Specifically this routine is returning *all* indices for the infinite
         periodic system (where ``self.nsc > 1`` or `periodic` is true).
+
+        Atomic coordinates lying on the boundary of the supercell will be duplicated
+        on the neighbouring supercell images. Thus performing `geom.within_inf(geom.sc)`
+        may result in more atoms than in the structure.
 
         Notes
         -----
@@ -2945,30 +2949,44 @@ class Geometry(SuperCellChild):
         periodic : list of bool
             explicitly define the periodic directions, by default the periodic
             directions are only where ``self.nsc > 1``.
+        ftol : float, optional
+            tolerance for the fractional coordinates to be on a duplicate site.
+
+        Returns
+        -------
+        ia : numpy.ndarray
+           unit-cell atomic indices which are inside the `sc` cell
+        xyz : numpy.ndarray
+           atomic coordinates for the `ia` atoms
+        isc : numpy.ndarray
+           integer supercell offsets for `ia` atoms
         """
         if periodic is None:
             periodic = self.nsc > 1
         else:
             periodic = list(periodic)
 
-        # First we should figure out which atoms we are dealing with
-        idx = dot(self.icell.T, sc.cell + np.diag(sc.origo))
-        #idx_origo = dot(self.icell.T, np.diag(sc.origo))
+        # Our first task is to construct a geometry large
+        # enough to fully encompass the supercell
+
+        # 1. Number of times each lattice vector must be expanded to fit
+        #    inside the "possibly" larger `sc`.
+        idx = dot(self.icell.T, sc.cell)
         tile_min = np.floor(idx.min(0)).astype(dtype=int32)
         tile_max = np.ceil(idx.max(0)).astype(dtype=int32)
 
-        # Minimize tile to 0 where nsc == 1
+        # 2. Reduce tiling along non-periodic directions
         tile_min = np.where(periodic, tile_min, 0)
         tile_max = np.where(periodic, tile_max, 1)
 
+        # 3. Find the *new* origo according to the *negative* tilings.
+        #    This is important for skewed cells as the placement of the new
+        #    larger geometry has to be shifted to have sc inside
         big_origo = (tile_min.reshape(-1, 1) * self.cell).sum(0)
 
         # The xyz geometry that fully encompass the (possibly) larger supercell
         tile = tile_max - tile_min
-        # We displace *all* atoms 0.1 Ang along each lattice vector.
-        # This should take care of numerical accuracy in the fxyz routine
-        min_xyz = dot(0.1 / fnorm(self.cell), self.cell)
-        full_geom = (self.translate(min_xyz) * tile).translate(big_origo)
+        full_geom = (self * tile).translate(big_origo)
 
         # Now we have to figure out all atomic coordinates within
         cuboid = sc.toCuboid()
@@ -2984,10 +3002,19 @@ class Geometry(SuperCellChild):
         # are sure that these fxyz are [0:1[
         fxyz = dot(xyz, self.icell.T)
 
-        # Reduce atomic coordinates (and shift back to "correct" coordinates)
-        xyz -= min_xyz.reshape(-1, 3)
-        # Convert to supercell indices
-        isc = np.floor(fxyz).astype(int32)
+        # Since there are numerical errors for the above operation
+        # we *have* to account for possible sign-errors
+
+        isc = np.floor(fxyz - ftol).astype(int32)
+
+        # Now we can extract the indices where the two are non-matching.
+        # At these indices we have some "errors" that we have to fix and
+        # thus select the correct isc.
+        idx_diff = (isc - np.floor(fxyz + ftol).astype(int32)).nonzero()
+
+        # For these indices we can use the nearest integer as that
+        # selects the closest. floor will ONLY be wrong for -0.0000, 0.99999, ...
+        isc[idx_diff[0], idx_diff[1]] = np.rint(fxyz[idx_diff[0], idx_diff[1]]).astype(int32)
 
         # Convert indices to unit-cell indices and also return coordinates and
         # infinite supercell indices

@@ -470,7 +470,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         xyz = geometry.xyz[ia, :] - origo
         idx = dot(ic, xyz.T).T
 
-        # Get min-max for all atoms, note we should first do the floor here
+        # Get min-max for all atoms
         idx_mm[ia, 0, :] = idxm * R + idx
         idx_mm[ia, 1, :] = idxM * R + idx
 
@@ -490,7 +490,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     sc = grid.sc.copy()
     if grid.geometry is None:
         # Create the actual geometry that encompass the grid
-        ia, xyz, _ = geometry.inf_within(sc)
+        ia, xyz, _ = geometry.within_inf(sc)
         if len(ia) > 0:
             grid.set_geometry(Geometry(xyz, geometry.atom[ia], sc=sc))
 
@@ -502,14 +502,14 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)
-    IA, XYZ, ISC = geometry.inf_within(sc)
+    IA, XYZ, ISC = geometry.within_inf(sc)
 
     r_k = dot(geometry.rcell, k)
     r_k_cell = dot(r_k, geometry.cell)
     phase = 1
 
     # Retrieve progressbar
-    eta = tqdm_eta(len(IA), 'psi', 'atom', eta)
+    eta = tqdm_eta(len(IA), 'wavefunction', 'atom', eta)
 
     # Loop over all atoms in the full supercell structure
     for ia, xyz, isc in zip(IA, XYZ - grid.origo.reshape(1, 3), ISC):
