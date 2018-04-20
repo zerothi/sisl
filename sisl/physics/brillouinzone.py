@@ -125,7 +125,7 @@ class BrillouinZone(object):
 
         eta : bool, optional
            if true a progress-bar is created, default false.
-        wraps : callable, optional
+        wrap : callable, optional
            a function that accepts the output of the given routine and post-process
            it. Defaults to ``lambda x: x``.
 
@@ -148,12 +148,12 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wraps = kwargs.pop('wraps', _do_nothing)
+            wrap = kwargs.pop('wrap', _do_nothing)
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray()',
                            'k', kwargs.pop('eta', False))
             for i, k in enumerate(self):
                 if i == 0:
-                    v = wraps(func(*args, k=k, **kwargs))
+                    v = wrap(func(*args, k=k, **kwargs))
                     if len(self) == 1:
                         return v
                     shp = [len(self)]
@@ -162,7 +162,7 @@ class BrillouinZone(object):
                     a[i, :] = v[:]
                     del v
                 else:
-                    a[i, :] = wraps(func(*args, k=k, **kwargs))
+                    a[i, :] = wrap(func(*args, k=k, **kwargs))
                 eta.update()
             eta.close()
             return a
@@ -181,14 +181,16 @@ class BrillouinZone(object):
 
         eta : bool, optional
            if true a progress-bar is created, default false.
-        wraps : callable, optional
+        wrap : callable, optional
            a function that accepts the output of the given routine and post-process
            it. Defaults to ``lambda x: x``.
 
         Examples
         --------
         >>> obj = BrillouinZone(...) # doctest: +SKIP
-        >>> obj.aslist().eigenstate(eta=True) # doctest: +SKIP
+        >>> def first_ten(es):
+        ...    return es.sub(range(10))
+        >>> obj.aslist().eigenstate(eta=True, wrap=first_ten) # doctest: +SKIP
 
         See Also
         --------
@@ -199,12 +201,12 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wraps = kwargs.pop('wraps', _do_nothing)
+            wrap = kwargs.pop('wrap', _do_nothing)
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist()',
                            'k', kwargs.pop('eta', False))
             a = [None] * len(self)
             for i, k in enumerate(self):
-                a[i] = wraps(func(*args, k=k, **kwargs))
+                a[i] = wrap(func(*args, k=k, **kwargs))
                 eta.update()
             eta.close()
             return a
@@ -224,7 +226,7 @@ class BrillouinZone(object):
 
         eta : bool, optional
            if true a progress-bar is created, default false.
-        wraps : callable, optional
+        wrap : callable, optional
            a function that accepts the output of the given routine and post-process
            it. Defaults to ``lambda x: x``.
 
@@ -247,11 +249,11 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wraps = kwargs.pop('wraps', _do_nothing)
+            wrap = kwargs.pop('wrap', _do_nothing)
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield()',
                            'k', kwargs.pop('eta', False))
             for k in self:
-                yield wraps(func(*args, k=k, **kwargs).astype(dtype, copy=False))
+                yield wrap(func(*args, k=k, **kwargs).astype(dtype, copy=False))
                 eta.update()
             eta.close()
         # Set instance __call__
@@ -270,7 +272,7 @@ class BrillouinZone(object):
 
         eta : bool, optional
            if true a progress-bar is created, default false.
-        wraps : callable, optional
+        wrap : callable, optional
            a function that accepts the output of the given routine and post-process
            it. Defaults to ``lambda x: x``.
 
@@ -298,15 +300,15 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wraps = kwargs.pop('wraps', _do_nothing)
+            wrap = kwargs.pop('wrap', _do_nothing)
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage()',
                            'k', kwargs.pop('eta', False))
             w = self.weight.view()
             for i, k in enumerate(self):
                 if i == 0:
-                    v = wraps(func(*args, k=k, **kwargs)) * w[i]
+                    v = wrap(func(*args, k=k, **kwargs)) * w[i]
                 else:
-                    v += wraps(func(*args, k=k, **kwargs)) * w[i]
+                    v += wrap(func(*args, k=k, **kwargs)) * w[i]
                 eta.update()
             eta.close()
             return v

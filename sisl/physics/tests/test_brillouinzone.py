@@ -170,7 +170,7 @@ class TestBrillouinZone(object):
         # Average needs to be performed
         assert np.allclose((asarray / len(bz)).sum(0), asaverage)
 
-    def test_as_wraps(self):
+    def test_as_wrap(self):
         from sisl import geom, Hamiltonian
         g = geom.graphene()
         H = Hamiltonian(g)
@@ -179,13 +179,13 @@ class TestBrillouinZone(object):
         bz = MonkhorstPack(H, [2, 2, 2], trs=False)
         assert len(bz) == 2 ** 3
 
-        # Check with a wraps function
+        # Check with a wrap function
         def wrap_reverse(arg):
             return arg[::-1]
-        asarray = bz.asarray().eigh(wraps=wrap_reverse)
-        aslist = np.array(bz.aslist().eigh(wraps=wrap_reverse))
-        asyield = np.array([a for a in bz.asyield().eigh(wraps=wrap_reverse)])
-        asaverage = bz.asaverage().eigh(wraps=wrap_reverse)
+        asarray = bz.asarray().eigh(wrap=wrap_reverse)
+        aslist = np.array(bz.aslist().eigh(wrap=wrap_reverse))
+        asyield = np.array([a for a in bz.asyield().eigh(wrap=wrap_reverse)])
+        asaverage = bz.asaverage().eigh(wrap=wrap_reverse)
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
         # Average needs to be performed
