@@ -30,6 +30,7 @@ real-space wavefunctions.
 from __future__ import print_function, division
 
 import numpy as np
+from numpy import floor, ceil
 from numpy import conj, dot, take, ogrid
 from numpy import arctan2, cos, sin, pi, int32
 from numpy import add, sqrt, divide
@@ -497,7 +498,12 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # Instead of looping all atoms in the supercell we find the exact atoms
     # and their supercell indices.
     add_R = _a.zerosd(3) + geometry.maxR()
-    sc = sc + np.diag(add_R * 2)
+    # Calculate the required additional vectors required to increase the fictitious
+    # supercell by add_R in each direction.
+    # For extremely skewed lattices this will be way too much.
+    # But perhaps these supercells are often small?
+    sc = sc + dot(add_R, sc.icell.T).reshape(3, 1) * sc.cell
+
     sc.origo = sc.origo[:] - add_R
 
     # Retrieve all atoms within the grid supercell
@@ -525,8 +531,8 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
         # Get indices in the supercell grid
         idx = (isc.reshape(3, 1) * geom_shape).sum(0)
-        idxm = (idx_mm[ia, 0, :] + idx).astype(int32)
-        idxM = (idx_mm[ia, 1, :] + idx).astype(int32) + 1
+        idxm = floor(idx_mm[ia, 0, :] + idx).astype(int32)
+        idxM = ceil(idx_mm[ia, 1, :] + idx).astype(int32) + 1
 
         # Fast check whether we can skip this point
         if idxm[0] >= shape[0] or idxm[1] >= shape[1] or idxm[2] >= shape[2] or \
