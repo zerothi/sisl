@@ -48,14 +48,14 @@ def get_distribution(method, smearing=0.1, x0=0.):
     The Gaussian distribution is calculated as:
 
     .. math::
-        G(x,x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x-x_0)^2}{2\sigma^2}\Big]
+        G(x,\sigma,x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x-x_0)^2}{2\sigma^2}\Big]
 
     where :math:`\sigma` is the `smearing` parameter.
 
     The Lorentzian distribution is calculated as:
 
     .. math::
-        L(x,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
+        L(x,\sigma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
 
     where :math:`\gamma` is the `smearing` parameter, note that here :math:`\gamma` is the
     half-width at half-maximum (:math:`2\gamma` the full-width at half-maximum).
@@ -87,7 +87,7 @@ def gaussian(x, sigma=0.1, x0=0.):
     r""" Gaussian distribution function
 
     .. math::
-        G(x, x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x - x_0)^2}{2\sigma^2}\Big]
+        G(x,\sigma,x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x - x_0)^2}{2\sigma^2}\Big]
 
     Parameters
     ----------
@@ -110,7 +110,7 @@ def lorentzian(x, gamma=0.1, x0=0.):
     r""" Lorentzian distribution function
 
     .. math::
-        L(x,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
+        L(x,\sigma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
 
     Parameters
     ----------
@@ -155,7 +155,7 @@ def fermi_dirac(E, kT=0.1, mu=0.):
 def bose_einstein(E, kT=0.1, mu=0.):
     r""" Bose-Einstein distribution function
 
-`    .. math::
+    .. math::
         n_B(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] - 1}
 
     Parameters
@@ -179,7 +179,7 @@ def cold(E, kT=0.1, mu=0.):
     r""" Cold smearing function, Marzari-Vanderbilt, PRL 82, 16, 1999
 
     .. math::
-        C(E,k_BT,\mu) = \frac12 + \operator{erf}\Big(-\frac{E-\mu}{k_BT}-\frac1{\sqrt{2}}\Big)
+        C(E,k_BT,\mu) = \frac12 + \mathrm{erf}\Big(-\frac{E-\mu}{k_BT}-\frac1{\sqrt{2}}\Big)
         + \frac1{\sqrt{2\pi} \exp\Bigg\{-\Big[\frac{E-\mu}{k_BT}+\frac1{\sqrt{2}}\Big]^2\Bigg\}
 
     Parameters
