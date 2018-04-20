@@ -30,7 +30,7 @@ different routines for electronic structure calculations.
    sisl.geom
    sisl.geom.basic
    sisl.physics
-   sisl.physics.distributions
+   sisl.physics.distribution
    sisl.physics.electron
    sisl.shape
    sisl.io
