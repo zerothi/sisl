@@ -1,7 +1,7 @@
 """Distribution functions
 =========================
 
-.. module:: sisl.physics.distributions
+.. module:: sisl.physics.distribution
    :noindex:
 
 Various distributions using different smearing techniques.
@@ -9,11 +9,12 @@ Various distributions using different smearing techniques.
 .. autosummary::
    :toctree:
 
-   distribution
+   get_distribution
    gaussian
    lorentzian
    fermi_dirac
    bose_einstein
+   cold
 
 
 .. autofunction:: gaussian
@@ -24,6 +25,8 @@ Various distributions using different smearing techniques.
    :noindex:
 .. autofunction:: bose_einstein
    :noindex:
+.. autofunction:: cold
+   :noindex:
 
 """
 from __future__ import print_function, division
@@ -31,26 +34,28 @@ from __future__ import print_function, division
 from functools import partial
 
 import numpy as np
+from scipy.special import erf
 _pi = np.pi
 _sqrt_2pi = (2 * _pi) ** 0.5
 
-__all__ = ['distribution', 'gaussian', 'lorentzian', 'fermi_dirac', 'bose_einstein']
+__all__ = ['get_distribution', 'gaussian', 'lorentzian']
+__all__ += ['fermi_dirac', 'bose_einstein', 'cold']
 
 
-def distribution(method, smearing=0.1):
-    r""" Create a distribution function for input in e.g. `DOS`. Gaussian, Lorentzian etc.
+def get_distribution(method, smearing=0.1, x0=0.):
+    r""" Create a distribution function, Gaussian, Lorentzian etc.
 
     The Gaussian distribution is calculated as:
 
     .. math::
-        G(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- x^2}{2\sigma^2}\Big]
+        G(x,x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x-x_0)^2}{2\sigma^2}\Big]
 
     where :math:`\sigma` is the `smearing` parameter.
 
     The Lorentzian distribution is calculated as:
 
     .. math::
-        L(x) = \frac{1}{\pi}\frac{\gamma}{x^2 + \gamma^2}
+        L(x,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
 
     where :math:`\gamma` is the `smearing` parameter, note that here :math:`\gamma` is the
     half-width at half-maximum (:math:`2\gamma` the full-width at half-maximum).
@@ -58,73 +63,74 @@ def distribution(method, smearing=0.1):
     Parameters
     ----------
     method: {'gaussian', 'lorentzian'}
-        the distribution function
+       distribution function
     smearing: float, optional
-        the smearing parameter for the method (:math:`\sigma` for Gaussian, :math:`\gamma` for Lorenztian etc.)
+       smearing parameter for the method (:math:`\sigma` for Gaussian, :math:`\gamma` for Lorenztian etc.)
+    x0: float, optional
+       maximum of the distribution function
 
     Returns
     -------
     callable
         a function which accepts one argument
     """
-    if method.lower() in ['gauss', 'gaussian']:
-        return partial(gaussian, sigma=smearing)
-    elif method.lower() in ['lorentz', 'lorentzian']:
-        return partial(lorentzian, gamma=smearing)
-    raise ValueError("distribution currently only implements 'gaussian' or "
-                     "'lorentzian' distribution functions")
+    m = method.lower()
+    if m in ['gauss', 'gaussian']:
+        return partial(gaussian, sigma=smearing, x0=x0)
+    elif m in ['lorentz', 'lorentzian']:
+        return partial(lorentzian, gamma=smearing, x0=x0)
+    raise ValueError("get_distribution currently only implements 'gaussian' or "
+                     "'lorentzian' distribution functions.")
 
 
-def gaussian(x, sigma=0.1):
+def gaussian(x, sigma=0.1, x0=0.):
     r""" Gaussian distribution function
 
-    The Gaussian distribution is calculated as:
-
     .. math::
-        G(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- x^2}{2\sigma^2}\Big]
+        G(x, x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x - x_0)^2}{2\sigma^2}\Big]
 
     Parameters
     ----------
     x: array_like
-        the points at which the Gaussian distribution is calculated
+        points at which the Gaussian distribution is calculated
     sigma: float, optional
-        the spread of the Gaussian
+        spread of the Gaussian
+    x0: float, optional
+        maximum position of the Gaussian
 
     Returns
     -------
     numpy.ndarray
         the Gaussian distribution, same length as `x`
     """
-    return np.exp(-x ** 2 / (2 * sigma ** 2)) / (_sqrt_2pi * sigma)
+    return np.exp(-(x - x0) ** 2 / (2 * sigma ** 2)) / (_sqrt_2pi * sigma)
 
 
-def lorentzian(x, gamma=0.1):
+def lorentzian(x, gamma=0.1, x0=0.):
     r""" Lorentzian distribution function
 
-    The Lorentzian distribution is calculated as:
-
     .. math::
-        L(x) = \frac{1}{\pi}\frac{\gamma}{x^2 + \gamma^2}
+        L(x,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
 
     Parameters
     ----------
     x: array_like
-        the points at which the Lorentzian distribution is calculated
+        points at which the Lorentzian distribution is calculated
     gamma: float, optional
-        the spread of the Lorentzian
+        spread of the Lorentzian
+    x0: float, optional
+        maximum position of the Lorentzian
 
     Returns
     -------
     numpy.ndarray
         the Lorentzian distribution, same length as `x`
     """
-    return (gamma / _pi) / (x ** 2 + gamma ** 2)
+    return (gamma / _pi) / ((x - x0) ** 2 + gamma ** 2)
 
 
 def fermi_dirac(E, kT=0.1, mu=0.):
     r""" Fermi-Dirac distribution function
-
-    The Fermi distribution is calculated as:
 
     .. math::
         n_F(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] + 1}
@@ -149,9 +155,7 @@ def fermi_dirac(E, kT=0.1, mu=0.):
 def bose_einstein(E, kT=0.1, mu=0.):
     r""" Bose-Einstein distribution function
 
-    The Bose-Einstein distribution is calculated as:
-
-    .. math::
+`    .. math::
         n_B(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] - 1}
 
     Parameters
@@ -169,3 +173,28 @@ def bose_einstein(E, kT=0.1, mu=0.):
         the Bose-Einstein distribution, same length as `E`
     """
     return 1. / (np.exp((E - mu) / kT) - 1.)
+
+
+def cold(E, kT=0.1, mu=0.):
+    r""" Cold smearing function, Marzari-Vanderbilt, PRL 82, 16, 1999
+
+    .. math::
+        C(E,k_BT,\mu) = \frac12 + \operator{erf}\Big(-\frac{E-\mu}{k_BT}-\frac1{\sqrt{2}}\Big)
+        + \frac1{\sqrt{2\pi} \exp\Bigg\{-\Big[\frac{E-\mu}{k_BT}+\frac1{\sqrt{2}}\Big]^2\Bigg\}
+
+    Parameters
+    ----------
+    E: array_like
+        energy evaluation points
+    kT: float, optional
+        temperature broadening
+    mu: float, optional
+        chemical potential
+
+    Returns
+    -------
+    numpy.ndarray
+        the Cold smearing distribution function, same length as `E`
+    """
+    x = - (E - mu) / kT - 1 / 2 ** 0.5
+    return 0.5 + 0.5 * erf(x) + 1 / _sqrt_2pi * np.exp(-x**2)

@@ -38,7 +38,7 @@ from sisl.geometry import Geometry
 import sisl._array as _a
 from sisl.messages import info, warn, tqdm_eta
 from sisl._help import dtype_complex_to_real, _range as range
-from .distributions import distribution as dist_func
+from .distribution import get_distribution
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
 from .state import Coefficient, State, StateC
@@ -82,7 +82,7 @@ def DOS(E, eig, distribution='gaussian'):
     numpy.ndarray : DOS calculated at energies, has same length as `E`
     """
     if isinstance(distribution, str):
-        distribution = dist_func(distribution)
+        distribution = get_distribution(distribution)
 
     DOS = distribution(E - eig[0])
     for i in range(1, len(eig)):
@@ -164,17 +164,16 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
         indicated in the above list.
     """
     if isinstance(distribution, str):
-        distribution = dist_func(distribution)
+        distribution = get_distribution(distribution)
 
     # Figure out whether we are dealing with a non-collinear calculation
     if S is None:
-        class __S(object):
+        class S(object):
             __slots__ = []
             shape = (eig_v.shape[1], eig_v.shape[1])
             @staticmethod
             def dot(v):
                 return v
-        S = __S()
 
     if spin is None:
         if S.shape[1] == eig_v.shape[1] // 2:
@@ -265,25 +264,24 @@ def spin_moment(eig_v, S=None):
     Returns
     -------
     numpy.ndarray
-        spin moments per eigenvector with final dimension ``(3, eig_v.shape[0])``.
+        spin moments per eigenvector with final dimension ``(eig_v.shape[0], 3)``.
     """
     if eig_v.ndim == 1:
         return spin_moment(eig_v.reshape(1, -1), S).ravel()
 
     if S is None:
-        class __S(object):
+        class S(object):
             __slots__ = []
             shape = (eig_v.shape[1] // 2, eig_v.shape[1] // 2)
             @staticmethod
             def dot(v):
                 return v
-        S = __S()
 
     if S.shape[1] == eig_v.shape[1]:
         S = S[::2, ::2]
 
     # Initialize
-    s = np.empty([3, eig_v.shape[0]], dtype=dtype_complex_to_real(eig_v.dtype))
+    s = np.empty([eig_v.shape[0], 3], dtype=dtype_complex_to_real(eig_v.dtype))
 
     # TODO consider doing this all in a few lines
     # TODO Since there are no energy dependencies here we can actually do all
@@ -292,10 +290,10 @@ def spin_moment(eig_v, S=None):
     for i in range(len(eig_v)):
         v = S.dot(eig_v[i].reshape(-1, 2))
         D = (conj(eig_v[i]) * v.ravel()).real.reshape(-1, 2)
-        s[2, i] = (D[:, 0] - D[:, 1]).sum()
+        s[i, 2] = (D[:, 0] - D[:, 1]).sum()
         D = 2 * (conj(eig_v[i, 1::2]) * v[:, 0]).sum()
-        s[0, i] = D.real
-        s[1, i] = D.imag
+        s[i, 0] = D.real
+        s[i, 1] = D.imag
 
     return s
 
@@ -626,10 +624,9 @@ class _common_State(object):
     def __is_nc(self):
         """ Internal routine to check whether this is a non-collinear calculation """
         try:
-            spin = self.parent.spin
+            return self.parent.spin > Spin.POLARIZED
         except:
-            spin = Spin()
-        return spin.kind > Spin.POLARIZED
+            return False
 
     def Sk(self, format='csr', spin=None):
         r""" Retrieve the overlap matrix corresponding to the originating parent structure.
@@ -667,7 +664,7 @@ class _common_State(object):
                 return v
 
         if spin is None:
-            return __FakeSk()
+            return __FakeSk
         if spin.kind > Spin.POLARIZED:
             class __FakeSk(object):
                 """ Replacement object which superseedes a matrix """
@@ -676,7 +673,7 @@ class _common_State(object):
                 @staticmethod
                 def dot(v):
                     return v
-        return __FakeSk()
+        return __FakeSk
 
     def norm2(self, sum=True):
         r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`

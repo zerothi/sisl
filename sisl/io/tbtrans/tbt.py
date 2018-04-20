@@ -24,7 +24,7 @@ from sisl import Geometry, Atoms
 from sisl.messages import warn, info, SislError
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
-from sisl.physics.distributions import fermi_dirac
+from sisl.physics.distribution import fermi_dirac
 
 
 __all__ = ['tbtncSileTBtrans', 'phtncSileTBtrans']
