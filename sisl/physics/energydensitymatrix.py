@@ -6,14 +6,9 @@ __all__ = ['EnergyDensityMatrix']
 
 
 class EnergyDensityMatrix(SparseOrbitalBZSpin):
-    """ EnergyDensityMatrix object containing the energy density matrix elements
+    """ Sparse energy density matrix object
 
-    The object contains information regarding the
-     - geometry
-     - energy density matrix elements between orbitals
-
-    Assigning or changing elements is as easy as with
-    standard `numpy` assignments:
+    Assigning or changing elements is as easy as with standard `numpy` assignments:
 
     >>> EDM = EnergyDensityMatrix(...) # doctest: +SKIP
     >>> EDM.E[1,2] = 0.1 # doctest: +SKIP
@@ -58,16 +53,16 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-          E(k) = E_{ij} e^{i k R}
+          E(k) = E_{\nu\mu} e^{i k R}
 
-        where :math:`R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-          E(k) = E_{ij} e^{i k r}
+          E(k) = E_{\nu\mu} e^{i k r}
 
-        where :math:`r` is the distance between the orbitals :math:`i` and :math:`j`.
+        where :math:`r` is the distance between the orbitals :math:`\nu` and :math:`\mu`.
         Currently the second gauge is not implemented (yet).
 
         Parameters

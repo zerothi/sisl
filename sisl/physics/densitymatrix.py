@@ -19,14 +19,9 @@ __all__ = ['DensityMatrix']
 
 
 class DensityMatrix(SparseOrbitalBZSpin):
-    """ DensityMatrix object containing the density matrix elements
+    """ Sparse density matrix object
 
-    The object contains information regarding the
-     - geometry
-     - density matrix elements between orbitals
-
-    Assigning or changing elements is as easy as with
-    standard `numpy` assignments:
+    Assigning or changing elements is as easy as with standard `numpy` assignments:
 
     >>> DM = DensityMatrix(...) # doctest: +SKIP
     >>> DM.D[1,2] = 0.1 # doctest: +SKIP
@@ -56,6 +51,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
     """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        """ Initialize density matrix """
         super(DensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
 
         self.Dk = self.Pk
@@ -71,16 +67,16 @@ class DensityMatrix(SparseOrbitalBZSpin):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-          D(k) = D_{ij} e^{i k R}
+          D(k) = D_{\nu\mu} e^{i k R}
 
-        where :math:`R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-          D(k) = D_{ij} e^{i k r}
+          D(k) = D_{\nu\mu} e^{i k r}
 
-        where :math:`r` is the distance between the orbitals :math:`i` and :math:`j`.
+        where :math:`r` is the distance between the orbitals :math:`\nu` and :math:`\mu`.
         Currently the second gauge is not implemented (yet).
 
         Parameters
@@ -117,27 +113,26 @@ class DensityMatrix(SparseOrbitalBZSpin):
     D = property(_get_D, _set_D)
 
     def rho(self, grid, spinor=None, eta=False):
-        r""" Expand the density matrix to a density on the grid
+        r""" Expand the density matrix to the charge density on a grid
 
-        This routine calculates the real-space density components in the
-        specified grid.
+        This routine calculates the real-space density components on a specified grid.
 
         This is an *in-place* operation that *adds* to the current values in the grid.
 
         Note: To calculate :math:`\rho(\mathbf r)` in a unit-cell different from the
-        originating geometry, simply pass a grid with a unit-cell smaller than the originating
+        originating geometry, simply pass a grid with a unit-cell different than the originating
         supercell.
 
         The real-space density is calculated as:
 
         .. math::
-            \psi(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \mathbf \rho_{\nu\mu}
+            \rho(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) D_{\nu\mu}
 
         While for non-collinear/spin-orbit calculations the wavefunctions are determined from the
         spinor component (`spinor`) by
 
         .. math::
-           \psi_{\sigma'}(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \sum_\alpha [\sigma' \mathbf \rho_{\nu\mu}]_{\alpha\alpha}
+           \rho_{\boldsymbol\sigma}(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \sum_\alpha [\sigma' \mathbf \rho_{\nu\mu}]_{\alpha\alpha}
 
         so to get only the :math:`x` component of the density one should pass the Pauli :math:`\sigma_x` matrix (`Spin.X`).
 

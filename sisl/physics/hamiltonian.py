@@ -11,16 +11,9 @@ __all__ = ['Hamiltonian']
 
 
 class Hamiltonian(SparseOrbitalBZSpin):
-    """ Object containing the coupling constants between orbitals.
+    """ Sparse Hamiltonian matrix object
 
-    The Hamiltonian object contains information regarding the
-     - geometry
-     - coupling constants between orbitals
-
-    It contains an intrinsic sparse matrix of the Hamiltonian elements.
-
-    Assigning or changing Hamiltonian elements is as easy as with
-    standard `numpy` assignments:
+    Assigning or changing Hamiltonian elements is as easy as with standard `numpy` assignments:
 
     >>> ham = Hamiltonian(...) # doctest: +SKIP
     >>> ham.H[1,2] = 0.1 # doctest: +SKIP
@@ -50,6 +43,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
     """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        """ Initialize Hamiltonian """
         super(Hamiltonian, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
 
         self.Hk = self.Pk
@@ -65,16 +59,16 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-          H(k) = H_{ij} e^{i k R}
+          \mathbf H(k) = \mathbf H_{\nu\mu} e^{i k R}
 
-        where :math:`R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-          H(k) = H_{ij} e^{i k r}
+          \mathbf H(k) = \mathbf H_{\nu\mu} e^{i k r}
 
-        where :math:`r` is the distance between the orbitals :math:`i` and :math:`j`.
+        where :math:`r` is the distance between the orbitals :math:`\nu` and :math:`\mu`.
         Currently the second gauge is not implemented (yet).
 
         Parameters
