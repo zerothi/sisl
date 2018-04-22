@@ -363,9 +363,9 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     """
     if geometry is None:
         geometry = grid.geometry
-        warn('psi was not passed a geometry associated, will use the geometry associated with the Grid.')
+        warn('wavefunction was not passed a geometry associated, will use the geometry associated with the Grid.')
     if geometry is None:
-        raise SislError('psi did not find a usable Geometry through keywords or the Grid!')
+        raise SislError('wavefunction did not find a usable Geometry through keywords or the Grid!')
 
     # In case the user has passed several vectors we sum them to plot the summed state
     if v.ndim == 2:
@@ -375,21 +375,21 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         if len(v) // 2 == geometry.no:
             # We can see from the input that the vector *must* be a non-collinear calculation
             v = v.reshape(-1, 2)[:, spinor]
-            info('psi assumes the input wavefunction coefficients to originate from a non-collinear calculation!')
+            info('wavefunction assumes the input wavefunction coefficients to originate from a non-collinear calculation!')
 
     elif spin.kind > Spin.POLARIZED:
         # For non-collinear cases the user selects the spinor component.
         v = v.reshape(-1, 2)[:, spinor]
 
     if len(v) != geometry.no:
-        raise ValueError("psi require wavefunction coefficients corresponding to number of orbitals in the geometry.")
+        raise ValueError("wavefunction require wavefunction coefficients corresponding to number of orbitals in the geometry.")
 
     # Check for k-points
     k = _a.asarrayd(k)
     kl = (k ** 2).sum() ** 0.5
     has_k = kl > 0.000001
     if has_k:
-        raise NotImplementedError('psi for k != Gamma does not produce correct wavefunctions!')
+        raise NotImplementedError('wavefunction for k != Gamma does not produce correct wavefunctions!')
 
     # Check that input/grid makes sense.
     # If the coefficients are complex valued, then the grid *has* to be
@@ -397,7 +397,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # Likewise if a k-point has been passed.
     is_complex = np.iscomplexobj(v) or has_k
     if is_complex and not np.iscomplexobj(grid.grid):
-        raise SislError("psi input coefficients are complex, while grid only contains real.")
+        raise SislError("wavefunction input coefficients are complex, while grid only contains real.")
 
     if is_complex:
         psi_init = _a.zerosz
@@ -517,7 +517,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # Retrieve progressbar
     eta = tqdm_eta(len(IA), 'wavefunction', 'atom', eta)
 
-    # Loop over all atoms in the full supercell structure
+    # Loop over all atoms in the grid-cell
     for ia, xyz, isc in zip(IA, XYZ - grid.origo.reshape(1, 3), ISC):
         # Get current atom
         atom = geometry.atom[ia]
