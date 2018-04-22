@@ -288,23 +288,22 @@ class ncSileSiesta(SileCDFSiesta):
                 'RhoXC': 1. / BohrC2AngC,
                 'RhoBader': 1. / BohrC2AngC,
                 'Chlocal': 1. / BohrC2AngC,
-        }
+        }.get(name, 1.)
 
         if len(v[:].shape) == 3:
-            grid.grid = v[:, :, :] * unit.get(name, 1.)
+            grid.grid = v[:, :, :] * unit
         elif isinstance(spin, Integral):
-            grid.grid = v[spin, :, :, :] * unit.get(name, 1.)
+            grid.grid = v[spin, :, :, :] * unit
         else:
             if len(spin) > v.shape[0]:
                 raise SileError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
                                 'an array of length equal to the number of spin components.')
-            grid.grid[:, :, :] = v[0, :, :, :] * spin[0]
+            grid.grid[:, :, :] = v[0, :, :, :] * (spin[0] * unit)
             for i, scale in enumerate(spin[1:]):
-                grid.grid[:, :, :] += v[1+i, :, :, :] * scale
+                grid.grid[:, :, :] += v[1+i, :, :, :] * (scale * unit)
 
         try:
-            u = v.unit
-            if u == 'Ry':
+            if v.unit == 'Ry':
                 # Convert to ev
                 grid *= Ry2eV
         except:
