@@ -2959,7 +2959,7 @@ class Geometry(SuperCellChild):
         ia : numpy.ndarray
            unit-cell atomic indices which are inside the `sc` cell
         xyz : numpy.ndarray
-           atomic coordinates for the `ia` atoms
+           atomic coordinates for the `ia` atoms (including supercell offsets)
         isc : numpy.ndarray
            integer supercell offsets for `ia` atoms
         """

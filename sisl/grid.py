@@ -10,7 +10,7 @@ from numpy import ogrid, take
 
 import sisl._array as _a
 from ._help import dtype_complex_to_real
-from .shape import Shape
+from .shape import Shape, Cuboid, Ellipsoid
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction, str_spec
 from .utils import array_arange
@@ -451,6 +451,21 @@ class Grid(SuperCellChild):
         """
         ret_idx = np.delete(_a.arangei(self.shape[axis]), _a.asarrayi(idx))
         return self.sub(ret_idx, axis)
+
+    def index2xyz(self, index):
+        """ Real-space coordinates of indices related to the grid
+
+        Parameters
+        ----------
+        index : array_like
+           indices for grid-positions
+
+        Returns
+        -------
+        numpy.ndarray:
+           coordinates of the indices with respect to this grid spacing
+        """
+        return dot(np.asarray(index), self.dcell)
 
     def _index_shape(self, shape):
         """ Internal routine for shape-indices """

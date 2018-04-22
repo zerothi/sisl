@@ -1116,13 +1116,13 @@ class Atom(object):
         """ Return number of orbitals in this atom """
         return self.no
 
-    def toSphere(self):
+    def toSphere(self, center=None):
         """ Return a sphere with the maximum orbital radius equal
 
         Returns
         -------
         Sphere : the sphere with a radius equal to the maximum radius of the orbitals"""
-        return Sphere(self.maxR())
+        return Sphere(self.maxR(), center)
 
     def equal(self, other, R=True, psi=False):
         """ True if `other` is the same as this atomic specie

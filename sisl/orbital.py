@@ -134,13 +134,13 @@ class Orbital(object):
         """ Return a named specification of the orbital (`tag`) """
         return self.tag
 
-    def toSphere(self):
+    def toSphere(self, center=None):
         """ Return a sphere with radius equal to the orbital size
 
         Returns
         -------
         Sphere : the sphere with a radius equal to the radius of this orbital"""
-        return Sphere(self.R)
+        return Sphere(self.R, center)
 
     def equal(self, other, psi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
