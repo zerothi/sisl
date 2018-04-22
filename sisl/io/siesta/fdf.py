@@ -528,7 +528,7 @@ class fdfSileSiesta(SileSiesta):
         if spgeom.na != geom.na and spgeom.no == geom.no:
             # In this case we cannot compare individiual atoms # of orbitals.
             # I.e. we suspect the incoming geometry to be correct.
-            spgeom._geom = geom
+            spgeom._geometry = geom
             return True
 
         elif spgeom.na != geom.na:
