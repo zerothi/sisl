@@ -1,18 +1,23 @@
 from __future__ import print_function, division
 
 from numbers import Integral
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix, triu, tril
+from scipy.sparse import hstack as ss_hstack
 import numpy as np
-from numpy import dot, take
-from numpy import logical_and as log_and
+from numpy import dot, unique, delete, allclose
+from numpy import cos, sin, arctan2, sqrt, divide
 
 
 import sisl._array as _a
-from sisl.messages import warn, tqdm_eta
+from sisl._indices import indices_le
+from sisl.messages import warn, SislError, tqdm_eta
+from sisl.geometry import Geometry
 from sisl._help import _zip as zip, _range as range
 from sisl.utils.ranges import array_arange
 from sisl.utils.mathematics import cart2spher
 from .spin import Spin
+from sisl.sparse import SparseCSR
+from sisl.sparse_geometry import SparseOrbital
 from .sparse import SparseOrbitalBZSpin
 
 __all__ = ['DensityMatrix']
@@ -128,13 +133,14 @@ class DensityMatrix(SparseOrbitalBZSpin):
         .. math::
             \rho(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) D_{\nu\mu}
 
-        While for non-collinear/spin-orbit calculations the wavefunctions are determined from the
+        While for non-collinear/spin-orbit calculations the density is determined from the
         spinor component (`spinor`) by
 
         .. math::
-           \rho_{\boldsymbol\sigma}(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \sum_\alpha [\sigma' \mathbf \rho_{\nu\mu}]_{\alpha\alpha}
+           \rho_{\boldsymbol\sigma}(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \sum_\alpha [\boldsymbol\sigma \mathbf \rho_{\nu\mu}]_{\alpha\alpha}
 
-        so to get only the :math:`x` component of the density one should pass the Pauli :math:`\sigma_x` matrix (`Spin.X`).
+        Here :math:`\boldsymbol\sigma` corresponds to a spinor operator to extract relevant quantities. By passing the identity matrix the total charge is added. By using the Pauli matrix :math:`\boldsymbol\sigma_x`
+        only the :math:`x` component of the density is added to the grid (see `Spin.X`).
 
         Parameters
         ----------
@@ -146,15 +152,25 @@ class DensityMatrix(SparseOrbitalBZSpin):
            length 2 (defaults to total density).
            For non-collinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
         """
-        geom = self.geometry
+        try:
+            # Once unique has the axis keyword, we know we can safely
+            # use it in this routine
+            # Otherwise we raise an ImportError
+            unique([[0, 1], [2, 3]], axis=0)
+        except:
+            raise NotImplementedError(self.__class__.__name__ + '.rho requires numpy >= 1.13, either update '
+                                      'numpy or do not use this function.')
 
-        if geom is None:
-            geom = grid.geometry
+        geometry = self.geometry
 
         # Extract sub variables used throughout the loop
-        csr = self._csr
+        shape = _a.asarrayi(grid.shape)
         dcell = grid.dcell
-        frcell = grid.rcell.T / (2 * np.pi)
+        ic = grid.sc.icell * shape.reshape(1, -1)
+        geom_shape = dot(ic, geometry.cell.T).T
+
+        # Sparse matrix data
+        csr = self._csr
 
         # In the following we don't care about division
         # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
@@ -164,18 +180,20 @@ class DensityMatrix(SparseOrbitalBZSpin):
         DM = None
         if self.spin.kind > Spin.POLARIZED:
             if spinor is None:
-                spinor = _a.arrayz([[1., 0], [0., 1.]])
-            spinor = _a.arrayz(spinor)
+                # Default to the total density
+                spinor = np.identity(2, dtype=np.complex128)
+            else:
+                spinor = _a.arrayz(spinor)
             if spinor.size != 4 or spinor.ndim != 2:
                 raise ValueError(self.__class__.__name__ + '.rho with NC/SO spin, requires a 2x2 matrix.')
 
             DM = _a.emptyz([self.nnz, 2, 2])
             idx = array_arange(csr.ptr[:-1], n=csr.ncol)
-            if self.spin == Spin('NC'):
+            if self.spin.kind == Spin.NONCOLINEAR:
                 # non-collinear
                 DM[:, 0, 0] = csr._D[idx, 0]
                 DM[:, 1, 1] = csr._D[idx, 1]
-                DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3]
+                DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3] #TODO check sign here!
                 DM[:, 0, 1] = np.conj(DM[:, 1, 0])
             else:
                 # spin-orbit
@@ -189,22 +207,22 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
         elif self.spin.kind == Spin.POLARIZED:
             if spinor is None:
-                spinor = _a.arrayd([1., 1.])
-            if isinstance(spinor, Integral):
+                spinor = _a.onesd(2)
+
+            elif isinstance(spinor, Integral):
                 # extract the provided spin-polarization
-                s = [0.] * 2
+                s = _a.zerosd(2)
                 s[spinor] = 1.
                 spinor = s
-            spinor = _a.arrayd(spinor)
+            else:
+                spinor = _a.arrayd(spinor)
 
             if spinor.size != 2 or spinor.ndim != 1:
-                raise ValueError(self.__class__.__name__ + '.rho with polarized spin, requires an integer, or a vector of length 2')
+                raise ValueError(self.__class__.__name__ + '.rho with polarized spin, requires spinor '
+                                 'argument as an integer, or a vector of length 2')
 
-            DM = _a.emptyd([self.nnz, 2])
             idx = array_arange(csr.ptr[:-1], n=csr.ncol)
-            DM[:, 0] = csr._D[idx, 0]
-            DM[:, 1] = csr._D[idx, 1]
-            DM = dot(DM, spinor)
+            DM = csr._D[idx, 0] * spinor[0] + csr._D[idx, 1] * spinor[1]
 
         else:
             idx = array_arange(csr.ptr[:-1], n=csr.ncol)
@@ -214,122 +232,296 @@ class DensityMatrix(SparseOrbitalBZSpin):
         csrDM = csr_matrix((DM, csr.col[idx], np.insert(np.cumsum(csr.ncol), 0, 0)),
                            shape=(self.shape[:2]), dtype=DM.dtype)
         csrDM.eliminate_zeros()
-        csrDM.sort_indices()
         csrDM.prune()
 
         # Clean-up
         del idx, DM
 
-        # The shape of the grid, in a reshaped version
-        shape = _a.arrayi(grid.shape).reshape(1, 3)
-        # Retrieve all supercell atoms' coordinates
-        origo = grid.origo.reshape(1, 3)
-        all_xyz = (geom.axyz(np.arange(geom.na_s)) - origo).reshape(-1, 1, 3)
-
-        def add_DM(ia, atomi, xyzi, cscDM, ja, atomj, xyzj, s):
-
-            # Find all indices for the grid (they may be outside the cell).
-            idx = grid.index(s)
-            if len(idx) == 0:
-                return
-
-            # TODO currently we don't allow unit-cells larger than the calculating one
-            # because we would then need to figure out the relative atomic indices
-
-            # The grid unit-cell and the geometry unit-cell are the same
-            # Hence we can easily determine whether they are inside or out
-            idx2 = log_and(log_and.reduce(0 <= idx, axis=1),
-                           log_and.reduce(idx < shape, axis=1)).nonzero()[0]
-            if len(idx2) == 0:
-                return
-
-            idx = take(idx, idx2, axis=0)
-
-            # Calculate the positions of the indices according to the grid
-            # voxel cells
-            rxyz = dot(idx, dcell)
-
-            del idx2
-
-            # Figure out orbitals, instead of using all=True, we
-            # do it like this because it is fancy indexing which is easier
-            # on memory.
-            o1, o2 = geom.a2o([ja, ja+1])
-
-            # Retrieve the matrix that connects the two atoms (i in unit-cell, j in supercell)
-            ijDM = cscDM[:, o1:o2]
-            ijptr = ijDM.indptr.view()
-            ijind = ijDM.indices.view()
-            ijdm = ijDM.data.view()
-
-            # Get the two atoms spherical coordinates
-            rri, thetai, cos_phii = cart2spher(rxyz - xyzi, cos_phi=True)
-            if ia == ja:
-                rrj = rri.view()
-                thetaj = thetai.view()
-                cos_phij = cos_phii.view()
+        # To heavily speed up the construction of the density we can recreate
+        # the sparse csrDM matrix by summing the lower and upper triangular part.
+        # This means we only traverse the sparse UPPER part of the DM matrix
+        # I.e.:
+        #    psi_i * DM_{ij} * psi_j + psi_j * DM_{ji} * psi_i
+        # is equal to:
+        #    psi_i * (DM_{ij} + DM_{ji}) * psi_j
+        # Secondly, to ease the loops we extract the main diagonal (on-site terms)
+        # and store this for separate usage
+        csr_sum = [None] * geometry.n_s
+        no = geometry.no
+        no_s = geometry.no_s
+        primary_i_s = geometry.sc_index([0, 0, 0])
+        for i_s in range(geometry.n_s):
+            # Extract the csr matrix
+            o_start, o_end = i_s * no, (i_s + 1) * no
+            csr = csrDM[:, o_start:o_end]
+            if i_s == primary_i_s:
+                csr_sum[i_s] = triu(csr) + tril(csr, -1).transpose()
             else:
-                rrj, thetaj, cos_phij = cart2spher(rxyz - xyzj, cos_phi=True)
+                csr_sum[i_s] = csr
 
-            # Clean-up to reduce memory...
-            del rxyz
+        # Recreate the column-stacked csr matrix
+        csrDM = ss_hstack(csr_sum, format='csr')
+        del csr, csr_sum
 
-            # Now loop on all connections between the two atoms
-            psi = _a.emptyd(rri.shape)
-            for c in range(ijDM.shape[1]):
-                psi.fill(0.)
-                sl = slice(ijptr[c], ijptr[c+1])
-                for r, dm in zip(ijind[sl], ijdm[sl]):
-                    psi += dm * atomi.orbital[r].psi_spher(rri, thetai, cos_phii, cos_phi=True)
-                grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += psi * atomj.orbital[c].psi_spher(rrj, thetaj, cos_phij, cos_phi=True)
+        # Eliminate zeros and sort indices etc.
+        csrDM.eliminate_zeros()
+        csrDM.sort_indices()
+        csrDM.prune()
 
-        def skip_atom(a):
-            if a.maxR() <= 0.:
-                warn("Atom '{}' does not have a wave-function, skipping atom.".format(a))
-                # Skip this atom
-                return True
-            return False
+        # 1. Ensure the grid has a geometry associated with it
+        sc = grid.sc.copy()
+        if grid.geometry is None:
+            # Create the actual geometry that encompass the grid
+            ia, xyz, _ = geometry.within_inf(sc)
+            if len(ia) > 0:
+                grid.set_geometry(Geometry(xyz, geometry.atom[ia], sc=sc))
 
-        def unique_atom_edge(csrDM, ia):
-            slo = slice(csrDM.indptr[geom.firsto[ia]],
-                        csrDM.indptr[geom.lasto[ia] + 1])
-            ja = geom.o2a(csrDM.indices[slo], uniq=True)
-            return zip(ja, ja % geom.na)
+        # Instead of looping all atoms in the supercell we find the exact atoms
+        # and their supercell indices.
+        add_R = _a.zerosd(3) + geometry.maxR()
+        # Calculate the required additional vectors required to increase the fictitious
+        # supercell by add_R in each direction.
+        # For extremely skewed lattices this will be way too much.
+        # But perhaps these supercells are often small?
+        sc = sc + dot(add_R, sc.icell.T).reshape(3, 1) * sc.cell
+
+        sc.origo = sc.origo[:] - add_R
+
+        # Retrieve all atoms within the grid supercell
+        # (and the neighbours that connect into the cell)
+        IA, XYZ, ISC = geometry.within_inf(sc)
 
         # Retrieve progressbar
-        eta = tqdm_eta(len(geom), self.__class__.__name__ + '.rho', 'atom', eta)
+        eta = tqdm_eta(len(IA), self.__class__.__name__ + '.rho', 'atom', eta)
 
-        # Loop over all atoms in unitcell
-        for ia in geom:
+        cell = geometry.cell
+        atom = geometry.atom
+        axyz = geometry.axyz
+        a2o = geometry.a2o
+        o2a = geometry.o2a
+        firsto = geometry.firsto
+        osc2uc = geometry.osc2uc
+        sc2uc = geometry.sc2uc
 
+        def xyz2spherical(xyz, offset):
+            """ Calculate the spherical coordinates from indices """
+            rx = xyz[:, 0] - offset[0]
+            ry = xyz[:, 1] - offset[1]
+            rz = xyz[:, 2] - offset[2]
+
+            # Calculate radius ** 2
+            rr = rx ** 2 + ry ** 2 + rz ** 2
+            arctan2(ry, rx, out=rx) # theta == rx
+            sqrt(rr, out=ry) # rr == ry
+            divide(rz, ry, out=rz) # cos_phi == rz
+            rz[ry == 0.] = 0
+            return ry, rx, rz
+
+        def xyz2sphericalR(xyz, offset, R):
+            """ Calculate the spherical coordinates from indices """
+            rx = xyz[:, 0] - offset[0]
+            ry = xyz[:, 1] - offset[1]
+            rz = xyz[:, 2] - offset[2]
+
+            # Calculate radius ** 2
+            rr = rx ** 2 + ry ** 2 + rz ** 2
+            idx = indices_le(rr, R ** 2)
+            if len(idx) == 0:
+                return [], [], [], []
+            rx = rx[idx]
+            ry = ry[idx]
+            rz = rz[idx]
+            arctan2(ry, rx, out=rx) # theta == rx
+            sqrt(rr[idx], out=ry) # rr == ry
+            divide(rz, ry, out=rz) # cos_phi == rz
+            rz[ry == 0.] = 0
+            return idx, ry, rx, rz
+
+        # Looping atoms in the sparse pattern is better since we can pre-calculate
+        # the radial parts and then add them.
+        # First create a SparseOrbital matrix, then convert to SparseAtom
+        spO = SparseOrbital(geometry, dtype=np.int16)
+        spO._csr = SparseCSR(csrDM)
+        spA = spO.toSparseAtom(dtype=np.int16)
+        del spO
+        na = geometry.na
+        # Remove the diagonal part of the sparse atom matrix
+        off = na * primary_i_s
+        for ia in range(na):
+            del spA[ia, off + ia]
+
+        # Get pointers and delete the atomic sparse pattern
+        # The below complexity is because we are not finalizing spA
+        csr = spA._csr
+        a_ptr = np.insert(_a.cumsumi(csr.ncol), 0, 0)
+        a_col = csr.col[array_arange(csr.ptr, n=csr.ncol)]
+        del spA, csr
+
+        # Get offset in supercell in orbitals
+        off = geometry.no * primary_i_s
+        origo = grid.origo
+        # TODO sum the non-origo atoms to the csrDM matrix
+        #      this would further decrease the loops required.
+
+        # Loop over all atoms in the grid-cell
+        for ia, ia_xyz, isc in zip(IA, XYZ - origo.reshape(1, 3), ISC):
             # Get current atom
-            atomi = geom.atom[ia]
-            if skip_atom(atomi):
-                # Note we don't check atomj, because they should be the
-                # same.
+            ia_atom = atom[ia]
+            IO = a2o(ia)
+            IO_range = range(ia_atom.no)
+            cell_offset = (cell * isc.reshape(3, 1)).sum(0) - origo
+
+            # Extract maximum R
+            R = ia_atom.maxR()
+            if R <= 0.:
+                warn("Atom '{}' does not have a wave-function, skipping atom.".format(ia_atom))
+                eta.update()
                 continue
 
-            # Get information about this atom
-            xyzi = all_xyz[ia, :, :]
-            si = atomi.toSphere()
-            si.set_center(xyzi)
+            # Retrieve indices of the grid for the atomic shape
+            idx = grid.index(ia_atom.toSphere(ia_xyz))
 
-            # Extract all connections to this atom and convert to CSC matrix
-            # This is just because we can then loop on the atom orbitals in add_DM
-            cscDM = csrDM[geom.firsto[ia]:geom.lasto[ia] + 1, :].tocsc()
+            # Now we have the indices for the largest orbital on the atom
 
-            # Figure out all connecting atoms
-            for ja, JA in unique_atom_edge(csrDM, ia):
-                # Get connecting atom (in supercell format)
-                atomj = geom.atom[JA]
+            # Subsequently we have to loop the orbitals and the
+            # connecting orbitals
+            # Then we find the indices that overlap with these indices
+            # First reduce indices to inside the grid-cell
+            idx[idx[:, 0] < 0, 0] = 0
+            idx[shape[0] <= idx[:, 0], 0] = shape[0] - 1
+            idx[idx[:, 1] < 0, 1] = 0
+            idx[shape[1] <= idx[:, 1], 1] = shape[1] - 1
+            idx[idx[:, 2] < 0, 2] = 0
+            idx[shape[2] <= idx[:, 2], 2] = shape[2] - 1
 
-                # Get information about this atom
-                xyzj = all_xyz[ja, :, :]
-                sj = atomj.toSphere()
-                sj.set_center(xyzj)
+            # Remove duplicates, requires numpy >= 1.13
+            idx = unique(idx, axis=0)
+            if len(idx) == 0:
+                eta.update()
+                continue
 
-                # Add the density matrix for atom ia -> ja
-                add_DM(ia, atomi, xyzi, cscDM, ja, atomj, xyzj, si & sj)
+            # Get real-space coordinates for the current atom
+            # as well as the radial parts
+            grid_xyz = dot(idx, dcell)
+
+            # Perform loop on connection atoms
+            # Allocate the DM_pj arrays
+            # This will have a size equal to number of elements times number of
+            # orbitals on this atom
+            # In this way we do not have to calculate the psi_j multiple times
+            DM_pj = _a.zerosd([ia_atom.no, grid_xyz.shape[0]])
+
+            # Now we perform the loop on the connections for this atom
+            # Remark that we have removed the diagonal atom (it-self)
+            # As that will be calculated in the end
+            for ja in a_col[a_ptr[ia]:a_ptr[ia+1]]:
+                # Retrieve atom (which contains the orbitals)
+                ja_atom = atom[ja % na]
+                JO = a2o(ja)
+                jR = ja_atom.maxR()
+                # Get actual coordinate of the atom
+                ja_xyz = axyz(ja) + cell_offset
+
+                # Reduce the ia'th grid points to those that connects to the ja'th atom
+                ja_idx, ja_r, ja_theta, ja_cos_phi = xyz2sphericalR(grid_xyz, ja_xyz, jR)
+
+                if len(ja_idx) == 0:
+                    # Quick step
+                    continue
+
+                # Loop on orbitals on this atom
+                for jo in range(ja_atom.no):
+                    o = ja_atom.orbital[jo]
+                    oR = o.R
+
+                    # Downsize to the correct indices
+                    if allclose(oR, jR):
+                        ja_idx1 = ja_idx.view()
+                        ja_r1 = ja_r.view()
+                        ja_theta1 = ja_theta.view()
+                        ja_cos_phi1 = ja_cos_phi.view()
+                    else:
+                        ja_idx1 = indices_le(ja_r, oR)
+                        if len(ja_idx1) == 0:
+                            # Quick step
+                            continue
+
+                        # Reduce arrays
+                        ja_r1 = ja_r[ja_idx1]
+                        ja_theta1 = ja_theta[ja_idx1]
+                        ja_cos_phi1 = ja_cos_phi[ja_idx1]
+                        ja_idx1 = ja_idx[ja_idx1]
+
+                    # Calculate the psi_j component
+                    psi = o.psi_spher(ja_r1, ja_theta1, ja_cos_phi1, cos_phi=True)
+
+                    # Now add this orbital to all components
+                    for io in IO_range:
+                        DM = csrDM[IO+io, JO+jo]
+                        if DM != 0.:
+                            DM_pj[io, ja_idx1] += DM * psi
+
+                # Temporary clean up
+                del ja_idx, ja_r, ja_theta, ja_cos_phi
+                del ja_idx1, ja_r1, ja_theta1, ja_cos_phi1, psi
+
+                # Now we have all components for all orbitals connection to all orbitals on atom
+                # ia
+                # Now we simply need to add the diagonal components
+
+            # Loop on the orbitals on this atom
+            ia_r, ia_theta, ia_cos_phi = xyz2spherical(grid_xyz, ia_xyz)
+            del grid_xyz
+            for io in IO_range:
+                for jo in IO_range:
+                    if jo == io:
+                        continue
+
+                    # Skip if DM is zero
+                    DM = csrDM[IO+io, off+IO+jo]
+                    if DM == 0.:
+                        continue
+
+                    oj = ia_atom.orbital[jo]
+                    ojR = oj.R
+
+                    # Downsize to the correct indices
+                    if allclose(ojR, R):
+                        ja_idx1 = slice(None)
+                        ja_r1 = ia_r.view()
+                        ja_theta1 = ia_theta.view()
+                        ja_cos_phi1 = ia_cos_phi.view()
+                    else:
+                        ja_idx1 = indices_le(ia_r, ojR)
+                        if len(ja_idx1) == 0:
+                            # Quick step
+                            continue
+
+                        # Reduce arrays
+                        ja_r1 = ia_r[ja_idx1]
+                        ja_theta1 = ia_theta[ja_idx1]
+                        ja_cos_phi1 = ia_cos_phi[ja_idx1]
+
+                    # Calculate the psi_j component
+                    DM_pj[io, ja_idx1] += DM * oj.psi_spher(ja_r1, ja_theta1, ja_cos_phi1, cos_phi=True)
+
+                # Calculate the psi_i component
+                # Note that this one *also* zeroes points outside the shell
+                # I.e. this step is important because it "nullifies" all but points where
+                # orbital io is defined.
+                psi = ia_atom.orbital[io].psi_spher(ia_r, ia_theta, ia_cos_phi, cos_phi=True)
+                DM_pj[io, :] += csrDM[IO+io, off+IO+io] * psi
+                DM_pj[io, :] *= psi
+
+            # Temporary clean up
+            ja_idx1 = ja_r1 = ja_theta1 = ja_cos_phi1 = None
+            del ia_r, ia_theta, ia_cos_phi, psi
+
+            # Now add the density
+            grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += DM_pj.sum(0)
+
+            # Clean-up
+            del DM_pj, idx
 
             eta.update()
         eta.close()

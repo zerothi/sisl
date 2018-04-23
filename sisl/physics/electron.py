@@ -36,6 +36,7 @@ from numpy import arctan2, cos, sin, pi, int32
 from numpy import add, sqrt, divide
 
 from sisl.geometry import Geometry
+from sisl._indices import indices_le
 import sisl._array as _a
 from sisl.messages import info, warn, tqdm_eta
 from sisl._help import dtype_complex_to_real, _range as range
@@ -425,7 +426,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         # Calculate radius ** 2
         rr = rx ** 2 + ry ** 2 + rz ** 2
         # Reduce our arrays to where the radius is "fine"
-        idx = (rr <= R ** 2).nonzero()[0]
+        idx = indices_le(rr, R ** 2)
         rx = rx[idx]
         ry = ry[idx]
         rz = rz[idx]
@@ -592,7 +593,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
                 theta1 = theta.view()
                 phi1 = phi.view()
             else:
-                idx1 = (r <= oR).nonzero()[0]
+                idx1 = indices_le(r, oR)
                 # Reduce arrays
                 r1 = take(r, idx1)
                 theta1 = take(theta, idx1)
