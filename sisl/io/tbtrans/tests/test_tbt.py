@@ -283,7 +283,6 @@ def test_1_graphene_all_tbtav(sisl_files, sisl_tmp):
     tbt.write_tbtav(f)
 
 
-@pytest.mark.only
 def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     try:
         import matplotlib

@@ -4,12 +4,11 @@ from numbers import Integral
 from scipy.sparse import csr_matrix, triu, tril
 from scipy.sparse import hstack as ss_hstack
 import numpy as np
-from numpy import dot, unique, delete, allclose
-from numpy import cos, sin, arctan2, sqrt, divide
-
+from numpy import dot, unique
 
 import sisl._array as _a
-from sisl._indices import indices_le
+from sisl._indices import indices_le, indices_fabs_le
+from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import warn, SislError, tqdm_eta
 from sisl.geometry import Geometry
 from sisl._help import _zip as zip, _range as range
@@ -117,7 +116,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
     D = property(_get_D, _set_D)
 
-    def rho(self, grid, spinor=None, eta=False):
+    def density(self, grid, spinor=None, tol=1e-7, eta=False):
         r""" Expand the density matrix to the charge density on a grid
 
         This routine calculates the real-space density components on a specified grid.
@@ -151,6 +150,11 @@ class DensityMatrix(SparseOrbitalBZSpin):
            this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of
            length 2 (defaults to total density).
            For non-collinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
+        tol : float, optional
+           DM tolerance for accepted values. For all density matrix elements with absolute values below
+           the tolerance, they will be treated as strictly zeros.
+        eta: bool, optional
+           show a progressbar on stdout
         """
         try:
             # Once unique has the axis keyword, we know we can safely
@@ -158,10 +162,21 @@ class DensityMatrix(SparseOrbitalBZSpin):
             # Otherwise we raise an ImportError
             unique([[0, 1], [2, 3]], axis=0)
         except:
-            raise NotImplementedError(self.__class__.__name__ + '.rho requires numpy >= 1.13, either update '
-                                      'numpy or do not use this function.')
+            raise NotImplementedError(self.__class__.__name__ + '.density requires numpy >= 1.13, either update '
+                                      'numpy or do not use this function!')
 
         geometry = self.geometry
+        # Check that the atomic coordinates, really are all within the intrinsic supercell.
+        # If not, it may mean that the DM does not conform to the primary unit-cell paradigm
+        # of matrix elements. It complicates things.
+        fxyz = geometry.fxyz
+        f_min = fxyz.min()
+        f_max = fxyz.max()
+        if f_min < 0 or 1. < f_max:
+            warn(self.__class__.__name__ + '.density has been passed a geometry where some coordinates are '
+                 'outside the primary unit-cell. This may potentially lead to problems! '
+                 'Double check the charge density!')
+        del fxyz, f_min, f_max
 
         # Extract sub variables used throughout the loop
         shape = _a.asarrayi(grid.shape)
@@ -185,7 +200,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
             else:
                 spinor = _a.arrayz(spinor)
             if spinor.size != 4 or spinor.ndim != 2:
-                raise ValueError(self.__class__.__name__ + '.rho with NC/SO spin, requires a 2x2 matrix.')
+                raise ValueError(self.__class__.__name__ + '.density with NC/SO spin, requires a 2x2 matrix.')
 
             DM = _a.emptyz([self.nnz, 2, 2])
             idx = array_arange(csr.ptr[:-1], n=csr.ncol)
@@ -199,7 +214,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 # spin-orbit
                 DM[:, 0, 0] = csr._D[idx, 0] + 1j * csr._D[idx, 4]
                 DM[:, 1, 1] = csr._D[idx, 1] + 1j * csr._D[idx, 5]
-                DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3]
+                DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3] #TODO check sign here!
                 DM[:, 0, 1] = csr._D[idx, 6] + 1j * csr._D[idx, 7]
 
             # Perform dot-product with spinor, and take out the diagonal real part
@@ -218,7 +233,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 spinor = _a.arrayd(spinor)
 
             if spinor.size != 2 or spinor.ndim != 1:
-                raise ValueError(self.__class__.__name__ + '.rho with polarized spin, requires spinor '
+                raise ValueError(self.__class__.__name__ + '.density with polarized spin, requires spinor '
                                  'argument as an integer, or a vector of length 2')
 
             idx = array_arange(csr.ptr[:-1], n=csr.ncol)
@@ -231,8 +246,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
         # Create the DM csr matrix.
         csrDM = csr_matrix((DM, csr.col[idx], np.insert(np.cumsum(csr.ncol), 0, 0)),
                            shape=(self.shape[:2]), dtype=DM.dtype)
-        csrDM.eliminate_zeros()
-        csrDM.prune()
 
         # Clean-up
         del idx, DM
@@ -263,6 +276,9 @@ class DensityMatrix(SparseOrbitalBZSpin):
         csrDM = ss_hstack(csr_sum, format='csr')
         del csr, csr_sum
 
+        # Remove all zero elements (note we use the tolerance here!)
+        csrDM.data = np.where(np.fabs(csrDM.data) > tol, csrDM.data, 0.)
+
         # Eliminate zeros and sort indices etc.
         csrDM.eliminate_zeros()
         csrDM.sort_indices()
@@ -283,7 +299,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         # supercell by add_R in each direction.
         # For extremely skewed lattices this will be way too much.
         # But perhaps these supercells are often small?
-        sc = sc + dot(add_R, sc.icell.T).reshape(3, 1) * sc.cell
+        sc = sc + 2 * dot(add_R, sc.icell.T).reshape(3, 1) * sc.cell
 
         sc.origo = sc.origo[:] - add_R
 
@@ -292,7 +308,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
         IA, XYZ, ISC = geometry.within_inf(sc)
 
         # Retrieve progressbar
-        eta = tqdm_eta(len(IA), self.__class__.__name__ + '.rho', 'atom', eta)
+        eta = tqdm_eta(len(IA), self.__class__.__name__ + '.density', 'atom', eta)
 
         cell = geometry.cell
         atom = geometry.atom
@@ -310,32 +326,36 @@ class DensityMatrix(SparseOrbitalBZSpin):
             rz = xyz[:, 2] - offset[2]
 
             # Calculate radius ** 2
-            rr = rx ** 2 + ry ** 2 + rz ** 2
-            arctan2(ry, rx, out=rx) # theta == rx
-            sqrt(rr, out=ry) # rr == ry
-            divide(rz, ry, out=rz) # cos_phi == rz
-            rz[ry == 0.] = 0
-            return ry, rx, rz
+            xyz_to_spherical_cos_phi(rx, ry, rz)
+            return rx, ry, rz
 
         def xyz2sphericalR(xyz, offset, R):
             """ Calculate the spherical coordinates from indices """
             rx = xyz[:, 0] - offset[0]
-            ry = xyz[:, 1] - offset[1]
-            rz = xyz[:, 2] - offset[2]
-
-            # Calculate radius ** 2
-            rr = rx ** 2 + ry ** 2 + rz ** 2
-            idx = indices_le(rr, R ** 2)
+            idx = indices_fabs_le(rx, R)
+            ry = xyz[idx, 1] - offset[1]
+            ix = indices_fabs_le(ry, R)
+            ry = ry[ix]
+            idx = idx[ix]
+            rz = xyz[idx, 2] - offset[2]
+            ix = indices_fabs_le(rz, R)
+            ry = ry[ix]
+            rz = rz[ix]
+            idx = idx[ix]
             if len(idx) == 0:
                 return [], [], [], []
             rx = rx[idx]
-            ry = ry[idx]
-            rz = rz[idx]
-            arctan2(ry, rx, out=rx) # theta == rx
-            sqrt(rr[idx], out=ry) # rr == ry
-            divide(rz, ry, out=rz) # cos_phi == rz
-            rz[ry == 0.] = 0
-            return idx, ry, rx, rz
+
+            # Calculate radius ** 2
+            ix = indices_le(rx ** 2 + ry ** 2 + rz ** 2, R ** 2)
+            idx = idx[ix]
+            if len(idx) == 0:
+                return [], [], [], []
+            rx = rx[ix]
+            ry = ry[ix]
+            rz = rz[ix]
+            xyz_to_spherical_cos_phi(rx, ry, rz)
+            return idx, rx, ry, rz
 
         # Looping atoms in the sparse pattern is better since we can pre-calculate
         # the radial parts and then add them.
@@ -409,6 +429,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
             # This will have a size equal to number of elements times number of
             # orbitals on this atom
             # In this way we do not have to calculate the psi_j multiple times
+            DM_io = csrDM[IO:IO+ia_atom.no, :].tolil()
             DM_pj = _a.zerosd([ia_atom.no, grid_xyz.shape[0]])
 
             # Now we perform the loop on the connections for this atom
@@ -435,7 +456,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
                     oR = o.R
 
                     # Downsize to the correct indices
-                    if allclose(oR, jR):
+                    if jR - oR < 1e-6:
                         ja_idx1 = ja_idx.view()
                         ja_r1 = ja_r.view()
                         ja_theta1 = ja_theta.view()
@@ -457,36 +478,30 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
                     # Now add this orbital to all components
                     for io in IO_range:
-                        DM = csrDM[IO+io, JO+jo]
-                        if DM != 0.:
-                            DM_pj[io, ja_idx1] += DM * psi
+                        DM_pj[io, ja_idx1] += DM_io[io, JO+jo] * psi
 
                 # Temporary clean up
                 del ja_idx, ja_r, ja_theta, ja_cos_phi
                 del ja_idx1, ja_r1, ja_theta1, ja_cos_phi1, psi
 
-                # Now we have all components for all orbitals connection to all orbitals on atom
-                # ia
-                # Now we simply need to add the diagonal components
+            # Now we have all components for all orbitals connection to all orbitals on atom
+            # ia. We simply need to add the diagonal components
 
             # Loop on the orbitals on this atom
             ia_r, ia_theta, ia_cos_phi = xyz2spherical(grid_xyz, ia_xyz)
             del grid_xyz
             for io in IO_range:
-                for jo in IO_range:
-                    if jo == io:
-                        continue
-
-                    # Skip if DM is zero
-                    DM = csrDM[IO+io, off+IO+jo]
-                    if DM == 0.:
-                        continue
+                # Only loop halve the range.
+                # This is because: triu + tril(-1).transpose()
+                # removes the lower half of the on-site matrix.
+                for jo in range(io+1, ia_atom.no):
+                    DM = DM_io[io, off+IO+jo]
 
                     oj = ia_atom.orbital[jo]
                     ojR = oj.R
 
                     # Downsize to the correct indices
-                    if allclose(ojR, R):
+                    if R - ojR < 1e-6:
                         ja_idx1 = slice(None)
                         ja_r1 = ia_r.view()
                         ja_theta1 = ia_theta.view()
@@ -510,12 +525,12 @@ class DensityMatrix(SparseOrbitalBZSpin):
                 # I.e. this step is important because it "nullifies" all but points where
                 # orbital io is defined.
                 psi = ia_atom.orbital[io].psi_spher(ia_r, ia_theta, ia_cos_phi, cos_phi=True)
-                DM_pj[io, :] += csrDM[IO+io, off+IO+io] * psi
+                DM_pj[io, :] += DM_io[io, off+IO+io] * psi
                 DM_pj[io, :] *= psi
 
             # Temporary clean up
             ja_idx1 = ja_r1 = ja_theta1 = ja_cos_phi1 = None
-            del ia_r, ia_theta, ia_cos_phi, psi
+            del ia_r, ia_theta, ia_cos_phi, psi, DM_io
 
             # Now add the density
             grid.grid[idx[:, 0], idx[:, 1], idx[:, 2]] += DM_pj.sum(0)

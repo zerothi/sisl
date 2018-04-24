@@ -31,12 +31,13 @@ from __future__ import print_function, division
 
 import numpy as np
 from numpy import floor, ceil
-from numpy import conj, dot, take, ogrid
-from numpy import arctan2, cos, sin, pi, int32
-from numpy import add, sqrt, divide
+from numpy import conj, dot, ogrid
+from numpy import cos, sin, pi, int32
+from numpy import add
 
 from sisl.geometry import Geometry
 from sisl._indices import indices_le
+from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.messages import info, warn, tqdm_eta
 from sisl._help import dtype_complex_to_real, _range as range
@@ -423,18 +424,13 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         rz = addouter(addouter(ix * dc[0, 2], iy * dc[1, 2]), iz * dc[2, 2] - offset[2]).ravel()
         # Total size of the indices
         n = rx.shape[0]
-        # Calculate radius ** 2
-        rr = rx ** 2 + ry ** 2 + rz ** 2
         # Reduce our arrays to where the radius is "fine"
-        idx = indices_le(rr, R ** 2)
+        idx = indices_le(rx ** 2 + ry ** 2 + rz ** 2, R ** 2)
         rx = rx[idx]
         ry = ry[idx]
         rz = rz[idx]
-        arctan2(ry, rx, out=rx) # theta == rx
-        sqrt(rr[idx], out=ry) # rr == ry
-        divide(rz, ry, out=rz) # cos_phi == rz
-        rz[ry == 0.] = 0
-        return n, idx, ry, rx, rz
+        xyz_to_spherical_cos_phi(rx, ry, rz)
+        return n, idx, rx, ry, rz
 
     # Figure out the max-min indices with a spacing of 1 radian
     rad1 = pi / 180
@@ -484,7 +480,6 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     del origo, idx
 
     aranged = _a.aranged
-    allclose = np.allclose
 
     # In case this grid does not have a Geometry associated
     # We can *perhaps* easily attach a geometry with the given
@@ -503,7 +498,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # supercell by add_R in each direction.
     # For extremely skewed lattices this will be way too much.
     # But perhaps these supercells are often small?
-    sc = sc + dot(add_R, sc.icell.T).reshape(3, 1) * sc.cell
+    sc = sc + 2 * dot(add_R, sc.icell.T).reshape(3, 1) * sc.cell
 
     sc.origo = sc.origo[:] - add_R
 
@@ -587,7 +582,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
                 continue
 
             # Downsize to the correct indices
-            if allclose(oR, R):
+            if R - oR < 1e-6:
                 idx1 = idx.view()
                 r1 = r.view()
                 theta1 = theta.view()
@@ -595,10 +590,10 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
             else:
                 idx1 = indices_le(r, oR)
                 # Reduce arrays
-                r1 = take(r, idx1)
-                theta1 = take(theta, idx1)
-                phi1 = take(phi, idx1)
-                idx1 = take(idx, idx1)
+                r1 = r[idx1]
+                theta1 = theta[idx1]
+                phi1 = phi[idx1]
+                idx1 = idx[idx1]
 
             # Loop orbitals with the same radius
             for o in os:
@@ -712,7 +707,7 @@ class _common_State(object):
         r""" Calculate spin moment from the states
 
         This routine calls `sisl.physics.electrons.spin_moment` with appropriate arguments
-        and returns the spin moment.
+        and returns the spin moment for the states.
 
         See `sisl.physics.electrons.spin_moment` for argument details.
         """

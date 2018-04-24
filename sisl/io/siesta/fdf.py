@@ -532,8 +532,8 @@ class fdfSileSiesta(SileSiesta):
             return True
 
         elif spgeom.na != geom.na:
-            warn(SileWarning('cannot replace geometry due to insufficient information regarding number of '
-                                    'atoms and orbitals, ensuring correct geometry failed...'))
+            warn('cannot replace geometry due to insufficient information regarding number of '
+                 'atoms and orbitals, ensuring correct geometry failed...')
 
         no_no = spgeom.no == geom.no
         # Loop and make sure the number of orbitals is consistent
@@ -548,6 +548,34 @@ class fdfSileSiesta(SileSiesta):
             spgeom.geom.atom.replace(idx, a)
             spgeom.geom.reduce()
         return no_no
+
+    def read_supercell_nsc(self, *args, **kwargs):
+        """ Read supercell size using any method available
+
+        Raises
+        ------
+        SislWarning if none of the files can be read
+        """
+        order = kwargs.pop('order', ['nc', 'ORB_INDX'])
+        for f in order:
+            v = getattr(self, '_r_supercell_nsc_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        warn('number of supercells could not be read from output files. Assuming molecule cell '
+             '(no supercell connections)')
+        return _a.onesi(3)
+
+    def _r_supercell_nsc_nc(self, *args, **kwargs):
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_supercell_nsc()
+        return None
+
+    def _r_supercell_nsc_orb_indx(self, *args, **kwargs):
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
+        if isfile(f):
+            return orbindxSileSiesta(f).read_supercell_nsc()
+        return None
 
     def read_supercell(self, output=False, *args, **kwargs):
         """ Returns SuperCell object by reading fdf or Siesta output related files.
@@ -606,7 +634,12 @@ class fdfSileSiesta(SileSiesta):
             raise SileError('Could not find LatticeVectors or LatticeParameters block in file')
         cell *= s
 
-        return SuperCell(cell)
+        # When reading from the fdf, the warning should be suppressed
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            nsc = self.read_supercell_nsc()
+
+        return SuperCell(cell, nsc=nsc)
 
     def _r_supercell_nc(self):
         # Read supercell from <>.nc file
@@ -619,7 +652,10 @@ class fdfSileSiesta(SileSiesta):
         """ Returns `SuperCell` object from the FDF file """
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.XV'
         if isfile(f):
-            return xvSileSiesta(f).read_supercell()
+            nsc = self.read_supercell_nsc()
+            sc = xvSileSiesta(f).read_supercell()
+            sc.set_nsc(nsc)
+            return sc
         return None
 
     def read_force(self, *args, **kwargs):
@@ -711,6 +747,8 @@ class fdfSileSiesta(SileSiesta):
                     for atom, _ in geom.atom.iter(True):
                         geom.atom.replace(atom, basis[atom.Z-1])
                     geom.reduce()
+            nsc = self.read_supercell_nsc()
+            geom.set_nsc(nsc)
         return geom
 
     def _r_geometry_nc(self):
@@ -932,10 +970,9 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.DM'
         DM = None
         if isfile(f):
-            geom = self.read_geometry(True)
+            if 'geometry' not in kwargs:
+                kwargs['geometry'] = self.read_geometry(True)
             DM = dmSileSiesta(f).read_density_matrix(*args, **kwargs)
-            if not self._SpGeom_replace_geom(DM, geom):
-                warn(SileWarning('DM from {} will most likely have a wrong supercell specification.'.format(f)))
         return DM
 
     def read_energy_density_matrix(self, *args, **kwargs):
@@ -969,7 +1006,8 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
         EDM = None
         if isfile(f):
-            geom = self.read_geometry(True)
+            if 'geometry' not in kwargs:
+                kwargs['geometry'] = self.read_geometry(True)
             EDM = tsdeSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
             if not self._SpGeom_replace_geom(EDM, geom):
                 warn(SileWarning('EDM from {} will most likely have a wrong supercell specification.'.format(f)))

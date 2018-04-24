@@ -25,6 +25,10 @@ Ry2eV = unit_convert('Ry', 'eV')
 class ncSileSiesta(SileCDFSiesta):
     """ Siesta file object """
 
+    def read_supercell_nsc(self):
+        """ Returns number of supercell connections """
+        return np.array(self._value('nsc'), np.int32)
+
     def read_supercell(self):
         """ Returns a SuperCell object from a Siesta.nc file """
         cell = np.array(self._value('cell'), np.float64)
@@ -32,7 +36,7 @@ class ncSileSiesta(SileCDFSiesta):
         cell *= Bohr2Ang
         cell.shape = (3, 3)
 
-        nsc = np.array(self._value('nsc'), np.int32)
+        nsc = self.read_supercell_nsc()
 
         return SuperCell(cell, nsc=nsc)
 
