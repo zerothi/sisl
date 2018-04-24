@@ -10,7 +10,7 @@ from numpy import ogrid, take
 
 import sisl._array as _a
 from ._help import dtype_complex_to_real
-from .shape import Shape, Cuboid, Ellipsoid
+from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction, str_spec
 from .utils import array_arange

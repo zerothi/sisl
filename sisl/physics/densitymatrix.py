@@ -9,11 +9,10 @@ from numpy import dot, unique
 import sisl._array as _a
 from sisl._indices import indices_le, indices_fabs_le
 from sisl._math_small import xyz_to_spherical_cos_phi
-from sisl.messages import warn, SislError, tqdm_eta
+from sisl.messages import warn, tqdm_eta
 from sisl.geometry import Geometry
 from sisl._help import _zip as zip, _range as range
 from sisl.utils.ranges import array_arange
-from sisl.utils.mathematics import cart2spher
 from .spin import Spin
 from sisl.sparse import SparseCSR
 from sisl.sparse_geometry import SparseOrbital
@@ -182,7 +181,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
         shape = _a.asarrayi(grid.shape)
         dcell = grid.dcell
         ic = grid.sc.icell * shape.reshape(1, -1)
-        geom_shape = dot(ic, geometry.cell.T).T
 
         # Sparse matrix data
         csr = self._csr
@@ -261,7 +259,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
         # and store this for separate usage
         csr_sum = [None] * geometry.n_s
         no = geometry.no
-        no_s = geometry.no_s
         primary_i_s = geometry.sc_index([0, 0, 0])
         for i_s in range(geometry.n_s):
             # Extract the csr matrix
@@ -314,10 +311,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
         atom = geometry.atom
         axyz = geometry.axyz
         a2o = geometry.a2o
-        o2a = geometry.o2a
-        firsto = geometry.firsto
-        osc2uc = geometry.osc2uc
-        sc2uc = geometry.sc2uc
 
         def xyz2spherical(xyz, offset):
             """ Calculate the spherical coordinates from indices """
