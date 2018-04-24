@@ -5,6 +5,7 @@ from numpy import cos, sin, arctan2, arccos
 from numpy import take, sqrt, square
 
 from sisl import _array as _a
+from sisl._indices import indices_le
 
 __all__ = ['fnorm', 'fnorm2', 'expand', 'orthogonalize']
 __all__ += ['spher2cart', 'cart2spher', 'spherical_harm']
@@ -158,7 +159,7 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
         return rr, theta, phi
 
     rr = square(r).sum(1)
-    idx = (rr <= maxR ** 2).nonzero()[0]
+    idx = indices_le(rr, maxR ** 2)
     r = take(r, idx, 0)
     rr = sqrt(take(rr, idx))
     if theta:

@@ -1,5 +1,6 @@
 # Enables usage of Cython decorators
 cimport cython
+from libc.math cimport atan2, sqrt
 
 import numpy as np
 # This enables Cython enhanced compatibilities
@@ -38,3 +39,32 @@ def is_ascending(np.ndarray[np.float64_t, ndim=1, mode='c'] v):
         if V[i-1] > V[i]:
             return 0
     return 1
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+@cython.cdivision(True)
+def xyz_to_spherical_cos_phi(np.ndarray[np.float64_t, ndim=1, mode='c'] x,
+                             np.ndarray[np.float64_t, ndim=1, mode='c'] y,
+                             np.ndarray[np.float64_t, ndim=1, mode='c'] z):
+    """ In x, y, z coordinates shifted to origo
+
+    Returns x = R, y = theta, z = cos_phi
+    """
+    cdef double[::1] X = x
+    cdef double[::1] Y = y
+    cdef double[::1] Z = z
+    cdef int i
+    cdef double R
+    for i in range(X.shape[0]):
+        # theta (radians)
+        R = sqrt(X[i] * X[i] + Y[i] * Y[i] + Z[i] * Z[i])
+        Y[i] = atan2(Y[i], X[i])
+        # Radius
+        X[i] = R
+        # cos(phi)
+        if R > 0.:
+            Z[i] = Z[i] / R
+        else:
+            Z[i] = 0.

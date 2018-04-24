@@ -452,6 +452,21 @@ class Grid(SuperCellChild):
         ret_idx = np.delete(_a.arangei(self.shape[axis]), _a.asarrayi(idx))
         return self.sub(ret_idx, axis)
 
+    def index2xyz(self, index):
+        """ Real-space coordinates of indices related to the grid
+
+        Parameters
+        ----------
+        index : array_like
+           indices for grid-positions
+
+        Returns
+        -------
+        numpy.ndarray:
+           coordinates of the indices with respect to this grid spacing
+        """
+        return dot(np.asarray(index), self.dcell)
+
     def _index_shape(self, shape):
         """ Internal routine for shape-indices """
         # First grab the sphere, subsequent indices will be reduced

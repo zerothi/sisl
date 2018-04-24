@@ -199,7 +199,7 @@ class dmSileSiesta(SileBinSiesta):
         ncol, col, dDM = _siesta.read_dm(self.file, spin, no, nnz)
 
         # Try and immediately attach a geometry
-        geom = kwargs.get('geom', kwargs.get('geometry', None))
+        geom = kwargs.get('geometry', kwargs.get('geom', None))
         if geom is None:
             # We truly, have no clue,
             # Just generate a boxed system
@@ -262,7 +262,7 @@ class tsdeSileSiesta(dmSileSiesta):
         ncol, col, dEDM = _siesta.read_tsde_edm(self.file, spin, no, nnz)
 
         # Try and immediately attach a geometry
-        geom = kwargs.get('geom', kwargs.get('geometry', None))
+        geom = kwargs.get('geometry', kwargs.get('geom', None))
         if geom is None:
             # We truly, have no clue,
             # Just generate a boxed system

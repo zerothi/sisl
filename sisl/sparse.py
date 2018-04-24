@@ -41,72 +41,73 @@ class SparseCSR(object):
     Note that this sparse matrix of data does not retain the number of columns
     in the matrix, i.e. it has no way of determining whether the input is
     correct.
+
+
+    This sparse matrix class tries to resemble the
+    ``scipy.sparse.csr_matrix`` as much as possible with
+    the difference of this class being multi-dimensional.
+
+    Creating a new sparse matrix is much similar to the
+    ``scipy`` equivalent.
+
+    `nnz` is only used if ``nnz > nr * nnzpr``.
+
+    This class may be instantiated by verious means.
+
+    - ``SparseCSR(S)``
+      where ``S`` is a ``scipy.sparse`` matrix
+    - ``SparseCSR((M,N)[, dtype])``
+      the shape of the sparse matrix (equivalent
+      to ``SparseCSR((M,N,1)[, dtype])``.
+    - ``SparseCSR((M,N), dim=K, [, dtype])``
+      the shape of the sparse matrix (equivalent
+      to ``SparseCSR((M,N,K)[, dtype])``.
+    - ``SparseCSR((M,N,K)[, dtype])``
+      creating a sparse matrix with ``M`` rows, ``N`` columns
+      and ``K`` elements per sparse element.
+
+    Additionally these parameters control the
+    creation of the sparse matrix
+
+    Parameters
+    ----------
+    arg1 : tuple
+       various initialization methods as described above
+    dim : int, optional
+       number of elements stored per sparse element, only used if (M,N) is passed
+    dtype : numpy.dtype, optional
+       data type of the matrix, defaults to `numpy.float64`
+    nnzpr : int, optional
+       initial number of non-zero elements per row.
+       Only used if `nnz` is not supplied
+    nnz : int, optional
+       initial total number of non-zero elements
+       This quantity has precedence over `nnzpr`
+
+    Attributes
+    ----------
+    ncol: int-array, ``self.shape[0]``
+       number of entries per row
+    ptr: int-array, ``self.shape[0]+1``
+       pointer index in the 1D column indices of the corresponding row
+    col: int-array
+       column indices of the sparse elements
+    data:
+       the data in the sparse matrix
+    dim: int
+       the extra dimension of the sparse matrix
+    nnz: int
+       number of contained sparse elements
+    shape: tuple, 3*(,)
+       size of contained matrix, M, N, K
+    finalized: boolean
+       whether the sparse matrix is finalized and non-set elements
+       are removed
     """
 
     def __init__(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
                  **kwargs):
         """ Initialize a new sparse CSR matrix
-
-        This sparse matrix class tries to resemble the
-        ``scipy.sparse.csr_matrix`` as much as possible with
-        the difference of this class being multi-dimensional.
-
-        Creating a new sparse matrix is much similar to the
-        ``scipy`` equivalent.
-
-        `nnz` is only used if ``nnz > nr * nnzpr``.
-
-        This class may be instantiated by verious means.
-
-        - ``SparseCSR(S)``
-          where ``S`` is a ``scipy.sparse`` matrix
-        - ``SparseCSR((M,N)[, dtype])``
-          the shape of the sparse matrix (equivalent
-          to ``SparseCSR((M,N,1)[, dtype])``.
-        - ``SparseCSR((M,N), dim=K, [, dtype])``
-          the shape of the sparse matrix (equivalent
-          to ``SparseCSR((M,N,K)[, dtype])``.
-        - ``SparseCSR((M,N,K)[, dtype])``
-          creating a sparse matrix with ``M`` rows, ``N`` columns
-          and ``K`` elements per sparse element.
-
-        Additionally these parameters control the
-        creation of the sparse matrix
-
-        Parameters
-        ----------
-        arg1 : tuple
-           various initialization methods as described above
-        dim : int, optional
-           number of elements stored per sparse element, only used if (M,N) is passed
-        dtype : numpy.dtype, optional
-           data type of the matrix, defaults to `numpy.float64`
-        nnzpr : int, optional
-           initial number of non-zero elements per row.
-           Only used if `nnz` is not supplied
-        nnz : int, optional
-           initial total number of non-zero elements
-           This quantity has precedence over `nnzpr`
-
-        Attributes
-        ----------
-        ncol: int-array, ``self.shape[0]``
-           number of entries per row
-        ptr: int-array, ``self.shape[0]+1``
-           pointer index in the 1D column indices of the corresponding row
-        col: int-array
-           column indices of the sparse elements
-        data:
-           the data in the sparse matrix
-        dim: int
-           the extra dimension of the sparse matrix
-        nnz: int
-           number of contained sparse elements
-        shape: tuple, 3*(,)
-           size of contained matrix, M, N, K
-        finalized: boolean
-           whether the sparse matrix is finalized and non-set elements
-           are removed
         """
 
         # step size in sparse elements
@@ -120,6 +121,8 @@ class SparseCSR(object):
             # The data-type is infered from the
             # input sparse matrix.
             arg1 = arg1.tocsr()
+            # Default shape to the CSR matrix
+            kwargs['shape'] = kwargs.get('shape', arg1.shape)
             self.__init__((arg1.data, arg1.indices, arg1.indptr),
                           dim=dim, dtype=dtype, **kwargs)
 

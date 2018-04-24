@@ -13,9 +13,9 @@ class Hessian(SparseOrbitalBZ):
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         super(Hessian, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
 
-        self.Dk = self._Pk
+        self.Hk = self._Pk
 
-    def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+    def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the Hessian matrix for a given k-point
 
         Creation and return of the density matrix for a given k-point (default to Gamma).
@@ -56,16 +56,16 @@ class Hessian(SparseOrbitalBZ):
         """
         pass
 
-    def _get_D(self):
+    def _get_H(self):
         self._def_dim = 0
         return self
 
-    def _set_D(self, key, value):
+    def _set_H(self, key, value):
         if len(key) == 2:
             self._def_dim = 0
         self[key] = value
 
-    D = property(_get_D, _set_D)
+    H = property(_get_H, _set_H)
 
     def correct_Newton(self):
         """
@@ -101,26 +101,26 @@ class Hessian(SparseOrbitalBZ):
             jo = ja * 3
 
             # Unroll...
-            D = self.D[jo, jo]
-            self.D[jo, jo] = D - d_uc[jo, ::3].multiply(MM).sum()
-            D = self.D[jo, jo + 1]
-            self.D[jo, jo + 1] = D - d_uc[jo, 1::3].multiply(MM).sum()
-            D = self.D[jo, jo + 2]
-            self.D[jo, jo + 2] = D - d_uc[jo, 2::3].multiply(MM).sum()
+            H = self.H[jo, jo]
+            self.H[jo, jo] = H - d_uc[jo, ::3].multiply(MM).sum()
+            H = self.H[jo, jo + 1]
+            self.H[jo, jo + 1] = H - d_uc[jo, 1::3].multiply(MM).sum()
+            H = self.H[jo, jo + 2]
+            self.H[jo, jo + 2] = H - d_uc[jo, 2::3].multiply(MM).sum()
 
-            D = self.D[jo + 1, jo]
-            self.D[jo + 1, jo] = D - d_uc[jo + 1, ::3].multiply(MM).sum()
-            D = self.D[jo + 1, jo + 1]
-            self.D[jo + 1, jo + 1] = D - d_uc[jo + 1, 1::3].multiply(MM).sum()
-            D = self.D[jo + 1, jo + 2]
-            self.D[jo + 1, jo + 2] = D - d_uc[jo + 1, 2::3].multiply(MM).sum()
+            H = self.H[jo + 1, jo]
+            self.H[jo + 1, jo] = H - d_uc[jo + 1, ::3].multiply(MM).sum()
+            H = self.H[jo + 1, jo + 1]
+            self.H[jo + 1, jo + 1] = H - d_uc[jo + 1, 1::3].multiply(MM).sum()
+            H = self.H[jo + 1, jo + 2]
+            self.H[jo + 1, jo + 2] = H - d_uc[jo + 1, 2::3].multiply(MM).sum()
 
-            D = self.D[jo + 2, jo]
-            self.D[jo + 2, jo] = D - d_uc[jo + 2, ::3].multiply(MM).sum()
-            D = self.D[jo + 2, jo + 1]
-            self.D[jo + 2, jo + 1] = D - d_uc[jo + 2, 1::3].multiply(MM).sum()
-            D = self.D[jo + 2, jo + 2]
-            self.D[jo + 2, jo + 2] = D - d_uc[jo + 2, 2::3].multiply(MM).sum()
+            H = self.H[jo + 2, jo]
+            self.H[jo + 2, jo] = H - d_uc[jo + 2, ::3].multiply(MM).sum()
+            H = self.H[jo + 2, jo + 1]
+            self.H[jo + 2, jo + 1] = H - d_uc[jo + 2, 1::3].multiply(MM).sum()
+            H = self.H[jo + 2, jo + 2]
+            self.H[jo + 2, jo + 2] = H - d_uc[jo + 2, 2::3].multiply(MM).sum()
 
         del d_uc
 

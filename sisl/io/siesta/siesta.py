@@ -25,6 +25,10 @@ Ry2eV = unit_convert('Ry', 'eV')
 class ncSileSiesta(SileCDFSiesta):
     """ Siesta file object """
 
+    def read_supercell_nsc(self):
+        """ Returns number of supercell connections """
+        return np.array(self._value('nsc'), np.int32)
+
     def read_supercell(self):
         """ Returns a SuperCell object from a Siesta.nc file """
         cell = np.array(self._value('cell'), np.float64)
@@ -32,7 +36,7 @@ class ncSileSiesta(SileCDFSiesta):
         cell *= Bohr2Ang
         cell.shape = (3, 3)
 
-        nsc = np.array(self._value('nsc'), np.int32)
+        nsc = self.read_supercell_nsc()
 
         return SuperCell(cell, nsc=nsc)
 
@@ -288,23 +292,22 @@ class ncSileSiesta(SileCDFSiesta):
                 'RhoXC': 1. / BohrC2AngC,
                 'RhoBader': 1. / BohrC2AngC,
                 'Chlocal': 1. / BohrC2AngC,
-        }
+        }.get(name, 1.)
 
         if len(v[:].shape) == 3:
-            grid.grid = v[:, :, :] * unit.get(name, 1.)
+            grid.grid = v[:, :, :] * unit
         elif isinstance(spin, Integral):
-            grid.grid = v[spin, :, :, :] * unit.get(name, 1.)
+            grid.grid = v[spin, :, :, :] * unit
         else:
             if len(spin) > v.shape[0]:
                 raise SileError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
                                 'an array of length equal to the number of spin components.')
-            grid.grid[:, :, :] = v[0, :, :, :] * spin[0]
+            grid.grid[:, :, :] = v[0, :, :, :] * (spin[0] * unit)
             for i, scale in enumerate(spin[1:]):
-                grid.grid[:, :, :] += v[1+i, :, :, :] * scale
+                grid.grid[:, :, :] += v[1+i, :, :, :] * (scale * unit)
 
         try:
-            u = v.unit
-            if u == 'Ry':
+            if v.unit == 'Ry':
                 # Convert to ev
                 grid *= Ry2eV
         except:

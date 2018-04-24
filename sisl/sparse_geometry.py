@@ -1694,3 +1694,55 @@ class SparseOrbital(_SparseGeometry):
                            shape=(geom_n.no, geom_n.no_s))
 
         return S
+
+    def toSparseAtom(self, dtype=None):
+        """ Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern
+
+        This converts the orbital sparse pattern to an atomic sparse pattern.
+
+        Parameters
+        ----------
+        dtype: numpy.dtype, optional
+           the data-container for the sparse object. Defaults to the same.
+        """
+        if dtype is None:
+            dtype = self.dtype
+
+        geom = self.geometry
+        # Create a conversion vector
+        orb2atom = geom.o2a(_a.arangei(geom.no_s))
+
+        # First convert all rows to the same
+        csr = self._csr
+
+        idx = array_arange(csr.ptr[:-1], n=csr.ncol)
+        acol = orb2atom[csr.col[idx]]
+
+        # Now build the new sparse pattern
+        ptr = _a.emptyi(geom.na+1)
+        ptr[0] = 0
+        col = [None] * geom.na
+        for ia in range(geom.na):
+
+            o1, o2 = geom.a2o([ia, ia + 1])
+            # Get current atomic elements
+            idx = array_arange(csr.ptr[o1:o2], n=csr.ncol[o1:o2])
+
+            # These are now the atomic columns
+            # Immediately reduce to unique elements
+            acol = np.unique(orb2atom[csr.col[idx]])
+
+            # Step counters
+            col[ia] = acol
+            ptr[ia+1] = ptr[ia] + len(acol)
+
+        # Now we can create the sparse atomic
+        col = np.concatenate(col, axis=0).astype(np.int32, copy=False)
+        spAtom = SparseAtom(geom, dim=1, dtype=dtype, nnzpr=0)
+        spAtom._csr.ptr[:] = ptr[:]
+        spAtom._csr.ncol[:] = np.diff(ptr)
+        spAtom._csr.col = col
+        spAtom._csr._D = np.empty([len(col), 1], dtype=dtype)
+        spAtom._csr._nnz = len(col)
+        spAtom._csr._finalized = True # unique returns sorted elements
+        return spAtom
