@@ -7,7 +7,7 @@ import warnings
 # Import sile objects
 import sisl._array as _a
 from sisl._help import _str
-from sisl.messages import warn
+from sisl.messages import info, warn
 from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
@@ -906,7 +906,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_basis_orb_indx(self):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
         if isfile(f):
-            showinfo(SileInfo('Siesta basis information is read from {}, the radial functions are in accessible.'.format(f)))
+            info(SileInfo('Siesta basis information is read from {}, the radial functions are in accessible.'.format(f)))
             return orbindxSileSiesta(f).read_basis()
         return None
 

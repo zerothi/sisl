@@ -35,6 +35,7 @@ from numpy import conj, dot, ogrid
 from numpy import cos, sin, pi, int32
 from numpy import add
 
+from sisl.supercell import SuperCell
 from sisl.geometry import Geometry
 from sisl._indices import indices_le
 from sisl._math_small import xyz_to_spherical_cos_phi
@@ -496,11 +497,11 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     add_R = _a.zerosd(3) + geometry.maxR()
     # Calculate the required additional vectors required to increase the fictitious
     # supercell by add_R in each direction.
-    # For extremely skewed lattices this will be way too much.
-    # But perhaps these supercells are often small?
-    sc = sc + 2 * dot(add_R, sc.icell.T).reshape(3, 1) * sc.cell
-
-    sc.origo = sc.origo[:] - add_R
+    # For extremely skewed lattices this will be way too much, hence we make
+    # them square.
+    o = sc.toCuboid(True)
+    sc = SuperCell(o._v, origo=o.origo) + np.diag(2 * add_R)
+    sc.origo -= add_R
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)

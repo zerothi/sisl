@@ -6,11 +6,12 @@ from scipy.sparse import hstack as ss_hstack
 import numpy as np
 from numpy import dot, unique
 
+from sisl.geometry import Geometry
+from sisl.supercell import SuperCell
 import sisl._array as _a
 from sisl._indices import indices_le, indices_fabs_le
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import warn, tqdm_eta
-from sisl.geometry import Geometry
 from sisl._help import _zip as zip, _range as range
 from sisl.utils.ranges import array_arange
 from .spin import Spin
@@ -293,11 +294,11 @@ class DensityMatrix(SparseOrbitalBZSpin):
         add_R = _a.zerosd(3) + geometry.maxR()
         # Calculate the required additional vectors required to increase the fictitious
         # supercell by add_R in each direction.
-        # For extremely skewed lattices this will be way too much.
-        # But perhaps these supercells are often small?
-        sc = sc + 2 * dot(add_R, sc.icell.T).reshape(3, 1) * sc.cell
-
-        sc.origo = sc.origo[:] - add_R
+        # For extremely skewed lattices this will be way too much, hence we make
+        # them square.
+        o = sc.toCuboid(True)
+        sc = SuperCell(o._v, origo=o.origo) + np.diag(2 * add_R)
+        sc.origo -= add_R
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)

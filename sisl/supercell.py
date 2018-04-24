@@ -87,9 +87,27 @@ class SuperCell(object):
         """ Set origo """
         self._origo[:] = origo
 
-    def toCuboid(self):
-        """ A cuboid with vectors as this unit-cell and center with respect to its origo """
-        return Cuboid(self.cell.copy(), self.center() + self.origo)
+    def toCuboid(self, orthogonal=False):
+        """ A cuboid with vectors as this unit-cell and center with respect to its origo
+
+        Parameters
+        ----------
+        orthogonal : bool, optional
+           if true the cuboid has orthogonal sides
+        """
+        if not orthogonal:
+            return Cuboid(self.cell.copy(), self.center() + self.origo)
+        def find_min_max(cmin, cmax, new):
+            for i in range(3):
+                cmin[i] = min(cmin[i], new[i])
+                cmax[i] = max(cmax[i], new[i])
+        cmin = self.cell.min(1)
+        cmax = self.cell.max(1)
+        find_min_max(cmin, cmax, self.cell[[0, 1], :].sum(0))
+        find_min_max(cmin, cmax, self.cell[[0, 2], :].sum(0))
+        find_min_max(cmin, cmax, self.cell[[1, 2], :].sum(0))
+        find_min_max(cmin, cmax, self.cell.sum(0))
+        return Cuboid(cmax - cmin, self.center() + self.origo)
 
     def parameters(self, rad=False):
         r""" Return the cell-parameters of this cell

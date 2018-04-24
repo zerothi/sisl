@@ -380,3 +380,20 @@ def test_plane2():
     assert -1.5 == approx(_dot(n, pp - p))
     n, p = sc.plane(1, 2, False)
     assert -1.5 == approx(_dot(n, pp - p))
+
+
+def test_tocuboid_simple():
+    sc = SuperCell([1, 1, 1, 90, 90, 90])
+    c1 = sc.toCuboid()
+    assert np.allclose(sc.cell, c1._v)
+    c2 = sc.toCuboid(True)
+    assert np.allclose(c1._v, c2._v)
+
+
+def test_tocuboid_complex():
+    sc = SuperCell([1, 1, 1, 60, 60, 60])
+    print(sc.cell)
+    c1 = sc.toCuboid()
+    assert np.allclose(sc.cell, c1._v)
+    c2 = sc.toCuboid(True)
+    assert not np.allclose(np.diagonal(c1._v), np.diagonal(c2._v))
