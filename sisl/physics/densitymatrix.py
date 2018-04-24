@@ -180,7 +180,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
         # Extract sub variables used throughout the loop
         shape = _a.asarrayi(grid.shape)
         dcell = grid.dcell
-        ic = grid.sc.icell * shape.reshape(1, -1)
 
         # Sparse matrix data
         csr = self._csr
