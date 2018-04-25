@@ -395,7 +395,7 @@ class SphericalOrbital(Orbital):
         This can be called in several ways:
 
               set_radial(r, f)
-                    which uses ``scipy.interpolate.UnivariateSpline(r, f, k=5, s=0, ext=1, check_finite=False)``
+                    which uses ``scipy.interpolate.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)``
                     to define the interpolation function (see `interp` keyword).
                     Here the maximum radius of the orbital is the maximum `r` value,
                     regardless of ``f(r)`` is zero for smaller `r`.
@@ -427,12 +427,12 @@ class SphericalOrbital(Orbital):
         >>> r = np.linspace(0, 4, 300)
         >>> f = np.exp(-r)
         >>> def i_univariate(r, f):
-        ...    return interp.UnivariateSpline(r, f, k=5, s=0, ext=1, check_finite=False)
+        ...    return interp.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)
         >>> def i_interp1d(r, f):
         ...    return interp.interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False)
         >>> def i_spline(r, f):
         ...    from functools import partial
-        ...    tck = interp.splrep(r, f, k=5, s=0)
+        ...    tck = interp.splrep(r, f, k=3, s=0)
         ...    return partial(interp.splev, tck=tck, der=0, ext=1)
         >>> R = np.linspace(0, 4, 400)
         >>> o.set_radial(r, f, interp=i_univariate)
@@ -498,7 +498,7 @@ class SphericalOrbital(Orbital):
             # s, smoothing factor. If 0, smooth through all points
             # I can see that this function is *much* faster than
             # interp1d, AND it yields same results with these arguments.
-            interp = partial(UnivariateSpline, k=5, s=0, ext=1, check_finite=False)
+            interp = partial(UnivariateSpline, k=3, s=0, ext=1, check_finite=False)
             interp = kwargs.get('interp', interp)
 
             self.set_radial(interp(r, f))
