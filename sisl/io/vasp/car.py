@@ -35,8 +35,8 @@ class carSileVASP(SileVASP):
         self._write('  1.\n')
 
         # Write unit-cell
-        fmt = ('   ' + '{:18.9f}' * 3) * 2 + '\n'
-        tmp = np.zeros([6], np.float64)
+        fmt = ('   ' + '{:18.9f}' * 3) + '\n'
+        tmp = np.zeros([3], np.float64)
         for i in range(3):
             tmp[:3] = geom.cell[i, :]
             self._write(fmt.format(*tmp))
@@ -49,9 +49,9 @@ class carSileVASP(SileVASP):
                 s.append(pt.Z_label(a.Z))
                 d.append(0)
             d[idx_specie] += + 1
-        fmt = ' ' + '{:s}' * len(d) + '\n'
+        fmt = ' {:s}' * len(d) + '\n'
         self._write(fmt.format(*s))
-        fmt = ' ' + '{:d}' * len(d) + '\n'
+        fmt = ' {:d}' * len(d) + '\n'
         self._write(fmt.format(*d))
         self._write('Cartesian\n')
 
