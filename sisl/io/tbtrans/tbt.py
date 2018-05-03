@@ -1292,11 +1292,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         The density matrix can be used to calculate the LDOS in real-space.
 
-        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `DensityMatrix.density`
+        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `~DensityMatrix.density`
         routine. Basically the LDOS in real-space may be calculated as
 
         .. math::
-            \rho_{\mathbf G}(E, \mathbf r) = -\frac{1}{\Pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Im[\mathbf G_{\nu\mu}(E)]
+            \rho_{\mathbf G}(E, \mathbf r) = -\frac{1}{\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Im[\mathbf G_{\nu\mu}(E)]
 
         where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations
         ensures the broadening of the density, i.e. it should not be necessary to perform energy
@@ -1316,6 +1316,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the given supercell, the default is all density matrix elements for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
 
+        See Also
+        --------
+        Adensity_matrix : spectral function density matrix
+
         Returns
         -------
         DensityMatrix: the object containing the Geometry and the density matrix elements
@@ -1327,11 +1331,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         The density matrix can be used to calculate the LDOS in real-space.
 
-        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `DensityMatrix.density`
+        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `~DensityMatrix.density`
         routine. Basically the LDOS in real-space may be calculated as
 
         .. math::
-            \rho_{\mathbf A}(E, \mathbf r) = \frac{1}{2\Pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Re[\mathbf A_{\nu\mu}(E)]
+            \rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, \nu\mu}(E)]
 
         where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations
         ensures the broadening of the density, i.e. it should not be necessary to perform energy
@@ -1352,6 +1356,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned density matrix from unit-cell (``[None, None, None]``) to
            the given supercell, the default is all density matrix elements for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+
+        See Also
+        --------
+        density_matrix : Green function density matrix
 
         Returns
         -------
