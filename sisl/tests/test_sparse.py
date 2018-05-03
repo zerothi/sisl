@@ -651,6 +651,65 @@ class TestSparseCSR(object):
                 assert setup.s1[0, jj] == i
                 assert s[1, jj] == 0
 
+    def test_op_csr(self, setup):
+        csr = sc.sparse.csr_matrix((10, 100), dtype=np.int32)
+        for i in range(10):
+            j = range(i + 2)
+            setup.s1[0, j] = i
+
+            csr[0, 0] = 1
+
+            # +
+            s = setup.s1 + csr
+            for jj in j:
+                if jj == 0: continue
+                assert s[0, jj] == i
+                assert setup.s1[0, jj] == i
+                assert s[1, jj] == 0
+            assert s[0, 0] == i + 1
+
+            # -
+            s = setup.s1 - csr
+            for jj in j:
+                if jj == 0: continue
+                assert s[0, jj] == i
+                assert setup.s1[0, jj] == i
+                assert s[1, jj] == 0
+            assert s[0, 0] == i - 1
+
+            # - (r)
+            s = csr - setup.s1
+            for jj in j:
+                if jj == 0: continue
+                assert s[0, jj] == -i
+                assert setup.s1[0, jj] == i
+                assert s[1, jj] == 0
+            assert s[0, 0] == 1 - i
+
+            csr[0, 0] = 2
+
+            # *
+            s = setup.s1 * csr
+            for jj in j:
+                if jj == 0: continue
+                assert s[0, jj] == 0
+                assert setup.s1[0, jj] == i
+                assert s[1, jj] == 0
+            assert s[0, 0] == i * 2
+
+            # //
+            s = s // csr
+            assert s[0, 0] == i
+
+            # **
+            s = setup.s1 ** csr
+            for jj in j:
+                if jj == 0: continue
+                assert s[0, jj] == 1
+                assert setup.s1[0, jj] == i
+                assert s[1, jj] == 0
+            assert s[0, 0] == i ** 2
+
     def test_op3(self, setup):
         S = SparseCSR((10, 100), dtype=np.int32)
         # Create initial stuff

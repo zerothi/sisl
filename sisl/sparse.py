@@ -1266,6 +1266,10 @@ class SparseCSR(object):
                 in_a = self._get(r, other.col[sl])
                 self._D[in_a, :] += other._D[sl, :]
 
+        elif isspmatrix(other):
+            tmp = SparseCSR(other, shape=self.shape[:2])
+            self += tmp
+
         else:
             self._D += other
         return self
@@ -1300,6 +1304,10 @@ class SparseCSR(object):
                 # Get positions of b-elements in a:
                 in_a = self._get(r, other.col[sl])
                 self._D[in_a, :] -= other._D[sl, :]
+
+        elif isspmatrix(other):
+            tmp = SparseCSR(other, shape=self.shape[:2])
+            self -= tmp
 
         else:
             self._D -= other
@@ -1343,6 +1351,10 @@ class SparseCSR(object):
                 not_in_b = in1d(acol, bcol, invert=True).nonzero()[0]
                 self._D[aptr+not_in_b, :] = 0
 
+        elif isspmatrix(other):
+            tmp = SparseCSR(other, shape=self.shape[:2])
+            self *= tmp
+
         else:
             self._D *= other
         return self
@@ -1375,6 +1387,10 @@ class SparseCSR(object):
                 in_a = self._get(r, other.col[bptr:bptr+bn])
                 self._D[in_a, :] /= other._D[bptr:bptr+bn, :]
 
+        elif isspmatrix(other):
+            tmp = SparseCSR(other, shape=self.shape[:2])
+            self /= tmp
+
         else:
             self._D /= other
         return self
@@ -1401,6 +1417,10 @@ class SparseCSR(object):
                 in_a = self._get(r, other.col[bptr:bptr+bn])
                 self._D[in_a, :] //= other._D[bptr:bptr+bn, :]
 
+        elif isspmatrix(other):
+            tmp = SparseCSR(other, shape=self.shape[:2])
+            self //= tmp
+
         else:
             self._D //= other
         return self
@@ -1426,6 +1446,10 @@ class SparseCSR(object):
                 # Get positions of b-elements in a:
                 in_a = self._get(r, other.col[bptr:bptr+bn])
                 self._D[in_a, :].__itruediv__(other._D[bptr:bptr+bn, :])
+
+        elif isspmatrix(other):
+            tmp = SparseCSR(other, shape=self.shape[:2])
+            self /= tmp
 
         else:
             self._D /= other
@@ -1470,6 +1494,10 @@ class SparseCSR(object):
                 #  float ** 0 == 1
                 not_in_b = in1d(acol, bcol, invert=True).nonzero()[0]
                 self._D[aptr+not_in_b, :] = 1
+
+        elif isspmatrix(other):
+            tmp = SparseCSR(other, shape=self.shape[:2])
+            self **= tmp
 
         else:
             self._D **= other

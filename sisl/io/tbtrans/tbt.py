@@ -25,6 +25,7 @@ from sisl.messages import warn, info, SislError
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
 from sisl.physics.distribution import fermi_dirac
+from sisl.physics.densitymatrix import DensityMatrix
 
 
 __all__ = ['tbtncSileTBtrans', 'phtncSileTBtrans']
@@ -972,8 +973,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                              'wrong value ["all", "+", "-"] allowed.')
 
         # We will always remove the zeroes and sort the indices... (they should be sorted anyways)
-        J.sort_indices()
         J.eliminate_zeros()
+        J.sort_indices()
 
         return J
 
@@ -1034,9 +1035,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                              'wrong value ["+", "-", "all"] allowed.')
 
         # Do in-place operations by removing all the things not required
+        Jab.eliminate_zeros()
         Jab.sort_indices()
         Jab.sum_duplicates()
-        Jab.eliminate_zeros()
 
         return Jab
 
@@ -1286,6 +1287,85 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.vector_current_from_bond(Jab)
 
+    def density_matrix(self, E, kavg=True, isc=None):
+        r""" Density matrix from the Green function at energy `E`
+
+        The density matrix can be used to calculate the LDOS in real-space.
+
+        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `DensityMatrix.density`
+        routine. Basically the LDOS in real-space may be calculated as
+
+        .. math::
+            \rho_{\mathbf G}(E, \mathbf r) = -\frac{1}{\Pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Im[\mathbf G_{\nu\mu}(E)]
+
+        where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations
+        ensures the broadening of the density, i.e. it should not be necessary to perform energy
+        averages over the density matrices.
+
+        Parameters
+        ----------
+        E : float or int, optional
+           the energy or the energy index of density matrix. If an integer
+           is passed it is the index, otherwise the index corresponding to
+           ``Eindex(E)`` is used.
+        kavg: bool, int or array_like, optional
+           whether the returned density matrix is k-averaged, an explicit k-point
+           or a selection of k-points
+        isc: array_like, optional
+           the returned density matrix from unit-cell (``[None, None, None]``) to
+           the given supercell, the default is all density matrix elements for the supercell.
+           To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+
+        Returns
+        -------
+        DensityMatrix: the object containing the Geometry and the density matrix elements
+        """
+        return self.Adensity_matrix(None, E, kavg, isc)
+
+    def Adensity_matrix(self, elec, E, kavg=True, isc=None):
+        r""" Spectral function density matrix at energy `E`
+
+        The density matrix can be used to calculate the LDOS in real-space.
+
+        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `DensityMatrix.density`
+        routine. Basically the LDOS in real-space may be calculated as
+
+        .. math::
+            \rho_{\mathbf A}(E, \mathbf r) = \frac{1}{2\Pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Re[\mathbf A_{\nu\mu}(E)]
+
+        where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations
+        ensures the broadening of the density, i.e. it should not be necessary to perform energy
+        averages over the density matrices.
+
+        Parameters
+        ----------
+        elec: str or int
+           the electrode of originating electrons
+        E : float or int, optional
+           the energy or the energy index of density matrix. If an integer
+           is passed it is the index, otherwise the index corresponding to
+           ``Eindex(E)`` is used.
+        kavg: bool, int or array_like, optional
+           whether the returned density matrix is k-averaged, an explicit k-point
+           or a selection of k-points
+        isc: array_like, optional
+           the returned density matrix from unit-cell (``[None, None, None]``) to
+           the given supercell, the default is all density matrix elements for the supercell.
+           To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+
+        Returns
+        -------
+        DensityMatrix: the object containing the Geometry and the density matrix elements
+        """
+        dm = self._sparse_data('DM', elec, E, kavg, isc)
+        dm.eliminate_zeros()
+        dm.sort_indices()
+        # Now create the density matrix object
+        geom = self.read_geometry()
+        DM = DensityMatrix(geom, nnzpr=1)
+        DM += dm
+        return DM
+
     def orbital_COOP(self, E, kavg=True, isc=None):
         r""" Orbital COOP analysis of the Green function
 
@@ -1390,8 +1470,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_ACOHP : atomic COHP analysis of the spectral function
         """
         COOP = self._sparse_data('COOP', elec, E, kavg, isc) * eV2Ry
-        COOP.sort_indices()
         COOP.eliminate_zeros()
+        COOP.sort_indices()
         return COOP
 
     def atom_COOP_from_orbital(self, COOP, uc=False):
@@ -1419,9 +1499,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_COOP : atomic COOP analysis of the Green function
         """
         COOP = self._sparse_data_orb_to_atom(COOP, uc)
+        COOP.eliminate_zeros()
         COOP.sort_indices()
         COOP.sum_duplicates()
-        COOP.eliminate_zeros()
         return COOP
 
     def atom_COOP(self, E, kavg=True, isc=None, uc=False):
@@ -1577,8 +1657,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_ACOOP : atomic COOP analysis of the spectral function
         """
         COHP = self._sparse_data('COHP', elec, E, kavg, isc)
-        COHP.sort_indices()
         COHP.eliminate_zeros()
+        COHP.sort_indices()
         return COHP
 
     def atom_COHP_from_orbital(self, COHP, uc=False):
