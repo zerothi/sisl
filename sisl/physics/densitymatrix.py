@@ -283,9 +283,11 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
         # 1. Ensure the grid has a geometry associated with it
         sc = grid.sc.copy()
+        # Find the periodic directions
+        pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1 for i, bc in enumerate(grid.bc[:, 0])]
         if grid.geometry is None:
             # Create the actual geometry that encompass the grid
-            ia, xyz, _ = geometry.within_inf(sc)
+            ia, xyz, _ = geometry.within_inf(sc, periodic=pbc)
             if len(ia) > 0:
                 grid.set_geometry(Geometry(xyz, geometry.atom[ia], sc=sc))
 
@@ -302,7 +304,7 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)
-        IA, XYZ, ISC = geometry.within_inf(sc)
+        IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc)
 
         # Retrieve progressbar
         eta = tqdm_eta(len(IA), self.__class__.__name__ + '.density', 'atom', eta)
