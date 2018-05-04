@@ -217,12 +217,19 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """ Return temperature of the electrode electronic distribution in eV """
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
-    def eta(self, elec):
-        """ The imaginary part used when calculating the self-energies in eV """
+    def eta(self, elec=None):
+        """ The imaginary part used when calculating the self-energies in eV (or for the device
+
+        Parameters
+        ----------
+        elec : str, int, optional
+           electrode to extract the eta value from. If not specified (or None) the device
+           region eta will be returned.
+        """
         try:
             return self._value('eta', self._elec(elec))[0] * Ry2eV
         except:
-            return 0.
+            return 0. # unknown!
 
     def transmission(self, elec_from=0, elec_to=1, kavg=True):
         """ Transmission from `elec_from` to `elec_to`.
