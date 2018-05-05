@@ -1299,7 +1299,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         The density matrix can be used to calculate the LDOS in real-space.
 
-        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `~DensityMatrix.density`
+        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `~sisl.physics.DensityMatrix.density`
         routine. Basically the LDOS in real-space may be calculated as
 
         .. math::
@@ -1311,7 +1311,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        E : float or int, optional
+        E : float or int
            the energy or the energy index of density matrix. If an integer
            is passed it is the index, otherwise the index corresponding to
            ``Eindex(E)`` is used.
@@ -1352,7 +1352,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         elec: str or int
            the electrode of originating electrons
-        E : float or int, optional
+        E : float or int
            the energy or the energy index of density matrix. If an integer
            is passed it is the index, otherwise the index corresponding to
            ``Eindex(E)`` is used.
