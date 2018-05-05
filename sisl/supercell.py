@@ -99,14 +99,19 @@ class SuperCell(object):
             return Cuboid(self.cell.copy(), self.center() + self.origo)
         def find_min_max(cmin, cmax, new):
             for i in range(3):
-                cmin[i] = min(cmin[i], new[i])
-                cmax[i] = max(cmax[i], new[i])
-        cmin = self.cell.min(1)
-        cmax = self.cell.max(1)
-        find_min_max(cmin, cmax, self.cell[[0, 1], :].sum(0))
-        find_min_max(cmin, cmax, self.cell[[0, 2], :].sum(0))
-        find_min_max(cmin, cmax, self.cell[[1, 2], :].sum(0))
-        find_min_max(cmin, cmax, self.cell.sum(0))
+                n = min(new[0, i], new[1, i])
+                cmin[i] = min(cmin[i], n)
+                n = max(new[0, i], new[1, i])
+                cmax[i] = max(cmax[i], n)
+        cmin = self.cell.min(0)
+        cmax = self.cell.max(0)
+        find_min_max(cmin, cmax, self.cell[[0, 1], :])
+        find_min_max(cmin, cmax, self.cell[[0, 2], :])
+        find_min_max(cmin, cmax, self.cell[[1, 2], :])
+        c = self.cell.sum(0)
+        for i in range(3):
+            cmin[i] = min(cmin[i], c[i])
+            cmax[i] = max(cmax[i], c[i])
         return Cuboid(cmax - cmin, self.center() + self.origo)
 
     def parameters(self, rad=False):
