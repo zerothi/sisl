@@ -1338,7 +1338,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         The density matrix can be used to calculate the LDOS in real-space.
 
-        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `~DensityMatrix.density`
+        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `~sisl.physics.DensityMatrix.density`
         routine. Basically the LDOS in real-space may be calculated as
 
         .. math::

@@ -32,11 +32,10 @@ transmission eigenvalues etc.
 >>> tbt.transmission(0, 1) # from electrode 0 -> 1 # doctest: +SKIP
 >>> tbt.transmission(0, 2) # from electrode 0 -> 2 # doctest: +SKIP
 >>> tbt.ADOS(0, E=1.) # k-average, total spectral DOS from 0th electrode # doctest: +SKIP
+>>> tbt.density_matrix(E=1.) # k-average, density matrix from Green function at 1. eV # doctest: +SKIP
 
 
-The above is the most important use of this module while the following
-entries are enabled:
-
+The above extraction of data is the most frequent use of this module.
 
 Data extraction files
 ^^^^^^^^^^^^^^^^^^^^^
