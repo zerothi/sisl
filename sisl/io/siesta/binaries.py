@@ -274,7 +274,7 @@ class tsdeSileSiesta(dmSileSiesta):
                              "correct number of orbitals.")
 
         # Create the energy density matrix container
-        EDM = EnergyDensityMatrix(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
+        EDM = EnergyDensityMatrix(geom, spin, nnzpr=1, dtype=np.float64, orthogonal=False)
 
         # Create the new sparse matrix
         EDM._csr.ncol = ncol.astype(np.int32, copy=False)
@@ -283,7 +283,7 @@ class tsdeSileSiesta(dmSileSiesta):
         EDM._csr.col = col.astype(np.int32, copy=False) - 1
         EDM._csr._nnz = len(col)
 
-        EDM._csr._D = np.empty([nnz, spin+1], np.float32)
+        EDM._csr._D = np.empty([nnz, spin+1], np.float64)
         EDM._csr._D[:, :spin] = dEDM[:, :]
         # EDM file does not contain overlap matrix... so neglect it for now.
         EDM._csr._D[:, spin] = 0.

@@ -1294,7 +1294,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.vector_current_from_bond(Jab)
 
-    def density_matrix(self, E, kavg=True, isc=None):
+    def density_matrix(self, E, kavg=True, isc=None, geometry=None):
         r""" Density matrix from the Green function at energy `E` (1/eV)
 
         The density matrix can be used to calculate the LDOS in real-space.
@@ -1322,6 +1322,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned density matrix from unit-cell (``[None, None, None]``) to
            the given supercell, the default is all density matrix elements for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+        geometry: Geometry, optional
+           geometry that will be associated with the density matrix. By default the
+           geometry contained in this file will be used. However, then the
+           atomic species are probably incorrect, nor will the orbitals contain
+           the basis-set information required to generate the required density
+           in real-space.
 
         See Also
         --------
@@ -1331,9 +1337,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         -------
         DensityMatrix: the object containing the Geometry and the density matrix elements
         """
-        return self.Adensity_matrix(None, E, kavg, isc)
+        return self.Adensity_matrix(None, E, kavg, isc, geometry=geometry)
 
-    def Adensity_matrix(self, elec, E, kavg=True, isc=None):
+    def Adensity_matrix(self, elec, E, kavg=True, isc=None, geometry=None):
         r""" Spectral function density matrix at energy `E` (1/eV)
 
         The density matrix can be used to calculate the LDOS in real-space.
@@ -1363,6 +1369,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned density matrix from unit-cell (``[None, None, None]``) to
            the given supercell, the default is all density matrix elements for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+        geometry: Geometry, optional
+           geometry that will be associated with the density matrix. By default the
+           geometry contained in this file will be used. However, then the
+           atomic species are probably incorrect, nor will the orbitals contain
+           the basis-set information required to generate the required density
+           in real-space.
 
         See Also
         --------
@@ -1377,7 +1389,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         dm.sort_indices()
         # Now create the density matrix object
         geom = self.read_geometry()
-        DM = DensityMatrix(geom, nnzpr=1)
+        if geometry is None:
+            DM = DensityMatrix(geom, nnzpr=1)
+        else:
+            if geom.no != geometry.no:
+                raise ValueError(self.__class__.__name__ + '.density_matrix requires input geometry to contain the correct number of orbitals. Please correct input!')
+            DM = DensityMatrix(geometry, nnzpr=1)
         DM += dm
         return DM
 
