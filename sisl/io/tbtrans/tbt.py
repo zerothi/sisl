@@ -1295,7 +1295,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self.vector_current_from_bond(Jab)
 
     def density_matrix(self, E, kavg=True, isc=None):
-        r""" Density matrix from the Green function at energy `E`
+        r""" Density matrix from the Green function at energy `E` (1/eV)
 
         The density matrix can be used to calculate the LDOS in real-space.
 
@@ -1334,7 +1334,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self.Adensity_matrix(None, E, kavg, isc)
 
     def Adensity_matrix(self, elec, E, kavg=True, isc=None):
-        r""" Spectral function density matrix at energy `E`
+        r""" Spectral function density matrix at energy `E` (1/eV)
 
         The density matrix can be used to calculate the LDOS in real-space.
 
@@ -1372,7 +1372,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         -------
         DensityMatrix: the object containing the Geometry and the density matrix elements
         """
-        dm = self._sparse_data('DM', elec, E, kavg, isc)
+        dm = self._sparse_data('DM', elec, E, kavg, isc) * eV2Ry
         dm.eliminate_zeros()
         dm.sort_indices()
         # Now create the density matrix object
