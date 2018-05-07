@@ -204,6 +204,28 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     elecs.append(tvar)
         return elecs
 
+    def n_btd(self, elec=None):
+        """ Number of blocks in the BTD partioning
+
+        Parameters
+        ----------
+        elec : str or int, optional
+           if None the number of blocks in the device region BTD matrix. Else
+           the number of BTD blocks in the electrode down-folding.
+        """
+        return len(self._dimension('n_btd', self._elec(elec)))
+
+    def btd(self, elec=None):
+        """ Block-sizes for the BTD method
+
+        Parameters
+        ----------
+        elec : str or int, optional
+           if None the number of blocks in the device region BTD matrix. Else
+           the number of BTD blocks in the electrode down-folding.
+        """
+        return self._value('btd', self._elec(elec))
+
     def chemical_potential(self, elec):
         """ Return the chemical potential associated with the electrode `elec` """
         return self._value('mu', self._elec(elec))[0] * Ry2eV
@@ -1870,8 +1892,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             prnt("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
         else:
             prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
+        prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta() * 1e3))
         prnt("  - atoms with DOS (fortran indices):")
         prnt("     " + list2str(self.a_dev + 1))
+        prnt("  - number of BTD blocks: {}".format(self.n_btd()))
         truefalse('DOS' in self.variables, "DOS Green function", ['TBT.DOS.Gf'])
         truefalse('DM' in self.variables, "Density matrix Green function", ['TBT.DOS.Gf', 'TBT.DM.Gf'])
         truefalse('COOP' in self.variables, "COOP Green function", ['TBT.DOS.Gf', 'TBT.COOP.Gf'])
@@ -1890,11 +1914,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     bloch = [0] * 3
                 prnt()
                 prnt("Electrode: {}".format(elec))
+                prnt("  - number of BTD blocks: {}".format(self.n_btd(elec)))
                 prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
                 gelec = self.groups[elec]
                 prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
                 prnt("  - electronic temperature: {:.2f} K".format(self.electronic_temperature(elec)))
-                prnt("  - imaginary part: {:.4f} meV".format(self.eta(elec) * 1e3))
+                prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
                 truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
                 truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
                 truefalse('J' in gelec.variables, "orbital-current", ['TBT.DOS.A', 'TBT.Current.Orb'])

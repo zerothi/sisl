@@ -279,13 +279,12 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """ Number of orbitals in the device region """
         return len(self.dimensions['no_d'])
 
-    @property
     def n_btd(self):
-        """ Number of blocks in the BTD partioning """
+        """ Number of blocks in the BTD partioning in the device region """
         return len(self.dimensions['n_btd'])
 
     def btd(self):
-        """ Block-sizes for the BTD method """
+        """ Block-sizes for the BTD method in the device region """
         return self._value('btd')
 
     def pivot(self, in_device=False, sort=False):
