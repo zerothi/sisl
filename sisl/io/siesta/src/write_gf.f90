@@ -51,7 +51,7 @@ subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
   write(iu) na_u, no_u
   write(iu) na_used, no_used
   write(iu) xa_used, lasto_used
-  write(iu) .true., Bloch, pre_expand
+  write(iu) .false., Bloch, pre_expand
   write(iu) mu
 
   ! k-points
