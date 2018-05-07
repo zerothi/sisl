@@ -39,26 +39,24 @@ class SelfEnergy(object):
 
 
 class SemiInfinite(SelfEnergy):
-    """ Self-energy object able to calculate the dense self-energy for a given `SparseGeometry` in a semi-infinite chain. """
+    """ Self-energy object able to calculate the dense self-energy for a given `SparseGeometry` in a semi-infinite chain.
+
+    Parameters
+    ----------
+    spgeom : SparseGeometry
+       any sparse geometry matrix which may return matrices
+    infinite : str
+       axis specification for the semi-infinite direction (`+A`/`-A`/`+B`/`-B`/`+C`/`-C`)
+    eta : float, optional
+       the default imaginary part of the self-energy calculation
+    bloch : array_like, optional
+       Bloch-expansion for each of the lattice vectors (`1` for no expansion)
+       The resulting self-energy will have dimension
+       equal to `len(obj) * np.product(bloch)`.
+    """
 
     def __init__(self, spgeom, infinite, eta=1e-6, bloch=None):
-        """ Create a `SelfEnergy` object from any `SparseGeometry`
-
-        This enables the calculation of the self-energy for a semi-infinite chain.
-
-        Parameters
-        ----------
-        spgeom : SparseGeometry
-           any sparse geometry matrix which may return matrices
-        infinite : str
-           axis specification for the semi-infinite direction (`+A`/`-A`/`+B`/`-B`/`+C`/`-C`)
-        eta : float, optional
-           the default imaginary part of the self-energy calculation
-        bloch : array_like, optional
-           Bloch-expansion for each of the lattice vectors (`1` for no expansion)
-           The resulting self-energy will have dimension
-           equal to `len(obj) * np.product(bloch)`.
-        """
+        """ Create a `SelfEnergy` object from any `SparseGeometry` """
         self.eta = eta
         if bloch is None:
             self.bloch = _a.onesi([3])

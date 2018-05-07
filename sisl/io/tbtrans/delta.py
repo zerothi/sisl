@@ -131,15 +131,15 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # Create designation of the creation
         self.method = 'sisl'
 
-    def write_geometry(self, geom):
+    def write_geometry(self, geometry):
         """ Creates the NetCDF file and writes the geometry information """
         sile_raise_write(self)
 
         # Create initial dimensions
-        self.write_supercell(geom.sc)
-        self._crt_dim(self, 'no_s', np.prod(geom.nsc) * geom.no)
-        self._crt_dim(self, 'no_u', geom.no)
-        self._crt_dim(self, 'na_u', geom.na)
+        self.write_supercell(geometry.sc)
+        self._crt_dim(self, 'no_s', np.prod(geometry.nsc) * geometry.no)
+        self._crt_dim(self, 'no_u', geometry.no)
+        self._crt_dim(self, 'na_u', geometry.na)
 
         # Create initial geometry
         v = self._crt_var(self, 'lasto', 'i4', ('na_u',))
@@ -149,15 +149,15 @@ class deltancSileTBtrans(SileCDFTBtrans):
         v.unit = 'Bohr'
 
         # Save stuff
-        self.variables['xa'][:] = geom.xyz / Bohr2Ang
+        self.variables['xa'][:] = geometry.xyz / Bohr2Ang
 
         bs = self._crt_grp(self, 'BASIS')
         b = self._crt_var(bs, 'basis', 'i4', ('na_u',))
         b.info = "Basis of each atom by ID"
 
-        orbs = _a.emptyi([geom.na])
+        orbs = _a.emptyi([geometry.na])
 
-        for ia, a, isp in geom.iter_species():
+        for ia, a, isp in geometry.iter_species():
             b[ia] = isp + 1
             orbs[ia] = a.no
             if a.tag in bs.groups:
@@ -301,7 +301,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             if np.any(lvl.variables['list_col'][:] != delta._csr.col[:]+1):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [list_col].")
-            if np.any(lvl.variables['isc_off'][:] != delta.geom.sc.sc_off):
+            if np.any(lvl.variables['isc_off'][:] != delta.geometry.sc.sc_off):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [sc_off].")
         else:
@@ -315,7 +315,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             v[:] = delta._csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
             v.info = "Index of supercell coordinates"
-            v[:] = delta.geom.sc.sc_off[:, :]
+            v[:] = delta.geometry.sc.sc_off[:, :]
 
         warn_E = True
         if ilvl in [3, 4]:
@@ -512,7 +512,7 @@ class dhncSileTBtrans(deltancSileTBtrans):
             if np.any(lvl.variables['list_col'][:] != H._csr.col[:]+1):
                 raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
                                  "all dH entries [list_col].")
-            if np.any(lvl.variables['isc_off'][:] != H.geom.sc.sc_off):
+            if np.any(lvl.variables['isc_off'][:] != H.geometry.sc.sc_off):
                 raise ValueError("The sparsity pattern stored in dH *MUST* be equivalent for "
                                  "all dH entries [sc_off].")
         else:
@@ -526,7 +526,7 @@ class dhncSileTBtrans(deltancSileTBtrans):
             v[:] = H._csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
             v.info = "Index of supercell coordinates"
-            v[:] = H.geom.sc.sc_off[:, :]
+            v[:] = H.geometry.sc.sc_off[:, :]
 
         warn_E = True
         if ilvl in [3, 4]:
