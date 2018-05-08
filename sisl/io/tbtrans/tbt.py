@@ -2156,7 +2156,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append('T:{}-{}[G]'.format(e1, e2))
+                ns._data_header.append('T:{}-{}[G0]'.format(e1, e2))
                 ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('-T', '--transmission', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataT,
@@ -2182,7 +2182,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append('BT:{}[G]'.format(e))
+                ns._data_header.append('BT:{}[G0]'.format(e))
                 ns._data_description.append('Column {} is bulk-transmission'.format(len(ns._data)))
         p.add_argument('-BT', '--transmission-bulk', nargs=1, metavar='ELEC',
                        action=DataBT,
@@ -2268,7 +2268,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 neig = data.shape[-1]
                 for eig in range(neig):
                     ns._data.append(data[ns._Erng, ..., eig].flatten())
-                    ns._data_header.append('Teig({}):{}-{}[G]'.format(eig+1, e1, e2))
+                    ns._data_header.append('Teig({}):{}-{}[G0]'.format(eig+1, e1, e2))
                     ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('--transmission-eig', '-Teig', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataTEig,
@@ -2328,8 +2328,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         class AVOut(argparse.Action):
 
             def __call__(self, parser, ns, value, option_string=None):
-                ns._tbt.write_tbtav()
-        p.add_argument('--tbt-av', action=AVOut, nargs=0,
+                if value is None:
+                    ns._tbt.write_tbtav()
+                else:
+                    ns._tbt.write_tbtav(value)
+        p.add_argument('--tbt-av', action=AVOut, nargs='?', default=None,
                        help='Create "{0}" with the k-averaged quantities of this file.'.format(self.file.replace('TBT.nc', 'TBT.AV.nc')))
 
         class Plot(argparse.Action):
