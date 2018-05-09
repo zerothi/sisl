@@ -867,7 +867,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             cnz = np.count_nonzero
             def func(ptr1, ptr2):
                 return cnz(all_col[ptr1:ptr2])
-            tmp = _a.arrayi(map(func, rptr[:geom.no], rptr[1:]))
+            tmp = _a.arrayi(list(map(func, rptr[:geom.no], rptr[1:])))
             rptr = np.insert(_a.cumsumi(tmp), 0, 0)
             del tmp
 
