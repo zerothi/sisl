@@ -28,6 +28,18 @@ class _SparseGeometry(object):
      - geometry
 
     """
+    # These overrides are necessary to be able to perform
+    # ufunc operations with numpy.
+    # The reason is that the ufunc in numpy arrays are first
+    # tried when encountering operations:
+    #   np.int + object will invoke __add__ from ndarray, regardless
+    # of objects __radd__ routine.
+    # We thus need to define the ufunc method in this object
+    # to tell numpy that using numpy.ndarray.__array_ufunc__ won't work.
+    # Prior to 1.13 the ufunc is named numpy_ufunc, subsequent versions
+    # are using array_ufunc.
+    __numpy_ufunc__ = None
+    __array_ufunc__ = None
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Create sparse object with element between orbitals """

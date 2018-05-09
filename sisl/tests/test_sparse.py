@@ -809,6 +809,56 @@ class TestSparseCSR(object):
         S = S1 - S2
         assert np.allclose(S._D, S1._D - S2._D)
 
+    def test_op_numpy_scalar(self, setup):
+        S = SparseCSR((10, 100), dtype=np.float32)
+        I = np.ones(1, dtype=np.complex64)[0]
+        # Create initial stuff
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            S[0, j] = i
+        S.finalize()
+
+        Ssum = S._D.sum()
+
+        s = S + I
+        assert isinstance(s, SparseCSR)
+        assert s.dtype == np.complex64
+        assert s._D.sum() == Ssum + S.nnz
+
+        s = S - I
+        assert isinstance(s, SparseCSR)
+        assert s.dtype == np.complex64
+        assert s._D.sum() == Ssum - S.nnz
+
+        s = I + S
+        assert isinstance(s, SparseCSR)
+        assert s.dtype == np.complex64
+        assert s._D.sum() == Ssum + S.nnz
+
+        s = S * I
+        assert isinstance(s, SparseCSR)
+        assert s.dtype == np.complex64
+        assert s._D.sum() == Ssum
+
+        s = I * S
+        assert isinstance(s, SparseCSR)
+        assert s.dtype == np.complex64
+        assert s._D.sum() == Ssum
+
+        s = S / I
+        assert isinstance(s, SparseCSR)
+        assert s.dtype == np.complex64
+        assert s._D.sum() == Ssum
+
+        s = S ** I
+        assert isinstance(s, SparseCSR)
+        assert s.dtype == np.complex64
+        assert s._D.sum() == Ssum
+
+        s = I ** S
+        assert isinstance(s, SparseCSR)
+        assert s.dtype == np.complex64
+
     def test_sum1(self, setup):
         S1 = SparseCSR((10, 10, 2), dtype=np.int32)
         S1[0, 0] = [1, 2]

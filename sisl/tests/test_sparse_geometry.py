@@ -292,6 +292,57 @@ class TestSparseAtom(object):
         assert len(s.edges(0)) == 3
         assert len(s.edges(0, exclude=[])) == 4
 
+    def test_op_numpy_scalar(self, setup):
+        g = graphene(atom=Atom(6, R=1.43))
+        S = SparseAtom(g)
+        I = np.ones(1, dtype=np.complex128)[0]
+        # Create initial stuff
+        for i in range(10):
+            j = range(i*4, i*4+3)
+            S[0, j] = i
+        S.finalize()
+
+        Ssum = S._csr._D.sum()
+
+        s = S + I
+        assert isinstance(s, SparseAtom)
+        assert s.dtype == np.complex128
+        assert s._csr._D.sum() == Ssum + S.nnz
+
+        s = S - I
+        assert isinstance(s, SparseAtom)
+        assert s.dtype == np.complex128
+        assert s._csr._D.sum() == Ssum - S.nnz
+
+        s = I + S
+        assert isinstance(s, SparseAtom)
+        assert s.dtype == np.complex128
+        assert s._csr._D.sum() == Ssum + S.nnz
+
+        s = S * I
+        assert isinstance(s, SparseAtom)
+        assert s.dtype == np.complex128
+        assert s._csr._D.sum() == Ssum
+
+        s = I * S
+        assert isinstance(s, SparseAtom)
+        assert s.dtype == np.complex128
+        assert s._csr._D.sum() == Ssum
+
+        s = S / I
+        assert isinstance(s, SparseAtom)
+        assert s.dtype == np.complex128
+        assert s._csr._D.sum() == Ssum
+
+        s = S ** I
+        assert isinstance(s, SparseAtom)
+        assert s.dtype == np.complex128
+        assert s._csr._D.sum() == Ssum
+
+        s = I ** S
+        assert isinstance(s, SparseAtom)
+        assert s.dtype == np.complex128
+
     def test_fromsp1(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
         csr = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
