@@ -889,7 +889,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned data are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
         """
         geom = self.geom
         na = geom.na
@@ -951,12 +951,24 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # I.e. sometimes we want to remove negative values, etc.
         return Dab
 
-    def orbital_current(self, elec, E, kavg=True, isc=None, take='all'):
-        """ Orbital current originating from `elec` as a sparse matrix
+    def orbital_current(self, elec, E, kavg=True, isc=None, only='all'):
+        r""" Orbital current originating from `elec` as a sparse matrix
 
         This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
         Each matrix element of the sparse matrix corresponds to the orbital indices of the
         underlying geometry.
+
+        When requesting orbital-currents it is vital to consider how the data needs to be analysed
+        before extracting the data. For instance, if only local currents are interesting one should
+        use ``only='+'``. While if one is interested in the transmission between subset of orbitals,
+        ``only='all'`` is the correct method.
+
+        For inexperienced users it is adviced to try out all three values of ``only`` to ensure
+        the correct physics is obtained.
+
+        This becomes even more important when the orbital currents are calculated with magnetic
+        fields. With :math:`\mathbf B` fields local current loops may form and current does
+        not necessarily flow along the transport direction.
 
         Parameters
         ----------
@@ -973,7 +985,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned bond currents from the unit-cell (``[None, None, None]``) to
            the given supercell, the default is all orbital currents for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
-        take : {'all', '+', '-'}
+        only : {'all', '+', '-'}
            which orbital currents to return, all, positive or negative values only.
            Default to ``'all'`` because it can then be used in the subsequent default
            arguments for `bond_current_from_orbital` and `atom_current_from_orbital`.
@@ -993,12 +1005,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         J = self._sparse_data('J', elec, E, kavg, isc)
 
-        if take == '+':
-            J.data = np.where(J.data > 0, J.data, 0).astype(J.dtype, copy=False)
-        elif take == '-':
-            J.data = np.where(J.data > 0, 0, J.data).astype(J.dtype, copy=False)
-        elif take != 'all':
-            raise ValueError(self.__class__.__name__ + '.orbital_current "take" keyword has '
+        if only == '+':
+            J.data[J.data < 0] = 0
+        elif only == '-':
+            J.data[J.data > 0] = 0
+        elif only != 'all':
+            raise ValueError(self.__class__.__name__ + '.orbital_current "only" keyword has '
                              'wrong value ["all", "+", "-"] allowed.')
 
         # We will always remove the zeroes and sort the indices... (they should be sorted anyways)
@@ -1007,7 +1019,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return J
 
-    def bond_current_from_orbital(self, Jij, sum='+', uc=False):
+    def bond_current_from_orbital(self, Jij, only='+', uc=False):
         r""" Bond-current between atoms (sum of orbital currents) from an external orbital current
 
         Conversion routine from orbital currents into bond currents.
@@ -1019,18 +1031,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         where if
 
-        * ``sum='+'``:
-          only :math:`J_{\nu\mu} > 0` are summed,
-        * ``sum='-'``:
-          only :math:`J_{\nu\mu} < 0` are summed,
-        * ``sum='all'``:
-          all :math:`J_{\nu\mu}` are summed.
+        * ``only='+'``:
+          only :math:`J_{\nu\mu} > 0` are summed onto the corresponding atom,
+        * ``only='-'``:
+          only :math:`J_{\nu\mu} < 0` are summed onto the corresponding atom,
+        * ``only='all'``:
+          all :math:`J_{\nu\mu}` are summed onto the corresponding atom.
 
         Parameters
         ----------
         Jij : scipy.sparse.csr_matrix
            the orbital currents as retrieved from `orbital_current`
-        sum : {'+', 'all', '-'}
+        only : {'+', '-', 'all'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
            else return both.
@@ -1038,7 +1050,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned bond-currents are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
 
         Examples
         --------
@@ -1055,12 +1067,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         Jab = self._sparse_data_orb_to_atom(Jij, uc)
 
-        if sum == '+':
-            Jab.data = np.where(Jab.data > 0, Jab.data, 0).astype(Jab.dtype, copy=False)
-        elif sum == '-':
-            Jab.data = np.where(Jab.data > 0, 0, Jab.data).astype(Jab.dtype, copy=False)
-        elif sum != 'all':
-            raise ValueError(self.__class__.__name__ + '.bond_current_from_orbital "sum" keyword has '
+        if only == '+':
+            Jab.data[Jab.data < 0] = 0
+        elif only == '-':
+            Jab.data[Jab.data > 0] = 0
+        elif only != 'all':
+            raise ValueError(self.__class__.__name__ + '.bond_current_from_orbital "only" keyword has '
                              'wrong value ["+", "-", "all"] allowed.')
 
         # Do in-place operations by removing all the things not required
@@ -1070,7 +1082,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return Jab
 
-    def bond_current(self, elec, E, kavg=True, isc=None, sum='+', uc=False):
+    def bond_current(self, elec, E, kavg=True, isc=None, only='+', uc=False):
         """ Bond-current between atoms (sum of orbital currents)
 
         Short hand function for calling `orbital_current` and `bond_current_from_orbital`.
@@ -1090,19 +1102,19 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned bond currents from the unit-cell (``[None, None, None]``) (default) to
            the given supercell. If ``[None, None, None]`` is passed all
            bond currents are returned.
-        sum : {'+', 'all', '-'}
+        only : {'+', '-', 'all'}
            If "+" is supplied only the positive orbital currents are used,
            for "-", only the negative orbital currents are used,
-           else return the sum of both.
+           else return the sum of both. Please see discussion in `orbital_current`.
         uc : bool, optional
            whether the returned bond-currents are only in the unit-cell.
            If `True` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
+        >>> Jij = tbt.orbital_current(0, -1.0, only='+') # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
         >>> Jab1 = tbt.bond_current_from_orbital(Jij) # doctest: +SKIP
         >>> Jab2 = tbt.bond_current(0, -1.0) # doctest: +SKIP
         >>> Jab1 == Jab2 # doctest: +SKIP
@@ -1116,9 +1128,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
         elec = self._elec(elec)
-        Jij = self.orbital_current(elec, E, kavg, isc)
+        Jij = self.orbital_current(elec, E, kavg, isc, only=only)
 
-        return self.bond_current_from_orbital(Jij, sum=sum, uc=uc)
+        return self.bond_current_from_orbital(Jij, uc=uc, only=only)
 
     def atom_current_from_orbital(self, Jij, activity=True):
         r""" Atomic current of atoms by passing the orbital current
@@ -1161,14 +1173,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         >>> Ja = tbt.atom_current_from_orbital(Jij) # doctest: +SKIP
         """
         # Create the bond-currents with all summations
-        Jab = self.bond_current_from_orbital(Jij, sum='all')
+        Jab = self.bond_current_from_orbital(Jij, only='all')
         # We take the absolute and sum it over all connecting atoms
         Ja = np.asarray(abs(Jab).sum(1)).ravel()
 
         if activity:
             # Calculate the absolute summation of all orbital
             # currents and transfer it to a bond-current
-            Jab = self.bond_current_from_orbital(abs(Jij), sum='all')
+            Jab = self.bond_current_from_orbital(abs(Jij), only='all')
 
             # Sum to make it per atom, it is already the absolute
             Jo = np.asarray(Jab.sum(1)).ravel()
@@ -1268,7 +1280,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return Ja
 
-    def vector_current(self, elec, E, kavg=True, sum='+'):
+    def vector_current(self, elec, E, kavg=True, only='+'):
         """ Vector for each atom describing the *mean* path for the current travelling through the atom
 
         See `vector_current_from_bond` for details.
@@ -1284,7 +1296,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         kavg: bool, int or array_like, optional
            whether the returned vector current is k-averaged, an explicit k-point
            or a selection of k-points
-        sum : {'+', '-', 'all'}
+        only : {'+', '-', 'all'}
            By default only sum *outgoing* vector currents (``'+'``).
            The *incoming* vector currents may be retrieved by ``'-'``, while the
            average incoming and outgoing direction can be obtained with ``'all'``.
@@ -1305,9 +1317,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec = self._elec(elec)
         # Imperative that we use the entire supercell structure to
         # retain vectors crossing the boundaries
-        Jab = self.bond_current(elec, E, kavg, sum=sum)
+        Jab = self.bond_current(elec, E, kavg, only=only)
 
-        if sum == 'all':
+        if only == 'all':
             # When we divide by two one can *always* compare the bulk
             # vector currents using either of the sum-rules.
             # I.e. it will be much easier to distinguish differences
@@ -1544,7 +1556,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COOP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
 
         See Also
         --------
@@ -1578,7 +1590,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COOP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
 
         See Also
         --------
@@ -1611,7 +1623,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COOP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
 
         See Also
         --------
@@ -1731,7 +1743,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COHP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
 
         See Also
         --------
@@ -1761,7 +1773,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COHP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
 
         See Also
         --------
@@ -1794,7 +1806,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COHP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `Geometry.sc_index`.
+           One may figure out the connections via `~Geometry.sc_index`.
 
         See Also
         --------

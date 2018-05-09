@@ -233,21 +233,21 @@ def test_1_graphene_all_content(sisl_files):
     assert orb_right[d2, d1.T].sum() == pytest.approx(-orb_right[d1, d2.T].sum())
 
     orb_left.sort_indices()
-    atom_left = tbt.bond_current(left, E, sum='all')
+    atom_left = tbt.bond_current(left, E, only='all')
     atom_left.sort_indices()
     assert np.allclose(orb_left.data, atom_left.data)
-    assert np.allclose(orb_left.data, tbt.bond_current_from_orbital(orb_left, sum='all').data)
+    assert np.allclose(orb_left.data, tbt.bond_current_from_orbital(orb_left, only='all').data)
     orb_right.sort_indices()
-    atom_right = tbt.bond_current(right, E, sum='all')
+    atom_right = tbt.bond_current(right, E, only='all')
     atom_right.sort_indices()
     assert np.allclose(orb_right.data, atom_right.data)
-    assert np.allclose(orb_right.data, tbt.bond_current_from_orbital(orb_right, sum='all').data)
+    assert np.allclose(orb_right.data, tbt.bond_current_from_orbital(orb_right, only='all').data)
 
     # Calculate the atom current
     # For 1-orbital systems the activity and non-activity are equivalent
     assert np.allclose(tbt.atom_current(left, E), tbt.atom_current(left, E, activity=False))
     tbt.vector_current(left, E)
-    assert np.allclose(tbt.vector_current_from_bond(atom_left) / 2, tbt.vector_current(left, E, sum='all'))
+    assert np.allclose(tbt.vector_current_from_bond(atom_left) / 2, tbt.vector_current(left, E, only='all'))
 
     # Check COOP curves
     coop = tbt.orbital_COOP(E)
