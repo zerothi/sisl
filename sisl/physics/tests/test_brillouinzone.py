@@ -41,6 +41,12 @@ class TestBrillouinZone(object):
         for k in bz:
             assert np.allclose(k, np.zeros(3))
 
+        w = 0.
+        for k, wk in bz.iter(True):
+            assert np.allclose(k, np.zeros(3))
+            w += wk
+        assert w == pytest.approx(1.)
+
     def test_class1(self, setup):
         class Test(SuperCellChild):
             def __init__(self, sc):

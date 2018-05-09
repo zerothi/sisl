@@ -338,13 +338,27 @@ class BrillouinZone(object):
             raise NotImplementedError("Could not call the object it self")
         return call(*args, **kwargs)
 
-    def __iter__(self):
-        """ Returns all k-points associated with this Brillouin zone object
+    def iter(self, ret_weight=False):
+        """ An iterator for the k-points and (possibly) the weights
 
-        The default `BrillouinZone` class only has the Gamma point.
-        """
-        for k in self.k:
-            yield k
+        Parameters
+        ----------
+        ret_weight : bool, optional
+          if true, also yield the weight for the respective k-point
+
+        Yields
+        ------
+        kpt : k-point
+        weight : weight of k-point, only if `ret_weight` is true.
+       """
+        if ret_weight:
+            for i in range(len(self)):
+                yield self.k[i], self.weight[i]
+        else:
+            for k in self.k:
+                yield k
+
+    __iter__ = iter
 
     def __len__(self):
         return len(self._k)
