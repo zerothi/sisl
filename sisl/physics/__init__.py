@@ -24,22 +24,13 @@ Brillouin zone
    MonkhorstPack - MP class
    BandStructure - bandstructure class
 
-Spin configurations
-===================
+Spin configuration
+==================
 
 .. autosummary::
    :toctree:
 
-   Spin - spin configurations
-
-Sparse matrices
-===============
-
-.. autosummary::
-   :toctree:
-
-   SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
-   SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
+   Spin - spin configuration
 
 
 Physical quantites
@@ -56,16 +47,6 @@ Physical quantites
    SemiInfinite
    RecursiveSI
 
-
-States
-======
-
-.. autosummary::
-   :toctree:
-
-   Coefficient
-   State
-   StateC
 
 
 Electrons (:mod:`sisl.physics.electron`)
@@ -103,6 +84,36 @@ Distribution functions (:mod:`sisl.physics.distribution`)
 
    sisl.physics.electron
    sisl.physics.distribution
+
+
+Low level objects
+=================
+
+The low level objects are the driven objects for a majority of the physical
+objects found here. They are rarely (if ever) required to be used, but they
+may be important for developers wishing to extend the functionality of `sisl`
+using generic class-structures. For instance the `~Hamiltonian` inherits the
+`~SparseOrbitalBZSpin` class and `~EigenvalueElectron` inherits from `~Coefficient`.
+
+States
+------
+
+.. autosummary::
+   :toctree:
+
+   Coefficient
+   State
+   StateC
+
+
+Sparse matrices
+---------------
+
+.. autosummary::
+   :toctree:
+
+   SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
+   SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
 
 """
 from .distribution import *
