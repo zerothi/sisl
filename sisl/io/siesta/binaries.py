@@ -497,8 +497,7 @@ class _gfSileSiesta(SileBinSiesta):
            a square matrix corresponding to the Hamiltonian
         S : matrix, optional
            a square matrix corresponding to the overlap, for efficiency reasons
-           it may be advantageous to specify this argument, even if `S` is the identity
-           matrix.
+           it may be advantageous to specify this argument for orthogonal cells.
         """
         # Step k
         self._ik += 1
