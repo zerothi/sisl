@@ -789,7 +789,7 @@ class fdfSileSiesta(SileSiesta):
         lor = self.get('AtomicCoordinatesOrigin')
         if lor:
             if kwargs.get('origin', True):
-                origo = _a.asarrayd(map(float, lor[0].split()[:3])) * s
+                origo = _a.asarrayd(list(map(float, lor[0].split()[:3]))) * s
         # Origo cannot be interpreted with fractional coordinates
         # hence, it is not transformed.
 

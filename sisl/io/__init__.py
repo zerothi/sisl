@@ -239,6 +239,7 @@ from .cube import *
 from .gulp import *
 from .ham import *
 from .molden import *
+from .pdb import *
 from .scaleup import *
 from .siesta import *
 from .tbtrans import *
