@@ -889,7 +889,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned data are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
         """
         geom = self.geom
         na = geom.na
@@ -1050,7 +1050,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned bond-currents are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
 
         Examples
         --------
@@ -1110,7 +1110,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned bond-currents are only in the unit-cell.
            If `True` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
 
         Examples
         --------
@@ -1442,13 +1442,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The COOP analysis can be written as:
 
         .. math::
-            \mathrm{COOP}^{\mathbf G}_{\nu\mu} &= \frac{-1}{2\pi}
+            \mathrm{COOP}^{\mathbf G}_{\nu\mu} = \frac{-1}{2\pi}
               \Im\big[(\mathbf G - \mathbf G^\dagger)_{\nu\mu} \mathbf S_{\mu\nu} \big]
 
         The sum of the COOP DOS is equal to the DOS:
 
         .. math::
-            \mathrm{DOS}_{\nu} &= \sum_\mu \mathrm{COOP}^{\mathbf G}_{\nu\mu}
+            \mathrm{DOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf G}_{\nu\mu}
 
         Parameters
         ----------
@@ -1494,12 +1494,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The COOP analysis can be written as:
 
         .. math::
-            \mathrm{COOP}^{\mathbf A}_{\nu\mu} &= \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu} \mathbf S_{\mu\nu} \big]
+            \mathrm{COOP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu} \mathbf S_{\mu\nu} \big]
 
         The sum of the COOP DOS is equal to the DOS:
 
         .. math::
-            \mathrm{ADOS}_{\nu} &= \sum_\mu \mathrm{COOP}^{\mathbf A}_{\nu\mu}
+            \mathrm{ADOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf A}_{\nu\mu}
 
         Parameters
         ----------
@@ -1556,7 +1556,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COOP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
 
         See Also
         --------
@@ -1590,7 +1590,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COOP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
 
         See Also
         --------
@@ -1623,7 +1623,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COOP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
 
         See Also
         --------
@@ -1645,7 +1645,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The COHP analysis can be written as:
 
         .. math::
-            \mathrm{COHP}^{\mathbf G}_{\nu\mu} &= \frac{-1}{2\pi}
+            \mathrm{COHP}^{\mathbf G}_{\nu\mu} = \frac{-1}{2\pi}
               \Im\big[(\mathbf G - \mathbf G^\dagger)_{\nu\mu} \mathbf H_{\mu\nu} \big]
 
         Parameters
@@ -1691,7 +1691,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The COHP analysis can be written as:
 
         .. math::
-            \mathrm{COHP}^{\mathbf A}_{\nu\mu} &= \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu}
+            \mathrm{COHP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu}
                 \mathbf H_{\nu\mu} \big]
 
         Parameters
@@ -1743,7 +1743,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COHP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
 
         See Also
         --------
@@ -1773,7 +1773,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COHP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
 
         See Also
         --------
@@ -1806,7 +1806,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COHP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~Geometry.sc_index`.
+           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
 
         See Also
         --------
