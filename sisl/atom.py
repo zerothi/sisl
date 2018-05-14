@@ -1482,8 +1482,6 @@ class Atoms(object):
         """
         if not isinstance(other, Atoms):
             other = Atoms(other)
-        else:
-            other = other.copy()
 
         atoms = self.copy()
         spec = np.copy(other._specie)

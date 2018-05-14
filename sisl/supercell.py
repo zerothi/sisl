@@ -835,18 +835,29 @@ class SuperCell(object):
             with get_sile(sile) as fh:
                 return fh.read_supercell(*args, **kwargs)
 
+    def equal(self, other, tol=1e-4):
+        """ Check whether two supercell are equivalent
+
+        Parameters
+        ----------
+        tol : float, optional
+            tolerance value for the cell vectors and origo
+        """
+        if not isinstance(other, (SuperCell, SuperCellChild)):
+            return False
+        for tol in [1e-2, 1e-3, 1e-4]:
+            same = np.allclose(self.cell, other.cell, atol=tol)
+        same = same and np.all(self.nsc == other.nsc)
+        same = same and np.allclose(self.origo, other.origo, atol=tol)
+        return same
+
     def __repr__(self):
         """ Returns a string representation of the object """
         return self.__class__.__name__ + '{{volume: {:.4e}, nsc: {} {} {}}}'.format(self.volume, *self.nsc)
 
-    def __eq__(a, b):
+    def __eq__(self, other):
         """ Equality check """
-        if not isinstance(b, SuperCell):
-            return False
-        same = np.allclose(a.cell, b.cell)
-        same = same and np.all(a.nsc == b.nsc)
-        same = same and np.allclose(a.origo, b.origo)
-        return same
+        return self.equal(other)
 
     def __ne__(a, b):
         """ In-equality check """

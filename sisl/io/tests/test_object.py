@@ -206,13 +206,13 @@ class TestObject(object):
         # Read 1
         try:
             g = sile(f, mode='r').read_geometry()
-            assert g.equal(G, R=False)
+            assert g.equal(G, R=False, tol=1e-3) # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
             g = Geometry.read(sile(f, mode='r'))
-            assert g.equal(G, R=False)
+            assert g.equal(G, R=False, tol=1e-3)
         except UnicodeDecodeError as e:
             pass
 

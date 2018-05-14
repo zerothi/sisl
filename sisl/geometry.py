@@ -2701,20 +2701,22 @@ class Geometry(SuperCellChild):
         """ Returns the mass of all atoms as an array """
         return self.atom.mass
 
-    def equal(self, other, R=True):
+    def equal(self, other, R=True, tol=1e-4):
         """ Whether two geometries are the same (optional not check of the orbital radius)
 
         Parameters
         ----------
         other : Geometry
             the other Geometry to check against
-        maxR : bool, optional
+        R : bool, optional
             if True also check if the orbital radii are the same (see `Atom.equal`)
+        tol : float, optional
+            tolerance for checking the atomic coordinates
         """
         if not isinstance(other, Geometry):
             return False
-        same = self.sc == other.sc
-        same = same and np.allclose(self.xyz, other.xyz)
+        same = self.sc.equal(other.sc, tol=tol)
+        same = same and np.allclose(self.xyz, other.xyz, atol=tol)
         same = same and self.atom.equal(other.atom, R)
         return same
 
