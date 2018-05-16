@@ -126,7 +126,7 @@ class Selector(object):
                 s += '  {{{0}: None}},\n'.format(r.__name__)
             else:
                 s += '  {{{0}: {1}}},\n'.format(r.__name__, p)
-        return s + '}}'
+        return s + '}'
 
     def prepend(self, routine):
         """ Prepends a new routine to the selector
