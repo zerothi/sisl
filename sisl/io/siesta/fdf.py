@@ -16,7 +16,7 @@ from .binaries import tshsSileSiesta, tsdeSileSiesta
 from .binaries import dmSileSiesta, hsxSileSiesta
 from .fa import faSileSiesta
 from .pdos import pdosSileSiesta
-from .siesta import ncSileSiesta
+from .siesta_nc import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import orbindxSileSiesta
 from .xv import xvSileSiesta
@@ -1159,6 +1159,13 @@ class fdfSileSiesta(SileSiesta):
                                   help="Manipulate EIG file from the Siesta simulation")
             tmp_p, tmp_ns = sis.eigSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
+
+        #f = label + '.FA'
+        #if isfile(f):
+        #    tmp_p = sp.add_parser('force',
+        #                          help="Manipulate FA file from the Siesta simulation")
+        #    tmp_p, tmp_ns = sis.faSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+        #    namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.TBT.nc'
         if isfile(f):

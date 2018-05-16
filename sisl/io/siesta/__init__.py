@@ -51,7 +51,7 @@ from .fdf import *
 from .orb_indx import *
 from .out import *
 from .pdos import *
-from .siesta import *
+from .siesta_nc import *
 from .siesta_grid import *
 from .transiesta_grid import *
 from .xv import *
