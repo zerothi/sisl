@@ -144,11 +144,11 @@ def test_1_graphene_all_content(sisl_files):
         assert np.all(tbt.transmission(left, right, ik) + 1e-7 >= tbt.transmission_eig(left, right, ik).sum(-1))
         assert np.all(tbt.transmission(right, left, ik) + 1e-7 >= tbt.transmission_eig(right, left, ik).sum(-1))
         assert np.allclose(tbt.DOS(kavg=ik), tbt.ADOS(left, kavg=ik) + tbt.ADOS(right, kavg=ik))
-        assert np.allclose(tbt.DOS(E=0.2, kavg=ik), tbt.ADOS(left, E=0.2, kavg=ik) + tbt.ADOS(right, E=0.2, kavg=ik))
+        assert np.allclose(tbt.DOS(E=0.195, kavg=ik), tbt.ADOS(left, E=0.195, kavg=ik) + tbt.ADOS(right, E=0.195, kavg=ik))
 
     kavg = list(range(10))
     assert np.allclose(tbt.DOS(kavg=kavg), tbt.ADOS(left, kavg=kavg) + tbt.ADOS(right, kavg=kavg))
-    assert np.allclose(tbt.DOS(E=0.2, kavg=kavg), tbt.ADOS(left, E=0.2, kavg=kavg) + tbt.ADOS(right, E=0.2, kavg=kavg))
+    assert np.allclose(tbt.DOS(E=0.195, kavg=kavg), tbt.ADOS(left, E=0.195, kavg=kavg) + tbt.ADOS(right, E=0.195, kavg=kavg))
 
     # Check that norm returns correct values
     assert tbt.norm() == 1
