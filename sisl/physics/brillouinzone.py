@@ -170,6 +170,46 @@ class BrillouinZone(object):
         setattr(self, '__call__', types.MethodType(_call, self))
         return self
 
+    def asnone(self):
+        """ Return `self` with None, this may be done for instance when wrapping the function calls.
+
+        This forces the `__call__` routine to return ``None``
+
+        Notes
+        -----
+        All invocations of sub-methods are added these keyword-only arguments:
+
+        eta : bool, optional
+           if true a progress-bar is created, default false.
+        wrap : callable, optional
+           a function that accepts the output of the given routine and post-process
+           it. Defaults to ``lambda x: x``.
+
+        Examples
+        --------
+        >>> obj = BrillouinZone(...) # doctest: +SKIP
+        >>> obj.asnone().eigh(eta=True) # doctest: +SKIP
+
+        See Also
+        --------
+        asyield : all output returned through an iterator
+        asaverage : take the average (with k-weights) of the Brillouin zone
+        aslist : all output returned as a Python list
+        """
+
+        def _call(self, *args, **kwargs):
+            func = getattr(self.parent, self.__attr)
+            wrap = kwargs.pop('wrap', _do_nothing)
+            eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray()',
+                           'k', kwargs.pop('eta', False))
+            for i, k in enumerate(self):
+                wrap(func(*args, k=k, **kwargs))
+                eta.update()
+            eta.close()
+        # Set instance __call__
+        setattr(self, '__call__', types.MethodType(_call, self))
+        return self
+
     def aslist(self):
         """ Return `self` with `list` returned quantities
 

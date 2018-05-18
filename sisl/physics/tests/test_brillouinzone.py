@@ -175,6 +175,7 @@ class TestBrillouinZone(object):
         assert np.allclose(asarray, asyield)
         # Average needs to be performed
         assert np.allclose((asarray / len(bz)).sum(0), asaverage)
+        bz.asnone().eigh()
 
     def test_as_wrap(self):
         from sisl import geom, Hamiltonian

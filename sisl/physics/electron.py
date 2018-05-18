@@ -861,7 +861,7 @@ class _common_State(object):
             spin = None
         return spin_moment(self.state, self.Sk(spin=spin))
 
-    def velocity(self, eps):
+    def velocity(self, eps=1e-4):
         r""" Calculate velocity for the states
 
         This routine calls `~sisl.physics.electron.velocity` with appropriate arguments
@@ -875,7 +875,7 @@ class _common_State(object):
 
         Parameters
         ----------
-        eps : float
+        eps : float, optional
            precision used to find degenerate states.
         """
         try:
