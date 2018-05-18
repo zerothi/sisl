@@ -9,6 +9,8 @@ from sisl._help import _range as range
 
 __all__ = ['Coefficient', 'State', 'StateC']
 
+_append = np.append
+_diff = np.diff
 _dot = np.dot
 _conj = np.conjugate
 _outer_ = np.outer
@@ -87,6 +89,34 @@ class Coefficient(ParentContainer):
         copy = self.__class__(self.c.copy(), self.parent)
         copy.info = self.info
         return copy
+
+    def degenerate(self, eps):
+        """ Find degenerate coefficients with a specified precision
+
+        Parameters
+        ----------
+        eps : float
+           the precision above which coefficients are not considered degenerate
+
+        Returns
+        -------
+        list of numpy.ndarray: a list of indices
+        """
+        deg = list()
+        idx = np.argsort(self.c)
+        dc = np.diff(self.c[idx])
+        # Degenerate indices
+        idx = (dc < eps).nonzero()[0]
+        if len(idx) == 0:
+            # There are no degenerate coefficients
+            return deg
+
+        # These are the points were we split the degeneracies
+        seps = (np.diff(idx) > 0).nonzero()[0]
+        IDX = np.array_split(idx, seps + 1)
+        for idx in IDX:
+            deg.append(np.append(idx, idx[-1] + 1))
+        return deg
 
     def sub(self, idx):
         """ Return a new coefficient with only the specified coefficients
@@ -481,6 +511,34 @@ class StateC(State):
         else:
             idx = np.argsort(-self.c)
         return self.sub(idx)
+
+    def degenerate(self, eps):
+        """ Find degenerate coefficients with a specified precision
+
+        Parameters
+        ----------
+        eps : float
+           the precision above which coefficients are not considered degenerate
+
+        Returns
+        -------
+        list of numpy.ndarray: a list of indices
+        """
+        deg = list()
+        sidx = np.argsort(self.c)
+        dc = _diff(self.c[sidx])
+        # Degenerate indices
+        idx = (dc < eps).nonzero()[0]
+        if len(idx) == 0:
+            # There are no degenerate coefficients
+            return deg
+
+        # These are the points were we split the degeneracies
+        seps = (_diff(idx) > 0).nonzero()[0]
+        IDX = np.array_split(idx, seps + 1)
+        for idx in IDX:
+            deg.append(_append(sidx[idx], sidx[idx[-1] + 1]))
+        return deg
 
     def sub(self, idx):
         """ Return a new state with only the specified states

@@ -9,7 +9,7 @@ specific for electrons. For instance density of states calculations from
 electronic eigenvalues and other quantities.
 
 This module implements the necessary tools required for calculating
-DOS, PDOS, spin moments of non-collinear calculations and plotting
+DOS, PDOS, spin moments, band-velocities of non-collinear calculations and plotting
 real-space wavefunctions.
 
 .. autosummary::
@@ -19,6 +19,7 @@ real-space wavefunctions.
    PDOS
    spin_moment
    wavefunction
+   velocity
    CoefficientElectron
    StateElectron
    StateCElectron
@@ -40,7 +41,8 @@ from sisl.geometry import Geometry
 from sisl._indices import indices_le
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
-from sisl.messages import info, warn, tqdm_eta
+from sisl.linalg import eig_destroy, eigh_destroy
+from sisl.messages import info, warn, SislError, tqdm_eta
 from sisl._help import dtype_complex_to_real, _range as range
 from .distribution import get_distribution
 from .spin import Spin
@@ -63,7 +65,7 @@ def DOS(E, eig, distribution='gaussian'):
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
     used may be a user-defined function. Alternatively a distribution function may
-    be retrieved from `sisl.physics.distribution`.
+    be retrieved from `~sisl.physics.distribution`.
 
     Parameters
     ----------
@@ -104,7 +106,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
     used may be a user-defined function. Alternatively a distribution function may
-    be aquired from `sisl.physics.distribution`.
+    be aquired from `~sisl.physics.distribution`.
 
     In case of an orthogonal basis set :math:`\mathbf S` is equal to the identity matrix.
     Note that `DOS` is the sum of the orbital projected DOS:
@@ -225,7 +227,7 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     return PDOS
 
 
-def spin_moment(eig_v, S=None):
+def spin_moment(state, S=None):
     r""" Calculate the spin magnetic moment (also known as spin texture)
 
     This calculation only makes sense for non-collinear calculations.
@@ -248,8 +250,8 @@ def spin_moment(eig_v, S=None):
 
     Parameters
     ----------
-    eig_v : array_like
-       vectors describing the electronic states
+    state : array_like
+       vectors describing the electronic states, 2nd dimension contains the states
     S : array_like, optional
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
@@ -268,38 +270,177 @@ def spin_moment(eig_v, S=None):
     Returns
     -------
     numpy.ndarray
-        spin moments per eigenvector with final dimension ``(eig_v.shape[0], 3)``.
+        spin moments per state with final dimension ``(state.shape[0], 3)``.
     """
-    if eig_v.ndim == 1:
-        return spin_moment(eig_v.reshape(1, -1), S).ravel()
+    if state.ndim == 1:
+        return spin_moment(state.reshape(1, -1), S).ravel()
 
     if S is None:
         class S(object):
             __slots__ = []
-            shape = (eig_v.shape[1] // 2, eig_v.shape[1] // 2)
+            shape = (state.shape[1] // 2, state.shape[1] // 2)
             @staticmethod
             def dot(v):
                 return v
 
-    if S.shape[1] == eig_v.shape[1]:
+    if S.shape[1] == state.shape[1]:
         S = S[::2, ::2]
 
     # Initialize
-    s = np.empty([eig_v.shape[0], 3], dtype=dtype_complex_to_real(eig_v.dtype))
+    s = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
     # TODO consider doing this all in a few lines
     # TODO Since there are no energy dependencies here we can actually do all
     # TODO dot products in one go and then use b-casting rules. Should be much faster
     # TODO but also way more memory demanding!
-    for i in range(len(eig_v)):
-        v = S.dot(eig_v[i].reshape(-1, 2))
-        D = (conj(eig_v[i]) * v.ravel()).real.reshape(-1, 2)
+    for i in range(len(state)):
+        Sstate = S.dot(state[i].reshape(-1, 2))
+        D = (conj(state[i]) * Sstate.ravel()).real.reshape(-1, 2)
         s[i, 2] = (D[:, 0] - D[:, 1]).sum()
-        D = 2 * (conj(eig_v[i, 1::2]) * v[:, 0]).sum()
+        D = 2 * (conj(state[i, 1::2]) * Sstate[:, 0]).sum()
         s[i, 0] = D.real
         s[i, 1] = D.imag
 
     return s
+
+
+def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
+    r""" Calculate the velocity of a set of states
+
+    The returned quantities are given in this order:
+
+    - Velocity along Cartesian :math:`x`
+    - Velocity along Cartesian :math:`y`
+    - Velocity along Cartesian :math:`z`
+
+    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
+
+    .. math::
+
+       \mathbf{v}_i^\alpha = \langle \psi_i | \frac{\delta\mathbf H(\mathbf k)}{\delta k_\alpha} | \psi_i \rangle
+
+    In case of non-orthogonal basis the equations requires the energy corresponding to the state and the overlap matrix derivative
+
+    .. math::
+
+       \mathbf{v}_i^\alpha = \langle \psi_i | \frac{\delta\mathbf H(\mathbf k)}{\delta k_\alpha} -\epsilon_i\frac{\delta\mathbf S(\mathbf k)}{\delta k_\alpha} | \psi_i \rangle
+
+    where :math:`\psi_i` are now states in the non-orthogonal basis.
+
+    Parameters
+    ----------
+    state : array_like
+       vectors describing the electronic states, 2nd dimension contains the states
+    dHk : array_like
+       Hamiltonian derivative with respect to :math:`\mathbf k`. If it is a square matrix
+       it is assumed to only be the velocity along a given direction. Otherwise it needs to be a
+       3 x 1 matrix describing the derivative along each lattice vector.
+    energy : array_like, optional
+       energies of the states. Required for non-orthogonal basis together with `dSk`
+    dSk : array_like, optional
+       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `eig` *must* both be
+       provided in a non-orthogonal basis (otherwise the results will be wrong).
+    degenerate: list of array_like, optional
+       a list containing the indices of degenerate states. In that case a subsequent diagonalization
+       is required to decouple them.
+
+    Returns
+    -------
+    numpy.ndarray
+        velocities per state with final dimension ``(state.shape[0], 3)``.
+    """
+    if state.ndim == 1:
+        return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate).ravel()
+
+    if not dSk is None:
+        return _velocity_non_ortho(state, dHk, energy, dSk, degenerate)
+    return _velocity_ortho(state, dHk, degenerate)
+
+
+def _velocity_non_ortho(state, dHk, energy, dSk, degenerate=None):
+    r""" For states in a non-orthogonal basis """
+    # Along all directions
+    v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
+
+    # Since they depend on the state energies and dSk we have to loop them individually.
+    for s, e in enumerate(energy):
+
+        # Since dHk *may* be a csr_matrix or sparse, we have to do it like
+        # this. A sparse matrix cannot be re-shaped with an extra dimension.
+        dHkstate = (dHk - e * dSk).dot(state[s])
+
+        v[s, 0] = (conj(state[s]) * dHkstate[0::3]).sum().real
+        v[s, 1] = (conj(state[s]) * dHkstate[1::3]).sum().real
+        v[s, 2] = (conj(state[s]) * dHkstate[2::3]).sum().real
+
+    # Now decouple the degenerate states
+    if not degenerate is None:
+        for deg in degenerate:
+            edSk = np.average(energy[deg]) * dSk
+            # Now diagonalize to find the contributions from individual states
+            # then re-construct the seperated degenerate states
+            # Since we do this for all directions we should decouple them all
+            vv = conj(state[deg, :]).dot((dHk[0::3, :] - edSk[0::3, :]).dot(state[deg, :].T))
+            S = eigh_destroy(vv)[1].T.dot(state[deg, :])
+            vv = conj(S).dot((dHk[1::3, :] - edSk[1::3, :]).dot(S.T))
+            S = eigh_destroy(vv)[1].T.dot(S)
+            vv = conj(S).dot((dHk[2::3, :] - edSk[2::3, :]).dot(S.T))
+            S = eigh_destroy(vv)[1].T.dot(S)
+
+            # Calculate velocities
+            for s, e in enumerate(energy[deg]):
+                v[deg[s], 0] = (conj(S[s]) * (dHk[0::3, :] - e * dSk[0::3, :]).dot(S[s])).sum().real
+                v[deg[s], 1] = (conj(S[s]) * (dHk[1::3, :] - e * dSk[1::3, :]).dot(S[s])).sum().real
+                v[deg[s], 2] = (conj(S[s]) * (dHk[2::3, :] - e * dSk[2::3, :]).dot(S[s])).sum().real
+
+    del dHkstate
+
+    return v
+
+
+def _velocity_ortho(state, dHk, degenerate=None):
+    r""" For states in an orthogonal basis """
+    if dHk.shape[0] == state.shape[1] * 3:
+        # Along all directions
+        v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
+
+        # Since dHk *may* be a csr_matrix or sparse, we have to do it like
+        # this. A sparse matrix cannot be re-shaped with an extra dimension.
+        dHkstate = dHk.dot(state.T)
+
+        v[:, 0] = (conj(state.T) * dHkstate[0::3, :]).sum(0).real
+        v[:, 1] = (conj(state.T) * dHkstate[1::3, :]).sum(0).real
+        v[:, 2] = (conj(state.T) * dHkstate[2::3, :]).sum(0).real
+
+        # Now decouple the degenerate states
+        if not degenerate is None:
+            for deg in degenerate:
+                # Now diagonalize to find the contributions from individual states
+                # then re-construct the seperated degenerate states
+                # Since we do this for all directions we should decouple them all
+                vv = conj(state[deg, :]).dot(dHkstate[0::3, deg])
+                S = eigh_destroy(vv)[1].T.dot(state[deg, :])
+                vv = conj(S).dot((dHk[1::3, :]).dot(S.T))
+                S = eigh_destroy(vv)[1].T.dot(S)
+                vv = conj(S).dot((dHk[2::3, :]).dot(S.T))
+                S = eigh_destroy(vv)[1].T.dot(S)
+
+                # Calculate velocities
+                v[deg, 0] = (conj(S.T) * dHk[0::3, :].dot(S.T)).sum(0).real
+                v[deg, 1] = (conj(S.T) * dHk[1::3, :].dot(S.T)).sum(0).real
+                v[deg, 2] = (conj(S.T) * dHk[2::3, :].dot(S.T)).sum(0).real
+
+        del dHkstate
+
+    elif dHk.shape[0] == state.shape[1]:
+
+        v = (conj(state.T) * dHk.dot(state.T)).sum(0).real
+
+    else:
+        raise SislError('sisl.physics.electron.velocity requries the dHk matrix to contain '
+                        '1 or 3 components per orbital.')
+
+    return v
 
 
 def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False):
@@ -709,10 +850,10 @@ class _common_State(object):
     def spin_moment(self):
         r""" Calculate spin moment from the states
 
-        This routine calls `sisl.physics.electrons.spin_moment` with appropriate arguments
+        This routine calls `~sisl.physics.electron.spin_moment` with appropriate arguments
         and returns the spin moment for the states.
 
-        See `sisl.physics.electrons.spin_moment` for argument details.
+        See `~sisl.physics.electron.spin_moment` for details.
         """
         try:
             spin = self.parent.spin
@@ -720,10 +861,46 @@ class _common_State(object):
             spin = None
         return spin_moment(self.state, self.Sk(spin=spin))
 
+    def velocity(self, eps):
+        r""" Calculate velocity for the states
+
+        This routine calls `~sisl.physics.electron.velocity` with appropriate arguments
+        and returns the spin moment for the states. I.e. for non-orthogonal basis the overlap
+        matrix and energy values are also passed.
+
+        Note that the coefficients associated with the `StateCElectron` *must* correspond
+        to the energies of the states.
+
+        See `~sisl.physics.electron.velocity` for details.
+
+        Parameters
+        ----------
+        eps : float
+           precision used to find degenerate states.
+        """
+        try:
+            opt = {'k': self.info.get('k', (0, 0, 0))}
+            gauge = self.info.get('gauge', None)
+            if not gauge is None:
+                opt['gauge'] = gauge
+
+            # Get dSk before spin
+            if self.parent.orthogonal:
+                dSk = None
+            else:
+                dSk = self.parent.dSk(**opt)
+
+            if 'spin' in self.info:
+                opt['spin'] = self.info.get('spin', None)
+            deg = self.degenerate(eps)
+        except:
+            raise SislError(self.__class__.__name__ + '.velocity requires the parent to have a spin associated.')
+        return velocity(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
+
     def wavefunction(self, grid, spinor=0, eta=False):
         r""" Expand the coefficients as the wavefunction on `grid` *as-is*
 
-        See `sisl.physics.electron.wavefunction` for argument details.
+        See `~sisl.physics.electron.wavefunction` for argument details.
         """
         try:
             spin = self.parent.spin
@@ -777,10 +954,10 @@ class EigenvalueElectron(CoefficientElectron):
     def DOS(self, E, distribution='gaussian'):
         r""" Calculate DOS for provided energies, `E`.
 
-        This routine calls `sisl.physics.electrons.DOS` with appropriate arguments
+        This routine calls `sisl.physics.electron.DOS` with appropriate arguments
         and returns the DOS.
 
-        See `sisl.physics.electrons.DOS` for argument details.
+        See `~sisl.physics.electron.DOS` for argument details.
         """
         return DOS(E, self.eig, distribution)
 
@@ -808,20 +985,20 @@ class EigenstateElectron(StateCElectron):
     def DOS(self, E, distribution='gaussian'):
         r""" Calculate DOS for provided energies, `E`.
 
-        This routine calls `sisl.physics.electrons.DOS` with appropriate arguments
+        This routine calls `sisl.physics.electron.DOS` with appropriate arguments
         and returns the DOS.
 
-        See `sisl.physics.electrons.DOS` for argument details.
+        See `~sisl.physics.electron.DOS` for argument details.
         """
         return DOS(E, self.c, distribution)
 
     def PDOS(self, E, distribution='gaussian'):
         r""" Calculate PDOS for provided energies, `E`.
 
-        This routine calls `sisl.physics.electrons.PDOS` with appropriate arguments
+        This routine calls `~sisl.physics.electron.PDOS` with appropriate arguments
         and returns the PDOS.
 
-        See `sisl.physics.electrons.PDOS` for argument details.
+        See `~sisl.physics.electron.PDOS` for argument details.
         """
         try:
             spin = self.parent.spin

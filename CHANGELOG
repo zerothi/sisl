@@ -1,6 +1,8 @@
 0.9.3
 =====
 
+- Enabled calculation of band-velocities from eigenstates
+
 - Made better progress-bars. Using eta= now relies on tqdm
   It is however still an optional dependency.
 
@@ -96,6 +98,8 @@
     from TBtrans
 
   - Added COOP and COHP extraction to the TBT.nc files.
+
+  - Added DM and ADM extraction to the TBT.nc files.
 
   - Reorganized the TBtrans netcdf files (internal changes only)
 
