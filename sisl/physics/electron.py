@@ -9,8 +9,8 @@ specific for electrons. For instance density of states calculations from
 electronic eigenvalues and other quantities.
 
 This module implements the necessary tools required for calculating
-DOS, PDOS, spin moments, band-velocities of non-collinear calculations and plotting
-real-space wavefunctions.
+DOS, PDOS, band-velocities and spin moments of non-collinear calculations.
+One may also plot real-space wavefunctions.
 
 .. autosummary::
    :toctree:
@@ -307,12 +307,6 @@ def spin_moment(state, S=None):
 def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     r""" Calculate the velocity of a set of states
 
-    The returned quantities are given in this order:
-
-    - Velocity along Cartesian :math:`x`
-    - Velocity along Cartesian :math:`y`
-    - Velocity along Cartesian :math:`z`
-
     These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
 
     .. math::
@@ -336,7 +330,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
        it is assumed to only be the velocity along a given direction. Otherwise it needs to be a
        3 x 1 matrix describing the derivative along each lattice vector.
     energy : array_like, optional
-       energies of the states. Required for non-orthogonal basis together with `dSk`
+       energies of the states. Required for non-orthogonal basis together with `dSk`.
     dSk : array_like, optional
        :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `eig` *must* both be
        provided in a non-orthogonal basis (otherwise the results will be wrong).
@@ -377,6 +371,7 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate=None):
     if not degenerate is None:
         for deg in degenerate:
             edSk = np.average(energy[deg]) * dSk
+
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # Since we do this for all directions we should decouple them all
