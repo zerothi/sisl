@@ -20,6 +20,21 @@ One may also plot real-space wavefunctions.
    spin_moment
    wavefunction
    velocity
+
+Supporting classes
+------------------
+
+Certain classes aid in the usage of the above methods by implementing them
+using automatic arguments.
+
+For instance, the PDOS method requires the overlap matrix in non-orthogonal
+basis sets at the :math:`k`-point corresponding to the eigenstates. Hence, the
+argument ``S`` must be :math:`\mathbf S(\mathbf k)`. The `EigenstateElectron` class
+automatically passes the correct ``S`` because it knows the states :math:`k`-point.
+
+.. autosummary::
+   :toctree:
+
    CoefficientElectron
    StateElectron
    StateCElectron

@@ -322,7 +322,7 @@ def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     p, ns = tbt.ArgumentParser()
 
     p.parse_args([], namespace=copy(ns))
-    out = p.parse_args(['--energy', ' -2:2'], namespace=copy(ns))
+    out = p.parse_args(['--energy', ' -1.995:1.995'], namespace=copy(ns))
     assert not out._actions_run
     run(out)
 
