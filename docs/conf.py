@@ -22,6 +22,8 @@ import shlex
 _this_dir = os.path.dirname(__file__)
 
 sys.path.insert(0, os.path.dirname(_this_dir))
+sys.path.insert(0, os.path.dirname(os.path.dirname(_this_dir)))
+
 
 # -- General configuration ------------------------------------------------
 
@@ -42,7 +44,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'sphinx.ext.inheritance_diagram',
+    #'sphinx.ext.inheritance_diagram',
 ]
 
 # Enable plots in documentation
