@@ -326,13 +326,13 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
 
     .. math::
 
-       \mathbf{v}_i^\alpha = \langle \psi_i | \frac{\delta\mathbf H(\mathbf k)}{\delta k_\alpha} | \psi_i \rangle
+       \mathbf{v}_i^\alpha = \frac1\hbar \langle \psi_i | \frac{\delta\mathbf H(\mathbf k)}{\delta k_\alpha} | \psi_i \rangle
 
     In case of non-orthogonal basis the equations requires the energy corresponding to the state and the overlap matrix derivative
 
     .. math::
 
-       \mathbf{v}_i^\alpha = \langle \psi_i | \frac{\delta\mathbf H(\mathbf k)}{\delta k_\alpha} -\epsilon_i\frac{\delta\mathbf S(\mathbf k)}{\delta k_\alpha} | \psi_i \rangle
+       \mathbf{v}_i^\alpha = \frac1\hbar\langle \psi_i | \frac{\delta\mathbf H(\mathbf k)}{\delta k_\alpha} -\epsilon_i\frac{\delta\mathbf S(\mathbf k)}{\delta k_\alpha} | \psi_i \rangle
 
     where :math:`\psi_i` are now states in the non-orthogonal basis.
 
@@ -347,7 +347,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     energy : array_like, optional
        energies of the states. Required for non-orthogonal basis together with `dSk`.
     dSk : array_like, optional
-       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `eig` *must* both be
+       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
        provided in a non-orthogonal basis (otherwise the results will be wrong).
     degenerate: list of array_like, optional
        a list containing the indices of degenerate states. In that case a subsequent diagonalization
@@ -356,7 +356,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     Returns
     -------
     numpy.ndarray
-        velocities per state with final dimension ``(state.shape[0], 3)``.
+        velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps.
     """
     if state.ndim == 1:
         return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate).ravel()
@@ -364,6 +364,10 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     if not dSk is None:
         return _velocity_non_ortho(state, dHk, energy, dSk, degenerate)
     return _velocity_ortho(state, dHk, degenerate)
+
+
+# We return velocity units in Ang/ps
+_velocity_const = 1 / 6.582119514e-16 * 1e-12
 
 
 def _velocity_non_ortho(state, dHk, energy, dSk, degenerate=None):
@@ -405,7 +409,7 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate=None):
 
     del dHkstate
 
-    return v
+    return v * _velocity_const
 
 
 def _velocity_ortho(state, dHk, degenerate=None):
@@ -450,7 +454,7 @@ def _velocity_ortho(state, dHk, degenerate=None):
         raise SislError('sisl.physics.electron.velocity requries the dHk matrix to contain '
                         '1 or 3 components per orbital.')
 
-    return v
+    return v * _velocity_const
 
 
 def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False):
