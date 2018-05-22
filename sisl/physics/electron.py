@@ -17,9 +17,9 @@ One may also plot real-space wavefunctions.
 
    DOS
    PDOS
-   spin_moment
-   wavefunction
    velocity
+   wavefunction
+   spin_moment
 
 Supporting classes
 ------------------
