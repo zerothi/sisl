@@ -51,6 +51,16 @@ def setup():
 @pytest.mark.sgrid
 class TestsGrid(object):
 
+    def test_help(self):
+        with pytest.raises(SystemExit):
+            sgrid(argv=['--help'])
+
+    def test_version(self):
+        sgrid(argv=['--version'])
+
+    def test_cite(self):
+        sgrid(argv=['--cite'])
+
     def test_average1(self, setup):
         g = setup.grid.copy()
         gavg = g.average(0)

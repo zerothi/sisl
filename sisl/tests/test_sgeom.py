@@ -46,6 +46,16 @@ def setup():
 @pytest.mark.geometry
 class TestGeometry(object):
 
+    def test_help(self):
+        with pytest.raises(SystemExit):
+            sgeom(argv=['--help'])
+
+    def test_version(self):
+        sgeom(argv=['--version'])
+
+    def test_cite(self):
+        sgeom(argv=['--cite'])
+
     def test_tile1(self, setup):
         cell = np.copy(setup.g.sc.cell)
         cell[0, :] *= 2

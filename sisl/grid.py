@@ -1299,7 +1299,7 @@ This may be unexpected but enables one to do advanced manipulations.
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-    p = argparse.ArgumentParser('Manipulates real-space grids in commonly encounterd files.',
+    p = argparse.ArgumentParser('Manipulates real-space grids.',
                            formatter_class=argparse.RawDescriptionHelpFormatter,
                            description=description)
 
@@ -1312,25 +1312,25 @@ This may be unexpected but enables one to do advanced manipulations.
         from os.path import isfile
         argv, input_file = cmd.collect_input(argv)
 
-        # Extract specification of the input file
-        input_file, spec = str_spec(input_file)
         kwargs = {}
-        if spec is not None:
-            if ',' in spec:
-                kwargs['spin'] = list(map(float, spec.split(',')))
-            else:
-                kwargs['spin'] = int(spec)
-
         if input_file is None:
-            grid = Grid(0.1)
             stdout_grid = False
+            grid = Grid(0.1, geometry=Geometry([0] * 3, sc=1))
+        else:
+            # Extract specification of the input file
+            input_file, spec = str_spec(input_file)
+            if spec is not None:
+                if ',' in spec:
+                    kwargs['spin'] = list(map(float, spec.split(',')))
+                else:
+                    kwargs['spin'] = int(spec)
 
-        elif isfile(input_file):
-            grid = get_sile(input_file).read_grid(**kwargs)
+            if isfile(input_file):
+                grid = get_sile(input_file).read_grid(**kwargs)
 
-        elif not isfile(input_file):
-            from .messages import info
-            info("Cannot find file '{}'!".format(input_file))
+            elif not isfile(input_file):
+                from .messages import info
+                info("Cannot find file '{}'!".format(input_file))
 
     elif isinstance(grid, BaseSile):
         # Store the input file...

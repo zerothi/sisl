@@ -3422,7 +3422,7 @@ lattice vector.
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-    p = argparse.ArgumentParser('Manipulates geometries from any Sile.',
+    p = argparse.ArgumentParser('Manipulates geometries.',
                                 formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description=description)
 
@@ -3434,6 +3434,7 @@ lattice vector.
     if geometry is None:
         from os.path import isfile
         argv, input_file = cmd.collect_input(argv)
+
         if input_file is None:
             stdout_geom = False
             geometry = Geometry([0] * 3)

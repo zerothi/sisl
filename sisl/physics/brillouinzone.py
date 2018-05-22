@@ -404,7 +404,7 @@ class BrillouinZone(object):
         return len(self._k)
 
     def write(self, sile, *args, **kwargs):
-        """ Writes a k-points to the `tableSile`.
+        """ Writes k-points to a `~sisl.io.tableSile`.
 
         This allows one to pass a `tableSile` or a file-name.
         """
