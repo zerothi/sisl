@@ -403,6 +403,19 @@ class BrillouinZone(object):
     def __len__(self):
         return len(self._k)
 
+    def write(self, sile, *args, **kwargs):
+        """ Writes a k-points to the `tableSile`.
+
+        This allows one to pass a `tableSile` or a file-name.
+        """
+        from sisl.io import tableSile
+        kw = np.concatenate((self._k, self._w.reshape(-1, 1)), axis=1)
+        if isinstance(sile, tableSile):
+            sile.write_data(kw.T, *args, **kwargs)
+        else:
+            with tableSile(sile, 'w') as fh:
+                fh.write_data(kw.T, *args, **kwargs)
+
 
 class MonkhorstPack(BrillouinZone):
     r""" Create a Monkhorst-Pack grid for the Brillouin zone
@@ -424,6 +437,8 @@ class MonkhorstPack(BrillouinZone):
        I.e. `size` must be of values :math:`]0 ; 1]`. Defaults to the entire BZ.
        Note that this will also reduce the weights such that the weights
        are normalized to the entire BZ.
+    centered : bool, optional
+       whether the k-points are :math:`\Gamma`-centered (for zero displacement)
     trs : bool, optional
        whether time-reversal symmetry exists in the Brillouin zone.
 
@@ -435,7 +450,7 @@ class MonkhorstPack(BrillouinZone):
     >>> MonkhorstPack(sc, [10, 5, 5], trs=False) # 10 x 5 x 5 (without TRS)
     """
 
-    def __init__(self, parent, nkpt, displacement=None, size=None, trs=True):
+    def __init__(self, parent, nkpt, displacement=None, size=None, centered=True, trs=True):
         super(MonkhorstPack, self).__init__(parent)
 
         if isinstance(nkpt, Integral):
@@ -473,7 +488,7 @@ class MonkhorstPack(BrillouinZone):
                     i_trs = i
 
         # Calculate k-points and weights along all directions
-        kw = [self.grid(Dn[i], displacement[i], size[i], i == i_trs) for i in (0, 1, 2)]
+        kw = [self.grid(Dn[i], displacement[i], size[i], centered, i == i_trs) for i in (0, 1, 2)]
 
         self._k = _a.emptyd((kw[0][0].size, kw[1][0].size, kw[2][0].size, 3))
         self._w = _a.onesd(self._k.shape[:-1])
@@ -488,8 +503,16 @@ class MonkhorstPack(BrillouinZone):
         self._k = np.where(self._k > .5, self._k - 1, self._k)
         self._w.shape = (-1,)
 
+        # Store information regarding size and diagonal elements
+        # This information is basically only necessary when
+        # we want to replace special k-points
+        self._centered = centered
+        self._trs = trs
+        self._diag = Dn # vector
+        self._size = size # vector
+
     @staticmethod
-    def grid(n, displ=0., size=1., trs=False):
+    def grid(n, displ=0., size=1., centered=True, trs=False):
         r""" Create a grid of `n` points with an offset of `displ` and sampling `size` around `displ`
 
         The :math:`k`-points are :math:`\Gamma` centered.
@@ -502,6 +525,8 @@ class MonkhorstPack(BrillouinZone):
            the displacement of the grid
         size : float, optional
            the total size of the Brillouin zone to sample
+        centered : bool, optional
+           if the points are centered
         trs : bool, optional
            whether time-reversal-symmetry is applied
 
@@ -516,28 +541,38 @@ class MonkhorstPack(BrillouinZone):
         displ = displ % 1.
         if displ > 0.5:
             displ -= 1.
+
         if trs and displ == 0.:
             n_half = n // 2
             if n % 2 == 1:
                 # Odd case, we have Gamma and remove all negative values
-                k = _a.aranged(n_half + 1) * size / n + displ
+                k = _a.aranged(n_half + 1) * size / n
                 # Weights are all twice (except Gamma)
                 w = _a.onesd(len(k)) / n * size
                 w[1:] *= 2
-            else:
+            elif centered:
                 # Even case, we do not have Gamma, but we shift to Gamma
                 # All points except Gamma and edge have weights doubled
-                k = _a.aranged(n_half + 1) * size / n  + displ
+                k = _a.aranged(n_half + 1) * size / n
                 # Weights are all twice (except Gamma and band-edge)
                 w = _a.onesd(len(k)) / n * size
                 w[1:-1] *= 2
+            else:
+                # Even case, we do not have Gamma, and we retain that choice
+                # All points except Gamma and edge have weights doubled
+                k = _a.aranged(n_half) * size / n + size / n * 0.5
+                # Weights are all twice (center and band-edge are not present)
+                w = _a.onesd(len(k)) / n * size * 2
         else:
             # Not TRS
-            if n % 2 == 0:
+            if n % 2 == 0 and centered:
                 k = (_a.aranged(n) * 2 - n) * size / (2 * n) + displ
+            elif n % 2 == 0:
+                k = (_a.aranged(n) * 2 - n + 1) * size / (2 * n) + displ
             else:
                 k = (_a.aranged(n) * 2 - n + 1) * size / (2 * n) + displ
             w = _a.onesd(n) * size / n
+
         # Return values
         return k, w
 
