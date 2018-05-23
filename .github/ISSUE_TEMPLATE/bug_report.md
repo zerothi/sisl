@@ -1,21 +1,22 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Let us know if something went wrong
 
 ---
 
 **Describe the bug**
-A clear and concise description of what the bug is.
 
-**To Reproduce**
-Insert code snippet that produces the error.
+**Reproducable code**
 ```python
-Add here
+<insert code here>
 ```
 
 **Version details**
-Please write the `sisl` version used:
+Run the below code and add to bug-report:
 ```python
+import sys
+print(sys.version)
 import sisl
 print(sisl.__version__)
 print(sisl.__git_revision__)
+```
