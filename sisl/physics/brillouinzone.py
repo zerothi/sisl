@@ -8,7 +8,7 @@ import numpy as np
 from numpy import sum, dot
 
 import sisl._array as _a
-from sisl.messages import SislError, tqdm_eta
+from sisl.messages import info, SislError, tqdm_eta
 from sisl.supercell import SuperCell
 
 
@@ -108,6 +108,31 @@ class BrillouinZone(object):
            k-point in Cartesian coordinates
         """
         return dot(k, self.cell) * 0.5 / pi
+
+    @staticmethod
+    def in_primitive(k):
+        """ Move the k-point into the primitive point(s) ]-0.5 ; 0.5]
+
+        Parameters
+        ----------
+        k : array_like
+           k-point(s) to move into the primitive cell
+
+        Returns
+        -------
+        k : all k-points moved into the primitive cell
+        """
+        k = _a.arrayd(k).copy()
+        # Ensure that we are in the interval ]-0.5; 0.5]
+        idx = (k > 0.5).nonzero()[0]
+        while len(idx) > 0:
+            k[idx] -= 1.
+            idx = (k > 0.5).nonzero()[0]
+        idx = (k < -0.5).nonzero()[0]
+        while len(idx) > 0:
+            k[idx] += 1.
+            idx = (k < -0.5).nonzero()[0]
+        return k
 
     __attr = None
 
@@ -495,6 +520,8 @@ class MonkhorstPack(BrillouinZone):
                 if displacement[i] in [0., 0.5] and Dn[i] > nmax:
                     nmax = Dn[i]
                     i_trs = i
+            if nmax == 1:
+                i_trs = -1
             if i_trs == -1:
                 # If we still haven't decided (say for weird displacements)
                 # simply take the one with the maximum number of k-points.
@@ -599,14 +626,7 @@ class MonkhorstPack(BrillouinZone):
             w = _a.onesd(n) * size / n
 
         # Ensure that we are in the interval ]-0.5; 0.5]
-        idx = (k > 0.5).nonzero()[0]
-        while len(idx) > 0:
-            k[idx] -= 1.
-            idx = (k > 0.5).nonzero()[0]
-        idx = (k < -0.5).nonzero()[0]
-        while len(idx) > 0:
-            k[idx] += 1.
-            idx = (k < -0.5).nonzero()[0]
+        k = BrillouinZone.in_primitive(k)
 
         # Check for TRS points
         idx = (k < 0.).nonzero()[0]
@@ -676,20 +696,30 @@ class MonkhorstPack(BrillouinZone):
         k_int = np.rint(k_int)
 
         # 1. find all k-points
-        k = _a.arrayd(k).reshape(1, 3)
+        k = self.in_primitive(_a.arrayd(k)).reshape(1, 3)
         dk = (mp._size / 2).reshape(1, 3)
         # Find all points within [k - dk; k + dk]
         # Since the volume of each k-point is non-zero we know that no k-points will be located
         # on the boundary.
         # This does remove boundary points because we shift everything into the positive
         # plane.
-        k = (self.k - k) % 1.
-        idx = np.logical_and.reduce(k <= dk, axis=1).nonzero()[0]
+        idx = np.logical_and.reduce((self.k - k) % 1. <= dk, axis=1).nonzero()[0]
+        if len(idx) == 0 and self._trs:
+            idx = np.logical_and.reduce((self.k - np.abs(k)) % 1. <= dk, axis=1).nonzero()[0]
+        if len(idx) == 0:
+            raise SislError(self.__class__.__name__ + '.reduce could not find any points to replace.')
 
         # Now we have the k-points we need to remove
         # Figure out if the total weight is consistent
         total_weight = self.weight[idx].sum()
-        if not np.allclose(total_weight, mp.weight.sum()):
+        replace_weight = mp.weight.sum()
+        if abs(total_weight - replace_weight) < 1e-8:
+            weight_factor = 1.
+        elif abs(total_weight - replace_weight * 2) < 1e-8:
+            weight_factor = 2.
+            if not self._trs:
+                info(self.__class__.__name__ + '.reduce assumes that the replaced k-point has double weights.')
+        else:
             raise SislError(self.__class__.__name__ + '.reduce could not assert the weights are consistent during replacement.')
 
         self._k = np.delete(self._k, idx, axis=0)
@@ -697,7 +727,7 @@ class MonkhorstPack(BrillouinZone):
 
         # Append the new k-points and weights
         self._k = np.concatenate((self._k, mp._k), axis=0)
-        self._w = np.concatenate((self._w, mp._w))
+        self._w = np.concatenate((self._w, mp._w * weight_factor))
 
 
 class BandStructure(BrillouinZone):
