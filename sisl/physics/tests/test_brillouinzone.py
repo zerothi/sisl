@@ -110,12 +110,17 @@ class TestBrillouinZone(object):
         assert len(bz1) == 8
         bz2 = MonkhorstPack(setup.s1, [2] * 3, displacement=[.5] * 3, trs=False)
         assert len(bz2) == 8
+        assert np.allclose(bz1.k, bz2.k)
+
+    def test_mp_uneven(self, setup):
+        bz1 = MonkhorstPack(setup.s1, [3] * 3, trs=False)
+        bz2 = MonkhorstPack(setup.s1, [3] * 3, displacement=[.5] * 3, trs=False)
         assert not np.allclose(bz1.k, bz2.k)
 
     def test_mp3(self, setup):
         bz1 = MonkhorstPack(setup.s1, [2] * 3, size=0.5, trs=False)
         assert len(bz1) == 8
-        assert np.all(bz1.k < 0.25)
+        assert np.all(bz1.k <= 0.25)
         assert bz1.weight.sum() == pytest.approx(0.5 ** 3)
 
     def test_trs(self, setup):
@@ -131,6 +136,16 @@ class TestBrillouinZone(object):
             bz = MonkhorstPack(setup.s1, [x, y, z], trs=False)
             assert len(bz) == x * y * z
             assert ((bz.k == 0.).sum(1).astype(np.int32) == 3).sum() == 1
+
+    def test_mp_gamma_non_centered(self, setup):
+        for x, y, z in product(np.arange(10) + 1, np.arange(20) + 1, np.arange(6) + 1):
+            bz = MonkhorstPack(setup.s1, [x, y, z], centered=False, trs=False)
+            assert len(bz) == x * y * z
+            has_gamma = (x % 2 + y % 2 + z % 2) == 3
+            if has_gamma:
+                assert ((bz.k == 0.).sum(1).astype(np.int32) == 3).sum() == 1
+            else:
+                assert ((bz.k == 0.).sum(1).astype(np.int32) == 3).sum() == 0
 
     def test_mp_gamma_centered_displ(self, setup):
         for x, y, z in product(np.arange(10) + 1, np.arange(20) + 1, np.arange(6) + 1):
@@ -201,3 +216,23 @@ class TestBrillouinZone(object):
         # Now we should check whether the reverse is doing its magic!
         mylist = [wrap_reverse(H.eigh(k=k)) for k in bz]
         assert np.allclose(aslist, mylist)
+
+    def test_replace_gamma(self):
+        from sisl import geom
+        g = geom.graphene()
+        bz = MonkhorstPack(g, [2, 2, 2], trs=False)
+        bz_gamma = MonkhorstPack(g, [2, 2, 2], size=[0.5] * 3, trs=False)
+        assert len(bz) == 2 ** 3
+        bz.replace([0] * 3, bz_gamma)
+        assert len(bz) == 2 ** 3 + 2 ** 3 - 1
+        assert bz.weight.sum() == pytest.approx(1.)
+
+    def test_replace_gamma_trs(self):
+        from sisl import geom
+        g = geom.graphene()
+        bz = MonkhorstPack(g, [2, 2, 2], trs=False)
+        bz_gamma = MonkhorstPack(g, [3, 3, 3], size=[0.5] * 3, trs=True)
+        assert len(bz) == 2 ** 3
+        bz.replace([0] * 3, bz_gamma)
+        assert len(bz) == 2 ** 3 + 3 ** 3 - 3 ** 2 - 1
+        assert bz.weight.sum() == pytest.approx(1.)

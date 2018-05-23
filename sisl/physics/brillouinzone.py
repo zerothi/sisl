@@ -8,7 +8,7 @@ import numpy as np
 from numpy import sum, dot
 
 import sisl._array as _a
-from sisl.messages import tqdm_eta
+from sisl.messages import SislError, tqdm_eta
 from sisl.supercell import SuperCell
 
 
@@ -63,6 +63,13 @@ class BrillouinZone(object):
         if isinstance(self.parent, SuperCell):
             return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), repr(self.parent).replace('\n', '\n '))
         return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), repr(self.parent.sc).replace('\n', '\n '))
+
+    def copy(self):
+        """ Create a copy of this object """
+        bz = self.__class__(self.parent)
+        bz._k = self._k.copy()
+        bz._w = self._w.copy()
+        return bz
 
     @property
     def k(self):
@@ -471,6 +478,8 @@ class MonkhorstPack(BrillouinZone):
             size = _a.onesd(3)
         elif isinstance(size, Real):
             size = _a.zerosd(3) + size
+        else:
+            size = _a.arrayd(size)
 
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt).astype(np.int32)
@@ -483,9 +492,13 @@ class MonkhorstPack(BrillouinZone):
             # Figure out which direction to TRS
             nmax = 0
             for i in [0, 1, 2]:
-                if displacement[i] == 0. and Dn[i] > nmax:
+                if displacement[i] in [0., 0.5] and Dn[i] > nmax:
                     nmax = Dn[i]
                     i_trs = i
+            if i_trs == -1:
+                # If we still haven't decided (say for weird displacements)
+                # simply take the one with the maximum number of k-points.
+                i_trs = np.argmax(Dn)
 
         # Calculate k-points and weights along all directions
         kw = [self.grid(Dn[i], displacement[i], size[i], centered, i == i_trs) for i in (0, 1, 2)]
@@ -506,10 +519,18 @@ class MonkhorstPack(BrillouinZone):
         # Store information regarding size and diagonal elements
         # This information is basically only necessary when
         # we want to replace special k-points
+        self._diag = Dn # vector
+        self._displ = displacement # vector
+        self._size = size # vector
         self._centered = centered
         self._trs = trs
-        self._diag = Dn # vector
-        self._size = size # vector
+
+    def copy(self):
+        """ Create a copy of this object """
+        bz = self.__class__(self.parent, self._diag, self._displ, self._size, self._centered, self._trs)
+        bz._k = self._k.copy()
+        bz._w = self._w.copy()
+        return bz
 
     @staticmethod
     def grid(n, displ=0., size=1., centered=True, trs=False):
@@ -564,17 +585,119 @@ class MonkhorstPack(BrillouinZone):
                 # Weights are all twice (center and band-edge are not present)
                 w = _a.onesd(len(k)) / n * size * 2
         else:
+            # If requesting a specific displacement we force a centered
+            # array (otherwise the displacement does not make sense), or does it?
+            if displ != 0.:
+                centered = True
             # Not TRS
             if n % 2 == 0 and centered:
-                k = (_a.aranged(n) * 2 - n) * size / (2 * n) + displ
+                k = (_a.aranged(1, n + 1) * 2 - n) * size / (2 * n) + displ
             elif n % 2 == 0:
                 k = (_a.aranged(n) * 2 - n + 1) * size / (2 * n) + displ
             else:
                 k = (_a.aranged(n) * 2 - n + 1) * size / (2 * n) + displ
             w = _a.onesd(n) * size / n
 
+        # Ensure that we are in the interval ]-0.5; 0.5]
+        idx = (k > 0.5).nonzero()[0]
+        while len(idx) > 0:
+            k[idx] -= 1.
+            idx = (k > 0.5).nonzero()[0]
+        idx = (k < -0.5).nonzero()[0]
+        while len(idx) > 0:
+            k[idx] += 1.
+            idx = (k < -0.5).nonzero()[0]
+
+        # Check for TRS points
+        idx = (k < 0.).nonzero()[0]
+        if trs and len(idx) > 0:
+            k_pos = k.copy()
+            k_pos[idx] *= -1.
+            # Sort k-points and weights
+            idx = np.argsort(k_pos)
+            k_pos = k_pos[idx]
+            w = w[idx]
+
+            # Find indices of all equivalent k-points (tolerance of 1e-10 in reciprocal units)
+            idx_same = (np.diff(k_pos) < 1e-10).nonzero()[0]
+
+            # The above algorithm should never create more than two duplicates.
+            # Hence we can simply remove all idx_same and double the weight for all
+            # idx_same + 1.
+            w[idx_same + 1] *= 2
+            # Delete the duplicated k-points (they are already sorted)
+            k = np.delete(k_pos, idx_same, axis=0)
+            w = np.delete(w, idx_same)
+        else:
+            # Sort them, because it makes more visual sense
+            idx = np.argsort(k)
+            k = k[idx]
+            w = w[idx]
+
         # Return values
         return k, w
+
+    def replace(self, k, mp):
+        """ Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
+
+        This method tries to replace an area corresponding to `mp.size` around the k-point `k`
+        such that the k-points are replaced.
+        This enables one to zoom in on specific points in the Brillouin zone for detailed analysis.
+
+        Parameters
+        ----------
+        k : array_like
+           k-point in this object to replace
+        mp : MonkhorstPack
+           object containing the replacement k-points.
+
+        Raises
+        ------
+        SislError : if the size of the replacement `MonkhorstPack` grid is not compatible with the
+                    k-point spacing in this object.
+        """
+        # First we find all k-points within k +- mp.size
+        # Those are the points we wish to remove.
+        # Secondly we need to ensure that the k-points we remove are occupying *exactly*
+        # the Brillouin zone we wish to replace.
+        if not isinstance(mp, MonkhorstPack):
+            raise ValueError('Object `mp` is not a MonkhorstPack object')
+
+        # We can easily figure out the BZ that each k-point is averaging
+        k_vol = self._size / self._diag
+        # Compare against the size of this one
+        # Since we can remove more than one k-point, we require that the
+        # size of the replacement MP is an integer multiple of the
+        # k-point volumes.
+        k_int = mp._size / k_vol
+        if not np.allclose(np.rint(k_int), k_int):
+            raise SislError(self.__class__.__name__ + '.reduce could not replace k-point, BZ '
+                            'volume replaced is not equivalent to the inherent k-point volume.')
+        k_int = np.rint(k_int)
+
+        # 1. find all k-points
+        k = _a.arrayd(k).reshape(1, 3)
+        dk = (mp._size / 2).reshape(1, 3)
+        # Find all points within [k - dk; k + dk]
+        # Since the volume of each k-point is non-zero we know that no k-points will be located
+        # on the boundary.
+        # This does remove boundary points because we shift everything into the positive
+        # plane.
+        k = (self.k - k) % 1.
+        idx = np.logical_and.reduce(k <= dk, axis=1).nonzero()[0]
+
+        # Now we have the k-points we need to remove
+        # Figure out if the total weight is consistent
+        total_weight = self.weight[idx].sum()
+        if not np.allclose(total_weight, mp.weight.sum()):
+            raise SislError(self.__class__.__name__ + '.reduce could not assert the weights are consistent during replacement.')
+
+        self._k = np.delete(self._k, idx, axis=0)
+        self._w = np.delete(self._w, idx)
+
+        # Append the new k-points and weights
+        self._k = np.concatenate((self._k, mp._k), axis=0)
+        self._w = np.concatenate((self._w, mp._w))
 
 
 class BandStructure(BrillouinZone):
