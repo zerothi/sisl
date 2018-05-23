@@ -29,6 +29,7 @@ sisl.
    ionncSileSiesta - Basis-information from the ion.nc files
    orbindxSileSiesta - Basis set information (no geometry information)
    faSileSiesta - Forces on atoms
+   kpSileSiesta - k-points from simulation
 
 The TranSiesta specific output files are:
 
@@ -48,6 +49,7 @@ from .binaries import *
 from .eig import *
 from .fa import *
 from .fdf import *
+from .kp import *
 from .orb_indx import *
 from .out import *
 from .pdos import *
