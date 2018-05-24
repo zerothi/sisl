@@ -107,7 +107,7 @@ class BrillouinZone(object):
         k : list of float
            k-point in Cartesian coordinates
         """
-        return dot(k, self.cell) * 0.5 / pi
+        return dot(k, self.cell.T / (2 * pi))
 
     @staticmethod
     def in_primitive(k):

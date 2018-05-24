@@ -14,15 +14,23 @@ class kpSileSiesta(SileSiesta):
     """ k-point Siesta file object """
 
     @Sile_fh_open
-    def read_data(self):
-        """ Returns K-points from the file (note that these are in reciprocal units) """
+    def read_data(self, sc=None):
+        """ Returns K-points from the file (note that these are in reciprocal units)
+
+        Parameters
+        ----------
+        sc : SuperCellChild
+           if supplied the returned k-points will be in reduced coordinates
+        """
         nk = int(self.readline())
 
         k = np.empty([nk, 3], np.float64)
         for ik in range(nk):
             k[ik, :] = list(map(float, self.readline().split()[1:]))
 
-        return k
+        if sc is None:
+            return k
+        return np.dot(k, sc.cell.T / (2 * np.pi))
 
     @Sile_fh_open
     def write_data(self, bz, fmt='%.9e'):

@@ -47,6 +47,13 @@ class TestBrillouinZone(object):
             w += wk
         assert w == pytest.approx(1.)
 
+    def test_to_reduced(self, setup):
+        bz = BrillouinZone(setup.s2)
+        for k in [[0.1] * 3, [0.2] * 3]:
+            cart = bz.tocartesian(k)
+            rec = bz.toreduced(cart)
+            assert np.allclose(rec, k)
+
     def test_class1(self, setup):
         class Test(SuperCellChild):
             def __init__(self, sc):
