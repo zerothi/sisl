@@ -21,16 +21,24 @@ class kpSileSiesta(SileSiesta):
         ----------
         sc : SuperCellChild
            if supplied the returned k-points will be in reduced coordinates
+
+        Returns
+        -------
+        k : k-points
+        w : weights for k-points
         """
         nk = int(self.readline())
 
         k = np.empty([nk, 3], np.float64)
+        w = np.empty([nk], np.float64)
         for ik in range(nk):
-            k[ik, :] = list(map(float, self.readline().split()[1:]))
+            l = self.readline().split()
+            k[ik, :] = float(l[1]), float(l[2]), float(l[3])
+            w[ik] = float(l[4])
 
         if sc is None:
-            return k
-        return np.dot(k, sc.cell.T / (2 * np.pi))
+            return k, w
+        return np.dot(k, sc.cell.T / (2 * np.pi)), w
 
     @Sile_fh_open
     def write_data(self, bz, fmt='%.9e'):
