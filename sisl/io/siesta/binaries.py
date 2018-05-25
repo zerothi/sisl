@@ -11,7 +11,7 @@ except Exception as e:
 
 # Import sile objects
 from sisl.messages import warn, SislError
-from ..sile import add_sile
+from ..sile import add_sile, SileError
 from .sile import SileBinSiesta
 
 # Import the geometry object
@@ -114,6 +114,14 @@ class tshsSileSiesta(SileBinSiesta):
         H._csr._D = np.empty([nnz, spin+1], np.float64)
         H._csr._D[:, :spin] = dH[:, :]
         H._csr._D[:, spin] = dS[:]
+
+        # Find all indices where dS == 1 (remember col is in fortran indices)
+        idx = col[np.isclose(dS, 1.).nonzero()[0]]
+        if np.any(idx > no):
+            print('Number of orbitals: {}'.format(no))
+            print(idx)
+            raise SileError(self.__class__.__name__ + '.read_hamiltonian could not assert the '
+                            'supercell connections in the primary unit-cell.')
 
         return H
 
