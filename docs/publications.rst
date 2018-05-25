@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. N. Papior, G. Calogero and M. Brandbyge,
+   *Simple and efficient LCAO basis sets for the diffuse states in carbon nanostructures*,
+   Journal of Physics: Condensed Matter `(2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aac4dd>`_
+
 #. C. Moreno, M. Vila-Varela, B. Kretz, A. Garcia-Lekue, M.V. Costache, M. Paradinas, M. Panighel, G. Ceballos, S.O. Valenzuela, D. Pena and A.M. Mugarza,
    *Bottom-up synthesis of multifunctional nanoporous graphene*,
    Science **360**, `6385 (2018) <http://www.sciencemag.org/lookup/doi/10.1126/science.aar2009>`_
@@ -39,8 +43,8 @@ arXiv publications
 
 These publications are as far as we know in the review process.
 
-#. `Exfoliation of single layer BiTeI flakes <https://arxiv.org/abs/1709.09732>`_
+#. `Large-scale tight-binding simulations of quantum transport in ballistic graphene`
 
-#. `Simple LCAO basis sets for the first unoccupied bands in graphene <https://arxiv.org/abs/1803.01568>`_
+#. `Exfoliation of single layer BiTeI flakes <https://arxiv.org/abs/1709.09732>`_
 
 #. `Charge transport in doped zigzag phosphorene nanoribbons <https://arxiv.org/abs/1803.00751>`_
