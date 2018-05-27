@@ -13,6 +13,7 @@ from sisl.sparse import isspmatrix
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
 from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_so, matrix_diag_k_nc
+from ._matrix_dk import matrix_dk
 
 __all__ = ['SparseOrbitalBZ', 'SparseOrbitalBZSpin']
 
@@ -75,6 +76,7 @@ class SparseOrbitalBZ(SparseOrbital):
             self.Sk = self._Sk
 
         self.Pk = self._Pk
+        self.dPk = self._dPk
 
     # Override to enable spin configuration and orthogonality
     def _cls_kwargs(self):
@@ -208,6 +210,21 @@ class SparseOrbitalBZ(SparseOrbital):
         k = np.asarray(k, np.float64).ravel()
         return matrix_k(gauge, self._csr, _dim, self.sc, k, dtype, format)
 
+    def _dPk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
+        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` differentiated with respect to `k` for a polarized system
+
+        Parameters
+        ----------
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge : {'R', 'r'}
+           chosen gauge
+        """
+        k = np.asarray(k, np.float64).ravel()
+        return matrix_dk(gauge, self._csr, _dim, self.sc, k, dtype, format)
+
     def Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the overlap matrix for a given k-point
 
@@ -270,6 +287,20 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
+
+    def _dSk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
+        """ Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` differentiated with respect to `k`
+
+        Parameters
+        ----------
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge : {'R', 'r'}
+           chosen gauge
+        """
+        return self._dPk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
     def eigh(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
@@ -363,11 +394,15 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             self.DOWN = 0
             self.Pk = self._Pk_unpolarized
             self.Sk = self._Sk
+            self.dPk = self._dPk_unpolarized
+            self.dSk = self._dSk
         elif self.spin.is_polarized:
             self.UP = 0
             self.DOWN = 1
             self.Pk = self._Pk_polarized
+            self.dPk = self._dPk_polarized
             self.Sk = self._Sk
+            self.dSk = self._dSk
         elif self.spin.is_noncolinear:
             if self.spin.dkind == 'f':
                 self.M11 = 0
@@ -381,6 +416,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 raise ValueError('Currently not implemented')
             self.Pk = self._Pk_non_colinear
             self.Sk = self._Sk_non_colinear
+            self.dPk = None
+            self.dSk = None
         elif self.spin.is_spinorbit:
             if self.spin.dkind == 'f':
                 self.M11r = 0
@@ -400,6 +437,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # The overlap is the same as non-collinear
             self.Pk = self._Pk_spin_orbit
             self.Sk = self._Sk_non_colinear
+            self.dPk = None
+            self.dSk = None
 
         if self.orthogonal:
             self.Sk = self._Sk_diagonal
@@ -485,6 +524,36 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         k = np.asarray(k, np.float64).ravel()
         return matrix_k_so(gauge, self._csr, self.sc, k, dtype, format)
+
+    def _dPk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
+        """ Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`
+
+        Parameters
+        ----------
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge : {'R', 'r'}
+           chosen gauge
+        """
+        return self._dPk(k, dtype=dtype, gauge=gauge, format=format)
+
+    def _dPk_polarized(self, k=(0, 0, 0), spin=0, dtype=None, gauge='R', format='csr'):
+        """ Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`
+
+        Parameters
+        ----------
+        k: array_like, optional
+           k-point (default is Gamma point)
+        spin: int, optional
+           the spin-index of the quantity
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge : {'R', 'r'}
+           chosen gauge
+        """
+        return self._dPk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
 
     def _Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.

@@ -340,15 +340,15 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     ----------
     state : array_like
        vectors describing the electronic states, 2nd dimension contains the states
-    dHk : array_like
-       Hamiltonian derivative with respect to :math:`\mathbf k`. If it is a square matrix
-       it is assumed to only be the velocity along a given direction. Otherwise it needs to be a
-       3 x 1 matrix describing the derivative along each lattice vector.
+    dHk : list of array_like
+       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
+       list of the Hamiltonian derivative along the 3 Cartesian directions.
     energy : array_like, optional
        energies of the states. Required for non-orthogonal basis together with `dSk`.
-    dSk : array_like, optional
+    dSk : list of array_like, optional
        :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
        provided in a non-orthogonal basis (otherwise the results will be wrong).
+       Same derivative as `dHk`
     degenerate: list of array_like, optional
        a list containing the indices of degenerate states. In that case a subsequent diagonalization
        is required to decouple them.
@@ -380,79 +380,61 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate=None):
 
         # Since dHk *may* be a csr_matrix or sparse, we have to do it like
         # this. A sparse matrix cannot be re-shaped with an extra dimension.
-        dHkstate = (dHk - e * dSk).dot(state[s])
-
-        v[s, 0] = (conj(state[s]) * dHkstate[0::3]).sum().real
-        v[s, 1] = (conj(state[s]) * dHkstate[1::3]).sum().real
-        v[s, 2] = (conj(state[s]) * dHkstate[2::3]).sum().real
+        v[s, 0] = (conj(state[s]) * (dHk[0] - e * dSk[0]).dot(state[s])).sum().real
+        v[s, 1] = (conj(state[s]) * (dHk[1] - e * dSk[1]).dot(state[s])).sum().real
+        v[s, 2] = (conj(state[s]) * (dHk[2] - e * dSk[2]).dot(state[s])).sum().real
 
     # Now decouple the degenerate states
     if not degenerate is None:
         for deg in degenerate:
-            edSk = np.average(energy[deg]) * dSk
+            e = np.average(energy[deg])
 
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # Since we do this for all directions we should decouple them all
-            vv = conj(state[deg, :]).dot((dHk[0::3, :] - edSk[0::3, :]).dot(state[deg, :].T))
+            vv = conj(state[deg, :]).dot((dHk[0] - e * dSk[0]).dot(state[deg, :].T))
             S = eigh_destroy(vv)[1].T.dot(state[deg, :])
-            vv = conj(S).dot((dHk[1::3, :] - edSk[1::3, :]).dot(S.T))
+            vv = conj(S).dot((dHk[1] - e * dSk[1]).dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
-            vv = conj(S).dot((dHk[2::3, :] - edSk[2::3, :]).dot(S.T))
+            vv = conj(S).dot((dHk[2] - e * dSk[2]).dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
 
             # Calculate velocities
             for s, e in enumerate(energy[deg]):
-                v[deg[s], 0] = (conj(S[s]) * (dHk[0::3, :] - e * dSk[0::3, :]).dot(S[s])).sum().real
-                v[deg[s], 1] = (conj(S[s]) * (dHk[1::3, :] - e * dSk[1::3, :]).dot(S[s])).sum().real
-                v[deg[s], 2] = (conj(S[s]) * (dHk[2::3, :] - e * dSk[2::3, :]).dot(S[s])).sum().real
-
-    del dHkstate
+                v[deg[s], 0] = (conj(S[s]) * (dHk[0] - e * dSk[0]).dot(S[s])).sum().real
+                v[deg[s], 1] = (conj(S[s]) * (dHk[1] - e * dSk[1]).dot(S[s])).sum().real
+                v[deg[s], 2] = (conj(S[s]) * (dHk[2] - e * dSk[2]).dot(S[s])).sum().real
 
     return v * _velocity_const
 
 
 def _velocity_ortho(state, dHk, degenerate=None):
     r""" For states in an orthogonal basis """
-    if dHk.shape[0] == state.shape[1] * 3:
-        # Along all directions
-        v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
-        # Since dHk *may* be a csr_matrix or sparse, we have to do it like
-        # this. A sparse matrix cannot be re-shaped with an extra dimension.
-        dHkstate = dHk.dot(state.T)
+    # Along all directions
+    v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
-        v[:, 0] = (conj(state.T) * dHkstate[0::3, :]).sum(0).real
-        v[:, 1] = (conj(state.T) * dHkstate[1::3, :]).sum(0).real
-        v[:, 2] = (conj(state.T) * dHkstate[2::3, :]).sum(0).real
+    v[:, 0] = (conj(state.T) * dHk[0].dot(state.T)).sum(0).real
+    v[:, 1] = (conj(state.T) * dHk[1].dot(state.T)).sum(0).real
+    v[:, 2] = (conj(state.T) * dHk[2].dot(state.T)).sum(0).real
 
-        # Now decouple the degenerate states
-        if not degenerate is None:
-            for deg in degenerate:
-                # Now diagonalize to find the contributions from individual states
-                # then re-construct the seperated degenerate states
-                # Since we do this for all directions we should decouple them all
-                vv = conj(state[deg, :]).dot(dHkstate[0::3, deg])
-                S = eigh_destroy(vv)[1].T.dot(state[deg, :])
-                vv = conj(S).dot((dHk[1::3, :]).dot(S.T))
-                S = eigh_destroy(vv)[1].T.dot(S)
-                vv = conj(S).dot((dHk[2::3, :]).dot(S.T))
-                S = eigh_destroy(vv)[1].T.dot(S)
+    # Now decouple the degenerate states
+    if not degenerate is None:
+        for deg in degenerate:
+            # Now diagonalize to find the contributions from individual states
+            # then re-construct the seperated degenerate states
+            # Since we do this for all directions we should decouple them all
+            vv = conj(state[deg, :]).dot(dHk[0].dot(state[deg, :].T))
+            S = eigh_destroy(vv)[1].T.dot(state[deg, :])
+            vv = conj(S).dot((dHk[1]).dot(S.T))
+            S = eigh_destroy(vv)[1].T.dot(S)
+            vv = conj(S).dot((dHk[2]).dot(S.T))
+            S = eigh_destroy(vv)[1].T.dot(S)
 
-                # Calculate velocities
-                v[deg, 0] = (conj(S.T) * dHk[0::3, :].dot(S.T)).sum(0).real
-                v[deg, 1] = (conj(S.T) * dHk[1::3, :].dot(S.T)).sum(0).real
-                v[deg, 2] = (conj(S.T) * dHk[2::3, :].dot(S.T)).sum(0).real
-
-        del dHkstate
-
-    elif dHk.shape[0] == state.shape[1]:
-
-        v = (conj(state.T) * dHk.dot(state.T)).sum(0).real
-
-    else:
-        raise SislError('sisl.physics.electron.velocity requries the dHk matrix to contain '
-                        '1 or 3 components per orbital.')
+            # Calculate velocities
+            v[deg, 0] = (conj(S.T) * dHk[0].dot(S.T)).sum(0).real
+            v[deg, 1] = (conj(S.T) * dHk[1].dot(S.T)).sum(0).real
+            v[deg, 2] = (conj(S.T) * dHk[2].dot(S.T)).sum(0).real
 
     return v * _velocity_const
 
