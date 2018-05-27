@@ -120,8 +120,7 @@ class SparseCSR(object):
 
     def __init__(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
                  **kwargs):
-        """ Initialize a new sparse CSR matrix
-        """
+        """ Initialize a new sparse CSR matrix """
 
         # step size in sparse elements
         # If there isn't enough room for adding
