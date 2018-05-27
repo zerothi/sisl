@@ -8,7 +8,9 @@ cimport numpy.math as npmath
 
 
 @cython.boundscheck(False)
+@cython.initializedcheck(False)
 @cython.wraparound(False)
+@cython.cdivision(True)
 cpdef cell_invert(np.ndarray[np.float64_t, ndim=2] cell):
     cdef np.ndarray[np.float64_t, ndim=2] icell = np.empty([3, 3], dtype=np.float64)
     icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
@@ -31,7 +33,9 @@ cpdef cell_invert(np.ndarray[np.float64_t, ndim=2] cell):
 
 
 @cython.boundscheck(False)
+@cython.initializedcheck(False)
 @cython.wraparound(False)
+@cython.cdivision(True)
 cpdef cell_reciprocal(np.ndarray[np.float64_t, ndim=2] cell):
     cdef np.ndarray[np.float64_t, ndim=2] rcell = np.empty([3, 3], dtype=np.float64)
     rcell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]

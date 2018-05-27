@@ -1576,9 +1576,9 @@ static PyObject *__pyx_tuple__7;
 static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
 
-/* "sisl/_supercell.pyx":12
- * @cython.boundscheck(False)
+/* "sisl/_supercell.pyx":14
  * @cython.wraparound(False)
+ * @cython.cdivision(True)
  * cpdef cell_invert(np.ndarray[np.float64_t, ndim=2] cell):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.float64_t, ndim=2] icell = np.empty([3, 3], dtype=np.float64)
  *     icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
@@ -1705,12 +1705,11 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   Py_ssize_t __pyx_t_107;
   Py_ssize_t __pyx_t_108;
   Py_ssize_t __pyx_t_109;
-  __pyx_t_5numpy_float64_t __pyx_t_110;
-  int __pyx_t_111;
+  int __pyx_t_110;
+  Py_ssize_t __pyx_t_111;
   Py_ssize_t __pyx_t_112;
   Py_ssize_t __pyx_t_113;
   Py_ssize_t __pyx_t_114;
-  Py_ssize_t __pyx_t_115;
   __Pyx_RefNannySetupContext("cell_invert", 0);
   __pyx_pybuffer_icell.pybuffer.buf = NULL;
   __pyx_pybuffer_icell.refcount = 0;
@@ -1722,23 +1721,23 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_pybuffernd_cell.rcbuffer = &__pyx_pybuffer_cell;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cell.rcbuffer->pybuffer, (PyObject*)__pyx_v_cell, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 12, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cell.rcbuffer->pybuffer, (PyObject*)__pyx_v_cell, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 14, __pyx_L1_error)
   }
   __pyx_pybuffernd_cell.diminfo[0].strides = __pyx_pybuffernd_cell.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cell.diminfo[0].shape = __pyx_pybuffernd_cell.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_cell.diminfo[1].strides = __pyx_pybuffernd_cell.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_cell.diminfo[1].shape = __pyx_pybuffernd_cell.rcbuffer->pybuffer.shape[1];
 
-  /* "sisl/_supercell.pyx":13
- * @cython.wraparound(False)
+  /* "sisl/_supercell.pyx":15
+ * @cython.cdivision(True)
  * cpdef cell_invert(np.ndarray[np.float64_t, ndim=2] cell):
  *     cdef np.ndarray[np.float64_t, ndim=2] icell = np.empty([3, 3], dtype=np.float64)             # <<<<<<<<<<<<<<
  *     icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
  *     icell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_int_3);
   __Pyx_GIVEREF(__pyx_int_3);
@@ -1746,32 +1745,32 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __Pyx_INCREF(__pyx_int_3);
   __Pyx_GIVEREF(__pyx_int_3);
   PyList_SET_ITEM(__pyx_t_1, 1, __pyx_int_3);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 15, __pyx_L1_error)
   __pyx_t_6 = ((PyArrayObject *)__pyx_t_5);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_icell.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_icell = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 13, __pyx_L1_error)
+      __PYX_ERR(0, 15, __pyx_L1_error)
     } else {__pyx_pybuffernd_icell.diminfo[0].strides = __pyx_pybuffernd_icell.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_icell.diminfo[0].shape = __pyx_pybuffernd_icell.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_icell.diminfo[1].strides = __pyx_pybuffernd_icell.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_icell.diminfo[1].shape = __pyx_pybuffernd_icell.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -1779,7 +1778,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_v_icell = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "sisl/_supercell.pyx":14
+  /* "sisl/_supercell.pyx":16
  * cpdef cell_invert(np.ndarray[np.float64_t, ndim=2] cell):
  *     cdef np.ndarray[np.float64_t, ndim=2] icell = np.empty([3, 3], dtype=np.float64)
  *     icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]             # <<<<<<<<<<<<<<
@@ -1798,7 +1797,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_16 = 0;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_16, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_8, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_10, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":15
+  /* "sisl/_supercell.pyx":17
  *     cdef np.ndarray[np.float64_t, ndim=2] icell = np.empty([3, 3], dtype=np.float64)
  *     icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
  *     icell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]             # <<<<<<<<<<<<<<
@@ -1817,7 +1816,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_26 = 1;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_26, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_18, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_20, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_24, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":16
+  /* "sisl/_supercell.pyx":18
  *     icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
  *     icell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
  *     icell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]             # <<<<<<<<<<<<<<
@@ -1836,7 +1835,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_36 = 2;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_36, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_28, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_30, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_32, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_34, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":17
+  /* "sisl/_supercell.pyx":19
  *     icell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
  *     icell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]
  *     icell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]             # <<<<<<<<<<<<<<
@@ -1855,7 +1854,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_46 = 0;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_40, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_41, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_42, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_43, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_44, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":18
+  /* "sisl/_supercell.pyx":20
  *     icell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]
  *     icell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]
  *     icell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]             # <<<<<<<<<<<<<<
@@ -1874,7 +1873,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_56 = 1;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_47, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_48, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_49, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_50, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_51, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_52, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_53, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_54, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":19
+  /* "sisl/_supercell.pyx":21
  *     icell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]
  *     icell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]
  *     icell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]             # <<<<<<<<<<<<<<
@@ -1893,7 +1892,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_66 = 2;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_65, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_66, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_57, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_58, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_59, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_60, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_61, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_62, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":20
+  /* "sisl/_supercell.pyx":22
  *     icell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]
  *     icell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]
  *     icell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]             # <<<<<<<<<<<<<<
@@ -1912,7 +1911,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_76 = 0;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_75, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_76, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_67, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_68, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_69, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_70, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_71, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_72, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":21
+  /* "sisl/_supercell.pyx":23
  *     icell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]
  *     icell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
  *     icell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]             # <<<<<<<<<<<<<<
@@ -1931,7 +1930,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_86 = 1;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_85, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_86, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_77, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_78, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_79, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_80, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_81, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_82, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_83, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_84, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":22
+  /* "sisl/_supercell.pyx":24
  *     icell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
  *     icell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]
  *     icell[2, 2] = cell[0, 0] * cell[1, 1] - cell[0, 1] * cell[1, 0]             # <<<<<<<<<<<<<<
@@ -1950,7 +1949,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_t_96 = 2;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_95, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_96, __pyx_pybuffernd_icell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_87, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_88, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_89, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_90, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_91, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_92, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_93, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_94, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":26
+  /* "sisl/_supercell.pyx":28
  *     cdef int j
  *     cdef double f
  *     for i in range(3):             # <<<<<<<<<<<<<<
@@ -1960,7 +1959,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   for (__pyx_t_97 = 0; __pyx_t_97 < 3; __pyx_t_97+=1) {
     __pyx_v_i = __pyx_t_97;
 
-    /* "sisl/_supercell.pyx":27
+    /* "sisl/_supercell.pyx":29
  *     cdef double f
  *     for i in range(3):
  *         f = 1. / (icell[i, 0] * cell[i, 0] + icell[i, 1] * cell[i, 1] + icell[i, 2] * cell[i, 2])             # <<<<<<<<<<<<<<
@@ -1979,39 +1978,34 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
     __pyx_t_107 = 2;
     __pyx_t_108 = __pyx_v_i;
     __pyx_t_109 = 2;
-    __pyx_t_110 = ((((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_98, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_99, __pyx_pybuffernd_icell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_100, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_101, __pyx_pybuffernd_cell.diminfo[1].strides))) + ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_102, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_103, __pyx_pybuffernd_icell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_104, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_105, __pyx_pybuffernd_cell.diminfo[1].strides)))) + ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_106, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_107, __pyx_pybuffernd_icell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_108, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_109, __pyx_pybuffernd_cell.diminfo[1].strides))));
-    if (unlikely(__pyx_t_110 == 0)) {
-      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 27, __pyx_L1_error)
-    }
-    __pyx_v_f = (1. / __pyx_t_110);
+    __pyx_v_f = (1. / ((((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_98, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_99, __pyx_pybuffernd_icell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_100, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_101, __pyx_pybuffernd_cell.diminfo[1].strides))) + ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_102, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_103, __pyx_pybuffernd_icell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_104, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_105, __pyx_pybuffernd_cell.diminfo[1].strides)))) + ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_106, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_107, __pyx_pybuffernd_icell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_108, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_109, __pyx_pybuffernd_cell.diminfo[1].strides)))));
 
-    /* "sisl/_supercell.pyx":28
+    /* "sisl/_supercell.pyx":30
  *     for i in range(3):
  *         f = 1. / (icell[i, 0] * cell[i, 0] + icell[i, 1] * cell[i, 1] + icell[i, 2] * cell[i, 2])
  *         for j in range(3):             # <<<<<<<<<<<<<<
  *             icell[i, j] = icell[i, j] * f
  *     return icell
  */
-    for (__pyx_t_111 = 0; __pyx_t_111 < 3; __pyx_t_111+=1) {
-      __pyx_v_j = __pyx_t_111;
+    for (__pyx_t_110 = 0; __pyx_t_110 < 3; __pyx_t_110+=1) {
+      __pyx_v_j = __pyx_t_110;
 
-      /* "sisl/_supercell.pyx":29
+      /* "sisl/_supercell.pyx":31
  *         f = 1. / (icell[i, 0] * cell[i, 0] + icell[i, 1] * cell[i, 1] + icell[i, 2] * cell[i, 2])
  *         for j in range(3):
  *             icell[i, j] = icell[i, j] * f             # <<<<<<<<<<<<<<
  *     return icell
  * 
  */
-      __pyx_t_112 = __pyx_v_i;
-      __pyx_t_113 = __pyx_v_j;
-      __pyx_t_114 = __pyx_v_i;
-      __pyx_t_115 = __pyx_v_j;
-      *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_114, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_115, __pyx_pybuffernd_icell.diminfo[1].strides) = ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_112, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_113, __pyx_pybuffernd_icell.diminfo[1].strides)) * __pyx_v_f);
+      __pyx_t_111 = __pyx_v_i;
+      __pyx_t_112 = __pyx_v_j;
+      __pyx_t_113 = __pyx_v_i;
+      __pyx_t_114 = __pyx_v_j;
+      *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_113, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_114, __pyx_pybuffernd_icell.diminfo[1].strides) = ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_icell.rcbuffer->pybuffer.buf, __pyx_t_111, __pyx_pybuffernd_icell.diminfo[0].strides, __pyx_t_112, __pyx_pybuffernd_icell.diminfo[1].strides)) * __pyx_v_f);
     }
   }
 
-  /* "sisl/_supercell.pyx":30
+  /* "sisl/_supercell.pyx":32
  *         for j in range(3):
  *             icell[i, j] = icell[i, j] * f
  *     return icell             # <<<<<<<<<<<<<<
@@ -2023,9 +2017,9 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_invert(PyArrayObject *__pyx_v_c
   __pyx_r = ((PyObject *)__pyx_v_icell);
   goto __pyx_L0;
 
-  /* "sisl/_supercell.pyx":12
- * @cython.boundscheck(False)
+  /* "sisl/_supercell.pyx":14
  * @cython.wraparound(False)
+ * @cython.cdivision(True)
  * cpdef cell_invert(np.ndarray[np.float64_t, ndim=2] cell):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.float64_t, ndim=2] icell = np.empty([3, 3], dtype=np.float64)
  *     icell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
@@ -2064,7 +2058,7 @@ static PyObject *__pyx_pw_4sisl_10_supercell_1cell_invert(PyObject *__pyx_self, 
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("cell_invert (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cell), __pyx_ptype_5numpy_ndarray, 1, "cell", 0))) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cell), __pyx_ptype_5numpy_ndarray, 1, "cell", 0))) __PYX_ERR(0, 14, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_10_supercell_cell_invert(__pyx_self, ((PyArrayObject *)__pyx_v_cell));
 
   /* function exit code */
@@ -2089,11 +2083,11 @@ static PyObject *__pyx_pf_4sisl_10_supercell_cell_invert(CYTHON_UNUSED PyObject 
   __pyx_pybuffernd_cell.rcbuffer = &__pyx_pybuffer_cell;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cell.rcbuffer->pybuffer, (PyObject*)__pyx_v_cell, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 12, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cell.rcbuffer->pybuffer, (PyObject*)__pyx_v_cell, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 14, __pyx_L1_error)
   }
   __pyx_pybuffernd_cell.diminfo[0].strides = __pyx_pybuffernd_cell.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cell.diminfo[0].shape = __pyx_pybuffernd_cell.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_cell.diminfo[1].strides = __pyx_pybuffernd_cell.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_cell.diminfo[1].shape = __pyx_pybuffernd_cell.rcbuffer->pybuffer.shape[1];
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_4sisl_10_supercell_cell_invert(__pyx_v_cell, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_4sisl_10_supercell_cell_invert(__pyx_v_cell, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2119,9 +2113,9 @@ static PyObject *__pyx_pf_4sisl_10_supercell_cell_invert(CYTHON_UNUSED PyObject 
   return __pyx_r;
 }
 
-/* "sisl/_supercell.pyx":35
- * @cython.boundscheck(False)
+/* "sisl/_supercell.pyx":39
  * @cython.wraparound(False)
+ * @cython.cdivision(True)
  * cpdef cell_reciprocal(np.ndarray[np.float64_t, ndim=2] cell):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.float64_t, ndim=2] rcell = np.empty([3, 3], dtype=np.float64)
  *     rcell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
@@ -2249,12 +2243,11 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   Py_ssize_t __pyx_t_107;
   Py_ssize_t __pyx_t_108;
   Py_ssize_t __pyx_t_109;
-  __pyx_t_5numpy_float64_t __pyx_t_110;
-  int __pyx_t_111;
+  int __pyx_t_110;
+  Py_ssize_t __pyx_t_111;
   Py_ssize_t __pyx_t_112;
   Py_ssize_t __pyx_t_113;
   Py_ssize_t __pyx_t_114;
-  Py_ssize_t __pyx_t_115;
   __Pyx_RefNannySetupContext("cell_reciprocal", 0);
   __pyx_pybuffer_rcell.pybuffer.buf = NULL;
   __pyx_pybuffer_rcell.refcount = 0;
@@ -2266,23 +2259,23 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_pybuffernd_cell.rcbuffer = &__pyx_pybuffer_cell;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cell.rcbuffer->pybuffer, (PyObject*)__pyx_v_cell, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 35, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cell.rcbuffer->pybuffer, (PyObject*)__pyx_v_cell, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 39, __pyx_L1_error)
   }
   __pyx_pybuffernd_cell.diminfo[0].strides = __pyx_pybuffernd_cell.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cell.diminfo[0].shape = __pyx_pybuffernd_cell.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_cell.diminfo[1].strides = __pyx_pybuffernd_cell.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_cell.diminfo[1].shape = __pyx_pybuffernd_cell.rcbuffer->pybuffer.shape[1];
 
-  /* "sisl/_supercell.pyx":36
- * @cython.wraparound(False)
+  /* "sisl/_supercell.pyx":40
+ * @cython.cdivision(True)
  * cpdef cell_reciprocal(np.ndarray[np.float64_t, ndim=2] cell):
  *     cdef np.ndarray[np.float64_t, ndim=2] rcell = np.empty([3, 3], dtype=np.float64)             # <<<<<<<<<<<<<<
  *     rcell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
  *     rcell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_int_3);
   __Pyx_GIVEREF(__pyx_int_3);
@@ -2290,32 +2283,32 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __Pyx_INCREF(__pyx_int_3);
   __Pyx_GIVEREF(__pyx_int_3);
   PyList_SET_ITEM(__pyx_t_1, 1, __pyx_int_3);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 40, __pyx_L1_error)
   __pyx_t_6 = ((PyArrayObject *)__pyx_t_5);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_rcell.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_rcell = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 36, __pyx_L1_error)
+      __PYX_ERR(0, 40, __pyx_L1_error)
     } else {__pyx_pybuffernd_rcell.diminfo[0].strides = __pyx_pybuffernd_rcell.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_rcell.diminfo[0].shape = __pyx_pybuffernd_rcell.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_rcell.diminfo[1].strides = __pyx_pybuffernd_rcell.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_rcell.diminfo[1].shape = __pyx_pybuffernd_rcell.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -2323,7 +2316,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_v_rcell = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "sisl/_supercell.pyx":37
+  /* "sisl/_supercell.pyx":41
  * cpdef cell_reciprocal(np.ndarray[np.float64_t, ndim=2] cell):
  *     cdef np.ndarray[np.float64_t, ndim=2] rcell = np.empty([3, 3], dtype=np.float64)
  *     rcell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]             # <<<<<<<<<<<<<<
@@ -2342,7 +2335,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_16 = 0;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_16, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_8, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_10, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":38
+  /* "sisl/_supercell.pyx":42
  *     cdef np.ndarray[np.float64_t, ndim=2] rcell = np.empty([3, 3], dtype=np.float64)
  *     rcell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
  *     rcell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]             # <<<<<<<<<<<<<<
@@ -2361,7 +2354,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_26 = 1;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_26, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_18, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_20, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_24, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":39
+  /* "sisl/_supercell.pyx":43
  *     rcell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
  *     rcell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
  *     rcell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]             # <<<<<<<<<<<<<<
@@ -2380,7 +2373,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_36 = 2;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_36, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_28, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_30, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_32, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_34, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":40
+  /* "sisl/_supercell.pyx":44
  *     rcell[0, 1] = cell[1, 2] * cell[2, 0] - cell[1, 0] * cell[2, 2]
  *     rcell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]
  *     rcell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]             # <<<<<<<<<<<<<<
@@ -2399,7 +2392,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_46 = 0;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_40, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_41, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_42, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_43, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_44, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":41
+  /* "sisl/_supercell.pyx":45
  *     rcell[0, 2] = cell[1, 0] * cell[2, 1] - cell[1, 1] * cell[2, 0]
  *     rcell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]
  *     rcell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]             # <<<<<<<<<<<<<<
@@ -2418,7 +2411,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_56 = 1;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_47, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_48, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_49, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_50, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_51, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_52, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_53, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_54, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":42
+  /* "sisl/_supercell.pyx":46
  *     rcell[1, 0] = cell[2, 1] * cell[0, 2] - cell[2, 2] * cell[0, 1]
  *     rcell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]
  *     rcell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]             # <<<<<<<<<<<<<<
@@ -2437,7 +2430,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_66 = 2;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_65, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_66, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_57, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_58, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_59, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_60, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_61, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_62, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":43
+  /* "sisl/_supercell.pyx":47
  *     rcell[1, 1] = cell[2, 2] * cell[0, 0] - cell[2, 0] * cell[0, 2]
  *     rcell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]
  *     rcell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]             # <<<<<<<<<<<<<<
@@ -2456,7 +2449,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_76 = 0;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_75, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_76, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_67, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_68, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_69, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_70, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_71, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_72, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":44
+  /* "sisl/_supercell.pyx":48
  *     rcell[1, 2] = cell[2, 0] * cell[0, 1] - cell[2, 1] * cell[0, 0]
  *     rcell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
  *     rcell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]             # <<<<<<<<<<<<<<
@@ -2475,7 +2468,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_86 = 1;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_85, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_86, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_77, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_78, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_79, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_80, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_81, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_82, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_83, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_84, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":45
+  /* "sisl/_supercell.pyx":49
  *     rcell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
  *     rcell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]
  *     rcell[2, 2] = cell[0, 0] * cell[1, 1] - cell[0, 1] * cell[1, 0]             # <<<<<<<<<<<<<<
@@ -2494,7 +2487,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_t_96 = 2;
   *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_95, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_96, __pyx_pybuffernd_rcell.diminfo[1].strides) = (((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_87, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_88, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_89, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_90, __pyx_pybuffernd_cell.diminfo[1].strides))) - ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_91, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_92, __pyx_pybuffernd_cell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_93, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_94, __pyx_pybuffernd_cell.diminfo[1].strides))));
 
-  /* "sisl/_supercell.pyx":48
+  /* "sisl/_supercell.pyx":52
  *     cdef int i
  *     cdef int j
  *     cdef double twopi = 2 * npmath.PI             # <<<<<<<<<<<<<<
@@ -2503,7 +2496,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
  */
   __pyx_v_twopi = (2.0 * NPY_PI);
 
-  /* "sisl/_supercell.pyx":50
+  /* "sisl/_supercell.pyx":54
  *     cdef double twopi = 2 * npmath.PI
  *     cdef double f
  *     for i in range(3):             # <<<<<<<<<<<<<<
@@ -2513,7 +2506,7 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   for (__pyx_t_97 = 0; __pyx_t_97 < 3; __pyx_t_97+=1) {
     __pyx_v_i = __pyx_t_97;
 
-    /* "sisl/_supercell.pyx":51
+    /* "sisl/_supercell.pyx":55
  *     cdef double f
  *     for i in range(3):
  *         f = twopi / (rcell[i, 0] * cell[i, 0] + rcell[i, 1] * cell[i, 1] + rcell[i, 2] * cell[i, 2])             # <<<<<<<<<<<<<<
@@ -2532,38 +2525,33 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
     __pyx_t_107 = 2;
     __pyx_t_108 = __pyx_v_i;
     __pyx_t_109 = 2;
-    __pyx_t_110 = ((((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_98, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_99, __pyx_pybuffernd_rcell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_100, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_101, __pyx_pybuffernd_cell.diminfo[1].strides))) + ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_102, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_103, __pyx_pybuffernd_rcell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_104, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_105, __pyx_pybuffernd_cell.diminfo[1].strides)))) + ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_106, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_107, __pyx_pybuffernd_rcell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_108, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_109, __pyx_pybuffernd_cell.diminfo[1].strides))));
-    if (unlikely(__pyx_t_110 == 0)) {
-      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 51, __pyx_L1_error)
-    }
-    __pyx_v_f = (__pyx_v_twopi / __pyx_t_110);
+    __pyx_v_f = (__pyx_v_twopi / ((((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_98, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_99, __pyx_pybuffernd_rcell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_100, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_101, __pyx_pybuffernd_cell.diminfo[1].strides))) + ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_102, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_103, __pyx_pybuffernd_rcell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_104, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_105, __pyx_pybuffernd_cell.diminfo[1].strides)))) + ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_106, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_107, __pyx_pybuffernd_rcell.diminfo[1].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_cell.rcbuffer->pybuffer.buf, __pyx_t_108, __pyx_pybuffernd_cell.diminfo[0].strides, __pyx_t_109, __pyx_pybuffernd_cell.diminfo[1].strides)))));
 
-    /* "sisl/_supercell.pyx":52
+    /* "sisl/_supercell.pyx":56
  *     for i in range(3):
  *         f = twopi / (rcell[i, 0] * cell[i, 0] + rcell[i, 1] * cell[i, 1] + rcell[i, 2] * cell[i, 2])
  *         for j in range(3):             # <<<<<<<<<<<<<<
  *             rcell[i, j] = rcell[i, j] * f
  *     return rcell
  */
-    for (__pyx_t_111 = 0; __pyx_t_111 < 3; __pyx_t_111+=1) {
-      __pyx_v_j = __pyx_t_111;
+    for (__pyx_t_110 = 0; __pyx_t_110 < 3; __pyx_t_110+=1) {
+      __pyx_v_j = __pyx_t_110;
 
-      /* "sisl/_supercell.pyx":53
+      /* "sisl/_supercell.pyx":57
  *         f = twopi / (rcell[i, 0] * cell[i, 0] + rcell[i, 1] * cell[i, 1] + rcell[i, 2] * cell[i, 2])
  *         for j in range(3):
  *             rcell[i, j] = rcell[i, j] * f             # <<<<<<<<<<<<<<
  *     return rcell
  */
-      __pyx_t_112 = __pyx_v_i;
-      __pyx_t_113 = __pyx_v_j;
-      __pyx_t_114 = __pyx_v_i;
-      __pyx_t_115 = __pyx_v_j;
-      *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_114, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_115, __pyx_pybuffernd_rcell.diminfo[1].strides) = ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_112, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_113, __pyx_pybuffernd_rcell.diminfo[1].strides)) * __pyx_v_f);
+      __pyx_t_111 = __pyx_v_i;
+      __pyx_t_112 = __pyx_v_j;
+      __pyx_t_113 = __pyx_v_i;
+      __pyx_t_114 = __pyx_v_j;
+      *__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_113, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_114, __pyx_pybuffernd_rcell.diminfo[1].strides) = ((*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rcell.rcbuffer->pybuffer.buf, __pyx_t_111, __pyx_pybuffernd_rcell.diminfo[0].strides, __pyx_t_112, __pyx_pybuffernd_rcell.diminfo[1].strides)) * __pyx_v_f);
     }
   }
 
-  /* "sisl/_supercell.pyx":54
+  /* "sisl/_supercell.pyx":58
  *         for j in range(3):
  *             rcell[i, j] = rcell[i, j] * f
  *     return rcell             # <<<<<<<<<<<<<<
@@ -2573,9 +2561,9 @@ static PyObject *__pyx_f_4sisl_10_supercell_cell_reciprocal(PyArrayObject *__pyx
   __pyx_r = ((PyObject *)__pyx_v_rcell);
   goto __pyx_L0;
 
-  /* "sisl/_supercell.pyx":35
- * @cython.boundscheck(False)
+  /* "sisl/_supercell.pyx":39
  * @cython.wraparound(False)
+ * @cython.cdivision(True)
  * cpdef cell_reciprocal(np.ndarray[np.float64_t, ndim=2] cell):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.float64_t, ndim=2] rcell = np.empty([3, 3], dtype=np.float64)
  *     rcell[0, 0] = cell[1, 1] * cell[2, 2] - cell[1, 2] * cell[2, 1]
@@ -2614,7 +2602,7 @@ static PyObject *__pyx_pw_4sisl_10_supercell_3cell_reciprocal(PyObject *__pyx_se
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("cell_reciprocal (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cell), __pyx_ptype_5numpy_ndarray, 1, "cell", 0))) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cell), __pyx_ptype_5numpy_ndarray, 1, "cell", 0))) __PYX_ERR(0, 39, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_10_supercell_2cell_reciprocal(__pyx_self, ((PyArrayObject *)__pyx_v_cell));
 
   /* function exit code */
@@ -2639,11 +2627,11 @@ static PyObject *__pyx_pf_4sisl_10_supercell_2cell_reciprocal(CYTHON_UNUSED PyOb
   __pyx_pybuffernd_cell.rcbuffer = &__pyx_pybuffer_cell;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cell.rcbuffer->pybuffer, (PyObject*)__pyx_v_cell, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 35, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cell.rcbuffer->pybuffer, (PyObject*)__pyx_v_cell, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 39, __pyx_L1_error)
   }
   __pyx_pybuffernd_cell.diminfo[0].strides = __pyx_pybuffernd_cell.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cell.diminfo[0].shape = __pyx_pybuffernd_cell.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_cell.diminfo[1].strides = __pyx_pybuffernd_cell.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_cell.diminfo[1].shape = __pyx_pybuffernd_cell.rcbuffer->pybuffer.shape[1];
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_4sisl_10_supercell_cell_reciprocal(__pyx_v_cell, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_4sisl_10_supercell_cell_reciprocal(__pyx_v_cell, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5314,7 +5302,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 235, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 823, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 1013, __pyx_L1_error)

@@ -96,7 +96,7 @@ def indices_in_sphere(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const dou
 
     if n == 0:
         return np.empty([0], dtype=np.int32)
-    return idx[:n]
+    return idx[:n].copy()
 
 
 @cython.boundscheck(False)
@@ -148,7 +148,7 @@ def indices_in_sphere_with_dist(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz,
 
     if n == 0:
         return np.empty([0], dtype=np.int32), np.empty([0], dtype=np.float64)
-    return idx[:n], dist[:n]
+    return idx[:n].copy(), dist[:n].copy()
 
 
 @cython.boundscheck(False)
@@ -212,7 +212,7 @@ def indices_le(np.ndarray a, const double V):
 
     if n == 0:
         return np.empty([0], dtype=np.int32)
-    return idx[:n]
+    return idx[:n].copy()
 
 
 @cython.boundscheck(False)
@@ -292,7 +292,7 @@ def indices_fabs_le(np.ndarray a, const double V):
 
     if n == 0:
         return np.empty([0], dtype=np.int32)
-    return idx[:n]
+    return idx[:n].copy()
 
 
 @cython.boundscheck(False)
@@ -358,7 +358,7 @@ def indices_gt_le(np.ndarray a, const double V1, const double V2):
 
     if n == 0:
         return np.empty([0], dtype=np.int32)
-    return idx[:n]
+    return idx[:n].copy()
 
 
 @cython.boundscheck(False)
@@ -405,6 +405,43 @@ cdef int _indices_gt_le2(const double[:, ::1] a, const double V1, const double V
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef inline int in_1d(const int[::1] array, const int v) nogil:
+    cdef int N = array.shape[0]
+    for i in range(N):
+        if array[i] == v:
+            return 1
+    return 0
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef int index_sorted(const int[::1] a, const int v) nogil:
+    """ Return index for the value v in a sorted array, otherwise return -1
+
+    Parameters
+    ----------
+    a : int[::1]
+        sorted array to check
+    v : int
+        value to find
+
+    Returns
+    -------
+    int : 0 if not unique, otherwise 1.
+    """
+    # Ensure contiguous arrays
+    cdef int n_a = a.shape[0]
+    cdef int i
+    for i in range(n_a):
+        if a[i] == v:
+            return i
+    return -1
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def sorted_unique(np.ndarray[np.int32_t, ndim=1, mode='c'] a):
     """ Return True/False if all elements of the sorted array `a` are unique
 
@@ -414,6 +451,7 @@ def sorted_unique(np.ndarray[np.int32_t, ndim=1, mode='c'] a):
         sorted array to check
 
     Returns
+    -------
     int : 0 if not unique, otherwise 1.
     """
     # Ensure contiguous arrays

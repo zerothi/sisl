@@ -166,94 +166,59 @@ class TestHamiltonian(object):
     def test_Hk1(self, setup):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        # The loops ensures that we loop over all selector
-        # items
         h = H.copy()
-        for i in range(4):
-            assert h.Hk().dtype == np.complex128
-            assert h.Sk().dtype == np.complex128
+        assert h.Hk().dtype == np.float64
+        assert h.Sk().dtype == np.float64
         h = H.copy()
-        for i in range(4):
-            Hk = h.Hk(dtype=np.complex64)
-            assert Hk.dtype == np.complex64
+        assert h.Hk(dtype=np.complex64).dtype == np.complex64
         h = H.copy()
-        for i in range(4):
-            Hk = h.Hk(dtype=np.float64)
-            assert Hk.dtype == np.float64
+        assert h.Hk(dtype=np.complex128).dtype == np.complex128
         h = H.copy()
-        for i in range(4):
-            Hk = h.Hk(dtype=np.float32)
-            assert Hk.dtype == np.float32
+        assert h.Hk(dtype=np.float64).dtype == np.float64
+        h = H.copy()
+        assert h.Hk(dtype=np.float32).dtype == np.float32
 
     def test_Hk2(self, setup):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        # The loops ensures that we loop over all selector
-        # items
         h = H.copy()
-        for i in range(4):
-            Hk = h.Hk(k=[0.15, 0.15, 0.15])
-            assert Hk.dtype == np.complex128
+        Hk = h.Hk(k=[0.15, 0.15, 0.15])
+        assert Hk.dtype == np.complex128
         h = H.copy()
-        for i in range(4):
-            Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.complex64)
-            assert Hk.dtype == np.complex64
+        Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.complex64)
+        assert Hk.dtype == np.complex64
 
+    @pytest.mark.parametrize("dtype", [np.float32, np.float64])
     @pytest.mark.xfail(raises=ValueError)
-    def test_Hk3(self, setup):
+    def test_Hk_dtype_valueerror(self, setup, dtype):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        # The loops ensures that we loop over all selector
-        # items
-        grabbed = True
-        h = H.copy()
-        for i in range(4):
-            try:
-                Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.float64)
-                grabbed = False
-            except ValueError:
-                grabbed = grabbed and True
-        if grabbed:
-            raise ValueError('all grabbed')
+        H.Hk(k=[0.15, 0.15, 0.15], dtype=dtype)
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_Hk4(self, setup):
-        H = setup.HS.copy()
-        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        # The loops ensures that we loop over all selector
-        # items
-        grabbed = True
-        h = H.copy()
-        for i in range(4):
-            try:
-                Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.float32)
-                grabbed = False
-            except ValueError:
-                grabbed = grabbed and True
-        if grabbed:
-            raise ValueError('all grabbed')
-
-    def test_Hk5(self, setup):
+    @pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
+    def test_Hk5(self, setup, dtype):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), (1., 0.1)])
-        # The loops ensures that we loop over all selector
-        # items
-        h = H.copy()
-        for i in range(4):
-            Hk = h.Hk(k=[0.15, 0.15, 0.15])
-            assert Hk.dtype == np.complex128
-            Sk = h.Sk(k=[0.15, 0.15, 0.15])
-            assert Sk.dtype == np.float64
+        Hk = H.Hk(k=[0.15, 0.15, 0.15], dtype=dtype)
+        assert Hk.dtype == dtype
+        Sk = H.Sk(k=[0.15, 0.15, 0.15])
+        # orthogonal basis sets always returns a diagonal in float64
+        assert Sk.dtype == np.float64
+        Sk = H.Sk(k=[0.15, 0.15, 0.15], dtype=dtype)
+        # orthogonal basis sets always returns a diagonal in float64
+        assert Sk.dtype == dtype
 
-    @pytest.mark.parametrize("format", ['array', 'csr', 'csc', 'dense'])
-    def test_Hk_format(self, setup, format):
+    @pytest.mark.parametrize("k", [[0, 0, 0], [0.15, 0.15, 0.15]])
+    def test_Hk_format(self, setup, k):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        # The loops ensures that we loop over all selector
-        # items
-        h = H.copy()
-        for i in range(4):
-            Hk = h.Hk(k=[0.15, 0.15, 0.15], format=format)
+        csr = H.Hk(k, format='csr').toarray()
+        mat = H.Hk(k, format='matrix')
+        arr = H.Hk(k, format='array')
+        coo = H.Hk(k, format='coo').toarray()
+        assert np.allclose(csr, mat)
+        assert np.allclose(csr, arr)
+        assert np.allclose(csr, coo)
 
     @pytest.mark.xfail(raises=ValueError)
     def test_construct_raise(self, setup):
@@ -524,9 +489,8 @@ class TestHamiltonian(object):
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param), eta=True)
-        eig1 = H.eigh()
-        for i in range(2):
-            assert np.allclose(eig1, H.eigh())
+        eig1 = H.eigh(dtype=np.complex64)
+        assert np.allclose(eig1, H.eigh(dtype=np.complex128))
         H.eigsh(n=4)
         H.empty()
         del H
@@ -535,9 +499,8 @@ class TestHamiltonian(object):
         # Test of eigenvalues
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
-        eig1 = HS.eigh()
-        for i in range(3): # to ensure all different algorithms has been used
-            assert np.allclose(eig1, HS.eigh())
+        eig1 = HS.eigh(dtype=np.complex64)
+        assert np.allclose(eig1, HS.eigh(dtype=np.complex128))
         setup.HS.empty()
 
     def test_eig3(self, setup):
@@ -706,10 +669,8 @@ class TestHamiltonian(object):
             if i < 9:
                 H[i, i+1, 0] = 1.
                 H[i, i+1, 1] = 1.
-        eig1 = H.eigh()
-        # Check TimeSelector
-        for i in range(4):
-            assert np.allclose(H.eigh(), eig1)
+        eig1 = H.eigh(dtype=np.complex64)
+        assert np.allclose(H.eigh(dtype=np.complex128), eig1)
         assert len(eig1) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
@@ -726,13 +687,11 @@ class TestHamiltonian(object):
                 H1[i, i+1, 0] = 1.
                 H1[i, i+1, 1] = 1.
         assert H1.spsame(H)
-        eig1 = H1.eigh()
-        # Check TimeSelector
-        for i in range(4):
-            assert np.allclose(H1.eigh(), eig1)
+        eig1 = H1.eigh(dtype=np.complex64)
+        assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(), H1.eigh())
 
-        es = H1.eigenstate()
+        es = H1.eigenstate(dtype=np.complex128)
         assert np.allclose(es.eig, eig1)
         es.spin_moment()
 
@@ -756,10 +715,8 @@ class TestHamiltonian(object):
                 H[i, i+1, 0] = 1.
                 H[i, i+1, 1] = 1.
             H.S[i, i] = 1.
-        eig1 = H.eigh()
-        # Check TimeSelector
-        for i in range(4):
-            assert np.allclose(H.eigh(), eig1)
+        eig1 = H.eigh(dtype=np.complex64)
+        assert np.allclose(H.eigh(dtype=np.complex128), eig1)
         assert len(eig1) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin('non-collinear'))
@@ -777,13 +734,11 @@ class TestHamiltonian(object):
                 H1[i, i+1, 1] = 1.
             H1.S[i, i] = 1.
         assert H1.spsame(H)
-        eig1 = H1.eigh()
-        # Check TimeSelector
-        for i in range(4):
-            assert np.allclose(H1.eigh(), eig1)
-        assert np.allclose(H.eigh(), H1.eigh())
+        eig1 = H1.eigh(dtype=np.complex64)
+        assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
+        assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
-        es = H1.eigenstate()
+        es = H1.eigenstate(dtype=np.complex128)
         assert np.allclose(es.eig, eig1)
         es.spin_moment()
 
@@ -810,10 +765,8 @@ class TestHamiltonian(object):
             if i < 9:
                 H[i, i+1, 0] = 1.
                 H[i, i+1, 1] = 1.
-        eig1 = H.eigh()
-        # Check TimeSelector
-        for i in range(2):
-            assert np.allclose(H.eigh(), eig1)
+        eig1 = H.eigh(dtype=np.complex64)
+        assert np.allclose(H.eigh(dtype=np.complex128), eig1)
         assert len(H.eigh()) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('spin-orbit'))
@@ -830,13 +783,11 @@ class TestHamiltonian(object):
                 H1[i, i+1, 0] = 1.
                 H1[i, i+1, 1] = 1.
         assert H1.spsame(H)
-        eig1 = H1.eigh()
-        # Check TimeSelector
-        for i in range(2):
-            assert np.allclose(H1.eigh(), eig1)
-        assert np.allclose(H.eigh(), H1.eigh())
+        eig1 = H1.eigh(dtype=np.complex64)
+        assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
+        assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
-        es = H.eigenstate()
+        es = H.eigenstate(dtype=np.complex128)
         assert np.allclose(es.eig, eig1)
         es.spin_moment()
 

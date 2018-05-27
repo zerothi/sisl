@@ -9,10 +9,10 @@ from scipy.sparse import csr_matrix, diags, SparseEfficiencyWarning
 import sisl._array as _a
 import sisl.linalg as lin
 from sisl._help import _range as range
-from sisl.selector import TimeSelector
 from sisl.sparse import isspmatrix
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
+from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_so, matrix_diag_k_nc
 
 __all__ = ['SparseOrbitalBZ', 'SparseOrbitalBZSpin']
 
@@ -74,7 +74,6 @@ class SparseOrbitalBZ(SparseOrbital):
             self.S_idx = dim
             self.Sk = self._Sk
 
-        self._Pk = TimeSelector([self._Pk_accummulate, self._Pk_dot, self._Pk_dense], True)
         self.Pk = self._Pk
 
     # Override to enable spin configuration and orthogonality
@@ -194,7 +193,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
     __iter__ = iter
 
-    def _Pk_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
+    def _Pk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
 
         Parameters
@@ -206,120 +205,8 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge : {'R', 'r'}
            chosen gauge
         """
-        if dtype is None:
-            dtype = np.complex128
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        if not np.allclose(k, 0.):
-            if np.dtype(dtype).kind != 'c':
-                raise ValueError(self.__class__.__name__ + " setup at k different from Gamma requires a complex matrix")
-
-        no = self.no
-
-        # sparse matrix dimension (self.no)
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        v = self.tocsr(_dim)
-
-        for si, phase in enumerate(phases):
-            V[:, :] += v[:, si*no:(si+1)*no] * phase
-
-        del v
-
-        return V.asformat(format)
-
-    def _Pk_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
-        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
-
-        Parameters
-        ----------
-        k: array_like, optional
-           k-point (default is Gamma point)
-        dtype : numpy.dtype, optional
-           default to `numpy.complex128`
-        gauge : {'R', 'r'}
-           chosen gauge
-        """
-        if dtype is None:
-            dtype = np.complex128
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        if not np.allclose(k, 0.):
-            if np.dtype(dtype).kind != 'c':
-                raise ValueError(self.__class__.__name__ + " setup at k different from Gamma requires a complex matrix")
-
-        # sparse matrix dimension (self.no)
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now create offsets
-        offsets = - _a.arangei(0, len(phases) * self.no, self.no)
-        # Do not cast to dtype, that is done below, then we retain precision
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]))
-
-        V[:, :] = self.tocsr(_dim).dot(diag)
-
-        return V.asformat(format)
-
-    def _Pk_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
-        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
-
-        Parameters
-        ----------
-        k: array_like, optional
-           k-point (default is Gamma point)
-        dtype : numpy.dtype, optional
-           default to `numpy.complex128`
-        gauge : {'R', 'r'}
-           chosen gauge
-        """
-        if dtype is None:
-            dtype = np.complex128
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        if not np.allclose(k, 0.):
-            if np.dtype(dtype).kind != 'c':
-                raise ValueError(self.__class__.__name__ + " setup at k different from Gamma requires a complex matrix")
-
-        # sparse matrix dimension (self.no)
-        V = np.empty([len(self), len(self)], dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now create offsets
-        offsets = - _a.arangei(0, len(phases) * self.no, self.no)
-        # Do not cast to dtype, that is done below, then we retain precision
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0])).toarray()
-
-        V[:, :] = dot(self.tocsr(_dim).toarray(), diag)
-
-        if format == 'array':
-            return V
-        elif format == 'dense':
-            return np.asmatrix(V)
-        # It must be a sparse matrix we inquire
-        return csr_matrix(V).asformat(format)
+        k = np.asarray(k, np.float64).ravel()
+        return matrix_k(gauge, self._csr, _dim, self.sc, k, dtype, format)
 
     def Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the overlap matrix for a given k-point
@@ -355,10 +242,10 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge : {'R', 'r'}
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
-        format : {'csr', 'array', 'dense', 'coo', ...}
+        format : {'csr', 'array', 'matrix', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'matrix'`).
         """
         pass
 
@@ -394,12 +281,10 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         dtype = kwargs.pop('dtype', None)
         P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
-        if not self.orthogonal:
-            S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
-
         if self.orthogonal:
             return lin.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
 
+        S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
         return lin.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
     def eigsh(self, k=(0, 0, 0), n=10, gauge='R', eigvals_only=True, **kwargs):
@@ -472,17 +357,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self._spin = Spin(spin, dtype)
 
         super(SparseOrbitalBZSpin, self).__init__(geometry, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
-
-        # _Pk is already created in the SparseOrbitalBZ __init__
-        self._Pk_non_colinear = TimeSelector([self._Pk_non_colinear_accummulate,
-                                              self._Pk_non_colinear_dot,
-                                              self._Pk_non_colinear_dense], True)
-        self._Sk_non_colinear = TimeSelector([self._Sk_non_colinear_accummulate,
-                                              self._Sk_non_colinear_dot,
-                                              self._Sk_non_colinear_dense], True)
-        self._Pk_spin_orbit = TimeSelector([self._Pk_spin_orbit_accummulate,
-                                            self._Pk_spin_orbit_dot,
-                                            self._Pk_spin_orbit_dense], True)
 
         if self.spin.is_unpolarized:
             self.UP = 0
@@ -582,7 +456,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
 
-    def _Pk_non_colinear_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
+    def _Pk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
@@ -594,138 +468,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge : {'R', 'r'}
            chosen gauge
         """
-        if dtype is None:
-            dtype = np.complex128
+        k = np.asarray(k, np.float64).ravel()
+        return matrix_k_nc(gauge, self._csr, self.sc, k, dtype, format)
 
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Non-colinear quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        no = self.no
-
-        # sparse matrix dimension (2 * self.no)
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
-        v = [self.tocsr(i) for i in range(len(self.spin))]
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now accummulate the matrix
-        for si, phase in enumerate(phases):
-            sl = slice(si*no, (si+1) * no, None)
-
-            # diagonal elements
-            V[::2, ::2] += v[0][:, sl] * phase
-            V[1::2, 1::2] += v[1][:, sl] * phase
-
-            # off-diagonal elements
-            vv = v[2][:, sl] - 1j * v[3][:, sl]
-            V[1::2, ::2] += vv * phase
-            V[::2, 1::2] += vv.conj() * phase
-
-        del v
-
-        return V.asformat(format)
-
-    def _Pk_non_colinear_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
-
-        Parameters
-        ----------
-        k: array_like, optional
-           k-point (default is Gamma point)
-        dtype : numpy.dtype, optional
-           default to `numpy.complex128`
-        gauge : {'R', 'r'}
-           chosen gauge
-        """
-        if dtype is None:
-            dtype = np.complex128
-
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Non-colinear quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        # sparse matrix dimension (2 * self.no)
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now create offsets
-        offsets = - np.arange(0, len(phases) * self.no, self.no)
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
-
-        V[::2, ::2] = self.tocsr(0).dot(diag)
-        V[1::2, 1::2] = self.tocsr(1).dot(diag)
-        v = self.tocsr(2) - 1j * self.tocsr(3)
-        V[1::2, ::2] = v.dot(diag)
-        V[::2, 1::2] = v.conj().dot(diag)
-
-        del v
-
-        return V.asformat(format)
-
-    def _Pk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Dense at `k` for a non-collinear system
-
-        Parameters
-        ----------
-        k: array_like, optional
-           k-point (default is Gamma point)
-        dtype : numpy.dtype, optional
-           default to `numpy.complex128`
-        gauge : {'R', 'r'}
-           chosen gauge
-        """
-        if dtype is None:
-            dtype = np.complex128
-
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Non-colinear quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        # sparse matrix dimension (2 * self.no)
-        V = np.empty([len(self), len(self)], dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now create offsets
-        offsets = - np.arange(0, len(phases) * self.no, self.no)
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype).toarray()
-
-        V[::2, ::2] = dot(self.tocsr(0).toarray(), diag)
-        V[1::2, 1::2] = dot(self.tocsr(1).toarray(), diag)
-        v = (self.tocsr(2) - 1j * self.tocsr(3)).toarray()
-        V[1::2, ::2] = dot(v, diag)
-        V[::2, 1::2] = dot(v.conj(), diag)
-
-        del v
-
-        if format == 'array':
-            return V
-        elif format == 'dense':
-            return np.asmatrix(V)
-        # It must be a sparse matrix we inquire
-        return csr_matrix(V).asformat(format)
-
-    def _Pk_spin_orbit_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
+    def _Pk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a spin-orbit system
 
         Parameters
@@ -737,129 +483,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge : {'R', 'r'}
            chosen gauge
         """
-        if dtype is None:
-            dtype = np.complex128
-
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Spin orbit quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        no = self.no
-
-        # sparse matrix dimension (2 * self.no)
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
-        v = [self.tocsr(i) for i in range(len(self.spin))]
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now accummulate the matrix
-        for si, phase in enumerate(phases):
-            sl = slice(si*no, (si+1) * no, None)
-
-            # diagonal elements
-            V[::2, ::2] += (v[0][:, sl] + 1j * v[4][:, sl]) * phase
-            V[1::2, 1::2] = (v[1][:, sl] + 1j * v[5][:, sl]) * phase
-
-            # off-diagonal elements
-            V[1::2, ::2] = (v[2][:, sl] - 1j * v[3][:, sl]) * phase
-            V[::2, 1::2] = (v[6][:, sl] + 1j * v[7][:, sl]) * phase
-
-        del v
-
-        return V.asformat(format)
-
-    def _Pk_spin_orbit_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a spin-orbit system
-
-        Parameters
-        ----------
-        k: array_like, optional
-           k-point (default is Gamma point)
-        dtype : numpy.dtype, optional
-           default to `numpy.complex128`
-        gauge : {'R', 'r'}
-           chosen gauge
-        """
-        if dtype is None:
-            dtype = np.complex128
-
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Spin orbit quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        # sparse matrix dimension (2 * self.no)
-        V = csr_matrix((len(self), len(self)), dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now create offsets
-        offsets = - np.arange(len(phases)) * self.no
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
-
-        V[::2, ::2] = (self.tocsr(0) + 1j * self.tocsr(4)).dot(diag)
-        V[1::2, 1::2] = (self.tocsr(1) + 1j * self.tocsr(5)).dot(diag)
-        V[1::2, ::2] = (self.tocsr(2) - 1j * self.tocsr(3)).dot(diag)
-        V[::2, 1::2] = (self.tocsr(6) + 1j * self.tocsr(7)).dot(diag)
-
-        return V.asformat(format)
-
-    def _Pk_spin_orbit_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Dense matrix at `k` for a spin-orbit system
-
-        Parameters
-        ----------
-        k: array_like, optional
-           k-point (default is Gamma point)
-        dtype : numpy.dtype, optional
-           default to `numpy.complex128`
-        gauge : {'R', 'r'}
-           chosen gauge
-        """
-        if dtype is None:
-            dtype = np.complex128
-
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Spin orbit quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        # sparse matrix dimension (2 * self.no)
-        V = np.empty([len(self), len(self)], dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now create offsets
-        offsets = - np.arange(len(phases)) * self.no
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype).toarray()
-
-        V[::2, ::2] = dot((self.tocsr(0) + 1j * self.tocsr(4)).toarray(), diag)
-        V[1::2, 1::2] = dot((self.tocsr(1) + 1j * self.tocsr(5)).toarray(), diag)
-        V[1::2, ::2] = dot((self.tocsr(2) - 1j * self.tocsr(3)).toarray(), diag)
-        V[::2, 1::2] = dot((self.tocsr(6) + 1j * self.tocsr(7)).toarray(), diag)
-
-        if format == 'array':
-            return V
-        elif format == 'dense':
-            return np.asmatrix(V)
-        # It must be a sparse matrix we inquire
-        return csr_matrix(V).asformat(format)
+        k = np.asarray(k, np.float64).ravel()
+        return matrix_k_so(gauge, self._csr, self.sc, k, dtype, format)
 
     def _Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
@@ -875,7 +500,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def _Sk_non_colinear_accummulate(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
+    def _Sk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
@@ -887,126 +512,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge : {'R', 'r'}
            chosen gauge
         """
-        if dtype is None:
-            dtype = np.complex128
-
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Non-colinear quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        no = self.no
-
-        # sparse matrix dimension (2 * self.no)
-        S = csr_matrix((len(self), len(self)), dtype=dtype)
-        s = self.tocsr(self.S_idx)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now accummulate the matrix
-        for si, phase in enumerate(phases):
-            sl = slice(si*no, (si+1) * no, None)
-
-            S[::2, ::2] += s[:, sl] * phase
-        S[1::2, 1::2] = S[::2, ::2]
-
-        del s
-
-        return S.asformat(format)
-
-    def _Sk_non_colinear_dot(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
-
-        Parameters
-        ----------
-        k: array_like, optional
-           k-point (default is Gamma point)
-        dtype : numpy.dtype, optional
-           default to `numpy.complex128`
-        gauge : {'R', 'r'}
-           chosen gauge
-        """
-        if dtype is None:
-            dtype = np.complex128
-
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Non-colinear quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        # sparse matrix dimension (2 * self.no)
-        S = csr_matrix((len(self), len(self)), dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now create offsets
-        offsets = - np.arange(0, len(phases) * self.no, self.no)
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype)
-
-        S11 = self.tocsr(self.S_idx).dot(diag)
-        S[::2, ::2] = S11
-        S[1::2, 1::2] = S11
-
-        del S11
-
-        return S.asformat(format)
-
-    def _Sk_non_colinear_dense(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
-        """ Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
-
-        Parameters
-        ----------
-        k: array_like, optional
-           k-point (default is Gamma point)
-        dtype : numpy.dtype, optional
-           default to `numpy.complex128`
-        gauge : {'R', 'r'}
-           chosen gauge
-        """
-        if dtype is None:
-            dtype = np.complex128
-
-        if np.dtype(dtype).kind != 'c':
-            raise ValueError("Non-colinear quantity setup requires a complex matrix")
-
-        if gauge != 'R':
-            raise ValueError('Only the cell vector gauge has been implemented')
-
-        k = np.asarray(k, np.float64)
-        k.shape = (-1,)
-
-        # sparse matrix dimension (2 * self.no)
-        S = np.zeros([len(self), len(self)], dtype=dtype)
-
-        # Calculate all phases
-        phases = np.exp(-1j * dot(dot(dot(self.rcell, k), self.cell), self.sc.sc_off.T))
-
-        # Now create offsets
-        offsets = - np.arange(0, len(phases) * self.no, self.no)
-        diag = diags(phases, offsets, shape=(self.shape[1], self.shape[0]), dtype=dtype).toarray()
-
-        S11 = dot(self.tocsr(self.S_idx).todense(), diag)
-        S[::2, ::2] = S11
-        S[1::2, 1::2] = S11
-
-        del S11
-
-        if format == 'array':
-            return S
-        elif format == 'dense':
-            return np.asmatrix(S)
-        # It must be a sparse matrix we inquire
-        return csr_matrix(S).asformat(format)
+        k = np.asarray(k, np.float64).ravel()
+        return matrix_diag_k_nc(gauge, self._csr, self.S_idx, self.sc, k, dtype, format)
 
     def eigh(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
@@ -1029,12 +536,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             P = self.Pk(k=k, dtype=dtype, gauge=gauge, spin=spin, format='array')
         else:
             P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
-        if not self.orthogonal:
-            S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
 
         if self.orthogonal:
             return lin.eigh_destroy(P, eigvals_only=eigvals_only, **kwargs)
 
+        S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
         return lin.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
     def eigsh(self, k=(0, 0, 0), n=10, gauge='R', eigvals_only=True, **kwargs):

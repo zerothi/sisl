@@ -5,6 +5,13 @@ def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
 
     config = Configuration('sisl', parent_package, top_path)
+
+    # Add Cython extensions
+    config.add_extension('_math_small', sources=['_math_small.c'])
+    config.add_extension('_indices', sources=['_indices.c'])
+    config.add_extension('_supercell', sources=['_supercell.c'])
+    config.add_extension('_sparse', sources=['_sparse.c'])
+
     config.add_subpackage('geom')
     config.add_subpackage('io')
     config.add_subpackage('physics')
@@ -12,11 +19,6 @@ def configuration(parent_package='', top_path=None):
     config.add_subpackage('shape')
     config.add_subpackage('unit')
     config.add_subpackage('utils')
-
-    # Add Cython extensions
-    config.add_extension('_math_small', sources=['_math_small.c'])
-    config.add_extension('_indices', sources=['_indices.c'])
-    config.add_extension('_supercell', sources=['_supercell.c'])
 
     config.add_data_dir('tests')
     config.make_config_py()

@@ -4,6 +4,12 @@ files="
 _math_small.pyx
 _indices.pyx
 _supercell.pyx
+_sparse.pyx
+physics/_matrix_k_dtype.pyx
+physics/_matrix_k_nc_dtype.pyx
+physics/_matrix_k_so_dtype.pyx
+physics/_matrix_diag_k_nc_dtype.pyx
+physics/_matrix_k.pyx
 "
 
 for file in $files
