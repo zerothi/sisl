@@ -704,9 +704,9 @@ class MonkhorstPack(BrillouinZone):
         # on the boundary.
         # This does remove boundary points because we shift everything into the positive
         # plane.
-        idx = np.logical_and.reduce((self.k - k) % 1. <= dk, axis=1).nonzero()[0]
+        idx = np.logical_and.reduce(np.abs(self.k - k) <= dk, axis=1).nonzero()[0]
         if len(idx) == 0 and self._trs:
-            idx = np.logical_and.reduce((self.k - np.abs(k)) % 1. <= dk, axis=1).nonzero()[0]
+            idx = np.logical_and.reduce(np.abs(self.k + k) <= dk, axis=1).nonzero()[0]
         if len(idx) == 0:
             raise SislError(self.__class__.__name__ + '.reduce could not find any points to replace.')
 

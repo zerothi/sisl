@@ -41,7 +41,7 @@ class kpSileSiesta(SileSiesta):
         return np.dot(k, sc.cell.T / (2 * np.pi)), w
 
     @Sile_fh_open
-    def write_data(self, bz, fmt='%.9e'):
+    def write_data(self, bz, fmt='.9e'):
         """ Writes K-points to file
 
         Parameters
@@ -53,9 +53,9 @@ class kpSileSiesta(SileSiesta):
 
         nk = len(bz)
         self._write('{}\n'.format(nk))
-        _fmt = ('%d' + (' ' + fmt) * 4) + '\n'
+        _fmt = ('{:d}' + (' {:' + fmt + '}') * 4) + '\n'
 
         for i, k in enumerate(bz):
-            self._write(_fmt % (i + 1, k[0], k[1], k[2], bz.weight[i]))
+            self._write(_fmt.format(i + 1, k[0], k[1], k[2], bz.weight[i]))
 
 add_sile('KP', kpSileSiesta, case=False, gzip=True)
