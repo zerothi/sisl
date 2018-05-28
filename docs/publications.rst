@@ -43,7 +43,7 @@ arXiv publications
 
 These publications are as far as we know in the review process.
 
-#. `Large-scale tight-binding simulations of quantum transport in ballistic graphene`
+#. `Large-scale tight-binding simulations of quantum transport in ballistic graphene <https://arxiv.org/abs/1805.10220>`_
 
 #. `Exfoliation of single layer BiTeI flakes <https://arxiv.org/abs/1709.09732>`_
 
