@@ -538,7 +538,7 @@ class _SparseGeometry(object):
         iR = self.geometry.iR(na_iR)
 
         # Create eta-object
-        eta = tqdm_eta(self.na, self.__class__.__name__ + '.construct()', 'atom', eta)
+        eta = tqdm_eta(self.na, self.__class__.__name__ + '.construct', 'atom', eta)
 
         # Do the loop
         for ias, idxs in self.geometry.iter_block(iR=iR, method=method):
