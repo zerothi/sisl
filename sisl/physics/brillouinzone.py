@@ -704,9 +704,10 @@ class MonkhorstPack(BrillouinZone):
         # on the boundary.
         # This does remove boundary points because we shift everything into the positive
         # plane.
-        idx = np.logical_and.reduce(np.abs(self.k - k) <= dk, axis=1).nonzero()[0]
-        if len(idx) == 0 and self._trs:
-            idx = np.logical_and.reduce(np.abs(self.k + k) <= dk, axis=1).nonzero()[0]
+        diff_k = self.k % 1. - k % 1.
+        diff_k[diff_k > 0.5] -= 1.
+        diff_k[diff_k < -0.5] += 1.
+        idx = np.logical_and.reduce(np.abs(diff_k) <= dk, axis=1).nonzero()[0]
         if len(idx) == 0:
             raise SislError(self.__class__.__name__ + '.reduce could not find any points to replace.')
 
@@ -721,6 +722,8 @@ class MonkhorstPack(BrillouinZone):
             if not self._trs:
                 info(self.__class__.__name__ + '.reduce assumes that the replaced k-point has double weights.')
         else:
+            print('Found k-indices that will be replaced:')
+            print(idx)
             raise SislError(self.__class__.__name__ + '.reduce could not assert the weights are consistent during replacement.')
 
         self._k = np.delete(self._k, idx, axis=0)
