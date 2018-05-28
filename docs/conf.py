@@ -24,7 +24,6 @@ _this_dir = os.path.dirname(__file__)
 # Add the 3 levels
 sys.path.insert(0, _this_dir)
 sys.path.insert(0, os.path.dirname(_this_dir))
-sys.path.insert(0, os.path.dirname(os.path.dirname(_this_dir)))
 
 
 # -- General configuration ------------------------------------------------
@@ -104,8 +103,14 @@ if on_rtd:
             return MagicMock()
 
     # Add Mock modules
-    MOCK_MODULES = ['sisl.io.siesta._siesta',
-                    'sisl._math_small', 'sisl._indices', 'sisl._supercell']
+    MOCK_MODULES = ['sisl.io.siesta._siesta']
+    MOCK_MODULES.extend(['sisl._{}'.format(a)
+                         for a in ['math_small', 'indices', 'supercell', 'sparse']])
+    MOCK_MODULES.extend(['sisl.physics._matrix_{}'.format(a)
+                         for a in ['diag_k_nc_dtype',
+                                   'dk', 'dk_dtype',
+                                   'k', 'k_dtype',
+                                   'k_nc_dtype', 'k_so_dtype']])
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # The version info for the project you're documenting, acts as replacement for
