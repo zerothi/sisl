@@ -53,8 +53,9 @@ class kpSileSiesta(SileSiesta):
 
         nk = len(bz)
         self._write('{}\n'.format(nk))
+        _fmt = ('%d' + (' ' + fmt) * 4) + '\n'
 
         for i, k in enumerate(bz):
-            self._write(('%d' + (' ' + fmt) * 4) % (i + 1, k[0], k[1], k[2], bz.weight[i]) + '\n')
+            self._write(_fmt % (i + 1, k[0], k[1], k[2], bz.weight[i]))
 
 add_sile('KP', kpSileSiesta, case=False, gzip=True)
