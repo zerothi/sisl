@@ -74,6 +74,7 @@ class SparseOrbitalBZ(SparseOrbital):
             dim = dim - 1
             self.S_idx = dim
             self.Sk = self._Sk
+            self.dSk = self._dSk
 
         self.Pk = self._Pk
         self.dPk = self._dPk
@@ -236,17 +237,17 @@ class SparseOrbitalBZ(SparseOrbital):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-          S(k) = S_{ij} e^{i k R}
+           \mathbf S(k) = \mathbf S_{\nu\mu} e^{i k R}
 
-        where :math:`R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-          S(k) = S_{ij} e^{i k r}
+           \mathbf S(k) = \mathbf S_{\nu\mu} e^{i k r}
 
-        where :math:`r` is the distance between the orbitals :math:`i` and :math:`j`.
-        Currently the second gauge is not implemented (yet).
+        where :math:`r` is the distance between the orbitals.
+        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -263,6 +264,14 @@ class SparseOrbitalBZ(SparseOrbital):
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'matrix'`).
+
+        See Also
+        --------
+        dSk : Overlap matrix derivative with respect to `k`
+
+        Returns
+        -------
+        object : the overlap matrix for the :math:`k`-point, `format` determines the object type.
         """
         pass
 
@@ -287,6 +296,56 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
+
+    def dSk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the :math:`k`-derivatie of the overlap matrix for a given k-point
+
+        Creation and return of the derivative of the overlap matrix for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+           \mathbf S_\alpha(k) = i R_\alpha \mathbf S_{\nu\mu} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        And :math:`\alpha` is one of the Cartesian directions.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+           \mathbf S_\alpha(k) = i r_\alpha \mathbf S_{ij} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals.
+        Currently the second gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like, optional
+           the k-point to setup the overlap at (default Gamma point)
+        dtype : numpy.dtype, optional
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is `numpy.complex128`
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'matrix', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'matrix'`).
+
+        See Also
+        --------
+        Sk : Overlap matrix at `k`
+
+        Returns
+        -------
+        tuple : for each of the Cartesian directions a :math:`\partial \mathbf S(k)/\partial k` is returned.
+        """
+        pass
 
     def _dSk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         """ Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` differentiated with respect to `k`

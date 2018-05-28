@@ -41,11 +41,12 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         super(EnergyDensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
 
         self.Ek = self.Pk
+        self.dEk = self.dPk
 
     def Ek(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the energy density matrix for a given k-point
 
-        Creation and return of the density matrix for a given k-point (default to Gamma).
+        Creation and return of the energy density matrix for a given k-point (default to Gamma).
 
         Notes
         -----
@@ -53,17 +54,17 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-          E(k) = E_{\nu\mu} e^{i k R}
+           \mathbf E(k) = \mathbf E_{\nu\mu} e^{i k R}
 
         where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-          E(k) = E_{\nu\mu} e^{i k r}
+           \mathbf E(k) = \mathbf E_{\nu\mu} e^{i k r}
 
-        where :math:`r` is the distance between the orbitals :math:`\nu` and :math:`\mu`.
-        Currently the second gauge is not implemented (yet).
+        where :math:`r` is the distance between the orbitals.
+        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -84,6 +85,72 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
            if the energy density matrix is a spin polarized one can extract the specific spin direction
            matrix by passing an integer (0 or 1). If the energy density matrix is not `Spin.POLARIZED`
            this keyword is ignored.
+
+        See Also
+        --------
+        dEk : Energy density matrix derivative with respect to `k`
+        Sk : Overlap matrix at `k`
+        dSk : Overlap matrix derivative with respect to `k`
+
+        Returns
+        -------
+        object : the energy density matrix at :math:`k`. The returned object depends on `format`.
+        """
+        pass
+
+    def dEk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the energy density matrix derivative for a given k-point
+
+        Creation and return of the energy density matrix derivative for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+           \mathbf E_\alpha(k) = i R_\alpha \mathbf E_{\nu\mu} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        And :math:`\alpha` is one of the Cartesian directions.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+           \mathbf E_\alpha(k) = i r_\alpha \mathbf E_{\nu\mu} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals.
+        Currently this gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the energy density matrix at
+        dtype : numpy.dtype , optional
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is `numpy.complex128`
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+        spin : int, optional
+           if the energy density matrix is a spin polarized one can extract the specific spin direction
+           matrix by passing an integer (0 or 1). If the energy density matrix is not `Spin.POLARIZED`
+           this keyword is ignored.
+
+        See Also
+        --------
+        Ek : Energy density matrix with respect to `k`
+        Sk : Overlap matrix at `k`
+        dSk : Overlap matrix derivative with respect to `k`
+
+        Returns
+        -------
+        tuple : for each of the Cartesian directions a :math:`\partial \mathbf E(k)/\partial k` is returned.
         """
         pass
 
