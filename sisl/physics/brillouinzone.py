@@ -649,7 +649,7 @@ class MonkhorstPack(BrillouinZone):
         return k, w
 
     def replace(self, k, mp):
-        """ Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
+        r""" Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
 
         This method tries to replace an area corresponding to `mp.size` around the k-point `k`
         such that the k-points are replaced.
@@ -661,6 +661,30 @@ class MonkhorstPack(BrillouinZone):
            k-point in this object to replace
         mp : MonkhorstPack
            object containing the replacement k-points.
+
+        Examples
+        --------
+
+        This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
+        a 3x3x3 Monkhorst-Pack grid.
+
+        >>> sc = SuperCell(1.)
+        >>> mp = MonkhorstPack(sc, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [3, 3, 3], size=1./3))
+
+        This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
+        a 4x4x4 Monkhorst-Pack grid.
+
+        >>> sc = SuperCell(1.)
+        >>> mp = MonkhorstPack(sc, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [4, 4, 4], size=1./3))
+
+        This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
+        a 4x4x1 Monkhorst-Pack grid.
+
+        >>> sc = SuperCell(1.)
+        >>> mp = MonkhorstPack(sc, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [4, 4, 1], size=1./3))
 
         Raises
         ------
