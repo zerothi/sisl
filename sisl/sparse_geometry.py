@@ -272,6 +272,7 @@ class _SparseGeometry(object):
             cls = SparseAtom
             if isinstance(self, SparseOrbital):
                 conv = geom.o2a
+                Rij = geom.Rij
 
         elif what in ['orbital', 'orb']:
             cls = SparseOrbital
