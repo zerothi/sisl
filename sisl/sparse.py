@@ -1106,8 +1106,8 @@ class SparseCSR(object):
         self.finalize()
 
         shape = self.shape[:2]
-        return csr_matrix((self._D[:, dim], self.col.astype(np.int32, copy=False),
-                           self.ptr.astype(np.int32, copy=False)),
+        return csr_matrix((self._D[:, dim].copy(), self.col.astype(np.int32),
+                           self.ptr.astype(np.int32)),
                           shape=shape, **kwargs)
 
     def remove(self, indices):
