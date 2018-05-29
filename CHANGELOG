@@ -1,6 +1,8 @@
 0.9.3
 =====
 
+- Enabled replacing k-points in MonkhorstPack grids.
+
 - Enabled calculation of band-velocities from eigenstates
 
 - Made better progress-bars. Using eta= now relies on tqdm
