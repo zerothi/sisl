@@ -1262,9 +1262,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Loop atoms in the device region
         # These are the only atoms which may have bond-currents,
         # So no need to loop over any other atoms
+        getrow = Jab.getrow
+        Rij = geom.Rij
+
         for ia in self.a_dev:
             # Get csr matrix
-            Jia = Jab.getrow(ia)
+            Jia = getrow(ia)
 
             # Set diagonal to zero
             Jia[0, ia] = 0.
@@ -1274,7 +1277,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             # Now calculate the vector elements
             # Remark that the vector goes from ia -> ja
-            rv = geom.Rij(ia, Jia.indices)
+            rv = Rij(ia, Jia.indices)
             rv = rv / sqrt((rv ** 2).sum(1))[:, None]
             Ja[ia, :] = (Jia.data[:, None] * rv).sum(0)
 
