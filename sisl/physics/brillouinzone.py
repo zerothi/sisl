@@ -603,17 +603,14 @@ class MonkhorstPack(BrillouinZone):
             centered = False
 
         # We create the full grid, then afterwards we figure out TRS
-        if displ in [0., 0.5]:
-            if centered or n % 2 == 1:
-                k = _a.aranged(n) * size / n + displ
-            else:
-                k = _a.aranged(1, n + 1) * size / n + displ
+        n_half = n // 2
+        if n % 2 == 1:
+            k = _a.aranged(-n_half, n_half + 1) * size / n + displ
         else:
-            n_half = n // 2
-            if centered or n % 2 == 1:
-                k = _a.aranged(-n_half, n_half + 1) * size / n + displ
-            else:
-                k = _a.aranged(-n_half + 1, n_half) * size / n + displ
+            k = _a.aranged(-n_half, n_half) * size / n + displ
+            if not centered:
+                # Shift everything by halve the size each occupies
+                k += size / (2 * n)
 
         # Move k to the primitive cell and generate weights
         k = cls.in_primitive(k)

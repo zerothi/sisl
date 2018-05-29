@@ -113,7 +113,7 @@ class TestBrillouinZone(object):
         assert bz.weight[0] == 1. / 8
 
     def test_mp2(self, setup):
-        bz1 = MonkhorstPack(setup.s1, [2] * 3, trs=False)
+        bz1 = MonkhorstPack(setup.s1, [2] * 3, centered=False, trs=False)
         assert len(bz1) == 8
         bz2 = MonkhorstPack(setup.s1, [2] * 3, displacement=[.5] * 3, trs=False)
         assert len(bz2) == 8
@@ -148,7 +148,11 @@ class TestBrillouinZone(object):
         for x, y, z in product(np.arange(10) + 1, np.arange(20) + 1, np.arange(6) + 1):
             bz = MonkhorstPack(setup.s1, [x, y, z], centered=False, trs=False)
             assert len(bz) == x * y * z
-            has_gamma = (x % 2 + y % 2 + z % 2) == 3
+            # The gamma point will also be in the unit-cell for
+            # non-centered
+            has_gamma = x % 2 == 1
+            has_gamma &= y % 2 == 1
+            has_gamma &= z % 2 == 1
             if has_gamma:
                 assert ((bz.k == 0.).sum(1).astype(np.int32) == 3).sum() == 1
             else:
@@ -160,7 +164,10 @@ class TestBrillouinZone(object):
             k = bz.k.copy()
             k[:, 0] -= 0.2
             assert len(bz) == x * y * z
-            assert ((k == 0.).sum(1).astype(np.int32) == 3).sum() == 1
+            if x % 2 == 1:
+                assert ((k == 0.).sum(1).astype(np.int32) == 3).sum() == 1
+            else:
+                assert ((k == 0.).sum(1).astype(np.int32) == 3).sum() == 0
 
     def test_pbz1(self, setup):
         bz = BandStructure(setup.s1, [[0]*3, [.5]*3], 300)
