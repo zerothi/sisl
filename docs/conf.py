@@ -24,6 +24,34 @@ _this_dir = os.path.dirname(__file__)
 # Add the 3 levels
 sys.path.insert(0, _this_dir)
 sys.path.insert(0, os.path.dirname(_this_dir))
+sys.path.insert(0, os.path.dirname(os.path.dirname(_this_dir)))
+
+try:
+    import sisl
+except:
+    # We will import locally
+    if tuple(sys.version_info[:2]) >= (3, 3):
+        from unittest.mock import MagicMock
+    else:
+        from mock import Mock as MagicMock
+
+    class Mock(MagicMock):
+        @classmethod
+        def __getattr__(cls, name):
+            return MagicMock()
+
+    # Add Mock modules
+    MOCK_MODULES = ['sisl.io.siesta._siesta']
+    MOCK_MODULES.extend(['sisl._{}'.format(a)
+                         for a in ['math_small', 'indices', 'supercell', 'sparse']])
+    MOCK_MODULES.extend(['sisl.physics._matrix_{}'.format(a)
+                         for a in ['diag_k_nc_dtype',
+                                   'dk', 'dk_dtype',
+                                   'k', 'k_dtype',
+                                   'k_nc_dtype', 'k_so_dtype']])
+    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+    nbsphinx_allow_errors = True
 
 
 # -- General configuration ------------------------------------------------
@@ -92,26 +120,6 @@ copyright = u'2015-2018, ' + author
 on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
 if on_rtd:
     nbsphinx_allow_errors = True
-    if tuple(sys.version_info[:2]) >= (3, 3):
-        from unittest.mock import MagicMock
-    else:
-        from mock import Mock as MagicMock
-
-    class Mock(MagicMock):
-        @classmethod
-        def __getattr__(cls, name):
-            return MagicMock()
-
-    # Add Mock modules
-    MOCK_MODULES = ['sisl.io.siesta._siesta']
-    MOCK_MODULES.extend(['sisl._{}'.format(a)
-                         for a in ['math_small', 'indices', 'supercell', 'sparse']])
-    MOCK_MODULES.extend(['sisl.physics._matrix_{}'.format(a)
-                         for a in ['diag_k_nc_dtype',
-                                   'dk', 'dk_dtype',
-                                   'k', 'k_dtype',
-                                   'k_nc_dtype', 'k_so_dtype']])
-    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
