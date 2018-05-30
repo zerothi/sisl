@@ -64,6 +64,16 @@ class BrillouinZone(object):
             return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), repr(self.parent).replace('\n', '\n '))
         return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), repr(self.parent.sc).replace('\n', '\n '))
 
+    def set_parent(self, parent):
+        """ Update the parent associated to this object
+
+        Parameter
+        ---------
+        parent : object
+           an object containing cell vectors
+        """
+        self.parent = parent
+
     def copy(self):
         """ Create a copy of this object """
         bz = self.__class__(self.parent)
