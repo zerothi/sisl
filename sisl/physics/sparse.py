@@ -328,7 +328,7 @@ class SparseOrbitalBZ(SparseOrbital):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \mathbf S_\alpha(k) = i R_\alpha \mathbf S_{\nu\mu} e^{i k R}
+           \nabla_k \mathbf S_\alpha(k) = i R_\alpha \mathbf S_{\nu\mu} e^{i k R}
 
         where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
         And :math:`\alpha` is one of the Cartesian directions.
@@ -336,7 +336,7 @@ class SparseOrbitalBZ(SparseOrbital):
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \mathbf S_\alpha(k) = i r_\alpha \mathbf S_{ij} e^{i k r}
+           \nabla_k \mathbf S_\alpha(k) = i r_\alpha \mathbf S_{ij} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
         Currently the second gauge is not implemented (yet).
@@ -393,7 +393,7 @@ class SparseOrbitalBZ(SparseOrbital):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \mathbf S_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf S_{\nu\mu} e^{i k R}
+           \nabla_k^2 \mathbf S_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf S_{\nu\mu} e^{i k R}
 
         where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
         And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
@@ -401,7 +401,7 @@ class SparseOrbitalBZ(SparseOrbital):
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \mathbf S_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf S_{ij} e^{i k r}
+           \nabla_k^2 \mathbf S_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf S_{ij} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
         Currently the second gauge is not implemented (yet).

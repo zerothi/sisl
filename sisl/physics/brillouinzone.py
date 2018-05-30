@@ -61,8 +61,8 @@ class BrillouinZone(object):
     def set_parent(self, parent):
         """ Update the parent associated to this object
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         parent : object or array_like
            an object containing cell vectors
         """
