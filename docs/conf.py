@@ -28,7 +28,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(_this_dir)))
 
 try:
     import sisl
-except:
+except Exception as e:
+    print()
+    print('#' * 60)
+    print('Will mock the sisl modules:')
+    print(e)
+    print('#' * 60)
+    print()
+
     # We will import locally
     if tuple(sys.version_info[:2]) >= (3, 3):
         from unittest.mock import MagicMock
