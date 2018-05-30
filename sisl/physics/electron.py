@@ -66,7 +66,7 @@ from .sparse import SparseOrbitalBZSpin
 from .state import Coefficient, State, StateC
 
 
-__all__ = ['DOS', 'PDOS', 'spin_moment', 'velocity', 'effective_mass', 'wavefunction']
+__all__ = ['DOS', 'PDOS', 'spin_moment', 'velocity', 'inv_eff_mass_tensor', 'wavefunction']
 __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
 
@@ -1040,6 +1040,14 @@ class _common_State(object):
 
         See `~sisl.physics.electron.inv_eff_mass_tensor` for details.
 
+        Notes
+        -----
+        The reason for not inverting the mass-tensor is that for systems with limited
+        periodicities some of the diagonal elements of the inverse mass tensor matrix
+        will be 0, in which case the matrix is singular and non-invertible. Therefore
+        it is the users responsibility to remove any of the non-periodic elements from
+        the matrix.
+
         Parameters
         ----------
         eps : float, optional
@@ -1061,7 +1069,7 @@ class _common_State(object):
                 opt['spin'] = self.info.get('spin', None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.effective_mass requires the parent to have a spin associated.')
+            raise SislError(self.__class__.__name__ + '.inv_eff_mass_tensor requires the parent to have a spin associated.')
         return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate=deg)
 
     def wavefunction(self, grid, spinor=0, eta=False):
