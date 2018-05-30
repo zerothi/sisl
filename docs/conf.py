@@ -23,8 +23,6 @@ _this_dir = os.path.dirname(__file__)
 
 # Add the 3 levels
 sys.path.insert(0, _this_dir)
-sys.path.insert(0, os.path.dirname(_this_dir))
-sys.path.insert(0, os.path.dirname(os.path.dirname(_this_dir)))
 
 try:
     import sisl
