@@ -15,6 +15,7 @@ class Hessian(SparseOrbitalBZ):
 
         self.Hk = self._Pk
         self.dHk = self.dPk
+        self.ddHk = self.ddPk
 
     def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the Hessian matrix for a given k-point
@@ -58,6 +59,7 @@ class Hessian(SparseOrbitalBZ):
         See Also
         --------
         dHk : Hessian derivative with respect to `k`
+        ddHk : Hessian double derivative with respect to `k`
 
         Returns
         -------
@@ -108,10 +110,62 @@ class Hessian(SparseOrbitalBZ):
         See Also
         --------
         Hk : Hessian with respect to `k`
+        ddHk : Hessian double derivative with respect to `k`
 
         Returns
         -------
         tuple : for each of the Cartesian directions a :math:`\partial \mathbf H(k)/\partial k` is returned.
+        """
+        pass
+
+    def ddHk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the Hessian matrix double derivative for a given k-point
+
+        Creation and return of the Hessian matrix double derivative for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+           \mathbf H_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf H_{\nu\mu} e^{i q R}
+
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        And :math:`\alpha`, :math:`\beta` are one of the Cartesian directions.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+          \mathbf H_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf H_{\nu\mu} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals.
+        Currently this gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the Hessian matrix at
+        dtype : numpy.dtype , optional
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is `numpy.complex128`
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+
+        See Also
+        --------
+        Hk : Hessian with respect to `k`
+        dHk : Hessian derivative with respect to `k`
+
+        Returns
+        -------
+        tuple of tuples : for each of the Cartesian directions
         """
         pass
 

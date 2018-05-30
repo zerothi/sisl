@@ -89,8 +89,7 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         See Also
         --------
         dEk : Energy density matrix derivative with respect to `k`
-        Sk : Overlap matrix at `k`
-        dSk : Overlap matrix derivative with respect to `k`
+        ddEk : Energy density matrix double derivative with respect to `k`
 
         Returns
         -------
@@ -145,12 +144,66 @@ class EnergyDensityMatrix(SparseOrbitalBZSpin):
         See Also
         --------
         Ek : Energy density matrix with respect to `k`
-        Sk : Overlap matrix at `k`
-        dSk : Overlap matrix derivative with respect to `k`
+        ddEk : Energy density matrix double derivative with respect to `k`
 
         Returns
         -------
         tuple : for each of the Cartesian directions a :math:`\partial \mathbf E(k)/\partial k` is returned.
+        """
+        pass
+
+    def ddEk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the energy density matrix double derivative for a given k-point
+
+        Creation and return of the energy density matrix double derivative for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+           \mathbf E_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf E_{\nu\mu} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+           \mathbf E_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf E_{\nu\mu} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals.
+        Currently this gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the energy density matrix at
+        dtype : numpy.dtype , optional
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is `numpy.complex128`
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+        spin : int, optional
+           if the energy density matrix is a spin polarized one can extract the specific spin direction
+           matrix by passing an integer (0 or 1). If the energy density matrix is not `Spin.POLARIZED`
+           this keyword is ignored.
+
+        See Also
+        --------
+        Ek : Energy density matrix with respect to `k`
+        dEk : Energy density matrix derivative with respect to `k`
+
+        Returns
+        -------
+        tuple of tuples : for each of the Cartesian directions
         """
         pass
 

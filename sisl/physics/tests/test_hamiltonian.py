@@ -544,6 +544,26 @@ class TestHamiltonian(object):
             vsub = es.sub([0]).velocity()
             assert np.allclose(v[0, :], vsub)
 
+    def test_inv_eff_mass_tensor_orthogonal(self, setup):
+        H = setup.H.copy()
+        H.construct([(0.1, 1.5), ((1., 1.))])
+        E = np.linspace(-4, 4, 1000)
+        for k in ([0] *3, [0.2] * 3):
+            es = H.eigenstate(k)
+            v = es.inv_eff_mass_tensor()
+            vsub = es.sub([0]).inv_eff_mass_tensor()
+            assert np.allclose(v[0, :], vsub)
+
+    def test_inv_eff_mass_tensor_nonorthogonal(self, setup):
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        E = np.linspace(-4, 4, 1000)
+        for k in ([0] *3, [0.2] * 3):
+            es = HS.eigenstate(k)
+            v = es.inv_eff_mass_tensor()
+            vsub = es.sub([0]).inv_eff_mass_tensor()
+            assert np.allclose(v[0, :], vsub)
+
     def test_dos1(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])

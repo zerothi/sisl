@@ -14,6 +14,8 @@ from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
 from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_so, matrix_diag_k_nc
 from ._matrix_dk import matrix_dk
+from ._matrix_ddk import matrix_ddk
+
 
 __all__ = ['SparseOrbitalBZ', 'SparseOrbitalBZSpin']
 
@@ -75,9 +77,11 @@ class SparseOrbitalBZ(SparseOrbital):
             self.S_idx = dim
             self.Sk = self._Sk
             self.dSk = self._dSk
+            self.ddSk = self._ddSk
 
         self.Pk = self._Pk
         self.dPk = self._dPk
+        self.ddPk = self._ddPk
 
     # Override to enable spin configuration and orthogonality
     def _cls_kwargs(self):
@@ -226,6 +230,21 @@ class SparseOrbitalBZ(SparseOrbital):
         k = np.asarray(k, np.float64).ravel()
         return matrix_dk(gauge, self._csr, _dim, self.sc, k, dtype, format)
 
+    def _ddPk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
+        """ Sparse matrix (``scipy.sparse.csr_matrix``) at `k` double differentiated with respect to `k` for a polarized system
+
+        Parameters
+        ----------
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge : {'R', 'r'}
+           chosen gauge
+        """
+        k = np.asarray(k, np.float64).ravel()
+        return matrix_ddk(gauge, self._csr, _dim, self.sc, k, dtype, format)
+
     def Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the overlap matrix for a given k-point
 
@@ -268,6 +287,7 @@ class SparseOrbitalBZ(SparseOrbital):
         See Also
         --------
         dSk : Overlap matrix derivative with respect to `k`
+        ddSk : Overlap matrix double derivative with respect to `k`
 
         Returns
         -------
@@ -340,6 +360,7 @@ class SparseOrbitalBZ(SparseOrbital):
         See Also
         --------
         Sk : Overlap matrix at `k`
+        ddSk : Overlap matrix double derivative at `k`
 
         Returns
         -------
@@ -360,6 +381,71 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         return self._dPk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
+
+    def ddSk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the double :math:`k`-derivatie of the overlap matrix for a given k-point
+
+        Creation and return of the double derivative of the overlap matrix for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+           \mathbf S_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf S_{\nu\mu} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+           \mathbf S_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf S_{ij} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals.
+        Currently the second gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like, optional
+           the k-point to setup the overlap at (default Gamma point)
+        dtype : numpy.dtype, optional
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is `numpy.complex128`
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'matrix', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'matrix'`).
+
+        See Also
+        --------
+        Sk : Overlap matrix at `k`
+        dSk : Overlap matrix derivative at `k`
+
+        Returns
+        -------
+        tuple of tuples : for each of the Cartesian directions
+        """
+        pass
+
+    def _ddSk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
+        """ Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` double differentiated with respect to `k`
+
+        Parameters
+        ----------
+        k: array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge : {'R', 'r'}
+           chosen gauge
+        """
+        return self._ddPk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
     def eigh(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
