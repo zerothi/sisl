@@ -367,6 +367,9 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
 
 
 # We return velocity units in Ang/ps
+#   hbar in eV.s = 6.582119514e-16
+# and dHk is already in Ang.
+#   1e-12 ps / s
 _velocity_const = 1 / 6.582119514e-16 * 1e-12
 
 
