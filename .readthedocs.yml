@@ -1,8 +1,11 @@
 requirements_file: docs/requirements.txt
 
+build:
+   image: latest
+
 python:
    setup_py_install: true
-   version: 3.5
+   version: 3.6
 
 formats:
    - none

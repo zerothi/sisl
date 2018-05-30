@@ -1,7 +1,7 @@
 name: sisl_docs
 dependencies:
-  - python=3.5
   - gcc
+  - python=3.6
   - numpy
   - scipy
   - netCDF4
