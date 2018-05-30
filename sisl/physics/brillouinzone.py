@@ -43,13 +43,7 @@ class BrillouinZone(object):
     """
 
     def __init__(self, parent):
-        try:
-            # It probably has the supercell attached
-            parent.cell
-            parent.rcell
-            self.parent = parent
-        except:
-            self.parent = SuperCell(parent)
+        self.set_parent(parent)
 
         # Gamma point
         self._k = _a.zerosd([1, 3])
@@ -69,10 +63,16 @@ class BrillouinZone(object):
 
         Parameter
         ---------
-        parent : object
+        parent : object or array_like
            an object containing cell vectors
         """
-        self.parent = parent
+        try:
+            # It probably has the supercell attached
+            parent.cell
+            parent.rcell
+            self.parent = parent
+        except:
+            self.parent = SuperCell(parent)
 
     def copy(self):
         """ Create a copy of this object """
