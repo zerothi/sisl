@@ -354,6 +354,10 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
        a list containing the indices of degenerate states. In that case a subsequent diagonalization
        is required to decouple them.
 
+    See Also
+    --------
+    inv_eff_mass_tensor : inverse effective mass tensor
+
     Returns
     -------
     numpy.ndarray
@@ -374,7 +378,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
 _velocity_const = 1 / 6.582119514e-16 * 1e-12
 
 
-def _velocity_non_ortho(state, dHk, energy, dSk, degenerate=None):
+def _velocity_non_ortho(state, dHk, energy, dSk, degenerate):
     r""" For states in a non-orthogonal basis """
     # Along all directions
     v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
@@ -412,7 +416,7 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate=None):
     return v * _velocity_const
 
 
-def _velocity_ortho(state, dHk, degenerate=None):
+def _velocity_ortho(state, dHk, degenerate):
     r""" For states in an orthogonal basis """
 
     # Along all directions
@@ -443,53 +447,68 @@ def _velocity_ortho(state, dHk, degenerate=None):
     return v * _velocity_const
 
 
-def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None):
+def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as_matrix=False):
     r""" Calculate the effective mass tensor for a set of states
 
-    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
+    These are calculated using the analytic expression (:math:`\alpha,\beta` corresponds to Cartesian directions):
 
     .. math::
 
-        \mathbf M_i = \hbar^2 \langle \psi_i | \nabla^2_{\mathbf k} \mathbf H(\mathbf k) | \psi_i \rangle^{-1}
+        \mathbf M^{-1}_{i\alpha\beta} = \frac1{\hbar^2} \langle \psi_i | \nabla^2_{\mathbf k} \mathbf H(\mathbf k) | \psi_i \rangle
 
     In case of non-orthogonal basis the equations requires the energy corresponding to the state and the overlap matrix derivative
 
     .. math::
 
-        \mathbf M_i = \hbar^2 \langle \psi_i | \nabla^2_{\mathbf k} \mathbf H(\mathbf k) - 
-                   \epsilon_i\nabla^2_{\mathbf k} \mathbf S(\mathbf k) | \psi_i \rangle^{-1}
+        \mathbf M^{-1}_{i\alpha\beta} = \frac1{\hbar^2} \langle \psi_i | \nabla^2_{\mathbf k} \mathbf H(\mathbf k) -
+                   \epsilon_i\nabla^2_{\mathbf k} \mathbf S(\mathbf k) | \psi_i \rangle
 
     where :math:`\psi_i` are now states in the non-orthogonal basis.
 
-    The matrix :math:`\mathbf M` is known as the effective mass tensor.
+    The matrix :math:`\mathbf M` is known as the effective mass tensor, remark that this function returns the inverse
+    of :math:`\mathbf M`.
+
+    Notes
+    -----
+    The reason for not inverting the mass-tensor is that for systems with limited
+    periodicities some of the diagonal elements of the inverse mass tensor matrix
+    will be 0, in which case the matrix is singular and non-invertible. Therefore
+    it is the users responsibility to remove any of the non-periodic elements from
+    the matrix before inverting.
 
     Parameters
     ----------
     state : array_like
        vectors describing the electronic states, 2nd dimension contains the states
-    ddHk : (3, 3) of array_like
-       Hamiltonian double derivative with respect to :math:`\mathbf k`.
+    ddHk : (6,) of array_like
+       Hamiltonian double derivative with respect to :math:`\mathbf k`. The input must be in Voigt order.
     energy : array_like, optional
-       energies of the states. Required for non-orthogonal basis together with `dSk`.
-    ddSk : (3, 3) of array_like, optional
+       energies of the states. Required for non-orthogonal basis together with `ddSk`.
+    ddSk : (6,) of array_like, optional
        :math:`\nabla^2_k \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
        provided in a non-orthogonal basis (otherwise the results will be wrong).
-       Same derivative as `ddHk`
+       Same order as `ddHk`
     degenerate: list of array_like, optional
        a list containing the indices of degenerate states. In that case a subsequent diagonalization
        is required to decouple them.
+    as_matrix : bool, optional
+       if true the returned tensor will be a symmetric matrix, otherwise the Voigt tensor is returned.
+
+    See Also
+    --------
+    velocity : band velocity
 
     Returns
     -------
     numpy.ndarray
-        effective mass of each state in units of electron mass
+        inverse effective mass tensor of each state in units of inverse electron mass
     """
     if state.ndim == 1:
-        return inv_eff_mass_tensor(state.reshape(1, -1), ddHk, energy, ddSk, degenerate).ravel()
+        return inv_eff_mass_tensor(state.reshape(1, -1), ddHk, energy, ddSk, degenerate, as_matrix).ravel()
 
     if ddSk is None:
-        return _inv_eff_mass_tensor_ortho(state, ddHk, degenerate)
-    return _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate)
+        return _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix)
+    return _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_matrix)
 
 
 # We return electron mass units in m_e
@@ -502,56 +521,67 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None):
 _inv_eff_mass_const = 1 / 6.582119514e-16 ** 2 / 1.60217653e-19 * 1e-10 ** 2 * 9.10938356e-31
 
 
-def _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate=None):
+def _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_matrix):
     r""" For states in a non-orthogonal basis """
-    # Along all directions
-    M = np.empty([state.shape[0], 3, 3], dtype=dtype_complex_to_real(state.dtype))
+    if as_matrix:
+        M = np.empty([state.shape[0], 9], dtype=dtype_complex_to_real(state.dtype))
+    else:
+        M = np.empty([state.shape[0], 6], dtype=dtype_complex_to_real(state.dtype))
 
-    # Since they depend on the state energies and dSk we have to loop them individually.
+    # Since they depend on the state energies and ddSk we have to loop them individually.
     for s, e in enumerate(energy):
 
-        # Since dHk *may* be a csr_matrix or sparse, we have to do it like
+        # Since ddHk *may* be a csr_matrix or sparse, we have to do it like
         # this. A sparse matrix cannot be re-shaped with an extra dimension.
-        for i in range(3):
-            M[s, i, 0] = (conj(state[s]) * (ddHk[i][0] - e * ddSk[i][0]).dot(state[s])).sum().real
-            M[s, i, 1] = (conj(state[s]) * (ddHk[i][1] - e * ddSk[i][1]).dot(state[s])).sum().real
-            M[s, i, 2] = (conj(state[s]) * (ddHk[i][2] - e * ddSk[i][2]).dot(state[s])).sum().real
+        for i in range(6):
+            M[s, i] = (conj(state[s]) * (ddHk[i] - e * ddSk[i]).dot(state[s])).sum().real
 
     # Now decouple the degenerate states
     if not degenerate is None:
+        print(degenerate)
         for deg in degenerate:
             e = np.average(energy[deg])
 
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # Since we do this for all directions we should decouple them all
-            vv = conj(state[deg, :]).dot((ddHk[0][0] - e * ddSk[0][0]).dot(state[deg, :].T))
+            vv = conj(state[deg, :]).dot((ddHk[0] - e * ddSk[0]).dot(state[deg, :].T))
             S = eigh_destroy(vv)[1].T.dot(state[deg, :])
-            vv = conj(S).dot((ddHk[1][1] - e * ddSk[1][1]).dot(S.T))
+            vv = conj(S).dot((ddHk[1] - e * ddSk[1]).dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
-            vv = conj(S).dot((ddHk[2][2] - e * ddSk[2][2]).dot(S.T))
+            vv = conj(S).dot((ddHk[2] - e * ddSk[2]).dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
 
             # Calculate velocities
             for s, e in enumerate(energy[deg]):
-                for i in range(3):
-                    M[s, i, 0] = (conj(S[s]) * (ddHk[i][0] - e * ddSk[i][0]).dot(S[s])).sum().real
-                    M[s, i, 1] = (conj(S[s]) * (ddHk[i][1] - e * ddSk[i][1]).dot(S[s])).sum().real
-                    M[s, i, 2] = (conj(S[s]) * (ddHk[i][2] - e * ddSk[i][2]).dot(S[s])).sum().real
+                for i in range(6):
+                    M[s, i] = (conj(S[s]) * (ddHk[i] - e * ddSk[i]).dot(S[s])).sum().real
+
+    if as_matrix:
+        M[:, 8] = M[:, 2] # zz
+        M[:, 7] = M[:, 3] # zy
+        M[:, 6] = M[:, 4] # zx
+        M[:, 3] = M[:, 5] # xy
+        M[:, 5] = M[:, 7] # yz
+        M[:, 4] = M[:, 1] # yy
+        M[:, 1] = M[:, 3] # xy
+        M[:, 2] = M[:, 6] # zx
+        M.shape = (-1, 3, 3)
 
     return M * _inv_eff_mass_const
 
 
-def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate=None):
+def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
     r""" For states in an orthogonal basis """
 
     # Along all directions
-    M = np.empty([state.shape[0], 3, 3], dtype=dtype_complex_to_real(state.dtype))
+    if as_matrix:
+        M = np.empty([state.shape[0], 9], dtype=dtype_complex_to_real(state.dtype))
+    else:
+        M = np.empty([state.shape[0], 6], dtype=dtype_complex_to_real(state.dtype))
 
-    for i in range(3):
-        M[:, i, 0] = (conj(state.T) * ddHk[i][0].dot(state.T)).sum(0).real
-        M[:, i, 1] = (conj(state.T) * ddHk[i][1].dot(state.T)).sum(0).real
-        M[:, i, 2] = (conj(state.T) * ddHk[i][2].dot(state.T)).sum(0).real
+    for i in range(6):
+        M[:, i] = (conj(state.T) * ddHk[i].dot(state.T)).sum(0).real
 
     # Now decouple the degenerate states
     if not degenerate is None:
@@ -559,17 +589,26 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate=None):
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # Since we do this for all directions we should decouple them all
-            vv = conj(state[deg, :]).dot(ddHk[0][0].dot(state[deg, :].T))
+            vv = conj(state[deg, :]).dot(ddHk[0].dot(state[deg, :].T))
             S = eigh_destroy(vv)[1].T.dot(state[deg, :])
-            vv = conj(S).dot(ddHk[1][1].dot(S.T))
+            vv = conj(S).dot(ddHk[1].dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
-            vv = conj(S).dot(ddHk[2][2].dot(S.T))
+            vv = conj(S).dot(ddHk[2].dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
 
-            for i in range(3):
-                M[deg, i, 0] = (conj(S.T) * ddHk[i][0].dot(S.T)).sum(0).real
-                M[deg, i, 1] = (conj(S.T) * ddHk[i][1].dot(S.T)).sum(0).real
-                M[deg, i, 2] = (conj(S.T) * ddHk[i][2].dot(S.T)).sum(0).real
+            for i in range(6):
+                M[deg, i] = (conj(S.T) * ddHk[i].dot(S.T)).sum(0).real
+
+    if as_matrix:
+        M[:, 8] = M[:, 2] # zz
+        M[:, 7] = M[:, 3] # zy
+        M[:, 6] = M[:, 4] # zx
+        M[:, 3] = M[:, 5] # xy
+        M[:, 5] = M[:, 7] # yz
+        M[:, 4] = M[:, 1] # yy
+        M[:, 1] = M[:, 3] # xy
+        M[:, 2] = M[:, 6] # zx
+        M.shape = (-1, 3, 3)
 
     return M * _inv_eff_mass_const
 
@@ -1028,7 +1067,7 @@ class _common_State(object):
             raise SislError(self.__class__.__name__ + '.velocity requires the parent to have a spin associated.')
         return velocity(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
 
-    def inv_eff_mass_tensor(self, eps=1e-4):
+    def inv_eff_mass_tensor(self, as_matrix=False, eps=1e-3):
         r""" Calculate inverse effective mass tensor for the states
 
         This routine calls `~sisl.physics.electron.inv_eff_mass` with appropriate arguments
@@ -1050,6 +1089,8 @@ class _common_State(object):
 
         Parameters
         ----------
+        as_matrix : bool, optional
+           if true the returned tensor will be a symmetric matrix, otherwise the Voigt tensor is returned.
         eps : float, optional
            precision used to find degenerate states.
         """
@@ -1067,10 +1108,10 @@ class _common_State(object):
 
             if 'spin' in self.info:
                 opt['spin'] = self.info.get('spin', None)
-            deg = self.degenerate(eps)
+            degenerate = self.degenerate(eps)
         except:
             raise SislError(self.__class__.__name__ + '.inv_eff_mass_tensor requires the parent to have a spin associated.')
-        return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate=deg)
+        return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate, as_matrix)
 
     def wavefunction(self, grid, spinor=0, eta=False):
         r""" Expand the coefficients as the wavefunction on `grid` *as-is*

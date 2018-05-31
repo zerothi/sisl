@@ -103,8 +103,9 @@ class Coefficient(ParentContainer):
         list of numpy.ndarray: a list of indices
         """
         deg = list()
-        idx = np.argsort(self.c)
-        dc = np.diff(self.c[idx])
+        sidx = np.argsort(self.c)
+        dc = _diff(self.c[sidx])
+
         # Degenerate indices
         idx = (dc < eps).nonzero()[0]
         if len(idx) == 0:
@@ -112,10 +113,10 @@ class Coefficient(ParentContainer):
             return deg
 
         # These are the points were we split the degeneracies
-        seps = (np.diff(idx) > 0).nonzero()[0]
+        seps = (_diff(idx) > 1).nonzero()[0]
         IDX = np.array_split(idx, seps + 1)
         for idx in IDX:
-            deg.append(np.append(idx, idx[-1] + 1))
+            deg.append(_append(sidx[idx], sidx[idx[-1] + 1]))
         return deg
 
     def sub(self, idx):
@@ -527,6 +528,7 @@ class StateC(State):
         deg = list()
         sidx = np.argsort(self.c)
         dc = _diff(self.c[sidx])
+
         # Degenerate indices
         idx = (dc < eps).nonzero()[0]
         if len(idx) == 0:
@@ -534,7 +536,7 @@ class StateC(State):
             return deg
 
         # These are the points were we split the degeneracies
-        seps = (_diff(idx) > 0).nonzero()[0]
+        seps = (_diff(idx) > 1).nonzero()[0]
         IDX = np.array_split(idx, seps + 1)
         for idx in IDX:
             deg.append(_append(sidx[idx], sidx[idx[-1] + 1]))
