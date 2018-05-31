@@ -538,7 +538,6 @@ def _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_mat
 
     # Now decouple the degenerate states
     if not degenerate is None:
-        print(degenerate)
         for deg in degenerate:
             e = np.average(energy[deg])
 
