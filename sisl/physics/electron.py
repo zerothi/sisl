@@ -19,7 +19,6 @@ One may also plot real-space wavefunctions.
    PDOS
    velocity
    wavefunction
-   inv_eff_mass_tensor
    spin_moment
 
 Supporting classes
@@ -327,15 +326,11 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
 
     .. math::
 
-       \mathbf{v}_i^\alpha = \frac1\hbar \langle \psi_i | \nabla_{\mathbf k} \mathbf H(\mathbf k) | \psi_i \rangle
+       \mathbf{v}_{i\alpha} = \frac1\hbar \langle \psi_i |
+                \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle
 
-    In case of non-orthogonal basis the equations requires the energy corresponding to the state and the overlap matrix derivative
-
-    .. math::
-
-       \mathbf{v}_i^\alpha = \frac1\hbar\langle \psi_i | \nabla_{\mathbf k} \mathbf H(\mathbf k) -\epsilon_i\nabla_{\mathbf k}\mathbf S(\mathbf k) | \psi_i \rangle
-
-    where :math:`\psi_i` are now states in the non-orthogonal basis.
+    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
+    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
 
     Parameters
     ----------
@@ -454,16 +449,12 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
 
     .. math::
 
-        \mathbf M^{-1}_{i\alpha\beta} = \frac1{\hbar^2} \langle \psi_i | \nabla^2_{\mathbf k} \mathbf H(\mathbf k) | \psi_i \rangle
+        \mathbf M^{-1}_{i\alpha\beta} = \frac1{\hbar^2} \langle \psi_i |
+             \frac{\partial}{\partial\mathbf k}_\alpha\frac{\partial}{\partial\mathbf k}_\beta \mathbf H(\mathbf k)
+             | \psi_i \rangle
 
-    In case of non-orthogonal basis the equations requires the energy corresponding to the state and the overlap matrix derivative
-
-    .. math::
-
-        \mathbf M^{-1}_{i\alpha\beta} = \frac1{\hbar^2} \langle \psi_i | \nabla^2_{\mathbf k} \mathbf H(\mathbf k) -
-                   \epsilon_i\nabla^2_{\mathbf k} \mathbf S(\mathbf k) | \psi_i \rangle
-
-    where :math:`\psi_i` are now states in the non-orthogonal basis.
+    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
+    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
 
     The matrix :math:`\mathbf M` is known as the effective mass tensor, remark that this function returns the inverse
     of :math:`\mathbf M`.
@@ -485,9 +476,9 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
     energy : array_like, optional
        energies of the states. Required for non-orthogonal basis together with `ddSk`.
     ddSk : (6,) of array_like, optional
-       :math:`\nabla^2_k \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
-       provided in a non-orthogonal basis (otherwise the results will be wrong).
-       Same order as `ddHk`
+       overlap matrix required for non-orthogonal basis. This and `energy` *must* both be
+       provided when the states are defined in a non-orthogonal basis (otherwise the results will be wrong).
+       Same order as `ddHk`.
     degenerate: list of array_like, optional
        a list containing the indices of degenerate states. In that case a subsequent diagonalization
        is required to decouple them.
