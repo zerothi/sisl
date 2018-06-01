@@ -1033,6 +1033,51 @@ class Atom(object):
         """ Orbital initial charges """
         return _a.arrayd([o.q0 for o in self.orbital])
 
+    def sub(self, orbitals):
+        """ Return the same atom with only a subset of the orbitals present
+
+        Parameters
+        ----------
+        orbitals : array_like
+           indices of the orbitals to retain
+
+        Returns
+        -------
+        Atom : with only the subset of orbitals
+
+        Raises
+        ------
+        ValueError : if the number of orbitals removed is too large or some indices are outside the allowed range
+        """
+        orbitals = _a.arrayi(orbitals)
+        if len(orbitals) >= self.no:
+            raise ValueError(self.__class__.__name__ + '.sub tries to remove all orbitals of an atom.')
+        if np.any(orbitals >= self.no):
+            raise ValueError(self.__class__.__name__ + '.sub tries to remove a non-existing orbital io > no.')
+
+        # TODO fix copy for AtomicOrbital
+        orbs = [self.orbital[o] for o in orbitals]
+        return self.copy(orbital=orbs)
+
+    def remove(self, orbitals):
+        """ Return the same atom without a specific set of orbitals
+
+        Parameters
+        ----------
+        orbitals : array_like
+           indices of the orbitals to remove
+
+        Returns
+        -------
+        Atom : with only the subset of orbitals
+
+        See Also
+        --------
+        sub : retain a selected set of orbitals
+        """
+        orbs = np.delete(_a.arangei(self.no), orbitals)
+        return self.sub(orbs)
+
     def copy(self, Z=None, orbital=None, mass=None, tag=None):
         """ Return copy of this object """
         return self.__class__(self.Z if Z is None else Z,
@@ -1683,13 +1728,19 @@ class Atoms(object):
             raise ValueError(self.__class__.__name__ + '.replace_atom requires input arguments to '
                              'be of the class Atom')
 
+        update_orbitals = False
         for i, atom in enumerate(self.atom):
             if atom == atom_from:
                 if atom.no != atom_to.no:
                     a1 = '  ' + repr(atom).replace('\n', '\n  ')
                     a2 = '  ' + repr(atom_to).replace('\n', '\n  ')
                     info('Replacing atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
+                    update_orbitals = True
                 self._atom[i] = atom_to
+
+        if update_orbitals:
+            # Update orbital counts...
+            self._update_orbitals()
 
     def hassame(self, other, R=True):
         """ True if the contained atoms are the same in the two lists
