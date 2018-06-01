@@ -2769,6 +2769,7 @@ class Geometry(SuperCellChild):
             # Loop the atoms inside
             for ia in ias:
                 idx, r = self.close(ia, R=R, idx=idxs, idx_xyz=idxs_xyz, ret_rij=True)
+                rij[ia, ia] = 0.
                 rij[ia, idx[1]] = r[1]
 
         return rij

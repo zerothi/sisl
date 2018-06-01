@@ -876,6 +876,14 @@ class AtomicOrbital(Orbital):
 
         self.R = self.orb.R
 
+    @property
+    def f(self):
+        return self.orb.f
+
+    def copy(self):
+        """ Create an exact copy of this object """
+        return self.__class__(n=self.n, l=self.l, m=self.m, Z=self.Z, P=self.P, orb=self.orb.copy(), q0=self.q0, tag=self.tag)
+
     def equal(self, other, psi=False, radial=False):
         """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
