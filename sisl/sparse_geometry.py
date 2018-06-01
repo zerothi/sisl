@@ -564,8 +564,6 @@ class _SparseGeometry(object):
     def remove(self, atom):
         """ Create a subset of this sparse matrix by removing the atoms corresponding to `atom`
 
-        Indices passed must be unique.
-
         Negative indices are wrapped and thus works.
 
         Parameters
@@ -577,7 +575,7 @@ class _SparseGeometry(object):
         --------
         Geometry.remove : equivalent to the resulting `Geometry` from this routine
         Geometry.sub : the negative of `Geometry.remove`
-        sub : the negative of `remove`, i.e. retain a subset of atoms
+        sub : the opposite of `remove`, i.e. retain a subset of atoms
         """
         atom = self.sc2uc(atom)
         atom = np.delete(_a.arangei(self.na), atom)
@@ -1029,7 +1027,7 @@ class SparseAtom(_SparseGeometry):
 
         Parameters
         ----------
-        atom  : array_like of int
+        atom : array_like of int
             indices of retained atoms
 
         See Also
@@ -1038,16 +1036,14 @@ class SparseAtom(_SparseGeometry):
         Geometry.sub : equivalent to the resulting `Geometry` from this routine
         remove : the negative of `sub`, i.e. remove a subset of atoms
         """
+        """ Atomic indices """
         atom = self.sc2uc(atom)
         geom = self.geometry.sub(atom)
 
         idx = np.tile(atom, self.n_s)
         # Use broadcasting rules
         idx.shape = (self.n_s, -1)
-        tmp = _a.arangei(self.n_s) * self.na
-        tmp.shape = (-1, 1)
-        idx += tmp
-        del tmp
+        idx += (_a.arangei(self.n_s) * self.na).reshape(-1, 1)
         idx.shape = (-1,)
 
         # Now create the new sparse orbital class
@@ -1477,7 +1473,43 @@ class SparseOrbital(_SparseGeometry):
 
         return S
 
-    def sub(self, atom):
+    def remove(self, atom, orb_index=None):
+        """ Remove a subset of this sparse matrix by only retaining the atoms corresponding to `atom` and optionally a subset of the atom orbitals
+
+
+        See `sub` for details regarding `atom` and `orb_index` arguments.
+
+        Parameters
+        ----------
+        atom  : array_like of int or Atom
+            indices of removed atoms or Atom for direct removal of all atoms
+        orb_index : array_like of int, optional
+            if `atom` is an instance of `Atom`, this variable correspond to the
+            orbital indices for the `atom` to remove.
+
+        See Also
+        --------
+        Geometry.remove : equivalent to the resulting `Geometry` from this routine
+        Geometry.sub : the negative of `Geometry.remove`
+        sub : the opposite of `remove`, i.e. retain a subset of atoms
+        """
+        if orb_index is None:
+            if isinstance(atom, Atom):
+                return super(SparseOrbital, self).remove(atom)
+            return self._remove_atoms(atom)
+        return self._remove_orbitals(atom, orb_index)
+
+    def _remove_atoms(self, atom):
+        """ Remove via atomic specie """
+        idx = self.geometry.atoms.index(atom)
+        return self.remove((self.geometry.atoms.specie == idx).nonzero()[0])
+
+    def _remove_orbitals(self, atom, orb_index):
+        """ Remove subset of atomic specie orbitals """
+        orbs = np.delete(_a.arangei(atom.no), orb_index)
+        return self.sub(atom, orbs)
+
+    def sub(self, atom, orb_index=None):
         """ Create a subset of this sparse matrix by only retaining the atoms corresponding to `atom`
 
         Indices passed *MUST* be unique.
@@ -1486,15 +1518,37 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atom  : array_like of int
-            indices of retained atoms
+        atom  : array_like of int or Atom
+            indices of retained atoms or Atom for retaining only *that* atom
+        orb_index : array_like of int, optional
+            if `atom` is an instance of `Atom`, this variable correspond to the
+            orbital indices for the `atom` to retain.
+
+        Examples
+        --------
+
+        >>> obj = SparseOrbital(...) # doctest: +SKIP
+        >>> obj.sub(1) # only retain the second atom in the SparseGeometry
+        >>> obj.sub(obj.atoms.atom[0]) # retain all atoms which is equivalent to
+        >>>                            # the first atomic specie
+        >>> obj.sub(obj.atoms.atom[0], [1, 2]) # remove all but the 2nd and 3rd
+        >>>                                    # from the first atomic specie
+        >>>                                    # All other atomic species retain their orbitals.
 
         See Also
         --------
-        Geometry.remove : the negative of `Geometry.remove`
+        Geometry.remove : the negative of `Geometry.sub`
         Geometry.sub : equivalent to the resulting `Geometry` from this routine
         remove : the negative of `sub`, i.e. remove a subset of atoms
         """
+        if orb_index is None:
+            if isinstance(atom, Atom):
+                return self._sub_atom(atom)
+            return self._sub_atoms(atom)
+        return self._sub_orbitals(atom, orb_index)
+
+    def _sub_atoms(self, atom):
+        """ Atomic indices """
         atom = self.sc2uc(atom)
         orbs = self.a2o(atom, all=True)
         geom = self.geometry.sub(atom)
@@ -1502,15 +1556,57 @@ class SparseOrbital(_SparseGeometry):
         idx = np.tile(orbs, self.n_s)
         # Use broadcasting rules
         idx.shape = (self.n_s, -1)
-        tmp = _a.arangei(self.n_s) * self.no
-        tmp.shape = (-1, 1)
-        idx += tmp
-        del tmp
+        idx += (_a.arangei(self.n_s) * self.no).reshape(-1, 1)
         idx.shape = (-1,)
 
         # Now create the new sparse orbital class
         S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
         S._csr = self._csr.sub(idx)
+
+        return S
+
+    def _sub_atom(self, atom):
+        """ Retain all of one atomic specie """
+        idx = self.geometry.atoms.index(atom)
+        return self._sub_atoms((self.geometry.atoms.specie == idx).nonzero()[0])
+
+    def _sub_orbitals(self, atom, orb_index):
+        """ Retain all of one atomic specie """
+        # Now we are ready to perform the operation
+        geom = self.geometry.copy()
+
+        # We have to sort them, otherwise things will go wrong in the Atom.sub method
+        orb_index = np.sort(orb_index)
+
+        # Get specie index of the atom
+        atom_idx = geom.atoms.index(atom)
+
+        # Define the atoms to change
+        old_atom = geom.atoms.atom[atom_idx]
+        new_atom = old_atom.sub(orb_index)
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore')
+            geom.atoms.replace_atom(old_atom, new_atom)
+
+        # Now create the new sparse orbital class
+        S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+
+        # Now create the orbital indices (in supercell format) to be retained
+        atom_idx = (geom.atoms.specie == atom_idx).nonzero()[0]
+
+        rem_orbs = np.delete(_a.arangei(old_atom.no), orb_index)
+        # Find orbitals to remove (note this HAS to be in the original array)
+        rem_orbs = np.add.outer(self.geometry.a2o(atom_idx), rem_orbs).ravel()
+
+        # Generate a list of orbitals to retain
+        sub_idx = np.delete(_a.arangei(self.no), rem_orbs)
+
+        # Generate full supercell indices
+        n_s = self.geometry.n_s
+        sc_off = _a.arangei(n_s) * self.no
+        sub_idx = np.tile(sub_idx, n_s).reshape(n_s, -1) + sc_off.reshape(-1, 1)
+        S._csr = self._csr.sub(sub_idx)
 
         return S
 
