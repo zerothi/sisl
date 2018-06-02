@@ -4,7 +4,7 @@ build:
    image: latest
 
 python:
-   setup_py_install: true
+   pip_install: true
    version: 3.6
 
 formats:
