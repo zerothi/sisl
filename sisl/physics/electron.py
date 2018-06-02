@@ -356,7 +356,8 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     Returns
     -------
     numpy.ndarray
-        velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps.
+        velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps
+        Units *may* change in future releases.
     """
     if state.ndim == 1:
         return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate).ravel()
