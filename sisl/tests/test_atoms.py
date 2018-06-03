@@ -9,6 +9,7 @@ from sisl import Atom, Atoms, PeriodicTable, Orbital
 
 pytestmark = [pytest.mark.atom, pytest.mark.atoms]
 
+
 @pytest.fixture
 def setup():
     class t():
@@ -30,6 +31,7 @@ def test_create1(setup):
     assert atom2 != atom4
     assert atom2.hassame(atom4)
 
+
 def test_create2():
     atom = Atoms(Atom(6, R=1.45), na=2)
     atom = Atoms(atom, na=4)
@@ -37,18 +39,22 @@ def test_create2():
     for ia in range(len(atom)):
         assert atom.maxR(True)[ia] == 1.45
 
+
 @pytest.mark.xfail(raises=ValueError)
 def test_create3():
     Atoms([{0: Atom(4)}])
+
 
 @pytest.mark.xfail(raises=ValueError)
 def test_create4():
     Atoms({0: Atom(4)})
 
+
 def test_len(setup):
     atom = Atoms([setup.C, setup.C3, setup.Au])
     assert len(atom) == 3
     assert len(atom.q0) == 3
+
 
 def test_get1():
     atoms = Atoms(['C', 'C', 'Au'])
@@ -58,6 +64,7 @@ def test_get1():
     assert atoms[0:2] == [Atom('C')]*2
     assert atoms[1:] == [Atom('C'), Atom('Au')]
 
+
 def test_set1():
     # Add new atoms to the set
     atom = Atoms(['C', 'C'])
@@ -66,6 +73,7 @@ def test_set1():
     atom[1] = Atom('Au')
     assert atom[0] == Atom('C')
     assert atom[1] == Atom('Au')
+
 
 def test_set2():
     # Add new atoms to the set
@@ -78,6 +86,7 @@ def test_set2():
     assert atom[1] != Atom('Au')
     assert atom[1] == Atom('Au', [-1] * 2)
     assert len(atom.atom) == 2
+
 
 def test_set3():
     # Add new atoms to the set
@@ -92,6 +101,7 @@ def test_set3():
     assert len(atom.atom) == 2
     atom[1:4] = Atom('C')
     assert len(atom.atom) == 2
+
 
 def test_replace1():
     # Add new atoms to the set
@@ -114,6 +124,7 @@ def test_replace1():
         assert atom[i] == Atom('Au', [-1] * 2)
     for i in range(10, 12):
         assert atom[i] == Atom('B')
+
 
 def test_replace2():
     # Add new atoms to the set
@@ -138,6 +149,7 @@ def test_replace2():
         assert atom[i] == Atom('Au', [-1] * 2)
     for i in range(10, 12):
         assert atom[i] == Atom('B')
+
 
 def test_append1():
     # Add new atoms to the set
@@ -165,6 +177,7 @@ def test_append1():
     assert atom[2] == Atom('C', tag='DZ')
     assert atom[3] == Atom('C')
 
+
 def test_compare1():
     # Add new atoms to the set
     atom1 = Atoms([Atom('C', tag='DZ'), Atom[6]])
@@ -172,11 +185,13 @@ def test_compare1():
     assert atom1.hassame(atom2)
     assert not atom1.equal(atom2)
 
+
 def test_in1():
     # Add new atoms to the set
     atom = Atoms(['C', 'C'])
     assert Atom[6] in atom
     assert Atom[1] not in atom
+
 
 def test_iter1():
     # Add new atoms to the set
@@ -198,6 +213,7 @@ def test_iter1():
             assert (idx == [1, 3]).all()
         assert len(idx) == 2
 
+
 def test_reduce1():
     atom = Atoms(['C', 'Au'])
     atom = atom.sub(0)
@@ -214,6 +230,7 @@ def test_reduce1():
     assert len(atom) == 1
     assert len(atom.atom) == 1
 
+
 def test_remove1():
     atom = Atoms(['C', 'Au'])
     atom = atom.remove(1)
@@ -221,6 +238,7 @@ def test_remove1():
     assert atom[0] == Atom[6]
     assert len(atom) == 1
     assert len(atom.atom) == 1
+
 
 def test_reorder1():
     atom = Atoms(['C', 'Au'])
@@ -242,15 +260,18 @@ def test_reorder1():
     assert len(atom) == 1
     assert len(atom.atom) == 2
 
+
 def test_reorder2():
     atom1 = Atoms(['C', 'Au'])
     atom2 = atom1.reorder()
     assert atom1 == atom2
 
+
 def test_charge1():
     atom = Atoms(['C', 'Au'])
     assert len(atom.q0) == 2
     assert atom.q0.sum() == pytest.approx(0.)
+
 
 def test_charge_diff():
     o1 = Orbital(1., 1.)
@@ -261,6 +282,7 @@ def test_charge_diff():
     assert len(a.q0) == 2
     assert a.q0.sum() == pytest.approx(8)
     assert np.allclose(a.q0, [3, 5])
+
 
 @pytest.mark.xfail(raises=KeyError)
 def test_index1():
