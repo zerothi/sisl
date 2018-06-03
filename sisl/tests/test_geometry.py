@@ -560,6 +560,7 @@ class TestGeometry(object):
         # There are 2 orbitals per C atom
         assert setup.g.a2o(1) == setup.g.atom[0].no
         assert np.all(setup.g.a2o(1, True) == [2, 3])
+        setup.g.reorder()
 
     def test_o2a(self, setup):
         # There are 2 orbitals per C atom
@@ -567,6 +568,12 @@ class TestGeometry(object):
         assert setup.g.o2a(3) == 1
         assert setup.g.o2a(4) == 2
         assert np.all(setup.g.o2a([0, 2, 4]) == [0, 1, 2])
+
+    def test_angle(self, setup):
+        # There are 2 orbitals per C atom
+        g = Geometry([[0] * 3, [1, 0, 0]])
+        g.angle([0])
+        g.angle([0], ref=1)
 
     def test_2uc(self, setup):
         # functions for any-thing to UC

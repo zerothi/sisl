@@ -124,6 +124,14 @@ class TestSparseAtom(object):
         s2 = s2.cut(2, 1)
         assert s1.spsame(s2)
 
+    def test_iter(self, setup):
+        s1 = SparseAtom(setup.g)
+        s1.construct([[0.1, 1.5], [1, 2]])
+        i = 0
+        for r, c in s1:
+            i += 1
+        assert i == s1.nnz
+
     @pytest.mark.xfail(raises=ValueError)
     def test_rij_fail1(self, setup):
         s = SparseAtom(setup.g.copy())
