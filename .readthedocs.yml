@@ -6,7 +6,7 @@ build:
 python:
    pip_install: false
    python_setup_install: false
-   version: 3.6
+   version: 3.5
 
 formats:
    - none
