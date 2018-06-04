@@ -17,4 +17,6 @@ dependencies:
   - jupyter_client
   - ipykernel
   - sphinx
-  - nbsphinx
+  - pip:
+    - nbsphinx
+
