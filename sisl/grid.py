@@ -283,8 +283,7 @@ class Grid(SuperCellChild):
     def dcell(self):
         """ Returns the delta-cell """
         # Calculate the grid-distribution
-        shape = _a.asarrayi(self.shape).reshape(1, -3)
-        return self.cell / shape
+        return self.cell / _a.asarrayi(self.shape).reshape(-1, 1)
 
     @property
     def dvolume(self):
@@ -602,7 +601,6 @@ class Grid(SuperCellChild):
 
         # Ensure we return values in the same dimensionality
         ndim = coord.ndim
-        coord.shape = (-1, 3)
 
         shape = np.array(self.shape).reshape(3, -1)
 
@@ -612,13 +610,13 @@ class Grid(SuperCellChild):
         # each lattice vector)
         if axis is None:
             if ndim == 1:
-                return floor(dot(icell, coord.T) * shape).reshape(3).astype(int32, copy=False)
+                return floor(dot(icell, coord.reshape(-1, 3).T) * shape).reshape(3).astype(int32, copy=False)
             else:
-                return floor(dot(icell, coord.T) * shape).T.astype(int32, copy=False)
+                return floor(dot(icell, coord.reshape(-1, 3).T) * shape).T.astype(int32, copy=False)
         if ndim == 1:
-            return floor(dot(icell[axis, :], coord.T) * shape[axis]).astype(int32, copy=False)[0]
+            return floor(dot(icell[axis, :], coord.reshape(-1, 3).T) * shape[axis]).astype(int32, copy=False)[0]
         else:
-            return floor(dot(icell[axis, :], coord.T) * shape[axis]).T.astype(int32, copy=False)
+            return floor(dot(icell[axis, :], coord.reshape(-1, 3).T) * shape[axis]).T.astype(int32, copy=False)
 
     def append(self, other, axis):
         """ Appends other `Grid` to this grid along axis """
