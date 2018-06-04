@@ -2929,7 +2929,7 @@ class Geometry(SuperCellChild):
 
         return d
 
-    def within_inf(self, sc, periodic=None, tol=1e-5):
+    def within_inf(self, sc, periodic=None, tol=1e-5, origo=None):
         """ Find all atoms within a provided supercell
 
         Note this function is rather different from `close` and `within`.
@@ -2956,6 +2956,8 @@ class Geometry(SuperCellChild):
             length tolerance for the fractional coordinates to be on a duplicate site (in Ang).
             This allows atoms within `tol` of the cell boundaries to be taken as *inside* the
             cell.
+        origo : (3, ) of float
+            origo that is the basis for comparison
 
         Returns
         -------
@@ -2971,14 +2973,17 @@ class Geometry(SuperCellChild):
         else:
             periodic = list(periodic)
 
+        if origo is None:
+            origo = _a.zerosd(3)
+
         # Our first task is to construct a geometry large
         # enough to fully encompass the supercell
 
         # 1. Number of times each lattice vector must be expanded to fit
         #    inside the "possibly" larger `sc`.
-        idx = dot(self.icell.T, sc.cell)
-        tile_min = np.floor(idx.min(0)).astype(dtype=int32)
-        tile_max = np.ceil(idx.max(0)).astype(dtype=int32)
+        idx = dot(self.icell, sc.cell.T)
+        tile_min = np.floor(idx.min(1)).astype(dtype=int32)
+        tile_max = np.ceil(idx.max(1)).astype(dtype=int32)
 
         # 2. Reduce tiling along non-periodic directions
         tile_min = np.where(periodic, tile_min, 0)
@@ -2991,7 +2996,7 @@ class Geometry(SuperCellChild):
 
         # The xyz geometry that fully encompass the (possibly) larger supercell
         tile = tile_max - tile_min
-        full_geom = (self * tile).translate(big_origo)
+        full_geom = (self * tile).translate(big_origo - origo)
 
         # Now we have to figure out all atomic coordinates within
         cuboid = sc.toCuboid()
@@ -3020,7 +3025,7 @@ class Geometry(SuperCellChild):
 
         # For these indices we can use the nearest integer as that
         # selects the closest. floor will ONLY be wrong for -0.0000, 0.99999, ...
-        isc[idx_diff[0], idx_diff[1]] = np.rint(fxyz[idx_diff[0], idx_diff[1]]).astype(int32)
+        isc[idx_diff] = np.rint(fxyz[idx_diff]).astype(int32)
 
         # Convert indices to unit-cell indices and also return coordinates and
         # infinite supercell indices

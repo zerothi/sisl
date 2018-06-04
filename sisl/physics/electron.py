@@ -805,12 +805,11 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # For extremely skewed lattices this will be way too much, hence we make
     # them square.
     o = sc.toCuboid(True)
-    sc = SuperCell(o._v, origo=o.origo) + np.diag(2 * add_R)
-    sc.origo -= add_R
+    sc = SuperCell(o._v, origo=o.origo - add_R) + np.diag(2 * add_R)
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)
-    IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc)
+    IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc, origo=grid.origo)
 
     r_k = dot(geometry.rcell, k)
     r_k_cell = dot(r_k, geometry.cell)
@@ -820,7 +819,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     eta = tqdm_eta(len(IA), 'wavefunction', 'atom', eta)
 
     # Loop over all atoms in the grid-cell
-    for ia, xyz, isc in zip(IA, XYZ - grid.origo.reshape(1, 3), ISC):
+    for ia, xyz, isc in zip(IA, XYZ, ISC):
         # Get current atom
         atom = geometry.atom[ia]
 
