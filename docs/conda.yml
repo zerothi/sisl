@@ -4,7 +4,7 @@ channels:
   - conda-forge
 
 dependencies:
-  - python=2.7
+  - python=3.6
   - numpy
   - scipy
   - netCDF4

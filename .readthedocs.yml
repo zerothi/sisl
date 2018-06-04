@@ -5,7 +5,7 @@ build:
 
 python:
    python_setup_install: true
-   version: 2.7
+   version: 3.6
 
 formats:
    - none
