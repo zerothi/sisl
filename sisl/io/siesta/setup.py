@@ -4,6 +4,7 @@ from __future__ import print_function, division
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     from numpy.distutils.system_info import get_info
+    import os
     from os.path import join as osp_join
 
     config = Configuration('siesta', parent_package, top_path)
@@ -23,9 +24,11 @@ def configuration(parent_package='', top_path=None):
         'write_grid.f90',
         'write_gf.f90',
     ]
-    config.add_extension('_siesta',
-                         sources = [osp_join('src', s) for s in sources],
-                         extra_info = all_info)
+    # Only install the extension if not on READTHEDOCS
+    if os.environ.get('READTHEDOCS', 'false').lower() != 'true':
+        config.add_extension('_siesta',
+                             sources = [osp_join('src', s) for s in sources],
+                             extra_info = all_info)
     config.add_data_dir('tests')
     config.make_config_py()
     return config
