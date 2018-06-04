@@ -293,10 +293,6 @@ class DensityMatrix(SparseOrbitalBZSpin):
         fxyz = geometry.fxyz
         f_min = fxyz.min()
         f_max = fxyz.max()
-        if f_min < 0 or 1. < f_max:
-            warn(self.__class__.__name__ + '.density has been passed a geometry where some coordinates are '
-                 'outside the primary unit-cell. This may potentially lead to problems! '
-                 'Double check the charge density!')
         del fxyz, f_min, f_max
 
         # Extract sub variables used throughout the loop
