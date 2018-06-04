@@ -109,11 +109,27 @@ def info(message, category=None, register=False):
         warnings.warn_explicit(message, category, 'info', 0)
 
 
+# https://stackoverflow.com/a/39662359/827281
+def is_jupyter_notebook():
+    try:
+        shell = get_ipython().__class__.__name__
+        if shell == 'ZMQInteractiveShell':
+            return True
+        elif shell == 'TerminalInteractiveShell':
+            return False
+        else:
+            return False
+    except NameError:
+        return False
+
 # Figure out if we can import tqdm.
 # If so, simply use the progressbar class there.
 # Otherwise, create a fake one.
 try:
-    from tqdm import tqdm as _tqdm
+    if is_jupyter_notebook():
+        from tqdm import tqdm_notebook as _tqdm
+    else:
+        from tqdm import tqdm as _tqdm
 except ImportError:
     # Notify user of better option
     info('Please install tqdm (pip install tqdm) for better looking progress bars', register=True)
