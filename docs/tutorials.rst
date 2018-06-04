@@ -32,6 +32,7 @@ these tutorials:
    :maxdepth: 1
 
    tutorials/tutorial_siesta_1.ipynb
+   tutorials/tutorial_siesta_2.ipynb
 
 
 Deprecated tutorials
