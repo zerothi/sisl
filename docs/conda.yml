@@ -1,7 +1,7 @@
 name: sisl_docs
 dependencies:
   - gcc
-  - python=3.5
+  - python=2.7
   - numpy
   - scipy
   - netCDF4
@@ -13,8 +13,8 @@ dependencies:
   - nbformat
   - jupyter_client
   - ipykernel
+  - sphinx
+  - nbsphinx
   - pip:
     - tqdm
-    - sphinx
-    - nbsphinx
     - send2Trash
