@@ -25,6 +25,14 @@ Siesta/TranSiesta support
 sisl was initiated around the `Siesta`_/`TranSiesta`_ code. And it may be *very* educational to
 look at the sisl+TBtrans+TranSiesta tutorial located `here <https://github.com/zerothi/ts-tbt-sisl-tutorial/>`_.
 
+If you plan on using sisl as an analyzation tool for Siesta you are highly recommended to follow
+these tutorials:
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/tutorial_siesta_1.ipynb
+
 
 Deprecated tutorials
 --------------------
