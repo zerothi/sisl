@@ -251,7 +251,7 @@ class Orbital(object):
             axes.set_xlabel('Radius [Ang]')
             axes.set_ylabel(r'$f(r)$ [1/Ang$^{3/2}$]')
 
-    def toGrid(self, precision=0.05, c=1., R=None, dtype=np.float64):
+    def toGrid(self, precision=0.05, c=1., R=None, dtype=np.float64, Z=1):
         """ Create a Grid with *only* this orbital wavefunction on it
 
         Parameters
@@ -264,6 +264,8 @@ class Orbital(object):
             box size of the grid (default to the orbital range)
         dtype : numpy.dtype, optional
             the used separation in the `Grid` between voxels
+        Z : int, optional
+            atomic number associated with the grid
         """
         if R is None:
             R = self.R
@@ -278,7 +280,7 @@ class Orbital(object):
         from .atom import Atom
         from .physics.electron import wavefunction
         sc = SuperCell(R*2, origo=[-R] * 3)
-        g = Geometry([0] * 3, Atom(1, self), sc=sc)
+        g = Geometry([0] * 3, Atom(Z, self), sc=sc)
         G = Grid(precision, dtype=dtype, geometry=g)
         wavefunction(np.ones(1), G, geometry=g)
         return G
