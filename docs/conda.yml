@@ -9,13 +9,13 @@ dependencies:
   - scipy
   - netCDF4
   - matplotlib
-#  - sphinx_rtd_theme
+  - sphinx_rtd_theme
   - numpydoc
-  - jinja2
-  - tornado
-  - nbformat
-  - jupyter_client
-  - ipykernel
+#  - jinja2
+#  - tornado
+#  - nbformat
+#  - jupyter_client
+#  - ipykernel
   - sphinx
-  - pip:
-    - nbsphinx
+#  - pip:
+#    - nbsphinx
