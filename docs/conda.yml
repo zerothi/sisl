@@ -5,11 +5,11 @@ channels:
 
 dependencies:
   - python=3.6
-  - numpy
-  - scipy
+#  - numpy
+#  - scipy
   - netCDF4
   - matplotlib
-  - sphinx_rtd_theme
+#  - sphinx_rtd_theme
   - numpydoc
   - jinja2
   - tornado
