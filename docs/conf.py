@@ -395,8 +395,8 @@ intersphinx_mapping = {
     'matplotlib': ('https://matplotlib.org', None),
 }
 
-# Tell nbsphinx to wait, at least 60 seconds for each cell
-nbsphinx_timeout = 60
+# Tell nbsphinx to wait, at least X seconds for each cell
+nbsphinx_timeout = 120
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""

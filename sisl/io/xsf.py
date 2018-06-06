@@ -10,7 +10,7 @@ from .sile import *
 from sisl import Geometry, Atom, SuperCell
 
 
-__all__ = ['xsfSile']
+__all__ = ['xsfSile', 'axsfSile']
 
 
 class xsfSile(Sile):
@@ -19,6 +19,64 @@ class xsfSile(Sile):
     def _setup(self, *args, **kwargs):
         """ Setup the `xsfSile` after initialization """
         self._comment = ['#']
+        self._md_steps = kwargs.get('steps', None)
+        self._md_index = 0
+
+    def _step_md(self):
+        """ Step the MD counter """
+        self._md_index += 1
+
+    @Sile_fh_open
+    def write_supercell(self, sc, fmt='.8f'):
+        """ Writes the supercell to the contained file
+
+        Parameters
+        ----------
+        sc : SuperCell
+           the supercell to be written
+        fmt : str, optional
+           used format for the precision of the data
+        """
+        # Implementation notice!
+        # The XSF files are compatible with Vesta, but ONLY
+        # if there are no empty lines!
+
+        # Check that we can write to the file
+        sile_raise_write(self)
+
+        # Write out top-header stuff
+        from time import gmtime, strftime
+        self._write('# File created by: sisl {}\n#\n'.format(strftime("%Y-%m-%d", gmtime())))
+
+        # Print out the number of ANIMSTEPS (if required)
+        if not self._md_steps is None:
+            self._write('ANIMSTEPS {}\n'.format(self._md_steps))
+
+        self._write('CRYSTAL\n#\n')
+
+        if self._md_index == 1:
+            self._write('# Primitive lattice vectors:\n#\n')
+        if self._md_steps is None:
+            self._write('PRIMVEC\n')
+        else:
+            self._write('PRIMVEC {}\n'.format(self._md_index))
+        # We write the cell coordinates as the cell coordinates
+        fmt_str = '{{:{0}}} '.format(fmt) * 3 + '\n'
+        for i in [0, 1, 2]:
+            self._write(fmt_str.format(*sc.cell[i, :]))
+
+        # Currently not written (we should convert the unit cell
+        # to a conventional cell (90-90-90))
+        # It seems this simply allows to store both formats in
+        # the same file.
+        self._write('\n# Conventional lattice vectors:\n#\n')
+        if self._md_steps is None:
+            self._write('CONVVEC\n')
+        else:
+            self._write('CONVVEC {}\n'.format(self._md_index))
+        convcell = sc.toCuboid(True)._v
+        for i in [0, 1, 2]:
+            self._write(fmt_str.format(*convcell[i, :]))
 
     @Sile_fh_open
     def write_geometry(self, geom, fmt='.8f', data=None):
@@ -34,13 +92,8 @@ class xsfSile(Sile):
            auxiliary data associated with the geometry to be saved
            along side. Internally in XCrySDen this data is named *Forces*
         """
-
-        # Implemntation notice!
-        # The XSF files are compatible with Vesta, but ONLY
-        # if there are no empty lines!
-
-        # Check that we can write to the file
-        sile_raise_write(self)
+        self._step_md()
+        self.write_supercell(geom.sc, fmt)
 
         has_data = not data is None
         if has_data:
@@ -49,31 +102,12 @@ class xsfSile(Sile):
         # The current geometry is currently only a single
         # one, and does not write the convvec
         # Is it a necessity?
-
-        # Write out top-header stuff
-        self._write('# File created by: sisl\n#\n')
-
-        self._write('CRYSTAL\n#\n')
-
-        self._write('# Primitive lattice vectors:\n#\n')
-        self._write('PRIMVEC\n')
-        # We write the cell coordinates as the cell coordinates
-        fmt_str = '{{:{0}}} '.format(fmt) * 3 + '\n'
-        for i in [0, 1, 2]:
-            self._write(fmt_str.format(*geom.cell[i, :]))
-
-        # Currently not written (we should convert the geometry
-        # to a conventional cell (90-90-90))
-        # It seems this simply allows to store both formats in
-        # the same file.
-        #self._write('\n# Conventional lattice vectors:\n#\n')
-        #self._write('CONVVEC\n')
-        #convcell =
-        #for i in [0, 1, 2]:
-        #    self._write(fmt_str.format(*convcell[i,:]))
-
-        self._write('#\n# Atomic coordinates (in primitive coordinates)\n#\n')
-        self._write('PRIMCOORD\n')
+        if self._md_index == 1:
+            self._write('#\n# Atomic coordinates (in primitive coordinates)\n#\n')
+        if self._md_steps is None:
+            self._write('PRIMCOORD\n')
+        else:
+            self._write('PRIMCOORD {}\n'.format(self._md_index))
         self._write('{} {}\n'.format(len(geom), 1))
 
         if has_data:
@@ -107,7 +141,7 @@ class xsfSile(Sile):
             # skip comments
             line = self.readline()
 
-            # We prefer the
+            # We prefer the primvec
             if line.startswith('CONVVEC') and not cell_set:
                 for i in [0, 1, 2]:
                     line = self.readline()
@@ -335,4 +369,24 @@ Any arguments inbetween are passed to the `read_data` function (in order).
                        help='Store the geometry/grid (plus any vector fields) the out file.')
 
 
+class axsfSile(Sile):
+    """ AXSF file for XCrySDen
+
+    When creating an AXSF file one should denote how many MD steps to write out:
+
+    >>> axsf = axsfSile('file.axsf', steps=100)
+    >>> for i in range(100):
+    ...    axsf.write_geometry(geom)
+    """
+
+    def _setup(self, *args, **kwargs):
+        super(axsfSile, self)._setup(*args, **kwargs)
+        # Correct number of steps
+        if self._md_steps is None:
+            self._md_steps = 1
+
+    write_grid = None
+
+
 add_sile('xsf', xsfSile, case=False, gzip=True)
+add_sile('axsf', axsfSile, case=False, gzip=True)
