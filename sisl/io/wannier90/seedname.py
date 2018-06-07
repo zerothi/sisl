@@ -4,6 +4,7 @@ Sile object for reading/writing Wannier90 in/output
 from __future__ import print_function
 
 import numpy as np
+from scipy.sparse import lil_matrix
 
 # Import sile objects
 from .sile import SileWannier90
@@ -12,7 +13,6 @@ from ..sile import *
 # Import the geometry object
 from sisl import Geometry, SuperCell
 from sisl.physics import Hamiltonian
-
 from sisl.unit import unit_convert
 
 __all__ = ['winSileWannier90']
@@ -307,7 +307,6 @@ class winSileWannier90(SileWannier90):
 
         # With the geometry in place we can read in the entire matrix
         # Create a new sparse matrix
-        from scipy.sparse import lil_matrix
         Hr = lil_matrix((geom.no, geom.no_s), dtype=dtype)
         Hi = lil_matrix((geom.no, geom.no_s), dtype=dtype)
 

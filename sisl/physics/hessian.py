@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 import numpy as np
+from scipy.sparse import lil_matrix
 
 from .sparse import SparseOrbitalBZ
 
@@ -188,8 +189,6 @@ class Hessian(SparseOrbitalBZ):
 
         Correcting for Newton forces the matrix to be finalized.
         """
-        from scipy.sparse import lil_matrix
-
         # Create UC dynamical matrix
         dyn_sc = self.tocsr(0)
         no = self.no

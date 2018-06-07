@@ -3,11 +3,13 @@ Sile object for reading the Hessian matrix written by GULP
 """
 from __future__ import print_function
 
+import numpy as np
+from scipy.sparse import lil_matrix
+
 # Import sile objects
 from .sile import SileGULP
 from ..sile import *
 
-import numpy as np
 
 __all__ = ['hessianSileGULP']
 
@@ -37,9 +39,6 @@ class hessianSileGULP(SileGULP):
         # Read number of atoms in the file...
         na = int(self.readline())
         no = na * 3
-
-        # Easier for creation of the sparsity pattern
-        from scipy.sparse import lil_matrix
 
         dyn = lil_matrix((no, no), dtype=dtype)
 

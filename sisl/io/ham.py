@@ -1,6 +1,8 @@
 from __future__ import print_function, division
 
 import numpy as np
+from scipy.sparse import lil_matrix
+from scipy.sparse import triu
 
 # Import sile objects
 from .sile import *
@@ -98,7 +100,6 @@ class hamiltonianSile(Sile):
 
         # With the geometry in place we can read in the entire matrix
         # Create a new sparse matrix
-        from scipy.sparse import lil_matrix
         H = lil_matrix((geom.no, geom.no_s), dtype=dtype)
         S = lil_matrix((geom.no, geom.no_s), dtype=dtype)
 
@@ -212,11 +213,9 @@ class hamiltonianSile(Sile):
         ham.finalize()
 
         # We use the upper-triangular form of the Hamiltonian
-        # and the overlap matrix
-        if hermitian:
-            from scipy.sparse import triu
+        # and the overlap matrix for hermitian problems
 
-        geom = ham.geom
+        geom = ham.geometry
 
         # First write the geometry
         self.write_geometry(geom, **kwargs)

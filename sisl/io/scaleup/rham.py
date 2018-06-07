@@ -1,10 +1,12 @@
 from __future__ import division, print_function
 
+import numpy as np
+from scipy.sparse import lil_matrix
+
 # Import sile objects
 from .sile import SileScaleUp
 from ..sile import *
 
-import numpy as np
 
 __all__ = ['rhamSileScaleUp']
 
@@ -72,9 +74,6 @@ class rhamSileScaleUp(SileScaleUp):
         if np.any(g.nsc != m_sc):
             # Correct the number of supercells
             g.set_nsc(m_sc)
-
-        # Easily construct the sparse matrix in python
-        from scipy.sparse import lil_matrix
 
         # List of Hamiltonians per spin
         Hs = [None] * ns
