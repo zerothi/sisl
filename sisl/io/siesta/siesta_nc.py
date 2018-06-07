@@ -157,9 +157,15 @@ class ncSileSiesta(SileCDFSiesta):
         geom.sc.set_nsc(np.amax(v[:, :], axis=0) * 2 + 1)
         geom.sc.sc_off = v[:, :]
 
+        # Since we may read in an orthogonal basis (stored in a Siesta compliant file)
+        # we can check whether it is orthogonal by checking the sum of the absolute S
+        # I.e. whether only diagonal elements are present.
+        S = np.array(sp.variables['S'][:], np.float64)
+        orthogonal = np.abs(S).sum() == geom.no
+
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
-        C = cls(geom, spin, nnzpr=1, orthogonal=False)
+        C = cls(geom, spin, nnzpr=1, orthogonal=orthogonal)
 
         C._csr.ncol = np.array(sp.variables['n_col'][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)
@@ -168,8 +174,11 @@ class ncSileSiesta(SileCDFSiesta):
 
         # Copy information over
         C._csr._nnz = len(C._csr.col)
-        C._csr._D = np.empty([C._csr.ptr[-1], spin+1], np.float64)
-        C._csr._D[:, C.S_idx] = np.array(sp.variables['S'][:], np.float64)
+        if orthogonal:
+            C._csr._D = np.empty([C._csr.ptr[-1], spin], np.float64)
+        else:
+            C._csr._D = np.empty([C._csr.ptr[-1], spin + 1], np.float64)
+            C._csr._D[:, C.S_idx] = S
 
         return C
 
@@ -180,27 +189,14 @@ class ncSileSiesta(SileCDFSiesta):
     def read_hamiltonian(self, **kwargs):
         """ Returns a Hamiltonian from the underlying NetCDF file """
         H = self._read_class_spin(Hamiltonian, **kwargs)
-        S = H._csr._D[:, H.S_idx]
-
-        Ef = self._value('Ef')[:] * Ry2eV
-        if Ef.size == 1:
-            Ef = np.tile(Ef, 2)
-        else:
-            dEf = np.diff(Ef)[0]
-            info(repr(self) + '.read_hamiltonian found a calculation with spin-dependent Fermi-levels: '
-                 'dEf={:.4f} eV. '
-                 'Both spin configurations are shifted to 0. This may change in future '
-                 'versions of sisl.'.format(dEf))
 
         sp = self._crt_grp(self, 'SPARSE')
-
         for i in range(len(H.spin)):
-            # Create new container
-            h = np.array(sp.variables['H'][i, :], np.float64) * Ry2eV
-            # Correct for the Fermi-level, Ef == 0
-            if i < 2:
-                h -= Ef[i] * S[:]
-            H._csr._D[:, i] = h[:]
+            H._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV
+
+        # Shift to the Fermi-level
+        Ef = - self._value('Ef')[:] * Ry2eV
+        H.shift(Ef)
 
         return H
 
@@ -213,9 +209,7 @@ class ncSileSiesta(SileCDFSiesta):
         H = self._read_class_spin(Hessian, **kwargs)
 
         sp = self._crt_grp(self, 'SPARSE')
-
-        for i in range(sp.variables['H'].shape[0]):
-            # Create new container
+        for i in range(len(H.spin)):
             H._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV ** 2
 
         return H
@@ -224,9 +218,9 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns a density matrix from the underlying NetCDF file """
         # This also adds the spin matrix
         DM = self._read_class_spin(DensityMatrix, **kwargs)
+
         sp = self._crt_grp(self, 'SPARSE')
         for i in range(len(DM.spin)):
-            # Create new container
             DM._csr._D[:, i] = sp.variables['DM'][i, :]
 
         return DM
@@ -234,9 +228,13 @@ class ncSileSiesta(SileCDFSiesta):
     def read_energy_density_matrix(self, **kwargs):
         """ Returns energy density matrix from the underlying NetCDF file """
         EDM = self._read_class_spin(EnergyDensityMatrix, **kwargs)
+
+        # In principle we should shift EDM according
+        info(self.__class__.__name__ + '.read_energy_density_matrix currently does not shift EDM to '
+             'the Fermi-level!')
+
         sp = self._crt_grp(self, 'SPARSE')
         for i in range(len(EDM.spin)):
-            # Create new container
             EDM._csr._D[:, i] = sp.variables['EDM'][i, :] * Ry2eV
 
         return EDM
