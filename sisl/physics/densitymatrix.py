@@ -22,221 +22,8 @@ from .sparse import SparseOrbitalBZSpin
 __all__ = ['DensityMatrix']
 
 
-class DensityMatrix(SparseOrbitalBZSpin):
-    """ Sparse density matrix object
-
-    Assigning or changing elements is as easy as with standard `numpy` assignments:
-
-    >>> DM = DensityMatrix(...) # doctest: +SKIP
-    >>> DM.D[1,2] = 0.1 # doctest: +SKIP
-
-    which assigns 0.1 as the density element between orbital 2 and 3.
-    (remember that Python is 0-based elements).
-
-    Parameters
-    ----------
-    geometry : Geometry
-      parent geometry to create a density matrix from. The density matrix will
-      have size equivalent to the number of orbitals in the geometry
-    dim : int or Spin, optional
-      number of components per element, may be a `Spin` object
-    dtype : np.dtype, optional
-      data type contained in the density matrix. See details of `Spin` for default values.
-    nnzpr : int, optional
-      number of initially allocated memory per orbital in the density matrix.
-      For increased performance this should be larger than the actual number of entries
-      per orbital.
-    spin : Spin, optional
-      equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.
-    orthogonal : bool, optional
-      whether the density matrix corresponds to a non-orthogonal basis. In this case
-      the dimensionality of the density matrix is one more than `dim`.
-      This is a keyword-only argument.
-    """
-
-    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
-        """ Initialize density matrix """
-        super(DensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
-
-        self.Dk = self.Pk
-        self.dDk = self.dPk
-        self.ddDk = self.ddPk
-
-    def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the density matrix for a given k-point
-
-        Creation and return of the density matrix for a given k-point (default to Gamma).
-
-        Notes
-        -----
-
-        Currently the implemented gauge for the k-point is the cell vector gauge:
-
-        .. math::
-           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k R}
-
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
-
-        Another possible gauge is the orbital distance which can be written as
-
-        .. math::
-           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}
-
-        where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
-
-        Parameters
-        ----------
-        k : array_like
-           the k-point to setup the density matrix at
-        dtype : numpy.dtype , optional
-           the data type of the returned matrix. Do NOT request non-complex
-           data-type for non-Gamma k.
-           The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
-           gauge.
-        format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
-           however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
-        spin : int, optional
-           if the density matrix is a spin polarized one can extract the specific spin direction
-           matrix by passing an integer (0 or 1). If the density matrix is not `Spin.POLARIZED`
-           this keyword is ignored.
-
-        See Also
-        --------
-        dDk : Density matrix derivative with respect to `k`
-        ddDk : Density matrix double derivative with respect to `k`
-
-        Returns
-        -------
-        object : the density matrix at :math:`k`. The returned object depends on `format`.
-        """
-        pass
-
-    def dDk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the density matrix derivative for a given k-point
-
-        Creation and return of the density matrix derivative for a given k-point (default to Gamma).
-
-        Notes
-        -----
-
-        Currently the implemented gauge for the k-point is the cell vector gauge:
-
-        .. math::
-           \nabla_k \mathbf D_\alpha(k) = i R_\alpha \mathbf D_{\nu\mu} e^{i k R}
-
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
-        And :math:`\alpha` is one of the Cartesian directions.
-
-        Another possible gauge is the orbital distance which can be written as
-
-        .. math::
-           \nabla_k \mathbf D_\alpha(k) = i r_\alpha \mathbf D_{\nu\mu} e^{i k r}
-
-        where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
-
-        Parameters
-        ----------
-        k : array_like
-           the k-point to setup the density matrix at
-        dtype : numpy.dtype , optional
-           the data type of the returned matrix. Do NOT request non-complex
-           data-type for non-Gamma k.
-           The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
-           gauge.
-        format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
-           however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
-        spin : int, optional
-           if the density matrix is a spin polarized one can extract the specific spin direction
-           matrix by passing an integer (0 or 1). If the density matrix is not `Spin.POLARIZED`
-           this keyword is ignored.
-
-        See Also
-        --------
-        Dk : Density matrix with respect to `k`
-        ddDk : Density matrix double derivative with respect to `k`
-
-        Returns
-        -------
-        tuple : for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k` is returned.
-        """
-        pass
-
-    def ddDk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the density matrix double derivative for a given k-point
-
-        Creation and return of the density matrix double derivative for a given k-point (default to Gamma).
-
-        Notes
-        -----
-
-        Currently the implemented gauge for the k-point is the cell vector gauge:
-
-        .. math::
-           \nabla_k^2 \mathbf D_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf D_{\nu\mu} e^{i k R}
-
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
-        And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
-
-        Another possible gauge is the orbital distance which can be written as
-
-        .. math::
-           \nabla_k^2 \mathbf D_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf D_{\nu\mu} e^{i k r}
-
-        where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
-
-        Parameters
-        ----------
-        k : array_like
-           the k-point to setup the density matrix at
-        dtype : numpy.dtype , optional
-           the data type of the returned matrix. Do NOT request non-complex
-           data-type for non-Gamma k.
-           The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
-           gauge.
-        format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
-           however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
-        spin : int, optional
-           if the density matrix is a spin polarized one can extract the specific spin direction
-           matrix by passing an integer (0 or 1). If the density matrix is not `Spin.POLARIZED`
-           this keyword is ignored.
-
-        See Also
-        --------
-        Dk : Density matrix with respect to `k`
-        dDk : Density matrix derivative with respect to `k`
-
-        Returns
-        -------
-        tuple of tuples : for each of the Cartesian directions
-        """
-        pass
-
-    def _get_D(self):
-        self._def_dim = self.UP
-        return self
-
-    def _set_D(self, key, value):
-        if len(key) == 2:
-            self._def_dim = self.UP
-        self[key] = value
-
-    D = property(_get_D, _set_D)
-
+class _realspace_DensityMatrix(SparseOrbitalBZSpin):
+    
     def density(self, grid, spinor=None, tol=1e-7, eta=False):
         r""" Expand the density matrix to the charge density on a grid
 
@@ -654,6 +441,222 @@ class DensityMatrix(SparseOrbitalBZSpin):
 
         # Reset the error code for division
         np.seterr(**old_err)
+
+
+class DensityMatrix(_realspace_DensityMatrix):
+    """ Sparse density matrix object
+
+    Assigning or changing elements is as easy as with standard `numpy` assignments:
+
+    >>> DM = DensityMatrix(...) # doctest: +SKIP
+    >>> DM.D[1,2] = 0.1 # doctest: +SKIP
+
+    which assigns 0.1 as the density element between orbital 2 and 3.
+    (remember that Python is 0-based elements).
+
+    Parameters
+    ----------
+    geometry : Geometry
+      parent geometry to create a density matrix from. The density matrix will
+      have size equivalent to the number of orbitals in the geometry
+    dim : int or Spin, optional
+      number of components per element, may be a `Spin` object
+    dtype : np.dtype, optional
+      data type contained in the density matrix. See details of `Spin` for default values.
+    nnzpr : int, optional
+      number of initially allocated memory per orbital in the density matrix.
+      For increased performance this should be larger than the actual number of entries
+      per orbital.
+    spin : Spin, optional
+      equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.
+    orthogonal : bool, optional
+      whether the density matrix corresponds to a non-orthogonal basis. In this case
+      the dimensionality of the density matrix is one more than `dim`.
+      This is a keyword-only argument.
+    """
+
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        """ Initialize density matrix """
+        super(DensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+
+        self.Dk = self.Pk
+        self.dDk = self.dPk
+        self.ddDk = self.ddPk
+
+    def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the density matrix for a given k-point
+
+        Creation and return of the density matrix for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals.
+        Currently this gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the density matrix at
+        dtype : numpy.dtype , optional
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is `numpy.complex128`
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+        spin : int, optional
+           if the density matrix is a spin polarized one can extract the specific spin direction
+           matrix by passing an integer (0 or 1). If the density matrix is not `Spin.POLARIZED`
+           this keyword is ignored.
+
+        See Also
+        --------
+        dDk : Density matrix derivative with respect to `k`
+        ddDk : Density matrix double derivative with respect to `k`
+
+        Returns
+        -------
+        object : the density matrix at :math:`k`. The returned object depends on `format`.
+        """
+        pass
+
+    def dDk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the density matrix derivative for a given k-point
+
+        Creation and return of the density matrix derivative for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+           \nabla_k \mathbf D_\alpha(k) = i R_\alpha \mathbf D_{\nu\mu} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        And :math:`\alpha` is one of the Cartesian directions.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+           \nabla_k \mathbf D_\alpha(k) = i r_\alpha \mathbf D_{\nu\mu} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals.
+        Currently this gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the density matrix at
+        dtype : numpy.dtype , optional
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is `numpy.complex128`
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+        spin : int, optional
+           if the density matrix is a spin polarized one can extract the specific spin direction
+           matrix by passing an integer (0 or 1). If the density matrix is not `Spin.POLARIZED`
+           this keyword is ignored.
+
+        See Also
+        --------
+        Dk : Density matrix with respect to `k`
+        ddDk : Density matrix double derivative with respect to `k`
+
+        Returns
+        -------
+        tuple : for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k` is returned.
+        """
+        pass
+
+    def ddDk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+        r""" Setup the density matrix double derivative for a given k-point
+
+        Creation and return of the density matrix double derivative for a given k-point (default to Gamma).
+
+        Notes
+        -----
+
+        Currently the implemented gauge for the k-point is the cell vector gauge:
+
+        .. math::
+           \nabla_k^2 \mathbf D_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf D_{\nu\mu} e^{i k R}
+
+        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
+
+        Another possible gauge is the orbital distance which can be written as
+
+        .. math::
+           \nabla_k^2 \mathbf D_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf D_{\nu\mu} e^{i k r}
+
+        where :math:`r` is the distance between the orbitals.
+        Currently this gauge is not implemented (yet).
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point to setup the density matrix at
+        dtype : numpy.dtype , optional
+           the data type of the returned matrix. Do NOT request non-complex
+           data-type for non-Gamma k.
+           The default data-type is `numpy.complex128`
+        gauge : {'R', 'r'}
+           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+           gauge.
+        format : {'csr', 'array', 'dense', 'coo', ...}
+           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           however if one always requires operations on dense matrices, one can always
+           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+        spin : int, optional
+           if the density matrix is a spin polarized one can extract the specific spin direction
+           matrix by passing an integer (0 or 1). If the density matrix is not `Spin.POLARIZED`
+           this keyword is ignored.
+
+        See Also
+        --------
+        Dk : Density matrix with respect to `k`
+        dDk : Density matrix derivative with respect to `k`
+
+        Returns
+        -------
+        tuple of tuples : for each of the Cartesian directions
+        """
+        pass
+
+    def _get_D(self):
+        self._def_dim = self.UP
+        return self
+
+    def _set_D(self, key, value):
+        if len(key) == 2:
+            self._def_dim = self.UP
+        self[key] = value
+
+    D = property(_get_D, _set_D)
 
     @staticmethod
     def read(sile, *args, **kwargs):

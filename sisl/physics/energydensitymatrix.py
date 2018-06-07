@@ -1,11 +1,12 @@
 from __future__ import print_function, division
 
 from .sparse import SparseOrbitalBZSpin
+from .densitymatrix import _realspace_DensityMatrix
 
 __all__ = ['EnergyDensityMatrix']
 
 
-class EnergyDensityMatrix(SparseOrbitalBZSpin):
+class EnergyDensityMatrix(_realspace_DensityMatrix):
     """ Sparse energy density matrix object
 
     Assigning or changing elements is as easy as with standard `numpy` assignments:
