@@ -229,13 +229,16 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns energy density matrix from the underlying NetCDF file """
         EDM = self._read_class_spin(EnergyDensityMatrix, **kwargs)
 
-        # In principle we should shift EDM according
-        info(self.__class__.__name__ + '.read_energy_density_matrix currently does not shift EDM to '
-             'the Fermi-level!')
+        # Shift to the Fermi-level
+        Ef = self._value('Ef')[:] * Ry2eV
+        if Ef.size == 1:
+            Ef = np.tile(Ef, 2)
 
         sp = self._crt_grp(self, 'SPARSE')
         for i in range(len(EDM.spin)):
             EDM._csr._D[:, i] = sp.variables['EDM'][i, :] * Ry2eV
+            if i < 2 and 'DM' in sp.variables:
+                EDM._csr._D[:, i] -= sp.variables['DM'][i, :] * Ef[i]
 
         return EDM
 
@@ -596,6 +599,10 @@ class ncSileSiesta(SileCDFSiesta):
         if EDM.dkind != 'f':
             raise NotImplementedError('Currently we only allow writing a floating point density matrix to the Siesta format')
 
+        v = self._crt_var(self, 'Ef', 'f8', ('one',))
+        v.info = 'Fermi level'
+        v.unit = 'Ry'
+        v[:] = kwargs.get('Ef', 0.) / Ry2eV
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
         v[:] = np.sum(EDM.geom.atom.q0)

@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. Z. Nourbakhsh and R. Asgari,
+   *Charge transport in doped zigzag phosphorene nanoribbons*,
+   Physical Review B **97**, `235406 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.97.235406>`_
+
 #. N. Papior, G. Calogero and M. Brandbyge,
    *Simple and efficient LCAO basis sets for the diffuse states in carbon nanostructures*,
    Journal of Physics: Condensed Matter `(2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aac4dd>`_
@@ -23,11 +27,11 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. P. Brandimarte, M. Engelund, N. Papior, A. Garcia-Lekue, T. Frederiksen and D. Sanchez-Portal,
    *A tunable electronic beam splitter realized with crossed graphene nanoribbons*,
-   Journal of Chemical Physics **146**, `092318 (2017) <http://aip.scitation.org/doi/10.1063/1.4974895>`_.
+   Journal of Chemical Physics **146**, `092318 (2017) <http://aip.scitation.org/doi/10.1063/1.4974895>`_
 
 #. V. Obersteiner, G. Huhs, N. Papior and E. Zojer,
    *Unconventional Current Scaling and Edge Effects for Charge Transport through Molecular Clusters*,
-   Nano Letters **17**, `12 (2017) <https://pubs.acs.org/doi/10.1021/acs.nanolett.7b03066>`_.
+   Nano Letters **17**, `12 (2017) <https://pubs.acs.org/doi/10.1021/acs.nanolett.7b03066>`_
    
 #. T. Groizard, N.R. Papior, B. Le Guennic, V. Robert and M. Kepenekian,
    *Enhanced Cooperativity in Supported Spin-Crossover Metal-Organic Frameworks*,
@@ -46,5 +50,3 @@ These publications are as far as we know in the review process.
 #. `Large-scale tight-binding simulations of quantum transport in ballistic graphene <https://arxiv.org/abs/1805.10220>`_
 
 #. `Exfoliation of single layer BiTeI flakes <https://arxiv.org/abs/1709.09732>`_
-
-#. `Charge transport in doped zigzag phosphorene nanoribbons <https://arxiv.org/abs/1803.00751>`_

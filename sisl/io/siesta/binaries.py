@@ -101,8 +101,10 @@ class tshsSileSiesta(SileBinSiesta):
         nnz = sizes[4]
         ncol, col, dH, dS = _siesta.read_tshs_hs(self.file, spin, no, nnz)
 
+        orthogonal = np.abs(dS).sum() == geom.no
+
         # Create the Hamiltonian container
-        H = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)
+        H = Hamiltonian(geom, spin, nnzpr=1, orthogonal=orthogonal)
 
         # Create the new sparse matrix
         H._csr.ncol = ncol.astype(np.int32, copy=False)
@@ -111,9 +113,13 @@ class tshsSileSiesta(SileBinSiesta):
         H._csr.col = col.astype(np.int32, copy=False) - 1
         H._csr._nnz = len(col)
 
-        H._csr._D = np.empty([nnz, spin+1], np.float64)
-        H._csr._D[:, :spin] = dH[:, :]
-        H._csr._D[:, spin] = dS[:]
+        if orthogonal:
+            H._csr._D = np.empty([nnz, spin], np.float64)
+            H._csr._D[:, :] = dH[:, :]
+        else:
+            H._csr._D = np.empty([nnz, spin+1], np.float64)
+            H._csr._D[:, :spin] = dH[:, :]
+            H._csr._D[:, spin] = dS[:]
 
         # Find all indices where dS == 1 (remember col is in fortran indices)
         idx = col[np.isclose(dS, 1.).nonzero()[0]]

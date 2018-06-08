@@ -23,7 +23,7 @@ __all__ = ['DensityMatrix']
 
 
 class _realspace_DensityMatrix(SparseOrbitalBZSpin):
-    
+
     def density(self, grid, spinor=None, tol=1e-7, eta=False):
         r""" Expand the density matrix to the charge density on a grid
 

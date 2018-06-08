@@ -228,7 +228,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
     H = property(_get_H, _set_H)
 
     def shift(self, E):
-        """ Shift the electronic structure by a constant energy
+        r""" Shift the electronic structure by a constant energy
+
+        This is equal to performing this operation:
+
+        .. math::
+           \mathbf H_\sigma = \mathbf H_\sigma + E \mathbf S
+
+        where :math:`\mathbf H_\sigma` correspond to the spin diagonal components of the
+        Hamiltonian.
 
         Parameters
         ----------

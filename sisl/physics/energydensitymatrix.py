@@ -1,5 +1,7 @@
 from __future__ import print_function, division
 
+import sisl._array as _a
+from sisl.messages import SislError
 from .sparse import SparseOrbitalBZSpin
 from .densitymatrix import _realspace_DensityMatrix
 
@@ -219,6 +221,41 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
         self[key] = value
 
     E = property(_get_E, _set_E)
+
+    def shift(self, E, DM):
+        r""" Shift the energy density matrix to a common energy by using a reference density matrix
+
+        This is equal to performing this operation:
+
+        .. math::
+           \mathfrak E_\sigma = \mathfrak E_\sigma + E \boldsymbol \rho_\sigma
+
+        where :math:`\mathfrak E_\sigma` correspond to the spin diagonal components of the
+        energy density matrix and :math:`\boldsymbol \rho_\sigma` is the spin diagonal
+        components of the corresponding density matrix.
+
+        Parameters
+        ----------
+        E : float or (2,)
+           the energy (in eV) to shift the energy density matrix, if two values are passed
+           the two first spin-components get shifted individually.
+        DM : DensityMatrix
+           density matrix corresponding to the same geometry
+        """
+        if not self.spsame(DM):
+            raise SislError(self.__class__.__name__ + '.shift requires the input DM to have '
+                            'the same sparsity as the shifted object.')
+
+        E = _a.asarrayd(E)
+        if E.size == 1:
+            E = np.tile(E, 2)
+
+        if np.abs(E).sum() == 0.:
+            # When the energy is zero, there is no shift
+            return
+
+        for i in range(min(self.spin.spins, 2)):
+            self._csr._D[:, i] += DM._csr._D[:, i] * E[i]
 
     @staticmethod
     def read(sile, *args, **kwargs):
