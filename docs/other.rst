@@ -13,9 +13,9 @@ Here a short introduction to some of the other methods is also highlighted.
 
 We are currently aware of 3 established tight-binding methods used in litterature (in random order):
 
-- PythTB, see `here <http://physics.rutgers.edu/pythtb/index.html>`_
-- kwant, see `here <https://kwant-project.org/>`_
-- pybinding, see `here <http://pybinding.site/>`_
+- `PythTB <http://physics.rutgers.edu/pythtb/index.html>`_
+- `kwant <https://kwant-project.org/>`_
+- `pybinding <http://pybinding.site/>`_
 
 sisl's philosophy is drastically different in the sense that the Hamiltonian (and other
 physical quantities described via matrices) is defined in matrix form. As for kwant and

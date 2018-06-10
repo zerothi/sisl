@@ -15,15 +15,23 @@
 |codecov|_
 
 
+.. title:: Tight-binding and DFT-LCAO post-processing tool in Python
+.. meta::
+   :description: sisl is a tool to manipulate an increasing amount of density functional
+		 theory code input and/or output. It also implements generic tight-binding
+		 tools to create and manipulate multi-orbital (non)-orthogonal basis sets.
+
+
 Welcome to sisl documentation!
 ==============================
 
 sisl is a tool to manipulate an increasing amount of density functional
 theory code input and/or output.
 It is also a tight-binding code implementing extremely fast and scalable
-tight-binding creation algorithms (`>1,000,000` orbitals).
+tight-binding creation algorithms (for millions of orbitals).
 sisl is developed in particular with `TBtrans`_ in mind to act as a tight-binding
-Hamiltonian input engine for *N*-electrode transport calculations.
+Hamiltonian input engine for *N*-electrode non-equilibrium Green function transport
+calculations.
 
 sisl is hosted here http://github.com/zerothi/sisl.
 
@@ -45,33 +53,7 @@ sisl consists of several distinct features:
   which provides easy examination of output files.
 
 * Command line utilities for processing of data files for a wide
-  variety of file formats:
-
-  * :ref:`script_sdata`
-    Read and transform *any* sisl data file. 
-    This script is capable of handling geometries, grids, special
-    data files such as binary files etc.
-
-  * :ref:`script_sgeom` a geometry conversion tool which reads and writes
-    many commonly encounted files for geometries, such as XYZ files etc.
-    as well as DFT related input and output files.
-
-  * :ref:`script_sgrid` a real-space grid conversion tool which reads and writes
-    many commonly encounted files for real-space grids.
-
-  
-:ref:`Installation <installation>`
-----------------------------------
-
-Follow :ref:`these steps <installation>` to install sisl.
-
-
-Indices
--------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+  variety of file formats.
 
 
 .. toctree::
@@ -82,7 +64,6 @@ Indices
    other.rst
 
 .. toctree::
-   :hidden:
    :maxdepth: 2
    :caption: Publications
 
@@ -90,7 +71,6 @@ Indices
    publications
 
 .. toctree::
-   :hidden:
    :maxdepth: 2
    :caption: User Guide
    
@@ -101,11 +81,14 @@ Indices
    rst/files
 
 .. toctree::
-   :hidden:
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Reference documentation
    
    api
+
+
+A table of contents for all methods may be found :ref:`here <genindex>` while
+a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 
 
 .. |buildstatus| image:: https://travis-ci.org/zerothi/sisl.svg
