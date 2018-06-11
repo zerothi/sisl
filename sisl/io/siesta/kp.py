@@ -6,8 +6,12 @@ import numpy as np
 from ..sile import add_sile, Sile_fh_open, sile_raise_write
 from .sile import *
 
+from sisl.unit.siesta import unit_convert
+
 
 __all__ = ['kpSileSiesta']
+
+Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class kpSileSiesta(SileSiesta):
@@ -19,7 +23,7 @@ class kpSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        sc : SuperCellChild
+        sc : SuperCellChild, optional
            if supplied the returned k-points will be in reduced coordinates
 
         Returns
@@ -36,9 +40,33 @@ class kpSileSiesta(SileSiesta):
             k[ik, :] = float(l[1]), float(l[2]), float(l[3])
             w[ik] = float(l[4])
 
+        # Correct units to 1/Ang
+        k /= Bohr2Ang
+
         if sc is None:
             return k, w
         return np.dot(k, sc.cell.T / (2 * np.pi)), w
+
+    @Sile_fh_open
+    def read_brillouinzone(self, sc):
+        """ Returns K-points from the file (note that these are in reciprocal units)
+
+        Parameters
+        ----------
+        sc : SuperCellChild
+           required supercell for the BrillouinZone object
+
+        Returns
+        -------
+        bz : BrillouinZone
+        """
+        k, w = self.read_data(sc)
+        from sisl.physics.brillouinzone import BrillouinZone
+
+        bz = BrillouinZone(sc)
+        bz._k = k
+        bz._w = w
+        return bz
 
     @Sile_fh_open
     def write_data(self, bz, fmt='.9e'):
