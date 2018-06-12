@@ -335,19 +335,21 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     Parameters
     ----------
     state : array_like
-       vectors describing the electronic states, 2nd dimension contains the states
+       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate
+       states the vectors *may* be rotated upon return.
     dHk : list of array_like
        Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
        list of the Hamiltonian derivative along the 3 Cartesian directions.
     energy : array_like, optional
-       energies of the states. Required for non-orthogonal basis together with `dSk`.
+       energies of the states. Required for non-orthogonal basis together with `dSk`. In case of degenerate
+       states the eigenvalues of the states will be averaged in the degenerate sub-space.
     dSk : list of array_like, optional
        :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
        provided in a non-orthogonal basis (otherwise the results will be wrong).
        Same derivative as `dHk`
     degenerate: list of array_like, optional
-       a list containing the indices of degenerate states. In that case a subsequent diagonalization
-       is required to decouple them.
+       a list containing the indices of degenerate states. In that case a prior diagonalization
+       is required to decouple them. This is done 3 times along each of the Cartesian directions.
 
     See Also
     --------
@@ -379,19 +381,12 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate):
     # Along all directions
     v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
-    # Since they depend on the state energies and dSk we have to loop them individually.
-    for s, e in enumerate(energy):
-
-        # Since dHk *may* be a csr_matrix or sparse, we have to do it like
-        # this. A sparse matrix cannot be re-shaped with an extra dimension.
-        v[s, 0] = (conj(state[s]) * (dHk[0] - e * dSk[0]).dot(state[s])).sum().real
-        v[s, 1] = (conj(state[s]) * (dHk[1] - e * dSk[1]).dot(state[s])).sum().real
-        v[s, 2] = (conj(state[s]) * (dHk[2] - e * dSk[2]).dot(state[s])).sum().real
-
-    # Now decouple the degenerate states
+    # Decouple the degenerate states
     if not degenerate is None:
         for deg in degenerate:
+            # Set the average energy
             e = np.average(energy[deg])
+            energy[deg] = e
 
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
@@ -401,13 +396,16 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate):
             vv = conj(S).dot((dHk[1] - e * dSk[1]).dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
             vv = conj(S).dot((dHk[2] - e * dSk[2]).dot(S.T))
-            S = eigh_destroy(vv)[1].T.dot(S)
+            state[deg, :] = eigh_destroy(vv)[1].T.dot(S)
 
-            # Calculate velocities
-            for s, e in enumerate(energy[deg]):
-                v[deg[s], 0] = (conj(S[s]) * (dHk[0] - e * dSk[0]).dot(S[s])).sum().real
-                v[deg[s], 1] = (conj(S[s]) * (dHk[1] - e * dSk[1]).dot(S[s])).sum().real
-                v[deg[s], 2] = (conj(S[s]) * (dHk[2] - e * dSk[2]).dot(S[s])).sum().real
+    # Since they depend on the state energies and dSk we have to loop them individually.
+    for s, e in enumerate(energy):
+
+        # Since dHk *may* be a csr_matrix or sparse, we have to do it like
+        # this. A sparse matrix cannot be re-shaped with an extra dimension.
+        v[s, 0] = (conj(state[s]) * (dHk[0] - e * dSk[0]).dot(state[s])).sum().real
+        v[s, 1] = (conj(state[s]) * (dHk[1] - e * dSk[1]).dot(state[s])).sum().real
+        v[s, 2] = (conj(state[s]) * (dHk[2] - e * dSk[2]).dot(state[s])).sum().real
 
     return v * _velocity_const
 
@@ -418,11 +416,7 @@ def _velocity_ortho(state, dHk, degenerate):
     # Along all directions
     v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
-    v[:, 0] = (conj(state.T) * dHk[0].dot(state.T)).sum(0).real
-    v[:, 1] = (conj(state.T) * dHk[1].dot(state.T)).sum(0).real
-    v[:, 2] = (conj(state.T) * dHk[2].dot(state.T)).sum(0).real
-
-    # Now decouple the degenerate states
+    # Decouple the degenerate states
     if not degenerate is None:
         for deg in degenerate:
             # Now diagonalize to find the contributions from individual states
@@ -433,12 +427,11 @@ def _velocity_ortho(state, dHk, degenerate):
             vv = conj(S).dot((dHk[1]).dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
             vv = conj(S).dot((dHk[2]).dot(S.T))
-            S = eigh_destroy(vv)[1].T.dot(S)
+            state[deg, :] = eigh_destroy(vv)[1].T.dot(S)
 
-            # Calculate velocities
-            v[deg, 0] = (conj(S.T) * dHk[0].dot(S.T)).sum(0).real
-            v[deg, 1] = (conj(S.T) * dHk[1].dot(S.T)).sum(0).real
-            v[deg, 2] = (conj(S.T) * dHk[2].dot(S.T)).sum(0).real
+    v[:, 0] = (conj(state.T) * dHk[0].dot(state.T)).sum(0).real
+    v[:, 1] = (conj(state.T) * dHk[1].dot(state.T)).sum(0).real
+    v[:, 2] = (conj(state.T) * dHk[2].dot(state.T)).sum(0).real
 
     return v * _velocity_const
 
@@ -471,18 +464,20 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
     Parameters
     ----------
     state : array_like
-       vectors describing the electronic states, 2nd dimension contains the states
+       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate
+       states the vectors *may* be rotated upon return.
     ddHk : (6,) of array_like
        Hamiltonian double derivative with respect to :math:`\mathbf k`. The input must be in Voigt order.
     energy : array_like, optional
-       energies of the states. Required for non-orthogonal basis together with `ddSk`.
+       energies of the states. Required for non-orthogonal basis together with `ddSk`. In case of degenerate
+       states the eigenvalues of the states will be averaged in the degenerate sub-space.
     ddSk : (6,) of array_like, optional
        overlap matrix required for non-orthogonal basis. This and `energy` *must* both be
        provided when the states are defined in a non-orthogonal basis (otherwise the results will be wrong).
        Same order as `ddHk`.
     degenerate: list of array_like, optional
        a list containing the indices of degenerate states. In that case a subsequent diagonalization
-       is required to decouple them.
+       is required to decouple them. This is done 3 times along the diagonal Cartesian directions.
     as_matrix : bool, optional
        if true the returned tensor will be a symmetric matrix, otherwise the Voigt tensor is returned.
 
@@ -520,6 +515,22 @@ def _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_mat
     else:
         M = np.empty([state.shape[0], 6], dtype=dtype_complex_to_real(state.dtype))
 
+    # Now decouple the degenerate states
+    if not degenerate is None:
+        for deg in degenerate:
+            e = np.average(energy[deg])
+            energy[deg] = e
+
+            # Now diagonalize to find the contributions from individual states
+            # then re-construct the seperated degenerate states
+            # We only do this along the double derivative directions
+            vv = conj(state[deg, :]).dot((ddHk[0] - e * ddSk[0]).dot(state[deg, :].T))
+            S = eigh_destroy(vv)[1].T.dot(state[deg, :])
+            vv = conj(S).dot((ddHk[1] - e * ddSk[1]).dot(S.T))
+            S = eigh_destroy(vv)[1].T.dot(S)
+            vv = conj(S).dot((ddHk[2] - e * ddSk[2]).dot(S.T))
+            state[deg, :] = eigh_destroy(vv)[1].T.dot(S)
+
     # Since they depend on the state energies and ddSk we have to loop them individually.
     for s, e in enumerate(energy):
 
@@ -527,26 +538,6 @@ def _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_mat
         # this. A sparse matrix cannot be re-shaped with an extra dimension.
         for i in range(6):
             M[s, i] = (conj(state[s]) * (ddHk[i] - e * ddSk[i]).dot(state[s])).sum().real
-
-    # Now decouple the degenerate states
-    if not degenerate is None:
-        for deg in degenerate:
-            e = np.average(energy[deg])
-
-            # Now diagonalize to find the contributions from individual states
-            # then re-construct the seperated degenerate states
-            # Since we do this for all directions we should decouple them all
-            vv = conj(state[deg, :]).dot((ddHk[0] - e * ddSk[0]).dot(state[deg, :].T))
-            S = eigh_destroy(vv)[1].T.dot(state[deg, :])
-            vv = conj(S).dot((ddHk[1] - e * ddSk[1]).dot(S.T))
-            S = eigh_destroy(vv)[1].T.dot(S)
-            vv = conj(S).dot((ddHk[2] - e * ddSk[2]).dot(S.T))
-            S = eigh_destroy(vv)[1].T.dot(S)
-
-            # Calculate velocities
-            for s, e in enumerate(energy[deg]):
-                for i in range(6):
-                    M[s, i] = (conj(S[s]) * (ddHk[i] - e * ddSk[i]).dot(S[s])).sum().real
 
     if as_matrix:
         M[:, 8] = M[:, 2] # zz
@@ -571,24 +562,21 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
     else:
         M = np.empty([state.shape[0], 6], dtype=dtype_complex_to_real(state.dtype))
 
-    for i in range(6):
-        M[:, i] = (conj(state.T) * ddHk[i].dot(state.T)).sum(0).real
-
     # Now decouple the degenerate states
     if not degenerate is None:
         for deg in degenerate:
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
-            # Since we do this for all directions we should decouple them all
+            # We only do this along the double derivative directions
             vv = conj(state[deg, :]).dot(ddHk[0].dot(state[deg, :].T))
             S = eigh_destroy(vv)[1].T.dot(state[deg, :])
             vv = conj(S).dot(ddHk[1].dot(S.T))
             S = eigh_destroy(vv)[1].T.dot(S)
             vv = conj(S).dot(ddHk[2].dot(S.T))
-            S = eigh_destroy(vv)[1].T.dot(S)
+            state[deg, :] = eigh_destroy(vv)[1].T.dot(S)
 
-            for i in range(6):
-                M[deg, i] = (conj(S.T) * ddHk[i].dot(S.T)).sum(0).real
+    for i in range(6):
+        M[:, i] = (conj(state.T) * ddHk[i].dot(state.T)).sum(0).real
 
     if as_matrix:
         M[:, 8] = M[:, 2] # zz
