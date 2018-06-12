@@ -266,8 +266,7 @@ class ncSileSiesta(SileCDFSiesta):
            ``[0.5, 0.5]`` will return sum of half the first two components.
            Default to the first component.
         """
-        # Swap as we swap back in the end
-        geom = self.read_geometry().swapaxes(0, 2)
+        geom = self.read_geometry()
 
         # Shorthand
         g = self.groups['GRID']
@@ -281,7 +280,7 @@ class ncSileSiesta(SileCDFSiesta):
         v = g.variables[name]
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, dtype=v.dtype)
+        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, geometry=geom, dtype=v.dtype)
 
         # Unit-conversion
         BohrC2AngC = Bohr2Ang ** 3
@@ -317,8 +316,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
-        grid = grid.swapaxes(0, 2)
-        grid.set_geom(geom)
+        grid.grid = np.copy(np.swapaxes(grid.grid, 0, 2), order='C')
 
         return grid
 

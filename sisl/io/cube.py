@@ -50,12 +50,9 @@ class cubeSile(Sile):
         self._write(_fmt.format(len(geometry), *(origo * Ang2Bohr)))
 
         # Write the cell and voxels
-        dcell = np.empty([3, 3], np.float64)
         for ix in range(3):
-            dcell[ix, :] = geometry.cell[ix, :] / size[ix] * Ang2Bohr
-        self._write(_fmt.format(size[0], *dcell[0, :]))
-        self._write(_fmt.format(size[1], *dcell[1, :]))
-        self._write(_fmt.format(size[2], *dcell[2, :]))
+            dcell = geometry.cell[ix, :] / size[ix] * Ang2Bohr
+            self._write(_fmt.format(size[ix], *dcell))
 
         tmp = ' {:' + fmt + '}'
         _fmt = '{:d} 0.0' + tmp + tmp + tmp + '\n'
