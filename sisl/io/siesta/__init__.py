@@ -30,6 +30,7 @@ sisl.
    orbindxSileSiesta - Basis set information (no geometry information)
    faSileSiesta - Forces on atoms
    kpSileSiesta - k-points from simulation
+   rkpSileSiesta - k-points to simulation
 
 The TranSiesta specific output files are:
 
