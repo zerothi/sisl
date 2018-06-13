@@ -351,8 +351,8 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        idx : array_like
-           the indices of the grid axis `axis` to be removed
+        idx : int
+           the index of the grid axis `axis` to be removed
            for ``above=True`` grid[:idx,...]
            for ``above=False`` grid[idx:,...]
         axis : int
@@ -372,8 +372,8 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        idx : array_like
-           the indices of the grid axis `axis` to be retained
+        idx : int
+           the index of the grid axis `axis` to be retained
            for ``above=True`` grid[idx:,...]
            for ``above=False`` grid[:idx,...]
         axis : int
