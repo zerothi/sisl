@@ -1,8 +1,9 @@
 from __future__ import print_function, division
 
 import os.path as osp
-import numpy as np
 import warnings
+from datetime import datetime
+import numpy as np
 
 # Import sile objects
 import sisl._array as _a
@@ -393,27 +394,26 @@ class fdfSileSiesta(SileSiesta):
            the value of the string. If a `str` is passed a regular
            fdf-key is used, if a `list` it will be a %block.
         keep : bool, optional
-           whether old flags will be kept in the fdf file.
+           whether old flags will be kept in the fdf file. In this case
+           a time-stamp will be written to show when the key was overwritten.
         """
 
         # To set a key we first need to figure out if it is
         # already present, if so, we will add the new key, just above
         # the already present key.
+        top_file = self.file
 
         # 1. find the old value, and thus the file in which it is found
         with self:
-            #old_value = self.get(key)
-            # Get the file of the containing data
-            top_file = self.file
+            try:
+                old_value = self.get(key)
+                # Get the file of the containing data
+                top_file = self.fh.name
+            except:
+                pass
 
-        try:
-            while len(self._parent_fh) > 0:
-                self.fh.close()
-                self.fh = self._parent_fh.pop()
-            self.fh.close()
-        except:
-            # Allowed pass due to pythonic reading
-            pass
+        # Ensure that all files are closed
+        self._seek()
 
         # Now we should re-read and edit the file
         lines = open(top_file, 'r').readlines()
@@ -422,23 +422,23 @@ class fdfSileSiesta(SileSiesta):
             if value is None:
                 return
             if isinstance(value, _str):
-                fh.write(' '.join([key, value]))
+                fh.write(self.print(key, value))
                 if '\n' not in value:
                     fh.write('\n')
             else:
-                fh.write('%block ' + key + '\n')
-                fh.write(''.join(value))
-                fh.write('%endblock ' + key + '\n')
+                raise NotImplementedError('Currently blocks are not implemented in set!')
+                fh.write(self.print(key, value) + '\n')
 
         # Now loop, write and edit
         do_write = True
+        lkey = key.lower()
         with open(top_file, 'w') as fh:
             for line in lines:
-                if self.line_has_key(line, key, case=False) and do_write:
+                if self.line_has_key(line, lkey, case=False) and do_write:
                     write(fh, value)
                     if keep:
-                        fh.write('# Old value\n')
-                        fh.write(line)
+                        fh.write('# Old value ({})\n'.format(datetime.today().strftime('%Y-%m-%d %H:%M')))
+                        fh.write('{}'.format(line))
                     do_write = False
                 else:
                     fh.write(line)
@@ -447,7 +447,7 @@ class fdfSileSiesta(SileSiesta):
     def print(key, value):
         """ Return a string which is pretty-printing the key+value """
         if isinstance(value, list):
-            s = '%block ' + key
+            s = '%block {}'.format(key)
             # if the value has any new-values
             has_nl = False
             for v in value:
@@ -460,7 +460,7 @@ class fdfSileSiesta(SileSiesta):
                 s += '\n{}'.format(''.join(value))
             else:
                 s += '\n{} {}'.format(value[0], '\n'.join(value[1:]))
-            s += '%endblock ' + key
+            s += '%endblock {}'.format(key)
         else:
             s = '{} {}'.format(key, value)
         return s

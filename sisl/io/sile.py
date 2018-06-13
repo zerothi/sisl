@@ -521,7 +521,7 @@ class Sile(BaseSile):
     def line_has_key(line, key, case=True):
         if case:
             return line.find(key) >= 0
-        return line.lower().find(key) >= 0
+        return line.lower().find(key.lower()) >= 0
 
     @staticmethod
     def line_has_keys(line, keys, case=True):
@@ -532,7 +532,7 @@ class Sile(BaseSile):
         else:
             l = line.lower()
             for key in keys:
-                found |= l.find(key) >= 0
+                found |= l.find(key.lower()) >= 0
         return found
 
     def readline(self, comment=False):

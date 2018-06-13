@@ -156,6 +156,34 @@ def test_geometry(sisl_tmp):
     assert g.atom[2].Z == 12
 
 
+def test_re_read(sisl_tmp):
+    f = sisl_tmp('file.fdf', _dir)
+    with open(f, 'w') as fh:
+        fh.write('Flag1 date\n')
+        fh.write('Flag1 not-date\n')
+        fh.write('Flag1 not-date-2\n')
+
+    fdf = fdfSileSiesta(f)
+    for i in range(10):
+        assert fdf.get('Flag1') == 'date'
+
+
+def test_get_set(sisl_tmp):
+    f = sisl_tmp('file.fdf', _dir)
+    with open(f, 'w') as fh:
+        fh.write('Flag1 date\n')
+
+    fdf = fdfSileSiesta(f)
+    assert fdf.get('Flag1') == 'date'
+    fdf.set('Flag1', 'not-date')
+    assert fdf.get('Flag1') == 'not-date'
+    fdf.set('Flag1', 'date')
+    assert fdf.get('Flag1') == 'date'
+    fdf.set('Flag1', 'date-date')
+    assert fdf.get('Flag1') == 'date-date'
+    fdf.set('Flag1', 'date-date', keep=False)
+
+
 def test_include(sisl_tmp):
     f = sisl_tmp('file.fdf', _dir)
     with open(f, 'w') as fh:
