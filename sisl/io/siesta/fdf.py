@@ -853,9 +853,9 @@ class fdfSileSiesta(SileSiesta):
             case insensitive.
         order: list of str, optional
             the order of which to try and read the geometry.
-            By default this is ``['nc', 'grid.nc', 'bin']``.
+            By default this is ``['nc', 'grid.nc']``.
         """
-        order = kwargs.pop('order', ['nc', 'grid.nc', 'bin'])
+        order = kwargs.pop('order', ['nc', 'grid.nc'])
         for f in order:
             v = getattr(self, '_r_grid_{}'.format(f.lower()))(name, *args, **kwargs)
             if v is not None:
@@ -907,12 +907,8 @@ class fdfSileSiesta(SileSiesta):
 
         f = self._tofile(name)
         if isfile(f):
-            return gridncSileSiesta(f).read_grid(*args, **kwargs)
-        return None
-
-    def _r_grid_bin(self, name, *args, **kwargs):
-        # Read from the binary files
-        info('fdf reading grids from binary files are currently not implemented')
+            grid = gridncSileSiesta(f).read_grid(*args, **kwargs)
+            grid.set_geometry(self.read_geometry(True))
         return None
 
     def read_basis(self, *args, **kwargs):
