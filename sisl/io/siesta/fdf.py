@@ -837,6 +837,84 @@ class fdfSileSiesta(SileSiesta):
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
 
+    def read_grid(self, name, *args, **kwargs):
+        """ Read grid related information from any of the output files
+
+        The order of the readed data is shown below.
+
+        One can limit the tried files to only one file by passing
+        only a single file ending.
+
+        Parameters
+        ----------
+        name : str
+            name of data to read. The list of names correspond to the
+            Siesta output manual (Rho, TotalPotential, etc.), the strings are
+            case insensitive.
+        order: list of str, optional
+            the order of which to try and read the geometry.
+            By default this is ``['nc', 'grid.nc', 'bin']``.
+        """
+        order = kwargs.pop('order', ['nc', 'grid.nc', 'bin'])
+        for f in order:
+            v = getattr(self, '_r_grid_{}'.format(f.lower()))(name, *args, **kwargs)
+            if v is not None:
+                return v
+        return None
+
+    def _r_grid_nc(self, name, *args, **kwargs):
+        # Read grid from the <>.nc file
+        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            # Capitalize correctly
+            name = {'rho': 'Rho',
+                    'rhoinit': 'RhoInit',
+                    'vna': 'Vna',
+                    'chlocal': 'Chlocal',
+                    'rhotot': 'RhoTot',
+                    'totalcharge': 'RhoTot',
+                    'deltarho': 'RhoDelta',
+                    'rhodelta': 'RhoDelta',
+                    'electrostaticpotential': 'Vh',
+                    'vh': 'Vh',
+                    'rhoxc': 'RhoXC',
+                    'totalpotential': 'Vt',
+                    'vt': 'Vt',
+                    'baderrho': 'RhoBader',
+                    'rhobader': 'RhoBader'
+            }.get(name.lower())
+            return ncSileSiesta(f).read_grid(name, **kwargs)
+        return None
+
+    def _r_grid_grid_nc(self, name, *args, **kwargs):
+        # Read grid from the <>.nc file
+        name = {'rho': 'Rho',
+                'rhoinit': 'RhoInit',
+                'vna': 'Vna',
+                'chlocal': 'Chlocal',
+                'rhotot': 'TotalCharge',
+                'totalcharge': 'TotalCharge',
+                'deltarho': 'DeltaRho',
+                'rhodelta': 'DeltaRho',
+                'electrostaticpotential': 'ElectrostaticPotential',
+                'vh': 'ElectrostaticPotential',
+                'rhoxc': 'RhoXC',
+                'totalpotential': 'TotalPotential',
+                'vt': 'TotalPotential',
+                'baderrho': 'BaderCharge',
+                'rhobader': 'BaderCharge'
+        }.get(name.lower()) + '.grid.nc'
+
+        f = self._tofile(name)
+        if isfile(f):
+            return gridncSileSiesta(f).read_grid(*args, **kwargs)
+        return None
+
+    def _r_grid_bin(self, name, *args, **kwargs):
+        # Read from the binary files
+        info('fdf reading grids from binary files are currently not implemented')
+        return None
+
     def read_basis(self, *args, **kwargs):
         """ Read the atomic species and figure out the number of atomic orbitals in their basis
 
