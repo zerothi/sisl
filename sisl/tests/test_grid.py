@@ -123,6 +123,24 @@ class TestGrid(object):
         assert np.allclose(setup.g.cell[0, :], g.cell[1, :])
         assert np.allclose(setup.g.cell[1, :], g.cell[0, :])
 
+    def test_average(self, setup):
+        g = setup.g.copy()
+        g.grid.fill(1)
+        shape = g.shape
+        for i in range(3):
+            assert g.average(i).grid.sum() == shape[0] * shape[1] * shape[2] / shape[i]
+        assert g.average(0).shape == (1, shape[1], shape[2])
+        assert g.average(1).shape == (shape[0], 1, shape[2])
+        assert g.average(2).shape == (shape[0], shape[1], 1)
+
+    def test_average_weight(self, setup):
+        g = setup.g.copy()
+        g.grid.fill(1)
+        shape = g.shape
+        for i in range(3):
+            w = np.zeros(shape[i]) + 0.5
+            assert g.average(i, weights=w).grid.sum() == shape[0] * shape[1] * shape[2] / shape[i]
+
     def test_interp(self, setup):
         shape = np.array(setup.g.shape, np.int32)
         g = setup.g.interp(shape * 2)

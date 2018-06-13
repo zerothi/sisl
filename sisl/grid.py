@@ -290,21 +290,27 @@ class Grid(SuperCellChild):
         """ Volume of the grids voxel elements """
         return self.sc.volume / self.size
 
+    def _copy_sub(self, n, axis):
+        # First calculate the new shape
+        shape = list(self.shape)
+        cell = np.copy(self.cell)
+        # Down-scale cell
+        cell[axis, :] = (cell[axis, :] / shape[axis]) * n
+        shape[axis] = n
+        if n < 1:
+            raise ValueError('You cannot retain no indices.')
+        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
+        # Update cell shape (the cell is smaller now)
+        grid.set_sc(cell)
+        return grid
+
     def cross_section(self, idx, axis):
         """ Takes a cross-section of the grid along axis `axis`
 
         Remark: This API entry might change to handle arbitrary
         cuts via rotation of the axis """
         idx = _a.asarrayi(idx).ravel()
-        # First calculate the new shape
-        shape = list(self.shape)
-        cell = np.copy(self.cell)
-        # Down-scale cell
-        cell[axis, :] /= shape[axis]
-        shape[axis] = 1
-        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
-        # Update cell shape (the cell is smaller now)
-        grid.set_sc(cell)
+        grid = self._copy_sub(1, axis)
 
         if axis == 0:
             grid.grid[:, :, :] = self.grid[idx, :, :]
@@ -318,28 +324,49 @@ class Grid(SuperCellChild):
         return grid
 
     def sum(self, axis):
-        """ Returns the grid summed along axis `axis`. """
-        # First calculate the new shape
-        shape = list(self.shape)
-        cell = np.copy(self.cell)
-        # Down-scale cell
-        cell[axis, :] /= shape[axis]
-        shape[axis] = 1
+        """ Returns the grid summed along axis `axis`.
 
-        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
-        # Update cell shape (the cell is smaller now)
-        grid.set_sc(cell)
-
+        Parameters
+        ----------
+        axis : int
+            unit-cell direction to sum across
+        """
+        grid = self._copy_sub(1, axis)
         # Calculate sum (retain dimensions)
         np.sum(self.grid, axis=axis, keepdims=True, out=grid.grid)
         return grid
 
-    def average(self, axis):
-        """ Returns the average grid along direction `axis` """
-        n = self.shape[axis]
-        g = self.sum(axis)
-        g /= float(n)
-        return g
+    def average(self, axis, weights=None):
+        """ Returns the average grid along direction `axis`.
+
+        Parameters
+        ----------
+        axis : int
+            unit-cell direction to average across
+        weights : array_like
+            the weights for the individual axis elements, if boolean it corresponds to 0 and 1
+            for false/true.
+
+        See Also
+        --------
+        numpy.average : for details regarding the `weights` argument
+        """
+        grid = self._copy_sub(1, axis)
+
+        if weights is None:
+            # Calculate sum (retain dimensions)
+            np.sum(self.grid, axis=axis, keepdims=True, out=grid.grid)
+            grid.grid /= self.shape[axis]
+        elif axis == 0:
+            grid.grid[0, :, :] = np.average(self.grid, axis=axis, weights=weights)
+        elif axis == 1:
+            grid.grid[:, 0, :] = np.average(self.grid, axis=axis, weights=weights)
+        elif axis == 2:
+            grid.grid[:, :, 0] = np.average(self.grid, axis=axis, weights=weights)
+        else:
+            raise ValueError(self.__class__.__name__ + '.average requires `axis` to be in [0, 1, 2]')
+
+        return grid
 
     # for compatibility
     mean = average
@@ -407,23 +434,7 @@ class Grid(SuperCellChild):
         ValueError : if the length of the indices is 0
         """
         idx = _a.asarrayi(idx).ravel()
-
-        # Calculate new shape
-        shape = list(self.shape)
-        cell = np.copy(self.cell)
-        old_N = shape[axis]
-
-        # Calculate new shape
-        shape[axis] = len(idx)
-        if shape[axis] < 1:
-            raise ValueError('You cannot retain no indices.')
-
-        # Down-scale cell
-        cell[axis, :] = cell[axis, :] / old_N * shape[axis]
-
-        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
-        # Update cell shape (the cell is smaller now)
-        grid.set_sc(cell)
+        grid = self._copy_sub(len(idx), axis)
 
         # Remove the indices
         # First create the opposite, index
