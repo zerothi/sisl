@@ -23,6 +23,7 @@ def setup():
                                         [1., 0., 0.]], np.float64) * bond,
                               atom=C, sc=self.sc)
             self.E = EnergyDensityMatrix(self.g)
+            self.ES = EnergyDensityMatrix(self.g, orthogonal=False)
 
             def func(E, ia, idxs, idxs_xyz):
                 idx = E.geom.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
@@ -80,6 +81,32 @@ class TestEnergyDensityMatrix(object):
 
     def test_ortho(self, setup):
         assert setup.E.orthogonal
+
+    def test_mulliken(self, setup):
+        E = setup.E.copy()
+        E.construct(setup.func)
+        mulliken = E.energy_charge()
+        assert len(mulliken) == 1
+
+    def test_mulliken_values_orthogonal(self, setup):
+        E = setup.E.copy()
+        E.empty()
+        E[0, 0] = 1.
+        E[1, 1] = 2.
+        E[1, 2] = 2.
+        mulliken = E.energy_charge()
+        assert mulliken[0].getnnz() == 2
+        assert mulliken[0].sum() == pytest.approx(3)
+
+    def test_mulliken_values_non_orthogonal(self, setup):
+        E = setup.ES.copy()
+        E.empty()
+        E[0, 0] = (1., 1.)
+        E[1, 1] = (2., 1.)
+        E[1, 2] = (2., 0.5)
+        mulliken = E.energy_charge()
+        assert mulliken[0].getnnz() == 3
+        assert mulliken[0].sum() == pytest.approx(4.)
 
     def test_set1(self, setup):
         setup.E.E[0, 0] = 1.

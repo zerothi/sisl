@@ -24,6 +24,45 @@ __all__ = ['DensityMatrix']
 
 class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
+    def _mulliken(self):
+        # Calculate the Mulliken elements
+
+        # First we re-create the sparse matrix as required for csr_matrix
+        ptr = self._csr.ptr
+        ncol = self._csr.ncol
+        # Indices of non-zero elements
+        idx = array_arange(ptr[:-1], n=ncol)
+        # Create the new pointer array
+        new_ptr = _a.emptyi(len(ptr))
+        new_ptr[0] = 0
+        col = self._csr.col[idx]
+        _a.cumsumi(ncol, out=new_ptr[1:])
+
+        # The shape of the matrices
+        shape = self.shape[:2]
+
+        # Create list of charges to be returned
+        Q = list()
+
+        if self.orthogonal:
+            # We only need the diagonal elements
+            S = csr_matrix(shape, dtype=self.dtype)
+            S.setdiag(1.)
+
+            for i in range(self.shape[2]):
+                DM = csr_matrix((self._csr._D[idx, i], col, new_ptr), shape=shape)
+                Q.append(DM.multiply(S))
+                Q[-1].eliminate_zeros()
+        else:
+
+            # We now what S is and do it element-wise.
+            q = self._csr._D[idx, :-1] * self._csr._D[idx, self.S_idx].reshape(-1, 1)
+            for i in range(q.shape[1]):
+                Q.append(csr_matrix((q[:, i], col, new_ptr), shape=shape))
+                Q[-1].eliminate_zeros()
+
+        return Q
+
     def density(self, grid, spinor=None, tol=1e-7, eta=False):
         r""" Expand the density matrix to the charge density on a grid
 
@@ -646,6 +685,24 @@ class DensityMatrix(_realspace_DensityMatrix):
         tuple of tuples : for each of the Cartesian directions
         """
         pass
+
+    def charge(self, method='mulliken'):
+        """ Calculate orbital charges based on the density matrix
+
+        This returns CSR-matrices with each spin-components charges.
+
+        Parameters
+        ----------
+        method : str, optional
+            choice of method to calculate the charges, currently only Mulliken is allowed
+
+        Returns
+        -------
+        charge : csr_matrix of charges
+        """
+        if method.lower() == 'mulliken':
+            return self._mulliken()
+        raise NotImplementedError(self.__class__.__name__ + '.charge does not implement the "{}" method.'.format(method))
 
     def _get_D(self):
         self._def_dim = self.UP

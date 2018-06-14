@@ -29,6 +29,7 @@ def setup():
                                         [1., 0., 0.]], np.float64) * bond,
                               atom=C, sc=self.sc)
             self.D = DensityMatrix(self.g)
+            self.DS = DensityMatrix(self.g, orthogonal=False)
 
             def func(D, ia, idxs, idxs_xyz):
                 idx = D.geom.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
@@ -84,6 +85,32 @@ class TestDensityMatrix(object):
         assert setup.D[0, 0] == 1.
         assert setup.D[1, 0] == 0.
         setup.D.empty()
+
+    def test_mulliken(self, setup):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        mulliken = D.charge()
+        assert len(mulliken) == 1
+
+    def test_mulliken_values_orthogonal(self, setup):
+        D = setup.D.copy()
+        D.empty()
+        D.D[0, 0] = 1.
+        D.D[1, 1] = 2.
+        D.D[1, 2] = 2.
+        mulliken = D.charge()
+        assert mulliken[0].getnnz() == 2
+        assert mulliken[0].sum() == pytest.approx(3)
+
+    def test_mulliken_values_non_orthogonal(self, setup):
+        D = setup.DS.copy()
+        D.empty()
+        D[0, 0] = (1., 1.)
+        D[1, 1] = (2., 1.)
+        D[1, 2] = (2., 0.5)
+        mulliken = D.charge()
+        assert mulliken[0].getnnz() == 3
+        assert mulliken[0].sum() == pytest.approx(4.)
 
     def test_rho1(self, setup):
         D = setup.D.copy()
