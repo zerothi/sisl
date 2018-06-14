@@ -455,7 +455,7 @@ class BrillouinZone(object):
         This allows one to pass a `tableSile` or a file-name.
         """
         from sisl.io import tableSile
-        kw = np.concatenate((self._k, self._w.reshape(-1, 1)), axis=1)
+        kw = np.concatenate((self.k, self.weight.reshape(-1, 1)), axis=1)
         if isinstance(sile, tableSile):
             sile.write_data(kw.T, *args, **kwargs)
         else:
@@ -844,6 +844,7 @@ class BandStructure(BrillouinZone):
             self.name = name
 
         self._k = _a.arrayd([k for k in self])
+        self._w = np.ones(len(self.k)) / len(self.k)
 
     def __iter__(self):
         """ Iterate through the path """
