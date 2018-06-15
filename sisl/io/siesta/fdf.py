@@ -473,12 +473,19 @@ class fdfSileSiesta(SileSiesta):
 
         fmt_str = ' {{0:{0}}} {{1:{0}}} {{2:{0}}}\n'.format(fmt)
 
+        unit = kwargs.get('unit', 'Ang').capitalize()
+        conv = 1.
+        if unit in ['Ang', 'Bohr']:
+            conv = unit_convert('Ang', unit)
+        else:
+            unit = 'Ang'
+
         # Write out the cell
-        self._write('LatticeConstant 1. Ang\n')
+        self._write('LatticeConstant 1. {}\n'.format(unit))
         self._write('%block LatticeVectors\n')
-        self._write(fmt_str.format(*sc.cell[0, :]))
-        self._write(fmt_str.format(*sc.cell[1, :]))
-        self._write(fmt_str.format(*sc.cell[2, :]))
+        self._write(fmt_str.format(*sc.cell[0, :] * conv))
+        self._write(fmt_str.format(*sc.cell[1, :] * conv))
+        self._write(fmt_str.format(*sc.cell[2, :] * conv))
         self._write('%endblock LatticeVectors\n')
 
     @Sile_fh_open
@@ -491,13 +498,23 @@ class fdfSileSiesta(SileSiesta):
 
         self._write('\n')
         self._write('NumberOfAtoms {0}\n'.format(geom.na))
-        self._write('AtomicCoordinatesFormat Ang\n')
+        unit = kwargs.get('unit', 'Ang').capitalize()
+        is_fractional = unit in ['Frac', 'Fractional']
+        if is_fractional:
+            self._write('AtomicCoordinatesFormat Fractional\n')
+        else:
+            conv = unit_convert('Ang', unit)
+            self._write('AtomicCoordinatesFormat {}\n'.format(unit))
         self._write('%block AtomicCoordinatesAndAtomicSpecies\n')
 
         fmt_str = ' {{2:{0}}} {{3:{0}}} {{4:{0}}} {{0}} # {{1}}\n'.format(fmt)
         # Count for the species
+        if is_fractional:
+            xyz = geom.fxyz
+        else:
+            xyz = geom.xyz * conv
         for ia, a, isp in geom.iter_species():
-            self._write(fmt_str.format(isp + 1, ia + 1, *geom.xyz[ia, :]))
+            self._write(fmt_str.format(isp + 1, ia + 1, *xyz[ia, :]))
         self._write('%endblock AtomicCoordinatesAndAtomicSpecies\n\n')
 
         # Write out species

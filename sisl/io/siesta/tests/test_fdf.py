@@ -46,6 +46,21 @@ def test_fdf2(sisl_tmp, sisl_system):
         assert g.atom[ia].tag == sisl_system.g.atom[ia].tag
 
 
+def test_fdf_units(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.fdf', _dir)
+    fdf = fdfSileSiesta(f, 'w')
+    g = sisl_system.g
+
+    for unit in ['bohr', 'ang', 'fractional', 'frac']:
+        fdf.write_geometry(g, unit=unit)
+        g2 = fdfSileSiesta(f).read_geometry()
+        assert np.allclose(g.cell, g2.cell)
+        assert np.allclose(g.xyz, g2.xyz)
+        for ia in g:
+            assert g.atom[ia].Z == g2.atom[ia].Z
+            assert g.atom[ia].tag == g2.atom[ia].tag
+
+
 def test_supercell(sisl_tmp):
     f = sisl_tmp('file.fdf', _dir)
     lines = [
