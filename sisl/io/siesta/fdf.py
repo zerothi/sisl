@@ -481,7 +481,7 @@ class fdfSileSiesta(SileSiesta):
             unit = 'Ang'
 
         # Write out the cell
-        self._write('LatticeConstant 1. {}\n'.format(unit))
+        self._write('LatticeConstant 1.0 {}\n'.format(unit))
         self._write('%block LatticeVectors\n')
         self._write(fmt_str.format(*sc.cell[0, :] * conv))
         self._write(fmt_str.format(*sc.cell[1, :] * conv))
