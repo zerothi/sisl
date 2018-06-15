@@ -45,4 +45,18 @@ def test_read_fc_old(sisl_tmp):
     assert fc.shape == fc2.shape
     assert np.allclose(fc, fc2)
 
-    fcSileSiesta(f).read_hessian()
+    fc2 = fcSileSiesta(f).read_force_constant()
+    assert fc.shape != fc2.shape
+    fc2.shape = (-1, 6, 2, 3)
+    assert fc.shape == fc2.shape
+    assert np.allclose(fc, fc2)
+
+    # Specify number of atoms
+    fc2 = fcSileSiesta(f).read_force_constant(2)
+    assert fc.shape == fc2.shape
+    assert np.allclose(fc, fc2)
+
+    # Specify number of atoms and correction to check they are equivalent
+    fc2 = fcSileSiesta(f).read_force(-1., na=2)
+    assert fc.shape == fc2.shape
+    assert np.allclose(fc, fc2)
