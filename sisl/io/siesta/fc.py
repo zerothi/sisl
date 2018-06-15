@@ -22,6 +22,15 @@ class fcSileSiesta(SileSiesta):
         this will only return forces on the displaced configurations minus the forces from
         the non-displaced configuration.
 
+        This may be used in conjunction with phonopy by noticing that Siesta FC-runs does
+        the displacements in reverse order (-x/+x vs. +x/-x). In this case one should reorder
+        the elements like this:
+
+        >>> fc2 = fc.copy() # doctest: +SKIP
+        >>> for i in range(3): # doctest: +SKIP
+        ...    fc[:, i*2+1, :, :] = fc2[:, i*2, :, :] # doctest: +SKIP
+        ...    fc[:, i*2, :, :] = fc2[:, i*2+1, :, :] # doctest: +SKIP
+
         Parameters
         ----------
         displacement : float, optional
@@ -47,7 +56,11 @@ class fcSileSiesta(SileSiesta):
             except:
                 displacement = 0.04 * unit_convert('Bohr', 'Ang')
 
-        return - self.read_force_constant(na) * displacement
+        # Since the displacements changes sign (starting with a negative sign)
+        # we can convert using this scheme
+        displacement = np.repeat(displacement, 6).ravel()
+        displacement[1::2] *= -1
+        return self.read_force_constant(na) * displacement.reshape(1, 6, 1, 1)
 
     @Sile_fh_open
     def read_force_constant(self, na=None):
@@ -81,10 +94,14 @@ class fcSileSiesta(SileSiesta):
 
         # Units are already eV / Ang ** 2
         fc = np.array(fc)
+
         # Slice to correct size
         if na is None:
             na = fc.size // 6 // 3
+
+        # Correct shape of matrix
         fc.shape = (-1, 6, na, 3)
+
         return fc
 
 add_sile('FC', fcSileSiesta, case=False, gzip=True)
