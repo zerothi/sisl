@@ -719,6 +719,12 @@ class fdfSileSiesta(SileSiesta):
     def read_force_constant(self, *args, **kwargs):
         """ Read force constant from the output of the calculation
 
+        Parameters
+        ----------
+        correct_fc : bool, optional
+            correct the FC-matrix by forcing the force on the moved atom to be
+            equal to the negative sum of all the others.
+
         Returns
         -------
         (*, 6, *, 3) : vector with force constant element for each of the atomic displacements
@@ -733,7 +739,20 @@ class fdfSileSiesta(SileSiesta):
     def _r_force_constant_fc(self, *args, **kwargs):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.FC'
         if isfile(f):
-            return fcSileSiesta(f).read_force_constant()
+            na = self.get('NumberOfAtoms', default=None)
+            fc = fcSileSiesta(f).read_force_constant(na=na)
+            # Figure out which atoms to correct
+            fc_first = self.get('MD.FCFirst', default=0)
+            fc_last = self.get('MD.FCLast', default=0)
+            if 0 == fc_first or 0 == fc_last:
+                raise SislError(repr(self) + '.read_force_constant(FC) requires FCFirst/FCLast to be set correctly.')
+            if fc_last - fc_first + 1 != fc.shape[0]:
+                raise SislError(repr(self) + '.read_force_constant(FC) has erroneous FC file compared to FCFirst/FCLast.')
+            if kwargs.get('correct_fc', True):
+                for i in range(fc_first - 1, fc_last):
+                    j = i - fc_first + 1
+                    fc[j, :, i, :] -= fc[j, :, :, :].sum(1)
+            return fc
         return None
 
     def read_geometry(self, output=False, *args, **kwargs):
