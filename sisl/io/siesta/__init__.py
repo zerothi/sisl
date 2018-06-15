@@ -29,6 +29,7 @@ sisl.
    ionncSileSiesta - Basis-information from the ion.nc files
    orbindxSileSiesta - Basis set information (no geometry information)
    faSileSiesta - Forces on atoms
+   fcSileSiesta - Force constant matrix
    kpSileSiesta - k-points from simulation
    rkpSileSiesta - k-points to simulation
 
@@ -49,6 +50,7 @@ from .basis import *
 from .binaries import *
 from .eig import *
 from .fa import *
+from .fc import *
 from .fdf import *
 from .kp import *
 from .orb_indx import *
