@@ -3,5 +3,7 @@ build
 index.rst
 docs/build
 docs/sisl
+sisl.egg-info
 sisl/info.py
 sisl/io/siesta/_siesta.so
+sisl/**/*.html
