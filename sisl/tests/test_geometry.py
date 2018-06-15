@@ -6,7 +6,7 @@ import math as m
 import numpy as np
 
 import sisl.geom as sisl_geom
-from sisl import SislWarning
+from sisl import SislWarning, SislError
 from sisl import Cube, Sphere
 from sisl import Geometry, Atom, SuperCell
 
@@ -1113,3 +1113,34 @@ class TestGeometry(object):
         s = p.dumps(setup.g)
         n = p.loads(s)
         assert n == setup.g
+
+    def test_geometry_groups(self):
+        g = sisl_geom.graphene()
+
+        assert len(g.group) == 0
+        g['A'] = 1
+        assert len(g.group) == 1
+        g['B'] = [1, 2]
+        assert len(g.group) == 2
+        g.group.delete('B')
+        assert len(g.group) == 1
+
+        # Add new group
+        g['B'] = [0, 2]
+
+        for group in g.group:
+            assert group in ['A', 'B']
+
+        repr(g)
+
+        assert np.allclose(g['B'], g[[0, 2], :])
+        assert np.allclose(g.axyz('B'), g[[0, 2], :])
+
+        del g.group['B']
+        assert len(g.group) == 1
+
+    @pytest.mark.xfail(raises=SislError)
+    def test_geometry_groups_raise(self):
+        g = sisl_geom.graphene()
+        g['A'] = 1
+        g['A'] = [1, 2]

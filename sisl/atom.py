@@ -1593,7 +1593,7 @@ class Atoms(object):
         s = self.__class__.__name__ + '{{species: {0},\n'.format(len(self._atom))
         for a, idx in self.iter(True):
             s += ' {1}: {0},\n'.format(len(idx), repr(a).replace('\n', '\n '))
-        return s + '}\n'
+        return s + '}'
 
     def __len__(self):
         """ Return number of atoms in the object """

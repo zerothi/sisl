@@ -28,6 +28,7 @@ from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from .sparse_geometry import SparseAtom
+from ._namedgroup import NamedGroup
 
 __all__ = ['Geometry', 'sgeom']
 
@@ -123,6 +124,9 @@ class Geometry(SuperCellChild):
         # Create the local Atoms object
         self._atom = Atoms(atom, na=self.na)
 
+        # Assign a group specifier
+        self._group = NamedGroup()
+
         self.__init_sc(sc)
 
     def __init_sc(self, sc):
@@ -190,6 +194,11 @@ class Geometry(SuperCellChild):
     atom = atoms
 
     @property
+    def group(self):
+        """ The named group specifier """
+        return self._group
+
+    @property
     def q0(self):
         """ Total initial charge in this geometry (sum of q0 in all atoms) """
         return self._atom.q0.sum()
@@ -239,6 +248,12 @@ class Geometry(SuperCellChild):
 
     ## End size of geometry
 
+    def __setitem__(self, atom, value):
+        """ Specify geometry coordinates """
+        if isinstance(atom, _str):
+            # Define a new group
+            self.group.add(atom, value)
+
     def __getitem__(self, atom):
         """ Geometry coordinates (allows supercell indices) """
         if isinstance(atom, Integral):
@@ -256,6 +271,9 @@ class Geometry(SuperCellChild):
 
         elif isinstance(atom, tuple):
             return self[atom[0]][..., atom[1]]
+
+        elif isinstance(atom, _str):
+            return self.axyz(self.group[atom])
 
         elif atom[0] is None:
             return self.axyz()[:, atom[1]]
@@ -413,7 +431,9 @@ class Geometry(SuperCellChild):
         """ Representation of the object """
         s = self.__class__.__name__ + '{{na: {0}, no: {1},\n '.format(self.na, self.no)
         s += repr(self.atom).replace('\n', '\n ')
-        return (s[:-2] + ',\n nsc: [{1}, {2}, {3}], maxR: {0}\n}}\n'.format(self.maxR(), *self.nsc)).strip()
+        if len(self.group) > 0:
+            s += ',\n ' + repr(self.group).replace('\n', '\n ')
+        return (s + ',\n nsc: [{1}, {2}, {3}], maxR: {0}\n}}\n'.format(self.maxR(), *self.nsc)).strip()
 
     def iter(self):
         """ An iterator over all atomic indices
@@ -1793,6 +1813,9 @@ class Geometry(SuperCellChild):
         [0.  0.  0.]
 
         """
+        if isinstance(atom, _str):
+            atom = self.group[atom]
+
         if atom is None and isc is None:
             return self.xyz
 

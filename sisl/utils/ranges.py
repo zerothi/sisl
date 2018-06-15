@@ -205,6 +205,8 @@ def list2str(lst):
         t += ln
         if ln == 1:
             rng += str(el)
+        #elif ln == 2:
+        #    rng += '{}, {}'.format(str(el), str(el+ln-1))
         else:
             rng += '{}-{}'.format(el, el+ln-1)
     return rng
