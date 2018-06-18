@@ -1114,30 +1114,30 @@ class TestGeometry(object):
         n = p.loads(s)
         assert n == setup.g
 
-    def test_geometry_groups(self):
+    def test_geometry_names(self):
         g = sisl_geom.graphene()
 
-        assert len(g.group) == 0
+        assert len(g.names) == 0
         g['A'] = 1
-        assert len(g.group) == 1
+        assert len(g.names) == 1
         g['B'] = [1, 2]
-        assert len(g.group) == 2
-        g.group.delete('B')
-        assert len(g.group) == 1
+        assert len(g.names) == 2
+        g.names.delete_name('B')
+        assert len(g.names) == 1
 
         # Add new group
         g['B'] = [0, 2]
 
-        for group in g.group:
-            assert group in ['A', 'B']
+        for name in g.names:
+            assert name in ['A', 'B']
 
         repr(g)
 
         assert np.allclose(g['B'], g[[0, 2], :])
         assert np.allclose(g.axyz('B'), g[[0, 2], :])
 
-        del g.group['B']
-        assert len(g.group) == 1
+        del g.names['B']
+        assert len(g.names) == 1
 
     @pytest.mark.xfail(raises=SislError)
     def test_geometry_groups_raise(self):

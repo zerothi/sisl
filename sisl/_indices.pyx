@@ -9,6 +9,66 @@ cimport numpy as np
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):
+    """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+
+    Parameters
+    ----------
+    search : np.ndarray(np.int32)
+        array to search in
+    value : np.ndarray(np.int32)
+        values to find the indices of in `search`
+    """
+    # Ensure contiguous arrays
+    cdef int[::1] SEARCH = search
+    cdef int[::1] VALUE = value
+    cdef int n_search = SEARCH.shape[0]
+    cdef int n_value = VALUE.shape[0]
+
+    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)
+    cdef int[::1] IDX = idx
+
+    cdef int n = _indices_only(n_search, SEARCH, n_value, VALUE, IDX)
+
+    return idx[:n]
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef int _indices_only(const int n_search, const int[::1] search,
+                        const int n_value, const int[::1] value,
+                        int[::1] idx) nogil:
+    cdef int i, j, n
+
+    # Fast return
+    if n_value == 0:
+        return 0
+    elif n_search == 0:
+        return 0
+
+    elif n_value > n_search:
+        n = 0
+        for j in range(n_value):
+            for i in range(n_search):
+                if value[j] == search[i]:
+                    idx[n] = i
+                    n += 1
+                    break
+
+    else:
+        n = 0
+        for i in range(n_search):
+            for j in range(n_value):
+                if value[j] == search[i]:
+                    idx[n] = i
+                    n += 1
+                    break
+    return n
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value, int offset):
     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
 

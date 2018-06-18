@@ -257,6 +257,33 @@ class _devncSileTBtrans(_ncSileTBtrans):
             # Reset the access pattern
             self._access = access
 
+    def read_geometry(self, *args, **kwargs):
+        g = super(_devncSileTBtrans, self).read_geometry(*args, **kwargs)
+        try:
+            g['Buffer'] = self.a_buf[:]
+        except:
+            # Then no buffer atoms
+            pass
+        g['Device'] = self.a_dev[:]
+        try:
+            for elec in self.elecs:
+                g[elec] = self._value('a', [elec]) - 1
+                g[elec + '+'] = self._value('a_down', [elec]) - 1
+        except:
+            pass
+        return g
+
+    @property
+    def na_b(self):
+        """ Number of atoms in the buffer region """
+        return len(self._dimension('na_b'))
+    na_buffer = na_b
+
+    @property
+    def a_buf(self):
+        """ Atomic indices (0-based) of device atoms """
+        return self._value('a_buf') - 1
+
     # Device atoms and other quantities
     @property
     def na_d(self):

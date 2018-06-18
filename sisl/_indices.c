@@ -2016,6 +2016,7 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
+static int __pyx_f_4sisl_8_indices__indices_only(int const , __Pyx_memviewslice const , int const , __Pyx_memviewslice const , __Pyx_memviewslice); /*proto*/
 static void __pyx_f_4sisl_8_indices__indices(int const , __Pyx_memviewslice const , int const , __Pyx_memviewslice const , int, __Pyx_memviewslice); /*proto*/
 static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const , double const , __Pyx_memviewslice); /*proto*/
 static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewslice const , double const , __Pyx_memviewslice, __Pyx_memviewslice); /*proto*/
@@ -2164,6 +2165,7 @@ static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
 static const char __pyx_k_indices_pyx[] = "_indices.pyx";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
+static const char __pyx_k_indices_only[] = "indices_only";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_indices_gt_le[] = "indices_gt_le";
@@ -2290,6 +2292,7 @@ static PyObject *__pyx_n_s_indices_in_sphere;
 static PyObject *__pyx_n_s_indices_in_sphere_with_dist;
 static PyObject *__pyx_n_s_indices_le;
 static PyObject *__pyx_kp_s_indices_le_requires_input_array;
+static PyObject *__pyx_n_s_indices_only;
 static PyObject *__pyx_kp_s_indices_pyx;
 static PyObject *__pyx_n_s_int32;
 static PyObject *__pyx_n_s_itemsize;
@@ -2350,13 +2353,14 @@ static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
 static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_value;
-static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_search, PyArrayObject *__pyx_v_value, int __pyx_v_offset); /* proto */
-static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dxyz, double __pyx_v_R); /* proto */
-static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dxyz, double __pyx_v_R); /* proto */
-static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V); /* proto */
-static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V); /* proto */
-static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V1, double __pyx_v_V2); /* proto */
-static PyObject *__pyx_pf_4sisl_8_indices_12sorted_unique(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a); /* proto */
+static PyObject *__pyx_pf_4sisl_8_indices_indices_only(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_search, PyArrayObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_4sisl_8_indices_2indices(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_search, PyArrayObject *__pyx_v_value, int __pyx_v_offset); /* proto */
+static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dxyz, double __pyx_v_R); /* proto */
+static PyObject *__pyx_pf_4sisl_8_indices_6indices_in_sphere_with_dist(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dxyz, double __pyx_v_R); /* proto */
+static PyObject *__pyx_pf_4sisl_8_indices_8indices_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V); /* proto */
+static PyObject *__pyx_pf_4sisl_8_indices_10indices_fabs_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V); /* proto */
+static PyObject *__pyx_pf_4sisl_8_indices_12indices_gt_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V1, double __pyx_v_V2); /* proto */
+static PyObject *__pyx_pf_4sisl_8_indices_14sorted_unique(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -2448,11 +2452,12 @@ static PyObject *__pyx_tuple__40;
 static PyObject *__pyx_tuple__42;
 static PyObject *__pyx_tuple__44;
 static PyObject *__pyx_tuple__46;
-static PyObject *__pyx_tuple__47;
 static PyObject *__pyx_tuple__48;
 static PyObject *__pyx_tuple__49;
 static PyObject *__pyx_tuple__50;
 static PyObject *__pyx_tuple__51;
+static PyObject *__pyx_tuple__52;
+static PyObject *__pyx_tuple__53;
 static PyObject *__pyx_codeobj__33;
 static PyObject *__pyx_codeobj__35;
 static PyObject *__pyx_codeobj__37;
@@ -2460,9 +2465,608 @@ static PyObject *__pyx_codeobj__39;
 static PyObject *__pyx_codeobj__41;
 static PyObject *__pyx_codeobj__43;
 static PyObject *__pyx_codeobj__45;
-static PyObject *__pyx_codeobj__52;
+static PyObject *__pyx_codeobj__47;
+static PyObject *__pyx_codeobj__54;
 
 /* "sisl/_indices.pyx":12
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):             # <<<<<<<<<<<<<<
+ *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_4sisl_8_indices_1indices_only(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_4sisl_8_indices_indices_only[] = " Return indices of all `value` in the search array. If not found the index will be ``-1``\n\n    Parameters\n    ----------\n    search : np.ndarray(np.int32)\n        array to search in\n    value : np.ndarray(np.int32)\n        values to find the indices of in `search`\n    ";
+static PyMethodDef __pyx_mdef_4sisl_8_indices_1indices_only = {"indices_only", (PyCFunction)__pyx_pw_4sisl_8_indices_1indices_only, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_indices_only};
+static PyObject *__pyx_pw_4sisl_8_indices_1indices_only(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyArrayObject *__pyx_v_search = 0;
+  PyArrayObject *__pyx_v_value = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("indices_only (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_search,&__pyx_n_s_value,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_search)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("indices_only", 1, 2, 2, 1); __PYX_ERR(0, 12, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_only") < 0)) __PYX_ERR(0, 12, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_search = ((PyArrayObject *)values[0]);
+    __pyx_v_value = ((PyArrayObject *)values[1]);
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("indices_only", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 12, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("sisl._indices.indices_only", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_search), __pyx_ptype_5numpy_ndarray, 1, "search", 0))) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_value), __pyx_ptype_5numpy_ndarray, 1, "value", 0))) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_r = __pyx_pf_4sisl_8_indices_indices_only(__pyx_self, __pyx_v_search, __pyx_v_value);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_4sisl_8_indices_indices_only(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_search, PyArrayObject *__pyx_v_value) {
+  __Pyx_memviewslice __pyx_v_SEARCH = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_VALUE = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_v_n_search;
+  int __pyx_v_n_value;
+  PyArrayObject *__pyx_v_idx = 0;
+  __Pyx_memviewslice __pyx_v_IDX = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_v_n;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_idx;
+  __Pyx_Buffer __pyx_pybuffer_idx;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_search;
+  __Pyx_Buffer __pyx_pybuffer_search;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_value;
+  __Pyx_Buffer __pyx_pybuffer_value;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_memviewslice __pyx_t_1 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyArrayObject *__pyx_t_7 = NULL;
+  __Pyx_RefNannySetupContext("indices_only", 0);
+  __pyx_pybuffer_idx.pybuffer.buf = NULL;
+  __pyx_pybuffer_idx.refcount = 0;
+  __pyx_pybuffernd_idx.data = NULL;
+  __pyx_pybuffernd_idx.rcbuffer = &__pyx_pybuffer_idx;
+  __pyx_pybuffer_search.pybuffer.buf = NULL;
+  __pyx_pybuffer_search.refcount = 0;
+  __pyx_pybuffernd_search.data = NULL;
+  __pyx_pybuffernd_search.rcbuffer = &__pyx_pybuffer_search;
+  __pyx_pybuffer_value.pybuffer.buf = NULL;
+  __pyx_pybuffer_value.refcount = 0;
+  __pyx_pybuffernd_value.data = NULL;
+  __pyx_pybuffernd_value.rcbuffer = &__pyx_pybuffer_value;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_search.rcbuffer->pybuffer, (PyObject*)__pyx_v_search, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_search.diminfo[0].strides = __pyx_pybuffernd_search.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_search.diminfo[0].shape = __pyx_pybuffernd_search.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_value.rcbuffer->pybuffer, (PyObject*)__pyx_v_value, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_value.diminfo[0].strides = __pyx_pybuffernd_value.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_value.diminfo[0].shape = __pyx_pybuffernd_value.rcbuffer->pybuffer.shape[0];
+
+  /* "sisl/_indices.pyx":23
+ *     """
+ *     # Ensure contiguous arrays
+ *     cdef int[::1] SEARCH = search             # <<<<<<<<<<<<<<
+ *     cdef int[::1] VALUE = value
+ *     cdef int n_search = SEARCH.shape[0]
+ */
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_search));
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_v_SEARCH = __pyx_t_1;
+  __pyx_t_1.memview = NULL;
+  __pyx_t_1.data = NULL;
+
+  /* "sisl/_indices.pyx":24
+ *     # Ensure contiguous arrays
+ *     cdef int[::1] SEARCH = search
+ *     cdef int[::1] VALUE = value             # <<<<<<<<<<<<<<
+ *     cdef int n_search = SEARCH.shape[0]
+ *     cdef int n_value = VALUE.shape[0]
+ */
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_value));
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_v_VALUE = __pyx_t_1;
+  __pyx_t_1.memview = NULL;
+  __pyx_t_1.data = NULL;
+
+  /* "sisl/_indices.pyx":25
+ *     cdef int[::1] SEARCH = search
+ *     cdef int[::1] VALUE = value
+ *     cdef int n_search = SEARCH.shape[0]             # <<<<<<<<<<<<<<
+ *     cdef int n_value = VALUE.shape[0]
+ * 
+ */
+  __pyx_v_n_search = (__pyx_v_SEARCH.shape[0]);
+
+  /* "sisl/_indices.pyx":26
+ *     cdef int[::1] VALUE = value
+ *     cdef int n_search = SEARCH.shape[0]
+ *     cdef int n_value = VALUE.shape[0]             # <<<<<<<<<<<<<<
+ * 
+ *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)
+ */
+  __pyx_v_n_value = (__pyx_v_VALUE.shape[0]);
+
+  /* "sisl/_indices.pyx":28
+ *     cdef int n_value = VALUE.shape[0]
+ * 
+ *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)             # <<<<<<<<<<<<<<
+ *     cdef int[::1] IDX = idx
+ * 
+ */
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_n_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_7 = ((PyArrayObject *)__pyx_t_6);
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_idx.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
+      __pyx_v_idx = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_idx.rcbuffer->pybuffer.buf = NULL;
+      __PYX_ERR(0, 28, __pyx_L1_error)
+    } else {__pyx_pybuffernd_idx.diminfo[0].strides = __pyx_pybuffernd_idx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_idx.diminfo[0].shape = __pyx_pybuffernd_idx.rcbuffer->pybuffer.shape[0];
+    }
+  }
+  __pyx_t_7 = 0;
+  __pyx_v_idx = ((PyArrayObject *)__pyx_t_6);
+  __pyx_t_6 = 0;
+
+  /* "sisl/_indices.pyx":29
+ * 
+ *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)
+ *     cdef int[::1] IDX = idx             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int n = _indices_only(n_search, SEARCH, n_value, VALUE, IDX)
+ */
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_idx));
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_v_IDX = __pyx_t_1;
+  __pyx_t_1.memview = NULL;
+  __pyx_t_1.data = NULL;
+
+  /* "sisl/_indices.pyx":31
+ *     cdef int[::1] IDX = idx
+ * 
+ *     cdef int n = _indices_only(n_search, SEARCH, n_value, VALUE, IDX)             # <<<<<<<<<<<<<<
+ * 
+ *     return idx[:n]
+ */
+  __pyx_v_n = __pyx_f_4sisl_8_indices__indices_only(__pyx_v_n_search, __pyx_v_SEARCH, __pyx_v_n_value, __pyx_v_VALUE, __pyx_v_IDX);
+
+  /* "sisl/_indices.pyx":33
+ *     cdef int n = _indices_only(n_search, SEARCH, n_value, VALUE, IDX)
+ * 
+ *     return idx[:n]             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_4 = PySlice_New(Py_None, __pyx_t_6, Py_None); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_r = __pyx_t_6;
+  __pyx_t_6 = 0;
+  goto __pyx_L0;
+
+  /* "sisl/_indices.pyx":12
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):             # <<<<<<<<<<<<<<
+ *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_idx.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_search.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_value.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("sisl._indices.indices_only", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_idx.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_search.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_value.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_SEARCH, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_VALUE, 1);
+  __Pyx_XDECREF((PyObject *)__pyx_v_idx);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_IDX, 1);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "sisl/_indices.pyx":39
+ * @cython.wraparound(False)
+ * @cython.initializedcheck(False)
+ * cdef int _indices_only(const int n_search, const int[::1] search,             # <<<<<<<<<<<<<<
+ *                         const int n_value, const int[::1] value,
+ *                         int[::1] idx) nogil:
+ */
+
+static int __pyx_f_4sisl_8_indices__indices_only(int const __pyx_v_n_search, __Pyx_memviewslice const __pyx_v_search, int const __pyx_v_n_value, __Pyx_memviewslice const __pyx_v_value, __Pyx_memviewslice __pyx_v_idx) {
+  int __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_n;
+  int __pyx_r;
+  int __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+
+  /* "sisl/_indices.pyx":45
+ * 
+ *     # Fast return
+ *     if n_value == 0:             # <<<<<<<<<<<<<<
+ *         return 0
+ *     elif n_search == 0:
+ */
+  __pyx_t_1 = ((__pyx_v_n_value == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "sisl/_indices.pyx":46
+ *     # Fast return
+ *     if n_value == 0:
+ *         return 0             # <<<<<<<<<<<<<<
+ *     elif n_search == 0:
+ *         return 0
+ */
+    __pyx_r = 0;
+    goto __pyx_L0;
+
+    /* "sisl/_indices.pyx":45
+ * 
+ *     # Fast return
+ *     if n_value == 0:             # <<<<<<<<<<<<<<
+ *         return 0
+ *     elif n_search == 0:
+ */
+  }
+
+  /* "sisl/_indices.pyx":47
+ *     if n_value == 0:
+ *         return 0
+ *     elif n_search == 0:             # <<<<<<<<<<<<<<
+ *         return 0
+ * 
+ */
+  __pyx_t_1 = ((__pyx_v_n_search == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "sisl/_indices.pyx":48
+ *         return 0
+ *     elif n_search == 0:
+ *         return 0             # <<<<<<<<<<<<<<
+ * 
+ *     elif n_value > n_search:
+ */
+    __pyx_r = 0;
+    goto __pyx_L0;
+
+    /* "sisl/_indices.pyx":47
+ *     if n_value == 0:
+ *         return 0
+ *     elif n_search == 0:             # <<<<<<<<<<<<<<
+ *         return 0
+ * 
+ */
+  }
+
+  /* "sisl/_indices.pyx":50
+ *         return 0
+ * 
+ *     elif n_value > n_search:             # <<<<<<<<<<<<<<
+ *         n = 0
+ *         for j in range(n_value):
+ */
+  __pyx_t_1 = ((__pyx_v_n_value > __pyx_v_n_search) != 0);
+  if (__pyx_t_1) {
+
+    /* "sisl/_indices.pyx":51
+ * 
+ *     elif n_value > n_search:
+ *         n = 0             # <<<<<<<<<<<<<<
+ *         for j in range(n_value):
+ *             for i in range(n_search):
+ */
+    __pyx_v_n = 0;
+
+    /* "sisl/_indices.pyx":52
+ *     elif n_value > n_search:
+ *         n = 0
+ *         for j in range(n_value):             # <<<<<<<<<<<<<<
+ *             for i in range(n_search):
+ *                 if value[j] == search[i]:
+ */
+    __pyx_t_2 = __pyx_v_n_value;
+    for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
+      __pyx_v_j = __pyx_t_3;
+
+      /* "sisl/_indices.pyx":53
+ *         n = 0
+ *         for j in range(n_value):
+ *             for i in range(n_search):             # <<<<<<<<<<<<<<
+ *                 if value[j] == search[i]:
+ *                     idx[n] = i
+ */
+      __pyx_t_4 = __pyx_v_n_search;
+      for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+        __pyx_v_i = __pyx_t_5;
+
+        /* "sisl/_indices.pyx":54
+ *         for j in range(n_value):
+ *             for i in range(n_search):
+ *                 if value[j] == search[i]:             # <<<<<<<<<<<<<<
+ *                     idx[n] = i
+ *                     n += 1
+ */
+        __pyx_t_6 = __pyx_v_j;
+        __pyx_t_7 = __pyx_v_i;
+        __pyx_t_1 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_value.data) + __pyx_t_6)) ))) == (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_search.data) + __pyx_t_7)) )))) != 0);
+        if (__pyx_t_1) {
+
+          /* "sisl/_indices.pyx":55
+ *             for i in range(n_search):
+ *                 if value[j] == search[i]:
+ *                     idx[n] = i             # <<<<<<<<<<<<<<
+ *                     n += 1
+ *                     break
+ */
+          __pyx_t_8 = __pyx_v_n;
+          *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_8)) )) = __pyx_v_i;
+
+          /* "sisl/_indices.pyx":56
+ *                 if value[j] == search[i]:
+ *                     idx[n] = i
+ *                     n += 1             # <<<<<<<<<<<<<<
+ *                     break
+ * 
+ */
+          __pyx_v_n = (__pyx_v_n + 1);
+
+          /* "sisl/_indices.pyx":57
+ *                     idx[n] = i
+ *                     n += 1
+ *                     break             # <<<<<<<<<<<<<<
+ * 
+ *     else:
+ */
+          goto __pyx_L7_break;
+
+          /* "sisl/_indices.pyx":54
+ *         for j in range(n_value):
+ *             for i in range(n_search):
+ *                 if value[j] == search[i]:             # <<<<<<<<<<<<<<
+ *                     idx[n] = i
+ *                     n += 1
+ */
+        }
+      }
+      __pyx_L7_break:;
+    }
+
+    /* "sisl/_indices.pyx":50
+ *         return 0
+ * 
+ *     elif n_value > n_search:             # <<<<<<<<<<<<<<
+ *         n = 0
+ *         for j in range(n_value):
+ */
+    goto __pyx_L3;
+  }
+
+  /* "sisl/_indices.pyx":60
+ * 
+ *     else:
+ *         n = 0             # <<<<<<<<<<<<<<
+ *         for i in range(n_search):
+ *             for j in range(n_value):
+ */
+  /*else*/ {
+    __pyx_v_n = 0;
+
+    /* "sisl/_indices.pyx":61
+ *     else:
+ *         n = 0
+ *         for i in range(n_search):             # <<<<<<<<<<<<<<
+ *             for j in range(n_value):
+ *                 if value[j] == search[i]:
+ */
+    __pyx_t_2 = __pyx_v_n_search;
+    for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
+      __pyx_v_i = __pyx_t_3;
+
+      /* "sisl/_indices.pyx":62
+ *         n = 0
+ *         for i in range(n_search):
+ *             for j in range(n_value):             # <<<<<<<<<<<<<<
+ *                 if value[j] == search[i]:
+ *                     idx[n] = i
+ */
+      __pyx_t_4 = __pyx_v_n_value;
+      for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+        __pyx_v_j = __pyx_t_5;
+
+        /* "sisl/_indices.pyx":63
+ *         for i in range(n_search):
+ *             for j in range(n_value):
+ *                 if value[j] == search[i]:             # <<<<<<<<<<<<<<
+ *                     idx[n] = i
+ *                     n += 1
+ */
+        __pyx_t_9 = __pyx_v_j;
+        __pyx_t_10 = __pyx_v_i;
+        __pyx_t_1 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_value.data) + __pyx_t_9)) ))) == (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_search.data) + __pyx_t_10)) )))) != 0);
+        if (__pyx_t_1) {
+
+          /* "sisl/_indices.pyx":64
+ *             for j in range(n_value):
+ *                 if value[j] == search[i]:
+ *                     idx[n] = i             # <<<<<<<<<<<<<<
+ *                     n += 1
+ *                     break
+ */
+          __pyx_t_11 = __pyx_v_n;
+          *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_11)) )) = __pyx_v_i;
+
+          /* "sisl/_indices.pyx":65
+ *                 if value[j] == search[i]:
+ *                     idx[n] = i
+ *                     n += 1             # <<<<<<<<<<<<<<
+ *                     break
+ *     return n
+ */
+          __pyx_v_n = (__pyx_v_n + 1);
+
+          /* "sisl/_indices.pyx":66
+ *                     idx[n] = i
+ *                     n += 1
+ *                     break             # <<<<<<<<<<<<<<
+ *     return n
+ * 
+ */
+          goto __pyx_L12_break;
+
+          /* "sisl/_indices.pyx":63
+ *         for i in range(n_search):
+ *             for j in range(n_value):
+ *                 if value[j] == search[i]:             # <<<<<<<<<<<<<<
+ *                     idx[n] = i
+ *                     n += 1
+ */
+        }
+      }
+      __pyx_L12_break:;
+    }
+  }
+  __pyx_L3:;
+
+  /* "sisl/_indices.pyx":67
+ *                     n += 1
+ *                     break
+ *     return n             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = __pyx_v_n;
+  goto __pyx_L0;
+
+  /* "sisl/_indices.pyx":39
+ * @cython.wraparound(False)
+ * @cython.initializedcheck(False)
+ * cdef int _indices_only(const int n_search, const int[::1] search,             # <<<<<<<<<<<<<<
+ *                         const int n_value, const int[::1] value,
+ *                         int[::1] idx) nogil:
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "sisl/_indices.pyx":72
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value, int offset):             # <<<<<<<<<<<<<<
@@ -2471,10 +3075,10 @@ static PyObject *__pyx_codeobj__52;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4sisl_8_indices_1indices(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4sisl_8_indices_indices[] = " Return indices of all `value` in the search array. If not found the index will be ``-1``\n\n    Parameters\n    ----------\n    search : np.ndarray(np.int32)\n        array to search in\n    value : np.ndarray(np.int32)\n        values to find the indices of in `search`\n    offset : int\n        index offset\n    ";
-static PyMethodDef __pyx_mdef_4sisl_8_indices_1indices = {"indices", (PyCFunction)__pyx_pw_4sisl_8_indices_1indices, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_indices};
-static PyObject *__pyx_pw_4sisl_8_indices_1indices(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_4sisl_8_indices_3indices(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_4sisl_8_indices_2indices[] = " Return indices of all `value` in the search array. If not found the index will be ``-1``\n\n    Parameters\n    ----------\n    search : np.ndarray(np.int32)\n        array to search in\n    value : np.ndarray(np.int32)\n        values to find the indices of in `search`\n    offset : int\n        index offset\n    ";
+static PyMethodDef __pyx_mdef_4sisl_8_indices_3indices = {"indices", (PyCFunction)__pyx_pw_4sisl_8_indices_3indices, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_2indices};
+static PyObject *__pyx_pw_4sisl_8_indices_3indices(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_search = 0;
   PyArrayObject *__pyx_v_value = 0;
   int __pyx_v_offset;
@@ -2506,17 +3110,17 @@ static PyObject *__pyx_pw_4sisl_8_indices_1indices(PyObject *__pyx_self, PyObjec
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("indices", 1, 3, 3, 1); __PYX_ERR(0, 12, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("indices", 1, 3, 3, 1); __PYX_ERR(0, 72, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_offset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("indices", 1, 3, 3, 2); __PYX_ERR(0, 12, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("indices", 1, 3, 3, 2); __PYX_ERR(0, 72, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices") < 0)) __PYX_ERR(0, 12, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices") < 0)) __PYX_ERR(0, 72, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -2527,19 +3131,19 @@ static PyObject *__pyx_pw_4sisl_8_indices_1indices(PyObject *__pyx_self, PyObjec
     }
     __pyx_v_search = ((PyArrayObject *)values[0]);
     __pyx_v_value = ((PyArrayObject *)values[1]);
-    __pyx_v_offset = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_offset == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 12, __pyx_L3_error)
+    __pyx_v_offset = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_offset == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 72, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("indices", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 12, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("indices", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 72, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl._indices.indices", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_search), __pyx_ptype_5numpy_ndarray, 1, "search", 0))) __PYX_ERR(0, 12, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_value), __pyx_ptype_5numpy_ndarray, 1, "value", 0))) __PYX_ERR(0, 12, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4sisl_8_indices_indices(__pyx_self, __pyx_v_search, __pyx_v_value, __pyx_v_offset);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_search), __pyx_ptype_5numpy_ndarray, 1, "search", 0))) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_value), __pyx_ptype_5numpy_ndarray, 1, "value", 0))) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_r = __pyx_pf_4sisl_8_indices_2indices(__pyx_self, __pyx_v_search, __pyx_v_value, __pyx_v_offset);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2550,7 +3154,7 @@ static PyObject *__pyx_pw_4sisl_8_indices_1indices(PyObject *__pyx_self, PyObjec
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_search, PyArrayObject *__pyx_v_value, int __pyx_v_offset) {
+static PyObject *__pyx_pf_4sisl_8_indices_2indices(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_search, PyArrayObject *__pyx_v_value, int __pyx_v_offset) {
   __Pyx_memviewslice __pyx_v_SEARCH = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_VALUE = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_n_search;
@@ -2587,16 +3191,16 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
   __pyx_pybuffernd_value.rcbuffer = &__pyx_pybuffer_value;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_search.rcbuffer->pybuffer, (PyObject*)__pyx_v_search, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 12, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_search.rcbuffer->pybuffer, (PyObject*)__pyx_v_search, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 72, __pyx_L1_error)
   }
   __pyx_pybuffernd_search.diminfo[0].strides = __pyx_pybuffernd_search.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_search.diminfo[0].shape = __pyx_pybuffernd_search.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_value.rcbuffer->pybuffer, (PyObject*)__pyx_v_value, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 12, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_value.rcbuffer->pybuffer, (PyObject*)__pyx_v_value, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 72, __pyx_L1_error)
   }
   __pyx_pybuffernd_value.diminfo[0].strides = __pyx_pybuffernd_value.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_value.diminfo[0].shape = __pyx_pybuffernd_value.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/_indices.pyx":25
+  /* "sisl/_indices.pyx":85
  *     """
  *     # Ensure contiguous arrays
  *     cdef int[::1] SEARCH = search             # <<<<<<<<<<<<<<
@@ -2604,12 +3208,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
  *     cdef int n_search = SEARCH.shape[0]
  */
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_search));
-  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 85, __pyx_L1_error)
   __pyx_v_SEARCH = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/_indices.pyx":26
+  /* "sisl/_indices.pyx":86
  *     # Ensure contiguous arrays
  *     cdef int[::1] SEARCH = search
  *     cdef int[::1] VALUE = value             # <<<<<<<<<<<<<<
@@ -2617,12 +3221,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
  *     cdef int n_value = VALUE.shape[0]
  */
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_value));
-  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 86, __pyx_L1_error)
   __pyx_v_VALUE = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/_indices.pyx":27
+  /* "sisl/_indices.pyx":87
  *     cdef int[::1] SEARCH = search
  *     cdef int[::1] VALUE = value
  *     cdef int n_search = SEARCH.shape[0]             # <<<<<<<<<<<<<<
@@ -2631,7 +3235,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
  */
   __pyx_v_n_search = (__pyx_v_SEARCH.shape[0]);
 
-  /* "sisl/_indices.pyx":28
+  /* "sisl/_indices.pyx":88
  *     cdef int[::1] VALUE = value
  *     cdef int n_search = SEARCH.shape[0]
  *     cdef int n_value = VALUE.shape[0]             # <<<<<<<<<<<<<<
@@ -2640,51 +3244,51 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
  */
   __pyx_v_n_value = (__pyx_v_VALUE.shape[0]);
 
-  /* "sisl/_indices.pyx":30
+  /* "sisl/_indices.pyx":90
  *     cdef int n_value = VALUE.shape[0]
  * 
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)             # <<<<<<<<<<<<<<
  *     cdef int[::1] IDX = idx
  * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_n_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_n_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 90, __pyx_L1_error)
   __pyx_t_7 = ((PyArrayObject *)__pyx_t_6);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_idx.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_idx = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_idx.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 30, __pyx_L1_error)
+      __PYX_ERR(0, 90, __pyx_L1_error)
     } else {__pyx_pybuffernd_idx.diminfo[0].strides = __pyx_pybuffernd_idx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_idx.diminfo[0].shape = __pyx_pybuffernd_idx.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -2692,7 +3296,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
   __pyx_v_idx = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "sisl/_indices.pyx":31
+  /* "sisl/_indices.pyx":91
  * 
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)
  *     cdef int[::1] IDX = idx             # <<<<<<<<<<<<<<
@@ -2700,12 +3304,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
  *     _indices(n_search, SEARCH, n_value, VALUE, offset, IDX)
  */
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_idx));
-  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 91, __pyx_L1_error)
   __pyx_v_IDX = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/_indices.pyx":33
+  /* "sisl/_indices.pyx":93
  *     cdef int[::1] IDX = idx
  * 
  *     _indices(n_search, SEARCH, n_value, VALUE, offset, IDX)             # <<<<<<<<<<<<<<
@@ -2714,7 +3318,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
  */
   __pyx_f_4sisl_8_indices__indices(__pyx_v_n_search, __pyx_v_SEARCH, __pyx_v_n_value, __pyx_v_VALUE, __pyx_v_offset, __pyx_v_IDX);
 
-  /* "sisl/_indices.pyx":35
+  /* "sisl/_indices.pyx":95
  *     _indices(n_search, SEARCH, n_value, VALUE, offset, IDX)
  * 
  *     return idx             # <<<<<<<<<<<<<<
@@ -2726,7 +3330,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
   __pyx_r = ((PyObject *)__pyx_v_idx);
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":12
+  /* "sisl/_indices.pyx":72
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value, int offset):             # <<<<<<<<<<<<<<
@@ -2767,7 +3371,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices(CYTHON_UNUSED PyObject *__pyx_
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":41
+/* "sisl/_indices.pyx":101
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef void _indices(const int n_search, const int[::1] search,             # <<<<<<<<<<<<<<
@@ -2793,7 +3397,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
   Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
 
-  /* "sisl/_indices.pyx":47
+  /* "sisl/_indices.pyx":107
  * 
  *     # Fast return
  *     if n_value == 0:             # <<<<<<<<<<<<<<
@@ -2805,7 +3409,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
     goto __pyx_L3;
   }
 
-  /* "sisl/_indices.pyx":49
+  /* "sisl/_indices.pyx":109
  *     if n_value == 0:
  *         pass
  *     elif n_search == 0:             # <<<<<<<<<<<<<<
@@ -2815,7 +3419,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
   __pyx_t_1 = ((__pyx_v_n_search == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "sisl/_indices.pyx":50
+    /* "sisl/_indices.pyx":110
  *         pass
  *     elif n_search == 0:
  *         for j in range(n_value):             # <<<<<<<<<<<<<<
@@ -2826,7 +3430,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_j = __pyx_t_3;
 
-      /* "sisl/_indices.pyx":51
+      /* "sisl/_indices.pyx":111
  *     elif n_search == 0:
  *         for j in range(n_value):
  *             idx[j] = -1             # <<<<<<<<<<<<<<
@@ -2837,7 +3441,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
       *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_4)) )) = -1;
     }
 
-    /* "sisl/_indices.pyx":49
+    /* "sisl/_indices.pyx":109
  *     if n_value == 0:
  *         pass
  *     elif n_search == 0:             # <<<<<<<<<<<<<<
@@ -2847,7 +3451,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
     goto __pyx_L3;
   }
 
-  /* "sisl/_indices.pyx":54
+  /* "sisl/_indices.pyx":114
  *         pass
  * 
  *     elif n_value > n_search:             # <<<<<<<<<<<<<<
@@ -2857,7 +3461,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
   __pyx_t_1 = ((__pyx_v_n_value > __pyx_v_n_search) != 0);
   if (__pyx_t_1) {
 
-    /* "sisl/_indices.pyx":55
+    /* "sisl/_indices.pyx":115
  * 
  *     elif n_value > n_search:
  *         for j in range(n_value):             # <<<<<<<<<<<<<<
@@ -2868,7 +3472,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_j = __pyx_t_3;
 
-      /* "sisl/_indices.pyx":56
+      /* "sisl/_indices.pyx":116
  *     elif n_value > n_search:
  *         for j in range(n_value):
  *             idx[j] = -1             # <<<<<<<<<<<<<<
@@ -2878,7 +3482,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
       __pyx_t_5 = __pyx_v_j;
       *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_5)) )) = -1;
 
-      /* "sisl/_indices.pyx":57
+      /* "sisl/_indices.pyx":117
  *         for j in range(n_value):
  *             idx[j] = -1
  *             for i in range(n_search):             # <<<<<<<<<<<<<<
@@ -2889,7 +3493,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
       for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_i = __pyx_t_7;
 
-        /* "sisl/_indices.pyx":58
+        /* "sisl/_indices.pyx":118
  *             idx[j] = -1
  *             for i in range(n_search):
  *                 if value[j] == search[i]:             # <<<<<<<<<<<<<<
@@ -2901,7 +3505,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
         __pyx_t_1 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_value.data) + __pyx_t_8)) ))) == (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_search.data) + __pyx_t_9)) )))) != 0);
         if (__pyx_t_1) {
 
-          /* "sisl/_indices.pyx":59
+          /* "sisl/_indices.pyx":119
  *             for i in range(n_search):
  *                 if value[j] == search[i]:
  *                     idx[j] = offset + i             # <<<<<<<<<<<<<<
@@ -2911,7 +3515,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
           __pyx_t_10 = __pyx_v_j;
           *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_10)) )) = (__pyx_v_offset + __pyx_v_i);
 
-          /* "sisl/_indices.pyx":60
+          /* "sisl/_indices.pyx":120
  *                 if value[j] == search[i]:
  *                     idx[j] = offset + i
  *                     break             # <<<<<<<<<<<<<<
@@ -2920,7 +3524,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
  */
           goto __pyx_L9_break;
 
-          /* "sisl/_indices.pyx":58
+          /* "sisl/_indices.pyx":118
  *             idx[j] = -1
  *             for i in range(n_search):
  *                 if value[j] == search[i]:             # <<<<<<<<<<<<<<
@@ -2932,7 +3536,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
       __pyx_L9_break:;
     }
 
-    /* "sisl/_indices.pyx":54
+    /* "sisl/_indices.pyx":114
  *         pass
  * 
  *     elif n_value > n_search:             # <<<<<<<<<<<<<<
@@ -2942,7 +3546,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
     goto __pyx_L3;
   }
 
-  /* "sisl/_indices.pyx":64
+  /* "sisl/_indices.pyx":124
  *     else:
  *         # We need to initialize
  *         for j in range(n_value):             # <<<<<<<<<<<<<<
@@ -2954,7 +3558,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_j = __pyx_t_3;
 
-      /* "sisl/_indices.pyx":65
+      /* "sisl/_indices.pyx":125
  *         # We need to initialize
  *         for j in range(n_value):
  *             idx[j] = -1             # <<<<<<<<<<<<<<
@@ -2965,7 +3569,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
       *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_11)) )) = -1;
     }
 
-    /* "sisl/_indices.pyx":66
+    /* "sisl/_indices.pyx":126
  *         for j in range(n_value):
  *             idx[j] = -1
  *         for i in range(n_search):             # <<<<<<<<<<<<<<
@@ -2976,7 +3580,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "sisl/_indices.pyx":67
+      /* "sisl/_indices.pyx":127
  *             idx[j] = -1
  *         for i in range(n_search):
  *             for j in range(n_value):             # <<<<<<<<<<<<<<
@@ -2987,7 +3591,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
       for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_j = __pyx_t_7;
 
-        /* "sisl/_indices.pyx":68
+        /* "sisl/_indices.pyx":128
  *         for i in range(n_search):
  *             for j in range(n_value):
  *                 if value[j] == search[i]:             # <<<<<<<<<<<<<<
@@ -2999,7 +3603,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
         __pyx_t_1 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_value.data) + __pyx_t_12)) ))) == (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_search.data) + __pyx_t_13)) )))) != 0);
         if (__pyx_t_1) {
 
-          /* "sisl/_indices.pyx":69
+          /* "sisl/_indices.pyx":129
  *             for j in range(n_value):
  *                 if value[j] == search[i]:
  *                     idx[j] = offset + i             # <<<<<<<<<<<<<<
@@ -3009,7 +3613,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
           __pyx_t_14 = __pyx_v_j;
           *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_14)) )) = (__pyx_v_offset + __pyx_v_i);
 
-          /* "sisl/_indices.pyx":70
+          /* "sisl/_indices.pyx":130
  *                 if value[j] == search[i]:
  *                     idx[j] = offset + i
  *                     break             # <<<<<<<<<<<<<<
@@ -3018,7 +3622,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
  */
           goto __pyx_L16_break;
 
-          /* "sisl/_indices.pyx":68
+          /* "sisl/_indices.pyx":128
  *         for i in range(n_search):
  *             for j in range(n_value):
  *                 if value[j] == search[i]:             # <<<<<<<<<<<<<<
@@ -3032,7 +3636,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
   }
   __pyx_L3:;
 
-  /* "sisl/_indices.pyx":41
+  /* "sisl/_indices.pyx":101
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef void _indices(const int n_search, const int[::1] search,             # <<<<<<<<<<<<<<
@@ -3043,7 +3647,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
   /* function exit code */
 }
 
-/* "sisl/_indices.pyx":75
+/* "sisl/_indices.pyx":135
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_in_sphere(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R):             # <<<<<<<<<<<<<<
@@ -3052,10 +3656,10 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4sisl_8_indices_3indices_in_sphere(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4sisl_8_indices_2indices_in_sphere[] = " Indices for all coordinates that are within a sphere of radius `R`\n\n    Parameters\n    ----------\n    dxyz : ndarray(np.float64)\n       coordinates centered around the sphere\n    R : float\n       radius of sphere to check\n\n    Returns\n    -------\n    index : np.ndarray(np.int32)\n       indices of all dxyz coordinates that are within the sphere of radius `R`\n    ";
-static PyMethodDef __pyx_mdef_4sisl_8_indices_3indices_in_sphere = {"indices_in_sphere", (PyCFunction)__pyx_pw_4sisl_8_indices_3indices_in_sphere, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_2indices_in_sphere};
-static PyObject *__pyx_pw_4sisl_8_indices_3indices_in_sphere(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_4sisl_8_indices_5indices_in_sphere(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_4sisl_8_indices_4indices_in_sphere[] = " Indices for all coordinates that are within a sphere of radius `R`\n\n    Parameters\n    ----------\n    dxyz : ndarray(np.float64)\n       coordinates centered around the sphere\n    R : float\n       radius of sphere to check\n\n    Returns\n    -------\n    index : np.ndarray(np.int32)\n       indices of all dxyz coordinates that are within the sphere of radius `R`\n    ";
+static PyMethodDef __pyx_mdef_4sisl_8_indices_5indices_in_sphere = {"indices_in_sphere", (PyCFunction)__pyx_pw_4sisl_8_indices_5indices_in_sphere, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_4indices_in_sphere};
+static PyObject *__pyx_pw_4sisl_8_indices_5indices_in_sphere(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_dxyz = 0;
   double __pyx_v_R;
   PyObject *__pyx_r = 0;
@@ -3084,11 +3688,11 @@ static PyObject *__pyx_pw_4sisl_8_indices_3indices_in_sphere(PyObject *__pyx_sel
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_R)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("indices_in_sphere", 1, 2, 2, 1); __PYX_ERR(0, 75, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("indices_in_sphere", 1, 2, 2, 1); __PYX_ERR(0, 135, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_in_sphere") < 0)) __PYX_ERR(0, 75, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_in_sphere") < 0)) __PYX_ERR(0, 135, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3097,18 +3701,18 @@ static PyObject *__pyx_pw_4sisl_8_indices_3indices_in_sphere(PyObject *__pyx_sel
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
     __pyx_v_dxyz = ((PyArrayObject *)values[0]);
-    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
+    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 135, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("indices_in_sphere", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 75, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("indices_in_sphere", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 135, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl._indices.indices_in_sphere", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dxyz), __pyx_ptype_5numpy_ndarray, 1, "dxyz", 0))) __PYX_ERR(0, 75, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4sisl_8_indices_2indices_in_sphere(__pyx_self, __pyx_v_dxyz, __pyx_v_R);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dxyz), __pyx_ptype_5numpy_ndarray, 1, "dxyz", 0))) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_r = __pyx_pf_4sisl_8_indices_4indices_in_sphere(__pyx_self, __pyx_v_dxyz, __pyx_v_R);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3119,7 +3723,7 @@ static PyObject *__pyx_pw_4sisl_8_indices_3indices_in_sphere(PyObject *__pyx_sel
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dxyz, double __pyx_v_R) {
+static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dxyz, double __pyx_v_R) {
   __Pyx_memviewslice __pyx_v_dXYZ = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_n;
   PyArrayObject *__pyx_v_idx = 0;
@@ -3150,11 +3754,11 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
   __pyx_pybuffernd_dxyz.rcbuffer = &__pyx_pybuffer_dxyz;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dxyz.rcbuffer->pybuffer, (PyObject*)__pyx_v_dxyz, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 75, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dxyz.rcbuffer->pybuffer, (PyObject*)__pyx_v_dxyz, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 135, __pyx_L1_error)
   }
   __pyx_pybuffernd_dxyz.diminfo[0].strides = __pyx_pybuffernd_dxyz.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dxyz.diminfo[0].shape = __pyx_pybuffernd_dxyz.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_dxyz.diminfo[1].strides = __pyx_pybuffernd_dxyz.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_dxyz.diminfo[1].shape = __pyx_pybuffernd_dxyz.rcbuffer->pybuffer.shape[1];
 
-  /* "sisl/_indices.pyx":90
+  /* "sisl/_indices.pyx":150
  *        indices of all dxyz coordinates that are within the sphere of radius `R`
  *     """
  *     cdef double[:, ::1] dXYZ = dxyz             # <<<<<<<<<<<<<<
@@ -3162,12 +3766,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
  *     cdef np.ndarray[np.int32_t, ndim=1] idx = np.empty([n], dtype=np.int32)
  */
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_dxyz));
-  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 90, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 150, __pyx_L1_error)
   __pyx_v_dXYZ = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/_indices.pyx":91
+  /* "sisl/_indices.pyx":151
  *     """
  *     cdef double[:, ::1] dXYZ = dxyz
  *     cdef int n = dXYZ.shape[0]             # <<<<<<<<<<<<<<
@@ -3176,51 +3780,51 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
  */
   __pyx_v_n = (__pyx_v_dXYZ.shape[0]);
 
-  /* "sisl/_indices.pyx":92
+  /* "sisl/_indices.pyx":152
  *     cdef double[:, ::1] dXYZ = dxyz
  *     cdef int n = dXYZ.shape[0]
  *     cdef np.ndarray[np.int32_t, ndim=1] idx = np.empty([n], dtype=np.int32)             # <<<<<<<<<<<<<<
  *     cdef int[::1] IDX = idx
  * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 152, __pyx_L1_error)
   __pyx_t_7 = ((PyArrayObject *)__pyx_t_6);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_idx.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_idx = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_idx.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 92, __pyx_L1_error)
+      __PYX_ERR(0, 152, __pyx_L1_error)
     } else {__pyx_pybuffernd_idx.diminfo[0].strides = __pyx_pybuffernd_idx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_idx.diminfo[0].shape = __pyx_pybuffernd_idx.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -3228,7 +3832,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
   __pyx_v_idx = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "sisl/_indices.pyx":93
+  /* "sisl/_indices.pyx":153
  *     cdef int n = dXYZ.shape[0]
  *     cdef np.ndarray[np.int32_t, ndim=1] idx = np.empty([n], dtype=np.int32)
  *     cdef int[::1] IDX = idx             # <<<<<<<<<<<<<<
@@ -3236,12 +3840,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
  *     n = _indices_in_sphere(dXYZ, R, IDX)
  */
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_idx));
-  if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_v_IDX = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "sisl/_indices.pyx":95
+  /* "sisl/_indices.pyx":155
  *     cdef int[::1] IDX = idx
  * 
  *     n = _indices_in_sphere(dXYZ, R, IDX)             # <<<<<<<<<<<<<<
@@ -3250,7 +3854,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
  */
   __pyx_v_n = __pyx_f_4sisl_8_indices__indices_in_sphere(__pyx_v_dXYZ, __pyx_v_R, __pyx_v_IDX);
 
-  /* "sisl/_indices.pyx":97
+  /* "sisl/_indices.pyx":157
  *     n = _indices_in_sphere(dXYZ, R, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -3260,7 +3864,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
   __pyx_t_9 = ((__pyx_v_n == 0) != 0);
   if (__pyx_t_9) {
 
-    /* "sisl/_indices.pyx":98
+    /* "sisl/_indices.pyx":158
  * 
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32)             # <<<<<<<<<<<<<<
@@ -3268,31 +3872,31 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyList_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_6 = PyList_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
     PyList_SET_ITEM(__pyx_t_6, 0, __pyx_int_0);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 98, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3301,7 +3905,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "sisl/_indices.pyx":97
+    /* "sisl/_indices.pyx":157
  *     n = _indices_in_sphere(dXYZ, R, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -3310,7 +3914,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
  */
   }
 
-  /* "sisl/_indices.pyx":99
+  /* "sisl/_indices.pyx":159
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32)
  *     return idx[:n].copy()             # <<<<<<<<<<<<<<
@@ -3318,15 +3922,15 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = PySlice_New(Py_None, __pyx_t_6, Py_None); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = PySlice_New(Py_None, __pyx_t_6, Py_None); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_6 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_6 = NULL;
@@ -3340,10 +3944,10 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
     }
   }
   if (__pyx_t_6) {
-    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else {
-    __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3351,7 +3955,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":75
+  /* "sisl/_indices.pyx":135
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_in_sphere(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R):             # <<<<<<<<<<<<<<
@@ -3390,7 +3994,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices_in_sphere(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":105
+/* "sisl/_indices.pyx":165
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_in_sphere(const double[:, ::1] dxyz, const double R, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -3421,7 +4025,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
   Py_ssize_t __pyx_t_15;
   Py_ssize_t __pyx_t_16;
 
-  /* "sisl/_indices.pyx":106
+  /* "sisl/_indices.pyx":166
  * @cython.initializedcheck(False)
  * cdef int _indices_in_sphere(const double[:, ::1] dxyz, const double R, int[::1] idx) nogil:
  *     cdef int N = dxyz.shape[0]             # <<<<<<<<<<<<<<
@@ -3430,7 +4034,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
  */
   __pyx_v_N = (__pyx_v_dxyz.shape[0]);
 
-  /* "sisl/_indices.pyx":107
+  /* "sisl/_indices.pyx":167
  * cdef int _indices_in_sphere(const double[:, ::1] dxyz, const double R, int[::1] idx) nogil:
  *     cdef int N = dxyz.shape[0]
  *     cdef double R2 = R * R             # <<<<<<<<<<<<<<
@@ -3439,7 +4043,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
  */
   __pyx_v_R2 = (__pyx_v_R * __pyx_v_R);
 
-  /* "sisl/_indices.pyx":111
+  /* "sisl/_indices.pyx":171
  * 
  *     # Reset number of elements
  *     n = 0             # <<<<<<<<<<<<<<
@@ -3448,7 +4052,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
  */
   __pyx_v_n = 0;
 
-  /* "sisl/_indices.pyx":113
+  /* "sisl/_indices.pyx":173
  *     n = 0
  * 
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -3459,7 +4063,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":114
+    /* "sisl/_indices.pyx":174
  * 
  *     for i in range(N):
  *         if all_fabs_le(dxyz, i, R):             # <<<<<<<<<<<<<<
@@ -3469,7 +4073,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
     __pyx_t_3 = (__pyx_f_4sisl_8_indices_all_fabs_le(__pyx_v_dxyz, __pyx_v_i, __pyx_v_R) != 0);
     if (__pyx_t_3) {
 
-      /* "sisl/_indices.pyx":115
+      /* "sisl/_indices.pyx":175
  *     for i in range(N):
  *         if all_fabs_le(dxyz, i, R):
  *             if dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2] <= R2:             # <<<<<<<<<<<<<<
@@ -3491,7 +4095,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
       __pyx_t_3 = ((((((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_4 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_5)) ))) * (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_6 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_7)) )))) + ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_8 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_9)) ))) * (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_10 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_11)) ))))) + ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_12 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_13)) ))) * (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_14 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_15)) ))))) <= __pyx_v_R2) != 0);
       if (__pyx_t_3) {
 
-        /* "sisl/_indices.pyx":116
+        /* "sisl/_indices.pyx":176
  *         if all_fabs_le(dxyz, i, R):
  *             if dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2] <= R2:
  *                 idx[n] = i             # <<<<<<<<<<<<<<
@@ -3501,7 +4105,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
         __pyx_t_16 = __pyx_v_n;
         *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_16)) )) = __pyx_v_i;
 
-        /* "sisl/_indices.pyx":117
+        /* "sisl/_indices.pyx":177
  *             if dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2] <= R2:
  *                 idx[n] = i
  *                 n += 1             # <<<<<<<<<<<<<<
@@ -3510,7 +4114,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
  */
         __pyx_v_n = (__pyx_v_n + 1);
 
-        /* "sisl/_indices.pyx":115
+        /* "sisl/_indices.pyx":175
  *     for i in range(N):
  *         if all_fabs_le(dxyz, i, R):
  *             if dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2] <= R2:             # <<<<<<<<<<<<<<
@@ -3519,7 +4123,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
  */
       }
 
-      /* "sisl/_indices.pyx":114
+      /* "sisl/_indices.pyx":174
  * 
  *     for i in range(N):
  *         if all_fabs_le(dxyz, i, R):             # <<<<<<<<<<<<<<
@@ -3529,7 +4133,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
     }
   }
 
-  /* "sisl/_indices.pyx":118
+  /* "sisl/_indices.pyx":178
  *                 idx[n] = i
  *                 n += 1
  *     return n             # <<<<<<<<<<<<<<
@@ -3539,7 +4143,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
   __pyx_r = __pyx_v_n;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":105
+  /* "sisl/_indices.pyx":165
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_in_sphere(const double[:, ::1] dxyz, const double R, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -3552,7 +4156,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":123
+/* "sisl/_indices.pyx":183
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_in_sphere_with_dist(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R):             # <<<<<<<<<<<<<<
@@ -3561,10 +4165,10 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice const _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4sisl_8_indices_5indices_in_sphere_with_dist(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4sisl_8_indices_4indices_in_sphere_with_dist[] = " Indices and the distances for all coordinates that are within a sphere of radius `R`\n\n    Parameters\n    ----------\n    dxyz : ndarray(np.float64)\n       coordinates centered around the sphere\n    R : float\n       radius of sphere to check\n\n    Returns\n    -------\n    index : np.ndarray(np.int32)\n       indices of all dxyz coordinates that are within the sphere of radius `R`\n    dist : np.ndarray(np.float64)\n       distances for the coordinates within the sphere of radius `R` (corresponds to `index`)\n    ";
-static PyMethodDef __pyx_mdef_4sisl_8_indices_5indices_in_sphere_with_dist = {"indices_in_sphere_with_dist", (PyCFunction)__pyx_pw_4sisl_8_indices_5indices_in_sphere_with_dist, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_4indices_in_sphere_with_dist};
-static PyObject *__pyx_pw_4sisl_8_indices_5indices_in_sphere_with_dist(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_4sisl_8_indices_7indices_in_sphere_with_dist(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_4sisl_8_indices_6indices_in_sphere_with_dist[] = " Indices and the distances for all coordinates that are within a sphere of radius `R`\n\n    Parameters\n    ----------\n    dxyz : ndarray(np.float64)\n       coordinates centered around the sphere\n    R : float\n       radius of sphere to check\n\n    Returns\n    -------\n    index : np.ndarray(np.int32)\n       indices of all dxyz coordinates that are within the sphere of radius `R`\n    dist : np.ndarray(np.float64)\n       distances for the coordinates within the sphere of radius `R` (corresponds to `index`)\n    ";
+static PyMethodDef __pyx_mdef_4sisl_8_indices_7indices_in_sphere_with_dist = {"indices_in_sphere_with_dist", (PyCFunction)__pyx_pw_4sisl_8_indices_7indices_in_sphere_with_dist, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_6indices_in_sphere_with_dist};
+static PyObject *__pyx_pw_4sisl_8_indices_7indices_in_sphere_with_dist(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_dxyz = 0;
   double __pyx_v_R;
   PyObject *__pyx_r = 0;
@@ -3593,11 +4197,11 @@ static PyObject *__pyx_pw_4sisl_8_indices_5indices_in_sphere_with_dist(PyObject 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_R)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("indices_in_sphere_with_dist", 1, 2, 2, 1); __PYX_ERR(0, 123, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("indices_in_sphere_with_dist", 1, 2, 2, 1); __PYX_ERR(0, 183, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_in_sphere_with_dist") < 0)) __PYX_ERR(0, 123, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_in_sphere_with_dist") < 0)) __PYX_ERR(0, 183, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3606,18 +4210,18 @@ static PyObject *__pyx_pw_4sisl_8_indices_5indices_in_sphere_with_dist(PyObject 
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
     __pyx_v_dxyz = ((PyArrayObject *)values[0]);
-    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L3_error)
+    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("indices_in_sphere_with_dist", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 123, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("indices_in_sphere_with_dist", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 183, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl._indices.indices_in_sphere_with_dist", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dxyz), __pyx_ptype_5numpy_ndarray, 1, "dxyz", 0))) __PYX_ERR(0, 123, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(__pyx_self, __pyx_v_dxyz, __pyx_v_R);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dxyz), __pyx_ptype_5numpy_ndarray, 1, "dxyz", 0))) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_r = __pyx_pf_4sisl_8_indices_6indices_in_sphere_with_dist(__pyx_self, __pyx_v_dxyz, __pyx_v_R);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3628,7 +4232,7 @@ static PyObject *__pyx_pw_4sisl_8_indices_5indices_in_sphere_with_dist(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dxyz, double __pyx_v_R) {
+static PyObject *__pyx_pf_4sisl_8_indices_6indices_in_sphere_with_dist(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dxyz, double __pyx_v_R) {
   __Pyx_memviewslice __pyx_v_dXYZ = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_n;
   PyArrayObject *__pyx_v_idx = 0;
@@ -3670,11 +4274,11 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
   __pyx_pybuffernd_dxyz.rcbuffer = &__pyx_pybuffer_dxyz;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dxyz.rcbuffer->pybuffer, (PyObject*)__pyx_v_dxyz, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 123, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dxyz.rcbuffer->pybuffer, (PyObject*)__pyx_v_dxyz, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 183, __pyx_L1_error)
   }
   __pyx_pybuffernd_dxyz.diminfo[0].strides = __pyx_pybuffernd_dxyz.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dxyz.diminfo[0].shape = __pyx_pybuffernd_dxyz.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_dxyz.diminfo[1].strides = __pyx_pybuffernd_dxyz.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_dxyz.diminfo[1].shape = __pyx_pybuffernd_dxyz.rcbuffer->pybuffer.shape[1];
 
-  /* "sisl/_indices.pyx":140
+  /* "sisl/_indices.pyx":200
  *        distances for the coordinates within the sphere of radius `R` (corresponds to `index`)
  *     """
  *     cdef double[:, ::1] dXYZ = dxyz             # <<<<<<<<<<<<<<
@@ -3682,12 +4286,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n], dtype=np.int32)
  */
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_dxyz));
-  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 140, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 200, __pyx_L1_error)
   __pyx_v_dXYZ = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/_indices.pyx":141
+  /* "sisl/_indices.pyx":201
  *     """
  *     cdef double[:, ::1] dXYZ = dxyz
  *     cdef int n = dXYZ.shape[0]             # <<<<<<<<<<<<<<
@@ -3696,51 +4300,51 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
  */
   __pyx_v_n = (__pyx_v_dXYZ.shape[0]);
 
-  /* "sisl/_indices.pyx":142
+  /* "sisl/_indices.pyx":202
  *     cdef double[:, ::1] dXYZ = dxyz
  *     cdef int n = dXYZ.shape[0]
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n], dtype=np.int32)             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.float64_t, ndim=1, mode='c'] dist = np.empty([n], dtype=np.float64)
  *     cdef int[::1] IDX = idx
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 142, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 142, __pyx_L1_error)
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 202, __pyx_L1_error)
   __pyx_t_7 = ((PyArrayObject *)__pyx_t_6);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_idx.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_idx = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_idx.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 142, __pyx_L1_error)
+      __PYX_ERR(0, 202, __pyx_L1_error)
     } else {__pyx_pybuffernd_idx.diminfo[0].strides = __pyx_pybuffernd_idx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_idx.diminfo[0].shape = __pyx_pybuffernd_idx.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -3748,51 +4352,51 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
   __pyx_v_idx = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "sisl/_indices.pyx":143
+  /* "sisl/_indices.pyx":203
  *     cdef int n = dXYZ.shape[0]
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n], dtype=np.int32)
  *     cdef np.ndarray[np.float64_t, ndim=1, mode='c'] dist = np.empty([n], dtype=np.float64)             # <<<<<<<<<<<<<<
  *     cdef int[::1] IDX = idx
  *     cdef double[::1] DIST = dist
  */
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_6);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_5);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dist.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_dist = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_dist.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 143, __pyx_L1_error)
+      __PYX_ERR(0, 203, __pyx_L1_error)
     } else {__pyx_pybuffernd_dist.diminfo[0].strides = __pyx_pybuffernd_dist.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dist.diminfo[0].shape = __pyx_pybuffernd_dist.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -3800,7 +4404,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
   __pyx_v_dist = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "sisl/_indices.pyx":144
+  /* "sisl/_indices.pyx":204
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n], dtype=np.int32)
  *     cdef np.ndarray[np.float64_t, ndim=1, mode='c'] dist = np.empty([n], dtype=np.float64)
  *     cdef int[::1] IDX = idx             # <<<<<<<<<<<<<<
@@ -3808,12 +4412,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
  * 
  */
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_idx));
-  if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 144, __pyx_L1_error)
+  if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_v_IDX = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/_indices.pyx":145
+  /* "sisl/_indices.pyx":205
  *     cdef np.ndarray[np.float64_t, ndim=1, mode='c'] dist = np.empty([n], dtype=np.float64)
  *     cdef int[::1] IDX = idx
  *     cdef double[::1] DIST = dist             # <<<<<<<<<<<<<<
@@ -3821,12 +4425,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
  *     n = _indices_in_sphere_with_dist(dXYZ, R, DIST, IDX)
  */
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_double(((PyObject *)__pyx_v_dist));
-  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 145, __pyx_L1_error)
+  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_v_DIST = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "sisl/_indices.pyx":147
+  /* "sisl/_indices.pyx":207
  *     cdef double[::1] DIST = dist
  * 
  *     n = _indices_in_sphere_with_dist(dXYZ, R, DIST, IDX)             # <<<<<<<<<<<<<<
@@ -3835,7 +4439,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
  */
   __pyx_v_n = __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__pyx_v_dXYZ, __pyx_v_R, __pyx_v_DIST, __pyx_v_IDX);
 
-  /* "sisl/_indices.pyx":149
+  /* "sisl/_indices.pyx":209
  *     n = _indices_in_sphere_with_dist(dXYZ, R, DIST, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -3845,7 +4449,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
   __pyx_t_11 = ((__pyx_v_n == 0) != 0);
   if (__pyx_t_11) {
 
-    /* "sisl/_indices.pyx":150
+    /* "sisl/_indices.pyx":210
  * 
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32), np.empty([0], dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -3853,65 +4457,65 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyList_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_5 = PyList_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
     PyList_SET_ITEM(__pyx_t_5, 0, __pyx_int_0);
-    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyList_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_5 = PyList_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
     PyList_SET_ITEM(__pyx_t_5, 0, __pyx_int_0);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_12) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_12) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
@@ -3923,7 +4527,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "sisl/_indices.pyx":149
+    /* "sisl/_indices.pyx":209
  *     n = _indices_in_sphere_with_dist(dXYZ, R, DIST, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -3932,7 +4536,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
  */
   }
 
-  /* "sisl/_indices.pyx":151
+  /* "sisl/_indices.pyx":211
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32), np.empty([0], dtype=np.float64)
  *     return idx[:n].copy(), dist[:n].copy()             # <<<<<<<<<<<<<<
@@ -3940,15 +4544,15 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_3 = PySlice_New(Py_None, __pyx_t_12, Py_None); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_3 = PySlice_New(Py_None, __pyx_t_12, Py_None); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_12 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_3); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_12 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_3); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_copy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_copy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   __pyx_t_12 = NULL;
@@ -3962,22 +4566,22 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
     }
   }
   if (__pyx_t_12) {
-    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_12); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 151, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_12); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   } else {
-    __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 151, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 211, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_2 = PySlice_New(Py_None, __pyx_t_12, Py_None); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_2 = PySlice_New(Py_None, __pyx_t_12, Py_None); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_12 = PyObject_GetItem(((PyObject *)__pyx_v_dist), __pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_12 = PyObject_GetItem(((PyObject *)__pyx_v_dist), __pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   __pyx_t_12 = NULL;
@@ -3991,14 +4595,14 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
     }
   }
   if (__pyx_t_12) {
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_12); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_12); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   } else {
-    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
@@ -4010,7 +4614,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":123
+  /* "sisl/_indices.pyx":183
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_in_sphere_with_dist(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R):             # <<<<<<<<<<<<<<
@@ -4055,7 +4659,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_4indices_in_sphere_with_dist(CYTHON_UN
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":157
+/* "sisl/_indices.pyx":217
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_in_sphere_with_dist(const double[:, ::1] dxyz, const double R,             # <<<<<<<<<<<<<<
@@ -4088,7 +4692,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
   Py_ssize_t __pyx_t_16;
   Py_ssize_t __pyx_t_17;
 
-  /* "sisl/_indices.pyx":159
+  /* "sisl/_indices.pyx":219
  * cdef int _indices_in_sphere_with_dist(const double[:, ::1] dxyz, const double R,
  *                             double[::1] dist, int[::1] idx) nogil:
  *     cdef int N = dxyz.shape[0]             # <<<<<<<<<<<<<<
@@ -4097,7 +4701,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
  */
   __pyx_v_N = (__pyx_v_dxyz.shape[0]);
 
-  /* "sisl/_indices.pyx":160
+  /* "sisl/_indices.pyx":220
  *                             double[::1] dist, int[::1] idx) nogil:
  *     cdef int N = dxyz.shape[0]
  *     cdef double R2 = R * R             # <<<<<<<<<<<<<<
@@ -4106,7 +4710,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
  */
   __pyx_v_R2 = (__pyx_v_R * __pyx_v_R);
 
-  /* "sisl/_indices.pyx":165
+  /* "sisl/_indices.pyx":225
  * 
  *     # Reset number of elements
  *     n = 0             # <<<<<<<<<<<<<<
@@ -4115,7 +4719,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
  */
   __pyx_v_n = 0;
 
-  /* "sisl/_indices.pyx":167
+  /* "sisl/_indices.pyx":227
  *     n = 0
  * 
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -4126,7 +4730,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":168
+    /* "sisl/_indices.pyx":228
  * 
  *     for i in range(N):
  *         if all_fabs_le(dxyz, i, R):             # <<<<<<<<<<<<<<
@@ -4136,7 +4740,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
     __pyx_t_3 = (__pyx_f_4sisl_8_indices_all_fabs_le(__pyx_v_dxyz, __pyx_v_i, __pyx_v_R) != 0);
     if (__pyx_t_3) {
 
-      /* "sisl/_indices.pyx":169
+      /* "sisl/_indices.pyx":229
  *     for i in range(N):
  *         if all_fabs_le(dxyz, i, R):
  *             d = dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2]             # <<<<<<<<<<<<<<
@@ -4157,7 +4761,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
       __pyx_t_15 = 2;
       __pyx_v_d = ((((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_4 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_5)) ))) * (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_6 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_7)) )))) + ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_8 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_9)) ))) * (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_10 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_11)) ))))) + ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_12 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_13)) ))) * (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_dxyz.data + __pyx_t_14 * __pyx_v_dxyz.strides[0]) )) + __pyx_t_15)) )))));
 
-      /* "sisl/_indices.pyx":170
+      /* "sisl/_indices.pyx":230
  *         if all_fabs_le(dxyz, i, R):
  *             d = dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2]
  *             if d <= R2:             # <<<<<<<<<<<<<<
@@ -4167,7 +4771,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
       __pyx_t_3 = ((__pyx_v_d <= __pyx_v_R2) != 0);
       if (__pyx_t_3) {
 
-        /* "sisl/_indices.pyx":171
+        /* "sisl/_indices.pyx":231
  *             d = dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2]
  *             if d <= R2:
  *                 dist[n] = sqrt(d)             # <<<<<<<<<<<<<<
@@ -4177,7 +4781,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
         __pyx_t_16 = __pyx_v_n;
         *((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_dist.data) + __pyx_t_16)) )) = sqrt(__pyx_v_d);
 
-        /* "sisl/_indices.pyx":172
+        /* "sisl/_indices.pyx":232
  *             if d <= R2:
  *                 dist[n] = sqrt(d)
  *                 idx[n] = i             # <<<<<<<<<<<<<<
@@ -4187,7 +4791,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
         __pyx_t_17 = __pyx_v_n;
         *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_17)) )) = __pyx_v_i;
 
-        /* "sisl/_indices.pyx":173
+        /* "sisl/_indices.pyx":233
  *                 dist[n] = sqrt(d)
  *                 idx[n] = i
  *                 n += 1             # <<<<<<<<<<<<<<
@@ -4196,7 +4800,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
  */
         __pyx_v_n = (__pyx_v_n + 1);
 
-        /* "sisl/_indices.pyx":170
+        /* "sisl/_indices.pyx":230
  *         if all_fabs_le(dxyz, i, R):
  *             d = dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2]
  *             if d <= R2:             # <<<<<<<<<<<<<<
@@ -4205,7 +4809,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
  */
       }
 
-      /* "sisl/_indices.pyx":168
+      /* "sisl/_indices.pyx":228
  * 
  *     for i in range(N):
  *         if all_fabs_le(dxyz, i, R):             # <<<<<<<<<<<<<<
@@ -4215,7 +4819,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
     }
   }
 
-  /* "sisl/_indices.pyx":174
+  /* "sisl/_indices.pyx":234
  *                 idx[n] = i
  *                 n += 1
  *     return n             # <<<<<<<<<<<<<<
@@ -4225,7 +4829,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
   __pyx_r = __pyx_v_n;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":157
+  /* "sisl/_indices.pyx":217
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_in_sphere_with_dist(const double[:, ::1] dxyz, const double R,             # <<<<<<<<<<<<<<
@@ -4238,7 +4842,7 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":179
+/* "sisl/_indices.pyx":239
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_le(np.ndarray a, const double V):             # <<<<<<<<<<<<<<
@@ -4247,10 +4851,10 @@ static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewsli
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4sisl_8_indices_7indices_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4sisl_8_indices_6indices_le[] = " Indices for all values in `a` that are ``<= V``\n\n    Parameters\n    ----------\n    a : np.ndarray(np.float64)\n       array to check if 2D, all last dimension values must be ``<= V``\n    V : float\n       value that is checked against\n\n    Returns\n    -------\n    index : np.ndarray(np.int32)\n       indices for the values in `a` which are less than or equal to `V`\n    ";
-static PyMethodDef __pyx_mdef_4sisl_8_indices_7indices_le = {"indices_le", (PyCFunction)__pyx_pw_4sisl_8_indices_7indices_le, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_6indices_le};
-static PyObject *__pyx_pw_4sisl_8_indices_7indices_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_4sisl_8_indices_9indices_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_4sisl_8_indices_8indices_le[] = " Indices for all values in `a` that are ``<= V``\n\n    Parameters\n    ----------\n    a : np.ndarray(np.float64)\n       array to check if 2D, all last dimension values must be ``<= V``\n    V : float\n       value that is checked against\n\n    Returns\n    -------\n    index : np.ndarray(np.int32)\n       indices for the values in `a` which are less than or equal to `V`\n    ";
+static PyMethodDef __pyx_mdef_4sisl_8_indices_9indices_le = {"indices_le", (PyCFunction)__pyx_pw_4sisl_8_indices_9indices_le, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_8indices_le};
+static PyObject *__pyx_pw_4sisl_8_indices_9indices_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_a = 0;
   double __pyx_v_V;
   PyObject *__pyx_r = 0;
@@ -4279,11 +4883,11 @@ static PyObject *__pyx_pw_4sisl_8_indices_7indices_le(PyObject *__pyx_self, PyOb
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_V)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("indices_le", 1, 2, 2, 1); __PYX_ERR(0, 179, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("indices_le", 1, 2, 2, 1); __PYX_ERR(0, 239, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_le") < 0)) __PYX_ERR(0, 179, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_le") < 0)) __PYX_ERR(0, 239, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -4292,18 +4896,18 @@ static PyObject *__pyx_pw_4sisl_8_indices_7indices_le(PyObject *__pyx_self, PyOb
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
     __pyx_v_a = ((PyArrayObject *)values[0]);
-    __pyx_v_V = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_V == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L3_error)
+    __pyx_v_V = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_V == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 239, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("indices_le", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 179, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("indices_le", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 239, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl._indices.indices_le", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) __PYX_ERR(0, 179, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4sisl_8_indices_6indices_le(__pyx_self, __pyx_v_a, __pyx_v_V);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_r = __pyx_pf_4sisl_8_indices_8indices_le(__pyx_self, __pyx_v_a, __pyx_v_V);
 
   /* function exit code */
   goto __pyx_L0;
@@ -4314,7 +4918,7 @@ static PyObject *__pyx_pw_4sisl_8_indices_7indices_le(PyObject *__pyx_self, PyOb
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V) {
+static PyObject *__pyx_pf_4sisl_8_indices_8indices_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V) {
   PyArrayObject *__pyx_v_idx = 0;
   __Pyx_memviewslice __pyx_v_IDX = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_ndim;
@@ -4342,51 +4946,51 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
   __pyx_pybuffernd_idx.data = NULL;
   __pyx_pybuffernd_idx.rcbuffer = &__pyx_pybuffer_idx;
 
-  /* "sisl/_indices.pyx":194
+  /* "sisl/_indices.pyx":254
  *        indices for the values in `a` which are less than or equal to `V`
  *     """
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([a.shape[0]], dtype=np.int32)             # <<<<<<<<<<<<<<
  *     cdef int[::1] IDX = idx
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_a->dimensions[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_a->dimensions[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 194, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 194, __pyx_L1_error)
+  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 254, __pyx_L1_error)
   __pyx_t_6 = ((PyArrayObject *)__pyx_t_5);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_idx.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_idx = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_idx.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 194, __pyx_L1_error)
+      __PYX_ERR(0, 254, __pyx_L1_error)
     } else {__pyx_pybuffernd_idx.diminfo[0].strides = __pyx_pybuffernd_idx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_idx.diminfo[0].shape = __pyx_pybuffernd_idx.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -4394,7 +4998,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
   __pyx_v_idx = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "sisl/_indices.pyx":195
+  /* "sisl/_indices.pyx":255
  *     """
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([a.shape[0]], dtype=np.int32)
  *     cdef int[::1] IDX = idx             # <<<<<<<<<<<<<<
@@ -4402,12 +5006,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  *     cdef int ndim = a.ndim
  */
   __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_idx));
-  if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 195, __pyx_L1_error)
+  if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 255, __pyx_L1_error)
   __pyx_v_IDX = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "sisl/_indices.pyx":197
+  /* "sisl/_indices.pyx":257
  *     cdef int[::1] IDX = idx
  * 
  *     cdef int ndim = a.ndim             # <<<<<<<<<<<<<<
@@ -4417,41 +5021,41 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
   __pyx_t_8 = __pyx_v_a->nd;
   __pyx_v_ndim = __pyx_t_8;
 
-  /* "sisl/_indices.pyx":202
+  /* "sisl/_indices.pyx":262
  *     cdef int n
  * 
  *     if a.dtype != np.float64:             # <<<<<<<<<<<<<<
  *         raise ValueError('indices_le requires input array to be of float64 type')
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_9) {
 
-    /* "sisl/_indices.pyx":203
+    /* "sisl/_indices.pyx":263
  * 
  *     if a.dtype != np.float64:
  *         raise ValueError('indices_le requires input array to be of float64 type')             # <<<<<<<<<<<<<<
  * 
  *     if ndim == 1:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 203, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 203, __pyx_L1_error)
+    __PYX_ERR(0, 263, __pyx_L1_error)
 
-    /* "sisl/_indices.pyx":202
+    /* "sisl/_indices.pyx":262
  *     cdef int n
  * 
  *     if a.dtype != np.float64:             # <<<<<<<<<<<<<<
@@ -4460,7 +5064,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  */
   }
 
-  /* "sisl/_indices.pyx":205
+  /* "sisl/_indices.pyx":265
  *         raise ValueError('indices_le requires input array to be of float64 type')
  * 
  *     if ndim == 1:             # <<<<<<<<<<<<<<
@@ -4470,7 +5074,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
   switch (__pyx_v_ndim) {
     case 1:
 
-    /* "sisl/_indices.pyx":206
+    /* "sisl/_indices.pyx":266
  * 
  *     if ndim == 1:
  *         A1 = a             # <<<<<<<<<<<<<<
@@ -4478,12 +5082,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  * 
  */
     __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_double(((PyObject *)__pyx_v_a));
-    if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 266, __pyx_L1_error)
     __pyx_v_A1 = __pyx_t_10;
     __pyx_t_10.memview = NULL;
     __pyx_t_10.data = NULL;
 
-    /* "sisl/_indices.pyx":207
+    /* "sisl/_indices.pyx":267
  *     if ndim == 1:
  *         A1 = a
  *         n = _indices_le1(A1, V, IDX)             # <<<<<<<<<<<<<<
@@ -4492,7 +5096,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  */
     __pyx_v_n = __pyx_f_4sisl_8_indices__indices_le1(__pyx_v_A1, __pyx_v_V, __pyx_v_IDX);
 
-    /* "sisl/_indices.pyx":205
+    /* "sisl/_indices.pyx":265
  *         raise ValueError('indices_le requires input array to be of float64 type')
  * 
  *     if ndim == 1:             # <<<<<<<<<<<<<<
@@ -4501,7 +5105,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  */
     break;
 
-    /* "sisl/_indices.pyx":209
+    /* "sisl/_indices.pyx":269
  *         n = _indices_le1(A1, V, IDX)
  * 
  *     elif ndim == 2:             # <<<<<<<<<<<<<<
@@ -4510,7 +5114,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  */
     case 2:
 
-    /* "sisl/_indices.pyx":210
+    /* "sisl/_indices.pyx":270
  * 
  *     elif ndim == 2:
  *         A2 = a             # <<<<<<<<<<<<<<
@@ -4518,12 +5122,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  * 
  */
     __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_a));
-    if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 210, __pyx_L1_error)
+    if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 270, __pyx_L1_error)
     __pyx_v_A2 = __pyx_t_11;
     __pyx_t_11.memview = NULL;
     __pyx_t_11.data = NULL;
 
-    /* "sisl/_indices.pyx":211
+    /* "sisl/_indices.pyx":271
  *     elif ndim == 2:
  *         A2 = a
  *         n = _indices_le2(A2, V, IDX)             # <<<<<<<<<<<<<<
@@ -4532,7 +5136,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  */
     __pyx_v_n = __pyx_f_4sisl_8_indices__indices_le2(__pyx_v_A2, __pyx_v_V, __pyx_v_IDX);
 
-    /* "sisl/_indices.pyx":209
+    /* "sisl/_indices.pyx":269
  *         n = _indices_le1(A1, V, IDX)
  * 
  *     elif ndim == 2:             # <<<<<<<<<<<<<<
@@ -4543,7 +5147,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
     default: break;
   }
 
-  /* "sisl/_indices.pyx":213
+  /* "sisl/_indices.pyx":273
  *         n = _indices_le2(A2, V, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -4553,7 +5157,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
   __pyx_t_9 = ((__pyx_v_n == 0) != 0);
   if (__pyx_t_9) {
 
-    /* "sisl/_indices.pyx":214
+    /* "sisl/_indices.pyx":274
  * 
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32)             # <<<<<<<<<<<<<<
@@ -4561,31 +5165,31 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
     PyList_SET_ITEM(__pyx_t_3, 0, __pyx_int_0);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 214, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -4594,7 +5198,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "sisl/_indices.pyx":213
+    /* "sisl/_indices.pyx":273
  *         n = _indices_le2(A2, V, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -4603,7 +5207,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  */
   }
 
-  /* "sisl/_indices.pyx":215
+  /* "sisl/_indices.pyx":275
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32)
  *     return idx[:n].copy()             # <<<<<<<<<<<<<<
@@ -4611,15 +5215,15 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = PySlice_New(Py_None, __pyx_t_3, Py_None); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = PySlice_New(Py_None, __pyx_t_3, Py_None); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_3 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_copy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_copy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -4633,10 +5237,10 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -4644,7 +5248,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":179
+  /* "sisl/_indices.pyx":239
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_le(np.ndarray a, const double V):             # <<<<<<<<<<<<<<
@@ -4683,7 +5287,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_6indices_le(CYTHON_UNUSED PyObject *__
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":221
+/* "sisl/_indices.pyx":281
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_le1(const double[::1] a, const double V, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -4702,7 +5306,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
   int __pyx_t_4;
   Py_ssize_t __pyx_t_5;
 
-  /* "sisl/_indices.pyx":222
+  /* "sisl/_indices.pyx":282
  * @cython.initializedcheck(False)
  * cdef int _indices_le1(const double[::1] a, const double V, int[::1] idx) nogil:
  *     cdef int N = a.shape[0]             # <<<<<<<<<<<<<<
@@ -4711,7 +5315,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
  */
   __pyx_v_N = (__pyx_v_a.shape[0]);
 
-  /* "sisl/_indices.pyx":224
+  /* "sisl/_indices.pyx":284
  *     cdef int N = a.shape[0]
  *     cdef int i, n
  *     n = 0             # <<<<<<<<<<<<<<
@@ -4720,7 +5324,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
  */
   __pyx_v_n = 0;
 
-  /* "sisl/_indices.pyx":225
+  /* "sisl/_indices.pyx":285
  *     cdef int i, n
  *     n = 0
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -4731,7 +5335,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":226
+    /* "sisl/_indices.pyx":286
  *     n = 0
  *     for i in range(N):
  *         if a[i] <= V:             # <<<<<<<<<<<<<<
@@ -4742,7 +5346,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
     __pyx_t_4 = (((*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_a.data) + __pyx_t_3)) ))) <= __pyx_v_V) != 0);
     if (__pyx_t_4) {
 
-      /* "sisl/_indices.pyx":227
+      /* "sisl/_indices.pyx":287
  *     for i in range(N):
  *         if a[i] <= V:
  *             idx[n] = i             # <<<<<<<<<<<<<<
@@ -4752,7 +5356,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
       __pyx_t_5 = __pyx_v_n;
       *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_5)) )) = __pyx_v_i;
 
-      /* "sisl/_indices.pyx":228
+      /* "sisl/_indices.pyx":288
  *         if a[i] <= V:
  *             idx[n] = i
  *             n += 1             # <<<<<<<<<<<<<<
@@ -4761,7 +5365,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
  */
       __pyx_v_n = (__pyx_v_n + 1);
 
-      /* "sisl/_indices.pyx":226
+      /* "sisl/_indices.pyx":286
  *     n = 0
  *     for i in range(N):
  *         if a[i] <= V:             # <<<<<<<<<<<<<<
@@ -4771,7 +5375,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
     }
   }
 
-  /* "sisl/_indices.pyx":229
+  /* "sisl/_indices.pyx":289
  *             idx[n] = i
  *             n += 1
  *     return n             # <<<<<<<<<<<<<<
@@ -4781,7 +5385,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
   __pyx_r = __pyx_v_n;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":221
+  /* "sisl/_indices.pyx":281
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_le1(const double[::1] a, const double V, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -4794,7 +5398,7 @@ static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice const __pyx_v
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":235
+/* "sisl/_indices.pyx":295
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef inline int all_le(const double[:, ::1] a, const int i, const double V) nogil:             # <<<<<<<<<<<<<<
@@ -4811,7 +5415,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_le(__Pyx_memviewslice const
   Py_ssize_t __pyx_t_4;
   int __pyx_t_5;
 
-  /* "sisl/_indices.pyx":237
+  /* "sisl/_indices.pyx":297
  * cdef inline int all_le(const double[:, ::1] a, const int i, const double V) nogil:
  *     cdef int j
  *     for j in range(a.shape[1]):             # <<<<<<<<<<<<<<
@@ -4822,7 +5426,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_le(__Pyx_memviewslice const
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_j = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":238
+    /* "sisl/_indices.pyx":298
  *     cdef int j
  *     for j in range(a.shape[1]):
  *         if a[i, j] > V:             # <<<<<<<<<<<<<<
@@ -4834,7 +5438,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_le(__Pyx_memviewslice const
     __pyx_t_5 = (((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_a.data + __pyx_t_3 * __pyx_v_a.strides[0]) )) + __pyx_t_4)) ))) > __pyx_v_V) != 0);
     if (__pyx_t_5) {
 
-      /* "sisl/_indices.pyx":239
+      /* "sisl/_indices.pyx":299
  *     for j in range(a.shape[1]):
  *         if a[i, j] > V:
  *             return 0             # <<<<<<<<<<<<<<
@@ -4844,7 +5448,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_le(__Pyx_memviewslice const
       __pyx_r = 0;
       goto __pyx_L0;
 
-      /* "sisl/_indices.pyx":238
+      /* "sisl/_indices.pyx":298
  *     cdef int j
  *     for j in range(a.shape[1]):
  *         if a[i, j] > V:             # <<<<<<<<<<<<<<
@@ -4854,7 +5458,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_le(__Pyx_memviewslice const
     }
   }
 
-  /* "sisl/_indices.pyx":240
+  /* "sisl/_indices.pyx":300
  *         if a[i, j] > V:
  *             return 0
  *     return 1             # <<<<<<<<<<<<<<
@@ -4864,7 +5468,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_le(__Pyx_memviewslice const
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":235
+  /* "sisl/_indices.pyx":295
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef inline int all_le(const double[:, ::1] a, const int i, const double V) nogil:             # <<<<<<<<<<<<<<
@@ -4877,7 +5481,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_le(__Pyx_memviewslice const
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":246
+/* "sisl/_indices.pyx":306
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_le2(const double[:, ::1] a, const double V, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -4895,7 +5499,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
   int __pyx_t_3;
   Py_ssize_t __pyx_t_4;
 
-  /* "sisl/_indices.pyx":247
+  /* "sisl/_indices.pyx":307
  * @cython.initializedcheck(False)
  * cdef int _indices_le2(const double[:, ::1] a, const double V, int[::1] idx) nogil:
  *     cdef int N = a.shape[0]             # <<<<<<<<<<<<<<
@@ -4904,7 +5508,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
  */
   __pyx_v_N = (__pyx_v_a.shape[0]);
 
-  /* "sisl/_indices.pyx":249
+  /* "sisl/_indices.pyx":309
  *     cdef int N = a.shape[0]
  *     cdef int i, n
  *     n = 0             # <<<<<<<<<<<<<<
@@ -4913,7 +5517,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
  */
   __pyx_v_n = 0;
 
-  /* "sisl/_indices.pyx":250
+  /* "sisl/_indices.pyx":310
  *     cdef int i, n
  *     n = 0
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -4924,7 +5528,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":251
+    /* "sisl/_indices.pyx":311
  *     n = 0
  *     for i in range(N):
  *         if all_le(a, i, V):             # <<<<<<<<<<<<<<
@@ -4934,7 +5538,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
     __pyx_t_3 = (__pyx_f_4sisl_8_indices_all_le(__pyx_v_a, __pyx_v_i, __pyx_v_V) != 0);
     if (__pyx_t_3) {
 
-      /* "sisl/_indices.pyx":252
+      /* "sisl/_indices.pyx":312
  *     for i in range(N):
  *         if all_le(a, i, V):
  *             idx[n] = i             # <<<<<<<<<<<<<<
@@ -4944,7 +5548,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
       __pyx_t_4 = __pyx_v_n;
       *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_4)) )) = __pyx_v_i;
 
-      /* "sisl/_indices.pyx":253
+      /* "sisl/_indices.pyx":313
  *         if all_le(a, i, V):
  *             idx[n] = i
  *             n += 1             # <<<<<<<<<<<<<<
@@ -4953,7 +5557,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
  */
       __pyx_v_n = (__pyx_v_n + 1);
 
-      /* "sisl/_indices.pyx":251
+      /* "sisl/_indices.pyx":311
  *     n = 0
  *     for i in range(N):
  *         if all_le(a, i, V):             # <<<<<<<<<<<<<<
@@ -4963,7 +5567,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
     }
   }
 
-  /* "sisl/_indices.pyx":254
+  /* "sisl/_indices.pyx":314
  *             idx[n] = i
  *             n += 1
  *     return n             # <<<<<<<<<<<<<<
@@ -4973,7 +5577,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
   __pyx_r = __pyx_v_n;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":246
+  /* "sisl/_indices.pyx":306
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_le2(const double[:, ::1] a, const double V, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -4986,7 +5590,7 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":259
+/* "sisl/_indices.pyx":319
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_fabs_le(np.ndarray a, const double V):             # <<<<<<<<<<<<<<
@@ -4995,10 +5599,10 @@ static int __pyx_f_4sisl_8_indices__indices_le2(__Pyx_memviewslice const __pyx_v
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4sisl_8_indices_9indices_fabs_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4sisl_8_indices_8indices_fabs_le[] = " Indices for all values in `a` that are ``| | <= V``\n\n    Parameters\n    ----------\n    a : np.ndarray(np.float64)\n       array to check if 2D, all last dimension values must be ``| | <= V``\n    V : float\n       value that is checked against\n\n    Returns\n    -------\n    index : np.ndarray(np.int32)\n       indices for the values in ``|a|`` which are less than or equal to `V`\n    ";
-static PyMethodDef __pyx_mdef_4sisl_8_indices_9indices_fabs_le = {"indices_fabs_le", (PyCFunction)__pyx_pw_4sisl_8_indices_9indices_fabs_le, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_8indices_fabs_le};
-static PyObject *__pyx_pw_4sisl_8_indices_9indices_fabs_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_4sisl_8_indices_11indices_fabs_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_4sisl_8_indices_10indices_fabs_le[] = " Indices for all values in `a` that are ``| | <= V``\n\n    Parameters\n    ----------\n    a : np.ndarray(np.float64)\n       array to check if 2D, all last dimension values must be ``| | <= V``\n    V : float\n       value that is checked against\n\n    Returns\n    -------\n    index : np.ndarray(np.int32)\n       indices for the values in ``|a|`` which are less than or equal to `V`\n    ";
+static PyMethodDef __pyx_mdef_4sisl_8_indices_11indices_fabs_le = {"indices_fabs_le", (PyCFunction)__pyx_pw_4sisl_8_indices_11indices_fabs_le, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_10indices_fabs_le};
+static PyObject *__pyx_pw_4sisl_8_indices_11indices_fabs_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_a = 0;
   double __pyx_v_V;
   PyObject *__pyx_r = 0;
@@ -5027,11 +5631,11 @@ static PyObject *__pyx_pw_4sisl_8_indices_9indices_fabs_le(PyObject *__pyx_self,
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_V)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("indices_fabs_le", 1, 2, 2, 1); __PYX_ERR(0, 259, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("indices_fabs_le", 1, 2, 2, 1); __PYX_ERR(0, 319, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_fabs_le") < 0)) __PYX_ERR(0, 259, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_fabs_le") < 0)) __PYX_ERR(0, 319, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -5040,18 +5644,18 @@ static PyObject *__pyx_pw_4sisl_8_indices_9indices_fabs_le(PyObject *__pyx_self,
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
     __pyx_v_a = ((PyArrayObject *)values[0]);
-    __pyx_v_V = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_V == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 259, __pyx_L3_error)
+    __pyx_v_V = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_V == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 319, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("indices_fabs_le", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 259, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("indices_fabs_le", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 319, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl._indices.indices_fabs_le", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) __PYX_ERR(0, 259, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4sisl_8_indices_8indices_fabs_le(__pyx_self, __pyx_v_a, __pyx_v_V);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) __PYX_ERR(0, 319, __pyx_L1_error)
+  __pyx_r = __pyx_pf_4sisl_8_indices_10indices_fabs_le(__pyx_self, __pyx_v_a, __pyx_v_V);
 
   /* function exit code */
   goto __pyx_L0;
@@ -5062,7 +5666,7 @@ static PyObject *__pyx_pw_4sisl_8_indices_9indices_fabs_le(PyObject *__pyx_self,
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V) {
+static PyObject *__pyx_pf_4sisl_8_indices_10indices_fabs_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V) {
   PyArrayObject *__pyx_v_idx = 0;
   __Pyx_memviewslice __pyx_v_IDX = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_ndim;
@@ -5090,51 +5694,51 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
   __pyx_pybuffernd_idx.data = NULL;
   __pyx_pybuffernd_idx.rcbuffer = &__pyx_pybuffer_idx;
 
-  /* "sisl/_indices.pyx":274
+  /* "sisl/_indices.pyx":334
  *        indices for the values in ``|a|`` which are less than or equal to `V`
  *     """
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([a.shape[0]], dtype=np.int32)             # <<<<<<<<<<<<<<
  *     cdef int[::1] IDX = idx
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_a->dimensions[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_a->dimensions[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 334, __pyx_L1_error)
   __pyx_t_6 = ((PyArrayObject *)__pyx_t_5);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_idx.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_idx = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_idx.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 274, __pyx_L1_error)
+      __PYX_ERR(0, 334, __pyx_L1_error)
     } else {__pyx_pybuffernd_idx.diminfo[0].strides = __pyx_pybuffernd_idx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_idx.diminfo[0].shape = __pyx_pybuffernd_idx.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -5142,7 +5746,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
   __pyx_v_idx = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "sisl/_indices.pyx":275
+  /* "sisl/_indices.pyx":335
  *     """
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([a.shape[0]], dtype=np.int32)
  *     cdef int[::1] IDX = idx             # <<<<<<<<<<<<<<
@@ -5150,12 +5754,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  *     cdef int ndim = a.ndim
  */
   __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_idx));
-  if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 275, __pyx_L1_error)
+  if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 335, __pyx_L1_error)
   __pyx_v_IDX = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "sisl/_indices.pyx":277
+  /* "sisl/_indices.pyx":337
  *     cdef int[::1] IDX = idx
  * 
  *     cdef int ndim = a.ndim             # <<<<<<<<<<<<<<
@@ -5165,41 +5769,41 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
   __pyx_t_8 = __pyx_v_a->nd;
   __pyx_v_ndim = __pyx_t_8;
 
-  /* "sisl/_indices.pyx":282
+  /* "sisl/_indices.pyx":342
  *     cdef int n
  * 
  *     if a.dtype != np.float64:             # <<<<<<<<<<<<<<
  *         raise ValueError('indices_fabs_le requires input array to be of float64 type')
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 282, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 342, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 282, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 342, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 282, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 342, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 282, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 342, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 282, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 342, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_9) {
 
-    /* "sisl/_indices.pyx":283
+    /* "sisl/_indices.pyx":343
  * 
  *     if a.dtype != np.float64:
  *         raise ValueError('indices_fabs_le requires input array to be of float64 type')             # <<<<<<<<<<<<<<
  * 
  *     if ndim == 1:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 283, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 343, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 283, __pyx_L1_error)
+    __PYX_ERR(0, 343, __pyx_L1_error)
 
-    /* "sisl/_indices.pyx":282
+    /* "sisl/_indices.pyx":342
  *     cdef int n
  * 
  *     if a.dtype != np.float64:             # <<<<<<<<<<<<<<
@@ -5208,7 +5812,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  */
   }
 
-  /* "sisl/_indices.pyx":285
+  /* "sisl/_indices.pyx":345
  *         raise ValueError('indices_fabs_le requires input array to be of float64 type')
  * 
  *     if ndim == 1:             # <<<<<<<<<<<<<<
@@ -5218,7 +5822,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
   switch (__pyx_v_ndim) {
     case 1:
 
-    /* "sisl/_indices.pyx":286
+    /* "sisl/_indices.pyx":346
  * 
  *     if ndim == 1:
  *         A1 = a             # <<<<<<<<<<<<<<
@@ -5226,12 +5830,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  * 
  */
     __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_double(((PyObject *)__pyx_v_a));
-    if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 286, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 346, __pyx_L1_error)
     __pyx_v_A1 = __pyx_t_10;
     __pyx_t_10.memview = NULL;
     __pyx_t_10.data = NULL;
 
-    /* "sisl/_indices.pyx":287
+    /* "sisl/_indices.pyx":347
  *     if ndim == 1:
  *         A1 = a
  *         n = _indices_fabs_le1(A1, V, IDX)             # <<<<<<<<<<<<<<
@@ -5240,7 +5844,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  */
     __pyx_v_n = __pyx_f_4sisl_8_indices__indices_fabs_le1(__pyx_v_A1, __pyx_v_V, __pyx_v_IDX);
 
-    /* "sisl/_indices.pyx":285
+    /* "sisl/_indices.pyx":345
  *         raise ValueError('indices_fabs_le requires input array to be of float64 type')
  * 
  *     if ndim == 1:             # <<<<<<<<<<<<<<
@@ -5249,7 +5853,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  */
     break;
 
-    /* "sisl/_indices.pyx":289
+    /* "sisl/_indices.pyx":349
  *         n = _indices_fabs_le1(A1, V, IDX)
  * 
  *     elif ndim == 2:             # <<<<<<<<<<<<<<
@@ -5258,7 +5862,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  */
     case 2:
 
-    /* "sisl/_indices.pyx":290
+    /* "sisl/_indices.pyx":350
  * 
  *     elif ndim == 2:
  *         A2 = a             # <<<<<<<<<<<<<<
@@ -5266,12 +5870,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  * 
  */
     __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_a));
-    if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 290, __pyx_L1_error)
+    if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 350, __pyx_L1_error)
     __pyx_v_A2 = __pyx_t_11;
     __pyx_t_11.memview = NULL;
     __pyx_t_11.data = NULL;
 
-    /* "sisl/_indices.pyx":291
+    /* "sisl/_indices.pyx":351
  *     elif ndim == 2:
  *         A2 = a
  *         n = _indices_fabs_le2(A2, V, IDX)             # <<<<<<<<<<<<<<
@@ -5280,7 +5884,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  */
     __pyx_v_n = __pyx_f_4sisl_8_indices__indices_fabs_le2(__pyx_v_A2, __pyx_v_V, __pyx_v_IDX);
 
-    /* "sisl/_indices.pyx":289
+    /* "sisl/_indices.pyx":349
  *         n = _indices_fabs_le1(A1, V, IDX)
  * 
  *     elif ndim == 2:             # <<<<<<<<<<<<<<
@@ -5291,7 +5895,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
     default: break;
   }
 
-  /* "sisl/_indices.pyx":293
+  /* "sisl/_indices.pyx":353
  *         n = _indices_fabs_le2(A2, V, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -5301,7 +5905,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
   __pyx_t_9 = ((__pyx_v_n == 0) != 0);
   if (__pyx_t_9) {
 
-    /* "sisl/_indices.pyx":294
+    /* "sisl/_indices.pyx":354
  * 
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32)             # <<<<<<<<<<<<<<
@@ -5309,31 +5913,31 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 294, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 294, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 294, __pyx_L1_error)
+    __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
     PyList_SET_ITEM(__pyx_t_3, 0, __pyx_int_0);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 294, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 294, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 294, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 294, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 294, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 294, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -5342,7 +5946,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "sisl/_indices.pyx":293
+    /* "sisl/_indices.pyx":353
  *         n = _indices_fabs_le2(A2, V, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -5351,7 +5955,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  */
   }
 
-  /* "sisl/_indices.pyx":295
+  /* "sisl/_indices.pyx":355
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32)
  *     return idx[:n].copy()             # <<<<<<<<<<<<<<
@@ -5359,15 +5963,15 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 355, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = PySlice_New(Py_None, __pyx_t_3, Py_None); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_5 = PySlice_New(Py_None, __pyx_t_3, Py_None); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 355, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_3 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 355, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_copy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_copy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 355, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -5381,10 +5985,10 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 295, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 355, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 295, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -5392,7 +5996,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":259
+  /* "sisl/_indices.pyx":319
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_fabs_le(np.ndarray a, const double V):             # <<<<<<<<<<<<<<
@@ -5431,7 +6035,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_8indices_fabs_le(CYTHON_UNUSED PyObjec
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":301
+/* "sisl/_indices.pyx":361
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_fabs_le1(const double[::1] a, const double V, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -5450,7 +6054,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
   int __pyx_t_4;
   Py_ssize_t __pyx_t_5;
 
-  /* "sisl/_indices.pyx":302
+  /* "sisl/_indices.pyx":362
  * @cython.initializedcheck(False)
  * cdef int _indices_fabs_le1(const double[::1] a, const double V, int[::1] idx) nogil:
  *     cdef int N = a.shape[0]             # <<<<<<<<<<<<<<
@@ -5459,7 +6063,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
  */
   __pyx_v_N = (__pyx_v_a.shape[0]);
 
-  /* "sisl/_indices.pyx":304
+  /* "sisl/_indices.pyx":364
  *     cdef int N = a.shape[0]
  *     cdef int i, n
  *     n = 0             # <<<<<<<<<<<<<<
@@ -5468,7 +6072,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
  */
   __pyx_v_n = 0;
 
-  /* "sisl/_indices.pyx":305
+  /* "sisl/_indices.pyx":365
  *     cdef int i, n
  *     n = 0
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -5479,7 +6083,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":306
+    /* "sisl/_indices.pyx":366
  *     n = 0
  *     for i in range(N):
  *         if fabs(a[i]) <= V:             # <<<<<<<<<<<<<<
@@ -5490,7 +6094,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
     __pyx_t_4 = ((fabs((*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_a.data) + __pyx_t_3)) )))) <= __pyx_v_V) != 0);
     if (__pyx_t_4) {
 
-      /* "sisl/_indices.pyx":307
+      /* "sisl/_indices.pyx":367
  *     for i in range(N):
  *         if fabs(a[i]) <= V:
  *             idx[n] = i             # <<<<<<<<<<<<<<
@@ -5500,7 +6104,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
       __pyx_t_5 = __pyx_v_n;
       *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_5)) )) = __pyx_v_i;
 
-      /* "sisl/_indices.pyx":308
+      /* "sisl/_indices.pyx":368
  *         if fabs(a[i]) <= V:
  *             idx[n] = i
  *             n += 1             # <<<<<<<<<<<<<<
@@ -5509,7 +6113,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
  */
       __pyx_v_n = (__pyx_v_n + 1);
 
-      /* "sisl/_indices.pyx":306
+      /* "sisl/_indices.pyx":366
  *     n = 0
  *     for i in range(N):
  *         if fabs(a[i]) <= V:             # <<<<<<<<<<<<<<
@@ -5519,7 +6123,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
     }
   }
 
-  /* "sisl/_indices.pyx":309
+  /* "sisl/_indices.pyx":369
  *             idx[n] = i
  *             n += 1
  *     return n             # <<<<<<<<<<<<<<
@@ -5529,7 +6133,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
   __pyx_r = __pyx_v_n;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":301
+  /* "sisl/_indices.pyx":361
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_fabs_le1(const double[::1] a, const double V, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -5542,7 +6146,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le1(__Pyx_memviewslice const __
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":315
+/* "sisl/_indices.pyx":375
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef inline int all_fabs_le(const double[:, ::1] a, const int i, const double V) nogil:             # <<<<<<<<<<<<<<
@@ -5559,7 +6163,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_fabs_le(__Pyx_memviewslice 
   Py_ssize_t __pyx_t_4;
   int __pyx_t_5;
 
-  /* "sisl/_indices.pyx":317
+  /* "sisl/_indices.pyx":377
  * cdef inline int all_fabs_le(const double[:, ::1] a, const int i, const double V) nogil:
  *     cdef int j
  *     for j in range(a.shape[1]):             # <<<<<<<<<<<<<<
@@ -5570,7 +6174,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_fabs_le(__Pyx_memviewslice 
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_j = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":318
+    /* "sisl/_indices.pyx":378
  *     cdef int j
  *     for j in range(a.shape[1]):
  *         if fabs(a[i, j]) > V:             # <<<<<<<<<<<<<<
@@ -5582,7 +6186,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_fabs_le(__Pyx_memviewslice 
     __pyx_t_5 = ((fabs((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_a.data + __pyx_t_3 * __pyx_v_a.strides[0]) )) + __pyx_t_4)) )))) > __pyx_v_V) != 0);
     if (__pyx_t_5) {
 
-      /* "sisl/_indices.pyx":319
+      /* "sisl/_indices.pyx":379
  *     for j in range(a.shape[1]):
  *         if fabs(a[i, j]) > V:
  *             return 0             # <<<<<<<<<<<<<<
@@ -5592,7 +6196,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_fabs_le(__Pyx_memviewslice 
       __pyx_r = 0;
       goto __pyx_L0;
 
-      /* "sisl/_indices.pyx":318
+      /* "sisl/_indices.pyx":378
  *     cdef int j
  *     for j in range(a.shape[1]):
  *         if fabs(a[i, j]) > V:             # <<<<<<<<<<<<<<
@@ -5602,7 +6206,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_fabs_le(__Pyx_memviewslice 
     }
   }
 
-  /* "sisl/_indices.pyx":320
+  /* "sisl/_indices.pyx":380
  *         if fabs(a[i, j]) > V:
  *             return 0
  *     return 1             # <<<<<<<<<<<<<<
@@ -5612,7 +6216,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_fabs_le(__Pyx_memviewslice 
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":315
+  /* "sisl/_indices.pyx":375
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef inline int all_fabs_le(const double[:, ::1] a, const int i, const double V) nogil:             # <<<<<<<<<<<<<<
@@ -5625,7 +6229,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_fabs_le(__Pyx_memviewslice 
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":326
+/* "sisl/_indices.pyx":386
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_fabs_le2(const double[:, ::1] a, const double V, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -5643,7 +6247,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
   int __pyx_t_3;
   Py_ssize_t __pyx_t_4;
 
-  /* "sisl/_indices.pyx":327
+  /* "sisl/_indices.pyx":387
  * @cython.initializedcheck(False)
  * cdef int _indices_fabs_le2(const double[:, ::1] a, const double V, int[::1] idx) nogil:
  *     cdef int N = a.shape[0]             # <<<<<<<<<<<<<<
@@ -5652,7 +6256,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
  */
   __pyx_v_N = (__pyx_v_a.shape[0]);
 
-  /* "sisl/_indices.pyx":329
+  /* "sisl/_indices.pyx":389
  *     cdef int N = a.shape[0]
  *     cdef int i, n
  *     n = 0             # <<<<<<<<<<<<<<
@@ -5661,7 +6265,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
  */
   __pyx_v_n = 0;
 
-  /* "sisl/_indices.pyx":330
+  /* "sisl/_indices.pyx":390
  *     cdef int i, n
  *     n = 0
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -5672,7 +6276,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":331
+    /* "sisl/_indices.pyx":391
  *     n = 0
  *     for i in range(N):
  *         if all_fabs_le(a, i, V):             # <<<<<<<<<<<<<<
@@ -5682,7 +6286,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
     __pyx_t_3 = (__pyx_f_4sisl_8_indices_all_fabs_le(__pyx_v_a, __pyx_v_i, __pyx_v_V) != 0);
     if (__pyx_t_3) {
 
-      /* "sisl/_indices.pyx":332
+      /* "sisl/_indices.pyx":392
  *     for i in range(N):
  *         if all_fabs_le(a, i, V):
  *             idx[n] = i             # <<<<<<<<<<<<<<
@@ -5692,7 +6296,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
       __pyx_t_4 = __pyx_v_n;
       *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_4)) )) = __pyx_v_i;
 
-      /* "sisl/_indices.pyx":333
+      /* "sisl/_indices.pyx":393
  *         if all_fabs_le(a, i, V):
  *             idx[n] = i
  *             n += 1             # <<<<<<<<<<<<<<
@@ -5701,7 +6305,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
  */
       __pyx_v_n = (__pyx_v_n + 1);
 
-      /* "sisl/_indices.pyx":331
+      /* "sisl/_indices.pyx":391
  *     n = 0
  *     for i in range(N):
  *         if all_fabs_le(a, i, V):             # <<<<<<<<<<<<<<
@@ -5711,7 +6315,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
     }
   }
 
-  /* "sisl/_indices.pyx":334
+  /* "sisl/_indices.pyx":394
  *             idx[n] = i
  *             n += 1
  *     return n             # <<<<<<<<<<<<<<
@@ -5721,7 +6325,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
   __pyx_r = __pyx_v_n;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":326
+  /* "sisl/_indices.pyx":386
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_fabs_le2(const double[:, ::1] a, const double V, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -5734,7 +6338,7 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":339
+/* "sisl/_indices.pyx":399
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_gt_le(np.ndarray a, const double V1, const double V2):             # <<<<<<<<<<<<<<
@@ -5743,9 +6347,9 @@ static int __pyx_f_4sisl_8_indices__indices_fabs_le2(__Pyx_memviewslice const __
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4sisl_8_indices_11indices_gt_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_4sisl_8_indices_11indices_gt_le = {"indices_gt_le", (PyCFunction)__pyx_pw_4sisl_8_indices_11indices_gt_le, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_4sisl_8_indices_11indices_gt_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_4sisl_8_indices_13indices_gt_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_4sisl_8_indices_13indices_gt_le = {"indices_gt_le", (PyCFunction)__pyx_pw_4sisl_8_indices_13indices_gt_le, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_4sisl_8_indices_13indices_gt_le(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_a = 0;
   double __pyx_v_V1;
   double __pyx_v_V2;
@@ -5777,17 +6381,17 @@ static PyObject *__pyx_pw_4sisl_8_indices_11indices_gt_le(PyObject *__pyx_self, 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_V1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("indices_gt_le", 1, 3, 3, 1); __PYX_ERR(0, 339, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("indices_gt_le", 1, 3, 3, 1); __PYX_ERR(0, 399, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_V2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("indices_gt_le", 1, 3, 3, 2); __PYX_ERR(0, 339, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("indices_gt_le", 1, 3, 3, 2); __PYX_ERR(0, 399, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_gt_le") < 0)) __PYX_ERR(0, 339, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "indices_gt_le") < 0)) __PYX_ERR(0, 399, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -5797,19 +6401,19 @@ static PyObject *__pyx_pw_4sisl_8_indices_11indices_gt_le(PyObject *__pyx_self, 
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
     __pyx_v_a = ((PyArrayObject *)values[0]);
-    __pyx_v_V1 = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_V1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 339, __pyx_L3_error)
-    __pyx_v_V2 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_V2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 339, __pyx_L3_error)
+    __pyx_v_V1 = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_V1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 399, __pyx_L3_error)
+    __pyx_v_V2 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_V2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 399, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("indices_gt_le", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 339, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("indices_gt_le", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 399, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl._indices.indices_gt_le", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) __PYX_ERR(0, 339, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4sisl_8_indices_10indices_gt_le(__pyx_self, __pyx_v_a, __pyx_v_V1, __pyx_v_V2);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_r = __pyx_pf_4sisl_8_indices_12indices_gt_le(__pyx_self, __pyx_v_a, __pyx_v_V1, __pyx_v_V2);
 
   /* function exit code */
   goto __pyx_L0;
@@ -5820,7 +6424,7 @@ static PyObject *__pyx_pw_4sisl_8_indices_11indices_gt_le(PyObject *__pyx_self, 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V1, double __pyx_v_V2) {
+static PyObject *__pyx_pf_4sisl_8_indices_12indices_gt_le(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a, double __pyx_v_V1, double __pyx_v_V2) {
   PyArrayObject *__pyx_v_idx = 0;
   __Pyx_memviewslice __pyx_v_IDX = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_ndim;
@@ -5848,51 +6452,51 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
   __pyx_pybuffernd_idx.data = NULL;
   __pyx_pybuffernd_idx.rcbuffer = &__pyx_pybuffer_idx;
 
-  /* "sisl/_indices.pyx":340
+  /* "sisl/_indices.pyx":400
  * @cython.wraparound(False)
  * def indices_gt_le(np.ndarray a, const double V1, const double V2):
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([a.shape[0]], dtype=np.int32)             # <<<<<<<<<<<<<<
  *     cdef int[::1] IDX = idx
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_a->dimensions[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_a->dimensions[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 340, __pyx_L1_error)
+  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 400, __pyx_L1_error)
   __pyx_t_6 = ((PyArrayObject *)__pyx_t_5);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_idx.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_idx = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_idx.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 340, __pyx_L1_error)
+      __PYX_ERR(0, 400, __pyx_L1_error)
     } else {__pyx_pybuffernd_idx.diminfo[0].strides = __pyx_pybuffernd_idx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_idx.diminfo[0].shape = __pyx_pybuffernd_idx.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -5900,7 +6504,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
   __pyx_v_idx = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "sisl/_indices.pyx":341
+  /* "sisl/_indices.pyx":401
  * def indices_gt_le(np.ndarray a, const double V1, const double V2):
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([a.shape[0]], dtype=np.int32)
  *     cdef int[::1] IDX = idx             # <<<<<<<<<<<<<<
@@ -5908,12 +6512,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  *     cdef int ndim = a.ndim
  */
   __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_idx));
-  if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 341, __pyx_L1_error)
+  if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 401, __pyx_L1_error)
   __pyx_v_IDX = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "sisl/_indices.pyx":343
+  /* "sisl/_indices.pyx":403
  *     cdef int[::1] IDX = idx
  * 
  *     cdef int ndim = a.ndim             # <<<<<<<<<<<<<<
@@ -5923,41 +6527,41 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
   __pyx_t_8 = __pyx_v_a->nd;
   __pyx_v_ndim = __pyx_t_8;
 
-  /* "sisl/_indices.pyx":348
+  /* "sisl/_indices.pyx":408
  *     cdef int n
  * 
  *     if a.dtype != np.float64:             # <<<<<<<<<<<<<<
  *         raise ValueError('indices_gt_le requires input array to be of float64 type')
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 348, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 408, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 348, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 408, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 348, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 408, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 348, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 408, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 348, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 408, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_9) {
 
-    /* "sisl/_indices.pyx":349
+    /* "sisl/_indices.pyx":409
  * 
  *     if a.dtype != np.float64:
  *         raise ValueError('indices_gt_le requires input array to be of float64 type')             # <<<<<<<<<<<<<<
  * 
  *     if ndim == 1:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 349, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 409, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 349, __pyx_L1_error)
+    __PYX_ERR(0, 409, __pyx_L1_error)
 
-    /* "sisl/_indices.pyx":348
+    /* "sisl/_indices.pyx":408
  *     cdef int n
  * 
  *     if a.dtype != np.float64:             # <<<<<<<<<<<<<<
@@ -5966,7 +6570,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  */
   }
 
-  /* "sisl/_indices.pyx":351
+  /* "sisl/_indices.pyx":411
  *         raise ValueError('indices_gt_le requires input array to be of float64 type')
  * 
  *     if ndim == 1:             # <<<<<<<<<<<<<<
@@ -5976,7 +6580,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
   switch (__pyx_v_ndim) {
     case 1:
 
-    /* "sisl/_indices.pyx":352
+    /* "sisl/_indices.pyx":412
  * 
  *     if ndim == 1:
  *         A1 = a             # <<<<<<<<<<<<<<
@@ -5984,12 +6588,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  * 
  */
     __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_double(((PyObject *)__pyx_v_a));
-    if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 352, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 412, __pyx_L1_error)
     __pyx_v_A1 = __pyx_t_10;
     __pyx_t_10.memview = NULL;
     __pyx_t_10.data = NULL;
 
-    /* "sisl/_indices.pyx":353
+    /* "sisl/_indices.pyx":413
  *     if ndim == 1:
  *         A1 = a
  *         n = _indices_gt_le1(A1, V1, V2, IDX)             # <<<<<<<<<<<<<<
@@ -5998,7 +6602,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  */
     __pyx_v_n = __pyx_f_4sisl_8_indices__indices_gt_le1(__pyx_v_A1, __pyx_v_V1, __pyx_v_V2, __pyx_v_IDX);
 
-    /* "sisl/_indices.pyx":351
+    /* "sisl/_indices.pyx":411
  *         raise ValueError('indices_gt_le requires input array to be of float64 type')
  * 
  *     if ndim == 1:             # <<<<<<<<<<<<<<
@@ -6007,7 +6611,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  */
     break;
 
-    /* "sisl/_indices.pyx":355
+    /* "sisl/_indices.pyx":415
  *         n = _indices_gt_le1(A1, V1, V2, IDX)
  * 
  *     elif ndim == 2:             # <<<<<<<<<<<<<<
@@ -6016,7 +6620,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  */
     case 2:
 
-    /* "sisl/_indices.pyx":356
+    /* "sisl/_indices.pyx":416
  * 
  *     elif ndim == 2:
  *         A2 = a             # <<<<<<<<<<<<<<
@@ -6024,12 +6628,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  * 
  */
     __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_a));
-    if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 356, __pyx_L1_error)
+    if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 416, __pyx_L1_error)
     __pyx_v_A2 = __pyx_t_11;
     __pyx_t_11.memview = NULL;
     __pyx_t_11.data = NULL;
 
-    /* "sisl/_indices.pyx":357
+    /* "sisl/_indices.pyx":417
  *     elif ndim == 2:
  *         A2 = a
  *         n = _indices_gt_le2(A2, V1, V2, IDX)             # <<<<<<<<<<<<<<
@@ -6038,7 +6642,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  */
     __pyx_v_n = __pyx_f_4sisl_8_indices__indices_gt_le2(__pyx_v_A2, __pyx_v_V1, __pyx_v_V2, __pyx_v_IDX);
 
-    /* "sisl/_indices.pyx":355
+    /* "sisl/_indices.pyx":415
  *         n = _indices_gt_le1(A1, V1, V2, IDX)
  * 
  *     elif ndim == 2:             # <<<<<<<<<<<<<<
@@ -6049,7 +6653,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
     default: break;
   }
 
-  /* "sisl/_indices.pyx":359
+  /* "sisl/_indices.pyx":419
  *         n = _indices_gt_le2(A2, V1, V2, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -6059,7 +6663,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
   __pyx_t_9 = ((__pyx_v_n == 0) != 0);
   if (__pyx_t_9) {
 
-    /* "sisl/_indices.pyx":360
+    /* "sisl/_indices.pyx":420
  * 
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32)             # <<<<<<<<<<<<<<
@@ -6067,31 +6671,31 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 360, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 360, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 360, __pyx_L1_error)
+    __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
     PyList_SET_ITEM(__pyx_t_3, 0, __pyx_int_0);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 360, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 360, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 360, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 360, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 360, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 360, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -6100,7 +6704,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "sisl/_indices.pyx":359
+    /* "sisl/_indices.pyx":419
  *         n = _indices_gt_le2(A2, V1, V2, IDX)
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -6109,7 +6713,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  */
   }
 
-  /* "sisl/_indices.pyx":361
+  /* "sisl/_indices.pyx":421
  *     if n == 0:
  *         return np.empty([0], dtype=np.int32)
  *     return idx[:n].copy()             # <<<<<<<<<<<<<<
@@ -6117,15 +6721,15 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 361, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 421, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = PySlice_New(Py_None, __pyx_t_3, Py_None); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 361, __pyx_L1_error)
+  __pyx_t_5 = PySlice_New(Py_None, __pyx_t_3, Py_None); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 421, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 361, __pyx_L1_error)
+  __pyx_t_3 = PyObject_GetItem(((PyObject *)__pyx_v_idx), __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 421, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_copy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 361, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_copy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 421, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -6139,10 +6743,10 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 361, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 421, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 361, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 421, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -6150,7 +6754,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":339
+  /* "sisl/_indices.pyx":399
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_gt_le(np.ndarray a, const double V1, const double V2):             # <<<<<<<<<<<<<<
@@ -6189,7 +6793,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_10indices_gt_le(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":367
+/* "sisl/_indices.pyx":427
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_gt_le1(const double[::1] a, const double V1, const double V2, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -6209,7 +6813,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
   Py_ssize_t __pyx_t_5;
   Py_ssize_t __pyx_t_6;
 
-  /* "sisl/_indices.pyx":368
+  /* "sisl/_indices.pyx":428
  * @cython.initializedcheck(False)
  * cdef int _indices_gt_le1(const double[::1] a, const double V1, const double V2, int[::1] idx) nogil:
  *     cdef int N = a.shape[0]             # <<<<<<<<<<<<<<
@@ -6218,7 +6822,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
  */
   __pyx_v_N = (__pyx_v_a.shape[0]);
 
-  /* "sisl/_indices.pyx":370
+  /* "sisl/_indices.pyx":430
  *     cdef int N = a.shape[0]
  *     cdef int i, n
  *     n = 0             # <<<<<<<<<<<<<<
@@ -6227,7 +6831,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
  */
   __pyx_v_n = 0;
 
-  /* "sisl/_indices.pyx":371
+  /* "sisl/_indices.pyx":431
  *     cdef int i, n
  *     n = 0
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -6238,7 +6842,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":372
+    /* "sisl/_indices.pyx":432
  *     n = 0
  *     for i in range(N):
  *         if V1 < a[i]:             # <<<<<<<<<<<<<<
@@ -6249,7 +6853,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
     __pyx_t_4 = ((__pyx_v_V1 < (*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_a.data) + __pyx_t_3)) )))) != 0);
     if (__pyx_t_4) {
 
-      /* "sisl/_indices.pyx":373
+      /* "sisl/_indices.pyx":433
  *     for i in range(N):
  *         if V1 < a[i]:
  *             if a[i] <= V2:             # <<<<<<<<<<<<<<
@@ -6260,7 +6864,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
       __pyx_t_4 = (((*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_a.data) + __pyx_t_5)) ))) <= __pyx_v_V2) != 0);
       if (__pyx_t_4) {
 
-        /* "sisl/_indices.pyx":374
+        /* "sisl/_indices.pyx":434
  *         if V1 < a[i]:
  *             if a[i] <= V2:
  *                 idx[n] = i             # <<<<<<<<<<<<<<
@@ -6270,7 +6874,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
         __pyx_t_6 = __pyx_v_n;
         *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_6)) )) = __pyx_v_i;
 
-        /* "sisl/_indices.pyx":375
+        /* "sisl/_indices.pyx":435
  *             if a[i] <= V2:
  *                 idx[n] = i
  *                 n += 1             # <<<<<<<<<<<<<<
@@ -6279,7 +6883,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
  */
         __pyx_v_n = (__pyx_v_n + 1);
 
-        /* "sisl/_indices.pyx":373
+        /* "sisl/_indices.pyx":433
  *     for i in range(N):
  *         if V1 < a[i]:
  *             if a[i] <= V2:             # <<<<<<<<<<<<<<
@@ -6288,7 +6892,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
  */
       }
 
-      /* "sisl/_indices.pyx":372
+      /* "sisl/_indices.pyx":432
  *     n = 0
  *     for i in range(N):
  *         if V1 < a[i]:             # <<<<<<<<<<<<<<
@@ -6298,7 +6902,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
     }
   }
 
-  /* "sisl/_indices.pyx":376
+  /* "sisl/_indices.pyx":436
  *                 idx[n] = i
  *                 n += 1
  *     return n             # <<<<<<<<<<<<<<
@@ -6308,7 +6912,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
   __pyx_r = __pyx_v_n;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":367
+  /* "sisl/_indices.pyx":427
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_gt_le1(const double[::1] a, const double V1, const double V2, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -6321,7 +6925,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le1(__Pyx_memviewslice const __py
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":382
+/* "sisl/_indices.pyx":442
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef inline int all_gt_le(const double[:, ::1] a, const int i, const double V1, const double V2) nogil:             # <<<<<<<<<<<<<<
@@ -6340,7 +6944,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
   Py_ssize_t __pyx_t_6;
   Py_ssize_t __pyx_t_7;
 
-  /* "sisl/_indices.pyx":384
+  /* "sisl/_indices.pyx":444
  * cdef inline int all_gt_le(const double[:, ::1] a, const int i, const double V1, const double V2) nogil:
  *     cdef int j
  *     for j in range(a.shape[1]):             # <<<<<<<<<<<<<<
@@ -6351,7 +6955,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_j = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":385
+    /* "sisl/_indices.pyx":445
  *     cdef int j
  *     for j in range(a.shape[1]):
  *         if a[i, j] <= V1:             # <<<<<<<<<<<<<<
@@ -6363,7 +6967,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
     __pyx_t_5 = (((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_a.data + __pyx_t_3 * __pyx_v_a.strides[0]) )) + __pyx_t_4)) ))) <= __pyx_v_V1) != 0);
     if (__pyx_t_5) {
 
-      /* "sisl/_indices.pyx":386
+      /* "sisl/_indices.pyx":446
  *     for j in range(a.shape[1]):
  *         if a[i, j] <= V1:
  *             return 0             # <<<<<<<<<<<<<<
@@ -6373,7 +6977,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
       __pyx_r = 0;
       goto __pyx_L0;
 
-      /* "sisl/_indices.pyx":385
+      /* "sisl/_indices.pyx":445
  *     cdef int j
  *     for j in range(a.shape[1]):
  *         if a[i, j] <= V1:             # <<<<<<<<<<<<<<
@@ -6382,7 +6986,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
  */
     }
 
-    /* "sisl/_indices.pyx":387
+    /* "sisl/_indices.pyx":447
  *         if a[i, j] <= V1:
  *             return 0
  *         elif V2 < a[i, j]:             # <<<<<<<<<<<<<<
@@ -6394,7 +6998,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
     __pyx_t_5 = ((__pyx_v_V2 < (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_a.data + __pyx_t_6 * __pyx_v_a.strides[0]) )) + __pyx_t_7)) )))) != 0);
     if (__pyx_t_5) {
 
-      /* "sisl/_indices.pyx":388
+      /* "sisl/_indices.pyx":448
  *             return 0
  *         elif V2 < a[i, j]:
  *             return 0             # <<<<<<<<<<<<<<
@@ -6404,7 +7008,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
       __pyx_r = 0;
       goto __pyx_L0;
 
-      /* "sisl/_indices.pyx":387
+      /* "sisl/_indices.pyx":447
  *         if a[i, j] <= V1:
  *             return 0
  *         elif V2 < a[i, j]:             # <<<<<<<<<<<<<<
@@ -6414,7 +7018,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
     }
   }
 
-  /* "sisl/_indices.pyx":389
+  /* "sisl/_indices.pyx":449
  *         elif V2 < a[i, j]:
  *             return 0
  *     return 1             # <<<<<<<<<<<<<<
@@ -6424,7 +7028,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":382
+  /* "sisl/_indices.pyx":442
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef inline int all_gt_le(const double[:, ::1] a, const int i, const double V1, const double V2) nogil:             # <<<<<<<<<<<<<<
@@ -6437,7 +7041,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_all_gt_le(__Pyx_memviewslice co
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":395
+/* "sisl/_indices.pyx":455
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_gt_le2(const double[:, ::1] a, const double V1, const double V2, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -6455,7 +7059,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
   int __pyx_t_3;
   Py_ssize_t __pyx_t_4;
 
-  /* "sisl/_indices.pyx":396
+  /* "sisl/_indices.pyx":456
  * @cython.initializedcheck(False)
  * cdef int _indices_gt_le2(const double[:, ::1] a, const double V1, const double V2, int[::1] idx) nogil:
  *     cdef int N = a.shape[0]             # <<<<<<<<<<<<<<
@@ -6464,7 +7068,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
  */
   __pyx_v_N = (__pyx_v_a.shape[0]);
 
-  /* "sisl/_indices.pyx":398
+  /* "sisl/_indices.pyx":458
  *     cdef int N = a.shape[0]
  *     cdef int i, n
  *     n = 0             # <<<<<<<<<<<<<<
@@ -6473,7 +7077,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
  */
   __pyx_v_n = 0;
 
-  /* "sisl/_indices.pyx":399
+  /* "sisl/_indices.pyx":459
  *     cdef int i, n
  *     n = 0
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -6484,7 +7088,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":400
+    /* "sisl/_indices.pyx":460
  *     n = 0
  *     for i in range(N):
  *         if all_gt_le(a, i, V1, V2):             # <<<<<<<<<<<<<<
@@ -6494,7 +7098,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
     __pyx_t_3 = (__pyx_f_4sisl_8_indices_all_gt_le(__pyx_v_a, __pyx_v_i, __pyx_v_V1, __pyx_v_V2) != 0);
     if (__pyx_t_3) {
 
-      /* "sisl/_indices.pyx":401
+      /* "sisl/_indices.pyx":461
  *     for i in range(N):
  *         if all_gt_le(a, i, V1, V2):
  *             idx[n] = i             # <<<<<<<<<<<<<<
@@ -6504,7 +7108,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
       __pyx_t_4 = __pyx_v_n;
       *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_idx.data) + __pyx_t_4)) )) = __pyx_v_i;
 
-      /* "sisl/_indices.pyx":402
+      /* "sisl/_indices.pyx":462
  *         if all_gt_le(a, i, V1, V2):
  *             idx[n] = i
  *             n += 1             # <<<<<<<<<<<<<<
@@ -6513,7 +7117,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
  */
       __pyx_v_n = (__pyx_v_n + 1);
 
-      /* "sisl/_indices.pyx":400
+      /* "sisl/_indices.pyx":460
  *     n = 0
  *     for i in range(N):
  *         if all_gt_le(a, i, V1, V2):             # <<<<<<<<<<<<<<
@@ -6523,7 +7127,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
     }
   }
 
-  /* "sisl/_indices.pyx":403
+  /* "sisl/_indices.pyx":463
  *             idx[n] = i
  *             n += 1
  *     return n             # <<<<<<<<<<<<<<
@@ -6533,7 +7137,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
   __pyx_r = __pyx_v_n;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":395
+  /* "sisl/_indices.pyx":455
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _indices_gt_le2(const double[:, ::1] a, const double V1, const double V2, int[::1] idx) nogil:             # <<<<<<<<<<<<<<
@@ -6546,7 +7150,7 @@ static int __pyx_f_4sisl_8_indices__indices_gt_le2(__Pyx_memviewslice const __py
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":409
+/* "sisl/_indices.pyx":469
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef inline int in_1d(const int[::1] array, const int v) nogil:             # <<<<<<<<<<<<<<
@@ -6563,7 +7167,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_in_1d(__Pyx_memviewslice const 
   Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
 
-  /* "sisl/_indices.pyx":410
+  /* "sisl/_indices.pyx":470
  * @cython.initializedcheck(False)
  * cdef inline int in_1d(const int[::1] array, const int v) nogil:
  *     cdef int N = array.shape[0]             # <<<<<<<<<<<<<<
@@ -6572,7 +7176,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_in_1d(__Pyx_memviewslice const 
  */
   __pyx_v_N = (__pyx_v_array.shape[0]);
 
-  /* "sisl/_indices.pyx":411
+  /* "sisl/_indices.pyx":471
  * cdef inline int in_1d(const int[::1] array, const int v) nogil:
  *     cdef int N = array.shape[0]
  *     for i in range(N):             # <<<<<<<<<<<<<<
@@ -6583,7 +7187,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_in_1d(__Pyx_memviewslice const 
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":412
+    /* "sisl/_indices.pyx":472
  *     cdef int N = array.shape[0]
  *     for i in range(N):
  *         if array[i] == v:             # <<<<<<<<<<<<<<
@@ -6594,7 +7198,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_in_1d(__Pyx_memviewslice const 
     __pyx_t_4 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_array.data) + __pyx_t_3)) ))) == __pyx_v_v) != 0);
     if (__pyx_t_4) {
 
-      /* "sisl/_indices.pyx":413
+      /* "sisl/_indices.pyx":473
  *     for i in range(N):
  *         if array[i] == v:
  *             return 1             # <<<<<<<<<<<<<<
@@ -6604,7 +7208,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_in_1d(__Pyx_memviewslice const 
       __pyx_r = 1;
       goto __pyx_L0;
 
-      /* "sisl/_indices.pyx":412
+      /* "sisl/_indices.pyx":472
  *     cdef int N = array.shape[0]
  *     for i in range(N):
  *         if array[i] == v:             # <<<<<<<<<<<<<<
@@ -6614,7 +7218,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_in_1d(__Pyx_memviewslice const 
     }
   }
 
-  /* "sisl/_indices.pyx":414
+  /* "sisl/_indices.pyx":474
  *         if array[i] == v:
  *             return 1
  *     return 0             # <<<<<<<<<<<<<<
@@ -6624,7 +7228,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_in_1d(__Pyx_memviewslice const 
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":409
+  /* "sisl/_indices.pyx":469
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef inline int in_1d(const int[::1] array, const int v) nogil:             # <<<<<<<<<<<<<<
@@ -6637,7 +7241,7 @@ static CYTHON_INLINE int __pyx_f_4sisl_8_indices_in_1d(__Pyx_memviewslice const 
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":420
+/* "sisl/_indices.pyx":480
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int index_sorted(const int[::1] a, const int v) nogil:             # <<<<<<<<<<<<<<
@@ -6654,7 +7258,7 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
   Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
 
-  /* "sisl/_indices.pyx":435
+  /* "sisl/_indices.pyx":495
  *     """
  *     # Ensure contiguous arrays
  *     cdef int n_a = a.shape[0]             # <<<<<<<<<<<<<<
@@ -6663,7 +7267,7 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
  */
   __pyx_v_n_a = (__pyx_v_a.shape[0]);
 
-  /* "sisl/_indices.pyx":437
+  /* "sisl/_indices.pyx":497
  *     cdef int n_a = a.shape[0]
  *     cdef int i
  *     for i in range(n_a):             # <<<<<<<<<<<<<<
@@ -6674,7 +7278,7 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "sisl/_indices.pyx":438
+    /* "sisl/_indices.pyx":498
  *     cdef int i
  *     for i in range(n_a):
  *         if a[i] == v:             # <<<<<<<<<<<<<<
@@ -6685,7 +7289,7 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
     __pyx_t_4 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_a.data) + __pyx_t_3)) ))) == __pyx_v_v) != 0);
     if (__pyx_t_4) {
 
-      /* "sisl/_indices.pyx":439
+      /* "sisl/_indices.pyx":499
  *     for i in range(n_a):
  *         if a[i] == v:
  *             return i             # <<<<<<<<<<<<<<
@@ -6695,7 +7299,7 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
       __pyx_r = __pyx_v_i;
       goto __pyx_L0;
 
-      /* "sisl/_indices.pyx":438
+      /* "sisl/_indices.pyx":498
  *     cdef int i
  *     for i in range(n_a):
  *         if a[i] == v:             # <<<<<<<<<<<<<<
@@ -6705,7 +7309,7 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
     }
   }
 
-  /* "sisl/_indices.pyx":440
+  /* "sisl/_indices.pyx":500
  *         if a[i] == v:
  *             return i
  *     return -1             # <<<<<<<<<<<<<<
@@ -6715,7 +7319,7 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
   __pyx_r = -1;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":420
+  /* "sisl/_indices.pyx":480
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int index_sorted(const int[::1] a, const int v) nogil:             # <<<<<<<<<<<<<<
@@ -6728,7 +7332,7 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":445
+/* "sisl/_indices.pyx":505
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def sorted_unique(np.ndarray[np.int32_t, ndim=1, mode='c'] a):             # <<<<<<<<<<<<<<
@@ -6737,15 +7341,15 @@ static int __pyx_f_4sisl_8_indices_index_sorted(__Pyx_memviewslice const __pyx_v
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4sisl_8_indices_13sorted_unique(PyObject *__pyx_self, PyObject *__pyx_v_a); /*proto*/
-static char __pyx_doc_4sisl_8_indices_12sorted_unique[] = " Return True/False if all elements of the sorted array `a` are unique\n\n    Parameters\n    ----------\n    a : np.ndarray(np.int32)\n        sorted array to check\n\n    Returns\n    -------\n    int : 0 if not unique, otherwise 1.\n    ";
-static PyMethodDef __pyx_mdef_4sisl_8_indices_13sorted_unique = {"sorted_unique", (PyCFunction)__pyx_pw_4sisl_8_indices_13sorted_unique, METH_O, __pyx_doc_4sisl_8_indices_12sorted_unique};
-static PyObject *__pyx_pw_4sisl_8_indices_13sorted_unique(PyObject *__pyx_self, PyObject *__pyx_v_a) {
+static PyObject *__pyx_pw_4sisl_8_indices_15sorted_unique(PyObject *__pyx_self, PyObject *__pyx_v_a); /*proto*/
+static char __pyx_doc_4sisl_8_indices_14sorted_unique[] = " Return True/False if all elements of the sorted array `a` are unique\n\n    Parameters\n    ----------\n    a : np.ndarray(np.int32)\n        sorted array to check\n\n    Returns\n    -------\n    int : 0 if not unique, otherwise 1.\n    ";
+static PyMethodDef __pyx_mdef_4sisl_8_indices_15sorted_unique = {"sorted_unique", (PyCFunction)__pyx_pw_4sisl_8_indices_15sorted_unique, METH_O, __pyx_doc_4sisl_8_indices_14sorted_unique};
+static PyObject *__pyx_pw_4sisl_8_indices_15sorted_unique(PyObject *__pyx_self, PyObject *__pyx_v_a) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("sorted_unique (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) __PYX_ERR(0, 445, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4sisl_8_indices_12sorted_unique(__pyx_self, ((PyArrayObject *)__pyx_v_a));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) __PYX_ERR(0, 505, __pyx_L1_error)
+  __pyx_r = __pyx_pf_4sisl_8_indices_14sorted_unique(__pyx_self, ((PyArrayObject *)__pyx_v_a));
 
   /* function exit code */
   goto __pyx_L0;
@@ -6756,7 +7360,7 @@ static PyObject *__pyx_pw_4sisl_8_indices_13sorted_unique(PyObject *__pyx_self, 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4sisl_8_indices_12sorted_unique(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a) {
+static PyObject *__pyx_pf_4sisl_8_indices_14sorted_unique(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_a) {
   __Pyx_memviewslice __pyx_v_A = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_n_a;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_a;
@@ -6772,11 +7376,11 @@ static PyObject *__pyx_pf_4sisl_8_indices_12sorted_unique(CYTHON_UNUSED PyObject
   __pyx_pybuffernd_a.rcbuffer = &__pyx_pybuffer_a;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_a.rcbuffer->pybuffer, (PyObject*)__pyx_v_a, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 445, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_a.rcbuffer->pybuffer, (PyObject*)__pyx_v_a, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 505, __pyx_L1_error)
   }
   __pyx_pybuffernd_a.diminfo[0].strides = __pyx_pybuffernd_a.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_a.diminfo[0].shape = __pyx_pybuffernd_a.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/_indices.pyx":458
+  /* "sisl/_indices.pyx":518
  *     """
  *     # Ensure contiguous arrays
  *     cdef int[::1] A = a             # <<<<<<<<<<<<<<
@@ -6784,12 +7388,12 @@ static PyObject *__pyx_pf_4sisl_8_indices_12sorted_unique(CYTHON_UNUSED PyObject
  * 
  */
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_a));
-  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 458, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 518, __pyx_L1_error)
   __pyx_v_A = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/_indices.pyx":459
+  /* "sisl/_indices.pyx":519
  *     # Ensure contiguous arrays
  *     cdef int[::1] A = a
  *     cdef int n_a = A.shape[0]             # <<<<<<<<<<<<<<
@@ -6798,7 +7402,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_12sorted_unique(CYTHON_UNUSED PyObject
  */
   __pyx_v_n_a = (__pyx_v_A.shape[0]);
 
-  /* "sisl/_indices.pyx":461
+  /* "sisl/_indices.pyx":521
  *     cdef int n_a = A.shape[0]
  * 
  *     return _sorted_unique(n_a, A)             # <<<<<<<<<<<<<<
@@ -6806,13 +7410,13 @@ static PyObject *__pyx_pf_4sisl_8_indices_12sorted_unique(CYTHON_UNUSED PyObject
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_f_4sisl_8_indices__sorted_unique(__pyx_v_n_a, __pyx_v_A)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 461, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_f_4sisl_8_indices__sorted_unique(__pyx_v_n_a, __pyx_v_A)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 521, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":445
+  /* "sisl/_indices.pyx":505
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def sorted_unique(np.ndarray[np.int32_t, ndim=1, mode='c'] a):             # <<<<<<<<<<<<<<
@@ -6842,7 +7446,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_12sorted_unique(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "sisl/_indices.pyx":467
+/* "sisl/_indices.pyx":527
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _sorted_unique(const int n_a, const int[::1] a) nogil:             # <<<<<<<<<<<<<<
@@ -6859,7 +7463,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
   Py_ssize_t __pyx_t_4;
   Py_ssize_t __pyx_t_5;
 
-  /* "sisl/_indices.pyx":471
+  /* "sisl/_indices.pyx":531
  * 
  *     # Fast return
  *     if n_a <= 1:             # <<<<<<<<<<<<<<
@@ -6869,7 +7473,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
   __pyx_t_1 = ((__pyx_v_n_a <= 1) != 0);
   if (__pyx_t_1) {
 
-    /* "sisl/_indices.pyx":472
+    /* "sisl/_indices.pyx":532
  *     # Fast return
  *     if n_a <= 1:
  *         return 1             # <<<<<<<<<<<<<<
@@ -6879,7 +7483,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
     __pyx_r = 1;
     goto __pyx_L0;
 
-    /* "sisl/_indices.pyx":471
+    /* "sisl/_indices.pyx":531
  * 
  *     # Fast return
  *     if n_a <= 1:             # <<<<<<<<<<<<<<
@@ -6888,7 +7492,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
  */
   }
 
-  /* "sisl/_indices.pyx":474
+  /* "sisl/_indices.pyx":534
  *         return 1
  * 
  *     for i in range(n_a - 1):             # <<<<<<<<<<<<<<
@@ -6899,7 +7503,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "sisl/_indices.pyx":475
+    /* "sisl/_indices.pyx":535
  * 
  *     for i in range(n_a - 1):
  *         if a[i] == a[i+1]:             # <<<<<<<<<<<<<<
@@ -6911,7 +7515,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
     __pyx_t_1 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_a.data) + __pyx_t_4)) ))) == (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_a.data) + __pyx_t_5)) )))) != 0);
     if (__pyx_t_1) {
 
-      /* "sisl/_indices.pyx":476
+      /* "sisl/_indices.pyx":536
  *     for i in range(n_a - 1):
  *         if a[i] == a[i+1]:
  *             return 0             # <<<<<<<<<<<<<<
@@ -6920,7 +7524,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
       __pyx_r = 0;
       goto __pyx_L0;
 
-      /* "sisl/_indices.pyx":475
+      /* "sisl/_indices.pyx":535
  * 
  *     for i in range(n_a - 1):
  *         if a[i] == a[i+1]:             # <<<<<<<<<<<<<<
@@ -6930,7 +7534,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
     }
   }
 
-  /* "sisl/_indices.pyx":477
+  /* "sisl/_indices.pyx":537
  *         if a[i] == a[i+1]:
  *             return 0
  *     return 1             # <<<<<<<<<<<<<<
@@ -6938,7 +7542,7 @@ static int __pyx_f_4sisl_8_indices__sorted_unique(int const __pyx_v_n_a, __Pyx_m
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "sisl/_indices.pyx":467
+  /* "sisl/_indices.pyx":527
  * @cython.wraparound(False)
  * @cython.initializedcheck(False)
  * cdef int _sorted_unique(const int n_a, const int[::1] a) nogil:             # <<<<<<<<<<<<<<
@@ -23124,6 +23728,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_indices_in_sphere_with_dist, __pyx_k_indices_in_sphere_with_dist, sizeof(__pyx_k_indices_in_sphere_with_dist), 0, 0, 1, 1},
   {&__pyx_n_s_indices_le, __pyx_k_indices_le, sizeof(__pyx_k_indices_le), 0, 0, 1, 1},
   {&__pyx_kp_s_indices_le_requires_input_array, __pyx_k_indices_le_requires_input_array, sizeof(__pyx_k_indices_le_requires_input_array), 0, 0, 1, 0},
+  {&__pyx_n_s_indices_only, __pyx_k_indices_only, sizeof(__pyx_k_indices_only), 0, 0, 1, 1},
   {&__pyx_kp_s_indices_pyx, __pyx_k_indices_pyx, sizeof(__pyx_k_indices_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_int32, __pyx_k_int32, sizeof(__pyx_k_int32), 0, 0, 1, 1},
   {&__pyx_n_s_itemsize, __pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 0, 1, 1},
@@ -23187,8 +23792,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 50, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 263, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 823, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 1013, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(2, 146, __pyx_L1_error)
@@ -23206,36 +23811,36 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "sisl/_indices.pyx":203
+  /* "sisl/_indices.pyx":263
  * 
  *     if a.dtype != np.float64:
  *         raise ValueError('indices_le requires input array to be of float64 type')             # <<<<<<<<<<<<<<
  * 
  *     if ndim == 1:
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_indices_le_requires_input_array); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_indices_le_requires_input_array); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "sisl/_indices.pyx":283
+  /* "sisl/_indices.pyx":343
  * 
  *     if a.dtype != np.float64:
  *         raise ValueError('indices_fabs_le requires input array to be of float64 type')             # <<<<<<<<<<<<<<
  * 
  *     if ndim == 1:
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_indices_fabs_le_requires_input_a); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 283, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_indices_fabs_le_requires_input_a); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 343, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "sisl/_indices.pyx":349
+  /* "sisl/_indices.pyx":409
  * 
  *     if a.dtype != np.float64:
  *         raise ValueError('indices_gt_le requires input array to be of float64 type')             # <<<<<<<<<<<<<<
  * 
  *     if ndim == 1:
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_indices_gt_le_requires_input_arr); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 349, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_indices_gt_le_requires_input_arr); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
@@ -23542,86 +24147,98 @@ static int __Pyx_InitCachedConstants(void) {
   /* "sisl/_indices.pyx":12
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
+ * def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):             # <<<<<<<<<<<<<<
+ *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+ * 
+ */
+  __pyx_tuple__32 = PyTuple_Pack(9, __pyx_n_s_search, __pyx_n_s_value, __pyx_n_s_SEARCH, __pyx_n_s_VALUE, __pyx_n_s_n_search, __pyx_n_s_n_value, __pyx_n_s_idx, __pyx_n_s_IDX, __pyx_n_s_n); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(2, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_only, 12, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 12, __pyx_L1_error)
+
+  /* "sisl/_indices.pyx":72
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
  * def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value, int offset):             # <<<<<<<<<<<<<<
  *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
  * 
  */
-  __pyx_tuple__32 = PyTuple_Pack(9, __pyx_n_s_search, __pyx_n_s_value, __pyx_n_s_offset, __pyx_n_s_SEARCH, __pyx_n_s_VALUE, __pyx_n_s_n_search, __pyx_n_s_n_value, __pyx_n_s_idx, __pyx_n_s_IDX); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 12, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__32);
-  __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(3, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices, 12, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(9, __pyx_n_s_search, __pyx_n_s_value, __pyx_n_s_offset, __pyx_n_s_SEARCH, __pyx_n_s_VALUE, __pyx_n_s_n_search, __pyx_n_s_n_value, __pyx_n_s_idx, __pyx_n_s_IDX); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__34);
+  __Pyx_GIVEREF(__pyx_tuple__34);
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(3, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 72, __pyx_L1_error)
 
-  /* "sisl/_indices.pyx":75
+  /* "sisl/_indices.pyx":135
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_in_sphere(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R):             # <<<<<<<<<<<<<<
  *     """ Indices for all coordinates that are within a sphere of radius `R`
  * 
  */
-  __pyx_tuple__34 = PyTuple_Pack(6, __pyx_n_s_dxyz, __pyx_n_s_R, __pyx_n_s_dXYZ, __pyx_n_s_n, __pyx_n_s_idx, __pyx_n_s_IDX); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 75, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__34);
-  __Pyx_GIVEREF(__pyx_tuple__34);
-  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_in_sphere, 75, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(6, __pyx_n_s_dxyz, __pyx_n_s_R, __pyx_n_s_dXYZ, __pyx_n_s_n, __pyx_n_s_idx, __pyx_n_s_IDX); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__36);
+  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_in_sphere, 135, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 135, __pyx_L1_error)
 
-  /* "sisl/_indices.pyx":123
+  /* "sisl/_indices.pyx":183
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_in_sphere_with_dist(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R):             # <<<<<<<<<<<<<<
  *     """ Indices and the distances for all coordinates that are within a sphere of radius `R`
  * 
  */
-  __pyx_tuple__36 = PyTuple_Pack(8, __pyx_n_s_dxyz, __pyx_n_s_R, __pyx_n_s_dXYZ, __pyx_n_s_n, __pyx_n_s_idx, __pyx_n_s_dist, __pyx_n_s_IDX, __pyx_n_s_DIST); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 123, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__36);
-  __Pyx_GIVEREF(__pyx_tuple__36);
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_in_sphere_with_dist, 123, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_tuple__38 = PyTuple_Pack(8, __pyx_n_s_dxyz, __pyx_n_s_R, __pyx_n_s_dXYZ, __pyx_n_s_n, __pyx_n_s_idx, __pyx_n_s_dist, __pyx_n_s_IDX, __pyx_n_s_DIST); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__38);
+  __Pyx_GIVEREF(__pyx_tuple__38);
+  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_in_sphere_with_dist, 183, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 183, __pyx_L1_error)
 
-  /* "sisl/_indices.pyx":179
+  /* "sisl/_indices.pyx":239
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_le(np.ndarray a, const double V):             # <<<<<<<<<<<<<<
  *     """ Indices for all values in `a` that are ``<= V``
  * 
  */
-  __pyx_tuple__38 = PyTuple_Pack(8, __pyx_n_s_a, __pyx_n_s_V, __pyx_n_s_idx, __pyx_n_s_IDX, __pyx_n_s_ndim, __pyx_n_s_A1, __pyx_n_s_A2, __pyx_n_s_n); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 179, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__38);
-  __Pyx_GIVEREF(__pyx_tuple__38);
-  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_le, 179, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_tuple__40 = PyTuple_Pack(8, __pyx_n_s_a, __pyx_n_s_V, __pyx_n_s_idx, __pyx_n_s_IDX, __pyx_n_s_ndim, __pyx_n_s_A1, __pyx_n_s_A2, __pyx_n_s_n); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__40);
+  __Pyx_GIVEREF(__pyx_tuple__40);
+  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_le, 239, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 239, __pyx_L1_error)
 
-  /* "sisl/_indices.pyx":259
+  /* "sisl/_indices.pyx":319
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_fabs_le(np.ndarray a, const double V):             # <<<<<<<<<<<<<<
  *     """ Indices for all values in `a` that are ``| | <= V``
  * 
  */
-  __pyx_tuple__40 = PyTuple_Pack(8, __pyx_n_s_a, __pyx_n_s_V, __pyx_n_s_idx, __pyx_n_s_IDX, __pyx_n_s_ndim, __pyx_n_s_A1, __pyx_n_s_A2, __pyx_n_s_n); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 259, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__40);
-  __Pyx_GIVEREF(__pyx_tuple__40);
-  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_fabs_le, 259, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_tuple__42 = PyTuple_Pack(8, __pyx_n_s_a, __pyx_n_s_V, __pyx_n_s_idx, __pyx_n_s_IDX, __pyx_n_s_ndim, __pyx_n_s_A1, __pyx_n_s_A2, __pyx_n_s_n); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 319, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__42);
+  __Pyx_GIVEREF(__pyx_tuple__42);
+  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_fabs_le, 319, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 319, __pyx_L1_error)
 
-  /* "sisl/_indices.pyx":339
+  /* "sisl/_indices.pyx":399
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_gt_le(np.ndarray a, const double V1, const double V2):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([a.shape[0]], dtype=np.int32)
  *     cdef int[::1] IDX = idx
  */
-  __pyx_tuple__42 = PyTuple_Pack(9, __pyx_n_s_a, __pyx_n_s_V1, __pyx_n_s_V2, __pyx_n_s_idx, __pyx_n_s_IDX, __pyx_n_s_ndim, __pyx_n_s_A1, __pyx_n_s_A2, __pyx_n_s_n); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 339, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__42);
-  __Pyx_GIVEREF(__pyx_tuple__42);
-  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(3, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_gt_le, 339, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 339, __pyx_L1_error)
+  __pyx_tuple__44 = PyTuple_Pack(9, __pyx_n_s_a, __pyx_n_s_V1, __pyx_n_s_V2, __pyx_n_s_idx, __pyx_n_s_IDX, __pyx_n_s_ndim, __pyx_n_s_A1, __pyx_n_s_A2, __pyx_n_s_n); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__44);
+  __Pyx_GIVEREF(__pyx_tuple__44);
+  __pyx_codeobj__45 = (PyObject*)__Pyx_PyCode_New(3, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__44, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_indices_gt_le, 399, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__45)) __PYX_ERR(0, 399, __pyx_L1_error)
 
-  /* "sisl/_indices.pyx":445
+  /* "sisl/_indices.pyx":505
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def sorted_unique(np.ndarray[np.int32_t, ndim=1, mode='c'] a):             # <<<<<<<<<<<<<<
  *     """ Return True/False if all elements of the sorted array `a` are unique
  * 
  */
-  __pyx_tuple__44 = PyTuple_Pack(3, __pyx_n_s_a, __pyx_n_s_A, __pyx_n_s_n_a); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 445, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__44);
-  __Pyx_GIVEREF(__pyx_tuple__44);
-  __pyx_codeobj__45 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__44, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_sorted_unique, 445, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__45)) __PYX_ERR(0, 445, __pyx_L1_error)
+  __pyx_tuple__46 = PyTuple_Pack(3, __pyx_n_s_a, __pyx_n_s_A, __pyx_n_s_n_a); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(0, 505, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__46);
+  __Pyx_GIVEREF(__pyx_tuple__46);
+  __pyx_codeobj__47 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__46, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_indices_pyx, __pyx_n_s_sorted_unique, 505, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__47)) __PYX_ERR(0, 505, __pyx_L1_error)
 
   /* "View.MemoryView":284
  *         return self.name
@@ -23630,9 +24247,9 @@ static int __Pyx_InitCachedConstants(void) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_tuple__46 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(2, 284, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__46);
-  __Pyx_GIVEREF(__pyx_tuple__46);
+  __pyx_tuple__48 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__48)) __PYX_ERR(2, 284, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__48);
+  __Pyx_GIVEREF(__pyx_tuple__48);
 
   /* "View.MemoryView":285
  * 
@@ -23641,9 +24258,9 @@ static int __Pyx_InitCachedConstants(void) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_tuple__47 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(2, 285, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__47);
-  __Pyx_GIVEREF(__pyx_tuple__47);
+  __pyx_tuple__49 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(2, 285, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__49);
+  __Pyx_GIVEREF(__pyx_tuple__49);
 
   /* "View.MemoryView":286
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -23652,9 +24269,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__48 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__48)) __PYX_ERR(2, 286, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__48);
-  __Pyx_GIVEREF(__pyx_tuple__48);
+  __pyx_tuple__50 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__50)) __PYX_ERR(2, 286, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__50);
+  __Pyx_GIVEREF(__pyx_tuple__50);
 
   /* "View.MemoryView":289
  * 
@@ -23663,9 +24280,9 @@ static int __Pyx_InitCachedConstants(void) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_tuple__49 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(2, 289, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__49);
-  __Pyx_GIVEREF(__pyx_tuple__49);
+  __pyx_tuple__51 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(2, 289, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__51);
+  __Pyx_GIVEREF(__pyx_tuple__51);
 
   /* "View.MemoryView":290
  * 
@@ -23674,19 +24291,19 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__50 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__50)) __PYX_ERR(2, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__50);
-  __Pyx_GIVEREF(__pyx_tuple__50);
+  __pyx_tuple__52 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__52)) __PYX_ERR(2, 290, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__52);
+  __Pyx_GIVEREF(__pyx_tuple__52);
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Enum(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     if __pyx_checksum != 0xb068931:
  *         from pickle import PickleError as __pyx_PickleError
  */
-  __pyx_tuple__51 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__51);
-  __Pyx_GIVEREF(__pyx_tuple__51);
-  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__53 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__53);
+  __Pyx_GIVEREF(__pyx_tuple__53);
+  __pyx_codeobj__54 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__53, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__54)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -23919,85 +24536,97 @@ static int __pyx_pymod_exec__indices(PyObject *__pyx_pyinit_module)
   /* "sisl/_indices.pyx":12
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
+ * def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):             # <<<<<<<<<<<<<<
+ *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+ * 
+ */
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_1indices_only, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_only, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "sisl/_indices.pyx":72
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
  * def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value, int offset):             # <<<<<<<<<<<<<<
  *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_1indices, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_3indices, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices, __pyx_t_1) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sisl/_indices.pyx":75
+  /* "sisl/_indices.pyx":135
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_in_sphere(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R):             # <<<<<<<<<<<<<<
  *     """ Indices for all coordinates that are within a sphere of radius `R`
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_3indices_in_sphere, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_5indices_in_sphere, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_in_sphere, __pyx_t_1) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_in_sphere, __pyx_t_1) < 0) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sisl/_indices.pyx":123
+  /* "sisl/_indices.pyx":183
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_in_sphere_with_dist(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R):             # <<<<<<<<<<<<<<
  *     """ Indices and the distances for all coordinates that are within a sphere of radius `R`
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_5indices_in_sphere_with_dist, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_7indices_in_sphere_with_dist, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_in_sphere_with_dist, __pyx_t_1) < 0) __PYX_ERR(0, 123, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_in_sphere_with_dist, __pyx_t_1) < 0) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sisl/_indices.pyx":179
+  /* "sisl/_indices.pyx":239
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_le(np.ndarray a, const double V):             # <<<<<<<<<<<<<<
  *     """ Indices for all values in `a` that are ``<= V``
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_7indices_le, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_9indices_le, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_le, __pyx_t_1) < 0) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_le, __pyx_t_1) < 0) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sisl/_indices.pyx":259
+  /* "sisl/_indices.pyx":319
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_fabs_le(np.ndarray a, const double V):             # <<<<<<<<<<<<<<
  *     """ Indices for all values in `a` that are ``| | <= V``
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_9indices_fabs_le, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_11indices_fabs_le, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_fabs_le, __pyx_t_1) < 0) __PYX_ERR(0, 259, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_fabs_le, __pyx_t_1) < 0) __PYX_ERR(0, 319, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sisl/_indices.pyx":339
+  /* "sisl/_indices.pyx":399
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_gt_le(np.ndarray a, const double V1, const double V2):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([a.shape[0]], dtype=np.int32)
  *     cdef int[::1] IDX = idx
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_11indices_gt_le, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 339, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_13indices_gt_le, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_gt_le, __pyx_t_1) < 0) __PYX_ERR(0, 339, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_indices_gt_le, __pyx_t_1) < 0) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sisl/_indices.pyx":445
+  /* "sisl/_indices.pyx":505
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def sorted_unique(np.ndarray[np.int32_t, ndim=1, mode='c'] a):             # <<<<<<<<<<<<<<
  *     """ Return True/False if all elements of the sorted array `a` are unique
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_13sorted_unique, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 445, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_15sorted_unique, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 505, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_sorted_unique, __pyx_t_1) < 0) __PYX_ERR(0, 445, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_sorted_unique, __pyx_t_1) < 0) __PYX_ERR(0, 505, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "sisl/_indices.pyx":1
@@ -24030,7 +24659,7 @@ static int __pyx_pymod_exec__indices(PyObject *__pyx_pyinit_module)
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__46, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 284, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__48, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 284, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(generic);
   __Pyx_DECREF_SET(generic, __pyx_t_1);
@@ -24044,7 +24673,7 @@ static int __pyx_pymod_exec__indices(PyObject *__pyx_pyinit_module)
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__47, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 285, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__49, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 285, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(strided);
   __Pyx_DECREF_SET(strided, __pyx_t_1);
@@ -24058,7 +24687,7 @@ static int __pyx_pymod_exec__indices(PyObject *__pyx_pyinit_module)
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__48, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 286, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__50, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(indirect);
   __Pyx_DECREF_SET(indirect, __pyx_t_1);
@@ -24072,7 +24701,7 @@ static int __pyx_pymod_exec__indices(PyObject *__pyx_pyinit_module)
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__49, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 289, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__51, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 289, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(contiguous);
   __Pyx_DECREF_SET(contiguous, __pyx_t_1);
@@ -24086,7 +24715,7 @@ static int __pyx_pymod_exec__indices(PyObject *__pyx_pyinit_module)
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__50, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 290, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__52, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(indirect_contiguous);
   __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_1);
