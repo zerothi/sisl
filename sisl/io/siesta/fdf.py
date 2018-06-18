@@ -8,6 +8,7 @@ import numpy as np
 # Import sile objects
 import sisl._array as _a
 from sisl._help import _str
+from sisl.utils.ranges import list2str
 from sisl.messages import info, warn
 from .sile import SileSiesta
 from ..sile import *
@@ -525,6 +526,27 @@ class fdfSileSiesta(SileSiesta):
         for i, a in enumerate(geom.atom.atom):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
+
+        _write_block = True
+        def write_block(atoms, append, write_block):
+            if write_block:
+                self._write('\n# Constrainst\n%block Geometry.Constraints\n')
+                write_block = False
+            self._write(' atom [{}]{}\n'.format(atoms, append))
+            return write_block
+
+        for d in range(4):
+            append = {0: '', 1: ' 1. 0. 0.', 2: ' 0. 1. 0.', 3: ' 0. 0. 1.'}.get(d)
+            n = 'CONSTRAIN' + {0: '', 1: '-x', 2: '-y', 3: '-z'}.get(d)
+            if n in geom.names:
+                idx = list2str(geom.names[n] + 1).replace('-', ' -- ')
+                if len(idx) > 200:
+                    info(repr(self) + '.write_geometry will not write the constraints for {} (too long line).'.format(n))
+                else:
+                    _write_block = write_block(idx, append, _write_block)
+
+        if not _write_block:
+            self._write('%endblock\n')
 
     @staticmethod
     def _SpGeom_replace_geom(spgeom, geom):

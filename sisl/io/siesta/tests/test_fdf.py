@@ -307,3 +307,13 @@ def test_geom_order(sisl_tmp):
     assert np.allclose(g.xyz, gfdf.xyz)
     g = fdf.read_geometry(order=['xv', 'nc'])
     assert np.allclose(g.xyz, gxv.xyz)
+
+
+def test_geom_constraints(sisl_tmp):
+    gfdf = geom.graphene().tile(2, 0).tile(2, 1)
+    gfdf['CONSTRAIN'] = 0
+    gfdf['CONSTRAIN-x'] = 2
+    gfdf['CONSTRAIN-y'] = [1, 3, 4, 5]
+    gfdf['CONSTRAIN-z'] = range(len(gfdf))
+
+    gfdf.write(sisl_tmp('siesta.fdf', _dir))

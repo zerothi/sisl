@@ -23,6 +23,8 @@ def test_ni_iter():
     assert len(ni) == 2
     for n in ni:
         assert n in ['name-1', 'name-2']
+    assert 'name-1' in ni
+    assert 'name-2' in ni
 
 
 def test_ni_copy():

@@ -105,6 +105,10 @@ class NamedIndex(object):
         """ Delete a named group """
         self.delete_name(name)
 
+    def __contains__(self, name):
+        """ Check whether a name exists in this group a named group """
+        return name in self._name
+
     def remove(self, index):
         """ Remove indices from all named index groups
 
