@@ -4,7 +4,7 @@ import pytest
 
 import numpy as np
 
-from ._namedindex import NamedIndex
+from sisl._namedindex import NamedIndex
 
 
 def test_ni_init():

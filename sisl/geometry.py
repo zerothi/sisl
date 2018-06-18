@@ -276,9 +276,6 @@ class Geometry(SuperCellChild):
         elif isinstance(atom, _str):
             return self.axyz(self.names[atom])
 
-        elif atom[0] is None:
-            return self.axyz()[:, atom[1]]
-
         return self.axyz(atom)
 
     def reorder(self):
