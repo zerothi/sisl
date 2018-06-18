@@ -1464,7 +1464,7 @@ class Atoms(object):
 
         rem = []
         for i in range(len(self.atom)):
-            if len((specie == i).nonzero()[0]) == 0:
+            if np.all(specie != i):
                 rem.append(i)
 
         # Remove the atoms

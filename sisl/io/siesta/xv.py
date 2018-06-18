@@ -7,7 +7,7 @@ from .sile import SileSiesta
 from ..sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl.unit.siesta import unit_convert
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
@@ -67,18 +67,29 @@ class xvSileSiesta(SileSiesta):
 
         # Read number of atoms
         na = int(self.readline())
-        atms = [None] * na
         xyz = np.empty([na, 3], np.float64)
+        atms = [None] * na
+        sp = np.empty([na], np.int32)
         for ia in range(na):
             line = list(map(float, self.readline().split()[:8]))
+            sp[ia] = int(line[0])
             if species_Z:
-                atms[ia] = Atom(int(line[0]))
+                atms[ia] = Atom(sp[ia])
             else:
                 atms[ia] = Atom(int(line[1]))
             xyz[ia, :] = line[2:5]
         xyz *= Bohr2Ang
 
-        return Geometry(xyz, atms, sc=sc)
+        # Ensure correct sorting
+        max_s = sp.max()
+        sp -= 1
+        # Ensure we can remove the atom after having aligned them
+        atms2 = Atoms(Atom(-213475), na=na)
+        for i in range(max_s):
+            idx = (sp[:] == i).nonzero()[0]
+            atms2[idx] = atms[idx[0]]
+
+        return Geometry(xyz, atms2.reduce(), sc=sc)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
