@@ -24,6 +24,7 @@ Brillouin zone (:mod:`sisl.physics.brillouinzone`)
    MonkhorstPack - MP class
    BandStructure - bandstructure class
 
+
 Spin configuration
 ==================
 
