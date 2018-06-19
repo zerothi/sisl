@@ -1,3 +1,59 @@
+"""Brillouin zone classes
+=========================
+
+.. module:: sisl.physics.brillouinzone
+   :noindex:
+
+The Brillouin zone objects are all special classes enabling easy manipulation
+of an underlying physical quantity.
+
+Quite often a physical quantity will be required to be averaged, or calculated individually
+over a number of k-points. In this regard can the Brillouin zone objects help.
+
+A basic principle of the BrillouinZone objects is that *any* method called on a BrillouinZone
+object will defer to the attached parent to the class. Lets take an example.
+
+>>> H = Hamiltonian(...)
+>>> bz = BrillouinZone(H)
+>>> bz.eigh()
+
+This will actually calculate the eigenvalues for all k-points associated with the BrillouinZone.
+This may be extremely convenient when calculating band-structures:
+
+>>> H = Hamiltonian(...)
+>>> bs = BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)
+>>> bs_eig = bs.eigh().T
+
+and then you have all eigenvalues for all the k-points.
+
+Sometimes one may want to post-process the data for each k-point.
+As an example lets post-process the DOS on a per k-point basis.
+ 
+>>> H = Hamiltonian(...)
+>>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> E = np.linspace(-2, 2, 100)
+>>> def wrap_DOS(eigenstate):
+...    # Calculate the DOS for the eigenstates
+...    DOS = eigenstate.DOS(E)
+...    # Calculate the velocity for the eigenstates
+...    v = eigenstate.velocity()
+...    V = (v ** 2).sum(1) ** 0.5
+...    return DOS.reshape(-1, 1) * np.abs(v) / V.reshape(-1, 1)
+>>> DOS = mp.asaverage().eigenstate(wrap=wrap_DOS, eta=True)
+
+This will, calculate the Monkhorst pack k-averaged DOS split into 3 Cartesian
+directions based on the eigenstates velocity direction. This method of manipulating
+the result can be extremely powerful to calculate many quantities while running an
+efficient BrillouinZone average. The `eta` flag will print, to stdout, a progress-bar.
+
+.. autosummary::
+   :toctree:
+
+   BrillouinZone
+   MonkhorstPack
+   BandStructure
+
+"""
 from __future__ import print_function, division
 
 import types
@@ -7,6 +63,7 @@ from numpy import pi
 import numpy as np
 from numpy import sum, dot
 
+from sisl.utils.misc import allow_kwargs
 import sisl._array as _a
 from sisl.messages import info, SislError, tqdm_eta
 from sisl.supercell import SuperCell
@@ -40,14 +97,24 @@ class BrillouinZone(object):
     parent : object or array_like
        An object with associated ``parent.cell`` and ``parent.rcell`` or
        an array of floats which may be turned into a `SuperCell`
+    k : array_like, optional
+       k-points that this Brillouin zone represents
+    weight : array_like, optional
+       weights for the k-points. Must have the same length as `k`.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, k=None, weight=None):
         self.set_parent(parent)
 
         # Gamma point
-        self._k = _a.zerosd([1, 3])
-        self._w = _a.onesd(1)
+        if k is None:
+            self._k = _a.zerosd([1, 3])
+            self._w = _a.onesd(1)
+        else:
+            self._k = _a.arrayd(k).reshape(-1, 3)
+            self._w = _a.arrayd(weight).ravel()
+        if len(self.k) != len(self.weight):
+            raise ValueError(self.__class__.__name__ + '.__init__ requires input k-points and weights to be of equal length.')
 
         # Instantiate the array call
         self.asarray()
@@ -193,16 +260,13 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = kwargs.pop('wrap', _do_nothing)
+            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
                            'k', kwargs.pop('eta', False))
-            has_weight = 'weight' in wrap.__code__.co_varnames
+            w = self.weight.view()
             for i, k in enumerate(self):
                 if i == 0:
-                    if has_weight:
-                        v = wrap(func(*args, k=k, **kwargs), weight=self.weight[i])
-                    else:
-                        v = wrap(func(*args, k=k, **kwargs))
+                    v = wrap(func(*args, k=k, **kwargs), weight=w[i])
                     if len(self) == 1:
                         return v
                     shp = [len(self)]
@@ -210,10 +274,8 @@ class BrillouinZone(object):
                     a = np.empty(shp, dtype=dtype)
                     a[i, :] = v[:]
                     del v
-                elif has_weight:
-                    a[i, :] = wrap(func(*args, k=k, **kwargs), weight=self.weight[i])
                 else:
-                    a[i, :] = wrap(func(*args, k=k, **kwargs))
+                    a[i, :] = wrap(func(*args, k=k, **kwargs), weight=w[i])
                 eta.update()
             eta.close()
             return a
@@ -251,18 +313,13 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = kwargs.pop('wrap', _do_nothing)
+            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asnone',
                            'k', kwargs.pop('eta', False))
-            has_weight = 'weight' in wrap.__code__.co_varnames
-            if has_weight:
-                for i, k in enumerate(self):
-                    wrap(func(*args, k=k, **kwargs), weight=self.weight[i])
-                    eta.update()
-            else:
-                for i, k in enumerate(self):
-                    wrap(func(*args, k=k, **kwargs))
-                    eta.update()
+            w = self.weight.view()
+            for i, k in enumerate(self):
+                wrap(func(*args, k=k, **kwargs), weight=w[i])
+                eta.update()
             eta.close()
         # Set instance __call__
         setattr(self, '__call__', types.MethodType(_call, self))
@@ -299,16 +356,13 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = kwargs.pop('wrap', _do_nothing)
+            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist',
                            'k', kwargs.pop('eta', False))
             a = [None] * len(self)
-            has_weight = 'weight' in wrap.__code__.co_varnames
+            w = self.weight.view()
             for i, k in enumerate(self):
-                if has_weight:
-                    a[i] = wrap(func(*args, k=k, **kwargs), weight=self.weight[i])
-                else:
-                    a[i] = wrap(func(*args, k=k, **kwargs))
+                a[i] = wrap(func(*args, k=k, **kwargs), weight=w[i])
                 eta.update()
             eta.close()
             return a
@@ -351,17 +405,13 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = kwargs.pop('wrap', _do_nothing)
+            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield',
                            'k', kwargs.pop('eta', False))
-            if 'weight' in wrap.__code__.co_varnames:
-                for i, k in enumerate(self):
-                    yield wrap(func(*args, k=k, **kwargs).astype(dtype, copy=False), weight=self.weight[i])
-                    eta.update()
-            else:
-                for k in self:
-                    yield wrap(func(*args, k=k, **kwargs).astype(dtype, copy=False))
-                    eta.update()
+            w = self.weight.view()
+            for i, k in enumerate(self):
+                yield wrap(func(*args, k=k, **kwargs).astype(dtype, copy=False), weight=w[i])
+                eta.update()
             eta.close()
         # Set instance __call__
         setattr(self, '__call__', types.MethodType(_call, self))
@@ -407,21 +457,15 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = kwargs.pop('wrap', _do_nothing)
+            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage',
                            'k', kwargs.pop('eta', False))
             w = self.weight.view()
-            has_weight = 'weight' in wrap.__code__.co_varnames
             for i, k in enumerate(self):
                 if i == 0:
-                    if has_weight:
-                        v = wrap(func(*args, k=k, **kwargs), weight=w[i]) * w[i]
-                    else:
-                        v = wrap(func(*args, k=k, **kwargs)) * w[i]
-                elif has_weight:
-                    v += wrap(func(*args, k=k, **kwargs), weight=w[i]) * w[i]
+                    v = wrap(func(*args, k=k, **kwargs), weight=w[i]) * w[i]
                 else:
-                    v += wrap(func(*args, k=k, **kwargs)) * w[i]
+                    v += wrap(func(*args, k=k, **kwargs), weight=w[i]) * w[i]
                 eta.update()
             eta.close()
             return v

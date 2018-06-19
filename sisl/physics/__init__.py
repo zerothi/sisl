@@ -14,8 +14,8 @@ In `sisl` the general usage of physical matrices are considering sparse
 matrices. Hence Hamiltonians, density matrices, etc. are considered
 sparse. There are exceptions, but it is generally advisable to have this in mind.
 
-Brillouin zone
-==============
+Brillouin zone (:mod:`sisl.physics.brillouinzone`)
+==================================================
 
 .. autosummary::
    :toctree:

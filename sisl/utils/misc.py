@@ -1,5 +1,7 @@
 from __future__ import division
 
+import inspect
+import functools
 import ast
 import operator as op
 from numbers import Integral
@@ -8,7 +10,7 @@ from math import pi
 from sisl._help import _range as range
 
 __all__ = ['merge_instances', 'str_spec', 'direction', 'angle']
-__all__ += ['iter_shape', 'math_eval']
+__all__ += ['iter_shape', 'math_eval', 'allow_kwargs']
 
 
 # supported operators
@@ -262,3 +264,41 @@ def angle(s, rad=True, in_rad=True):
     # Both radians and in_radians are equivalent
     # so return as-is
     return ra
+
+
+def allow_kwargs(*args):
+    """ Decoractor for forcing `func` to have the named arguments as listed in `args`
+
+    This decorator merely removes any keyword argument from the called function
+    which is in the list of `args`.
+
+    Parameters
+    ----------
+    *args : str
+       required arguments in `func`, if already present nothing will be done.
+    """
+    def deco(func):
+        # Retrieve names
+        arg_names = inspect.getargspec(func)[0]
+
+        # First we figure out which arguments are already in the lists
+        args_ = [arg for arg in args if not arg in arg_names]
+
+        # Now we have the compressed lists
+        # If there are no arguments required to be added, simply return the function
+        if len(args_) == 0:
+            return func
+
+        # Basically any function that does not have a named argument
+        # cannot use it. So we simply need to create a function which by-passes
+        # the named arguments.
+        @functools.wraps(func)
+        def dec_func(*args, **kwargs):
+            # Simply remove all the arguments that cannot be passed to the function
+            for arg in args_:
+                kwargs.pop(arg, None)
+            return func(*args, **kwargs)
+
+        return dec_func
+
+    return deco
