@@ -126,6 +126,14 @@ copyright = u'2015-2018, ' + author
 on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
 if on_rtd:
     nbsphinx_allow_errors = True
+else:
+    nbsphinx_allow_errors = False
+    extensions += [
+        'sphinx.ext.inheritance_diagram',
+        'nbsphinx',
+        'IPython.sphinxext.ipython_directive',
+        'IPython.sphinxext.ipython_console_highlighting',
+    ]
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
