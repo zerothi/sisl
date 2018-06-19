@@ -79,12 +79,16 @@ Distribution functions (:mod:`sisl.physics.distribution`)
    cold
 
 
+
+.. Below lines ensures that the sub-modules gets their own page.
+
 .. autosummary::
    :toctree:
    :hidden:
 
    sisl.physics.electron
    sisl.physics.distribution
+   sisl.physics.brillouinzone
 
 
 Low level objects
