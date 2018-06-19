@@ -1650,6 +1650,11 @@ class Atoms(object):
         else:
             key = _a.asarrayi(key).ravel()
 
+        if len(key) == 0:
+            if value not in self:
+                self._atom.append(atom)
+            return
+
         # Create new atoms object to iterate
         other = Atoms(value, na=len(key))
 

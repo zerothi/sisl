@@ -84,10 +84,14 @@ class xvSileSiesta(SileSiesta):
         max_s = sp.max()
         sp -= 1
         # Ensure we can remove the atom after having aligned them
-        atms2 = Atoms(Atom(-213475), na=na)
+        atms2 = Atoms(Atom(-150), na=na)
         for i in range(max_s):
             idx = (sp[:] == i).nonzero()[0]
-            atms2[idx] = atms[idx[0]]
+            if len(idx) == 0:
+                # Always ensure we have "something" for the unoccupied places
+                atms2[idx] = Atom(-150 - i)
+            else:
+                atms2[idx] = atms[idx[0]]
 
         return Geometry(xyz, atms2.reduce(), sc=sc)
 
