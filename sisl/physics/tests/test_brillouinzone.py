@@ -218,6 +218,7 @@ class TestBrillouinZone(object):
         # Check with a wrap function
         def wrap_reverse(arg):
             return arg[::-1]
+
         asarray = bz.asarray().eigh(wrap=wrap_reverse)
         aslist = np.array(bz.aslist().eigh(wrap=wrap_reverse))
         asyield = np.array([a for a in bz.asyield().eigh(wrap=wrap_reverse)])
@@ -230,6 +231,36 @@ class TestBrillouinZone(object):
         # Now we should check whether the reverse is doing its magic!
         mylist = [wrap_reverse(H.eigh(k=k)) for k in bz]
         assert np.allclose(aslist, mylist)
+
+    # Check with a wrap function and the weight argument
+    def test_wrap_weight(arg):
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False)
+        assert len(bz) == 2 ** 3
+
+        def wrap_none(arg):
+            return arg
+        def wrap_weight(arg, weight):
+            return arg * weight
+
+        E = np.linspace(-2, 2, 100)
+        asarray1 = (bz.asarray().DOS(E, wrap=wrap_none) * bz.weight.reshape(-1, 1)).sum(0)
+        asarray2 = bz.asarray().DOS(E, wrap=wrap_weight).sum(0)
+        aslist1 = (np.array(bz.aslist().DOS(E, wrap=wrap_none)) * bz.weight.reshape(-1, 1)).sum(0)
+        aslist2 = np.array(bz.aslist().DOS(E, wrap=wrap_weight)).sum(0)
+        asyield1 = (np.array([a for a in bz.asyield().DOS(E, wrap=wrap_none)]) * bz.weight.reshape(-1, 1)).sum(0)
+        asyield2 = np.array([a for a in bz.asyield().DOS(E, wrap=wrap_weight)]).sum(0)
+        asaverage = bz.asaverage().DOS(E, wrap=wrap_none)
+        assert np.allclose(asarray1, asaverage)
+        assert np.allclose(asarray2, asaverage)
+        assert np.allclose(aslist1, asaverage)
+        assert np.allclose(aslist2, asaverage)
+        assert np.allclose(asyield1, asaverage)
+        assert np.allclose(asyield2, asaverage)
 
     def test_replace_gamma(self):
         from sisl import geom
