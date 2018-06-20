@@ -44,14 +44,10 @@ class pdosSileSiesta(SileSiesta):
 
         Returns
         -------
-        geom : Geometry instance with positions, atoms and orbitals. The
-               orbitals of these atoms are `AtomicOrbital` instances.
-        E : the energies at which the PDOS has been evaluated at (if the Fermi-level is present the energies
-            are shifted to :math:`E - E_F = 0`, this will *only* be done from Siesta 4.0.2 and later).
-        PDOS : an array of DOS with dimensions ``(nspin, atom.no, len(E))``, unless it is spin-unpolarized
-            in which case the spin dimension is lost, units are 1/eV.
-        DataArray : if `as_dataarray` is True, only this data array is returned, in this case
-               all data can be post-processed using the `xarray` selection routines.
+        geom : Geometry instance with positions, atoms and orbitals.
+        E : the energies at which the PDOS has been evaluated at (if Fermi-level present in file energies are shifted to :math:`E - E_F = 0`).
+        PDOS : an array of DOS with dimensions ``(nspin, geom.no, len(E))`` (with different spin-components) or ``(geom.no, len(E))`` (spin-symmetric).
+        DataArray : if `as_dataarray` is True, only this data array is returned, in this case all data can be post-processed using the `xarray` selection routines.
         """
         # Get the element-tree
         ET = ElementTree('pdos', self.file)
