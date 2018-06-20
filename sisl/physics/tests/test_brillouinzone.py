@@ -263,12 +263,15 @@ class TestBrillouinZone(object):
         asyield1 = (np.array([a for a in bz.asyield().DOS(E, wrap=wrap_none)]) * bz.weight.reshape(-1, 1)).sum(0)
         asyield2 = np.array([a for a in bz.asyield().DOS(E, wrap=wrap_kwargs)]).sum(0)
         asaverage = bz.asaverage().DOS(E, wrap=wrap_none)
+        assum = bz.assum().DOS(E, wrap=wrap_kwargs)
+
         assert np.allclose(asarray1, asaverage)
         assert np.allclose(asarray2, asaverage)
         assert np.allclose(aslist1, asaverage)
         assert np.allclose(aslist2, asaverage)
         assert np.allclose(asyield1, asaverage)
         assert np.allclose(asyield2, asaverage)
+        assert np.allclose(assum, asaverage)
 
     def test_replace_gamma(self):
         from sisl import geom
