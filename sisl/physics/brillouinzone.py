@@ -37,8 +37,8 @@ As an example lets post-process the DOS on a per k-point basis.
 ...    DOS = eigenstate.DOS(E)
 ...    # Calculate the velocity for the eigenstates
 ...    v = eigenstate.velocity()
-...    V = (v ** 2).sum(1) ** 0.5
-...    return DOS.reshape(-1, 1) * np.abs(v) / V.reshape(-1, 1)
+...    V = (v ** 2).sum(1)
+...    return DOS.reshape(-1, 1) * v ** 2 / V.reshape(-1, 1)
 >>> DOS = mp.asaverage().eigenstate(wrap=wrap_DOS, eta=True)
 
 This will, calculate the Monkhorst pack k-averaged DOS split into 3 Cartesian
@@ -54,12 +54,8 @@ weight:
 >>> mp = MonkhorstPack(H, [10, 10, 10])
 >>> E = np.linspace(-2, 2, 100)
 >>> def wrap_DOS(eigenstate, k, weight):
-...    # Calculate the DOS for the eigenstates
-...    DOS = eigenstate.DOS(E)
-...    # Calculate the velocity for the eigenstates
-...    v = eigenstate.velocity()
-...    V = (v ** 2).sum(1) ** 0.5 * k[0]
-...    return DOS.reshape(-1, 1) * np.abs(v) / V.reshape(-1, 1) * weight
+...    # Calculate the DOS for the eigenstates and weight by k_x and weight
+...    return eigenstate.DOS(E) * k[0] * weight
 >>> DOS = mp.assum().eigenstate(wrap=wrap_DOS, eta=True)
 
 
