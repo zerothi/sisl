@@ -143,7 +143,7 @@ class BrillouinZone(object):
 
     def copy(self):
         """ Create a copy of this object """
-        bz = self.__class__(self.parent)
+        bz = self.__class__(self.parent, self._k, self.weight)
         bz._k = self._k.copy()
         bz._w = self._w.copy()
         return bz
@@ -260,22 +260,18 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
+            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
                            'k', kwargs.pop('eta', False))
+            parent = self.parent
+            k = self.k.view()
             w = self.weight.view()
-            for i, k in enumerate(self):
-                if i == 0:
-                    v = wrap(func(*args, k=k, **kwargs), weight=w[i])
-                    if len(self) == 1:
-                        return v
-                    shp = [len(self)]
-                    shp.extend(v.shape)
-                    a = np.empty(shp, dtype=dtype)
-                    a[i, :] = v[:]
-                    del v
-                else:
-                    a[i, :] = wrap(func(*args, k=k, **kwargs), weight=w[i])
+            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
+            a = np.empty((len(self), ) + v.shape, dtype=dtype)
+            a[0, :] = v[:]
+            del v
+            for i in range(1, len(k)):
+                a[i, :] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
             eta.close()
             return a
@@ -313,12 +309,14 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
+            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asnone',
                            'k', kwargs.pop('eta', False))
+            parent = self.parent
+            k = self.k.view()
             w = self.weight.view()
-            for i, k in enumerate(self):
-                wrap(func(*args, k=k, **kwargs), weight=w[i])
+            for i in range(len(k)):
+                wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
             eta.close()
         # Set instance __call__
@@ -356,13 +354,15 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
+            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist',
                            'k', kwargs.pop('eta', False))
             a = [None] * len(self)
+            parent = self.parent
+            k = self.k.view()
             w = self.weight.view()
-            for i, k in enumerate(self):
-                a[i] = wrap(func(*args, k=k, **kwargs), weight=w[i])
+            for i in range(len(k)):
+                a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
             eta.close()
             return a
@@ -370,7 +370,7 @@ class BrillouinZone(object):
         setattr(self, '__call__', types.MethodType(_call, self))
         return self
 
-    def asyield(self, dtype=np.float64):
+    def asyield(self):
         """ Return `self` with yielded quantities
 
         This forces the `__call__` routine to return a an iterator which may
@@ -386,11 +386,6 @@ class BrillouinZone(object):
            a function that accepts the output of the given routine and post-process
            it. Defaults to ``lambda x: x``.
 
-        Parameters
-        ----------
-        dtype : numpy.dtype, optional
-            the data-type to cast the values to
-
         Examples
         --------
         >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
@@ -405,12 +400,14 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
+            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield',
                            'k', kwargs.pop('eta', False))
+            parent = self.parent
+            k = self.k.view()
             w = self.weight.view()
-            for i, k in enumerate(self):
-                yield wrap(func(*args, k=k, **kwargs).astype(dtype, copy=False), weight=w[i])
+            for i in range(len(k)):
+                yield wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
             eta.close()
         # Set instance __call__
@@ -436,7 +433,7 @@ class BrillouinZone(object):
         Parameters
         ----------
         dtype : numpy.dtype, optional
-            the data-type to cast the values to
+            the data-type to cast the returned values to
 
         Examples
         --------
@@ -457,15 +454,15 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = getattr(self.parent, self.__attr)
-            wrap = allow_kwargs('weight')(kwargs.pop('wrap', _do_nothing))
+            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage',
                            'k', kwargs.pop('eta', False))
+            parent = self.parent
+            k = self.k.view()
             w = self.weight.view()
-            for i, k in enumerate(self):
-                if i == 0:
-                    v = wrap(func(*args, k=k, **kwargs), weight=w[i]) * w[i]
-                else:
-                    v += wrap(func(*args, k=k, **kwargs), weight=w[i]) * w[i]
+            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]).astype(dtype, copy=False) * w[0]
+            for i in range(1, len(k)):
+                v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i]) * w[i]
                 eta.update()
             eta.close()
             return v

@@ -47,6 +47,14 @@ class TestBrillouinZone(object):
             w += wk
         assert w == pytest.approx(1.)
 
+        bz = BrillouinZone(setup.s1, [[0]*3, [0.5]*3], [.5]*2)
+        assert len(bz) == 2
+        assert len(bz.copy()) == 2
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_bz_fail(self, setup):
+        BrillouinZone(setup.s1, [0] * 3, [.5] * 2)
+
     def test_to_reduced(self, setup):
         bz = BrillouinZone(setup.s2)
         for k in [[0.1] * 3, [0.2] * 3]:
@@ -233,7 +241,7 @@ class TestBrillouinZone(object):
         assert np.allclose(aslist, mylist)
 
     # Check with a wrap function and the weight argument
-    def test_wrap_weight(arg):
+    def test_wrap_kwargs(arg):
         from sisl import geom, Hamiltonian
         g = geom.graphene()
         H = Hamiltonian(g)
@@ -244,16 +252,16 @@ class TestBrillouinZone(object):
 
         def wrap_none(arg):
             return arg
-        def wrap_weight(arg, weight):
+        def wrap_kwargs(arg, parent, k, weight):
             return arg * weight
 
         E = np.linspace(-2, 2, 100)
         asarray1 = (bz.asarray().DOS(E, wrap=wrap_none) * bz.weight.reshape(-1, 1)).sum(0)
-        asarray2 = bz.asarray().DOS(E, wrap=wrap_weight).sum(0)
+        asarray2 = bz.asarray().DOS(E, wrap=wrap_kwargs).sum(0)
         aslist1 = (np.array(bz.aslist().DOS(E, wrap=wrap_none)) * bz.weight.reshape(-1, 1)).sum(0)
-        aslist2 = np.array(bz.aslist().DOS(E, wrap=wrap_weight)).sum(0)
+        aslist2 = np.array(bz.aslist().DOS(E, wrap=wrap_kwargs)).sum(0)
         asyield1 = (np.array([a for a in bz.asyield().DOS(E, wrap=wrap_none)]) * bz.weight.reshape(-1, 1)).sum(0)
-        asyield2 = np.array([a for a in bz.asyield().DOS(E, wrap=wrap_weight)]).sum(0)
+        asyield2 = np.array([a for a in bz.asyield().DOS(E, wrap=wrap_kwargs)]).sum(0)
         asaverage = bz.asaverage().DOS(E, wrap=wrap_none)
         assert np.allclose(asarray1, asaverage)
         assert np.allclose(asarray2, asaverage)
@@ -265,12 +273,17 @@ class TestBrillouinZone(object):
     def test_replace_gamma(self):
         from sisl import geom
         g = geom.graphene()
-        bz = MonkhorstPack(g, [2, 2, 2], trs=False)
+        bz = MonkhorstPack(g, 2, trs=False)
         bz_gamma = MonkhorstPack(g, [2, 2, 2], size=[0.5] * 3, trs=False)
         assert len(bz) == 2 ** 3
         bz.replace([0] * 3, bz_gamma)
         assert len(bz) == 2 ** 3 + 2 ** 3 - 1
         assert bz.weight.sum() == pytest.approx(1.)
+        assert np.allclose(bz.copy().k, bz.k)
+        assert np.allclose(bz.copy().weight, bz.weight)
+
+    def test_in_primitive(self):
+        assert np.allclose(MonkhorstPack.in_primitive([[1.] * 3, [-1.] * 3]), 0)
 
     def test_replace_gamma_trs(self):
         from sisl import geom
