@@ -270,7 +270,8 @@ def allow_kwargs(*args):
     """ Decoractor for forcing `func` to have the named arguments as listed in `args`
 
     This decorator merely removes any keyword argument from the called function
-    which is in the list of `args`.
+    which is in the list of `args` in case the function does not have the arguments
+    or a ``**kwargs`` equivalent.
 
     Parameters
     ----------
@@ -279,7 +280,9 @@ def allow_kwargs(*args):
     """
     def deco(func):
         # Retrieve names
-        arg_names = inspect.getargspec(func)[0]
+        arg_names, _, kwargs_name, _ = inspect.getargspec(func)
+        if not kwargs_name is None:
+            return func
 
         # First we figure out which arguments are already in the lists
         args_ = [arg for arg in args if not arg in arg_names]
