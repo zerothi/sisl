@@ -1,31 +1,3 @@
-"""Basic geometries
-===========================
-
-.. module:: sisl.geom.basic
-   :noindex:
-
-A preset selection of default geometries can be found here. The most common geometries
-found in the periodic table of solids may be found here.
-
-.. autosummary::
-   :toctree:
-
-   sc
-   bcc
-   fcc
-   hcp
-
-.. autofunction:: sc
-   :noindex:
-.. autofunction:: bcc
-   :noindex:
-.. autofunction:: fcc
-   :noindex:
-.. autofunction:: hcp
-   :noindex:
-
-"""
-
 from __future__ import print_function, division
 
 import numpy as np

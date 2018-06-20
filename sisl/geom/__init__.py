@@ -8,41 +8,56 @@ Common geometries (:mod:`sisl.geom`)
 
 A variety of default geometries.
 
-Basic (:mod:`sisl.geom.basic`)
-==============================
-
-.. autosummary::
-   :toctree:
-
-   sc - simple cubic
-   bcc - body centered cubic
-   fcc - face centered cubic
-   hcp - hexagonal
-   diamond - a diamond lattice
-
-2D materials
-================================
-
-.. autosummary::
-   :toctree:
-
-   honeycomb - graphene like, but generic
-   graphene - graphen
-
-Nanotube
-========
-
-.. autosummary::
-   :toctree:
-
-   nanotube - a nanotube (default to carbon)
-
+.. contents::
+   :local:
 
 .. autosummary::
    :toctree:
    :hidden:
 
-   sisl.geom.basic
+   sc
+   bcc
+   fcc
+   hcp
+   honeycomb
+   nanotube
+   diamond
+
+
+Basic
+=====
+
+.. autofunction:: sc
+   :noindex:
+.. autofunction:: bcc
+   :noindex:
+.. autofunction:: fcc
+   :noindex:
+.. autofunction:: hcp
+   :noindex:
+
+
+2D materials
+================================
+
+.. autofunction:: honeycomb
+   :noindex:
+.. autofunction:: graphene
+   :noindex:
+
+
+Nanotube
+========
+
+.. autofunction:: nanotube
+   :noindex:
+
+
+Others
+======
+
+.. autofunction:: diamond
+   :noindex:
 
 """
 from .basic import *

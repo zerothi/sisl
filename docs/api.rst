@@ -27,7 +27,6 @@ different routines for electronic structure calculations.
 
    sisl
    sisl.geom
-   sisl.geom.basic
    sisl.physics
    sisl.physics.distribution
    sisl.physics.brillouinzone
