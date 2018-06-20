@@ -48,8 +48,7 @@ class pdosSileSiesta(SileSiesta):
                orbitals of these atoms are `AtomicOrbital` instances.
         E : the energies at which the PDOS has been evaluated at (if the Fermi-level is present the energies
             are shifted to :math:`E - E_F = 0`, this will *only* be done from Siesta 4.0.2 and later).
-        PDOS : an array of DOS, for non-polarized calculations it has dimension ``(atom.no, len(E))``,
-               else it has dimension ``(nspin, atom.no, len(E))``.
+        PDOS : an array of DOS with dimensions ``(nspin, atom.no, len(E))``.
         DataArray : if `as_dataarray` is True, only this data array is returned, in this case
                all data can be post-processed using the `xarray` selection routines.
         """
