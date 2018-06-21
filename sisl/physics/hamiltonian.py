@@ -362,6 +362,25 @@ class Hamiltonian(SparseOrbitalBZSpin):
             with get_sile(sile, 'w') as fh:
                 fh.write_hamiltonian(self, *args, **kwargs)
 
+    def velocity(self, k=(0, 0, 0), **kwargs):
+        r""" Calculate the velocity for the eigenstates for a given `k` point
+
+        Parameters
+        ----------
+        k : array_like, optional
+            k-point at which the velocities are calculated
+        **kwargs: optional
+            additional parameters passed to the `eigenstate` routine
+
+        See Also
+        --------
+        eigenstate : method used to calculate the eigenstates
+        DOS : Calculate total DOS
+        PDOS : Calculate projected DOS
+        EigenvalueElectron.velocity : Underlying method used to calculate the velocity
+        """
+        return self.eigenstate(k, **kwargs).velocity()
+
     def DOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
         r""" Calculate the DOS at the given energies for a specific `k` point
 
