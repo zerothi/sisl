@@ -94,8 +94,11 @@ class fdfSileSiesta(SileSiesta):
         return osp.join(self._directory, f)
 
     def _pushfile(self, f):
-        self._parent_fh.append(self.fh)
-        self.fh = open(self._tofile(f), self._mode)
+        if osp.isfile(self._tofile(f)):
+            self._parent_fh.append(self.fh)
+            self.fh = open(self._tofile(f), self._mode)
+        else:
+            warn(repr(self) + ' is trying to include file: {} but the file seems not to exist? Disregard file!'.format(f))
 
     def _popfile(self):
         if len(self._parent_fh) > 0:
