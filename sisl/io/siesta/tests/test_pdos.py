@@ -16,7 +16,7 @@ def test_si_pdos_gamma(sisl_files):
     geom, E, pdos = si.read_data()
     assert len(geom) == 2
     assert len(E) == 500
-    assert pdos.shape == (1, geom.no, 500)
+    assert pdos.shape == (geom.no, 500)
 
 
 def test_si_pdos_gamma_xarray(sisl_files):
@@ -39,7 +39,7 @@ def test_si_pdos_kgrid(sisl_files):
     geom, E, pdos = si.read_data()
     assert len(geom) == 2
     assert len(E) == 500
-    assert pdos.shape == (1, geom.no, 500)
+    assert pdos.shape == (geom.no, 500)
 
 
 def test_si_pdos_kgrid_xarray(sisl_files):

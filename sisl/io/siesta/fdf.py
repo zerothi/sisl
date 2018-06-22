@@ -509,19 +509,27 @@ class fdfSileSiesta(SileSiesta):
             self._write('AtomicCoordinatesFormat {}\n'.format(unit))
         self._write('%block AtomicCoordinatesAndAtomicSpecies\n')
 
-        fmt_str = ' {{2:{0}}} {{3:{0}}} {{4:{0}}} {{0}} # {{1}}\n'.format(fmt)
+        n_species = len(geom.atoms.atom)
+
         # Count for the species
         if is_fractional:
             xyz = geom.fxyz
         else:
             xyz = geom.xyz * conv
+            if fmt[0] == '.':
+                # Correct for a "same" length of all coordinates
+                c_max = len(str(('{{:{0}}}'.format(fmt)).format(xyz.max())))
+                c_min = len(str(('{{:{0}}}'.format(fmt)).format(xyz.min())))
+                fmt = str(max(c_min, c_max)) + fmt
+        fmt_str = ' {{3:{0}}} {{4:{0}}} {{5:{0}}} {{0}} # {{1:{1}d}}: {{2}}\n'.format(fmt, len(str(len(geom))))
+
         for ia, a, isp in geom.iter_species():
-            self._write(fmt_str.format(isp + 1, ia + 1, *xyz[ia, :]))
+            self._write(fmt_str.format(isp + 1, ia + 1, a.tag, *xyz[ia, :]))
         self._write('%endblock AtomicCoordinatesAndAtomicSpecies\n\n')
 
         # Write out species
         # First swap key and value
-        self._write('NumberOfSpecies {0}\n'.format(len(geom.atom.atom)))
+        self._write('NumberOfSpecies {0}\n'.format(n_species))
         self._write('%block ChemicalSpeciesLabel\n')
         for i, a in enumerate(geom.atom.atom):
             self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
@@ -530,7 +538,7 @@ class fdfSileSiesta(SileSiesta):
         _write_block = True
         def write_block(atoms, append, write_block):
             if write_block:
-                self._write('\n# Constrainst\n%block Geometry.Constraints\n')
+                self._write('\n# Constraints\n%block Geometry.Constraints\n')
                 write_block = False
             self._write(' atom [{}]{}\n'.format(atoms, append))
             return write_block
