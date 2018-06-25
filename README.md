@@ -39,9 +39,11 @@ If performing a manual installation, these packages are required:
    - __six__
    - __numpy__
    - __scipy__
-   - __netCDF4__, this module is only required if you need interface to construct
-    the transport tight-binding model for `TBtrans`
+   - __netCDF4__
    - __setuptools__
+   - __matplotlib__, encouraged optional dependency
+   - __tqdm__, encouraged optional dependency
+   - __xarray__, optional dependency
 
 You are encouraged to also install `matplotlib` and `tqdm` for plotting utilities and
 progress-bar support.
@@ -49,6 +51,10 @@ progress-bar support.
 Subsequently manual installation may be done using this command:
 
     python setup.py install --prefix=<prefix>
+
+If trying to install without root access, you may be required to use this command:
+
+    python setup.py install --user --prefix=<prefix>
 
 
 ### Testing installation ###
