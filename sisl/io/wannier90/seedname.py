@@ -34,11 +34,13 @@ class winSileWannier90(SileWannier90):
     seedname.win:
 
         write_xyz = true
+        translate_home_cell = False
 
     while if you want to read the Wannier Hamiltonian you should have this:
 
         write_xyz = true
         plot_hr = true
+        translate_home_cell = False
 
     Examples
     --------
