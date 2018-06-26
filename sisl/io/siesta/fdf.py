@@ -1124,9 +1124,10 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
         DM = None
         if isfile(f):
-            geom = self.read_geometry(True)
             DM = tsdeSileSiesta(f).read_density_matrix(*args, **kwargs)
-            self._SpGeom_replace_geom(DM, geom)
+            if 'geometry' not in kwargs:
+                if not self._SpGeom_replace_geom(DM, self.read_geometry(True)):
+                    warn(SileWarning('DM from {} will most likely have a wrong supercell specification.'.format(f)))
         return DM
 
     def _r_density_matrix_dm(self, *args, **kwargs):
@@ -1134,9 +1135,10 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.DM'
         DM = None
         if isfile(f):
-            if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
             DM = dmSileSiesta(f).read_density_matrix(*args, **kwargs)
+            if 'geometry' not in kwargs:
+                if not self._SpGeom_replace_geom(DM, self.read_geometry(True)):
+                    warn(SileWarning('DM from {} will most likely have a wrong supercell specification.'.format(f)))
         return DM
 
     def read_energy_density_matrix(self, *args, **kwargs):
@@ -1170,11 +1172,10 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
         EDM = None
         if isfile(f):
-            if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
             EDM = tsdeSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
-            if not self._SpGeom_replace_geom(EDM, geom):
-                warn(SileWarning('EDM from {} will most likely have a wrong supercell specification.'.format(f)))
+            if 'geometry' not in kwargs:
+                if not self._SpGeom_replace_geom(EDM, self.read_geometry(True)):
+                    warn(SileWarning('EDM from {} will most likely have a wrong supercell specification.'.format(f)))
         return EDM
 
     def read_hamiltonian(self, *args, **kwargs):
@@ -1208,9 +1209,8 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSHS'
         H = None
         if isfile(f):
-            geom = self.read_geometry(True)
             H = tshsSileSiesta(f).read_hamiltonian(*args, **kwargs)
-            self._SpGeom_replace_geom(H, geom)
+            self._SpGeom_replace_geom(H, self.read_geometry(True))
         return H
 
     def _r_hamiltonian_hsx(self, *args, **kwargs):
@@ -1218,9 +1218,8 @@ class fdfSileSiesta(SileSiesta):
         f = self._tofile(self.get('SystemLabel', default='siesta')) + '.HSX'
         H = None
         if isfile(f):
-            geom = self.read_geometry(True)
             H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
-            if not self._SpGeom_replace_geom(H, geom):
+            if not self._SpGeom_replace_geom(H, self.read_geometry(True)):
                 warn(SileWarning('H from {} will most likely have a wrong supercell specification.'.format(f)))
         return H
 
