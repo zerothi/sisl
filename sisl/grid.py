@@ -290,7 +290,7 @@ class Grid(SuperCellChild):
         """ Volume of the grids voxel elements """
         return self.sc.volume / self.size
 
-    def _copy_sub(self, n, axis):
+    def _copy_sub(self, n, axis, scale_geometry=False):
         # First calculate the new shape
         shape = list(self.shape)
         cell = np.copy(self.cell)
@@ -302,6 +302,13 @@ class Grid(SuperCellChild):
         grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
+        if scale_geometry and not self.geometry is None:
+            geom = self.geometry.copy()
+            fxyz = geom.fxyz.copy()
+            geom.set_supercell(grid.sc)
+            geom.xyz[:, :] = np.dot(fxyz, grid.sc.cell)
+            grid.set_geometry(geom)
+
         return grid
 
     def cross_section(self, idx, axis):
@@ -331,7 +338,7 @@ class Grid(SuperCellChild):
         axis : int
             unit-cell direction to sum across
         """
-        grid = self._copy_sub(1, axis)
+        grid = self._copy_sub(1, axis, scale_geometry=True)
         # Calculate sum (retain dimensions)
         np.sum(self.grid, axis=axis, keepdims=True, out=grid.grid)
         return grid
@@ -351,7 +358,7 @@ class Grid(SuperCellChild):
         --------
         numpy.average : for details regarding the `weights` argument
         """
-        grid = self._copy_sub(1, axis)
+        grid = self._copy_sub(1, axis, scale_geometry=True)
 
         if weights is None:
             # Calculate sum (retain dimensions)
@@ -434,7 +441,20 @@ class Grid(SuperCellChild):
         ValueError : if the length of the indices is 0
         """
         idx = _a.asarrayi(idx).ravel()
-        grid = self._copy_sub(len(idx), axis)
+        shift_geometry = False
+        if len(idx) > 1:
+            if np.all(np.diff(idx) == 1):
+                shift_geometry = not self.geometry is None
+
+        if shift_geometry:
+            grid = self._copy_sub(len(idx), axis)
+            min_xyz = self.dcell[axis, :] * idx[0]
+            # Now shift the geometry according to what is retained
+            geom = self.geometry.translate(-min_xyz)
+            geom.set_supercell(grid.sc)
+            grid.set_geometry(geom)
+        else:
+            grid = self._copy_sub(len(idx), axis, scale_geometry=True)
 
         # Remove the indices
         # First create the opposite, index
