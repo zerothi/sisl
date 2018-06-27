@@ -1046,6 +1046,7 @@ class SparseCSR(object):
             C0 = (nsum(nabs(D[sl, :]) <= atol, axis=1) == shape2).nonzero()[0]
             if len(C0) == 0:
                 continue
+
             # Remove all entries with 0 values
             del self[i, C[C0]]
 

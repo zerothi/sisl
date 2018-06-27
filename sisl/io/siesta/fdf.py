@@ -4,6 +4,7 @@ import os.path as osp
 import warnings
 from datetime import datetime
 import numpy as np
+import itertools
 
 # Import sile objects
 import sisl._array as _a
@@ -824,12 +825,17 @@ class fdfSileSiesta(SileSiesta):
         # We have the force constant matrix.
         # Now handle it...
         #  fc = (n_displ, 3, 2, na, 3)
+        #  FC = (n_displ, 3, na, 3)
         FC = np.average(fc, axis=2)
-        # Now create mass array
-        if len(self.get('AtomicMass', default=[])) > 0:
-            warn(repr(self) + '.read_hessian(FC) does not implement reading atomic masses from fdf file.')
-        # Remove everything that has to do with floating orbitals (should limit the size)
+
+        # First we need to create the geometry (without the floating atoms)
         geom = self.read_geometry()
+        # Figure out the "original" periodic directions
+        periodic = geom.nsc > 1
+
+        # Cut-off too small values
+        fc_cut = kwargs.get('cutoff_fc', 0.)
+        FC = np.where(np.abs(FC) <= fc_cut, 0, FC)
 
         # Convert the geometry to contain 3 orbitals per atom
         R = kwargs.get('cutoff_dist', -1.)
@@ -840,22 +846,86 @@ class fdfSileSiesta(SileSiesta):
                 new_atom = Atom(atom.Z, orbs, tag=atom.tag)
                 geom.atoms.replace(atom, new_atom)
 
+        # Remove ghost-atoms or atoms with 0 mass!
         idx = (geom.atoms.mass == 0.).nonzero()[0]
         FC = np.delete(FC, idx, axis=3)
         geom = geom.remove(idx)
-        mass = geom.atoms.mass
+        geom.set_nsc([1] * 3)
+        m = geom.atoms.mass
+
+        # Now create mass array
+        if len(self.get('AtomicMass', default=[])) > 0:
+            warn(repr(self) + '.read_hessian(FC) does not implement reading atomic masses from fdf file.')
 
         # Get list of FC atoms
-        fc_atoms = np.arange(self.get('MD.FCFirst', default=0), self.get('MD.FCLast', default=0) + 1) - 1
-        cuts = len(fc_atoms) // len(geom)
+        fc_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=0))
 
         # Now we can build the Hessian (it will always be real)
-        big_geom = geom.repeat(3, 0)
-        big_geom.set_supercell(geom.sc.copy())
-        big_geom.xyz[:, :] = np.repeat(geom.xyz, 3, 0)
-        H = Hessian(big_geom)
+        H = Hessian(geom)
+        fc_na = len(fc_atoms)
+        na = len(geom)
 
-        raise NotImplementedError('Currently read_hessian does not work')
+        # Populate it!
+        xyz_xyz = itertools.product([0, 1, 2], [0, 1, 2])
+
+        supercell = _a.arrayi(kwargs.get('supercell', (1, 1, 1)))
+        if np.all(supercell == 1):
+            all_idx = _a.arangei(len(geom))
+            for ia, fia in enumerate(fc_atoms):
+                if R > 0:
+                    # find distances between the other atoms to cut-off the distance
+                    idx = np.delete(all_idx, geom.close(fia, R=R, idx=fc_atoms))
+                    FC[ia, :, idx, :] = 0.
+                for ja, fja in enumerate(fc_atoms):
+                    for i, j in xyz_xyz:
+                        H[ia*3+i, ja*3+j] = (FC[ia, i, fja, j] + FC[ja, j, fia, i]) / (4 * m[fia] * m[fja]) ** 0.5
+
+                # This shouldn't be too expensive as we can easily remove them
+                H.eliminate_zeros()
+        else:
+            # We have an actual supercell. Lets try and fix it.
+            # First lets recreate the smallest geometry
+            sc = geom.sc.cell.copy()
+            sc[0, :] /= supercell[0]
+            sc[1, :] /= supercell[1]
+            sc[2, :] /= supercell[2]
+
+            # Ensure nsc is at least an odd number, later down we will symmetrize the FC matrix
+            sc = SuperCell(sc, nsc=supercell + (supercell + 1) % 2)
+            geom_small = Geometry(geom.xyz[fc_atoms], geom.atoms[fc_atoms], sc)
+
+            # Now we need to figure out how the atoms are laid out.
+            # It *MUST* either be repeated or tiled (preferentially tiled).
+
+            # Convert the big geometry's coordinates to fractional coordinates of the  small unit-cell.
+            isc_xyz = np.dot(geom.xyz, geom_small.sc.icell.T) - np.tile(geom_small.fxyz, (np.product(supercell), 1))
+
+            if np.any(np.diff(fc_atoms) != 1):
+                raise SislError(repr(self) + '.read_hessian requires the FC atoms to be consecutive!')
+
+            # Now figure out the order of tiling
+            axis_tiling = []
+            offset = len(geom_small)
+            for _ in (supercell > 1).nonzero()[0]:
+                first_isc = (np.around(isc_xyz[fc_atoms + offset, :]) == 1.).sum(0)
+                axis_tiling.append(np.argmax(first_isc))
+                # Fix the offset
+                offset *= supercell[axis_tiling[-1]]
+
+            # Now we have the tiling operation, check it sort of matches
+            geom_tile = geom_small.copy()
+            for axis in axis_tiling:
+                geom_tile = geom_tile.tile(supercell[axis], axis)
+
+            # Proximity check of 0.01 Ang (TODO add this as an argument)
+            if not np.allclose(geom_tile.xyz, geom.xyz, rtol=0, atol=0.01):
+                raise SislError(repr(self) + '.read_hessian could not figure out the tiling method for the supercell')
+
+            # Now we have the order of the operations
+            # First ensure we have an uneven supercell
+            raise NotImplementedError(repr(self) + '.read_hessian currently does not support super-cell Hessians')
+
+        return H
 
     def read_geometry(self, output=False, *args, **kwargs):
         """ Returns Geometry object by reading fdf or Siesta output related files.
