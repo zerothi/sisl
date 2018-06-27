@@ -1026,6 +1026,8 @@ class SparseCSR(object):
         atol : float, optional
             absolute tolerance below this value will be considered 0.
         """
+        shape2 = self.shape[2]
+
         ptr = self.ptr.view()
         ncol = self.ncol.view()
         col = self.col.view()
@@ -1034,21 +1036,31 @@ class SparseCSR(object):
         # Get short-hand
         nsum = np.sum
         nabs = np.abs
-        shape2 = self.shape[2]
+        arangei = _a.arangei
+
+        # Fast check to see for return (skips loop)
+        idx = array_arange(ptr[:-1], n=ncol)
+        if (nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2).nonzero()[0].sum() == 0:
+            return
+
         for i in range(self.shape[0]):
 
             # Create short-hand slice
-            sl = slice(ptr[i], ptr[i] + ncol[i], None)
+            idx = arangei(ptr[i], ptr[i] + ncol[i])
 
-            # Get current column entries for the row
-            C = col[sl]
             # Retrieve columns with zero values (summed over all elements)
-            C0 = (nsum(nabs(D[sl, :]) <= atol, axis=1) == shape2).nonzero()[0]
+            C0 = (nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2).nonzero()[0]
             if len(C0) == 0:
                 continue
 
             # Remove all entries with 0 values
-            del self[i, C[C0]]
+            del self[i, col[idx[C0]]]
+
+            # Since some elements may be deleted we need to ensure we have them all
+            ptr = self.ptr.view()
+            ncol = self.ncol.view()
+            col = self.col.view()
+            D = self._D.view()
 
     def copy(self, dims=None, dtype=None):
         """ Returns an exact copy of the sparse matrix
