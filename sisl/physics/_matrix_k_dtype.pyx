@@ -5,7 +5,7 @@ import numpy as np
 cimport numpy as np
 from scipy.sparse import csr_matrix
 
-from sisl._indices cimport index_sorted
+from sisl._indices cimport _index_sorted
 from sisl._sparse import fold_csr_matrix
 
 __all__ = ['_k_R_csr_f32', '_k_R_csr_f64', '_k_R_csr_c64', '_k_R_csr_c128',
@@ -54,7 +54,7 @@ def _k_R_csr_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             c = col[ind] % nr
-            s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+            s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -88,7 +88,7 @@ def _k_R_csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             c = col[ind] % nr
-            s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+            s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -123,7 +123,7 @@ def _k_R_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             c = col[ind] % nr
-            s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+            s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -158,7 +158,7 @@ def _k_R_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             c = col[ind] % nr
-            s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+            s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))

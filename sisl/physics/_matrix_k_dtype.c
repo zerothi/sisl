@@ -2164,7 +2164,7 @@ static PyTypeObject *__pyx_ptype_5numpy_ufunc = 0;
 static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, char *, char *, int *); /*proto*/
 
 /* Module declarations from 'sisl._indices' */
-static int (*__pyx_f_4sisl_8_indices_index_sorted)(__Pyx_memviewslice const , int const ); /*proto*/
+static int (*__pyx_f_4sisl_8_indices__index_sorted)(__Pyx_memviewslice const , int const ); /*proto*/
 
 /* Module declarations from 'sisl.physics._matrix_k_dtype' */
 static PyTypeObject *__pyx_array_type = 0;
@@ -4044,7 +4044,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_16_k_R_csr_f32(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -4057,7 +4057,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_16_k_R_csr_f32(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -4066,7 +4066,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_16_k_R_csr_f32(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":57
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
  * 
  */
@@ -4094,14 +4094,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_16_k_R_csr_f32(CYTHON
     __PYX_ERR(0, 57, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":58
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -4695,7 +4695,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_18_k_R_csr_f32(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -4708,7 +4708,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_18_k_R_csr_f32(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -4717,7 +4717,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_18_k_R_csr_f32(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":57
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
  * 
  */
@@ -4745,14 +4745,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_18_k_R_csr_f32(CYTHON
     __PYX_ERR(0, 57, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":58
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -5346,7 +5346,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_20_k_R_csr_f32(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -5359,7 +5359,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_20_k_R_csr_f32(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -5368,7 +5368,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_20_k_R_csr_f32(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":57
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
  * 
  */
@@ -5396,14 +5396,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_20_k_R_csr_f32(CYTHON
     __PYX_ERR(0, 57, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":58
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -5997,7 +5997,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_22_k_R_csr_f32(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -6010,7 +6010,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_22_k_R_csr_f32(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -6019,7 +6019,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_22_k_R_csr_f32(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":57
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]
  * 
  */
@@ -6047,14 +6047,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_22_k_R_csr_f32(CYTHON
     __PYX_ERR(0, 57, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":58
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <float> D[ind, idx]             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -7465,7 +7465,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_26_k_R_csr_f64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -7478,7 +7478,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_26_k_R_csr_f64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -7487,7 +7487,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_26_k_R_csr_f64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":91
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
  * 
  */
@@ -7515,14 +7515,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_26_k_R_csr_f64(CYTHON
     __PYX_ERR(0, 91, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":92
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -8116,7 +8116,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_28_k_R_csr_f64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -8129,7 +8129,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_28_k_R_csr_f64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -8138,7 +8138,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_28_k_R_csr_f64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":91
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
  * 
  */
@@ -8166,14 +8166,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_28_k_R_csr_f64(CYTHON
     __PYX_ERR(0, 91, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":92
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -8767,7 +8767,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_30_k_R_csr_f64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -8780,7 +8780,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_30_k_R_csr_f64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -8789,7 +8789,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_30_k_R_csr_f64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":91
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
  * 
  */
@@ -8817,14 +8817,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_30_k_R_csr_f64(CYTHON
     __PYX_ERR(0, 91, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":92
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -9418,7 +9418,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_32_k_R_csr_f64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -9431,7 +9431,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_32_k_R_csr_f64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -9440,7 +9440,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_32_k_R_csr_f64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":91
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]
  * 
  */
@@ -9468,14 +9468,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_32_k_R_csr_f64(CYTHON
     __PYX_ERR(0, 91, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":92
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] += <double> D[ind, idx]             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -11006,7 +11006,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_36_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -11019,7 +11019,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_36_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -11028,7 +11028,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_36_k_R_csr_c64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":126
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -11056,14 +11056,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_36_k_R_csr_c64(CYTHON
     __PYX_ERR(0, 126, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":127
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -11707,7 +11707,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_38_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -11720,7 +11720,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_38_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -11729,7 +11729,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_38_k_R_csr_c64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":126
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -11757,14 +11757,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_38_k_R_csr_c64(CYTHON
     __PYX_ERR(0, 126, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":127
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -12408,7 +12408,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_40_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -12421,7 +12421,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_40_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -12430,7 +12430,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_40_k_R_csr_c64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":126
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -12458,14 +12458,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_40_k_R_csr_c64(CYTHON
     __PYX_ERR(0, 126, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":127
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -13110,7 +13110,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_42_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -13123,7 +13123,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_42_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -13132,7 +13132,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_42_k_R_csr_c64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":126
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -13160,14 +13160,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_42_k_R_csr_c64(CYTHON
     __PYX_ERR(0, 126, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":127
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -13812,7 +13812,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_44_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -13825,7 +13825,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_44_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -13834,7 +13834,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_44_k_R_csr_c64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":126
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -13862,14 +13862,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_44_k_R_csr_c64(CYTHON
     __PYX_ERR(0, 126, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":127
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -14514,7 +14514,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_46_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -14527,7 +14527,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_46_k_R_csr_c64(CYTHON
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -14536,7 +14536,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_46_k_R_csr_c64(CYTHON
       /* "sisl/physics/_matrix_k_dtype.pyx":126
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -14564,14 +14564,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_46_k_R_csr_c64(CYTHON
     __PYX_ERR(0, 126, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":127
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -16111,7 +16111,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_50_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -16124,7 +16124,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_50_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -16133,7 +16133,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_50_k_R_csr_c128(CYTHO
       /* "sisl/physics/_matrix_k_dtype.pyx":161
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -16161,14 +16161,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_50_k_R_csr_c128(CYTHO
     __PYX_ERR(0, 161, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":162
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -16812,7 +16812,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_52_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -16825,7 +16825,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_52_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -16834,7 +16834,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_52_k_R_csr_c128(CYTHO
       /* "sisl/physics/_matrix_k_dtype.pyx":161
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -16862,14 +16862,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_52_k_R_csr_c128(CYTHO
     __PYX_ERR(0, 161, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":162
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -17513,7 +17513,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_54_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -17526,7 +17526,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_54_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -17535,7 +17535,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_54_k_R_csr_c128(CYTHO
       /* "sisl/physics/_matrix_k_dtype.pyx":161
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -17563,14 +17563,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_54_k_R_csr_c128(CYTHO
     __PYX_ERR(0, 161, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":162
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -18214,7 +18214,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_56_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -18227,7 +18227,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_56_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -18236,7 +18236,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_56_k_R_csr_c128(CYTHO
       /* "sisl/physics/_matrix_k_dtype.pyx":161
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -18264,14 +18264,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_56_k_R_csr_c128(CYTHO
     __PYX_ERR(0, 161, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":162
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -18916,7 +18916,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_58_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -18929,7 +18929,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_58_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -18938,7 +18938,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_58_k_R_csr_c128(CYTHO
       /* "sisl/physics/_matrix_k_dtype.pyx":161
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -18966,14 +18966,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_58_k_R_csr_c128(CYTHO
     __PYX_ERR(0, 161, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":162
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -19618,7 +19618,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_60_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -19631,7 +19631,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_60_k_R_csr_c128(CYTHO
  *     for r in range(nr):
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -19640,7 +19640,7 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_60_k_R_csr_c128(CYTHO
       /* "sisl/physics/_matrix_k_dtype.pyx":161
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)             # <<<<<<<<<<<<<<
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
  * 
  */
@@ -19668,14 +19668,14 @@ static PyObject *__pyx_pf_4sisl_7physics_15_matrix_k_dtype_60_k_R_csr_c128(CYTHO
     __PYX_ERR(0, 161, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_k_dtype.pyx":162
  *             c = col[ind] % nr
- *             s_idx = index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
  *             v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -48930,7 +48930,7 @@ static int __pyx_pymod_exec__matrix_k_dtype(PyObject *__pyx_pyinit_module)
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   __pyx_t_1 = __Pyx_ImportModule("sisl._indices"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "index_sorted", (void (**)(void))&__pyx_f_4sisl_8_indices_index_sorted, "int (__Pyx_memviewslice const , int const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "_index_sorted", (void (**)(void))&__pyx_f_4sisl_8_indices__index_sorted, "int (__Pyx_memviewslice const , int const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
@@ -48954,7 +48954,7 @@ static int __pyx_pymod_exec__matrix_k_dtype(PyObject *__pyx_pyinit_module)
  * cimport numpy as np
  * from scipy.sparse import csr_matrix             # <<<<<<<<<<<<<<
  * 
- * from sisl._indices cimport index_sorted
+ * from sisl._indices cimport _index_sorted
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -48972,7 +48972,7 @@ static int __pyx_pymod_exec__matrix_k_dtype(PyObject *__pyx_pyinit_module)
 
   /* "sisl/physics/_matrix_k_dtype.pyx":9
  * 
- * from sisl._indices cimport index_sorted
+ * from sisl._indices cimport _index_sorted
  * from sisl._sparse import fold_csr_matrix             # <<<<<<<<<<<<<<
  * 
  * __all__ = ['_k_R_csr_f32', '_k_R_csr_f64', '_k_R_csr_c64', '_k_R_csr_c128',

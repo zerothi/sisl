@@ -7,6 +7,7 @@ import numpy as np
 import sisl._array as _a
 from .atom import Atom
 from .messages import warn, SislError, SislWarning, tqdm_eta
+from ._indices import index_sorted
 from ._help import get_dtype
 from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
@@ -414,6 +415,47 @@ class _SparseGeometry(object):
             self._csr.align(other)
         else:
             self._csr.align(other._csr)
+
+    def make_hermitian(self):
+        """ Ensures the matrix is Hermitian by doing an *in-place* symmetrization """
+        geom = self.geometry
+        na = geom.na
+        sc = geom.sc
+        arangei = _a.arangei
+
+        # We finalize to make searching faster
+        self.finalize()
+
+        # Loop on all atoms
+        ptr = self._csr.ptr
+        ncol = self._csr.ncol
+        col = self._csr.col
+        D = self._csr._D
+
+        for ia in range(self.shape[0]):
+            if ncol[ia] == 0:
+                continue
+
+            c = col[ptr[ia]:ptr[ia] + ncol[ia]]
+            ja = c % na
+            h_col = (sc.sc_index(-geom.a2isc(c)) * na + ia).astype(np.int32, copy=False)
+            h_idx = arangei(len(h_col))
+            # Now we have the Hermitian column indices
+            for i, j in enumerate(ja):
+                idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
+                if idx < 0:
+                    self[j, h_col[i]] = 0.
+                    self.finalize()
+                    ptr = self._csr.ptr
+                    ncol = self._csr.ncol
+                    col = self._csr.col
+                    D = self._csr._D
+                    idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
+                h_idx[i] = ptr[j] + idx
+            # Now make it hermitian
+            idx = slice(ptr[ia], ptr[ia] + ncol[ia])
+            D[idx, :] = (D[idx, :] + D[h_idx, :].conj()) / 2
+            D[h_idx, :] = D[idx, :]
 
     def eliminate_zeros(self, atol=0.):
         """ Removes all zero elements from the sparse matrix
@@ -1321,6 +1363,48 @@ class SparseOrbital(_SparseGeometry):
             return self._csr.nonzero(only_col=only_col)
         row = self.geometry.a2o(atom, all=True)
         return self._csr.nonzero(row=row, only_col=only_col)
+
+    def make_hermitian(self):
+        """ Ensures the matrix is Hermitian by doing an *in-place* symmetrization """
+        geom = self.geometry
+        no = geom.no
+        sc = geom.sc
+        arangei = _a.arangei
+
+        # We finalize to make searching faster
+        self.finalize()
+
+        # Loop on all orbitals
+        ptr = self._csr.ptr.view()
+        ncol = self._csr.ncol.view()
+        col = self._csr.col.view()
+        D = self._csr._D.view()
+
+        for io in range(self.shape[0]):
+            if ncol[io] == 0:
+                continue
+
+            c = col[ptr[io]:ptr[io] + ncol[io]]
+            jo = c % no
+            h_col = (sc.sc_index(-geom.o2isc(c)) * no + io).astype(np.int32, copy=False)
+            h_idx = arangei(len(h_col))
+            # Now we have the Hermitian column indices
+            for i, j in enumerate(jo):
+                idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
+                if idx < 0:
+                    # Add a new element
+                    self[j, h_col[i]] = 0.
+                    self.finalize()
+                    ptr = self._csr.ptr.view()
+                    ncol = self._csr.ncol.view()
+                    col = self._csr.col.view()
+                    D = self._csr._D.view()
+                    idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
+                h_idx[i] = ptr[j] + idx
+            # Now make it hermitian
+            idx = slice(ptr[io], ptr[io] + ncol[io])
+            D[idx, :] = (D[idx, :] + D[h_idx, :].conj()) / 2
+            D[h_idx, :] = D[idx, :]
 
     def iter_nnz(self, atom=None, orbital=None):
         """ Iterations of the non-zero elements

@@ -5,7 +5,7 @@ import numpy as np
 cimport numpy as np
 from scipy.sparse import csr_matrix
 
-from sisl._indices cimport index_sorted
+from sisl._indices cimport _index_sorted
 from sisl._sparse import fold_csr_matrix_nc
 
 __all__ = ['_k_R_nc_csr_c64', '_k_R_nc_csr_c128',
@@ -53,7 +53,7 @@ def _k_R_nc_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             c = (col[ind] % nr) * 2
             ph = phases[col[ind] / nr]
-            s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+            s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
             v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
             v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
@@ -97,7 +97,7 @@ def _k_R_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             c = (col[ind] % nr) * 2
             ph = phases[col[ind] / nr]
-            s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+            s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
             v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
             v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()

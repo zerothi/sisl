@@ -476,9 +476,32 @@ cdef inline int in_1d(const int[::1] array, const int v) nogil:
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-@cython.initializedcheck(False)
-cdef int index_sorted(const int[::1] a, const int v) nogil:
+def index_sorted(np.ndarray[np.int32_t, ndim=1, mode='c'] a, const int v):
     """ Return index for the value v in a sorted array, otherwise return -1
+
+    Parameters
+    ----------
+    a : int[::1]
+        sorted array to check
+    v : int
+        value to find
+
+    Returns
+    -------
+    int : -1 if not found, otherwise the first index in `a` that is equal to `v`
+    """
+    # Ensure contiguous arrays
+    cdef int[::1] A = a
+    return _index_sorted(A, v)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef int _index_sorted(const int[::1] a, const int v) nogil:
+    """ Return index for the value v in a sorted array, otherwise return -1
+
+    This implements a binary search method
 
     Parameters
     ----------
@@ -491,12 +514,26 @@ cdef int index_sorted(const int[::1] a, const int v) nogil:
     -------
     int : 0 if not unique, otherwise 1.
     """
-    # Ensure contiguous arrays
-    cdef int n_a = a.shape[0]
-    cdef int i
-    for i in range(n_a):
-        if a[i] == v:
+    cdef int i, L, R
+
+    # Simple binary search
+    L = 0
+    R = a.shape[0] - 1
+    if v < a[L]:
+        return -1
+    if v > a[R]:
+        return -1
+
+    while L < R:
+        i = (L + R) / 2
+        if a[i] < v:
+            L = i + 1
+        elif a[i] > v:
+            R = i - 1
+        elif a[i] == v:
             return i
+    if a[R] == v:
+        return R
     return -1
 
 

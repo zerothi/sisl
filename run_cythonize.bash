@@ -22,5 +22,6 @@ do
     f=$(basename $file)
     pushd sisl/$d 2>/dev/null
     cythonize -a $f
+    [ $? -ne 0 ] && exit 1
     popd 2>/dev/null
 done

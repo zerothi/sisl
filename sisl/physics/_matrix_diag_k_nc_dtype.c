@@ -2158,7 +2158,7 @@ static PyTypeObject *__pyx_ptype_5numpy_ufunc = 0;
 static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, char *, char *, int *); /*proto*/
 
 /* Module declarations from 'sisl._indices' */
-static int (*__pyx_f_4sisl_8_indices_index_sorted)(__Pyx_memviewslice const , int const ); /*proto*/
+static int (*__pyx_f_4sisl_8_indices__index_sorted)(__Pyx_memviewslice const , int const ); /*proto*/
 
 /* Module declarations from 'sisl.physics._matrix_diag_k_nc_dtype' */
 static PyTypeObject *__pyx_array_type = 0;
@@ -4118,7 +4118,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_8_diag_k_R_nc
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -4131,7 +4131,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_8_diag_k_R_nc
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -4140,7 +4140,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_8_diag_k_R_nc
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":55
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -4168,14 +4168,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_8_diag_k_R_nc
     __PYX_ERR(0, 55, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":56
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -4188,7 +4188,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":57
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -4856,7 +4856,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_10_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -4869,7 +4869,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_10_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -4878,7 +4878,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_10_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":55
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -4906,14 +4906,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_10_diag_k_R_n
     __PYX_ERR(0, 55, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":56
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -4926,7 +4926,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":57
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -5594,7 +5594,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_12_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -5607,7 +5607,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_12_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -5616,7 +5616,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_12_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":55
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -5644,14 +5644,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_12_diag_k_R_n
     __PYX_ERR(0, 55, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":56
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -5664,7 +5664,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":57
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -6333,7 +6333,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_14_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -6346,7 +6346,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_14_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -6355,7 +6355,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_14_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":55
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -6383,14 +6383,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_14_diag_k_R_n
     __PYX_ERR(0, 55, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":56
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -6404,7 +6404,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_27)), ((float)__Pyx_CIMAG(__pyx_t_27)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":57
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -7072,7 +7072,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_16_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -7085,7 +7085,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_16_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -7094,7 +7094,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_16_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":55
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -7122,14 +7122,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_16_diag_k_R_n
     __PYX_ERR(0, 55, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":56
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -7142,7 +7142,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":57
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -7811,7 +7811,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_18_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -7824,7 +7824,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_18_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -7833,7 +7833,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_18_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":55
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -7861,14 +7861,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_18_diag_k_R_n
     __PYX_ERR(0, 55, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":56
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -7882,7 +7882,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_27)), ((float)__Pyx_CIMAG(__pyx_t_27)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":57
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <float complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -9445,7 +9445,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_22_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -9458,7 +9458,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_22_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -9467,7 +9467,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_22_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":94
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -9495,14 +9495,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_22_diag_k_R_n
     __PYX_ERR(0, 94, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":95
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -9515,7 +9515,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":96
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -10183,7 +10183,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_24_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -10196,7 +10196,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_24_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -10205,7 +10205,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_24_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":94
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -10233,14 +10233,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_24_diag_k_R_n
     __PYX_ERR(0, 94, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":95
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -10253,7 +10253,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":96
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -10921,7 +10921,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_26_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -10934,7 +10934,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_26_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -10943,7 +10943,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_26_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":94
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -10971,14 +10971,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_26_diag_k_R_n
     __PYX_ERR(0, 94, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":95
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -10991,7 +10991,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":96
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -11659,7 +11659,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_28_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -11672,7 +11672,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_28_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -11681,7 +11681,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_28_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":94
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -11709,14 +11709,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_28_diag_k_R_n
     __PYX_ERR(0, 94, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":95
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -11729,7 +11729,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":96
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -12398,7 +12398,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_30_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -12411,7 +12411,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_30_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -12420,7 +12420,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_30_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":94
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -12448,14 +12448,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_30_diag_k_R_n
     __PYX_ERR(0, 94, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":95
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -12469,7 +12469,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_27)), ((double)__Pyx_CIMAG(__pyx_t_27)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":96
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -13137,7 +13137,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_32_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  */
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
@@ -13150,7 +13150,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_32_diag_k_R_n
  *         rr = r * 2
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  */
       __pyx_t_17 = __pyx_v_ind;
@@ -13159,7 +13159,7 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_32_diag_k_R_n
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":94
  *         for ind in range(ptr[r], ptr[r] + ncol[r]):
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  */
@@ -13187,14 +13187,14 @@ static PyObject *__pyx_pf_4sisl_7physics_23_matrix_diag_k_nc_dtype_32_diag_k_R_n
     __PYX_ERR(0, 94, __pyx_L1_error)
 }
 
-__pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
+__pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":95
  *             c = (col[ind] % nr) * 2
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -13207,7 +13207,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices_index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_v_vv = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
       /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":96
- *             s_idx = index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
+ *             s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *             vv = <double complex> (phases[col[ind] / nr] * D[ind, idx])
  *             v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv             # <<<<<<<<<<<<<<
  *             v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
@@ -38006,7 +38006,7 @@ static int __pyx_pymod_exec__matrix_diag_k_nc_dtype(PyObject *__pyx_pyinit_modul
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   __pyx_t_1 = __Pyx_ImportModule("sisl._indices"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "index_sorted", (void (**)(void))&__pyx_f_4sisl_8_indices_index_sorted, "int (__Pyx_memviewslice const , int const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "_index_sorted", (void (**)(void))&__pyx_f_4sisl_8_indices__index_sorted, "int (__Pyx_memviewslice const , int const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
@@ -38030,7 +38030,7 @@ static int __pyx_pymod_exec__matrix_diag_k_nc_dtype(PyObject *__pyx_pyinit_modul
  * cimport numpy as np
  * from scipy.sparse import csr_matrix             # <<<<<<<<<<<<<<
  * 
- * from sisl._indices cimport index_sorted
+ * from sisl._indices cimport _index_sorted
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -38048,7 +38048,7 @@ static int __pyx_pymod_exec__matrix_diag_k_nc_dtype(PyObject *__pyx_pyinit_modul
 
   /* "sisl/physics/_matrix_diag_k_nc_dtype.pyx":9
  * 
- * from sisl._indices cimport index_sorted
+ * from sisl._indices cimport _index_sorted
  * from sisl._sparse import fold_csr_diagonal_nc             # <<<<<<<<<<<<<<
  * 
  * __all__ = ['_diag_k_R_nc_csr_c64', '_diag_k_R_nc_csr_c128',

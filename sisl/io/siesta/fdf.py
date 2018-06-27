@@ -4,10 +4,10 @@ import os.path as osp
 import warnings
 from datetime import datetime
 import numpy as np
-import itertools
 
 # Import sile objects
 import sisl._array as _a
+from sisl._indices import indices_only
 from sisl._help import _str
 from sisl.utils.ranges import list2str
 from sisl.messages import SislError, info, warn
@@ -786,8 +786,7 @@ class fdfSileSiesta(SileSiesta):
             # TODO check whether some of the atoms are "ghost" atoms
             # TODO Most probably these should not be taken into account...?
             if kwargs.get('correct_fc', True):
-                for i in range(fc_first - 1, fc_last):
-                    j = i - fc_first + 1
+                for j, i in enumerate(range(fc_first - 1, fc_last)):
                     fc[j, :, :, i, :] -= fc[j, :, :, :, :].sum(2)
             return fc
         return None
@@ -819,14 +818,15 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_hessian_fc(self, *args, **kwargs):
-        fc = self._r_force_constant_fc(*args, **kwargs)
-        if fc is None:
+        FC = self._r_force_constant_fc(*args, **kwargs)
+        if FC is None:
             return None
+
         # We have the force constant matrix.
         # Now handle it...
-        #  fc = (n_displ, 3, 2, na, 3)
-        #  FC = (n_displ, 3, na, 3)
-        FC = np.average(fc, axis=2)
+        #  FC(OLD) = (n_displ, 3, 2, na, 3)
+        #  FC(NEW) = (n_displ, 3, na, 3)
+        FC = np.average(FC, axis=2)
 
         # First we need to create the geometry (without the floating atoms)
         geom = self.read_geometry()
@@ -835,7 +835,7 @@ class fdfSileSiesta(SileSiesta):
 
         # Cut-off too small values
         fc_cut = kwargs.get('cutoff_fc', 0.)
-        FC = np.where(np.abs(FC) <= fc_cut, 0, FC)
+        FC = np.where(np.abs(FC) > fc_cut, FC, 0.)
 
         # Convert the geometry to contain 3 orbitals per atom
         R = kwargs.get('cutoff_dist', -1.)
@@ -851,7 +851,6 @@ class fdfSileSiesta(SileSiesta):
         FC = np.delete(FC, idx, axis=3)
         geom = geom.remove(idx)
         geom.set_nsc([1] * 3)
-        m = geom.atoms.mass
 
         # Now create mass array
         if len(self.get('AtomicMass', default=[])) > 0:
@@ -861,28 +860,43 @@ class fdfSileSiesta(SileSiesta):
         fc_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=0))
 
         # Now we can build the Hessian (it will always be real)
-        H = Hessian(geom)
-        fc_na = len(fc_atoms)
         na = len(geom)
+        na_fc = len(fc_atoms)
+
+        # Flags for all nditer calls
+        nditer_kwargs = {'flags': ['buffered'], 'op_flags': ['readonly']}
 
         # Populate it!
-        xyz_xyz = itertools.product([0, 1, 2], [0, 1, 2])
+        xyz_xyz = _a.arangei(3).reshape(-1, 1)
+        xyz_xyz = np.nditer([xyz_xyz, xyz_xyz.T], **nditer_kwargs)
 
         supercell = _a.arrayi(kwargs.get('supercell', (1, 1, 1)))
+        # Ensure 0's gets translated to 1's
+        supercell = np.where(supercell > 0, supercell, 1)
         if np.all(supercell == 1):
-            all_idx = _a.arangei(len(geom))
+            H = Hessian(geom)
+
+            # Instead of doing the sqrt in all H = FC (below) we do it here
+            m = geom.atoms.mass ** 0.5
+
+            j_fc_atoms = fc_atoms.view()
+            idx = _a.arangei(len(fc_atoms))
             for ia, fia in enumerate(fc_atoms):
+
                 if R > 0:
                     # find distances between the other atoms to cut-off the distance
-                    idx = np.delete(all_idx, geom.close(fia, R=R, idx=fc_atoms))
-                    FC[ia, :, idx, :] = 0.
-                for ja, fja in enumerate(fc_atoms):
-                    for i, j in xyz_xyz:
-                        H[ia*3+i, ja*3+j] = (FC[ia, i, fja, j] + FC[ja, j, fia, i]) / (4 * m[fia] * m[fja]) ** 0.5
+                    idx = geom.close(fia, R=R, idx=fc_atoms)
+                    idx = indices_only(fc_atoms, idx)
+                    j_fc_atoms = fc_atoms[idx]
 
-                # This shouldn't be too expensive as we can easily remove them
-                H.eliminate_zeros()
+                for ja, fja in zip(idx, j_fc_atoms):
+                    M = 1 / (m[fia] * m[fja])
+                    for i, j in xyz_xyz:
+                        H[ia*3+i, ja*3+j] = FC[ia, i, fja, j] * M
+                    xyz_xyz.reset()
+
         else:
+
             # We have an actual supercell. Lets try and fix it.
             # First lets recreate the smallest geometry
             sc = geom.sc.cell.copy()
@@ -891,17 +905,21 @@ class fdfSileSiesta(SileSiesta):
             sc[2, :] /= supercell[2]
 
             # Ensure nsc is at least an odd number, later down we will symmetrize the FC matrix
-            sc = SuperCell(sc, nsc=supercell + (supercell + 1) % 2)
+            nsc = supercell + (supercell + 1) % 2
+            sc = SuperCell(sc, nsc=nsc)
             geom_small = Geometry(geom.xyz[fc_atoms], geom.atoms[fc_atoms], sc)
+            H = Hessian(geom_small)
+            # Instead of doing the sqrt in all H = FC (below) we do it here
+            m = geom_small.atoms.mass ** 0.5
 
             # Now we need to figure out how the atoms are laid out.
             # It *MUST* either be repeated or tiled (preferentially tiled).
 
-            # Convert the big geometry's coordinates to fractional coordinates of the  small unit-cell.
+            # Convert the big geometry's coordinates to fractional coordinates of the small unit-cell.
             isc_xyz = np.dot(geom.xyz, geom_small.sc.icell.T) - np.tile(geom_small.fxyz, (np.product(supercell), 1))
 
             if np.any(np.diff(fc_atoms) != 1):
-                raise SislError(repr(self) + '.read_hessian requires the FC atoms to be consecutive!')
+                raise SislError(repr(self) + '.read_hessian(FC) requires the FC atoms to be consecutive!')
 
             # Now figure out the order of tiling
             axis_tiling = []
@@ -912,6 +930,11 @@ class fdfSileSiesta(SileSiesta):
                 # Fix the offset
                 offset *= supercell[axis_tiling[-1]]
 
+            while len(axis_tiling) < 3:
+                for i in range(3):
+                    if not i in axis_tiling:
+                        axis_tiling.append(i)
+
             # Now we have the tiling operation, check it sort of matches
             geom_tile = geom_small.copy()
             for axis in axis_tiling:
@@ -919,11 +942,85 @@ class fdfSileSiesta(SileSiesta):
 
             # Proximity check of 0.01 Ang (TODO add this as an argument)
             if not np.allclose(geom_tile.xyz, geom.xyz, rtol=0, atol=0.01):
-                raise SislError(repr(self) + '.read_hessian could not figure out the tiling method for the supercell')
+                raise SislError(repr(self) + '.read_hessian(FC) could not figure out the tiling method for the supercell')
 
-            # Now we have the order of the operations
-            # First ensure we have an uneven supercell
-            raise NotImplementedError(repr(self) + '.read_hessian currently does not support super-cell Hessians')
+            # Convert the FC matrix to a "rollable" matrix
+            # This will make it easier to symmetrize
+            #  0. displaced atoms
+            #  1. x, y, z (displacements)
+            #  2. tile-axis_tiling[0]
+            #  3. tile-axis_tiling[1]
+            #  4. tile-axis_tiling[2]
+            #  5. na
+            #  6. x, y, z (force components)
+            FC.shape = (na_fc, 3, supercell[axis_tiling[0]], supercell[axis_tiling[1]], supercell[axis_tiling[2]], na_fc, 3)
+
+            if fc_atoms[0] != 0:
+                # TODO we could roll the axis such that the displaced atoms moves into the
+                # first elements
+                raise SislError(repr(self) + '.read_hessian(FC) requires the displaced atoms to start from 1!')
+
+            # Now swap the [2, 3, 4] dimensions so that we get in order of lattice vectors
+            sa = np.swapaxes
+            if axis_tiling[0] == 1:
+                if axis_tiling[1] == 2:
+                    # B, C, A
+                    FC = sa(sa(FC, 3, 4), 2, 3)
+                else:
+                    # B, A, C
+                    FC = sa(FC, 2, 3)
+            elif axis_tiling[0] == 2:
+                if axis_tiling[1] == 1:
+                    # C, B, A
+                    FC = sa(FC, 2, 4)
+                else:
+                    # C, A, B
+                    FC = sa(sa(FC, 2, 3), 3, 4)
+            else:
+                if axis_tiling[1] == 2:
+                    # A, C, B
+                    FC = sa(FC, 3, 4)
+
+            # Now axis_tiling has no meaning since we know supercell represents the axis_tiling
+            del axis_tiling
+
+            # Now convert the FC matrix to the Hessian matrix
+            def arai(nsc):
+                return _a.arangei(-nsc, nsc + 1)
+
+            # Now take all positive supercell connections (including inner cell)
+            nsc = H.geometry.nsc // 2
+            iter_nsc = np.nditer([arai(nsc[0]).reshape(-1, 1, 1),
+                                  arai(nsc[1]).reshape(1, -1, 1),
+                                  arai(nsc[2]).reshape(1, 1, -1)], **nditer_kwargs)
+
+            iter_fc_atoms = _a.arangei(len(fc_atoms))
+            iter_j_fc_atoms = iter_fc_atoms.view()
+
+            # When x, y, z are negative we simply look-up from the back of the array
+            # which is exactly what is required
+            isc_off = H.geometry.sc.isc_off
+            nxyz = H.geometry.no
+            dist = H.geometry.rij
+            na = H.geometry.na
+            for x, y, z in iter_nsc:
+                aoff = isc_off[x, y, z] * na
+                joff = aoff / na * nxyz
+                for ia in iter_fc_atoms:
+
+                    # Reduce second loop based on radius
+                    if R > 0:
+                        iter_j_fc_atoms = iter_fc_atoms[dist(ia, aoff + iter_fc_atoms) <= R]
+
+                    for ja in iter_j_fc_atoms:
+                        M = 1 / (m[ia] * m[ja])
+                        for i, j in xyz_xyz:
+                            H[ia*3+i, joff+ja*3+j] = FC[ia, i, x, y, z, ja, j] * M
+                        xyz_xyz.reset()
+
+        H.eliminate_zeros()
+        H.make_hermitian()
+        H.eliminate_zeros(fc_cut)
 
         return H
 

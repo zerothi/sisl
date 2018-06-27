@@ -569,6 +569,7 @@ class SuperCell(object):
             _assert(hsc[1], sc_off[:, 1])
             _assert(hsc[2], sc_off[:, 2])
             return self._isc_off[sc_off[:, 0], sc_off[:, 1], sc_off[:, 2]]
+
         elif isinstance(sc_off[0], (tuple, list)):
             # We are dealing with a list of lists
             sc_off = np.asarray(sc_off)
