@@ -1016,10 +1016,15 @@ class SparseCSR(object):
             return self.col[idx]
         return rows, self.col[idx]
 
-    def eliminate_zeros(self):
+    def eliminate_zeros(self, atol=0.):
         """ Remove all zero elememts from the sparse matrix
 
         This is an *in-place* operation
+
+        Parameters
+        ----------
+        atol : float, optional
+            absolute tolerance below this value will be considered 0.
         """
         ptr = self.ptr.view()
         ncol = self.ncol.view()
@@ -1029,6 +1034,7 @@ class SparseCSR(object):
         # Get short-hand
         nsum = np.sum
         nabs = np.abs
+        shape2 = self.shape[2]
         for i in range(self.shape[0]):
 
             # Create short-hand slice
@@ -1037,7 +1043,7 @@ class SparseCSR(object):
             # Get current column entries for the row
             C = col[sl]
             # Retrieve columns with zero values (summed over all elements)
-            C0 = (nsum(nabs(D[sl, :]), axis=1) == 0).nonzero()[0]
+            C0 = (nsum(nabs(D[sl, :]) <= atol, axis=1) == shape2).nonzero()[0]
             if len(C0) == 0:
                 continue
             # Remove all entries with 0 values

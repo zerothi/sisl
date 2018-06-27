@@ -79,21 +79,21 @@ class xsfSile(Sile):
             self._write(fmt_str.format(*convcell[i, :]))
 
     @Sile_fh_open
-    def write_geometry(self, geom, fmt='.8f', data=None):
+    def write_geometry(self, geometry, fmt='.8f', data=None):
         """ Writes the geometry to the contained file
 
         Parameters
         ----------
-        geom : Geometry
+        geometry : Geometry
            the geometry to be written
         fmt : str, optional
            used format for the precision of the data
-        data : (geom.na, 3), optional
+        data : (geometry.na, 3), optional
            auxiliary data associated with the geometry to be saved
            along side. Internally in XCrySDen this data is named *Forces*
         """
         self._step_md()
-        self.write_supercell(geom.sc, fmt)
+        self.write_supercell(geometry.sc, fmt)
 
         has_data = not data is None
         if has_data:
@@ -108,17 +108,20 @@ class xsfSile(Sile):
             self._write('PRIMCOORD\n')
         else:
             self._write('PRIMCOORD {}\n'.format(self._md_index))
-        self._write('{} {}\n'.format(len(geom), 1))
+        self._write('{} {}\n'.format(len(geometry), 1))
+
+        valid_Z = (geometry.atoms.Z > 0).nonzero()[0]
+        geometry = geometry.sub(valid_Z)
 
         if has_data:
             fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}   {{4:{0}}}  {{5:{0}}}  {{6:{0}}}\n'.format(fmt)
-            for ia in geom:
-                tmp = np.append(geom.xyz[ia, :], data[ia, :])
-                self._write(fmt_str.format(geom.atom[ia].Z, *tmp))
+            for ia in geometry:
+                tmp = np.append(geometry.xyz[ia, :], data[ia, :])
+                self._write(fmt_str.format(geometry.atom[ia].Z, *tmp))
         else:
             fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
-            for ia in geom:
-                self._write(fmt_str.format(geom.atom[ia].Z, *geom.xyz[ia, :]))
+            for ia in geometry:
+                self._write(fmt_str.format(geometry.atom[ia].Z, *geometry.xyz[ia, :]))
 
     @Sile_fh_open
     def read_geometry(self, data=False):

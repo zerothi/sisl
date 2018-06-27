@@ -415,12 +415,17 @@ class _SparseGeometry(object):
         else:
             self._csr.align(other._csr)
 
-    def eliminate_zeros(self):
+    def eliminate_zeros(self, atol=0.):
         """ Removes all zero elements from the sparse matrix
 
         This is an *in-place* operation.
+
+        Parameters
+        ----------
+        atol : float, optional
+            absolute tolerance below this value will be considered 0.
         """
-        self._csr.eliminate_zeros()
+        self._csr.eliminate_zeros(atol)
 
     # Create iterations on the non-zero elements
     def iter_nnz(self):

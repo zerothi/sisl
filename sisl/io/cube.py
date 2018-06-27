@@ -18,6 +18,43 @@ class cubeSile(Sile):
     """ CUBE file object """
 
     @Sile_fh_open
+    def write_supercell(self, sc, fmt='15.10e', size=None, origo=None,
+                        *args, **kwargs):
+        """ Writes `SuperCell` object attached to this grid
+
+        Parameters
+        ----------
+        sc : SuperCell
+            supercell to be written
+        fmt : str, optional
+            floating point format for stored values
+        size : (3, ), optional
+            shape of the stored grid (``[1, 1, 1]``)
+        origo : (3, ), optional
+            origo of the cell (``[0, 0, 0]``)
+        """
+        sile_raise_write(self)
+
+        # Write header
+        self._write('\n')
+        self._write('sisl --- CUBE file\n')
+
+        if size is None:
+            size = np.ones([3], np.int32)
+        if origo is None:
+            origo = sc.origo[:]
+
+        _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
+
+        # Add #-of atoms and origo
+        self._write(_fmt.format(0, *(origo * Ang2Bohr)))
+
+        # Write the cell and voxels
+        for ix in range(3):
+            dcell = sc.cell[ix, :] / size[ix] * Ang2Bohr
+            self._write(_fmt.format(size[ix], *dcell))
+
+    @Sile_fh_open
     def write_geometry(self, geometry, fmt='15.10e', size=None, origo=None,
             *args, **kwargs):
         """ Writes `Geometry` object attached to this grid
@@ -45,6 +82,9 @@ class cubeSile(Sile):
             origo = geometry.origo[:]
 
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
+
+        valid_Z = (geometry.atoms.Z > 0).nonzero()[0]
+        geometry = geometry.sub(valid_Z)
 
         # Add #-of atoms and origo
         self._write(_fmt.format(len(geometry), *(origo * Ang2Bohr)))
@@ -78,12 +118,10 @@ class cubeSile(Sile):
         # Check that we can write to the file
         sile_raise_write(self)
 
-        geom = grid.geometry
-        if geom is None:
-            geom = Geometry([0, 0, 0], Atom(-999), sc=grid.sc)
-
-        # Write the geometry
-        self.write_geometry(geom, size=grid.grid.shape, *args, **kwargs)
+        if grid.geometry is None:
+            self.write_supercell(grid.sc, size=grid.shape, *args, **kwargs)
+        else:
+            self.write_geometry(grid.geometry, size=grid.shape, *args, **kwargs)
 
         buffersize = kwargs.get('buffersize', min(6144, grid.grid.size))
         buffersize += buffersize % 6 # ensure multiple of 6
@@ -119,12 +157,15 @@ class cubeSile(Sile):
     def read_supercell(self, na=False):
         """ Returns `SuperCell` object from the CUBE file
 
-        If ``na=True`` it will return a tuple (na,SuperCell)
+        Parameters
+        ----------
+        na : bool, optional
+           whether to also return the number of atoms in the geometry
         """
         self.readline()  # header 1
         self.readline()  # header 2
         origo = self.readline().split() # origo
-        na = int(origo[0])
+        lna = int(origo[0])
         origo = np.array(list(map(float, origo[1:])), np.float64)
 
         cell = np.empty([3, 3], np.float64)
@@ -138,8 +179,8 @@ class cubeSile(Sile):
         cell = cell / Ang2Bohr
         origo = origo / Ang2Bohr
         if na:
-            return na, SuperCell(cell, origo=origo)
-        return 0, SuperCell(cell, origo=origo)
+            return lna, SuperCell(cell, origo=origo)
+        return SuperCell(cell, origo=origo)
 
     @Sile_fh_open
     def read_geometry(self):
@@ -147,7 +188,7 @@ class cubeSile(Sile):
         na, sc = self.read_supercell(na=True)
 
         if na == 0:
-            raise ValueError("There is no atoms in the CUBE file")
+            return None
 
         # Start reading the geometry
         xyz = np.empty([na, 3], np.float64)
@@ -160,8 +201,6 @@ class cubeSile(Sile):
             xyz[ia, 2] = float(tmp[4])
 
         xyz /= Ang2Bohr
-        if na == 1 and atom[0].Z == -999:
-            return None
         return Geometry(xyz, atom, sc=sc)
 
     @Sile_fh_open
@@ -178,6 +217,11 @@ class cubeSile(Sile):
             if not isinstance(imag, Grid):
                 imag = Grid.read(imag)
         geom = self.read_geometry()
+        if geom is None:
+            self.fh.seek(0)
+            sc = self.read_supercell()
+        else:
+            sc = geom.sc
 
         # Now seek behind to read grid sizes
         self.fh.seek(0)
@@ -196,7 +240,10 @@ class cubeSile(Sile):
         for i in range(na):
             self.readline()
 
-        grid = Grid(ngrid, dtype=np.float64, geometry=geom)
+        if geom is None:
+            grid = Grid(ngrid, dtype=np.float64, sc=sc)
+        else:
+            grid = Grid(ngrid, dtype=np.float64, geometry=geom)
         grid.grid.shape = (-1,)
 
         # TODO check performance of this

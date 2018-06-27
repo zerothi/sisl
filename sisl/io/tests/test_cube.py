@@ -7,7 +7,7 @@ from sisl.io.cube import *
 
 import numpy as np
 
-pytestmark = pytest.mark.io
+pytestmark = [pytest.mark.io, pytest.mark.cube]
 
 _dir = 'sisl/io'
 

@@ -26,10 +26,7 @@ class fcSileSiesta(SileSiesta):
         the displacements in reverse order (-x/+x vs. +x/-x). In this case one should reorder
         the elements like this:
 
-        >>> fc2 = fc.copy() # doctest: +SKIP
-        >>> for i in range(3): # doctest: +SKIP
-        ...    fc[:, i*2+1, :, :] = fc2[:, i*2, :, :] # doctest: +SKIP
-        ...    fc[:, i*2, :, :] = fc2[:, i*2+1, :, :] # doctest: +SKIP
+        >>> fc = np.roll(fc, 1, axis=2) # doctest: +SKIP
 
         Parameters
         ----------
@@ -45,8 +42,8 @@ class fcSileSiesta(SileSiesta):
 
         Returns
         -------
-        forces : numpy.ndarray with 4 dimensions containing all the forces. The 2nd dimensions contains
-                 -x/+x/-y/+y/-z/+z displacements.
+        forces : numpy.ndarray with 5 dimensions containing all the forces. The 2nd dimensions contains
+                 contains the directions, and 3rd dimensions contains -/+ displacements.
         """
         if displacement is None:
             line = self.readline().split()
@@ -60,7 +57,7 @@ class fcSileSiesta(SileSiesta):
         # we can convert using this scheme
         displacement = np.repeat(displacement, 6).ravel()
         displacement[1::2] *= -1
-        return self.read_force_constant(na) * displacement.reshape(1, 6, 1, 1)
+        return self.read_force_constant(na) * displacement.reshape(1, 3, 2, 1, 1)
 
     @Sile_fh_open
     def read_force_constant(self, na=None):
@@ -73,8 +70,8 @@ class fcSileSiesta(SileSiesta):
 
         Returns
         -------
-        force constants : numpy.ndarray with 4 dimensions containing all the forces. The 2nd dimensions contains
-                          -x/+x/-y/+y/-z/+z displacements.
+        force constants : numpy.ndarray with 5 dimensions containing all the forces. The 2nd dimensions contains
+                 contains the directions, and 3rd dimensions contains -/+ displacements.
         """
         # Force constants matrix
         line = self.readline().split()
@@ -100,7 +97,7 @@ class fcSileSiesta(SileSiesta):
             na = fc.size // 6 // 3
 
         # Correct shape of matrix
-        fc.shape = (-1, 6, na, 3)
+        fc.shape = (-1, 3, 2, na, 3)
 
         return fc
 

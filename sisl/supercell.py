@@ -270,9 +270,6 @@ class SuperCell(object):
         """ Internal indexed supercell ``[ia, ib, ic] == i`` """
         return self._isc_off
 
-    # Aliases
-    set_supercell = set_nsc
-
     def __iter__(self):
         """ Iterate the supercells and the indices of the supercells """
         for i, sc in enumerate(self.sc_off):

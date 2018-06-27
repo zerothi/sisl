@@ -369,6 +369,36 @@ class TestSparseCSR(object):
         assert setup.s1[1, 3] == 0
         setup.s1.empty()
 
+    @pytest.mark.only
+    def test_eliminate_zeros_tolerance(self, setup):
+        setup.s1[0, [1, 2, 3]] = 1
+        setup.s1[1, [1, 2, 3]] = 2
+        assert setup.s1.nnz == 6
+        setup.s1.eliminate_zeros()
+        assert setup.s1.nnz == 6
+        setup.s1.eliminate_zeros(1)
+        assert setup.s1.nnz == 3
+        assert setup.s1[0, 1] == 0
+        assert setup.s1[0, 2] == 0
+        assert setup.s1[0, 3] == 0
+        setup.s1.empty()
+
+    @pytest.mark.only
+    def test_eliminate_zeros_tolerance_ndim(self, setup):
+        s = SparseCSR((3, 3, 3))
+        s[1, [1, 2, 3]] = 0.1
+        s[1, [1, 2, 3], 1] = 0.05
+        assert s.nnz == 3
+        s.eliminate_zeros()
+        assert s.nnz == 3
+        s.eliminate_zeros(0.075)
+        assert s.nnz == 3
+        assert s[1, 1, 0] == 0.1
+        assert s[1, 1, 1] == 0.05
+        assert s[1, 1, 2] == 0.1
+        s.eliminate_zeros(0.2)
+        assert s.nnz == 0
+
     def test_same1(self, setup):
         setup.s1[0, [1, 2, 3]] = 1
         setup.s2[0, [1, 2, 3]] = (1, 1)

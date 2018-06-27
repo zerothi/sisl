@@ -9,7 +9,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._help import _str
 from sisl.utils.ranges import list2str
-from sisl.messages import info, warn
+from sisl.messages import SislError, info, warn
 from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
@@ -23,7 +23,7 @@ from .siesta_nc import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import orbindxSileSiesta
 from .xv import xvSileSiesta
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Orbital, Atom, SuperCell, Hessian
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances, str_spec
@@ -98,7 +98,7 @@ class fdfSileSiesta(SileSiesta):
             self._parent_fh.append(self.fh)
             self.fh = open(self._tofile(f), self._mode)
         else:
-            warn(repr(self) + ' is trying to include file: {} but the file seems not to exist? Disregard file!'.format(f))
+            warn(repr(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
 
     def _popfile(self):
         if len(self._parent_fh) > 0:
@@ -110,8 +110,8 @@ class fdfSileSiesta(SileSiesta):
     def _seek(self):
         """ Closes all files, and starts over from beginning """
         try:
-            while len(self._parent_fh) > 1:
-                self._popfile()
+            while self._popfile():
+                pass
             self.fh.seek(0)
         except:
             pass
@@ -756,11 +756,11 @@ class fdfSileSiesta(SileSiesta):
         ----------
         correct_fc : bool, optional
             correct the FC-matrix by forcing the force on the moved atom to be
-            equal to the negative sum of all the others.
+            equal to the negative sum of all the others. Default to true.
 
         Returns
         -------
-        (*, 6, *, 3) : vector with force constant element for each of the atomic displacements
+        (*, 3, 2, *, 3) : vector with force constant element for each of the atomic displacements
         """
         order = kwargs.pop('order', ['FC'])
         for f in order:
@@ -777,16 +777,85 @@ class fdfSileSiesta(SileSiesta):
             # Figure out which atoms to correct
             fc_first = self.get('MD.FCFirst', default=0)
             fc_last = self.get('MD.FCLast', default=0)
-            if 0 == fc_first or 0 == fc_last:
-                raise SislError(repr(self) + '.read_force_constant(FC) requires FCFirst/FCLast to be set correctly.')
+            if 0 in [fc_first, fc_last]:
+                raise SislError(repr(self) + '.read_force_constant(FC) requires FCFirst({})/FCLast({}) to be set correctly.'.format(fc_first, fc_last))
             if fc_last - fc_first + 1 != fc.shape[0]:
-                raise SislError(repr(self) + '.read_force_constant(FC) has erroneous FC file compared to FCFirst/FCLast.')
+                raise SislError(repr(self) + '.read_force_constant(FC) expected {} displaced atoms, '
+                                'only found {} displaced atoms!'.format(fc_last - fc_first + 1, fc.shape[0]))
+            # TODO check whether some of the atoms are "ghost" atoms
+            # TODO Most probably these should not be taken into account...?
             if kwargs.get('correct_fc', True):
                 for i in range(fc_first - 1, fc_last):
                     j = i - fc_first + 1
-                    fc[j, :, i, :] -= fc[j, :, :, :].sum(1)
+                    fc[j, :, :, i, :] -= fc[j, :, :, :, :].sum(2)
             return fc
         return None
+
+    def read_hessian(self, *args, **kwargs):
+        """ Read Hessian matrix from the force constant output of the calculation
+
+        Parameters
+        ----------
+        cutoff_dist : float, optional
+            cutoff value for the distance of the force-constants (everything farther than
+            `cutoff_dist` will be set to 0.
+        cutoff_fc : float, optional
+            cutoff value for the force-constants (absolute values below this value will be set
+            to 0).
+        correct_fc : bool, optional
+            correct the FC-matrix by forcing the force on the moved atom to be
+            equal to the negative sum of all the others. Default to true.
+
+        Returns
+        -------
+        Hessian : Hessian matrix with mass-scaled force constants
+        """
+        order = kwargs.pop('order', ['FC'])
+        for f in order:
+            v = getattr(self, '_r_hessian_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
+
+    def _r_hessian_fc(self, *args, **kwargs):
+        fc = self._r_force_constant_fc(*args, **kwargs)
+        if fc is None:
+            return None
+        # We have the force constant matrix.
+        # Now handle it...
+        #  fc = (n_displ, 3, 2, na, 3)
+        FC = np.average(fc, axis=2)
+        # Now create mass array
+        if len(self.get('AtomicMass', default=[])) > 0:
+            warn(repr(self) + '.read_hessian(FC) does not implement reading atomic masses from fdf file.')
+        # Remove everything that has to do with floating orbitals (should limit the size)
+        geom = self.read_geometry()
+
+        # Convert the geometry to contain 3 orbitals per atom
+        R = kwargs.get('cutoff_dist', -1.)
+        orbs = [Orbital(R, tag=tag) for tag in 'xyz']
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for atom in geom.atoms:
+                new_atom = Atom(atom.Z, orbs, tag=atom.tag)
+                geom.atoms.replace(atom, new_atom)
+
+        idx = (geom.atoms.mass == 0.).nonzero()[0]
+        FC = np.delete(FC, idx, axis=3)
+        geom = geom.remove(idx)
+        mass = geom.atoms.mass
+
+        # Get list of FC atoms
+        fc_atoms = np.arange(self.get('MD.FCFirst', default=0), self.get('MD.FCLast', default=0) + 1) - 1
+        cuts = len(fc_atoms) // len(geom)
+
+        # Now we can build the Hessian (it will always be real)
+        big_geom = geom.repeat(3, 0)
+        big_geom.set_supercell(geom.sc.copy())
+        big_geom.xyz[:, :] = np.repeat(geom.xyz, 3, 0)
+        H = Hessian(big_geom)
+
+        raise NotImplementedError('Currently read_hessian does not work')
 
     def read_geometry(self, output=False, *args, **kwargs):
         """ Returns Geometry object by reading fdf or Siesta output related files.
