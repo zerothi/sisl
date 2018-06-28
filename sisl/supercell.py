@@ -627,7 +627,10 @@ class SuperCell(object):
         cell[axis, :] *= reps
         # Only reduce the size if it is larger than 5
         if nsc[axis] > 3 and reps > 1:
-            nsc[axis] = max(1, nsc[axis] // 2 - (reps - 1)) * 2 + 1
+            # This is number of connections for the primary cell
+            h_nsc = nsc[axis] // 2
+            # The new number of supercells will then be
+            nsc[axis] = max(1, int(math.ceil(h_nsc / reps))) * 2 + 1
         return self.__class__(cell, nsc=nsc, origo=origo)
 
     def repeat(self, reps, axis):
