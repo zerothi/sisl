@@ -1061,8 +1061,6 @@ class fdfSileSiesta(SileSiesta):
         # Make Hermitian, this may "halve" some elements if the matrix is not
         # symmetric.
         H.make_hermitian()
-        # We again eliminate due to the cutoff (if elements reduced after make_hermitian, will only happen for missing items)
-        H.eliminate_zeros(fc_cut)
 
         # TODO, it may be advantegeous to apply Newtons 3rd law and then call make_hermitian again.
 
