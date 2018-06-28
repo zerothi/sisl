@@ -1,7 +1,7 @@
 """
 Sile object for reading/writing GULP in/output
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 import numpy as np
 from numpy import where
@@ -12,8 +12,9 @@ from ..sile import *
 
 from sisl._help import _range as range
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Orbital, SuperCell
 from sisl.physics import Hessian
+from sisl.unit import unit_convert
 
 
 __all__ = ['gotSileGULP']
@@ -94,11 +95,10 @@ class gotSileGULP(SileGULP):
             # Step to either the geometry or
             f, ki, _ = self.step_either([self._keys['sc'], self._keys['geometry']])
             if not f and ki == 0:
-                raise ValueError(
-                    ('SileGULP tries to lookup the SuperCell vectors '
-                     'using key "' + self._keys['sc'] + '". \n'
-                     'Use ".set_supercell_key(...)" to search for different name.\n'
-                     'This could not be found found in file: "' + self.file + '".'))
+                raise ValueError('SileGULP tries to lookup the SuperCell vectors '
+                                 'using key "' + self._keys['sc'] + '". \n'
+                                 'Use ".set_supercell_key(...)" to search for different name.\n'
+                                 'This could not be found found in file: "' + self.file + '".')
             elif f and ki == 0:
                 # supercell
                 self.readline()
@@ -111,12 +111,13 @@ class gotSileGULP(SileGULP):
                 sc = SuperCell(cell)
 
             elif not f and ki == 1:
-                raise ValueError(
-                    ('SileGULP tries to lookup the Geometry coordinates '
-                     'using key "' + self._keys['geometry'] + '". \n'
-                     'Use ".set_geom_key(...)" to search for different name.\n'
-                     'This could not be found found in file: "' + self.file + '".'))
+                raise ValueError('SileGULP tries to lookup the Geometry coordinates '
+                                 'using key "' + self._keys['geometry'] + '". \n'
+                                 'Use ".set_geom_key(...)" to search for different name.\n'
+                                 'This could not be found found in file: "' + self.file + '".')
             elif f and ki == 1:
+
+                orbs = [Orbital(-1, tag=tag) for tag in 'xyz']
 
                 # We skip 5 lines
                 for _ in [0] * 5:
@@ -130,7 +131,7 @@ class gotSileGULP(SileGULP):
                         break
 
                     ls = l.split()
-                    Z.append(Atom(ls[1], orbital=[-1] * 3))
+                    Z.append(Atom(ls[1], orbital=orbs))
                     xyz.append([float(x) for x in ls[3:6]])
 
                 # Convert to array and correct size
@@ -138,15 +139,13 @@ class gotSileGULP(SileGULP):
                 xyz.shape = (-1, 3)
 
                 if len(Z) == 0 or len(xyz) == 0:
-                    raise ValueError(
-                        'Could not read in cell information and/or coordinates')
+                    raise ValueError('Could not read in cell information and/or coordinates')
 
             elif not f:
                 # could not find either cell or geometry
-                raise ValueError(
-                    ('SileGULP tries to lookup the SuperCell or Geometry.\n'
-                     'None succeeded, ensure file has correct format.\n'
-                     'This could not be found found in file: "' + self.file + '".'))
+                raise ValueError('SileGULP tries to lookup the SuperCell or Geometry.\n'
+                                 'None succeeded, ensure file has correct format.\n'
+                                 'This could not be found found in file: "{}".'.format(self.file))
 
         # as the cell may be read in after the geometry we have
         # to wait until here to convert from fractional
@@ -178,32 +177,25 @@ class gotSileGULP(SileGULP):
 
         hessian = kwargs.get('hessian', None)
         if hessian is None:
+            # The output of the Dynamical matrix contains the mass-scaled dynamical matrix
             dyn = self._read_dyn(geom.no, **kwargs)
         else:
+            # The output of the hessian in the Hessian file does not contain the mass-scaling
             dyn = get_sile(hessian, 'r').read_hessian(**kwargs)
 
             if dyn.shape[0] != geom.no:
                 raise ValueError("Inconsistent Hessian file, number of atoms not correct")
 
-            # Perform mass scaling to retrieve the dynamical matrix
-            mass = [geom.atom[ia].mass for ia in range(geom.na)]
-
-            # Construct orbital mass
-            mass = np.array(mass, np.float64).repeat(3)
+            # Construct orbital mass ** (-.5)
+            rmass = 1 / np.array(geom.atoms.mass, np.float64).repeat(3) ** 0.5
 
             # Scale to get dynamical matrix
-            dyn.data[:] /= np.sqrt(mass[dyn.row] * mass[dyn.col])
-
-            # slower, less memory consuming...
-            #for I, ijd in enumerate(zip(dyn.row, dyn.col, dyn.data)):
-            #    dyn.data[I] = ijd[2] / sqrt(mass[ijd[0]] * mass[ijd[1]])
+            dyn.data[:] *= rmass[dyn.row] * rmass[dyn.col]
 
             # clean-up
             del mass
 
         return Hessian.fromsp(geom, dyn)
-
-    read_hamiltonian = read_hessian
 
     def _read_dyn(self, no, **kwargs):
         """ In case the dynamical matrix is read from the file """
@@ -211,7 +203,7 @@ class gotSileGULP(SileGULP):
         from scipy.sparse import lil_matrix
 
         # Default cutoff
-        cutoff = kwargs.get('cutoff', 0.001)
+        cutoff = kwargs.get('cutoff', 1.e-4)
         # Default dtype
         dtype = kwargs.get('dtype', np.float64)
 
@@ -219,11 +211,10 @@ class gotSileGULP(SileGULP):
 
         f, _ = self.step_to(self._keys['dyn'])
         if not f:
-            raise ValueError(
-                ('SileGULP tries to lookup the Dynamical matrix '
-                 'using key "' + self._keys['dyn'] + '". '
-                 'Use .set_dyn_key(...) to search for different name.'
-                 'This could not be found found in file: "' + self.file + '".'))
+            raise ValueError('SileGULP tries to lookup the Dynamical matrix '
+                             'using key "' + self._keys['dyn'] + '". '
+                             'Use .set_dyn_key(...) to search for different name.'
+                             'This could not be found found in file: "{}".'.format(self.file))
 
         # skip 1 line
         self.readline()
@@ -261,8 +252,7 @@ class gotSileGULP(SileGULP):
                     j += 3
                     if j >= no:
                         # Clear those below the cutoff
-                        dyn[i, :] = where(np.abs(dat[:]) >= cutoff,
-                                          dat, 0.)
+                        dyn[i, :] = where(np.abs(dat[:]) >= cutoff, dat, 0.)
 
                         i += 1
                         j = 0
@@ -275,8 +265,9 @@ class gotSileGULP(SileGULP):
         # Convert to CSR matrix format
         dyn = dyn.tocsr()
 
-        # Convert the GULP data to standard units
-        dyn.data *= (521.469 * 1.23981e-4) ** 2
+        # Convert the hessian such that a diagonalization returns eV ^ 2
+        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
+        dyn.data *= scale ** 2
 
         return dyn
 

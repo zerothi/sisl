@@ -828,7 +828,9 @@ class fdfSileSiesta(SileSiesta):
         # Now handle it...
         #  FC(OLD) = (n_displ, 3, 2, na, 3)
         #  FC(NEW) = (n_displ, 3, na, 3)
-        FC = np.average(FC, axis=2)
+        # Convert the hessian such that a diagonalization returns eV ^ 2
+        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
+        FC = np.average(FC, axis=2) * scale ** 2
 
         # First we need to create the geometry (without the floating atoms)
         geom = self.read_geometry()
@@ -879,7 +881,9 @@ class fdfSileSiesta(SileSiesta):
             H = Hessian(geom)
 
             # Instead of doing the sqrt in all H = FC (below) we do it here
-            m = geom.atoms.mass ** 0.5
+            m = 1 / geom.atoms.mass ** 0.5
+            FC *= m[fc_atoms].reshape(-1, 1, 1, 1)
+            FC *= m.reshape(1, 1, -1, 1)
 
             j_fc_atoms = fc_atoms.view()
             idx = _a.arangei(len(fc_atoms))
@@ -892,9 +896,8 @@ class fdfSileSiesta(SileSiesta):
                     j_fc_atoms = fc_atoms[idx]
 
                 for ja, fja in zip(idx, j_fc_atoms):
-                    M = 1 / (m[fia] * m[fja])
                     for i, j in xyz_xyz:
-                        H[ia*3+i, ja*3+j] = FC[ia, i, fja, j] * M
+                        H[ia*3+i, ja*3+j] = FC[ia, i, fja, j]
                     xyz_xyz.reset()
 
         else:
@@ -919,8 +922,6 @@ class fdfSileSiesta(SileSiesta):
             sc = SuperCell(sc, nsc=nsc)
             geom_small = Geometry(geom.xyz[fc_atoms], geom.atoms[fc_atoms], sc)
             H = Hessian(geom_small)
-            # Instead of doing the sqrt in all H = FC (below) we do it here
-            m = geom_small.atoms.mass ** 0.5
 
             # Now we need to figure out how the atoms are laid out.
             # It *MUST* either be repeated or tiled (preferentially tiled).
@@ -964,6 +965,11 @@ class fdfSileSiesta(SileSiesta):
             #  5. na
             #  6. x, y, z (force components)
             FC.shape = (na_fc, 3, supercell[axis_tiling[0]], supercell[axis_tiling[1]], supercell[axis_tiling[2]], na_fc, 3)
+
+            # After having done this we can easily mass scale all FC components
+            m = 1 / geom_small.atoms.mass ** 0.5
+            FC *= m.reshape(-1, 1, 1, 1, 1, 1, 1)
+            FC *= m.reshape(1, 1, 1, 1, 1, -1, 1)
 
             if fc_atoms[0] != 0:
                 # TODO we could roll the axis such that the displaced atoms moves into the
@@ -1046,9 +1052,8 @@ class fdfSileSiesta(SileSiesta):
                         iter_j_fc_atoms = iter_fc_atoms[dist(ia, aoff + iter_fc_atoms) <= R]
 
                     for ja in iter_j_fc_atoms:
-                        M = 1 / (m[ia] * m[ja])
                         for i, j in xyz_xyz:
-                            H[ia*3+i, joff+ja*3+j] = FC[ia, i, x, y, z, ja, j] * M
+                            H[ia*3+i, joff+ja*3+j] = FC[ia, i, x, y, z, ja, j]
                         xyz_xyz.reset()
 
         # Remove all zeros
@@ -1056,7 +1061,7 @@ class fdfSileSiesta(SileSiesta):
         # Make Hermitian, this may "halve" some elements if the matrix is not
         # symmetric.
         H.make_hermitian()
-        # We again eliminate due to the cutoff.
+        # We again eliminate due to the cutoff (if elements reduced after make_hermitian, will only happen for missing items)
         H.eliminate_zeros(fc_cut)
 
         # TODO, it may be advantegeous to apply Newtons 3rd law and then call make_hermitian again.

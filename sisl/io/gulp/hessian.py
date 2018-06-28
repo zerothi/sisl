@@ -1,7 +1,7 @@
 """
 Sile object for reading the Hessian matrix written by GULP
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 import numpy as np
 from scipy.sparse import lil_matrix
@@ -9,6 +9,7 @@ from scipy.sparse import lil_matrix
 # Import sile objects
 from .sile import SileGULP
 from ..sile import *
+from sisl.unit import unit_convert
 
 
 __all__ = ['hessianSileGULP']
@@ -76,6 +77,10 @@ class hessianSileGULP(SileGULP):
 
         # Convert to COO format
         dyn = dyn.tocoo()
+
+        # Convert the hessian such that a diagonalization returns eV ^ 2
+        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
+        dyn.data *= scale ** 2
 
         return dyn
 

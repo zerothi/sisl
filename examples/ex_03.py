@@ -189,7 +189,7 @@ dyn = gout.read_hessian()
 # In GULP correcting for Newtons second law is already obeyed
 # So this need not be used, however, the precision of output
 # may require this anyway.
-dyn.correct_Newton()
+dyn.apply_newton()
 
 dev = dyn.cut(4, 0)
 dev.write('DEVICE_zz.nc')
