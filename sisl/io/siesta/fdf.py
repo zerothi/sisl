@@ -11,9 +11,11 @@ from sisl._indices import indices_only
 from sisl._help import _str
 from sisl.utils.ranges import list2str
 from sisl.messages import SislError, info, warn
-from .sile import SileSiesta
+from sisl.utils.mathematics import fnorm
+
+from .._help import *
 from ..sile import *
-from sisl.io._help import *
+from .sile import SileSiesta
 
 from .binaries import tshsSileSiesta, tsdeSileSiesta
 from .binaries import dmSileSiesta, hsxSileSiesta
@@ -838,8 +840,8 @@ class fdfSileSiesta(SileSiesta):
         FC = np.where(np.abs(FC) > fc_cut, FC, 0.)
 
         # Convert the geometry to contain 3 orbitals per atom
-        R = kwargs.get('cutoff_dist', -1.)
-        orbs = [Orbital(R, tag=tag) for tag in 'xyz']
+        R = kwargs.get('cutoff_dist', -2.)
+        orbs = [Orbital(R / 2, tag=tag) for tag in 'xyz']
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             for atom in geom.atoms:
@@ -906,6 +908,14 @@ class fdfSileSiesta(SileSiesta):
 
             # Ensure nsc is at least an odd number, later down we will symmetrize the FC matrix
             nsc = supercell + (supercell + 1) % 2
+            if R > 0:
+                # Correct for the optional radius
+                sc_norm = fnorm(sc)
+                # R is already "twice" the "orbital" range
+                nsc_R = 1 + 2 * np.ceil(R / sc_norm).astype(np.int32)
+                for i in range(3):
+                    nsc[i] = min(nsc[i], nsc_R[i])
+                del nsc_R
             sc = SuperCell(sc, nsc=nsc)
             geom_small = Geometry(geom.xyz[fc_atoms], geom.atoms[fc_atoms], sc)
             H = Hessian(geom_small)
@@ -981,6 +991,29 @@ class fdfSileSiesta(SileSiesta):
                     # A, C, B
                     FC = sa(FC, 3, 4)
 
+            # Check whether we need to "halve" the equivalent supercell
+            # This will be present in calculations done on an even number of supercells.
+            # I.e. for 4 supercells
+            #  [0] [1] [2] [3]
+            # where in the supercell approach:
+            #  [2] [3] [0] [1] [2]
+            # I.e. since we are double counting [2] we will halve it.
+            # This is not *exactly* true because depending on the range one should do the symmetry operations.
+            # However the FC does not contain such symmetry considerations.
+            for i in range(3):
+                if supercell[i] % 2 == 1:
+                    # We don't need to do anything
+                    continue
+
+                # Figure out the supercell to halve
+                halve_idx = supercell[i] // 2
+                if i == 0:
+                    FC[:, :, halve_idx, :, :, :, :] *= 0.5
+                elif i == 1:
+                    FC[:, :, :, halve_idx, :, :, :] *= 0.5
+                else:
+                    FC[:, :, :, :, halve_idx, :, :] *= 0.5
+
             # Now axis_tiling has no meaning since we know supercell represents the axis_tiling
             del axis_tiling
 
@@ -1008,7 +1041,7 @@ class fdfSileSiesta(SileSiesta):
                 joff = aoff / na * nxyz
                 for ia in iter_fc_atoms:
 
-                    # Reduce second loop based on radius
+                    # Reduce second loop based on radius cutoff
                     if R > 0:
                         iter_j_fc_atoms = iter_fc_atoms[dist(ia, aoff + iter_fc_atoms) <= R]
 
@@ -1018,9 +1051,15 @@ class fdfSileSiesta(SileSiesta):
                             H[ia*3+i, joff+ja*3+j] = FC[ia, i, x, y, z, ja, j] * M
                         xyz_xyz.reset()
 
+        # Remove all zeros
         H.eliminate_zeros()
+        # Make Hermitian, this may "halve" some elements if the matrix is not
+        # symmetric.
         H.make_hermitian()
+        # We again eliminate due to the cutoff.
         H.eliminate_zeros(fc_cut)
+
+        # TODO, it may be advantegeous to apply Newtons 3rd law and then call make_hermitian again.
 
         return H
 

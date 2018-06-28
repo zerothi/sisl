@@ -79,10 +79,10 @@ class TestHessian(object):
         assert setup.H[1, 0] == 0.
         setup.H.empty()
 
-    def test_correct_newton(self, setup):
+    def test_apply_newton(self, setup):
         setup.H.construct(setup.func)
         assert setup.H[0, 0] == 1.
         assert setup.H[1, 0] == 0.1
         assert setup.H[0, 1] == 0.1
-        setup.H.correct_Newton()
+        setup.H.apply_newton()
         setup.H.empty()

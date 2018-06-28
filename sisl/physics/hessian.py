@@ -9,7 +9,7 @@ __all__ = ['Hessian', 'DynamicalMatrix']
 
 
 class Hessian(SparseOrbitalBZ):
-    """ Dynamical matrix of a geometry """
+    """ Hessian matrix of a geometry """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         super(Hessian, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
@@ -181,9 +181,8 @@ class Hessian(SparseOrbitalBZ):
 
     H = property(_get_H, _set_H)
 
-    def correct_Newton(self):
-        """
-        Sometimes the dynamical matrix does not obey Newtons laws.
+    def apply_newton(self):
+        """ Sometimes the dynamical matrix does not obey Newtons 3rd law.
 
         We correct the dynamical matrix by imposing zero force.
 
@@ -197,18 +196,18 @@ class Hessian(SparseOrbitalBZ):
         for i, _ in self.sc:
             d_uc[:, :] += dyn_sc[:, i*no: (i+1)*no]
 
+        # A CSC matrix is faster to slice for columns
         d_uc = d_uc.tocsc()
 
-        # we need to correct the dynamical matrix found in GULP
-        # This ensures that Newtons laws are obeyed, (i.e.
-        # action == re-action)
+        # we need to correct the dynamical matrix such that Newtons 3rd law
+        # is obeyed (action == reaction)
         om = np.sqrt(self.mass)
         MM = np.empty([len(om)], np.float64)
 
         for ja in self.geometry:
 
-            # Create conversion to force-constant, and revert back
-            # after correcting
+            # Create conversion to force-constant in units of the on-site mass scaled
+            # dynamical matrix.
             MM[:] = om[:] / om[ja]
             jo = ja * 3
 
