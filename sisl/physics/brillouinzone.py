@@ -125,7 +125,11 @@ class BrillouinZone(object):
             self._w = _a.onesd(1)
         else:
             self._k = _a.arrayd(k).reshape(-1, 3)
-            self._w = _a.arrayd(weight).ravel()
+            if weight is None:
+                n = self._k.shape[0]
+                self._w = _a.onesd(n) / n
+            else:
+                self._w = _a.arrayd(weight).ravel()
         if len(self.k) != len(self.weight):
             raise ValueError(self.__class__.__name__ + '.__init__ requires input k-points and weights to be of equal length.')
 
