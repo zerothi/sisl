@@ -725,7 +725,7 @@ class ncSileSiesta(SileCDFSiesta):
 
             if tmp.nnz != H.nnz:
                 # We have added more stuff, something that we currently do not allow.
-                raise ValueError(self.__class__.__name__ + '.write_hamiltonian '
+                raise ValueError(self.__class__.__name__ + '.write_hessian '
                                  'is trying to write a Hamiltonian in Siesta format with '
                                  'not all on-site terms defined. Please correct. '
                                  'I.e. add explicitly *all* on-site terms.')
