@@ -307,17 +307,17 @@ class fdfSileSiesta(SileSiesta):
         return self._type(self._read_label(label))
 
     @Sile_fh_open
-    def get(self, label, unit=None, default=None, with_unit=False):
+    def get(self, label, default=None, unit=None, with_unit=False):
         """ Retrieve fdf-keyword from the file
 
         Parameters
         ----------
         label : str
             the fdf-label to search for
-        unit : str, optional
-            unit of the physical quantity to return
         default : optional
             if the label is not found, this will be the returned value (default to ``None``)
+        unit : str, optional
+            unit of the physical quantity to return
         with_unit : bool, optional
             whether the physical quantity gets returned with the found unit in the fdf file.
 
@@ -341,9 +341,9 @@ class fdfSileSiesta(SileSiesta):
         %endblock # doctest: +SKIP
         >>> fdf.get('LabeleV') == 1. # default unit is eV # doctest: +SKIP
         >>> fdf.get('LabelRy') == unit.siesta.unit_convert('Ry', 'eV') # doctest: +SKIP
-        >>> fdf.get('LabelRy', 'Ry') == 1. # doctest: +SKIP
+        >>> fdf.get('LabelRy', unit='Ry') == 1. # doctest: +SKIP
         >>> fdf.get('LabelRy', with_unit=True) == (1., 'Ry') # doctest: +SKIP
-        >>> fdf.get('FakeInt', default='0') == '1' # doctest: +SKIP
+        >>> fdf.get('FakeInt', '0') == '1' # doctest: +SKIP
         >>> fdf.get('LabeleV', with_unit=True) == (1., 'eV') # doctest: +SKIP
         >>> fdf.get('Label', with_unit=True) == 'name' # no unit present on line # doctest: +SKIP
         >>> fdf.get('Hello') == ['line 1', 'line2'] # doctest: +SKIP

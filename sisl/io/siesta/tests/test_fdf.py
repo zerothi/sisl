@@ -241,17 +241,17 @@ def test_include(sisl_tmp):
     assert fdf.get('Flag4') == 'non'
     assert fdf.get('FLAG4') == 'non'
     assert fdf.get('Fakeint') == 1
-    assert fdf.get('Fakeint', default='0') == '1'
+    assert fdf.get('Fakeint', '0') == '1'
     assert fdf.get('Fakereal') == 2.
-    assert fdf.get('Fakereal', default=0.) == 2.
+    assert fdf.get('Fakereal', 0.) == 2.
     assert fdf.get('test', 'eV') == pytest.approx(1.)
     assert fdf.get('test', with_unit=True)[0] == pytest.approx(1.)
     assert fdf.get('test', with_unit=True)[1] == 'eV'
-    assert fdf.get('test', 'Ry') == pytest.approx(unit_convert('eV', 'Ry'))
+    assert fdf.get('test', unit='Ry') == pytest.approx(unit_convert('eV', 'Ry'))
     assert fdf.get('testRy') == pytest.approx(unit_convert('Ry', 'eV'))
     assert fdf.get('testRy', with_unit=True)[0] == pytest.approx(1.)
     assert fdf.get('testRy', with_unit=True)[1] == 'Ry'
-    assert fdf.get('testRy', 'Ry') == pytest.approx(1.)
+    assert fdf.get('testRy', unit='Ry') == pytest.approx(1.)
     assert fdf.get('Sub') == 'sub-test'
     assert fdf.get('Third') == 'level'
     assert fdf.get('test-last', with_unit=True)[0] == pytest.approx(1.)
@@ -259,7 +259,7 @@ def test_include(sisl_tmp):
 
     # Currently lists are not implemented
     #assert np.allclose(fdf.get('MyList'), np.arange(3) + 1)
-    #assert np.allclose(fdf.get('MyList', default=[]), np.arange(3) + 1)
+    #assert np.allclose(fdf.get('MyList', []), np.arange(3) + 1)
 
     # Read a block
     ll = open(sisl_tmp('hello', _dir)).readlines()
