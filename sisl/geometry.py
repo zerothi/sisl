@@ -278,6 +278,110 @@ class Geometry(SuperCellChild):
 
         return self.axyz(atom)
 
+    def as_primary(self, na_primary, ret_super=False):
+        """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms
+
+        This will basically try and find the tiling/repetitions required for the geometry to only have
+        `na_primary` atoms in the unit cell.
+
+        Parameters
+        ----------
+        na_primary : int
+           number of atoms in the primary unit cell
+        ret_super : bool, optional
+           also return the number of supercells used in each direction
+
+        Returns
+        -------
+        Geometry : the primary unit cell
+        supercell : the tiled supercell numbers used to find the primary unit cell
+
+        Raises
+        ------
+        SislError : in case the algorithm fails.
+        """
+        na = len(self)
+        if na % na_primary != 0:
+            raise SislError(self.__class__.__name__ + '.as_primary requires the number of atoms to be divisable by the '
+                            'total number of atoms.')
+
+        n_supercells = len(self) // na_primary
+        if n_supercells == 1:
+            # Return a copy of self
+            return self.copy()
+
+        # Now figure out the repetitions along each direction
+        fxyz = self.fxyz
+        # Move to 0
+        fxyz -= fxyz.min(0)
+        # Shift a little bit in to account for inaccuracies.
+        fxyz += (0.5 - (fxyz.max(0) - fxyz.min(0)) / 2).reshape(1, -1) * 0.01
+
+        # Default guess to 1 along all directions
+        supercell = _a.onesi(3)
+
+        n_bin = n_supercells
+        while n_bin > 1:
+
+            # Create bins
+            bins = np.linspace(0, 1, n_bin + 1)
+
+            # Loop directions where we need to check
+            for i in (supercell == 1).nonzero()[0]:
+
+                # A histogram should yield an equal splitting for each bins
+                # if the geometry is a n_bin repetition along the i'th direction.
+                # Hence if diff == 0 for all elements we have a match.
+                diff_bin = np.diff(np.histogram(fxyz[:, i], bins)[0])
+
+                if diff_bin.sum() == 0:
+                    supercell[i] = n_bin
+                    if np.product(supercell) > n_supercells:
+                        # For geometries with more than 1 atom in the primary unit cell
+                        # we can get false positives (each layer can be split again)
+                        # We will search again the max-value supercell
+                        i_max = supercell.argmax()
+                        n_bin = supercell[i_max]
+                        supercell[i_max] = 1
+
+            # Quick escape if hit the correct number of supercells
+            if np.product(supercell) == n_supercells:
+                break
+
+            n_bin -= 1
+
+        # Check that the number of supercells match
+        if np.product(supercell) != n_supercells:
+            raise SislError(self.__class__.__name__ + '.as_primary could not determine the optimal supercell.')
+
+        # Cut down the supercell (TODO this does not correct the number of supercell connections!)
+        sc = self.sc.copy()
+        for i in range(3):
+            sc = sc.cut(supercell[i], i)
+
+        # Now we need to find the atoms that are in the primary cell
+        # We do this by finding all coordinates within the primary unit-cell
+        fxyz = dot(self.xyz, sc.icell.T)
+        # Move to 0 and shift in 0.05 Ang in each direction
+        fxyz -= fxyz.min(0)
+
+        # Find minimal distance in each direction
+        sc_idx = (supercell > 1).nonzero()[0]
+        min_fxyz = _a.zerosd(3)
+        for i in sc_idx:
+            s_fxyz = np.sort(fxyz[:, i])
+            min_fxyz[i] = s_fxyz[(s_fxyz < 1e-4).nonzero()[0][-1] + 1]
+        fxyz += min_fxyz * 0.05
+
+        # Find all fractional indices that are below 1
+        ind = np.logical_and.reduce(fxyz < 1., axis=1).nonzero()[0]
+
+        geom = self.sub(ind)
+        geom.set_supercell(sc)
+        if ret_super:
+            return geom, supercell
+        return geom
+
     def reorder(self):
         """ Reorders atoms according to first occurence in the geometry
 

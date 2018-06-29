@@ -369,7 +369,6 @@ class TestSparseCSR(object):
         assert setup.s1[1, 3] == 0
         setup.s1.empty()
 
-    @pytest.mark.only
     def test_eliminate_zeros_tolerance(self, setup):
         setup.s1[0, [1, 2, 3]] = 1
         setup.s1[1, [1, 2, 3]] = 2
@@ -383,7 +382,6 @@ class TestSparseCSR(object):
         assert setup.s1[0, 3] == 0
         setup.s1.empty()
 
-    @pytest.mark.only
     def test_eliminate_zeros_tolerance_ndim(self, setup):
         s = SparseCSR((3, 3, 3))
         s[1, [1, 2, 3]] = 0.1

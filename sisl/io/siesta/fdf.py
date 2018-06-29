@@ -800,10 +800,10 @@ class fdfSileSiesta(SileSiesta):
         ----------
         cutoff_dist : float, optional
             cutoff value for the distance of the force-constants (everything farther than
-            `cutoff_dist` will be set to 0.
+            `cutoff_dist` will be set to 0, unit in Ang.
         cutoff_fc : float, optional
             cutoff value for the force-constants (absolute values below this value will be set
-            to 0).
+            to 0). Unit is eV/Ang**2.
         correct_fc : bool, optional
             correct the FC-matrix by forcing the force on the moved atom to be
             equal to the negative sum of all the others. Default to true.
@@ -828,9 +828,7 @@ class fdfSileSiesta(SileSiesta):
         # Now handle it...
         #  FC(OLD) = (n_displ, 3, 2, na, 3)
         #  FC(NEW) = (n_displ, 3, na, 3)
-        # Convert the hessian such that a diagonalization returns eV ^ 2
-        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
-        FC = np.average(FC, axis=2) * scale ** 2
+        FC = np.average(FC, axis=2)
 
         # First we need to create the geometry (without the floating atoms)
         geom = self.read_geometry()
@@ -841,7 +839,11 @@ class fdfSileSiesta(SileSiesta):
         fc_cut = kwargs.get('cutoff_fc', 0.)
         FC = np.where(np.abs(FC) > fc_cut, FC, 0.)
 
-        # Convert the geometry to contain 3 orbitals per atom
+        # Convert the hessian such that a diagonalization returns eV ^ 2
+        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
+        FC *= scale ** 2
+
+        # Convert the geometry to contain 3 orbitals per atom (x, y, z)
         R = kwargs.get('cutoff_dist', -2.)
         orbs = [Orbital(R / 2, tag=tag) for tag in 'xyz']
         with warnings.catch_warnings():
@@ -1093,8 +1095,7 @@ class fdfSileSiesta(SileSiesta):
 
         # Remove all zeros
         H.eliminate_zeros()
-        # Make Hermitian, this may "halve" some elements if the matrix is not
-        # symmetric.
+        # Make Hermitian, this may "halve" some elements if the matrix is not symmetric.
         H.make_hermitian()
 
         # TODO, it may be advantegeous to apply Newtons 3rd law and then call make_hermitian again.

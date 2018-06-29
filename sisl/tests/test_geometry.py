@@ -2,6 +2,7 @@ from __future__ import print_function, division
 
 import pytest
 
+import itertools
 import math as m
 import numpy as np
 
@@ -1144,3 +1145,37 @@ class TestGeometry(object):
         g = sisl_geom.graphene()
         g['A'] = 1
         g['A'] = [1, 2]
+
+    @pytest.mark.parametrize("geometry", [sisl_geom.graphene(),
+                                          sisl_geom.diamond(),
+                                          sisl_geom.sc(1.4, Atom[1]),
+                                          sisl_geom.fcc(1.4, Atom[1]),
+                                          sisl_geom.bcc(1.4, Atom[1]),
+                                          sisl_geom.hcp(1.4, Atom[1])])
+    def test_geometry_as_primary(self, geometry):
+        prod = itertools.product
+        x_reps = [1, 4, 3]
+        y_reps = [1, 4, 5]
+        z_reps = [1, 4, 6]
+        tile_rep = ['r', 't']
+
+        na_primary = len(geometry)
+        for x, y, z in prod(x_reps, y_reps, z_reps):
+            if x == y == z == 1:
+                continue
+            for a, b, c in prod(tile_rep, tile_rep, tile_rep):
+                G = ((geometry * ([x, 1, 1], a)) * ([1, y, 1], b)) * ([1, 1, z], c)
+                p = G.as_primary(na_primary)
+                assert np.allclose(p.xyz, geometry.xyz)
+                assert np.allclose(p.cell, geometry.cell)
+
+    def test_geometry_as_primary_without_super(self):
+        g = sisl_geom.graphene()
+        p = g.as_primary(len(g))
+        assert g == p
+
+        G = g.tile(2, 0).tile(3, 1)
+        p, supercell = G.as_primary(len(g), ret_super=True)
+        assert np.allclose(p.xyz, g.xyz)
+        assert np.allclose(p.cell, g.cell)
+        assert np.all(supercell == [2, 3, 1])
