@@ -200,19 +200,19 @@ class ncSileSiesta(SileCDFSiesta):
 
         return H
 
-    def read_hessian(self, **kwargs):
-        """ Returns a Hessian from the underlying NetCDF file
+    def read_dynamical_matrix(self, **kwargs):
+        """ Returns a dynamical matrix from the underlying NetCDF file
 
-        This assumes that the Hessian is stored in the field "H" as would the
+        This assumes that the dynamical matrix is stored in the field "H" as would the
         Hamiltonian. This is counter-intuitive but is required when using PHtrans.
         """
-        H = self._read_class_spin(Hessian, **kwargs)
+        D = self._read_class_spin(DynamicalMatrix, **kwargs)
 
         sp = self._crt_grp(self, 'SPARSE')
         for i in range(len(H.spin)):
-            H._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV ** 2
+            D._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV ** 2
 
-        return H
+        return D
 
     def read_density_matrix(self, **kwargs):
         """ Returns a density matrix from the underlying NetCDF file """
@@ -668,24 +668,24 @@ class ncSileSiesta(SileCDFSiesta):
         v.unit = "b**-1"
         v[:] = np.zeros([3], np.float64)
 
-    def write_hessian(self, H, **kwargs):
-        """ Writes Hessian model to file
+    def write_dynamical_matrix(self, D, **kwargs):
+        """ Writes dynamical matrix model to file
 
         Parameters
         ----------
-        H : Hessian
+        D : DynamicalMatrix
            the model to be saved in the NC file
         """
         # Ensure finalizations
-        H.finalize()
+        D.finalize()
 
         # Ensure that the geometry is written
-        self.write_geometry(H.geom)
+        self.write_geometry(D.geometry)
 
         self._crt_dim(self, 'spin', 1)
 
-        if H.dkind != 'f':
-            raise NotImplementedError('Currently we only allow writing a floating point Hessian to the Siesta format')
+        if D.dkind != 'f':
+            raise NotImplementedError('Currently we only allow writing a floating point dynamical matrix to the Siesta format')
 
         v = self._crt_var(self, 'Ef', 'f8', ('one',))
         v.info = 'Fermi level'
@@ -700,32 +700,32 @@ class ncSileSiesta(SileCDFSiesta):
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
 
-        self._crt_dim(sp, 'nnzs', H._csr.col.shape[0])
+        self._crt_dim(sp, 'nnzs', D._csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
         v.info = "Number of non-zero elements per row"
-        v[:] = H._csr.ncol[:]
+        v[:] = D._csr.ncol[:]
         v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(H._csr.col),), **self._cmp_args)
+                          chunksizes=(len(D._csr.col),), **self._cmp_args)
         v.info = "Supercell column indices in the sparse format"
-        v[:] = H._csr.col[:] + 1  # correct for fortran indices
+        v[:] = D._csr.col[:] + 1  # correct for fortran indices
         v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = H.geom.sc.sc_off[:, :]
+        v[:] = D.geom.sc.sc_off[:, :]
 
         # Save tight-binding parameters
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(H._csr.col),), **self._cmp_args)
+                          chunksizes=(len(D._csr.col),), **self._cmp_args)
         v.info = "Overlap matrix"
-        if H.orthogonal:
+        if D.orthogonal:
             # We need to create the orthogonal pattern
-            tmp = H._csr.copy(dims=[0])
+            tmp = D._csr.copy(dims=[0])
             tmp.empty(keep_nnz=True)
             for i in range(tmp.shape[0]):
                 tmp[i, i] = 1.
 
-            if tmp.nnz != H.nnz:
+            if tmp.nnz != D.nnz:
                 # We have added more stuff, something that we currently do not allow.
-                raise ValueError(self.__class__.__name__ + '.write_hessian '
+                raise ValueError(self.__class__.__name__ + '.write_dynamical_matrix '
                                  'is trying to write a Hamiltonian in Siesta format with '
                                  'not all on-site terms defined. Please correct. '
                                  'I.e. add explicitly *all* on-site terms.')
@@ -733,12 +733,12 @@ class ncSileSiesta(SileCDFSiesta):
             v[:] = tmp._D[:, 0]
             del tmp
         else:
-            v[:] = H._csr._D[:, H.S_idx]
+            v[:] = D._csr._D[:, D.S_idx]
         v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(H._csr.col)), **self._cmp_args)
-        v.info = "Hessian"
+                          chunksizes=(1, len(D._csr.col)), **self._cmp_args)
+        v.info = "Dynamical matrix"
         v.unit = "Ry**2"
-        v[0, :] = H._csr._D[:, 0] / Ry2eV ** 2
+        v[0, :] = D._csr._D[:, 0] / Ry2eV ** 2
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')

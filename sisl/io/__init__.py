@@ -90,7 +90,7 @@ GULP (:mod:`sisl.io.gulp`)
    :toctree:
 
    gotSileGULP - the output from GULP
-   hessianSileGULP - Hessian output from GULP
+   fcSileGULP - force constant output from GULP
 
 
 .. _toc-io-scaleup:

@@ -1,5 +1,5 @@
 """
-Sile object for reading the Hessian matrix written by GULP
+Sile object for reading the force constant matrix written by GULP
 """
 from __future__ import print_function, division
 
@@ -12,16 +12,15 @@ from ..sile import *
 from sisl.unit import unit_convert
 
 
-__all__ = ['hessianSileGULP']
+__all__ = ['fcSileGULP']
 
 
-class hessianSileGULP(SileGULP):
+class fcSileGULP(SileGULP):
     """ GULP output file object """
 
     @Sile_fh_open
-    def read_hessian(self, **kwargs):
-        """ Returns a sparse matrix in coo format which contains the GULP
-        Hessian matrix.
+    def read_force_constant(self, **kwargs):
+        """ Returns a sparse matrix in coo format which contains the GULP force constant matrix.
 
         This routine expects the units to be in eV/Ang**2.
 
@@ -41,7 +40,7 @@ class hessianSileGULP(SileGULP):
         na = int(self.readline())
         no = na * 3
 
-        dyn = lil_matrix((no, no), dtype=dtype)
+        fc = lil_matrix((no, no), dtype=dtype)
 
         # Temporary container (to not de/alloc all the time)
         dat = np.empty([3], dtype=dtype)
@@ -66,23 +65,19 @@ class hessianSileGULP(SileGULP):
 
                     # Assign data...
                     if dat[0] >= cutoff:
-                        dyn[i+o, j] = dat[0]
+                        fc[i+o, j] = dat[0]
                     if dat[1] >= cutoff:
-                        dyn[i+o, j+1] = dat[1]
+                        fc[i+o, j+1] = dat[1]
                     if dat[2] >= cutoff:
-                        dyn[i+o, j+2] = dat[2]
+                        fc[i+o, j+2] = dat[2]
 
                 j += 3
             i += 3
 
         # Convert to COO format
-        dyn = dyn.tocoo()
+        fc = fc.tocoo()
 
-        # Convert the hessian such that a diagonalization returns eV ^ 2
-        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
-        dyn.data *= scale ** 2
-
-        return dyn
+        return fc
 
 
-add_sile('FORCE_CONSTANTS_2ND', hessianSileGULP, gzip=True)
+add_sile('FORCE_CONSTANTS_2ND', fcSileGULP, gzip=True)

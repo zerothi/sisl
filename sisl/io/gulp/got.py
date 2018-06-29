@@ -13,7 +13,7 @@ from ..sile import *
 from sisl._help import _range as range
 # Import the geometry object
 from sisl import Geometry, Atom, Orbital, SuperCell
-from sisl.physics import Hessian
+from sisl.physics import DynamicalMatrix
 from sisl.unit import unit_convert
 
 
@@ -156,15 +156,15 @@ class gotSileGULP(SileGULP):
         # Return the geometry
         return Geometry(xyz, Z, sc=sc)
 
-    def set_hessian_key(self, key):
+    def set_dynamical_matrix_key(self, key):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """
         self.set_key('dyn', key)
 
-    set_dyn_key = set_hessian_key
+    set_dyn_key = set_dynamical_matrix_key
 
     @Sile_fh_open
-    def read_hessian(self, **kwargs):
-        """ Returns a GULP Hessian matrix model for the output of GULP
+    def read_dynamical_matrix(self, **kwargs):
+        """ Returns a GULP dynamical matrix model for the output of GULP
 
         Parameters
         ----------
@@ -175,16 +175,17 @@ class gotSileGULP(SileGULP):
         """
         geom = self.read_geometry(**kwargs)
 
-        hessian = kwargs.get('hessian', None)
-        if hessian is None:
+        fc = kwargs.get('force_constant', None)
+        if fc is None:
             # The output of the Dynamical matrix contains the mass-scaled dynamical matrix
             dyn = self._read_dyn(geom.no, **kwargs)
         else:
-            # The output of the hessian in the Hessian file does not contain the mass-scaling
-            dyn = get_sile(hessian, 'r').read_hessian(**kwargs)
+            # The output of the force constant in the file does not contain the mass-scaling
+            # nor the unit conversion
+            dyn = get_sile(fc, 'r').read_force_constant(**kwargs)
 
             if dyn.shape[0] != geom.no:
-                raise ValueError("Inconsistent Hessian file, number of atoms not correct")
+                raise ValueError("Inconsistent force constant file, number of atoms not correct")
 
             # Construct orbital mass ** (-.5)
             rmass = 1 / np.array(geom.atoms.mass, np.float64).repeat(3) ** 0.5
@@ -195,7 +196,11 @@ class gotSileGULP(SileGULP):
             # clean-up
             del mass
 
-        return Hessian.fromsp(geom, dyn)
+        # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
+        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
+        dyn.data *= scale ** 2
+
+        return DynamicalMatrix.fromsp(geom, dyn)
 
     def _read_dyn(self, no, **kwargs):
         """ In case the dynamical matrix is read from the file """
@@ -211,7 +216,7 @@ class gotSileGULP(SileGULP):
 
         f, _ = self.step_to(self._keys['dyn'])
         if not f:
-            raise ValueError('SileGULP tries to lookup the Dynamical matrix '
+            raise ValueError(self.__class__.__name__ + ' tries to lookup the Dynamical matrix '
                              'using key "' + self._keys['dyn'] + '". '
                              'Use .set_dyn_key(...) to search for different name.'
                              'This could not be found found in file: "{}".'.format(self.file))
@@ -264,10 +269,6 @@ class gotSileGULP(SileGULP):
 
         # Convert to CSR matrix format
         dyn = dyn.tocsr()
-
-        # Convert the hessian such that a diagonalization returns eV ^ 2
-        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
-        dyn.data *= scale ** 2
 
         return dyn
 
