@@ -66,7 +66,8 @@ class fcSileSiesta(SileSiesta):
         Parameters
         ----------
         na : int, optional
-           number of atoms in the unit-cell
+           number of atoms in the unit-cell, if not specified it will guess on only
+           one atom displacement.
 
         Returns
         -------

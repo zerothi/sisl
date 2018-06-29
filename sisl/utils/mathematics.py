@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
-from numpy import dot, asarray
+import numpy as np
+from numpy import dot, asarray, cross
 from numpy import cos, sin, arctan2, arccos
 from numpy import take, sqrt, square
 
@@ -9,6 +10,7 @@ from sisl._indices import indices_le
 
 __all__ = ['fnorm', 'fnorm2', 'expand', 'orthogonalize']
 __all__ += ['spher2cart', 'cart2spher', 'spherical_harm']
+__all__ += ['curl']
 
 
 def fnorm(array):
@@ -200,3 +202,32 @@ def spherical_harm(m, l, theta, phi):
     #return (-1) ** m * ( (2*l+1)/(4*pi) * factorial(l-m) / factorial(l+m) ) ** 0.5 \
     #    * lpmv(m, l, np.cos(theta)) * np.exp(1j * m * phi)
     return sph_harm(m, l, theta, phi) * (-1) ** m
+
+
+def curl(m):
+    r""" Determine the curl of a matrix `m`.
+
+    The curl will be calculated using the last axis as the vectors.
+
+    Parameters
+    ----------
+    m : numpy.ndarray (-1, 3, 3)
+       matrix to calculate the curl of
+
+    Returns
+    -------
+    curl : the curl of the matrix
+    """
+    old_shape = m.shape
+    ndim = m.ndim
+    m = m.reshape(-1, m.shape[-2], m.shape[-1])
+
+    curl = np.empty_like(m)
+    n = m.shape[1]
+    for i in range(m.shape[0]):
+        curl[i, 0] = cross(m[i, 1], m[i, 2])
+        curl[i, 1] = cross(m[i, 2], m[i, 0])
+        curl[i, 2] = cross(m[i, 0], m[i, 1])
+
+    curl.shape = old_shape
+    return curl
