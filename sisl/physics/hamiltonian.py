@@ -375,8 +375,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
         See Also
         --------
         eigenstate : method used to calculate the eigenstates
-        DOS : Calculate total DOS
-        PDOS : Calculate projected DOS
         EigenvalueElectron.velocity : Underlying method used to calculate the velocity
         """
         return self.eigenstate(k, **kwargs).velocity()
@@ -402,7 +400,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
         eigenvalue : method used to calculate the eigenvalues
         PDOS : Calculate projected DOS
         EigenvalueElectron.DOS : Underlying method used to calculate the DOS
-        EigenstateElectron.PDOS : Underlying method used to calculate the projected DOS
         """
         return self.eigenvalue(k, **kwargs).DOS(E, distribution)
 
@@ -426,7 +423,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
         sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
         eigenstate : method used to calculate the eigenstates
         DOS : Calculate total DOS
-        EigenvalueElectron.DOS : Underlying method used to calculate the DOS
         EigenstateElectron.PDOS : Underlying method used to calculate the projected DOS
         """
         return self.eigenstate(k, **kwargs).PDOS(E, distribution)

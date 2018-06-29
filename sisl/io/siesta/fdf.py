@@ -894,7 +894,7 @@ class fdfSileSiesta(SileSiesta):
         if np.all(supercell == 1):
             D = DynamicalMatrix(geom)
 
-            # Instead of doing the sqrt in all H = FC (below) we do it here
+            # Instead of doing the sqrt in all D = FC (below) we do it here
             m = 1 / geom.atoms.mass ** 0.5
             FC *= m[fc_atoms].reshape(-1, 1, 1, 1)
             FC *= m.reshape(1, 1, -1, 1)
@@ -1067,7 +1067,7 @@ class fdfSileSiesta(SileSiesta):
 
                     for ja in iter_j_fc_atoms:
                         for i, j in xyz_xyz:
-                            H[ia*3+i, joff+ja*3+j] = FC[ia, i, x, y, z, ja, j]
+                            D[ia*3+i, joff+ja*3+j] = FC[ia, i, x, y, z, ja, j]
                         xyz_xyz.reset()
 
         # Remove all zeros

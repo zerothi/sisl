@@ -21,6 +21,7 @@ One may also plot real-space wavefunctions.
    wavefunction
    spin_moment
 
+
 Supporting classes
 ------------------
 

@@ -17,6 +17,8 @@ DOS, PDOS, group-velocities and real-space displacements.
    DOS
    PDOS
    velocity
+   displacement
+
 
 Supporting classes
 ------------------
@@ -41,6 +43,7 @@ import numpy as np
 from numpy import conj
 
 import sisl._array as _a
+from sisl.unit import unit_convert
 from sisl.linalg import eig_destroy, eigh_destroy
 from sisl.messages import info, warn, SislError, tqdm_eta
 from sisl._help import dtype_complex_to_real
@@ -52,7 +55,7 @@ from .electron import DOS as electron_DOS
 from .electron import PDOS as electron_PDOS
 
 
-__all__ = ['DOS', 'PDOS', 'velocity']
+__all__ = ['DOS', 'PDOS', 'velocity', 'displacement']
 __all__ += ['CoefficientPhonon', 'ModePhonon', 'ModeCPhonon']
 __all__ += ['EigenvaluePhonon', 'EigenvectorPhonon', 'EigenmodePhonon']
 
@@ -147,7 +150,7 @@ def velocity(mode, hw, dDk, degenerate=None):
        vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate
        modes the vectors *may* be rotated upon return.
     hw : array_like
-       frequencies of the modes
+       frequencies of the modes, for any negative frequency the velocity will be set to 0.
     dDk : list of array_like
        Dynamical matrix derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
        list of the dynamical matrix derivative along the 3 Cartesian directions.
@@ -197,7 +200,63 @@ def _velocity(mode, hw, dDk, degenerate):
     v[:, 1] = (conj(mode.T) * dDk[1].dot(mode.T)).sum(0).real
     v[:, 2] = (conj(mode.T) * dDk[2].dot(mode.T)).sum(0).real
 
+    # Set everything to zero for the negative frequencies
+    v[hw < 0, :] = 0
+
     return v * _velocity_const / (2 * hw.reshape(-1, 1))
+
+
+def displacement(mode, hw, mass):
+    r""" Calculate the real-space displacements for a given mode (in units of the characteristic length)
+
+    The displacements per mode may be written as:
+
+    .. math::
+
+       \mathbf{u}_{i\alpha} = \frac{\epsilon_{i\alpha}}{m_i \hbar\omega}
+
+    where :math:`i` is the atomic index.
+
+    Parameters
+    ----------
+    mode : array_like
+       vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate
+       modes the vectors *may* be rotated upon return.
+    hw : array_like
+       frequencies of the modes, for any negative frequency the returned displacement will be 0.
+    mass : array_like
+       masses for the atoms (has to have length ``mode.shape[1] // 3``
+
+    Returns
+    -------
+    numpy.ndarray
+        displacements per mode with final dimension ``(mode.shape[0], 3)``, the displacements are in Ang
+    """
+    if mode.ndim == 1:
+        return displacement(mode.reshape(1, -1), hw, mass).reshape(-1, 3)
+
+    return _displacement(mode, hw, mass)
+
+
+_displacement_const = (2 * unit_convert('Ry', 'eV')) ** 0.5
+
+
+def _displacement(mode, hw, mass):
+    """ Real space displacements """
+    idx = (hw < 0).nonzero()[0]
+    U = mode.copy()
+    U[idx, :] = 0.
+
+    # Now create the remaining displacements
+    idx = np.delete(_a.arangei(mode.shape[0]), idx)
+
+    # Generate displacement factor
+    factor = _displacement_const / hw[idx].reshape(-1, 1) ** 0.5
+
+    U.shape = (mode.shape[0], -1, 3)
+    U[idx, :, :] = (mode[idx, :] * factor).reshape(-1, mass.shape[0], 3) / mass.reshape(1, -1, 1) ** 0.5
+
+    return U
 
 
 class _phonon_Mode(object):
@@ -292,6 +351,12 @@ class EigenmodePhonon(ModeCPhonon):
 
         See `~sisl.physics.phonon.velocity` for details.
 
+        Notes
+        -----
+        The eigenvectors for the modes *may* have changed after calling this routine.
+        This is because of the velocity un-folding for degenerate modes. I.e. calling
+        `displacement` and/or `PDOS` after this method *may* change the result.
+
         Parameters
         ----------
         eps : float, optional
@@ -304,3 +369,16 @@ class EigenmodePhonon(ModeCPhonon):
 
         deg = self.degenerate(eps)
         return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg)
+
+    def displacement(self):
+        r""" Calculate displacements for the modes
+
+        This routine calls `~sisl.physics.phonon.displacements` with appropriate arguments
+        and returns the real space displacements for the modes.
+
+        Note that the coefficients associated with the `ModeCPhonon` *must* correspond
+        to the frequencies of the modes.
+
+        See `~sisl.physics.phonon.displacement` for details.
+        """
+        return displacement(self.mode, self.hw, self.parent.mass)

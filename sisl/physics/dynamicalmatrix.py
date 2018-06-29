@@ -273,8 +273,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
             hw = self.eigsh(k, gauge=gauge, eigvals_only=True, **kwargs)
         else:
             hw = self.eigh(k, gauge, eigvals_only=True, **kwargs)
-        info = {'k': k,
-                'gauge': gauge}
+        info = {'k': k, 'gauge': gauge}
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
     def eigenmode(self, k=(0, 0, 0), gauge='R', **kwargs):
@@ -302,14 +301,12 @@ class DynamicalMatrix(SparseOrbitalBZ):
         EigenmodePhonon
         """
         if kwargs.pop('sparse', False):
-            e, v = self.eigsh(k, gauge=gauge, eigvals_only=False, **kwargs)
+            hw, v = self.eigsh(k, gauge=gauge, eigvals_only=False, **kwargs)
         else:
-            e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
+            hw, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
         info = {'k': k, 'gauge': gauge}
-        if 'spin' in kwargs:
-            info['spin'] = kwargs['spin']
         # Since eigh returns the eigenvectors [:, i] we have to transpose
-        return EigenmodePhonon(v.T, _correct_hw(e), self, **info)
+        return EigenmodePhonon(v.T, _correct_hw(hw), self, **info)
 
     @staticmethod
     def read(sile, *args, **kwargs):
@@ -355,11 +352,28 @@ class DynamicalMatrix(SparseOrbitalBZ):
         See Also
         --------
         eigenmode : method used to calculate the eigenmodes
-        DOS : Calculate total DOS
-        PDOS : Calculate projected DOS
+        displacement : Calculate mode displacements
         EigenmodePhonon.velocity : Underlying method used to calculate the velocity
         """
         return self.eigenmode(k, **kwargs).velocity()
+
+    def displacement(self, k=(0, 0, 0), **kwargs):
+        r""" Calculate the displacement for the eigenmodes for a given `k` point
+
+        Parameters
+        ----------
+        k : array_like, optional
+            k-point at which the displacement are calculated
+        **kwargs: optional
+            additional parameters passed to the `eigenmode` routine
+
+        See Also
+        --------
+        eigenmode : method used to calculate the eigenmodes
+        velocity : Calculate mode velocity
+        EigenmodePhonon.displacement : Underlying method used to calculate the velocity
+        """
+        return self.eigenmode(k, **kwargs).displacement()
 
     def DOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
         r""" Calculate the DOS at the given energies for a specific `k` point
@@ -382,7 +396,6 @@ class DynamicalMatrix(SparseOrbitalBZ):
         eigenvalue : method used to calculate the eigenvalues
         PDOS : Calculate projected DOS
         EigenvaluePhonon.DOS : Underlying method used to calculate the DOS
-        EigenmodePhonon.PDOS : Underlying method used to calculate the projected DOS
         """
         return self.eigenvalue(k, **kwargs).DOS(E, distribution)
 
@@ -406,7 +419,6 @@ class DynamicalMatrix(SparseOrbitalBZ):
         sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
         eigenmode : method used to calculate the eigenmodes
         DOS : Calculate total DOS
-        EigenvaluePhonon.DOS : Underlying method used to calculate the DOS
         EigenmodePhonon.PDOS : Underlying method used to calculate the projected DOS
         """
         return self.eigenmode(k, **kwargs).PDOS(E, distribution)

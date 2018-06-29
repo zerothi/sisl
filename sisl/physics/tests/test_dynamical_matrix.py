@@ -103,4 +103,5 @@ class TestDynamicalMatrix(object):
         assert np.allclose(D.DOS(E), D.PDOS(E).sum(0))
         assert np.allclose(D.DOS(E), em.DOS(E))
         assert np.allclose(D.PDOS(E), em.PDOS(E))
+        assert np.allclose(D.displacement(), em.displacement())
         assert np.allclose(D.velocity(), em.velocity())
