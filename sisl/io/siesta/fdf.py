@@ -881,33 +881,9 @@ class fdfSileSiesta(SileSiesta):
             supercell = [1] * 3
 
         elif supercell is True:
-            # Try and guess the supercell
-            if FC.shape[2] % FC.shape[0] != 0:
-                raise ValueError(repr(self) + '.read_hessian(FC) does not seem to contain an '
-                                 'exact supercell FC. Please check the FC file!')
-            sup_product = FC.shape[2] // FC.shape[0]
-
-            # Now figure out the repetitions along each direction
-            fxyz = geom.fxyz
-            # Move to 0
-            fxyz -= fxyz.min(0)
-            # Shift a little bit in to account for inaccuracies.
-            fxyz += (0.5 - (fxyz.max(0) - fxyz.min(0)) / 2).reshape(1, -1) * 0.01
-
-            # Default guess to 1
-            supercell = [1] * 3
-            for n_bin in range(sup_product, 1, -1):
-                bins = np.linspace(0, 1, n_bin + 1)
-                for i in range(3):
-                    if supercell[i] > 1:
-                        continue
-
-                    b = np.histogram(fxyz[:, i], bins)[0]
-
-                    diff_bin = np.diff(np.histogram(fxyz[:, i], bins)[0])
-                    if np.all(diff_bin == 0):
-                        supercell[i] = n_bin
-            info(repr(self) + '.read_hessian(FC) guessed on a [{}, {}, {}] supercell calculation.'.format(*supercell))
+            _, supercell = geom.as_primary(FC.shape[0], ret_super=True)
+            info(repr(self) + '.read_hessian(FC) guessed on a [{}, {}, {}] '
+                 'supercell calculation.'.format(*supercell))
 
         # Convert to integer array
         supercell = _a.arrayi(supercell)
