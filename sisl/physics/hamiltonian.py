@@ -157,7 +157,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Returns
         -------
-        tuple : for each of the Cartesian directions a :math:`\partial \mathbf H(k)/\partial k` is returned.
+        tuple : for each of the Cartesian directions a :math:`\partial \mathbf H(k)/\partial k_\alpha` is returned.
         """
         pass
 
@@ -394,12 +394,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
         **kwargs: optional
-            additional parameters passed to the `eigenstate` routine
+            additional parameters passed to the `eigenvalue` routine
 
         See Also
         --------
         sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
-        eigenstate : method used to calculate the eigenstates
+        eigenvalue : method used to calculate the eigenvalues
         PDOS : Calculate projected DOS
         EigenvalueElectron.DOS : Underlying method used to calculate the DOS
         EigenstateElectron.PDOS : Underlying method used to calculate the projected DOS

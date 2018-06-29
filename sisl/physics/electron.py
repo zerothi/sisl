@@ -87,9 +87,9 @@ def DOS(E, eig, distribution='gaussian'):
     E : array_like
        energies to calculate the DOS at
     eig : array_like
-       eigenvalues
+       electronic eigenvalues
     distribution : func or str, optional
-       a function that accepts :math:`E-\epsilon` as argument and calculates the
+       a function that accepts :math:`\Delta E` as argument and calculates the
        distribution function.
 
     See Also
@@ -111,7 +111,7 @@ def DOS(E, eig, distribution='gaussian'):
     return DOS
 
 
-def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
+def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
     r""" Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{PDOS}(E)` is calculated as:
@@ -158,11 +158,11 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
        energies to calculate the projected-DOS from
     eig : array_like
        eigenvalues
-    eig_v : array_like
+    state : array_like
        eigenvectors
     S : array_like, optional
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
-       matrix is assumed. For non-collinear calculations this matrix may be halve the size of ``len(eig_v[0, :])`` to
+       matrix is assumed. For non-collinear calculations this matrix may be halve the size of ``len(state[0, :])`` to
        trigger the non-collinear calculation of PDOS.
     distribution : func or str, optional
        a function that accepts :math:`E-\epsilon` as argument and calculates the
@@ -180,8 +180,8 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     Returns
     -------
     numpy.ndarray
-        projected DOS calculated at energies, has dimension ``(eig_v.shape[1], len(E))``.
-        For non-collinear calculations it will be ``(4, eig_v.shape[1] // 2, len(E))``, ordered as
+        projected DOS calculated at energies, has dimension ``(state.shape[1], len(E))``.
+        For non-collinear calculations it will be ``(4, state.shape[1] // 2, len(E))``, ordered as
         indicated in the above list.
     """
     if isinstance(distribution, str):
@@ -191,13 +191,13 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     if S is None:
         class S(object):
             __slots__ = []
-            shape = (eig_v.shape[1], eig_v.shape[1])
+            shape = (state.shape[1], state.shape[1])
             @staticmethod
             def dot(v):
                 return v
 
     if spin is None:
-        if S.shape[1] == eig_v.shape[1] // 2:
+        if S.shape[1] == state.shape[1] // 2:
             spin = Spin('nc')
             S = S[::2, ::2]
         else:
@@ -206,37 +206,37 @@ def PDOS(E, eig, eig_v, S=None, distribution='gaussian', spin=None):
     # check for non-collinear (or SO)
     if spin.kind > Spin.POLARIZED:
         # Non colinear eigenvectors
-        if S.shape[1] == eig_v.shape[1]:
+        if S.shape[1] == state.shape[1]:
             # Since we are going to reshape the eigen-vectors
             # to more easily get the mixed states, we can reduce the overlap matrix
             S = S[::2, ::2]
 
         # Initialize data
-        PDOS = np.empty([4, eig_v.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(eig_v.dtype))
+        PDOS = np.empty([4, state.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(state.dtype))
 
         d = distribution(E - eig[0]).reshape(1, -1)
-        v = S.dot(eig_v[0].reshape(-1, 2))
-        D = (conj(eig_v[0]) * v.ravel()).real.reshape(-1, 2) # diagonal PDOS
+        v = S.dot(state[0].reshape(-1, 2))
+        D = (conj(state[0]) * v.ravel()).real.reshape(-1, 2) # diagonal PDOS
         PDOS[0, :, :] = D.sum(1).reshape(-1, 1) * d # total DOS
         PDOS[3, :, :] = (D[:, 0] - D[:, 1]).reshape(-1, 1) * d # z-dos
-        D = (conj(eig_v[0, 1::2]) * 2 * v[:, 0]).reshape(-1, 1) # psi_down * psi_up * 2
+        D = (conj(state[0, 1::2]) * 2 * v[:, 0]).reshape(-1, 1) # psi_down * psi_up * 2
         PDOS[1, :, :] = D.real * d # x-dos
         PDOS[2, :, :] = D.imag * d # y-dos
         for i in range(1, len(eig)):
             d = distribution(E - eig[i]).reshape(1, -1)
-            v = S.dot(eig_v[i].reshape(-1, 2))
-            D = (conj(eig_v[i]) * v.ravel()).real.reshape(-1, 2)
+            v = S.dot(state[i].reshape(-1, 2))
+            D = (conj(state[i]) * v.ravel()).real.reshape(-1, 2)
             PDOS[0, :, :] += D.sum(1).reshape(-1, 1) * d
             PDOS[3, :, :] += (D[:, 0] - D[:, 1]).reshape(-1, 1) * d
-            D = (conj(eig_v[i, 1::2]) * 2 * v[:, 0]).reshape(-1, 1)
+            D = (conj(state[i, 1::2]) * 2 * v[:, 0]).reshape(-1, 1)
             PDOS[1, :, :] += D.real * d
             PDOS[2, :, :] += D.imag * d
 
     else:
-        PDOS = (conj(eig_v[0]) * S.dot(eig_v[0])).real.reshape(-1, 1) \
+        PDOS = (conj(state[0]) * S.dot(state[0])).real.reshape(-1, 1) \
                * distribution(E - eig[0]).reshape(1, -1)
         for i in range(1, len(eig)):
-            PDOS[:, :] += (conj(eig_v[i]) * S.dot(eig_v[i])).real.reshape(-1, 1) \
+            PDOS[:, :] += (conj(state[i]) * S.dot(state[i])).real.reshape(-1, 1) \
                           * distribution(E - eig[i]).reshape(1, -1)
 
     return PDOS
@@ -909,7 +909,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     np.seterr(**old_err)
 
 
-class _common_State(object):
+class _electron_State(object):
     __slots__ = []
 
     def __is_nc(self):
@@ -1121,12 +1121,12 @@ class CoefficientElectron(Coefficient):
     __slots__ = []
 
 
-class StateElectron(_common_State, State):
+class StateElectron(_electron_State, State):
     """ A state describing a physical quantity related to electrons """
     __slots__ = []
 
 
-class StateCElectron(_common_State, StateC):
+class StateCElectron(_electron_State, StateC):
     """ A state describing a physical quantity related to electrons, with associated coefficients of the state """
     __slots__ = []
 
