@@ -1,7 +1,6 @@
 """
-===================================
 Unit conversion (:mod:`sisl.unit`)
-===================================
+==================================
 
 .. module:: sisl.unit
    :noindex:
@@ -35,6 +34,14 @@ Siesta units (:mod:`sisl.unit.siesta`)
 .. currentmodule:: sisl.unit.siesta
 
 This subpackage implements the unit conversions used in `Siesta`_.
+
+To use the unit conversion from `Siesta`_, simply import `unit_convert` as:
+
+>>> from sisl.unit import unit_convert
+>>> from sisl.unit.siesta import siesta_unit_convert
+
+in which case ``unit_convert`` will refer to default unit conversions and ``siesta_unit_convert``
+will use the unit definitions in `Siesta`_.
 """
 from .base import unit_group, unit_convert, unit_default
 
