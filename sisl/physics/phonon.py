@@ -1,4 +1,4 @@
-"""PHonon related functions and classes
+"""Phonon related functions and classes
 =======================================
 
 .. module:: sisl.physics.phonon
@@ -32,7 +32,7 @@ using automatic arguments.
    CoefficientPhonon
    ModePhonon
    ModeCPhonon
-   EigenfrequencyPhonon
+   EigenvaluePhonon
    EigenvectorPhonon
    EigenmodePhonon
 
@@ -213,7 +213,7 @@ def displacement(mode, hw, mass):
 
     .. math::
 
-       \mathbf{u}_{i\alpha} = \frac{\epsilon_{i\alpha}}{m_i \hbar\omega}
+       \mathbf{u}_{i\alpha} = \frac{\epsilon_{i\alpha}}{\sqrt{m_i \hbar\omega}}
 
     where :math:`i` is the atomic index.
 
@@ -285,7 +285,7 @@ class ModeCPhonon(_phonon_Mode, StateC):
 
 
 class EigenvaluePhonon(CoefficientPhonon):
-    """ Eigenvalues of phononic states, no eigenmodes retained
+    """ Eigenvalues of phonon modes, no eigenmodes retained
 
     This holds routines that enable the calculation of density of states.
     """
