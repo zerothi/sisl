@@ -238,7 +238,9 @@ def displacement(mode, hw, mass):
     return _displacement(mode, hw, mass)
 
 
-_displacement_const = (2 * unit_convert('Ry', 'eV')) ** 0.5
+# Electron rest mass in units of proton mass (the units we use for the atoms)
+_me_in_mp = 5.485799090e-4
+_displacement_const = (2 * unit_convert('Ry', 'eV') * _me_in_mp) ** 0.5 * unit_convert('Bohr', 'Ang')
 
 
 def _displacement(mode, hw, mass):
@@ -340,7 +342,7 @@ class EigenmodePhonon(ModeCPhonon):
         """
         return PDOS(E, self.mode, self.hw, distribution)
 
-    def velocity(self, eps=1e-4):
+    def velocity(self, eps=1e-7):
         r""" Calculate velocity for the modes
 
         This routine calls `~sisl.physics.phonon.velocity` with appropriate arguments
