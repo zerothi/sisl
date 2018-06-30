@@ -5,7 +5,7 @@
    :noindex:
 
 In sisl phonon calculations are relying on routines
-specific for electrons. For instance density of states calculations from
+specific for phonons. For instance density of states calculations from
 phonon eigenvalues and other quantities.
 
 This module implements the necessary tools required for calculating

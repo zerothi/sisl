@@ -31,6 +31,7 @@ different routines for electronic structure calculations.
    sisl.physics.distribution
    sisl.physics.brillouinzone
    sisl.physics.electron
+   sisl.physics.phonon
    sisl.shape
    sisl.io
    sisl.unit

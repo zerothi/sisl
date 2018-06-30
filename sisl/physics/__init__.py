@@ -75,6 +75,7 @@ Phonons (:mod:`sisl.physics.phonon`)
    ~phonon.DOS
    ~phonon.PDOS
    ~phonon.velocity
+   ~phonon.displacement
    EigenvaluePhonon
    EigenvectorPhonon
    EigenmodePhonon
