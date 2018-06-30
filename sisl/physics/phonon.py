@@ -213,7 +213,7 @@ def displacement(mode, hw, mass):
 
     .. math::
 
-       \mathbf{u}_{i\alpha} = \frac{\epsilon_{i\alpha}}{\sqrt{m_i \hbar\omega}}
+       \mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}
 
     where :math:`i` is the atomic index.
 
