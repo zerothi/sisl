@@ -13,6 +13,7 @@ different routines for electronic structure calculations.
    api-generated/sisl.physics
    api-generated/sisl.shape
    api-generated/sisl.io
+   api-generated/sisl.constant
    api-generated/sisl.unit
    api-generated/sisl.utils
 
@@ -26,6 +27,7 @@ different routines for electronic structure calculations.
    :hidden:
 
    sisl
+   sisl.constant
    sisl.geom
    sisl.physics
    sisl.physics.distribution

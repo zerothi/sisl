@@ -43,7 +43,7 @@ import numpy as np
 from numpy import conj
 
 import sisl._array as _a
-from sisl.unit import unit_convert
+from sisl import units, constant
 from sisl.linalg import eig_destroy, eigh_destroy
 from sisl.messages import info, warn, SislError, tqdm_eta
 from sisl._help import dtype_complex_to_real
@@ -170,11 +170,9 @@ def velocity(mode, hw, dDk, degenerate=None):
     return _velocity(mode, hw, dDk, degenerate)
 
 
-# We return velocity units in Ang/ps
-#   hbar in eV.s = 6.582119514e-16
-# and dDk is already in Ang * eV ** 2.
-#   1e-12 ps / s
-_velocity_const = 1 / 6.582119514e-16 * 1e-12
+# dDk is in [Ang * eV ** 2]
+# velocity units in Ang/ps
+_velocity_const = units('ps', 's') / constant.hbar('eV s')
 
 
 def _velocity(mode, hw, dDk, degenerate):
@@ -186,6 +184,9 @@ def _velocity(mode, hw, dDk, degenerate):
     # Decouple the degenerate modes
     if not degenerate is None:
         for deg in degenerate:
+            # Set the average frequency
+            hw[deg] = np.average(hw[deg])
+
             # Now diagonalize to find the contributions from individual modes
             # then re-construct the seperated degenerate modes
             # Since we do this for all directions we should decouple them all
@@ -239,8 +240,7 @@ def displacement(mode, hw, mass):
 
 
 # Electron rest mass in units of proton mass (the units we use for the atoms)
-_me_in_mp = 5.485799090e-4
-_displacement_const = (2 * unit_convert('Ry', 'eV') * _me_in_mp) ** 0.5 * unit_convert('Bohr', 'Ang')
+_displacement_const = (2 * units('Ry', 'eV') * constant.m_e('amu')) ** 0.5 * units('Bohr', 'Ang')
 
 
 def _displacement(mode, hw, mass):

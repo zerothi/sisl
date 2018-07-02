@@ -6,6 +6,8 @@ from datetime import datetime
 import numpy as np
 
 # Import sile objects
+from sisl import constant
+from sisl.unit.siesta import units
 import sisl._array as _a
 from sisl._indices import indices_only
 from sisl._help import _str
@@ -841,7 +843,9 @@ class fdfSileSiesta(SileSiesta):
         FC = np.where(np.abs(FC) > fc_cut, FC, 0.)
 
         # Convert the force constant such that a diagonalization returns eV ^ 2
-        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
+        # FC is in [eV / Ang^2]
+        # Further down we are multiplying with [1 / amu]
+        scale = constant.hbar / units('Ang', 'm') / units('eV amu', 'J kg') ** 0.5
         FC *= scale ** 2
 
         # Convert the geometry to contain 3 orbitals per atom (x, y, z)

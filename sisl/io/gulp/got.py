@@ -13,8 +13,8 @@ from ..sile import *
 from sisl._help import _range as range
 # Import the geometry object
 from sisl import Geometry, Atom, Orbital, SuperCell
+from sisl import constant, units
 from sisl.physics import DynamicalMatrix
-from sisl.unit import unit_convert
 
 
 __all__ = ['gotSileGULP']
@@ -197,7 +197,7 @@ class gotSileGULP(SileGULP):
             del mass
 
         # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
-        scale = 1.054571800e-34 / unit_convert('Ang', 'm') / (unit_convert('eV', 'J') * unit_convert('amu', 'kg')) ** 0.5
+        scale = constant.hbar / units('Ang', 'm') / units('eV amu', 'J kg') ** 0.5
         dyn.data *= scale ** 2
 
         return DynamicalMatrix.fromsp(geom, dyn)

@@ -52,6 +52,7 @@ from numpy import conj, dot, ogrid
 from numpy import cos, sin, pi, int32
 from numpy import add
 
+from sisl import units, constant
 from sisl.supercell import SuperCell
 from sisl.geometry import Geometry
 from sisl._indices import indices_le
@@ -370,11 +371,9 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     return _velocity_non_ortho(state, dHk, energy, dSk, degenerate)
 
 
-# We return velocity units in Ang/ps
-#   hbar in eV.s = 6.582119514e-16
-# and dHk is already in Ang * eV.
-#   1e-12 ps / s
-_velocity_const = 1 / 6.582119514e-16 * 1e-12
+# dHk is in [Ang eV]
+# velocity units in [Ang/ps]
+_velocity_const = units('ps', 's') / constant.hbar('eV s')
 
 
 def _velocity_non_ortho(state, dHk, energy, dSk, degenerate):
@@ -499,14 +498,9 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
     return _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_matrix)
 
 
-# We return electron mass units in m_e
-#   hbar in eV.s = 6.582119514e-16
-# and ddHk is already in Ang ^ 2 * eV
-# So
-#  eV -> J
-#  1/Ang -> 1/m   (squared)
-#  kg -> mass_e
-_inv_eff_mass_const = 1 / 6.582119514e-16 ** 2 / 1.60217653e-19 * 1e-10 ** 2 * 9.10938356e-31
+# inverse electron mass units in 1/m_e (atomic units)!
+# ddHk is in [Ang ^ 2 eV]
+_inv_eff_mass_const = units('Ang', 'Bohr') ** 2 * units('eV', 'Ha')
 
 
 def _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_matrix):
