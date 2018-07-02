@@ -18,6 +18,22 @@ The currently stored constants are (all are given in SI units):
    m_p
    G
 
+
+.. we need to add them to the toctree to be able to create links to them
+
+
+.. autosummary::
+   :toctree:
+   :hidden:
+
+   PhysicalConstant
+   c
+   h
+   hbar
+   m_e
+   m_p
+   G
+
 All constants may be used like an ordinary float:
 
 >>> c * 2
