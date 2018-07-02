@@ -7,6 +7,7 @@ setuptools
 numpy>=1.9
 scipy
 netCDF4
+pyparsing
 matplotlib
 ipykernel
 nbsphinx

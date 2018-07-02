@@ -41,6 +41,7 @@ If performing a manual installation, these packages are required:
    - __scipy__
    - __netCDF4__
    - __setuptools__
+   - __pyparsing__
    - __matplotlib__, encouraged optional dependency
    - __tqdm__, encouraged optional dependency
    - __xarray__, optional dependency

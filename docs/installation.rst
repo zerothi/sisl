@@ -15,6 +15,7 @@ Required dependencies
 - `numpy`_ (1.9 or later)
 - `scipy`_
 - `netCDF4-python <netcdf4-py_>`_
+- `pyparsing`_
 - A C- and fortran-compiler
 
 Optional dependencies:
