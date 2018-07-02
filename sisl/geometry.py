@@ -1679,12 +1679,13 @@ class Geometry(SuperCellChild):
     def add(self, other):
         """ Merge two geometries (or a Geometry and SuperCell) by adding the two atoms together
 
+        If `other` is a Geometry only the atoms gets added, to also add the supercell vectors
+        simply do ``geom.add(other).add(other.sc)``.
+
         Parameters
         ----------
         other : Geometry or SuperCell
             Other geometry class which is added
-        only_atoms : bool, optional
-            If ``True`` only the atoms are added, else both the atoms and lattice vectors are added
 
         See Also
         --------
