@@ -9,6 +9,9 @@ Module containing a pre-set set of physical constants.
 
 The currently stored constants are (all are given in SI units):
 
+Constants
+---------
+
 .. autosummary::
    :toctree:
   
