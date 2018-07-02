@@ -14,6 +14,7 @@
 .. _netcdf4-py: http://github.com/Unidata/netcdf4-python
 .. _numpy: http://www.numpy.org/
 .. _scipy: https://scipy.org/scipylib/index.html
+.. _pyparsing: https://github.com/pyparsing/pyparsing
 .. _matplotlib: https://matplotlib.org/
 .. _pytest: https://docs.pytest.org/en/stable/
 .. _tqdm: https://github.com/tqdm/tqdm
