@@ -34,15 +34,17 @@ The currently stored constants are (all are given in SI units):
    m_p
    G
 
-All constants may be used like an ordinary float:
+All constants may be used like an ordinary float (which converts it to a float:
 
+>>> c
+299792458.0 m/s
 >>> c * 2
 599584916
 
-while one can just as easily convert the units
+while one can just as easily convert the units (which ensures thay stay like another `PhysicalConstant`):
 
 >>> c('Ang/ps')
-2997924.58
+2997924.58 Ang/ps
 
 """
 from __future__ import print_function, division
@@ -62,9 +64,11 @@ class PhysicalConstant(float):
     'm'
     >>> m2nm = m('nm')
     >>> m2nm
-    1000000000.0
+    1000000000.0 nm
     >>> m2nm.unit
     'nm'
+    >>> m2nm * 2
+    1000000000.0
     """
     __slots__ = ['_unit']
 
