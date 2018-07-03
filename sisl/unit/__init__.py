@@ -28,6 +28,10 @@ All subsequent subpackages also exposes the above 4 methods. If
 a subpackage method is used, the unit conversion corresponds to
 the units defined in the respective code.
 
+The `units` object is by far the easiest version to use since it handles
+complex units (Ry/kg/Bohr N) while `unit_convert` is the basic unit-conversion
+table that only converts simple units. E.g. Ry to eV etc.
+
 
 Siesta units (:mod:`sisl.unit.siesta`)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -36,10 +40,10 @@ Siesta units (:mod:`sisl.unit.siesta`)
 
 This subpackage implements the unit conversions used in `Siesta`_.
 
-To use the unit conversion from `Siesta`_, simply import `unit_convert` as:
+To use the unit conversion from `Siesta`_, simply import `units` as:
 
 >>> from sisl.unit import units
->>> from sisl.unit.siesta import siesta_units
+>>> from sisl.unit.siesta import units as siesta_units
 
 in which case ``units`` will refer to default unit conversions and ``siesta_units``
 will use the unit definitions in `Siesta`_.
