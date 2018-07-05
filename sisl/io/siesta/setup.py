@@ -12,6 +12,7 @@ def configuration(parent_package='', top_path=None):
     all_info = get_info('ALL')
     sources = [
         'free_unit.f90',
+        'siesta_sc_off.f90',
         'write_hsx.f90',
         'read_hsx.f90',
         'read_dm.f90',

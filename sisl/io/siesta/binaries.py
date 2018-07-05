@@ -32,6 +32,27 @@ __all__ += ['gridSileSiesta']
 __all__ += ['tsgfSileSiesta']
 
 
+def _to_siesta_csr(geom, csr):
+    """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
+    nsc = geom.sc.nsc.astype(np.int32)
+    # Create the sc_off as siesta would have done it
+    siesta_sc_off = _siesta.siesta_sc_off(nsc[0], nsc[1], nsc[2]).T
+    return _to_sc_off_csr(geom, siesta_sc_off, csr)
+
+
+def _to_sc_off_csr(geom, sc_off, csr):
+    """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
+    # Find the equivalent indices in the geometry supercell
+    geom_sc_off = geom.sc_index(sc_off)
+    # local csr matrix ordering
+    col_from = _a.arangei(geom.no_s)
+    # this transfers the local csr matrix ordering to the geometry ordering
+    col_to = (geom_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)).ravel()
+    new = csr.copy()
+    new.translate_columns(col_from, col_to)
+    return new
+
+
 class tshsSileSiesta(SileBinSiesta):
     """ TranSiesta TSHS file object """
 
@@ -169,7 +190,10 @@ class tshsSileSiesta(SileBinSiesta):
         xyz = H.geom.xyz * Ang2Bohr
 
         # Pointer to CSR matrix
-        csr = H._csr
+        csr = _to_siesta_csr(H.geom, H._csr)
+
+        if csr.nnz == 0:
+            raise SileError(str(self) + '.write_hamiltonian cannot write a zero element sparse matrix!')
 
         # Get H and S
         if H.orthogonal:
@@ -198,8 +222,7 @@ class tshsSileSiesta(SileBinSiesta):
         # however, they are both in C-contiguous arrays and this is indeed weird... :(
         _siesta.write_tshs_hs(self.file, nsc[0], nsc[1], nsc[2],
                               cell.T, xyz.T, H.geom.firsto,
-                              csr.ncol, csr.col + 1, h, s, isc.T,
-                              nspin=len(H.spin), na_u=H.geom.na, no_u=H.geom.no, nnz=H.nnz)
+                              csr.ncol, csr.col + 1, h, s, isc.T)
 
 
 class dmSileSiesta(SileBinSiesta):
@@ -209,8 +232,8 @@ class dmSileSiesta(SileBinSiesta):
         """ Returns the density matrix from the siesta.DM file """
 
         # Now read the sizes used...
-        spin, no, nnz = _siesta.read_dm_sizes(self.file)
-        ncol, col, dDM = _siesta.read_dm(self.file, spin, no, nnz)
+        spin, no, nsc, nnz = _siesta.read_dm_sizes(self.file)
+        ncol, col, dDM = _siesta.read_dm(self.file, spin, no, nsc, nnz)
 
         # Try and immediately attach a geometry
         geom = kwargs.get('geometry', kwargs.get('geom', None))
@@ -218,7 +241,8 @@ class dmSileSiesta(SileBinSiesta):
             # We truly, have no clue,
             # Just generate a boxed system
             xyz = [[x, 0, 0] for x in range(no)]
-            geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
+            sc = SuperCell([no, 1, 1], nsc=nsc)
+            geom = Geometry(xyz, Atom(1), sc=sc)
 
         if geom.no != no:
             raise ValueError("Reading DM files requires the input geometry to have the "
@@ -247,7 +271,10 @@ class dmSileSiesta(SileBinSiesta):
         DM.finalize()
 
         # Pointer to CSR matrix
-        csr = DM._csr
+        csr = _to_siesta_csr(DM.geom, DM._csr)
+
+        if csr.nnz == 0:
+            raise SileError(str(self) + '.write_density_matrix cannot write a zero element sparse matrix!')
 
         # Get H and S
         if DM.orthogonal:
@@ -258,11 +285,9 @@ class dmSileSiesta(SileBinSiesta):
         # Ensure shapes (say if only 1 spin)
         dm.shape = (-1, len(DM.spin))
 
-        # I can't seem to figure out the usage of f2py
-        # Below I get an error if xyz is not transposed and h is transposed,
-        # however, they are both in C-contiguous arrays and this is indeed weird... :(
-        _siesta.write_dm(self.file, csr.ncol, csr.col + 1, dm,
-                              nspin=len(DM.spin), no_u=DM.geom.no, nnz=DM.nnz)
+        nsc = DM.geometry.sc.nsc.astype(np.int32)
+
+        _siesta.write_dm(self.file, nsc, csr.ncol, csr.col + 1, dm)
 
 
 class tsdeSileSiesta(dmSileSiesta):
@@ -272,8 +297,8 @@ class tsdeSileSiesta(dmSileSiesta):
         """ Returns the energy density matrix from the siesta.DM file """
 
         # Now read the sizes used...
-        spin, no, nnz = _siesta.read_tsde_sizes(self.file)
-        ncol, col, dEDM = _siesta.read_tsde_edm(self.file, spin, no, nnz)
+        spin, no, nsc, nnz = _siesta.read_tsde_sizes(self.file)
+        ncol, col, dEDM = _siesta.read_tsde_edm(self.file, spin, no, nsc, nnz)
 
         # Try and immediately attach a geometry
         geom = kwargs.get('geometry', kwargs.get('geom', None))
@@ -281,7 +306,8 @@ class tsdeSileSiesta(dmSileSiesta):
             # We truly, have no clue,
             # Just generate a boxed system
             xyz = [[x, 0, 0] for x in range(no)]
-            geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
+            sc = SuperCell([no, 1, 1], nsc=nsc)
+            geom = Geometry(xyz, Atom(1), sc=sc)
 
         if geom.no != no:
             raise ValueError("Reading EDM files requires the input geometry to have the "

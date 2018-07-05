@@ -1,23 +1,29 @@
-subroutine read_dm_sizes(fname, nspin, no_u, nnz)
+subroutine read_dm_sizes(fname, nspin, no_u, nsc, nnz)
 
   implicit none
   
   ! Input parameters
   character(len=*), intent(in) :: fname
-  integer, intent(out) :: no_u, nspin, nnz
+  integer, intent(out) :: nspin, no_u, nsc(3), nnz
   
 ! Define f2py intents
 !f2py intent(in)  :: fname
-!f2py intent(out) :: no_u, nspin, nnz
+!f2py intent(out) :: no_u, nspin, nsc, nnz
 
 ! Internal variables and arrays
-  integer :: iu
+  integer :: iu, ierr
   integer, allocatable :: num_col(:)
 
   call free_unit(iu)
   open(iu,file=trim(fname),status='old',form='unformatted')
 
-  read(iu) no_u, nspin
+  ! First try and see if nsc is present
+  read(iu,iostat=ierr) no_u, nspin, nsc
+  if ( ierr /= 0 ) then
+    rewind(iu)
+    read(iu) no_u, nspin
+    nsc(:) = 0
+  end if
   allocate(num_col(no_u))
   read(iu) num_col
   nnz = sum(num_col)
@@ -27,7 +33,7 @@ subroutine read_dm_sizes(fname, nspin, no_u, nnz)
 
 end subroutine read_dm_sizes
 
-subroutine read_dm(fname, nspin, no_u, nnz, ncol, list_col, DM)
+subroutine read_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
 
   implicit none
 
@@ -37,29 +43,36 @@ subroutine read_dm(fname, nspin, no_u, nnz, ncol, list_col, DM)
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  integer, intent(in) :: no_u, nspin, nnz
+  integer, intent(in) :: no_u, nspin, nsc(3), nnz
   integer, intent(out) :: ncol(no_u), list_col(nnz)
   real(dp), intent(out) :: DM(nnz,nspin)
   
 ! Define f2py intents
 !f2py intent(in)  :: fname
-!f2py intent(in) :: no_u, nspin, nnz
+!f2py intent(in) :: no_u, nspin, nsc, nnz
 !f2py intent(out) :: ncol, list_col
 !f2py intent(out) :: DM
 
 ! Internal variables and arrays
-  integer :: iu
+  integer :: iu, ierr
   integer :: is, io, n
 
   ! Local readables
-  integer :: lno_u, lnspin
+  integer :: lno_u, lnspin, lnsc(3)
 
   call free_unit(iu)
   open(iu,file=trim(fname),status='old',form='unformatted')
 
-  read(iu) lno_u, lnspin
+  ! First try and see if nsc is present
+  read(iu,iostat=ierr) lno_u, lnspin, lnsc
+  if ( ierr /= 0 ) then
+    rewind(iu)
+    read(iu) lno_u, lnspin
+    lnsc(:) = 0
+  end if
   if ( lno_u /= no_u ) stop 'Error in reading data, not allocated, no_u'
   if ( lnspin /= nspin ) stop 'Error in reading data, not allocated, nspin'
+  if ( any(lnsc /= nsc) ) stop 'Error in reading data, not allocated, nsc'
 
   read(iu) ncol
   if ( nnz /= sum(ncol) ) stop 'Error in reading data, not allocated, nnz'

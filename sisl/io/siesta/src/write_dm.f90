@@ -1,4 +1,4 @@
-subroutine write_dm(fname, nspin, no_u, nnz, ncol, list_col, DM)
+subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
   
   implicit none
   
@@ -6,13 +6,13 @@ subroutine write_dm(fname, nspin, no_u, nnz, ncol, list_col, DM)
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  integer, intent(in) :: nspin, no_u, nnz
+  integer, intent(in) :: nspin, no_u, nsc(3), nnz
   integer, intent(in) :: ncol(no_u), list_col(nnz)
   real(dp), intent(in) :: DM(nnz,nspin)
 
 ! Define f2py intents
 !f2py intent(in) :: fname
-!f2py intent(in) :: nspin, no_u, nnz
+!f2py intent(in) :: nspin, no_u, nsc, nnz
 !f2py intent(in) :: ncol, list_col
 !f2py intent(in) :: DM
 
@@ -22,7 +22,8 @@ subroutine write_dm(fname, nspin, no_u, nnz, ncol, list_col, DM)
   call free_unit(iu)
   open( iu, file=trim(fname), status='unknown', form='unformatted', action='write')
 
-  write(iu) no_u, nspin
+  ! Also write the supercell.
+  write(iu) no_u, nspin, nsc
 
   ! Sparse pattern
   write(iu) ncol
