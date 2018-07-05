@@ -1137,6 +1137,22 @@ class EigenvalueElectron(CoefficientElectron):
     def eig(self):
         return self.c
 
+    def occupation(self, distribution='fermi_dirac'):
+        """ Calculate the occupations for the states according to a distribution function
+
+        Parameters
+        ----------
+        distribution : str or func, optional
+           distribution used to find occupations
+
+        Returns
+        -------
+        numpy.ndarray : len(self) with occupation values
+        """
+        if isinstance(distribution, str):
+            distribution = get_distribution(distribution)
+        return distribution(self.eig)
+
     def DOS(self, E, distribution='gaussian'):
         r""" Calculate DOS for provided energies, `E`.
 
@@ -1167,6 +1183,22 @@ class EigenstateElectron(StateCElectron):
     @property
     def eig(self):
         return self.c
+
+    def occupation(self, distribution='fermi_dirac'):
+        """ Calculate the occupations for the states according to a distribution function
+
+        Parameters
+        ----------
+        distribution : str or func, optional
+           distribution used to find occupations
+
+        Returns
+        -------
+        numpy.ndarray : len(self) with occupation values
+        """
+        if isinstance(distribution, str):
+            distribution = get_distribution(distribution)
+        return distribution(self.eig)
 
     def DOS(self, E, distribution='gaussian'):
         r""" Calculate DOS for provided energies, `E`.

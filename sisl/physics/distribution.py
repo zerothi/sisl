@@ -45,20 +45,7 @@ __all__ += ['fermi_dirac', 'bose_einstein', 'cold']
 def get_distribution(method, smearing=0.1, x0=0.):
     r""" Create a distribution function, Gaussian, Lorentzian etc.
 
-    The Gaussian distribution is calculated as:
-
-    .. math::
-        G(x,\sigma,x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x-x_0)^2}{2\sigma^2}\Big]
-
-    where :math:`\sigma` is the `smearing` parameter.
-
-    The Lorentzian distribution is calculated as:
-
-    .. math::
-        L(x,\gamma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
-
-    where :math:`\gamma` is the `smearing` parameter, note that here :math:`\gamma` is the
-    half-width at half-maximum (:math:`2\gamma` the full-width at half-maximum).
+    See the details regarding the distributions in their respective documentation.
 
     Parameters
     ----------
@@ -79,8 +66,13 @@ def get_distribution(method, smearing=0.1, x0=0.):
         return partial(gaussian, sigma=smearing, x0=x0)
     elif m in ['lorentz', 'lorentzian']:
         return partial(lorentzian, gamma=smearing, x0=x0)
-    raise ValueError("get_distribution currently only implements 'gaussian' or "
-                     "'lorentzian' distribution functions.")
+    elif m in ['fd', 'fermi_dirac']:
+        return partial(fermi_dirac, kT=smearing, mu=x0)
+    elif m in ['bose_einstein']:
+        return partial(bose_einstein, kT=smearing, mu=x0)
+    elif m in ['cold']:
+        return partial(cold, kT=smearing, mu=x0)
+    raise ValueError("get_distribution does not implement the {} distribution function, have you mispelled?".format(method))
 
 
 def gaussian(x, sigma=0.1, x0=0.):
