@@ -19,10 +19,27 @@ class xvSileSiesta(SileSiesta):
     """ XV file object """
 
     @Sile_fh_open
-    def write_geometry(self, geom, fmt='.9f'):
-        """ Writes the geometry to the contained file """
+    def write_geometry(self, geom, fmt='.9f', velocity=None):
+        """ Writes the geometry to the contained file
+
+        Parameters
+        ----------
+        geom : Geometry
+           geometry to write in the XV file
+        fmt : str, optional
+           the precision used for writing the XV file
+        velocity : numpy.ndarray, optional
+           velocities to write in the XV file (will be zero if not specified).
+           Units input must be in Ang/fs.
+        """
         # Check that we can write to the file
         sile_raise_write(self)
+
+        if velocity is None:
+            velocity = np.zeros([geom.na, 3], np.float32)
+        if geom.xyz.shape != velocity.shape:
+            raise SislError(str(self) + '.write_geometry requires the input'
+                            'velocity to have equal length to the input geometry.')
 
         # Write unit-cell
         tmp = np.zeros(6, np.float64)
@@ -40,6 +57,7 @@ class xvSileSiesta(SileSiesta):
         fmt_str += ('{:' + fmt + '} ') * 3 + '\n'
         for ia, a, ips in geom.iter_species():
             tmp[0:3] = geom.xyz[ia, :] / Bohr2Ang
+            tmp[3:] = velocity[ia, :] / Bohr2Ang
             self._write(fmt_str.format(ips + 1, a.Z, *tmp))
 
     @Sile_fh_open
@@ -54,7 +72,7 @@ class xvSileSiesta(SileSiesta):
         return SuperCell(cell)
 
     @Sile_fh_open
-    def read_geometry(self, species_Z=False):
+    def read_geometry(self, velocity=False, species_Z=False):
         """ Returns a `Geometry` object from the XV file
 
         Parameters
@@ -62,12 +80,20 @@ class xvSileSiesta(SileSiesta):
         species_Z : bool, optional
            if ``True`` the atomic numbers are the species indices (useful when
            reading the ChemicalSpeciesLabel block simultaneously).
+        velocity : bool, optional
+           also return the velocities in the file
+
+        Returns
+        -------
+        Geometry
+        velocity : only if `velocity` is true.
         """
         sc = self.read_supercell()
 
         # Read number of atoms
         na = int(self.readline())
         xyz = np.empty([na, 3], np.float64)
+        vel = np.empty([na, 3], np.float64)
         atms = [None] * na
         sp = np.empty([na], np.int32)
         for ia in range(na):
@@ -78,7 +104,10 @@ class xvSileSiesta(SileSiesta):
             else:
                 atms[ia] = Atom(int(line[1]))
             xyz[ia, :] = line[2:5]
+            vel[ia, :] = line[5:8]
+
         xyz *= Bohr2Ang
+        vel *= Bohr2Ang
 
         # Ensure correct sorting
         max_s = sp.max()
@@ -93,7 +122,30 @@ class xvSileSiesta(SileSiesta):
             else:
                 atms2[idx] = atms[idx[0]]
 
-        return Geometry(xyz, atms2.reduce(), sc=sc)
+        geom = Geometry(xyz, atms2.reduce(), sc=sc)
+        if velocity:
+            return geom, vel
+        return geom
+
+    @Sile_fh_open
+    def read_velocity(self):
+        """ Returns an array with the velocities from the XV file
+
+        Returns
+        -------
+        velocity : 
+        """
+        self.read_supercell()
+        na = int(self.readline())
+        vel = np.empty([na, 3], np.float64)
+        for ia in range(na):
+            line = list(map(float, self.readline().split()[:8]))
+            vel[ia, :] = line[5:8]
+
+        vel *= Bohr2Ang
+        return vel
+
+    read_data = read_velocity
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

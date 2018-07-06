@@ -33,3 +33,27 @@ def test_xv_reorder(sisl_tmp, sisl_system):
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
+
+
+def test_xv_velocity(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.XV', _dir)
+    g = sisl_system.g.copy()
+    g.atoms[0] = Atom(1)
+    v = np.random.rand(len(g), 3)
+    g.write(xvSileSiesta(f, 'w'), velocity=v)
+
+    # Try to read in different ways
+    g2 = xvSileSiesta(f).read_geometry()
+    assert np.allclose(g.cell, g2.cell)
+    assert np.allclose(g.xyz, g2.xyz)
+    assert g.atoms.equal(g2.atoms, R=False)
+
+    g2, v2 = xvSileSiesta(f).read_geometry(velocity=True)
+    assert np.allclose(g.cell, g2.cell)
+    assert np.allclose(g.xyz, g2.xyz)
+    assert g.atoms.equal(g2.atoms, R=False)
+    assert np.allclose(v, v2)
+
+    # Try to read in different ways
+    v2 = xvSileSiesta(f).read_velocity()
+    assert np.allclose(v, v2)
