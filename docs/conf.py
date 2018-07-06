@@ -24,6 +24,13 @@ _this_dir = os.path.dirname(__file__)
 
 # Add the 3 levels
 sys.path.insert(0, _this_dir)
+print('path:')
+print(sys.path)
+print('dir (.):')
+print(os.listdir())
+print('dir (..):')
+print(os.listdir('..'))
+
 
 try:
     import sisl
@@ -49,12 +56,11 @@ except Exception as e:
     # Add Mock modules
     MOCK_MODULES = ['sisl.io.siesta._siesta']
     MOCK_MODULES.extend(['sisl._{}'.format(a)
-                         for a in ['math_small', 'indices', 'supercell', 'sparse']])
+                         for a in ['indices', 'math_small', 'sparse', 'supercell']])
     MOCK_MODULES.extend(['sisl.physics._matrix_{}'.format(a)
-                         for a in ['diag_k_nc_dtype',
-                                   'dk', 'dk_dtype',
-                                   'k', 'k_dtype',
-                                   'k_nc_dtype', 'k_so_dtype']])
+                         for a in ['ddk', 'diag_k_nc_dtype',
+                                   'dk', 'k_dtype', 'k_factor_dtype',
+                                   'k_nc_dtype', 'k', 'k_so_dtype']])
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
     nbsphinx_allow_errors = True
