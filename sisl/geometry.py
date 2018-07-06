@@ -529,12 +529,12 @@ class Geometry(SuperCellChild):
             with get_sile(sile, 'w') as fh:
                 fh.write_geometry(self, *args, **kwargs)
 
-    def __repr__(self):
-        """ Representation of the object """
+    def __str__(self):
+        """ str of the object """
         s = self.__class__.__name__ + '{{na: {0}, no: {1},\n '.format(self.na, self.no)
-        s += repr(self.atom).replace('\n', '\n ')
+        s += str(self.atom).replace('\n', '\n ')
         if len(self.names) > 0:
-            s += ',\n ' + repr(self.names).replace('\n', '\n ')
+            s += ',\n ' + str(self.names).replace('\n', '\n ')
         return (s + ',\n nsc: [{1}, {2}, {3}], maxR: {0}\n}}\n'.format(self.maxR(), *self.nsc)).strip()
 
     def iter(self):

@@ -123,7 +123,7 @@ class pdbSile(Sile):
         f, line = self._step_record('CRYST1')
 
         if not f:
-            raise SileError(repr(self) + ' does not contain a CRYST1 record.')
+            raise SileError(str(self) + ' does not contain a CRYST1 record.')
         a = float(line[6:15])
         b = float(line[15:24])
         c = float(line[24:33])
@@ -137,11 +137,11 @@ class pdbSile(Sile):
             cell[0, :] = float(line[11:20]), float(line[21:30]), float(line[31:40])
             f, line = self._step_record('SCALE2')
             if not f:
-                raise SileError(repr(self) + ' found SCALE1 but not SCALE2!')
+                raise SileError(str(self) + ' found SCALE1 but not SCALE2!')
             cell[1, :] = float(line[11:20]), float(line[21:30]), float(line[31:40])
             f, line = self._step_record('SCALE3')
             if not f:
-                raise SileError(repr(self) + ' found SCALE1 but not SCALE3!')
+                raise SileError(str(self) + ' found SCALE1 but not SCALE3!')
             cell[2, :] = float(line[11:20]), float(line[21:30]), float(line[31:40])
 
         origo = np.zeros(3)

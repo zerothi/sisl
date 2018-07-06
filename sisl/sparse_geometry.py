@@ -301,10 +301,10 @@ class _SparseGeometry(object):
 
         return R
 
-    def __repr__(self):
+    def __str__(self):
         """ Representation of the sparse model """
         s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, kind={2}\n '.format(self.dim, self.nnz, self.dkind)
-        s += repr(self.geometry).replace('\n', '\n ')
+        s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
     def __getattr__(self, attr):

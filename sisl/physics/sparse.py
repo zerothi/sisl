@@ -101,10 +101,10 @@ class SparseOrbitalBZ(SparseOrbital):
         """ Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) """
         return self.no
 
-    def __repr__(self):
+    def __str__(self):
         """ Representation of the model """
         s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, orthogonal: {2}\n '.format(self.dim, self.nnz, self.orthogonal)
-        s += repr(self.geometry).replace('\n', '\n ')
+        s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
     def _get_S(self):
@@ -603,11 +603,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             return self.no * 2
         return self.no
 
-    def __repr__(self):
+    def __str__(self):
         """ Representation of the model """
         s = self.__class__.__name__ + '{{non-zero: {0}, orthogonal: {1},\n '.format(self.nnz, self.orthogonal)
-        s += repr(self.spin).replace('\n', '\n ') + ',\n '
-        s += repr(self.geometry).replace('\n', '\n ')
+        s += str(self.spin).replace('\n', '\n ') + ',\n '
+        s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
     def _Pk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):

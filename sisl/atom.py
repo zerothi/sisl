@@ -1151,9 +1151,9 @@ class Atom(object):
         for o in self.orbital:
             yield o
 
-    def __repr__(self):
+    def __str__(self):
         # Create orbitals output
-        orbs = ',\n '.join([repr(o) for o in self.orbital])
+        orbs = ',\n '.join([str(o) for o in self.orbital])
         return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5g}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
 
     def __len__(self):
@@ -1588,11 +1588,11 @@ class Atoms(object):
         atoms._update_orbitals()
         return atoms
 
-    def __repr__(self):
-        """ Return the `Atoms` representation """
+    def __str__(self):
+        """ Return the `Atoms` in str """
         s = self.__class__.__name__ + '{{species: {0},\n'.format(len(self._atom))
         for a, idx in self.iter(True):
-            s += ' {1}: {0},\n'.format(len(idx), repr(a).replace('\n', '\n '))
+            s += ' {1}: {0},\n'.format(len(idx), str(a).replace('\n', '\n '))
         return s + '}'
 
     def __len__(self):
@@ -1697,8 +1697,8 @@ class Atoms(object):
         for ius in np.unique(self._specie[index]):
             a = self._atom[ius]
             if a.no != atom.no:
-                a1 = '  ' + repr(a).replace('\n', '\n  ')
-                a2 = '  ' + repr(atom).replace('\n', '\n  ')
+                a1 = '  ' + str(a).replace('\n', '\n  ')
+                a2 = '  ' + str(atom).replace('\n', '\n  ')
                 info('Substituting atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
         self._specie[index] = specie
         # Update orbital counts...
@@ -1736,8 +1736,8 @@ class Atoms(object):
         for i, atom in enumerate(self.atom):
             if atom == atom_from:
                 if atom.no != atom_to.no:
-                    a1 = '  ' + repr(atom).replace('\n', '\n  ')
-                    a2 = '  ' + repr(atom_to).replace('\n', '\n  ')
+                    a1 = '  ' + str(atom).replace('\n', '\n  ')
+                    a2 = '  ' + str(atom_to).replace('\n', '\n  ')
                     info('Replacing atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
                     update_orbitals = True
                 self._atom[i] = atom_to

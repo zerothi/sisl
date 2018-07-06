@@ -23,7 +23,7 @@ def couter(c, v):
 
 def test_coefficient_creation1():
     c = Coefficient(ar(6))
-    repr(c)
+    str(c)
     assert len(c) == 6
     assert c.shape == (6, )
     assert c.dtype == np.float64
@@ -66,14 +66,14 @@ def test_state_creation1():
     assert state.norm2()[0] == pytest.approx((ar(6) ** 2).sum())
     state_c = state.copy()
     assert len(state) == len(state_c)
-    repr(state)
+    str(state)
 
 
 def test_state_repr1():
     state = State(ar(6))
-    repr(state)
+    str(state)
     state = State(ar(6), parent=geom.graphene())
-    repr(state)
+    str(state)
 
 
 def test_state_dkind():
@@ -85,7 +85,7 @@ def test_state_dkind():
 
 def test_state_norm1():
     state = State(ar(6)).normalize()
-    repr(state)
+    str(state)
     assert len(state) == 1
     assert state.norm()[0] == pytest.approx(1)
     assert state.norm2()[0] == pytest.approx(1)
@@ -155,7 +155,7 @@ def test_cstate_creation1():
     state = StateC(ar(6, 6), ar(6))
     assert len(state) == 6
     assert np.allclose(state.c, ar(6))
-    repr(state)
+    str(state)
     state2 = state.copy()
     assert np.allclose(state2.c, state.c)
     assert np.allclose(state2.state, state.state)
@@ -168,9 +168,9 @@ def test_cstate_creation1():
 def test_cstate_repr1():
     state = StateC(ar(6), 1)
     assert len(state) == 1
-    repr(state)
+    str(state)
     state = StateC(ar(6), 1, parent=geom.graphene())
-    repr(state)
+    str(state)
     assert len(state) == 1
 
 

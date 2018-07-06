@@ -258,10 +258,10 @@ class cubeSile(Sile):
 
         # We are expecting an imaginary part
         if not grid.geometry.equal(imag.geometry):
-            raise SislError(repr(self) + ' and its imaginary part does not have the same '
+            raise SislError(str(self) + ' and its imaginary part does not have the same '
                             'geometry. Hence a combined complex Grid cannot be formed.')
         if grid != imag:
-            raise SislError(repr(self) + ' and its imaginary part does not have the same '
+            raise SislError(str(self) + ' and its imaginary part does not have the same '
                             'shape. Hence a combined complex Grid cannot be formed.')
 
         # Now we have a complex grid

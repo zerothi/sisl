@@ -55,7 +55,7 @@ class Cuboid(PureShape):
     def copy(self):
         return self.__class__(self._v, self.center)
 
-    def __repr__(self):
+    def __str__(self):
         return self.__class__.__name__ + '{{O({1} {2} {3}), vol: {0}}}'.format(self.volume(), *self.origo)
 
     def volume(self):

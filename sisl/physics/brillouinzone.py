@@ -136,11 +136,11 @@ class BrillouinZone(object):
         # Instantiate the array call
         self.asarray()
 
-    def __repr__(self):
+    def __str__(self):
         """ String representation of the BrillouinZone """
         if isinstance(self.parent, SuperCell):
-            return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), repr(self.parent).replace('\n', '\n '))
-        return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), repr(self.parent.sc).replace('\n', '\n '))
+            return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent).replace('\n', '\n '))
+        return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent.sc).replace('\n', '\n '))
 
     def set_parent(self, parent):
         """ Update the parent associated to this object

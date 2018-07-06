@@ -56,13 +56,13 @@ class Coefficient(ParentContainer):
         super(Coefficient, self).__init__(parent, **info)
         self.c = np.atleast_1d(c)
 
-    def __repr__(self):
+    def __str__(self):
         """ The string representation of this object """
         s = self.__class__.__name__ + '{{coefficients: {0}'.format(len(self))
         if self.parent is None:
             s += '}}'
         else:
-            s += '\n {}}}'.format(repr(self.parent).replace('\n', '\n '))
+            s += '\n {}}}'.format(str(self.parent).replace('\n', '\n '))
         return s
 
     def __len__(self):
@@ -202,13 +202,13 @@ class State(ParentContainer):
         super(State, self).__init__(parent, **info)
         self.state = np.atleast_2d(state)
 
-    def __repr__(self):
+    def __str__(self):
         """ The string representation of this object """
         s = self.__class__.__name__ + '{{states: {0}'.format(len(self))
         if self.parent is None:
             s += '}}'
         else:
-            s += '\n {}}}'.format(repr(self.parent).replace('\n', '\n '))
+            s += '\n {}}}'.format(str(self.parent).replace('\n', '\n '))
         return s
 
     def __len__(self):

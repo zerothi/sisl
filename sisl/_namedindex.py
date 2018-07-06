@@ -70,7 +70,7 @@ class NamedIndex(object):
         except:
             pass
 
-    def __repr__(self):
+    def __str__(self):
         """ Representation of the object """
         N = len(self)
         if N == 0:

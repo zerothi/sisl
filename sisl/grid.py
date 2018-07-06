@@ -706,16 +706,16 @@ class Grid(SuperCellChild):
             with get_sile(sile, 'w') as fh:
                 fh.write_grid(self, *args, **kwargs)
 
-    def __repr__(self):
-        """ Representation of object """
+    def __str__(self):
+        """ String of object """
         return self.__class__.__name__ + '{{kind={kind}, [{} {} {}]}}'.format(*self.shape, kind=self.dkind)
 
     def _check_compatibility(self, other, msg):
         """ Internal check for asserting two grids are commensurable """
         if self == other:
             return True
-        s1 = repr(self)
-        s2 = repr(other)
+        s1 = str(self)
+        s2 = str(other)
         raise ValueError('Grids are not compatible, ' +
                          s1 + '-' + s2 + '. ', msg)
 

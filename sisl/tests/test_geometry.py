@@ -35,8 +35,6 @@ def setup():
 class TestGeometry(object):
 
     def test_objects(self, setup):
-        # just make sure __repr__ works
-        repr(setup.g)
         str(setup.g)
         assert len(setup.g) == 2
         assert len(setup.g.xyz) == 2
@@ -1132,7 +1130,7 @@ class TestGeometry(object):
         for name in g.names:
             assert name in ['A', 'B']
 
-        repr(g)
+        str(g)
 
         assert np.allclose(g['B'], g[[0, 2], :])
         assert np.allclose(g.axyz('B'), g[[0, 2], :])

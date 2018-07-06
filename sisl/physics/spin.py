@@ -99,7 +99,7 @@ class Spin(object):
 
         self._spins = spins
 
-    def __repr__(self):
+    def __str__(self):
         s = self.__class__.__name__
         if self.is_unpolarized:
             return s + '{{unpolarized, kind={}}}'.format(self.dkind)

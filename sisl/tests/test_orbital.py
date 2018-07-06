@@ -41,11 +41,11 @@ class Test_orbital(object):
 
     def test_basic1(self):
         orb = Orbital(1.)
-        repr(orb)
+        str(orb)
         orb = Orbital(1., tag='none')
-        repr(orb)
+        str(orb)
         orb = Orbital(1., 1., tag='none')
-        repr(orb)
+        str(orb)
         assert orb == orb.copy()
         assert orb != 1.
 
@@ -98,9 +98,9 @@ class Test_sphericalorbital(object):
     def test_basic1(self):
         rf = r_f(6)
         orb = SphericalOrbital(1, rf)
-        repr(orb)
+        str(orb)
         orb = SphericalOrbital(1, rf, tag='none')
-        repr(orb)
+        str(orb)
 
     @pytest.mark.xfail(raises=ValueError)
     def test_set_radial1(self):
@@ -293,11 +293,11 @@ class Test_atomicorbital(object):
             a = AtomicOrbital(l=l, m=0, spherical=rf)
             a.name()
             a.name(True)
-            repr(a)
+            str(a)
             a = AtomicOrbital(l=l, m=0, P=True, spherical=rf, tag='hello')
             a.name()
             a.name(True)
-            repr(a)
+            str(a)
 
     def test_init4(self):
         rf = r_f(6)

@@ -124,7 +124,7 @@ class Orbital(object):
         self.q0 = float(q0)
         self.tag = tag
 
-    def __repr__(self):
+    def __str__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
             return self.__class__.__name__ + '{{R: {0}, q0: {1}, tag: {2}}}'.format(self.R, self.q0, self.tag)
@@ -506,7 +506,7 @@ class SphericalOrbital(Orbital):
         else:
             raise ValueError('Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial')
 
-    def __repr__(self):
+    def __str__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
             return self.__class__.__name__ + '{{l: {0}, R: {1}, q0: {2}, tag: {3}}}'.format(self.l, self.R, self.q0, self.tag)
@@ -942,11 +942,11 @@ class AtomicOrbital(Orbital):
             return name + 'Z{}P'.format(self.Z)
         return name + 'Z{}'.format(self.Z)
 
-    def __repr__(self):
+    def __str__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
-            return self.__class__.__name__ + '{{{0}, q0: {1}, tag: {2}, {3}}}'.format(self.name(), self.q0, self.tag, repr(self.orb))
-        return self.__class__.__name__ + '{{{0}, q0: {1}, {2}}}'.format(self.name(), self.q0, repr(self.orb))
+            return self.__class__.__name__ + '{{{0}, q0: {1}, tag: {2}, {3}}}'.format(self.name(), self.q0, self.tag, str(self.orb))
+        return self.__class__.__name__ + '{{{0}, q0: {1}, {2}}}'.format(self.name(), self.q0, str(self.orb))
 
     def set_radial(self, *args):
         r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`

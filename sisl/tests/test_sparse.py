@@ -66,7 +66,7 @@ class TestSparseCSR(object):
         assert np.all(s1[1, [1, 6], 1] == [2, 0])
 
     def test_init1(self, setup):
-        repr(setup.s1)
+        str(setup.s1)
         assert setup.s1.dtype == np.int32
         assert setup.s2.dtype == np.float64
         assert np.allclose(setup.s1.data, setup.s1.data)

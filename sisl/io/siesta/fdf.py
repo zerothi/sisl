@@ -76,7 +76,7 @@ class fdfSileSiesta(SileSiesta):
         if len(self._directory) == 0:
             self._directory = '.'
 
-    def __repr__(self):
+    def __str__(self):
         return ''.join([self.__class__.__name__, '(', self.file, ', base=', self._directory, ')'])
 
     @property
@@ -103,7 +103,7 @@ class fdfSileSiesta(SileSiesta):
             self._parent_fh.append(self.fh)
             self.fh = open(self._tofile(f), self._mode)
         else:
-            warn(repr(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
+            warn(str(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
 
     def _popfile(self):
         if len(self._parent_fh) > 0:
@@ -557,7 +557,7 @@ class fdfSileSiesta(SileSiesta):
             if n in geom.names:
                 idx = list2str(geom.names[n] + 1).replace('-', ' -- ')
                 if len(idx) > 200:
-                    info(repr(self) + '.write_geometry will not write the constraints for {} (too long line).'.format(n))
+                    info(str(self) + '.write_geometry will not write the constraints for {} (too long line).'.format(n))
                 else:
                     _write_block = write_block(idx, append, _write_block)
 
@@ -783,9 +783,9 @@ class fdfSileSiesta(SileSiesta):
             fc_first = self.get('MD.FCFirst', default=0)
             fc_last = self.get('MD.FCLast', default=0)
             if 0 in [fc_first, fc_last]:
-                raise SislError(repr(self) + '.read_force_constant(FC) requires FCFirst({})/FCLast({}) to be set correctly.'.format(fc_first, fc_last))
+                raise SislError(str(self) + '.read_force_constant(FC) requires FCFirst({})/FCLast({}) to be set correctly.'.format(fc_first, fc_last))
             if fc_last - fc_first + 1 != fc.shape[0]:
-                raise SislError(repr(self) + '.read_force_constant(FC) expected {} displaced atoms, '
+                raise SislError(str(self) + '.read_force_constant(FC) expected {} displaced atoms, '
                                 'only found {} displaced atoms!'.format(fc_last - fc_first + 1, fc.shape[0]))
             # TODO check whether some of the atoms are "ghost" atoms
             # TODO Most probably these should not be taken into account...?
@@ -865,7 +865,7 @@ class fdfSileSiesta(SileSiesta):
 
         # Now create mass array
         if len(self.get('AtomicMass', default=[])) > 0:
-            warn(repr(self) + '.read_dynamical_matrix(FC) does not implement reading atomic masses from fdf file.')
+            warn(str(self) + '.read_dynamical_matrix(FC) does not implement reading atomic masses from fdf file.')
 
         # Get list of FC atoms
         fc_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=0))
@@ -887,7 +887,7 @@ class fdfSileSiesta(SileSiesta):
 
         elif supercell is True:
             _, supercell = geom.as_primary(FC.shape[0], ret_super=True)
-            info(repr(self) + '.read_dynamical_matrix(FC) guessed on a [{}, {}, {}] '
+            info(str(self) + '.read_dynamical_matrix(FC) guessed on a [{}, {}, {}] '
                  'supercell calculation.'.format(*supercell))
 
         # Convert to integer array
@@ -948,7 +948,7 @@ class fdfSileSiesta(SileSiesta):
             isc_xyz = np.dot(geom.xyz, geom_small.sc.icell.T) - np.tile(geom_small.fxyz, (np.product(supercell), 1))
 
             if np.any(np.diff(fc_atoms) != 1):
-                raise SislError(repr(self) + '.read_dynamical_matrix(FC) requires the FC atoms to be consecutive!')
+                raise SislError(str(self) + '.read_dynamical_matrix(FC) requires the FC atoms to be consecutive!')
 
             # Now figure out the order of tiling
             axis_tiling = []
@@ -971,7 +971,7 @@ class fdfSileSiesta(SileSiesta):
 
             # Proximity check of 0.01 Ang (TODO add this as an argument)
             if not np.allclose(geom_tile.xyz, geom.xyz, rtol=0, atol=0.01):
-                raise SislError(repr(self) + '.read_dynamical_matrix(FC) could not figure out the tiling method for the supercell')
+                raise SislError(str(self) + '.read_dynamical_matrix(FC) could not figure out the tiling method for the supercell')
 
             # Convert the FC matrix to a "rollable" matrix
             # This will make it easier to symmetrize
@@ -992,7 +992,7 @@ class fdfSileSiesta(SileSiesta):
             if fc_atoms[0] != 0:
                 # TODO we could roll the axis such that the displaced atoms moves into the
                 # first elements
-                raise SislError(repr(self) + '.read_dynamical_matrix(FC) requires the displaced atoms to start from 1!')
+                raise SislError(str(self) + '.read_dynamical_matrix(FC) requires the displaced atoms to start from 1!')
 
             # Now swap the [2, 3, 4] dimensions so that we get in order of lattice vectors
             sa = np.swapaxes

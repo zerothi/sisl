@@ -16,11 +16,11 @@ def _get():
     return gr
 
 
-def test_repr():
+def test_str():
     gr = _get()
     # The most simple setup.
     sp = SparseOrbitalBZ(gr)
-    repr(sp)
+    str(sp)
 
 
 def test_S():

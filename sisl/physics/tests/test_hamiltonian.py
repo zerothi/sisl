@@ -574,7 +574,7 @@ class TestHamiltonian(object):
             assert DOS.dtype.kind == 'f'
             assert np.allclose(DOS, HS.DOS(E, k))
             assert np.allclose(es.norm(), 1)
-            repr(es)
+            str(es)
 
     def test_pdos1(self, setup):
         HS = setup.HS.copy()

@@ -114,7 +114,7 @@ class Shape(object):
         """ Checks whether all of `other` is within the shape """
         return np.all(self.within(other))
 
-    def __repr__(self):
+    def __str__(self):
         return "{{" + self.__class__.__name__ + ' c({} {} {})'.format(*self.center)
 
     # Implement logical operators to enable composition of sets
@@ -254,9 +254,9 @@ class CompositeShape(Shape):
         elif op == self._XOR:
             return setxor1d(A, B, assume_unique=True)
 
-    def __repr__(self):
-        A = repr(self.A).replace('\n', '\n ')
-        B = repr(self.B).replace('\n', '\n ')
+    def __str__(self):
+        A = str(self.A).replace('\n', '\n ')
+        B = str(self.B).replace('\n', '\n ')
         op = {self._OR: 'OR', self._AND: 'AND', self._SUB: 'SUB', self._XOR: 'XOR'}.get(self.op)
         return '{0}{{{1},\n {2},\n {3}\n}}'.format(self.__class__.__name__, op, A, B)
 

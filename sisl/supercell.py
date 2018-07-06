@@ -852,7 +852,7 @@ class SuperCell(object):
         same = same and np.allclose(self.origo, other.origo, atol=tol)
         return same
 
-    def __repr__(self):
+    def __str__(self):
         """ Returns a string representation of the object """
         return self.__class__.__name__ + '{{volume: {:.4e}, nsc: {} {} {}}}'.format(self.volume, *self.nsc)
 

@@ -118,7 +118,7 @@ class Selector(object):
         """ Number of routines that it can select from """
         return len(self.routines)
 
-    def __repr__(self):
+    def __str__(self):
         """ A representation of the current selector state """
         s = self.__class__.__name__ + '{{n={0}, \n'.format(len(self))
         for r, p in zip(self.routines, self.performances):

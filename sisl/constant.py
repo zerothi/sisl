@@ -85,9 +85,6 @@ class PhysicalConstant(float):
     def __str__(self):
         return '{} {}'.format(float(self), self.unit)
 
-    def __repr__(self):
-        return '{} {}'.format(float(self), self.unit)
-
     def __call__(self, unit=None):
         """ Return the value for the constant in the given unit, otherwise will return the units in SI units """
         if unit is None:

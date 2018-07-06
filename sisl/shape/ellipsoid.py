@@ -64,7 +64,7 @@ class Ellipsoid(PureShape):
     def copy(self):
         return self.__class__(self._v, self.center)
 
-    def __repr__(self):
+    def __str__(self):
         cr = np.array([self.center, self.radius])
         return self.__class__.__name__ + ('{{c({0:.2f} {1:.2f} {2:.2f}) '
                                           'r({3:.2f} {4:.2f} {5:.2f})}}').format(*cr.ravel())
@@ -162,9 +162,8 @@ class Sphere(Ellipsoid):
                              'to __init__.')
         super(Sphere, self).__init__(radius, center=center)
 
-    def __repr__(self):
-        return self.__class__.__name__ + ('{{c({1:.2f} {2:.2f} {3:.2f}) '
-                                          'r({0:.2f})}}').format(self.radius, *self.center)
+    def __str__(self):
+        return '{0}{{c({2:.2f} {3:.2f} {4:.2f}) r({1:.2f})}}'.format(self.__class__.__name__, self.radius, *self.center)
 
     def copy(self):
         return self.__class__(self.radius, self.center)

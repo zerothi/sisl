@@ -425,7 +425,7 @@ class BaseSile(object):
         """
         pass
 
-    def __repr__(self):
+    def __str__(self):
         """ Return a representation of the `Sile` """
         return ''.join([self.__class__.__name__, '(', self.file, ')'])
 
@@ -942,7 +942,7 @@ class SileError(IOError):
 
     def __str__(self):
         if self.obj:
-            return self.value + ' in ' + repr(self.obj)
+            return self.value + ' in ' + str(self.obj)
         else:
             return self.value
 

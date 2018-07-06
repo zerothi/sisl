@@ -28,8 +28,8 @@ def setup():
 
 class TestSuperCell(object):
 
-    def test_repr(self, setup):
-        repr(setup.sc)
+    def test_str(self, setup):
+        str(setup.sc)
         str(setup.sc)
         assert setup.sc != 'Not a SuperCell'
 
