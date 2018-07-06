@@ -17,7 +17,6 @@ def test_si_pdos_kgrid_tshs(sisl_files, sisl_tmp):
     HS1.write(f)
     si = sisl.get_sile(f)
     HS2 = si.read_hamiltonian()
-
     assert HS1._csr.spsame(HS2._csr)
     assert np.allclose(HS1._csr._D, HS2._csr._D)
 

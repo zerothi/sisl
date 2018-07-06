@@ -11,9 +11,11 @@ from sisl._array import aranged
 from sisl.messages import info
 from sisl.unit.siesta import unit_convert
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
-from sisl.physics import DensityMatrix
-from sisl.physics import EnergyDensityMatrix
+from sisl.physics import DensityMatrix, EnergyDensityMatrix
+from sisl.physics import DynamicalMatrix
 from sisl.physics import Hamiltonian
+from . import _siesta
+from ._help import *
 
 
 __all__ = ['ncSileSiesta']
@@ -141,7 +143,7 @@ class ncSileSiesta(SileCDFSiesta):
 
     def read_force(self):
         """ Returns a vector with final forces contained. """
-        return np.array(self._value('xa'), np.float64) * Ry2eV / Bohr2Ang
+        return _a.arrayd(self._value('fa')) * Ry2eV / Bohr2Ang
 
     def _read_class_spin(self, cls, **kwargs):
         # Get the default spin channel
@@ -152,10 +154,6 @@ class ncSileSiesta(SileCDFSiesta):
 
         # Populate the things
         sp = self._crt_grp(self, 'SPARSE')
-        v = sp.variables['isc_off']
-        # pre-allocate the super-cells
-        geom.sc.set_nsc(np.amax(v[:, :], axis=0) * 2 + 1)
-        geom.sc.sc_off = v[:, :]
 
         # Since we may read in an orthogonal basis (stored in a Siesta compliant file)
         # we can check whether it is orthogonal by checking the sum of the absolute S
@@ -180,6 +178,9 @@ class ncSileSiesta(SileCDFSiesta):
             C._csr._D = np.empty([C._csr.ptr[-1], spin + 1], np.float64)
             C._csr._D[:, C.S_idx] = S
 
+        # Convert from isc to sisl isc
+        C._csr = _csr_from_sc_off(C.geometry, sp.variables['isc_off'][:, :], C._csr)
+
         return C
 
     def read_overlap(self, **kwargs):
@@ -191,6 +192,9 @@ class ncSileSiesta(SileCDFSiesta):
         H = self._read_class_spin(Hamiltonian, **kwargs)
 
         sp = self._crt_grp(self, 'SPARSE')
+        if sp.variables['H'].unit != 'Ry':
+            raise SileError(self.__class__.__name__ + '.read_hamiltonian requires the stored matrix to be in Ry!')
+
         for i in range(len(H.spin)):
             H._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV
 
@@ -209,8 +213,9 @@ class ncSileSiesta(SileCDFSiesta):
         D = self._read_class_spin(DynamicalMatrix, **kwargs)
 
         sp = self._crt_grp(self, 'SPARSE')
-        for i in range(len(H.spin)):
-            D._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV ** 2
+        if sp.variables['H'].unit != 'Ry**2':
+            raise SileError(self.__class__.__name__ + '.read_dynamical_matrix requires the stored matrix to be in Ry**2!')
+        D._csr._D[:, 0] = sp.variables['H'][0, :] * Ry2eV ** 2
 
         return D
 
@@ -411,7 +416,7 @@ class ncSileSiesta(SileCDFSiesta):
         H.finalize()
 
         # Ensure that the geometry is written
-        self.write_geometry(H.geom)
+        self.write_geometry(H.geometry)
 
         self._crt_dim(self, 'spin', len(H.spin))
 
@@ -424,31 +429,33 @@ class ncSileSiesta(SileCDFSiesta):
         v[:] = kwargs.get('Ef', 0.) / Ry2eV
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
-        v[0] = kwargs.get('Q', kwargs.get('Qtot', H.geom.q0))
+        v[0] = kwargs.get('Q', kwargs.get('Qtot', H.geometry.q0))
 
         # Append the sparsity pattern
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
 
-        self._crt_dim(sp, 'nnzs', H._csr.col.shape[0])
+        csr = _csr_to_siesta(H.geometry, H._csr)
+
+        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
         v.info = "Number of non-zero elements per row"
-        v[:] = H._csr.ncol[:]
+        v[:] = csr.ncol[:]
         v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(H._csr.col),), **self._cmp_args)
+                          chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Supercell column indices in the sparse format"
-        v[:] = H._csr.col[:] + 1  # correct for fortran indices
+        v[:] = csr.col[:] + 1  # correct for fortran indices
         v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = H.geom.sc.sc_off[:, :]
+        v[:, :] = _siesta.siesta_sc_off(*H.geometry.nsc).T
 
         # Save tight-binding parameters
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(H._csr.col),), **self._cmp_args)
+                          chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Overlap matrix"
         if H.orthogonal:
             # We need to create the orthogonal pattern
-            tmp = H._csr.copy(dims=[0])
+            tmp = csr.copy(dims=[0])
             tmp.empty(keep_nnz=True)
             for i in range(tmp.shape[0]):
                 tmp[i, i] = 1.
@@ -463,13 +470,13 @@ class ncSileSiesta(SileCDFSiesta):
             v[:] = tmp._D[:, 0]
             del tmp
         else:
-            v[:] = H._csr._D[:, H.S_idx]
+            v[:] = csr._D[:, H.S_idx]
         v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(H._csr.col)), **self._cmp_args)
+                          chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"
         for i in range(len(H.spin)):
-            v[i, :] = H._csr._D[:, i] / Ry2eV
+            v[i, :] = csr._D[:, i] / Ry2eV
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')
@@ -520,25 +527,27 @@ class ncSileSiesta(SileCDFSiesta):
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
 
-        self._crt_dim(sp, 'nnzs', DM._csr.col.shape[0])
+        csr = _csr_to_siesta(DM.geometry, DM._csr)
+
+        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
         v.info = "Number of non-zero elements per row"
-        v[:] = DM._csr.ncol[:]
+        v[:] = csr.ncol[:]
         v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(DM._csr.col),), **self._cmp_args)
+                          chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Supercell column indices in the sparse format"
-        v[:] = DM._csr.col[:] + 1  # correct for fortran indices
+        v[:] = csr.col[:] + 1  # correct for fortran indices
         v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = DM.geom.sc.sc_off[:, :]
+        v[:, :] = _siesta.siesta_sc_off(*DM.geometry.nsc).T
 
         # Save tight-binding parameters
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(DM._csr.col),), **self._cmp_args)
+                          chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Overlap matrix"
         if DM.orthogonal:
             # We need to create the orthogonal pattern
-            tmp = DM._csr.copy(dims=[0])
+            tmp = csr.copy(dims=[0])
             tmp.empty(keep_nnz=True)
             for i in range(tmp.shape[0]):
                 tmp[i, i] = 1.
@@ -553,12 +562,12 @@ class ncSileSiesta(SileCDFSiesta):
             v[:] = tmp._D[:, 0]
             del tmp
         else:
-            v[:] = DM._csr._D[:, DM.S_idx]
+            v[:] = csr._D[:, DM.S_idx]
         v = self._crt_var(sp, 'DM', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(DM._csr.col)), **self._cmp_args)
+                          chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Density matrix"
         for i in range(len(DM.spin)):
-            v[i, :] = DM._csr._D[:, i]
+            v[i, :] = csr._D[:, i]
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')
@@ -590,7 +599,7 @@ class ncSileSiesta(SileCDFSiesta):
         EDM.finalize()
 
         # Ensure that the geometry is written
-        self.write_geometry(EDM.geom)
+        self.write_geometry(EDM.geometry)
 
         self._crt_dim(self, 'spin', len(EDM.spin))
 
@@ -603,7 +612,7 @@ class ncSileSiesta(SileCDFSiesta):
         v[:] = kwargs.get('Ef', 0.) / Ry2eV
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
-        v[:] = np.sum(EDM.geom.atom.q0)
+        v[:] = np.sum(EDM.geometry.atom.q0)
         if 'Qtot' in kwargs:
             v[:] = kwargs['Qtot']
         if 'Q' in kwargs:
@@ -613,25 +622,27 @@ class ncSileSiesta(SileCDFSiesta):
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
 
-        self._crt_dim(sp, 'nnzs', EDM._csr.col.shape[0])
+        csr = _csr_to_siesta(EDM.geometry, EDM._csr)
+
+        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
         v.info = "Number of non-zero elements per row"
-        v[:] = EDM._csr.ncol[:]
+        v[:] = csr.ncol[:]
         v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(EDM._csr.col),), **self._cmp_args)
+                          chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Supercell column indices in the sparse format"
-        v[:] = EDM._csr.col[:] + 1  # correct for fortran indices
+        v[:] = csr.col[:] + 1  # correct for fortran indices
         v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = EDM.geom.sc.sc_off[:, :]
+        v[:, :] = _siesta.siesta_sc_off(*EDM.geometry.nsc).T
 
         # Save tight-binding parameters
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(EDM._csr.col),), **self._cmp_args)
+                          chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Overlap matrix"
         if EDM.orthogonal:
             # We need to create the orthogonal pattern
-            tmp = EDM._csr.copy(dims=[0])
+            tmp = csr.copy(dims=[0])
             tmp.empty(keep_nnz=True)
             for i in range(tmp.shape[0]):
                 tmp[i, i] = 1.
@@ -646,13 +657,13 @@ class ncSileSiesta(SileCDFSiesta):
             v[:] = tmp._D[:, 0]
             del tmp
         else:
-            v[:] = EDM._csr._D[:, EDM.S_idx]
+            v[:] = csr._D[:, EDM.S_idx]
         v = self._crt_var(sp, 'EDM', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(EDM._csr.col)), **self._cmp_args)
+                          chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Energy density matrix"
         v.unit = "Ry"
         for i in range(len(EDM.spin)):
-            v[i, :] = EDM._csr._D[:, i] / Ry2eV
+            v[i, :] = csr._D[:, i] / Ry2eV
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')
@@ -700,25 +711,27 @@ class ncSileSiesta(SileCDFSiesta):
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
 
-        self._crt_dim(sp, 'nnzs', D._csr.col.shape[0])
+        csr = _csr_to_siesta(D.geometry, D._csr)
+
+        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
         v.info = "Number of non-zero elements per row"
-        v[:] = D._csr.ncol[:]
+        v[:] = csr.ncol[:]
         v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(D._csr.col),), **self._cmp_args)
+                          chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Supercell column indices in the sparse format"
-        v[:] = D._csr.col[:] + 1  # correct for fortran indices
+        v[:] = csr.col[:] + 1  # correct for fortran indices
         v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = D.geom.sc.sc_off[:, :]
+        v[:, :] = _siesta.siesta_sc_off(*D.geometry.nsc).T
 
         # Save tight-binding parameters
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(D._csr.col),), **self._cmp_args)
+                          chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Overlap matrix"
         if D.orthogonal:
             # We need to create the orthogonal pattern
-            tmp = D._csr.copy(dims=[0])
+            tmp = csr.copy(dims=[0])
             tmp.empty(keep_nnz=True)
             for i in range(tmp.shape[0]):
                 tmp[i, i] = 1.
@@ -733,12 +746,12 @@ class ncSileSiesta(SileCDFSiesta):
             v[:] = tmp._D[:, 0]
             del tmp
         else:
-            v[:] = D._csr._D[:, D.S_idx]
+            v[:] = csr._D[:, D.S_idx]
         v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(D._csr.col)), **self._cmp_args)
+                          chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Dynamical matrix"
         v.unit = "Ry**2"
-        v[0, :] = D._csr._D[:, 0] / Ry2eV ** 2
+        v[0, :] = csr._D[:, 0] / Ry2eV ** 2
 
         # Create the settings
         st = self._crt_grp(self, 'SETTINGS')

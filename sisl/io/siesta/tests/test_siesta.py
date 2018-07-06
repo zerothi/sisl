@@ -3,7 +3,7 @@ from __future__ import print_function, division
 import pytest
 import numpy as np
 
-from sisl import Hamiltonian
+from sisl import Hamiltonian, DynamicalMatrix
 from sisl.io.siesta import *
 
 
@@ -39,3 +39,19 @@ def test_nc2(sisl_tmp, sisl_system):
     assert np.allclose(tb.xyz, ntb.xyz)
     assert np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0])
     assert sisl_system.g.atom.equal(ntb.atom, R=False)
+
+
+def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
+    f = sisl_tmp('grS.nc', _dir)
+    dm = DynamicalMatrix(sisl_system.gtb)
+    for ia, ix in dm:
+        dm[ix, ix] = ix / 2.
+    dm.write(ncSileSiesta(f, 'w'))
+
+    ndm = ncSileSiesta(f).read_dynamical_matrix()
+
+    # Assert they are the same
+    assert np.allclose(dm.cell, ndm.cell)
+    assert np.allclose(dm.xyz, ndm.xyz)
+    assert np.allclose(dm._csr._D[:, 0], ndm._csr._D[:, 0])
+    assert sisl_system.g.atom.equal(ndm.atom, R=False)

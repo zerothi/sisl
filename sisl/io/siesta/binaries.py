@@ -20,6 +20,8 @@ from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
+from ._help import *
+
 
 Ang2Bohr = unit_convert('Ang', 'Bohr')
 eV2Ry = unit_convert('eV', 'Ry')
@@ -32,27 +34,6 @@ __all__ += ['gridSileSiesta']
 __all__ += ['tsgfSileSiesta']
 
 
-def _to_siesta_csr(geom, csr):
-    """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
-    nsc = geom.sc.nsc.astype(np.int32)
-    # Create the sc_off as siesta would have done it
-    siesta_sc_off = _siesta.siesta_sc_off(nsc[0], nsc[1], nsc[2]).T
-    return _to_sc_off_csr(geom, siesta_sc_off, csr)
-
-
-def _to_sc_off_csr(geom, sc_off, csr):
-    """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
-    # Find the equivalent indices in the geometry supercell
-    geom_sc_off = geom.sc_index(sc_off)
-    # local csr matrix ordering
-    col_from = _a.arangei(geom.no_s)
-    # this transfers the local csr matrix ordering to the geometry ordering
-    col_to = (geom_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)).ravel()
-    new = csr.copy()
-    new.translate_columns(col_from, col_to)
-    return new
-
-
 class tshsSileSiesta(SileBinSiesta):
     """ TranSiesta TSHS file object """
 
@@ -63,12 +44,7 @@ class tshsSileSiesta(SileBinSiesta):
         nsc = np.array(arr[0].T, np.int32)
         cell = np.array(arr[1].T, np.float64)
         cell.shape = (3, 3)
-        isc = np.array(arr[2].T, np.int32)
-        isc.shape = (-1, 3)
-
-        SC = SuperCell(cell, nsc=nsc)
-        SC.sc_off = isc
-        return SC
+        return SuperCell(cell, nsc=nsc)
 
     def read_geometry(self):
         """ Returns Geometry object from a siesta.TSHS file """
@@ -117,6 +93,7 @@ class tshsSileSiesta(SileBinSiesta):
 
         # Now read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
+        isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
         spin = sizes[0]
         no = sizes[2]
         nnz = sizes[4]
@@ -142,6 +119,9 @@ class tshsSileSiesta(SileBinSiesta):
             H._csr._D[:, :spin] = dH[:, :]
             H._csr._D[:, spin] = dS[:]
 
+        # Convert to sisl supercell
+        H._csr = _csr_from_sc_off(H.geometry, isc, H._csr)
+
         # Find all indices where dS == 1 (remember col is in fortran indices)
         idx = col[np.isclose(dS, 1.).nonzero()[0]]
         if np.any(idx > no):
@@ -160,6 +140,7 @@ class tshsSileSiesta(SileBinSiesta):
 
         # Now read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
+        isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
         no = sizes[2]
         nnz = sizes[4]
         ncol, col, dS = _siesta.read_tshs_s(self.file, no, nnz)
@@ -177,6 +158,9 @@ class tshsSileSiesta(SileBinSiesta):
         S._csr._D = np.empty([nnz, 1], np.float64)
         S._csr._D[:, 0] = dS[:]
 
+        # Convert to sisl supercell
+        S._csr = _csr_from_sc_off(S.geometry, isc, S._csr)
+
         return S
 
     def write_hamiltonian(self, H, **kwargs):
@@ -190,7 +174,7 @@ class tshsSileSiesta(SileBinSiesta):
         xyz = H.geom.xyz * Ang2Bohr
 
         # Pointer to CSR matrix
-        csr = _to_siesta_csr(H.geom, H._csr)
+        csr = _csr_to_siesta(H.geom, H._csr)
 
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_hamiltonian cannot write a zero element sparse matrix!')
@@ -214,15 +198,15 @@ class tshsSileSiesta(SileBinSiesta):
         s.shape = (-1,)
 
         # Get shorter variants
-        nsc = H.geom.nsc[:]
-        isc = H.geom.sc.sc_off[:, :]
+        nsc = H.geometry.nsc[:]
+        isc = _siesta.siesta_sc_off(*nsc)
 
         # I can't seem to figure out the usage of f2py
         # Below I get an error if xyz is not transposed and h is transposed,
         # however, they are both in C-contiguous arrays and this is indeed weird... :(
         _siesta.write_tshs_hs(self.file, nsc[0], nsc[1], nsc[2],
-                              cell.T, xyz.T, H.geom.firsto,
-                              csr.ncol, csr.col + 1, h, s, isc.T)
+                              cell.T, xyz.T, H.geometry.firsto,
+                              csr.ncol, csr.col + 1, h, s, isc)
 
 
 class dmSileSiesta(SileBinSiesta):
@@ -244,6 +228,10 @@ class dmSileSiesta(SileBinSiesta):
             sc = SuperCell([no, 1, 1], nsc=nsc)
             geom = Geometry(xyz, Atom(1), sc=sc)
 
+        if nsc[0] != 0 and np.any(geom.nsc != nsc):
+            # We have to update the number of supercells!
+            geom.set_nsc(nsc)
+
         if geom.no != no:
             raise ValueError("Reading DM files requires the input geometry to have the "
                              "correct number of orbitals.")
@@ -263,6 +251,12 @@ class dmSileSiesta(SileBinSiesta):
         # DM file does not contain overlap matrix... so neglect it for now.
         DM._csr._D[:, spin] = 0.
 
+        # Convert the supercells to sisl supercells
+        if nsc[0] != 0 or geom.no_s >= col.max():
+            DM._csr = _csr_from_siesta(geom, DM._csr)
+        else:
+            warn(str(self) + '.read_density_matrix may result in a wrong sparse pattern!')
+
         return DM
 
     def write_density_matrix(self, DM, **kwargs):
@@ -271,7 +265,7 @@ class dmSileSiesta(SileBinSiesta):
         DM.finalize()
 
         # Pointer to CSR matrix
-        csr = _to_siesta_csr(DM.geom, DM._csr)
+        csr = _csr_to_siesta(DM.geom, DM._csr)
 
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_density_matrix cannot write a zero element sparse matrix!')
@@ -309,6 +303,10 @@ class tsdeSileSiesta(dmSileSiesta):
             sc = SuperCell([no, 1, 1], nsc=nsc)
             geom = Geometry(xyz, Atom(1), sc=sc)
 
+        if nsc[0] != 0 and np.any(geom.nsc != nsc):
+            # We have to update the number of supercells!
+            geom.set_nsc(nsc)
+
         if geom.no != no:
             raise ValueError("Reading EDM files requires the input geometry to have the "
                              "correct number of orbitals.")
@@ -327,6 +325,12 @@ class tsdeSileSiesta(dmSileSiesta):
         EDM._csr._D[:, :spin] = dEDM[:, :]
         # EDM file does not contain overlap matrix... so neglect it for now.
         EDM._csr._D[:, spin] = 0.
+
+        # Convert the supercells to sisl supercells
+        if nsc[0] != 0 or geom.no_s >= col.max():
+            EDM._csr = _csr_from_siesta(geom, EDM._csr)
+        else:
+            warn(str(self) + '.read_energy_density_matrix may result in a wrong sparse pattern!')
 
         return EDM
 
@@ -372,6 +376,10 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr._D[:, :spin] = dH[:, :]
         H._csr._D[:, spin] = dS[:]
 
+        # Convert the supercells to sisl supercells
+        if no_s // no == np.product(geom.nsc):
+            H._csr = _csr_from_siesta(geom, H._csr)
+
         return H
 
     def read_overlap(self, **kwargs):
@@ -399,6 +407,10 @@ class hsxSileSiesta(SileBinSiesta):
 
         S._csr._D = np.empty([nnz, 1], np.float32)
         S._csr._D[:, 0] = dS[:]
+
+        # Convert the supercells to sisl supercells
+        if no_s // no == np.product(geom.nsc):
+            S._csr = _csr_from_siesta(geom, S._csr)
 
         return S
 
