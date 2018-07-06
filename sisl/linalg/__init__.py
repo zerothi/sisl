@@ -1,5 +1,7 @@
-"""Linear algebra
-=================
+"""
+===================================
+Linear algebra (:mod:`sisl.linalg`)
+===================================
 
 .. module:: sisl.linalg
    :noindex:

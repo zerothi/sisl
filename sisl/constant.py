@@ -1,4 +1,5 @@
 """
+=========================================
 Physical constants (:mod:`sisl.constant`)
 =========================================
 
@@ -33,6 +34,7 @@ The currently stored constants are (all are given in SI units):
    m_e
    m_p
    G
+
 
 All constants may be used like an ordinary float (which converts it to a float:
 

@@ -22,15 +22,8 @@ import shlex
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 _this_dir = os.path.dirname(__file__)
 
-# Add the 3 levels
-sys.path.insert(0, _this_dir)
+# Add the top-level directory
 sys.path.insert(0, os.path.basename(_this_dir))
-print('path:')
-print(sys.path)
-print('dir (.):')
-print(os.listdir())
-print('dir (..):')
-print(os.listdir('..'))
 
 
 try:

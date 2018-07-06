@@ -1,5 +1,7 @@
-"""Shapes
-=========
+"""
+==========================
+Shapes (:mod:`sisl.shape`)
+==========================
 
 .. module:: sisl.shape
    :noindex:

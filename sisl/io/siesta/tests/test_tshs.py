@@ -10,6 +10,7 @@ pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = 'sisl/io/siesta'
 
 
+@pytest.mark.only
 def test_si_pdos_kgrid_tshs(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
     HS1 = si.read_hamiltonian()

@@ -38,7 +38,7 @@ Basic
 
 
 2D materials
-================================
+============
 
 .. autofunction:: honeycomb
    :noindex:

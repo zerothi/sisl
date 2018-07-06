@@ -68,8 +68,8 @@ given code.
 
 .. _toc-io-bigdft:
 
-BigDFT (:mod:`sisl.io.bigdft`)
-------------------------------
+BigDFT (:mod:`~sisl.io.bigdft`)
+-------------------------------
 
 .. currentmodule:: sisl.io.bigdft
 
@@ -81,8 +81,8 @@ BigDFT (:mod:`sisl.io.bigdft`)
 
 .. _toc-io-gulp:
 
-GULP (:mod:`sisl.io.gulp`)
---------------------------
+GULP (:mod:`~sisl.io.gulp`)
+---------------------------
 
 .. currentmodule:: sisl.io.gulp
 
@@ -95,8 +95,8 @@ GULP (:mod:`sisl.io.gulp`)
 
 .. _toc-io-scaleup:
 
-ScaleUp (:mod:`sisl.io.scaleup`)
---------------------------------
+ScaleUp (:mod:`~sisl.io.scaleup`)
+---------------------------------
 
 .. currentmodule:: sisl.io.scaleup
 
@@ -110,8 +110,8 @@ ScaleUp (:mod:`sisl.io.scaleup`)
 
 .. _toc-io-siesta:
 
-Siesta (:mod:`sisl.io.siesta`)
-------------------------------
+Siesta (:mod:`~sisl.io.siesta`)
+-------------------------------
 
 .. currentmodule:: sisl.io.siesta
 
@@ -136,8 +136,8 @@ Siesta (:mod:`sisl.io.siesta`)
 
 .. _toc-io-transiesta:
 
-TranSiesta (:mod:`sisl.io.siesta`)
-----------------------------------
+TranSiesta (:mod:`~sisl.io.siesta`)
+-----------------------------------
 
 .. autosummary::
    :toctree:
@@ -150,8 +150,8 @@ TranSiesta (:mod:`sisl.io.siesta`)
 
 .. _toc-io-tbtrans:
 
-TBtrans (:mod:`sisl.io.tbtrans`)
---------------------------------
+TBtrans (:mod:`~sisl.io.tbtrans`)
+---------------------------------
 
 .. currentmodule:: sisl.io.tbtrans
 
@@ -182,8 +182,8 @@ Additionally the PHtrans code also has these files
 
 .. _toc-io-vasp:
 
-VASP (:mod:`sisl.io.vasp`)
---------------------------
+VASP (:mod:`~sisl.io.vasp`)
+---------------------------
 
 .. currentmodule:: sisl.io.vasp
 
@@ -199,8 +199,8 @@ VASP (:mod:`sisl.io.vasp`)
 
 .. _toc-io-wannier90:
 
-Wannier90 (:mod:`sisl.io.wannier90`)
-------------------------------------
+Wannier90 (:mod:`~sisl.io.wannier90`)
+-------------------------------------
 
 .. currentmodule:: sisl.io.wannier90
 

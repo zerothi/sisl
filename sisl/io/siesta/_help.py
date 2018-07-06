@@ -39,8 +39,8 @@ def _csr_from_sc_off(geom, sc_off, csr):
     sc.sc_off = sc_off
     other_sc_off = sc.sc_index(geom.sc_off)
     # this transfers the local siesta csr matrix ordering to the geometry ordering
-    col_to = (other_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)).ravel()
-    return _csr_to(col_to, csr)
+    col_from = (other_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)).ravel()
+    return _csr_from(col_from, csr)
 
 
 def _csr_to_sc_off(geom, sc_off, csr):
@@ -51,6 +51,14 @@ def _csr_to_sc_off(geom, sc_off, csr):
     col_to = (geom_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)).ravel()
     return _csr_to(col_to, csr)
 
+
+def _csr_from(col_from, csr):
+    """ Internal routine to convert columns in a SparseCSR matrix """
+    new = csr.copy()
+    # local csr matrix ordering
+    col_to = _a.arangei(csr.shape[1])
+    new.translate_columns(col_from, col_to)
+    return new
 
 def _csr_to(col_to, csr):
     """ Internal routine to convert columns in a SparseCSR matrix """
