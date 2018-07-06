@@ -14,7 +14,10 @@ from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
 from sisl.physics import DensityMatrix, EnergyDensityMatrix
 from sisl.physics import DynamicalMatrix
 from sisl.physics import Hamiltonian
-from . import _siesta
+try:
+    from . import _siesta
+except:
+    pass
 from ._help import *
 
 
