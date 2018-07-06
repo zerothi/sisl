@@ -5,9 +5,8 @@ import numpy as np
 
 try:
     from . import _siesta
-    found_module = True
 except Exception as e:
-    found_module = False
+    pass
 
 # Import sile objects
 from sisl.messages import warn, SislError

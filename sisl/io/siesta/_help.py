@@ -2,9 +2,8 @@ import numpy as np
 import sisl._array as _a
 try:
     from . import _siesta
-    found_module = True
 except Exception as e:
-    found_module = False
+    pass
 
 __all__ = ['_csr_from_siesta', '_csr_from_sc_off']
 __all__ += ['_csr_to_siesta', '_csr_to_sc_off']
