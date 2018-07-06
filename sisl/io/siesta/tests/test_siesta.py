@@ -22,6 +22,8 @@ def test_nc1(sisl_tmp, sisl_system):
     # Assert they are the same
     assert np.allclose(tb.cell, ntb.cell)
     assert np.allclose(tb.xyz, ntb.xyz)
+    tb.finalize()
+    ntb.finalize()
     assert np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0])
     assert sisl_system.g.atom.equal(ntb.atom, R=False)
 
@@ -37,6 +39,8 @@ def test_nc2(sisl_tmp, sisl_system):
     # Assert they are the same
     assert np.allclose(tb.cell, ntb.cell)
     assert np.allclose(tb.xyz, ntb.xyz)
+    tb.finalize()
+    ntb.finalize()
     assert np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0])
     assert sisl_system.g.atom.equal(ntb.atom, R=False)
 
@@ -53,5 +57,7 @@ def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     # Assert they are the same
     assert np.allclose(dm.cell, ndm.cell)
     assert np.allclose(dm.xyz, ndm.xyz)
+    dm.finalize()
+    ndm.finalize()
     assert np.allclose(dm._csr._D[:, 0], ndm._csr._D[:, 0])
     assert sisl_system.g.atom.equal(ndm.atom, R=False)

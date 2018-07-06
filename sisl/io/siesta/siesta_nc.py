@@ -182,7 +182,7 @@ class ncSileSiesta(SileCDFSiesta):
             C._csr._D[:, C.S_idx] = S
 
         # Convert from isc to sisl isc
-        C._csr = _csr_from_sc_off(C.geometry, sp.variables['isc_off'][:, :], C._csr)
+        _csr_from_sc_off(C.geometry, sp.variables['isc_off'][:, :], C._csr)
 
         return C
 
@@ -411,12 +411,14 @@ class ncSileSiesta(SileCDFSiesta):
         Ef : float, optional
            the Fermi level of the electronic structure (in eV), default to 0.
         """
-        if H.nnz == 0:
-            raise ValueError(self.__class__.__name__ + '.write_hamiltonian + cannot write a Hamiltonian '
-                             'with zero non-zero elements!')
-
-        # Ensure finalizations
         H.finalize()
+        csr = H._csr.copy()
+        if csr.nnz == 0:
+            raise SileError(str(self) + '.write_hamiltonian cannot write a zero element sparse matrix!')
+
+        # Convert to siesta CSR
+        _csr_to_siesta(H.geometry, csr)
+        csr.finalize()
 
         # Ensure that the geometry is written
         self.write_geometry(H.geometry)
@@ -437,8 +439,6 @@ class ncSileSiesta(SileCDFSiesta):
         # Append the sparsity pattern
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
-
-        csr = _csr_to_siesta(H.geometry, H._csr)
 
         self._crt_dim(sp, 'nnzs', csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
@@ -503,12 +503,14 @@ class ncSileSiesta(SileCDFSiesta):
         DM : DensityMatrix
            the model to be saved in the NC file
         """
-        if DM.nnz == 0:
-            raise ValueError(self.__class__.__name__ + '.write_density_matrix + cannot write a DensityMatrix '
-                             'with zero non-zero elements!')
-
-        # Ensure finalizations
         DM.finalize()
+        csr = DM._csr.copy()
+        if csr.nnz == 0:
+            raise SileError(str(self) + '.write_density_matrix cannot write a zero element sparse matrix!')
+
+        # Convert to siesta CSR
+        _csr_to_siesta(DM.geometry, csr)
+        csr.finalize()
 
         # Ensure that the geometry is written
         self.write_geometry(DM.geom)
@@ -529,8 +531,6 @@ class ncSileSiesta(SileCDFSiesta):
         # Append the sparsity pattern
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
-
-        csr = _csr_to_siesta(DM.geometry, DM._csr)
 
         self._crt_dim(sp, 'nnzs', csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
@@ -594,12 +594,14 @@ class ncSileSiesta(SileCDFSiesta):
         EDM : EnergyDensityMatrix
            the model to be saved in the NC file
         """
-        if EDM.nnz == 0:
-            raise ValueError(self.__class__.__name__ + '.write_density_matrix + cannot write a DensityMatrix '
-                             'with zero non-zero elements!')
-
-        # Ensure finalizations
         EDM.finalize()
+        csr = EDM._csr.copy()
+        if csr.nnz == 0:
+            raise SileError(str(self) + '.write_energy_density_matrix cannot write a zero element sparse matrix!')
+
+        # Convert to siesta CSR
+        _csr_to_siesta(EDM.geometry, csr)
+        csr.finalize()
 
         # Ensure that the geometry is written
         self.write_geometry(EDM.geometry)
@@ -624,8 +626,6 @@ class ncSileSiesta(SileCDFSiesta):
         # Append the sparsity pattern
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
-
-        csr = _csr_to_siesta(EDM.geometry, EDM._csr)
 
         self._crt_dim(sp, 'nnzs', csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
@@ -690,8 +690,14 @@ class ncSileSiesta(SileCDFSiesta):
         D : DynamicalMatrix
            the model to be saved in the NC file
         """
-        # Ensure finalizations
         D.finalize()
+        csr = D._csr.copy()
+        if csr.nnz == 0:
+            raise SileError(str(self) + '.write_dynamical_matrix cannot write a zero element sparse matrix!')
+
+        # Convert to siesta CSR
+        _csr_to_siesta(D.geometry, csr)
+        csr.finalize()
 
         # Ensure that the geometry is written
         self.write_geometry(D.geometry)
@@ -713,8 +719,6 @@ class ncSileSiesta(SileCDFSiesta):
         # Append the sparsity pattern
         # Create basis group
         sp = self._crt_grp(self, 'SPARSE')
-
-        csr = _csr_to_siesta(D.geometry, D._csr)
 
         self._crt_dim(sp, 'nnzs', csr.col.shape[0])
         v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))

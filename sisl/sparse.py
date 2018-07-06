@@ -11,6 +11,7 @@ from numpy import insert, take, delete, copyto, split
 from numpy import intersect1d, setdiff1d, unique, in1d
 from numpy import diff, count_nonzero
 from numpy import any as np_any
+from numpy import all as np_all
 from numpy import argsort
 
 from scipy.sparse import isspmatrix
@@ -566,12 +567,12 @@ class SparseCSR(object):
             raise ValueError(self.__class__.__name__+".translate_columns requires input and output columns with "
                              "equal length")
 
+        if np_all(old == new):
+            # No need to translate anything...
+            return
+
         if np_any(old >= self.shape[1]):
             raise ValueError(self.__class__.__name__+".translate_columns has non-existing old column values")
-
-        end_clean = False
-        if np_any(new >= self.shape[1]):
-            end_clean = True
 
         # Now do the translation
         pvt = _a.arangei(self.shape[1])
@@ -585,7 +586,7 @@ class SparseCSR(object):
 
         # After translation, set to not finalized
         self._finalized = False
-        if end_clean:
+        if np_any(new >= self.shape[1]):
             self._clean_columns()
 
     def spsame(self, other):
@@ -943,7 +944,7 @@ class SparseCSR(object):
         # for integer stuff.
         data = asarray(data, self._D.dtype)
         isnan = np.isnan(data)
-        if np.all(isnan):
+        if np_all(isnan):
             # If the entries are nan's
             # then we return without adding the
             # entry.
@@ -981,7 +982,7 @@ class SparseCSR(object):
     def __contains__(self, key):
         """ Check whether a sparse index is non-zero """
         # Get indices of sparse data (-1 if non-existing)
-        return np.all(self._get(key[0], key[1]) >= 0)
+        return np_all(self._get(key[0], key[1]) >= 0)
 
     def nonzero(self, row=None, only_col=False):
         """ Row and column indices where non-zero elements exists
