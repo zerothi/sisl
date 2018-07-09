@@ -1,6 +1,35 @@
 0.9.3
 =====
 
+- Added velocity calculation of electronic eigenstates
+
+- Enabled effective mass tensor in electronic eigenstates (un-tested)
+
+- High performance increase by moving stuff to Cython.
+
+- Added Siesta interaction tutorials
+
+- Added orthogonality checks when reading sparse matrices
+
+- Lots of fixes for the fdf-file
+
+- Added Mulliken calculation in DensityMatrix/EnergyDensityMatrix
+
+- Enabled reading phonons from FC files
+
+- Added named-groups which enables accessing groups of atoms by names.
+
+      Geometry['Hello'] = [2, 3, 4]
+
+- Changed Hessian to DynamicalMatrix to clarify the units
+
+- Added new units class to handle complex units.
+
+- Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS
+
+- Bug-fixes for Siesta binary writes, now the supercell format is *always*
+	Siesta compliant.
+
 - Enabled replacing k-points in MonkhorstPack grids.
 
 - Enabled calculation of band-velocities from eigenstates
@@ -106,6 +135,8 @@
   - Reorganized the TBtrans netcdf files (internal changes only)
 
   - Added shot-noise calculation (and Fano factor). Currently un-tested!
+
+- Several added files
 
 
 0.9.2
