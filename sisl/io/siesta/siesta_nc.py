@@ -250,6 +250,24 @@ class ncSileSiesta(SileCDFSiesta):
 
         return EDM
 
+    def read_force_constant(self):
+        """ Reads the force-constant stored in the nc file
+
+        Returns
+        -------
+        force constants : numpy.ndarray with 5 dimensions containing all the forces. The 2nd dimensions contains
+                 contains the directions, and 3rd dimensions contains -/+ displacements.
+        """
+        if not 'FC' in self.groups:
+            raise SislError(str(self) + '.read_force_constant cannot find the FC group.')
+        fc = self.groups['FC']
+
+        disp = fc.variables['disp'][0] * Bohr2Ang
+        f0 = fc.variables['fa0'][:, :]
+        fc = (fc.variables['fa'][:, :, :, :, :] - f0.reshape(1, 1, 1, -1, 3)) / disp
+        fc[:, :, 1, :, :] *= -1
+        return fc * Ry2eV / Bohr2Ang
+
     def grids(self):
         """ Return a list of available grids in this file. """
 
