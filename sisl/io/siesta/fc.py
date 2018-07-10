@@ -2,7 +2,6 @@ from __future__ import print_function, division
 
 import numpy as np
 
-# Import sile objects
 from ..sile import add_sile, Sile_fh_open
 from .sile import *
 from sisl.unit.siesta import unit_convert
@@ -12,7 +11,7 @@ __all__ = ['fcSileSiesta']
 
 
 class fcSileSiesta(SileSiesta):
-    """ Force constants Siesta file object """
+    """ Force constant file """
 
     @Sile_fh_open
     def read_force(self, displacement=None, na=None):
@@ -101,6 +100,7 @@ class fcSileSiesta(SileSiesta):
         fc.shape = (-1, 3, 2, na, 3)
 
         return fc
+
 
 add_sile('FC', fcSileSiesta, case=False, gzip=True)
 add_sile('FCC', fcSileSiesta, case=False, gzip=True)

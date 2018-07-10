@@ -2,16 +2,12 @@ from __future__ import print_function, division
 
 import numpy as np
 
-# Import sile objects
 from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
-# Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-
 from sisl.utils.cmd import *
-
 from sisl.unit.siesta import unit_convert
 
 __all__ = ['outSileSiesta']
@@ -28,7 +24,7 @@ def _ensure_species(species):
 
 
 class outSileSiesta(SileSiesta):
-    """ Siesta output file object
+    """ Output file
 
     This enables reading the output quantities from the Siesta output.
     """

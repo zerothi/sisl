@@ -2,11 +2,9 @@ from __future__ import print_function
 
 import numpy as np
 
-# Import sile objects
 from .sile import SileSiesta
 from ..sile import *
 
-# Import the geometry object
 from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl.unit.siesta import unit_convert
 
@@ -16,7 +14,7 @@ __all__ = ['xvSileSiesta']
 
 
 class xvSileSiesta(SileSiesta):
-    """ XV file object """
+    """ Geometry file """
 
     @Sile_fh_open
     def write_geometry(self, geom, fmt='.9f', velocity=None):

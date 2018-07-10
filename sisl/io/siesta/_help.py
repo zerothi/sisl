@@ -1,4 +1,5 @@
 import numpy as np
+
 from sisl import SislError
 import sisl._array as _a
 try:

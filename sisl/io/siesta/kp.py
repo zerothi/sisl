@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import numpy as np
 
-# Import sile objects
 from ..sile import add_sile, Sile_fh_open, sile_raise_write
 from .sile import *
 
@@ -15,7 +14,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class kpSileSiesta(SileSiesta):
-    """ k-point Siesta file object """
+    """ k-points file in 1/Bohr units """
 
     @Sile_fh_open
     def read_data(self, sc=None):
@@ -107,7 +106,7 @@ class kpSileSiesta(SileSiesta):
 
 
 class rkpSileSiesta(kpSileSiesta):
-    """ Special k-point Siesta file object. This is not a format inherent to Siesta
+    """ Special k-point file with units in reciprocal lattice vectors
 
     Its main usage is as input for the kgrid.File fdf-option, in which case this
     file provides the k-points in the correct format.

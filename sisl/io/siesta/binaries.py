@@ -9,12 +9,10 @@ try:
 except Exception as e:
     found_module = False
 
-# Import sile objects
 from sisl.messages import warn, SislError
 from ..sile import add_sile, SileError
 from .sile import SileBinSiesta
 
-# Import the geometry object
 import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
@@ -35,7 +33,7 @@ __all__ += ['tsgfSileSiesta']
 
 
 class tshsSileSiesta(SileBinSiesta):
-    """ TranSiesta TSHS file object """
+    """ Geometry, Hamiltonian and overlap matrix file """
 
     def read_supercell(self):
         """ Returns a SuperCell object from a siesta.TSHS file """
@@ -206,7 +204,7 @@ class tshsSileSiesta(SileBinSiesta):
 
 
 class dmSileSiesta(SileBinSiesta):
-    """ Siesta DM file object """
+    """ Density matrix file """
 
     def read_density_matrix(self, **kwargs):
         """ Returns the density matrix from the siesta.DM file """
@@ -280,7 +278,7 @@ class dmSileSiesta(SileBinSiesta):
 
 
 class tsdeSileSiesta(dmSileSiesta):
-    """ TranSiesta TSDE file object """
+    """ Non-equilibrium density matrix and energy density matrix file """
 
     def read_energy_density_matrix(self, **kwargs):
         """ Returns the energy density matrix from the siesta.DM file """
@@ -331,7 +329,7 @@ class tsdeSileSiesta(dmSileSiesta):
 
 
 class hsxSileSiesta(SileBinSiesta):
-    """ Siesta HSX file object """
+    """ Hamiltonian and overlap matrix file """
 
     def read_hamiltonian(self, **kwargs):
         """ Returns the electronic structure from the siesta.TSHS file """
@@ -411,7 +409,7 @@ class hsxSileSiesta(SileBinSiesta):
 
 
 class gridSileSiesta(SileBinSiesta):
-    """ Siesta grid binary file """
+    """ Binary real-space grid file """
 
     def read_supercell(self, *args, **kwargs):
 
@@ -458,7 +456,7 @@ class gridSileSiesta(SileBinSiesta):
 
 
 class _gfSileSiesta(SileBinSiesta):
-    """ Surface Green function file for inclusion in TranSiesta and TBtrans """
+    """ Surface Green function file containing, Hamiltonian, overlap matrix and self-energies """
 
     def _setup(self, *args, **kwargs):
         """ Simple setup that needs to be overwritten """

@@ -7,7 +7,6 @@ try:
 except ImportError:
     from xml.etree.ElementTree import ElementTree
 
-# Import sile objects
 from ..sile import add_sile
 from .sile import SileSiesta
 from sisl._array import arrayd, emptyd
@@ -23,7 +22,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class pdosSileSiesta(SileSiesta):
-    """ PDOS as calculated by Siesta
+    """ Projected DOS file with orbital information
 
     Data file containing the PDOS as calculated by Siesta.
     """

@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import numpy as np
 
-# Import sile objects
 from ..sile import add_sile, Sile_fh_open, sile_raise_write
 from .sile import *
 
@@ -11,7 +10,7 @@ __all__ = ['faSileSiesta']
 
 
 class faSileSiesta(SileSiesta):
-    """ Force Siesta file object """
+    """ Forces file """
 
     @Sile_fh_open
     def read_force(self):
@@ -45,6 +44,7 @@ class faSileSiesta(SileSiesta):
     # Short-cut
     read_data = read_force
     write_data = write_force
+
 
 add_sile('FA', faSileSiesta, case=False, gzip=True)
 add_sile('FAC', faSileSiesta, case=False, gzip=True)

@@ -2,11 +2,9 @@ from __future__ import print_function
 
 import numpy as np
 
-# Import sile objects
 from .sile import SileCDFSiesta
 from ..sile import *
 
-# Import the geometry object
 from sisl import Grid
 from sisl.unit.siesta import unit_convert
 

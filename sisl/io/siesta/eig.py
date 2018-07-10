@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import numpy as np
 
-# Import sile objects
 from sisl.physics import get_distribution
 from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
@@ -16,7 +15,7 @@ __all__ = ['eigSileSiesta']
 
 
 class eigSileSiesta(SileSiesta):
-    """ The eigenvalue file from siesta exposes methods to read and also plot the data using `sdata`
+    """ Eigenvalues as calculated in the SCF loop, easy plots using `sdata`
 
     The .EIG file from Siesta contains the eigenvalues for k-points used during the SCF.
     Using the command-line utility `sdata` one may plot the eigenvalue spectrum to visualize the

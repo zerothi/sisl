@@ -1,10 +1,8 @@
 from __future__ import print_function, division
 
-# Import sile objects
 from .sile import SileSiesta
 from ..sile import add_sile, Sile_fh_open
 
-# Import the geometry object
 from sisl import Orbital, AtomicOrbital
 from sisl import PeriodicTable, Atom, Atoms
 from sisl._array import arrayi
@@ -16,7 +14,7 @@ __all__ = ['orbindxSileSiesta']
 
 
 class orbindxSileSiesta(SileSiesta):
-    """ .ORB_INDX file object """
+    """ Orbital information file """
 
     @Sile_fh_open
     def read_supercell_nsc(self):

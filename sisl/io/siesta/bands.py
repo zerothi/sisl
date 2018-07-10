@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import numpy as np
 
-# Import sile objects
 from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from ..sile import add_sile, Sile_fh_open
@@ -13,7 +12,7 @@ __all__ = ['bandsSileSiesta']
 
 
 class bandsSileSiesta(SileSiesta):
-    """ bands Siesta file object """
+    """ Bandstructure information """
 
     @Sile_fh_open
     def read_data(self):

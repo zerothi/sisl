@@ -3,7 +3,6 @@ from __future__ import print_function
 from numbers import Integral
 import numpy as np
 
-# Import sile objects
 from .sile import SileCDFSiesta
 from ..sile import *
 
@@ -28,7 +27,7 @@ Ry2eV = unit_convert('Ry', 'eV')
 
 
 class ncSileSiesta(SileCDFSiesta):
-    """ Siesta file object """
+    """ Generic NetCDF output file containing a large variety of information """
 
     def read_supercell_nsc(self):
         """ Returns number of supercell connections """

@@ -5,7 +5,6 @@ import warnings
 from datetime import datetime
 import numpy as np
 
-# Import sile objects
 from sisl import constant
 from sisl.unit.siesta import units
 import sisl._array as _a
@@ -46,7 +45,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 class fdfSileSiesta(SileSiesta):
-    """ Initialize an FDF file from the filename
+    """ FDF-input file
 
     By supplying base you can reference files in other directories.
     By default the ``base`` is the directory given in the file name.

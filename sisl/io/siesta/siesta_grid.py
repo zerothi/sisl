@@ -4,11 +4,9 @@ import os.path as osp
 from numbers import Integral
 import numpy as np
 
-# Import sile objects
 from .sile import SileCDFSiesta
 from ..sile import *
 
-# Import the geometry object
 from sisl.messages import info
 from sisl import SuperCell, Grid
 from sisl.unit.siesta import unit_convert
@@ -20,7 +18,7 @@ Ry2eV = unit_convert('Ry', 'eV')
 
 
 class gridncSileSiesta(SileCDFSiesta):
-    """ Siesta Grid file object """
+    """ NetCDF real-space grid file """
 
     def read_supercell(self):
         """ Returns a SuperCell object from a Siesta.grid.nc file

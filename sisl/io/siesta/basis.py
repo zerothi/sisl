@@ -17,11 +17,9 @@ __all__ = ['ionxmlSileSiesta', 'ionncSileSiesta']
 
 
 class ionxmlSileSiesta(SileSiesta):
-    """ Siesta basis set information
+    """ Basis set information in xml format
 
     Note that the ``ion`` files are equivalent to the ``ion.xml`` files.
-    However, the former has less precision and thus ``ion.xml`` files are
-    preferred.
     """
 
     def read_basis(self):
@@ -86,11 +84,9 @@ class ionxmlSileSiesta(SileSiesta):
 
 
 class ionncSileSiesta(SileCDFSiesta):
-    """ Siesta basis set information
+    """ Basis set information in NetCDF files
 
     Note that the ``ion.nc`` files are equivalent to the ``ion.xml`` files.
-    However, the former has higher precision and thus ``ion.nc`` files are
-    preferred.
     """
 
     def read_basis(self):
