@@ -7,6 +7,7 @@ ScaleUp (:mod:`sisl.io.scaleup`)
    :noindex:
 
 .. autosummary::
+   :toctree:
 
    orboccSileScaleUp - orbital information
    refSileScaleUp - reference coordinates

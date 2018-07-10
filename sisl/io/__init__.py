@@ -132,6 +132,10 @@ Siesta (:mod:`~sisl.io.siesta`)
    ionxmlSileSiesta - Basis-information from the ion.xml files
    ionncSileSiesta - Basis-information from the ion.nc files
    orbindxSileSiesta - Basis set information (no geometry information)
+   faSileSiesta - Forces on atoms
+   fcSileSiesta - Force constant matrix
+   kpSileSiesta - k-points from simulation
+   rkpSileSiesta - k-points to simulation
 
 
 .. _toc-io-transiesta:

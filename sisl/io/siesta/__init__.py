@@ -13,6 +13,7 @@ sisl.
 
 
 .. autosummary::
+   :toctree:
 
    fdfSileSiesta - input file
    outSileSiesta - output file
@@ -36,6 +37,7 @@ sisl.
 The TranSiesta specific output files are:
 
 .. autosummary::
+   :toctree:
 
    tshsSileSiesta - TranSiesta Hamiltonian
    tsdeSileSiesta - TranSiesta TSDE
