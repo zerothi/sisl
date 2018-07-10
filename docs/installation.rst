@@ -13,7 +13,7 @@ Required dependencies
 - `six`_
 - `setuptools`_
 - `numpy`_ (1.9 or later)
-- `scipy`_
+- `scipy`_ (1.1.0 contains a bug, see https://github.com/scipy/scipy/pull/9017)
 - `netCDF4-python <netcdf4-py_>`_
 - `pyparsing`_
 - A C- and fortran-compiler

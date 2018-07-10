@@ -4,8 +4,8 @@ mock
 six
 setuptools
 # We use some functionality not available in 1.8
-numpy>=1.9
-scipy
+numpy>=1.10
+scipy<=1.0.0
 netCDF4
 pyparsing
 matplotlib
