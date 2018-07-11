@@ -31,7 +31,7 @@ class omxSileOpenMX(SileOpenMX):
     Parameters
     ----------
     filename: str
-       fdf file
+       input file
     mode : str, optional
        opening mode, default to read-only
     base : str, optional
@@ -76,7 +76,6 @@ class omxSileOpenMX(SileOpenMX):
         self._comment = ['#']
 
         # List of parent file-handles used while reading
-        # This is because fdf enables inclusion of other files
         self._parent_fh = []
         self._directory = '.'
 
@@ -194,14 +193,14 @@ class omxSileOpenMX(SileOpenMX):
         # Grab the entire line (beside the key)
         values = value.split()
         if len(values) == 1:
-            fdf = values[0].lower()
-            if fdf in _LOGICAL:
+            val = values[0].lower()
+            if val in _LOGICAL:
                 # logical
                 return 'l'
 
             try:
-                float(fdf)
-                if '.' in fdf:
+                float(val)
+                if '.' in val:
                     # a real number (otherwise an integer)
                     return 'r'
                 return 'i'
