@@ -37,6 +37,7 @@ are missing, please create an issue `here <issue>`_.
 - :ref:`toc-io-generic`
 - :ref:`toc-io-bigdft`
 - :ref:`toc-io-gulp`
+- :ref:`toc-io-openmx`
 - :ref:`toc-io-scaleup`
 - :ref:`toc-io-siesta`
 - :ref:`toc-io-transiesta`
@@ -88,6 +89,19 @@ GULP (:mod:`~sisl.io.gulp`)
 
    gotSileGULP - the output from GULP
    fcSileGULP - force constant output from GULP
+
+
+.. _toc-io-openmx:
+
+OpenMX (:mod:`~sisl.io.openmx`)
+===============================
+
+.. currentmodule:: sisl.io.openmx
+
+.. autosummary::
+   :toctree:
+
+   omxSileOpenMX - input file
 
 
 .. _toc-io-scaleup:
@@ -248,6 +262,7 @@ its generic use in all routines etc.
 
    bigdft
    gulp
+   openmx
    scaleup
    siesta
    tbtrans
@@ -264,6 +279,7 @@ from .cube import *
 from .gulp import *
 from .ham import *
 from .molden import *
+from .openmx import *
 from .pdb import *
 from .scaleup import *
 from .siesta import *

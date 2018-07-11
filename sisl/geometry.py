@@ -19,7 +19,7 @@ from .messages import warn, SislError
 from ._help import _str
 from ._help import _range as range
 from ._help import isndarray
-from .utils import default_ArgumentParser, default_namespace, cmd
+from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
 from .utils import angle, direction
 from .utils import lstranges, strmap, array_arange
 from .utils.mathematics import fnorm
@@ -3218,8 +3218,12 @@ class Geometry(SuperCellChild):
         # parser.
         # This will enable custom actions to interact with the geometry in a
         # straight forward manner.
+        if isinstance(self, Geometry):
+            g = self.copy()
+        else:
+            g = None
         d = {
-            "_geometry": self.copy(),
+            "_geometry": g,
             "_stored_geometry": False,
         }
         namespace = default_namespace(**d)
@@ -3571,13 +3575,17 @@ lattice vector.
         if input_file is None:
             stdout_geom = False
             geometry = Geometry([0] * 3)
-        elif isfile(input_file):
-            geometry = get_sile(input_file).read_geometry()
-        elif not isfile(input_file):
-            from .messages import info
-            info("Cannot find file '{}'!".format(input_file))
-            geometry = Geometry
-            stdout_geom = False
+        else:
+            # Extract specification of the input file
+            i_file, spec = str_spec(input_file)
+
+            if isfile(i_file):
+                geometry = get_sile(input_file).read_geometry()
+            else:
+                from .messages import info
+                info("Cannot find file '{}'!".format(input_file))
+                geometry = Geometry
+                stdout_geom = False
 
     elif isinstance(geometry, Geometry):
         # Do nothing, the geometry is already created
