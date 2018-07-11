@@ -7,7 +7,6 @@ from .sile import SileCDFSiesta
 from ..sile import *
 
 from sisl._array import aranged
-from sisl.messages import info
 from sisl.unit.siesta import unit_convert
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
 from sisl.physics import DensityMatrix, EnergyDensityMatrix

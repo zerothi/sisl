@@ -1,12 +1,11 @@
 from __future__ import print_function, division
 
 import os.path as osp
-import warnings
 import numpy as np
 
 from sisl.unit import units
 import sisl._array as _a
-from sisl.messages import SislError, info, warn
+from sisl.messages import SislError, warn
 
 from .._help import *
 from ..sile import *

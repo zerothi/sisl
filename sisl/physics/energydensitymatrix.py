@@ -2,7 +2,6 @@ from __future__ import print_function, division
 
 import sisl._array as _a
 from sisl.messages import SislError
-from .sparse import SparseOrbitalBZSpin
 from .densitymatrix import _realspace_DensityMatrix
 
 __all__ = ['EnergyDensityMatrix']

@@ -415,7 +415,7 @@ class fdfSileSiesta(SileSiesta):
         # 1. find the old value, and thus the file in which it is found
         with self:
             try:
-                old_value = self.get(key)
+                self.get(key)
                 # Get the file of the containing data
                 top_file = self.fh.name
             except:

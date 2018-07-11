@@ -3,9 +3,6 @@ from __future__ import print_function, division
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
-    from numpy.distutils.system_info import get_info
-    import os
-    from os.path import join as osp_join
 
     config = Configuration('openmx', parent_package, top_path)
     config.add_data_dir('tests')

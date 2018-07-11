@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-import numpy as np
 from numpy import dot, sqrt, square
 from numpy import cos, sin, arctan2, arccos
 from numpy import asarray, take, delete, empty
@@ -200,7 +199,7 @@ def spherical_harm(m, l, theta, phi):
     """
     # Probably same as:
     #return (-1) ** m * ( (2*l+1)/(4*pi) * factorial(l-m) / factorial(l+m) ) ** 0.5 \
-    #    * lpmv(m, l, np.cos(theta)) * np.exp(1j * m * phi)
+    #    * lpmv(m, l, cos(theta)) * exp(1j * m * phi)
     return sph_harm(m, l, theta, phi) * (-1) ** m
 
 

@@ -44,11 +44,8 @@ from numpy import conj, dot
 
 import sisl._array as _a
 from sisl import units, constant
-from sisl.linalg import eig_destroy, eigh_destroy
-from sisl.messages import info, warn, SislError, tqdm_eta
+from sisl.linalg import eigh_destroy
 from sisl._help import dtype_complex_to_real
-from .distribution import get_distribution
-from .sparse import SparseOrbitalBZ
 from .state import Coefficient, State, StateC
 
 from .electron import DOS as electron_DOS

@@ -58,7 +58,7 @@ from sisl.geometry import Geometry
 from sisl._indices import indices_le
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
-from sisl.linalg import eig_destroy, eigh_destroy
+from sisl.linalg import eigh_destroy
 from sisl.messages import info, warn, SislError, tqdm_eta
 from sisl._help import dtype_complex_to_real, _range as range
 from .distribution import get_distribution

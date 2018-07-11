@@ -1,8 +1,6 @@
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import dot
-from scipy.sparse import csr_matrix
 
 from sisl._help import _range as range
 import sisl._array as _a

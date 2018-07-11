@@ -2,11 +2,9 @@ from __future__ import print_function, division
 
 import warnings
 
-from numpy import dot
 import numpy as np
-from scipy.sparse import csr_matrix, diags, SparseEfficiencyWarning
+from scipy.sparse import csr_matrix, SparseEfficiencyWarning
 
-import sisl._array as _a
 import sisl.linalg as lin
 from sisl._help import _range as range
 from sisl.sparse import isspmatrix

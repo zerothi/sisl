@@ -9,7 +9,6 @@ from scipy.sparse import lil_matrix
 # Import sile objects
 from .sile import SileGULP
 from ..sile import *
-from sisl.unit import unit_convert
 
 
 __all__ = ['fcSileGULP']

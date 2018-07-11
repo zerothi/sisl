@@ -10,7 +10,6 @@ from numpy import where
 from .sile import SileGULP
 from ..sile import *
 
-from sisl._help import _range as range
 # Import the geometry object
 from sisl import Geometry, Atom, Orbital, SuperCell
 from sisl import constant, units
