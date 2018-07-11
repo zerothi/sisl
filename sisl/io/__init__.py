@@ -211,9 +211,16 @@ Wannier90 (:mod:`~sisl.io.wannier90`)
    winSileWannier90 - input file
 
 
+.. #################################
+.. Switch back to the sisl.io module
+.. #################################
+
+.. currentmodule:: sisl.io
+
 
 Low level methods/classes
 =========================
+
 
 Classes and methods generically only used internally. If you wish to create
 your own `Sile` you should inherit either of `Sile` (ASCII), `SileCDF` (NetCDF)
@@ -234,8 +241,6 @@ its generic use in all routines etc.
 .. ###############################################
 .. Add all io modules to the toc (to be reachable)
 .. ###############################################
-
-.. currentmodule:: sisl.io
 
 .. autosummary::
    :toctree:
