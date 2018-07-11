@@ -38,6 +38,12 @@ def setup():
     return t()
 
 
+def _to_voight(m):
+    idx1 = [0, 1, 2, 1, 0, 0]
+    idx2 = [0, 1, 2, 2, 2, 1]
+    return m[:, idx1, idx2]
+
+
 @pytest.mark.hamiltonian
 class TestHamiltonian(object):
 
@@ -524,6 +530,22 @@ class TestHamiltonian(object):
             assert np.allclose(v, es.state.T)
             assert np.allclose(es.norm(), 1)
 
+    def test_change_gauge(self, setup):
+        # Test of eigenvalues vs eigenstate class
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        es = HS.eigenstate()
+        es2 = es.copy()
+        es2.change_gauge('r')
+        assert np.allclose(es2.state, es.state)
+
+        es = HS.eigenstate(k=(0.2, 0.2, 0.2))
+        es2 = es.copy()
+        es2.change_gauge('r')
+        assert not np.allclose(es2.state, es.state)
+        es2.change_gauge('R')
+        assert np.allclose(es2.state, es.state)
+
     def test_velocity_orthogonal(self, setup):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), ((1., 1.))])
@@ -553,6 +575,8 @@ class TestHamiltonian(object):
             v = es.inv_eff_mass_tensor()
             vsub = es.sub([0]).inv_eff_mass_tensor()
             assert np.allclose(v[0, :], vsub)
+            vsub = es.sub([0]).inv_eff_mass_tensor(True)
+            assert np.allclose(v[0, :], _to_voight(vsub))
 
     def test_inv_eff_mass_tensor_nonorthogonal(self, setup):
         HS = setup.HS.copy()
@@ -563,6 +587,8 @@ class TestHamiltonian(object):
             v = es.inv_eff_mass_tensor()
             vsub = es.sub([0]).inv_eff_mass_tensor()
             assert np.allclose(v[0, :], vsub)
+            vsub = es.sub([0]).inv_eff_mass_tensor(True)
+            assert np.allclose(v[0, :], _to_voight(vsub))
 
     def test_dos1(self, setup):
         HS = setup.HS.copy()

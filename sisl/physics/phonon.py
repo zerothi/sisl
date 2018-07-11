@@ -40,7 +40,7 @@ using automatic arguments.
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import conj
+from numpy import conj, dot
 
 import sisl._array as _a
 from sisl import units, constant
@@ -268,6 +268,46 @@ class _phonon_Mode(object):
     def mode(self):
         return self.state
 
+    def change_gauge(self, gauge):
+        r""" In-place change of the gauge of the mode coefficients
+
+        The two gauges are related through:
+
+        .. math::
+
+            \tilde C_j = e^{-i\mathbf k\mathbf r_j} C_j
+
+        where :math:`C_j` belongs to the gauge ``R`` and :math:`\tilde C_j` is in the gauge
+        ``r``.
+
+        Parameters
+        ----------
+        gauge : {'R', 'r'}
+            specify the new gauge for the mode coefficients
+        """
+        # These calls will fail if the gauge is not specified.
+        # In that case we simply don't care about the raised issues.
+        if self.info.get('gauge') == gauge:
+            # Quick return
+            return
+
+        # Update gauge value
+        self.info['gauge'] = gauge
+
+        # Check that we can do a gauge transformation
+        k = _a.asarrayd(self.info.get('k'))
+        if (k ** 2).sum() ** 0.5 <= 0.000001:
+            return
+
+        g = self.parent.geometry
+        k = dot(g.rcell, k)
+        phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], k)
+
+        if gauge == 'r':
+            self.state *= np.exp(-1j * phase).reshape(1, -1)
+        elif gauge == 'R':
+            self.state *= np.exp(1j * phase).reshape(1, -1)
+
 
 class CoefficientPhonon(Coefficient):
     """ Coefficients describing some physical quantity related to phonons """
@@ -282,6 +322,36 @@ class ModePhonon(_phonon_Mode, State):
 class ModeCPhonon(_phonon_Mode, StateC):
     """ A mode describing a physical quantity related to phonons, with associated coefficients of the mode """
     __slots__ = []
+
+    def velocity(self, eps=1e-7):
+        r""" Calculate velocity for the modes
+
+        This routine calls `~sisl.physics.phonon.velocity` with appropriate arguments
+        and returns the velocity for the modes.
+
+        Note that the coefficients associated with the `ModeCPhonon` *must* correspond
+        to the energies of the modes.
+
+        See `~sisl.physics.phonon.velocity` for details.
+
+        Notes
+        -----
+        The eigenvectors for the modes *may* have changed after calling this routine.
+        This is because of the velocity un-folding for degenerate modes. I.e. calling
+        `displacement` and/or `PDOS` after this method *may* change the result.
+
+        Parameters
+        ----------
+        eps : float, optional
+           precision used to find degenerate modes.
+        """
+        opt = {'k': self.info.get('k', (0, 0, 0))}
+        gauge = self.info.get('gauge', None)
+        if not gauge is None:
+            opt['gauge'] = gauge
+
+        deg = self.degenerate(eps)
+        return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg)
 
 
 class EigenvaluePhonon(CoefficientPhonon):
@@ -341,36 +411,6 @@ class EigenmodePhonon(ModeCPhonon):
         See `~sisl.physics.phonon.PDOS` for argument details.
         """
         return PDOS(E, self.mode, self.hw, distribution)
-
-    def velocity(self, eps=1e-7):
-        r""" Calculate velocity for the modes
-
-        This routine calls `~sisl.physics.phonon.velocity` with appropriate arguments
-        and returns the velocity for the modes.
-
-        Note that the coefficients associated with the `ModeCPhonon` *must* correspond
-        to the energies of the modes.
-
-        See `~sisl.physics.phonon.velocity` for details.
-
-        Notes
-        -----
-        The eigenvectors for the modes *may* have changed after calling this routine.
-        This is because of the velocity un-folding for degenerate modes. I.e. calling
-        `displacement` and/or `PDOS` after this method *may* change the result.
-
-        Parameters
-        ----------
-        eps : float, optional
-           precision used to find degenerate modes.
-        """
-        opt = {'k': self.info.get('k', (0, 0, 0))}
-        gauge = self.info.get('gauge', None)
-        if not gauge is None:
-            opt['gauge'] = gauge
-
-        deg = self.degenerate(eps)
-        return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg)
 
     def displacement(self):
         r""" Calculate displacements for the modes

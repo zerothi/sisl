@@ -620,13 +620,21 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     Notes
     -----
-    Currently this method only works for :math:`\Gamma` states
+    Currently this method only works for `v` being coefficients of the gauge='R' method. In case
+    you are passing a `v` with the incorrect gauge you will find a phase-shift according to:
+
+    .. math::
+        \tilde v_j = e^{-i\mathbf k\mathbf r_j} v_j
+
+    where :math:`j` is the orbital index and :math:`\mathbf r_j` is the orbital position.
+
 
     Parameters
     ----------
     v : array_like
        coefficients for the orbital expansion on the real-space grid.
-       If `v` is a complex array then the `grid` *must* be complex as well.
+       If `v` is a complex array then the `grid` *must* be complex as well. The coefficients
+       must be using the ``R`` gauge.
     grid : Grid
        grid on which the wavefunction will be plotted.
        If multiple eigenstates are in this object, they will be summed.
@@ -1001,6 +1009,91 @@ class _electron_State(object):
             spin = None
         return spin_moment(self.state, self.Sk(spin=spin))
 
+    def wavefunction(self, grid, spinor=0, eta=False):
+        r""" Expand the coefficients as the wavefunction on `grid` *as-is*
+
+        See `~sisl.physics.electron.wavefunction` for argument details.
+        """
+        try:
+            spin = self.parent.spin
+        except:
+            spin = None
+
+        if isinstance(self.parent, Geometry):
+            geometry = self.parent
+        else:
+            try:
+                geometry = self.parent.geometry
+            except:
+                geometry = None
+
+        # Ensure we are dealing with the R gauge
+        self.change_gauge('R')
+
+        # Retrieve k
+        k = self.info.get('k', _a.zerosd(3))
+
+        wavefunction(self.state, grid, geometry=geometry, k=k, spinor=spinor,
+                     spin=spin, eta=eta)
+
+    def change_gauge(self, gauge):
+        r""" In-place change of the gauge of the state coefficients
+
+        The two gauges are related through:
+
+        .. math::
+
+            \tilde C_j = e^{-i\mathbf k\mathbf r_j} C_j
+
+        where :math:`C_j` belongs to the gauge ``R`` and :math:`\tilde C_j` is in the gauge
+        ``r``.
+
+        Parameters
+        ----------
+        gauge : {'R', 'r'}
+            specify the new gauge for the state coefficients
+        """
+        # These calls will fail if the gauge is not specified.
+        # In that case we simply don't care about the raised issues.
+        if self.info.get('gauge') == gauge:
+            # Quick return
+            return
+
+        # Update gauge value
+        self.info['gauge'] = gauge
+
+        # Check that we can do a gauge transformation
+        k = _a.asarrayd(self.info.get('k'))
+        if (k ** 2).sum() ** 0.5 <= 0.000001:
+            return
+
+        g = self.parent.geometry
+        k = dot(g.rcell, k)
+        phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], k)
+
+        if gauge == 'r':
+            self.state *= np.exp(-1j * phase).reshape(1, -1)
+        elif gauge == 'R':
+            self.state *= np.exp(1j * phase).reshape(1, -1)
+
+    # TODO to be deprecated
+    psi = wavefunction
+
+
+class CoefficientElectron(Coefficient):
+    """ Coefficients describing some physical quantity related to electrons """
+    __slots__ = []
+
+
+class StateElectron(_electron_State, State):
+    """ A state describing a physical quantity related to electrons """
+    __slots__ = []
+
+
+class StateCElectron(_electron_State, StateC):
+    """ A state describing a physical quantity related to electrons, with associated coefficients of the state """
+    __slots__ = []
+
     def velocity(self, eps=1e-4):
         r""" Calculate velocity for the states
 
@@ -1082,48 +1175,6 @@ class _electron_State(object):
         except:
             raise SislError(self.__class__.__name__ + '.inv_eff_mass_tensor requires the parent to have a spin associated.')
         return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate, as_matrix)
-
-    def wavefunction(self, grid, spinor=0, eta=False):
-        r""" Expand the coefficients as the wavefunction on `grid` *as-is*
-
-        See `~sisl.physics.electron.wavefunction` for argument details.
-        """
-        try:
-            spin = self.parent.spin
-        except:
-            spin = None
-
-        if isinstance(self.parent, Geometry):
-            geometry = self.parent
-        else:
-            try:
-                geometry = self.parent.geometry
-            except:
-                geometry = None
-
-        # Retrieve k
-        k = self.info.get('k', _a.zerosd(3))
-
-        wavefunction(self.state, grid, geometry=geometry, k=k, spinor=spinor,
-                     spin=spin, eta=eta)
-
-    # TODO to be deprecated
-    psi = wavefunction
-
-
-class CoefficientElectron(Coefficient):
-    """ Coefficients describing some physical quantity related to electrons """
-    __slots__ = []
-
-
-class StateElectron(_electron_State, State):
-    """ A state describing a physical quantity related to electrons """
-    __slots__ = []
-
-
-class StateCElectron(_electron_State, StateC):
-    """ A state describing a physical quantity related to electrons, with associated coefficients of the state """
-    __slots__ = []
 
 
 class EigenvalueElectron(CoefficientElectron):

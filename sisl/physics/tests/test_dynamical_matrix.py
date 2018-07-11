@@ -95,6 +95,16 @@ class TestDynamicalMatrix(object):
         assert np.allclose(ev.hw, em.hw)
         assert np.allclose(em.norm(), 1)
 
+    def test_change_gauge(self, setup):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        em = D.eigenmode(k=(0.2, 0.2, 0.2))
+        em2 = em.copy()
+        em2.change_gauge('r')
+        assert not np.allclose(em.mode, em2.mode)
+        em2.change_gauge('R')
+        assert np.allclose(em.mode, em2.mode)
+
     def test_dos_pdos_velocity(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)
