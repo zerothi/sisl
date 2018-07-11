@@ -69,6 +69,21 @@ def test_tbl4(sisl_tmp):
     assert np.allclose(dat, DAT)
 
 
+def test_tbl_automatic_stack(sisl_tmp):
+    dat0 = np.arange(4)
+    dat1 = np.arange(8).reshape(2, 4) + 1
+    DAT = np.vstack([dat0, dat1])
+
+    io = tableSile(sisl_tmp('t.dat', _dir), 'w')
+    io.write_data(dat0, dat1)
+    dat = tableSile(io.file, 'r').read_data()
+    assert np.allclose(dat, DAT)
+    io = tableSile(io.file, 'w')
+    io.write_data((dat0, dat1))
+    dat = tableSile(io.file, 'r').read_data()
+    assert np.allclose(dat, DAT)
+
+
 @pytest.mark.parametrize("delimiter", ['\t', ' ', ',', ':', 'M'])
 def test_tbl5(sisl_tmp, delimiter):
     dat0 = np.arange(8)

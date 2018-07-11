@@ -12,7 +12,60 @@ __all__ = ['tableSile', 'TableSile']
 
 
 class tableSile(Sile):
-    """ ASCII tabular formatted data """
+    """ ASCII tabular formatted data
+
+    A generic table data which will easily accommodate the most common write-outs of data
+
+    Examples
+    --------
+
+    >>> a = np.arange(6).reshape(3, 2)
+    >>> tbl = tableSile('test.dat', 'w')
+    >>> tbl.write_data(a)
+    >>> print(''.join(open('test.dat').readlines())) # doctest: +NORMALIZE_WHITESPACE
+    0.00000e+00	2.00000e+00	4.00000e+00
+    1.00000e+00	3.00000e+00	5.00000e+00
+    <BLANKLINE>
+
+    >>> a = np.arange(6).reshape(3, 2)
+    >>> tbl = tableSile('test.dat', 'w')
+    >>> tbl.write_data(a, comment='Hello')
+    >>> print(''.join(open('test.dat').readlines())) # doctest: +NORMALIZE_WHITESPACE
+    # Hello
+    0.00000e+00	2.00000e+00	4.00000e+00
+    1.00000e+00	3.00000e+00	5.00000e+00
+    <BLANKLINE>
+
+    >>> a = np.arange(6).reshape(3, 2)
+    >>> tbl = tableSile('test.dat', 'w')
+    >>> tbl.write_data(a, header=['x', 'y'])
+    >>> print(''.join(open('test.dat').readlines())) # doctest: +NORMALIZE_WHITESPACE
+    #x	y
+    0.00000e+00	2.00000e+00	4.00000e+00
+    1.00000e+00	3.00000e+00	5.00000e+00
+    <BLANKLINE>
+
+    >>> a = np.arange(6).reshape(3, 2)
+    >>> tbl = tableSile('test.dat', 'w')
+    >>> tbl.write_data(a.T)
+    >>> print(''.join(open('test.dat').readlines())) # doctest: +NORMALIZE_WHITESPACE
+    0.00000e+00	1.00000e+00
+    2.00000e+00	3.00000e+00
+    4.00000e+00	5.00000e+00
+    <BLANKLINE>
+
+    >>> x = np.arange(4)
+    >>> y = np.arange(8).reshape(2, 4) + 4
+    >>> tbl = tableSile('test.dat', 'w')
+    >>> tbl.write_data(x, y)
+    >>> print(''.join(open('test.dat').readlines())) # doctest: +NORMALIZE_WHITESPACE
+    0.00000e+00	4.00000e+00	8.00000e+00
+    1.00000e+00	5.00000e+00	9.00000e+00
+    2.00000e+00	6.00000e+00	1.00000e+01
+    3.00000e+00	7.00000e+00	1.10000e+01
+    <BLANKLINE>
+
+    """
 
     def _setup(self, *args, **kwargs):
         """ Setup the `tableSile` after initialization """
@@ -76,9 +129,7 @@ class tableSile(Sile):
             comment = self._comment[0] + ' ' + comment + newline
 
         header = kwargs.get('header', None)
-        if header is None:
-            header = ''
-        elif isinstance(header, (list, tuple)):
+        if isinstance(header, (list, tuple)):
             header = delimiter.join(header)
         if header is not None:
             # Ensure no "dangling" spaces
@@ -87,6 +138,8 @@ class tableSile(Sile):
                 header = self._comment[0] + header
             if not header.endswith('\n'):
                 header += '\n'
+        else:
+            header = ''
         header = comment + header
 
         footer = kwargs.get('footer', None)
@@ -99,9 +152,9 @@ class tableSile(Sile):
         # This is rather difficult because we have to guess the
         # input size
         if len(args) == 1:
-            dat = np.stack(args[0])
+            dat = np.vstack(args[0])
         else:
-            dat = np.stack(args)
+            dat = np.vstack(args)
 
         _fmt = '{:' + fmt + '}'
 
