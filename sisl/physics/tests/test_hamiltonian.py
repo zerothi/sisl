@@ -5,7 +5,7 @@ import pytest
 import warnings
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure
+from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack
 from sisl import Grid
 from sisl import SphericalOrbital
 
@@ -1091,6 +1091,15 @@ class TestHamiltonian(object):
         H.shift([0, -0.2])
         assert H.eigh(spin=0)[0] == pytest.approx(eig0_0 + 0.2)
         assert H.eigh(spin=1)[0] == pytest.approx(eig1_0)
+
+    def test_fermi_level(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (2.1, 0.1)]
+        H = Hamiltonian(setup.g.copy(), orthogonal=False)
+        H.construct([R, param])
+        bz = MonkhorstPack(H, [10, 10, 1])
+        Ef = H.fermi_level(bz, q=1)
+        H.shift(-Ef)
+        assert H.fermi_level(bz, q=1) == pytest.approx(0., abs=1e-6)
 
     def test_edges1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

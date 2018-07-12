@@ -4,6 +4,7 @@ import numpy as np
 
 from sisl._help import _range as range
 import sisl._array as _a
+from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron
 from .sparse import SparseOrbitalBZSpin
 
@@ -424,3 +425,60 @@ class Hamiltonian(SparseOrbitalBZSpin):
         EigenstateElectron.PDOS : Underlying method used to calculate the projected DOS
         """
         return self.eigenstate(k, **kwargs).PDOS(E, distribution)
+
+    def fermi_level(self, bz, distribution='fermi_dirac', q=None, q_tol=1e-10):
+        """ Calculate the Fermi-level using a Brillouinzone sampling and a target charge
+
+        The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues
+        and subsequently fitting the Fermi level to the final charge (`q`).
+
+        Parameters
+        ----------
+        bz : Brillouinzone
+            sampled k-points and weights, the ``bz.parent`` will be equal to this object upon return
+        distribution : str, func
+            used distribution, must accept the keyword ``mu`` as parameter for the Fermi-level
+        q : float, optional
+            seeked charge, if not set will be equal to ``self.geometry.q0``.
+        q_tol : float, optional
+            tolerance of charge for finding the Fermi-level
+
+        Returns
+        -------
+        fermi-level : the Fermi-level of the system.
+        """
+        # Overwrite the parent in bz
+        bz.set_parent(self)
+
+        if q is None:
+            q = self.geometry.q0
+
+        if isinstance(distribution, str):
+            distribution = get_distribution(distribution)
+
+        # We have two cases, either a spin-polarized calculation, or all others.
+        spin = bz.parent.spin
+        if spin.is_polarized:
+            # We need both spin eigenvalues
+            eig = np.stack([bz.asarray().eigh(spin=0),
+                            bz.asarray().eigh(spin=1)], axis=1)
+        else:
+            eig = bz.asarray().eigh()
+        w = bz.weight.reshape(-1, 1)
+
+        # Find Fermi-level
+        E_min = eig.min()
+        E_max = eig.max()
+
+        # We start by guessing on 10 (so we can faster move down)
+        Ef = 10.
+        qt = (distribution(eig, mu=Ef) * w).sum()
+        while abs(qt - q) > q_tol:
+            if qt > q:
+                E_max = Ef
+            elif qt < q:
+                E_min = Ef
+            Ef = (E_min + E_max) / 2
+            qt = (distribution(eig, mu=Ef) * w).sum()
+
+        return Ef
