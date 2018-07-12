@@ -297,7 +297,12 @@ class SparseOrbitalBZ(SparseOrbital):
         """ For an orthogonal case we always return the identity matrix """
         if dtype is None:
             dtype = np.float64
-        S = csr_matrix((len(self), len(self)), dtype=dtype)
+        no = len(self)
+        if format == 'array':
+            return np.diag(np.ones(no, dtype=dtype))
+        elif format == 'matrix' or format == 'dense':
+            return np.diag(np.ones(no, dtype=dtype)).asmatrix()
+        S = csr_matrix((no, no), dtype=dtype)
         S.setdiag(1.)
         return S.asformat(format)
 

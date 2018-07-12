@@ -186,7 +186,7 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        GB = (sp0.Sk(k, dtype=dtype) * Z - sp0.Pk(k, dtype=dtype)).asformat('array')
+        GB = (sp0.Sk(k, dtype=dtype) * Z - sp0.Pk(k, dtype=dtype)).toarray()
 
         if sp1.orthogonal:
             alpha = sp1.Pk(k, dtype=dtype, format='array')
@@ -194,8 +194,8 @@ class RecursiveSI(SemiInfinite):
         else:
             M = sp1.Pk(k, dtype=dtype)
             S = sp1.Sk(k, dtype=dtype)
-            alpha = (M - S * Z).asformat('array')
-            beta  = (M.getH() - S.getH() * Z).asformat('array')
+            alpha = (M - S * Z).toarray()
+            beta  = (M.getH() - S.getH() * Z).toarray()
             del M, S
 
         # Surface Green function (self-energy)
