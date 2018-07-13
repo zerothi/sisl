@@ -37,8 +37,8 @@ If performing a manual installation, these packages are required:
 
    - A C- and fortran-compiler
    - __six__
-   - __numpy__
-   - __scipy__ (1.1.0 contains a bug, see https://github.com/scipy/scipy/pull/9017)
+   - __numpy__ (1.10 or later)
+   - __scipy__
    - __netCDF4__
    - __setuptools__
    - __pyparsing__
