@@ -313,19 +313,34 @@ class omxSileOpenMX(SileOpenMX):
                 if c.isdigit():
                     idx = i
                     break
+            R = -1
             if idx == 0:
                 Z = Zr
-                R = -1
             else:
                 Z = Zr[:idx]
-                R = float(Zr[idx:])
+                try:
+                    R = float(Zr[idx:])
+                except:
+                    pass
 
             # Now figure out the orbitals
             orbs = []
+            m_order = {
+                0: [0],
+                1: [1, -1, 0], # px, py, pz
+                2: [0, 2, -2, 1, -1], # d3z^2-r^2, dx^2-y^2, dxy, dxz, dyz
+                3: [0, 1, -1, 2, -2, 3, -3], # f5z^2-3r^2, f5xz^2-xr^2, f5yz^2-yr^2, fzx^2-zy^2, fxyz, fx^3-3*xy^2, f3yx^2-y^3
+                4: [0, 1, -1, 2, -2, 3, -3, 4, -4]
+            }
             for i, c in enumerate(spec):
                 try:
                     l = 'spdfg'.index(c)
-                    orbs.extend(SphericalOrbital(l, rf_func(R)).toAtomicOrbital())
+                    try:
+                        nZ = int(spec[i+1])
+                    except:
+                        nZ = 1
+                    for z in range(nZ):
+                        orbs.extend(SphericalOrbital(l, rf_func(R)).toAtomicOrbital(m=m_order[l], Z=z+1))
                 except:
                     pass
 
