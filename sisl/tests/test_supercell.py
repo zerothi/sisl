@@ -309,6 +309,18 @@ class TestSuperCell(object):
         g = g.rotatea(90)
         assert not g.sc.parallel(gbig.sc)
 
+    def test_tile_multiply_orthogonal(self):
+        sc = graphene(orthogonal=True).sc
+        assert np.allclose(sc.tile(3, 0).tile(2, 1).tile(4, 2).cell, (sc * (3, 2, 4)).cell)
+        assert np.allclose(sc.tile(3, 0).tile(2, 1).cell, (sc * [3, 2]).cell)
+        assert np.allclose(sc.tile(3, 0).tile(3, 1).tile(3, 2).cell, (sc * 3).cell)
+
+    def test_tile_multiply_non_orthogonal(self):
+        sc = graphene(orthogonal=False).sc
+        assert np.allclose(sc.tile(3, 0).tile(2, 1).tile(4, 2).cell, (sc * (3, 2, 4)).cell)
+        assert np.allclose(sc.tile(3, 0).tile(2, 1).cell, (sc * [3, 2]).cell)
+        assert np.allclose(sc.tile(3, 0).tile(3, 1).tile(3, 2).cell, (sc * 3).cell)
+
     def test_angle1(self, setup):
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)

@@ -453,6 +453,28 @@ class SuperCell(object):
         # We have to reverse the normal vector
         return -n, up
 
+    def __mul__(self, m):
+        """ Implement easy repeat function
+
+        Parameters
+        ----------
+        m : int or array_like of length 3
+           a single integer may be regarded as [m, m, m].
+           A list will expand the unit-cell along the equivalent lattice vector.
+
+        Returns
+        -------
+        supercell : the enlarged supercell
+        """
+        # Simple form
+        if isinstance(m, Integral):
+            return self.tile(m, 0).tile(m, 1).tile(m, 2)
+
+        sc = self.copy()
+        for i, r in enumerate(m):
+            sc = sc.tile(r, i)
+        return sc
+
     @property
     def icell(self):
         """ Returns the reciprocal (inverse) cell for the `SuperCell`.

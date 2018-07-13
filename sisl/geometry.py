@@ -1260,11 +1260,6 @@ class Geometry(SuperCellChild):
         tile : specific method to enlarge the geometry
         repeat : specific method to enlarge the geometry
         """
-
-        # Reverse arguments in case it is on the LHS
-        if not isinstance(self, Geometry):
-            return m * self
-
         # Simple form
         if isinstance(m, Integral):
             return self * [m, m, m]
