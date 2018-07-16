@@ -189,7 +189,7 @@ gout.set_supercell_key("Cartesian lattice vectors")
 # matrix from the GULP output file or from the
 # FORCE_CONSTANTS_2ND file.
 order = ['got'] # GULP output file
-#order = ['FC'] # FORCE_CONSTANTS_2ND file
+order = ['FC'] # FORCE_CONSTANTS_2ND file
 
 dyn = gout.read_dynamical_matrix(order=order)
 

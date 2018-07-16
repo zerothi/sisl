@@ -816,8 +816,7 @@ class fdfSileSiesta(SileSiesta):
             cutoff value for the distance of the force-constants (everything farther than
             `cutoff_dist` will be set to 0, unit in Ang.
         cutoff : float, optional
-            cutoff value for the force-constants (absolute values below this value will be set
-            to 0). Unit is eV/Ang**2.
+            absolute values below the cutoff are considered 0. Defaults to 1e-4 eV/Ang**2.
         correct_fc : bool, optional
             correct the FC-matrix by forcing the force on the moved atom to be
             equal to the negative sum of all the others. Default to true.
@@ -851,7 +850,7 @@ class fdfSileSiesta(SileSiesta):
         periodic = geom.nsc > 1
 
         # Cut-off too small values
-        fc_cut = kwargs.get('cutoff', 0.)
+        fc_cut = kwargs.get('cutoff', 1e-4)
         FC = np.where(np.abs(FC) > fc_cut, FC, 0.)
 
         # Convert the force constant such that a diagonalization returns eV ^ 2

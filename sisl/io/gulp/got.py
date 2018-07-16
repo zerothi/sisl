@@ -6,6 +6,8 @@ from __future__ import print_function, division
 import os.path as osp
 import numpy as np
 from numpy import where
+from numpy import abs as np_abs
+
 
 from sisl.messages import info, warn
 from .sile import SileGULP
@@ -23,7 +25,7 @@ class gotSileGULP(SileGULP):
     """ GULP output file object """
 
     def _setup(self, *args, **kwargs):
-        """ Setup `goutSileGULP` after initialization """
+        """ Setup `gotSileGULP` after initialization """
 
         self._keys = {
             'sc': 'Final Cartesian lattice vectors',
@@ -167,8 +169,8 @@ class gotSileGULP(SileGULP):
 
         Parameters
         ----------
-        cutoff: float (0.001 eV/Ang**2)
-           the cutoff of the force-constant matrix for adding to the matrix
+        cutoff: float, optional
+           absolute values below the cutoff are considered 0. Defaults to 1e-4 eV/Ang**2.
         dtype: np.dtype (np.float64)
            default data-type of the matrix
         order: list of str, optional
@@ -178,7 +180,7 @@ class gotSileGULP(SileGULP):
         """
         geom = self.read_geometry(**kwargs)
 
-        order = kwargs.get('order', ['got', 'FC'])
+        order = kwargs.pop('order', ['got', 'FC'])
         for f in order:
             v = getattr(self, '_r_dynamical_matrix_{}'.format(f.lower()))(geom, **kwargs)
             if v is not None:
@@ -194,9 +196,8 @@ class gotSileGULP(SileGULP):
         # Easier for creation of the sparsity pattern
         from scipy.sparse import lil_matrix
 
-        # Default cutoff
+        # Default cutoff eV / Ang ** 2
         cutoff = kwargs.get('cutoff', 1.e-4)
-        # Default dtype
         dtype = kwargs.get('dtype', np.float64)
 
         no = geom.no
@@ -206,7 +207,7 @@ class gotSileGULP(SileGULP):
         if not f:
             info(self.__class__.__name__ + ' tries to lookup the Dynamical matrix '
                              'using key "' + self._keys['dyn'] + '". '
-                             'Use .set_dyn_key(...) to search for different name.'
+                             'Use .set_dynamical_matrix_key(...) to search for different name.'
                              'This could not be found found in file: "{}".'.format(self.file))
             return None
 
@@ -245,7 +246,7 @@ class gotSileGULP(SileGULP):
                     j += 3
                     if j >= no:
                         # Clear those below the cutoff
-                        dyn[i, :] = where(np.abs(dat[:]) >= cutoff, dat, 0.)
+                        dyn[i, :] = dat[:]
 
                         i += 1
                         j = 0
@@ -255,8 +256,15 @@ class gotSileGULP(SileGULP):
         # clean-up for memory
         del dat
 
-        # Convert to CSR matrix format
-        dyn = dyn.tocsr()
+        # Convert to COO matrix format
+        dyn = dyn.tocoo()
+
+        # Construct mass ** (-.5), so we can check cutoff correctly
+        mass_sqrt = np.array(geom.atoms.mass, np.float64).repeat(3) ** 0.5
+        dyn.data[:] *= mass_sqrt[dyn.row] * mass_sqrt[dyn.col]
+        dyn.data[np_abs(dyn.data) < cutoff] = 0.
+        dyn.data[:] *= 1 / (mass_sqrt[dyn.row] * mass_sqrt[dyn.col])
+        dyn.eliminate_zeros()
 
         return dyn
 
@@ -267,9 +275,9 @@ class gotSileGULP(SileGULP):
         if not osp.isfile(f):
             return None
 
-        dyn = fcSileGULP(f, 'r').read_force_constant(**kwargs)
+        fc = fcSileGULP(f, 'r').read_force_constant(**kwargs)
 
-        if dyn.shape[0] != geom.no:
+        if fc.shape[0] != geom.no:
             warn(self.__class__.__name__ + 'read_dynamical_matrix(FC) inconsistent force constant file, number of atoms not correct!')
             return None
 
@@ -277,9 +285,10 @@ class gotSileGULP(SileGULP):
         rmass = 1 / np.array(geom.atoms.mass, np.float64).repeat(3) ** 0.5
 
         # Scale to get dynamical matrix
-        dyn.data[:] *= rmass[dyn.row] * rmass[dyn.col]
+        fc.data[:] *= rmass[fc.row] * rmass[fc.col]
 
-        return dyn
+        return fc
+
 
 # Old-style GULP output
 add_sile('gout', gotSileGULP, gzip=True)
