@@ -10,6 +10,7 @@ import sisl
 
 with open('zz.gin', 'w') as f:
     f.write("""opti conv dist full nosymmetry phon dynamical_matrix
+output she
 cutd 3.0
 
 cell 
@@ -184,7 +185,13 @@ print('Reading output')
 gout = sisl.get_sile('zz.gout')
 # Correct what to read from the gulp output
 gout.set_supercell_key("Cartesian lattice vectors")
-dyn = gout.read_dynamical_matrix()
+# Selectively decide whether you want to read the dynamical
+# matrix from the GULP output file or from the
+# FORCE_CONSTANTS_2ND file.
+order = ['got'] # GULP output file
+#order = ['FC'] # FORCE_CONSTANTS_2ND file
+
+dyn = gout.read_dynamical_matrix(order=order)
 
 # In GULP correcting for Newtons second law is already obeyed
 # So this need not be used, however, the precision of output

@@ -3,14 +3,14 @@ Sile object for reading/writing GULP in/output
 """
 from __future__ import print_function, division
 
+import os.path as osp
 import numpy as np
 from numpy import where
 
-# Import sile objects
+from sisl.messages import info, warn
 from .sile import SileGULP
+from .fc import fcSileGULP
 from ..sile import *
-
-# Import the geometry object
 from sisl import Geometry, Atom, Orbital, SuperCell
 from sisl import constant, units
 from sisl.physics import DynamicalMatrix
@@ -171,37 +171,25 @@ class gotSileGULP(SileGULP):
            the cutoff of the force-constant matrix for adding to the matrix
         dtype: np.dtype (np.float64)
            default data-type of the matrix
+        order: list of str, optional
+            the order of which to try and read the dynamical matrix
+            By default this is ``['got', 'FC']``. Note that ``FC`` corresponds to
+            the `fcSileGULP` file (``FORCE_CONSTANTS_2ND``).
         """
         geom = self.read_geometry(**kwargs)
 
-        fc = kwargs.get('force_constant', None)
-        if fc is None:
-            # The output of the Dynamical matrix contains the mass-scaled dynamical matrix
-            dyn = self._read_dyn(geom.no, **kwargs)
-        else:
-            # The output of the force constant in the file does not contain the mass-scaling
-            # nor the unit conversion
-            dyn = get_sile(fc, 'r').read_force_constant(**kwargs)
+        order = kwargs.get('order', ['got', 'FC'])
+        for f in order:
+            v = getattr(self, '_r_dynamical_matrix_{}'.format(f.lower()))(geom, **kwargs)
+            if v is not None:
+                # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
+                scale = constant.hbar / units('Ang', 'm') / units('eV amu', 'J kg') ** 0.5
+                v.data *= scale ** 2
+                return DynamicalMatrix.fromsp(geom, v)
 
-            if dyn.shape[0] != geom.no:
-                raise ValueError("Inconsistent force constant file, number of atoms not correct")
+        return None
 
-            # Construct orbital mass ** (-.5)
-            rmass = 1 / np.array(geom.atoms.mass, np.float64).repeat(3) ** 0.5
-
-            # Scale to get dynamical matrix
-            dyn.data[:] *= rmass[dyn.row] * rmass[dyn.col]
-
-            # clean-up
-            del mass
-
-        # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
-        scale = constant.hbar / units('Ang', 'm') / units('eV amu', 'J kg') ** 0.5
-        dyn.data *= scale ** 2
-
-        return DynamicalMatrix.fromsp(geom, dyn)
-
-    def _read_dyn(self, no, **kwargs):
+    def _r_dynamical_matrix_got(self, geom, **kwargs):
         """ In case the dynamical matrix is read from the file """
         # Easier for creation of the sparsity pattern
         from scipy.sparse import lil_matrix
@@ -211,22 +199,23 @@ class gotSileGULP(SileGULP):
         # Default dtype
         dtype = kwargs.get('dtype', np.float64)
 
+        no = geom.no
         dyn = lil_matrix((no, no), dtype=dtype)
 
         f, _ = self.step_to(self._keys['dyn'])
         if not f:
-            raise ValueError(self.__class__.__name__ + ' tries to lookup the Dynamical matrix '
+            info(self.__class__.__name__ + ' tries to lookup the Dynamical matrix '
                              'using key "' + self._keys['dyn'] + '". '
                              'Use .set_dyn_key(...) to search for different name.'
                              'This could not be found found in file: "{}".'.format(self.file))
+            return None
 
         # skip 1 line
         self.readline()
 
         # default range
         dat = np.empty([no], dtype=dtype)
-        i = 0
-        j = 0
+        i, j = 0, 0
         while True:
             l = self.readline().strip()
             if len(l) == 0:
@@ -271,6 +260,26 @@ class gotSileGULP(SileGULP):
 
         return dyn
 
+    def _r_dynamical_matrix_fc(self, geom, **kwargs):
+        # The output of the force constant in the file does not contain the mass-scaling
+        # nor the unit conversion
+        f = 'FORCE_CONSTANTS_2ND'
+        if not osp.isfile(f):
+            return None
+
+        dyn = fcSileGULP(f, 'r').read_force_constant(**kwargs)
+
+        if dyn.shape[0] != geom.no:
+            warn(self.__class__.__name__ + 'read_dynamical_matrix(FC) inconsistent force constant file, number of atoms not correct!')
+            return None
+
+        # Construct orbital mass ** (-.5)
+        rmass = 1 / np.array(geom.atoms.mass, np.float64).repeat(3) ** 0.5
+
+        # Scale to get dynamical matrix
+        dyn.data[:] *= rmass[dyn.row] * rmass[dyn.col]
+
+        return dyn
 
 # Old-style GULP output
 add_sile('gout', gotSileGULP, gzip=True)

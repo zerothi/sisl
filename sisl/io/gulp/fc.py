@@ -25,13 +25,13 @@ class fcSileGULP(SileGULP):
 
         Parameters
         ----------
-        cutoff: float (0.001 eV/Ang**2)
+        cutoff: float (1e-4 eV/Ang**2)
            the cutoff of the force-constant matrix for adding to the matrix
         dtype: np.dtype (np.float64)
            default data-type of the matrix
         """
         # Default cutoff
-        cutoff = kwargs.get('cutoff', 0.001)
+        cutoff = kwargs.get('cutoff', 1e-4)
 
         dtype = kwargs.get('dtype', np.float64)
 
@@ -63,11 +63,11 @@ class fcSileGULP(SileGULP):
                     dat[:] = [float(x) for x in rl().split()]
 
                     # Assign data...
-                    if dat[0] >= cutoff:
+                    if abs(dat[0]) >= cutoff:
                         fc[i+o, j] = dat[0]
-                    if dat[1] >= cutoff:
+                    if abs(dat[1]) >= cutoff:
                         fc[i+o, j+1] = dat[1]
-                    if dat[2] >= cutoff:
+                    if abs(dat[2]) >= cutoff:
                         fc[i+o, j+2] = dat[2]
 
                 j += 3
