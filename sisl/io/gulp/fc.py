@@ -41,11 +41,8 @@ class fcSileGULP(SileGULP):
 
         fc = lil_matrix((no, no), dtype=dtype)
 
-        # Temporary container (to not de/alloc all the time)
-        dat = np.empty([3], dtype=dtype)
-
         # Reduce overhead...
-        rl = self.readline
+        rl = self.fh.readline
 
         i = 0
         for ia in range(na):
@@ -58,17 +55,15 @@ class fcSileGULP(SileGULP):
                 if I != ia + 1 or J != ja + 1:
                     raise ValueError("Inconsistent 2ND file data")
 
-                # Read data
+                # Read 3x3 data
                 for o in [0, 1, 2]:
-                    dat[:] = [float(x) for x in rl().split()]
-
-                    # Assign data...
-                    if abs(dat[0]) >= cutoff:
-                        fc[i+o, j] = dat[0]
-                    if abs(dat[1]) >= cutoff:
-                        fc[i+o, j+1] = dat[1]
-                    if abs(dat[2]) >= cutoff:
-                        fc[i+o, j+2] = dat[2]
+                    ii = i + o
+                    lsplit = rl().split()
+                    for oo in [0, 1, 2]:
+                        f = float(lsplit[oo])
+                        # Assign data...
+                        if abs(f) >= cutoff:
+                            fc[ii, j+oo] = f
 
                 j += 3
             i += 3

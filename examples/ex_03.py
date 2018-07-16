@@ -9,7 +9,7 @@
 import sisl
 
 with open('zz.gin', 'w') as f:
-    f.write("""opti conv dist full nosymmetry phon dynamical_matrix
+    f.write("""opti conv dist full nosymmetry phon dynamical_matrix nod3
 output she
 cutd 3.0
 
