@@ -28,7 +28,7 @@ class gotSileGULP(SileGULP):
         """ Setup `gotSileGULP` after initialization """
 
         self._keys = {
-            'sc': 'Final Cartesian lattice vectors',
+            'sc': 'Cartesian lattice vectors',
             'geometry': 'Final fractional coordinates',
             'dyn': 'Real Dynamical matrix',
         }
@@ -103,7 +103,7 @@ class gotSileGULP(SileGULP):
             elif f and ki == 0:
                 # supercell
                 self.readline()
-                cell = np.zeros([3, 3], np.float64)
+                cell = np.empty([3, 3], np.float64)
                 for i in [0, 1, 2]:
                     l = self.readline().split()
                     cell[i, 0] = float(l[0])
@@ -163,7 +163,6 @@ class gotSileGULP(SileGULP):
 
     set_dyn_key = set_dynamical_matrix_key
 
-    @Sile_fh_open
     def read_dynamical_matrix(self, **kwargs):
         """ Returns a GULP dynamical matrix model for the output of GULP
 
@@ -175,7 +174,7 @@ class gotSileGULP(SileGULP):
            default data-type of the matrix
         order: list of str, optional
             the order of which to try and read the dynamical matrix
-            By default this is ``['got', 'FC']``. Note that ``FC`` corresponds to
+            By default this is ``['got'/'gout', 'FC']``. Note that ``FC`` corresponds to
             the `fcSileGULP` file (``FORCE_CONSTANTS_2ND``).
         """
         geom = self.read_geometry(**kwargs)
@@ -191,6 +190,7 @@ class gotSileGULP(SileGULP):
 
         return None
 
+    @Sile_fh_open
     def _r_dynamical_matrix_got(self, geom, **kwargs):
         """ In case the dynamical matrix is read from the file """
         # Easier for creation of the sparsity pattern
@@ -267,6 +267,8 @@ class gotSileGULP(SileGULP):
         dyn.eliminate_zeros()
 
         return dyn
+
+    _r_dynamical_matrix_gout = _r_dynamical_matrix_got
 
     def _r_dynamical_matrix_fc(self, geom, **kwargs):
         # The output of the force constant in the file does not contain the mass-scaling
