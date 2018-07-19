@@ -1585,11 +1585,11 @@ class SparseOrbital(_SparseGeometry):
         """
         if orb_index is None:
             if isinstance(atom, Atom):
-                return super(SparseOrbital, self).remove(atom)
-            return self._remove_atoms(atom)
+                return self._remove_atom(atom)
+            return super(SparseOrbital, self).remove(atom)
         return self._remove_orbitals(atom, orb_index)
 
-    def _remove_atoms(self, atom):
+    def _remove_atom(self, atom):
         """ Remove via atomic specie """
         idx = self.geometry.atoms.index(atom)
         return self.remove((self.geometry.atoms.specie == idx).nonzero()[0])

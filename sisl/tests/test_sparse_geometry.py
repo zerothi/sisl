@@ -168,6 +168,15 @@ class TestSparseAtom(object):
         orbital = so.rij()
         assert so.spsame(orbital)
 
+    def test_sp_orb_remove(self, setup):
+        so = SparseOrbital(setup.g.copy())
+        so2 = so.remove(0)
+        assert so.geometry.na - 1 == so2.geometry.na
+        so2 = so.remove([0])
+        assert so.geometry.na - 1 == so2.geometry.na
+        so2 = so.remove([1])
+        assert so.geometry.na - 1 == so2.geometry.na
+
     def test_remove1(self, setup):
         for i in range(len(setup.g)):
             setup.s1.construct([[0.1, 1.5], [1, 2]])
