@@ -18,7 +18,7 @@ __all__ = ['pdbSile']
 class pdbSile(Sile):
     """ PDB file object """
 
-    def _setup(self):
+    def _setup(self, *args, **kwargs):
         """ Instantiate counters """
         self._model = 1
         self._serial = 1

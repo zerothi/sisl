@@ -152,16 +152,3 @@ def sisl_system():
     d.ham = Hamiltonian(d.gtb)
     d.ham.construct([(0.1, 1.5), (0.1, 2.7)])
     return d
-
-
-@pytest.fixture(scope='session')
-def sisl_pushd():
-    @contextlib.contextmanager
-    def pushd(new_dir):
-        if not os.path.isdir(new_dir):
-            os.mkdir(new_dir)
-        previous_dir = os.getcwd()
-        os.chdir(new_dir)
-        yield
-        os.chdir(previous_dir)
-    return pushd

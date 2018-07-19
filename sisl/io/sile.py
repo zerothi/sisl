@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 from functools import wraps
-from os.path import split, splitext, isfile
+from os.path import splitext, isfile, dirname, join, abspath, basename
 import gzip
 
 import numpy as np
@@ -190,7 +190,7 @@ def get_sile_class(filename, *args, **kwargs):
     cls = kwargs.pop('cls', None)
 
     # Split filename into proper file name and
-    # the specification of the type
+    # the Specification of the type
     tmp_file, fcls = str_spec(filename)
 
     if cls is None and not fcls is None:
@@ -210,7 +210,7 @@ def get_sile_class(filename, *args, **kwargs):
 
     try:
         # Create list of endings on this file
-        f = split(filename)[1]
+        f = basename(filename)
         end_list = []
         end = ''
 
@@ -314,6 +314,22 @@ def get_siles(attrs=None):
 class BaseSile(object):
     """ Base class for all sisl files """
 
+    @property
+    def file(self):
+        """ File of the current `Sile` """
+        return self._file
+
+    @property
+    def base_file(self):
+        """ File of the current `Sile` """
+        return basename(self._file)
+
+    def dir_file(self, filename=None):
+        """ File of the current `Sile` """
+        if filename is None:
+            filename = basename(self._file)
+        return join(self._directory, filename)
+
     def exist(self):
         """ Query whether the file exists """
         return isfile(self.file)
@@ -383,7 +399,7 @@ class BaseSile(object):
         """
         pass
 
-    def __setup(self, *args, **kwargs):
+    def _base_setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization
 
         Inherited method for setting up the sile.
@@ -391,7 +407,21 @@ class BaseSile(object):
         This method **must** be overwritten *and*
         end with ``self._setup()``.
         """
+        base = kwargs.get('base', None)
+        if base is None:
+            # Extract from filename
+            self._directory = dirname(self._file)
+        else:
+            self._directory = base
+        if len(self._directory) == 0:
+            self._directory = '.'
+        self._directory = abspath(self._directory)
+
         self._setup(*args, **kwargs)
+
+    def _base_file(self, f):
+        """ Make `f` refer to the file with the appropriate base directory """
+        return join(self._directory, f)
 
     def __getattr__(self, name):
         """ Override to check the handle """
@@ -427,7 +457,7 @@ class BaseSile(object):
 
     def __str__(self):
         """ Return a representation of the `Sile` """
-        return ''.join([self.__class__.__name__, '(', self.file, ')'])
+        return ''.join([self.__class__.__name__, '(', self.base_file, ', base=', self._directory, ')'])
 
 
 def Sile_fh_open(func):
@@ -451,33 +481,19 @@ class Sile(BaseSile):
     with benefit inherit this class.
     """
 
-    def __init__(self, filename, mode='r', comment='#'):
+    def __init__(self, filename, mode='r', comment=None, *args, **kwargs):
         self._file = filename
         self._mode = mode
         if isinstance(comment, (list, tuple)):
             self._comment = list(comment)
-        else:
+        elif not comment is None:
             self._comment = [comment]
+        else:
+            self._comment = []
         self._line = 0
 
         # Initialize
-        self.__setup()
-
-    @property
-    def file(self):
-        """ File of the current `Sile` """
-        return self._file
-
-    def __setup(self):
-        """ Setup the `Sile` after initialization
-
-        Inherited method for setting up the sile.
-
-        This method must **never** be overwritten.
-        """
-        # Initialize the non-comment sile
-        self._comment = []
-        self._setup()
+        self._base_setup(*args, **kwargs)
 
     def _open(self):
         if self.file.endswith('gz'):
@@ -648,7 +664,7 @@ class SileCDF(BaseSile):
     1) means stores certain variables in the object.
     """
 
-    def __init__(self, filename, mode='r', lvl=0, access=1, _open=True):
+    def __init__(self, filename, mode='r', lvl=0, access=1, *args, **kwargs):
         self._file = filename
         # Open mode
         self._mode = mode
@@ -663,27 +679,14 @@ class SileCDF(BaseSile):
             # and read anything, no matter what the user says
             self._access = 0
 
-        # The CDF file can easily open the file
-        if _open:
+            # The CDF file can easily open the file
+        if kwargs.pop('_open', True):
             _import_netCDF4()
             self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
                                                    format='NETCDF4')
 
         # Must call setup-methods
-        self.__setup()
-
-    @property
-    def file(self):
-        """ Filename of the current `Sile` """
-        return self._file
-
-    def _setup(self, *args, **kwargs):
-        """ Simple setup that needs to be overloaded """
-        pass
-
-    def __setup(self):
-        """ Setup `SileCDF` after initialization """
-        self._setup()
+        self._base_setup(*args, **kwargs)
 
     @property
     def _cmp_args(self):
@@ -904,26 +907,13 @@ class SileBin(BaseSile):
     If `mode` is in read-mode (r).
     """
 
-    def __init__(self, filename, mode='r'):
+    def __init__(self, filename, mode='r', *args, **kwargs):
         self._file = filename
         # Open mode
         self._mode = mode.replace('b', '') + 'b'
 
         # Must call setup-methods
-        self.__setup()
-
-    @property
-    def file(self):
-        """ File of the current `Sile` """
-        return self._file
-
-    def _setup(self, *args, **kwargs):
-        """ Simple setup that needs to be overwritten """
-        pass
-
-    def __setup(self):
-        """ Setup `SileBin` after initialization """
-        self._setup()
+        self._base_setup(*args, **kwargs)
 
     def __enter__(self):
         """ Opens the output file and returns it self """

@@ -52,17 +52,7 @@ class omxSileOpenMX(SileOpenMX):
     """
 
     def __init__(self, filename, mode='r', base=None):
-        super(omxSileOpenMX, self).__init__(filename, mode=mode)
-        if base is None:
-            # Extract from filename
-            self._directory = osp.dirname(filename)
-        else:
-            self._directory = base
-        if len(self._directory) == 0:
-            self._directory = '.'
-
-    def __str__(self):
-        return ''.join([self.__class__.__name__, '(', self.file, ', base=', self._directory, ')'])
+        super(omxSileOpenMX, self).__init__(filename, mode=mode, base=base)
 
     @property
     def file(self):
@@ -76,16 +66,11 @@ class omxSileOpenMX(SileOpenMX):
 
         # List of parent file-handles used while reading
         self._parent_fh = []
-        self._directory = '.'
-
-    def _tofile(self, f):
-        """ Make `f` refer to the file with the appropriate base directory """
-        return osp.join(self._directory, f)
 
     def _pushfile(self, f):
-        if osp.isfile(self._tofile(f)):
+        if osp.isfile(self.dir_file(f)):
             self._parent_fh.append(self.fh)
-            self.fh = open(self._tofile(f), self._mode)
+            self.fh = open(self.dir_file(f), self._mode)
         else:
             warn(str(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
 

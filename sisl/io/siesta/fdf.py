@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-import os.path as osp
 import warnings
 from datetime import datetime
 import numpy as np
@@ -66,17 +65,7 @@ class fdfSileSiesta(SileSiesta):
     """
 
     def __init__(self, filename, mode='r', base=None):
-        super(fdfSileSiesta, self).__init__(filename, mode=mode)
-        if base is None:
-            # Extract from filename
-            self._directory = osp.dirname(filename)
-        else:
-            self._directory = base
-        if len(self._directory) == 0:
-            self._directory = '.'
-
-    def __str__(self):
-        return ''.join([self.__class__.__name__, '(', self.file, ', base=', self._directory, ')'])
+        super(fdfSileSiesta, self).__init__(filename, mode=mode, comment=['#', '!', ';'], base=base)
 
     @property
     def file(self):
@@ -85,22 +74,15 @@ class fdfSileSiesta(SileSiesta):
 
     def _setup(self, *args, **kwargs):
         """ Setup the `fdfSileSiesta` after initialization """
-        # These are the comments
-        self._comment = ['#', '!', ';']
 
         # List of parent file-handles used while reading
         # This is because fdf enables inclusion of other files
         self._parent_fh = []
-        self._directory = '.'
-
-    def _tofile(self, f):
-        """ Make `f` refer to the file with the appropriate base directory """
-        return osp.join(self._directory, f)
 
     def _pushfile(self, f):
-        if osp.isfile(self._tofile(f)):
+        if isfile(self.dir_file(f)):
             self._parent_fh.append(self.fh)
-            self.fh = open(self._tofile(f), self._mode)
+            self.fh = open(self.dir_file(f), self._mode)
         else:
             warn(str(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
 
@@ -127,7 +109,7 @@ class fdfSileSiesta(SileSiesta):
         # In FDF files, %include marks files that progress
         # down in a tree structure
         def add(f):
-            f = self._tofile(f)
+            f = self.dir_file(f)
             if f not in includes:
                 includes.append(f)
         # List of includes
@@ -195,14 +177,14 @@ class fdfSileSiesta(SileSiesta):
                 if lsl[0] == '%block' and lsl[1] == labell:
                     # Correct line found
                     # Read the file content, removing any empty and/or comment lines
-                    lines = open(self._tofile(ls[3]), 'r').readlines()
+                    lines = open(self.dir_file(ls[3]), 'r').readlines()
                     return [l.strip() for l in lines if valid_line(l)]
 
                 # 2. There are labels that should be read from a subsequent file
                 #    Label1 Label2 < other.fdf
                 if labell in lsl[:idx]:
                     # Valid line, read key from other.fdf
-                    return fdfSileSiesta(self._tofile(ls[idx+1]), base=self._directory)._read_label(label)
+                    return fdfSileSiesta(self.dir_file(ls[idx+1]), base=self._directory)._read_label(label)
 
                 # It is not in this line, either key is
                 # on the RHS of <, or the key could be "block". Say.
@@ -621,13 +603,13 @@ class fdfSileSiesta(SileSiesta):
         return _a.onesi(3)
 
     def _r_supercell_nsc_nc(self, *args, **kwargs):
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_supercell_nsc()
         return None
 
     def _r_supercell_nsc_orb_indx(self, *args, **kwargs):
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
         if isfile(f):
             return orbindxSileSiesta(f).read_supercell_nsc()
         return None
@@ -698,14 +680,14 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_supercell_nc(self):
         # Read supercell from <>.nc file
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_supercell()
         return None
 
     def _r_supercell_xv(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.XV'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.XV'
         if isfile(f):
             nsc = self.read_supercell_nsc()
             sc = xvSileSiesta(f).read_supercell()
@@ -734,21 +716,21 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_force_fa(self, *args, **kwargs):
         """ Read forces from the FA file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.FA'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.FA'
         if isfile(f):
             return faSileSiesta(f).read_force()
         return None
 
     def _r_force_fac(self, *args, **kwargs):
         """ Read forces from the FAC file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.FAC'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.FAC'
         if isfile(f):
             return faSileSiesta(f).read_force()
         return None
 
     def _r_force_nc(self, *args, **kwargs):
         """ Read forces from the nc file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_force()
         return None
@@ -774,7 +756,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_force_constant_nc(self, *args, **kwargs):
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             if not 'FC' in ncSileSiesta(f).groups:
                 return None
@@ -787,7 +769,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_force_constant_fc(self, *args, **kwargs):
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.FC'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.FC'
         if isfile(f):
             na = self.get('NumberOfAtoms', default=None)
             fc = fcSileSiesta(f).read_force_constant(na=na)
@@ -1130,7 +1112,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_geometry_xv(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.XV'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.XV'
         geom = None
         if isfile(f):
             basis = self.read_basis()
@@ -1149,7 +1131,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_geometry_nc(self):
         # Read geometry from <>.nc file
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_geometry()
         return None
@@ -1260,7 +1242,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_grid_nc(self, name, *args, **kwargs):
         # Read grid from the <>.nc file
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             # Capitalize correctly
             name = {'rho': 'Rho',
@@ -1301,7 +1283,7 @@ class fdfSileSiesta(SileSiesta):
                 'rhobader': 'BaderCharge'
         }.get(name.lower()) + '.grid.nc'
 
-        f = self._tofile(name)
+        f = self.dir_file(name)
         if isfile(f):
             grid = gridncSileSiesta(f).read_grid(*args, **kwargs)
             grid.set_geometry(self.read_geometry(True))
@@ -1330,7 +1312,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_basis_nc(self):
         # Read basis from <>.nc file
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_basis()
         return None
@@ -1352,7 +1334,7 @@ class fdfSileSiesta(SileSiesta):
             idx = int(idx) - 1 # F-indexing
             Z = int(Z)
             lbl = lbl.strip()
-            f = self._tofile(lbl)
+            f = self.dir_file(lbl)
 
             # now try and read the basis
             if isfile(f + '.ion.nc'):
@@ -1374,7 +1356,7 @@ class fdfSileSiesta(SileSiesta):
         return atom
 
     def _r_basis_orb_indx(self):
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
         if isfile(f):
             info(SileInfo('Siesta basis information is read from {}, the radial functions are in accessible.'.format(f)))
             return orbindxSileSiesta(f).read_basis()
@@ -1420,14 +1402,14 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_density_matrix_nc(self, *args, **kwargs):
         """ Try and read the density matrix by reading the <>.nc """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_density_matrix(*args, **kwargs)
         return None
 
     def _r_density_matrix_tsde(self, *args, **kwargs):
         """ Read density matrix from the TSDE file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSDE'
         DM = None
         if isfile(f):
             DM = tsdeSileSiesta(f).read_density_matrix(*args, **kwargs)
@@ -1438,7 +1420,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_density_matrix_dm(self, *args, **kwargs):
         """ Read density matrix from the DM file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.DM'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.DM'
         DM = None
         if isfile(f):
             DM = dmSileSiesta(f).read_density_matrix(*args, **kwargs)
@@ -1468,14 +1450,14 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_energy_density_matrix_nc(self, *args, **kwargs):
         """ Read energy density matrix by reading the <>.nc """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
         return None
 
     def _r_energy_density_matrix_tsde(self, *args, **kwargs):
         """ Read energy density matrix from the TSDE file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSDE'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSDE'
         EDM = None
         if isfile(f):
             EDM = tsdeSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
@@ -1505,14 +1487,14 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_hamiltonian_nc(self, *args, **kwargs):
         """ Read Hamiltonian from the nc file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_hamiltonian(*args, **kwargs)
         return None
 
     def _r_hamiltonian_tshs(self, *args, **kwargs):
         """ Read Hamiltonian from the TSHS file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.TSHS'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSHS'
         H = None
         if isfile(f):
             H = tshsSileSiesta(f).read_hamiltonian(*args, **kwargs)
@@ -1521,7 +1503,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_hamiltonian_hsx(self, *args, **kwargs):
         """ Read Hamiltonian from the HSX file """
-        f = self._tofile(self.get('SystemLabel', default='siesta')) + '.HSX'
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.HSX'
         H = None
         if isfile(f):
             H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
@@ -1544,7 +1526,7 @@ class fdfSileSiesta(SileSiesta):
         sp = p.add_subparsers(help="Determine which part of the fdf-file that should be processed.")
 
         # Get the label which retains all the sub-modules
-        label = self._tofile(self.get('SystemLabel', default='siesta'))
+        label = self.dir_file(self.get('SystemLabel', default='siesta'))
 
         # The default on all sub-parsers are the retrieval and setting
 

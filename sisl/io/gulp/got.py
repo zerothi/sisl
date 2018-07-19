@@ -22,16 +22,24 @@ __all__ = ['gotSileGULP']
 
 
 class gotSileGULP(SileGULP):
-    """ GULP output file object """
+    """ GULP output file object
+
+    Parameters
+    ----------
+    filename : str
+        filename of the file
+    mode : str, optional
+        opening mode of file, default to read-only
+    base : str, optional
+        base directory of the file
+    """
 
     def _setup(self, *args, **kwargs):
         """ Setup `gotSileGULP` after initialization """
-
-        self._keys = {
-            'sc': 'Cartesian lattice vectors',
-            'geometry': 'Final fractional coordinates',
-            'dyn': 'Real Dynamical matrix',
-        }
+        self._keys = dict()
+        self.set_supercell_key('Cartesian lattice vectors')
+        self.set_geometry_key('Final fractional coordinates')
+        self.set_dynamical_matrix_key('Real Dynamical matrix')
 
     def set_key(self, segment, key):
         """ Sets the segment lookup key """
@@ -85,10 +93,8 @@ class gotSileGULP(SileGULP):
         self.set_key('geometry', key)
 
     @Sile_fh_open
-    def read_geometry(self, key=None, **kwargs):
+    def read_geometry(self, **kwargs):
         """ Reads a geometry and creates the GULP dynamical geometry """
-        self.set_geometry_key(key)
-
         # create default supercell
         sc = SuperCell([1, 1, 1])
 
@@ -273,7 +279,7 @@ class gotSileGULP(SileGULP):
     def _r_dynamical_matrix_fc(self, geom, **kwargs):
         # The output of the force constant in the file does not contain the mass-scaling
         # nor the unit conversion
-        f = 'FORCE_CONSTANTS_2ND'
+        f = self.dir_file('FORCE_CONSTANTS_2ND')
         if not osp.isfile(f):
             return None
 
