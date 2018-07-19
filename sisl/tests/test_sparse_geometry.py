@@ -6,7 +6,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
-from sisl import Atom
+from sisl import Geometry, Atom
 from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 
@@ -176,6 +176,15 @@ class TestSparseAtom(object):
         assert so.geometry.na - 1 == so2.geometry.na
         so2 = so.remove([1])
         assert so.geometry.na - 1 == so2.geometry.na
+
+    def test_sp_orb_remove_atom(self):
+        so = SparseOrbital(Geometry([[0] *3, [1]* 3], [Atom[1], Atom[2]], 2))
+        so2 = so.remove(Atom[1])
+        assert so.geometry.na - 1 == so2.geometry.na
+        so = SparseOrbital(Geometry([[0] *3, [1]* 3], [Atom(1, [1, 2]), Atom(2, [1, 2])], 2))
+        so2 = so.remove(so.geometry.atoms[0], [0])
+        assert so.geometry.na == so2.geometry.na
+        assert so.geometry.no -1 == so2.geometry.no
 
     def test_remove1(self, setup):
         for i in range(len(setup.g)):
