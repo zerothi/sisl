@@ -1453,6 +1453,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         .. math::
             \mathrm{DOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf G}_{\nu\mu}
 
+        One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),
+        7751-7761 for details. The DBCOOP is given by:
+
+        .. math::
+            D &= \sum_\nu \mathrm{COOP}^{\mathbf G}_{\nu\nu}
+            \\
+            \mathrm{DBCOOP}^{\mathbf G}_{\nu\mu} &= \mathrm{COOP}^{\mathbf G}_{\nu\mu} / D
+
+        The BCOOP can be looked up in the reference above.
+
         Parameters
         ----------
         E: float or int
@@ -1472,6 +1482,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         >>> COOP = tbt.orbital_COOP(-1.0) # COOP @ E = -1 eV  # doctest: +SKIP
         >>> COOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
         >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.DOS(sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
+        >>> D = COOP.diagonal().sum() # doctest: +SKIP
+        >>> DBCOOP = COOP / D # doctest: +SKIP
 
         See Also
         --------
@@ -1504,6 +1516,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         .. math::
             \mathrm{ADOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf A}_{\nu\mu}
 
+        One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),
+        7751-7761 for details. The DBCOOP is given by:
+
+        .. math::
+            D &= \sum_\nu \mathrm{COOP}^{\mathbf A}_{\nu\nu}
+            \\
+            \mathrm{DBCOOP}^{\mathbf A}_{\nu\mu} &= \mathrm{COOP}^{\mathbf A}_{\nu\mu} / D
+
+        The BCOOP can be looked up in the reference above.
+
         Parameters
         ----------
         elec: str or int
@@ -1522,9 +1544,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> COOP = tbt.orbital_ACOOP(0, -1.0) # COOP @ E = -1 eV from ``0`` spectral function # doctest: +SKIP
-        >>> COOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
-        >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
+        >>> ACOOP = tbt.orbital_ACOOP(0, -1.0) # COOP @ E = -1 eV from ``0`` spectral function # doctest: +SKIP
+        >>> ACOOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
+        >>> ACOOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
+        >>> D = ACOOP.diagonal().sum() # doctest: +SKIP
+        >>> ADBCOOP = ACOOP / D # doctest: +SKIP
 
         See Also
         --------
