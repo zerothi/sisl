@@ -67,7 +67,9 @@ from .sparse import SparseOrbitalBZSpin
 from .state import Coefficient, State, StateC
 
 
-__all__ = ['DOS', 'PDOS', 'spin_moment', 'velocity', 'inv_eff_mass_tensor', 'wavefunction']
+__all__ = ['DOS', 'PDOS']
+__all__ += ['velocity', 'velocity_matrix']
+__all__ += ['spin_moment', 'inv_eff_mass_tensor', 'wavefunction']
 __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
 
@@ -360,8 +362,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     Returns
     -------
     numpy.ndarray
-        velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps
-        Units *may* change in future releases.
+        velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
     """
     if state.ndim == 1:
         return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate).ravel()
@@ -432,6 +433,123 @@ def _velocity_ortho(state, dHk, degenerate):
     v[:, 0] = (conj(state.T) * dHk[0].dot(state.T)).sum(0).real
     v[:, 1] = (conj(state.T) * dHk[1].dot(state.T)).sum(0).real
     v[:, 2] = (conj(state.T) * dHk[2].dot(state.T)).sum(0).real
+
+    return v * _velocity_const
+
+
+def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
+    r""" Calculate the velocity matrix of a set of states
+
+    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
+
+    .. math::
+
+       \mathbf{v}_{ij\alpha} = \frac1\hbar \langle \psi_j |
+                \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle
+
+    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
+    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
+
+    Although this matrix should be Hermitian it is not checked, and we explicitly calculate
+    all elements.
+
+    Parameters
+    ----------
+    state : array_like
+       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate
+       states the vectors *may* be rotated upon return.
+    dHk : list of array_like
+       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
+       list of the Hamiltonian derivative along the 3 Cartesian directions.
+    energy : array_like, optional
+       energies of the states. Required for non-orthogonal basis together with `dSk`. In case of degenerate
+       states the eigenvalues of the states will be averaged in the degenerate sub-space.
+    dSk : list of array_like, optional
+       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
+       provided in a non-orthogonal basis (otherwise the results will be wrong).
+       Same derivative as `dHk`
+    degenerate: list of array_like, optional
+       a list containing the indices of degenerate states. In that case a prior diagonalization
+       is required to decouple them. This is done 3 times along each of the Cartesian directions.
+
+    See Also
+    --------
+    velocity : only calculate the diagonal components of this matrix
+    inv_eff_mass_tensor : inverse effective mass tensor
+
+    Returns
+    -------
+    numpy.ndarray
+        velocity matrixstate with final dimension ``(state.shape[0], state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
+    """
+    if state.ndim == 1:
+        return velocity_matrix(state.reshape(1, -1), dHk, energy, dSk, degenerate).ravel()
+
+    if dSk is None:
+        return _velocity_matrix_ortho(state, dHk, degenerate)
+    return _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate)
+
+
+def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate):
+    r""" For states in a non-orthogonal basis """
+
+    # All matrix elements along the 3 directions
+    n = state.shape[0]
+    v = np.empty([n, n, 3], dtype=state.dtype)
+
+    # Decouple the degenerate states
+    if not degenerate is None:
+        for deg in degenerate:
+            # Set the average energy
+            e = np.average(energy[deg])
+            energy[deg] = e
+
+            # Now diagonalize to find the contributions from individual states
+            # then re-construct the seperated degenerate states
+            # Since we do this for all directions we should decouple them all
+            vv = conj(state[deg, :]).dot((dHk[0] - e * dSk[0]).dot(state[deg, :].T))
+            S = eigh_destroy(vv)[1].T.dot(state[deg, :])
+            vv = conj(S).dot((dHk[1] - e * dSk[1]).dot(S.T))
+            S = eigh_destroy(vv)[1].T.dot(S)
+            vv = conj(S).dot((dHk[2] - e * dSk[2]).dot(S.T))
+            state[deg, :] = eigh_destroy(vv)[1].T.dot(S)
+
+    # Since they depend on the state energies and dSk we have to loop them individually.
+    for s, e in enumerate(energy):
+
+        # Since dHk *may* be a csr_matrix or sparse, we have to do it like
+        # this. A sparse matrix cannot be re-shaped with an extra dimension.
+        v[s, :, 0] = conj(state).dot((dHk[0] - e * dSk[0]).dot(state[s]))
+        v[s, :, 1] = conj(state).dot((dHk[1] - e * dSk[1]).dot(state[s]))
+        v[s, :, 2] = conj(state).dot((dHk[2] - e * dSk[2]).dot(state[s]))
+
+    return v * _velocity_const
+
+
+def _velocity_matrix_ortho(state, dHk, degenerate):
+    r""" For states in an orthogonal basis """
+
+    # All matrix elements along the 3 directions
+    n = state.shape[0]
+    v = np.empty([n, n, 3], dtype=state.dtype)
+
+    # Decouple the degenerate states
+    if not degenerate is None:
+        for deg in degenerate:
+            # Now diagonalize to find the contributions from individual states
+            # then re-construct the seperated degenerate states
+            # Since we do this for all directions we should decouple them all
+            vv = conj(state[deg, :]).dot(dHk[0].dot(state[deg, :].T))
+            S = eigh_destroy(vv)[1].T.dot(state[deg, :])
+            vv = conj(S).dot((dHk[1]).dot(S.T))
+            S = eigh_destroy(vv)[1].T.dot(S)
+            vv = conj(S).dot((dHk[2]).dot(S.T))
+            state[deg, :] = eigh_destroy(vv)[1].T.dot(S)
+
+    for s in range(n):
+        v[s, :, 0] = conj(state).dot(dHk[0].dot(state[s, :]))
+        v[s, :, 1] = conj(state).dot(dHk[1].dot(state[s, :]))
+        v[s, :, 2] = conj(state).dot(dHk[2].dot(state[s, :]))
 
     return v * _velocity_const
 
@@ -1173,6 +1291,42 @@ class StateCElectron(_electron_State, StateC):
         except:
             raise SislError(self.__class__.__name__ + '.velocity requires the parent to have a spin associated.')
         return velocity(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
+
+    def velocity_matrix(self, eps=1e-4):
+        r""" Calculate velocity matrix for the states
+
+        This routine calls `~sisl.physics.electron.velocity_matrix` with appropriate arguments
+        and returns the velocity for the states. I.e. for non-orthogonal basis the overlap
+        matrix and energy values are also passed.
+
+        Note that the coefficients associated with the `StateCElectron` *must* correspond
+        to the energies of the states.
+
+        See `~sisl.physics.electron.velocity_matrix` for details.
+
+        Parameters
+        ----------
+        eps : float, optional
+           precision used to find degenerate states.
+        """
+        try:
+            opt = {'k': self.info.get('k', (0, 0, 0))}
+            gauge = self.info.get('gauge', None)
+            if not gauge is None:
+                opt['gauge'] = gauge
+
+            # Get dSk before spin
+            if self.parent.orthogonal:
+                dSk = None
+            else:
+                dSk = self.parent.dSk(**opt)
+
+            if 'spin' in self.info:
+                opt['spin'] = self.info.get('spin', None)
+            deg = self.degenerate(eps)
+        except:
+            raise SislError(self.__class__.__name__ + '.velocity_matrix requires the parent to have a spin associated.')
+        return velocity_matrix(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
 
     def inv_eff_mass_tensor(self, as_matrix=False, eps=1e-3):
         r""" Calculate inverse effective mass tensor for the states
