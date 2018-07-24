@@ -283,8 +283,8 @@ class _phonon_Mode(object):
             specify the new gauge for the mode coefficients
         """
         # These calls will fail if the gauge is not specified.
-        # In that case we simply don't care about the raised issues.
-        if self.info.get('gauge') == gauge:
+        # In that case it will not do anything
+        if self.info.get('gauge', gauge) == gauge:
             # Quick return
             return
 
@@ -297,13 +297,12 @@ class _phonon_Mode(object):
             return
 
         g = self.parent.geometry
-        k = dot(g.rcell, k)
-        phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], k)
+        phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(k, g.rcell))
 
         if gauge == 'r':
-            self.state *= np.exp(-1j * phase).reshape(1, -1)
-        elif gauge == 'R':
             self.state *= np.exp(1j * phase).reshape(1, -1)
+        elif gauge == 'R':
+            self.state *= np.exp(-1j * phase).reshape(1, -1)
 
 
 class CoefficientPhonon(Coefficient):

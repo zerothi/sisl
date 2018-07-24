@@ -920,8 +920,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # (and the neighbours that connect into the cell)
     IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc, origo=grid.origo)
 
-    r_k = dot(geometry.rcell, k)
-    r_k_cell = dot(r_k, geometry.cell)
+    phk = k * 2 * np.pi
     phase = 1
 
     # Retrieve progressbar
@@ -974,7 +973,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         io = geometry.a2o(ia)
 
         if has_k:
-            phase = np.exp(-1j * (dot(r_k_cell, isc)))
+            phase = np.exp(-1j * (phk * isc).sum())
 
         # Allocate a temporary array where we add the psi elements
         psi = psi_init(n)
@@ -1216,8 +1215,8 @@ class _electron_State(object):
             specify the new gauge for the state coefficients
         """
         # These calls will fail if the gauge is not specified.
-        # In that case we simply don't care about the raised issues.
-        if self.info.get('gauge') == gauge:
+        # In that case it will not do anything
+        if self.info.get('gauge', gauge) == gauge:
             # Quick return
             return
 
@@ -1230,13 +1229,12 @@ class _electron_State(object):
             return
 
         g = self.parent.geometry
-        k = dot(g.rcell, k)
-        phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], k)
+        phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(k, g.rcell))
 
         if gauge == 'r':
-            self.state *= np.exp(-1j * phase).reshape(1, -1)
-        elif gauge == 'R':
             self.state *= np.exp(1j * phase).reshape(1, -1)
+        elif gauge == 'R':
+            self.state *= np.exp(-1j * phase).reshape(1, -1)
 
     # TODO to be deprecated
     psi = wavefunction
@@ -1356,6 +1354,9 @@ class StateCElectron(_electron_State, StateC):
            precision used to find degenerate states.
         """
         try:
+            # Ensure we are dealing with the r gauge
+            self.change_gauge('r')
+
             opt = {'k': self.info.get('k', (0, 0, 0))}
             gauge = self.info.get('gauge', None)
             if not gauge is None:

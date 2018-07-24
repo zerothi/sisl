@@ -4,7 +4,7 @@ from libc.math cimport fabs
 
 import numpy as np
 cimport numpy as np
-from numpy import dot, ones, exp
+from numpy import pi, dot, ones, exp
 from numpy import float32, float64, complex64, complex128
 from numpy import ndarray
 from numpy cimport float32_t, float64_t, complex64_t, complex128_t
@@ -54,7 +54,9 @@ def phase_rsc(sc, ndarray[float64_t, ndim=1, mode='c'] k, dtype):
     if is_gamma(k):
         phases = ones(sc.sc_off.shape[0], dtype=dtype)
     else:
-        phases = exp(-1j * dot(dot(dot(sc.rcell, k), sc.cell), sc.sc_off.T)).astype(dtype, copy=False)
+        # This is equivalent to (k.rcell).(sc_off.cell)^T
+        # since rcell.cell^T == I * 2 * pi
+        phases = exp(-1j * dot(sc.sc_off, k * 2 * pi)).astype(dtype, copy=False)
 
     return phases
 
@@ -66,6 +68,6 @@ def phase_rij(rij, sc, ndarray[float64_t, ndim=1, mode='c'] k, dtype):
     if is_gamma(k):
         phases = ones(rij.shape[0], dtype=dtype)
     else:
-        phases = exp(-1j * dot(dot(sc.rcell, k), rij.T)).astype(dtype, copy=False)
+        phases = exp(-1j * dot(rij, dot(k, sc.rcell))).astype(dtype, copy=False)
 
     return phases

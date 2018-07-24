@@ -286,22 +286,20 @@ class _SparseGeometry(object):
             if isinstance(self, SparseAtom):
                 raise NotImplementedError(self.__class__.__name__ + ' cannot create Rij in SparseAtom from SparseOrbital')
 
-            if self.finalized:
+            # We create an *exact* copy of the Rij
+            R = cls(geom, 3, dtype, nnzpr=1)
+            # Re-create the sparse matrix data
+            R._csr.ptr = ptr.copy()
+            R._csr.ncol = ncol.copy()
+            R._csr.col = col.copy()
+            R._csr._nnz = self._csr.nnz
+            R._csr._D = np.zeros([self._csr._D.shape[0], 3], dtype=dtype)
+            R._csr._finalized = self.finalized
+            for ro in range(self.shape[0]):
+                sl = slice(ptr[ro], ptr[ro] + ncol[ro])
+                R._csr._D[sl, :] = Rij(ro, col[sl])
 
-                # We create an *exact* copy of the Rij
-                R = cls(geom, 3, dtype, nnzpr=1)
-                # Re-create the sparse matrix data
-                R._csr.ptr = ptr.copy()
-                R._csr.ncol = ncol.copy()
-                R._csr.col = col.copy()
-                R._csr._nnz = self._csr.nnz
-                R._csr._D = np.empty([self.nnz, 3], dtype=dtype)
-                R._csr._finalized = self.finalized
-                for ro in range(self.shape[0]):
-                    sl = slice(ptr[ro], ptr[ro] + ncol[ro])
-                    R._csr._D[sl, :] = Rij(ro, col[sl])
-
-                return R
+            return R
 
         else:
             raise ValueError(self.__class__.__name__ + '.Rij what must be one of ["atom", "orbital", "orb"].')

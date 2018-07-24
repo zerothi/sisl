@@ -530,6 +530,56 @@ class TestHamiltonian(object):
             assert np.allclose(v, es.state.T)
             assert np.allclose(es.norm(), 1)
 
+    def test_gauge_eig(self, setup):
+        # Test of eigenvalues
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es1 = H.eigenstate(k, gauge='R')
+        es2 = H.eigenstate(k, gauge='r')
+        assert np.allclose(es1.eig, es2.eig)
+        assert not np.allclose(es1.state, es2.state)
+
+        es1 = H.eigenstate(k, gauge='R', dtype=np.complex64)
+        es2 = H.eigenstate(k, gauge='r', dtype=np.complex64)
+        assert np.allclose(es1.eig, es2.eig)
+        assert not np.allclose(es1.state, es2.state)
+
+    def test_gauge_velocity(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es1 = H.eigenstate(k, gauge='R')
+        es2 = H.eigenstate(k, gauge='r')
+        assert np.allclose(es1.velocity(), es2.velocity())
+
+        es2.change_gauge('R')
+        assert np.allclose(es1.velocity(), es2.velocity())
+
+        es2.change_gauge('r')
+        es1.change_gauge('r')
+        assert np.allclose(es1.velocity(), es2.velocity())
+
+    @pytest.mark.only
+    def test_gauge_inv_eff(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        ie1 = H.eigenstate(k, gauge='R').inv_eff_mass_tensor()
+        ie2 = H.eigenstate(k, gauge='r').inv_eff_mass_tensor()
+        print(ie1)
+        print(ie2)
+        assert np.allclose(ie1, ie2)
+
     def test_change_gauge(self, setup):
         # Test of eigenvalues vs eigenstate class
         HS = setup.HS.copy()
@@ -735,6 +785,7 @@ class TestHamiltonian(object):
                 H[i, i+1, 1] = 1.
         eig1 = H.eigh(dtype=np.complex64)
         assert np.allclose(H.eigh(dtype=np.complex128), eig1)
+        assert np.allclose(H.eigh(gauge='r', dtype=np.complex128), eig1)
         assert len(eig1) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
