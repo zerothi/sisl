@@ -566,7 +566,6 @@ class TestHamiltonian(object):
         es1.change_gauge('r')
         assert np.allclose(es1.velocity(), es2.velocity())
 
-    @pytest.mark.only
     def test_gauge_inv_eff(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
