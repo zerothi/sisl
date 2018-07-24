@@ -250,19 +250,16 @@ class _SparseGeometry(object):
         It is thus important to *only* create the sparse vector matrix when the sparse
         structure is completed.
         """
-        # Define default of what
-        if what is None:
-            if isinstance(self, SparseOrbital):
-                what = 'orbital'
-            else:
-                what = 'atom'
-
         geom = self.geometry
 
         if isinstance(self, SparseAtom):
             Rij = geom.Rij
+            if what is None:
+                what = 'atom'
         elif isinstance(self, SparseOrbital):
             Rij = geom.oRij
+            if what is None:
+                what = 'orbital'
         else:
             raise ValueError(self.__class__.__name__ + ' is an unknown class. Perhaps the inheritance has been broken.')
 
@@ -270,10 +267,18 @@ class _SparseGeometry(object):
         # We default to expect atoms
         conv = lambda val: val
 
+        # Pointers
+        ncol = self._csr.ncol.view()
+        ptr = self._csr.ptr.view()
+        col = self._csr.col.view()
+
         if what == 'atom':
             cls = SparseAtom
             if isinstance(self, SparseOrbital):
-                conv = geom.o2a
+                # Since we are reducing dimensions (from orbital to atoms)
+                # we sort and only return unique values
+                def conv(orbs):
+                    return np.unique(geom.o2a(orbs))
                 Rij = geom.Rij
 
         elif what in ['orbital', 'orb']:
@@ -281,12 +286,25 @@ class _SparseGeometry(object):
             if isinstance(self, SparseAtom):
                 raise NotImplementedError(self.__class__.__name__ + ' cannot create Rij in SparseAtom from SparseOrbital')
 
-        else:
-            raise ValueError(self.__class__.__name__ + '.Rij what= must be "atom", "orbital" or "orb".')
+            if self.finalized:
 
-        ncol = self._csr.ncol.view()
-        ptr = self._csr.ptr.view()
-        col = self._csr.col.view()
+                # We create an *exact* copy of the Rij
+                R = cls(geom, 3, dtype, nnzpr=1)
+                # Re-create the sparse matrix data
+                R._csr.ptr = ptr.copy()
+                R._csr.ncol = ncol.copy()
+                R._csr.col = col.copy()
+                R._csr._nnz = self._csr.nnz
+                R._csr._D = np.empty([self.nnz, 3], dtype=dtype)
+                R._csr._finalized = self.finalized
+                for ro in range(self.shape[0]):
+                    sl = slice(ptr[ro], ptr[ro] + ncol[ro])
+                    R._csr._D[sl, :] = Rij(ro, col[sl])
+
+                return R
+
+        else:
+            raise ValueError(self.__class__.__name__ + '.Rij what must be one of ["atom", "orbital", "orb"].')
 
         # Create the output class
         R = cls(geom, 3, dtype, nnzpr=np.amax(ncol))
@@ -296,7 +314,7 @@ class _SparseGeometry(object):
 
         for ro, rn in zip(orow, conv(orow)):
             # Reduce to the unique columns
-            coln = np.unique(conv(col[ptr[ro]:ptr[ro]+ncol[ro]]))
+            coln = conv(col[ptr[ro]:ptr[ro]+ncol[ro]])
             R[rn, coln] = Rij(rn, coln)
 
         return R

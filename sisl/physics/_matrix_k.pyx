@@ -12,10 +12,14 @@ from _matrix_diag_k_nc_dtype import *
 
 _dot = np.dot
 
-def matrix_k(gauge, csr, const int idx, sc,
+def matrix_k(gauge, M, const int idx, sc,
              np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     if gauge == 'R':
-        return _matrix_k_R(csr, idx, sc, k, dtype, format)
+        return _matrix_k_R(M._csr, idx, sc, k, dtype, format)
+    elif gauge == 'r':
+        # The current gauge implementation will recreate the matrix for every k-point
+        M.finalize()
+        xij = M.Rij()
     raise ValueError('Currently only R gauge has been implemented in matrix_k.')
 
 
@@ -87,10 +91,10 @@ def _matrix_k_R(csr, const int idx, sc,
     raise ValueError('matrix_k_R: currently only supports dtype in [float32, float64, complex64, complex128].')
 
     
-def matrix_k_nc(gauge, csr, sc,
+def matrix_k_nc(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     if gauge == 'R':
-        return _matrix_k_R_nc(csr, sc, k, dtype, format)
+        return _matrix_k_R_nc(M._csr, sc, k, dtype, format)
     raise ValueError('Currently only R gauge has been implemented in matrix_k_nc.')
 
 
@@ -132,10 +136,10 @@ def _matrix_k_R_nc(csr, sc,
     raise ValueError('matrix_k_R_nc: only supports dtype in [complex64, complex128].')
 
 
-def matrix_k_so(gauge, csr, sc,
+def matrix_k_so(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     if gauge == 'R':
-        return _matrix_k_R_so(csr, sc, k, dtype, format)
+        return _matrix_k_R_so(M._csr, sc, k, dtype, format)
     raise ValueError('Currently only R gauge has been implemented in matrix_k_so.')
 
 
@@ -177,10 +181,10 @@ def _matrix_k_R_so(csr, sc,
     raise ValueError('matrix_k_R_so: only supports dtype in [complex64, complex128].')
 
 
-def matrix_diag_k_nc(gauge, csr, const int idx, sc,
+def matrix_diag_k_nc(gauge, M, const int idx, sc,
                      np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     if gauge == 'R':
-        return _matrix_diag_k_R_nc(csr, idx, sc, k, dtype, format)
+        return _matrix_diag_k_R_nc(M._csr, idx, sc, k, dtype, format)
     raise ValueError('Currently only R gauge has been implemented in matrix_diag_k_nc.')
 
 

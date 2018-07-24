@@ -9,10 +9,10 @@ from _matrix_k_factor_dtype import *
 
 _dot = np.dot
 
-def matrix_ddk(gauge, csr, const int idx, sc,
+def matrix_ddk(gauge, M, const int idx, sc,
                np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     if gauge == 'R':
-        return _matrix_ddk_R(csr, idx, sc, k, dtype, format)
+        return _matrix_ddk_R(M._csr, idx, sc, k, dtype, format)
     raise ValueError('Currently only R gauge has been implemented in matrix_ddk.')
 
 

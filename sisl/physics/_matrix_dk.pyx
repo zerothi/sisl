@@ -9,10 +9,14 @@ from _matrix_k_factor_dtype import *
 
 _dot = np.dot
 
-def matrix_dk(gauge, csr, const int idx, sc,
+def matrix_dk(gauge, M, const int idx, sc,
               np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     if gauge == 'R':
-        return _matrix_dk_R(csr, idx, sc, k, dtype, format)
+        return _matrix_dk_R(M._csr, idx, sc, k, dtype, format)
+    elif gauge == 'r':
+        # The current gauge implementation will recreate the matrix for every k-point
+        M.finalize()
+        xij = M.Rij()
     raise ValueError('Currently only R gauge has been implemented in matrix_dk.')
 
 
