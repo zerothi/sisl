@@ -8,8 +8,8 @@ from scipy.sparse import csr_matrix
 from sisl._indices cimport _index_sorted
 from sisl._sparse import fold_csr_matrix
 
-__all__ = ['_k_R_csr_f32', '_k_R_csr_f64', '_k_R_csr_c64', '_k_R_csr_c128',
-           '_k_R_array_f32', '_k_R_array_f64', '_k_R_array_c64', '_k_R_array_c128'] 
+__all__ = ['_csr_f32', '_csr_f64', '_phase_csr_c64', '_phase_csr_c128',
+           '_array_f32', '_array_f64', '_phase_array_c64', '_phase_array_c128'] 
 
 # The fused data-types forces the data input to be of "correct" values.
 ctypedef fused numeric_real:
@@ -30,10 +30,10 @@ ctypedef fused numeric_complex:
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def _k_R_csr_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
-                 np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
-                 np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
-                 numeric_real[:, ::1] D, const int idx):
+def _csr_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+             np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+             np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+             numeric_real[:, ::1] D, const int idx):
 
     # Convert to memory views
     cdef int[::1] ptr = PTR
@@ -64,10 +64,10 @@ def _k_R_csr_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def _k_R_csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
-                 np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
-                 np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
-                 numeric_real[:, ::1] D, const int idx):
+def _csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+             np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+             np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+             numeric_real[:, ::1] D, const int idx):
 
     # Convert to memory views
     cdef int[::1] ptr = PTR
@@ -98,10 +98,11 @@ def _k_R_csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def _k_R_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
-                  np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
-                  np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
-                  numeric_complex[:, ::1] D, const int idx, np.ndarray[np.complex64_t, ndim=1, mode='c'] PHASES):
+def _phase_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+                   np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+                   np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+                   numeric_complex[:, ::1] D, const int idx,
+                   np.ndarray[np.complex64_t, ndim=1, mode='c'] PHASES, const int p_opt):
 
     # Convert to memory views
     cdef int[::1] ptr = PTR
@@ -120,11 +121,18 @@ def _k_R_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef float complex[::1] v = V
     cdef int r, ind, c, s_idx
 
-    for r in range(nr):
-        for ind in range(ptr[r], ptr[r] + ncol[r]):
-            c = col[ind] % nr
-            s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
-            v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
+    if p_opt == 0:
+        for r in range(nr):
+            for ind in range(ptr[r], ptr[r] + ncol[r]):
+                c = col[ind] % nr
+                s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+                v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[ind] * D[ind, idx])
+    else:
+        for r in range(nr):
+            for ind in range(ptr[r], ptr[r] + ncol[r]):
+                c = col[ind] % nr
+                s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+                v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
@@ -133,10 +141,11 @@ def _k_R_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def _k_R_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
-                  np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
-                  np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
-                  numeric_complex[:, ::1] D, const int idx, np.ndarray[np.complex128_t, ndim=1, mode='c'] PHASES):
+def _phase_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+                    np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+                    np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+                    numeric_complex[:, ::1] D, const int idx,
+                    np.ndarray[np.complex128_t, ndim=1, mode='c'] PHASES, const int p_opt):
 
     # Convert to memory views
     cdef int[::1] ptr = PTR
@@ -155,11 +164,18 @@ def _k_R_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef double complex[::1] v = V
     cdef int r, ind, c, s_idx
 
-    for r in range(nr):
-        for ind in range(ptr[r], ptr[r] + ncol[r]):
-            c = col[ind] % nr
-            s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
-            v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
+    if p_opt == 0:
+        for r in range(nr):
+            for ind in range(ptr[r], ptr[r] + ncol[r]):
+                c = col[ind] % nr
+                s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+                v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[ind] * D[ind, idx])
+    else:
+        for r in range(nr):
+            for ind in range(ptr[r], ptr[r] + ncol[r]):
+                c = col[ind] % nr
+                s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
+                v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
@@ -168,10 +184,10 @@ def _k_R_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def _k_R_array_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
-                   np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
-                   np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
-                   numeric_real[:, ::1] D, const int idx):
+def _array_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+               np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+               np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+               numeric_real[:, ::1] D, const int idx):
 
     # Convert to memory views
     cdef int[::1] ptr = PTR
@@ -194,10 +210,10 @@ def _k_R_array_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def _k_R_array_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
-                   np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
-                   np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
-                   numeric_real[:, ::1] D, const int idx):
+def _array_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+               np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+               np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+               numeric_real[:, ::1] D, const int idx):
 
     # Convert to memory views
     cdef int[::1] ptr = PTR
@@ -220,10 +236,11 @@ def _k_R_array_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def _k_R_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
-                    np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
-                    np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
-                    numeric_complex[:, ::1] D, const int idx, np.ndarray[np.complex64_t, ndim=1, mode='c'] PHASES):
+def _phase_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+                     np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+                     np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+                     numeric_complex[:, ::1] D, const int idx,
+                     np.ndarray[np.complex64_t, ndim=1, mode='c'] PHASES, const int p_opt):
 
     # Convert to memory views
     cdef int[::1] ptr = PTR
@@ -236,10 +253,17 @@ def _k_R_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef float complex[:, ::1] v = V
     cdef int r, ind, c
 
-    for r in range(nr):
-        for ind in range(ptr[r], ptr[r] + ncol[r]):
-            c = col[ind] % nr
-            v[r, c] = v[r, c] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
+    if p_opt == 0:
+        for r in range(nr):
+            for ind in range(ptr[r], ptr[r] + ncol[r]):
+                c = col[ind] % nr
+                v[r, c] = v[r, c] + <float complex> (phases[ind] * D[ind, idx])
+                
+    else:
+        for r in range(nr):
+            for ind in range(ptr[r], ptr[r] + ncol[r]):
+                c = col[ind] % nr
+                v[r, c] = v[r, c] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
             
     return V
 
@@ -248,10 +272,11 @@ def _k_R_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def _k_R_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
-                    np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
-                    np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
-                    numeric_complex[:, ::1] D, const int idx, np.ndarray[np.complex128_t, ndim=1, mode='c'] PHASES):
+def _phase_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+                      np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+                      np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+                      numeric_complex[:, ::1] D, const int idx,
+                      np.ndarray[np.complex128_t, ndim=1, mode='c'] PHASES, const int p_opt):
 
     # Convert to memory views
     cdef int[::1] ptr = PTR
@@ -264,10 +289,17 @@ def _k_R_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef double complex[:, ::1] v = V
     cdef int r, ind, c
 
-    for r in range(nr):
-        for ind in range(ptr[r], ptr[r] + ncol[r]):
-            c = col[ind] % nr
-            v[r, c] = v[r, c] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
+    if p_opt == 0:
+        for r in range(nr):
+            for ind in range(ptr[r], ptr[r] + ncol[r]):
+                c = col[ind] % nr
+                v[r, c] = v[r, c] + <double complex> (phases[ind] * D[ind, idx])
+
+    else:
+        for r in range(nr):
+            for ind in range(ptr[r], ptr[r] + ncol[r]):
+                c = col[ind] % nr
+                v[r, c] = v[r, c] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
             
     return V
 

@@ -5,70 +5,59 @@ from libc.math cimport fabs
 import numpy as np
 cimport numpy as np
 
-from _matrix_k_factor_dtype import *
+from ._phase import *
+from ._matrix_phase3 import *
 
 _dot = np.dot
 
+__all__ = ['matrix_dk']
+
+
 def matrix_dk(gauge, M, const int idx, sc,
               np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
+    dtype = phase_dtype(k, dtype, True)
+
+    # This is the differentiated matrix with respect to k
+    #  - i R
     if gauge == 'R':
-        return _matrix_dk_R(M._csr, idx, sc, k, dtype, format)
+        iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
+        iRs = (-1j * _dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
+        p_opt = 1
+
     elif gauge == 'r':
-        # The current gauge implementation will recreate the matrix for every k-point
         M.finalize()
-        xij = M.Rij()
-    raise ValueError('Currently only R gauge has been implemented in matrix_dk.')
+        rij = M.Rij()._csr._D
+        iRs = (-1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
+        del rij
+        p_opt = 0
+
+    return _matrix_dk(M._csr, idx, iRs, dtype, format, p_opt)
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int is_gamma(const double[::1] k) nogil:
-    if fabs(k[0]) > 0.0000001:
-        return 0
-    if fabs(k[1]) > 0.0000001:
-        return 0
-    if fabs(k[2]) > 0.0000001:
-        return 0
-    return 1
-
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-def _matrix_dk_R(csr, const int idx, sc,
-                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    """ Setup the k-point matrix """
-
-    if dtype is None:
-        dtype = np.complex128
-
-    if is_gamma(k):
-        phases = np.ones(sc.sc_off.shape[0], dtype=dtype)
-    else:
-        phases = np.exp(-1j * _dot(_dot(_dot(sc.rcell, k), sc.cell), sc.sc_off.T)).astype(dtype, copy=False)
-
-    iRs = -1j * _dot(sc.sc_off, sc.cell).astype(dtype, copy=False) * phases.reshape(-1, 1)
+def _matrix_dk(csr, const int idx, iRs, dtype, format, p_opt):
 
     if dtype == np.complex128:
         
         if format == 'array':
-            return _k_R_factor_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs)
+            return _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         elif format == 'matrix' or format == 'dense':
-            d1, d2, d3 = _k_R_factor_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs)
+            d1, d2, d3 = _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
             return np.asmatrix(d1), np.asmatrix(d2), np.asmatrix(d3)
         
         # Default must be something else.
-        d1, d2, d3 = _k_R_factor_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs)
+        d1, d2, d3 = _phase3_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
     
     elif dtype == np.complex64:
         if format == 'array':
-            return _k_R_factor_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs)
+            return _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         elif format == 'matrix' or format == 'dense':
-            d1, d2, d3 = _k_R_factor_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs)
+            d1, d2, d3 = _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
             return np.asmatrix(d1), np.asmatrix(d2), np.asmatrix(d3)
-        d1, d2, d3 = _k_R_factor_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs)
+        d1, d2, d3 = _phase3_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
-    raise ValueError('matrix_dk_R: currently only supports dtype in [complex64, complex128].')
+    raise ValueError('matrix_dk: currently only supports dtype in [complex64, complex128].')

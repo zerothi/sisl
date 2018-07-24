@@ -10,7 +10,7 @@ from sisl._help import _range as range
 from sisl.sparse import isspmatrix
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
-from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_so, matrix_diag_k_nc
+from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_so, matrix_k_nc_diag
 from ._matrix_dk import matrix_dk
 from ._matrix_ddk import matrix_ddk
 
@@ -730,7 +730,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = np.asarray(k, np.float64).ravel()
-        return matrix_diag_k_nc(gauge, self, self.S_idx, self.sc, k, dtype, format)
+        return matrix_k_nc_diag(gauge, self, self.S_idx, self.sc, k, dtype, format)
 
     def eigh(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
