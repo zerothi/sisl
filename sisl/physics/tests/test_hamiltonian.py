@@ -546,6 +546,24 @@ class TestHamiltonian(object):
         es2.change_gauge('R')
         assert np.allclose(es2.state, es.state)
 
+    def test_expectation_value(self, setup):
+        H = setup.H.copy()
+        H.construct([(0.1, 1.5), ((1., 1.))])
+        D = np.ones(len(H))
+        I = np.identity(len(H))
+        for k in ([0] *3, [0.2] * 3):
+            es = H.eigenstate(k)
+
+            d = es.expectation(D)
+            assert np.allclose(d - D, 0)
+            d = es.expectation(D, diag=False)
+            assert np.allclose(d - I, 0)
+
+            d = es.expectation(I)
+            assert np.allclose(d - D, 0)
+            d = es.expectation(I, diag=False)
+            assert np.allclose(d - I, 0)
+
     def test_velocity_orthogonal(self, setup):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), ((1., 1.))])

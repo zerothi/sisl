@@ -140,7 +140,7 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
        radius in spherical coordinates, only for `maxR` different from ``None``
     theta : numpy.ndarray
        angle in the :math:`x-y` plane from :math:`x` (azimuthal)
-       Only returned if input `theta` is ``True``
+       Only calculated if input `theta` is ``True``, otherwise None is returned.
     phi : numpy.ndarray
        If `cos_phi` is ``True`` this is :math:`\cos(\phi)`, otherwise
        :math:`\phi` is returned (the polar angle from the :math:`z` axis)
@@ -151,7 +151,10 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
     n = r.shape[0]
     if maxR is None:
         rr = sqrt(square(r).sum(1))
-        theta = arctan2(r[:, 1], r[:, 0])
+        if theta:
+            theta = arctan2(r[:, 1], r[:, 0])
+        else:
+            theta = None
         if cos_phi:
             phi = r[:, 2] / rr
         else:

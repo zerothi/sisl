@@ -76,6 +76,8 @@ from numpy import pi
 import numpy as np
 from numpy import sum, dot
 
+from sisl.quaternion import Quaternion
+from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import allow_kwargs
 import sisl._array as _a
 from sisl.messages import info, SislError, tqdm_eta
@@ -141,6 +143,100 @@ class BrillouinZone(object):
         if isinstance(self.parent, SuperCell):
             return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent).replace('\n', '\n '))
         return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent.sc).replace('\n', '\n '))
+
+    @classmethod
+    def parameterize(self, sc, func, N, *args, **kwargs):
+        """ Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
+
+        Generator of a parameterized Brillouin zone object that contains a parameterized k-point
+        list.
+
+        Basically this generates a new BrillouinZone object as:
+
+        >>> def func(sc, frac):
+        ...    return [frac, 0, 0]
+        >>> bz = BrillouinZone([1]).gen_parametrization(func, 10)
+        >>> len(bz) == 10
+        True
+        >>> np.allclose(bz.k[-1, :], [9./10, 0, 0])
+        True
+
+        Parameters
+        ----------
+        sc : SuperCell, or SuperCellChild
+           the supercell used to construct the k-points
+        func : callable
+           method that parameterizes the k-points, *must* at least accept two arguments, ``sc``
+           (super-cell object containing the unit-cell and reciprocal cell) and ``frac``
+           (current parametrization fraction, between 0 and ``(N-1)/N``. It must return
+           a k-point in 3 dimensions.
+        N : int
+           number of k-points generated using the parameterization
+        args: list of arguments
+           arguments passed directly to `func`
+        kwargs: dictionary of arguments
+           keyword arguments passed directly to `func`
+        """
+        k = np.empty([N, 3], np.float64)
+        for i in range(N):
+            k[i, :] = func(sc, i / N, *args, **kwargs)
+        return BrillouinZone(sc, k)
+
+    @classmethod
+    def param_circle(self, sc, N, kR, normal, origo):
+        """ Create a parameterized k-point list where the k-points are generated on a circle around an origo
+
+        Parameters
+        ----------
+        sc : SuperCell, or SuperCellChild
+           the supercell used to construct the k-points
+        N : int
+           number of k-points generated using the parameterization
+        kR : float
+           radius of the k-point. In 1/Ang
+        normal : array_like of float
+           normal vector to determine the circle plane
+        origo : array_like of float
+           origo of the circle used to generate the circular parameterization
+
+        Returns
+        -------
+        BrillouinZone : with the parameterized k-points.
+        """
+        # Conversion object
+        bz = BrillouinZone(sc)
+
+        normal = _a.arrayd(normal)
+        origo = _a.arrayd(origo)
+        k_n = bz.tocartesian(normal)
+        k_o = bz.tocartesian(origo)
+
+        # Generate a preset list of k-points on the unit-circle
+        radians = _a.aranged(N) / N * 2 * np.pi
+        k = _a.emptyd([N, 3])
+        k[:, 0] = np.cos(radians)
+        k[:, 1] = np.sin(radians)
+        k[:, 2] = 0.
+
+        # Now generate the rotation
+        _, theta, phi = cart2spher(k_n)
+        if theta != 0:
+            pv = _a.arrayd([k_n[0], k_n[1], 0])
+            pv /= fnorm(pv)
+            q = Quaternion(phi, pv, rad=True) * Quaternion(theta, [0, 0, 1], rad=True)
+        else:
+            q = Quaternion(0., [0, 0, k_n[2] / abs(k_n[2])], rad=True)
+
+        # Calculate k-points
+        k = q.rotate(k)
+        k *= kR / fnorm(k).reshape(-1, 1)
+        k = bz.toreduced(k + k_o)
+
+        # The sum of weights is equal to the BZ area
+        W = np.pi * kR ** 2
+        w = np.repeat([W / N], N)
+
+        return BrillouinZone(sc, k, w)
 
     def set_parent(self, parent):
         """ Update the parent associated to this object

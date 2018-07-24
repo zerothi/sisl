@@ -1009,6 +1009,50 @@ class _electron_State(object):
             spin = None
         return spin_moment(self.state, self.Sk(spin=spin))
 
+    def expectation(self, A, diag=True):
+        r""" Calculate the expectation value of matrix `A`
+
+        The expectation matrix is calculated as:
+
+        .. math::
+            A_{ij} = \langle \psi_i | \mathbf A | \psi_j \rangle
+
+        If `diag` is true, only the diagonal elements are returned.
+
+        Parameters
+        ----------
+        A : array_like
+           a vector or matrix that expresses the operator `A`
+        diag : bool, optional
+           whether only the diagonal elements are calculated or if the full expectation
+           matrix is calculated
+
+        Returns
+        -------
+        expectation : a vector if `diag` is true, otherwise the expectation matrix
+        """
+        ndim = A.ndim
+        n = len(self)
+        if diag:
+            a = _a.emptyz(n)
+        else:
+            a = _a.emptyz([n, n])
+
+        s = self.state
+        if ndim == 1 and diag:
+            for i in range(n):
+                a[i] = (s[i, :].conj() * A * s[i, :]).sum()
+        elif ndim == 2 and diag:
+            for i in range(n):
+                a[i] = (s[i, :].conj() * A.dot(s[i, :])).sum()
+        elif ndim == 1:
+            for i in range(n):
+                a[i, :] = s.conj().dot((A * s[i, :]).T)
+        elif ndim == 2:
+            for i in range(n):
+                a[i, :] = s.conj().dot(A.dot(s[i, :]))
+        return a
+
     def wavefunction(self, grid, spinor=0, eta=False):
         r""" Expand the coefficients as the wavefunction on `grid` *as-is*
 
