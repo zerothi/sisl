@@ -72,7 +72,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
            \mathbf H(k) = \mathbf H_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -127,7 +126,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
            \nabla_k \mathbf H_\alpha(k) = i r_\alpha \mathbf H_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -182,7 +180,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
            \nabla_k^2 \mathbf H_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf H_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------

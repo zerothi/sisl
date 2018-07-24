@@ -67,7 +67,6 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
            \mathbf E(k) = \mathbf E_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -122,7 +121,6 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
            \nabla_k \mathbf E_\alpha(k) = i r_\alpha \mathbf E_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -177,7 +175,6 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
            \nabla_k^2 \mathbf E_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf E_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------

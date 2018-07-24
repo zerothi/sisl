@@ -543,7 +543,6 @@ class DensityMatrix(_realspace_DensityMatrix):
            \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -598,7 +597,6 @@ class DensityMatrix(_realspace_DensityMatrix):
            \nabla_k \mathbf D_\alpha(k) = i r_\alpha \mathbf D_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -653,7 +651,6 @@ class DensityMatrix(_realspace_DensityMatrix):
            \nabla_k^2 \mathbf D_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf D_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------

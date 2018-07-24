@@ -49,7 +49,6 @@ class DynamicalMatrix(SparseOrbitalBZ):
            \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the atoms.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -100,7 +99,6 @@ class DynamicalMatrix(SparseOrbitalBZ):
           \nabla_k \mathbf D_\gamma(k) = i r_\gamma \mathbf D_{i_\alpha j_\beta} e^{i k r}
 
         where :math:`r` is the distance between the atoms.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -151,7 +149,6 @@ class DynamicalMatrix(SparseOrbitalBZ):
            \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - r_\gamma r_\sigma \mathbf D_{i_\alpha j_\beta} e^{i k r}
 
         where :math:`r` is atomic distance.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------

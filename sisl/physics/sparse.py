@@ -264,7 +264,6 @@ class SparseOrbitalBZ(SparseOrbital):
            \mathbf S(k) = \mathbf S_{\nu\mu} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently this gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -342,7 +341,6 @@ class SparseOrbitalBZ(SparseOrbital):
            \nabla_k \mathbf S_\alpha(k) = i r_\alpha \mathbf S_{ij} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently the second gauge is not implemented (yet).
 
         Parameters
         ----------
@@ -407,7 +405,6 @@ class SparseOrbitalBZ(SparseOrbital):
            \nabla_k^2 \mathbf S_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf S_{ij} e^{i k r}
 
         where :math:`r` is the distance between the orbitals.
-        Currently the second gauge is not implemented (yet).
 
         Parameters
         ----------
