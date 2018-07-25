@@ -134,23 +134,17 @@ class TestSparseAtom(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_rij_fail1(self, setup):
-        s = SparseAtom(setup.g.copy())
+        s = SparseOrbital(setup.g.copy())
         s.construct([[0.1, 1.5], [1, 2]])
         s.rij(what='none')
 
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_rij_fail2(self, setup):
-        s = SparseAtom(setup.g.copy())
-        s.construct([[0.1, 1.5], [1, 2]])
-        s.rij(what='orbital')
-
-    def test_rij2(self, setup):
+    def test_rij_atom(self, setup):
         s = SparseAtom(setup.g.copy())
         s.construct([[0.1, 1.5], [1, 2]])
         atom = s.rij()
         assert atom.spsame(s)
 
-    def test_rij3(self, setup):
+    def test_rij_atom_orbital_compare(self, setup):
         sa = SparseAtom(setup.g.copy())
         so = SparseOrbital(setup.g.copy())
         sa.construct([[0.1, 1.5], [1, 2]])
@@ -158,7 +152,7 @@ class TestSparseAtom(object):
         atom = sa.rij()
         orbital = so.rij()
         assert atom.spsame(orbital)
-        atom = sa.rij('atom')
+        atom = sa.rij()
         orbital = so.rij('atom')
         assert atom.spsame(orbital)
         # This only works because there is 1 orbital per atom

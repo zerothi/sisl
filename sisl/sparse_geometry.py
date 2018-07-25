@@ -3,6 +3,7 @@ from __future__ import print_function, division
 import warnings
 import functools as ftool
 import numpy as np
+from numpy import unique
 
 import sisl._array as _a
 from .atom import Atom
@@ -206,117 +207,6 @@ class _SparseGeometry(object):
         """
         return self._csr.edges(atom, exclude)
 
-    def rij(self, what=None, dtype=np.float64):
-        r""" Create a sparse matrix with the distance between atoms/orbitals
-
-        Parameters
-        ----------
-        what : {None, 'atom', 'orbital'}
-            which kind of sparse distance matrix to return, either an atomic distance matrix
-            or an orbital distance matrix. The orbital matrix is equivalent to the atomic
-            one with the same distance repeated for the same atomic orbitals.
-            The default is the same type as the parent class.
-        dtype : numpy.dtype, optional
-            the data-type of the sparse matrix.
-
-        Notes
-        -----
-        The returned sparse matrix with distances are taken from the current sparse pattern.
-        I.e. a subsequent addition of sparse elements will make them inequivalent.
-        It is thus important to *only* create the sparse distance when the sparse
-        structure is completed.
-        """
-        R = self.Rij(what, dtype)
-        R._csr = (R._csr ** 2).sum(-1) ** 0.5
-        return R
-
-    def Rij(self, what=None, dtype=np.float64):
-        r""" Create a sparse matrix with the vectors between atoms/orbitals
-
-        Parameters
-        ----------
-        what : {None, 'atom', 'orbital'}
-            which kind of sparse vector matrix to return, either an atomic vector matrix
-            or an orbital vector matrix. The orbital matrix is equivalent to the atomic
-            one with the same vectors repeated for the same atomic orbitals.
-            The default is the same type as the parent class.
-        dtype : numpy.dtype, optional
-            the data-type of the sparse matrix.
-
-        Notes
-        -----
-        The returned sparse matrix with vectors are taken from the current sparse pattern.
-        I.e. a subsequent addition of sparse elements will make them inequivalent.
-        It is thus important to *only* create the sparse vector matrix when the sparse
-        structure is completed.
-        """
-        geom = self.geometry
-
-        if isinstance(self, SparseAtom):
-            Rij = geom.Rij
-            if what is None:
-                what = 'atom'
-        elif isinstance(self, SparseOrbital):
-            Rij = geom.oRij
-            if what is None:
-                what = 'orbital'
-        else:
-            raise ValueError(self.__class__.__name__ + ' is an unknown class. Perhaps the inheritance has been broken.')
-
-        # Conversion before doing Rij on geometry
-        # We default to expect atoms
-        conv = lambda val: val
-
-        # Pointers
-        ncol = self._csr.ncol.view()
-        ptr = self._csr.ptr.view()
-        col = self._csr.col.view()
-
-        if what == 'atom':
-            cls = SparseAtom
-            if isinstance(self, SparseOrbital):
-                # Since we are reducing dimensions (from orbital to atoms)
-                # we sort and only return unique values
-                def conv(orbs):
-                    return np.unique(geom.o2a(orbs))
-                Rij = geom.Rij
-
-        elif what in ['orbital', 'orb']:
-            cls = SparseOrbital
-            if isinstance(self, SparseAtom):
-                raise NotImplementedError(self.__class__.__name__ + ' cannot create Rij in SparseAtom from SparseOrbital')
-
-            # We create an *exact* copy of the Rij
-            R = cls(geom, 3, dtype, nnzpr=1)
-            # Re-create the sparse matrix data
-            R._csr.ptr = ptr.copy()
-            R._csr.ncol = ncol.copy()
-            R._csr.col = col.copy()
-            R._csr._nnz = self._csr.nnz
-            R._csr._D = np.zeros([self._csr._D.shape[0], 3], dtype=dtype)
-            R._csr._finalized = self.finalized
-            for ro in range(self.shape[0]):
-                sl = slice(ptr[ro], ptr[ro] + ncol[ro])
-                R._csr._D[sl, :] = Rij(ro, col[sl])
-
-            return R
-
-        else:
-            raise ValueError(self.__class__.__name__ + '.Rij what must be one of ["atom", "orbital", "orb"].')
-
-        # Create the output class
-        R = cls(geom, 3, dtype, nnzpr=np.amax(ncol))
-
-        # Old rows
-        orow = _a.arangei(self.shape[0])
-
-        for ro, rn in zip(orow, conv(orow)):
-            # Reduce to the unique columns
-            coln = conv(col[ptr[ro]:ptr[ro]+ncol[ro]])
-            R[rn, coln] = Rij(rn, coln)
-
-        return R
-
     def __str__(self):
         """ Representation of the sparse model """
         s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, kind={2}\n '.format(self.dim, self.nnz, self.dkind)
@@ -391,9 +281,9 @@ class _SparseGeometry(object):
         new = _a.arrayi(new)
 
         # Assert that there are only unique values
-        if len(np.unique(old)) != len(old):
+        if len(unique(old)) != len(old):
             raise SislError("non-unique values in old set_nsc")
-        if len(np.unique(new)) != len(new):
+        if len(unique(new)) != len(new):
             raise SislError("non-unique values in new set_nsc")
         if self.n_s != len(old):
             raise SislError("non-valid size of in old set_nsc")
@@ -1290,6 +1180,64 @@ class SparseAtom(_SparseGeometry):
 
         return S
 
+    def rij(self, dtype=np.float64):
+        r""" Create a sparse matrix with the distance between atoms
+
+        Parameters
+        ----------
+        dtype : numpy.dtype, optional
+            the data-type of the sparse matrix.
+
+        Notes
+        -----
+        The returned sparse matrix with distances are taken from the current sparse pattern.
+        I.e. a subsequent addition of sparse elements will make them inequivalent.
+        It is thus important to *only* create the sparse distance when the sparse
+        structure is completed.
+        """
+        R = self.Rij(dtype)
+        R._csr = (R._csr ** 2).sum(-1) ** 0.5
+        return R
+
+    def Rij(self, dtype=np.float64):
+        r""" Create a sparse matrix with the vectors between atoms
+
+        Parameters
+        ----------
+        dtype : numpy.dtype, optional
+            the data-type of the sparse matrix.
+
+        Notes
+        -----
+        The returned sparse matrix with vectors are taken from the current sparse pattern.
+        I.e. a subsequent addition of sparse elements will make them inequivalent.
+        It is thus important to *only* create the sparse vector matrix when the sparse
+        structure is completed.
+        """
+        geom = self.geometry
+        Rij = geom.Rij
+
+        # Pointers
+        ncol = self._csr.ncol.view()
+        ptr = self._csr.ptr.view()
+        col = self._csr.col.view()
+
+        # Create the output class
+        R = SparseAtom(geom, 3, dtype, nnzpr=1)
+
+        # Re-create the sparse matrix data
+        R._csr.ptr = ptr.copy()
+        R._csr.ncol = ncol.copy()
+        R._csr.col = col.copy()
+        R._csr._nnz = self._csr.nnz
+        R._csr._D = np.zeros([self._csr._D.shape[0], 3], dtype=dtype)
+        R._csr._finalized = self.finalized
+        for ia in range(self.shape[0]):
+            sl = slice(ptr[ia], ptr[ia] + ncol[ia])
+            R._csr._D[sl, :] = Rij(ia, col[sl])
+
+        return R
+
 
 class SparseOrbital(_SparseGeometry):
     """ Sparse object with number of rows equal to the total number of orbitals in the `Geometry` """
@@ -1357,7 +1305,7 @@ class SparseOrbital(_SparseGeometry):
         if atom is None and orbital is None:
             raise ValueError(self.__class__.__name__ + '.edges must have either "atom" or "orbital" keyword defined.')
         if orbital is None:
-            return np.unique(self.geometry.o2a(self._csr.edges(self.geometry.a2o(atom, True), exclude)))
+            return unique(self.geometry.o2a(self._csr.edges(self.geometry.a2o(atom, True), exclude)))
         return self._csr.edges(orbital, exclude)
 
     def nonzero(self, atom=None, only_col=False):
@@ -1910,6 +1858,91 @@ class SparseOrbital(_SparseGeometry):
 
         return S
 
+    def rij(self, what='orbital', dtype=np.float64):
+        r""" Create a sparse matrix with the distance between atoms/orbitals
+
+        Parameters
+        ----------
+        what : {'orbital', 'atom'}
+            which kind of sparse distance matrix to return, either an atomic distance matrix
+            or an orbital distance matrix. The orbital matrix is equivalent to the atomic
+            one with the same distance repeated for the same atomic orbitals.
+            The default is the same type as the parent class.
+        dtype : numpy.dtype, optional
+            the data-type of the sparse matrix.
+
+        Notes
+        -----
+        The returned sparse matrix with distances are taken from the current sparse pattern.
+        I.e. a subsequent addition of sparse elements will make them inequivalent.
+        It is thus important to *only* create the sparse distance when the sparse
+        structure is completed.
+        """
+        R = self.Rij(what, dtype)
+        R._csr = (R._csr ** 2).sum(-1) ** 0.5
+        return R
+
+    def Rij(self, what='orbital', dtype=np.float64):
+        r""" Create a sparse matrix with the vectors between atoms/orbitals
+
+        Parameters
+        ----------
+        what : {'orbital', 'atom'}
+            which kind of sparse vector matrix to return, either an atomic vector matrix
+            or an orbital vector matrix. The orbital matrix is equivalent to the atomic
+            one with the same vectors repeated for the same atomic orbitals.
+            The default is the same type as the parent class.
+        dtype : numpy.dtype, optional
+            the data-type of the sparse matrix.
+
+        Notes
+        -----
+        The returned sparse matrix with vectors are taken from the current sparse pattern.
+        I.e. a subsequent addition of sparse elements will make them inequivalent.
+        It is thus important to *only* create the sparse vector matrix when the sparse
+        structure is completed.
+        """
+        geom = self.geometry
+
+        # Pointers
+        ncol = self._csr.ncol.view()
+        ptr = self._csr.ptr.view()
+        col = self._csr.col.view()
+
+        if what == 'atom':
+            R = SparseAtom(geom, 3, dtype, nnzpr=np.amax(ncol))
+            Rij = geom.Rij
+            o2a = geom.o2a
+
+            # Orbitals
+            orow = _a.arangei(self.shape[0])
+            # Loop on orbitals and atoms
+            for io, ia in zip(orow, o2a(orow)):
+                coln = unique(o2a(col[ptr[io]:ptr[io]+ncol[io]]))
+                R[ia, coln] = Rij(ia, coln)
+
+        elif what in ['orbital', 'orb']:
+            # We create an *exact* copy of the Rij
+            R = SparseOrbital(geom, 3, dtype, nnzpr=1)
+            Rij = geom.oRij
+
+            # Re-create the sparse matrix data
+            R._csr.ptr = ptr.copy()
+            R._csr.ncol = ncol.copy()
+            R._csr.col = col.copy()
+            R._csr._nnz = self._csr.nnz
+            R._csr._D = np.zeros([self._csr._D.shape[0], 3], dtype=dtype)
+            R._csr._finalized = self.finalized
+
+            for io in range(self.shape[0]):
+                sl = slice(ptr[io], ptr[io] + ncol[io])
+                R._csr._D[sl, :] = Rij(io, col[sl])
+
+        else:
+            raise ValueError(self.__class__.__name__ + '.Rij "what" is not one of [atom, orbital].')
+
+        return R
+
     def toSparseAtom(self, dtype=None):
         """ Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern
 
@@ -1945,7 +1978,7 @@ class SparseOrbital(_SparseGeometry):
 
             # These are now the atomic columns
             # Immediately reduce to unique elements
-            acol = np.unique(orb2atom[csr.col[idx]])
+            acol = unique(orb2atom[csr.col[idx]])
 
             # Step counters
             col[ia] = acol
