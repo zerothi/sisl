@@ -47,6 +47,7 @@ automatically passes the correct ``S`` because it knows the states :math:`k`-poi
 from __future__ import print_function, division
 
 import numpy as np
+from numpy import find_common_type
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid
 from numpy import cos, sin, pi, int32
@@ -485,17 +486,18 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
     if state.ndim == 1:
         return velocity_matrix(state.reshape(1, -1), dHk, energy, dSk, degenerate).ravel()
 
+    dtype = np.find_common_type([state.dtype, dHk[0].dtype], [])
     if dSk is None:
-        return _velocity_matrix_ortho(state, dHk, degenerate)
-    return _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate)
+        return _velocity_matrix_ortho(state, dHk, degenerate, dtype)
+    return _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype)
 
 
-def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate):
+def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype):
     r""" For states in a non-orthogonal basis """
 
     # All matrix elements along the 3 directions
     n = state.shape[0]
-    v = np.empty([n, n, 3], dtype=state.dtype)
+    v = np.empty([n, n, 3], dtype=dtype)
 
     # Decouple the degenerate states
     if not degenerate is None:
@@ -526,12 +528,12 @@ def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate):
     return v * _velocity_const
 
 
-def _velocity_matrix_ortho(state, dHk, degenerate):
+def _velocity_matrix_ortho(state, dHk, degenerate, dtype):
     r""" For states in an orthogonal basis """
 
     # All matrix elements along the 3 directions
     n = state.shape[0]
-    v = np.empty([n, n, 3], dtype=state.dtype)
+    v = np.empty([n, n, 3], dtype=dtype)
 
     # Decouple the degenerate states
     if not degenerate is None:

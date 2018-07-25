@@ -633,6 +633,26 @@ class TestHamiltonian(object):
             vsub = es.sub([0]).velocity()
             assert np.allclose(v[0, :], vsub)
 
+    def test_velocity_matrix_orthogonal(self, setup):
+        H = setup.H.copy()
+        H.construct([(0.1, 1.5), ((1., 1.))])
+        E = np.linspace(-4, 4, 1000)
+        for k in ([0] *3, [0.2] * 3):
+            es = H.eigenstate(k)
+            v = es.velocity_matrix()
+            vsub = es.sub([0, 1]).velocity_matrix()
+            assert np.allclose(v[:2, :2, :], vsub)
+
+    def test_velocity_matrix_nonorthogonal(self, setup):
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        E = np.linspace(-4, 4, 1000)
+        for k in ([0] *3, [0.2] * 3):
+            es = HS.eigenstate(k)
+            v = es.velocity_matrix()
+            vsub = es.sub([0, 1]).velocity_matrix()
+            assert np.allclose(v[:2, :2, :], vsub)
+
     def test_inv_eff_mass_tensor_orthogonal(self, setup):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), ((1., 1.))])
