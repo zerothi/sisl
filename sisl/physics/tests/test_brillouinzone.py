@@ -214,6 +214,25 @@ class TestBrillouinZone(object):
         assert np.allclose((asarray / len(bz)).sum(0), asaverage)
         bz.asnone().eigh()
 
+    def test_as_single(self):
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        def wrap(eig):
+            return eig[0]
+
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False)
+        assert len(bz) == 2 ** 3
+
+        # Assert that as* all does the same
+        asarray = bz.asarray().eigh(wrap=wrap)
+        aslist = np.array(bz.aslist().eigh(wrap=wrap))
+        asyield = np.array([a for a in bz.asyield().eigh(wrap=wrap)])
+        assert np.allclose(asarray, aslist)
+        assert np.allclose(asarray, asyield)
+
     def test_as_wrap(self):
         from sisl import geom, Hamiltonian
         g = geom.graphene()

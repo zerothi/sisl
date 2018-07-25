@@ -375,7 +375,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
 
 # dHk is in [Ang eV]
 # velocity units in [Ang/ps]
-_velocity_const = units('ps', 's') / constant.hbar('eV s')
+_velocity_const = 1 / constant.hbar('eV ps')
 
 
 def _velocity_non_ortho(state, dHk, energy, dSk, degenerate):

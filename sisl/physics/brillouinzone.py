@@ -339,7 +339,7 @@ class BrillouinZone(object):
                 attr, self.parent.__class__.__name__))
 
     # Implement wrapper calls
-    def asarray(self, dtype=np.float64):
+    def asarray(self):
         """ Return `self` with `numpy.ndarray` returned quantities
 
         This forces the `__call__` routine to return a single array.
@@ -353,11 +353,6 @@ class BrillouinZone(object):
         wrap : callable, optional
            a function that accepts the output of the given routine and post-process
            it. Defaults to ``lambda x: x``.
-
-        Parameters
-        ----------
-        dtype : numpy.dtype, optional
-            the data-type to cast the values to
 
         Examples
         --------
@@ -381,11 +376,14 @@ class BrillouinZone(object):
             k = self.k.view()
             w = self.weight.view()
             v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-            a = np.empty((len(self), ) + v.shape, dtype=dtype)
-            a[0, :] = v[:]
+            if v.ndim == 0:
+                a = np.empty([len(self)], dtype=v.dtype)
+            else:
+                a = np.empty((len(self), ) + v.shape, dtype=v.dtype)
+            a[0] = v
             del v
             for i in range(1, len(k)):
-                a[i, :] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
             eta.close()
             return a
@@ -531,7 +529,7 @@ class BrillouinZone(object):
         setattr(self, '__call__', types.MethodType(_call, self))
         return self
 
-    def asaverage(self, dtype=np.float64):
+    def asaverage(self):
         """ Return `self` with k-averaged quantities
 
         This forces the `__call__` routine to return a single k-averaged value.
@@ -545,11 +543,6 @@ class BrillouinZone(object):
         wrap : callable, optional
            a function that accepts the output of the given routine and post-process
            it. Defaults to ``lambda x: x``.
-
-        Parameters
-        ----------
-        dtype : numpy.dtype, optional
-            the data-type to cast the returned values to
 
         Examples
         --------
@@ -577,7 +570,7 @@ class BrillouinZone(object):
             parent = self.parent
             k = self.k.view()
             w = self.weight.view()
-            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]).astype(dtype, copy=False) * w[0]
+            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]) * w[0]
             for i in range(1, len(k)):
                 v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i]) * w[i]
                 eta.update()
@@ -587,7 +580,7 @@ class BrillouinZone(object):
         setattr(self, '__call__', types.MethodType(_call, self))
         return self
 
-    def assum(self, dtype=np.float64):
+    def assum(self):
         """ Return `self` with summed quantities
 
         This forces the `__call__` routine to return all k-point values summed.
@@ -601,11 +594,6 @@ class BrillouinZone(object):
         wrap : callable, optional
            a function that accepts the output of the given routine and post-process
            it. Defaults to ``lambda x: x``.
-
-        Parameters
-        ----------
-        dtype : numpy.dtype, optional
-            the data-type to cast the returned values to
 
         Examples
         --------
@@ -633,7 +621,7 @@ class BrillouinZone(object):
             parent = self.parent
             k = self.k.view()
             w = self.weight.view()
-            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]).astype(dtype, copy=False)
+            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
             for i in range(1, len(k)):
                 v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
