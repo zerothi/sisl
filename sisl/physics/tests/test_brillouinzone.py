@@ -307,6 +307,16 @@ class TestBrillouinZone(object):
     def test_in_primitive(self):
         assert np.allclose(MonkhorstPack.in_primitive([[1.] * 3, [-1.] * 3]), 0)
 
+    @pytest.mark.parametrize("n", [[0, 0, 1], [0.5] * 3])
+    def test_param_circle(self, n):
+        bz = BrillouinZone.param_circle(1, 10, 0.1, n, [1/2] * 3)
+        assert len(bz) == 10
+        sc = SuperCell(1)
+        bz_loop = BrillouinZone.param_circle(sc, 10, 0.1, n, [1/2] * 3, True)
+        assert len(bz_loop) == 10
+        assert not np.allclose(bz.k, bz_loop.k)
+        assert np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :])
+
     def test_replace_gamma_trs(self):
         from sisl import geom
         g = geom.graphene()

@@ -145,7 +145,7 @@ class BrillouinZone(object):
         return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent.sc).replace('\n', '\n '))
 
     @classmethod
-    def parameterize(self, sc, func, N, *args, **kwargs):
+    def parametrize(self, sc, func, N, *args, **kwargs):
         """ Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
@@ -155,7 +155,7 @@ class BrillouinZone(object):
 
         >>> def func(sc, frac):
         ...    return [frac, 0, 0]
-        >>> bz = BrillouinZone([1]).gen_parametrization(func, 10)
+        >>> bz = BrillouinZone.parametrize(1, func, 10)
         >>> len(bz) == 10
         True
         >>> np.allclose(bz.k[-1, :], [9./10, 0, 0])
@@ -183,8 +183,13 @@ class BrillouinZone(object):
         return BrillouinZone(sc, k)
 
     @classmethod
-    def param_circle(self, sc, N, kR, normal, origo):
-        """ Create a parameterized k-point list where the k-points are generated on a circle around an origo
+    def param_circle(self, sc, N, kR, normal, origo, loop=False):
+        r""" Create a parameterized k-point list where the k-points are generated on a circle around an origo
+
+        The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
+        To generate a perfect circle in units of the reciprocal lattice vectors one can
+        generate the circle for a diagonal supercell with side-length :math:`2\pi`, see
+        example below.
 
         Parameters
         ----------
@@ -198,6 +203,20 @@ class BrillouinZone(object):
            normal vector to determine the circle plane
         origo : array_like of float
            origo of the circle used to generate the circular parameterization
+        loop : bool, optional
+           whether the first and last point are equal
+
+        Examples
+        --------
+
+        >>> sc = SuperCell([1, 1, 10, 90, 90, 60])
+        >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
+
+        To generate a circular set of k-points in reduced coordinates (reciprocal
+        >>> sc = SuperCell([1, 1, 10, 90, 90, 60])
+        >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
+        >>> bz_rec = BrillouinZone.param_circle(2*np.pi, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
+        >>> bz.k[:, :] = bz_rec.k[:, :]
 
         Returns
         -------
@@ -212,7 +231,10 @@ class BrillouinZone(object):
         k_o = bz.tocartesian(origo)
 
         # Generate a preset list of k-points on the unit-circle
-        radians = _a.aranged(N) / N * 2 * np.pi
+        if loop:
+            radians = _a.aranged(N) / (N-1) * 2 * np.pi
+        else:
+            radians = _a.aranged(N) / N * 2 * np.pi
         k = _a.emptyd([N, 3])
         k[:, 0] = np.cos(radians)
         k[:, 1] = np.sin(radians)
@@ -286,6 +308,10 @@ class BrillouinZone(object):
         ----------
         k : list of float
            k-point in reduced coordinates
+
+        Returns
+        -------
+        k : in units of 1/Ang
         """
         return dot(k, self.rcell)
 
@@ -296,6 +322,10 @@ class BrillouinZone(object):
         ----------
         k : list of float
            k-point in Cartesian coordinates
+
+        Returns
+        -------
+        k : in units of reciprocal lattice vectors ]-0.5 ; 0.5] (if k is in the primitive cell)
         """
         return dot(k, self.cell.T / (2 * pi))
 
