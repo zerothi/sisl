@@ -59,6 +59,8 @@ Electrons (:mod:`~sisl.physics.electron`)
    ~electron.DOS
    ~electron.PDOS
    ~electron.velocity
+   ~electron.velocity_matrix
+   ~electron.berry_phase
    ~electron.wavefunction
    ~electron.spin_moment
    EigenvalueElectron

@@ -6,8 +6,9 @@ import warnings
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack
-from sisl import Grid
-from sisl import SphericalOrbital
+from sisl import Grid, SphericalOrbital, SislError
+from sisl import electron as elec
+
 
 pytestmark = pytest.mark.hamiltonian
 
@@ -565,6 +566,30 @@ class TestHamiltonian(object):
         es2.change_gauge('r')
         es1.change_gauge('r')
         assert np.allclose(es1.velocity(), es2.velocity())
+
+    def test_berry_phase(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        elec.berry_phase(bz)
+        elec.berry_phase(bz, sub=0)
+        elec.berry_phase(bz, eigvals=True, sub=0)
+
+    @pytest.mark.xfail(raises=SislError)
+    def test_berry_phase_fail_sc(self, setup):
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        bz = BandStructure.param_circle(H.geometry.sc, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        elec.berry_phase(bz)
+
+    @pytest.mark.xfail(raises=SislError)
+    def test_berry_phase_fail_loop(self, setup):
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3, loop=True)
+        elec.berry_phase(bz)
 
     def test_gauge_inv_eff(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

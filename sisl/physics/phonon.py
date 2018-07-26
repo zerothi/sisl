@@ -272,7 +272,7 @@ class _phonon_Mode(object):
 
         .. math::
 
-            \tilde C_j = e^{-i\mathbf k\mathbf r_j} C_j
+            \tilde C_j = e^{i\mathbf k\mathbf r_j} C_j
 
         where :math:`C_j` belongs to the gauge ``R`` and :math:`\tilde C_j` is in the gauge
         ``r``.
