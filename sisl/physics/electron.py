@@ -747,6 +747,7 @@ def berry_phase(bz, sub=None, eigvals=False, _gauge='r'):
     --------
 
     Calculate the multi-band Berry-phase
+
     >>> N = 30
     >>> kR = 0.01
     >>> normal = [0, 0, 1]
@@ -755,6 +756,7 @@ def berry_phase(bz, sub=None, eigvals=False, _gauge='r'):
     >>> phase = berry_phase(bz)
 
     Calculate Berry-phase for first band
+
     >>> N = 30
     >>> kR = 0.01
     >>> normal = [0, 0, 1]

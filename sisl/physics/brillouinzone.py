@@ -213,6 +213,7 @@ class BrillouinZone(object):
         >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
 
         To generate a circular set of k-points in reduced coordinates (reciprocal
+
         >>> sc = SuperCell([1, 1, 10, 90, 90, 60])
         >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
         >>> bz_rec = BrillouinZone.param_circle(2*np.pi, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
