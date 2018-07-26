@@ -134,6 +134,10 @@ eig_left_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwr
 eig_right_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, right=True)
 __all__ += _append('eig_', ['destroy', 'left_destroy', 'right_destroy'])
 
+eigvals = _partial(sl.eigvals, check_finite=False, overwrite_a=False)
+eigvals_destroy = _partial(sl.eigvals, check_finite=False, overwrite_a=True)
+__all__ += _append('eigvals', ['', '_destroy'])
+
 # Solve symmetric/hermitian eigenvalue problem (generic == no overwrite)
 eigh = _partial(sl.eigh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=True)
 eigh_dc = eigh
@@ -145,6 +149,16 @@ eigh_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite
 eigh_dc_destroy = eigh_destroy
 eigh_qr_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=False)
 __all__ += _append('eigh_', ['destroy', 'dc_destroy', 'qr_destroy'])
+
+eigvalsh = _partial(sl.eigvalsh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=True)
+eigvalsh_dc = eigvalsh
+eigvalsh_qr = _partial(sl.eigvalsh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=False)
+__all__ += _append('eigvalsh', ['', '_dc', '_qr'])
+
+eigvalsh_destroy = _partial(sl.eigvalsh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=True)
+eigvalsh_dc_destroy = eigvalsh_destroy
+eigvalsh_qr_destroy = _partial(sl.eigvalsh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=False)
+__all__ += _append('eigvalsh_', ['destroy', 'dc_destroy', 'qr_destroy'])
 
 # SVD problem
 svd = _partial(sl.svd, check_finite=False, overwrite_a=False)
