@@ -165,6 +165,11 @@ svd = _partial(sl.svd, check_finite=False, overwrite_a=False)
 svd_destroy = _partial(sl.svd, check_finite=False, overwrite_a=True)
 __all__ += _append('svd', ['', '_destroy'])
 
+# Determinants
+det = _partial(sl.det, check_finite=False, overwrite_a=False)
+det_destroy = _partial(sl.det, check_finite=False, overwrite_a=True)
+__all__ += _append('det', ['', '_destroy'])
+
 # Sparse linalg routines
 
 # Solve eigenvalue problem
