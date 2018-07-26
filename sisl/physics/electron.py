@@ -711,7 +711,7 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
     return M * _inv_eff_mass_const
 
 
-def berry_phase(bz, sub=None, eigvals=False, _gauge='r'):
+def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r'):
     r""" Calculate the Berry-phase on a loop using a predefined path
 
     The Berry phase for a single Bloch state is calculated using the discretized formula:
@@ -724,8 +724,8 @@ def berry_phase(bz, sub=None, eigvals=False, _gauge='r'):
 
     Parameters
     ----------
-    bz : BrillouinZone
-       containing the closed contour and has the ``bz.parent`` as an instance of Hamiltonian. The
+    bz_loop : BrillouinZone
+       containing the closed contour and has the ``bz_loop.parent`` as an instance of Hamiltonian. The
        first and last k-point must not be the same.
     sub : None or list of int, optional
        selected bands to calculate the Berry phase of
@@ -766,10 +766,10 @@ def berry_phase(bz, sub=None, eigvals=False, _gauge='r'):
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
-    if not isinstance(bz.parent, Hamiltonian):
+    if not isinstance(bz_loop.parent, Hamiltonian):
         raise SislError('berry_phase: requires the Brillouin zone object to contain a Hamiltonian!')
 
-    if np.allclose(bz.k[0, :], bz.k[-1, :]):
+    if np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :]):
         raise SislError('berry_phase: requires the Brillouin zone to not form a loop!')
 
     # Check that the Gauge is correct.
@@ -828,7 +828,7 @@ def berry_phase(bz, sub=None, eigvals=False, _gauge='r'):
             return prd
 
     # Do the actual calculation of the final matrix
-    d = _berry(bz.asyield().eigenstate())
+    d = _berry(bz_loop.asyield().eigenstate())
 
     # Correct return values
     if eigvals:
