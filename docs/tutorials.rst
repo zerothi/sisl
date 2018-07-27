@@ -17,6 +17,7 @@ Below is a list of the current tutorials:
    :maxdepth: 1
 
    tutorials/tutorial_es_1.ipynb
+   tutorials/tutorial_es_2.ipynb
 
 
 Siesta/TranSiesta support

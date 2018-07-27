@@ -185,7 +185,7 @@ class BrillouinZone(object):
         return BrillouinZone(sc, k)
 
     @classmethod
-    def param_circle(self, sc, N, kR, normal, origo, loop=False):
+    def param_circle(self, sc, N_or_dk, kR, normal, origo, loop=False):
         r""" Create a parameterized k-point list where the k-points are generated on a circle around an origo
 
         The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
@@ -197,8 +197,11 @@ class BrillouinZone(object):
         ----------
         sc : SuperCell, or SuperCellChild
            the supercell used to construct the k-points
-        N : int
-           number of k-points generated using the parameterization
+        N_or_dk : int
+           number of k-points generated using the parameterization (if an integer),
+           otherwise it specifies the discretization length on the circle (in 1/Ang),
+           If the latter case will use less than 4 points a warning will be raised and
+           the number of points increased to 4.
         kR : float
            radius of the k-point. In 1/Ang
         normal : array_like of float
@@ -225,6 +228,15 @@ class BrillouinZone(object):
         -------
         BrillouinZone : with the parameterized k-points.
         """
+        if isinstance(N_or_dk, Integral):
+            N = N_or_dk
+        else:
+            # Calculate the required number of points
+            N = int(kR ** 2 * np.pi / N_or_dk + 0.5)
+            if N < 4:
+                N = 4
+                info('BrillouinZone.param_circle increased the number of circle points to 4.')
+
         # Conversion object
         bz = BrillouinZone(sc)
 
