@@ -47,12 +47,14 @@ class cubeSile(Sile):
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
         # Add #-of atoms and origo
-        self._write(_fmt.format(0, *(origo * Ang2Bohr)))
+        self._write(_fmt.format(1, *(origo * Ang2Bohr)))
 
         # Write the cell and voxels
         for ix in range(3):
             dcell = sc.cell[ix, :] / size[ix] * Ang2Bohr
             self._write(_fmt.format(size[ix], *dcell))
+
+        self._write('1 0. 0. 0. 0.\n')
 
     @Sile_fh_open
     def write_geometry(self, geometry, fmt='15.10e', size=None, origo=None,
