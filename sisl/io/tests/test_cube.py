@@ -20,7 +20,7 @@ def test_default(sisl_tmp):
     read = grid.read(f)
     assert np.allclose(grid.grid, read.grid)
     assert grid.geometry is None
-    assert read.geometry is None
+    assert len(read.geometry) == 1
 
 
 def test_default_size(sisl_tmp):
@@ -31,7 +31,7 @@ def test_default_size(sisl_tmp):
     read = grid.read(f)
     assert np.allclose(grid.grid, read.grid)
     assert grid.geometry is None
-    assert read.geometry is None
+    assert len(read.geometry) == 1
 
 
 def test_geometry(sisl_tmp):

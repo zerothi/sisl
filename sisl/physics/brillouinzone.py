@@ -74,14 +74,16 @@ from numbers import Integral, Real
 
 from numpy import pi
 import numpy as np
-from numpy import sum, dot
+from numpy import sum, dot, cross
 
+from sisl.unit import units
 from sisl.quaternion import Quaternion
 from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import allow_kwargs
 import sisl._array as _a
 from sisl.messages import info, SislError, tqdm_eta
 from sisl.supercell import SuperCell
+from sisl.grid import Grid
 
 
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
@@ -358,12 +360,12 @@ class BrillouinZone(object):
 
         return k
 
-    __attr = None
+    _bz_attr = None
 
     def __getattr__(self, attr):
         try:
             getattr(self.parent, attr)
-            self.__attr = attr
+            self._bz_attr = attr
             return self
         except AttributeError:
             raise AttributeError("'{}' does not exist in class '{}'".format(
@@ -399,7 +401,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self.__attr)
+            func = getattr(self.parent, self._bz_attr)
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
                            'k', kwargs.pop('eta', False))
@@ -418,8 +420,8 @@ class BrillouinZone(object):
                 eta.update()
             eta.close()
             return a
-        # Set instance __call__
-        setattr(self, '__call__', types.MethodType(_call, self))
+        # Set instance __bz_call
+        setattr(self, '_bz_call', types.MethodType(_call, self))
         return self
 
     def asnone(self):
@@ -452,7 +454,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self.__attr)
+            func = getattr(self.parent, self._bz_attr)
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asnone',
                            'k', kwargs.pop('eta', False))
@@ -464,7 +466,7 @@ class BrillouinZone(object):
                 eta.update()
             eta.close()
         # Set instance __call__
-        setattr(self, '__call__', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(_call, self))
         return self
 
     def aslist(self):
@@ -498,7 +500,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self.__attr)
+            func = getattr(self.parent, self._bz_attr)
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist',
                            'k', kwargs.pop('eta', False))
@@ -512,7 +514,7 @@ class BrillouinZone(object):
             eta.close()
             return a
         # Set instance __call__
-        setattr(self, '__call__', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(_call, self))
         return self
 
     def asyield(self):
@@ -545,7 +547,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self.__attr)
+            func = getattr(self.parent, self._bz_attr)
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield',
                            'k', kwargs.pop('eta', False))
@@ -557,7 +559,7 @@ class BrillouinZone(object):
                 eta.update()
             eta.close()
         # Set instance __call__
-        setattr(self, '__call__', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(_call, self))
         return self
 
     def asaverage(self):
@@ -594,7 +596,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self.__attr)
+            func = getattr(self.parent, self._bz_attr)
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage',
                            'k', kwargs.pop('eta', False))
@@ -608,7 +610,7 @@ class BrillouinZone(object):
             eta.close()
             return v
         # Set instance __call__
-        setattr(self, '__call__', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(_call, self))
         return self
 
     def assum(self):
@@ -645,7 +647,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self.__attr)
+            func = getattr(self.parent, self._bz_attr)
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.assum',
                            'k', kwargs.pop('eta', False))
@@ -659,7 +661,7 @@ class BrillouinZone(object):
             eta.close()
             return v
         # Set instance __call__
-        setattr(self, '__call__', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(_call, self))
         return self
 
     def __call__(self, *args, **kwargs):
@@ -679,7 +681,7 @@ class BrillouinZone(object):
         getattr(self, attr)(k, *args, **kwargs) : whatever this returns
         """
         try:
-            call = getattr(self, '__call__')
+            call = getattr(self, '_bz_call')
         except Exception:
             raise NotImplementedError("Could not call the object it self")
         return call(*args, **kwargs)
@@ -824,14 +826,172 @@ class MonkhorstPack(BrillouinZone):
         self._displ = displacement # vector
         self._size = size # vector
         self._centered = centered
-        self._trs = trs
+        self._trs = i_trs
 
     def copy(self):
         """ Create a copy of this object """
-        bz = self.__class__(self.parent, self._diag, self._displ, self._size, self._centered, self._trs)
+        bz = self.__class__(self.parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0)
         bz._k = self._k.copy()
         bz._w = self._w.copy()
         return bz
+
+    def asgrid(self):
+        """ Return `self` with Grid quantities
+
+        This forces the `__call__` routine to return all k-point values in a regular grid.
+
+        The calculation of values on a grid requires some careful thought before
+        running the calculation as the returned grid may be somewhat difficult
+        to comprehend.
+
+        Notes
+        -----
+        All invocations of sub-methods are added these keyword-only arguments:
+
+        eta : bool, optional
+           if true a progress-bar is created, default false.
+        wrap : callable, optional
+           a function that accepts the output of the given routine and post-process
+           it. Defaults to ``lambda x: x``.
+        data_axis : int, optional
+           the Grid axis to put in the data values in. Has to be specified if the
+           subsequent routine calls return more than 1 data-point per k-point.
+        grid_unit : {'b', 'Ang', 'Bohr'}, optional
+           for 'b' the returned grid will be a cube, otherwise the grid will be the reciprocal lattice
+           vectors (for any other value) and in the given reciprocal unit ('Ang' => 1/Ang)
+
+        Examples
+        --------
+        >>> obj = MonkhorstPack(Hamiltonian, [10, 1, 10]) # doctest: +SKIP
+        >>> grid = obj.asgrid().eigh(data_axis=1) # doctest: +SKIP
+
+        See Also
+        --------
+        asarray : all output as a single array
+        asyield : all output returned through an iterator
+        asaverage : take the average (with k-weights) of the Brillouin zone
+        aslist : all output returned as a Python list
+        """
+
+        def _call(self, *args, **kwargs):
+            data_axis = kwargs.pop('data_axis', None)
+            grid_unit = kwargs.pop('grid_unit', 'b')
+
+            func = getattr(self.parent, self._bz_attr)
+            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
+            eta = tqdm_eta(len(self), self.__class__.__name__ + '.asgrid',
+                           'k', kwargs.pop('eta', False))
+            parent = self.parent
+            k = self.k.view()
+            w = self.weight.view()
+
+            # Extract information from the MP grid, these values
+            # define the Grid size, etc.
+            diag = self._diag.copy()
+            if not np.all(self._displ == 0):
+                raise SislError(self.__class__.__name__ + '.{} requires the displacement to be 0 for all k-points.'.format(self._bz_attr))
+            displ = self._displ.copy()
+            size = self._size.copy()
+            steps = size / diag
+            if self._centered:
+                offset = np.where(diag % 2 == 0, steps, steps / 2)
+            else:
+                offset = np.where(diag % 2 == 0, steps / 2, steps)
+
+            # Instead of doing
+            #    _in_primitive(k) + 0.5 - offset
+            # we can do it here
+            #    _in_primitive(k) + offset'
+            offset -= 0.5
+
+            # Check the TRS direction
+            trs_axis = self._trs
+            _in_primitive = self.in_primitive
+            _rint = np.rint
+            _int32 = np.int32
+            def k2idx(k):
+                # In case TRS is applied two indices may be returned
+                return _rint((_in_primitive(k) - offset) / steps).astype(_int32)
+                # To find the opposite k-point, do this
+                #  idx[i] = [diag[i] - idx[i] - 1, idx[i]
+                # with i in [0, 1, 2]
+
+            # Create cell from the reciprocal cell.
+            if grid_unit == 'b':
+                cell = np.diag(self._size)
+            else:
+                cell = parent.sc.rcell * self._size.reshape(1, -1) / units('Ang', grid_unit)
+
+            # Find the grid origo
+            origo = -(cell * 0.5).sum(0)
+
+            # Calculate first k-point (to get size and dtype)
+            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
+
+            if data_axis is None:
+                if v.size != 1:
+                    raise SislError(self.__class__.__name__ + '.{} requires one value per-kpoint because of the 3D grid values'.format(self._bz_attr))
+
+            else:
+
+                # Check the weights
+                weights = self.grid(diag[data_axis], displ[data_axis], size[data_axis],
+                                    centered=self._centered, trs=trs_axis == data_axis)[1]
+
+                # Correct the Grid size
+                diag[data_axis] = len(v)
+                # Create the orthogonal cell direction to ensure it is orthogonal
+                # Since array axis is cyclic for negative numbers, we simply do this
+                cell[data_axis, :] = cross(cell[data_axis-1, :], cell[data_axis-2, :])
+                # Check whether we should rotate it
+                if cart2spher(cell[data_axis, :])[2] > pi / 4:
+                    cell[data_axis, :] *= -1
+
+            # Correct cell for the grid
+            if trs_axis >= 0:
+                origo[trs_axis] = 0.
+                # Correct offset since we only have the positive halve
+                if self._diag[trs_axis] % 2 == 0 and not self._centered:
+                    offset[trs_axis] = steps[trs_axis] / 2
+                else:
+                    offset[trs_axis] = 0.
+                # Find number of points
+                diag[trs_axis] = len(self.grid(diag[trs_axis], displ[trs_axis], size[trs_axis],
+                                               centered=self._centered, trs=True)[1])
+
+            # Create the grid in the reciprocal cell
+            sc = SuperCell(cell, origo=origo)
+            grid = Grid(diag, sc=sc, dtype=v.dtype)
+            if data_axis is None:
+                grid[k2idx(k[0])] = v
+            else:
+                idx = k2idx(k[0]).tolist()
+                weight = weights[idx[data_axis]]
+                idx[data_axis] = slice(None)
+                grid[idx] = v * weight
+
+            del v
+
+            # Now perform calculation
+            if data_axis is None:
+                for i in range(1, len(k)):
+                    grid[k2idx(k[i])] = wrap(func(*args, k=k[i], **kwargs),
+                                             parent=parent, k=k[i], weight=w[i]).reshape(*shape)
+                    eta.update()
+            else:
+                for i in range(1, len(k)):
+                    idx = k2idx(k[i]).tolist()
+                    weight = weights[idx[data_axis]]
+                    idx[data_axis] = slice(None)
+                    grid[idx] = wrap(func(*args, k=k[i], **kwargs),
+                                     parent=parent, k=k[i], weight=w[i]) * weight
+                    eta.update()
+            eta.close()
+            return grid
+
+        # Set instance __call__
+        setattr(self, '_bz_call', types.MethodType(_call, self))
+        return self
 
     @classmethod
     def grid(cls, n, displ=0., size=1., centered=True, trs=False):
@@ -1001,7 +1161,7 @@ class MonkhorstPack(BrillouinZone):
             weight_factor = 1.
         elif abs(total_weight - replace_weight * 2) < 1e-8:
             weight_factor = 2.
-            if not self._trs:
+            if self._trs < 0:
                 info(self.__class__.__name__ + '.reduce assumes that the replaced k-point has double weights.')
         else:
             print('k-point to replace:')
