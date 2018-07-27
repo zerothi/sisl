@@ -1,6 +1,14 @@
 0.9.3
 =====
 
+- Fixes for the GULP dynamical matrix reads
+
+- Enabled preliminary reads of OpenMX input file
+
+- Enabled DOS calculation for the eigenvalue files
+
+- Added Berry-phase calculation for orthogonal basis sets
+
 - Added velocity calculation of electronic eigenstates
 
 - Enabled effective mass tensor in electronic eigenstates (un-tested)
@@ -25,7 +33,8 @@
 
 - Added new units class to handle complex units.
 
-- Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS
+- Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS,
+	displacements
 
 - Bug-fixes for Siesta binary writes, now the supercell format is *always*
 	Siesta compliant.
