@@ -769,6 +769,9 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r'):
     if not isinstance(bz_loop.parent, Hamiltonian):
         raise SislError('berry_phase: requires the Brillouin zone object to contain a Hamiltonian!')
 
+    if not bz_loop.parent.orthogonal:
+        raise SislError('berry_phase: requires the Hamiltonian to use an orthogonal basis!')
+
     if np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :]):
         raise SislError('berry_phase: requires the Brillouin zone to not form a loop!')
 
