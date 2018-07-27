@@ -6,6 +6,7 @@ from itertools import product
 import math as m
 import numpy as np
 
+from sisl import SislError
 from sisl import Geometry, Atom, SuperCell, SuperCellChild
 from sisl import BrillouinZone, BandStructure
 from sisl import MonkhorstPack
@@ -114,6 +115,41 @@ class TestBrillouinZone(object):
             assert np.allclose(val, np.arange(3) - 1)
         # Average
         assert np.allclose(bz.asaverage().eigh(), np.arange(3))
+
+    @pytest.mark.parametrize("N", [2, 3, 4, 5, 7])
+    @pytest.mark.parametrize("centered", [True, False])
+    def test_mp_asgrid(self, setup, N, centered):
+        class Test(SuperCellChild):
+            def __init__(self, sc):
+                self.set_supercell(sc)
+            def eigh(self, k, *args, **kwargs):
+                return np.arange(3)
+        bz = MonkhorstPack(Test(setup.s1), [2] * 3).asgrid()
+
+        # Check the shape
+        grid = bz.eigh(wrap=lambda eig: eig[0])
+        assert np.allclose(grid.shape, [2] * 3)
+
+        # Check the grids are different
+        grid2 = bz.eigh(grid_unit='Bohr', wrap=lambda eig: eig[0])
+        assert not np.allclose(grid.cell, grid2.cell)
+
+        assert np.allclose(grid.grid, grid2.grid)
+        for i in range(3):
+            grid = bz.eigh(data_axis=i)
+            shape = [2] * 3
+            shape[i] = 3
+            assert np.allclose(grid.shape, shape)
+
+    @pytest.mark.xfail(raises=SislError)
+    def test_mp_asgrid_fail(self, setup):
+        class Test(SuperCellChild):
+            def __init__(self, sc):
+                self.set_supercell(sc)
+            def eigh(self, k, *args, **kwargs):
+                return np.arange(3)
+        bz = MonkhorstPack(Test(setup.s1), [2] * 3, displacement=[0.1] * 3).asgrid()
+        bz.eigh(wrap=lambda eig: eig[0])
 
     def test_mp1(self, setup):
         bz = MonkhorstPack(setup.s1, [2] * 3, trs=False)

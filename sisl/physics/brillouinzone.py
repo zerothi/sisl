@@ -955,9 +955,11 @@ class MonkhorstPack(BrillouinZone):
                     offset[trs_axis] = steps[trs_axis] / 2
                 else:
                     offset[trs_axis] = 0.
+
                 # Find number of points
-                diag[trs_axis] = len(self.grid(diag[trs_axis], displ[trs_axis], size[trs_axis],
-                                               centered=self._centered, trs=True)[1])
+                if trs_axis != data_axis:
+                    diag[trs_axis] = len(self.grid(diag[trs_axis], displ[trs_axis], size[trs_axis],
+                                                   centered=self._centered, trs=True)[1])
 
             # Create the grid in the reciprocal cell
             sc = SuperCell(cell, origo=origo)
@@ -976,7 +978,7 @@ class MonkhorstPack(BrillouinZone):
             if data_axis is None:
                 for i in range(1, len(k)):
                     grid[k2idx(k[i])] = wrap(func(*args, k=k[i], **kwargs),
-                                             parent=parent, k=k[i], weight=w[i]).reshape(*shape)
+                                             parent=parent, k=k[i], weight=w[i])
                     eta.update()
             else:
                 for i in range(1, len(k)):
