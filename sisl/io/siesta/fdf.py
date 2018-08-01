@@ -1069,10 +1069,6 @@ class fdfSileSiesta(SileSiesta):
 
         # Remove all zeros
         D.eliminate_zeros()
-        # Make Hermitian, this may "halve" some elements if the matrix is not symmetric.
-        D.make_hermitian()
-
-        # TODO, it may be advantegeous to apply Newtons 3rd law and then call make_hermitian again.
 
         return D
 
