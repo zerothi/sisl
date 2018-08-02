@@ -794,6 +794,9 @@ class fdfSileSiesta(SileSiesta):
 
         Parameters
         ----------
+        order: list of str, optional
+            the order of which to try and read the dynamical matrix.
+            By default this is ``['nc', 'FC']``.
         cutoff_dist : float, optional
             cutoff value for the distance of the force-constants (everything farther than
             `cutoff_dist` will be set to 0, unit in Ang.
@@ -807,7 +810,7 @@ class fdfSileSiesta(SileSiesta):
         -------
         DynamicalMatrix : Dynamical matrix
         """
-        order = kwargs.pop('order', ['FC'])
+        order = kwargs.pop('order', ['nc', 'FC'])
         for f in order:
             v = getattr(self, '_r_dynamical_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -818,7 +821,30 @@ class fdfSileSiesta(SileSiesta):
         FC = self._r_force_constant_fc(*args, **kwargs)
         if FC is None:
             return None
+        geom = self.read_geometry()
 
+        # Now create mass array
+        if len(self.get('AtomicMass', default=[])) > 0:
+            warn(str(self) + '.read_dynamical_matrix(FC) does not implement reading atomic masses from fdf file.')
+        # Get list of FC atoms
+        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=0))
+        return self._dynamical_matrix_from_fc(geom, FC, FC_atoms, *args, **kwargs)
+
+    def _r_dynamical_matrix_nc(self, *args, **kwargs):
+        FC = self._r_force_constant_nc(*args, **kwargs)
+        if FC is None:
+            return None
+        geom = self.read_geometry()
+
+        # Now create mass array
+        if len(self.get('AtomicMass', default=[])) > 0:
+            warn(str(self) + '.read_dynamical_matrix(nc) does not implement reading atomic masses from fdf file.')
+        # Get list of FC atoms
+        # TODO change to read in from the NetCDF file
+        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=0))
+        return self._dynamical_matrix_from_fc(geom, FC, FC_atoms, *args, **kwargs)
+
+    def _dynamical_matrix_from_fc(self, geom, FC, FC_atoms, *args, **kwargs):
         # We have the force constant matrix.
         # Now handle it...
         #  FC(OLD) = (n_displ, 3, 2, na, 3)
@@ -826,8 +852,6 @@ class fdfSileSiesta(SileSiesta):
         # In fact, after averaging this becomes the Hessian
         FC = np.average(FC, axis=2)
 
-        # First we need to create the geometry (without the floating atoms)
-        geom = self.read_geometry()
         # Figure out the "original" periodic directions
         periodic = geom.nsc > 1
 
@@ -856,16 +880,9 @@ class fdfSileSiesta(SileSiesta):
         geom = geom.remove(idx)
         geom.set_nsc([1] * 3)
 
-        # Now create mass array
-        if len(self.get('AtomicMass', default=[])) > 0:
-            warn(str(self) + '.read_dynamical_matrix(FC) does not implement reading atomic masses from fdf file.')
-
-        # Get list of FC atoms
-        fc_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=0))
-
         # Now we can build the dynamical matrix (it will always be real)
         na = len(geom)
-        na_fc = len(fc_atoms)
+        na_fc = len(FC_atoms)
 
         # Flags for all nditer calls
         nditer_kwargs = {'flags': ['buffered'], 'op_flags': ['readonly']}
@@ -893,20 +910,20 @@ class fdfSileSiesta(SileSiesta):
 
             # Instead of doing the sqrt in all D = FC (below) we do it here
             m = 1 / geom.atoms.mass ** 0.5
-            FC *= m[fc_atoms].reshape(-1, 1, 1, 1)
+            FC *= m[FC_atoms].reshape(-1, 1, 1, 1)
             FC *= m.reshape(1, 1, -1, 1)
 
-            j_fc_atoms = fc_atoms.view()
-            idx = _a.arangei(len(fc_atoms))
-            for ia, fia in enumerate(fc_atoms):
+            j_FC_atoms = FC_atoms.view()
+            idx = _a.arangei(len(FC_atoms))
+            for ia, fia in enumerate(FC_atoms):
 
                 if R > 0:
                     # find distances between the other atoms to cut-off the distance
-                    idx = geom.close(fia, R=R, idx=fc_atoms)
-                    idx = indices_only(fc_atoms, idx)
-                    j_fc_atoms = fc_atoms[idx]
+                    idx = geom.close(fia, R=R, idx=FC_atoms)
+                    idx = indices_only(FC_atoms, idx)
+                    j_FC_atoms = FC_atoms[idx]
 
-                for ja, fja in zip(idx, j_fc_atoms):
+                for ja, fja in zip(idx, j_FC_atoms):
                     for i, j in xyz_xyz:
                         D[ia*3+i, ja*3+j] = FC[ia, i, fja, j]
                     xyz_xyz.reset()
@@ -931,7 +948,7 @@ class fdfSileSiesta(SileSiesta):
                     nsc[i] = min(nsc[i], nsc_R[i])
                 del nsc_R
             sc = SuperCell(sc, nsc=nsc)
-            geom_small = Geometry(geom.xyz[fc_atoms], geom.atoms[fc_atoms], sc)
+            geom_small = Geometry(geom.xyz[FC_atoms], geom.atoms[FC_atoms], sc)
             D = DynamicalMatrix(geom_small)
 
             # Now we need to figure out how the atoms are laid out.
@@ -940,14 +957,14 @@ class fdfSileSiesta(SileSiesta):
             # Convert the big geometry's coordinates to fractional coordinates of the small unit-cell.
             isc_xyz = np.dot(geom.xyz, geom_small.sc.icell.T) - np.tile(geom_small.fxyz, (np.product(supercell), 1))
 
-            if np.any(np.diff(fc_atoms) != 1):
+            if np.any(np.diff(FC_atoms) != 1):
                 raise SislError(str(self) + '.read_dynamical_matrix(FC) requires the FC atoms to be consecutive!')
 
             # Now figure out the order of tiling
             axis_tiling = []
             offset = len(geom_small)
             for _ in (supercell > 1).nonzero()[0]:
-                first_isc = (np.around(isc_xyz[fc_atoms + offset, :]) == 1.).sum(0)
+                first_isc = (np.around(isc_xyz[FC_atoms + offset, :]) == 1.).sum(0)
                 axis_tiling.append(np.argmax(first_isc))
                 # Fix the offset
                 offset *= supercell[axis_tiling[-1]]
@@ -982,7 +999,7 @@ class fdfSileSiesta(SileSiesta):
             FC *= m.reshape(-1, 1, 1, 1, 1, 1, 1)
             FC *= m.reshape(1, 1, 1, 1, 1, -1, 1)
 
-            if fc_atoms[0] != 0:
+            if FC_atoms[0] != 0:
                 # TODO we could roll the axis such that the displaced atoms moves into the
                 # first elements
                 raise SislError(str(self) + '.read_dynamical_matrix(FC) requires the displaced atoms to start from 1!')
@@ -1044,8 +1061,8 @@ class fdfSileSiesta(SileSiesta):
                                   arai(nsc[1]).reshape(1, -1, 1),
                                   arai(nsc[2]).reshape(1, 1, -1)], **nditer_kwargs)
 
-            iter_fc_atoms = _a.arangei(len(fc_atoms))
-            iter_j_fc_atoms = iter_fc_atoms.view()
+            iter_FC_atoms = _a.arangei(len(FC_atoms))
+            iter_j_FC_atoms = iter_FC_atoms.view()
 
             # When x, y, z are negative we simply look-up from the back of the array
             # which is exactly what is required
@@ -1056,13 +1073,13 @@ class fdfSileSiesta(SileSiesta):
             for x, y, z in iter_nsc:
                 aoff = isc_off[x, y, z] * na
                 joff = aoff / na * nxyz
-                for ia in iter_fc_atoms:
+                for ia in iter_FC_atoms:
 
                     # Reduce second loop based on radius cutoff
                     if R > 0:
-                        iter_j_fc_atoms = iter_fc_atoms[dist(ia, aoff + iter_fc_atoms) <= R]
+                        iter_j_FC_atoms = iter_FC_atoms[dist(ia, aoff + iter_FC_atoms) <= R]
 
-                    for ja in iter_j_fc_atoms:
+                    for ja in iter_j_FC_atoms:
                         for i, j in xyz_xyz:
                             D[ia*3+i, joff+ja*3+j] = FC[ia, i, x, y, z, ja, j]
                         xyz_xyz.reset()
