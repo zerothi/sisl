@@ -418,8 +418,8 @@ class BrillouinZone(object):
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
-            k = self.k.view()
-            w = self.weight.view()
+            k = self.k
+            w = self.weight
             v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
             if v.ndim == 0:
                 a = np.empty([len(self)], dtype=v.dtype)
@@ -471,8 +471,8 @@ class BrillouinZone(object):
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asnone',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
-            k = self.k.view()
-            w = self.weight.view()
+            k = self.k
+            w = self.weight
             for i in range(len(k)):
                 wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
@@ -518,8 +518,8 @@ class BrillouinZone(object):
                            'k', kwargs.pop('eta', False))
             a = [None] * len(self)
             parent = self.parent
-            k = self.k.view()
-            w = self.weight.view()
+            k = self.k
+            w = self.weight
             for i in range(len(k)):
                 a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
@@ -564,8 +564,8 @@ class BrillouinZone(object):
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
-            k = self.k.view()
-            w = self.weight.view()
+            k = self.k
+            w = self.weight
             for i in range(len(k)):
                 yield wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
@@ -613,8 +613,8 @@ class BrillouinZone(object):
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
-            k = self.k.view()
-            w = self.weight.view()
+            k = self.k
+            w = self.weight
             v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]) * w[0]
             for i in range(1, len(k)):
                 v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i]) * w[i]
@@ -664,8 +664,8 @@ class BrillouinZone(object):
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.assum',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
-            k = self.k.view()
-            w = self.weight.view()
+            k = self.k
+            w = self.weight
             v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
             for i in range(1, len(k)):
                 v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
@@ -894,8 +894,8 @@ class MonkhorstPack(BrillouinZone):
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asgrid',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
-            k = self.k.view()
-            w = self.weight.view()
+            k = self.k
+            w = self.weight
 
             # Extract information from the MP grid, these values
             # define the Grid size, etc.

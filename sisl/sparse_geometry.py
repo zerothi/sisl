@@ -1218,9 +1218,9 @@ class SparseAtom(_SparseGeometry):
         Rij = geom.Rij
 
         # Pointers
-        ncol = self._csr.ncol.view()
-        ptr = self._csr.ptr.view()
-        col = self._csr.col.view()
+        ncol = self._csr.ncol
+        ptr = self._csr.ptr
+        col = self._csr.col
 
         # Create the output class
         R = SparseAtom(geom, 3, dtype, nnzpr=1)
@@ -1339,10 +1339,10 @@ class SparseOrbital(_SparseGeometry):
         self.finalize()
 
         # Loop on all orbitals
-        ptr = self._csr.ptr.view()
-        ncol = self._csr.ncol.view()
-        col = self._csr.col.view()
-        D = self._csr._D.view()
+        ptr = self._csr.ptr
+        ncol = self._csr.ncol
+        col = self._csr.col
+        D = self._csr._D
 
         for io in range(self.shape[0]):
             if ncol[io] == 0:
@@ -1359,10 +1359,10 @@ class SparseOrbital(_SparseGeometry):
                     # Add a new element
                     self[j, h_col[i]] = 0.
                     self.finalize()
-                    ptr = self._csr.ptr.view()
-                    ncol = self._csr.ncol.view()
-                    col = self._csr.col.view()
-                    D = self._csr._D.view()
+                    ptr = self._csr.ptr
+                    ncol = self._csr.ncol
+                    col = self._csr.col
+                    D = self._csr._D
                     idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
                 h_idx[i] = ptr[j] + idx
             # Now make it hermitian
@@ -1826,7 +1826,7 @@ class SparseOrbital(_SparseGeometry):
         del ja, oJ, A
 
         # Get view of ncol
-        ncol = self._csr.ncol.view()
+        ncol = self._csr.ncol
 
         # Create repetitions
         for _ in range(reps):
@@ -1905,9 +1905,9 @@ class SparseOrbital(_SparseGeometry):
         geom = self.geometry
 
         # Pointers
-        ncol = self._csr.ncol.view()
-        ptr = self._csr.ptr.view()
-        col = self._csr.col.view()
+        ncol = self._csr.ncol
+        ptr = self._csr.ptr
+        col = self._csr.col
 
         if what == 'atom':
             R = SparseAtom(geom, 3, dtype, nnzpr=np.amax(ncol))

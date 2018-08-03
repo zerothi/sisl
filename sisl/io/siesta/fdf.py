@@ -913,7 +913,7 @@ class fdfSileSiesta(SileSiesta):
             FC *= m[FC_atoms].reshape(-1, 1, 1, 1)
             FC *= m.reshape(1, 1, -1, 1)
 
-            j_FC_atoms = FC_atoms.view()
+            j_FC_atoms = FC_atoms
             idx = _a.arangei(len(FC_atoms))
             for ia, fia in enumerate(FC_atoms):
 
@@ -1062,7 +1062,7 @@ class fdfSileSiesta(SileSiesta):
                                   arai(nsc[2]).reshape(1, 1, -1)], **nditer_kwargs)
 
             iter_FC_atoms = _a.arangei(len(FC_atoms))
-            iter_j_FC_atoms = iter_FC_atoms.view()
+            iter_j_FC_atoms = iter_FC_atoms
 
             # When x, y, z are negative we simply look-up from the back of the array
             # which is exactly what is required

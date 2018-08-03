@@ -394,10 +394,10 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
                     # Downsize to the correct indices
                     if jR - oR < 1e-6:
-                        ja_idx1 = ja_idx.view()
-                        ja_r1 = ja_r.view()
-                        ja_theta1 = ja_theta.view()
-                        ja_cos_phi1 = ja_cos_phi.view()
+                        ja_idx1 = ja_idx
+                        ja_r1 = ja_r
+                        ja_theta1 = ja_theta
+                        ja_cos_phi1 = ja_cos_phi
                     else:
                         ja_idx1 = indices_le(ja_r, oR)
                         if len(ja_idx1) == 0:
@@ -440,9 +440,9 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
                     # Downsize to the correct indices
                     if R - ojR < 1e-6:
                         ja_idx1 = slice(None)
-                        ja_r1 = ia_r.view()
-                        ja_theta1 = ia_theta.view()
-                        ja_cos_phi1 = ia_cos_phi.view()
+                        ja_r1 = ia_r
+                        ja_theta1 = ia_theta
+                        ja_cos_phi1 = ia_cos_phi
                     else:
                         ja_idx1 = indices_le(ia_r, ojR)
                         if len(ja_idx1) == 0:

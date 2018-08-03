@@ -1130,10 +1130,10 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
             # Downsize to the correct indices
             if R - oR < 1e-6:
-                idx1 = idx.view()
-                r1 = r.view()
-                theta1 = theta.view()
-                phi1 = phi.view()
+                idx1 = idx
+                r1 = r
+                theta1 = theta
+                phi1 = phi
             else:
                 idx1 = indices_le(r, oR)
                 # Reduce arrays

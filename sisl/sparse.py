@@ -365,17 +365,17 @@ class SparseCSR(object):
         self.ptr[0] = 0
         _a.cumsumi(ncol, out=self.ptr[1:])
 
-        ptr = self.ptr.view()
-        col = self.col.view()
-        D = self._D.view()
+        ptr = self.ptr
+        col = self.col
+        D = self._D
 
         # We truncate all the connections
         if sort:
             for r in range(self.shape[0]):
                 # Sort and check whether there are double entries
                 sl = slice(ptr[r], ptr[r+1])
-                ccol = col[sl].view()
-                DD = D[sl, :].view()
+                ccol = col[sl]
+                DD = D[sl, :]
                 idx = argsort(ccol)
                 # Do in-place sorting
                 ccol[:] = ccol[idx]
@@ -418,13 +418,13 @@ class SparseCSR(object):
         """
         row = unique(_a.asarrayi(row))
         if exclude is None:
-            exclude = row.view()
+            exclude = row
         else:
             exclude = unique(_a.asarrayi(exclude))
 
         # Now get the edges
-        ptr = self.ptr.view()
-        ncol = self.ncol.view()
+        ptr = self.ptr
+        ncol = self.ncol
 
         # Create column indices
         edges = unique(self.col[array_arange(ptr[row], n=ncol[row])])
@@ -452,9 +452,9 @@ class SparseCSR(object):
         n_cols = cnz(columns < self.shape[1])
 
         # Grab pointers
-        ptr = self.ptr.view()
-        ncol = self.ncol.view()
-        col = self.col.view()
+        ptr = self.ptr
+        ncol = self.ncol
+        col = self.col
 
         # Get indices of deleted columns
         idx = array_arange(ptr[:-1], n=ncol)
@@ -482,7 +482,7 @@ class SparseCSR(object):
 
         # Update pointer
         #  col
-        col = self.col.view()
+        col = self.col
 
         # Figure out if it is necessary to update columns
         # This is only necessary when the deleted columns
@@ -518,9 +518,9 @@ class SparseCSR(object):
     def _clean_columns(self):
         """ Remove all intrinsic columns that are not defined in the sparse matrix """
         # Grab pointers
-        ptr = self.ptr.view()
-        ncol = self.ncol.view()
-        col = self.col.view()
+        ptr = self.ptr
+        ncol = self.ncol
+        col = self.col
 
         # Number of columns
         nc = self.shape[1]
@@ -581,7 +581,7 @@ class SparseCSR(object):
         # Get indices of valid column entries
         idx = array_arange(self.ptr[:-1], n=self.ncol)
         # Convert the old column indices to new ones
-        col = self.col.view()
+        col = self.col
         col[idx] = pvt[col[idx]]
 
         # After translation, set to not finalized
@@ -603,12 +603,12 @@ class SparseCSR(object):
         if self.shape[:2] != other.shape[:2]:
             return False
 
-        sptr = self.ptr.view()
-        sncol = self.ncol.view()
-        scol = self.col.view()
-        optr = other.ptr.view()
-        oncol = other.ncol.view()
-        ocol = other.col.view()
+        sptr = self.ptr
+        sncol = self.ncol
+        scol = self.col
+        optr = other.ptr
+        oncol = other.ncol
+        ocol = other.col
 
         # Easy check for non-equal number of elements
         if (sncol == oncol).sum() != self.shape[0]:
@@ -640,12 +640,12 @@ class SparseCSR(object):
             raise ValueError('Aligning two sparse matrices requires same shapes')
 
         lsetdiff1d = setdiff1d
-        sptr = self.ptr.view()
-        sncol = self.ncol.view()
-        scol = self.col.view()
-        optr = other.ptr.view()
-        oncol = other.ncol.view()
-        ocol = other.col.view()
+        sptr = self.ptr
+        sncol = self.ncol
+        scol = self.col
+        optr = other.ptr
+        oncol = other.ncol
+        ocol = other.col
         for r in range(self.shape[0]):
             # pointers
             sp = sptr[r]
@@ -864,8 +864,8 @@ class SparseCSR(object):
             return
 
         # Get short-hand
-        ptr = self.ptr.view()
-        ncol = self.ncol.view()
+        ptr = self.ptr
+        ncol = self.ncol
 
         # Get original values
         sl = slice(ptr[i], ptr[i] + ncol[i], None)
@@ -1029,10 +1029,10 @@ class SparseCSR(object):
         """
         shape2 = self.shape[2]
 
-        ptr = self.ptr.view()
-        ncol = self.ncol.view()
-        col = self.col.view()
-        D = self._D.view()
+        ptr = self.ptr
+        ncol = self.ncol
+        col = self.col
+        D = self._D
 
         # Get short-hand
         nsum = np.sum
@@ -1058,10 +1058,10 @@ class SparseCSR(object):
             del self[i, col[idx[C0]]]
 
             # Since some elements may be deleted we need to ensure we have them all
-            ptr = self.ptr.view()
-            ncol = self.ncol.view()
-            col = self.col.view()
-            D = self._D.view()
+            ptr = self.ptr
+            ncol = self.ncol
+            col = self.col
+            D = self._D
 
     def copy(self, dims=None, dtype=None):
         """ Returns an exact copy of the sparse matrix
@@ -1161,13 +1161,13 @@ class SparseCSR(object):
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] == self.shape[1]:
-            ridx = indices.view()
+            ridx = indices
 
         elif self.shape[0] < self.shape[1]:
             ridx = indices[indices < self.shape[0]]
 
         elif self.shape[0] > self.shape[1]:
-            ridx = indices.view()
+            ridx = indices
 
         # Number of rows, columns
         nr = len(ridx)
@@ -1184,8 +1184,8 @@ class SparseCSR(object):
         csr._D = empty([1])
 
         # Get views
-        ptr1 = csr.ptr.view()
-        ncol1 = csr.ncol.view()
+        ptr1 = csr.ptr
+        ncol1 = csr.ncol
 
         # Create the sub data
         take(self.ptr, ridx, out=ptr1[1:])
@@ -1259,8 +1259,8 @@ class SparseCSR(object):
             raise NotImplementedError('Currently performing a sum on the columns is not implemented')
         elif axis == 0:
             ret = empty([self.shape[0], self.shape[2]], dtype=self.dtype)
-            ptr = self.ptr.view()
-            ncol = self.ncol.view()
+            ptr = self.ptr
+            ncol = self.ncol
             for r in range(self.shape[0]):
                 ret[r, :] = self._D[ptr[r]:ptr[r]+ncol[r], :].sum(0)
 

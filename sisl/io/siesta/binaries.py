@@ -265,7 +265,7 @@ class dmSileSiesta(SileBinSiesta):
 
         # Get H and S
         if DM.orthogonal:
-            dm = csr._D.view()
+            dm = csr._D
         else:
             dm = csr._D[:, :DM.S_idx]
 

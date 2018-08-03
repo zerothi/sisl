@@ -2332,7 +2332,7 @@ class Geometry(SuperCellChild):
         idcell = divisions * icell
 
         # Calculate mesh indices for atoms
-        xyz = self.xyz.view()
+        xyz = self.xyz
         mesh_a = dot(xyz, imcell.T) # dmx
         mesh_i = mesh_a.floor(dtype=int32)
         subtract(mesh_a, mesh_i, out=mesh_a)
