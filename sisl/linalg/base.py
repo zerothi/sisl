@@ -128,7 +128,6 @@ eig_left = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=F
 eig_right = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, right=True)
 __all__ += _append('eig', ['', '_left', '_right'])
 
-# Solve eigenvalue problem
 eig_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True)
 eig_left_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, left=True)
 eig_right_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, right=True)

@@ -447,6 +447,27 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         return self._ddPk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
+    def eig(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
+        """ Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)
+
+        Setup the system and overlap matrix with respect to
+        the given k-point and calculate the eigenvalues.
+
+        All subsequent arguments gets passed directly to :code:`scipy.linalg.eig`
+        """
+        dtype = kwargs.pop('dtype', None)
+
+        P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
+        if self.orthogonal:
+            if eigvals_only:
+                return lin.eigvals_destroy(P, **kwargs)
+            return lin.eig_destroy(P, **kwargs)
+
+        S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
+        if eigvals_only:
+            return lin.eigvals_destroy(P, S, **kwargs)
+        return lin.eig_destroy(P, S, **kwargs)
+
     def eigh(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity
 
