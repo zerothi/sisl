@@ -456,7 +456,6 @@ class SparseOrbitalBZ(SparseOrbital):
         All subsequent arguments gets passed directly to :code:`scipy.linalg.eig`
         """
         dtype = kwargs.pop('dtype', None)
-
         P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
         if self.orthogonal:
             if eigvals_only:
@@ -749,6 +748,38 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         k = np.asarray(k, np.float64).ravel()
         return matrix_k_nc_diag(gauge, self, self.S_idx, self.sc, k, dtype, format)
+
+    def eig(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
+        """ Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)
+
+        Setup the system and overlap matrix with respect to
+        the given k-point and calculate the eigenvalues.
+
+        All subsequent arguments gets passed directly to :code:`scipy.linalg.eig`
+
+        Parameters
+        ----------
+        spin : int, optional
+           the spin-component to calculate the eigenvalue spectrum of, note that
+           this parameter is only valid for `Spin.POLARIZED` matrices.
+        """
+        spin = kwargs.pop('spin', 0)
+        dtype = kwargs.pop('dtype', None)
+
+        if self.spin.kind == Spin.POLARIZED:
+            P = self.Pk(k=k, dtype=dtype, gauge=gauge, spin=spin, format='array')
+        else:
+            P = self.Pk(k=k, dtype=dtype, gauge=gauge, format='array')
+
+        if self.orthogonal:
+            if eigvals_only:
+                return lin.eigvals_destroy(P, **kwargs)
+            return lin.eig_destroy(P, **kwargs)
+
+        S = self.Sk(k=k, dtype=dtype, gauge=gauge, format='array')
+        if eigvals_only:
+            return lin.eigvals_destroy(P, S, **kwargs)
+        return lin.eig_destroy(P, S, **kwargs)
 
     def eigh(self, k=(0, 0, 0), gauge='R', eigvals_only=True, **kwargs):
         """ Returns the eigenvalues of the physical quantity

@@ -490,6 +490,24 @@ class TestHamiltonian(object):
         assert np.allclose(Hg.eigh(), Hc.eigh())
         del Hc, H
 
+    def test_eigh_vs_eig(self, setup):
+        # Test of eigenvalues
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param), eta=True)
+        eig1 = H.eigh(dtype=np.complex64)
+        eig2 = np.sort(H.eig(dtype=np.complex64).real)
+        eig3 = np.sort(H.eig(eigvals_only=False, dtype=np.complex64)[0].real)
+        assert np.allclose(eig1, eig2, atol=1e-5)
+        assert np.allclose(eig1, eig3, atol=1e-5)
+
+        eig1 = H.eigh([0.01] * 3, dtype=np.complex64)
+        eig2 = np.sort(H.eig([0.01] * 3, dtype=np.complex64).real)
+        eig3 = np.sort(H.eig([0.01] * 3, eigvals_only=False, dtype=np.complex64)[0].real)
+        assert np.allclose(eig1, eig2, atol=1e-5)
+        assert np.allclose(eig1, eig3, atol=1e-5)
+
     def test_eig1(self, setup):
         # Test of eigenvalues
         R, param = [0.1, 1.5], [1., 0.1]
@@ -524,12 +542,18 @@ class TestHamiltonian(object):
         # Test of eigenvalues vs eigenstate class
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+
         for k in ([0] *3, [0.2] * 3):
             e, v = HS.eigh(k, eigvals_only=False)
             es = HS.eigenstate(k)
             assert np.allclose(e, es.eig)
             assert np.allclose(v, es.state.T)
             assert np.allclose(es.norm(), 1)
+            eig1 = HS.eigh(k)
+            eig2 = np.sort(HS.eig(k).real)
+            eig3 = np.sort(HS.eig(k, eigvals_only=False)[0].real)
+            assert np.allclose(eig1, eig2, atol=1e-5)
+            assert np.allclose(eig1, eig3, atol=1e-5)
 
     def test_gauge_eig(self, setup):
         # Test of eigenvalues
