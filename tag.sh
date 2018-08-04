@@ -121,8 +121,6 @@ git tag -a "v$v" -m "$MSG"
 # Publish on testpypi
 python setup.py sdist bdist_wheel
 twine upload --repository testpypi dist/sisl-$v*.tar.gz
-# The whl will most likely fail...
-twine upload --repository testpypi dist/sisl-$v*.whl
 
 exit 0
 # Revert release tag
