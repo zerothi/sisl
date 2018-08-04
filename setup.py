@@ -59,14 +59,7 @@ for subdir, dirs, files in os.walk('sisl'):
 def readme():
     if not osp.exists('README.md'):
         return ""
-    try:
-        import codecs
-        from markdown import markdown
-        md = codecs.open("README.md", mode="r", encoding="utf-8").read()
-        html = markdown(md, output_format='html4')
-        return html
-    except:
-        return open('README.md').read()
+    return open('README.md', 'r').read()
 
 metadata = dict(
     name='sisl',
@@ -74,6 +67,7 @@ metadata = dict(
     maintainer_email="nickpapior@gmail.com",
     description="Python interface for tight-binding model creation and analysis of DFT output. Input mechanism for large scale transport calculations using NEGF TBtrans (TranSiesta)",
     long_description=readme(),
+    long_description_content_type="text/markdown",
     url="http://github.com/zerothi/sisl",
     download_url="http://github.com/zerothi/sisl/releases",
     license='LGPLv3',
