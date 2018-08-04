@@ -254,5 +254,9 @@ if __name__ == '__main__':
         else:
             metadata['version'] = VERSION + '-dev'
 
+    if 'sdist' in sys.argv:
+        from distutils.command.sdist import sdist
+        metadata['cmdclass'] = {'sdist': sdist}
+
     # Main setup of python modules
     setup(**metadata)
