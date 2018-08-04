@@ -109,6 +109,7 @@ python setup.py sdist bdist_wheel
 twine upload dist/sisl-$v*.tar.gz
 twine upload dist/sisl-$v*.whl
 
+exit 0
 # Revert release tag
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 False:" setup.py
 git add setup.py
