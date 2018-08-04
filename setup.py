@@ -44,7 +44,7 @@ if osp.exists('MANIFEST'):
     os.remove('MANIFEST')
 
 
-install_requires = ['setuptools', 'numpy>=1.9']
+install_requires = ['setuptools', 'numpy>=1.10']
 
 # Create list of all sub-directories with
 #   __init__.py files...
