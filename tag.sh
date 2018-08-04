@@ -104,10 +104,25 @@ git add setup.py
 git commit -s -m "sisl release: $v"
 git tag -a "v$v" -m "$MSG"
 
-# Publish on pypi
+# This requires ~/.pypirc to exist with this content:
+#[distutils]
+#index-servers =
+#   pypi
+#   testpypi
+#
+#[pypi]
+#repository = https://upload.pypi.org/legacy/
+#username = zeroth
+#
+#[testpypi]
+#repository = https://test.pypi.org/legacy/
+#username = zeroth
+
+# Publish on testpypi
 python setup.py sdist bdist_wheel
-twine upload dist/sisl-$v*.tar.gz
-twine upload dist/sisl-$v*.whl
+twine upload --repository testpypi dist/sisl-$v*.tar.gz
+# The whl will most likely fail...
+twine upload --repository testpypi dist/sisl-$v*.whl
 
 exit 0
 # Revert release tag
