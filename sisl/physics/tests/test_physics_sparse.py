@@ -56,7 +56,7 @@ def test_eigh_non_orthogonal():
     assert np.allclose(sp.eigh(), [0.5, 0.5])
 
 
-@pytest.mark.xfail(raises=ValueError)
+@pytest.mark.xfail
 def test_eigsh_orthogonal():
     gr = _get()
     # The most simple setup.
@@ -67,7 +67,7 @@ def test_eigsh_orthogonal():
     sp.eigsh()
 
 
-@pytest.mark.xfail(raises=ValueError)
+@pytest.mark.xfail
 def test_eigsh_non_orthogonal():
     gr = _get()
     # The most simple setup.
