@@ -17,7 +17,7 @@ __all__ = ['fcSileGULP']
 class fcSileGULP(SileGULP):
     """ GULP output file object """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_force_constant(self, **kwargs):
         """ Returns a sparse matrix in coo format which contains the GULP force constant matrix.
 

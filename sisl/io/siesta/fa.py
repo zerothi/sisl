@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import numpy as np
 
-from ..sile import add_sile, Sile_fh_open, sile_raise_write
+from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import *
 
 
@@ -12,7 +12,7 @@ __all__ = ['faSileSiesta']
 class faSileSiesta(SileSiesta):
     """ Forces file """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_force(self):
         """ Reads the forces from the file """
         na = int(self.readline())
@@ -24,7 +24,7 @@ class faSileSiesta(SileSiesta):
         # Units are already eV / Ang
         return f
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_force(self, f, fmt='.9e'):
         """ Write forces to file
 

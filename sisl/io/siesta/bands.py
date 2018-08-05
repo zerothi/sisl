@@ -4,7 +4,7 @@ import numpy as np
 
 from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
-from ..sile import add_sile, Sile_fh_open
+from ..sile import add_sile, sile_fh_open
 from .sile import *
 
 
@@ -14,7 +14,7 @@ __all__ = ['bandsSileSiesta']
 class bandsSileSiesta(SileSiesta):
     """ Bandstructure information """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_data(self):
         """ Returns data associated with the bands file """
         band_lines = False

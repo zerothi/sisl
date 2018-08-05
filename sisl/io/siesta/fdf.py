@@ -102,7 +102,7 @@ class fdfSileSiesta(SileSiesta):
         except:
             pass
 
-    @Sile_fh_open
+    @sile_fh_open()
     def includes(self):
         """ Return a list of all files that are *included* or otherwise necessary for reading the fdf file """
         self._seek()
@@ -135,7 +135,7 @@ class fdfSileSiesta(SileSiesta):
 
         return includes
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _read_label(self, label):
         """ Try and read the first occurence of a key
 
@@ -277,7 +277,7 @@ class fdfSileSiesta(SileSiesta):
 
         return 'n'
 
-    @Sile_fh_open
+    @sile_fh_open()
     def type(self, label):
         """ Return the type of the fdf-keyword
 
@@ -289,7 +289,7 @@ class fdfSileSiesta(SileSiesta):
         self._seek()
         return self._type(self._read_label(label))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def get(self, label, default=None, unit=None, with_unit=False):
         """ Retrieve fdf-keyword from the file
 
@@ -456,7 +456,7 @@ class fdfSileSiesta(SileSiesta):
             s = '{} {}'.format(key, value)
         return s
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
@@ -479,7 +479,7 @@ class fdfSileSiesta(SileSiesta):
         self._write(fmt_str.format(*sc.cell[2, :] * conv))
         self._write('%endblock LatticeVectors\n')
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geom, fmt='.8f', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file

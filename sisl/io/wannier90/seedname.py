@@ -62,7 +62,7 @@ class winSileWannier90(SileWannier90):
         else:
             self._file = self._seed + suffix
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _read_supercell(self):
         """ Deferred routine """
 
@@ -99,7 +99,7 @@ class winSileWannier90(SileWannier90):
 
         return self._read_supercell()
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _read_geometry_centres(self, *args, **kwargs):
         """ Defered routine """
 
@@ -120,7 +120,7 @@ class winSileWannier90(SileWannier90):
 
         return Geometry(xyz[:na, :], atom='H')
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _read_geometry(self, sc, *args, **kwargs):
         """ Defered routine """
 
@@ -176,7 +176,7 @@ class winSileWannier90(SileWannier90):
         geom.set_sc(sc)
         return geom
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _write_supercell(self, sc, fmt='.8f', *args, **kwargs):
         """ Writes the supercel to the contained file """
         # Check that we can write to the file
@@ -196,7 +196,7 @@ class winSileWannier90(SileWannier90):
         self._set_file()
         self._write_supercell(sc, fmt, *args, **kwargs)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _write_geometry(self, geom, fmt='.8f', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
@@ -229,7 +229,7 @@ class winSileWannier90(SileWannier90):
         self._set_file()
         self._write_geometry(geom, fmt, *args, **kwargs)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _read_hamiltonian(self, geom, dtype=np.float64, **kwargs):
         """ Reads a Hamiltonian
 

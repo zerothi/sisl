@@ -13,7 +13,7 @@ __all__ = ['moldenSile']
 class moldenSile(Sile):
     """ Molden file object """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_supercell(self, sc):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
@@ -24,7 +24,7 @@ class moldenSile(Sile):
 
         # Sadly, MOLDEN does not read this information...
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geom, fmt='.8f'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file

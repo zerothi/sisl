@@ -21,7 +21,7 @@ __all__ = ['hamiltonianSile']
 class hamiltonianSile(Sile):
     """ Hamiltonian file object """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self):
         """ Reading a geometry in regular Hamiltonian format """
 
@@ -86,7 +86,7 @@ class hamiltonianSile(Sile):
 
         return geom
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_hamiltonian(self, hermitian=True, dtype=np.float64, **kwargs):
         """ Reads a Hamiltonian (including the geometry)
 
@@ -147,7 +147,7 @@ class hamiltonianSile(Sile):
 
         return Hamiltonian.fromsp(geom, H, S)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geom, fmt='.8f', **kwargs):
         """
         Writes the geometry to the output file
@@ -192,7 +192,7 @@ class hamiltonianSile(Sile):
 
         self._write('end atom\n')
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_hamiltonian(self, ham, hermitian=True, **kwargs):
         """ Writes the Hamiltonian model to the file
 

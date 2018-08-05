@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 from .sile import SileSiesta
-from ..sile import add_sile, Sile_fh_open
+from ..sile import add_sile, sile_fh_open
 
 from sisl import Orbital, AtomicOrbital
 from sisl import PeriodicTable, Atom, Atoms
@@ -16,7 +16,7 @@ __all__ = ['orbindxSileSiesta']
 class orbindxSileSiesta(SileSiesta):
     """ Orbital information file """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_supercell_nsc(self):
         """ Reads the supercell number of supercell information """
         # First line contains no no_s
@@ -41,7 +41,7 @@ class orbindxSileSiesta(SileSiesta):
 
         return arrayi([n * 2 + 1 for n in nsc])
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_basis(self):
         """ Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file
 

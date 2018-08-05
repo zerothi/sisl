@@ -16,7 +16,7 @@ __all__ = ['xvSileSiesta']
 class xvSileSiesta(SileSiesta):
     """ Geometry file """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geom, fmt='.9f', velocity=None):
         """ Writes the geometry to the contained file
 
@@ -58,7 +58,7 @@ class xvSileSiesta(SileSiesta):
             tmp[3:] = velocity[ia, :] / Bohr2Ang
             self._write(fmt_str.format(ips + 1, a.Z, *tmp))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_supercell(self):
         """ Returns `SuperCell` object from the XV file """
 
@@ -69,7 +69,7 @@ class xvSileSiesta(SileSiesta):
 
         return SuperCell(cell)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self, velocity=False, species_Z=False):
         """ Returns a `Geometry` object from the XV file
 
@@ -125,7 +125,7 @@ class xvSileSiesta(SileSiesta):
             return geom, vel
         return geom
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_velocity(self):
         """ Returns an array with the velocities from the XV file
 

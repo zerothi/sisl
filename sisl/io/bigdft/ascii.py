@@ -26,7 +26,7 @@ class asciiSileBigDFT(SileBigDFT):
         """ Initialize for `asciiSileBigDFT` """
         self._comment = ['#', '!']
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self):
         """ Reads a supercell from the Sile """
 
@@ -126,7 +126,7 @@ class asciiSileBigDFT(SileBigDFT):
 
         return Geometry(xyz, spec, sc=sc)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geom, fmt='.8f'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file

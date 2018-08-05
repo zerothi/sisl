@@ -17,7 +17,7 @@ class rhamSileScaleUp(SileScaleUp):
     This file contains the real-space Hamiltonian for a ScaleUp simulation
     """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_hamiltonian(self, geometry=None):
         """ Reads a Hamiltonian from the Sile """
         from sisl import Hamiltonian

@@ -90,7 +90,7 @@ class omxSileOpenMX(SileOpenMX):
         except:
             pass
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _read_key(self, key):
         """ Try and read the first occurence of a key
 
@@ -194,7 +194,7 @@ class omxSileOpenMX(SileOpenMX):
 
         return 'n'
 
-    @Sile_fh_open
+    @sile_fh_open()
     def type(self, label):
         """ Return the type of the fdf-keyword
 
@@ -206,7 +206,7 @@ class omxSileOpenMX(SileOpenMX):
         self._seek()
         return self._type(self._read_label(label))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def get(self, key, default=None):
         """ Retrieve keyword from the file
 

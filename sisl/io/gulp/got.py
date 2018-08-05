@@ -50,7 +50,7 @@ class gotSileGULP(SileGULP):
         """ Overwrites internal key lookup value for the cell vectors """
         self.set_key('sc', key)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_super(self, key=None):
         """ Reads the dimensions of the supercell """
 
@@ -66,7 +66,7 @@ class gotSileGULP(SileGULP):
 
         return np.array(sc[:3], np.int32)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_supercell(self, key=None, **kwargs):
         """ Reads a `SuperCell` and creates the GULP cell """
         self.set_supercell_key(key)
@@ -92,7 +92,7 @@ class gotSileGULP(SileGULP):
         """ Overwrites internal key lookup value for the geometry vectors """
         self.set_key('geometry', key)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self, **kwargs):
         """ Reads a geometry and creates the GULP dynamical geometry """
         # create default supercell
@@ -196,7 +196,7 @@ class gotSileGULP(SileGULP):
 
         return None
 
-    @Sile_fh_open
+    @sile_fh_open()
     def _r_dynamical_matrix_got(self, geom, **kwargs):
         """ In case the dynamical matrix is read from the file """
         # Easier for creation of the sparsity pattern

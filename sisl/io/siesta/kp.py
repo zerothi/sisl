@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import numpy as np
 
-from ..sile import add_sile, Sile_fh_open, sile_raise_write
+from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import *
 
 from sisl.unit.siesta import unit_convert
@@ -16,7 +16,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 class kpSileSiesta(SileSiesta):
     """ k-points file in 1/Bohr units """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_data(self, sc=None):
         """ Returns K-points from the file (note that these are in reciprocal units)
 
@@ -46,7 +46,7 @@ class kpSileSiesta(SileSiesta):
             return k, w
         return np.dot(k, sc.cell.T / (2 * np.pi)), w
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_data(self, k, weight, fmt='.9e'):
         """ Writes K-points to file
 
@@ -68,7 +68,7 @@ class kpSileSiesta(SileSiesta):
         for i, (kk, w) in enumerate(zip(np.atleast_2d(k), weight)):
             self._write(_fmt.format(i + 1, kk[0], kk[1], kk[2], w))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_brillouinzone(self, sc):
         """ Returns K-points from the file (note that these are in reciprocal units)
 
@@ -89,7 +89,7 @@ class kpSileSiesta(SileSiesta):
         bz._w = w
         return bz
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_brillouinzone(self, bz, fmt='.9e'):
         """ Writes BrillouinZone-points to file
 
@@ -112,7 +112,7 @@ class rkpSileSiesta(kpSileSiesta):
     file provides the k-points in the correct format.
     """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_data(self):
         """ Returns K-points from the file (note that these are in reciprocal units)
 
@@ -132,7 +132,7 @@ class rkpSileSiesta(kpSileSiesta):
 
         return k, w
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_brillouinzone(self, sc):
         """ Returns K-points from the file
 
@@ -153,7 +153,7 @@ class rkpSileSiesta(kpSileSiesta):
         bz._w = w
         return bz
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_brillouinzone(self, bz, fmt='.9e'):
         """ Writes BrillouinZone-points to file
 

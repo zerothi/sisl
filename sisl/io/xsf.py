@@ -26,7 +26,7 @@ class xsfSile(Sile):
         """ Step the MD counter """
         self._md_index += 1
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_supercell(self, sc, fmt='.8f'):
         """ Writes the supercell to the contained file
 
@@ -78,7 +78,7 @@ class xsfSile(Sile):
         for i in [0, 1, 2]:
             self._write(fmt_str.format(*convcell[i, :]))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geometry, fmt='.8f', data=None):
         """ Writes the geometry to the contained file
 
@@ -123,7 +123,7 @@ class xsfSile(Sile):
             for ia in geometry:
                 self._write(fmt_str.format(geometry.atom[ia].Z, *geometry.xyz[ia, :]))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self, data=False):
         """ Returns Geometry object from the XSF file
 
@@ -185,7 +185,7 @@ class xsfSile(Sile):
             return geom, dat
         return geom
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_grid(self, *args, **kwargs):
         """ Store grid(s) data to an XSF file
 

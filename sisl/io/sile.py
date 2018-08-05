@@ -31,7 +31,7 @@ __all__ += [
 # Decorators or sile-specific functions
 __all__ += [
     'isfile',
-    'Sile_fh_open',
+    'sile_fh_open',
     'sile_raise_write',
     'sile_raise_read']
 
@@ -460,18 +460,40 @@ class BaseSile(object):
         return ''.join([self.__class__.__name__, '(', self.base_file, ', base=', self._directory, ')'])
 
 
-def Sile_fh_open(func):
+def sile_fh_open(from_closed=False):
     """ Method decorator for objects to directly implement opening of the
     file-handle upon entry (if it isn't already).
+
+    Parameters
+    ----------
+    from_closed : bool, optional
+       ensure the wrapped function *must* open the file (i.e. one cannot open the file prior
+       to calling the method
+
+    Raises
+    ------
+    SileError: if `from_closed` is true and the file is already opened
     """
-    @wraps(func)
-    def pre_open(self, *args, **kwargs):
-        if hasattr(self, "fh"):
-            return func(self, *args, **kwargs)
-        else:
-            with self:
-                return func(self, *args, **kwargs)
-    return pre_open
+    if from_closed:
+        def _wrapper(func):
+            @wraps(func)
+            def pre_open(self, *args, **kwargs):
+                if hasattr(self, "fh"):
+                    raise SileError(str(self) + ' is already open. Calling {} requires that the file is not opened before calling it.'.format(func.__name__))
+                with self:
+                    return func(self, *args, **kwargs)
+            return pre_open
+    else:
+        def _wrapper(func):
+            @wraps(func)
+            def pre_open(self, *args, **kwargs):
+                if hasattr(self, "fh"):
+                    return func(self, *args, **kwargs)
+                else:
+                    with self:
+                        return func(self, *args, **kwargs)
+            return pre_open
+    return _wrapper
 
 
 class Sile(BaseSile):

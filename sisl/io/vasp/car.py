@@ -22,7 +22,7 @@ class carSileVASP(SileVASP):
         """ Setup the `poscarSile` after initialization """
         self._scale = 1.
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geom):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
@@ -59,7 +59,7 @@ class carSileVASP(SileVASP):
         for ia in geom:
             self._write(fmt.format(*geom.xyz[ia, :]))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_supercell(self):
         """ Returns `SuperCell` object from the CONTCAR/POSCAR file """
 
@@ -76,7 +76,7 @@ class carSileVASP(SileVASP):
 
         return SuperCell(cell)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self):
         """ Returns Geometry object from the CONTCAR/POSCAR file
         """

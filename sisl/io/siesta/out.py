@@ -29,7 +29,7 @@ class outSileSiesta(SileSiesta):
     This enables reading the output quantities from the Siesta output.
     """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_species(self):
         """ Reads the species from the top of the output file.
 
@@ -163,7 +163,7 @@ class outSileSiesta(SileSiesta):
 
         return geom
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self, last=True, all=False):
         """ Reads the geometry from the Siesta output file
 
@@ -208,7 +208,7 @@ class outSileSiesta(SileSiesta):
         # Signal not found
         return None
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_force(self, last=True, all=False):
         """ Reads the forces from the Siesta output file
 
@@ -243,7 +243,7 @@ class outSileSiesta(SileSiesta):
             return tmp.extend([F])
         return F
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_moment(self, orbital=False, quantity='S', last=True, all=False):
         """ Reads the moments from the Siesta output file
         These will only be present in case of spin-orbit coupling.

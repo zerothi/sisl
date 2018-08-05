@@ -13,7 +13,7 @@ __all__ = ['orboccSileScaleUp']
 class orboccSileScaleUp(SileScaleUp):
     """ orbocc file object for ScaleUp """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_atom(self):
         """ Reads a the atoms and returns an `Atoms` object """
         self.readline()

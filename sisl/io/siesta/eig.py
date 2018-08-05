@@ -6,7 +6,7 @@ from sisl.physics import get_distribution
 from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.unit.siesta import units
-from ..sile import add_sile, Sile_fh_open, SileError
+from ..sile import add_sile, sile_fh_open, SileError
 from .sile import *
 from .kp import kpSileSiesta
 
@@ -59,7 +59,7 @@ class eigSileSiesta(SileSiesta):
     the used distribution is a Lorentzian.
     """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_data(self):
         r""" Read eigenvalues, as calculated and written by Siesta
 

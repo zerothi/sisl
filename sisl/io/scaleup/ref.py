@@ -20,7 +20,7 @@ Ang2Bohr = unit_convert('Ang', 'Bohr')
 class refSileScaleUp(SileScaleUp):
     """ REF file object for ScaleUp """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_supercell(self):
         """ Reads a supercell from the Sile """
         # 1st line is number of supercells
@@ -32,7 +32,7 @@ class refSileScaleUp(SileScaleUp):
         # so supercells will typically be restricted to [3, 3, 3]
         return SuperCell(cell * Bohr2Ang, nsc=nsc)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self, primary=False, **kwargs):
         """ Reads a geometry from the Sile """
         # 1st line is number of supercells
@@ -88,7 +88,7 @@ class refSileScaleUp(SileScaleUp):
 
         return Geometry(xyz * Bohr2Ang, atoms, sc=sc)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geom, fmt='18.8e'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
@@ -141,7 +141,7 @@ class refSileScaleUp(SileScaleUp):
 # The restart file is _equivalent_ but with displacements
 class restartSileScaleUp(refSileScaleUp):
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self, *args, **kwargs):
         """ Read geometry of the restart file
 

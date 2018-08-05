@@ -17,7 +17,7 @@ Ang2Bohr = unit_convert('Ang', 'Bohr')
 class cubeSile(Sile):
     """ CUBE file object """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_supercell(self, sc, fmt='15.10e', size=None, origo=None,
                         *args, **kwargs):
         """ Writes `SuperCell` object attached to this grid
@@ -56,7 +56,7 @@ class cubeSile(Sile):
 
         self._write('1 0. 0. 0. 0.\n')
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geometry, fmt='15.10e', size=None, origo=None,
             *args, **kwargs):
         """ Writes `Geometry` object attached to this grid
@@ -101,7 +101,7 @@ class cubeSile(Sile):
         for ia in geometry:
             self._write(_fmt.format(geometry.atom[ia].Z, *geometry.xyz[ia, :] * Ang2Bohr))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_grid(self, grid, fmt='.5e', imag=False, *args, **kwargs):
         """ Write `Grid` to the contained file
 
@@ -155,7 +155,7 @@ class cubeSile(Sile):
         # Add a finishing line to ensure empty ending
         self._write('\n')
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_supercell(self, na=False):
         """ Returns `SuperCell` object from the CUBE file
 
@@ -184,7 +184,7 @@ class cubeSile(Sile):
             return lna, SuperCell(cell, origo=origo)
         return SuperCell(cell, origo=origo)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self):
         """ Returns `Geometry` object from the CUBE file """
         na, sc = self.read_supercell(na=True)
@@ -205,7 +205,7 @@ class cubeSile(Sile):
         xyz /= Ang2Bohr
         return Geometry(xyz, atom, sc=sc)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_grid(self, imag=None):
         """ Returns `Grid` object from the CUBE file
 

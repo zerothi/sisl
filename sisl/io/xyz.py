@@ -18,7 +18,7 @@ __all__ = ['xyzSile']
 class xyzSile(Sile):
     """ XYZ file object """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geom, fmt='.8f'):
         """ Writes the geometry to the contained file
 
@@ -48,7 +48,7 @@ class xyzSile(Sile):
         # Add a single new line
         self._write('\n')
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self):
         """ Returns Geometry object from the XYZ file """
 

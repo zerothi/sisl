@@ -72,7 +72,7 @@ class pdbSile(Sile):
 
         return found, l
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_supercell(self, sc):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
@@ -117,7 +117,7 @@ class pdbSile(Sile):
             args = [i + 1, 0, 0, 0, sc.origo[i]]
             self._write(fmt.format(*args))
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_supercell(self):
         """ Read supercell from the contained file """
         f, line = self._step_record('CRYST1')
@@ -152,7 +152,7 @@ class pdbSile(Sile):
 
         return SuperCell(cell, origo=origo)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_geometry(self, geometry):
         """ Writes the geometry to the contained file
 
@@ -199,7 +199,7 @@ class pdbSile(Sile):
         # End a model
         self._w_model(False)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_geometry(self):
         """ Read geometry from the contained file """
 

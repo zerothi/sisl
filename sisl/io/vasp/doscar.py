@@ -13,7 +13,7 @@ __all__ = ['doscarSileVASP']
 class doscarSileVASP(SileVASP):
     """ VASP DOS output """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_data(self):
         r""" Read DOS, as calculated and written by VASP
 

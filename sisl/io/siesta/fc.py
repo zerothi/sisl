@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from ..sile import add_sile, Sile_fh_open
+from ..sile import add_sile, sile_fh_open
 from .sile import *
 from sisl.unit.siesta import unit_convert
 
@@ -13,7 +13,7 @@ __all__ = ['fcSileSiesta']
 class fcSileSiesta(SileSiesta):
     """ Force constant file """
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_force(self, displacement=None, na=None):
         """ Reads all displacement forces by multiplying with the displacement value
 
@@ -58,7 +58,7 @@ class fcSileSiesta(SileSiesta):
         displacement[1::2] *= -1
         return self.read_force_constant(na) * displacement.reshape(1, 3, 2, 1, 1)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_force_constant(self, na=None):
         """ Reads the force-constant stored in the FC file
 

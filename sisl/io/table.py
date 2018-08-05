@@ -5,7 +5,7 @@ import numpy as np
 
 # Import sile objects
 import sisl._array as _a
-from .sile import Sile, add_sile, Sile_fh_open, sile_raise_write
+from .sile import Sile, add_sile, sile_fh_open, sile_raise_write
 
 
 __all__ = ['tableSile', 'TableSile']
@@ -71,7 +71,7 @@ class tableSile(Sile):
         """ Setup the `tableSile` after initialization """
         self._comment = ['#']
 
-    @Sile_fh_open
+    @sile_fh_open()
     def write_data(self, *args, **kwargs):
         """ Write tabular data to the file with optional header.
 
@@ -179,7 +179,7 @@ class tableSile(Sile):
         if len(footer) > 0:
             self._write(newline * 2 + footer)
 
-    @Sile_fh_open
+    @sile_fh_open()
     def read_data(self, *args, **kwargs):
         """ Read tabular data from the file.
 
