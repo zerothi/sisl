@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. G. Calogero, N. Papior, P. Bøggild and M. Brandbyge,
+   *CLarge-scale tight-binding simulations of quantum transport in ballistic graphene*,
+   Journal of Physics: Condensed Matter, `(2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aad6f1>`_
+
 #. Z. Nourbakhsh and R. Asgari,
    *Charge transport in doped zigzag phosphorene nanoribbons*,
    Physical Review B **97**, `235406 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.97.235406>`_
@@ -46,7 +50,5 @@ arXiv publications
 ------------------
 
 These publications are as far as we know in the review process.
-
-#. `Large-scale tight-binding simulations of quantum transport in ballistic graphene <https://arxiv.org/abs/1805.10220>`_
 
 #. `Exfoliation of single layer BiTeI flakes <https://arxiv.org/abs/1709.09732>`_
