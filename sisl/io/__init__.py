@@ -210,6 +210,8 @@ VASP (:mod:`~sisl.io.vasp`)
    poscarSileVASP
    contcarSileVASP
    eigenvalSileVASP
+   chgSileVASP
+   locpotSileVASP
 
 
 .. _toc-io-wannier90:
