@@ -467,19 +467,15 @@ def sile_fh_open(from_closed=False):
     Parameters
     ----------
     from_closed : bool, optional
-       ensure the wrapped function *must* open the file (i.e. one cannot open the file prior
-       to calling the method
-
-    Raises
-    ------
-    SileError: if `from_closed` is true and the file is already opened
+       ensure the wrapped function *must* open the file, otherwise it will seek to 0.
     """
     if from_closed:
         def _wrapper(func):
             @wraps(func)
             def pre_open(self, *args, **kwargs):
                 if hasattr(self, "fh"):
-                    raise SileError(str(self) + ' is already open. Calling {} requires that the file is not opened before calling it.'.format(func.__name__))
+                    self.fh.seek(0)
+                    return func(self, *args, **kwargs)
                 with self:
                     return func(self, *args, **kwargs)
             return pre_open
@@ -489,9 +485,8 @@ def sile_fh_open(from_closed=False):
             def pre_open(self, *args, **kwargs):
                 if hasattr(self, "fh"):
                     return func(self, *args, **kwargs)
-                else:
-                    with self:
-                        return func(self, *args, **kwargs)
+                with self:
+                    return func(self, *args, **kwargs)
             return pre_open
     return _wrapper
 
