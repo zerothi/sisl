@@ -13,7 +13,7 @@ __all__ = ['locpotSileVASP']
 
 
 class locpotSileVASP(carSileVASP):
-    """ LOCPOT file object
+    """ Electrostatic (or total) potential plus geometry
 
     This file-object handles the electrostatic(total) potential from VASP
     """

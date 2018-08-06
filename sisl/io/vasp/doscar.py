@@ -11,7 +11,7 @@ __all__ = ['doscarSileVASP']
 
 
 class doscarSileVASP(SileVASP):
-    """ VASP DOS output """
+    """ Density of states output """
 
     @sile_fh_open()
     def read_data(self):

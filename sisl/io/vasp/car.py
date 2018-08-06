@@ -14,7 +14,8 @@ __all__ = ['carSileVASP', 'poscarSileVASP', 'contcarSileVASP']
 
 
 class carSileVASP(SileVASP):
-    """ CAR file object
+    """ Geometry informaation
+
     This file-object handles both POSCAR and CONTCAR files
     """
 
@@ -142,15 +143,6 @@ class carSileVASP(SileVASP):
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-# Equivalent classes
-class poscarSileVASP(carSileVASP):
-    pass
-
-
-class contcarSileVASP(carSileVASP):
-    pass
-
-
 add_sile('CAR', carSileVASP, gzip=True)
-add_sile('POSCAR', poscarSileVASP, gzip=True)
-add_sile('CONTCAR', contcarSileVASP, gzip=True)
+add_sile('POSCAR', carSileVASP, gzip=True)
+add_sile('CONTCAR', carSileVASP, gzip=True)

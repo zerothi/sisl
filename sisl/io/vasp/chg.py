@@ -12,7 +12,7 @@ __all__ = ['chgSileVASP']
 
 
 class chgSileVASP(carSileVASP):
-    """ CHG/CHGCAR file object
+    """ Charge density plus geometry
 
     This file-object handles the charge-density from VASP
     """
