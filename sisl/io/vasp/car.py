@@ -10,7 +10,7 @@ from ..sile import *
 from sisl.messages import warn
 from sisl import Geometry, PeriodicTable, Atom, SuperCell
 
-__all__ = ['carSileVASP', 'poscarSileVASP', 'contcarSileVASP']
+__all__ = ['carSileVASP']
 
 
 class carSileVASP(SileVASP):
