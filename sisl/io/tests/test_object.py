@@ -150,13 +150,13 @@ class TestObject(object):
     @pytest.mark.parametrize("sile", _fnames('CONTCAR', ['', 'gz']))
     def test_vasp_contcar(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, SileVASP, carSileVASP, contcarSileVASP]:
+        for obj in [BaseSile, Sile, SileVASP, carSileVASP]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('POSCAR', ['', 'gz']))
     def test_vasp_poscar(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, SileVASP, carSileVASP, poscarSileVASP]:
+        for obj in [BaseSile, Sile, SileVASP, carSileVASP]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['xyz', 'XYZ', 'xyz.gz', 'XYZ.gz']))
