@@ -60,7 +60,7 @@ class carSileVASP(SileVASP):
         for ia in geom:
             self._write(fmt.format(*geom.xyz[ia, :]))
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_supercell(self):
         """ Returns `SuperCell` object from the CONTCAR/POSCAR file """
 
@@ -100,7 +100,7 @@ class carSileVASP(SileVASP):
                 "  <Specie-1> <Specie-2>",
                 "  <#Specie-1> <#Specie-2>",
                 "Format not found, the species are defaulted to the first elements of the periodic table."])
-            warn(SileWarning(err))
+            warn(err)
 
         # Create list of atoms to be used subsequently
         atom = [Atom[spec]
