@@ -84,6 +84,19 @@ def test_tbl_automatic_stack(sisl_tmp):
     assert np.allclose(dat, DAT)
 
 
+def test_tbl_accumulate(sisl_tmp):
+    DAT = np.arange(12).reshape(3, 4) + 1
+
+    io = tableSile(sisl_tmp('t.dat', _dir), 'w')
+    with io:
+        io.write_data(header='Hello')
+        for d in DAT.T:
+            io.write_data(d)
+    dat, header = tableSile(io.file, 'r').read_data(ret_header=True)
+    assert np.allclose(dat, DAT)
+    assert header.index('Hello') >= 0
+
+
 @pytest.mark.parametrize("delimiter", ['\t', ' ', ',', ':', 'M'])
 def test_tbl5(sisl_tmp, delimiter):
     dat0 = np.arange(8)
