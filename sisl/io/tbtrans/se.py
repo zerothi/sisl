@@ -53,6 +53,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
     >>> Hdev[dpvt_unsorted, dpvt_unsorted.T] -= se_unsorted[:, :] # doctest: +SKIP
     >>> Hdev[dpvt_sorted, dpvt_sorted.T] -= se_sorted[:, :] # doctest: +SKIP
     """
+    _SE2eV = Ry2eV
 
     def o2p(self, orbital):
         """ Return the pivoting indices (0-based) for the orbitals
@@ -215,16 +216,16 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         re = self._variable('ReSelfEnergy', tree=tree)
         im = self._variable('ImSelfEnergy', tree=tree)
 
-        SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :]) * Ry2eV
+        SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :])
         if sort:
             pvt = self.pivot(elec)
             idx = argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
-            return SE[idx, idx.T]
+            return SE[idx, idx.T] * self._SE2eV
 
-        return SE
+        return SE * self._SE2eV
 
     def scattering_matrix(self, elec, E, k=0, sort=False):
         r""" Return the scattering matrix from the electrode `elec`
@@ -261,9 +262,9 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
-            return G[idx, idx.T]
+            return G[idx, idx.T] * self._SE2eV
 
-        return G
+        return G * self._SE2eV
 
     def self_energy_average(self, elec, E, sort=False):
         """ Return the k-averaged average self-energy from the electrode `elec`
@@ -286,16 +287,16 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         re = self._variable('ReSelfEnergyMean', tree=tree)
         im = self._variable('ImSelfEnergyMean', tree=tree)
 
-        SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :]) * Ry2eV
+        SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :])
         if sort:
             pvt = self.pivot(elec)
             idx = argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
-            return SE[idx, idx.T]
+            return SE[idx, idx.T] * self._SE2eV
 
-        return SE
+        return SE * self._SE2eV
 
 
 add_sile('TBT.SE.nc', tbtsencSileTBtrans)
@@ -307,5 +308,6 @@ add_sile('TBT_DN.SE.nc', tbtsencSileTBtrans)
 class phtsencSileTBtrans(tbtsencSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
+    _SE2eV = Ry2eV ** 2
 
 add_sile('PHT.SE.nc', phtsencSileTBtrans)
