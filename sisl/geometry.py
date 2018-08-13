@@ -2814,9 +2814,9 @@ class Geometry(SuperCellChild):
 
     def toASE(self):
         """ Returns the geometry as an ASE ``Atoms`` object """
-        from ase import Atoms
-        return Atoms(symbols=self.atoms.tolist(), positions=self.xyz.tolist(),
-                     cell=self.cell.tolist())
+        from ase import Atoms as ASE_Atoms
+        return ASE_Atoms(symbols=self.atoms.Z, positions=self.xyz.tolist(),
+                         cell=self.cell.tolist())
 
     @property
     def mass(self):
