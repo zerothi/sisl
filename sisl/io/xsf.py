@@ -290,11 +290,20 @@ class xsfSile(Sile):
         # We will add the vector data
         class VectorNoScale(argparse.Action):
 
-            def __call__(self, parser, ns, values, option_string=None):
+            def __call__(self, parser, ns, no_value, option_string=None):
                 setattr(ns, '_vector_scale', False)
-        p.add_argument('--no-scale-vector', '-nsv', nargs=0,
+        p.add_argument('--no-vector-scale', '-nsv', nargs=0,
                        action=VectorNoScale,
-                       help='''The vector components are kept as-is and are not scaled (the default is scaling largest number to 1)''')
+                       help='''Do not modify vector components (same as --vector-scale 1.)''')
+
+        # We will add the vector data
+        class VectorScale(argparse.Action):
+
+            def __call__(self, parser, ns, value, option_string=None):
+                setattr(ns, '_vector_scale', float(value))
+        p.add_argument('--vector-scale', '-sv', metavar='SCALE',
+                       action=VectorScale,
+                       help='''Scale vector components by this factor.''')
 
         # We will add the vector data
         class Vectors(argparse.Action):
@@ -345,26 +354,9 @@ If the current input file contains the vectors no second argument is necessary, 
 the file containing the data is required as the last input.
 
 Any arguments inbetween are passed to the `read_data` function (in order).
+
+By default the vectors scaled by 1 / max(|V|) such that the longest vector has length 1.
                        ''')
-
-        class Out(argparse.Action):
-
-            def __call__(self, parser, ns, value, option_string=None):
-                if value is None:
-                    return
-                if len(value) == 0:
-                    return
-                # If the vector, exists, we should write it
-                if hasattr(ns, '_vector'):
-                    v = getattr(ns, '_vector')
-                    if getattr(ns, '_vector_scale', True):
-                        v /= np.max((v[:, 0]**2 + v[:, 1]**2 + v[:, 2]**2) ** .5)
-                    ns._geometry.write(value[0], data=v)
-                else:
-                    ns._geometry.write(value[0])
-                # Issue to the namespace that the geometry has been written, at least once.
-                ns._stored_geometry = True
-                setattr(ns, '_vector_scale', True)
 
         # currently adding an argument that is already there does not remove the
         # old one...
