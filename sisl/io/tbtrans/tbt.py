@@ -1950,7 +1950,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 try:
                     bloch = self._value('bloch', elec)
                 except:
-                    bloch = [0] * 3
+                    bloch = [1] * 3
                 prnt()
                 prnt("Electrode: {}".format(elec))
                 prnt("  - number of BTD blocks: {}".format(self.n_btd(elec)))
