@@ -1896,16 +1896,17 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Create a StringIO object to retain the information
         out = StringIO()
         # Create wrapper function
-        def prnt(*args, **kwargs):
-            print(*args, file=out, **kwargs)
+        def prnt(*args, option=None):
+            if option is None:
+                print(*args, file=out)
+            else:
+                print('{:60s}[{}]'.format(' '.join(args),', '.join(option)), file=out)
 
         def truefalse(bol, string, fdf=None):
             if bol:
                 prnt("  + " + string + ": true")
-            elif fdf is None:
-                prnt("  - " + string + ": false")
             else:
-                prnt("  - " + string + ": false\t\t["+', '.join(fdf) + ']')
+                prnt("  - " + string + ": false", option=fdf)
 
         # Retrieve the device atoms
         prnt("Device information:")
@@ -1936,9 +1937,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         prnt("     " + list2str(self.a_dev + 1))
         prnt("  - number of BTD blocks: {}".format(self.n_btd()))
         truefalse('DOS' in self.variables, "DOS Green function", ['TBT.DOS.Gf'])
-        truefalse('DM' in self.variables, "Density matrix Green function", ['TBT.DOS.Gf', 'TBT.DM.Gf'])
-        truefalse('COOP' in self.variables, "COOP Green function", ['TBT.DOS.Gf', 'TBT.COOP.Gf'])
-        truefalse('COHP' in self.variables, "COHP Green function", ['TBT.DOS.Gf', 'TBT.COHP.Gf'])
+        truefalse('DM' in self.variables, "Density matrix Green function", ['TBT.DM.Gf'])
+        truefalse('COOP' in self.variables, "COOP Green function", ['TBT.COOP.Gf'])
+        truefalse('COHP' in self.variables, "COHP Green function", ['TBT.COHP.Gf'])
         if elec is None:
             elecs = self.elecs
         else:
@@ -1961,10 +1962,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
                 truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
                 truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
-                truefalse('J' in gelec.variables, "orbital-current", ['TBT.DOS.A', 'TBT.Current.Orb'])
-                truefalse('DM' in gelec.variables, "Density matrix spectral", ['TBT.DOS.A', 'TBT.DM.A'])
-                truefalse('COOP' in gelec.variables, "COOP spectral", ['TBT.DOS.A', 'TBT.COOP.A'])
-                truefalse('COHP' in gelec.variables, "COHP spectral", ['TBT.DOS.A', 'TBT.COHP.A'])
+                truefalse('J' in gelec.variables, "orbital-current", ['TBT.Current.Orb'])
+                truefalse('DM' in gelec.variables, "Density matrix spectral", ['TBT.DM.A'])
+                truefalse('COOP' in gelec.variables, "COOP spectral", ['TBT.COOP.A'])
+                truefalse('COHP' in gelec.variables, "COHP spectral", ['TBT.COHP.A'])
                 truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
                 truefalse(elec + '.T' in gelec.variables, "transmission out", ['TBT.T.Out'])
                 truefalse(elec + '.C' in gelec.variables, "transmission out correction", ['TBT.T.Out'])
