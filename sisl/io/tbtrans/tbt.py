@@ -1900,7 +1900,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             if option is None:
                 print(*args, file=out)
             else:
-                print('{:60s}[{}]'.format(' '.join(args),', '.join(option)), file=out)
+                print('{:60s}[{}]'.format(' '.join(args), ', '.join(option)), file=out)
 
         def truefalse(bol, string, fdf=None):
             if bol:
