@@ -392,10 +392,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        atom : array_like of int or bool, optional
+        atom : array_like of int, optional
            only return for a given set of atoms (default to all).
            *NOT* allowed with `orbital` keyword
-        orbital : array_like of int or bool, optional
+        orbital : array_like of int, optional
            only return for a given set of orbitals (default to all)
            *NOT* allowed with `atom` keyword
         sum : bool, optional
@@ -1896,7 +1896,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Create a StringIO object to retain the information
         out = StringIO()
         # Create wrapper function
-        def prnt(*args, option=None):
+        def prnt(*args, **kwargs):
+            option = kwargs.pop('option', None)
             if option is None:
                 print(*args, file=out)
             else:

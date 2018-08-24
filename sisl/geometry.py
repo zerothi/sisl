@@ -65,7 +65,7 @@ class Geometry(SuperCellChild):
     na
     xyz : ndarray
         atomic coordinates
-    atom
+    atoms
     orbitals
     sc : SuperCell
         the supercell describing the periodicity of the
