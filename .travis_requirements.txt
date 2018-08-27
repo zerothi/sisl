@@ -1,6 +1,6 @@
 six
 setuptools
 netCDF4
-numpy
+numpy>=1.10*
 scipy
 pyparsing
