@@ -12,17 +12,12 @@ _dir = 'sisl/io/siesta'
 
 
 def test_si_pdos_kgrid_dm(sisl_files):
+    fdf = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'), base=sisl_files(_dir))
+
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.DM'))
-    DM1 = si.read_density_matrix()
 
-    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'), base=sisl_files(_dir))
-    DM2 = si.read_density_matrix(order=['DM'])
+    DM1 = si.read_density_matrix(geometry=fdf.read_geometry())
+    DM2 = fdf.read_density_matrix(order=['DM'])
 
-    # Force the shapes to align
-    # This is because reading from fdf tries to read the correct
-    # supercell from elsewere.
-    csr1 = DM1._csr
-    csr2 = DM2._csr
-    csr1._shape = csr2._shape
-    assert csr1.spsame(csr2)
-    assert np.allclose(csr1._D, csr2._D)
+    assert DM1._csr.spsame(DM2._csr)
+    assert np.allclose(DM1._csr._D, DM2._csr._D)
