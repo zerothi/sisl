@@ -1,6 +1,6 @@
 six
 setuptools
-# netCDF4 has numpy as dependency...
 netCDF4
+numpy
 scipy
 pyparsing
