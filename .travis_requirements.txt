@@ -1,3 +1,6 @@
-tqdm
-xarray
-matplotlib
+six
+setuptools
+numpy=1.10*
+scipy
+netCDF4
+pyparsing
