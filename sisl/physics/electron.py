@@ -1244,8 +1244,8 @@ class _electron_State(object):
         # TODO, perhaps check that it is correct... and fix multiple transposes
         if sum:
             if self.__is_nc():
-                return (conj(self.state) * S.dot(self.state.T).T).real.reshape(len(self), -1, 2).sum(-1).sum(0)
-            return (conj(self.state) * S.dot(self.state.T).T).real.sum(0)
+                return (conj(self.state) * S.dot(self.state.T).T).real.reshape(len(self), -1, 2).sum(-1).sum(1)
+            return (conj(self.state) * S.dot(self.state.T).T).real.sum(1)
         if self.__is_nc():
             return (conj(self.state) * S.dot(self.state.T).T).real.reshape(len(self), -1, 2).sum(-1)
         return (conj(self.state) * S.dot(self.state.T).T).real
