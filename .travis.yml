@@ -64,6 +64,8 @@ before_install:
     else
        conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION --file .travis_requirements.txt
     fi
+  # Hardwire that setup.py allows numpy < 1.10, on travis there are some problems with numpy versions
+  - sed -i -e 's:numpy>=1.10:numpy:' setup.py
   - source activate test-environment
   - | # In case we have optional dependencies, also download the sisl-files submodule to test large files
     if [[ ${OPTIONAL_DEPENDENCIES:-false} == true ]]; then
