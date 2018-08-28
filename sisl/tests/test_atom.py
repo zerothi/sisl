@@ -163,6 +163,39 @@ def test_charge():
     assert a.q0.sum() == pytest.approx(2)
 
 
+def test_atoms_set():
+    a1 = Atom(1)
+    a2 = Atom(2)
+    a3 = Atom(3)
+    a = Atoms(a1, 3)
+    assert len(a) == 3
+    assert len(a.atom) == 1
+    a[1] = a2
+    assert len(a) == 3
+    assert len(a.atom) == 2
+
+    # Add the atom, but do not specify any
+    # atoms to have the species
+    a[[]] = a3
+    assert len(a) == 3
+    assert len(a.atom) == 3
+    for atom in a:
+        assert atom in [a1, a2]
+        assert atom != a3
+    found = 0
+    for atom, i_s in a.iter(True):
+        if atom == a1:
+            assert len(i_s) == 2
+            found += 1
+        elif atom == a2:
+            assert len(i_s) == 1
+            found += 1
+        elif atom == a3:
+            assert len(i_s) == 0
+            found += 1
+    assert found == 3
+
+
 def test_charge_diff():
     o1 = Orbital(1., 1.)
     o2 = Orbital(1., .5)

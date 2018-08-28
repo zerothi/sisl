@@ -1652,7 +1652,7 @@ class Atoms(object):
 
         if len(key) == 0:
             if value not in self:
-                self._atom.append(atom)
+                self._atom.append(value)
             return
 
         # Create new atoms object to iterate
