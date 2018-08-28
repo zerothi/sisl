@@ -5,7 +5,8 @@ Physical constants (:mod:`sisl.constant`)
 
 .. module:: sisl.constant
 
-Module containing a pre-set set of physical constants.
+Module containing a pre-set set of physical constants. The SI units are following the *new* convention
+that takes effect on 20 May 2019.
 
 The currently stored constants are (all are given in SI units):
 
@@ -100,9 +101,9 @@ __all__ += ['c', 'h', 'hbar', 'm_e', 'm_p', 'G']
 #: Speed of light [m/s]
 c = PhysicalConstant(299792458, 'm/s')
 #: Plancks constant [J s]
-h = PhysicalConstant(6.62607004081e-34, 'J s')
+h = PhysicalConstant(6.62607015e-34, 'J s')
 #: Reduced Plancks constant [J s]
-hbar = PhysicalConstant(1.05457180013e-34, 'J s')
+hbar = PhysicalConstant(1.0545718176461565e-34, 'J s')
 #: Mass of electron [kg]
 m_e = PhysicalConstant(9.1093835611e-31, 'kg')
 #: Mass of proton [kg]

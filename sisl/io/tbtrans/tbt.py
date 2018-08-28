@@ -21,10 +21,11 @@ from sisl.utils import *
 import sisl._array as _a
 
 from sisl import Geometry, Atoms
+from sisl import units, constant
 from sisl.messages import warn, info, SislError
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
-from sisl.physics.distribution import fermi_dirac
+from sisl.physics.distribution import get_distribution, fermi_dirac
 from sisl.physics.densitymatrix import DensityMatrix
 
 
@@ -714,12 +715,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                  "Increase the calculated energy-range.\n" + s)
 
         I = _a.sumd(T * dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to)))
-        return I * 1.6021766208e-19 / 4.135667662e-15
+        return I * units('eV', 'J') / constant.h('eV s')
 
     def shot_noise(self, elec_from=0, elec_to=1, classical=False, kavg=True):
-        r""" Shot-noise term `from` to `to` using the k-weights and energy spacings in the file.
+        r""" Shot-noise term `from` to `to` using the k-weights
 
-        Calculates the shot-noise term according to `classical` (also known as the Poisson value). If `classical` is True the shot-noise calculated is:
+        Calculates the shot-noise term according to `classical` (also known as the Poisson value).
+        If `classical` is True the shot-noise calculated is:
 
         .. math::
            S_P(E, V) = \frac{2e^2}{h}|V|\sum_n T_n(E) = \frac{2e^3}{h}|V|T(E)
@@ -748,25 +750,87 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         See Also
         --------
         fano : the ratio between the quantum mechanial and the classical shot noise.
+        noise_power : temperature dependent noise power
         """
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
         mu_f = self.chemical_potential(elec_from)
         mu_t = self.chemical_potential(elec_to)
         # The applied bias between the two electrodes
-        V = abs(mu_f - mu_t)
+        eV = abs(mu_f - mu_t)
         # Pre-factor
-        e2OVERhV = 2 * 1.6021766208e-19 ** 2 / 4.135667662e-15 * V
+        # 2 e ^ 3 V / h
+        # Note that h in eV units will cancel the units in the applied bias
+        _noise_const = 2 * units('eV', 'J') ** 2 * (eV / constant.h('eV s'))
         if classical:
-            # Calculate the Poisson shot-noise
-            return e2OVERhV * self.transmission(elec_from, elec_to, kavg=kavg)
+            # Calculate the Poisson shot-noise (equal to 2eI in the low T and zero kT limit)
+            return _noise_const * self.transmission(elec_from, elec_to, kavg=kavg)
         else:
             T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
             # Check that at least one value is below the 0.001 limit
             if np.any(np.logical_and.reduce(T > 0.001, axis=-1)):
                 info(self.__class__.__name__ + ".shot_noise does possibly not have all relevant transmission eigenvalues in the "
                      "calculation. For some energy values all transmission eigenvalues are above 0.001!")
-            return e2OVERhV * (T * (1 - T)).sum(-1)
+            return _noise_const * (T * (1 - T)).sum(-1)
+
+    def noise_power(self, elec_from=0, elec_to=1, kavg=True):
+        r""" Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)
+
+        Calculates the noise power as
+
+        .. math::
+           S(V) = \frac{2e^2}{h}\sum_n \int\mathrm d E
+                  \big\{T_n(E)[f_L(1-f_L)+f_R(1-f_R)] +
+                        T_n(E)[1 - T_n(E)](f_L - f_R)^2\big\}
+
+        Where :math:`f_i` are the Fermi-Dirac distributions for the electrodes.
+
+        Raises
+        ------
+        SislInfo: If *all* of the calculated :math:`T_n(E)` values in the file are above 0.001.
+
+        Parameters
+        ----------
+        elec_from: str, int, optional
+           the originating electrode
+        elec_to: str, int, optional
+           the absorbing electrode (different from `elec_from`)
+        kavg: bool, int or array_like, optional
+           whether the returned noise power is k-averaged, an explicit k-point
+           or a selection of k-points
+
+        See Also
+        --------
+        fano : the ratio between the quantum mechanial and the classical shot noise.
+        shot_noise : shot-noise term (zero temperature limit)
+        """
+        elec_from = self._elec(elec_from)
+        elec_to = self._elec(elec_to)
+        kT_f = self.kT(elec_from)
+        kT_t = self.kT(elec_to)
+        mu_f = self.chemical_potential(elec_from)
+        mu_t = self.chemical_potential(elec_to)
+        fd_f = get_distribution('fd', kT_f, mu_f)(self.E)
+        fd_t = get_distribution('fd', kT_t, mu_t)(self.E)
+
+        # Get the energy spacing (probably we should add a routine)
+        dE = self.E[1] - self.E[0]
+
+        # Pre-factor
+        # 2 e ^ 2 / h
+        # Note that h in eV units will cancel the units in the dE integration
+        _noise_const = 2 * units('eV', 'J') ** 2 / constant.h('eV s')
+        T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
+        # Check that at least one value is below the 0.001 limit
+        if np.any(np.logical_and.reduce(T > 0.001, axis=-1)):
+            info(self.__class__.__name__ + ".shot_noise does possibly not have all relevant transmission eigenvalues in the "
+                 "calculation. For some energy values all transmission eigenvalues are above 0.001!")
+
+        # Separate the calculation into two terms (see Ya.M. Blanter, M. Buttiker, Physics Reports 336 2000)
+        eq = (T.sum(-1) * dE * (fd_f * (1 - fd_f) + fd_t * (1 - fd_t))).sum()
+        neq = ((T * (1 - T)).sum(-1) * dE * (fd_f - fd_t) ** 2).sum()
+
+        return _noise_const * (eq + neq)
 
     def fano(self, elec_from=0, elec_to=1, kavg=True):
         r""" The Fano-factor for the calculation (requires calculated transmission eigenvalues)
@@ -788,13 +852,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         See Also
         --------
-        shot_noise : routine to calculate the shot-noise
+        shot_noise : shot-noise term (zero temperature limit)
+        noise_power : temperature dependent noise power
         """
         TE = self.transmission_eig(elec_from, elec_to, kavg=kavg)
         if np.any(np.logical_and.reduce(TE > 0.001, axis=-1)):
             info(self.__class__.__name__ + ".fano does possibly not have all relevant transmission eigenvalues in the "
                  "calculation. For some energy values all transmission eigenvalues are above 0.001!")
-        return (TE * (1 - TE)).sum(-1) / self.transmission(elec_from, elec_to, kavg=kavg)
+        return (TE * (1 - TE)).sum(-1) / TE.sum(-1)
 
     def _sparse_data(self, data, elec, E, kavg=True, isc=None):
         """ Internal routine for retrieving sparse data (orbital current, COOP) """

@@ -188,6 +188,8 @@ def test_1_graphene_all_content(sisl_files):
     # we can't correctly calculate the fano factors
     assert np.all(tbt.fano(left, right) > 0.)
     assert np.all(tbt.fano(right, left) > 0.)
+    # Neither should the noise_power exist
+    assert tbt.noise_power(right, left) == pytest.approx(0.)
 
     # Check specific DOS queries
     DOS = tbt.DOS
