@@ -473,17 +473,24 @@ class gridSileSiesta(SileBinSiesta):
 
 
 class _gfSileSiesta(SileBinSiesta):
-    """ Surface Green function file containing, Hamiltonian, overlap matrix and self-energies """
+    """ Surface Green function file containing, Hamiltonian, overlap matrix and self-energies
+
+    Do not mix read and write statements when using this code.
+    """
 
     def _setup(self, *args, **kwargs):
         """ Simple setup that needs to be overwritten """
         self._iu = -1
 
     def _is_open(self):
-        return self._iu > 0
+        return self._iu != -1
 
-    def _open_gf(self):
-        self._iu = _siesta.open_gf(self.file)
+    def _open_gf(self, mode):
+        if mode == 'r':
+            self._iu = _siesta.read_open_gf(self.file)
+        elif mode == 'w':
+            self._iu = _siesta.write_open_gf(self.file)
+
         # Counters to keep track
         self._ie = 0
         self._ik = 0
@@ -493,6 +500,9 @@ class _gfSileSiesta(SileBinSiesta):
             return
         # Close it
         _siesta.close_gf(self._iu)
+        self._iu = -1
+
+        # Clean variables
         del self._ie
         del self._ik
         try:
@@ -500,6 +510,64 @@ class _gfSileSiesta(SileBinSiesta):
             del self._k
         except:
             pass
+        try:
+            del self._no_u
+        except:
+            pass
+
+    def read_header(self):
+        """ Read the header of the file and open it for reading subsequently
+
+        NOTES: this method may change in the future
+
+        Returns
+        -------
+        no_u : size of the matrices returned
+        k : k points in the GF file
+        E : energy points in the GF file
+        """
+        # Ensure it is open (in read-mode)
+        self._close_gf()
+        self._open_gf('r')
+        no_u, nkpt, NE = _siesta.read_gf_sizes(self._iu)
+
+        # We need to re-read (because of k-points)
+        self._close_gf()
+        self._open_gf('r')
+
+        k, E = _siesta.read_gf_header(self._iu, nkpt, NE)
+        k = k.T
+        self._no_u = no_u
+        self._E = E
+        self._k = k
+        return no_u, k, E / eV2Ry
+
+    def read_hamiltonian(self):
+        """ Return current Hamiltonian and overlap matrix from the GF file
+
+        Returns
+        -------
+        complex128 : Hamiltonian matrix
+        complex128 : Overlap matrix
+        """
+        # Step k
+        self._ik += 1
+        self._ie = 1
+
+        H, S = _siesta.read_gf_hs(self._iu, self._no_u)
+        return H / eV2Ry, S
+
+    def read_self_energy(self):
+        """ Return current self-energy
+
+        Returns
+        -------
+        complex128 : Self-energy matrix
+        """
+        # Step E
+        SE = _siesta.read_gf_se(self._iu, self._no_u, self._ie)
+        self._ie += 1
+        return SE / eV2Ry
 
     def write_header(self, E, bz, obj, mu=0.):
         """ Write to the binary file the header of the file
@@ -542,9 +610,9 @@ class _gfSileSiesta(SileBinSiesta):
         self._E = np.copy(E) * eV2Ry
         self._k = np.copy(k)
 
-        # Ensure it is open
+        # Ensure it is open (in write mode)
         self._close_gf()
-        self._open_gf()
+        self._open_gf('w')
 
         # Now write to it...
         _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,

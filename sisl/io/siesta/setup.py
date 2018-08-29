@@ -23,6 +23,7 @@ def configuration(parent_package='', top_path=None):
         'write_tshs.f90',
         'read_grid.f90',
         'write_grid.f90',
+        'read_gf.f90',
         'write_gf.f90',
     ]
     # Only install the extension if not on READTHEDOCS

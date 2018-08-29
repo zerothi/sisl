@@ -1,4 +1,4 @@
-subroutine open_gf( fname, iu )
+subroutine write_open_gf( fname, iu )
 
   implicit none
 
@@ -8,16 +8,16 @@ subroutine open_gf( fname, iu )
 
   ! Define f2py intents
 !f2py intent(in) :: fname
-!f2py intent(out) :: iu
+!f2py intent(out) :: iu, test
   
   ! Open file
   call free_unit(iu)
   open( iu, file=trim(fname), form='unformatted', status='unknown', action='write' )
   
-end subroutine open_gf
+end subroutine write_open_gf
 
 subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
-     xa_used, lasto_used, Bloch, pre_expand, mu, nkpt, kpt, kw, NE, E )
+    xa_used, lasto_used, Bloch, pre_expand, mu, nkpt, kpt, kw, NE, E )
   
   implicit none
 
@@ -83,7 +83,7 @@ subroutine write_gf_hs( iu, ik, iE, E, no_u, H, S)
 !f2py intent(in) :: ik, iE, E
 !f2py intent(in) :: no_u
 !f2py intent(in) :: H, S
-
+  
   write(iu) ik, iE, E
   write(iu) H
   write(iu) S
@@ -112,7 +112,7 @@ subroutine write_gf_se( iu, ik, iE, E, no_u, SE )
 !f2py intent(in) :: SE
 
   if ( iE > 1 ) then
-     write(iu) ik, iE, E
+    write(iu) ik, iE, E
   end if
   write(iu) SE
 
