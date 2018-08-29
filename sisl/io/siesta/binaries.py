@@ -85,7 +85,12 @@ class tshsSileSiesta(SileBinSiesta):
 
     def read_hamiltonian(self, **kwargs):
         """ Returns the electronic structure from the siesta.TSHS file """
-        geom = self.read_geometry()
+        tshs_g = self.read_geometry()
+        geom = kwargs.get('geometry', tshs_g)
+        if geom.na != tshs_g.na or geom.no != tshs_g.no:
+            raise SileError(self.__class__.__name__ + '.read_hamiltonian could not use the '
+                            'passed geometry as the number of atoms or orbitals is inconsistent '
+                            'with TSHS file.')
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
@@ -124,14 +129,19 @@ class tshsSileSiesta(SileBinSiesta):
         if np.any(idx > no):
             print('Number of orbitals: {}'.format(no))
             print(idx)
-            raise SileError(self.__class__.__name__ + '.read_hamiltonian could not assert the '
-                            'supercell connections in the primary unit-cell.')
+            raise SileError(self.__class__.__name__ + '.read_hamiltonian could not assert '
+                            'the supercell connections in the primary unit-cell.')
 
         return H
 
     def read_overlap(self, **kwargs):
         """ Returns the overlap matrix from the siesta.TSHS file """
-        geom = self.read_geometry()
+        tshs_g = self.read_geometry()
+        geom = kwargs.get('geometry', tshs_g)
+        if geom.na != tshs_g.na or geom.no != tshs_g.no:
+            raise SileError(self.__class__.__name__ + '.read_overlap could not use the '
+                            'passed geometry as the number of atoms or orbitals is '
+                            'inconsistent with TSHS file.')
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
@@ -163,7 +173,8 @@ class tshsSileSiesta(SileBinSiesta):
         H.finalize()
         csr = H._csr.copy()
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_hamiltonian cannot write a zero element sparse matrix!')
+            raise SileError(str(self) + '.write_hamiltonian cannot write '
+                            'a zero element sparse matrix!')
 
         # Convert to siesta CSR
         _csr_to_siesta(H.geometry, csr)
@@ -181,8 +192,8 @@ class tshsSileSiesta(SileBinSiesta):
             s.align(csr)
             s.finalize()
             if s.nnz != len(h):
-                raise SislError("The diagonal elements of your orthogonal Hamiltonian have not been defined, "
-                                "this is a requirement.")
+                raise SislError('The diagonal elements of your orthogonal Hamiltonian '
+                                'have not been defined, this is a requirement.')
             s = (s._D[:, 0]).astype(np.float64, 'C', copy=False)
         else:
             h = (csr._D[:, :H.S_idx] * eV2Ry).astype(np.float64, 'C', copy=False)
@@ -227,8 +238,9 @@ class dmSileSiesta(SileBinSiesta):
             geom.set_nsc(nsc)
 
         if geom.no != no:
-            raise ValueError("Reading DM files requires the input geometry to have the "
-                             "correct number of orbitals.")
+            raise SileError(self.__class__.__name__ + '.read_density_matrix could not use the '
+                            'passed geometry as the number of atoms or orbitals is '
+                            'inconsistent with DM file.')
 
         # Create the density matrix container
         DM = DensityMatrix(geom, spin, nnzpr=1, dtype=np.float64, orthogonal=False)
@@ -258,7 +270,8 @@ class dmSileSiesta(SileBinSiesta):
         DM.finalize()
         csr = DM._csr.copy()
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_density_matrix cannot write a zero element sparse matrix!')
+            raise SileError(str(self) + '.write_density_matrix cannot write '
+                            'a zero element sparse matrix!')
 
         _csr_to_siesta(DM.geometry, csr)
         csr.finalize()
@@ -301,8 +314,9 @@ class tsdeSileSiesta(dmSileSiesta):
             geom.set_nsc(nsc)
 
         if geom.no != no:
-            raise ValueError("Reading EDM files requires the input geometry to have the "
-                             "correct number of orbitals.")
+            raise SileError(self.__class__.__name__ + '.read_energy_density_matrix could '
+                            'not use the passed geometry as the number of atoms or orbitals '
+                            'is inconsistent with DM file.')
 
         # Create the energy density matrix container
         EDM = EnergyDensityMatrix(geom, spin, nnzpr=1, dtype=np.float64, orthogonal=False)
@@ -323,7 +337,8 @@ class tsdeSileSiesta(dmSileSiesta):
         if nsc[0] != 0 or geom.no_s >= col.max():
             _csr_from_siesta(geom, EDM._csr)
         else:
-            warn(str(self) + '.read_energy_density_matrix may result in a wrong sparse pattern!')
+            warn(str(self) + '.read_energy_density_matrix may '
+                 'result in a wrong sparse pattern!')
 
         return EDM
 
@@ -349,11 +364,12 @@ class hsxSileSiesta(SileBinSiesta):
                 geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
             else:
                 # Try to figure out the supercell
-                warn(self.__class__.__name__ + ".read_hamiltonian (currently we can not calculate atomic positions from"
-                     " xij array)")
+                warn(self.__class__.__name__ + '.read_hamiltonian '
+                     '(currently we can not calculate atomic positions from xij array)')
         if geom.no != no:
-            raise ValueError("Reading HSX files requires the input geometry to have the "
-                             "correct number of orbitals {} / {}.".format(no, geom.no))
+            raise SileError(self.__class__.__name__ + '.read_hamiltonian could not use the '
+                            'passed geometry as the number of atoms or orbitals is '
+                            'inconsistent with HSX file.')
 
         # Create the Hamiltonian container
         H = Hamiltonian(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
@@ -385,8 +401,9 @@ class hsxSileSiesta(SileBinSiesta):
         if geom is None:
             warn(self.__class__.__name__ + ".read_overlap requires input geometry to assign S")
         if geom.no != no:
-            raise ValueError("Reading HSX files requires the input geometry to have the "
-                             "correct number of orbitals {} / {}.".format(no, geom.no))
+            raise SileError(self.__class__.__name__ + '.read_overlap could not use the '
+                            'passed geometry as the number of atoms or orbitals is '
+                            'inconsistent with HSX file.')
 
         # Create the Hamiltonian container
         S = SparseOrbitalBZ(geom, nnzpr=1)
