@@ -40,7 +40,11 @@ class TestSparseCSR(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_fail_init1(self):
-        s = SparseCSR((10, 100, 20, 20), dtype=np.int32)
+        SparseCSR((10, 100, 20, 20), dtype=np.int32)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_fail_init_shape0(self):
+        SparseCSR((0, 10, 10), dtype=np.int32)
 
     @pytest.mark.xfail(raises=ValueError)
     def test_fail_init2(self):

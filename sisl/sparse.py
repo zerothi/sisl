@@ -196,8 +196,10 @@ class SparseCSR(object):
         if dtype is None:
             dtype = np.float64
 
-        # unpack size
+        # unpack size and check the sizes are "physical"
         M, N, K = arg1
+        if M <= 0 or N <= 0 or K <= 0:
+            raise ValueError("invalid size of sparse matrix, one of the dimensions is zero: M={}, N={}, K={}".format(M, N, K))
 
         # Store shape
         self._shape = (M, N, K)
