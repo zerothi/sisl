@@ -5,6 +5,7 @@ import pytest
 import numpy as np
 
 from sisl.io import *
+from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
 from sisl import Geometry, Grid, Hamiltonian
 from sisl import DensityMatrix, EnergyDensityMatrix
@@ -218,6 +219,9 @@ class TestObject(object):
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_hamiltonian'], ['write_hamiltonian']))
     def test_read_write_hamiltonian(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, _gfSileSiesta):
+            return
+
         G = sisl_system.g.rotatec(-30)
         H = Hamiltonian(G)
         H.construct([[0.1, 1.45], [0.1, -2.7]])
@@ -281,6 +285,9 @@ class TestObject(object):
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_hamiltonian'], ['write_hamiltonian']))
     def test_read_write_hamiltonian_overlap(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, _gfSileSiesta):
+            return
+
         G = sisl_system.g.rotatec(-30)
         H = Hamiltonian(G, orthogonal=False)
         H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])

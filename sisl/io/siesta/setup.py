@@ -12,20 +12,13 @@ def configuration(parent_package='', top_path=None):
     all_info = get_info('ALL')
     sources = [
         'free_unit.f90',
-        'siesta_sc_off.f90',
-        'write_hsx.f90',
-        'read_hsx.f90',
-        'read_dm.f90',
-        'write_dm.f90',
-        'read_hs.f90',
-        'read_tshs.f90',
-        'read_tsde.f90',
-        'write_tshs.f90',
-        'read_grid.f90',
-        'write_grid.f90',
-        'read_gf.f90',
-        'write_gf.f90',
+        'siesta_sc_off.f90'
     ]
+    for f in ['hsx', 'dm', 'tshs', 'grid', 'gf']:
+        sources.extend([f + '_read.f90', f + '_write.f90'])
+    for f in ['hs', 'tsde']:
+        sources.append(f + '_read.f90')
+
     # Only install the extension if not on READTHEDOCS
     if os.environ.get('READTHEDOCS', 'false').lower() != 'true':
         config.add_extension('_siesta',
