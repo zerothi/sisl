@@ -1,3 +1,0 @@
-tqdm
-xarray
-matplotlib

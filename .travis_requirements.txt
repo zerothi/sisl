@@ -1,6 +1,0 @@
-six
-setuptools
-netCDF4
-numpy>=1.10*
-scipy>=0.18
-pyparsing
