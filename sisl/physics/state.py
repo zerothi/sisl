@@ -9,6 +9,8 @@ from sisl._help import _range as range
 
 __all__ = ['Coefficient', 'State', 'StateC']
 
+_abs = np.absolute
+_argmax = np.argmax
 _append = np.append
 _diff = np.diff
 _dot = np.dot
@@ -373,6 +375,38 @@ class State(ParentContainer):
         for i in idx[1:]:
             m += _outer(self.state[i, :])
         return m
+
+    def rotate(self, phi=0, individual=False):
+        r""" Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
+
+        The states will be rotated according to:
+
+        .. math::
+
+            S' = S / S^\phi_{\mathrm{max}} \exp (i \phi),
+
+        where :math:`S^\phi_{\mathrm{max}}` is the phase of the component with the largest amplitude
+        and :math:`\phi` is the angle to align on.
+
+        Parameters
+        ----------
+        phi : float, optional
+           angle to align the state at (in radians), 0 is the positive real axis
+        individual: bool, optional
+           whether the rotation is per state, or a single maximum component is chosen.
+        """
+        # Convert angle to complex phase
+        phi = np.exp(1j * phi)
+        s = self.state
+        if individual:
+            for i in range(len(self)):
+                # Find the maximum amplitude index
+                idx = _argmax(_abs(s[i, :]))
+                s[i, :] *= phi * _conj(s[i, idx] / _abs(s[i, idx]))
+        else:
+            # Find the maximum amplitude index among all elements
+            idx = np.unravel_index(_argmax(_abs(s)), s.shape)
+            s *= phi * _conj(s[idx] / _abs(s[idx]))
 
     # def toStateC(self, norm=1.):
     #     r""" Transforms the states into normalized values equal to `norm` and specifies the coefficients in `StateC` as the norm
