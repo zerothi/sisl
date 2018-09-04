@@ -376,16 +376,16 @@ class State(ParentContainer):
             m += _outer(self.state[i, :])
         return m
 
-    def rotate(self, phi=0, individual=False):
+    def rotate(self, phi=0., individual=False):
         r""" Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
 
         The states will be rotated according to:
 
         .. math::
 
-            S' = S / S^\phi_{\mathrm{max}} \exp (i \phi),
+            S' = S / S^\dagger_{\phi-\mathrm{max}} \exp (i \phi),
 
-        where :math:`S^\phi_{\mathrm{max}}` is the phase of the component with the largest amplitude
+        where :math:`S^\dagger_{\phi-\mathrm{max}}` is the phase of the component with the largest amplitude
         and :math:`\phi` is the angle to align on.
 
         Parameters
