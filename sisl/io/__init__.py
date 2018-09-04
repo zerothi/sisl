@@ -207,8 +207,6 @@ VASP (:mod:`~sisl.io.vasp`)
 
    carSileVASP
    doscarSileVASP
-   poscarSileVASP
-   contcarSileVASP
    eigenvalSileVASP
    chgSileVASP
    locpotSileVASP

@@ -13,8 +13,6 @@ VASP files.
 
    carSileVASP
    doscarSileVASP
-   poscarSileVASP
-   contcarSileVASP
    eigenvalSileVASP
    chgSileVASP
    locpotSileVASP
