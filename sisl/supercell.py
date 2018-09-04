@@ -882,9 +882,9 @@ class SuperCell(object):
         """ Equality check """
         return self.equal(other)
 
-    def __ne__(a, b):
+    def __ne__(self, b):
         """ In-equality check """
-        return not (a == b)
+        return not (self == b)
 
     # Create pickling routines
     def __getstate__(self):

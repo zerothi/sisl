@@ -29,7 +29,7 @@ class pdbSile(Sile):
         if self._wrote_header:
             return
         self._wrote_header = True
-        self._write('EXPDTA    {60s}\n'.format("THEORETICAL MODEL"))
+        self._write('EXPDTA    {:60s}\n'.format("THEORETICAL MODEL"))
         # Add dates, AUTHOR etc.
 
     def _w_model(self, start):

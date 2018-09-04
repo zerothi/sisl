@@ -1191,12 +1191,12 @@ class Atom(object):
         return same
 
     # Check whether they are equal
-    def __eq__(a, b):
+    def __eq__(self, b):
         """ Return true if the saved quantities are the same """
-        return a.equal(b)
+        return self.equal(b)
 
-    def __ne__(a, b):
-        return not (a == b)
+    def __ne__(self, b):
+        return not (self == b)
 
     # Create pickling routines
     def __getstate__(self):
@@ -1819,9 +1819,9 @@ class Atoms(object):
                     return False
         return True
 
-    def __eq__(a, b):
+    def __eq__(self, b):
         """ Returns true if the contained atoms are the same """
-        return a.equal(b)
+        return self.equal(b)
 
     # Create pickling routines
     def __getstate__(self):

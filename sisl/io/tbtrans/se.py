@@ -55,16 +55,6 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
     """
     _SE2eV = Ry2eV
 
-    def o2p(self, orbital):
-        """ Return the pivoting indices (0-based) for the orbitals
-
-        Parameters
-        ----------
-        orbital : array_like or int
-           orbital indices (0-based)
-        """
-        return in1d(self.pivot(), orbital).nonzero()[0]
-
     def _elec(self, elec):
         """ Converts a string or integer to the corresponding electrode name
 

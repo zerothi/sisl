@@ -145,7 +145,7 @@ except ImportError:
         def __init__(self, total, desc, unit):
             self.total = total
             self.desc = desc
-            _stdout.write(self.desc + "  ETA = ?????h ??m ????s\r".format(total))
+            _stdout.write(self.desc + "  ETA = ?????h ??m ????s\r")
             _stdout.flush()
             self.t0 = _time()
             self.n = 0

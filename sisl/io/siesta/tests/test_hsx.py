@@ -14,12 +14,12 @@ def si_pdos_kgrid_geom():
     return sisl.Geometry([[0, 0, 0], [1, 1, 1]], sisl.Atom('Si', R=np.arange(13) + 1))
 
 
-def test_si_pdos_kgrid_hsx(sisl_files, sisl_tmp):
+def test_si_pdos_kgrid_hsx_H(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
     si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
 
 
-def test_si_pdos_kgrid_hsx(sisl_files, sisl_tmp):
+def test_si_pdos_kgrid_hsx_overlap(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
     HS = si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
     S = si.read_overlap(geometry=si_pdos_kgrid_geom())

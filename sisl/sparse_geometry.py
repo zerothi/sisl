@@ -657,111 +657,111 @@ class _SparseGeometry(object):
     ###############################
     # Overload of math operations #
     ###############################
-    def __add__(a, b):
-        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+    def __add__(self, b):
+        c = self.copy(dtype=get_dtype(b, other=self.dtype))
         c += b
         return c
     __radd__ = __add__
 
-    def __iadd__(a, b):
+    def __iadd__(self, b):
         if isinstance(b, _SparseGeometry):
-            a._csr += b._csr
+            self._csr += b._csr
         else:
-            a._csr += b
-        return a
+            self._csr += b
+        return self
 
-    def __sub__(a, b):
-        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+    def __sub__(self, b):
+        c = self.copy(dtype=get_dtype(b, other=self.dtype))
         c -= b
         return c
 
-    def __rsub__(a, b):
+    def __rsub__(self, b):
         if isinstance(b, _SparseGeometry):
-            c = b.copy(dtype=get_dtype(a, other=b.dtype))
-            c._csr += -1 * a._csr
+            c = b.copy(dtype=get_dtype(self, other=b.dtype))
+            c._csr += -1 * self._csr
         else:
-            c = b + (-1) * a
+            c = b + (-1) * self
         return c
 
-    def __isub__(a, b):
+    def __isub__(self, b):
         if isinstance(b, _SparseGeometry):
-            a._csr -= b._csr
+            self._csr -= b._csr
         else:
-            a._csr -= b
-        return a
+            self._csr -= b
+        return self
 
-    def __mul__(a, b):
-        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+    def __mul__(self, b):
+        c = self.copy(dtype=get_dtype(b, other=self.dtype))
         c *= b
         return c
     __rmul__ = __mul__
 
-    def __imul__(a, b):
+    def __imul__(self, b):
         if isinstance(b, _SparseGeometry):
-            a._csr *= b._csr
+            self._csr *= b._csr
         else:
-            a._csr *= b
-        return a
+            self._csr *= b
+        return self
 
-    def __div__(a, b):
-        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+    def __div__(self, b):
+        c = self.copy(dtype=get_dtype(b, other=self.dtype))
         c /= b
         return c
 
-    def __rdiv__(a, b):
-        c = b.copy(dtype=get_dtype(a, other=b.dtype))
-        c /= a
+    def __rdiv__(self, b):
+        c = b.copy(dtype=get_dtype(self, other=b.dtype))
+        c /= self
         return c
 
-    def __idiv__(a, b):
+    def __idiv__(self, b):
         if isinstance(b, _SparseGeometry):
-            a._csr /= b._csr
+            self._csr /= b._csr
         else:
-            a._csr /= b
-        return a
+            self._csr /= b
+        return self
 
-    def __floordiv__(a, b):
+    def __floordiv__(self, b):
         if isinstance(b, _SparseGeometry):
             raise NotImplementedError
-        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c = self.copy(dtype=get_dtype(b, other=self.dtype))
         c //= b
         return c
 
-    def __ifloordiv__(a, b):
+    def __ifloordiv__(self, b):
         if isinstance(b, _SparseGeometry):
             raise NotImplementedError
-        a._csr //= b
-        return a
+        self._csr //= b
+        return self
 
-    def __truediv__(a, b):
+    def __truediv__(self, b):
         if isinstance(b, _SparseGeometry):
             raise NotImplementedError
-        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+        c = self.copy(dtype=get_dtype(b, other=self.dtype))
         c /= b
         return c
 
-    def __itruediv__(a, b):
+    def __itruediv__(self, b):
         if isinstance(b, _SparseGeometry):
             raise NotImplementedError
-        a._csr /= b
-        return a
+        self._csr /= b
+        return self
 
-    def __pow__(a, b):
-        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+    def __pow__(self, b):
+        c = self.copy(dtype=get_dtype(b, other=self.dtype))
         c **= b
         return c
 
-    def __rpow__(a, b):
-        c = a.copy(dtype=get_dtype(b, other=a.dtype))
+    def __rpow__(self, b):
+        c = self.copy(dtype=get_dtype(b, other=self.dtype))
         c._csr = b ** c._csr
         return c
 
-    def __ipow__(a, b):
+    def __ipow__(self, b):
         if isinstance(b, _SparseGeometry):
-            a._csr **= b._csr
+            self._csr **= b._csr
         else:
-            a._csr **= b
-        return a
+            self._csr **= b
+        return self
 
 
 class SparseAtom(_SparseGeometry):
