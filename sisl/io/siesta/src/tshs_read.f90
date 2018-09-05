@@ -236,7 +236,7 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
   integer :: iu, i, is, idx
   integer :: version, tmp(5)
   real(dp) :: Ef
-  logical :: Gamma
+  logical :: Gamma, TSGamma, onlyS
 
   call read_tshs_version(fname, version)
 
@@ -260,7 +260,7 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
   ! Read the stuff...
   read(iu) ! nsc
   read(iu) ! cell, xa
-  read(iu) Gamma ! TSGamma, onlyS
+  read(iu) Gamma, TSGamma, onlyS
   read(iu) ! kscell, kdispl
   read(iu) Ef ! Qtot, Temp
   read(iu) ! istep, ia1
@@ -280,19 +280,23 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
      idx = idx + ncol(i)
   end do
   ! Hamiltonian matrix
-  do is = 1, tmp(4)
-     idx = 0
-     do i = 1 , tmp(2)
+  if ( onlyS ) then
+    H(:,:) = 0._dp
+  else
+    do is = 1, tmp(4)
+      idx = 0
+      do i = 1 , tmp(2)
         read(iu) H(idx+1:idx+ncol(i),is)
         idx = idx + ncol(i)
-     end do
-     ! Move to Ef = 0
-     if ( is <= 2 ) then
+      end do
+      ! Move to Ef = 0
+      if ( is <= 2 ) then
         H(:,is) = H(:,is) - Ef * S(:)
-     end if
-     ! Change to eV
-     H(:,is) = H(:,is) * eV
-  end do
+      end if
+      ! Change to eV
+      H(:,is) = H(:,is) * eV
+    end do
+  end if
 
   close(iu)
 
