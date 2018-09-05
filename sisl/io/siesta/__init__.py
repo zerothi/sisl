@@ -23,6 +23,7 @@ sisl.
    pdosSileSiesta - PDOS file
    gridSileSiesta - Grid charge information (binary)
    gridncSileSiesta - NetCDF grid output files (netcdf)
+   onlysSileSiesta - Overlap matrix information
    dmSileSiesta - density matrix information
    hsxSileSiesta - Hamiltonian and overlap matrix information
    ncSileSiesta - NetCDF output file
