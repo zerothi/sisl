@@ -100,57 +100,59 @@ subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
 ! Internal variables and arrays
   integer :: iu, i, is
   integer :: version, tmp(5)
-  logical :: Gamma
+  logical :: Gamma, TSGamma, onlyS
   
   call read_tshs_version(fname, version)
-
+  
   if ( version /= 1 ) then
 
-     nsc = 0
-     cell = 0._dp
-     isc = 0
-     
-     return
+    nsc = 0
+    cell = 0._dp
+    isc = 0
+
+    return
      
   end if
-
+  
   call free_unit(iu)
   open(iu,file=trim(fname),status='old',form='unformatted')
   read(iu) ! version
   ! Now we may read the sizes
   read(iu) tmp
-
+  
   ! Read the stuff...
   read(iu) nsc
   read(iu) cell ! xa
   cell = cell * Ang
-  read(iu) Gamma ! TSGamma, onlyS
+  read(iu) Gamma, TSGamma, onlyS
   read(iu) ! kscell, kdispl
   read(iu) ! Ef, Qtot, Temp
   read(iu) ! istep, ia1
   read(iu) ! lasto
-
+  
   ! Sparse pattern
   read(iu) ! ncol
   do i = 1 , tmp(2)
-     read(iu) ! list_col
+    read(iu) ! list_col
   end do
   ! Overlap matrix
   do i = 1 , tmp(2)
-     read(iu) ! S
+    read(iu) ! S
   end do
-  ! Hamiltonian matrix
-  do is = 1, tmp(4)
-     do i = 1 , tmp(2)
+  if ( .not. onlyS ) then
+    ! Hamiltonian matrix
+    do is = 1, tmp(4)
+      do i = 1 , tmp(2)
         read(iu) ! H
-     end do
-  end do
+      end do
+    end do
+  end if
   if ( .not. Gamma ) then
-     read(iu) isc
+    read(iu) isc
   end if
   
   close(iu)
-
+  
 end subroutine read_tshs_cell
 
 subroutine read_tshs_geom(fname, na_u, xa, lasto)
