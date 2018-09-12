@@ -2147,8 +2147,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 ns._norm = value
         p.add_argument('--norm', '-N', action=NormAction, default='atom',
                        choices=['none', 'atom', 'orbital', 'all'],
-                       help="""Specify the normalization method; "atom") total orbitals in selected atoms,
-                       "all") total orbitals in the device region, "none") no normalization or "orbital") selected orbitals.
+                       help="""Specify the normalization method; "none") no normalization, "atom") total orbitals in selected atoms,
+                       "orbital") selected orbitals or "all") total orbitals in the device region.
 
                        This flag only takes effect on --dos and --ados and is reset whenever --plot or --out is called""")
 
@@ -2454,8 +2454,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 from matplotlib import pyplot as plt
                 plt.figure()
 
+                is_DOS = True
+                is_T = True
                 for i in range(1, len(ns._data)):
-                    plt.plot(ns._data[0], ns._data[i], label=ns._data_header[i])
+                    plt.plot(ns._data[0], ns._data[i], label=ns._data_header[i].split('[')[0])
+                    is_DOS &= 'DOS' in ns._data_header[i]
+                    is_T &= 'T' in ns._data_header[i]
+
+                if is_DOS:
+                    plt.ylabel('DOS [1/eV]')
+                elif is_T:
+                    plt.ylabel('Transmission [G0]')
+                plt.xlabel('E - E_F [eV]')
 
                 plt.legend(loc=8, ncol=3, bbox_to_anchor=(0.5, 1.0))
                 if value is None:
