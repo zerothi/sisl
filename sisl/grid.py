@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 
+from functools import partial
 from numbers import Integral, Real
 from math import pi
 
@@ -143,33 +144,31 @@ class Grid(SuperCellChild):
             optional arguments passed to the interpolation algorithm
             The interpolation routine is `scipy.interpolate.interpn`
         """
+        # Interpolate function
+        from scipy.interpolate import RegularGridInterpolator
+
         # Get current grid spacing
+        flinspace = partial(np.linspace, dtype=np.float32)
         dold = (
-            np.linspace(0, 1, self.shape[0]),
-            np.linspace(0, 1, self.shape[1]),
-            np.linspace(0, 1, self.shape[2])
+            flinspace(0, 1, self.shape[0]),
+            flinspace(0, 1, self.shape[1]),
+            flinspace(0, 1, self.shape[2])
         )
 
-        # Interpolate
-        from scipy.interpolate import interpn
-
-        # Create new grid
-        grid = self.__class__(shape, bc=np.copy(self.bc), sc=self.sc.copy())
-        # Clean-up to reduce memory
+        # Create new grid and clean-up to reduce memory
+        grid = self.copy()
         del grid.grid
 
-        # Create new mesh-grid
-        dnew = np.concatenate(np.meshgrid(
-            np.linspace(0, 1, shape[0]),
-            np.linspace(0, 1, shape[1]),
-            np.linspace(0, 1, shape[2])), axis=0)
-        dnew.shape = (-1, 3)
+        # Create new mesh-grid (this will sadly be 3 times the size of the new shape)
+        # There are ways around it, but perhaps this is fine for now?
+        dnew = np.mgrid[0:1:shape[0] * 1j, 0:1:shape[1] * 1j, 0:1:shape[2] * 1j].astype(np.float32).reshape(3, -1).T
 
-        grid.grid = interpn(dold, self.grid, dnew, method=method, **kwargs)
+        f = RegularGridInterpolator(dold, self.grid, method=method)
+        del dold
+        grid.grid = f(dnew).reshape(shape)
+
         # immediately delete the dnew (which is VERY large)
-        del dold, dnew
-        # Ensure that the grid has the correct shape
-        grid.grid.shape = tuple(shape)
+        del dnew
 
         return grid
 
