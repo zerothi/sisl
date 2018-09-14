@@ -1963,13 +1963,13 @@ class SparseOrbital(_SparseGeometry):
 
         geom = self.geometry
         # Create a conversion vector
-        orb2atom = geom.o2a(_a.arangei(geom.no_s))
+        orb2atom = np.tile(geom.o2a(_a.arangei(geom.no)), geom.n_s)
+        orb2atom.shape = (geom.no, -1)
+        orb2atom += _a.arangei(geom.n_s).reshape(1, -1) * geom.na
+        orb2atom.shape = (-1,)
 
         # First convert all rows to the same
         csr = self._csr
-
-        idx = array_arange(csr.ptr[:-1], n=csr.ncol)
-        acol = orb2atom[csr.col[idx]]
 
         # Now build the new sparse pattern
         ptr = _a.emptyi(geom.na+1)
