@@ -1049,7 +1049,7 @@ class Atom(object):
         ------
         ValueError : if the number of orbitals removed is too large or some indices are outside the allowed range
         """
-        orbitals = _a.arrayi(orbitals)
+        orbitals = _a.arrayi(orbitals).ravel()
         if len(orbitals) > self.no:
             raise ValueError(self.__class__.__name__ + '.sub tries to remove more than the number of orbitals on an atom.')
         if np.any(orbitals >= self.no):

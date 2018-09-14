@@ -1492,12 +1492,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Now create the density matrix object
         geom = self.read_geometry()
         if geometry is None:
-            DM = DensityMatrix(geom, nnzpr=1)
+            DM = DensityMatrix.fromsp(geom, dm)
         else:
             if geom.no != geometry.no:
                 raise ValueError(self.__class__.__name__ + '.density_matrix requires input geometry to contain the correct number of orbitals. Please correct input!')
-            DM = DensityMatrix(geometry, nnzpr=1)
-        DM += dm
+            DM = DensityMatrix.fromsp(geometry, dm)
         return DM
 
     def orbital_COOP(self, E, kavg=True, isc=None):

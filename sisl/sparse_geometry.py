@@ -2,6 +2,7 @@ from __future__ import print_function, division
 
 import warnings
 import functools as ftool
+from numbers import Integral
 import numpy as np
 from numpy import unique
 
@@ -1560,6 +1561,8 @@ class SparseOrbital(_SparseGeometry):
 
     def _remove_orbitals(self, atom, orb_index):
         """ Remove subset of atomic specie orbitals """
+        if isinstance(atom, Integral):
+            atom = self.geometry.atoms[atom]
         orbs = np.delete(_a.arangei(atom.no), orb_index)
         return self.sub(atom, orbs)
 
@@ -1633,6 +1636,8 @@ class SparseOrbital(_SparseGeometry):
         orb_index = np.sort(orb_index)
 
         # Get specie index of the atom
+        if isinstance(atom, Integral):
+            atom = geom.atoms[atom]
         atom_idx = geom.atoms.index(atom)
 
         # Define the atoms to change
