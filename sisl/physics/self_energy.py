@@ -166,6 +166,10 @@ class RecursiveSI(SemiInfinite):
         bulk : bool, optional
           if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else
           :math:`\boldsymbol\Sigma` is returned (default).
+
+        Returns
+        -------
+        self-energy : the self-energy corresponding to the semi-infinite direction
         """
         if eta is None:
             eta = self.eta
@@ -232,3 +236,104 @@ class RecursiveSI(SemiInfinite):
                 return - GS
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')
+
+
+    def self_energy_lr(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=False):
+        r""" Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
+
+        Parameters
+        ----------
+        E : float
+          energy at which the calculation will take place (should *not* be complex)
+        k : array_like, optional
+          k-point at which the self-energy should be evaluated.
+          the k-point should be in units of the reciprocal lattice vectors, and
+          the semi-infinite component will be automatically set to zero.
+        eta : float, optional
+          the imaginary value to evaluate the self-energy with. Defaults to the
+          value with which the object was created
+        dtype : numpy.dtype
+          the resulting data type
+        eps : float, optional
+          convergence criteria for the recursion
+        bulk : bool, optional
+          if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else
+          :math:`\boldsymbol\Sigma` is returned (default).
+
+        Returns
+        -------
+        left : the left self-energy
+        right : the right self-energy
+        """
+        if eta is None:
+            eta = self.eta
+        try:
+            Z = E.real + 1j * eta
+        except:
+            Z = E + 1j * eta
+
+        # Get k-point
+        k = self._correct_k(k)
+
+        if dtype is None:
+            dtype = np.complex128
+
+        sp0 = self.spgeom0
+        sp1 = self.spgeom1
+
+        # As the SparseGeometry inherently works for
+        # orthogonal and non-orthogonal basis, there is no
+        # need to have two algorithms.
+        SmH0 = sp0.Sk(k, dtype=dtype) * Z - sp0.Pk(k, dtype=dtype)
+        GB = SmH0.toarray()
+
+        if sp1.orthogonal:
+            alpha = sp1.Pk(k, dtype=dtype, format='array')
+            beta  = np.conjugate(np.transpose(alpha))
+        else:
+            M = sp1.Pk(k, dtype=dtype)
+            S = sp1.Sk(k, dtype=dtype)
+            alpha = (M - S * Z).toarray()
+            beta  = (M.getH() - S.getH() * Z).toarray()
+            del M, S
+
+        # Surface Green function (self-energy)
+        if bulk:
+            GS = np.copy(GB)
+        else:
+            GS = np.zeros_like(GB)
+
+        solve = lin.solve
+
+        i = 0
+        while True:
+            i += 1
+
+            tA = solve(GB, alpha)
+            tB = solve(GB, beta)
+
+            tmp = dot(alpha, tB)
+            # Update bulk Green function
+            GB -= tmp + dot(beta, tA)
+            # Update surface self-energy
+            GS -= tmp
+
+            # Update forward/backward
+            alpha = dot(alpha, tA)
+            beta = dot(beta, tB)
+
+            # Convergence criteria, it could be stricter
+            if np.amax(np.abs(tmp)) < eps:
+                # Return the pristine Green function
+                del tA, tB, alpha, beta
+                if self.semi_inf_dir == 1:
+                    # GS is the "right" self-energy
+                    if bulk:
+                        return GB - GS + SmH0.toarray(), GS
+                    return GS - GB + SmH0.toarray(), - GS
+                # GS is the "left" self-energy
+                if bulk:
+                    return GS, GB - GS + SmH0.toarray()
+                return - GS, GS - GB + SmH0.toarray()
+
+        raise ValueError(self.__class__.__name__+': could not converge self-energy (LR) calculation')
