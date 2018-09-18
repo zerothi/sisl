@@ -241,6 +241,9 @@ class RecursiveSI(SemiInfinite):
     def self_energy_lr(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=False):
         r""" Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
 
+        Note calculating the LR self-energies simultaneously requires that their chemical potentials are the same.
+        I.e. only when the reference energy is equivalent in the left/right schemes does this make sense.
+
         Parameters
         ----------
         E : float
