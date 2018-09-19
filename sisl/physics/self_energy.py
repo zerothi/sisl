@@ -237,7 +237,6 @@ class RecursiveSI(SemiInfinite):
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')
 
-
     def self_energy_lr(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=False):
         r""" Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
 

@@ -83,6 +83,15 @@ Phonons (:mod:`~sisl.physics.phonon`)
    EigenmodePhonon
 
 
+Bloch's theorem (:mod:`~sisl.physics.bloch`)
+============================================
+
+.. autosummary::
+   :toctree:
+
+   Bloch
+
+
 Distribution functions (:mod:`~sisl.physics.distribution`)
 ==========================================================
 
@@ -142,6 +151,7 @@ Sparse matrices
 """
 from .distribution import *
 from .brillouinzone import *
+from .bloch import *
 from .spin import *
 from .sparse import *
 from .state import *

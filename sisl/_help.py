@@ -7,7 +7,8 @@ import numpy as np
 
 __all__ = ['array_fill_repeat']
 __all__ += ['isndarray', 'isiterable']
-__all__ += ['get_dtype', 'dtype_complex_to_real']
+__all__ += ['get_dtype']
+__all__ += ['dtype_complex_to_real', 'dtype_real_to_complex']
 
 # Wrappers typically used
 __all__ += ['_str', '_range', '_zip', '_map']
@@ -138,4 +139,13 @@ def dtype_complex_to_real(dtype):
         return np.float64
     elif dtype == np.complex64:
         return np.float32
+    return dtype
+
+
+def dtype_real_to_complex(dtype):
+    """ Return the equivalent precision complex data-type if the `dtype` is real """
+    if dtype == np.float64:
+        return np.complex128
+    elif dtype == np.float32:
+        return np.complex64
     return dtype
