@@ -57,15 +57,29 @@ class Bloch(object):
 
     @property
     def bloch(self):
+        """ Number of Bloch expansions along each lattice vector """
         return self._bloch
 
     @property
     def is_tile(self):
+        """ Whether the Bloch unfolding will be using the tiling construct """
         return self._is_tile
 
     @property
     def is_repeat(self):
+        """ Whether the Bloch unfolding will be using the repeat construct """
         return not self._is_tile
+
+    def fold_point(self, k):
+        """ Fold the k-point from a small unit-cell to a bigger unitcell """
+        # Transfer to the larger cell (smaller reciprocal cell)
+        k = _a.arrayd(k) * self.bloch
+        for ax in range(3):
+            while k[ax] > 0.5:
+                k[ax] -= 1
+            while k[ax] <= -0.5:
+                k[ax] += 1
+        return k
 
     def unfold_points(self, k):
         r""" Return a list of k-points to be evaluated for this objects unfolding

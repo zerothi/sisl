@@ -365,10 +365,10 @@ class BrillouinZone(object):
             k[np.unravel_index(idx, k.shape)] -= 1.
             idx = (k.ravel() > 0.5).nonzero()[0]
 
-        idx = (k.ravel() < -0.5).nonzero()[0]
+        idx = (k.ravel() <= -0.5).nonzero()[0]
         while len(idx) > 0:
             k[np.unravel_index(idx, k.shape)] += 1.
-            idx = (k.ravel() < -0.5).nonzero()[0]
+            idx = (k.ravel() <= -0.5).nonzero()[0]
 
         return k
 
