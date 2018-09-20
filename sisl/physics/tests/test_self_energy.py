@@ -43,6 +43,7 @@ def test_objects(setup):
         SE = SemiInfinite(setup.H, D)
         assert SE.semi_inf == si
         assert SE.semi_inf_dir == sid
+        assert D in str(SE)
 
 
 def test_sancho_orthogonal(setup):

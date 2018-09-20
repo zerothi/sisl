@@ -1,5 +1,5 @@
 r"""Bloch's theorem
-==================
+===================
 
 .. module:: sisl.physics.bloch
    :noindex:

@@ -29,9 +29,11 @@ def test_bloch_create(nx, ny, nz):
 
 def test_bloch_method():
     b = Bloch([1] * 3)
+    assert 'tile' in str(b)
     assert b.is_tile
     assert not b.is_repeat
     b = Bloch([1] * 3, tile=False)
+    assert 'repeat' in str(b)
     assert not b.is_tile
     assert b.is_repeat
 
