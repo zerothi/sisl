@@ -9,6 +9,9 @@ from sisl import Geometry, Atom, SuperCell, Hamiltonian
 from sisl import SelfEnergy, SemiInfinite, RecursiveSI
 
 
+pytestmark = pytest.mark.self_energy
+
+
 @pytest.fixture
 def setup():
     class t():
@@ -32,22 +35,54 @@ def setup():
     return t()
 
 
-@pytest.mark.self_energy
-class TestSelfEnergy(object):
+def test_objects(setup):
+    for D, si, sid in [('+A', 0, 1),
+                       ('-A', 0, -1),
+                       ('+B', 1, 1),
+                       ('-B', 1, -1)]:
+        SE = SemiInfinite(setup.H, D)
+        assert SE.semi_inf == si
+        assert SE.semi_inf_dir == sid
 
-    def test_objects(self, setup):
-        for D, si, sid in [('+A', 0, 1),
-                           ('-A', 0, -1),
-                           ('+B', 1, 1),
-                           ('-B', 1, -1)]:
-            SE = SemiInfinite(setup.H, D)
-            assert SE.semi_inf == si
-            assert SE.semi_inf_dir == sid
 
-    def test_sancho1(self, setup):
-        SE = RecursiveSI(setup.H, '+A')
-        SE.self_energy(0.1)
+def test_sancho_orthogonal(setup):
+    SE = RecursiveSI(setup.H, '+A')
+    assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
 
-    def test_sancho2(self, setup):
-        SE = RecursiveSI(setup.HS, '+A')
-        SE.self_energy(0.1)
+
+def test_sancho_non_orthogonal(setup):
+    SE = RecursiveSI(setup.HS, '-A')
+    assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
+
+
+def test_sancho_lr(setup):
+    SL = RecursiveSI(setup.HS, '-A')
+    SR = RecursiveSI(setup.HS, '+A')
+
+    E = 0.1
+    k = [0, 0.13, 0]
+
+    # Check that left/right are different
+
+    L_SE = SL.self_energy(E, k)
+    R_SE = SR.self_energy(E, k)
+    assert not np.allclose(L_SE, R_SE)
+
+    LB_SEL, LB_SER = SL.self_energy_lr(E, k)
+    RB_SEL, RB_SER = SR.self_energy_lr(E, k)
+
+    assert np.allclose(LB_SEL, L_SE)
+    assert np.allclose(LB_SER, R_SE)
+    assert np.allclose(RB_SEL, L_SE)
+    assert np.allclose(RB_SER, R_SE)
+
+    LB_SEL, LB_SER = SL.self_energy_lr(E, k, bulk=True)
+    L_SE = SL.self_energy(E, k, bulk=True)
+    R_SE = SR.self_energy(E, k,  bulk=True)
+    assert not np.allclose(L_SE, R_SE)
+    RB_SEL, RB_SER = SR.self_energy_lr(E, k, bulk=True)
+
+    assert np.allclose(LB_SEL, L_SE)
+    assert np.allclose(LB_SER, R_SE)
+    assert np.allclose(RB_SEL, L_SE)
+    assert np.allclose(RB_SER, R_SE)
