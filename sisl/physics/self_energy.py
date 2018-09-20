@@ -49,19 +49,11 @@ class SemiInfinite(SelfEnergy):
        axis specification for the semi-infinite direction (`+A`/`-A`/`+B`/`-B`/`+C`/`-C`)
     eta : float, optional
        the default imaginary part of the self-energy calculation
-    bloch : array_like, optional
-       Bloch-expansion for each of the lattice vectors (`1` for no expansion)
-       The resulting self-energy will have dimension
-       equal to `len(obj) * np.product(bloch)`.
     """
 
-    def __init__(self, spgeom, infinite, eta=1e-6, bloch=None):
+    def __init__(self, spgeom, infinite, eta=1e-6):
         """ Create a `SelfEnergy` object from any `SparseGeometry` """
         self.eta = eta
-        if bloch is None:
-            self.bloch = _a.onesi([3])
-        else:
-            self.bloch = _a.arrayi(bloch)
 
         # Determine whether we are in plus/minus direction
         if infinite.startswith('+'):
@@ -87,6 +79,13 @@ class SemiInfinite(SelfEnergy):
         # Finalize the setup by calling the class specific routine
         self._setup(spgeom)
 
+    def __str__(self):
+        """ String representation of the SemiInfinite """
+        direction = {-1: '-', 1: '+'}
+        axis = {0: 'A', 1: 'B', 2: 'C'}
+        return self.__class__.__name__ + '{{direction: {0}{1}\n}}'.format(
+            direction[self.semi_inf_dir], axis[self.semi_inf])
+
     def _correct_k(self, k=None):
         """ Return a corrected k-point
 
@@ -110,6 +109,15 @@ class RecursiveSI(SemiInfinite):
     def __getattr__(self, attr):
         """ Overload attributes from the hosting object """
         return getattr(self.spgeom0, attr)
+
+    def __str__(self):
+        """ Representation of the RecursiveSI model """
+        direction = {-1: '-', 1: '+'}
+        axis = {0: 'A', 1: 'B', 2: 'C'}
+        return self.__class__.__name__ + '{{direction: {0}{1},\n {2}\n}}'.format(
+            direction[self.semi_inf_dir], axis[self.semi_inf],
+            str(self.spgeom0).replace('\n', '\n '),
+        )
 
     def _setup(self, spgeom):
         """ Setup the Lopez-Sancho internals for easy axes """

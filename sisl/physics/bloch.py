@@ -48,6 +48,13 @@ class Bloch(object):
         """ Return unfolded size """
         return np.prod(self.bloch)
 
+    def __str__(self):
+        """ Representation of the Bloch model """
+        B = self._bloch
+        if self.is_tile:
+            return self.__class__.__name__ + '{{tile: [{0}, {1}, {2}]}}'.format(B[0], B[1], B[2])
+        return self.__class__.__name__ + '{{repeat: [{0}, {1}, {2}]}}'.format(B[0], B[1], B[2])
+
     @property
     def bloch(self):
         return self._bloch
@@ -84,6 +91,41 @@ class Bloch(object):
         # Back-transform shape
         unfold.shape = (-1, 3)
         return unfold
+
+    def __call__(self, func, k, *args, **kwargs):
+        """ Return a functions return values as the Bloch unfolded equivalent according to this object
+
+        Calling the `Bloch` object is a shorthand for the manual use of the `Bloch.unfold_points` and `Bloch.unfold`
+        methods.
+
+        This call structure is a shorthand for:
+
+        >>> bloch = Bloch([2, 1, 2])
+        >>> k_unfold = bloch.unfold_points([0] * 3)
+        >>> M = [func(*args, k=k) for k in k_unfold]
+        >>> bloch.unfold(M, k_unfold)
+
+        Notes
+        -----
+        The function passed *must* have a keyword argument ``k``.
+
+        Parameters
+        ----------
+        func : callable
+           method called which returns a matrix.
+        k : (3, ) of float
+           k-point to be unfolded
+        *args : list
+           arguments passed directly to `func`
+        **kwargs: dict
+           keyword arguments passed directly to `func`
+
+        Returns
+        -------
+        M : unfolded Bloch matrix
+        """
+        K_unfold = self.unfold_points(k)
+        return self.unfold([func(*args, k=K, **kwargs) for K in K_unfold], K_unfold)
 
     def unfold(self, M, k_unfold):
         r""" Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)

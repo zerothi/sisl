@@ -44,6 +44,17 @@ def test_bloch_fail_repeat():
     m = b.unfold(M, k)
 
 
+def test_bloch_call():
+    b = Bloch([2] * 3)
+    H = get_H()
+
+    # Manual
+    k_unfold = b.unfold_points([0] * 3)
+    m = b.unfold([H.Hk(k, format='array') for k in k_unfold], k_unfold)
+
+    assert np.allclose(m, b(H.Hk, [0] * 3, format='array'))
+
+
 @pytest.mark.parametrize("nx", [1, 3])
 @pytest.mark.parametrize("ny", [1, 4])
 @pytest.mark.parametrize("nz", [1, 3])
