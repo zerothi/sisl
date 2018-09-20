@@ -2,6 +2,6 @@ six
 setuptools
 # We use some functionality in 1.10
 numpy>=1.10*
-scipy
+scipy>=0.18
 netCDF4
 pyparsing

@@ -44,7 +44,16 @@ if osp.exists('MANIFEST'):
     os.remove('MANIFEST')
 
 
-install_requires = ['setuptools', 'numpy>=1.10']
+# The install_requires should also be the
+# requirements for the actual running of sisl
+install_requires = [
+    'six',
+    'setuptools',
+    'numpy>=1.10',
+    'scipy>=0.18',
+    'netCDF4',
+    'pyparsing',
+]
 
 # Create list of all sub-directories with
 #   __init__.py files...
