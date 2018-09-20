@@ -60,7 +60,7 @@ class Bloch(object):
     def is_repeat(self):
         return not self._is_tile
 
-    def unfold_k_points(self, k):
+    def unfold_points(self, k):
         r""" Return a list of k-points to be evaluated for this objects unfolding
 
         Parameters
@@ -93,7 +93,7 @@ class Bloch(object):
         M : list of numpy arrays
             matrices used for unfolding
         k_unfold : (*, 3) of float
-            unfolding k-points as returned by `Bloch.unfold_k`
+            unfolding k-points as returned by `Bloch.unfold_points`
 
         Returns
         -------

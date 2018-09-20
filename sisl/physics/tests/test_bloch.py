@@ -24,7 +24,24 @@ def get_H(orthogonal=True, *args):
 def test_bloch_create(nx, ny, nz):
     b = Bloch([nx, ny, nz])
     assert len(b) == nx * ny * nz
-    assert len(b.unfold_k_points([0] * 3)) == nx * ny * nz
+    assert len(b.unfold_points([0] * 3)) == nx * ny * nz
+
+
+def test_bloch_method():
+    b = Bloch([1] * 3)
+    assert b.is_tile
+    assert not b.is_repeat
+    b = Bloch([1] * 3, tile=False)
+    assert not b.is_tile
+    assert b.is_repeat
+
+
+@pytest.mark.xfail(raises=NotImplementedError)
+def test_bloch_fail_repeat():
+    b = Bloch([2] * 3, tile=False)
+    k = b.unfold_points([0] * 3)
+    M = np.zeros([2, 2])
+    m = b.unfold(M, k)
 
 
 @pytest.mark.parametrize("nx", [1, 3])
@@ -40,7 +57,7 @@ def test_bloch_one_direction(nx, ny, nz):
     KY = [0, 0.128359, 0.340925]
     KZ = [0, 0.445]
     for kx, ky, kz in product(KX, KY, KZ):
-        k_unfold = b.unfold_k_points([kx, ky, kz])
+        k_unfold = b.unfold_points([kx, ky, kz])
 
         HK = [H.Hk(k, format='array') for k in k_unfold]
         H_unfold = b.unfold(HK, k_unfold)
