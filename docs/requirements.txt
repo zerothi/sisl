@@ -5,7 +5,7 @@ six
 setuptools
 # We use some functionality added in 1.10
 numpy>=1.10
-scipy
+scipy>=0.18
 netCDF4
 pyparsing
 matplotlib

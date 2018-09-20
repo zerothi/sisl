@@ -83,13 +83,19 @@ extensions = [
 ]
 
 # Enable plots in documentation
-extensions += [
-    'matplotlib.sphinxext.only_directives',
-    'matplotlib.sphinxext.plot_directive',
-#    'nbsphinx',
-#    'IPython.sphinxext.ipython_directive',
-#    'IPython.sphinxext.ipython_console_highlighting',
-]
+from matplotlib import __version__ as mpl_version
+if int(mpl_version[0]) > 2:
+    extensions += [
+        'matplotlib.sphinxext.plot_directive',
+    ]
+else:
+    extensions += [
+        'matplotlib.sphinxext.only_directives',
+        'matplotlib.sphinxext.plot_directive',
+        #    'nbsphinx',
+        #    'IPython.sphinxext.ipython_directive',
+        #    'IPython.sphinxext.ipython_console_highlighting',
+    ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
