@@ -181,10 +181,7 @@ class RecursiveSI(SemiInfinite):
         """
         if eta is None:
             eta = self.eta
-        try:
-            Z = E.real + 1j * eta
-        except:
-            Z = E + 1j * eta
+        Z = E.real + 1j * eta
 
         # Get k-point
         k = self._correct_k(k)
