@@ -297,6 +297,10 @@ class SparseOrbitalBZ(SparseOrbital):
         if dtype is None:
             dtype = np.float64
         no = len(self)
+        # In the "rare" but could be found situation where
+        # the matrix only describes neighbouring couplings it is vital
+        # to not return anything
+        # TODO
         if format == 'array':
             return np.diag(np.ones(no, dtype=dtype))
         elif format == 'matrix' or format == 'dense':
