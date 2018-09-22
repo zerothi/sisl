@@ -75,6 +75,6 @@ def test_bloch_one_direction(nx, ny, nz):
 
         HK = [H.Hk(k, format='array') for k in k_unfold]
         H_unfold = b.unfold(HK, k_unfold)
-        H_big = HB.Hk(b.fold_point(K), format='array')
+        H_big = HB.Hk(K, format='array')
 
         assert np.allclose(H_unfold, H_big)

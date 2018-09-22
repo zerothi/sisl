@@ -383,6 +383,26 @@ class BrillouinZone(object):
             raise AttributeError("'{}' does not exist in class '{}'".format(
                 attr, self.parent.__class__.__name__))
 
+    def _bz_get_func(self):
+        """ Internal method to retrieve the actual function to be called """
+        if callable(self._bz_attr):
+            return self._bz_attr
+        return getattr(self.parent, self._bz_attr)
+
+    def wrap(self, func):
+        """ Manually define the function to be called from the object
+
+        This is mainly to allow custom defined functions rather
+        than relying on methods on the parent object.
+
+        Parameters
+        ----------
+        func : callable
+           method used
+        """
+        self._bz_attr = func
+        return self
+
     # Implement wrapper calls
     def asarray(self):
         """ Return `self` with `numpy.ndarray` returned quantities
@@ -413,7 +433,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self._bz_attr)
+            func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
                            'k', kwargs.pop('eta', False))
@@ -466,7 +486,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self._bz_attr)
+            func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asnone',
                            'k', kwargs.pop('eta', False))
@@ -512,7 +532,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self._bz_attr)
+            func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist',
                            'k', kwargs.pop('eta', False))
@@ -559,7 +579,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self._bz_attr)
+            func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield',
                            'k', kwargs.pop('eta', False))
@@ -608,7 +628,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self._bz_attr)
+            func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage',
                            'k', kwargs.pop('eta', False))
@@ -659,7 +679,7 @@ class BrillouinZone(object):
         """
 
         def _call(self, *args, **kwargs):
-            func = getattr(self.parent, self._bz_attr)
+            func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.assum',
                            'k', kwargs.pop('eta', False))
@@ -889,7 +909,7 @@ class MonkhorstPack(BrillouinZone):
             data_axis = kwargs.pop('data_axis', None)
             grid_unit = kwargs.pop('grid_unit', 'b')
 
-            func = getattr(self.parent, self._bz_attr)
+            func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asgrid',
                            'k', kwargs.pop('eta', False))

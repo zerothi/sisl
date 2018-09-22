@@ -70,24 +70,13 @@ class Bloch(object):
         """ Whether the Bloch unfolding will be using the repeat construct """
         return not self._is_tile
 
-    def fold_point(self, k):
-        """ Fold the k-point from a small unit-cell to a bigger unitcell """
-        # Transfer to the larger cell (smaller reciprocal cell)
-        k = _a.arrayd(k) * self.bloch
-        for ax in range(3):
-            while k[ax] > 0.5:
-                k[ax] -= 1
-            while k[ax] <= -0.5:
-                k[ax] += 1
-        return k
-
     def unfold_points(self, k):
         r""" Return a list of k-points to be evaluated for this objects unfolding
 
         Parameters
         ----------
         k : (3,) of float
-           k-point evaluation
+           k-point evaluation corresponding to the unfolded unit-cell
 
         Returns
         -------
@@ -99,9 +88,9 @@ class Bloch(object):
         B = self._bloch
         unfold = _a.emptyd([B[2], B[1], B[0], 3])
         # Use B-casting rules (much simpler)
-        unfold[:, :, :, 0] = (_a.aranged(B[0]) / B[0]).reshape(1, 1, -1) + k[0]
-        unfold[:, :, :, 1] = (_a.aranged(B[1]) / B[1]).reshape(1, -1, 1) + k[1]
-        unfold[:, :, :, 2] = (_a.aranged(B[2]) / B[2]).reshape(-1, 1, 1) + k[2]
+        unfold[:, :, :, 0] = (_a.aranged(B[0]).reshape(1, 1, -1) + k[0]) / B[0]
+        unfold[:, :, :, 1] = (_a.aranged(B[1]).reshape(1, -1, 1) + k[1]) / B[1]
+        unfold[:, :, :, 2] = (_a.aranged(B[2]).reshape(-1, 1, 1) + k[2]) / B[2]
         # Back-transform shape
         unfold.shape = (-1, 3)
         return unfold
