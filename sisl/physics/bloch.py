@@ -73,6 +73,10 @@ class Bloch(object):
     def unfold_points(self, k):
         r""" Return a list of k-points to be evaluated for this objects unfolding
 
+        The k-point `k` is with respect to the unfolded geometry.
+        The return list of `k` points are the k-points required to be sampled in the
+        folded geometry (``this.parent``).
+
         Parameters
         ----------
         k : (3,) of float
