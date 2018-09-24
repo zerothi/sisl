@@ -299,7 +299,7 @@ def allow_kwargs(*args):
         def dec_func(*args, **kwargs):
             # Simply remove all the arguments that cannot be passed to the function
             for arg in args_:
-                kwargs.pop(arg, None)
+                del kwargs[arg]
             return func(*args, **kwargs)
 
         return dec_func

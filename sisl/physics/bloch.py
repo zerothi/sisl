@@ -175,16 +175,14 @@ class Bloch(object):
                     m = M[T].reshape(Mshape)
                     k2jpi = jpi2 * k_unfold[T, :]
                     for k in K:
-                        Kk = (K - k).reshape(kshape)
-                        Mu[k, 0, 0] += m * exp(k2jpi[2] * Kk)
+                        Mu[k, 0, 0] += m * exp(k2jpi[2] * (K - k).reshape(kshape))
 
             elif B[2] == 1:
                 for T in range(N):
                     m = M[T].reshape(Mshape)
                     k2jpi = jpi2 * k_unfold[T, :]
                     for j in J:
-                        Jj = (J - j).reshape(jshape)
-                        Mu[0, j, 0] += m * exp(k2jpi[1] * Jj)
+                        Mu[0, j, 0] += m * exp(k2jpi[1] * (J - j).reshape(jshape))
 
             else:
                 for T in range(N):
@@ -201,8 +199,7 @@ class Bloch(object):
                     m = M[T].reshape(Mshape)
                     k2jpi = jpi2 * k_unfold[T, :]
                     for i in I:
-                        Ii = (I - i).reshape(ishape)
-                        Mu[0, 0, i] += m * exp(k2jpi[0] * Ii)
+                        Mu[0, 0, i] += m * exp(k2jpi[0] * (I - i).reshape(ishape))
 
             else:
                 for T in range(N):
