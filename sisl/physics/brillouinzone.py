@@ -447,6 +447,7 @@ class BrillouinZone(object):
                 a = np.empty((len(self), ) + v.shape, dtype=v.dtype)
             a[0] = v
             del v
+            eta.update()
             for i in range(1, len(k)):
                 a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
@@ -636,6 +637,7 @@ class BrillouinZone(object):
             k = self.k
             w = self.weight
             v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]) * w[0]
+            eta.update()
             for i in range(1, len(k)):
                 v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i]) * w[i]
                 eta.update()
@@ -687,6 +689,7 @@ class BrillouinZone(object):
             k = self.k
             w = self.weight
             v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
+            eta.update()
             for i in range(1, len(k)):
                 v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
@@ -1007,6 +1010,7 @@ class MonkhorstPack(BrillouinZone):
             del v
 
             # Now perform calculation
+            eta.update()
             if data_axis is None:
                 for i in range(1, len(k)):
                     grid[k2idx(k[i])] = wrap(func(*args, k=k[i], **kwargs),
