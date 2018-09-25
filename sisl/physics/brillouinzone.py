@@ -389,19 +389,31 @@ class BrillouinZone(object):
             return self._bz_attr
         return getattr(self.parent, self._bz_attr)
 
-    def wrap(self, func):
-        """ Manually define the function to be called from the object
+    def call(self, func, *args, **kwargs):
+        """ Call the function `func` and run as though the function has been called
 
-        This is mainly to allow custom defined functions rather
-        than relying on methods on the parent object.
+        This is a wrapper to call user-defined functions not attached to the parent
+        object.
+
+        The below example shows that the equivalence of the call.
+
+        Examples
+        --------
+        >>> H = Hamiltonian(...)
+        >>> bz = BrillouinZone(H)
+        >>> bz.eigh() == bz.call(H.eigh)
 
         Parameters
         ----------
         func : callable
            method used
+        *args :
+           arguments passed to func in the call sequence
+        **kwargs :
+           keyword arguments passed to func in the call sequence
         """
         self._bz_attr = func
-        return self
+        return self(*args, **kwargs)
 
     # Implement wrapper calls
     def asarray(self):

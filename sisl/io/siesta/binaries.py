@@ -644,7 +644,12 @@ class _gfSileSiesta(SileBinSiesta):
                             S.astype(np.complex128, 'C', copy=False).T, no_u=no)
 
     def write_self_energy(self, SE):
-        """ Write the current energy, k-point and H and S to the file
+        r""" Write the current self energy, k-point and H and S to the file
+
+        The self-energy must correspond to the *bulk* self-energy
+
+        .. math::
+            \boldsymbol \Sigma_{\mathrm{bulk}}(E) = \mathbf S E - \mathbf H - \boldsymbol \Sigma(E)
 
         Parameters
         ----------
