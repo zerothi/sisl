@@ -918,6 +918,27 @@ class Geometry(SuperCellChild):
         g._names = self.names.copy()
         return g
 
+    def sort(self, axes=(2, 1, 0)):
+        """ Return an equivalent geometry by sorting the coordinates according to the axis orders
+
+        This is equivalent to:
+
+        >>> idx = np.lexsort((self.xyz[:, i] for i in axis))
+        >>> new = self.sub(idx)
+
+        Parameters
+        ----------
+        axes : (*,)
+           sorting axes (note the last element has highest precedence)
+
+        Returns
+        -------
+        Geometry : the sorted geometry
+        """
+        axes = _a.arrayi(axes).ravel()
+        idx = np.lexsort(tuple((self.xyz[:, i] for i in axes)))
+        return self.sub(idx)
+
     def optimize_nsc(self, axis=None, R=None):
         """ Optimize the number of supercell connections based on ``self.maxR()``
 

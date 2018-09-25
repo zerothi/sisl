@@ -112,6 +112,13 @@ class TestGeometry(object):
         t = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         assert np.allclose(cell, t.sc.cell)
 
+    def test_sort(self, setup):
+        t = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        ts = t.sort()
+        t = setup.g.tile(2, 1).tile(2, 2).tile(2, 0)
+        tS = t.sort()
+        assert np.allclose(ts.xyz, tS.xyz)cd
+
     def test_tile3(self, setup):
         cell = np.copy(setup.g.sc.cell)
         cell[:, :] *= 2
