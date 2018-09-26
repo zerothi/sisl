@@ -1,13 +1,15 @@
 from __future__ import print_function, division
 
-
 import numpy as np
-from numpy import dot
+from numpy import dot, amax, conjugate, zeros_like
+from numpy import abs as _abs
+
 
 from sisl.messages import warn
 from sisl.utils.ranges import array_arange
 import sisl._array as _a
 import sisl.linalg as lin
+from sisl.linalg import solve
 
 __all__ = ['SelfEnergy', 'SemiInfinite']
 __all__ += ['RecursiveSI']
@@ -195,7 +197,7 @@ class RecursiveSI(SemiInfinite):
 
         if sp1.orthogonal:
             alpha = sp1.Pk(k, dtype=dtype, format='array')
-            beta  = np.conjugate(np.transpose(alpha))
+            beta  = conjugate(alpha.T)
         else:
             M = sp1.Pk(k, dtype=dtype)
             S = sp1.Sk(k, dtype=dtype)
@@ -205,16 +207,11 @@ class RecursiveSI(SemiInfinite):
 
         # Surface Green function (self-energy)
         if bulk:
-            GS = np.copy(GB)
+            GS = GB.copy()
         else:
-            GS = np.zeros_like(GB)
+            GS = zeros_like(GB)
 
-        solve = lin.solve
-
-        i = 0
         while True:
-            i += 1
-
             tA = solve(GB, alpha)
             tB = solve(GB, beta)
 
@@ -229,7 +226,7 @@ class RecursiveSI(SemiInfinite):
             beta = dot(beta, tB)
 
             # Convergence criteria, it could be stricter
-            if np.amax(np.abs(tmp)) < eps:
+            if _abs(tmp).max() < eps:
                 # Return the pristine Green function
                 del tA, tB, alpha, beta, GB
                 if bulk:
@@ -285,7 +282,7 @@ class RecursiveSI(SemiInfinite):
 
         if sp1.orthogonal:
             alpha = sp1.Pk(k, dtype=dtype, format='array')
-            beta  = np.conjugate(np.transpose(alpha))
+            beta  = conjugate(alpha.T)
         else:
             M = sp1.Pk(k, dtype=dtype)
             S = sp1.Sk(k, dtype=dtype)
@@ -295,16 +292,11 @@ class RecursiveSI(SemiInfinite):
 
         # Surface Green function (self-energy)
         if bulk:
-            GS = np.copy(GB)
+            GS = GB.copy()
         else:
-            GS = np.zeros_like(GB)
+            GS = zeros_like(GB)
 
-        solve = lin.solve
-
-        i = 0
         while True:
-            i += 1
-
             tA = solve(GB, alpha)
             tB = solve(GB, beta)
 
@@ -319,7 +311,7 @@ class RecursiveSI(SemiInfinite):
             beta = dot(beta, tB)
 
             # Convergence criteria, it could be stricter
-            if np.amax(np.abs(tmp)) < eps:
+            if _abs(tmp).max() < eps:
                 # Return the pristine Green function
                 del tA, tB, alpha, beta
                 if self.semi_inf_dir == 1:
