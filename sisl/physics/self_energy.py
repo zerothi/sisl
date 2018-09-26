@@ -153,20 +153,17 @@ class RecursiveSI(SemiInfinite):
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep_shape=True)
 
-    def self_energy(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=False):
+    def self_energy(self, E, k=None, dtype=None, eps=1e-14, bulk=False):
         r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
         Parameters
         ----------
-        E : float
-          energy at which the calculation will take place (should *not* be complex)
+        E : float/complex
+          energy at which the calculation will take place
         k : array_like, optional
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors, and
           the semi-infinite component will be automatically set to zero.
-        eta : float, optional
-          the imaginary value to evaluate the self-energy with. Defaults to the
-          value with which the object was created
         dtype : numpy.dtype
           the resulting data type
         eps : float, optional
@@ -179,9 +176,8 @@ class RecursiveSI(SemiInfinite):
         -------
         self-energy : the self-energy corresponding to the semi-infinite direction
         """
-        if eta is None:
-            eta = self.eta
-        Z = E.real + 1j * eta
+        if E.imag == 0.:
+            E = E.real + 1j * self.eta
 
         # Get k-point
         k = self._correct_k(k)
@@ -195,7 +191,7 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        GB = (sp0.Sk(k, dtype=dtype) * Z - sp0.Pk(k, dtype=dtype)).toarray()
+        GB = (sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)).toarray()
 
         if sp1.orthogonal:
             alpha = sp1.Pk(k, dtype=dtype, format='array')
@@ -203,8 +199,8 @@ class RecursiveSI(SemiInfinite):
         else:
             M = sp1.Pk(k, dtype=dtype)
             S = sp1.Sk(k, dtype=dtype)
-            alpha = (M - S * Z).toarray()
-            beta  = (M.getH() - S.getH() * Z).toarray()
+            alpha = (M - S * E).toarray()
+            beta  = (M.getH() - S.getH() * E).toarray()
             del M, S
 
         # Surface Green function (self-energy)
@@ -242,7 +238,7 @@ class RecursiveSI(SemiInfinite):
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')
 
-    def self_energy_lr(self, E, k=None, eta=None, dtype=None, eps=1e-14, bulk=False):
+    def self_energy_lr(self, E, k=None, dtype=None, eps=1e-14, bulk=False):
         r""" Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
 
         Note calculating the LR self-energies simultaneously requires that their chemical potentials are the same.
@@ -250,15 +246,12 @@ class RecursiveSI(SemiInfinite):
 
         Parameters
         ----------
-        E : float
-          energy at which the calculation will take place (should *not* be complex)
+        E : float/complex
+          energy at which the calculation will take place, if complex, the hosting ``eta`` won't be used.
         k : array_like, optional
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors, and
           the semi-infinite component will be automatically set to zero.
-        eta : float, optional
-          the imaginary value to evaluate the self-energy with. Defaults to the
-          value with which the object was created
         dtype : numpy.dtype
           the resulting data type
         eps : float, optional
@@ -272,12 +265,8 @@ class RecursiveSI(SemiInfinite):
         left : the left self-energy
         right : the right self-energy
         """
-        if eta is None:
-            eta = self.eta
-        try:
-            Z = E.real + 1j * eta
-        except:
-            Z = E + 1j * eta
+        if E.imag == 0.:
+            E = E.real + 1j * self.eta
 
         # Get k-point
         k = self._correct_k(k)
@@ -291,7 +280,7 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        SmH0 = sp0.Sk(k, dtype=dtype) * Z - sp0.Pk(k, dtype=dtype)
+        SmH0 = sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)
         GB = SmH0.toarray()
 
         if sp1.orthogonal:
@@ -300,8 +289,8 @@ class RecursiveSI(SemiInfinite):
         else:
             M = sp1.Pk(k, dtype=dtype)
             S = sp1.Sk(k, dtype=dtype)
-            alpha = (M - S * Z).toarray()
-            beta  = (M.getH() - S.getH() * Z).toarray()
+            alpha = (M - S * E).toarray()
+            beta  = (M.getH() - S.getH() * E).toarray()
             del M, S
 
         # Surface Green function (self-energy)
