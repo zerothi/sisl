@@ -8,6 +8,7 @@ from .sile import *
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
+from sisl.utils import str_spec
 
 
 __all__ = ['xsfSile', 'axsfSile']
@@ -316,7 +317,7 @@ class xsfSile(Sile):
 
                 # Figure out which of the segments are a file
                 for i, val in enumerate(values):
-                    if osp.isfile(val):
+                    if osp.isfile(str_spec(val)[0]):
                         input_file = values.pop(i)
                         break
 
@@ -345,7 +346,7 @@ class xsfSile(Sile):
                     raise ValueError('{} could not be read from file: {}.'.format(routine.title(), input_file))
 
                 if len(vector) != len(ns._geometry):
-                    raise ValueError('{} could read from file: {}, does not conform to read geometry.'.format(routine.title(), input_file))
+                    raise ValueError('read_{} could read from file: {}, sizes does not conform to geometry.'.format(routine, input_file))
                 setattr(ns, '_vector', vector)
         p.add_argument('--vector', '-v', metavar=('DATA', '*ARGS, FILE'), nargs='+',
                        action=Vectors,
