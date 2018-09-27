@@ -1,9 +1,9 @@
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import dot, amax, conjugate, zeros_like
+from numpy import dot, amax, conjugate, zeros_like, empty_like
+from numpy import complex128
 from numpy import abs as _abs
-
 
 from sisl.messages import warn
 from sisl.utils.ranges import array_arange
@@ -185,7 +185,7 @@ class RecursiveSI(SemiInfinite):
         k = self._correct_k(k)
 
         if dtype is None:
-            dtype = np.complex128
+            dtype = complex128
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
@@ -197,12 +197,12 @@ class RecursiveSI(SemiInfinite):
 
         if sp1.orthogonal:
             alpha = sp1.Pk(k, dtype=dtype, format='array')
-            beta  = conjugate(alpha.T)
+            beta  = conjugate(alpha.T).astype(GB.dtype, order='C', copy=False)
         else:
             M = sp1.Pk(k, dtype=dtype)
             S = sp1.Sk(k, dtype=dtype)
-            alpha = (M - S * E).toarray()
-            beta  = (M.getH() - S.getH() * E).toarray()
+            alpha = (M - S * E).toarray().astype(GB.dtype, order='C', copy=False)
+            beta  = (M.getH() - S.getH() * E).toarray().astype(GB.dtype, order='C', copy=False)
             del M, S
 
         # Surface Green function (self-energy)
@@ -211,22 +211,24 @@ class RecursiveSI(SemiInfinite):
         else:
             GS = zeros_like(GB)
 
+        # Specifying dot with 'out' argument should be faster
+        tmp = empty_like(GS)
         while True:
             tA = solve(GB, alpha)
             tB = solve(GB, beta)
 
-            tmp = dot(alpha, tB)
+            dot(alpha, tB, tmp)
             # Update bulk Green function
             GB -= tmp + dot(beta, tA)
             # Update surface self-energy
             GS -= tmp
 
             # Update forward/backward
-            alpha = dot(alpha, tA)
-            beta = dot(beta, tB)
+            dot(alpha, tA, alpha)
+            dot(beta, tB, beta)
 
             # Convergence criteria, it could be stricter
-            if _abs(tmp).max() < eps:
+            if _abs(alpha).max() < eps:
                 # Return the pristine Green function
                 del tA, tB, alpha, beta, GB
                 if bulk:
@@ -269,7 +271,7 @@ class RecursiveSI(SemiInfinite):
         k = self._correct_k(k)
 
         if dtype is None:
-            dtype = np.complex128
+            dtype = complex128
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
@@ -282,12 +284,12 @@ class RecursiveSI(SemiInfinite):
 
         if sp1.orthogonal:
             alpha = sp1.Pk(k, dtype=dtype, format='array')
-            beta  = conjugate(alpha.T)
+            beta  = conjugate(alpha.T).astype(GB.dtype, order='C', copy=False)
         else:
             M = sp1.Pk(k, dtype=dtype)
             S = sp1.Sk(k, dtype=dtype)
-            alpha = (M - S * E).toarray()
-            beta  = (M.getH() - S.getH() * E).toarray()
+            alpha = (M - S * E).toarray().astype(GB.dtype, order='C', copy=False)
+            beta  = (M.getH() - S.getH() * E).toarray().astype(GB.dtype, order='C', copy=False)
             del M, S
 
         # Surface Green function (self-energy)
@@ -296,22 +298,24 @@ class RecursiveSI(SemiInfinite):
         else:
             GS = zeros_like(GB)
 
+        # Specifying dot with 'out' argument should be faster
+        tmp = empty_like(GS)
         while True:
             tA = solve(GB, alpha)
             tB = solve(GB, beta)
 
-            tmp = dot(alpha, tB)
+            dot(alpha, tB, tmp)
             # Update bulk Green function
             GB -= tmp + dot(beta, tA)
             # Update surface self-energy
             GS -= tmp
 
             # Update forward/backward
-            alpha = dot(alpha, tA)
-            beta = dot(beta, tB)
+            dot(alpha, tA, alpha)
+            dot(beta, tB, beta)
 
             # Convergence criteria, it could be stricter
-            if _abs(tmp).max() < eps:
+            if _abs(alpha).max() < eps:
                 # Return the pristine Green function
                 del tA, tB, alpha, beta
                 if self.semi_inf_dir == 1:
