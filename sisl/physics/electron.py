@@ -341,6 +341,8 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
     :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
 
+    The velocities calculated are without the Berry curvature contributions.
+
     Parameters
     ----------
     state : array_like
@@ -359,10 +361,6 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     degenerate: list of array_like, optional
        a list containing the indices of degenerate states. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
-
-    See Also
-    --------
-    inv_eff_mass_tensor : inverse effective mass tensor
 
     Returns
     -------
@@ -458,6 +456,8 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
     Although this matrix should be Hermitian it is not checked, and we explicitly calculate
     all elements.
 
+    The velocities calculated are without the Berry curvature contributions.
+
     Parameters
     ----------
     state : array_like
@@ -480,7 +480,6 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
     See Also
     --------
     velocity : only calculate the diagonal components of this matrix
-    inv_eff_mass_tensor : inverse effective mass tensor
 
     Returns
     -------
@@ -561,7 +560,7 @@ def _velocity_matrix_ortho(state, dHk, degenerate, dtype):
 
 
 def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as_matrix=False):
-    r""" Calculate the effective mass tensor for a set of states
+    r""" Calculate the effective mass tensor for a set of states (missing off-diagonal terms)
 
     These are calculated using the analytic expression (:math:`\alpha,\beta` corresponds to Cartesian directions):
 
@@ -576,6 +575,9 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
 
     The matrix :math:`\mathbf M` is known as the effective mass tensor, remark that this function returns the inverse
     of :math:`\mathbf M`.
+
+    Currently this routine only returns the above quations, however, the inverse effective mass tensor
+    also has contributions from some off-diagonal elements, see PRB 75 (195121) 2007.
 
     Notes
     -----
