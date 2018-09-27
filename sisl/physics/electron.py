@@ -53,7 +53,7 @@ from numpy import find_common_type
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid
 from numpy import cos, sin, pi, int32
-from numpy import add, dot, angle, sort
+from numpy import add, angle, sort
 
 from sisl import units, constant
 from sisl.supercell import SuperCell
@@ -61,7 +61,7 @@ from sisl.geometry import Geometry
 from sisl._indices import indices_le
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
-from sisl.linalg import eig_destroy, svd_destroy, eigvals_destroy
+from sisl.linalg import svd_destroy, eigvals_destroy
 from sisl.linalg import eigh_destroy, det_destroy
 from sisl.messages import info, warn, SislError, tqdm_eta
 from sisl._help import dtype_complex_to_real, _range as range
@@ -490,7 +490,7 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
     if state.ndim == 1:
         return velocity_matrix(state.reshape(1, -1), dHk, energy, dSk, degenerate).ravel()
 
-    dtype = np.find_common_type([state.dtype, dHk[0].dtype], [])
+    dtype = find_common_type([state.dtype, dHk[0].dtype], [])
     if dSk is None:
         return _velocity_matrix_ortho(state, dHk, degenerate, dtype)
     return _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype)
