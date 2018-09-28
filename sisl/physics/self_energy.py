@@ -1,8 +1,9 @@
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import dot, amax, conjugate, zeros_like, empty_like
-from numpy import complex128
+from numpy import dot, amax, conjugate
+from numpy import subtract
+from numpy import zeros_like, empty_like, complex128
 from numpy import abs as _abs
 
 from sisl.messages import warn
@@ -219,7 +220,8 @@ class RecursiveSI(SemiInfinite):
 
             dot(alpha, tB, tmp)
             # Update bulk Green function
-            GB -= tmp + dot(beta, tA)
+            subtract(GB, tmp, out=GB)
+            subtract(GB, dot(beta, tA), out=GB)
             # Update surface self-energy
             GS -= tmp
 
@@ -306,7 +308,8 @@ class RecursiveSI(SemiInfinite):
 
             dot(alpha, tB, tmp)
             # Update bulk Green function
-            GB -= tmp + dot(beta, tA)
+            subtract(GB, tmp, out=GB)
+            subtract(GB, dot(beta, tA), out=GB)
             # Update surface self-energy
             GS -= tmp
 
