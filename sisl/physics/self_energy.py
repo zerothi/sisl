@@ -2,8 +2,8 @@ from __future__ import print_function, division
 
 import numpy as np
 from numpy import dot, amax, conjugate
-from numpy import subtract, ascontiguousarray
-from numpy import zeros_like, empty_like, complex128
+from numpy import subtract
+from numpy import empty, zeros_like, empty_like, complex128
 from numpy import abs as _abs
 
 from sisl.messages import warn
@@ -195,16 +195,28 @@ class RecursiveSI(SemiInfinite):
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
         GB = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array')
+        n = GB.shape[0]
+
+        ab = empty([n, 2, n], dtype=dtype)
+        shape = ab.shape
+
+        # Get direct arrays
+        alpha = ab[:, 0, :].view()
+        beta = ab[:, 1, :].view()
+
+        # Get solve step arary
+        ab2 = ab.view()
+        ab2.shape = (n, 2 * n)
 
         if sp1.orthogonal:
-            alpha = sp1.Pk(k, dtype=dtype, format='array')
-            beta  = conjugate(alpha.T).astype(GB.dtype, order='C', copy=False)
+            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array')
+            beta[:, :] = conjugate(alpha.T)
         else:
-            M = sp1.Pk(k, dtype=dtype, format='array')
+            P = sp1.Pk(k, dtype=dtype, format='array')
             S = sp1.Sk(k, dtype=dtype, format='array')
-            alpha = M - S * E
-            beta  = ascontiguousarray(conjugate(M.T) - conjugate(S).T * E)
-            del M, S
+            alpha[:, :] = P - S * E
+            beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
+            del P, S
 
         # Surface Green function (self-energy)
         if bulk:
@@ -215,24 +227,23 @@ class RecursiveSI(SemiInfinite):
         # Specifying dot with 'out' argument should be faster
         tmp = empty_like(GS)
         while True:
-            tA = solve(GB, alpha)
-            tB = solve(GB, beta)
+            tab = solve(GB, ab2).reshape(shape)
 
-            dot(alpha, tB, tmp)
+            dot(alpha, tab[:, 1, :], tmp)
             # Update bulk Green function
             subtract(GB, tmp, out=GB)
-            subtract(GB, dot(beta, tA), out=GB)
+            subtract(GB, dot(beta, tab[:, 0, :]), out=GB)
             # Update surface self-energy
             GS -= tmp
 
             # Update forward/backward
-            dot(alpha, tA, alpha)
-            dot(beta, tB, beta)
+            alpha[:, :] = dot(alpha, tab[:, 0, :])
+            beta[:, :] = dot(beta, tab[:, 1, :])
 
             # Convergence criteria, it could be stricter
             if _abs(alpha).max() < eps:
                 # Return the pristine Green function
-                del tA, tB, alpha, beta, GB
+                del ab, alpha, beta, ab2, tab, GB
                 if bulk:
                     return GS
                 return - GS
@@ -283,16 +294,28 @@ class RecursiveSI(SemiInfinite):
         # need to have two algorithms.
         SmH0 = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array')
         GB = SmH0.copy()
+        n = GB.shape[0]
+
+        ab = empty([n, 2, n], dtype=dtype)
+        shape = ab.shape
+
+        # Get direct arrays
+        alpha = ab[:, 0, :].view()
+        beta = ab[:, 1, :].view()
+
+        # Get solve step arary
+        ab2 = ab.view()
+        ab2.shape = (n, 2 * n)
 
         if sp1.orthogonal:
-            alpha = sp1.Pk(k, dtype=dtype, format='array')
-            beta  = ascontiguousarray(conjugate(alpha.T))
+            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array')
+            beta[:, :] = conjugate(alpha.T)
         else:
-            M = sp1.Pk(k, dtype=dtype, format='array')
+            P = sp1.Pk(k, dtype=dtype, format='array')
             S = sp1.Sk(k, dtype=dtype, format='array')
-            alpha = ascontiguousarray(M - S * E)
-            beta  = ascontiguousarray(conjugate(M.T) - conjugate(S.T) * E)
-            del M, S
+            alpha[:, :] = P - S * E
+            beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
+            del P, S
 
         # Surface Green function (self-energy)
         if bulk:
@@ -303,24 +326,23 @@ class RecursiveSI(SemiInfinite):
         # Specifying dot with 'out' argument should be faster
         tmp = empty_like(GS)
         while True:
-            tA = solve(GB, alpha)
-            tB = solve(GB, beta)
+            tab = solve(GB, ab2).reshape(shape)
 
-            dot(alpha, tB, tmp)
+            dot(alpha, tab[:, 1, :], tmp)
             # Update bulk Green function
             subtract(GB, tmp, out=GB)
-            subtract(GB, dot(beta, tA), out=GB)
+            subtract(GB, dot(beta, tab[:, 0, :]), out=GB)
             # Update surface self-energy
             GS -= tmp
 
             # Update forward/backward
-            dot(alpha, tA, alpha)
-            dot(beta, tB, beta)
+            alpha[:, :] = dot(alpha, tab[:, 0, :])
+            beta[:, :] = dot(beta, tab[:, 1, :])
 
             # Convergence criteria, it could be stricter
             if _abs(alpha).max() < eps:
                 # Return the pristine Green function
-                del tA, tB, alpha, beta
+                del ab, alpha, beta, ab2, tab
                 if self.semi_inf_dir == 1:
                     # GS is the "right" self-energy
                     if bulk:
