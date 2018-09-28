@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import numpy as np
 from numpy import dot, amax, conjugate
-from numpy import subtract
+from numpy import subtract, ascontiguousarray
 from numpy import zeros_like, empty_like, complex128
 from numpy import abs as _abs
 
@@ -194,16 +194,16 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        GB = (sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)).toarray()
+        GB = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array')
 
         if sp1.orthogonal:
             alpha = sp1.Pk(k, dtype=dtype, format='array')
             beta  = conjugate(alpha.T).astype(GB.dtype, order='C', copy=False)
         else:
-            M = sp1.Pk(k, dtype=dtype)
-            S = sp1.Sk(k, dtype=dtype)
-            alpha = (M - S * E).toarray().astype(GB.dtype, order='C', copy=False)
-            beta  = (M.getH() - S.getH() * E).toarray().astype(GB.dtype, order='C', copy=False)
+            M = sp1.Pk(k, dtype=dtype, format='array')
+            S = sp1.Sk(k, dtype=dtype, format='array')
+            alpha = M - S * E
+            beta  = ascontiguousarray(conjugate(M.T) - conjugate(S).T * E)
             del M, S
 
         # Surface Green function (self-energy)
@@ -281,17 +281,17 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        SmH0 = sp0.Sk(k, dtype=dtype) * E - sp0.Pk(k, dtype=dtype)
-        GB = SmH0.toarray()
+        SmH0 = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array')
+        GB = SmH0.copy()
 
         if sp1.orthogonal:
             alpha = sp1.Pk(k, dtype=dtype, format='array')
-            beta  = conjugate(alpha.T).astype(GB.dtype, order='C', copy=False)
+            beta  = ascontiguousarray(conjugate(alpha.T))
         else:
-            M = sp1.Pk(k, dtype=dtype)
-            S = sp1.Sk(k, dtype=dtype)
-            alpha = (M - S * E).toarray().astype(GB.dtype, order='C', copy=False)
-            beta  = (M.getH() - S.getH() * E).toarray().astype(GB.dtype, order='C', copy=False)
+            M = sp1.Pk(k, dtype=dtype, format='array')
+            S = sp1.Sk(k, dtype=dtype, format='array')
+            alpha = ascontiguousarray(M - S * E)
+            beta  = ascontiguousarray(conjugate(M.T) - conjugate(S.T) * E)
             del M, S
 
         # Surface Green function (self-energy)
@@ -324,11 +324,11 @@ class RecursiveSI(SemiInfinite):
                 if self.semi_inf_dir == 1:
                     # GS is the "right" self-energy
                     if bulk:
-                        return GB - GS + SmH0.toarray(), GS
-                    return GS - GB + SmH0.toarray(), - GS
+                        return GB - GS + SmH0, GS
+                    return GS - GB + SmH0, - GS
                 # GS is the "left" self-energy
                 if bulk:
-                    return GS, GB - GS + SmH0.toarray()
-                return - GS, GS - GB + SmH0.toarray()
+                    return GS, GB - GS + SmH0
+                return - GS, GS - GB + SmH0
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy (LR) calculation')
