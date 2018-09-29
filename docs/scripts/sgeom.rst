@@ -46,23 +46,9 @@ Remark that the input file *must* be the first argument of `sgeom`.
 Available formats
 ^^^^^^^^^^^^^^^^^
 
-The currently available formats are:
-
-  * **xyz**, standard coordinate format
-    Note that the the *xyz* file format does not *per see* contain the cell size.
-    The `xyzSile` writes the cell information in the ``xyz`` file comment
-    section (2nd line). Hence if the file was written with sisl you retain
-    the cell information.
-  * **gout**, reads geometries from GULP output
-  * **nc**, reads/writes NetCDF4 files created by Siesta
-  * **TBT.nc**/**PHT.nc**, reads NetCDF4 files created by TBtrans/PHtrans
-  * **tb**, intrinsic file format for geometry/tight-binding models
-  * **fdf**, Siesta native format
-  * **XV**, Siesta coordinate format with velocities
-  * **POSCAR**/**CONTCAR**, VASP coordinate format, does *not* contain species, i.e. returns Hydrogen geometry.
-  * **ASCII**, BigDFT coordinate format
-  * **win**, Wannier90 input file
-  * **xsf**, XCrySDen coordinate format
+A great deal of different file formats are available. For details please see
+`sisl.io` for a list of all implemented data-files. *Any* file that implements
+the ``read_geometry``/``write_geometry`` methods will be usable by `sgeom`.
 
 
 Advanced Features
@@ -157,7 +143,11 @@ If one starts by repeating the structure, then rotate it, then shift the structu
 it will be different from, shift the structure, then rotate, then repeat.
 
 Be also aware that outputting structures are done *at the time in the command line order*.
-This means one can store the intermediate steps while performing the entire operation.
+This means one can store the intermediate steps while performing the entire operation:
+
+::
+		
+    sgeom <in> --rotate <angle> --out <rotated> -tx 2 --out <rotate-tile-x> --ty 2 --out <rotate-tile-y>
 
 
 .. highlight:: python
