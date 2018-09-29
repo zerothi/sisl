@@ -42,7 +42,7 @@ def test_bloch_method():
 def test_bloch_fail_repeat():
     b = Bloch([2] * 3, tile=False)
     k = b.unfold_points([0] * 3)
-    M = np.zeros([2, 2])
+    M = [np.zeros([2, 2])] * len(k)
     m = b.unfold(M, k)
 
 
