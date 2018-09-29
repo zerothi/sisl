@@ -409,7 +409,7 @@ def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     assert len(d) == 2
     d = sisl.io.tableSile(f2).read_data()
     assert len(d) == 4
-    assert np.allclose(d[1, :], d[2, :] * 2)
+    assert np.allclose(d[1, :], (d[2, :] + d[3, :])* 2)
     assert np.allclose(d[2, :], d[3, :])
 
     f = sisl_tmp('1_graphene_all_T.png', _dir)

@@ -1,0 +1,19 @@
+name: test-env
+channels:
+  - conda-forge
+dependencies:
+  - gcc
+  - python=2.7
+  - six
+  - setuptools
+  - pytest
+  - numpy>=1.12
+  - scipy
+  - matplotlib
+  - netcdf4
+  - pyparsing
+  - tqdm
+  - xarray
+  - pip:
+    - coveralls
+    - pytest-cov
