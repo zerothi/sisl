@@ -22,6 +22,7 @@ from numpy import pi, exp, add
 
 from sisl._help import dtype_real_to_complex
 import sisl._array as _a
+from sisl._array import aranged
 
 
 __all__ = ['Bloch']
@@ -92,9 +93,9 @@ class Bloch(object):
         B = self._bloch
         unfold = _a.emptyd([B[2], B[1], B[0], 3])
         # Use B-casting rules (much simpler)
-        unfold[:, :, :, 0] = (_a.aranged(B[0]).reshape(1, 1, -1) + k[0]) / B[0]
-        unfold[:, :, :, 1] = (_a.aranged(B[1]).reshape(1, -1, 1) + k[1]) / B[1]
-        unfold[:, :, :, 2] = (_a.aranged(B[2]).reshape(-1, 1, 1) + k[2]) / B[2]
+        unfold[:, :, :, 0] = (aranged(B[0]).reshape(1, 1, -1) + k[0]) / B[0]
+        unfold[:, :, :, 1] = (aranged(B[1]).reshape(1, -1, 1) + k[1]) / B[1]
+        unfold[:, :, :, 2] = (aranged(B[2]).reshape(-1, 1, 1) + k[2]) / B[2]
         # Back-transform shape
         unfold.shape = (-1, 3)
         return unfold
@@ -148,13 +149,10 @@ class Bloch(object):
         -------
         M_unfold : unfolded matrix of size ``M[0].shape * k_unfold.shape[0] ** 2``
         """
-        B = self.bloch
+        Bi, Bj, Bk = self.bloch
         if self.is_tile:
-            shape = (B[2], B[1], B[0], M[0].shape[0], B[2], B[1], B[0], M[0].shape[1])
+            shape = (Bk, Bj, Bi, M[0].shape[0], Bk, Bj, Bi, M[0].shape[1])
             Mshape = (M[0].shape[0], 1, 1, 1, M[0].shape[1])
-            kshape = (1, B[2], 1, 1, 1)
-            jshape = (1, 1, B[1], 1, 1)
-            ishape = (1, 1, 1, B[0], 1)
         else:
             raise NotImplementedError(self.__class__.__name__ + '.unfold currently does not implement repeating!')
 
@@ -162,89 +160,82 @@ class Bloch(object):
         Mu = np.zeros(shape, dtype=dtype_real_to_complex(M[0].dtype))
 
         # Use B-casting rules (much simpler)
-        jpi2 = 2j * pi
+        pi2 = 2 * pi
 
         # Perform unfolding
         N = len(self)
         w = 1 / N
-        if B[0] == 1:
-            if B[1] == 1:
-                K = _a.arangei(B[2])
+        if Bi == 1:
+            if Bj == 1:
+                K = aranged(Bk).reshape(1, Bk, 1, 1, 1)
                 for T in range(N):
                     m = M[T].reshape(Mshape) * w
-                    k2jpi = jpi2 * k_unfold[T, :]
-                    for k in K:
-                        add(Mu[k, 0, 0], m * exp(k2jpi[2] * (K - k).reshape(kshape)), out=Mu[k, 0, 0])
+                    kjpi2 = 1j * pi2 * k_unfold[T, 2]
+                    for k in range(Bk):
+                        add(Mu[k, 0, 0], m * exp(kjpi2 * (K - k)), out=Mu[k, 0, 0])
 
-            elif B[2] == 1:
-                J = _a.arangei(B[1])
+            elif Bk == 1:
+                J = aranged(Bj).reshape(1, 1, Bj, 1, 1)
                 for T in range(N):
                     m = M[T].reshape(Mshape) * w
-                    k2jpi = jpi2 * k_unfold[T, :]
-                    for j in J:
-                        add(Mu[0, j, 0], m * exp(k2jpi[1] * (J - j).reshape(jshape)), out=Mu[0, j, 0])
-
-            else:
-                J = _a.arangei(B[1])
-                K = _a.arangei(B[2])
-                for T in range(N):
-                    m = M[T].reshape(Mshape) * w
-                    k2jpi = jpi2 * k_unfold[T, :]
-                    for k in K:
-                        Kk = (K - k).reshape(kshape)
-                        for j in J:
-                            Jj = (J - j).reshape(jshape)
-                            add(Mu[k, j, 0], m * exp(k2jpi[2] * Kk + k2jpi[1] * Jj), out=Mu[k, j, 0])
-        elif B[1] == 1:
-            if B[2] == 1:
-                I = _a.arangei(B[0])
-                for T in range(N):
-                    m = M[T].reshape(Mshape) * w
-                    k2jpi = jpi2 * k_unfold[T, :]
-                    for i in I:
-                        add(Mu[0, 0, i], m * exp(k2jpi[0] * (I - i).reshape(ishape)), out=Mu[0, 0, i])
+                    kjpi2 = 1j * pi2 * k_unfold[T, 1]
+                    for j in range(Bj):
+                        add(Mu[0, j, 0], m * exp(kjpi2 * (J - j)), out=Mu[0, j, 0])
 
             else:
-                I = _a.arangei(B[0])
-                K = _a.arangei(B[2])
+                J = aranged(Bj).reshape(1, 1, Bj, 1, 1)
+                K = aranged(Bk).reshape(1, Bk, 1, 1, 1)
                 for T in range(N):
                     m = M[T].reshape(Mshape) * w
-                    k2jpi = jpi2 * k_unfold[T, :]
-                    for k in K:
-                        Kk = (K - k).reshape(kshape)
-                        for i in I:
-                            Ii = (I - i).reshape(ishape)
-                            add(Mu[k, 0, i], m * exp(k2jpi[2] * Kk + k2jpi[0] * Ii), out=Mu[k, 0, i])
+                    kpi2 = pi2 * k_unfold[T, :]
+                    for k in range(Bk):
+                        Kk = (K - k) * kpi2[2]
+                        for j in range(Bj):
+                            add(Mu[k, j, 0], m * exp(1j * (Kk + kpi2[1] * (J - j))), out=Mu[k, j, 0])
+        elif Bj == 1:
+            if Bk == 1:
+                I = aranged(Bi).reshape(1, 1, 1, Bi, 1)
+                for T in range(N):
+                    m = M[T].reshape(Mshape) * w
+                    kjpi2 = 1j * pi2 * k_unfold[T, 0]
+                    for i in range(Bi):
+                        add(Mu[0, 0, i], m * exp(kjpi2 * (I - i)), out=Mu[0, 0, i])
 
-        elif B[2] == 1:
-            I = _a.arangei(B[0])
-            J = _a.arangei(B[1])
+            else:
+                I = aranged(Bi).reshape(1, 1, 1, Bi, 1)
+                K = aranged(Bk).reshape(1, Bk, 1, 1, 1)
+                for T in range(N):
+                    m = M[T].reshape(Mshape) * w
+                    kpi2 = pi2 * k_unfold[T, :]
+                    for k in range(Bk):
+                        Kk = (K - k) * kpi2[2]
+                        for i in range(Bi):
+                            add(Mu[k, 0, i], m * exp(1j * (Kk + kpi2[0] * (I - i))), out=Mu[k, 0, i])
+
+        elif Bk == 1:
+            I = aranged(Bi).reshape(1, 1, 1, Bi, 1)
+            J = aranged(Bj).reshape(1, 1, Bj, 1, 1)
             for T in range(N):
                 m = M[T].reshape(Mshape) * w
-                k2jpi = jpi2 * k_unfold[T, :]
-                for j in J:
-                    Jj = (J - j).reshape(jshape)
-                    for i in I:
-                        Ii = (I - i).reshape(ishape)
-                        add(Mu[0, j, i], m * exp(k2jpi[1] * Jj + k2jpi[0] * Ii), out=Mu[0, j, i])
+                kpi2 = pi2 * k_unfold[T, :]
+                for j in range(Bj):
+                    Jj = (J - j) * kpi2[1]
+                    for i in range(Bi):
+                        add(Mu[0, j, i], m * exp(1j * (Jj + kpi2[0] * (I - i))), out=Mu[0, j, i])
 
         else:
-            I = _a.arangei(B[0])
-            J = _a.arangei(B[1])
-            K = _a.arangei(B[2])
+            I = aranged(Bi).reshape(1, 1, 1, Bi, 1)
+            J = aranged(Bj).reshape(1, 1, Bj, 1, 1)
+            K = aranged(Bk).reshape(1, Bk, 1, 1, 1)
             for T in range(N):
                 m = M[T].reshape(Mshape) * w
-                k2jpi = jpi2 * k_unfold[T, :]
-                for k in K:
-                    Kk = (K - k).reshape(kshape)
-                    for j in J:
-                        Jj = (J - j).reshape(jshape)
-                        for i in I:
-                            Ii = (I - i).reshape(ishape)
-
+                kpi2 = pi2 * k_unfold[T, :]
+                for k in range(Bk):
+                    Kk = (K - k) * kpi2[2]
+                    for j in range(Bj):
+                        KkJj = Kk + (J - j) * kpi2[1]
+                        for i in range(Bi):
                             # Calculate phases and add for all expansions
-                            add(Mu[k, j, i], m * exp(k2jpi[2] * Kk +
-                                                     k2jpi[1] * Jj +
-                                                     k2jpi[0] * Ii), out=Mu[k, j, i])
+                            add(Mu[k, j, i], m * exp(1j * (KkJj + kpi2[0] * (I - i))), out=Mu[k, j, i])
 
         return Mu.reshape(N * M[0].shape[0], N * M[0].shape[1])
