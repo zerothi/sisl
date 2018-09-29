@@ -269,6 +269,7 @@ def angle(s, rad=True, in_rad=True):
 
 _ispy3 = sys.version[0] == '3'
 
+
 def allow_kwargs(*args):
     """ Decoractor for forcing `func` to have the named arguments as listed in `args`
 

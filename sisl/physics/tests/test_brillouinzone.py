@@ -6,7 +6,7 @@ from itertools import product
 import math as m
 import numpy as np
 
-from sisl import SislError
+from sisl import SislError, geom
 from sisl import Geometry, Atom, SuperCell, SuperCellChild
 from sisl import BrillouinZone, BandStructure
 from sisl import MonkhorstPack
@@ -329,7 +329,6 @@ class TestBrillouinZone(object):
         assert np.allclose(assum, asaverage)
 
     def test_replace_gamma(self):
-        from sisl import geom
         g = geom.graphene()
         bz = MonkhorstPack(g, 2, trs=False)
         bz_gamma = MonkhorstPack(g, [2, 2, 2], size=[0.5] * 3, trs=False)
@@ -343,6 +342,12 @@ class TestBrillouinZone(object):
     def test_in_primitive(self):
         assert np.allclose(MonkhorstPack.in_primitive([[1.] * 3, [-1.] * 3]), 0)
 
+    def test_default_weight(self):
+        bz1 = BrillouinZone(geom.graphene(), [[0] * 3, [0.25] * 3], [1/2] * 2)
+        bz2 = BrillouinZone(geom.graphene(), [[0] * 3, [0.25] * 3])
+        assert np.allclose(bz1.k, bz2.k)
+        assert np.allclose(bz1.weight, bz2.weight)
+
     @pytest.mark.parametrize("n", [[0, 0, 1], [0.5] * 3])
     def test_param_circle(self, n):
         bz = BrillouinZone.param_circle(1, 10, 0.1, n, [1/2] * 3)
@@ -354,7 +359,6 @@ class TestBrillouinZone(object):
         assert np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :])
 
     def test_replace_gamma_trs(self):
-        from sisl import geom
         g = geom.graphene()
         bz = MonkhorstPack(g, [2, 2, 2], trs=False)
         bz_gamma = MonkhorstPack(g, [3, 3, 3], size=[0.5] * 3, trs=True)
