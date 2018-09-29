@@ -28,10 +28,12 @@ matrix:
      - CONDA_ENV=py27
    - env:
      - CONDA_ENV=py27-opt
+     - OPTIONAL_DEPENDENCIES=true
    - env:
      - CONDA_ENV=py36
    - env:
      - CONDA_ENV=py36-opt
+     - OPTIONAL_DEPENDENCIES=true
 
 before_install:
   - |
