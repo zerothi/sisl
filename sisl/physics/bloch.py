@@ -18,7 +18,9 @@ from __future__ import print_function, division
 
 from itertools import product
 import numpy as np
-from numpy import pi, exp, add
+from numpy import zeros, empty
+from numpy import add, multiply
+from numpy import pi, exp
 
 from sisl._help import dtype_real_to_complex
 import sisl._array as _a
@@ -150,14 +152,16 @@ class Bloch(object):
         M_unfold : unfolded matrix of size ``M[0].shape * k_unfold.shape[0] ** 2``
         """
         Bi, Bj, Bk = self.bloch
+        # Retrieve shapes
+        M0, M1 = M[0].shape
         if self.is_tile:
-            shape = (Bk, Bj, Bi, M[0].shape[0], Bk, Bj, Bi, M[0].shape[1])
-            Mshape = (M[0].shape[0], 1, 1, 1, M[0].shape[1])
+            shape = (Bk, Bj, Bi, M0, Bk, Bj, Bi, M1)
+            Mshape = (M0, 1, 1, 1, M1)
         else:
             raise NotImplementedError(self.__class__.__name__ + '.unfold currently does not implement repeating!')
 
         # Allocate the unfolded matrix
-        Mu = np.zeros(shape, dtype=dtype_real_to_complex(M[0].dtype))
+        Mu = zeros(shape, dtype=dtype_real_to_complex(M[0].dtype))
 
         # Use B-casting rules (much simpler)
         pi2 = 2 * pi
@@ -238,4 +242,4 @@ class Bloch(object):
                             # Calculate phases and add for all expansions
                             add(Mu[k, j, i], m * exp(1j * (KkJj + kpi2[0] * (I - i))), out=Mu[k, j, i])
 
-        return Mu.reshape(N * M[0].shape[0], N * M[0].shape[1])
+        return Mu.reshape(N * M0, N * M1)
