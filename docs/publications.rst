@@ -10,7 +10,8 @@ Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. Z. Nourbakhsh and R. Asgari,
-   *Phosphorene as nanoelectromechanical material*
+   *Phosphorene as nanoelectromechanical material*,
+   Physical Review B **98**, `125427 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.98.125427>`_
 
 #. G. Calogero, N. Papior, P. Bøggild and M. Brandbyge,
    *Large-scale tight-binding simulations of quantum transport in ballistic graphene*,
