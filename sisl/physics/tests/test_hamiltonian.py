@@ -1274,19 +1274,19 @@ class TestHamiltonian(object):
         # orbitals of first atom
         edge = H2.edges(orbital=[0, 1])
         assert len(edge) == 6
-        assert len(H2.geom.o2a(edge, uniq=True)) == 3
+        assert len(H2.geom.o2a(edge, unique=True)) == 3
 
         # first orbital on first two atoms
         edge = H2.edges(orbital=[0, 2])
         # The 1, 3 are still on the first two atoms, but aren't
         # excluded. Hence they are both there
         assert len(edge) == 10
-        assert len(H2.geom.o2a(edge, uniq=True)) == 6
+        assert len(H2.geom.o2a(edge, unique=True)) == 6
 
         # first orbital on first two atoms
         edge = H2.edges(orbital=[0, 2], exclude=[0, 1, 2, 3])
         assert len(edge) == 8
-        assert len(H2.geom.o2a(edge, uniq=True)) == 4
+        assert len(H2.geom.o2a(edge, unique=True)) == 4
 
 
 def test_psi1():
