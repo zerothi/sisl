@@ -92,6 +92,10 @@ class onlysSileSiesta(SileBinSiesta):
                             'passed geometry as the number of atoms or orbitals is '
                             'inconsistent with TSHS file.')
 
+        # Ensure that the number of supercells is correct
+        if np.any(geom.nsc != tshs_g.nsc):
+            geom.set_nsc(tshs_g.nsc)
+
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
@@ -129,6 +133,10 @@ class tshsSileSiesta(onlysSileSiesta):
             raise SileError(self.__class__.__name__ + '.read_hamiltonian could not use the '
                             'passed geometry as the number of atoms or orbitals is inconsistent '
                             'with TSHS file.')
+
+        # Ensure that the number of supercells is correct
+        if np.any(geom.nsc != tshs_g.nsc):
+            geom.set_nsc(tshs_g.nsc)
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
