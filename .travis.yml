@@ -59,8 +59,7 @@ before_install:
   - | # In case we have optional dependencies, also download the sisl-files submodule to test large files
     if [[ ${OPTIONAL_DEPENDENCIES:-false} == true ]]; then
        export SISL_FILES_TESTS=$(pwd)/files/tests ;
-       git submodule init files ;
-       git lfs pull ;
+       git submodule update --init files ;
     fi
 
 
