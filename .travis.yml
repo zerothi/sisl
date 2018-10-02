@@ -4,13 +4,13 @@ sudo: false
 # Manage sub-modules manually
 git:
   submodules: false
-  lfs_skip_smudge: true
+#  lfs_skip_smudge: true
 
 # Reduce bandwidth usage for Git-LFS
 # see https://github.com/travis-ci/travis-ci/issues/8787#event-1875343357
-cache:
-  directories:
-    - .git/lfs
+#cache:
+#  directories:
+#    - .git/lfs
 
 branches:
   except:
