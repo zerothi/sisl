@@ -89,10 +89,6 @@ from sisl.grid import Grid
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
 
 
-def _do_nothing(x):
-    return x
-
-
 class BrillouinZone(object):
     """ A class to construct Brillouin zone related quantities
 
@@ -446,13 +442,18 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
+            has_wrap = 'wrap' in kwargs
+            if has_wrap:
+                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
             w = self.weight
-            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
+            if has_wrap:
+                v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
+            else:
+                v = func(*args, k=k[0], **kwargs)
             if v.ndim == 0:
                 a = np.empty([len(self)], dtype=v.dtype)
             else:
@@ -460,9 +461,14 @@ class BrillouinZone(object):
             a[0] = v
             del v
             eta.update()
-            for i in range(1, len(k)):
-                a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
+            if has_wrap:
+                for i in range(1, len(k)):
+                    a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                    eta.update()
+            else:
+                for i in range(1, len(k)):
+                    a[i] = func(*args, k=k[i], **kwargs)
+                    eta.update()
             eta.close()
             return a
         # Set instance __bz_call
@@ -500,7 +506,7 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
+            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asnone',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
@@ -546,16 +552,23 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
+            has_wrap = 'wrap' in kwargs
+            if has_wrap:
+                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist',
                            'k', kwargs.pop('eta', False))
             a = [None] * len(self)
             parent = self.parent
             k = self.k
             w = self.weight
-            for i in range(len(k)):
-                a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
+            if has_wrap:
+                for i in range(len(k)):
+                    a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                    eta.update()
+            else:
+                for i in range(len(k)):
+                    a[i] = func(*args, k=k[i], **kwargs)
+                    eta.update()
             eta.close()
             return a
         # Set instance __call__
@@ -593,15 +606,22 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
+            has_wrap = 'wrap' in kwargs
+            if has_wrap:
+                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
             w = self.weight
-            for i in range(len(k)):
-                yield wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
+            if has_wrap:
+                for i in range(len(k)):
+                    yield wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                    eta.update()
+            else:
+                for i in range(len(k)):
+                    yield func(*args, k=k[i], **kwargs)
+                    eta.update()
             eta.close()
         # Set instance __call__
         setattr(self, '_bz_call', types.MethodType(_call, self))
@@ -642,17 +662,26 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
+            has_wrap = 'wrap' in kwargs
+            if has_wrap:
+                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
             w = self.weight
-            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]) * w[0]
-            eta.update()
-            for i in range(1, len(k)):
-                v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i]) * w[i]
+            if has_wrap:
+                v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]) * w[0]
                 eta.update()
+                for i in range(1, len(k)):
+                    v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i]) * w[i]
+                    eta.update()
+            else:
+                v = func(*args, k=k[0], **kwargs) * w[0]
+                eta.update()
+                for i in range(1, len(k)):
+                    v += func(*args, k=k[i], **kwargs) * w[i]
+                    eta.update()
             eta.close()
             return v
         # Set instance __call__
@@ -694,17 +723,26 @@ class BrillouinZone(object):
 
         def _call(self, *args, **kwargs):
             func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
+            has_wrap = 'wrap' in kwargs
+            if has_wrap:
+                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.assum',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
             w = self.weight
-            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-            eta.update()
-            for i in range(1, len(k)):
-                v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+            if has_wrap:
+                v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
                 eta.update()
+                for i in range(1, len(k)):
+                    v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                    eta.update()
+            else:
+                v = func(*args, k=k[0], **kwargs)
+                eta.update()
+                for i in range(1, len(k)):
+                    v += func(*args, k=k[i], **kwargs)
+                    eta.update()
             eta.close()
             return v
         # Set instance __call__
@@ -925,7 +963,7 @@ class MonkhorstPack(BrillouinZone):
             grid_unit = kwargs.pop('grid_unit', 'b')
 
             func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', _do_nothing))
+            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asgrid',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
