@@ -96,10 +96,11 @@ def test_sancho_lr(setup):
 @pytest.mark.parametrize("semi_axis", [None, 0, 1])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
-def test_real_space_HS(setup, k_axis, semi_axis, trs, bz):
+@pytest.mark.parametrize("unfold", [1, 2])
+def test_real_space_HS(setup, k_axis, semi_axis, trs, bz, unfold):
     if k_axis == semi_axis:
         return
-    RSE = RealSpaceSE(setup.HS, (1, 1, 1))
+    RSE = RealSpaceSE(setup.HS, (unfold, unfold, 1))
     RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz)
     # Initialize and print
     with warnings.catch_warnings():
@@ -114,10 +115,11 @@ def test_real_space_HS(setup, k_axis, semi_axis, trs, bz):
 @pytest.mark.parametrize("semi_axis", [None, 0, 1])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
-def test_real_space_H(setup, k_axis, semi_axis, trs, bz):
+@pytest.mark.parametrize("unfold", [1, 2])
+def test_real_space_H(setup, k_axis, semi_axis, trs, bz, unfold):
     if k_axis == semi_axis:
         return
-    RSE = RealSpaceSE(setup.H, (1, 1, 1))
+    RSE = RealSpaceSE(setup.H, (unfold, unfold, 1))
     RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz)
     # Initialize and print
     with warnings.catch_warnings():
