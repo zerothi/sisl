@@ -3,10 +3,13 @@ from __future__ import print_function, division
 import pytest
 
 import math as m
+import warnings
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian
+from sisl import BrillouinZone
 from sisl import SelfEnergy, SemiInfinite, RecursiveSI
+from sisl import RealSpaceSE
 
 
 pytestmark = pytest.mark.self_energy
@@ -87,3 +90,39 @@ def test_sancho_lr(setup):
     assert np.allclose(LB_SER, R_SE)
     assert np.allclose(RB_SEL, L_SE)
     assert np.allclose(RB_SER, R_SE)
+
+
+@pytest.mark.parametrize("k_axis", [None, 0, 1])
+@pytest.mark.parametrize("semi_axis", [None, 0, 1])
+@pytest.mark.parametrize("trs", [True, False])
+@pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
+def test_real_space_HS(setup, k_axis, semi_axis, trs, bz):
+    if k_axis == semi_axis:
+        return
+    RSE = RealSpaceSE(setup.HS, (1, 1, 1))
+    RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz)
+    # Initialize and print
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+
+    RSE.green(0.1)
+    RSE.self_energy(0.1)
+
+
+@pytest.mark.parametrize("k_axis", [None, 0, 1])
+@pytest.mark.parametrize("semi_axis", [None, 0, 1])
+@pytest.mark.parametrize("trs", [True, False])
+@pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
+def test_real_space_H(setup, k_axis, semi_axis, trs, bz):
+    if k_axis == semi_axis:
+        return
+    RSE = RealSpaceSE(setup.H, (1, 1, 1))
+    RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz)
+    # Initialize and print
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+
+    RSE.green(0.1)
+    RSE.self_energy(0.1)
