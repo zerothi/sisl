@@ -29,21 +29,7 @@ def test_bloch_create(nx, ny, nz):
 
 def test_bloch_method():
     b = Bloch([1] * 3)
-    assert 'tile' in str(b)
-    assert b.is_tile
-    assert not b.is_repeat
-    b = Bloch([1] * 3, tile=False)
-    assert 'repeat' in str(b)
-    assert not b.is_tile
-    assert b.is_repeat
-
-
-@pytest.mark.xfail(raises=NotImplementedError)
-def test_bloch_fail_repeat():
-    b = Bloch([2] * 3, tile=False)
-    k = b.unfold_points([0] * 3)
-    M = [np.zeros([2, 2])] * len(k)
-    m = b.unfold(M, k)
+    assert 'Bloch' in str(b)
 
 
 def test_bloch_call():

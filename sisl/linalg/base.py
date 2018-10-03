@@ -46,7 +46,7 @@ def inv(a, overwrite_a=False):
         x, info = getri(lu, piv, lwork=lwork, overwrite_lu=True)
     if info > 0:
         raise LinAlgError("Singular matrix")
-    if info < 0:
+    elif info < 0:
         raise ValueError('illegal value in %d-th argument of internal '
                          'getrf|getri' % -info)
     return x
@@ -102,7 +102,7 @@ def solve(a, b, overwrite_a=False, overwrite_b=False):
     _, _, x, info = gesv(a1, b1, overwrite_a=overwrite_a, overwrite_b=overwrite_b)
     if info > 0:
         raise LinAlgError("Singular matrix")
-    if info < 0:
+    elif info < 0:
         raise ValueError('illegal value in %d-th argument of internal '
                          'gesv' % -info)
     if b_is_1D:
