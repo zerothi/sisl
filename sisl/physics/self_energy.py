@@ -419,11 +419,6 @@ class RealSpaceSE(SelfEnergy):
         }
         self.update_option(**options)
 
-        try:
-            import matplotlib as _mpl
-        except ImportError:
-            raise ImportError(self.__class__.__name__ + ' requires matplotlib installed!')
-
     def update_option(self, **options):
         """ Update options in the real-space self-energy """
         self._options.update(options)
