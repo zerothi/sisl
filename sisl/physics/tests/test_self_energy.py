@@ -120,7 +120,7 @@ def test_real_space_H(setup, k_axis, semi_axis, trs, bz, unfold):
     if k_axis == semi_axis:
         return
     RSE = RealSpaceSE(setup.H, (unfold, unfold, 1))
-    RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz)
+    RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz, trs=False)
     # Initialize and print
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
