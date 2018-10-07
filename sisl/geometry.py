@@ -1807,11 +1807,13 @@ class Geometry(SuperCellChild):
     def attach(self, s_idx, other, o_idx, dist='calc', axis=None):
         """ Attaches another `Geometry` at the `s_idx` index with respect to `o_idx` using different methods.
 
+        The attached geometry will be inserted at the end of the geometry via `add`.
+
         Parameters
         ----------
         s_idx : int
            atomic index which is the base position of the attachment. The distance
-           between `s_idx` and `o_idx` are `dist`.
+           between `s_idx` and `o_idx` is `dist`.
         other : Geometry
            the other Geometry to attach at the given point. In this case `dist` from
            `s_idx`.

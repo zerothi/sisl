@@ -1531,7 +1531,6 @@ class SparseOrbital(_SparseGeometry):
     def remove(self, atom, orb_index=None):
         """ Remove a subset of this sparse matrix by only retaining the atoms corresponding to `atom` and optionally a subset of the atom orbitals
 
-
         See `sub` for details regarding `atom` and `orb_index` arguments.
 
         Parameters
@@ -1643,6 +1642,8 @@ class SparseOrbital(_SparseGeometry):
         # Define the atoms to change
         old_atom = geom.atoms.atom[atom_idx]
         new_atom = old_atom.sub(orb_index)
+        # Rename the tag
+        new_atom.tag += 'sub'
 
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore')

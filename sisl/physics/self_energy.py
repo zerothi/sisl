@@ -471,7 +471,7 @@ class RealSpaceSE(SelfEnergy):
         idx = g.sc.sc_index([0, 0, 0])
         cols = _a.arangei(n) + idx * n
         # Short hand sparse matrix
-        csr = P0._csr
+        csr = P0._csr.copy()
         csr.delete_columns(cols, keep_shape=True)
         # Now P0 only contains couplings along the k and semi-inf directions
         # Extract the connecting orbitals and reduce them to unique atomic indices

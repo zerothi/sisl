@@ -488,6 +488,24 @@ class _gfSileSiesta(SileBinSiesta):
     """ Surface Green function file containing, Hamiltonian, overlap matrix and self-energies
 
     Do not mix read and write statements when using this code.
+
+    This small snippet reads/writes the GF file
+
+    >>> with sisl.io._gfSileSiesta('hello.GF') as f:
+    ...    no, k, E = f.read_header()
+    ...    for is_k, k, E in f:
+    ...        if is_k:
+    ...            H, S = f.read_hamiltonian()
+    ...        SeHSE = f.read_self_energy()
+
+    To write a file do:
+
+    >>> with sisl.io._gfSileSiesta('hello.GF') as f:
+    ...    f.write_header(E, sisl.MonkhorstPack(...), H, mu=0.)
+    ...    for is_k, k, E in f:
+    ...        if is_k:
+    ...            f.write_hamiltonian(H, S)
+    ...        f.write_self_energy(SeHSE)
     """
 
     def _setup(self, *args, **kwargs):

@@ -17,6 +17,10 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    *Large-scale tight-binding simulations of quantum transport in ballistic graphene*,
    Journal of Physics: Condensed Matter, `(2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aad6f1>`_
 
+#. Bálint Fülöp, Zoltán Tajkov, János Pető, Péter Kun, János Koltai, László Oroszlány, Endre Tóvári, Hiroshi Murakawa, Yoshinori Tokura, Sándor Bordács, Levente Tapasztó and Szabolcs Csonka,
+   *Exfoliation of single layer BiTeI flakes*,
+   2D Materials **5** `3 (2018) <http://stacks.iop.org/2053-1583/5/i=3/a=031013>`_.
+
 #. Z. Nourbakhsh and R. Asgari,
    *Charge transport in doped zigzag phosphorene nanoribbons*,
    Physical Review B **97**, `235406 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.97.235406>`_
@@ -55,4 +59,3 @@ arXiv publications
 
 These publications are as far as we know in the review process.
 
-#. `Exfoliation of single layer BiTeI flakes <https://arxiv.org/abs/1709.09732>`_
