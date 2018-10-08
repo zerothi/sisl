@@ -160,7 +160,7 @@ def test_real_space_H_dtype(setup):
     g128 = RSE.green(0.1, dtype=np.complex128)
     assert g64.dtype == np.complex64
     assert g128.dtype == np.complex128
-    assert np.allclose(g64, g128, atol=1.e-6)
+    assert np.allclose(g64, g128, atol=1.e-4)
 
     s64 = RSE.self_energy(0.1, dtype=np.complex64)
     s128 = RSE.self_energy(0.1, dtype=np.complex128)
