@@ -523,7 +523,7 @@ class _SparseGeometry(object):
 
         Parameters
         ----------
-        atom  : array_like of int
+        atom : array_like of int
             indices of removed atoms
 
         See Also
@@ -545,7 +545,7 @@ class _SparseGeometry(object):
 
         Parameters
         ----------
-        atom  : array_like of int
+        atom : array_like of int
             indices of removed atoms
 
         See Also
@@ -1535,7 +1535,7 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atom  : array_like of int or Atom
+        atom : array_like of int or Atom
             indices of removed atoms or Atom for direct removal of all atoms
         orb_index : array_like of int, optional
             if `atom` is an instance of `Atom`, this variable correspond to the
@@ -1574,7 +1574,7 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atom  : array_like of int or Atom
+        atom : array_like of int or Atom
             indices of retained atoms or Atom for retaining only *that* atom
         orb_index : array_like of int, optional
             if `atom` is an instance of `Atom`, this variable correspond to the

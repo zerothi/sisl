@@ -269,8 +269,8 @@ class RecursiveSI(SemiInfinite):
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors, and
           the semi-infinite component will be automatically set to zero.
-        dtype : numpy.dtype
-          the resulting data type
+        dtype : numpy.dtype, optional
+          the resulting data type, default to ``np.complex128``
         eps : float, optional
           convergence criteria for the recursion
         bulk : bool, optional
@@ -591,7 +591,7 @@ class RealSpaceSE(SelfEnergy):
             self._options['bz'] = MonkhorstPack(sc, nk, trs=self._options['trs'])
             info(self.__class__.__name__ + '.initialize determined the number of k-points: {}'.format(nk[k_ax]))
 
-    def self_energy(self, E, bulk=False, only_V=False):
+    def self_energy(self, E, bulk=False, coupling=False, dtype=None):
         r""" Calculate the real-space self-energy
 
         The real space self-energy is calculated via:
@@ -607,24 +607,26 @@ class RealSpaceSE(SelfEnergy):
         bulk : bool, optional
            if true, :math:`\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}`
            is returned, otherwise :math:`\boldsymbol\Sigma^\mathcal{R}` is returned
-        only_V: bool, optional
+        dtype : numpy.dtype, optional
+          the resulting data type, default to ``np.complex128``
+        coupling: bool, optional
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
         """
         if E.imag == 0:
             E = E.real + 1j * self._options['eta']
-        invG = inv(self.green(E), True)
-        if only_V:
+        invG = inv(self.green(E, dtype=dtype), True)
+        if coupling:
             orbs = self._calc['orbs']
             if bulk:
                 return invG[orbs, orbs.T]
-            return ((self._calc['S0'] * E - self._calc['P0']) - invG)[orbs, orbs.T]
+            return ((self._calc['S0'] * E - self._calc['P0']).astype(dtype, copy=False).toarray() - invG)[orbs, orbs.T]
         else:
             if bulk:
                 return invG
-            return (self._calc['S0'] * E - self._calc['P0']) - invG
+            return (self._calc['S0'] * E - self._calc['P0']).astype(dtype, copy=False).toarray() - invG
 
-    def green(self, E):
+    def green(self, E, dtype=None):
         r""" Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -636,6 +638,8 @@ class RealSpaceSE(SelfEnergy):
         ----------
         E : float/complex
            energy to evaluate the real-space Green function at
+        dtype : numpy.dtype, optional
+          the resulting data type, default to ``np.complex128``
         """
         opt = self._options
 
@@ -646,6 +650,9 @@ class RealSpaceSE(SelfEnergy):
             trs = bz._trs
         except:
             trs = opt['trs']
+
+        if dtype is None:
+            dtype = complex128
 
         # Now we are to calculate the real-space self-energy
         if E.imag == 0:
@@ -671,15 +678,15 @@ class RealSpaceSE(SelfEnergy):
             M0Pk = M0.Pk
             if self.parent.orthogonal:
                 # Orthogonal *always* identity
-                S0 = identity(len(M0), dtype=complex128)
+                S0E = identity(len(M0), dtype=dtype) * E
                 def _calc_green(k, no, tile, idx0):
-                    SL, SR = SE(E, k)
-                    return inv(S0 * E - M0Pk(k, format='array') - SL - SR, True)
+                    SL, SR = SE(E, k, dtype=dtype)
+                    return inv(S0E - M0Pk(k, dtype=dtype, format='array') - SL - SR, True)
             else:
                 M0Sk = M0.Sk
                 def _calc_green(k, no, tile, idx0):
-                    SL, SR = SE(E, k)
-                    return inv(M0Sk(k, format='array') * E - M0Pk(k, format='array') - SL - SR, True)
+                    SL, SR = SE(E, k, dtype=dtype)
+                    return inv(M0Sk(k, dtype=dtype, format='array') * E - M0Pk(k, dtype=dtype, format='array') - SL - SR, True)
 
         else:
             M1 = self._calc['SE'].spgeom1
@@ -687,8 +694,8 @@ class RealSpaceSE(SelfEnergy):
             if self.parent.orthogonal:
                 def _calc_green(k, no, tile, idx0):
                     # Calculate left/right self-energies
-                    Gf, A2 = SE(E, k, bulk=True) # A1 == Gf, because of memory usage
-                    B = - M1Pk(k, dtype=A2.dtype, format='array')
+                    Gf, A2 = SE(E, k, dtype=dtype, bulk=True) # A1 == Gf, because of memory usage
+                    B = - M1Pk(k, dtype=dtype, format='array')
                     # C = conjugate(B.T)
 
                     tY = solve(Gf, conjugate(B.T), True, True)
@@ -699,7 +706,7 @@ class RealSpaceSE(SelfEnergy):
                     # G11 and G22 are the same:
                     #  G = [A1 - C.tX]^-1 == [A2 - B.tY]^-1
 
-                    G = empty([tile, no, tile, no], dtype=Gf.dtype)
+                    G = empty([tile, no, tile, no], dtype=dtype)
                     G[idx0, :, idx0, :] = Gf.reshape(1, no, no)
                     for i in range(1, tile):
                         G[idx0[i:], :, idx0[:-i], :] = - dot(tX, G[i-1, :, 0, :]).reshape(1, no, no)
@@ -709,8 +716,7 @@ class RealSpaceSE(SelfEnergy):
             else:
                 M1Sk = M1.Sk
                 def _calc_green(k, no, tile, idx0):
-                    Gf, A2 = SE(E, k, bulk=True) # A1 == Gf, because of memory usage
-                    dtype = A2.dtype
+                    Gf, A2 = SE(E, k, dtype=dtype, bulk=True) # A1 == Gf, because of memory usage
                     tY = M1Sk(k, dtype=dtype, format='array') # S
                     tX = M1Pk(k, dtype=dtype, format='array') # H
                     B = tY * E - tX

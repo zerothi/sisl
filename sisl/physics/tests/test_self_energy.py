@@ -54,9 +54,27 @@ def test_sancho_orthogonal(setup):
     assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
 
 
+def test_sancho_orthogonal_dtype(setup):
+    SE = RecursiveSI(setup.H, '+A')
+    s64 = SE.self_energy(0.1, dtype=np.complex64)
+    s128 = SE.self_energy(0.1)
+    assert s64.dtype == np.complex64
+    assert s128.dtype == np.complex128
+    assert np.allclose(s64, s128)
+
+
 def test_sancho_non_orthogonal(setup):
     SE = RecursiveSI(setup.HS, '-A')
     assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
+
+
+def test_sancho_non_orthogonal(setup):
+    SE = RecursiveSI(setup.HS, '-A')
+    s64 = SE.self_energy(0.1, dtype=np.complex64)
+    s128 = SE.self_energy(0.1)
+    assert s64.dtype == np.complex64
+    assert s128.dtype == np.complex128
+    assert np.allclose(s64, s128)
 
 
 def test_sancho_lr(setup):
@@ -128,3 +146,24 @@ def test_real_space_H(setup, k_axis, semi_axis, trs, bz, unfold):
 
     RSE.green(0.1)
     RSE.self_energy(0.1)
+
+
+def test_real_space_H_dtype(setup):
+    RSE = RealSpaceSE(setup.H, (2, 2, 1))
+    RSE.update_option(semi_axis=0, k_axis=1, dk=100)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+
+    g64 = RSE.green(0.1, dtype=np.complex64)
+    g128 = RSE.green(0.1, dtype=np.complex128)
+    assert g64.dtype == np.complex64
+    assert g128.dtype == np.complex128
+    assert np.allclose(g64, g128, atol=1.e-6)
+
+    s64 = RSE.self_energy(0.1, dtype=np.complex64)
+    s128 = RSE.self_energy(0.1, dtype=np.complex128)
+    assert s64.dtype == np.complex64
+    assert s128.dtype == np.complex128
+    assert np.allclose(s64, s128, atol=1e-2)
