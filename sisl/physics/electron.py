@@ -719,7 +719,7 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
     The Berry phase for a single Bloch state is calculated using the discretized formula:
 
     .. math::
-       \phi = - \Im\ln \prod_i^{N-1} \mathrm{det} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
+       \phi = - \Im\ln \mathrm{det} \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
 
     where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix
     of the investigated bands.
