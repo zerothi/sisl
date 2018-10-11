@@ -713,13 +713,13 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
     return M * _inv_eff_mass_const
 
 
-def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r'):
+def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
     r""" Calculate the Berry-phase on a loop using a predefined path
 
     The Berry phase for a single Bloch state is calculated using the discretized formula:
 
     .. math::
-       \phi = - \Im\ln \prod_i^{N-1} \mathrm{det} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
+       \phi = - \Im\ln \mathrm{det} \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
 
     where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix
     of the investigated bands.
@@ -733,6 +733,8 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r'):
        selected bands to calculate the Berry phase of
     eigvals : bool, optional
        return the eigenvalues of the product of the overlap matrices
+    closed : bool, optional
+       whether or not to include the connection the last and first points in the loop (unwanted for the Zak phase)
 
     Notes
     -----
@@ -814,7 +816,9 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r'):
                 prev = second.state
 
             # Complete the loop
-            prd = _process(prd, prev.conj().dot(first.T))
+            if closed:
+                # Include last-to-first segment
+                prd = _process(prd, prev.conj().dot(first.T))
             return prd
 
     else:
@@ -829,7 +833,9 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r'):
                 second = second.sub(sub)
                 prd = _process(prd, prev.conj().dot(second.state.T))
                 prev = second.state
-            prd = _process(prd, prev.conj().dot(first.T))
+            if closed:
+                # Include last-to-first segment
+                prd = _process(prd, prev.conj().dot(first.T))
             return prd
 
     # Do the actual calculation of the final matrix
