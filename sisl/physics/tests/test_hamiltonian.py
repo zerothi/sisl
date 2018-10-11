@@ -608,12 +608,12 @@ class TestHamiltonian(object):
         bz = BandStructure.param_circle(H.geometry.sc, 20, 0.01, [0, 0, 1], [1/3] * 3)
         elec.berry_phase(bz)
 
-    @pytest.mark.xfail(raises=SislError)
-    def test_berry_phase_fail_loop(self, setup):
+    def test_berry_phase_loop(self, setup):
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
-        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3, loop=True)
-        elec.berry_phase(bz)
+        bz1 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        bz2 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3, loop=True)
+        assert np.allclose(elec.berry_phase(bz1), elec.berry_phase(bz2))
 
     def test_gauge_inv_eff(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

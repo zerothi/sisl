@@ -612,6 +612,8 @@ class _gfSileSiesta(SileBinSiesta):
            contains the k-points and their weights
         obj : ...
            an object that contains the Hamiltonian definitions
+        mu : float, optional
+           chemical potential in the file
         """
         nspin = len(obj.spin)
         cell = obj.geom.sc.cell * Ang2Bohr

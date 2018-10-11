@@ -713,7 +713,7 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
     return M * _inv_eff_mass_const
 
 
-def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
+def berry_phase(contour, sub=None, eigvals=False, closed=True):
     r""" Calculate the Berry-phase on a loop using a predefined path
 
     The Berry phase for a single Bloch state is calculated using the discretized formula:
@@ -726,20 +726,19 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
 
     Parameters
     ----------
-    bz_loop : BrillouinZone
-       containing the closed contour and has the ``bz_loop.parent`` as an instance of Hamiltonian. The
+    contour : BrillouinZone
+       containing the closed contour and has the ``contour.parent`` as an instance of Hamiltonian. The
        first and last k-point must not be the same.
     sub : None or list of int, optional
        selected bands to calculate the Berry phase of
     eigvals : bool, optional
        return the eigenvalues of the product of the overlap matrices
     closed : bool, optional
-       whether or not to include the connection the last and first points in the loop (unwanted for the Zak phase)
+       whether or not to include the connection of the last and first points in the loop (unwanted for the Zak phase)
 
     Notes
     -----
-    The Brillouin zone object *must* contain a closed discretized contour without any double points.
-    It is the users responsibility to assert this.
+    The Brillouin zone object *need* not contain a closed discretized contour by doubling the first point.
 
     The implementation is very similar to PythTB and refer to the details outlined in PythTB for
     additional details.
@@ -770,20 +769,15 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
-    if not isinstance(bz_loop.parent, Hamiltonian):
+    if not isinstance(contour.parent, Hamiltonian):
         raise SislError('berry_phase: requires the Brillouin zone object to contain a Hamiltonian!')
 
-    if not bz_loop.parent.orthogonal:
+    if not contour.parent.orthogonal:
         raise SislError('berry_phase: requires the Hamiltonian to use an orthogonal basis!')
 
-    if np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :]):
-        raise SislError('berry_phase: requires the Brillouin zone to not form a loop!')
-
-    # Check that the Gauge is correct.
-    # Since it *is* wrong to use a different gauge we warn the user.
-    # It may however, be instructive to check this
-    if _gauge != 'r':
-        warn('berry_phase: gauge *must* be "r" for correct results, only use for educational purposes!')
+    if np.allclose(contour.k[0, :], contour.k[-1, :]):
+        # When the user has the contour points closed, we don't need to do this in the below loop
+        closed = False
 
     # Whether we should calculate the eigenvalues of the overlap matrix
     if eigvals:
@@ -793,14 +787,13 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
             return dot(prd, dot(U, V))
     else:
         # We calculate the final angle from the determinant
-        def _process(prd, ovr):
-            return dot(prd, ovr)
+        _process = dot
 
     if sub is None:
         def _berry(eigenstates):
             # Grab the first one to be able to form a loop
             first = next(eigenstates)
-            first.change_gauge(_gauge)
+            first.change_gauge('r')
             first = first.state
             # Create a variable to keep track of the previous state
             prev = first
@@ -811,7 +804,7 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
 
             # Loop remaining eigenstates
             for second in eigenstates:
-                second.change_gauge(_gauge)
+                second.change_gauge('r')
                 prd = _process(prd, prev.conj().dot(second.state.T))
                 prev = second.state
 
@@ -824,12 +817,12 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
     else:
         def _berry(eigenstates):
             first = next(eigenstates)
-            first.change_gauge(_gauge)
+            first.change_gauge('r')
             first = first.sub(sub).state
             prev = first
             prd = 1
             for second in eigenstates:
-                second.change_gauge(_gauge)
+                second.change_gauge('r')
                 second = second.sub(sub)
                 prd = _process(prd, prev.conj().dot(second.state.T))
                 prev = second.state
@@ -839,7 +832,7 @@ def berry_phase(bz_loop, sub=None, eigvals=False, _gauge='r', closed=True):
             return prd
 
     # Do the actual calculation of the final matrix
-    d = _berry(bz_loop.asyield().eigenstate())
+    d = _berry(contour.asyield().eigenstate())
 
     # Correct return values
     if eigvals:
