@@ -1,3 +1,24 @@
+0.9.5
+=====
+
+- Updated lots of State methods
+
+- added Bloch expansion class which can expand any method
+
+- self-energy calculations:
+  - Much faster
+	- enabled left/right self-energies in one method
+
+- fixed AtomicOrbital copies
+
+- enabled TSGF reads
+
+- Added noise-power calculations for TBT.nc files
+
+- Fixed TBT.SE.nc files, units and scattering matrix retrieval
+
+- added more VASP files
+
 0.9.4
 =====
 
