@@ -613,6 +613,8 @@ class RealSpaceSE(SelfEnergy):
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
         """
+        if dtype is None:
+            dtype = complex128
         if E.imag == 0:
             E = E.real + 1j * self._options['eta']
         invG = inv(self.green(E, dtype=dtype), True)

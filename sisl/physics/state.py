@@ -3,30 +3,40 @@ from __future__ import print_function, division
 import numpy as np
 
 import sisl._array as _a
-from sisl._help import dtype_complex_to_real
 from sisl._help import _range as range
 
 
 __all__ = ['Coefficient', 'State', 'StateC']
 
 _abs = np.absolute
+_phase = np.angle
 _argmax = np.argmax
 _append = np.append
 _diff = np.diff
 _dot = np.dot
 _conj = np.conjugate
 _outer_ = np.outer
+_pi = np.pi
+_pi2 = np.pi * 2
 
 
-def _outer(v):
+def _outer1(v):
     return _outer_(v, _conj(v))
 
 
-def _idot(v):
+def _outer(v1, v2):
+    return _outer_(v1, _conj(v2))
+
+
+def _inner1(v):
     return _dot(_conj(v), v)
 
 
-def _couter(c, v):
+def _inner(v1, v2):
+    return _dot(_conj(v1), v2)
+
+
+def _couter1(c, v):
     return _outer_(v * c, _conj(v))
 
 
@@ -315,23 +325,18 @@ class State(ParentContainer):
            if true the summed site square is returned (a vector). For false a matrix
            with normalization squared per site is returned.
 
+        Notes
+        -----
+        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
+
         Returns
         -------
         numpy.ndarray
             the normalization for each state
         """
-        if not sum:
-            return (conj(self.state) * self.state.T).real
-
-        dtype = dtype_complex_to_real(self.dtype)
-
-        N = len(self)
-        n = np.empty(N, dtype=dtype)
-
-        for i in range(N):
-            n[i] = _idot(self.state[i, :]).real
-
-        return n
+        if sum:
+            return (_conj(self.state) * self.state).real.sum(1)
+        return (_conj(self.state) * self.state).real
 
     def normalize(self):
         r""" Return a normalized state where each state has :math:`|\psi|^2=1`
@@ -341,6 +346,10 @@ class State(ParentContainer):
         >>> state = State(np.arange(10))
         >>> n = state.norm()
         >>> norm_state = State(state.state / n.reshape(-1, 1))
+
+        Notes
+        -----
+        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
 
         Returns
         -------
@@ -352,29 +361,128 @@ class State(ParentContainer):
         s.info = self.info
         return s
 
-    def outer(self, idx=None):
-        r""" Return the outer product for the indices `idx` (or all if ``None``) by :math:`\sum_i|\psi_i\rangle\langle\psi_i|`
+    def outer(self, right=None, align=True):
+        r""" Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
 
         Parameters
         ----------
-        idx : int or array_like, optional
-           only perform an outer product of the specified indices, otherwise all states are used
+        right : State, optional
+           the right object to calculate the outer product of, if not passed it will do the outer
+           product with itself. This object will always be the left :math:`|\psi_i\rangle`
+        align : bool, optional
+           first align `right` with the angles for this state (see `align`)
+
+        Notes
+        -----
+        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
 
         Returns
         -------
         numpy.ndarray
             a matrix with the sum of outer state products
         """
-        if idx is None:
-            m = _outer(self.state[0, :])
+        if right is None:
+            m = _outer1(self.state[0, :])
             for i in range(1, len(self)):
-                m += _outer(self.state[i, :])
-            return m
-        idx = _a.asarrayi(idx).ravel()
-        m = _outer(self.state[idx[0], :])
-        for i in idx[1:]:
-            m += _outer(self.state[i, :])
+                m += _outer1(self.state[i, :])
+        else:
+            if not np.array_equal(self.shape, right.shape):
+                raise ValueError(self.__class__.__name__ + '.outer requires the objects to have the same shape')
+            if align:
+                # Align the states
+                right = self.align(right, copy=False)
+            m = _outer(self.state[0, :], right.state[0, :])
+            for i in range(1, len(self)):
+                m += _outer(self.state[i, :], right.state[i, :])
         return m
+
+    def inner(self, right=None, diagonal=True, align=True):
+        r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
+
+        Parameters
+        ----------
+        right : State, optional
+           the right object to calculate the inner product with, if not passed it will do the inner
+           product with itself. This object will always be the left :math:`\langle\psi_i|`
+        diagonal : bool, optional
+           only return the diagonal matrix :math:`\mathbf M_{ii}`.
+        align : bool, optional
+           first align `right` with the angles for this state (see `align`)
+
+        Notes
+        -----
+        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
+
+        Returns
+        -------
+        numpy.ndarray
+            a matrix with the sum of outer state products
+        """
+        if right is None:
+            if diagonal:
+                m = (_conj(self.state) * self.state).sum(1)
+            else:
+                m = _inner(self.state, self.state.T)
+        else:
+            if not np.array_equal(self.shape, right.shape):
+                raise ValueError(self.__class__.__name__ + '.inner requires the objects to have the same shape')
+            if align:
+                # Align the states
+                right = self.align(right, copy=False)
+            if diagonal:
+                m = (_conj(self.state) * right.state).sum(1)
+            else:
+                m = _inner(self.state, right.state.T)
+        return m
+
+    def phase(self, method='max', return_indices=False):
+        r""" Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
+
+        Parameters
+        ----------
+        method : {'max', 'all'}
+           for max, the phase for the element which has the largest absolute magnitude is returned,
+           for all, all phases are calculated
+        return_indices : bool, optional
+           return indices for the elements used when ``method=='max'``
+        """
+        if method.lower() == 'max':
+            idx = _argmax(_abs(self.state), 1)
+            if return_indices:
+                return _phase(self.state[_a.arangei(len(self)), idx]), idx
+            return _phase(self.state[_a.arangei(len(self)), idx])
+        elif method.lower() == 'all':
+            return _phase(self.state)
+        raise ValueError(self.__class__.__name__ + '.phase only accepts method in ["max", "all"]')
+
+    def align(self, other, copy=False):
+        r""" Align `other.state` with the angles for this state, a copy of `other` is returned with rotated elements
+
+        States will be rotated provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
+
+        Parameters
+        ----------
+        other : State
+           the other state to align onto this state
+        copy: bool, optional
+           sometimes no states require rotation, if this is the case this flag determines whether `other` will be
+           copied or not
+        """
+        phase, idx = self.phase(return_indices=True)
+        other_phase = _phase(other.state[_a.arangei(len(other)), idx])
+
+        # Calculate absolute phase difference
+        abs_phase = _abs((phase - other_phase + _pi) % _pi2 - _pi)
+
+        idx = (abs_phase > _pi / 2).nonzero()[0]
+        if len(idx) == 0:
+            if copy:
+                return other.copy()
+            return other
+
+        out = other.copy()
+        out.state[idx, :] *= np.exp(-1j * _pi)
+        return out
 
     def rotate(self, phi=0., individual=False):
         r""" Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
@@ -397,7 +505,7 @@ class State(ParentContainer):
         """
         # Convert angle to complex phase
         phi = np.exp(1j * phi)
-        s = self.state
+        s = self.state.view()
         if individual:
             for i in range(len(self)):
                 # Find the maximum amplitude index
@@ -445,7 +553,7 @@ class State(ParentContainer):
     #     state = np.empty(self.shape, dtype=self.dtype)
 
     #     for i in range(n):
-    #         c[i] = (_idot(self.state[i].ravel()).astype(dtype) / norm[i]) ** 0.5
+    #         c[i] = (_inner1(self.state[i].ravel()).astype(dtype) / norm[i]) ** 0.5
     #         state[i, ...] = self.state[i, ...] / c[i]
 
     #     cs = StateC(state, c, parent=self.parent)
@@ -523,14 +631,14 @@ class StateC(State):
         numpy.ndarray : a matrix with the sum of outer state products
         """
         if idx is None:
-            m = _couter(self.c[0], self.state[0].ravel())
+            m = _couter1(self.c[0], self.state[0].ravel())
             for i in range(1, len(self)):
-                m += _couter(self.c[i], self.state[i].ravel())
+                m += _couter1(self.c[i], self.state[i].ravel())
             return m
         idx = _a.asarrayi(idx).ravel()
-        m = _couter(self.c[idx[0]], self.state[idx[0]].ravel())
+        m = _couter1(self.c[idx[0]], self.state[idx[0]].ravel())
         for i in idx[1:]:
-            m += _couter(self.c[i], self.state[i].ravel())
+            m += _couter1(self.c[i], self.state[i].ravel())
         return m
 
     def sort(self, ascending=True):

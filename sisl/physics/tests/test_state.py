@@ -115,17 +115,50 @@ def test_state_outer1():
     state = State(state)
     out = state.outer()
     o = out.copy()
-    o1 = out.copy()
     o.fill(0)
-    o1.fill(0)
     for i, sub in enumerate(state):
         o += outer(sub.state[0, :])
-        o1 += state.outer(i)
 
     assert np.allclose(out, o)
-    assert np.allclose(out, o1)
-    o = state.outer(np.arange(len(state)))
+    o = state.outer(state)
     assert np.allclose(out, o)
+
+
+def test_state_inner1():
+    state = ar(10, 10)
+    state = State(state)
+    inner = state.inner()
+    assert np.allclose(inner, state.inner(state))
+    inner = state.inner(diagonal=False)
+    assert np.allclose(inner, state.inner(state, diagonal=False))
+
+
+def test_state_phase_max():
+    state = np.random.rand(10, 10) + 1j * np.random.rand(10, 10)
+    state1 = State(state)
+    state2 = State(-state)
+    ph1 = state1.phase()
+    ph2 = state2.phase()
+    assert np.allclose(ph1, ph2 + np.pi)
+
+
+def test_state_phase_all():
+    state = np.random.rand(10, 10) + 1j * np.random.rand(10, 10)
+    state1 = State(state)
+    state2 = State(-state)
+    ph1 = state1.phase('all')
+    ph2 = state2.phase('all')
+    assert np.allclose(ph1, ph2 + np.pi)
+
+
+def test_state_align1():
+    state = np.random.rand(10, 10) + 1j * np.random.rand(10, 10)
+    state1 = State(state)
+    state2 = State(-state)
+
+    # This should rotate all back
+    align2 = state1.align(state2)
+    assert np.allclose(state1.state, align2.state)
 
 
 def test_state_rotate_1():

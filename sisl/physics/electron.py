@@ -1364,7 +1364,7 @@ class _electron_State(object):
 
         # Check that we can do a gauge transformation
         k = _a.asarrayd(self.info.get('k'))
-        if (k ** 2).sum() ** 0.5 <= 0.000001:
+        if (k ** 2).sum() <= 0.000000001:
             return
 
         g = self.parent.geometry
