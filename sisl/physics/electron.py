@@ -714,7 +714,7 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
     return M * _inv_eff_mass_const
 
 
-def berry_phase(contour, sub=None, eigvals=False, closed=True):
+def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     r""" Calculate the Berry-phase on a loop using a predefined path
 
     The Berry phase for a single Bloch state is calculated using the discretized formula:
@@ -735,7 +735,12 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True):
     eigvals : bool, optional
        return the eigenvalues of the product of the overlap matrices
     closed : bool, optional
-       whether or not to include the connection of the last and first points in the loop (unwanted for the Zak phase)
+       whether or not to include the connection of the last and first points in the loop
+    method : string, optional
+       'berry' will return the usual integral of the Berry connection over the specified contour
+       'zak' will compute the Zak phase for 1D systems by performing a closed loop integration but
+       taking into account the Bloch factor exp(-i 2\pi/a x) accumulated over a Brillouin zone,
+       see J. Zak, "Berry's phase for energy bands in solids" PRL 62, 2747 (1989).
 
     Notes
     -----
@@ -780,6 +785,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True):
         # When the user has the contour points closed, we don't need to do this in the below loop
         closed = False
 
+    if method == 'zak':
+        closed = True
+
     # Whether we should calculate the eigenvalues of the overlap matrix
     if eigvals:
         # We calculate the final eigenvalues
@@ -808,6 +816,14 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True):
                 prd = _process(prd, prev.inner(second, False))
                 prev = second
 
+            # Insert Bloch phase for 1D integral?
+            if method == 'zak':
+                g = contour.parent.geometry
+                axis = contour.k[1] - contour.k[0]
+                axis /= np.linalg.norm(axis)
+                phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
+                prev.state *= np.exp(-1j*phase)
+
             # Complete the loop
             if closed:
                 # Include last-to-first segment
@@ -825,8 +841,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True):
                 second.change_gauge('r')
                 prd = _process(prd, prev.inner(second, False))
                 prev = second
+            if method == 'zak':
+                g = contour.parent.geometry
+                axis = contour.k[1] - contour.k[0]
+                axis /= np.linalg.norm(axis)
+                phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
+                prev.state *= np.exp(-1j*phase)
             if closed:
-                # Include last-to-first segment
                 prd = _process(prd, prev.inner(first, False))
             return prd
 
