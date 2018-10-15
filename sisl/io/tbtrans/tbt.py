@@ -609,8 +609,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         E = self.E
         idx_sort = np.argsort(E)
         # Get transmission
-        elec_from = self._elec(elec_from)
-        elec_to = self._elec(elec_to)
         T = self.transmission(elec_from, elec_to, kavg)
         return E[idx_sort], T[idx_sort]
 
@@ -640,8 +638,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         chemical_potential : routine that defines the chemical potential of the queried electrodes
         kT : routine that defines the electronic temperature of the queried electrodes
         """
-        elec_from = self._elec(elec_from)
-        elec_to = self._elec(elec_to)
         mu_f = self.chemical_potential(elec_from)
         kt_f = self.kT(elec_from)
         mu_t = self.chemical_potential(elec_to)
@@ -752,8 +748,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         fano : the ratio between the quantum mechanial and the classical shot noise.
         noise_power : temperature dependent noise power
         """
-        elec_from = self._elec(elec_from)
-        elec_to = self._elec(elec_to)
         mu_f = self.chemical_potential(elec_from)
         mu_t = self.chemical_potential(elec_to)
         # The applied bias between the two electrodes
@@ -804,8 +798,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         fano : the ratio between the quantum mechanial and the classical shot noise.
         shot_noise : shot-noise term (zero temperature limit)
         """
-        elec_from = self._elec(elec_from)
-        elec_to = self._elec(elec_to)
         kT_f = self.kT(elec_from)
         kT_t = self.kT(elec_to)
         mu_f = self.chemical_potential(elec_from)
@@ -1192,7 +1184,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
-        elec = self._elec(elec)
         Jij = self.orbital_current(elec, E, kavg, isc, only=only)
 
         return self.bond_current_from_orbital(Jij, uc=uc, only=only)
@@ -1283,7 +1274,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         bond_current : the bond current (orbital current summed over orbitals)
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         """
-        elec = self._elec(elec)
         Jorb = self.orbital_current(elec, E, kavg)
 
         return self.atom_current_from_orbital(Jorb, activity=activity)
@@ -1382,7 +1372,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         bond_current : the bond current (orbital current summed over orbitals)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
-        elec = self._elec(elec)
         # Imperative that we use the entire supercell structure to
         # retain vectors crossing the boundaries
         Jab = self.bond_current(elec, E, kavg, only=only)
