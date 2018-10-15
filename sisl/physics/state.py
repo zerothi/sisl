@@ -481,7 +481,7 @@ class State(ParentContainer):
             return other
 
         out = other.copy()
-        out.state[idx, :] *= np.exp(-1j * _pi)
+        out.state[idx, :] *= -1
         return out
 
     def rotate(self, phi=0., individual=False):

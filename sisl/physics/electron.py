@@ -52,7 +52,8 @@ import numpy as np
 from numpy import find_common_type
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid
-from numpy import cos, sin, pi, int32
+from numpy import cos, sin, pi
+from numpy import int32, complex128
 from numpy import add, angle, sort
 
 from sisl import units, constant
@@ -794,7 +795,6 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True):
             # Grab the first one to be able to form a loop
             first = next(eigenstates)
             first.change_gauge('r')
-            first = first.state
             # Create a variable to keep track of the previous state
             prev = first
 
@@ -805,30 +805,29 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True):
             # Loop remaining eigenstates
             for second in eigenstates:
                 second.change_gauge('r')
-                prd = _process(prd, prev.conj().dot(second.state.T))
-                prev = second.state
+                prd = _process(prd, prev.inner(second, False))
+                prev = second
 
             # Complete the loop
             if closed:
                 # Include last-to-first segment
-                prd = _process(prd, prev.conj().dot(first.T))
+                prd = _process(prd, prev.inner(first, False))
             return prd
 
     else:
         def _berry(eigenstates):
-            first = next(eigenstates)
+            first = next(eigenstates).sub(sub)
             first.change_gauge('r')
-            first = first.sub(sub).state
             prev = first
             prd = 1
             for second in eigenstates:
-                second.change_gauge('r')
                 second = second.sub(sub)
-                prd = _process(prd, prev.conj().dot(second.state.T))
-                prev = second.state
+                second.change_gauge('r')
+                prd = _process(prd, prev.inner(second, False))
+                prev = second
             if closed:
                 # Include last-to-first segment
-                prd = _process(prd, prev.conj().dot(first.T))
+                prd = _process(prd, prev.inner(first, False))
             return prd
 
     # Do the actual calculation of the final matrix
