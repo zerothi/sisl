@@ -785,8 +785,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         # When the user has the contour points closed, we don't need to do this in the below loop
         closed = False
 
-    if method == 'zak':
+    method = method.lower()
+    if method == 'berry':
+        pass
+    elif method == 'zak':
         closed = True
+    else:
+        raise SislError('berry_phase: requires the method to be [berry, zak]')
 
     # Whether we should calculate the eigenvalues of the overlap matrix
     if eigvals:
@@ -816,16 +821,16 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                 prd = _process(prd, prev.inner(second, False))
                 prev = second
 
-            # Insert Bloch phase for 1D integral?
-            if method == 'zak':
-                g = contour.parent.geometry
-                axis = contour.k[1] - contour.k[0]
-                axis /= (axis ** 2).sum() ** 0.5
-                phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
-                prev.state *= np.exp(-1j*phase)
-
             # Complete the loop
             if closed:
+                # Insert Bloch phase for 1D integral?
+                if method == 'zak':
+                    g = contour.parent.geometry
+                    axis = contour.k[1] - contour.k[0]
+                    axis /= (axis ** 2).sum() ** 0.5
+                    phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
+                    prev.state *= np.exp(-1j * phase)
+
                 # Include last-to-first segment
                 prd = _process(prd, prev.inner(first, False))
             return prd
@@ -841,13 +846,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                 second.change_gauge('r')
                 prd = _process(prd, prev.inner(second, False))
                 prev = second
-            if method == 'zak':
-                g = contour.parent.geometry
-                axis = contour.k[1] - contour.k[0]
-                axis /= (axis ** 2).sum() ** 0.5
-                phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
-                prev.state *= np.exp(-1j*phase)
             if closed:
+                if method == 'zak':
+                    g = contour.parent.geometry
+                    axis = contour.k[1] - contour.k[0]
+                    axis /= (axis ** 2).sum() ** 0.5
+                    phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
+                    prev.state *= np.exp(-1j * phase)
                 prd = _process(prd, prev.inner(first, False))
             return prd
 
