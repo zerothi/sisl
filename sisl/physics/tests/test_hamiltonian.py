@@ -5,7 +5,7 @@ import pytest
 import warnings
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack
+from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
 from sisl import Grid, SphericalOrbital, SislError
 from sisl import electron as elec
 
@@ -614,6 +614,19 @@ class TestHamiltonian(object):
         bz1 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
         bz2 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3, loop=True)
         assert np.allclose(elec.berry_phase(bz1), elec.berry_phase(bz2))
+
+    def test_berry_phase_zak(self):
+        # SSH model, topological cell
+        g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
+        g.set_nsc([3, 1, 1])
+        H = Hamiltonian(g)
+        H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
+        # Contour
+        k = np.linspace(0.0, 1.0, 101)
+        K = np.zeros([k.size, 3])
+        K[:, 0] = k
+        bz = BrillouinZone(H, K)
+        assert np.allclose(np.abs(elec.berry_phase(bz, sub=0, method='zak')), np.pi)
 
     def test_gauge_inv_eff(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
