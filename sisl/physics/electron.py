@@ -736,10 +736,10 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
        return the eigenvalues of the product of the overlap matrices
     closed : bool, optional
        whether or not to include the connection of the last and first points in the loop
-    method : string, optional
+    method : {'berry', 'zak'}
        'berry' will return the usual integral of the Berry connection over the specified contour
        'zak' will compute the Zak phase for 1D systems by performing a closed loop integration but
-       taking into account the Bloch factor exp(-i 2\pi/a x) accumulated over a Brillouin zone,
+       taking into account the Bloch factor :math:`e^{-i2\pi/a x}` accumulated over a Brillouin zone,
        see J. Zak, "Berry's phase for energy bands in solids" PRL 62, 2747 (1989).
 
     Notes
@@ -820,7 +820,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             if method == 'zak':
                 g = contour.parent.geometry
                 axis = contour.k[1] - contour.k[0]
-                axis /= np.linalg.norm(axis)
+                axis /= (axis ** 2).sum() ** 0.5
                 phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
                 prev.state *= np.exp(-1j*phase)
 
@@ -844,7 +844,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             if method == 'zak':
                 g = contour.parent.geometry
                 axis = contour.k[1] - contour.k[0]
-                axis /= np.linalg.norm(axis)
+                axis /= (axis ** 2).sum() ** 0.5
                 phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
                 prev.state *= np.exp(-1j*phase)
             if closed:
