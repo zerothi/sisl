@@ -5,7 +5,7 @@ import pytest
 import warnings
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack
+from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
 from sisl import Grid, SphericalOrbital, SislError
 from sisl import electron as elec
 
