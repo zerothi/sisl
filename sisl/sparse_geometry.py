@@ -588,20 +588,20 @@ class _SparseGeometry(object):
         """
         self._csr.finalize()
 
-    def tocsr(self, index, isc=None, **kwargs):
-        """ Return a ``scipy.sparse.csr_matrix`` of the specified index
+    def tocsr(self, dim=0, isc=None, **kwargs):
+        """ Return a ``scipy.sparse.csr_matrix`` for the specified dimension
 
         Parameters
         ----------
-        index : int
-           the index in the sparse matrix (for non-orthogonal cases the last
+        dim : int, optional
+           the dimension in the sparse matrix (for non-orthogonal cases the last
            dimension is the overlap matrix)
         isc : int, optional
            the supercell index, or all (if ``isc=None``)
         """
         if isc is not None:
             raise NotImplementedError("Requesting sub-sparse has not been implemented yet")
-        return self._csr.tocsr(index, **kwargs)
+        return self._csr.tocsr(dim, **kwargs)
 
     def spsame(self, other):
         """ Compare two sparse objects and check whether they have the same entries.
@@ -1996,7 +1996,7 @@ class SparseOrbital(_SparseGeometry):
         spAtom._csr.ptr[:] = ptr[:]
         spAtom._csr.ncol[:] = np.diff(ptr)
         spAtom._csr.col = col
-        spAtom._csr._D = np.empty([len(col), 1], dtype=dtype)
+        spAtom._csr._D = np.zeros([len(col), 1], dtype=dtype)
         spAtom._csr._nnz = len(col)
         spAtom._csr._finalized = True # unique returns sorted elements
         return spAtom
