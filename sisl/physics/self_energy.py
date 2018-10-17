@@ -435,8 +435,8 @@ class RealSpaceSE(SelfEnergy):
     def real_space_coupling(self, ret_indices=False):
         """ Return the real-space coupling parent where they fold into the parent real-space unit cell
 
-        The resulting parent object only contains the couplings for the real-space matrix out into the
-        neighbouring unit cells.
+        The resulting parent object only contains the inner-cell couplings for the elements that couple
+        out of the real-space matrix.
 
         Parameters
         ----------
@@ -451,35 +451,32 @@ class RealSpaceSE(SelfEnergy):
         opt = self._options
         s_ax = opt['semi_axis']
         k_ax = opt['k_axis']
-        P0 = self.parent.tile(max(1, self._unfold[s_ax]), s_ax).tile(self._unfold[k_ax], k_ax)
+        PC = self.parent.tile(max(1, self._unfold[s_ax]), s_ax).tile(self._unfold[k_ax], k_ax)
 
-        # Figure out all couplings crossing the borders along the semi+k directions
-        nsc = P0.nsc.copy()
-        if 0 in [s_ax, k_ax] and 1 in [s_ax, k_ax]:
-            nsc[2] = 1
-        elif 0 in [s_ax, k_ax] and 2 in [s_ax, k_ax]:
-            nsc[1] = 1
-        elif 1 in [s_ax, k_ax] and 2 in [s_ax, k_ax]:
-            nsc[0] = 1
-
-        # Remove the non-used direction
-        P0.set_nsc(nsc)
         # Geometry short-hand
-        g = P0.geometry
-        # Remove all inner-cell couplings (0, 0, 0)
-        n = P0.shape[0]
+        g = PC.geometry
+        # Remove all inner-cell couplings (0, 0, 0) to figure out the
+        # elements that couple out of the real-space region
+        n = PC.shape[0]
         idx = g.sc.sc_index([0, 0, 0])
         cols = _a.arangei(n) + idx * n
-        # Short hand sparse matrix
-        csr = P0._csr.copy()
+        csr = PC._csr.copy([0]) # we just want the sparse pattern, so forget about the other elements
         csr.delete_columns(cols, keep_shape=True)
-        # Now P0 only contains couplings along the k and semi-inf directions
+        # Now PC only contains couplings along the k and semi-inf directions
         # Extract the connecting orbitals and reduce them to unique atomic indices
         orbs = g.osc2uc(csr.col[array_arange(csr.ptr[:-1], n=csr.ncol)], True)
         atom_idx = g.o2a(orbs, True)
+        # Only retain coupling atoms
+        PC = PC.sub(atom_idx)
+
+        # Remove all out-of-cell couplings such that we only have inner-cell couplings.
+        nsc = P0.nsc.copy()
+        nsc[s_ax] = 1
+        nsc[k_ax] = 1
+        PC.set_nsc(nsc)
         if ret_indices:
-            return P0.sub(atom_idx), atom_idx
-        return P0.sub(atom_idx)
+            return PC, atom_idx
+        return PC
 
     def initialize(self):
         """ Initialize the internal data-arrays used for efficient calculation of the real-space quantities
