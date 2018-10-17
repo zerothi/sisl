@@ -470,7 +470,7 @@ class RealSpaceSE(SelfEnergy):
         PC = PC.sub(atom_idx)
 
         # Remove all out-of-cell couplings such that we only have inner-cell couplings.
-        nsc = P0.nsc.copy()
+        nsc = PC.nsc.copy()
         nsc[s_ax] = 1
         nsc[k_ax] = 1
         PC.set_nsc(nsc)
