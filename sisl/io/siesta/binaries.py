@@ -599,7 +599,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._ie += 1
         return SE * Ry2eV
 
-    def write_header(self, E, bz, obj, mu=0.):
+    def write_header(self, E, bz, obj=None, mu=0.):
         """ Write to the binary file the header of the file
 
         Parameters
@@ -610,11 +610,13 @@ class _gfSileSiesta(SileBinSiesta):
            it *has* to be a complex array.
         bz : BrillouinZone
            contains the k-points and their weights
-        obj : ...
-           an object that contains the Hamiltonian definitions
+        obj : ..., optional
+           an object that contains the Hamiltonian definitions, defaults to ``bz.parent``
         mu : float, optional
            chemical potential in the file
         """
+        if obj is None:
+            obj = bz.parent
         nspin = len(obj.spin)
         cell = obj.geom.sc.cell * Ang2Bohr
         na_u = obj.geom.na
