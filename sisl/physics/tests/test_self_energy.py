@@ -126,7 +126,6 @@ def test_real_space_HS(setup, k_axis, semi_axis, trs, bz, unfold):
         RSE.initialize()
 
     RSE.green(0.1)
-    RSE.self_energy(0.1)
 
 
 @pytest.mark.parametrize("k_axis", [None, 0, 1])
@@ -167,3 +166,43 @@ def test_real_space_H_dtype(setup):
     assert s64.dtype == np.complex64
     assert s128.dtype == np.complex128
     assert np.allclose(s64, s128, atol=1e-2)
+
+
+def test_real_space_H_SE_unfold(setup):
+    # check that calculating the real-space Green function is equivalent for two equivalent systems
+    RSE = RealSpaceSE(setup.H, (2, 2, 1), semi_axis=0, k_axis=1, dk=100)
+    RSE_big = RealSpaceSE(setup.H.tile(2, 0).tile(2, 1), semi_axis=0, k_axis=1, dk=100)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+        RSE_big.initialize()
+
+    for E in [0.1, 1.5]:
+        G = RSE.green(E)
+        G_big = RSE_big.green(E)
+        assert np.allclose(G, G_big)
+
+        SE = RSE.self_energy(E)
+        SE_big = RSE_big.self_energy(E)
+        assert np.allclose(SE, SE_big)
+
+
+def test_real_space_HS_SE_unfold(setup):
+    # check that calculating the real-space Green function is equivalent for two equivalent systems
+    RSE = RealSpaceSE(setup.HS, (2, 2, 1), semi_axis=0, k_axis=1, dk=100)
+    RSE_big = RealSpaceSE(setup.HS.tile(2, 0).tile(2, 1), semi_axis=0, k_axis=1, dk=100)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+        RSE_big.initialize()
+
+    for E in [0.1, 1.5]:
+        G = RSE.green(E)
+        G_big = RSE_big.green(E)
+        assert np.allclose(G, G_big)
+
+        SE = RSE.self_energy(E)
+        SE_big = RSE_big.self_energy(E)
+        assert np.allclose(SE, SE_big)

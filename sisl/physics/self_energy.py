@@ -703,19 +703,19 @@ class RealSpaceSE(SelfEnergy):
                     B = - M1Pk(k, dtype=dtype, format='array')
                     # C = conjugate(B.T)
 
-                    tY = solve(Gf, conjugate(B.T), True, True)
-                    Gf = inv(A2 - dot(B, tY), True)
-                    tX = solve(A2, B, True, True)
+                    tY = - solve(Gf, conjugate(B.T), True, True)
+                    Gf = inv(A2 + dot(B, tY), True)
+                    tX = - solve(A2, B, True, True)
 
                     # Since this is the pristine case, we know that
                     # G11 and G22 are the same:
-                    #  G = [A1 - C.tX]^-1 == [A2 - B.tY]^-1
+                    #  G = [A1 + C.tX]^-1 == [A2 + B.tY]^-1
 
                     G = empty([tile, no, tile, no], dtype=dtype)
                     G[idx0, :, idx0, :] = Gf.reshape(1, no, no)
                     for i in range(1, tile):
-                        G[idx0[i:], :, idx0[:-i], :] = - dot(tX, G[i-1, :, 0, :]).reshape(1, no, no)
-                        G[idx0[:-i], :, idx0[i:], :] = - dot(tY, G[0, :, i-1, :]).reshape(1, no, no)
+                        G[idx0[i:], :, idx0[:-i], :] = dot(tX, G[i-1, :, 0, :]).reshape(1, no, no)
+                        G[idx0[:-i], :, idx0[i:], :] = dot(tY, G[0, :, i-1, :]).reshape(1, no, no)
                     return G.reshape(tile * no, -1)
 
             else:
@@ -727,15 +727,15 @@ class RealSpaceSE(SelfEnergy):
                     B = tY * E - tX
                     # C = _conj(tY.T) * E - _conj(tX.T)
 
-                    tY = solve(Gf, conjugate(tY.T) * E - conjugate(tX.T), True, True)
-                    Gf = inv(A2 - dot(B, tY), True)
-                    tX = solve(A2, B, True, True)
+                    tY = - solve(Gf, conjugate(tY.T) * E - conjugate(tX.T), True, True)
+                    Gf = inv(A2 + dot(B, tY), True)
+                    tX = - solve(A2, B, True, True)
 
                     G = empty([tile, no, tile, no], dtype=dtype)
                     G[idx0, :, idx0, :] = Gf.reshape(1, no, no)
                     for i in range(1, tile):
-                        G[idx0[i:], :, idx0[:-i], :] = - dot(tX, G[i-1, :, 0, :]).reshape(1, no, no)
-                        G[idx0[:-i], :, idx0[i:], :] = - dot(tY, G[0, :, i-1, :]).reshape(1, no, no)
+                        G[idx0[i:], :, idx0[:-i], :] = dot(tX, G[i-1, :, 0, :]).reshape(1, no, no)
+                        G[idx0[:-i], :, idx0[i:], :] = dot(tY, G[0, :, i-1, :]).reshape(1, no, no)
                     return G.reshape(tile * no, -1)
 
         # Create functions used to calculate the real-space Green function
