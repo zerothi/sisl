@@ -3,7 +3,8 @@ from __future__ import print_function, division
 import numpy as np
 from numpy import dot, amax, conjugate
 from numpy import subtract
-from numpy import empty, zeros_like, empty_like, identity
+from numpy import empty, zeros, identity
+from numpy import zeros_like, empty_like
 from numpy import complex128
 from numpy import abs as _abs
 
@@ -614,16 +615,21 @@ class RealSpaceSE(SelfEnergy):
             dtype = complex128
         if E.imag == 0:
             E = E.real + 1j * self._options['eta']
-        invG = inv(self.green(E, dtype=dtype), True)
+        G = self.green(E, dtype=dtype)
         if coupling:
             orbs = self._calc['orbs']
+            iorbs = _a.arangei(orbs.size).reshape(1, -1)
+            I = zeros([G.shape[0], orbs.size], dtype)
+            # Set diagonal
+            I[orbs.ravel(), iorbs.ravel()] = 1.
             if bulk:
-                return invG[orbs, orbs.T]
-            return ((self._calc['S0'] * E - self._calc['P0']).astype(dtype, copy=False).toarray() - invG)[orbs, orbs.T]
+                return solve(G, I, True, True)[orbs, iorbs]
+            return (self._calc['S0'] * E - self._calc['P0']).astype(dtype, copy=False).toarray()[orbs, orbs.T] \
+                - solve(G, I, True, True)[orbs, iorbs]
         else:
             if bulk:
-                return invG
-            return (self._calc['S0'] * E - self._calc['P0']).astype(dtype, copy=False).toarray() - invG
+                return inv(G, True)
+            return (self._calc['S0'] * E - self._calc['P0']).astype(dtype, copy=False).toarray() - inv(G, True)
 
     def green(self, E, dtype=None):
         r""" Calculate the real-space Green function

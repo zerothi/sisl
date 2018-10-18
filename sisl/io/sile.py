@@ -255,8 +255,6 @@ def get_sile_class(filename, *args, **kwargs):
         return clss
 
     except Exception as e:
-        import traceback as t
-        t.print_exc()
         raise e
 
 
