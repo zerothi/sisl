@@ -2049,11 +2049,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         namespace = default_namespace(_tbt=self,
                                       _geometry=self.geom,
-                                      _data=[], _data_description=[],
-                                      _data_header=[],
+                                      _data=[], _data_description=[], _data_header=[],
                                       _norm='none',
-                                      _Ovalue='',
-                                      _Orng=None, _Erng=None,
+                                      _Ovalue='', _Orng=None, _Erng=None,
                                       _krng=True)
 
         def ensure_E(func):
@@ -2250,7 +2248,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append('T:{}-{}[G0]'.format(e1, e2))
+                ns._data_header.append('T[G0]:{}-{}'.format(e1, e2))
                 ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('-T', '--transmission', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataT,
@@ -2276,7 +2274,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append('BT:{}[G0]'.format(e))
+                ns._data_header.append('BT[G0]:{}'.format(e))
                 ns._data_description.append('Column {} is bulk-transmission'.format(len(ns._data)))
         p.add_argument('-BT', '--transmission-bulk', nargs=1, metavar='ELEC',
                        action=DataBT,
@@ -2293,7 +2291,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     if e not in ns._tbt.elecs:
                         raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                     data = ns._tbt.ADOS(e, kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
-                    ns._data_header.append('ADOS:{}[1/eV]'.format(e))
+                    ns._data_header.append('ADOS[1/eV]:{}'.format(e))
                 else:
                     data = ns._tbt.DOS(kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
                     ns._data_header.append('DOS[1/eV]')
@@ -2326,7 +2324,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                 # Grab the information
                 data = ns._tbt.BDOS(e, kavg=ns._krng, sum=False)
-                ns._data_header.append('BDOS:{}[1/eV]'.format(e))
+                ns._data_header.append('BDOS[1/eV]:{}'.format(e))
                 # Select the energies, even if _Erng is None, this will work!
                 no = data.shape[-1]
                 data = np.mean(data[ns._Erng, ...], axis=-1).flatten()
@@ -2362,7 +2360,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 neig = data.shape[-1]
                 for eig in range(neig):
                     ns._data.append(data[ns._Erng, ..., eig].flatten())
-                    ns._data_header.append('Teig({}):{}-{}[G0]'.format(eig+1, e1, e2))
+                    ns._data_header.append('Teig({})[G0]:{}-{}'.format(eig+1, e1, e2))
                     ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('--transmission-eig', '-Teig', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataTEig,
