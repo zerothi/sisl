@@ -5,6 +5,10 @@ def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     config = Configuration('physics', parent_package, top_path)
 
+    # Bloch expansion
+    config.add_extension('_bloch', sources=['_bloch.c'])
+
+    # Regular M(k)
     config.add_extension('_phase', sources=['_phase.c'], include_dirs=['..'])
     config.add_extension('_matrix_phase', sources=['_matrix_phase.c'], include_dirs=['..'])
     config.add_extension('_matrix_phase_nc', sources=['_matrix_phase_nc.c'], include_dirs=['..'])

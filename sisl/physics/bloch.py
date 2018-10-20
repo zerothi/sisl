@@ -25,6 +25,7 @@ from numpy import pi, exp
 from sisl._help import dtype_real_to_complex
 import sisl._array as _a
 from sisl._array import aranged
+from ._bloch import bloch_unfold
 
 
 __all__ = ['Bloch']
@@ -39,10 +40,14 @@ class Bloch(object):
        Bloch repetitions along each direction
     """
 
-    def __init__(self, bloch):
+    def __init__(self, *bloch):
         """ Create `Bloch` object """
-        self._bloch = _a.arrayi(bloch)
+        self._bloch = _a.arrayi(bloch).ravel()
         self._bloch = np.where(self._bloch < 1, 1, self._bloch)
+        if len(self._bloch) != 3:
+            raise ValueError(self.__class__.__name__ + ' requires 3 input values')
+        if np.any(self._bloch < 1):
+            raise ValueError(self.__class__.__name__ + ' requires all unfoldings to be larger than 0')
 
     def __len__(self):
         """ Return unfolded size """
@@ -120,15 +125,22 @@ class Bloch(object):
         M : unfolded Bloch matrix
         """
         K_unfold = self.unfold_points(k)
-        return self.unfold([func(*args, k=K, **kwargs) for K in K_unfold], K_unfold)
+        M0 = func(*args, k=K_unfold[0, :], **kwargs)
+        shape = (K_unfold.shape[0], M0.shape[0], M0.shape[1])
+        M = empty(shape, dtype=dtype_real_to_complex(M0.dtype))
+        M[0] = M0
+        del M0
+        for i in range(1, K_unfold.shape[0]):
+            M[i] = func(*args, k=K_unfold[i, :], **kwargs)
+        return bloch_unfold(_a.arrayi(self._bloch), K_unfold, M)
 
     def unfold(self, M, k_unfold):
         r""" Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)
 
         Parameters
         ----------
-        M : list of numpy arrays
-            matrices used for unfolding
+        M : (*, :, :)
+            an *-N-M matrix used for unfolding
         k_unfold : (*, 3) of float
             unfolding k-points as returned by `Bloch.unfold_points`
 
@@ -136,91 +148,6 @@ class Bloch(object):
         -------
         M_unfold : unfolded matrix of size ``M[0].shape * k_unfold.shape[0] ** 2``
         """
-        Bi, Bj, Bk = self.bloch
-        # Retrieve shapes
-        M0, M1 = M[0].shape
-        shape = (Bk, Bj, Bi, M0, Bk, Bj, Bi, M1)
-        Mshape = (M0, 1, 1, 1, M1)
-
-        # Allocate the unfolded matrix
-        Mu = zeros(shape, dtype=dtype_real_to_complex(M[0].dtype))
-
-        # Use B-casting rules (much simpler)
-
-        # Perform unfolding
-        N = len(self)
-        w = 1 / N
-        if Bi == 1:
-            if Bj == 1:
-                K = aranged(Bk).reshape(1, Bk, 1, 1, 1)
-                for T in range(N):
-                    m = M[T].reshape(Mshape) * w
-                    kjpi = 2j * pi * k_unfold[T, 2]
-                    for k in range(Bk):
-                        add(Mu[k, 0, 0], m * exp(kjpi * (K - k)), out=Mu[k, 0, 0])
-
-            elif Bk == 1:
-                J = aranged(Bj).reshape(1, 1, Bj, 1, 1)
-                for T in range(N):
-                    m = M[T].reshape(Mshape) * w
-                    kjpi = 2j * pi * k_unfold[T, 1]
-                    for j in range(Bj):
-                        add(Mu[0, j, 0], m * exp(kjpi * (J - j)), out=Mu[0, j, 0])
-
-            else:
-                J = aranged(Bj).reshape(1, 1, Bj, 1, 1)
-                K = aranged(Bk).reshape(1, Bk, 1, 1, 1)
-                for T in range(N):
-                    m = M[T].reshape(Mshape) * w
-                    kpi = pi * k_unfold[T, :]
-                    for k in range(Bk):
-                        Kk = (K - k) * kpi[2]
-                        for j in range(Bj):
-                            add(Mu[k, j, 0], m * exp(2j * (Kk + kpi[1] * (J - j))), out=Mu[k, j, 0])
-        elif Bj == 1:
-            if Bk == 1:
-                I = aranged(Bi).reshape(1, 1, 1, Bi, 1)
-                for T in range(N):
-                    m = M[T].reshape(Mshape) * w
-                    kjpi = 2j * pi * k_unfold[T, 0]
-                    for i in range(Bi):
-                        add(Mu[0, 0, i], m * exp(kjpi * (I - i)), out=Mu[0, 0, i])
-
-            else:
-                I = aranged(Bi).reshape(1, 1, 1, Bi, 1)
-                K = aranged(Bk).reshape(1, Bk, 1, 1, 1)
-                for T in range(N):
-                    m = M[T].reshape(Mshape) * w
-                    kpi = pi * k_unfold[T, :]
-                    for k in range(Bk):
-                        Kk = (K - k) * kpi[2]
-                        for i in range(Bi):
-                            add(Mu[k, 0, i], m * exp(2j * (Kk + kpi[0] * (I - i))), out=Mu[k, 0, i])
-
-        elif Bk == 1:
-            I = aranged(Bi).reshape(1, 1, 1, Bi, 1)
-            J = aranged(Bj).reshape(1, 1, Bj, 1, 1)
-            for T in range(N):
-                m = M[T].reshape(Mshape) * w
-                kpi = pi * k_unfold[T, :]
-                for j in range(Bj):
-                    Jj = (J - j) * kpi[1]
-                    for i in range(Bi):
-                        add(Mu[0, j, i], m * exp(2j * (Jj + kpi[0] * (I - i))), out=Mu[0, j, i])
-
-        else:
-            I = aranged(Bi).reshape(1, 1, 1, Bi, 1)
-            J = aranged(Bj).reshape(1, 1, Bj, 1, 1)
-            K = aranged(Bk).reshape(1, Bk, 1, 1, 1)
-            for T in range(N):
-                m = M[T].reshape(Mshape) * w
-                kpi = pi * k_unfold[T, :]
-                for k in range(Bk):
-                    Kk = (K - k) * kpi[2]
-                    for j in range(Bj):
-                        KkJj = Kk + (J - j) * kpi[1]
-                        for i in range(Bi):
-                            # Calculate phases and add for all expansions
-                            add(Mu[k, j, i], m * exp(2j * (KkJj + kpi[0] * (I - i))), out=Mu[k, j, i])
-
-        return Mu.reshape(N * M0, N * M1)
+        if isinstance(M, (list, tuple)):
+            M = np.stack(M)
+        return bloch_unfold(_a.arrayi(self._bloch), k_unfold, M)

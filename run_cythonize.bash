@@ -5,6 +5,7 @@ _math_small.pyx
 _indices.pyx
 _supercell.pyx
 _sparse.pyx
+physics/_bloch.pyx
 physics/_phase.pyx
 physics/_matrix_phase.pyx
 physics/_matrix_phase_nc.pyx
