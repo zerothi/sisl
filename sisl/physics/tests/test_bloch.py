@@ -43,12 +43,18 @@ def test_bloch_call():
     assert np.allclose(m, b(H.Hk, [0] * 3, format='array'))
 
 
+@pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
 @pytest.mark.parametrize("nx", [1, 3])
 @pytest.mark.parametrize("ny", [1, 4])
 @pytest.mark.parametrize("nz", [1, 3])
-def test_bloch_one_direction(nx, ny, nz):
+def test_bloch_one_direction(nx, ny, nz, dtype):
     H = get_H()
     b = Bloch([nx, ny, nz])
+
+    if dtype == np.complex64:
+        atol = 1e-6
+    else:
+        atol = 1e-8
 
     HB = H.tile(nx, 0).tile(ny, 1).tile(nz, 2)
 
@@ -59,8 +65,9 @@ def test_bloch_one_direction(nx, ny, nz):
         K = [kx, ky, kz]
         k_unfold = b.unfold_points(K)
 
-        HK = [H.Hk(k, format='array') for k in k_unfold]
+        HK = [H.Hk(k, format='array', dtype=dtype) for k in k_unfold]
         H_unfold = b.unfold(np.stack(HK), k_unfold)
-        H_big = HB.Hk(K, format='array')
+        H_big = HB.Hk(K, format='array', dtype=dtype)
 
-        assert np.allclose(H_unfold, H_big)
+        print(np.amax(np.absolute(H_unfold - H_big)))
+        assert np.allclose(H_unfold, H_big, atol=atol)
