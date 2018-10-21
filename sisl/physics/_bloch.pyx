@@ -39,9 +39,9 @@ def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
     raise ValueError('bloch_unfold: requires dtype to be either complex64 or complex128.')
 
 
-@cython.initializedcheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 cdef void _unfold_M64(const double w,
                       const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
                       const double k0, const double k1, const double k2,
@@ -80,6 +80,7 @@ cdef void _unfold_M64(const double w,
                     # Every column starts from scratch
                     ph2 = ph
 
+                    # Retrieve sub-arrays that we are to write too
                     mj = m[j]
                     MJ = M[J]
 
@@ -98,10 +99,10 @@ cdef void _unfold_M64(const double w,
                     J += 1
                     
 
-@cython.initializedcheck(False)
+@cython.cdivision(True)
 @cython.boundscheck(False)
 @cython.wraparound(False)
-@cython.cdivision(True)
+@cython.initializedcheck(False)
 def _unfold64(const int[::1] B, const double[:, ::1] K,
               const float complex[:, :, ::1] m):
 
@@ -132,9 +133,9 @@ def _unfold64(const int[::1] B, const double[:, ::1] K,
     return M
 
 
-@cython.initializedcheck(False)
-@cython.wraparound(False)
 @cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
 cdef void _unfold_M128(const double w,
                        const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
                        const double k0, const double k1, const double k2,
@@ -173,6 +174,7 @@ cdef void _unfold_M128(const double w,
                     # Every column starts from scratch
                     ph2 = ph
 
+                    # Retrieve sub-arrays that we are to write too
                     mj = m[j]
                     MJ = M[J]
 
@@ -191,10 +193,10 @@ cdef void _unfold_M128(const double w,
                     J += 1
                     
 
+@cython.cdivision(True)
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-@cython.cdivision(True)
 def _unfold128(const int[::1] B, const double[:, ::1] K,
                const double complex[:, :, ::1] m):
 
