@@ -39,19 +39,22 @@ def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
     raise ValueError('bloch_unfold: requires dtype to be either complex64 or complex128.')
 
 
+@cython.initializedcheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold_M64(const double w,
-                      const int B0, const int B1, const int B2,
+                      const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
                       const double k0, const double k1, const double k2,
-                      const int N1, const int N2, 
+                      const Py_ssize_t N1, const Py_ssize_t N2,
                       const float complex[:, ::1] m,
                       float complex[:, ::1] M) nogil:
 
-    cdef int j0, j1, j2 # looping the output rows
-    cdef int i, j # looping m[j, i]
-    cdef int I, J # looping output M[J, I]
+    cdef Py_ssize_t j0, j1, j2 # looping the output rows
+    cdef Py_ssize_t i, j # looping m[j, i]
+    cdef Py_ssize_t I, J # looping output M[J, I]
+
+    # Faster memory views
+    cdef float complex[:] MJ, mj
 
     # Phase handling variables
     cdef double rph
@@ -77,6 +80,9 @@ cdef void _unfold_M64(const double w,
                     # Every column starts from scratch
                     ph2 = ph
 
+                    mj = m[j]
+                    MJ = M[J]
+
                     I = 0
                     for _ in range(B2):
                         ph1 = ph2
@@ -84,7 +90,7 @@ cdef void _unfold_M64(const double w,
                             ph0 = ph1
                             for _ in range(B0):
                                 for i in range(N2):
-                                    M[J, I] = M[J, I] + m[j, i] * ph0
+                                    MJ[I] = MJ[I] + mj[i] * ph0
                                     I += 1
                                 ph0 = ph0 * aph0
                             ph1 = ph1 * aph1
@@ -92,20 +98,20 @@ cdef void _unfold_M64(const double w,
                     J += 1
                     
 
+@cython.initializedcheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
-@cython.initializedcheck(False)
 @cython.cdivision(True)
 def _unfold64(const int[::1] B, const double[:, ::1] K,
               const float complex[:, :, ::1] m):
 
     # N should now equal K.shape[0]
-    cdef int B0 = B[0]
-    cdef int B1 = B[1]
-    cdef int B2 = B[2]
-    cdef int N = B0 * B1 * B2
-    cdef int N1 = m.shape[1]
-    cdef int N2 = m.shape[2]
+    cdef Py_ssize_t B0 = B[0]
+    cdef Py_ssize_t B1 = B[1]
+    cdef Py_ssize_t B2 = B[2]
+    cdef Py_ssize_t N = B0 * B1 * B2
+    cdef Py_ssize_t N1 = m.shape[1]
+    cdef Py_ssize_t N2 = m.shape[2]
     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex64)
     # Get view
     cdef float complex[:, ::1] MM = M
@@ -114,7 +120,7 @@ def _unfold64(const int[::1] B, const double[:, ::1] K,
     cdef double k0, k1, k2
 
     cdef double w = 1. / N
-    cdef int I
+    cdef Py_ssize_t I
 
     # Now perform expansion
     for I in range(N):
@@ -126,19 +132,22 @@ def _unfold64(const int[::1] B, const double[:, ::1] K,
     return M
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 @cython.initializedcheck(False)
+@cython.wraparound(False)
+@cython.boundscheck(False)
 cdef void _unfold_M128(const double w,
-                       const int B0, const int B1, const int B2,
+                       const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
                        const double k0, const double k1, const double k2,
-                       const int N1, const int N2,
+                       const Py_ssize_t N1, const Py_ssize_t N2,
                        const double complex[:, ::1] m,
                        double complex[:, ::1] M) nogil:
 
-    cdef int j0, j1, j2 # looping the output rows
-    cdef int i, j # looping m[j, i]
-    cdef int I, J # looping output M[J, I]
+    cdef Py_ssize_t j0, j1, j2 # looping the output rows
+    cdef Py_ssize_t i, j # looping m[j, i]
+    cdef Py_ssize_t I, J # looping output M[J, I]
+
+    # Faster memory views
+    cdef double complex[:] MJ, mj
 
     # Phase handling variables
     cdef double rph
@@ -164,6 +173,9 @@ cdef void _unfold_M128(const double w,
                     # Every column starts from scratch
                     ph2 = ph
 
+                    mj = m[j]
+                    MJ = M[J]
+
                     I = 0
                     for _ in range(B2):
                         ph1 = ph2
@@ -171,7 +183,7 @@ cdef void _unfold_M128(const double w,
                             ph0 = ph1
                             for _ in range(B0):
                                 for i in range(N2):
-                                    M[J, I] = M[J, I] + m[j, i] * ph0
+                                    MJ[I] = MJ[I] + mj[i] * ph0
                                     I += 1
                                 ph0 = ph0 * aph0
                             ph1 = ph1 * aph1
@@ -187,12 +199,12 @@ def _unfold128(const int[::1] B, const double[:, ::1] K,
                const double complex[:, :, ::1] m):
 
     # N should now equal K.shape[0]
-    cdef int B0 = B[0]
-    cdef int B1 = B[1]
-    cdef int B2 = B[2]
-    cdef int N = B0 * B1 * B2
-    cdef int N1 = m.shape[1]
-    cdef int N2 = m.shape[2]
+    cdef Py_ssize_t B0 = B[0]
+    cdef Py_ssize_t B1 = B[1]
+    cdef Py_ssize_t B2 = B[2]
+    cdef Py_ssize_t N = B0 * B1 * B2
+    cdef Py_ssize_t N1 = m.shape[1]
+    cdef Py_ssize_t N2 = m.shape[2]
     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex128)
     # Get view
     cdef double complex[:, ::1] MM = M
@@ -201,7 +213,7 @@ def _unfold128(const int[::1] B, const double[:, ::1] K,
     cdef double k0, k1, k2
 
     cdef double w = 1. / N
-    cdef int I
+    cdef Py_ssize_t I
 
     # Now perform expansion
     for I in range(N):

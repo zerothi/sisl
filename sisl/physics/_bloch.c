@@ -1453,9 +1453,6 @@ static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObje
 #define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
 #endif
 
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
-
 /* MemviewSliceInit.proto */
 #define __Pyx_BUF_MAX_NDIMS %(BUF_MAX_NDIMS)d
 #define __Pyx_MEMVIEW_DIRECT   1
@@ -1481,6 +1478,14 @@ static CYTHON_INLINE int __pyx_sub_acquisition_count_locked(
 #define __PYX_XDEC_MEMVIEW(slice, have_gil) __Pyx_XDEC_MEMVIEW(slice, have_gil, __LINE__)
 static CYTHON_INLINE void __Pyx_INC_MEMVIEW(__Pyx_memviewslice *, int, int);
 static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *, int, int);
+
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
 
 /* DictGetItem.proto */
 #if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
@@ -1684,11 +1689,6 @@ static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
 
 /* None.proto */
 static CYTHON_INLINE long __Pyx_div_long(long, long);
-
-/* WriteUnraisableException.proto */
-static void __Pyx_WriteUnraisable(const char *name, int clineno,
-                                  int lineno, const char *filename,
-                                  int full_traceback, int nogil);
 
 /* PyObjectCallMethO.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -2016,8 +2016,8 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const , int const , int const , int const , double const , double const , double const , int const , int const , __Pyx_memviewslice const , __Pyx_memviewslice); /*proto*/
-static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const , int const , int const , int const , double const , double const , double const , int const , int const , __Pyx_memviewslice const , __Pyx_memviewslice); /*proto*/
+static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const , Py_ssize_t const , Py_ssize_t const , Py_ssize_t const , double const , double const , double const , Py_ssize_t const , Py_ssize_t const , __Pyx_memviewslice const , __Pyx_memviewslice); /*proto*/
+static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const , Py_ssize_t const , Py_ssize_t const , Py_ssize_t const , double const , double const , double const , Py_ssize_t const , Py_ssize_t const , __Pyx_memviewslice const , __Pyx_memviewslice); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -2890,21 +2890,23 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
 }
 
 /* "sisl/physics/_bloch.pyx":45
+ * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * @cython.initializedcheck(False)
  * cdef void _unfold_M64(const double w,             # <<<<<<<<<<<<<<
- *                       const int B0, const int B1, const int B2,
+ *                       const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
  *                       const double k0, const double k1, const double k2,
  */
 
-static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, int const __pyx_v_B0, int const __pyx_v_B1, int const __pyx_v_B2, double const __pyx_v_k0, double const __pyx_v_k1, double const __pyx_v_k2, int const __pyx_v_N1, int const __pyx_v_N2, __Pyx_memviewslice const __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
-  int __pyx_v_j0;
-  int __pyx_v_j1;
-  int __pyx_v_j2;
-  int __pyx_v_i;
-  int __pyx_v_j;
-  int __pyx_v_I;
-  int __pyx_v_J;
+static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, Py_ssize_t const __pyx_v_B0, Py_ssize_t const __pyx_v_B1, Py_ssize_t const __pyx_v_B2, double const __pyx_v_k0, double const __pyx_v_k1, double const __pyx_v_k2, Py_ssize_t const __pyx_v_N1, Py_ssize_t const __pyx_v_N2, __Pyx_memviewslice const __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
+  Py_ssize_t __pyx_v_j0;
+  Py_ssize_t __pyx_v_j1;
+  Py_ssize_t __pyx_v_j2;
+  Py_ssize_t __pyx_v_i;
+  Py_ssize_t __pyx_v_j;
+  Py_ssize_t __pyx_v_I;
+  Py_ssize_t __pyx_v_J;
+  __Pyx_memviewslice __pyx_v_MJ = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_mj = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_rph;
   __pyx_t_float_complex __pyx_v_aph0;
   __pyx_t_float_complex __pyx_v_aph1;
@@ -2913,34 +2915,32 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
   __pyx_t_float_complex __pyx_v_ph0;
   __pyx_t_float_complex __pyx_v_ph1;
   __pyx_t_float_complex __pyx_v_ph2;
-  CYTHON_UNUSED int __pyx_v__;
+  CYTHON_UNUSED Py_ssize_t __pyx_v__;
   __pyx_t_float_complex __pyx_t_1;
   int __pyx_t_2;
   __pyx_t_double_complex __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  int __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
-  int __pyx_t_9;
-  int __pyx_t_10;
-  int __pyx_t_11;
-  int __pyx_t_12;
-  int __pyx_t_13;
-  int __pyx_t_14;
-  int __pyx_t_15;
-  int __pyx_t_16;
-  int __pyx_t_17;
-  int __pyx_t_18;
-  int __pyx_t_19;
+  Py_ssize_t __pyx_t_4;
+  Py_ssize_t __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  __Pyx_memviewslice __pyx_t_12 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  Py_ssize_t __pyx_t_16;
+  Py_ssize_t __pyx_t_17;
+  Py_ssize_t __pyx_t_18;
+  Py_ssize_t __pyx_t_19;
   Py_ssize_t __pyx_t_20;
   Py_ssize_t __pyx_t_21;
   Py_ssize_t __pyx_t_22;
   Py_ssize_t __pyx_t_23;
-  Py_ssize_t __pyx_t_24;
-  Py_ssize_t __pyx_t_25;
 
-  /* "sisl/physics/_bloch.pyx":62
+  /* "sisl/physics/_bloch.pyx":65
  * 
  *     # Construct the phases to be added
  *     aph0 = aph1 = aph2 = 1.             # <<<<<<<<<<<<<<
@@ -2952,7 +2952,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
   __pyx_v_aph1 = __pyx_t_1;
   __pyx_v_aph2 = __pyx_t_1;
 
-  /* "sisl/physics/_bloch.pyx":63
+  /* "sisl/physics/_bloch.pyx":66
  *     # Construct the phases to be added
  *     aph0 = aph1 = aph2 = 1.
  *     if B0 > 1:             # <<<<<<<<<<<<<<
@@ -2962,7 +2962,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
   __pyx_t_2 = ((__pyx_v_B0 > 1) != 0);
   if (__pyx_t_2) {
 
-    /* "sisl/physics/_bloch.pyx":64
+    /* "sisl/physics/_bloch.pyx":67
  *     aph0 = aph1 = aph2 = 1.
  *     if B0 > 1:
  *         aph0 = <float complex> (cos(k0) + 1j * sin(k0))             # <<<<<<<<<<<<<<
@@ -2972,7 +2972,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
     __pyx_t_3 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k0), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k0), 0)));
     __pyx_v_aph0 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_3)), ((float)__Pyx_CIMAG(__pyx_t_3)));
 
-    /* "sisl/physics/_bloch.pyx":63
+    /* "sisl/physics/_bloch.pyx":66
  *     # Construct the phases to be added
  *     aph0 = aph1 = aph2 = 1.
  *     if B0 > 1:             # <<<<<<<<<<<<<<
@@ -2981,7 +2981,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
  */
   }
 
-  /* "sisl/physics/_bloch.pyx":65
+  /* "sisl/physics/_bloch.pyx":68
  *     if B0 > 1:
  *         aph0 = <float complex> (cos(k0) + 1j * sin(k0))
  *     if B1 > 1:             # <<<<<<<<<<<<<<
@@ -2991,7 +2991,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
   __pyx_t_2 = ((__pyx_v_B1 > 1) != 0);
   if (__pyx_t_2) {
 
-    /* "sisl/physics/_bloch.pyx":66
+    /* "sisl/physics/_bloch.pyx":69
  *         aph0 = <float complex> (cos(k0) + 1j * sin(k0))
  *     if B1 > 1:
  *         aph1 = <float complex> (cos(k1) + 1j * sin(k1))             # <<<<<<<<<<<<<<
@@ -3001,7 +3001,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
     __pyx_t_3 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k1), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k1), 0)));
     __pyx_v_aph1 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_3)), ((float)__Pyx_CIMAG(__pyx_t_3)));
 
-    /* "sisl/physics/_bloch.pyx":65
+    /* "sisl/physics/_bloch.pyx":68
  *     if B0 > 1:
  *         aph0 = <float complex> (cos(k0) + 1j * sin(k0))
  *     if B1 > 1:             # <<<<<<<<<<<<<<
@@ -3010,7 +3010,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
  */
   }
 
-  /* "sisl/physics/_bloch.pyx":67
+  /* "sisl/physics/_bloch.pyx":70
  *     if B1 > 1:
  *         aph1 = <float complex> (cos(k1) + 1j * sin(k1))
  *     if B2 > 1:             # <<<<<<<<<<<<<<
@@ -3020,7 +3020,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
   __pyx_t_2 = ((__pyx_v_B2 > 1) != 0);
   if (__pyx_t_2) {
 
-    /* "sisl/physics/_bloch.pyx":68
+    /* "sisl/physics/_bloch.pyx":71
  *         aph1 = <float complex> (cos(k1) + 1j * sin(k1))
  *     if B2 > 1:
  *         aph2 = <float complex> (cos(k2) + 1j * sin(k2))             # <<<<<<<<<<<<<<
@@ -3030,7 +3030,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
     __pyx_t_3 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k2), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k2), 0)));
     __pyx_v_aph2 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_3)), ((float)__Pyx_CIMAG(__pyx_t_3)));
 
-    /* "sisl/physics/_bloch.pyx":67
+    /* "sisl/physics/_bloch.pyx":70
  *     if B1 > 1:
  *         aph1 = <float complex> (cos(k1) + 1j * sin(k1))
  *     if B2 > 1:             # <<<<<<<<<<<<<<
@@ -3039,7 +3039,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
  */
   }
 
-  /* "sisl/physics/_bloch.pyx":70
+  /* "sisl/physics/_bloch.pyx":73
  *         aph2 = <float complex> (cos(k2) + 1j * sin(k2))
  * 
  *     J = 0             # <<<<<<<<<<<<<<
@@ -3048,7 +3048,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
  */
   __pyx_v_J = 0;
 
-  /* "sisl/physics/_bloch.pyx":71
+  /* "sisl/physics/_bloch.pyx":74
  * 
  *     J = 0
  *     for j2 in range(B2):             # <<<<<<<<<<<<<<
@@ -3059,7 +3059,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_j2 = __pyx_t_5;
 
-    /* "sisl/physics/_bloch.pyx":72
+    /* "sisl/physics/_bloch.pyx":75
  *     J = 0
  *     for j2 in range(B2):
  *         for j1 in range(B1):             # <<<<<<<<<<<<<<
@@ -3070,7 +3070,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
     for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
       __pyx_v_j1 = __pyx_t_7;
 
-      /* "sisl/physics/_bloch.pyx":73
+      /* "sisl/physics/_bloch.pyx":76
  *     for j2 in range(B2):
  *         for j1 in range(B1):
  *             for j0 in range(B0):             # <<<<<<<<<<<<<<
@@ -3081,7 +3081,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
       for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
         __pyx_v_j0 = __pyx_t_9;
 
-        /* "sisl/physics/_bloch.pyx":74
+        /* "sisl/physics/_bloch.pyx":77
  *         for j1 in range(B1):
  *             for j0 in range(B0):
  *                 rph = - j0 * k0 - j1 * k1 - j2 * k2             # <<<<<<<<<<<<<<
@@ -3090,7 +3090,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
  */
         __pyx_v_rph = ((((-__pyx_v_j0) * __pyx_v_k0) - (__pyx_v_j1 * __pyx_v_k1)) - (__pyx_v_j2 * __pyx_v_k2));
 
-        /* "sisl/physics/_bloch.pyx":75
+        /* "sisl/physics/_bloch.pyx":78
  *             for j0 in range(B0):
  *                 rph = - j0 * k0 - j1 * k1 - j2 * k2
  *                 ph = <float complex> ( w * cos(rph) + 1j * (w * sin(rph)) )             # <<<<<<<<<<<<<<
@@ -3100,7 +3100,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
         __pyx_t_3 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts((__pyx_v_w * cos(__pyx_v_rph)), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((__pyx_v_w * sin(__pyx_v_rph)), 0)));
         __pyx_v_ph = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_3)), ((float)__Pyx_CIMAG(__pyx_t_3)));
 
-        /* "sisl/physics/_bloch.pyx":76
+        /* "sisl/physics/_bloch.pyx":79
  *                 rph = - j0 * k0 - j1 * k1 - j2 * k2
  *                 ph = <float complex> ( w * cos(rph) + 1j * (w * sin(rph)) )
  *                 for j in range(N1):             # <<<<<<<<<<<<<<
@@ -3111,17 +3111,93 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
         for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
           __pyx_v_j = __pyx_t_11;
 
-          /* "sisl/physics/_bloch.pyx":78
+          /* "sisl/physics/_bloch.pyx":81
  *                 for j in range(N1):
  *                     # Every column starts from scratch
  *                     ph2 = ph             # <<<<<<<<<<<<<<
  * 
- *                     I = 0
+ *                     mj = m[j]
  */
           __pyx_v_ph2 = __pyx_v_ph;
 
-          /* "sisl/physics/_bloch.pyx":80
+          /* "sisl/physics/_bloch.pyx":83
  *                     ph2 = ph
+ * 
+ *                     mj = m[j]             # <<<<<<<<<<<<<<
+ *                     MJ = M[J]
+ * 
+ */
+          __pyx_t_12.data = __pyx_v_m.data;
+          __pyx_t_12.memview = __pyx_v_m.memview;
+          __PYX_INC_MEMVIEW(&__pyx_t_12, 0);
+          {
+    Py_ssize_t __pyx_tmp_idx = __pyx_v_j;
+    Py_ssize_t __pyx_tmp_shape = __pyx_v_m.shape[0];
+    Py_ssize_t __pyx_tmp_stride = __pyx_v_m.strides[0];
+    if (0 && (__pyx_tmp_idx < 0))
+        __pyx_tmp_idx += __pyx_tmp_shape;
+    if (0 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
+            #ifdef WITH_THREAD
+            PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+            #endif
+        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 0)");
+            #ifdef WITH_THREAD
+            PyGILState_Release(__pyx_gilstate_save);
+            #endif
+        __PYX_ERR(0, 83, __pyx_L1_error)
+    }
+        __pyx_t_12.data += __pyx_tmp_idx * __pyx_tmp_stride;
+}
+
+__pyx_t_12.shape[0] = __pyx_v_m.shape[1];
+__pyx_t_12.strides[0] = __pyx_v_m.strides[1];
+    __pyx_t_12.suboffsets[0] = -1;
+
+__PYX_XDEC_MEMVIEW(&__pyx_v_mj, 0);
+          __pyx_v_mj = __pyx_t_12;
+          __pyx_t_12.memview = NULL;
+          __pyx_t_12.data = NULL;
+
+          /* "sisl/physics/_bloch.pyx":84
+ * 
+ *                     mj = m[j]
+ *                     MJ = M[J]             # <<<<<<<<<<<<<<
+ * 
+ *                     I = 0
+ */
+          __pyx_t_12.data = __pyx_v_M.data;
+          __pyx_t_12.memview = __pyx_v_M.memview;
+          __PYX_INC_MEMVIEW(&__pyx_t_12, 0);
+          {
+    Py_ssize_t __pyx_tmp_idx = __pyx_v_J;
+    Py_ssize_t __pyx_tmp_shape = __pyx_v_M.shape[0];
+    Py_ssize_t __pyx_tmp_stride = __pyx_v_M.strides[0];
+    if (0 && (__pyx_tmp_idx < 0))
+        __pyx_tmp_idx += __pyx_tmp_shape;
+    if (0 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
+            #ifdef WITH_THREAD
+            PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+            #endif
+        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 0)");
+            #ifdef WITH_THREAD
+            PyGILState_Release(__pyx_gilstate_save);
+            #endif
+        __PYX_ERR(0, 84, __pyx_L1_error)
+    }
+        __pyx_t_12.data += __pyx_tmp_idx * __pyx_tmp_stride;
+}
+
+__pyx_t_12.shape[0] = __pyx_v_M.shape[1];
+__pyx_t_12.strides[0] = __pyx_v_M.strides[1];
+    __pyx_t_12.suboffsets[0] = -1;
+
+__PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
+          __pyx_v_MJ = __pyx_t_12;
+          __pyx_t_12.memview = NULL;
+          __pyx_t_12.data = NULL;
+
+          /* "sisl/physics/_bloch.pyx":86
+ *                     MJ = M[J]
  * 
  *                     I = 0             # <<<<<<<<<<<<<<
  *                     for _ in range(B2):
@@ -3129,18 +3205,18 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
  */
           __pyx_v_I = 0;
 
-          /* "sisl/physics/_bloch.pyx":81
+          /* "sisl/physics/_bloch.pyx":87
  * 
  *                     I = 0
  *                     for _ in range(B2):             # <<<<<<<<<<<<<<
  *                         ph1 = ph2
  *                         for _ in range(B1):
  */
-          __pyx_t_12 = __pyx_v_B2;
-          for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-            __pyx_v__ = __pyx_t_13;
+          __pyx_t_13 = __pyx_v_B2;
+          for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
+            __pyx_v__ = __pyx_t_14;
 
-            /* "sisl/physics/_bloch.pyx":82
+            /* "sisl/physics/_bloch.pyx":88
  *                     I = 0
  *                     for _ in range(B2):
  *                         ph1 = ph2             # <<<<<<<<<<<<<<
@@ -3149,18 +3225,18 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
  */
             __pyx_v_ph1 = __pyx_v_ph2;
 
-            /* "sisl/physics/_bloch.pyx":83
+            /* "sisl/physics/_bloch.pyx":89
  *                     for _ in range(B2):
  *                         ph1 = ph2
  *                         for _ in range(B1):             # <<<<<<<<<<<<<<
  *                             ph0 = ph1
  *                             for _ in range(B0):
  */
-            __pyx_t_14 = __pyx_v_B1;
-            for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_14; __pyx_t_15+=1) {
-              __pyx_v__ = __pyx_t_15;
+            __pyx_t_15 = __pyx_v_B1;
+            for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+              __pyx_v__ = __pyx_t_16;
 
-              /* "sisl/physics/_bloch.pyx":84
+              /* "sisl/physics/_bloch.pyx":90
  *                         ph1 = ph2
  *                         for _ in range(B1):
  *                             ph0 = ph1             # <<<<<<<<<<<<<<
@@ -3169,46 +3245,43 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
  */
               __pyx_v_ph0 = __pyx_v_ph1;
 
-              /* "sisl/physics/_bloch.pyx":85
+              /* "sisl/physics/_bloch.pyx":91
  *                         for _ in range(B1):
  *                             ph0 = ph1
  *                             for _ in range(B0):             # <<<<<<<<<<<<<<
  *                                 for i in range(N2):
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0
  */
-              __pyx_t_16 = __pyx_v_B0;
-              for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
-                __pyx_v__ = __pyx_t_17;
+              __pyx_t_17 = __pyx_v_B0;
+              for (__pyx_t_18 = 0; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
+                __pyx_v__ = __pyx_t_18;
 
-                /* "sisl/physics/_bloch.pyx":86
+                /* "sisl/physics/_bloch.pyx":92
  *                             ph0 = ph1
  *                             for _ in range(B0):
  *                                 for i in range(N2):             # <<<<<<<<<<<<<<
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0
  *                                     I += 1
  */
-                __pyx_t_18 = __pyx_v_N2;
-                for (__pyx_t_19 = 0; __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
-                  __pyx_v_i = __pyx_t_19;
+                __pyx_t_19 = __pyx_v_N2;
+                for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_19; __pyx_t_20+=1) {
+                  __pyx_v_i = __pyx_t_20;
 
-                  /* "sisl/physics/_bloch.pyx":87
+                  /* "sisl/physics/_bloch.pyx":93
  *                             for _ in range(B0):
  *                                 for i in range(N2):
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0             # <<<<<<<<<<<<<<
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0             # <<<<<<<<<<<<<<
  *                                     I += 1
  *                                 ph0 = ph0 * aph0
  */
-                  __pyx_t_20 = __pyx_v_J;
                   __pyx_t_21 = __pyx_v_I;
-                  __pyx_t_22 = __pyx_v_j;
-                  __pyx_t_23 = __pyx_v_i;
-                  __pyx_t_24 = __pyx_v_J;
-                  __pyx_t_25 = __pyx_v_I;
-                  *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_24 * __pyx_v_M.strides[0]) )) + __pyx_t_25)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_20 * __pyx_v_M.strides[0]) )) + __pyx_t_21)) ))), __Pyx_c_prod_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_m.data + __pyx_t_22 * __pyx_v_m.strides[0]) )) + __pyx_t_23)) ))), __pyx_v_ph0));
+                  __pyx_t_22 = __pyx_v_i;
+                  __pyx_t_23 = __pyx_v_I;
+                  *((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_MJ.data + __pyx_t_23 * __pyx_v_MJ.strides[0]) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_MJ.data + __pyx_t_21 * __pyx_v_MJ.strides[0]) ))), __Pyx_c_prod_float((*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_mj.data + __pyx_t_22 * __pyx_v_mj.strides[0]) ))), __pyx_v_ph0));
 
-                  /* "sisl/physics/_bloch.pyx":88
+                  /* "sisl/physics/_bloch.pyx":94
  *                                 for i in range(N2):
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0
  *                                     I += 1             # <<<<<<<<<<<<<<
  *                                 ph0 = ph0 * aph0
  *                             ph1 = ph1 * aph1
@@ -3216,8 +3289,8 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
                   __pyx_v_I = (__pyx_v_I + 1);
                 }
 
-                /* "sisl/physics/_bloch.pyx":89
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0
+                /* "sisl/physics/_bloch.pyx":95
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0
  *                                     I += 1
  *                                 ph0 = ph0 * aph0             # <<<<<<<<<<<<<<
  *                             ph1 = ph1 * aph1
@@ -3226,7 +3299,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
                 __pyx_v_ph0 = __Pyx_c_prod_float(__pyx_v_ph0, __pyx_v_aph0);
               }
 
-              /* "sisl/physics/_bloch.pyx":90
+              /* "sisl/physics/_bloch.pyx":96
  *                                     I += 1
  *                                 ph0 = ph0 * aph0
  *                             ph1 = ph1 * aph1             # <<<<<<<<<<<<<<
@@ -3236,7 +3309,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
               __pyx_v_ph1 = __Pyx_c_prod_float(__pyx_v_ph1, __pyx_v_aph1);
             }
 
-            /* "sisl/physics/_bloch.pyx":91
+            /* "sisl/physics/_bloch.pyx":97
  *                                 ph0 = ph0 * aph0
  *                             ph1 = ph1 * aph1
  *                         ph2 = ph2 * aph2             # <<<<<<<<<<<<<<
@@ -3246,7 +3319,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
             __pyx_v_ph2 = __Pyx_c_prod_float(__pyx_v_ph2, __pyx_v_aph2);
           }
 
-          /* "sisl/physics/_bloch.pyx":92
+          /* "sisl/physics/_bloch.pyx":98
  *                             ph1 = ph1 * aph1
  *                         ph2 = ph2 * aph2
  *                     J += 1             # <<<<<<<<<<<<<<
@@ -3260,18 +3333,25 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M64(double const __pyx_v_w, i
   }
 
   /* "sisl/physics/_bloch.pyx":45
+ * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * @cython.initializedcheck(False)
  * cdef void _unfold_M64(const double w,             # <<<<<<<<<<<<<<
- *                       const int B0, const int B1, const int B2,
+ *                       const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
  *                       const double k0, const double k1, const double k2,
  */
 
   /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __PYX_XDEC_MEMVIEW(&__pyx_t_12, 0);
+  __Pyx_WriteUnraisable("sisl.physics._bloch._unfold_M64", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_mj, 0);
 }
 
-/* "sisl/physics/_bloch.pyx":99
- * @cython.initializedcheck(False)
+/* "sisl/physics/_bloch.pyx":105
+ * @cython.wraparound(False)
  * @cython.cdivision(True)
  * def _unfold64(const int[::1] B, const double[:, ::1] K,             # <<<<<<<<<<<<<<
  *               const float complex[:, :, ::1] m):
@@ -3313,17 +3393,17 @@ static PyObject *__pyx_pw_4sisl_7physics_6_bloch_3_unfold64(PyObject *__pyx_self
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_K)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_unfold64", 1, 3, 3, 1); __PYX_ERR(0, 99, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_unfold64", 1, 3, 3, 1); __PYX_ERR(0, 105, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_m)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_unfold64", 1, 3, 3, 2); __PYX_ERR(0, 99, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_unfold64", 1, 3, 3, 2); __PYX_ERR(0, 105, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_unfold64") < 0)) __PYX_ERR(0, 99, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_unfold64") < 0)) __PYX_ERR(0, 105, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3332,13 +3412,13 @@ static PyObject *__pyx_pw_4sisl_7physics_6_bloch_3_unfold64(PyObject *__pyx_self
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_B = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[0]); if (unlikely(!__pyx_v_B.memview)) __PYX_ERR(0, 99, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[1]); if (unlikely(!__pyx_v_K.memview)) __PYX_ERR(0, 99, __pyx_L3_error)
-    __pyx_v_m = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc___pyx_t_float_complex(values[2]); if (unlikely(!__pyx_v_m.memview)) __PYX_ERR(0, 100, __pyx_L3_error)
+    __pyx_v_B = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[0]); if (unlikely(!__pyx_v_B.memview)) __PYX_ERR(0, 105, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[1]); if (unlikely(!__pyx_v_K.memview)) __PYX_ERR(0, 105, __pyx_L3_error)
+    __pyx_v_m = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc___pyx_t_float_complex(values[2]); if (unlikely(!__pyx_v_m.memview)) __PYX_ERR(0, 106, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_unfold64", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 99, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_unfold64", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 105, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._bloch._unfold64", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3352,12 +3432,12 @@ static PyObject *__pyx_pw_4sisl_7physics_6_bloch_3_unfold64(PyObject *__pyx_self
 }
 
 static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_B, __Pyx_memviewslice __pyx_v_K, __Pyx_memviewslice __pyx_v_m) {
-  int __pyx_v_B0;
-  int __pyx_v_B1;
-  int __pyx_v_B2;
-  int __pyx_v_N;
-  int __pyx_v_N1;
-  int __pyx_v_N2;
+  Py_ssize_t __pyx_v_B0;
+  Py_ssize_t __pyx_v_B1;
+  Py_ssize_t __pyx_v_B2;
+  Py_ssize_t __pyx_v_N;
+  Py_ssize_t __pyx_v_N1;
+  Py_ssize_t __pyx_v_N2;
   PyArrayObject *__pyx_v_M = 0;
   __Pyx_memviewslice __pyx_v_MM = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_pi2;
@@ -3365,7 +3445,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
   double __pyx_v_k1;
   double __pyx_v_k2;
   double __pyx_v_w;
-  int __pyx_v_I;
+  Py_ssize_t __pyx_v_I;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_M;
   __Pyx_Buffer __pyx_pybuffer_M;
   PyObject *__pyx_r = NULL;
@@ -3380,8 +3460,8 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
   PyObject *__pyx_t_8 = NULL;
   PyArrayObject *__pyx_t_9 = NULL;
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_t_11;
-  int __pyx_t_12;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
   Py_ssize_t __pyx_t_15;
@@ -3394,80 +3474,80 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
   __pyx_pybuffernd_M.data = NULL;
   __pyx_pybuffernd_M.rcbuffer = &__pyx_pybuffer_M;
 
-  /* "sisl/physics/_bloch.pyx":103
+  /* "sisl/physics/_bloch.pyx":109
  * 
  *     # N should now equal K.shape[0]
- *     cdef int B0 = B[0]             # <<<<<<<<<<<<<<
- *     cdef int B1 = B[1]
- *     cdef int B2 = B[2]
+ *     cdef Py_ssize_t B0 = B[0]             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t B1 = B[1]
+ *     cdef Py_ssize_t B2 = B[2]
  */
   __pyx_t_1 = 0;
   __pyx_v_B0 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_B.data) + __pyx_t_1)) )));
 
-  /* "sisl/physics/_bloch.pyx":104
+  /* "sisl/physics/_bloch.pyx":110
  *     # N should now equal K.shape[0]
- *     cdef int B0 = B[0]
- *     cdef int B1 = B[1]             # <<<<<<<<<<<<<<
- *     cdef int B2 = B[2]
- *     cdef int N = B0 * B1 * B2
+ *     cdef Py_ssize_t B0 = B[0]
+ *     cdef Py_ssize_t B1 = B[1]             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t B2 = B[2]
+ *     cdef Py_ssize_t N = B0 * B1 * B2
  */
   __pyx_t_2 = 1;
   __pyx_v_B1 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_B.data) + __pyx_t_2)) )));
 
-  /* "sisl/physics/_bloch.pyx":105
- *     cdef int B0 = B[0]
- *     cdef int B1 = B[1]
- *     cdef int B2 = B[2]             # <<<<<<<<<<<<<<
- *     cdef int N = B0 * B1 * B2
- *     cdef int N1 = m.shape[1]
+  /* "sisl/physics/_bloch.pyx":111
+ *     cdef Py_ssize_t B0 = B[0]
+ *     cdef Py_ssize_t B1 = B[1]
+ *     cdef Py_ssize_t B2 = B[2]             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t N = B0 * B1 * B2
+ *     cdef Py_ssize_t N1 = m.shape[1]
  */
   __pyx_t_3 = 2;
   __pyx_v_B2 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_B.data) + __pyx_t_3)) )));
 
-  /* "sisl/physics/_bloch.pyx":106
- *     cdef int B1 = B[1]
- *     cdef int B2 = B[2]
- *     cdef int N = B0 * B1 * B2             # <<<<<<<<<<<<<<
- *     cdef int N1 = m.shape[1]
- *     cdef int N2 = m.shape[2]
+  /* "sisl/physics/_bloch.pyx":112
+ *     cdef Py_ssize_t B1 = B[1]
+ *     cdef Py_ssize_t B2 = B[2]
+ *     cdef Py_ssize_t N = B0 * B1 * B2             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t N1 = m.shape[1]
+ *     cdef Py_ssize_t N2 = m.shape[2]
  */
   __pyx_v_N = ((__pyx_v_B0 * __pyx_v_B1) * __pyx_v_B2);
 
-  /* "sisl/physics/_bloch.pyx":107
- *     cdef int B2 = B[2]
- *     cdef int N = B0 * B1 * B2
- *     cdef int N1 = m.shape[1]             # <<<<<<<<<<<<<<
- *     cdef int N2 = m.shape[2]
+  /* "sisl/physics/_bloch.pyx":113
+ *     cdef Py_ssize_t B2 = B[2]
+ *     cdef Py_ssize_t N = B0 * B1 * B2
+ *     cdef Py_ssize_t N1 = m.shape[1]             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t N2 = m.shape[2]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex64)
  */
   __pyx_v_N1 = (__pyx_v_m.shape[1]);
 
-  /* "sisl/physics/_bloch.pyx":108
- *     cdef int N = B0 * B1 * B2
- *     cdef int N1 = m.shape[1]
- *     cdef int N2 = m.shape[2]             # <<<<<<<<<<<<<<
+  /* "sisl/physics/_bloch.pyx":114
+ *     cdef Py_ssize_t N = B0 * B1 * B2
+ *     cdef Py_ssize_t N1 = m.shape[1]
+ *     cdef Py_ssize_t N2 = m.shape[2]             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex64)
  *     # Get view
  */
   __pyx_v_N2 = (__pyx_v_m.shape[2]);
 
-  /* "sisl/physics/_bloch.pyx":109
- *     cdef int N1 = m.shape[1]
- *     cdef int N2 = m.shape[2]
+  /* "sisl/physics/_bloch.pyx":115
+ *     cdef Py_ssize_t N1 = m.shape[1]
+ *     cdef Py_ssize_t N2 = m.shape[2]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex64)             # <<<<<<<<<<<<<<
  *     # Get view
  *     cdef float complex[:, ::1] MM = M
  */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_N * __pyx_v_N1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_4 = PyInt_FromSsize_t((__pyx_v_N * __pyx_v_N1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = __Pyx_PyInt_From_int((__pyx_v_N * __pyx_v_N2)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_6 = PyInt_FromSsize_t((__pyx_v_N * __pyx_v_N2)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = PyList_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_4);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
@@ -3475,32 +3555,32 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
   PyList_SET_ITEM(__pyx_t_7, 1, __pyx_t_6);
   __pyx_t_4 = 0;
   __pyx_t_6 = 0;
-  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex64); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex64); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 109, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 109, __pyx_L1_error)
+  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 115, __pyx_L1_error)
   __pyx_t_9 = ((PyArrayObject *)__pyx_t_8);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_M.rcbuffer->pybuffer, (PyObject*)__pyx_t_9, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_M = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_M.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 109, __pyx_L1_error)
+      __PYX_ERR(0, 115, __pyx_L1_error)
     } else {__pyx_pybuffernd_M.diminfo[0].strides = __pyx_pybuffernd_M.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_M.diminfo[0].shape = __pyx_pybuffernd_M.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_M.diminfo[1].strides = __pyx_pybuffernd_M.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_M.diminfo[1].shape = __pyx_pybuffernd_M.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -3508,7 +3588,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
   __pyx_v_M = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "sisl/physics/_bloch.pyx":111
+  /* "sisl/physics/_bloch.pyx":117
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex64)
  *     # Get view
  *     cdef float complex[:, ::1] MM = M             # <<<<<<<<<<<<<<
@@ -3516,12 +3596,12 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
  *     cdef double pi2 = pi * 2
  */
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_M));
-  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 111, __pyx_L1_error)
+  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 117, __pyx_L1_error)
   __pyx_v_MM = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "sisl/physics/_bloch.pyx":113
+  /* "sisl/physics/_bloch.pyx":119
  *     cdef float complex[:, ::1] MM = M
  * 
  *     cdef double pi2 = pi * 2             # <<<<<<<<<<<<<<
@@ -3530,16 +3610,16 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
  */
   __pyx_v_pi2 = (M_PI * 2.0);
 
-  /* "sisl/physics/_bloch.pyx":116
+  /* "sisl/physics/_bloch.pyx":122
  *     cdef double k0, k1, k2
  * 
  *     cdef double w = 1. / N             # <<<<<<<<<<<<<<
- *     cdef int I
+ *     cdef Py_ssize_t I
  * 
  */
   __pyx_v_w = (1. / __pyx_v_N);
 
-  /* "sisl/physics/_bloch.pyx":120
+  /* "sisl/physics/_bloch.pyx":126
  * 
  *     # Now perform expansion
  *     for I in range(N):             # <<<<<<<<<<<<<<
@@ -3550,7 +3630,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_I = __pyx_t_12;
 
-    /* "sisl/physics/_bloch.pyx":121
+    /* "sisl/physics/_bloch.pyx":127
  *     # Now perform expansion
  *     for I in range(N):
  *         k0 = K[I, 0] * pi2             # <<<<<<<<<<<<<<
@@ -3561,7 +3641,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
     __pyx_t_14 = 0;
     __pyx_v_k0 = ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_K.data + __pyx_t_13 * __pyx_v_K.strides[0]) )) + __pyx_t_14)) ))) * __pyx_v_pi2);
 
-    /* "sisl/physics/_bloch.pyx":122
+    /* "sisl/physics/_bloch.pyx":128
  *     for I in range(N):
  *         k0 = K[I, 0] * pi2
  *         k1 = K[I, 1] * pi2             # <<<<<<<<<<<<<<
@@ -3572,7 +3652,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
     __pyx_t_16 = 1;
     __pyx_v_k1 = ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_K.data + __pyx_t_15 * __pyx_v_K.strides[0]) )) + __pyx_t_16)) ))) * __pyx_v_pi2);
 
-    /* "sisl/physics/_bloch.pyx":123
+    /* "sisl/physics/_bloch.pyx":129
  *         k0 = K[I, 0] * pi2
  *         k1 = K[I, 1] * pi2
  *         k2 = K[I, 2] * pi2             # <<<<<<<<<<<<<<
@@ -3583,7 +3663,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
     __pyx_t_18 = 2;
     __pyx_v_k2 = ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_K.data + __pyx_t_17 * __pyx_v_K.strides[0]) )) + __pyx_t_18)) ))) * __pyx_v_pi2);
 
-    /* "sisl/physics/_bloch.pyx":124
+    /* "sisl/physics/_bloch.pyx":130
  *         k1 = K[I, 1] * pi2
  *         k2 = K[I, 2] * pi2
  *         _unfold_M64(w, B0, B1, B2, k0, k1, k2, N1, N2, m[I], MM)             # <<<<<<<<<<<<<<
@@ -3601,7 +3681,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
         __pyx_tmp_idx += __pyx_tmp_shape;
     if (0 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
         PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 0)");
-        __PYX_ERR(0, 124, __pyx_L1_error)
+        __PYX_ERR(0, 130, __pyx_L1_error)
     }
         __pyx_t_10.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -3620,7 +3700,7 @@ __pyx_f_4sisl_7physics_6_bloch__unfold_M64(__pyx_v_w, __pyx_v_B0, __pyx_v_B1, __
     __pyx_t_10.data = NULL;
   }
 
-  /* "sisl/physics/_bloch.pyx":126
+  /* "sisl/physics/_bloch.pyx":132
  *         _unfold_M64(w, B0, B1, B2, k0, k1, k2, N1, N2, m[I], MM)
  * 
  *     return M             # <<<<<<<<<<<<<<
@@ -3632,8 +3712,8 @@ __pyx_f_4sisl_7physics_6_bloch__unfold_M64(__pyx_v_w, __pyx_v_B0, __pyx_v_B1, __
   __pyx_r = ((PyObject *)__pyx_v_M);
   goto __pyx_L0;
 
-  /* "sisl/physics/_bloch.pyx":99
- * @cython.initializedcheck(False)
+  /* "sisl/physics/_bloch.pyx":105
+ * @cython.wraparound(False)
  * @cython.cdivision(True)
  * def _unfold64(const int[::1] B, const double[:, ::1] K,             # <<<<<<<<<<<<<<
  *               const float complex[:, :, ::1] m):
@@ -3670,22 +3750,24 @@ __pyx_f_4sisl_7physics_6_bloch__unfold_M64(__pyx_v_w, __pyx_v_B0, __pyx_v_B1, __
   return __pyx_r;
 }
 
-/* "sisl/physics/_bloch.pyx":132
+/* "sisl/physics/_bloch.pyx":138
  * @cython.wraparound(False)
- * @cython.initializedcheck(False)
+ * @cython.boundscheck(False)
  * cdef void _unfold_M128(const double w,             # <<<<<<<<<<<<<<
- *                        const int B0, const int B1, const int B2,
+ *                        const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
  *                        const double k0, const double k1, const double k2,
  */
 
-static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, int const __pyx_v_B0, int const __pyx_v_B1, int const __pyx_v_B2, double const __pyx_v_k0, double const __pyx_v_k1, double const __pyx_v_k2, int const __pyx_v_N1, int const __pyx_v_N2, __Pyx_memviewslice const __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
-  int __pyx_v_j0;
-  int __pyx_v_j1;
-  int __pyx_v_j2;
-  int __pyx_v_i;
-  int __pyx_v_j;
-  int __pyx_v_I;
-  int __pyx_v_J;
+static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, Py_ssize_t const __pyx_v_B0, Py_ssize_t const __pyx_v_B1, Py_ssize_t const __pyx_v_B2, double const __pyx_v_k0, double const __pyx_v_k1, double const __pyx_v_k2, Py_ssize_t const __pyx_v_N1, Py_ssize_t const __pyx_v_N2, __Pyx_memviewslice const __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
+  Py_ssize_t __pyx_v_j0;
+  Py_ssize_t __pyx_v_j1;
+  Py_ssize_t __pyx_v_j2;
+  Py_ssize_t __pyx_v_i;
+  Py_ssize_t __pyx_v_j;
+  Py_ssize_t __pyx_v_I;
+  Py_ssize_t __pyx_v_J;
+  __Pyx_memviewslice __pyx_v_MJ = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_mj = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_rph;
   __pyx_t_double_complex __pyx_v_aph0;
   __pyx_t_double_complex __pyx_v_aph1;
@@ -3694,33 +3776,31 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
   __pyx_t_double_complex __pyx_v_ph0;
   __pyx_t_double_complex __pyx_v_ph1;
   __pyx_t_double_complex __pyx_v_ph2;
-  CYTHON_UNUSED int __pyx_v__;
+  CYTHON_UNUSED Py_ssize_t __pyx_v__;
   __pyx_t_double_complex __pyx_t_1;
   int __pyx_t_2;
-  int __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  int __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
-  int __pyx_t_9;
-  int __pyx_t_10;
-  int __pyx_t_11;
-  int __pyx_t_12;
-  int __pyx_t_13;
-  int __pyx_t_14;
-  int __pyx_t_15;
-  int __pyx_t_16;
-  int __pyx_t_17;
-  int __pyx_t_18;
+  Py_ssize_t __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  Py_ssize_t __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  __Pyx_memviewslice __pyx_t_11 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_t_12;
+  Py_ssize_t __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  Py_ssize_t __pyx_t_16;
+  Py_ssize_t __pyx_t_17;
+  Py_ssize_t __pyx_t_18;
   Py_ssize_t __pyx_t_19;
   Py_ssize_t __pyx_t_20;
   Py_ssize_t __pyx_t_21;
   Py_ssize_t __pyx_t_22;
-  Py_ssize_t __pyx_t_23;
-  Py_ssize_t __pyx_t_24;
 
-  /* "sisl/physics/_bloch.pyx":149
+  /* "sisl/physics/_bloch.pyx":158
  * 
  *     # Construct the phases to be added
  *     aph0 = aph1 = aph2 = 1.             # <<<<<<<<<<<<<<
@@ -3732,7 +3812,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
   __pyx_v_aph1 = __pyx_t_1;
   __pyx_v_aph2 = __pyx_t_1;
 
-  /* "sisl/physics/_bloch.pyx":150
+  /* "sisl/physics/_bloch.pyx":159
  *     # Construct the phases to be added
  *     aph0 = aph1 = aph2 = 1.
  *     if B0 > 1:             # <<<<<<<<<<<<<<
@@ -3742,7 +3822,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
   __pyx_t_2 = ((__pyx_v_B0 > 1) != 0);
   if (__pyx_t_2) {
 
-    /* "sisl/physics/_bloch.pyx":151
+    /* "sisl/physics/_bloch.pyx":160
  *     aph0 = aph1 = aph2 = 1.
  *     if B0 > 1:
  *         aph0 = cos(k0) + 1j * sin(k0)             # <<<<<<<<<<<<<<
@@ -3751,7 +3831,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
     __pyx_v_aph0 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k0), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k0), 0)));
 
-    /* "sisl/physics/_bloch.pyx":150
+    /* "sisl/physics/_bloch.pyx":159
  *     # Construct the phases to be added
  *     aph0 = aph1 = aph2 = 1.
  *     if B0 > 1:             # <<<<<<<<<<<<<<
@@ -3760,7 +3840,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
   }
 
-  /* "sisl/physics/_bloch.pyx":152
+  /* "sisl/physics/_bloch.pyx":161
  *     if B0 > 1:
  *         aph0 = cos(k0) + 1j * sin(k0)
  *     if B1 > 1:             # <<<<<<<<<<<<<<
@@ -3770,7 +3850,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
   __pyx_t_2 = ((__pyx_v_B1 > 1) != 0);
   if (__pyx_t_2) {
 
-    /* "sisl/physics/_bloch.pyx":153
+    /* "sisl/physics/_bloch.pyx":162
  *         aph0 = cos(k0) + 1j * sin(k0)
  *     if B1 > 1:
  *         aph1 = cos(k1) + 1j * sin(k1)             # <<<<<<<<<<<<<<
@@ -3779,7 +3859,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
     __pyx_v_aph1 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k1), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k1), 0)));
 
-    /* "sisl/physics/_bloch.pyx":152
+    /* "sisl/physics/_bloch.pyx":161
  *     if B0 > 1:
  *         aph0 = cos(k0) + 1j * sin(k0)
  *     if B1 > 1:             # <<<<<<<<<<<<<<
@@ -3788,7 +3868,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
   }
 
-  /* "sisl/physics/_bloch.pyx":154
+  /* "sisl/physics/_bloch.pyx":163
  *     if B1 > 1:
  *         aph1 = cos(k1) + 1j * sin(k1)
  *     if B2 > 1:             # <<<<<<<<<<<<<<
@@ -3798,7 +3878,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
   __pyx_t_2 = ((__pyx_v_B2 > 1) != 0);
   if (__pyx_t_2) {
 
-    /* "sisl/physics/_bloch.pyx":155
+    /* "sisl/physics/_bloch.pyx":164
  *         aph1 = cos(k1) + 1j * sin(k1)
  *     if B2 > 1:
  *         aph2 = cos(k2) + 1j * sin(k2)             # <<<<<<<<<<<<<<
@@ -3807,7 +3887,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
     __pyx_v_aph2 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k2), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k2), 0)));
 
-    /* "sisl/physics/_bloch.pyx":154
+    /* "sisl/physics/_bloch.pyx":163
  *     if B1 > 1:
  *         aph1 = cos(k1) + 1j * sin(k1)
  *     if B2 > 1:             # <<<<<<<<<<<<<<
@@ -3816,7 +3896,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
   }
 
-  /* "sisl/physics/_bloch.pyx":157
+  /* "sisl/physics/_bloch.pyx":166
  *         aph2 = cos(k2) + 1j * sin(k2)
  * 
  *     J = 0             # <<<<<<<<<<<<<<
@@ -3825,7 +3905,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
   __pyx_v_J = 0;
 
-  /* "sisl/physics/_bloch.pyx":158
+  /* "sisl/physics/_bloch.pyx":167
  * 
  *     J = 0
  *     for j2 in range(B2):             # <<<<<<<<<<<<<<
@@ -3836,7 +3916,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_j2 = __pyx_t_4;
 
-    /* "sisl/physics/_bloch.pyx":159
+    /* "sisl/physics/_bloch.pyx":168
  *     J = 0
  *     for j2 in range(B2):
  *         for j1 in range(B1):             # <<<<<<<<<<<<<<
@@ -3847,7 +3927,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_j1 = __pyx_t_6;
 
-      /* "sisl/physics/_bloch.pyx":160
+      /* "sisl/physics/_bloch.pyx":169
  *     for j2 in range(B2):
  *         for j1 in range(B1):
  *             for j0 in range(B0):             # <<<<<<<<<<<<<<
@@ -3858,7 +3938,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
       for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
         __pyx_v_j0 = __pyx_t_8;
 
-        /* "sisl/physics/_bloch.pyx":161
+        /* "sisl/physics/_bloch.pyx":170
  *         for j1 in range(B1):
  *             for j0 in range(B0):
  *                 rph = - j0 * k0 - j1 * k1 - j2 * k2             # <<<<<<<<<<<<<<
@@ -3867,7 +3947,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
         __pyx_v_rph = ((((-__pyx_v_j0) * __pyx_v_k0) - (__pyx_v_j1 * __pyx_v_k1)) - (__pyx_v_j2 * __pyx_v_k2));
 
-        /* "sisl/physics/_bloch.pyx":162
+        /* "sisl/physics/_bloch.pyx":171
  *             for j0 in range(B0):
  *                 rph = - j0 * k0 - j1 * k1 - j2 * k2
  *                 ph = w * cos(rph) + 1j * (w * sin(rph))             # <<<<<<<<<<<<<<
@@ -3876,7 +3956,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
         __pyx_v_ph = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts((__pyx_v_w * cos(__pyx_v_rph)), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((__pyx_v_w * sin(__pyx_v_rph)), 0)));
 
-        /* "sisl/physics/_bloch.pyx":163
+        /* "sisl/physics/_bloch.pyx":172
  *                 rph = - j0 * k0 - j1 * k1 - j2 * k2
  *                 ph = w * cos(rph) + 1j * (w * sin(rph))
  *                 for j in range(N1):             # <<<<<<<<<<<<<<
@@ -3887,17 +3967,93 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
         for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
           __pyx_v_j = __pyx_t_10;
 
-          /* "sisl/physics/_bloch.pyx":165
+          /* "sisl/physics/_bloch.pyx":174
  *                 for j in range(N1):
  *                     # Every column starts from scratch
  *                     ph2 = ph             # <<<<<<<<<<<<<<
  * 
- *                     I = 0
+ *                     mj = m[j]
  */
           __pyx_v_ph2 = __pyx_v_ph;
 
-          /* "sisl/physics/_bloch.pyx":167
+          /* "sisl/physics/_bloch.pyx":176
  *                     ph2 = ph
+ * 
+ *                     mj = m[j]             # <<<<<<<<<<<<<<
+ *                     MJ = M[J]
+ * 
+ */
+          __pyx_t_11.data = __pyx_v_m.data;
+          __pyx_t_11.memview = __pyx_v_m.memview;
+          __PYX_INC_MEMVIEW(&__pyx_t_11, 0);
+          {
+    Py_ssize_t __pyx_tmp_idx = __pyx_v_j;
+    Py_ssize_t __pyx_tmp_shape = __pyx_v_m.shape[0];
+    Py_ssize_t __pyx_tmp_stride = __pyx_v_m.strides[0];
+    if (0 && (__pyx_tmp_idx < 0))
+        __pyx_tmp_idx += __pyx_tmp_shape;
+    if (0 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
+            #ifdef WITH_THREAD
+            PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+            #endif
+        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 0)");
+            #ifdef WITH_THREAD
+            PyGILState_Release(__pyx_gilstate_save);
+            #endif
+        __PYX_ERR(0, 176, __pyx_L1_error)
+    }
+        __pyx_t_11.data += __pyx_tmp_idx * __pyx_tmp_stride;
+}
+
+__pyx_t_11.shape[0] = __pyx_v_m.shape[1];
+__pyx_t_11.strides[0] = __pyx_v_m.strides[1];
+    __pyx_t_11.suboffsets[0] = -1;
+
+__PYX_XDEC_MEMVIEW(&__pyx_v_mj, 0);
+          __pyx_v_mj = __pyx_t_11;
+          __pyx_t_11.memview = NULL;
+          __pyx_t_11.data = NULL;
+
+          /* "sisl/physics/_bloch.pyx":177
+ * 
+ *                     mj = m[j]
+ *                     MJ = M[J]             # <<<<<<<<<<<<<<
+ * 
+ *                     I = 0
+ */
+          __pyx_t_11.data = __pyx_v_M.data;
+          __pyx_t_11.memview = __pyx_v_M.memview;
+          __PYX_INC_MEMVIEW(&__pyx_t_11, 0);
+          {
+    Py_ssize_t __pyx_tmp_idx = __pyx_v_J;
+    Py_ssize_t __pyx_tmp_shape = __pyx_v_M.shape[0];
+    Py_ssize_t __pyx_tmp_stride = __pyx_v_M.strides[0];
+    if (0 && (__pyx_tmp_idx < 0))
+        __pyx_tmp_idx += __pyx_tmp_shape;
+    if (0 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
+            #ifdef WITH_THREAD
+            PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+            #endif
+        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 0)");
+            #ifdef WITH_THREAD
+            PyGILState_Release(__pyx_gilstate_save);
+            #endif
+        __PYX_ERR(0, 177, __pyx_L1_error)
+    }
+        __pyx_t_11.data += __pyx_tmp_idx * __pyx_tmp_stride;
+}
+
+__pyx_t_11.shape[0] = __pyx_v_M.shape[1];
+__pyx_t_11.strides[0] = __pyx_v_M.strides[1];
+    __pyx_t_11.suboffsets[0] = -1;
+
+__PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
+          __pyx_v_MJ = __pyx_t_11;
+          __pyx_t_11.memview = NULL;
+          __pyx_t_11.data = NULL;
+
+          /* "sisl/physics/_bloch.pyx":179
+ *                     MJ = M[J]
  * 
  *                     I = 0             # <<<<<<<<<<<<<<
  *                     for _ in range(B2):
@@ -3905,18 +4061,18 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
           __pyx_v_I = 0;
 
-          /* "sisl/physics/_bloch.pyx":168
+          /* "sisl/physics/_bloch.pyx":180
  * 
  *                     I = 0
  *                     for _ in range(B2):             # <<<<<<<<<<<<<<
  *                         ph1 = ph2
  *                         for _ in range(B1):
  */
-          __pyx_t_11 = __pyx_v_B2;
-          for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
-            __pyx_v__ = __pyx_t_12;
+          __pyx_t_12 = __pyx_v_B2;
+          for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
+            __pyx_v__ = __pyx_t_13;
 
-            /* "sisl/physics/_bloch.pyx":169
+            /* "sisl/physics/_bloch.pyx":181
  *                     I = 0
  *                     for _ in range(B2):
  *                         ph1 = ph2             # <<<<<<<<<<<<<<
@@ -3925,18 +4081,18 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
             __pyx_v_ph1 = __pyx_v_ph2;
 
-            /* "sisl/physics/_bloch.pyx":170
+            /* "sisl/physics/_bloch.pyx":182
  *                     for _ in range(B2):
  *                         ph1 = ph2
  *                         for _ in range(B1):             # <<<<<<<<<<<<<<
  *                             ph0 = ph1
  *                             for _ in range(B0):
  */
-            __pyx_t_13 = __pyx_v_B1;
-            for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
-              __pyx_v__ = __pyx_t_14;
+            __pyx_t_14 = __pyx_v_B1;
+            for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_14; __pyx_t_15+=1) {
+              __pyx_v__ = __pyx_t_15;
 
-              /* "sisl/physics/_bloch.pyx":171
+              /* "sisl/physics/_bloch.pyx":183
  *                         ph1 = ph2
  *                         for _ in range(B1):
  *                             ph0 = ph1             # <<<<<<<<<<<<<<
@@ -3945,46 +4101,43 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
  */
               __pyx_v_ph0 = __pyx_v_ph1;
 
-              /* "sisl/physics/_bloch.pyx":172
+              /* "sisl/physics/_bloch.pyx":184
  *                         for _ in range(B1):
  *                             ph0 = ph1
  *                             for _ in range(B0):             # <<<<<<<<<<<<<<
  *                                 for i in range(N2):
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0
  */
-              __pyx_t_15 = __pyx_v_B0;
-              for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
-                __pyx_v__ = __pyx_t_16;
+              __pyx_t_16 = __pyx_v_B0;
+              for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
+                __pyx_v__ = __pyx_t_17;
 
-                /* "sisl/physics/_bloch.pyx":173
+                /* "sisl/physics/_bloch.pyx":185
  *                             ph0 = ph1
  *                             for _ in range(B0):
  *                                 for i in range(N2):             # <<<<<<<<<<<<<<
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0
  *                                     I += 1
  */
-                __pyx_t_17 = __pyx_v_N2;
-                for (__pyx_t_18 = 0; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
-                  __pyx_v_i = __pyx_t_18;
+                __pyx_t_18 = __pyx_v_N2;
+                for (__pyx_t_19 = 0; __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
+                  __pyx_v_i = __pyx_t_19;
 
-                  /* "sisl/physics/_bloch.pyx":174
+                  /* "sisl/physics/_bloch.pyx":186
  *                             for _ in range(B0):
  *                                 for i in range(N2):
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0             # <<<<<<<<<<<<<<
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0             # <<<<<<<<<<<<<<
  *                                     I += 1
  *                                 ph0 = ph0 * aph0
  */
-                  __pyx_t_19 = __pyx_v_J;
                   __pyx_t_20 = __pyx_v_I;
-                  __pyx_t_21 = __pyx_v_j;
-                  __pyx_t_22 = __pyx_v_i;
-                  __pyx_t_23 = __pyx_v_J;
-                  __pyx_t_24 = __pyx_v_I;
-                  *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_23 * __pyx_v_M.strides[0]) )) + __pyx_t_24)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_19 * __pyx_v_M.strides[0]) )) + __pyx_t_20)) ))), __Pyx_c_prod_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_m.data + __pyx_t_21 * __pyx_v_m.strides[0]) )) + __pyx_t_22)) ))), __pyx_v_ph0));
+                  __pyx_t_21 = __pyx_v_i;
+                  __pyx_t_22 = __pyx_v_I;
+                  *((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_MJ.data + __pyx_t_22 * __pyx_v_MJ.strides[0]) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_MJ.data + __pyx_t_20 * __pyx_v_MJ.strides[0]) ))), __Pyx_c_prod_double((*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_mj.data + __pyx_t_21 * __pyx_v_mj.strides[0]) ))), __pyx_v_ph0));
 
-                  /* "sisl/physics/_bloch.pyx":175
+                  /* "sisl/physics/_bloch.pyx":187
  *                                 for i in range(N2):
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0
  *                                     I += 1             # <<<<<<<<<<<<<<
  *                                 ph0 = ph0 * aph0
  *                             ph1 = ph1 * aph1
@@ -3992,8 +4145,8 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
                   __pyx_v_I = (__pyx_v_I + 1);
                 }
 
-                /* "sisl/physics/_bloch.pyx":176
- *                                     M[J, I] = M[J, I] + m[j, i] * ph0
+                /* "sisl/physics/_bloch.pyx":188
+ *                                     MJ[I] = MJ[I] + mj[i] * ph0
  *                                     I += 1
  *                                 ph0 = ph0 * aph0             # <<<<<<<<<<<<<<
  *                             ph1 = ph1 * aph1
@@ -4002,7 +4155,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
                 __pyx_v_ph0 = __Pyx_c_prod_double(__pyx_v_ph0, __pyx_v_aph0);
               }
 
-              /* "sisl/physics/_bloch.pyx":177
+              /* "sisl/physics/_bloch.pyx":189
  *                                     I += 1
  *                                 ph0 = ph0 * aph0
  *                             ph1 = ph1 * aph1             # <<<<<<<<<<<<<<
@@ -4012,7 +4165,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
               __pyx_v_ph1 = __Pyx_c_prod_double(__pyx_v_ph1, __pyx_v_aph1);
             }
 
-            /* "sisl/physics/_bloch.pyx":178
+            /* "sisl/physics/_bloch.pyx":190
  *                                 ph0 = ph0 * aph0
  *                             ph1 = ph1 * aph1
  *                         ph2 = ph2 * aph2             # <<<<<<<<<<<<<<
@@ -4022,7 +4175,7 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
             __pyx_v_ph2 = __Pyx_c_prod_double(__pyx_v_ph2, __pyx_v_aph2);
           }
 
-          /* "sisl/physics/_bloch.pyx":179
+          /* "sisl/physics/_bloch.pyx":191
  *                             ph1 = ph1 * aph1
  *                         ph2 = ph2 * aph2
  *                     J += 1             # <<<<<<<<<<<<<<
@@ -4035,18 +4188,25 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold_M128(double const __pyx_v_w, 
     }
   }
 
-  /* "sisl/physics/_bloch.pyx":132
+  /* "sisl/physics/_bloch.pyx":138
  * @cython.wraparound(False)
- * @cython.initializedcheck(False)
+ * @cython.boundscheck(False)
  * cdef void _unfold_M128(const double w,             # <<<<<<<<<<<<<<
- *                        const int B0, const int B1, const int B2,
+ *                        const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
  *                        const double k0, const double k1, const double k2,
  */
 
   /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __PYX_XDEC_MEMVIEW(&__pyx_t_11, 0);
+  __Pyx_WriteUnraisable("sisl.physics._bloch._unfold_M128", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_mj, 0);
 }
 
-/* "sisl/physics/_bloch.pyx":186
+/* "sisl/physics/_bloch.pyx":198
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _unfold128(const int[::1] B, const double[:, ::1] K,             # <<<<<<<<<<<<<<
@@ -4089,17 +4249,17 @@ static PyObject *__pyx_pw_4sisl_7physics_6_bloch_5_unfold128(PyObject *__pyx_sel
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_K)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_unfold128", 1, 3, 3, 1); __PYX_ERR(0, 186, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_unfold128", 1, 3, 3, 1); __PYX_ERR(0, 198, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_m)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_unfold128", 1, 3, 3, 2); __PYX_ERR(0, 186, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_unfold128", 1, 3, 3, 2); __PYX_ERR(0, 198, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_unfold128") < 0)) __PYX_ERR(0, 186, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_unfold128") < 0)) __PYX_ERR(0, 198, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -4108,13 +4268,13 @@ static PyObject *__pyx_pw_4sisl_7physics_6_bloch_5_unfold128(PyObject *__pyx_sel
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_B = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[0]); if (unlikely(!__pyx_v_B.memview)) __PYX_ERR(0, 186, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[1]); if (unlikely(!__pyx_v_K.memview)) __PYX_ERR(0, 186, __pyx_L3_error)
-    __pyx_v_m = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc___pyx_t_double_complex(values[2]); if (unlikely(!__pyx_v_m.memview)) __PYX_ERR(0, 187, __pyx_L3_error)
+    __pyx_v_B = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[0]); if (unlikely(!__pyx_v_B.memview)) __PYX_ERR(0, 198, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[1]); if (unlikely(!__pyx_v_K.memview)) __PYX_ERR(0, 198, __pyx_L3_error)
+    __pyx_v_m = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc___pyx_t_double_complex(values[2]); if (unlikely(!__pyx_v_m.memview)) __PYX_ERR(0, 199, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_unfold128", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 186, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_unfold128", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 198, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._bloch._unfold128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4128,12 +4288,12 @@ static PyObject *__pyx_pw_4sisl_7physics_6_bloch_5_unfold128(PyObject *__pyx_sel
 }
 
 static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_B, __Pyx_memviewslice __pyx_v_K, __Pyx_memviewslice __pyx_v_m) {
-  int __pyx_v_B0;
-  int __pyx_v_B1;
-  int __pyx_v_B2;
-  int __pyx_v_N;
-  int __pyx_v_N1;
-  int __pyx_v_N2;
+  Py_ssize_t __pyx_v_B0;
+  Py_ssize_t __pyx_v_B1;
+  Py_ssize_t __pyx_v_B2;
+  Py_ssize_t __pyx_v_N;
+  Py_ssize_t __pyx_v_N1;
+  Py_ssize_t __pyx_v_N2;
   PyArrayObject *__pyx_v_M = 0;
   __Pyx_memviewslice __pyx_v_MM = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_pi2;
@@ -4141,7 +4301,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
   double __pyx_v_k1;
   double __pyx_v_k2;
   double __pyx_v_w;
-  int __pyx_v_I;
+  Py_ssize_t __pyx_v_I;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_M;
   __Pyx_Buffer __pyx_pybuffer_M;
   PyObject *__pyx_r = NULL;
@@ -4156,8 +4316,8 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
   PyObject *__pyx_t_8 = NULL;
   PyArrayObject *__pyx_t_9 = NULL;
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_t_11;
-  int __pyx_t_12;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
   Py_ssize_t __pyx_t_15;
@@ -4170,80 +4330,80 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
   __pyx_pybuffernd_M.data = NULL;
   __pyx_pybuffernd_M.rcbuffer = &__pyx_pybuffer_M;
 
-  /* "sisl/physics/_bloch.pyx":190
+  /* "sisl/physics/_bloch.pyx":202
  * 
  *     # N should now equal K.shape[0]
- *     cdef int B0 = B[0]             # <<<<<<<<<<<<<<
- *     cdef int B1 = B[1]
- *     cdef int B2 = B[2]
+ *     cdef Py_ssize_t B0 = B[0]             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t B1 = B[1]
+ *     cdef Py_ssize_t B2 = B[2]
  */
   __pyx_t_1 = 0;
   __pyx_v_B0 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_B.data) + __pyx_t_1)) )));
 
-  /* "sisl/physics/_bloch.pyx":191
+  /* "sisl/physics/_bloch.pyx":203
  *     # N should now equal K.shape[0]
- *     cdef int B0 = B[0]
- *     cdef int B1 = B[1]             # <<<<<<<<<<<<<<
- *     cdef int B2 = B[2]
- *     cdef int N = B0 * B1 * B2
+ *     cdef Py_ssize_t B0 = B[0]
+ *     cdef Py_ssize_t B1 = B[1]             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t B2 = B[2]
+ *     cdef Py_ssize_t N = B0 * B1 * B2
  */
   __pyx_t_2 = 1;
   __pyx_v_B1 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_B.data) + __pyx_t_2)) )));
 
-  /* "sisl/physics/_bloch.pyx":192
- *     cdef int B0 = B[0]
- *     cdef int B1 = B[1]
- *     cdef int B2 = B[2]             # <<<<<<<<<<<<<<
- *     cdef int N = B0 * B1 * B2
- *     cdef int N1 = m.shape[1]
+  /* "sisl/physics/_bloch.pyx":204
+ *     cdef Py_ssize_t B0 = B[0]
+ *     cdef Py_ssize_t B1 = B[1]
+ *     cdef Py_ssize_t B2 = B[2]             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t N = B0 * B1 * B2
+ *     cdef Py_ssize_t N1 = m.shape[1]
  */
   __pyx_t_3 = 2;
   __pyx_v_B2 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_B.data) + __pyx_t_3)) )));
 
-  /* "sisl/physics/_bloch.pyx":193
- *     cdef int B1 = B[1]
- *     cdef int B2 = B[2]
- *     cdef int N = B0 * B1 * B2             # <<<<<<<<<<<<<<
- *     cdef int N1 = m.shape[1]
- *     cdef int N2 = m.shape[2]
+  /* "sisl/physics/_bloch.pyx":205
+ *     cdef Py_ssize_t B1 = B[1]
+ *     cdef Py_ssize_t B2 = B[2]
+ *     cdef Py_ssize_t N = B0 * B1 * B2             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t N1 = m.shape[1]
+ *     cdef Py_ssize_t N2 = m.shape[2]
  */
   __pyx_v_N = ((__pyx_v_B0 * __pyx_v_B1) * __pyx_v_B2);
 
-  /* "sisl/physics/_bloch.pyx":194
- *     cdef int B2 = B[2]
- *     cdef int N = B0 * B1 * B2
- *     cdef int N1 = m.shape[1]             # <<<<<<<<<<<<<<
- *     cdef int N2 = m.shape[2]
+  /* "sisl/physics/_bloch.pyx":206
+ *     cdef Py_ssize_t B2 = B[2]
+ *     cdef Py_ssize_t N = B0 * B1 * B2
+ *     cdef Py_ssize_t N1 = m.shape[1]             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t N2 = m.shape[2]
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex128)
  */
   __pyx_v_N1 = (__pyx_v_m.shape[1]);
 
-  /* "sisl/physics/_bloch.pyx":195
- *     cdef int N = B0 * B1 * B2
- *     cdef int N1 = m.shape[1]
- *     cdef int N2 = m.shape[2]             # <<<<<<<<<<<<<<
+  /* "sisl/physics/_bloch.pyx":207
+ *     cdef Py_ssize_t N = B0 * B1 * B2
+ *     cdef Py_ssize_t N1 = m.shape[1]
+ *     cdef Py_ssize_t N2 = m.shape[2]             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex128)
  *     # Get view
  */
   __pyx_v_N2 = (__pyx_v_m.shape[2]);
 
-  /* "sisl/physics/_bloch.pyx":196
- *     cdef int N1 = m.shape[1]
- *     cdef int N2 = m.shape[2]
+  /* "sisl/physics/_bloch.pyx":208
+ *     cdef Py_ssize_t N1 = m.shape[1]
+ *     cdef Py_ssize_t N2 = m.shape[2]
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     # Get view
  *     cdef double complex[:, ::1] MM = M
  */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_N * __pyx_v_N1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_4 = PyInt_FromSsize_t((__pyx_v_N * __pyx_v_N1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = __Pyx_PyInt_From_int((__pyx_v_N * __pyx_v_N2)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_6 = PyInt_FromSsize_t((__pyx_v_N * __pyx_v_N2)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = PyList_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_4);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
@@ -4251,32 +4411,32 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
   PyList_SET_ITEM(__pyx_t_7, 1, __pyx_t_6);
   __pyx_t_4 = 0;
   __pyx_t_6 = 0;
-  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 208, __pyx_L1_error)
   __pyx_t_9 = ((PyArrayObject *)__pyx_t_8);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_M.rcbuffer->pybuffer, (PyObject*)__pyx_t_9, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_M = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_M.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 196, __pyx_L1_error)
+      __PYX_ERR(0, 208, __pyx_L1_error)
     } else {__pyx_pybuffernd_M.diminfo[0].strides = __pyx_pybuffernd_M.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_M.diminfo[0].shape = __pyx_pybuffernd_M.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_M.diminfo[1].strides = __pyx_pybuffernd_M.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_M.diminfo[1].shape = __pyx_pybuffernd_M.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -4284,7 +4444,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
   __pyx_v_M = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "sisl/physics/_bloch.pyx":198
+  /* "sisl/physics/_bloch.pyx":210
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex128)
  *     # Get view
  *     cdef double complex[:, ::1] MM = M             # <<<<<<<<<<<<<<
@@ -4292,12 +4452,12 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
  *     cdef double pi2 = pi * 2
  */
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_M));
-  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 210, __pyx_L1_error)
   __pyx_v_MM = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "sisl/physics/_bloch.pyx":200
+  /* "sisl/physics/_bloch.pyx":212
  *     cdef double complex[:, ::1] MM = M
  * 
  *     cdef double pi2 = pi * 2             # <<<<<<<<<<<<<<
@@ -4306,16 +4466,16 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
  */
   __pyx_v_pi2 = (M_PI * 2.0);
 
-  /* "sisl/physics/_bloch.pyx":203
+  /* "sisl/physics/_bloch.pyx":215
  *     cdef double k0, k1, k2
  * 
  *     cdef double w = 1. / N             # <<<<<<<<<<<<<<
- *     cdef int I
+ *     cdef Py_ssize_t I
  * 
  */
   __pyx_v_w = (1. / __pyx_v_N);
 
-  /* "sisl/physics/_bloch.pyx":207
+  /* "sisl/physics/_bloch.pyx":219
  * 
  *     # Now perform expansion
  *     for I in range(N):             # <<<<<<<<<<<<<<
@@ -4326,7 +4486,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_I = __pyx_t_12;
 
-    /* "sisl/physics/_bloch.pyx":208
+    /* "sisl/physics/_bloch.pyx":220
  *     # Now perform expansion
  *     for I in range(N):
  *         k0 = K[I, 0] * pi2             # <<<<<<<<<<<<<<
@@ -4337,7 +4497,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
     __pyx_t_14 = 0;
     __pyx_v_k0 = ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_K.data + __pyx_t_13 * __pyx_v_K.strides[0]) )) + __pyx_t_14)) ))) * __pyx_v_pi2);
 
-    /* "sisl/physics/_bloch.pyx":209
+    /* "sisl/physics/_bloch.pyx":221
  *     for I in range(N):
  *         k0 = K[I, 0] * pi2
  *         k1 = K[I, 1] * pi2             # <<<<<<<<<<<<<<
@@ -4348,7 +4508,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
     __pyx_t_16 = 1;
     __pyx_v_k1 = ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_K.data + __pyx_t_15 * __pyx_v_K.strides[0]) )) + __pyx_t_16)) ))) * __pyx_v_pi2);
 
-    /* "sisl/physics/_bloch.pyx":210
+    /* "sisl/physics/_bloch.pyx":222
  *         k0 = K[I, 0] * pi2
  *         k1 = K[I, 1] * pi2
  *         k2 = K[I, 2] * pi2             # <<<<<<<<<<<<<<
@@ -4359,7 +4519,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
     __pyx_t_18 = 2;
     __pyx_v_k2 = ((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_K.data + __pyx_t_17 * __pyx_v_K.strides[0]) )) + __pyx_t_18)) ))) * __pyx_v_pi2);
 
-    /* "sisl/physics/_bloch.pyx":211
+    /* "sisl/physics/_bloch.pyx":223
  *         k1 = K[I, 1] * pi2
  *         k2 = K[I, 2] * pi2
  *         _unfold_M128(w, B0, B1, B2, k0, k1, k2, N1, N2, m[I], MM)             # <<<<<<<<<<<<<<
@@ -4377,7 +4537,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
         __pyx_tmp_idx += __pyx_tmp_shape;
     if (0 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
         PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 0)");
-        __PYX_ERR(0, 211, __pyx_L1_error)
+        __PYX_ERR(0, 223, __pyx_L1_error)
     }
         __pyx_t_10.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -4396,7 +4556,7 @@ __pyx_f_4sisl_7physics_6_bloch__unfold_M128(__pyx_v_w, __pyx_v_B0, __pyx_v_B1, _
     __pyx_t_10.data = NULL;
   }
 
-  /* "sisl/physics/_bloch.pyx":213
+  /* "sisl/physics/_bloch.pyx":225
  *         _unfold_M128(w, B0, B1, B2, k0, k1, k2, N1, N2, m[I], MM)
  * 
  *     return M             # <<<<<<<<<<<<<<
@@ -4407,7 +4567,7 @@ __pyx_f_4sisl_7physics_6_bloch__unfold_M128(__pyx_v_w, __pyx_v_B0, __pyx_v_B1, _
   __pyx_r = ((PyObject *)__pyx_v_M);
   goto __pyx_L0;
 
-  /* "sisl/physics/_bloch.pyx":186
+  /* "sisl/physics/_bloch.pyx":198
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _unfold128(const int[::1] B, const double[:, ::1] K,             # <<<<<<<<<<<<<<
@@ -20673,7 +20833,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 29, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 74, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 823, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 1013, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(2, 146, __pyx_L1_error)
@@ -21025,29 +21185,29 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__31);
   __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bloch_pyx, __pyx_n_s_bloch_unfold, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) __PYX_ERR(0, 11, __pyx_L1_error)
 
-  /* "sisl/physics/_bloch.pyx":99
- * @cython.initializedcheck(False)
+  /* "sisl/physics/_bloch.pyx":105
+ * @cython.wraparound(False)
  * @cython.cdivision(True)
  * def _unfold64(const int[::1] B, const double[:, ::1] K,             # <<<<<<<<<<<<<<
  *               const float complex[:, :, ::1] m):
  * 
  */
-  __pyx_tuple__33 = PyTuple_Pack(17, __pyx_n_s_B, __pyx_n_s_K, __pyx_n_s_m, __pyx_n_s_B0, __pyx_n_s_B1, __pyx_n_s_B2, __pyx_n_s_N, __pyx_n_s_N1, __pyx_n_s_N2, __pyx_n_s_M, __pyx_n_s_MM, __pyx_n_s_pi2, __pyx_n_s_k0, __pyx_n_s_k1, __pyx_n_s_k2, __pyx_n_s_w, __pyx_n_s_I); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_tuple__33 = PyTuple_Pack(17, __pyx_n_s_B, __pyx_n_s_K, __pyx_n_s_m, __pyx_n_s_B0, __pyx_n_s_B1, __pyx_n_s_B2, __pyx_n_s_N, __pyx_n_s_N1, __pyx_n_s_N2, __pyx_n_s_M, __pyx_n_s_MM, __pyx_n_s_pi2, __pyx_n_s_k0, __pyx_n_s_k1, __pyx_n_s_k2, __pyx_n_s_w, __pyx_n_s_I); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__33);
   __Pyx_GIVEREF(__pyx_tuple__33);
-  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(3, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bloch_pyx, __pyx_n_s_unfold64, 99, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(3, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bloch_pyx, __pyx_n_s_unfold64, 105, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 105, __pyx_L1_error)
 
-  /* "sisl/physics/_bloch.pyx":186
+  /* "sisl/physics/_bloch.pyx":198
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _unfold128(const int[::1] B, const double[:, ::1] K,             # <<<<<<<<<<<<<<
  *                const double complex[:, :, ::1] m):
  * 
  */
-  __pyx_tuple__35 = PyTuple_Pack(17, __pyx_n_s_B, __pyx_n_s_K, __pyx_n_s_m, __pyx_n_s_B0, __pyx_n_s_B1, __pyx_n_s_B2, __pyx_n_s_N, __pyx_n_s_N1, __pyx_n_s_N2, __pyx_n_s_M, __pyx_n_s_MM, __pyx_n_s_pi2, __pyx_n_s_k0, __pyx_n_s_k1, __pyx_n_s_k2, __pyx_n_s_w, __pyx_n_s_I); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_tuple__35 = PyTuple_Pack(17, __pyx_n_s_B, __pyx_n_s_K, __pyx_n_s_m, __pyx_n_s_B0, __pyx_n_s_B1, __pyx_n_s_B2, __pyx_n_s_N, __pyx_n_s_N1, __pyx_n_s_N2, __pyx_n_s_M, __pyx_n_s_MM, __pyx_n_s_pi2, __pyx_n_s_k0, __pyx_n_s_k1, __pyx_n_s_k2, __pyx_n_s_w, __pyx_n_s_I); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__35);
   __Pyx_GIVEREF(__pyx_tuple__35);
-  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(3, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bloch_pyx, __pyx_n_s_unfold128, 186, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(3, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bloch_pyx, __pyx_n_s_unfold128, 198, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 198, __pyx_L1_error)
 
   /* "View.MemoryView":284
  *         return self.name
@@ -21367,28 +21527,28 @@ static int __pyx_pymod_exec__bloch(PyObject *__pyx_pyinit_module)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_bloch_unfold, __pyx_t_1) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sisl/physics/_bloch.pyx":99
- * @cython.initializedcheck(False)
+  /* "sisl/physics/_bloch.pyx":105
+ * @cython.wraparound(False)
  * @cython.cdivision(True)
  * def _unfold64(const int[::1] B, const double[:, ::1] K,             # <<<<<<<<<<<<<<
  *               const float complex[:, :, ::1] m):
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_6_bloch_3_unfold64, NULL, __pyx_n_s_sisl_physics__bloch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_6_bloch_3_unfold64, NULL, __pyx_n_s_sisl_physics__bloch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_unfold64, __pyx_t_1) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_unfold64, __pyx_t_1) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sisl/physics/_bloch.pyx":186
+  /* "sisl/physics/_bloch.pyx":198
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _unfold128(const int[::1] B, const double[:, ::1] K,             # <<<<<<<<<<<<<<
  *                const double complex[:, :, ::1] m):
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_6_bloch_5_unfold128, NULL, __pyx_n_s_sisl_physics__bloch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_6_bloch_5_unfold128, NULL, __pyx_n_s_sisl_physics__bloch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_unfold128, __pyx_t_1) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_unfold128, __pyx_t_1) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "sisl/physics/_bloch.pyx":1
@@ -22701,19 +22861,6 @@ static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, P
 }
 #endif
 
-/* ExtTypeTest */
-    static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(__Pyx_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
-}
-
 /* MemviewSliceInit */
     static int
 __Pyx_init_memviewslice(struct __pyx_memoryview_obj *memview,
@@ -22850,6 +22997,61 @@ static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *memslice,
     } else {
         memslice->memview = NULL;
     }
+}
+
+/* WriteUnraisableException */
+    static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
+
+/* ExtTypeTest */
+    static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    if (likely(__Pyx_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
 }
 
 /* RaiseTooManyValuesToUnpack */
@@ -23499,48 +23701,6 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
     long r = a - q*b;
     q -= ((r != 0) & ((r ^ b) < 0));
     return q;
-}
-
-/* WriteUnraisableException */
-      static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
-                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
-                                  int full_traceback, CYTHON_UNUSED int nogil) {
-    PyObject *old_exc, *old_val, *old_tb;
-    PyObject *ctx;
-    __Pyx_PyThreadState_declare
-#ifdef WITH_THREAD
-    PyGILState_STATE state;
-    if (nogil)
-        state = PyGILState_Ensure();
-#ifdef _MSC_VER
-    else state = (PyGILState_STATE)-1;
-#endif
-#endif
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
-    if (full_traceback) {
-        Py_XINCREF(old_exc);
-        Py_XINCREF(old_val);
-        Py_XINCREF(old_tb);
-        __Pyx_ErrRestore(old_exc, old_val, old_tb);
-        PyErr_PrintEx(1);
-    }
-    #if PY_MAJOR_VERSION < 3
-    ctx = PyString_FromString(name);
-    #else
-    ctx = PyUnicode_FromString(name);
-    #endif
-    __Pyx_ErrRestore(old_exc, old_val, old_tb);
-    if (!ctx) {
-        PyErr_WriteUnraisable(Py_None);
-    } else {
-        PyErr_WriteUnraisable(ctx);
-        Py_DECREF(ctx);
-    }
-#ifdef WITH_THREAD
-    if (nogil)
-        PyGILState_Release(state);
-#endif
 }
 
 /* PyObjectCallMethO */
