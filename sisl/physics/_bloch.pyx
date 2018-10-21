@@ -54,7 +54,7 @@ cdef void _unfold_M64(const double w,
     cdef Py_ssize_t I, J # looping output M[J, I]
 
     # Faster memory views
-    cdef float complex[:] MJ, mj
+    cdef float complex[::1] MJ, mj
 
     # Phase handling variables
     cdef double rph
@@ -147,7 +147,7 @@ cdef void _unfold_M128(const double w,
     cdef Py_ssize_t I, J # looping output M[J, I]
 
     # Faster memory views
-    cdef double complex[:] MJ, mj
+    cdef double complex[::1] MJ, mj
 
     # Phase handling variables
     cdef double rph

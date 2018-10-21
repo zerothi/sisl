@@ -3277,7 +3277,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
                   __pyx_t_21 = __pyx_v_I;
                   __pyx_t_22 = __pyx_v_i;
                   __pyx_t_23 = __pyx_v_I;
-                  *((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_MJ.data + __pyx_t_23 * __pyx_v_MJ.strides[0]) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_MJ.data + __pyx_t_21 * __pyx_v_MJ.strides[0]) ))), __Pyx_c_prod_float((*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_mj.data + __pyx_t_22 * __pyx_v_mj.strides[0]) ))), __pyx_v_ph0));
+                  *((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_MJ.data) + __pyx_t_23)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_MJ.data) + __pyx_t_21)) ))), __Pyx_c_prod_float((*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_mj.data) + __pyx_t_22)) ))), __pyx_v_ph0));
 
                   /* "sisl/physics/_bloch.pyx":94
  *                                 for i in range(N2):
@@ -4133,7 +4133,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
                   __pyx_t_20 = __pyx_v_I;
                   __pyx_t_21 = __pyx_v_i;
                   __pyx_t_22 = __pyx_v_I;
-                  *((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_MJ.data + __pyx_t_22 * __pyx_v_MJ.strides[0]) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_MJ.data + __pyx_t_20 * __pyx_v_MJ.strides[0]) ))), __Pyx_c_prod_double((*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_mj.data + __pyx_t_21 * __pyx_v_mj.strides[0]) ))), __pyx_v_ph0));
+                  *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_MJ.data) + __pyx_t_22)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_MJ.data) + __pyx_t_20)) ))), __Pyx_c_prod_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_mj.data) + __pyx_t_21)) ))), __pyx_v_ph0));
 
                   /* "sisl/physics/_bloch.pyx":187
  *                                 for i in range(N2):
