@@ -22,7 +22,7 @@ def configuration(parent_package='', top_path=None):
     # Only install the extension if not on READTHEDOCS
     if os.environ.get('READTHEDOCS', 'false').lower() != 'true':
         config.add_extension('_siesta',
-                             sources = [osp_join('src', s) for s in sources],
+                             sources = [osp_join('_src', s) for s in sources],
                              extra_info = all_info)
     config.add_data_dir('tests')
     config.make_config_py()
