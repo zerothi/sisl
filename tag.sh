@@ -79,6 +79,10 @@ v=$MAJOR.$MINOR.$MICRO
 # Git revision
 rev=$(git rev-parse HEAD)
 
+# Retrieve year of latest commit
+year=$(git show -s --format=%ci HEAD)
+year=${year:0:4}
+
 # Message for release
 MSG="Releasing v$v"
 
@@ -89,6 +93,7 @@ sed -i -e "s:\(MICRO[[:space:]]*=\).*:\1 $MICRO:" setup.py
 # Update release tag and git revision
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 True:" setup.py
 sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 \"$rev\":" setup.py
+sed -i -e "s:\(REVISION_YEAR[[:space:]]*=\).*:\1 $year:" setup.py
 
 if [ $no_commit -eq 1 ]; then
     python setup.py sdist bdist_wheel

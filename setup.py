@@ -36,6 +36,8 @@ MICRO = 4
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 GIT_REVISION = "56550eb5924245b9908963ba07a67d8f34108599"
+REVISION_YEAR = 2018
+
 
 # The MANIFEST should be updated (which it only is
 # if it does not exist...)
@@ -167,13 +169,16 @@ def git_version():
         count = _minimal_ext_cmd(['git', 'rev-list', tag + '..', '--count'])
         if len(count) == 0:
             count = '1'
+        # Get year
+        year = int(_minimal_ext_cmd(['git', 'show', '-s' '--format=%ci']).split('-')[0])
     except:
         # Retain the revision name
         rev = GIT_REVISION
         # Assume it is on tag
         count = '0'
+        year = REVISION_YEAR
 
-    return rev, int(count)
+    return rev, int(count), year
 
 
 def write_version(filename='sisl/info.py'):
@@ -200,6 +205,7 @@ if git_count > 2 and not released:
 bibtex = '''@misc{{{{zerothi_sisl,
     author = {{{{Papior, Nick R.}}}},
     title  = {{{{sisl: v{{0}}}}}},
+    year   = {{{{{rev_year}}}}},
     doi    = {{{{10.5281/zenodo.597181}}}},
     url    = {{{{https://doi.org/10.5281/zenodo.597181}}}},
 }}}}'''.format(version)
@@ -209,12 +215,12 @@ def cite():
 """
     # If we are in git we try and fetch the
     # git version as well
-    GIT_REV, GIT_COUNT = git_version()
+    GIT_REV, GIT_COUNT, REV_YEAR = git_version()
     with open(filename, 'w') as fh:
         fh.write(version_str.format(version=[MAJOR, MINOR, MICRO],
                                     released=ISRELEASED,
                                     count=GIT_COUNT,
-                                    git=GIT_REV))
+                                    rev_year=REV_YEAR, git=GIT_REV))
 
 
 if __name__ == '__main__':
