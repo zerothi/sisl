@@ -9,6 +9,7 @@ from ..sile import *
 from sisl._array import aranged
 from sisl.unit.siesta import unit_convert
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
+from sisl.physics import SparseOrbitalBZ
 from sisl.physics import DensityMatrix, EnergyDensityMatrix
 from sisl.physics import DynamicalMatrix
 from sisl.physics import Hamiltonian
@@ -146,6 +147,32 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns a vector with final forces contained. """
         return _a.arrayd(self._value('fa')) * Ry2eV / Bohr2Ang
 
+    def _read_class(self, cls, dim=1, **kwargs):
+        # Get the default spin channel
+        # First read the geometry
+        geom = self.read_geometry()
+
+        # Populate the things
+        sp = self._crt_grp(self, 'SPARSE')
+
+        # Now create the tight-binding stuff (we re-create the
+        # array, hence just allocate the smallest amount possible)
+        C = cls(geom, dim, nnzpr=1)
+
+        C._csr.ncol = np.array(sp.variables['n_col'][:], np.int32)
+        # Update maximum number of connections (in case future stuff happens)
+        C._csr.ptr = np.insert(np.cumsum(C._csr.ncol, dtype=np.int32), 0, 0)
+        C._csr.col = np.array(sp.variables['list_col'][:], np.int32) - 1
+
+        # Copy information over
+        C._csr._nnz = len(C._csr.col)
+        C._csr._D = np.empty([C._csr.ptr[-1], dim], np.float64)
+
+        # Convert from isc to sisl isc
+        _csr_from_sc_off(C.geometry, sp.variables['isc_off'][:, :], C._csr)
+
+        return C
+
     def _read_class_spin(self, cls, **kwargs):
         # Get the default spin channel
         spin = len(self._dimension('spin'))
@@ -186,7 +213,12 @@ class ncSileSiesta(SileCDFSiesta):
 
     def read_overlap(self, **kwargs):
         """ Returns a overlap matrix from the underlying NetCDF file """
-        raise NotImplementedError('Currently not implemented')
+        S = self._read_class(SparseOrbitalBZ, **kwargs)
+
+        sp = self._crt_grp(self, 'SPARSE')
+        S._csr._D[:, 0] = sp.variables['S'][:]
+
+        return S
 
     def read_hamiltonian(self, **kwargs):
         """ Returns a Hamiltonian from the underlying NetCDF file """

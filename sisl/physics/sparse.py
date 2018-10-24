@@ -41,8 +41,8 @@ class SparseOrbitalBZ(SparseOrbital):
     geometry : Geometry
       parent geometry to create a sparse matrix from. The matrix will
       have size equivalent to the number of orbitals in the geometry
-    dim : int or Spin, optional
-      number of components per element, may be a `Spin` object
+    dim : int, optional
+      number of components per element
     dtype : np.dtype, optional
       data type contained in the matrix. See details of `Spin` for default values.
     nnzpr : int, optional

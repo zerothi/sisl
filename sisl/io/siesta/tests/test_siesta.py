@@ -45,6 +45,19 @@ def test_nc2(sisl_tmp, sisl_system):
     assert sisl_system.g.atom.equal(ntb.atom, R=False)
 
 
+def test_nc_overlap(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.nc', _dir)
+    tb = Hamiltonian(sisl_system.gtb)
+    tb.construct([sisl_system.R, sisl_system.t])
+    tb.write(ncSileSiesta(f, 'w'))
+
+    S = ncSileSiesta(f).read_overlap()
+
+    # Ensure no empty data-points
+    S.finalize()
+    assert np.allclose(S._csr._D.sum(), tb.no)
+
+
 def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     f = sisl_tmp('grS.nc', _dir)
     dm = DynamicalMatrix(sisl_system.gtb)
