@@ -128,6 +128,9 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   ! Local readables
   integer :: lno_u, lnspin, lnsc(3)
 
+  real(dp) :: Ef
+  real(dp), allocatable :: DM(:,:)
+
   call free_unit(iu)
   open(iu,file=trim(fname),status='old',form='unformatted')
 
@@ -145,29 +148,46 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   read(iu) ncol
   if ( nnz /= sum(ncol) ) stop 'Error in reading data, not allocated, nnz'
 
+  allocate(DM(nnz, nspin))
+
   ! Read list_col
   n = 0
   do io = 1 , no_u
-     read(iu) list_col(n+1:n+ncol(io))
-     n = n + ncol(io)
+    read(iu) list_col(n+1:n+ncol(io))
+    n = n + ncol(io)
   end do
 
   ! Skip density matrix
   do is = 1 , nspin
-     do io = 1 , no_u
-        read(iu) !
-     end do
+    n = 0
+    do io = 1 , no_u
+      read(iu) DM(n+1:n+ncol(io), is)
+      n = n + ncol(io)
+    end do
   end do
 
   ! Read energy density matrix
   do is = 1 , nspin
-     n = 0
-     do io = 1 , no_u
-        read(iu) EDM(n+1:n+ncol(io), is)
-        n = n + ncol(io)
-     end do
-     EDM(:, is) = EDM(:, is) * eV
+    n = 0
+    do io = 1 , no_u
+      read(iu) EDM(n+1:n+ncol(io), is)
+      n = n + ncol(io)
+    end do
+    EDM(:, is) = EDM(:, is) * eV
   end do
+
+  ! Read Fermi energy
+  read(iu) Ef
+  Ef = Ef * eV
+
+  do is = 1 , nspin
+    do io = 1 , nnz
+      EDM(io,is) = EDM(io,is) - Ef * DM(io, is)
+    end do
+  end do
+
+  ! Clean-up
+  deallocate(DM)
 
   close(iu)
 
