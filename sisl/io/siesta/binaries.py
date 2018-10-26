@@ -505,8 +505,8 @@ class _gfSileSiesta(SileBinSiesta):
 
     >>> with sisl.io._gfSileSiesta('hello.GF') as f:
     ...    f.write_header(sisl.MonkhorstPack(...), E)
-    ...    for is_k, k, E in f:
-    ...        if is_k:
+    ...    for ispin, new_k, k, E in f:
+    ...        if new_k:
     ...            f.write_hamiltonian(H, S)
     ...        f.write_self_energy(SeHSE)
     """
