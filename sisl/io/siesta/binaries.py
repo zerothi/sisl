@@ -487,21 +487,24 @@ class gridSileSiesta(SileBinSiesta):
 class _gfSileSiesta(SileBinSiesta):
     """ Surface Green function file containing, Hamiltonian, overlap matrix and self-energies
 
-    Do not mix read and write statements when using this code.
+    Do not mix read and write statements when using this code. Complete one or the other
+    before doing the other thing. Fortran does not allow the same file opened twice, if this
+    is needed you are recommended to make a symlink to the file and thus open two different
+    files.
 
     This small snippet reads/writes the GF file
 
     >>> with sisl.io._gfSileSiesta('hello.GF') as f:
-    ...    no, k, E = f.read_header()
-    ...    for is_k, k, E in f:
-    ...        if is_k:
+    ...    nspin, no, k, E = f.read_header()
+    ...    for ispin, new_k, k, E in f:
+    ...        if new_k:
     ...            H, S = f.read_hamiltonian()
     ...        SeHSE = f.read_self_energy()
 
     To write a file do:
 
     >>> with sisl.io._gfSileSiesta('hello.GF') as f:
-    ...    f.write_header(E, sisl.MonkhorstPack(...), H, mu=0.)
+    ...    f.write_header(sisl.MonkhorstPack(...), E)
     ...    for is_k, k, E in f:
     ...        if is_k:
     ...            f.write_hamiltonian(H, S)
@@ -544,6 +547,10 @@ class _gfSileSiesta(SileBinSiesta):
             del self._no_u
         except:
             pass
+        try:
+            del self._nspin
+        except:
+            pass
 
     def read_header(self):
         """ Read the header of the file and open it for reading subsequently
@@ -552,6 +559,7 @@ class _gfSileSiesta(SileBinSiesta):
 
         Returns
         -------
+        nspin : number of spin-components stored (1 or 2)
         no_u : size of the matrices returned
         k : k points in the GF file
         E : energy points in the GF file
@@ -559,7 +567,7 @@ class _gfSileSiesta(SileBinSiesta):
         # Ensure it is open (in read-mode)
         self._close_gf()
         self._open_gf('r')
-        no_u, nkpt, NE = _siesta.read_gf_sizes(self._iu)
+        nspin, no_u, nkpt, NE = _siesta.read_gf_sizes(self._iu)
 
         # We need to re-read (because of k-points)
         self._close_gf()
@@ -567,10 +575,11 @@ class _gfSileSiesta(SileBinSiesta):
 
         k, E = _siesta.read_gf_header(self._iu, nkpt, NE)
         k = k.T
+        self._nspin = nspin
         self._no_u = no_u
         self._E = E
         self._k = k
-        return no_u, k, E * Ry2eV
+        return nspin, no_u, k, E * Ry2eV
 
     def read_hamiltonian(self):
         """ Return current Hamiltonian and overlap matrix from the GF file
@@ -580,7 +589,6 @@ class _gfSileSiesta(SileBinSiesta):
         complex128 : Hamiltonian matrix
         complex128 : Overlap matrix
         """
-        # Step k
         self._ik += 1
         self._ie = 1
 
@@ -599,7 +607,6 @@ class _gfSileSiesta(SileBinSiesta):
         -------
         complex128 : Self-energy matrix
         """
-        # Step E
         SE = _siesta.read_gf_se(self._iu, self._no_u, self._ie).T * Ry2eV
         self._ie += 1
         return SE
@@ -646,6 +653,7 @@ class _gfSileSiesta(SileBinSiesta):
             'ne': NE,
         }
 
+        self._nspin = nspin
         self._E = np.copy(E) * eV2Ry
         self._k = np.copy(k)
 
@@ -668,7 +676,6 @@ class _gfSileSiesta(SileBinSiesta):
            a square matrix corresponding to the overlap, for efficiency reasons
            it may be advantageous to specify this argument for orthogonal cells.
         """
-        # Step k
         self._ik += 1
         self._ie = 1
         no = len(H)
@@ -695,7 +702,6 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.write_gf_se(self._iu, self._ik, self._ie,
                             self._E[self._ie-1],
                             SE.astype(np.complex128, 'C', copy=False).T * eV2Ry, no_u=no)
-        # Step energy counter
         self._ie += 1
 
     def __iter__(self):
@@ -705,10 +711,18 @@ class _gfSileSiesta(SileBinSiesta):
         ------
         bool, list of float, float
         """
-        for k in self._k:
-            yield True, k, self._E[0] * Ry2eV
-            for E in self._E[1:] * Ry2eV:
-                yield False, k, E
+        # get everything
+        e = self._E * Ry2eV
+        for ispin in range(self._nspin):
+            for k in self._k:
+                yield ispin, True, k, e[0]
+                for E in e[1:]:
+                    yield ispin, False, k, E
+
+            # Reset counters for k and e
+            self._ik = 0
+            self._ie = 0
+
         # We will automatically close once we hit the end
         self._close_gf()
 

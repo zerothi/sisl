@@ -16,7 +16,7 @@ subroutine read_open_gf( fname, iu )
   
 end subroutine read_open_gf
 
-subroutine read_gf_sizes( iu, no_u, nkpt, NE)
+subroutine read_gf_sizes( iu, nspin, no_u, nkpt, NE)
 
   implicit none
 
@@ -25,10 +25,11 @@ subroutine read_gf_sizes( iu, no_u, nkpt, NE)
 
   ! Input parameters
   integer, intent(in) :: iu
-  integer, intent(out) :: no_u, nkpt, NE
+  integer, intent(out) :: nspin, no_u, nkpt, NE
 
   ! Define f2py intents
 !f2py intent(in) :: iu
+!f2py intent(out) :: nspin
 !f2py intent(out) :: no_u
 !f2py intent(out) :: nkpt
 !f2py intent(out) :: NE
@@ -36,7 +37,7 @@ subroutine read_gf_sizes( iu, no_u, nkpt, NE)
   ! Local variables
   integer :: na_used
 
-  read(iu) !nspin, cell
+  read(iu) nspin !cell
   read(iu) !na_u, no_u
   read(iu) na_used, no_u
   read(iu) !xa_used, lasto_used
