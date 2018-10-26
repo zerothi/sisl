@@ -1,6 +1,8 @@
 0.9.5
 =====
 
+- Added Zak-phase calculations (thanks to T. Frederiksen)
+
 - Updated lots of State methods
 
 - added Bloch expansion class which can expand any method

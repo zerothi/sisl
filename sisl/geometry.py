@@ -652,7 +652,7 @@ class Geometry(SuperCellChild):
         if R is None:
             R = self.maxR()
         if R < 0:
-            raise ValueError("Unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?")
+            raise ValueError(self.__class__.__name__ + ".iR unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?")
 
         # Number of atoms within 20 * R
         naiR = max(1, len(self.close(ia, R=R * iR)))
@@ -765,7 +765,7 @@ class Geometry(SuperCellChild):
             if len(dS) == 1:
                 dS += (dS[0].expand(R + 0.01), )
         if len(dS) != 2:
-            raise ValueError('Number of Shapes *must* be one or two')
+            raise ValueError(self.__class__.__name__ + '.iter_block_shape, number of Shapes *must* be one or two')
 
         # Now create the Grid
         # convert the radius to a square Grid
@@ -1076,9 +1076,9 @@ class Geometry(SuperCellChild):
         tile : opposite method of this
         """
         if self.na % seps != 0:
-            raise ValueError(
-                'The system cannot be cut into {0} different '.format(seps) +
-                'pieces. Please check your geometry and input.')
+            raise ValueError(self.__class__.__name__ + '.cut '
+                             'cannot be cut into {0} different '.format(seps) +
+                             'pieces. Please check your geometry and input.')
         # Truncate to the correct segments
         lseg = seg % seps
         # Cut down cell
@@ -1603,10 +1603,11 @@ class Geometry(SuperCellChild):
                 'Unknown what, not one of [xyz,position,mass,cell]')
         return np.mean(g.xyz, axis=0)
 
-    def append(self, other, axis):
-        """ Appends structure along `axis`. This will automatically
-        add the ``self.cell[axis,:]`` to all atomic coordiates in the
-        `other` structure before appending.
+    def append(self, other, axis, align='none'):
+        """ Appends two structures along `axis`
+
+        This will automatically add the ``self.cell[axis,:]`` to all atomic
+        coordiates in the `other` structure before appending.
 
         The basic algorithm is this:
 
@@ -1626,6 +1627,11 @@ class Geometry(SuperCellChild):
         axis : int
             Cell direction to which the `other` geometry should be
             appended.
+        align : {'none', 'min'}
+            By default appending two structures will simply use the coordinates,
+            as is.
+            With 'min', the routine will shift both the structures along the cell
+            axis of `self` such that they coincide at the first atom.
 
         See Also
         --------
@@ -1634,24 +1640,32 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
+        align = align.lower()
         if isinstance(other, SuperCell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atom = self.atoms.copy()
             sc = self.sc.append(other, axis)
         else:
-            xyz = np.append(self.xyz,
-                            self.cell[axis, :][None, :] + other.xyz,
-                            axis=0)
+            if align == 'none':
+                xyz = np.append(self.xyz, self.cell[axis, :][None, :] + other.xyz, axis=0)
+            elif align == 'min':
+                # We want to align at the minimum position along the `axis`
+                min_f = self.fxyz[:, axis].min()
+                min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
+                displ = self.cell[axis, :] * (1 + min_f - min_other_f)
+                xyz = np.append(self.xyz, displ[None, :] + other.xyz, axis=0)
+            else:
+                raise ValueError(self.__class__.__name__ + '.append requires align keyword to be one of [none, min]')
             atom = self.atoms.append(other.atom)
             sc = self.sc.append(other.sc, axis)
         return self.__class__(xyz, atom=atom, sc=sc)
 
-    def prepend(self, other, axis):
-        """
-        Prepends structure along `axis`. This will automatically
-        add the ``self.cell[axis,:]`` to all atomic coordiates in the
-        `other` structure before prepending.
+    def prepend(self, other, axis, align='none'):
+        """ Prepend two structures along `axis`
+
+        This will automatically add the ``self.cell[axis,:]`` to all atomic
+        coordiates in the `other` structure before appending.
 
         The basic algorithm is this:
 
@@ -1671,6 +1685,11 @@ class Geometry(SuperCellChild):
         axis : int
             Cell direction to which the `other` geometry should be
             prepended
+        align : {'none', 'min'}
+            By default prepending two structures will simply use the coordinates,
+            as is.
+            With 'min', the routine will shift both the structures along the cell
+            axis of `other` such that they coincide at the first atom.
 
         See Also
         --------
@@ -1679,17 +1698,26 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
+        align = align.lower()
         if isinstance(other, SuperCell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atom = self.atoms.copy()
             sc = self.sc.prepend(other, axis)
         else:
-            xyz = np.append(other.xyz,
-                            self.xyz + other.cell[axis, :][None, :],
-                            axis=0)
+            if align == 'none':
+                xyz = np.append(other.xyz, other.cell[axis, :][None, :] + self.xyz, axis=0)
+            elif align == 'min':
+                # We want to align at the minimum position along the `axis`
+                min_f = other.fxyz[:, axis].min()
+                min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
+                displ = other.cell[axis, :] * (1 + min_f - min_other_f)
+                xyz = np.append(other.xyz, displ[None, :] + self.xyz, axis=0)
+            else:
+                raise ValueError(self.__class__.__name__ + '.prepend requires align keyword to be one of [none, min]')
             atom = self.atoms.prepend(other.atom)
             sc = self.sc.append(other.sc, axis)
+
         return self.__class__(xyz, atom=atom, sc=sc)
 
     def add(self, other):
@@ -1835,7 +1863,7 @@ class Geometry(SuperCellChild):
         if isinstance(dist, Real):
             # We have a single rational number
             if axis is None:
-                raise ValueError("Argument `axis` has not been specified, please specify the axis when using a distance")
+                raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
 
             # Now calculate the vector that we should have
             # between the atoms
@@ -1845,7 +1873,7 @@ class Geometry(SuperCellChild):
         elif isinstance(dist, string_types):
             # We have a single rational number
             if axis is None:
-                raise ValueError("Argument `axis` has not been specified, please specify the axis when using a distance")
+                raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
 
             # This is the empirical distance between the atoms
             d = self.atom[s_idx].radius(dist) + other.atom[o_idx].radius(dist)
