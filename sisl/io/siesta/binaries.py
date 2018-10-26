@@ -585,35 +585,40 @@ class _gfSileSiesta(SileBinSiesta):
         self._ie = 1
 
         H, S = _siesta.read_gf_hs(self._iu, self._no_u)
-        return H * Ry2eV, S
+        return H.T * Ry2eV, S.T
 
     def read_self_energy(self):
-        """ Return current self-energy
+        r""" Read the currently reached bulk self-energy
+
+        The returned self-energy is:
+
+        .. math::
+            \boldsymbol \Sigma_{\mathrm{bulk}}(E) = \mathbf S E - \mathbf H - \boldsymbol \Sigma(E)
 
         Returns
         -------
         complex128 : Self-energy matrix
         """
         # Step E
-        SE = _siesta.read_gf_se(self._iu, self._no_u, self._ie)
+        SE = _siesta.read_gf_se(self._iu, self._no_u, self._ie).T * Ry2eV
         self._ie += 1
-        return SE * Ry2eV
+        return SE
 
-    def write_header(self, E, bz, obj=None, mu=0.):
+    def write_header(self, bz, E, mu=0., obj=None):
         """ Write to the binary file the header of the file
 
         Parameters
         ----------
+        bz : BrillouinZone
+           contains the k-points, the weights and possibly the parent Hamiltonian (if `obj` is None)s
         E : array_like of cmplx or float
            the energy points. If `obj` is an instance of `SelfEnergy` where an
            associated ``eta`` is defined then `E` may be float, otherwise
            it *has* to be a complex array.
-        bz : BrillouinZone
-           contains the k-points and their weights
-        obj : ..., optional
-           an object that contains the Hamiltonian definitions, defaults to ``bz.parent``
         mu : float, optional
            chemical potential in the file
+        obj : ..., optional
+           an object that contains the Hamiltonian definitions, defaults to ``bz.parent``
         """
         if obj is None:
             obj = bz.parent
