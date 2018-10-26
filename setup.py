@@ -170,8 +170,10 @@ def git_version():
         if len(count) == 0:
             count = '1'
         # Get year
-        year = int(_minimal_ext_cmd(['git', 'show', '-s' '--format=%ci']).split('-')[0])
-    except:
+        year = int(_minimal_ext_cmd(['git', 'show', '-s', '--format=%ci']).split('-')[0])
+        print('sisl-install: using git revision')
+    except Exception as e:
+        print('sisl-install: using internal shipped revisions')
         # Retain the revision name
         rev = GIT_REVISION
         # Assume it is on tag
