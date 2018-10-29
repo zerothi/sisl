@@ -4,7 +4,8 @@ import warnings
 import functools as ftool
 from numbers import Integral
 import numpy as np
-from numpy import unique
+from numpy import int32
+from numpy import unique, argmin, where
 
 import sisl._array as _a
 from .atom import Atom
@@ -345,7 +346,7 @@ class _SparseGeometry(object):
 
             c = col[ptr[ia]:ptr[ia] + ncol[ia]]
             ja = c % na
-            h_col = (sc.sc_index(-geom.a2isc(c)) * na + ia).astype(np.int32, copy=False)
+            h_col = (sc.sc_index(-geom.a2isc(c)) * na + ia).astype(int32, copy=False)
             h_idx = arangei(len(h_col))
             # Now we have the Hermitian column indices
             for i, j in enumerate(ja):
@@ -899,7 +900,7 @@ class SparseAtom(_SparseGeometry):
         # First we need to figure out how long the interaction range is
         # in the cut-direction
         # We initialize to be the same as the parent direction
-        nsc = np.array(self.nsc, np.int32, copy=True) // 2
+        nsc = np.array(self.nsc, int32, copy=True) // 2
         nsc[axis] = 0  # we count the new direction
         isc = _a.zerosi([3])
         isc[axis] -= 1
@@ -946,7 +947,7 @@ class SparseAtom(_SparseGeometry):
 
         def _sca2sca(M, a, m, seps, axis):
             # Converts an o from M to m
-            isc = np.array(M.a2isc(a), np.int32, copy=True)
+            isc = np.array(M.a2isc(a), int32, copy=True)
             isc[axis] = isc[axis] * seps
             # Correct for cell-offset
             isc[axis] = isc[axis] + (a % M.na) // m.na
@@ -1351,7 +1352,7 @@ class SparseOrbital(_SparseGeometry):
 
             c = col[ptr[io]:ptr[io] + ncol[io]]
             jo = c % no
-            h_col = (sc.sc_index(-geom.o2isc(c)) * no + io).astype(np.int32, copy=False)
+            h_col = (sc.sc_index(-geom.o2isc(c)) * no + io).astype(int32, copy=False)
             h_idx = arangei(len(h_col))
             # Now we have the Hermitian column indices
             for i, j in enumerate(jo):
@@ -1949,6 +1950,186 @@ class SparseOrbital(_SparseGeometry):
 
         return R
 
+    def append(self, other, axis, align='none', eps=0.01):
+        """ Append `other` along `axis` while retaining the sparse elements in `self`
+
+        This method tries to append two sparse geometry objects together by
+        the following these steps:
+
+        1. Create the new extended geometry
+        2. Use neighbor cell couplings from `self` as the couplings to `other`
+           This *may* cause problems if the coupling atoms are not exactly equi-positioned.
+           If the coupling coordinates and the coordinates in `other` differ by more than
+           0.001 Ang, a warning will be issued.
+           If this difference is above `eps` the couplings will be removed.
+        3. The couplings will be assumed Hermitian and thus also created *backwards*
+
+        Notes
+        -----
+        This routine may change in the future such that the coupling matrix elements
+        are created from an average of the two sparse geometries. For now all coupling
+        elements are taken from `self`.
+
+        Parameters
+        ----------
+        other : object
+            must be an object of the same instance as `self`
+        axis : int
+            the axis to append the two sparse geometries along
+        align : optional
+            see `Geometry.append` for details
+
+        See Also
+        --------
+        Geometry.append
+
+        Returns
+        -------
+        a new object with the two sparse geometries appended together
+        """
+        # Check the two passed class-types are the same
+        if not type(self) is type(other):
+            raise ValueError(self.__class__.__name__ + '.append requires other to be of same type (is {}).'.format(other.__class__.__name__))
+
+        if self.geometry.nsc[axis] > 3 or other.geometry.nsc[axis] > 3:
+            raise ValueError(self.__class__.__name__ + '.append requires sparse-geometries to maximally have 3 supercells along axis.')
+
+        if self.shape[2] != other.shape[2]:
+            raise ValueError(self.__class__.__name__ + '.append requires the sparse-geometries to have the same number of dimensions [self/other]: {} / {}.'.format(self.shape[2], other.shape[2]))
+
+        na_self = self.geometry.na
+        na_other = other.geometry.na
+        # Create the new, extended geometry
+        geom = self.geometry.append(other.geometry, axis, align)
+        idx_orig = _a.arangei(self.geometry.na)
+        idx_other = _a.arangei(self.geometry.na, geom.na)
+
+        # Create output sparse geometry
+        out = self.__class__(geom, self.shape[2], self.dtype, **self._cls_kwargs())
+        # Start by copying all information from `self`
+        out._csr.ptr[:self.shape[0]] = self._csr.ptr[:-1]
+        out._csr.ptr[self.shape[0]:] = self._csr.ptr[-1]
+        out._csr.ncol[:self.shape[0]] = self._csr.ncol[:]
+        out._csr.col = self._csr.col.copy()
+        out._csr._D = self._csr._D.copy()
+        out._csr._nnz = self._csr._nnz
+
+        # Now we are to deal with the "complex" thing.
+        # We'll do it in several steps
+
+        # 0. First create the atomic sparse pattern, this will be used a couple of
+        #    times
+        spA = self.toSparseAtom(int32)
+
+        def create_coupling(orig, sc_off):
+            sp = orig.copy()
+            
+            # Create the sub-sparse pattern
+            nsc = [None] * 3
+            nsc[axis] = sc_off
+            idx_s = geom.sc.sc_index(nsc)
+
+            n_s = sp.geometry.sc.n_s
+            n = sp.shape[0]
+
+            # Get all supercell indices that we should delete
+            idx = np.delete(_a.arangei(n_s),
+                            _a.arrayi(sp.geometry.sc.sc_index(nsc))) * n
+
+            cols = array_arange(idx, idx + n)
+            # Delete all values in columns, but keep them to retain the supercell information
+            sp._csr.delete_columns(cols, keep_shape=True)
+            return sp
+
+        # 1. Create couplings along positive/negative axis
+        spA01 = create_coupling(spA, 1)
+        spA10 = create_coupling(spA, -1)
+
+        # 2. Figure out the atoms along the positive/negative directions
+        connect_01 = spA01.edges(_a.arangei(spA01.shape[0]), [])
+        connect_01_xyz = self.geometry.axyz(connect_01)
+        connect_10 = spA10.edges(_a.arangei(spA01.shape[0]), [])
+        # The negative connection requires adding the lattice vector such
+        # that we find the "opposite" connections
+        connect_10_xyz = self.geometry.axyz(connect_10) + geom.cell[axis, :].reshape(1, 3)
+
+        # Now we need to find the coordinates in the appended geometry
+        # in order to locate the connectivity atoms
+        def find_coords(geom, coords):
+            xyz = geom.xyz.copy()
+            idx = _a.emptyi(coords.shape[0])
+            dist = _a.emptyd(coords.shape[0])
+            for i, coord in enumerate(coords.reshape(-1, 1, 3)):
+                dist2 = ((xyz - coord) ** 2).sum(1)
+                idx[i] = argmin(dist2)
+                dist[i] = dist2[idx[i]] ** 0.5
+            return idx, dist
+
+        connect_01_idx, dist_01 = find_coords(geom, connect_01_xyz)
+        connect_10_idx, dist_10 = find_coords(geom, connect_10_xyz)
+
+        # Check the connectivities
+        mismatch_01_N = (dist_01 > eps).nonzero()[0].size
+        mismatch_10_N = (dist_10 > eps).nonzero()[0].size
+        if mismatch_01_N > 0:
+            warn(self.__class__.__name__ + '.append found positive direction with {} atoms deviating more than {} Ang. Will continue silently!'.format(mismatch_01_N, eps))
+        if mismatch_10_N > 0:
+            warn(self.__class__.__name__ + '.append found negative direction with {} atoms deviating more than {} Ang. Will continue silently!'.format(mismatch_10_N, eps))
+
+        # 3. Redistribute the orbitals from `self` into `geom`
+        def translate_cols(base, isc, connect, connect_idx):
+            # We do this by first translating columns along the periodic directions
+            # into the new "periodic ones", then we'll
+            nsc = [None] * 3
+            nsc[axis] = isc
+            self_idx_s = base.sc.sc_index(nsc) * self.shape[0]
+            # Since these are coupling elements we want them in the [None, None, None][axis] = 0
+            geom_idx_s = self_idx_s.copy()
+            for i in range(self_idx_s.size):
+                nsc = base.sc.sc_off[self_idx_s[i]].copy()
+                # Note we use min here because -1 will actually still be -1, however +1 will turn into 0
+                nsc[axis] = min(isc, 0)
+                geom_idx_s[i] = geom.sc.sc_index(nsc)
+            geom_idx_s = geom_idx_s * out.shape[0]
+            # Now we have the conversion from a periodic column index to the internal cell along
+            # the append axis.
+            # The last thing to do, before translating columns, is to find the equivalent
+            # columns for the new positions of the orbitals
+
+            # This refers to connect_01 -> connect_01_idx (in orbitals)
+            orb_connect = base.a2o(connect, True) % self.geometry.no
+            orb_connect_idx = geom.a2o(connect_idx, True) % geom.no
+
+            old_cols = (self_idx_s.reshape(-1, 1) + orb_connect.reshape(1, -1)).ravel()
+            new_cols = (geom_idx_s.reshape(-1, 1) + orb_connect_idx.reshape(1, -1)).ravel()
+            return old_cols, new_cols
+        
+        old_cols, new_cols = translate_cols(self.geometry, 1, connect_01, connect_01_idx)
+        out._csr.translate_columns(old_cols, new_cols)
+        old_cols, new_cols = translate_cols(self.geometry, -1, connect_10, connect_10_idx)
+        out._csr.translate_columns(old_cols, new_cols)
+        del old_cols, new_cols
+
+        # Now we have all connections for `self` correctly placed.
+        # All we need is to append `other` into the sparse matrix
+        other = other.copy()
+        nsc = [None] * 3
+        nsc[axis] = 0
+        # Remove all couplings along the appended axis.
+        other.set_nsc(nsc)
+        old_cols, new_cols = translate_cols(other.geometry, 0, _a.arange(other.geometry.na), idx_other)
+        other._csr.translate_cols(old_cols, new_cols, clean=False)
+
+        # 4. Append the sparse matrices
+        # Retrieve current pointer offset where we are to insert `other`
+        ptr0 = out._csr.ptr[self.shape[0]]
+        
+        print(spA01)
+        print(spA10)
+
+        raise NotImplementedError
+
+
     def toSparseAtom(self, dtype=None):
         """ Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern
 
@@ -1991,7 +2172,7 @@ class SparseOrbital(_SparseGeometry):
             ptr[ia+1] = ptr[ia] + len(acol)
 
         # Now we can create the sparse atomic
-        col = np.concatenate(col, axis=0).astype(np.int32, copy=False)
+        col = np.concatenate(col, axis=0).astype(int32, copy=False)
         spAtom = SparseAtom(geom, dim=1, dtype=dtype, nnzpr=0)
         spAtom._csr.ptr[:] = ptr[:]
         spAtom._csr.ncol[:] = np.diff(ptr)

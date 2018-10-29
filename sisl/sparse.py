@@ -431,8 +431,10 @@ class SparseCSR(object):
         # Create column indices
         edges = unique(self.col[array_arange(ptr[row], n=ncol[row])])
 
-        # Return the difference to the exclude region, we know both are unique
-        return setdiff1d(edges, exclude, assume_unique=True)
+        if len(exclude) > 0:
+            # Return the difference to the exclude region, we know both are unique
+            return setdiff1d(edges, exclude, assume_unique=True)
+        return edges
 
     def delete_columns(self, columns, keep_shape=False):
         """ Delete all columns in `columns`
@@ -552,7 +554,7 @@ class SparseCSR(object):
         # We are *only* deleting columns, so if it is finalized,
         # it will still be
 
-    def translate_columns(self, old, new):
+    def translate_columns(self, old, new, clean=True):
         """ Takes all `old` columns and translates them to `new`.
 
         Parameters
@@ -561,6 +563,8 @@ class SparseCSR(object):
            old column indices
         new : int or array_like
            new column indices
+        clean : bool, optional
+           whether the new translated columns, outside the shape, should be deleted or not (default delete)
         """
         old = _a.asarrayi(old)
         new = _a.asarrayi(new)
@@ -588,8 +592,9 @@ class SparseCSR(object):
 
         # After translation, set to not finalized
         self._finalized = False
-        if np_any(new >= self.shape[1]):
-            self._clean_columns()
+        if clean:
+            if np_any(new >= self.shape[1]):
+                self._clean_columns()
 
     def spsame(self, other):
         """ Check whether two sparse matrices have the same non-zero elements
