@@ -110,7 +110,7 @@ def _phase_nc_diag_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 vv = <double complex> (phases[ind] * D[ind, idx])
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
-                
+
     else:
         for r in range(nr):
             rr = r * 2
@@ -208,4 +208,3 @@ def _phase_nc_diag_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 v[rr+1, c+1] = v[rr+1, c+1] + vv
 
     return V
- 

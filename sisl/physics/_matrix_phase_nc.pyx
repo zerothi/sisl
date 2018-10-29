@@ -10,7 +10,7 @@ from sisl._indices cimport _index_sorted
 from sisl._sparse import fold_csr_matrix_nc
 
 __all__ = ['_phase_nc_csr_c64', '_phase_nc_csr_c128',
-           '_phase_nc_array_c64', '_phase_nc_array_c128'] 
+           '_phase_nc_array_c64', '_phase_nc_array_c128']
 
 # The fused data-types forces the data input to be of "correct" values.
 ctypedef fused numeric_complex:
@@ -60,11 +60,11 @@ def _phase_nc_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                
+
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
 
-    else:    
+    else:
         for r in range(nr):
             rr = r * 2
             for ind in range(ptr[r], ptr[r] + ncol[r]):
@@ -74,10 +74,9 @@ def _phase_nc_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                
+
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
-
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
 
@@ -120,10 +119,10 @@ def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                
+
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
-                
+
     else:
         for r in range(nr):
             rr = r * 2
@@ -134,7 +133,7 @@ def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                
+
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
 
@@ -237,5 +236,3 @@ def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
 
     return V
-
-    

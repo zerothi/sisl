@@ -4386,7 +4386,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
  * 
- * 
+ *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
  */
         __pyx_t_79 = (__pyx_v_rr + 1);
         __pyx_t_80 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_79)) ))) + __pyx_v_s_idx) + 1);
@@ -4401,17 +4401,17 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":82
- * 
+  /* "sisl/physics/_matrix_phase_nc.pyx":81
+ *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -4422,18 +4422,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_85 = PyTuple_New(2); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_85 = PyTuple_New(2); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_85);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_85, 0, __pyx_t_5);
@@ -4441,9 +4441,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_85, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_85) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_85) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_85); __pyx_t_85 = 0;
-  __pyx_t_85 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_85 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_85);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -5397,7 +5397,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
  * 
- * 
+ *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
  */
         __pyx_t_79 = (__pyx_v_rr + 1);
         __pyx_t_80 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_79)) ))) + __pyx_v_s_idx) + 1);
@@ -5412,17 +5412,17 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":82
- * 
+  /* "sisl/physics/_matrix_phase_nc.pyx":81
+ *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -5433,18 +5433,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_85 = PyTuple_New(2); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_85 = PyTuple_New(2); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_85);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_85, 0, __pyx_t_5);
@@ -5452,9 +5452,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_85, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_85) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_85) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_85); __pyx_t_85 = 0;
-  __pyx_t_85 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_85 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_85);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -6408,7 +6408,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
  * 
- * 
+ *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
  */
         __pyx_t_79 = (__pyx_v_rr + 1);
         __pyx_t_80 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_79)) ))) + __pyx_v_s_idx) + 1);
@@ -6423,17 +6423,17 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":82
- * 
+  /* "sisl/physics/_matrix_phase_nc.pyx":81
+ *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -6444,18 +6444,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_85 = PyTuple_New(2); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_85 = PyTuple_New(2); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_85);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_85, 0, __pyx_t_5);
@@ -6463,9 +6463,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_85, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_85) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_85) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_85); __pyx_t_85 = 0;
-  __pyx_t_85 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_85 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_85)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_85);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -7418,7 +7418,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
  * 
- * 
+ *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
  */
         __pyx_t_78 = (__pyx_v_rr + 1);
         __pyx_t_79 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_78)) ))) + __pyx_v_s_idx) + 1);
@@ -7433,17 +7433,17 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":82
- * 
+  /* "sisl/physics/_matrix_phase_nc.pyx":81
+ *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -7454,18 +7454,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_84, 0, __pyx_t_5);
@@ -7473,9 +7473,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_84, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_84); __pyx_t_84 = 0;
-  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -8434,7 +8434,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
  * 
- * 
+ *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
  */
         __pyx_t_80 = (__pyx_v_rr + 1);
         __pyx_t_81 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_80)) ))) + __pyx_v_s_idx) + 1);
@@ -8449,17 +8449,17 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":82
- * 
+  /* "sisl/physics/_matrix_phase_nc.pyx":81
+ *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -8470,18 +8470,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_86 = PyTuple_New(2); if (unlikely(!__pyx_t_86)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_86 = PyTuple_New(2); if (unlikely(!__pyx_t_86)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_86);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_86, 0, __pyx_t_5);
@@ -8489,9 +8489,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_86, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_86) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_86) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_86); __pyx_t_86 = 0;
-  __pyx_t_86 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_86)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_86 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_86)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_86);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -9444,7 +9444,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
  * 
- * 
+ *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
  */
         __pyx_t_78 = (__pyx_v_rr + 1);
         __pyx_t_79 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_78)) ))) + __pyx_v_s_idx) + 1);
@@ -9459,17 +9459,17 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":82
- * 
+  /* "sisl/physics/_matrix_phase_nc.pyx":81
+ *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -9480,18 +9480,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_84, 0, __pyx_t_5);
@@ -9499,9 +9499,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_84, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_84); __pyx_t_84 = 0;
-  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -9566,7 +9566,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   return __pyx_r;
 }
 
-/* "sisl/physics/_matrix_phase_nc.pyx":89
+/* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -9612,23 +9612,23 @@ static PyObject *__pyx_pw_4sisl_7physics_16_matrix_phase_nc_3_phase_nc_csr_c128(
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_args)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_kwargs)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_defaults)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 88, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -9645,7 +9645,7 @@ static PyObject *__pyx_pw_4sisl_7physics_16_matrix_phase_nc_3_phase_nc_csr_c128(
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc.__pyx_fused_cpdef", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -9698,7 +9698,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
   int __pyx_t_18;
   __Pyx_RefNannySetupContext("_phase_nc_csr_c128", 0);
   __Pyx_INCREF(__pyx_v_kwargs);
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(Py_None);
@@ -9712,7 +9712,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
     __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_t_3 = ((!__pyx_t_4) != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
@@ -9720,7 +9720,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
     __Pyx_INCREF(Py_None);
     __Pyx_DECREF_SET(__pyx_v_kwargs, Py_None);
   }
-  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ndarray = ((PyTypeObject*)__pyx_t_1);
   __pyx_t_1 = 0;
@@ -9729,14 +9729,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
   __pyx_v_long_is_signed = (!((((long)-1L) > 0) != 0));
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 89, __pyx_L1_error)
+    __PYX_ERR(0, 88, __pyx_L1_error)
   }
-  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_t_2 = ((3 < __pyx_t_5) != 0);
   if (__pyx_t_2) {
     if (unlikely(__pyx_v_args == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 89, __pyx_L1_error)
+      __PYX_ERR(0, 88, __pyx_L1_error)
     }
     __pyx_t_1 = PyTuple_GET_ITEM(((PyObject*)__pyx_v_args), 3);
     __Pyx_INCREF(__pyx_t_1);
@@ -9753,18 +9753,18 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
   }
   if (unlikely(__pyx_v_kwargs == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 89, __pyx_L1_error)
+    __PYX_ERR(0, 88, __pyx_L1_error)
   }
-  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_D, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_D, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_t_3 = (__pyx_t_4 != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L7_bool_binop_done:;
   if (__pyx_t_2) {
     if (unlikely(__pyx_v_kwargs == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 89, __pyx_L1_error)
+      __PYX_ERR(0, 88, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_D); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_D); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_arg = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -9773,12 +9773,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
   /*else*/ {
     if (unlikely(__pyx_v_args == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 89, __pyx_L1_error)
+      __PYX_ERR(0, 88, __pyx_L1_error)
     }
-    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
-    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_int_6);
     __Pyx_GIVEREF(__pyx_int_6);
@@ -9789,15 +9789,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 89, __pyx_L1_error)
+    __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_L6:;
   while (1) {
@@ -9807,7 +9807,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg, __pyx_v_ndarray); 
       __pyx_t_2 = (__pyx_t_3 != 0);
       if (__pyx_t_2) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_v_dtype = __pyx_t_6;
         __pyx_t_6 = 0;
@@ -9816,14 +9816,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_2 = __pyx_memoryview_check(__pyx_v_arg); 
       __pyx_t_3 = (__pyx_t_2 != 0);
       if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_v_arg_base = __pyx_t_6;
         __pyx_t_6 = 0;
         __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg_base, __pyx_v_ndarray); 
         __pyx_t_2 = (__pyx_t_3 != 0);
         if (__pyx_t_2) {
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_v_dtype = __pyx_t_6;
           __pyx_t_6 = 0;
@@ -9845,14 +9845,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_2 = (__pyx_v_dtype != Py_None);
       __pyx_t_3 = (__pyx_t_2 != 0);
       if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_itemsize = __pyx_t_5;
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_kind = __pyx_t_7;
         __pyx_v_dtype_signed = (__pyx_v_kind == 'i');
@@ -9865,9 +9865,9 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L16_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           if (__pyx_t_2) {
@@ -9879,7 +9879,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
           __pyx_t_3 = __pyx_t_2;
           __pyx_L16_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(long)) == __pyx_v_itemsize) != 0);
@@ -9888,9 +9888,9 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L20_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           if (__pyx_t_2) {
@@ -9902,7 +9902,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
           __pyx_t_3 = __pyx_t_2;
           __pyx_L20_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -9913,15 +9913,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L24_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L24_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(double)) == __pyx_v_itemsize) != 0);
@@ -9930,15 +9930,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L27_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L27_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -9949,15 +9949,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L30_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L30_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(__pyx_t_double_complex)) == __pyx_v_itemsize) != 0);
@@ -9966,15 +9966,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L33_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L33_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -9999,7 +9999,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -10021,7 +10021,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -10043,7 +10043,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -10065,7 +10065,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -10087,7 +10087,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -10109,27 +10109,27 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
         PyErr_Clear(); 
       }
     }
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
     goto __pyx_L10_break;
   }
   __pyx_L10_break:;
-  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_v_candidates = ((PyObject*)__pyx_t_6);
   __pyx_t_6 = 0;
   __pyx_t_5 = 0;
   if (unlikely(__pyx_v_signatures == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 89, __pyx_L1_error)
+    __PYX_ERR(0, 88, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_6);
   __pyx_t_6 = __pyx_t_1;
@@ -10137,12 +10137,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
   while (1) {
     __pyx_t_11 = __Pyx_dict_iter_next(__pyx_t_6, __pyx_t_9, &__pyx_t_5, &__pyx_t_1, NULL, NULL, __pyx_t_10);
     if (unlikely(__pyx_t_11 == 0)) break;
-    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_sig, __pyx_t_1);
     __pyx_t_1 = 0;
     __pyx_v_match_found = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __pyx_t_14 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_13))) {
@@ -10156,10 +10156,10 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
     }
     __pyx_t_12 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_kp_s_) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s_);
     __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __pyx_t_12 = NULL;
@@ -10174,12 +10174,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
     }
     __pyx_t_1 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_12, __pyx_kp_s__2) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__2);
     __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_XDECREF_SET(__pyx_v_src_sig, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 88, __pyx_L1_error)
     __pyx_t_16 = __pyx_t_15;
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_i = __pyx_t_17;
@@ -10190,11 +10190,11 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
       __pyx_t_3 = (__pyx_v_dst_type != Py_None);
       __pyx_t_2 = (__pyx_t_3 != 0);
       if (__pyx_t_2) {
-        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         if (__pyx_t_2) {
           __pyx_v_match_found = 1;
@@ -10210,35 +10210,35 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_2_phase_nc_csr_c128(
     __pyx_L62_break:;
     __pyx_t_2 = (__pyx_v_match_found != 0);
     if (__pyx_t_2) {
-      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
+      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 88, __pyx_L1_error)
     }
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_2 = (PyList_GET_SIZE(__pyx_v_candidates) != 0);
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 89, __pyx_L1_error)
+    __PYX_ERR(0, 88, __pyx_L1_error)
   }
-  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_t_3 = ((__pyx_t_9 > 1) != 0);
   if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 89, __pyx_L1_error)
+    __PYX_ERR(0, 88, __pyx_L1_error)
   }
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_signatures == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 89, __pyx_L1_error)
+      __PYX_ERR(0, 88, __pyx_L1_error)
     }
-    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_r = __pyx_t_6;
     __pyx_t_6 = 0;
@@ -10314,35 +10314,35 @@ static PyObject *__pyx_fuse_0__pyx_pw_4sisl_7physics_16_matrix_phase_nc_23_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 88, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -10357,22 +10357,22 @@ static PyObject *__pyx_fuse_0__pyx_pw_4sisl_7physics_16_matrix_phase_nc_23_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 91, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_csr_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -10524,74 +10524,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":96
+  /* "sisl/physics/_matrix_phase_nc.pyx":95
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":97
+  /* "sisl/physics/_matrix_phase_nc.pyx":96
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":98
+  /* "sisl/physics/_matrix_phase_nc.pyx":97
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":99
+  /* "sisl/physics/_matrix_phase_nc.pyx":98
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":100
+  /* "sisl/physics/_matrix_phase_nc.pyx":99
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -10600,14 +10600,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":103
+  /* "sisl/physics/_matrix_phase_nc.pyx":102
  * 
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -10624,7 +10624,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -10632,13 +10632,13 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -10652,7 +10652,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
     __Pyx_INCREF(((PyObject *)__pyx_v_COL));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_COL));
     PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, ((PyObject *)__pyx_v_COL));
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -10663,7 +10663,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 103, __pyx_L1_error)
+      __PYX_ERR(0, 102, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -10679,17 +10679,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
     __Pyx_INCREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_t_5);
     #else
-    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     #endif
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -10699,7 +10699,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
     __Pyx_GOTREF(__pyx_t_7);
     index = 2; __pyx_t_5 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_5)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L4_unpacking_done;
@@ -10707,7 +10707,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 103, __pyx_L1_error)
+    __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_V_PTR = __pyx_t_4;
@@ -10717,87 +10717,87 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":104
+  /* "sisl/physics/_matrix_phase_nc.pyx":103
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 103, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":105
+  /* "sisl/physics/_matrix_phase_nc.pyx":104
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_col = V_COL
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":106
+  /* "sisl/physics/_matrix_phase_nc.pyx":105
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL             # <<<<<<<<<<<<<<
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":108
+  /* "sisl/physics/_matrix_phase_nc.pyx":107
  *     cdef int[::1] v_col = V_COL
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_t_10 = ((PyArrayObject *)__pyx_t_8);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 108, __pyx_L1_error)
+      __PYX_ERR(0, 107, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -10805,19 +10805,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":109
+  /* "sisl/physics/_matrix_phase_nc.pyx":108
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  *     cdef double complex[::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c, s_idx
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 108, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":113
+  /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -10827,7 +10827,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":114
+    /* "sisl/physics/_matrix_phase_nc.pyx":113
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -10839,7 +10839,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":115
+      /* "sisl/physics/_matrix_phase_nc.pyx":114
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -10848,7 +10848,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":116
+      /* "sisl/physics/_matrix_phase_nc.pyx":115
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -10863,7 +10863,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":117
+        /* "sisl/physics/_matrix_phase_nc.pyx":116
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -10873,7 +10873,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":118
+        /* "sisl/physics/_matrix_phase_nc.pyx":117
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -10883,7 +10883,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":119
+        /* "sisl/physics/_matrix_phase_nc.pyx":118
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -10911,7 +10911,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_22_phase_nc_csr_c128
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -10919,7 +10919,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":120
+        /* "sisl/physics/_matrix_phase_nc.pyx":119
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -10933,7 +10933,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_26 * __pyx_v_D.strides[0]) )) + __pyx_t_27)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_28 * __pyx_v_D.strides[0]) )) + __pyx_t_29)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":121
+        /* "sisl/physics/_matrix_phase_nc.pyx":120
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -10949,7 +10949,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_36 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_35)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_36)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":122
+        /* "sisl/physics/_matrix_phase_nc.pyx":121
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -10962,7 +10962,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_40 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_39)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_40)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_38)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":124
+        /* "sisl/physics/_matrix_phase_nc.pyx":123
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -10975,7 +10975,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_44 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_43)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_44)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_42)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":125
+        /* "sisl/physics/_matrix_phase_nc.pyx":124
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -10993,7 +10993,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":113
+    /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -11003,7 +11003,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     goto __pyx_L5;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":128
+  /* "sisl/physics/_matrix_phase_nc.pyx":127
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -11016,7 +11016,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":129
+      /* "sisl/physics/_matrix_phase_nc.pyx":128
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -11025,7 +11025,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":130
+      /* "sisl/physics/_matrix_phase_nc.pyx":129
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -11040,7 +11040,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_53)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":131
+        /* "sisl/physics/_matrix_phase_nc.pyx":130
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -11050,7 +11050,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_54 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_54)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":132
+        /* "sisl/physics/_matrix_phase_nc.pyx":131
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -11061,7 +11061,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_56 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_55)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_56)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":133
+        /* "sisl/physics/_matrix_phase_nc.pyx":132
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -11089,7 +11089,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 133, __pyx_L1_error)
+    __PYX_ERR(0, 132, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -11097,7 +11097,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":134
+        /* "sisl/physics/_matrix_phase_nc.pyx":133
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -11111,7 +11111,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_60 * __pyx_v_D.strides[0]) )) + __pyx_t_61)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_62 * __pyx_v_D.strides[0]) )) + __pyx_t_63)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":135
+        /* "sisl/physics/_matrix_phase_nc.pyx":134
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -11127,7 +11127,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_69 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_68)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_69)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_65)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":136
+        /* "sisl/physics/_matrix_phase_nc.pyx":135
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -11140,7 +11140,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_73 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_72)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_73)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_71)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":138
+        /* "sisl/physics/_matrix_phase_nc.pyx":137
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -11153,7 +11153,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_77 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_76)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_77)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_75)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":139
+        /* "sisl/physics/_matrix_phase_nc.pyx":138
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -11173,7 +11173,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":141
+  /* "sisl/physics/_matrix_phase_nc.pyx":140
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
@@ -11181,9 +11181,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -11194,18 +11194,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_84, 0, __pyx_t_5);
@@ -11213,9 +11213,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_84, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_84); __pyx_t_84 = 0;
-  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -11224,7 +11224,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_t_84 = 0;
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -11324,35 +11324,35 @@ static PyObject *__pyx_fuse_1__pyx_pw_4sisl_7physics_16_matrix_phase_nc_25_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 88, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -11367,22 +11367,22 @@ static PyObject *__pyx_fuse_1__pyx_pw_4sisl_7physics_16_matrix_phase_nc_25_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_long(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_long(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 91, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_csr_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -11534,74 +11534,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":96
+  /* "sisl/physics/_matrix_phase_nc.pyx":95
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":97
+  /* "sisl/physics/_matrix_phase_nc.pyx":96
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":98
+  /* "sisl/physics/_matrix_phase_nc.pyx":97
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":99
+  /* "sisl/physics/_matrix_phase_nc.pyx":98
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":100
+  /* "sisl/physics/_matrix_phase_nc.pyx":99
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -11610,14 +11610,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":103
+  /* "sisl/physics/_matrix_phase_nc.pyx":102
  * 
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -11634,7 +11634,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -11642,13 +11642,13 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -11662,7 +11662,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
     __Pyx_INCREF(((PyObject *)__pyx_v_COL));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_COL));
     PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, ((PyObject *)__pyx_v_COL));
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -11673,7 +11673,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 103, __pyx_L1_error)
+      __PYX_ERR(0, 102, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -11689,17 +11689,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
     __Pyx_INCREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_t_5);
     #else
-    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     #endif
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -11709,7 +11709,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
     __Pyx_GOTREF(__pyx_t_7);
     index = 2; __pyx_t_5 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_5)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L4_unpacking_done;
@@ -11717,7 +11717,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 103, __pyx_L1_error)
+    __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_V_PTR = __pyx_t_4;
@@ -11727,87 +11727,87 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":104
+  /* "sisl/physics/_matrix_phase_nc.pyx":103
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 103, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":105
+  /* "sisl/physics/_matrix_phase_nc.pyx":104
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_col = V_COL
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":106
+  /* "sisl/physics/_matrix_phase_nc.pyx":105
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL             # <<<<<<<<<<<<<<
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":108
+  /* "sisl/physics/_matrix_phase_nc.pyx":107
  *     cdef int[::1] v_col = V_COL
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_t_10 = ((PyArrayObject *)__pyx_t_8);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 108, __pyx_L1_error)
+      __PYX_ERR(0, 107, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -11815,19 +11815,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":109
+  /* "sisl/physics/_matrix_phase_nc.pyx":108
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  *     cdef double complex[::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c, s_idx
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 108, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":113
+  /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -11837,7 +11837,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":114
+    /* "sisl/physics/_matrix_phase_nc.pyx":113
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -11849,7 +11849,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":115
+      /* "sisl/physics/_matrix_phase_nc.pyx":114
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -11858,7 +11858,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":116
+      /* "sisl/physics/_matrix_phase_nc.pyx":115
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -11873,7 +11873,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":117
+        /* "sisl/physics/_matrix_phase_nc.pyx":116
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -11883,7 +11883,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":118
+        /* "sisl/physics/_matrix_phase_nc.pyx":117
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -11893,7 +11893,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":119
+        /* "sisl/physics/_matrix_phase_nc.pyx":118
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -11921,7 +11921,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_24_phase_nc_csr_c128
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -11929,7 +11929,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":120
+        /* "sisl/physics/_matrix_phase_nc.pyx":119
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -11943,7 +11943,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_26 * __pyx_v_D.strides[0]) )) + __pyx_t_27)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_28 * __pyx_v_D.strides[0]) )) + __pyx_t_29)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":121
+        /* "sisl/physics/_matrix_phase_nc.pyx":120
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -11959,7 +11959,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_36 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_35)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_36)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":122
+        /* "sisl/physics/_matrix_phase_nc.pyx":121
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -11972,7 +11972,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_40 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_39)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_40)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_38)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":124
+        /* "sisl/physics/_matrix_phase_nc.pyx":123
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -11985,7 +11985,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_44 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_43)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_44)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_42)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":125
+        /* "sisl/physics/_matrix_phase_nc.pyx":124
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -12003,7 +12003,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":113
+    /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -12013,7 +12013,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     goto __pyx_L5;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":128
+  /* "sisl/physics/_matrix_phase_nc.pyx":127
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -12026,7 +12026,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":129
+      /* "sisl/physics/_matrix_phase_nc.pyx":128
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -12035,7 +12035,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":130
+      /* "sisl/physics/_matrix_phase_nc.pyx":129
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -12050,7 +12050,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_53)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":131
+        /* "sisl/physics/_matrix_phase_nc.pyx":130
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -12060,7 +12060,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_54 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_54)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":132
+        /* "sisl/physics/_matrix_phase_nc.pyx":131
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -12071,7 +12071,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_56 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_55)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_56)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":133
+        /* "sisl/physics/_matrix_phase_nc.pyx":132
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -12099,7 +12099,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 133, __pyx_L1_error)
+    __PYX_ERR(0, 132, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -12107,7 +12107,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":134
+        /* "sisl/physics/_matrix_phase_nc.pyx":133
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -12121,7 +12121,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_60 * __pyx_v_D.strides[0]) )) + __pyx_t_61)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_62 * __pyx_v_D.strides[0]) )) + __pyx_t_63)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":135
+        /* "sisl/physics/_matrix_phase_nc.pyx":134
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -12137,7 +12137,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_69 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_68)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_69)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_65)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":136
+        /* "sisl/physics/_matrix_phase_nc.pyx":135
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -12150,7 +12150,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_73 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_72)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_73)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_71)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":138
+        /* "sisl/physics/_matrix_phase_nc.pyx":137
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -12163,7 +12163,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_77 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_76)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_77)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_75)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":139
+        /* "sisl/physics/_matrix_phase_nc.pyx":138
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -12183,7 +12183,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":141
+  /* "sisl/physics/_matrix_phase_nc.pyx":140
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
@@ -12191,9 +12191,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -12204,18 +12204,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_84, 0, __pyx_t_5);
@@ -12223,9 +12223,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_84, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_84); __pyx_t_84 = 0;
-  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -12234,7 +12234,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_t_84 = 0;
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -12334,35 +12334,35 @@ static PyObject *__pyx_fuse_2__pyx_pw_4sisl_7physics_16_matrix_phase_nc_27_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 88, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -12377,22 +12377,22 @@ static PyObject *__pyx_fuse_2__pyx_pw_4sisl_7physics_16_matrix_phase_nc_27_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 91, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_csr_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -12544,74 +12544,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":96
+  /* "sisl/physics/_matrix_phase_nc.pyx":95
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":97
+  /* "sisl/physics/_matrix_phase_nc.pyx":96
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":98
+  /* "sisl/physics/_matrix_phase_nc.pyx":97
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":99
+  /* "sisl/physics/_matrix_phase_nc.pyx":98
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":100
+  /* "sisl/physics/_matrix_phase_nc.pyx":99
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -12620,14 +12620,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":103
+  /* "sisl/physics/_matrix_phase_nc.pyx":102
  * 
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -12644,7 +12644,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -12652,13 +12652,13 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -12672,7 +12672,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
     __Pyx_INCREF(((PyObject *)__pyx_v_COL));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_COL));
     PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, ((PyObject *)__pyx_v_COL));
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -12683,7 +12683,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 103, __pyx_L1_error)
+      __PYX_ERR(0, 102, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -12699,17 +12699,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
     __Pyx_INCREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_t_5);
     #else
-    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     #endif
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -12719,7 +12719,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
     __Pyx_GOTREF(__pyx_t_7);
     index = 2; __pyx_t_5 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_5)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L4_unpacking_done;
@@ -12727,7 +12727,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 103, __pyx_L1_error)
+    __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_V_PTR = __pyx_t_4;
@@ -12737,87 +12737,87 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":104
+  /* "sisl/physics/_matrix_phase_nc.pyx":103
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 103, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":105
+  /* "sisl/physics/_matrix_phase_nc.pyx":104
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_col = V_COL
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":106
+  /* "sisl/physics/_matrix_phase_nc.pyx":105
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL             # <<<<<<<<<<<<<<
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":108
+  /* "sisl/physics/_matrix_phase_nc.pyx":107
  *     cdef int[::1] v_col = V_COL
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_t_10 = ((PyArrayObject *)__pyx_t_8);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 108, __pyx_L1_error)
+      __PYX_ERR(0, 107, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -12825,19 +12825,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":109
+  /* "sisl/physics/_matrix_phase_nc.pyx":108
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  *     cdef double complex[::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c, s_idx
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 108, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":113
+  /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -12847,7 +12847,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":114
+    /* "sisl/physics/_matrix_phase_nc.pyx":113
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -12859,7 +12859,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":115
+      /* "sisl/physics/_matrix_phase_nc.pyx":114
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -12868,7 +12868,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":116
+      /* "sisl/physics/_matrix_phase_nc.pyx":115
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -12883,7 +12883,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":117
+        /* "sisl/physics/_matrix_phase_nc.pyx":116
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -12893,7 +12893,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":118
+        /* "sisl/physics/_matrix_phase_nc.pyx":117
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -12903,7 +12903,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":119
+        /* "sisl/physics/_matrix_phase_nc.pyx":118
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -12931,7 +12931,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_26_phase_nc_csr_c128
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -12939,7 +12939,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":120
+        /* "sisl/physics/_matrix_phase_nc.pyx":119
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -12953,7 +12953,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_26 * __pyx_v_D.strides[0]) )) + __pyx_t_27)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_28 * __pyx_v_D.strides[0]) )) + __pyx_t_29)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":121
+        /* "sisl/physics/_matrix_phase_nc.pyx":120
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -12969,7 +12969,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_36 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_35)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_36)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":122
+        /* "sisl/physics/_matrix_phase_nc.pyx":121
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -12982,7 +12982,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_40 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_39)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_40)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_38)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":124
+        /* "sisl/physics/_matrix_phase_nc.pyx":123
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -12995,7 +12995,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_44 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_43)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_44)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_42)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":125
+        /* "sisl/physics/_matrix_phase_nc.pyx":124
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -13013,7 +13013,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":113
+    /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -13023,7 +13023,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     goto __pyx_L5;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":128
+  /* "sisl/physics/_matrix_phase_nc.pyx":127
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -13036,7 +13036,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":129
+      /* "sisl/physics/_matrix_phase_nc.pyx":128
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -13045,7 +13045,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":130
+      /* "sisl/physics/_matrix_phase_nc.pyx":129
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -13060,7 +13060,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_53)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":131
+        /* "sisl/physics/_matrix_phase_nc.pyx":130
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -13070,7 +13070,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_54 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_54)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":132
+        /* "sisl/physics/_matrix_phase_nc.pyx":131
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -13081,7 +13081,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_56 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_55)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_56)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":133
+        /* "sisl/physics/_matrix_phase_nc.pyx":132
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -13109,7 +13109,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 133, __pyx_L1_error)
+    __PYX_ERR(0, 132, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -13117,7 +13117,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":134
+        /* "sisl/physics/_matrix_phase_nc.pyx":133
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -13131,7 +13131,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_60 * __pyx_v_D.strides[0]) )) + __pyx_t_61)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_62 * __pyx_v_D.strides[0]) )) + __pyx_t_63)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":135
+        /* "sisl/physics/_matrix_phase_nc.pyx":134
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -13147,7 +13147,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_69 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_68)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_69)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_65)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":136
+        /* "sisl/physics/_matrix_phase_nc.pyx":135
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -13160,7 +13160,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_73 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_72)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_73)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_71)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":138
+        /* "sisl/physics/_matrix_phase_nc.pyx":137
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -13173,7 +13173,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_77 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_76)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_77)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_75)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":139
+        /* "sisl/physics/_matrix_phase_nc.pyx":138
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -13193,7 +13193,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":141
+  /* "sisl/physics/_matrix_phase_nc.pyx":140
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
@@ -13201,9 +13201,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -13214,18 +13214,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_84, 0, __pyx_t_5);
@@ -13233,9 +13233,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_84, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_84); __pyx_t_84 = 0;
-  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -13244,7 +13244,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_t_84 = 0;
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -13344,35 +13344,35 @@ static PyObject *__pyx_fuse_3__pyx_pw_4sisl_7physics_16_matrix_phase_nc_29_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 88, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -13387,22 +13387,22 @@ static PyObject *__pyx_fuse_3__pyx_pw_4sisl_7physics_16_matrix_phase_nc_29_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 91, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_csr_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -13554,74 +13554,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":96
+  /* "sisl/physics/_matrix_phase_nc.pyx":95
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":97
+  /* "sisl/physics/_matrix_phase_nc.pyx":96
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":98
+  /* "sisl/physics/_matrix_phase_nc.pyx":97
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":99
+  /* "sisl/physics/_matrix_phase_nc.pyx":98
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":100
+  /* "sisl/physics/_matrix_phase_nc.pyx":99
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -13630,14 +13630,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":103
+  /* "sisl/physics/_matrix_phase_nc.pyx":102
  * 
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -13654,7 +13654,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -13662,13 +13662,13 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -13682,7 +13682,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
     __Pyx_INCREF(((PyObject *)__pyx_v_COL));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_COL));
     PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, ((PyObject *)__pyx_v_COL));
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -13693,7 +13693,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 103, __pyx_L1_error)
+      __PYX_ERR(0, 102, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -13709,17 +13709,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
     __Pyx_INCREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_t_5);
     #else
-    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     #endif
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -13729,7 +13729,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
     __Pyx_GOTREF(__pyx_t_7);
     index = 2; __pyx_t_5 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_5)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L4_unpacking_done;
@@ -13737,7 +13737,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 103, __pyx_L1_error)
+    __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_V_PTR = __pyx_t_4;
@@ -13747,87 +13747,87 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":104
+  /* "sisl/physics/_matrix_phase_nc.pyx":103
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 103, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":105
+  /* "sisl/physics/_matrix_phase_nc.pyx":104
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_col = V_COL
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":106
+  /* "sisl/physics/_matrix_phase_nc.pyx":105
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL             # <<<<<<<<<<<<<<
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":108
+  /* "sisl/physics/_matrix_phase_nc.pyx":107
  *     cdef int[::1] v_col = V_COL
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_t_10 = ((PyArrayObject *)__pyx_t_8);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 108, __pyx_L1_error)
+      __PYX_ERR(0, 107, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -13835,19 +13835,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":109
+  /* "sisl/physics/_matrix_phase_nc.pyx":108
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  *     cdef double complex[::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c, s_idx
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 108, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":113
+  /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -13857,7 +13857,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":114
+    /* "sisl/physics/_matrix_phase_nc.pyx":113
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -13869,7 +13869,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":115
+      /* "sisl/physics/_matrix_phase_nc.pyx":114
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -13878,7 +13878,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":116
+      /* "sisl/physics/_matrix_phase_nc.pyx":115
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -13893,7 +13893,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":117
+        /* "sisl/physics/_matrix_phase_nc.pyx":116
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -13903,7 +13903,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":118
+        /* "sisl/physics/_matrix_phase_nc.pyx":117
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -13913,7 +13913,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":119
+        /* "sisl/physics/_matrix_phase_nc.pyx":118
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -13941,7 +13941,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_28_phase_nc_csr_c128
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -13949,7 +13949,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":120
+        /* "sisl/physics/_matrix_phase_nc.pyx":119
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -13963,7 +13963,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_26 * __pyx_v_D.strides[0]) )) + __pyx_t_27)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_28 * __pyx_v_D.strides[0]) )) + __pyx_t_29)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":121
+        /* "sisl/physics/_matrix_phase_nc.pyx":120
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -13979,7 +13979,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_36 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_35)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_36)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":122
+        /* "sisl/physics/_matrix_phase_nc.pyx":121
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -13992,7 +13992,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_40 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_39)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_40)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_38)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":124
+        /* "sisl/physics/_matrix_phase_nc.pyx":123
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -14005,7 +14005,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_44 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_43)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_44)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_42)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":125
+        /* "sisl/physics/_matrix_phase_nc.pyx":124
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -14023,7 +14023,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":113
+    /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -14033,7 +14033,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     goto __pyx_L5;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":128
+  /* "sisl/physics/_matrix_phase_nc.pyx":127
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -14046,7 +14046,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":129
+      /* "sisl/physics/_matrix_phase_nc.pyx":128
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -14055,7 +14055,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":130
+      /* "sisl/physics/_matrix_phase_nc.pyx":129
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -14070,7 +14070,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_53)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":131
+        /* "sisl/physics/_matrix_phase_nc.pyx":130
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -14080,7 +14080,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_54 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_54)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":132
+        /* "sisl/physics/_matrix_phase_nc.pyx":131
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -14091,7 +14091,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_56 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_55)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_56)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":133
+        /* "sisl/physics/_matrix_phase_nc.pyx":132
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -14119,7 +14119,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 133, __pyx_L1_error)
+    __PYX_ERR(0, 132, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -14127,7 +14127,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":134
+        /* "sisl/physics/_matrix_phase_nc.pyx":133
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -14141,7 +14141,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_60 * __pyx_v_D.strides[0]) )) + __pyx_t_61)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_62 * __pyx_v_D.strides[0]) )) + __pyx_t_63)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":135
+        /* "sisl/physics/_matrix_phase_nc.pyx":134
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -14157,7 +14157,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_69 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_68)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_69)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_65)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":136
+        /* "sisl/physics/_matrix_phase_nc.pyx":135
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -14170,7 +14170,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_73 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_72)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_73)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_71)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":138
+        /* "sisl/physics/_matrix_phase_nc.pyx":137
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -14183,7 +14183,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_77 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_76)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_77)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_75)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":139
+        /* "sisl/physics/_matrix_phase_nc.pyx":138
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -14203,7 +14203,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":141
+  /* "sisl/physics/_matrix_phase_nc.pyx":140
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
@@ -14211,9 +14211,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -14224,18 +14224,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_84, 0, __pyx_t_5);
@@ -14243,9 +14243,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_84, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_84); __pyx_t_84 = 0;
-  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -14254,7 +14254,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_t_84 = 0;
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -14354,35 +14354,35 @@ static PyObject *__pyx_fuse_4__pyx_pw_4sisl_7physics_16_matrix_phase_nc_31_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 88, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -14397,22 +14397,22 @@ static PyObject *__pyx_fuse_4__pyx_pw_4sisl_7physics_16_matrix_phase_nc_31_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 91, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_csr_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -14566,74 +14566,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":96
+  /* "sisl/physics/_matrix_phase_nc.pyx":95
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":97
+  /* "sisl/physics/_matrix_phase_nc.pyx":96
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":98
+  /* "sisl/physics/_matrix_phase_nc.pyx":97
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":99
+  /* "sisl/physics/_matrix_phase_nc.pyx":98
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":100
+  /* "sisl/physics/_matrix_phase_nc.pyx":99
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -14642,14 +14642,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":103
+  /* "sisl/physics/_matrix_phase_nc.pyx":102
  * 
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -14666,7 +14666,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -14674,13 +14674,13 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -14694,7 +14694,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
     __Pyx_INCREF(((PyObject *)__pyx_v_COL));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_COL));
     PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, ((PyObject *)__pyx_v_COL));
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -14705,7 +14705,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 103, __pyx_L1_error)
+      __PYX_ERR(0, 102, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -14721,17 +14721,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
     __Pyx_INCREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_t_5);
     #else
-    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     #endif
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -14741,7 +14741,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
     __Pyx_GOTREF(__pyx_t_7);
     index = 2; __pyx_t_5 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_5)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L4_unpacking_done;
@@ -14749,7 +14749,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 103, __pyx_L1_error)
+    __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_V_PTR = __pyx_t_4;
@@ -14759,87 +14759,87 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":104
+  /* "sisl/physics/_matrix_phase_nc.pyx":103
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 103, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":105
+  /* "sisl/physics/_matrix_phase_nc.pyx":104
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_col = V_COL
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":106
+  /* "sisl/physics/_matrix_phase_nc.pyx":105
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL             # <<<<<<<<<<<<<<
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":108
+  /* "sisl/physics/_matrix_phase_nc.pyx":107
  *     cdef int[::1] v_col = V_COL
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_t_10 = ((PyArrayObject *)__pyx_t_8);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 108, __pyx_L1_error)
+      __PYX_ERR(0, 107, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -14847,19 +14847,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":109
+  /* "sisl/physics/_matrix_phase_nc.pyx":108
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  *     cdef double complex[::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c, s_idx
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 108, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":113
+  /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -14869,7 +14869,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":114
+    /* "sisl/physics/_matrix_phase_nc.pyx":113
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -14881,7 +14881,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":115
+      /* "sisl/physics/_matrix_phase_nc.pyx":114
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -14890,7 +14890,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":116
+      /* "sisl/physics/_matrix_phase_nc.pyx":115
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -14905,7 +14905,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":117
+        /* "sisl/physics/_matrix_phase_nc.pyx":116
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -14915,7 +14915,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":118
+        /* "sisl/physics/_matrix_phase_nc.pyx":117
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -14925,7 +14925,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":119
+        /* "sisl/physics/_matrix_phase_nc.pyx":118
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -14953,7 +14953,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_30_phase_nc_csr_c128
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -14961,7 +14961,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":120
+        /* "sisl/physics/_matrix_phase_nc.pyx":119
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -14977,7 +14977,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_32 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_28), __Pyx_CIMAG(__pyx_t_28)), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_31), __Pyx_CIMAG(__pyx_t_31))));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_32)), ((double)__Pyx_CIMAG(__pyx_t_32)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":121
+        /* "sisl/physics/_matrix_phase_nc.pyx":120
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -14994,7 +14994,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_38 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_37)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_38)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_34)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_32)), ((double)__Pyx_CIMAG(__pyx_t_32))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":122
+        /* "sisl/physics/_matrix_phase_nc.pyx":121
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -15007,7 +15007,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_42 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_41)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_42)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_40)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":124
+        /* "sisl/physics/_matrix_phase_nc.pyx":123
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -15020,7 +15020,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_46 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_45)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_46)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_44)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":125
+        /* "sisl/physics/_matrix_phase_nc.pyx":124
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -15039,7 +15039,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":113
+    /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -15049,7 +15049,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     goto __pyx_L5;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":128
+  /* "sisl/physics/_matrix_phase_nc.pyx":127
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -15062,7 +15062,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":129
+      /* "sisl/physics/_matrix_phase_nc.pyx":128
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -15071,7 +15071,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":130
+      /* "sisl/physics/_matrix_phase_nc.pyx":129
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -15086,7 +15086,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_55)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":131
+        /* "sisl/physics/_matrix_phase_nc.pyx":130
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -15096,7 +15096,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_56 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_56)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":132
+        /* "sisl/physics/_matrix_phase_nc.pyx":131
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -15107,7 +15107,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_58 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_57)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_58)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":133
+        /* "sisl/physics/_matrix_phase_nc.pyx":132
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -15135,7 +15135,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 133, __pyx_L1_error)
+    __PYX_ERR(0, 132, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -15143,7 +15143,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":134
+        /* "sisl/physics/_matrix_phase_nc.pyx":133
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -15159,7 +15159,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_32 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_31), __Pyx_CIMAG(__pyx_t_31)), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_28), __Pyx_CIMAG(__pyx_t_28))));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_32)), ((double)__Pyx_CIMAG(__pyx_t_32)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":135
+        /* "sisl/physics/_matrix_phase_nc.pyx":134
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -15176,7 +15176,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_71 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_70)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_71)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_67)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_32)), ((double)__Pyx_CIMAG(__pyx_t_32))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":136
+        /* "sisl/physics/_matrix_phase_nc.pyx":135
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -15189,7 +15189,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_75 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_74)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_75)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_73)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":138
+        /* "sisl/physics/_matrix_phase_nc.pyx":137
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -15202,7 +15202,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_79 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_78)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_79)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_77)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":139
+        /* "sisl/physics/_matrix_phase_nc.pyx":138
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -15223,7 +15223,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":141
+  /* "sisl/physics/_matrix_phase_nc.pyx":140
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
@@ -15231,9 +15231,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -15244,18 +15244,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_86 = PyTuple_New(2); if (unlikely(!__pyx_t_86)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_86 = PyTuple_New(2); if (unlikely(!__pyx_t_86)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_86);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_86, 0, __pyx_t_5);
@@ -15263,9 +15263,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_86, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_86) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_86) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_86); __pyx_t_86 = 0;
-  __pyx_t_86 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_86)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_86 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_86)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_86);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -15274,7 +15274,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_t_86 = 0;
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -15374,35 +15374,35 @@ static PyObject *__pyx_fuse_5__pyx_pw_4sisl_7physics_16_matrix_phase_nc_33_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 2); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 3); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 4); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 89, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, 5); __PYX_ERR(0, 88, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_csr_c128") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -15417,22 +15417,22 @@ static PyObject *__pyx_fuse_5__pyx_pw_4sisl_7physics_16_matrix_phase_nc_33_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 91, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_csr_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_csr_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 90, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -15584,74 +15584,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 88, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":96
+  /* "sisl/physics/_matrix_phase_nc.pyx":95
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":97
+  /* "sisl/physics/_matrix_phase_nc.pyx":96
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":98
+  /* "sisl/physics/_matrix_phase_nc.pyx":97
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":99
+  /* "sisl/physics/_matrix_phase_nc.pyx":98
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":100
+  /* "sisl/physics/_matrix_phase_nc.pyx":99
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -15660,14 +15660,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":103
+  /* "sisl/physics/_matrix_phase_nc.pyx":102
  * 
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -15684,7 +15684,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -15692,13 +15692,13 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, ((PyObject *)__pyx_v_PTR), ((PyObject *)__pyx_v_NCOL), ((PyObject *)__pyx_v_COL)};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -15712,7 +15712,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
     __Pyx_INCREF(((PyObject *)__pyx_v_COL));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_COL));
     PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, ((PyObject *)__pyx_v_COL));
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -15723,7 +15723,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 103, __pyx_L1_error)
+      __PYX_ERR(0, 102, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -15739,17 +15739,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
     __Pyx_INCREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_t_5);
     #else
-    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     #endif
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -15759,7 +15759,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
     __Pyx_GOTREF(__pyx_t_7);
     index = 2; __pyx_t_5 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_5)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 3) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L4_unpacking_done;
@@ -15767,7 +15767,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 103, __pyx_L1_error)
+    __PYX_ERR(0, 102, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_V_PTR = __pyx_t_4;
@@ -15777,87 +15777,87 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":104
+  /* "sisl/physics/_matrix_phase_nc.pyx":103
  *     # Now create the folded sparse elements
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 103, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":105
+  /* "sisl/physics/_matrix_phase_nc.pyx":104
  *     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] v_col = V_COL
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":106
+  /* "sisl/physics/_matrix_phase_nc.pyx":105
  *     cdef int[::1] v_ptr = V_PTR
  *     cdef int[::1] v_ncol = V_NCOL
  *     cdef int[::1] v_col = V_COL             # <<<<<<<<<<<<<<
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":108
+  /* "sisl/physics/_matrix_phase_nc.pyx":107
  *     cdef int[::1] v_col = V_COL
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t((__pyx_v_v_col.shape[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_complex128); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (!(likely(((__pyx_t_8) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_8, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_t_10 = ((PyArrayObject *)__pyx_t_8);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 108, __pyx_L1_error)
+      __PYX_ERR(0, 107, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -15865,19 +15865,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":109
+  /* "sisl/physics/_matrix_phase_nc.pyx":108
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
  *     cdef double complex[::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c, s_idx
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 108, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":113
+  /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -15887,7 +15887,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":114
+    /* "sisl/physics/_matrix_phase_nc.pyx":113
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -15899,7 +15899,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":115
+      /* "sisl/physics/_matrix_phase_nc.pyx":114
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -15908,7 +15908,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":116
+      /* "sisl/physics/_matrix_phase_nc.pyx":115
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -15923,7 +15923,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":117
+        /* "sisl/physics/_matrix_phase_nc.pyx":116
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -15933,7 +15933,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":118
+        /* "sisl/physics/_matrix_phase_nc.pyx":117
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -15943,7 +15943,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":119
+        /* "sisl/physics/_matrix_phase_nc.pyx":118
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -15971,7 +15971,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_32_phase_nc_csr_c128
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -15979,7 +15979,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":120
+        /* "sisl/physics/_matrix_phase_nc.pyx":119
  *                 ph = phases[ind]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -15993,7 +15993,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_26 * __pyx_v_D.strides[0]) )) + __pyx_t_27)) ))), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), (*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_28 * __pyx_v_D.strides[0]) )) + __pyx_t_29)) )))));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":121
+        /* "sisl/physics/_matrix_phase_nc.pyx":120
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -16009,7 +16009,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_36 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_35)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_36)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":122
+        /* "sisl/physics/_matrix_phase_nc.pyx":121
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -16022,7 +16022,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_40 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_39)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_40)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_38)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":124
+        /* "sisl/physics/_matrix_phase_nc.pyx":123
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -16035,7 +16035,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_44 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_43)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_44)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_42)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":125
+        /* "sisl/physics/_matrix_phase_nc.pyx":124
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -16053,7 +16053,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":113
+    /* "sisl/physics/_matrix_phase_nc.pyx":112
  *     cdef int r, rr, ind, c, s_idx
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -16063,7 +16063,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     goto __pyx_L5;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":128
+  /* "sisl/physics/_matrix_phase_nc.pyx":127
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -16076,7 +16076,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":129
+      /* "sisl/physics/_matrix_phase_nc.pyx":128
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -16085,7 +16085,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":130
+      /* "sisl/physics/_matrix_phase_nc.pyx":129
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -16100,7 +16100,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_53)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":131
+        /* "sisl/physics/_matrix_phase_nc.pyx":130
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -16110,7 +16110,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_54 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_54)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":132
+        /* "sisl/physics/_matrix_phase_nc.pyx":131
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -16121,7 +16121,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_56 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_55)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_56)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":133
+        /* "sisl/physics/_matrix_phase_nc.pyx":132
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)             # <<<<<<<<<<<<<<
@@ -16149,7 +16149,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 133, __pyx_L1_error)
+    __PYX_ERR(0, 132, __pyx_L1_error)
 }
 
 __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
@@ -16157,7 +16157,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":134
+        /* "sisl/physics/_matrix_phase_nc.pyx":133
  *                 ph = phases[col[ind] / nr]
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -16171,7 +16171,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_30 = __Pyx_c_diff_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_60 * __pyx_v_D.strides[0]) )) + __pyx_t_61)) ))), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), (*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_62 * __pyx_v_D.strides[0]) )) + __pyx_t_63)) )))));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":135
+        /* "sisl/physics/_matrix_phase_nc.pyx":134
  *                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -16187,7 +16187,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_69 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_68)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_69)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_65)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":136
+        /* "sisl/physics/_matrix_phase_nc.pyx":135
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -16200,7 +16200,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_73 = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_72)) ))) + __pyx_v_s_idx) + 1);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_73)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_71)) ))), __Pyx_c_prod_double(__pyx_v_ph, __Pyx_c_conj_double(__pyx_v_v12)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":138
+        /* "sisl/physics/_matrix_phase_nc.pyx":137
  *                 v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12             # <<<<<<<<<<<<<<
@@ -16213,7 +16213,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __pyx_t_77 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_76)) ))) + __pyx_v_s_idx);
         *((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_77)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_75)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":139
+        /* "sisl/physics/_matrix_phase_nc.pyx":138
  * 
  *                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -16233,7 +16233,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   }
   __pyx_L5:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":141
+  /* "sisl/physics/_matrix_phase_nc.pyx":140
  *                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
  * 
  *     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))             # <<<<<<<<<<<<<<
@@ -16241,9 +16241,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_V));
@@ -16254,18 +16254,18 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_INCREF(__pyx_v_V_PTR);
   __Pyx_GIVEREF(__pyx_v_V_PTR);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_V_PTR);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = PyTuple_New(2); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_84, 0, __pyx_t_5);
@@ -16273,9 +16273,9 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   PyTuple_SET_ITEM(__pyx_t_84, 1, __pyx_t_4);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_shape, __pyx_t_84) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_84); __pyx_t_84 = 0;
-  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_84 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_84)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_84);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -16284,7 +16284,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_t_84 = 0;
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -16340,7 +16340,7 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   return __pyx_r;
 }
 
-/* "sisl/physics/_matrix_phase_nc.pyx":148
+/* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -16386,23 +16386,23 @@ static PyObject *__pyx_pw_4sisl_7physics_16_matrix_phase_nc_5_phase_nc_array_c64
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_args)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_kwargs)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_defaults)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 147, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 147, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -16419,7 +16419,7 @@ static PyObject *__pyx_pw_4sisl_7physics_16_matrix_phase_nc_5_phase_nc_array_c64
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 147, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc.__pyx_fused_cpdef", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -16472,7 +16472,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
   int __pyx_t_18;
   __Pyx_RefNannySetupContext("_phase_nc_array_c64", 0);
   __Pyx_INCREF(__pyx_v_kwargs);
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(Py_None);
@@ -16486,7 +16486,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
     __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
   __pyx_t_3 = ((!__pyx_t_4) != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
@@ -16494,7 +16494,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
     __Pyx_INCREF(Py_None);
     __Pyx_DECREF_SET(__pyx_v_kwargs, Py_None);
   }
-  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ndarray = ((PyTypeObject*)__pyx_t_1);
   __pyx_t_1 = 0;
@@ -16503,14 +16503,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
   __pyx_v_long_is_signed = (!((((long)-1L) > 0) != 0));
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 148, __pyx_L1_error)
+    __PYX_ERR(0, 147, __pyx_L1_error)
   }
-  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 147, __pyx_L1_error)
   __pyx_t_2 = ((3 < __pyx_t_5) != 0);
   if (__pyx_t_2) {
     if (unlikely(__pyx_v_args == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 148, __pyx_L1_error)
+      __PYX_ERR(0, 147, __pyx_L1_error)
     }
     __pyx_t_1 = PyTuple_GET_ITEM(((PyObject*)__pyx_v_args), 3);
     __Pyx_INCREF(__pyx_t_1);
@@ -16527,18 +16527,18 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
   }
   if (unlikely(__pyx_v_kwargs == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 148, __pyx_L1_error)
+    __PYX_ERR(0, 147, __pyx_L1_error)
   }
-  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_D, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_D, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
   __pyx_t_3 = (__pyx_t_4 != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L7_bool_binop_done:;
   if (__pyx_t_2) {
     if (unlikely(__pyx_v_kwargs == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 148, __pyx_L1_error)
+      __PYX_ERR(0, 147, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_D); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_D); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_arg = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -16547,12 +16547,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
   /*else*/ {
     if (unlikely(__pyx_v_args == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 148, __pyx_L1_error)
+      __PYX_ERR(0, 147, __pyx_L1_error)
     }
-    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
-    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 147, __pyx_L1_error)
+    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_int_6);
     __Pyx_GIVEREF(__pyx_int_6);
@@ -16563,15 +16563,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 148, __pyx_L1_error)
+    __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_L6:;
   while (1) {
@@ -16581,7 +16581,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg, __pyx_v_ndarray); 
       __pyx_t_2 = (__pyx_t_3 != 0);
       if (__pyx_t_2) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_v_dtype = __pyx_t_6;
         __pyx_t_6 = 0;
@@ -16590,14 +16590,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_2 = __pyx_memoryview_check(__pyx_v_arg); 
       __pyx_t_3 = (__pyx_t_2 != 0);
       if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_v_arg_base = __pyx_t_6;
         __pyx_t_6 = 0;
         __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg_base, __pyx_v_ndarray); 
         __pyx_t_2 = (__pyx_t_3 != 0);
         if (__pyx_t_2) {
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_v_dtype = __pyx_t_6;
           __pyx_t_6 = 0;
@@ -16619,14 +16619,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_2 = (__pyx_v_dtype != Py_None);
       __pyx_t_3 = (__pyx_t_2 != 0);
       if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_itemsize = __pyx_t_5;
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_kind = __pyx_t_7;
         __pyx_v_dtype_signed = (__pyx_v_kind == 'i');
@@ -16639,9 +16639,9 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L16_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           if (__pyx_t_2) {
@@ -16653,7 +16653,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
           __pyx_t_3 = __pyx_t_2;
           __pyx_L16_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(long)) == __pyx_v_itemsize) != 0);
@@ -16662,9 +16662,9 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L20_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           if (__pyx_t_2) {
@@ -16676,7 +16676,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
           __pyx_t_3 = __pyx_t_2;
           __pyx_L20_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -16687,15 +16687,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L24_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L24_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(double)) == __pyx_v_itemsize) != 0);
@@ -16704,15 +16704,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L27_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L27_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -16723,15 +16723,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L30_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L30_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(__pyx_t_double_complex)) == __pyx_v_itemsize) != 0);
@@ -16740,15 +16740,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L33_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L33_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -16773,7 +16773,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -16795,7 +16795,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -16817,7 +16817,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -16839,7 +16839,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -16861,7 +16861,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -16883,27 +16883,27 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
         PyErr_Clear(); 
       }
     }
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
     goto __pyx_L10_break;
   }
   __pyx_L10_break:;
-  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_v_candidates = ((PyObject*)__pyx_t_6);
   __pyx_t_6 = 0;
   __pyx_t_5 = 0;
   if (unlikely(__pyx_v_signatures == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 148, __pyx_L1_error)
+    __PYX_ERR(0, 147, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_6);
   __pyx_t_6 = __pyx_t_1;
@@ -16911,12 +16911,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
   while (1) {
     __pyx_t_11 = __Pyx_dict_iter_next(__pyx_t_6, __pyx_t_9, &__pyx_t_5, &__pyx_t_1, NULL, NULL, __pyx_t_10);
     if (unlikely(__pyx_t_11 == 0)) break;
-    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_sig, __pyx_t_1);
     __pyx_t_1 = 0;
     __pyx_v_match_found = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __pyx_t_14 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_13))) {
@@ -16930,10 +16930,10 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
     }
     __pyx_t_12 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_kp_s_) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s_);
     __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __pyx_t_12 = NULL;
@@ -16948,12 +16948,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
     }
     __pyx_t_1 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_12, __pyx_kp_s__2) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__2);
     __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_XDECREF_SET(__pyx_v_src_sig, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 147, __pyx_L1_error)
     __pyx_t_16 = __pyx_t_15;
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_i = __pyx_t_17;
@@ -16964,11 +16964,11 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
       __pyx_t_3 = (__pyx_v_dst_type != Py_None);
       __pyx_t_2 = (__pyx_t_3 != 0);
       if (__pyx_t_2) {
-        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         if (__pyx_t_2) {
           __pyx_v_match_found = 1;
@@ -16984,35 +16984,35 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_4_phase_nc_array_c64
     __pyx_L62_break:;
     __pyx_t_2 = (__pyx_v_match_found != 0);
     if (__pyx_t_2) {
-      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
+      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 147, __pyx_L1_error)
     }
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_2 = (PyList_GET_SIZE(__pyx_v_candidates) != 0);
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 148, __pyx_L1_error)
+    __PYX_ERR(0, 147, __pyx_L1_error)
   }
-  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 147, __pyx_L1_error)
   __pyx_t_3 = ((__pyx_t_9 > 1) != 0);
   if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 148, __pyx_L1_error)
+    __PYX_ERR(0, 147, __pyx_L1_error)
   }
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_signatures == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 148, __pyx_L1_error)
+      __PYX_ERR(0, 147, __pyx_L1_error)
     }
-    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_r = __pyx_t_6;
     __pyx_t_6 = 0;
@@ -17088,35 +17088,35 @@ static PyObject *__pyx_fuse_0__pyx_pw_4sisl_7physics_16_matrix_phase_nc_37_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 147, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 147, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -17131,22 +17131,22 @@ static PyObject *__pyx_fuse_0__pyx_pw_4sisl_7physics_16_matrix_phase_nc_37_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 151, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 150, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 147, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c64", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 150, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 151, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c64(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -17284,74 +17284,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":155
+  /* "sisl/physics/_matrix_phase_nc.pyx":154
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":156
+  /* "sisl/physics/_matrix_phase_nc.pyx":155
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":157
+  /* "sisl/physics/_matrix_phase_nc.pyx":156
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef float complex[::1] phases = PHASES
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":158
+  /* "sisl/physics/_matrix_phase_nc.pyx":157
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  * 
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":160
+  /* "sisl/physics/_matrix_phase_nc.pyx":159
  *     cdef float complex[::1] phases = PHASES
  * 
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -17360,23 +17360,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":161
+  /* "sisl/physics/_matrix_phase_nc.pyx":160
  * 
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)             # <<<<<<<<<<<<<<
  *     cdef float complex[:, ::1] v = V
  *     cdef float complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -17384,32 +17384,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 161, __pyx_L1_error)
+      __PYX_ERR(0, 160, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -17417,19 +17417,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":162
+  /* "sisl/physics/_matrix_phase_nc.pyx":161
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)
  *     cdef float complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef float complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":166
+  /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -17439,7 +17439,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":167
+    /* "sisl/physics/_matrix_phase_nc.pyx":166
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -17451,7 +17451,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":168
+      /* "sisl/physics/_matrix_phase_nc.pyx":167
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -17460,7 +17460,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":169
+      /* "sisl/physics/_matrix_phase_nc.pyx":168
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -17475,7 +17475,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":170
+        /* "sisl/physics/_matrix_phase_nc.pyx":169
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -17485,7 +17485,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":171
+        /* "sisl/physics/_matrix_phase_nc.pyx":170
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -17495,7 +17495,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":172
+        /* "sisl/physics/_matrix_phase_nc.pyx":171
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -17511,7 +17511,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":173
+        /* "sisl/physics/_matrix_phase_nc.pyx":172
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -17527,7 +17527,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":174
+        /* "sisl/physics/_matrix_phase_nc.pyx":173
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -17541,7 +17541,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_39 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) ))), 0)));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_39)), ((float)__Pyx_CIMAG(__pyx_t_39)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":175
+        /* "sisl/physics/_matrix_phase_nc.pyx":174
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -17554,7 +17554,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_43 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_42 * __pyx_v_v.strides[0]) )) + __pyx_t_43)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_40 * __pyx_v_v.strides[0]) )) + __pyx_t_41)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":176
+        /* "sisl/physics/_matrix_phase_nc.pyx":175
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -17569,7 +17569,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":166
+    /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -17579,7 +17579,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":179
+  /* "sisl/physics/_matrix_phase_nc.pyx":178
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -17592,7 +17592,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":180
+      /* "sisl/physics/_matrix_phase_nc.pyx":179
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -17601,7 +17601,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":181
+      /* "sisl/physics/_matrix_phase_nc.pyx":180
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -17616,7 +17616,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_50)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":182
+        /* "sisl/physics/_matrix_phase_nc.pyx":181
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -17626,7 +17626,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_51 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":183
+        /* "sisl/physics/_matrix_phase_nc.pyx":182
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -17637,7 +17637,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_53 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_52)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_53)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":184
+        /* "sisl/physics/_matrix_phase_nc.pyx":183
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -17653,7 +17653,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_59 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_58 * __pyx_v_v.strides[0]) )) + __pyx_t_59)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_54 * __pyx_v_v.strides[0]) )) + __pyx_t_55)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":185
+        /* "sisl/physics/_matrix_phase_nc.pyx":184
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -17669,7 +17669,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_65 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_64 * __pyx_v_v.strides[0]) )) + __pyx_t_65)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_60 * __pyx_v_v.strides[0]) )) + __pyx_t_61)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":186
+        /* "sisl/physics/_matrix_phase_nc.pyx":185
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -17683,7 +17683,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_39 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_66 * __pyx_v_D.strides[0]) )) + __pyx_t_67)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_68 * __pyx_v_D.strides[0]) )) + __pyx_t_69)) ))), 0)));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_39)), ((float)__Pyx_CIMAG(__pyx_t_39)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":187
+        /* "sisl/physics/_matrix_phase_nc.pyx":186
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -17696,7 +17696,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
         __pyx_t_73 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_72 * __pyx_v_v.strides[0]) )) + __pyx_t_73)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_70 * __pyx_v_v.strides[0]) )) + __pyx_t_71)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":188
+        /* "sisl/physics/_matrix_phase_nc.pyx":187
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -17713,7 +17713,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":190
+  /* "sisl/physics/_matrix_phase_nc.pyx":189
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
@@ -17725,7 +17725,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_36_phase_nc_array_c6
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -17819,35 +17819,35 @@ static PyObject *__pyx_fuse_1__pyx_pw_4sisl_7physics_16_matrix_phase_nc_39_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 147, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 147, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -17862,22 +17862,22 @@ static PyObject *__pyx_fuse_1__pyx_pw_4sisl_7physics_16_matrix_phase_nc_39_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_long(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 151, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_long(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 150, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 147, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c64", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 150, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 151, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c64(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -18015,74 +18015,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":155
+  /* "sisl/physics/_matrix_phase_nc.pyx":154
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":156
+  /* "sisl/physics/_matrix_phase_nc.pyx":155
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":157
+  /* "sisl/physics/_matrix_phase_nc.pyx":156
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef float complex[::1] phases = PHASES
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":158
+  /* "sisl/physics/_matrix_phase_nc.pyx":157
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  * 
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":160
+  /* "sisl/physics/_matrix_phase_nc.pyx":159
  *     cdef float complex[::1] phases = PHASES
  * 
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -18091,23 +18091,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":161
+  /* "sisl/physics/_matrix_phase_nc.pyx":160
  * 
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)             # <<<<<<<<<<<<<<
  *     cdef float complex[:, ::1] v = V
  *     cdef float complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -18115,32 +18115,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 161, __pyx_L1_error)
+      __PYX_ERR(0, 160, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -18148,19 +18148,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":162
+  /* "sisl/physics/_matrix_phase_nc.pyx":161
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)
  *     cdef float complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef float complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":166
+  /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -18170,7 +18170,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":167
+    /* "sisl/physics/_matrix_phase_nc.pyx":166
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -18182,7 +18182,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":168
+      /* "sisl/physics/_matrix_phase_nc.pyx":167
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -18191,7 +18191,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":169
+      /* "sisl/physics/_matrix_phase_nc.pyx":168
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -18206,7 +18206,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":170
+        /* "sisl/physics/_matrix_phase_nc.pyx":169
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -18216,7 +18216,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":171
+        /* "sisl/physics/_matrix_phase_nc.pyx":170
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -18226,7 +18226,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":172
+        /* "sisl/physics/_matrix_phase_nc.pyx":171
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -18242,7 +18242,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":173
+        /* "sisl/physics/_matrix_phase_nc.pyx":172
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -18258,7 +18258,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":174
+        /* "sisl/physics/_matrix_phase_nc.pyx":173
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -18272,7 +18272,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_39 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) ))), 0)));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_39)), ((float)__Pyx_CIMAG(__pyx_t_39)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":175
+        /* "sisl/physics/_matrix_phase_nc.pyx":174
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -18285,7 +18285,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_43 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_42 * __pyx_v_v.strides[0]) )) + __pyx_t_43)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_40 * __pyx_v_v.strides[0]) )) + __pyx_t_41)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":176
+        /* "sisl/physics/_matrix_phase_nc.pyx":175
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -18300,7 +18300,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":166
+    /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -18310,7 +18310,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":179
+  /* "sisl/physics/_matrix_phase_nc.pyx":178
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -18323,7 +18323,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":180
+      /* "sisl/physics/_matrix_phase_nc.pyx":179
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -18332,7 +18332,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":181
+      /* "sisl/physics/_matrix_phase_nc.pyx":180
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -18347,7 +18347,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_50)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":182
+        /* "sisl/physics/_matrix_phase_nc.pyx":181
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -18357,7 +18357,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_51 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":183
+        /* "sisl/physics/_matrix_phase_nc.pyx":182
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -18368,7 +18368,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_53 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_52)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_53)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":184
+        /* "sisl/physics/_matrix_phase_nc.pyx":183
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -18384,7 +18384,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_59 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_58 * __pyx_v_v.strides[0]) )) + __pyx_t_59)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_54 * __pyx_v_v.strides[0]) )) + __pyx_t_55)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":185
+        /* "sisl/physics/_matrix_phase_nc.pyx":184
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -18400,7 +18400,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_65 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_64 * __pyx_v_v.strides[0]) )) + __pyx_t_65)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_60 * __pyx_v_v.strides[0]) )) + __pyx_t_61)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":186
+        /* "sisl/physics/_matrix_phase_nc.pyx":185
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -18414,7 +18414,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_39 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_66 * __pyx_v_D.strides[0]) )) + __pyx_t_67)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_68 * __pyx_v_D.strides[0]) )) + __pyx_t_69)) ))), 0)));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_39)), ((float)__Pyx_CIMAG(__pyx_t_39)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":187
+        /* "sisl/physics/_matrix_phase_nc.pyx":186
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -18427,7 +18427,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
         __pyx_t_73 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_72 * __pyx_v_v.strides[0]) )) + __pyx_t_73)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_70 * __pyx_v_v.strides[0]) )) + __pyx_t_71)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":188
+        /* "sisl/physics/_matrix_phase_nc.pyx":187
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -18444,7 +18444,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":190
+  /* "sisl/physics/_matrix_phase_nc.pyx":189
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
@@ -18456,7 +18456,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_38_phase_nc_array_c6
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -18550,35 +18550,35 @@ static PyObject *__pyx_fuse_2__pyx_pw_4sisl_7physics_16_matrix_phase_nc_41_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 147, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 147, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -18593,22 +18593,22 @@ static PyObject *__pyx_fuse_2__pyx_pw_4sisl_7physics_16_matrix_phase_nc_41_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 151, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 150, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 147, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c64", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 150, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 151, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c64(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -18746,74 +18746,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":155
+  /* "sisl/physics/_matrix_phase_nc.pyx":154
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":156
+  /* "sisl/physics/_matrix_phase_nc.pyx":155
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":157
+  /* "sisl/physics/_matrix_phase_nc.pyx":156
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef float complex[::1] phases = PHASES
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":158
+  /* "sisl/physics/_matrix_phase_nc.pyx":157
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  * 
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":160
+  /* "sisl/physics/_matrix_phase_nc.pyx":159
  *     cdef float complex[::1] phases = PHASES
  * 
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -18822,23 +18822,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":161
+  /* "sisl/physics/_matrix_phase_nc.pyx":160
  * 
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)             # <<<<<<<<<<<<<<
  *     cdef float complex[:, ::1] v = V
  *     cdef float complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -18846,32 +18846,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 161, __pyx_L1_error)
+      __PYX_ERR(0, 160, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -18879,19 +18879,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":162
+  /* "sisl/physics/_matrix_phase_nc.pyx":161
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)
  *     cdef float complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef float complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":166
+  /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -18901,7 +18901,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":167
+    /* "sisl/physics/_matrix_phase_nc.pyx":166
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -18913,7 +18913,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":168
+      /* "sisl/physics/_matrix_phase_nc.pyx":167
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -18922,7 +18922,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":169
+      /* "sisl/physics/_matrix_phase_nc.pyx":168
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -18937,7 +18937,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":170
+        /* "sisl/physics/_matrix_phase_nc.pyx":169
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -18947,7 +18947,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":171
+        /* "sisl/physics/_matrix_phase_nc.pyx":170
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -18957,7 +18957,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":172
+        /* "sisl/physics/_matrix_phase_nc.pyx":171
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -18973,7 +18973,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":173
+        /* "sisl/physics/_matrix_phase_nc.pyx":172
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -18989,7 +18989,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":174
+        /* "sisl/physics/_matrix_phase_nc.pyx":173
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -19003,7 +19003,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_39 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) ))), 0)));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_39)), ((float)__Pyx_CIMAG(__pyx_t_39)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":175
+        /* "sisl/physics/_matrix_phase_nc.pyx":174
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -19016,7 +19016,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_43 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_42 * __pyx_v_v.strides[0]) )) + __pyx_t_43)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_40 * __pyx_v_v.strides[0]) )) + __pyx_t_41)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":176
+        /* "sisl/physics/_matrix_phase_nc.pyx":175
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -19031,7 +19031,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":166
+    /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -19041,7 +19041,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":179
+  /* "sisl/physics/_matrix_phase_nc.pyx":178
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -19054,7 +19054,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":180
+      /* "sisl/physics/_matrix_phase_nc.pyx":179
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -19063,7 +19063,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":181
+      /* "sisl/physics/_matrix_phase_nc.pyx":180
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -19078,7 +19078,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_50)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":182
+        /* "sisl/physics/_matrix_phase_nc.pyx":181
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -19088,7 +19088,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_51 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":183
+        /* "sisl/physics/_matrix_phase_nc.pyx":182
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -19099,7 +19099,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_53 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_52)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_53)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":184
+        /* "sisl/physics/_matrix_phase_nc.pyx":183
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -19115,7 +19115,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_59 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_58 * __pyx_v_v.strides[0]) )) + __pyx_t_59)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_54 * __pyx_v_v.strides[0]) )) + __pyx_t_55)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":185
+        /* "sisl/physics/_matrix_phase_nc.pyx":184
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -19131,7 +19131,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_65 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_64 * __pyx_v_v.strides[0]) )) + __pyx_t_65)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_60 * __pyx_v_v.strides[0]) )) + __pyx_t_61)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":186
+        /* "sisl/physics/_matrix_phase_nc.pyx":185
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -19145,7 +19145,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_39 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_66 * __pyx_v_D.strides[0]) )) + __pyx_t_67)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_68 * __pyx_v_D.strides[0]) )) + __pyx_t_69)) ))), 0)));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_39)), ((float)__Pyx_CIMAG(__pyx_t_39)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":187
+        /* "sisl/physics/_matrix_phase_nc.pyx":186
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -19158,7 +19158,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
         __pyx_t_73 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_72 * __pyx_v_v.strides[0]) )) + __pyx_t_73)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_70 * __pyx_v_v.strides[0]) )) + __pyx_t_71)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":188
+        /* "sisl/physics/_matrix_phase_nc.pyx":187
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -19175,7 +19175,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":190
+  /* "sisl/physics/_matrix_phase_nc.pyx":189
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
@@ -19187,7 +19187,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_40_phase_nc_array_c6
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -19281,35 +19281,35 @@ static PyObject *__pyx_fuse_3__pyx_pw_4sisl_7physics_16_matrix_phase_nc_43_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 147, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 147, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -19324,22 +19324,22 @@ static PyObject *__pyx_fuse_3__pyx_pw_4sisl_7physics_16_matrix_phase_nc_43_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 151, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 150, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 147, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c64", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 150, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 151, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c64(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -19476,74 +19476,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":155
+  /* "sisl/physics/_matrix_phase_nc.pyx":154
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":156
+  /* "sisl/physics/_matrix_phase_nc.pyx":155
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":157
+  /* "sisl/physics/_matrix_phase_nc.pyx":156
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef float complex[::1] phases = PHASES
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":158
+  /* "sisl/physics/_matrix_phase_nc.pyx":157
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  * 
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":160
+  /* "sisl/physics/_matrix_phase_nc.pyx":159
  *     cdef float complex[::1] phases = PHASES
  * 
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -19552,23 +19552,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":161
+  /* "sisl/physics/_matrix_phase_nc.pyx":160
  * 
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)             # <<<<<<<<<<<<<<
  *     cdef float complex[:, ::1] v = V
  *     cdef float complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -19576,32 +19576,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 161, __pyx_L1_error)
+      __PYX_ERR(0, 160, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -19609,19 +19609,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":162
+  /* "sisl/physics/_matrix_phase_nc.pyx":161
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)
  *     cdef float complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef float complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":166
+  /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -19631,7 +19631,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":167
+    /* "sisl/physics/_matrix_phase_nc.pyx":166
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -19643,7 +19643,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":168
+      /* "sisl/physics/_matrix_phase_nc.pyx":167
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -19652,7 +19652,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":169
+      /* "sisl/physics/_matrix_phase_nc.pyx":168
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -19667,7 +19667,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":170
+        /* "sisl/physics/_matrix_phase_nc.pyx":169
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -19677,7 +19677,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":171
+        /* "sisl/physics/_matrix_phase_nc.pyx":170
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -19687,7 +19687,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":172
+        /* "sisl/physics/_matrix_phase_nc.pyx":171
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -19703,7 +19703,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":173
+        /* "sisl/physics/_matrix_phase_nc.pyx":172
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -19719,7 +19719,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":174
+        /* "sisl/physics/_matrix_phase_nc.pyx":173
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -19733,7 +19733,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) ))), 0)));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":175
+        /* "sisl/physics/_matrix_phase_nc.pyx":174
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -19746,7 +19746,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_42 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_39 * __pyx_v_v.strides[0]) )) + __pyx_t_40)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":176
+        /* "sisl/physics/_matrix_phase_nc.pyx":175
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -19761,7 +19761,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":166
+    /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -19771,7 +19771,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":179
+  /* "sisl/physics/_matrix_phase_nc.pyx":178
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -19784,7 +19784,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":180
+      /* "sisl/physics/_matrix_phase_nc.pyx":179
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -19793,7 +19793,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":181
+      /* "sisl/physics/_matrix_phase_nc.pyx":180
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -19808,7 +19808,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_49)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":182
+        /* "sisl/physics/_matrix_phase_nc.pyx":181
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -19818,7 +19818,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_50 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_50)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":183
+        /* "sisl/physics/_matrix_phase_nc.pyx":182
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -19829,7 +19829,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_52 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_52)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":184
+        /* "sisl/physics/_matrix_phase_nc.pyx":183
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -19845,7 +19845,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_58 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_57 * __pyx_v_v.strides[0]) )) + __pyx_t_58)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_53 * __pyx_v_v.strides[0]) )) + __pyx_t_54)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":185
+        /* "sisl/physics/_matrix_phase_nc.pyx":184
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -19861,7 +19861,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_64 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_63 * __pyx_v_v.strides[0]) )) + __pyx_t_64)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":186
+        /* "sisl/physics/_matrix_phase_nc.pyx":185
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -19875,7 +19875,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_65 * __pyx_v_D.strides[0]) )) + __pyx_t_66)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_67 * __pyx_v_D.strides[0]) )) + __pyx_t_68)) ))), 0)));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":187
+        /* "sisl/physics/_matrix_phase_nc.pyx":186
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -19888,7 +19888,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
         __pyx_t_72 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_69 * __pyx_v_v.strides[0]) )) + __pyx_t_70)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":188
+        /* "sisl/physics/_matrix_phase_nc.pyx":187
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -19905,7 +19905,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":190
+  /* "sisl/physics/_matrix_phase_nc.pyx":189
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
@@ -19917,7 +19917,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_42_phase_nc_array_c6
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -20011,35 +20011,35 @@ static PyObject *__pyx_fuse_4__pyx_pw_4sisl_7physics_16_matrix_phase_nc_45_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 147, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 147, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -20054,22 +20054,22 @@ static PyObject *__pyx_fuse_4__pyx_pw_4sisl_7physics_16_matrix_phase_nc_45_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 151, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 150, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 147, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c64", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 150, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 151, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c64(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -20208,74 +20208,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":155
+  /* "sisl/physics/_matrix_phase_nc.pyx":154
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":156
+  /* "sisl/physics/_matrix_phase_nc.pyx":155
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":157
+  /* "sisl/physics/_matrix_phase_nc.pyx":156
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef float complex[::1] phases = PHASES
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":158
+  /* "sisl/physics/_matrix_phase_nc.pyx":157
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  * 
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":160
+  /* "sisl/physics/_matrix_phase_nc.pyx":159
  *     cdef float complex[::1] phases = PHASES
  * 
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -20284,23 +20284,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":161
+  /* "sisl/physics/_matrix_phase_nc.pyx":160
  * 
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)             # <<<<<<<<<<<<<<
  *     cdef float complex[:, ::1] v = V
  *     cdef float complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -20308,32 +20308,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 161, __pyx_L1_error)
+      __PYX_ERR(0, 160, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -20341,19 +20341,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":162
+  /* "sisl/physics/_matrix_phase_nc.pyx":161
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)
  *     cdef float complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef float complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":166
+  /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -20363,7 +20363,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":167
+    /* "sisl/physics/_matrix_phase_nc.pyx":166
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -20375,7 +20375,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":168
+      /* "sisl/physics/_matrix_phase_nc.pyx":167
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -20384,7 +20384,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":169
+      /* "sisl/physics/_matrix_phase_nc.pyx":168
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -20399,7 +20399,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":170
+        /* "sisl/physics/_matrix_phase_nc.pyx":169
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -20409,7 +20409,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":171
+        /* "sisl/physics/_matrix_phase_nc.pyx":170
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -20419,7 +20419,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":172
+        /* "sisl/physics/_matrix_phase_nc.pyx":171
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -20435,7 +20435,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":173
+        /* "sisl/physics/_matrix_phase_nc.pyx":172
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -20451,7 +20451,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":174
+        /* "sisl/physics/_matrix_phase_nc.pyx":173
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -20467,7 +20467,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_40 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_26), __Pyx_CIMAG(__pyx_t_26)), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_39), __Pyx_CIMAG(__pyx_t_39))));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_40)), ((float)__Pyx_CIMAG(__pyx_t_40)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":175
+        /* "sisl/physics/_matrix_phase_nc.pyx":174
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -20480,7 +20480,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_44 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_43 * __pyx_v_v.strides[0]) )) + __pyx_t_44)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":176
+        /* "sisl/physics/_matrix_phase_nc.pyx":175
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -20495,7 +20495,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":166
+    /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -20505,7 +20505,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":179
+  /* "sisl/physics/_matrix_phase_nc.pyx":178
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -20518,7 +20518,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":180
+      /* "sisl/physics/_matrix_phase_nc.pyx":179
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -20527,7 +20527,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":181
+      /* "sisl/physics/_matrix_phase_nc.pyx":180
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -20542,7 +20542,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_51)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":182
+        /* "sisl/physics/_matrix_phase_nc.pyx":181
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -20552,7 +20552,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_52 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_52)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":183
+        /* "sisl/physics/_matrix_phase_nc.pyx":182
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -20563,7 +20563,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_54 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_53)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_54)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":184
+        /* "sisl/physics/_matrix_phase_nc.pyx":183
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -20579,7 +20579,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_60 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_55 * __pyx_v_v.strides[0]) )) + __pyx_t_56)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_39)), ((float)__Pyx_CIMAG(__pyx_t_39))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":185
+        /* "sisl/physics/_matrix_phase_nc.pyx":184
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -20595,7 +20595,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_66 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_65 * __pyx_v_v.strides[0]) )) + __pyx_t_66)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_61 * __pyx_v_v.strides[0]) )) + __pyx_t_62)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_39)), ((float)__Pyx_CIMAG(__pyx_t_39))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":186
+        /* "sisl/physics/_matrix_phase_nc.pyx":185
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -20611,7 +20611,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_40 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_39), __Pyx_CIMAG(__pyx_t_39)), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_26), __Pyx_CIMAG(__pyx_t_26))));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_40)), ((float)__Pyx_CIMAG(__pyx_t_40)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":187
+        /* "sisl/physics/_matrix_phase_nc.pyx":186
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -20624,7 +20624,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
         __pyx_t_74 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_73 * __pyx_v_v.strides[0]) )) + __pyx_t_74)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":188
+        /* "sisl/physics/_matrix_phase_nc.pyx":187
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -20641,7 +20641,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":190
+  /* "sisl/physics/_matrix_phase_nc.pyx":189
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
@@ -20653,7 +20653,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_44_phase_nc_array_c6
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -20747,35 +20747,35 @@ static PyObject *__pyx_fuse_5__pyx_pw_4sisl_7physics_16_matrix_phase_nc_47_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 1); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 2); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 3); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 4); __PYX_ERR(0, 147, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 148, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, 5); __PYX_ERR(0, 147, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c64") < 0)) __PYX_ERR(0, 147, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -20790,22 +20790,22 @@ static PyObject *__pyx_fuse_5__pyx_pw_4sisl_7physics_16_matrix_phase_nc_47_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 151, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 150, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c64", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 147, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c64", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 150, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 151, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c64(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -20942,74 +20942,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":155
+  /* "sisl/physics/_matrix_phase_nc.pyx":154
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":156
+  /* "sisl/physics/_matrix_phase_nc.pyx":155
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":157
+  /* "sisl/physics/_matrix_phase_nc.pyx":156
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef float complex[::1] phases = PHASES
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":158
+  /* "sisl/physics/_matrix_phase_nc.pyx":157
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef float complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  * 
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":160
+  /* "sisl/physics/_matrix_phase_nc.pyx":159
  *     cdef float complex[::1] phases = PHASES
  * 
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -21018,23 +21018,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":161
+  /* "sisl/physics/_matrix_phase_nc.pyx":160
  * 
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)             # <<<<<<<<<<<<<<
  *     cdef float complex[:, ::1] v = V
  *     cdef float complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -21042,32 +21042,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 161, __pyx_L1_error)
+      __PYX_ERR(0, 160, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -21075,19 +21075,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":162
+  /* "sisl/physics/_matrix_phase_nc.pyx":161
  *     cdef int nr = ncol.shape[0]
  *     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex64)
  *     cdef float complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef float complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":166
+  /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -21097,7 +21097,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":167
+    /* "sisl/physics/_matrix_phase_nc.pyx":166
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -21109,7 +21109,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":168
+      /* "sisl/physics/_matrix_phase_nc.pyx":167
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -21118,7 +21118,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":169
+      /* "sisl/physics/_matrix_phase_nc.pyx":168
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -21133,7 +21133,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":170
+        /* "sisl/physics/_matrix_phase_nc.pyx":169
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -21143,7 +21143,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":171
+        /* "sisl/physics/_matrix_phase_nc.pyx":170
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -21153,7 +21153,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":172
+        /* "sisl/physics/_matrix_phase_nc.pyx":171
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -21169,7 +21169,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":173
+        /* "sisl/physics/_matrix_phase_nc.pyx":172
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -21185,7 +21185,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":174
+        /* "sisl/physics/_matrix_phase_nc.pyx":173
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -21199,7 +21199,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_26 = __Pyx_c_diff_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), (*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) )))));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":175
+        /* "sisl/physics/_matrix_phase_nc.pyx":174
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -21212,7 +21212,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_42 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_39 * __pyx_v_v.strides[0]) )) + __pyx_t_40)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":176
+        /* "sisl/physics/_matrix_phase_nc.pyx":175
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -21227,7 +21227,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":166
+    /* "sisl/physics/_matrix_phase_nc.pyx":165
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -21237,7 +21237,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":179
+  /* "sisl/physics/_matrix_phase_nc.pyx":178
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -21250,7 +21250,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":180
+      /* "sisl/physics/_matrix_phase_nc.pyx":179
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -21259,7 +21259,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":181
+      /* "sisl/physics/_matrix_phase_nc.pyx":180
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -21274,7 +21274,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_49)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":182
+        /* "sisl/physics/_matrix_phase_nc.pyx":181
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -21284,7 +21284,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_50 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_50)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":183
+        /* "sisl/physics/_matrix_phase_nc.pyx":182
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -21295,7 +21295,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_52 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_phases.data) + __pyx_t_52)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":184
+        /* "sisl/physics/_matrix_phase_nc.pyx":183
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -21311,7 +21311,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_58 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_57 * __pyx_v_v.strides[0]) )) + __pyx_t_58)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_53 * __pyx_v_v.strides[0]) )) + __pyx_t_54)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":185
+        /* "sisl/physics/_matrix_phase_nc.pyx":184
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -21327,7 +21327,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_64 = (__pyx_v_c + 1);
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_63 * __pyx_v_v.strides[0]) )) + __pyx_t_64)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":186
+        /* "sisl/physics/_matrix_phase_nc.pyx":185
  *                 v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -21341,7 +21341,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_26 = __Pyx_c_diff_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_65 * __pyx_v_D.strides[0]) )) + __pyx_t_66)) ))), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), (*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_67 * __pyx_v_D.strides[0]) )) + __pyx_t_68)) )))));
         __pyx_v_v12 = __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":187
+        /* "sisl/physics/_matrix_phase_nc.pyx":186
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -21354,7 +21354,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
         __pyx_t_72 = __pyx_v_c;
         *((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_69 * __pyx_v_v.strides[0]) )) + __pyx_t_70)) ))), __Pyx_c_prod_float(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":188
+        /* "sisl/physics/_matrix_phase_nc.pyx":187
  *                 v12 = <float complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -21371,7 +21371,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":190
+  /* "sisl/physics/_matrix_phase_nc.pyx":189
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
@@ -21383,7 +21383,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -21433,7 +21433,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_46_phase_nc_array_c6
   return __pyx_r;
 }
 
-/* "sisl/physics/_matrix_phase_nc.pyx":197
+/* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -21479,23 +21479,23 @@ static PyObject *__pyx_pw_4sisl_7physics_16_matrix_phase_nc_7_phase_nc_array_c12
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_args)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_kwargs)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_defaults)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 196, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 197, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 196, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -21512,7 +21512,7 @@ static PyObject *__pyx_pw_4sisl_7physics_16_matrix_phase_nc_7_phase_nc_array_c12
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 197, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 196, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc.__pyx_fused_cpdef", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -21565,7 +21565,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
   int __pyx_t_18;
   __Pyx_RefNannySetupContext("_phase_nc_array_c128", 0);
   __Pyx_INCREF(__pyx_v_kwargs);
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(Py_None);
@@ -21579,7 +21579,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
     __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_t_3 = ((!__pyx_t_4) != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
@@ -21587,7 +21587,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
     __Pyx_INCREF(Py_None);
     __Pyx_DECREF_SET(__pyx_v_kwargs, Py_None);
   }
-  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ndarray = ((PyTypeObject*)__pyx_t_1);
   __pyx_t_1 = 0;
@@ -21596,14 +21596,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
   __pyx_v_long_is_signed = (!((((long)-1L) > 0) != 0));
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 197, __pyx_L1_error)
+    __PYX_ERR(0, 196, __pyx_L1_error)
   }
-  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_t_2 = ((3 < __pyx_t_5) != 0);
   if (__pyx_t_2) {
     if (unlikely(__pyx_v_args == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 197, __pyx_L1_error)
+      __PYX_ERR(0, 196, __pyx_L1_error)
     }
     __pyx_t_1 = PyTuple_GET_ITEM(((PyObject*)__pyx_v_args), 3);
     __Pyx_INCREF(__pyx_t_1);
@@ -21620,18 +21620,18 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
   }
   if (unlikely(__pyx_v_kwargs == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 197, __pyx_L1_error)
+    __PYX_ERR(0, 196, __pyx_L1_error)
   }
-  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_D, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_D, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_t_3 = (__pyx_t_4 != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L7_bool_binop_done:;
   if (__pyx_t_2) {
     if (unlikely(__pyx_v_kwargs == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 197, __pyx_L1_error)
+      __PYX_ERR(0, 196, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_D); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_D); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_arg = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -21640,12 +21640,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
   /*else*/ {
     if (unlikely(__pyx_v_args == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 197, __pyx_L1_error)
+      __PYX_ERR(0, 196, __pyx_L1_error)
     }
-    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 197, __pyx_L1_error)
-    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 196, __pyx_L1_error)
+    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_int_6);
     __Pyx_GIVEREF(__pyx_int_6);
@@ -21656,15 +21656,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 197, __pyx_L1_error)
+    __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_L6:;
   while (1) {
@@ -21674,7 +21674,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg, __pyx_v_ndarray); 
       __pyx_t_2 = (__pyx_t_3 != 0);
       if (__pyx_t_2) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_v_dtype = __pyx_t_6;
         __pyx_t_6 = 0;
@@ -21683,14 +21683,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_2 = __pyx_memoryview_check(__pyx_v_arg); 
       __pyx_t_3 = (__pyx_t_2 != 0);
       if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_v_arg_base = __pyx_t_6;
         __pyx_t_6 = 0;
         __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg_base, __pyx_v_ndarray); 
         __pyx_t_2 = (__pyx_t_3 != 0);
         if (__pyx_t_2) {
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_v_dtype = __pyx_t_6;
           __pyx_t_6 = 0;
@@ -21712,14 +21712,14 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_2 = (__pyx_v_dtype != Py_None);
       __pyx_t_3 = (__pyx_t_2 != 0);
       if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_itemsize = __pyx_t_5;
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_kind = __pyx_t_7;
         __pyx_v_dtype_signed = (__pyx_v_kind == 'i');
@@ -21732,9 +21732,9 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L16_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           if (__pyx_t_2) {
@@ -21746,7 +21746,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
           __pyx_t_3 = __pyx_t_2;
           __pyx_L16_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(long)) == __pyx_v_itemsize) != 0);
@@ -21755,9 +21755,9 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L20_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           if (__pyx_t_2) {
@@ -21769,7 +21769,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
           __pyx_t_3 = __pyx_t_2;
           __pyx_L20_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -21780,15 +21780,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L24_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L24_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(double)) == __pyx_v_itemsize) != 0);
@@ -21797,15 +21797,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L27_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L27_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -21816,15 +21816,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L30_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L30_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(__pyx_t_double_complex)) == __pyx_v_itemsize) != 0);
@@ -21833,15 +21833,15 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L33_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
           __pyx_t_3 = __pyx_t_2;
           __pyx_L33_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -21866,7 +21866,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_int, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -21888,7 +21888,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_long, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -21910,7 +21910,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -21932,7 +21932,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -21954,7 +21954,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -21976,27 +21976,27 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
         PyErr_Clear(); 
       }
     }
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
     goto __pyx_L10_break;
   }
   __pyx_L10_break:;
-  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_v_candidates = ((PyObject*)__pyx_t_6);
   __pyx_t_6 = 0;
   __pyx_t_5 = 0;
   if (unlikely(__pyx_v_signatures == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 197, __pyx_L1_error)
+    __PYX_ERR(0, 196, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_6);
   __pyx_t_6 = __pyx_t_1;
@@ -22004,12 +22004,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
   while (1) {
     __pyx_t_11 = __Pyx_dict_iter_next(__pyx_t_6, __pyx_t_9, &__pyx_t_5, &__pyx_t_1, NULL, NULL, __pyx_t_10);
     if (unlikely(__pyx_t_11 == 0)) break;
-    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_sig, __pyx_t_1);
     __pyx_t_1 = 0;
     __pyx_v_match_found = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __pyx_t_14 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_13))) {
@@ -22023,10 +22023,10 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
     }
     __pyx_t_12 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_kp_s_) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s_);
     __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __pyx_t_12 = NULL;
@@ -22041,12 +22041,12 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
     }
     __pyx_t_1 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_12, __pyx_kp_s__2) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__2);
     __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_XDECREF_SET(__pyx_v_src_sig, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 196, __pyx_L1_error)
     __pyx_t_16 = __pyx_t_15;
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_i = __pyx_t_17;
@@ -22057,11 +22057,11 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
       __pyx_t_3 = (__pyx_v_dst_type != Py_None);
       __pyx_t_2 = (__pyx_t_3 != 0);
       if (__pyx_t_2) {
-        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         if (__pyx_t_2) {
           __pyx_v_match_found = 1;
@@ -22077,35 +22077,35 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_6_phase_nc_array_c12
     __pyx_L62_break:;
     __pyx_t_2 = (__pyx_v_match_found != 0);
     if (__pyx_t_2) {
-      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 197, __pyx_L1_error)
+      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 196, __pyx_L1_error)
     }
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_2 = (PyList_GET_SIZE(__pyx_v_candidates) != 0);
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 197, __pyx_L1_error)
+    __PYX_ERR(0, 196, __pyx_L1_error)
   }
-  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_t_3 = ((__pyx_t_9 > 1) != 0);
   if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 197, __pyx_L1_error)
+    __PYX_ERR(0, 196, __pyx_L1_error)
   }
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_signatures == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 197, __pyx_L1_error)
+      __PYX_ERR(0, 196, __pyx_L1_error)
     }
-    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_r = __pyx_t_6;
     __pyx_t_6 = 0;
@@ -22181,35 +22181,35 @@ static PyObject *__pyx_fuse_0__pyx_pw_4sisl_7physics_16_matrix_phase_nc_51_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 196, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 197, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 196, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -22224,22 +22224,22 @@ static PyObject *__pyx_fuse_0__pyx_pw_4sisl_7physics_16_matrix_phase_nc_51_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 200, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 199, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 197, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 196, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 200, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -22376,74 +22376,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":204
+  /* "sisl/physics/_matrix_phase_nc.pyx":203
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":205
+  /* "sisl/physics/_matrix_phase_nc.pyx":204
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":206
+  /* "sisl/physics/_matrix_phase_nc.pyx":205
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":207
+  /* "sisl/physics/_matrix_phase_nc.pyx":206
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":208
+  /* "sisl/physics/_matrix_phase_nc.pyx":207
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -22452,23 +22452,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":210
+  /* "sisl/physics/_matrix_phase_nc.pyx":209
  *     cdef int nr = ncol.shape[0]
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[:, ::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -22476,32 +22476,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 209, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 210, __pyx_L1_error)
+      __PYX_ERR(0, 209, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -22509,19 +22509,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":211
+  /* "sisl/physics/_matrix_phase_nc.pyx":210
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)
  *     cdef double complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 210, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":215
+  /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -22531,7 +22531,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":216
+    /* "sisl/physics/_matrix_phase_nc.pyx":215
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -22543,7 +22543,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":217
+      /* "sisl/physics/_matrix_phase_nc.pyx":216
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -22552,7 +22552,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":218
+      /* "sisl/physics/_matrix_phase_nc.pyx":217
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -22567,7 +22567,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":219
+        /* "sisl/physics/_matrix_phase_nc.pyx":218
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -22577,7 +22577,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":220
+        /* "sisl/physics/_matrix_phase_nc.pyx":219
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -22587,7 +22587,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":221
+        /* "sisl/physics/_matrix_phase_nc.pyx":220
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -22603,7 +22603,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":222
+        /* "sisl/physics/_matrix_phase_nc.pyx":221
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -22619,7 +22619,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":223
+        /* "sisl/physics/_matrix_phase_nc.pyx":222
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -22633,7 +22633,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":224
+        /* "sisl/physics/_matrix_phase_nc.pyx":223
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -22646,7 +22646,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_42 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_39 * __pyx_v_v.strides[0]) )) + __pyx_t_40)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":225
+        /* "sisl/physics/_matrix_phase_nc.pyx":224
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -22661,7 +22661,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":215
+    /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -22671,7 +22671,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":228
+  /* "sisl/physics/_matrix_phase_nc.pyx":227
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -22684,7 +22684,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":229
+      /* "sisl/physics/_matrix_phase_nc.pyx":228
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -22693,7 +22693,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":230
+      /* "sisl/physics/_matrix_phase_nc.pyx":229
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -22708,7 +22708,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_49)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":231
+        /* "sisl/physics/_matrix_phase_nc.pyx":230
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -22718,7 +22718,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_50 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_50)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":232
+        /* "sisl/physics/_matrix_phase_nc.pyx":231
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -22729,7 +22729,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_52 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_52)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":233
+        /* "sisl/physics/_matrix_phase_nc.pyx":232
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -22745,7 +22745,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_58 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_57 * __pyx_v_v.strides[0]) )) + __pyx_t_58)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_53 * __pyx_v_v.strides[0]) )) + __pyx_t_54)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":234
+        /* "sisl/physics/_matrix_phase_nc.pyx":233
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -22761,7 +22761,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_64 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_63 * __pyx_v_v.strides[0]) )) + __pyx_t_64)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":235
+        /* "sisl/physics/_matrix_phase_nc.pyx":234
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -22775,7 +22775,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_65 * __pyx_v_D.strides[0]) )) + __pyx_t_66)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_67 * __pyx_v_D.strides[0]) )) + __pyx_t_68)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":236
+        /* "sisl/physics/_matrix_phase_nc.pyx":235
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -22788,7 +22788,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
         __pyx_t_72 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_69 * __pyx_v_v.strides[0]) )) + __pyx_t_70)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":237
+        /* "sisl/physics/_matrix_phase_nc.pyx":236
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -22805,19 +22805,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_50_phase_nc_array_c1
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":239
+  /* "sisl/physics/_matrix_phase_nc.pyx":238
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -22911,35 +22909,35 @@ static PyObject *__pyx_fuse_1__pyx_pw_4sisl_7physics_16_matrix_phase_nc_53_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 196, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 197, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 196, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -22954,22 +22952,22 @@ static PyObject *__pyx_fuse_1__pyx_pw_4sisl_7physics_16_matrix_phase_nc_53_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_long(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 200, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_long(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 199, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 197, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 196, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 200, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -23106,74 +23104,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":204
+  /* "sisl/physics/_matrix_phase_nc.pyx":203
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":205
+  /* "sisl/physics/_matrix_phase_nc.pyx":204
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":206
+  /* "sisl/physics/_matrix_phase_nc.pyx":205
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":207
+  /* "sisl/physics/_matrix_phase_nc.pyx":206
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":208
+  /* "sisl/physics/_matrix_phase_nc.pyx":207
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -23182,23 +23180,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":210
+  /* "sisl/physics/_matrix_phase_nc.pyx":209
  *     cdef int nr = ncol.shape[0]
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[:, ::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -23206,32 +23204,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 209, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 210, __pyx_L1_error)
+      __PYX_ERR(0, 209, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -23239,19 +23237,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":211
+  /* "sisl/physics/_matrix_phase_nc.pyx":210
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)
  *     cdef double complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 210, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":215
+  /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -23261,7 +23259,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":216
+    /* "sisl/physics/_matrix_phase_nc.pyx":215
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -23273,7 +23271,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":217
+      /* "sisl/physics/_matrix_phase_nc.pyx":216
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -23282,7 +23280,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":218
+      /* "sisl/physics/_matrix_phase_nc.pyx":217
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -23297,7 +23295,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":219
+        /* "sisl/physics/_matrix_phase_nc.pyx":218
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -23307,7 +23305,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":220
+        /* "sisl/physics/_matrix_phase_nc.pyx":219
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -23317,7 +23315,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":221
+        /* "sisl/physics/_matrix_phase_nc.pyx":220
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -23333,7 +23331,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":222
+        /* "sisl/physics/_matrix_phase_nc.pyx":221
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -23349,7 +23347,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":223
+        /* "sisl/physics/_matrix_phase_nc.pyx":222
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -23363,7 +23361,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":224
+        /* "sisl/physics/_matrix_phase_nc.pyx":223
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -23376,7 +23374,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_42 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_39 * __pyx_v_v.strides[0]) )) + __pyx_t_40)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":225
+        /* "sisl/physics/_matrix_phase_nc.pyx":224
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -23391,7 +23389,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":215
+    /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -23401,7 +23399,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":228
+  /* "sisl/physics/_matrix_phase_nc.pyx":227
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -23414,7 +23412,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":229
+      /* "sisl/physics/_matrix_phase_nc.pyx":228
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -23423,7 +23421,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":230
+      /* "sisl/physics/_matrix_phase_nc.pyx":229
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -23438,7 +23436,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_49)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":231
+        /* "sisl/physics/_matrix_phase_nc.pyx":230
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -23448,7 +23446,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_50 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_50)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":232
+        /* "sisl/physics/_matrix_phase_nc.pyx":231
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -23459,7 +23457,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_52 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_52)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":233
+        /* "sisl/physics/_matrix_phase_nc.pyx":232
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -23475,7 +23473,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_58 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_57 * __pyx_v_v.strides[0]) )) + __pyx_t_58)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_53 * __pyx_v_v.strides[0]) )) + __pyx_t_54)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":234
+        /* "sisl/physics/_matrix_phase_nc.pyx":233
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -23491,7 +23489,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_64 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_63 * __pyx_v_v.strides[0]) )) + __pyx_t_64)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":235
+        /* "sisl/physics/_matrix_phase_nc.pyx":234
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -23505,7 +23503,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_65 * __pyx_v_D.strides[0]) )) + __pyx_t_66)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((long *) ( /* dim=1 */ ((char *) (((long *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_67 * __pyx_v_D.strides[0]) )) + __pyx_t_68)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":236
+        /* "sisl/physics/_matrix_phase_nc.pyx":235
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -23518,7 +23516,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
         __pyx_t_72 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_69 * __pyx_v_v.strides[0]) )) + __pyx_t_70)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":237
+        /* "sisl/physics/_matrix_phase_nc.pyx":236
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -23535,19 +23533,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_52_phase_nc_array_c1
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":239
+  /* "sisl/physics/_matrix_phase_nc.pyx":238
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -23641,35 +23637,35 @@ static PyObject *__pyx_fuse_2__pyx_pw_4sisl_7physics_16_matrix_phase_nc_55_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 196, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 197, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 196, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -23684,22 +23680,22 @@ static PyObject *__pyx_fuse_2__pyx_pw_4sisl_7physics_16_matrix_phase_nc_55_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 200, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 199, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 197, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 196, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 200, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -23836,74 +23832,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":204
+  /* "sisl/physics/_matrix_phase_nc.pyx":203
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":205
+  /* "sisl/physics/_matrix_phase_nc.pyx":204
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":206
+  /* "sisl/physics/_matrix_phase_nc.pyx":205
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":207
+  /* "sisl/physics/_matrix_phase_nc.pyx":206
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":208
+  /* "sisl/physics/_matrix_phase_nc.pyx":207
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -23912,23 +23908,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":210
+  /* "sisl/physics/_matrix_phase_nc.pyx":209
  *     cdef int nr = ncol.shape[0]
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[:, ::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -23936,32 +23932,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 209, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 210, __pyx_L1_error)
+      __PYX_ERR(0, 209, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -23969,19 +23965,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":211
+  /* "sisl/physics/_matrix_phase_nc.pyx":210
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)
  *     cdef double complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 210, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":215
+  /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -23991,7 +23987,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":216
+    /* "sisl/physics/_matrix_phase_nc.pyx":215
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -24003,7 +23999,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":217
+      /* "sisl/physics/_matrix_phase_nc.pyx":216
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -24012,7 +24008,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":218
+      /* "sisl/physics/_matrix_phase_nc.pyx":217
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -24027,7 +24023,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":219
+        /* "sisl/physics/_matrix_phase_nc.pyx":218
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -24037,7 +24033,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":220
+        /* "sisl/physics/_matrix_phase_nc.pyx":219
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -24047,7 +24043,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":221
+        /* "sisl/physics/_matrix_phase_nc.pyx":220
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -24063,7 +24059,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":222
+        /* "sisl/physics/_matrix_phase_nc.pyx":221
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -24079,7 +24075,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":223
+        /* "sisl/physics/_matrix_phase_nc.pyx":222
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -24093,7 +24089,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":224
+        /* "sisl/physics/_matrix_phase_nc.pyx":223
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -24106,7 +24102,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_42 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_39 * __pyx_v_v.strides[0]) )) + __pyx_t_40)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":225
+        /* "sisl/physics/_matrix_phase_nc.pyx":224
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -24121,7 +24117,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":215
+    /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -24131,7 +24127,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":228
+  /* "sisl/physics/_matrix_phase_nc.pyx":227
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -24144,7 +24140,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":229
+      /* "sisl/physics/_matrix_phase_nc.pyx":228
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -24153,7 +24149,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":230
+      /* "sisl/physics/_matrix_phase_nc.pyx":229
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -24168,7 +24164,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_49)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":231
+        /* "sisl/physics/_matrix_phase_nc.pyx":230
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -24178,7 +24174,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_50 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_50)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":232
+        /* "sisl/physics/_matrix_phase_nc.pyx":231
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -24189,7 +24185,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_52 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_52)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":233
+        /* "sisl/physics/_matrix_phase_nc.pyx":232
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -24205,7 +24201,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_58 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_57 * __pyx_v_v.strides[0]) )) + __pyx_t_58)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_53 * __pyx_v_v.strides[0]) )) + __pyx_t_54)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":234
+        /* "sisl/physics/_matrix_phase_nc.pyx":233
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -24221,7 +24217,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_64 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_63 * __pyx_v_v.strides[0]) )) + __pyx_t_64)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":235
+        /* "sisl/physics/_matrix_phase_nc.pyx":234
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -24235,7 +24231,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_65 * __pyx_v_D.strides[0]) )) + __pyx_t_66)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_67 * __pyx_v_D.strides[0]) )) + __pyx_t_68)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":236
+        /* "sisl/physics/_matrix_phase_nc.pyx":235
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -24248,7 +24244,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
         __pyx_t_72 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_69 * __pyx_v_v.strides[0]) )) + __pyx_t_70)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":237
+        /* "sisl/physics/_matrix_phase_nc.pyx":236
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -24265,19 +24261,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_54_phase_nc_array_c1
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":239
+  /* "sisl/physics/_matrix_phase_nc.pyx":238
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -24371,35 +24365,35 @@ static PyObject *__pyx_fuse_3__pyx_pw_4sisl_7physics_16_matrix_phase_nc_57_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 196, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 197, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 196, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -24414,22 +24408,22 @@ static PyObject *__pyx_fuse_3__pyx_pw_4sisl_7physics_16_matrix_phase_nc_57_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 200, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 199, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 197, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 196, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 200, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -24566,74 +24560,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":204
+  /* "sisl/physics/_matrix_phase_nc.pyx":203
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":205
+  /* "sisl/physics/_matrix_phase_nc.pyx":204
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":206
+  /* "sisl/physics/_matrix_phase_nc.pyx":205
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":207
+  /* "sisl/physics/_matrix_phase_nc.pyx":206
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":208
+  /* "sisl/physics/_matrix_phase_nc.pyx":207
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -24642,23 +24636,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":210
+  /* "sisl/physics/_matrix_phase_nc.pyx":209
  *     cdef int nr = ncol.shape[0]
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[:, ::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -24666,32 +24660,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 209, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 210, __pyx_L1_error)
+      __PYX_ERR(0, 209, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -24699,19 +24693,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":211
+  /* "sisl/physics/_matrix_phase_nc.pyx":210
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)
  *     cdef double complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 210, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":215
+  /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -24721,7 +24715,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":216
+    /* "sisl/physics/_matrix_phase_nc.pyx":215
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -24733,7 +24727,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":217
+      /* "sisl/physics/_matrix_phase_nc.pyx":216
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -24742,7 +24736,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":218
+      /* "sisl/physics/_matrix_phase_nc.pyx":217
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -24757,7 +24751,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":219
+        /* "sisl/physics/_matrix_phase_nc.pyx":218
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -24767,7 +24761,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":220
+        /* "sisl/physics/_matrix_phase_nc.pyx":219
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -24777,7 +24771,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":221
+        /* "sisl/physics/_matrix_phase_nc.pyx":220
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -24793,7 +24787,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":222
+        /* "sisl/physics/_matrix_phase_nc.pyx":221
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -24809,7 +24803,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":223
+        /* "sisl/physics/_matrix_phase_nc.pyx":222
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -24823,7 +24817,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":224
+        /* "sisl/physics/_matrix_phase_nc.pyx":223
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -24836,7 +24830,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_42 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_39 * __pyx_v_v.strides[0]) )) + __pyx_t_40)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":225
+        /* "sisl/physics/_matrix_phase_nc.pyx":224
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -24851,7 +24845,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":215
+    /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -24861,7 +24855,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":228
+  /* "sisl/physics/_matrix_phase_nc.pyx":227
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -24874,7 +24868,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":229
+      /* "sisl/physics/_matrix_phase_nc.pyx":228
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -24883,7 +24877,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":230
+      /* "sisl/physics/_matrix_phase_nc.pyx":229
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -24898,7 +24892,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_49)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":231
+        /* "sisl/physics/_matrix_phase_nc.pyx":230
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -24908,7 +24902,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_50 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_50)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":232
+        /* "sisl/physics/_matrix_phase_nc.pyx":231
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -24919,7 +24913,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_52 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_52)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":233
+        /* "sisl/physics/_matrix_phase_nc.pyx":232
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -24935,7 +24929,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_58 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_57 * __pyx_v_v.strides[0]) )) + __pyx_t_58)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_53 * __pyx_v_v.strides[0]) )) + __pyx_t_54)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":234
+        /* "sisl/physics/_matrix_phase_nc.pyx":233
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -24951,7 +24945,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_64 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_63 * __pyx_v_v.strides[0]) )) + __pyx_t_64)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":235
+        /* "sisl/physics/_matrix_phase_nc.pyx":234
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -24965,7 +24959,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_65 * __pyx_v_D.strides[0]) )) + __pyx_t_66)) ))), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_67 * __pyx_v_D.strides[0]) )) + __pyx_t_68)) ))), 0)));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":236
+        /* "sisl/physics/_matrix_phase_nc.pyx":235
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -24978,7 +24972,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
         __pyx_t_72 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_69 * __pyx_v_v.strides[0]) )) + __pyx_t_70)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":237
+        /* "sisl/physics/_matrix_phase_nc.pyx":236
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -24995,19 +24989,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_56_phase_nc_array_c1
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":239
+  /* "sisl/physics/_matrix_phase_nc.pyx":238
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -25101,35 +25093,35 @@ static PyObject *__pyx_fuse_4__pyx_pw_4sisl_7physics_16_matrix_phase_nc_59_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 196, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 197, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 196, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -25144,22 +25136,22 @@ static PyObject *__pyx_fuse_4__pyx_pw_4sisl_7physics_16_matrix_phase_nc_59_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 200, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 199, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 197, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 196, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 200, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -25298,74 +25290,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":204
+  /* "sisl/physics/_matrix_phase_nc.pyx":203
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":205
+  /* "sisl/physics/_matrix_phase_nc.pyx":204
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":206
+  /* "sisl/physics/_matrix_phase_nc.pyx":205
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":207
+  /* "sisl/physics/_matrix_phase_nc.pyx":206
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":208
+  /* "sisl/physics/_matrix_phase_nc.pyx":207
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -25374,23 +25366,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":210
+  /* "sisl/physics/_matrix_phase_nc.pyx":209
  *     cdef int nr = ncol.shape[0]
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[:, ::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -25398,32 +25390,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 209, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 210, __pyx_L1_error)
+      __PYX_ERR(0, 209, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -25431,19 +25423,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":211
+  /* "sisl/physics/_matrix_phase_nc.pyx":210
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)
  *     cdef double complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 210, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":215
+  /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -25453,7 +25445,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":216
+    /* "sisl/physics/_matrix_phase_nc.pyx":215
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -25465,7 +25457,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":217
+      /* "sisl/physics/_matrix_phase_nc.pyx":216
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -25474,7 +25466,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":218
+      /* "sisl/physics/_matrix_phase_nc.pyx":217
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -25489,7 +25481,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":219
+        /* "sisl/physics/_matrix_phase_nc.pyx":218
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -25499,7 +25491,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":220
+        /* "sisl/physics/_matrix_phase_nc.pyx":219
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -25509,7 +25501,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":221
+        /* "sisl/physics/_matrix_phase_nc.pyx":220
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -25526,7 +25518,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_29 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_28 * __pyx_v_v.strides[0]) )) + __pyx_t_29)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_27)), ((double)__Pyx_CIMAG(__pyx_t_27))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":222
+        /* "sisl/physics/_matrix_phase_nc.pyx":221
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -25543,7 +25535,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_35 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_34 * __pyx_v_v.strides[0]) )) + __pyx_t_35)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_30 * __pyx_v_v.strides[0]) )) + __pyx_t_31)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_27)), ((double)__Pyx_CIMAG(__pyx_t_27))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":223
+        /* "sisl/physics/_matrix_phase_nc.pyx":222
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -25559,7 +25551,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_27 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_26), __Pyx_CIMAG(__pyx_t_26)), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_40), __Pyx_CIMAG(__pyx_t_40))));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_27)), ((double)__Pyx_CIMAG(__pyx_t_27)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":224
+        /* "sisl/physics/_matrix_phase_nc.pyx":223
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -25572,7 +25564,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_44 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_43 * __pyx_v_v.strides[0]) )) + __pyx_t_44)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":225
+        /* "sisl/physics/_matrix_phase_nc.pyx":224
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -25587,7 +25579,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":215
+    /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -25597,7 +25589,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":228
+  /* "sisl/physics/_matrix_phase_nc.pyx":227
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -25610,7 +25602,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":229
+      /* "sisl/physics/_matrix_phase_nc.pyx":228
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -25619,7 +25611,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":230
+      /* "sisl/physics/_matrix_phase_nc.pyx":229
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -25634,7 +25626,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_51)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":231
+        /* "sisl/physics/_matrix_phase_nc.pyx":230
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -25644,7 +25636,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_52 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_52)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":232
+        /* "sisl/physics/_matrix_phase_nc.pyx":231
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -25655,7 +25647,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_54 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_53)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_54)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":233
+        /* "sisl/physics/_matrix_phase_nc.pyx":232
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -25672,7 +25664,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_60 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_55 * __pyx_v_v.strides[0]) )) + __pyx_t_56)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_27)), ((double)__Pyx_CIMAG(__pyx_t_27))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":234
+        /* "sisl/physics/_matrix_phase_nc.pyx":233
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -25689,7 +25681,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_66 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_65 * __pyx_v_v.strides[0]) )) + __pyx_t_66)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_61 * __pyx_v_v.strides[0]) )) + __pyx_t_62)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_27)), ((double)__Pyx_CIMAG(__pyx_t_27))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":235
+        /* "sisl/physics/_matrix_phase_nc.pyx":234
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -25705,7 +25697,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_27 = __Pyx_c_diff_double(__pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_40), __Pyx_CIMAG(__pyx_t_40)), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_26), __Pyx_CIMAG(__pyx_t_26))));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_27)), ((double)__Pyx_CIMAG(__pyx_t_27)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":236
+        /* "sisl/physics/_matrix_phase_nc.pyx":235
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -25718,7 +25710,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
         __pyx_t_74 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_73 * __pyx_v_v.strides[0]) )) + __pyx_t_74)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":237
+        /* "sisl/physics/_matrix_phase_nc.pyx":236
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -25735,19 +25727,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_58_phase_nc_array_c1
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":239
+  /* "sisl/physics/_matrix_phase_nc.pyx":238
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -25841,35 +25831,35 @@ static PyObject *__pyx_fuse_5__pyx_pw_4sisl_7physics_16_matrix_phase_nc_61_phase
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NCOL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 1); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_COL)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 2); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_D)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 3); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PHASES)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 4); __PYX_ERR(0, 196, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p_opt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 197, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, 5); __PYX_ERR(0, 196, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 197, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_phase_nc_array_c128") < 0)) __PYX_ERR(0, 196, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -25884,22 +25874,22 @@ static PyObject *__pyx_fuse_5__pyx_pw_4sisl_7physics_16_matrix_phase_nc_61_phase
     __pyx_v_PTR = ((PyArrayObject *)values[0]);
     __pyx_v_NCOL = ((PyArrayObject *)values[1]);
     __pyx_v_COL = ((PyArrayObject *)values[2]);
-    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 200, __pyx_L3_error)
+    __pyx_v_D = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_D.memview)) __PYX_ERR(0, 199, __pyx_L3_error)
     __pyx_v_PHASES = ((PyArrayObject *)values[4]);
-    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L3_error)
+    __pyx_v_p_opt = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_p_opt == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 197, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_phase_nc_array_c128", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 196, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sisl.physics._matrix_phase_nc._phase_nc_array_c128", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PTR), __pyx_ptype_5numpy_ndarray, 1, "PTR", 0))) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_NCOL), __pyx_ptype_5numpy_ndarray, 1, "NCOL", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_COL), __pyx_ptype_5numpy_ndarray, 1, "COL", 0))) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PHASES), __pyx_ptype_5numpy_ndarray, 1, "PHASES", 0))) __PYX_ERR(0, 200, __pyx_L1_error)
   __pyx_r = __pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c128(__pyx_self, __pyx_v_PTR, __pyx_v_NCOL, __pyx_v_COL, __pyx_v_D, __pyx_v_PHASES, __pyx_v_p_opt);
 
   /* function exit code */
@@ -26036,74 +26026,74 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
   __pyx_pybuffernd_PHASES.rcbuffer = &__pyx_pybuffer_PHASES;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PTR.rcbuffer->pybuffer, (PyObject*)__pyx_v_PTR, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PTR.diminfo[0].strides = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PTR.diminfo[0].shape = __pyx_pybuffernd_PTR.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_NCOL.rcbuffer->pybuffer, (PyObject*)__pyx_v_NCOL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_NCOL.diminfo[0].strides = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_NCOL.diminfo[0].shape = __pyx_pybuffernd_NCOL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":204
+  /* "sisl/physics/_matrix_phase_nc.pyx":203
  * 
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR             # <<<<<<<<<<<<<<
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":205
+  /* "sisl/physics/_matrix_phase_nc.pyx":204
  *     # Convert to memory views
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL             # <<<<<<<<<<<<<<
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":206
+  /* "sisl/physics/_matrix_phase_nc.pyx":205
  *     cdef int[::1] ptr = PTR
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL             # <<<<<<<<<<<<<<
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":207
+  /* "sisl/physics/_matrix_phase_nc.pyx":206
  *     cdef int[::1] ncol = NCOL
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES             # <<<<<<<<<<<<<<
  *     cdef int nr = ncol.shape[0]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":208
+  /* "sisl/physics/_matrix_phase_nc.pyx":207
  *     cdef int[::1] col = COL
  *     cdef double complex[::1] phases = PHASES
  *     cdef int nr = ncol.shape[0]             # <<<<<<<<<<<<<<
@@ -26112,23 +26102,23 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
  */
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":210
+  /* "sisl/physics/_matrix_phase_nc.pyx":209
  *     cdef int nr = ncol.shape[0]
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)             # <<<<<<<<<<<<<<
  *     cdef double complex[:, ::1] v = V
  *     cdef double complex ph, v12
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_nr * 2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -26136,32 +26126,32 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
   PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_complex128); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 209, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_V.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_V = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_V.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 210, __pyx_L1_error)
+      __PYX_ERR(0, 209, __pyx_L1_error)
     } else {__pyx_pybuffernd_V.diminfo[0].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_V.diminfo[0].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_V.diminfo[1].strides = __pyx_pybuffernd_V.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_V.diminfo[1].shape = __pyx_pybuffernd_V.rcbuffer->pybuffer.shape[1];
     }
   }
@@ -26169,19 +26159,19 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":211
+  /* "sisl/physics/_matrix_phase_nc.pyx":210
  * 
  *     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=np.complex128)
  *     cdef double complex[:, ::1] v = V             # <<<<<<<<<<<<<<
  *     cdef double complex ph, v12
  *     cdef int r, rr, ind, c
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 210, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":215
+  /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -26191,7 +26181,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":216
+    /* "sisl/physics/_matrix_phase_nc.pyx":215
  * 
  *     if p_opt == 0:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -26203,7 +26193,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":217
+      /* "sisl/physics/_matrix_phase_nc.pyx":216
  *     if p_opt == 0:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -26212,7 +26202,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":218
+      /* "sisl/physics/_matrix_phase_nc.pyx":217
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -26227,7 +26217,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":219
+        /* "sisl/physics/_matrix_phase_nc.pyx":218
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -26237,7 +26227,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":220
+        /* "sisl/physics/_matrix_phase_nc.pyx":219
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]             # <<<<<<<<<<<<<<
@@ -26247,7 +26237,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_21 = __pyx_v_ind;
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_21)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":221
+        /* "sisl/physics/_matrix_phase_nc.pyx":220
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -26263,7 +26253,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_28 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_22 * __pyx_v_v.strides[0]) )) + __pyx_t_23)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":222
+        /* "sisl/physics/_matrix_phase_nc.pyx":221
  *                 ph = phases[ind]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -26279,7 +26269,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_34 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_33 * __pyx_v_v.strides[0]) )) + __pyx_t_34)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_29 * __pyx_v_v.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":223
+        /* "sisl/physics/_matrix_phase_nc.pyx":222
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -26293,7 +26283,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_35 * __pyx_v_D.strides[0]) )) + __pyx_t_36)) ))), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), (*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_37 * __pyx_v_D.strides[0]) )) + __pyx_t_38)) )))));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":224
+        /* "sisl/physics/_matrix_phase_nc.pyx":223
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -26306,7 +26296,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_42 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_41 * __pyx_v_v.strides[0]) )) + __pyx_t_42)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_39 * __pyx_v_v.strides[0]) )) + __pyx_t_40)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":225
+        /* "sisl/physics/_matrix_phase_nc.pyx":224
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -26321,7 +26311,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
       }
     }
 
-    /* "sisl/physics/_matrix_phase_nc.pyx":215
+    /* "sisl/physics/_matrix_phase_nc.pyx":214
  *     cdef int r, rr, ind, c
  * 
  *     if p_opt == 0:             # <<<<<<<<<<<<<<
@@ -26331,7 +26321,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
     goto __pyx_L3;
   }
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":228
+  /* "sisl/physics/_matrix_phase_nc.pyx":227
  * 
  *     else:
  *         for r in range(nr):             # <<<<<<<<<<<<<<
@@ -26344,7 +26334,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":229
+      /* "sisl/physics/_matrix_phase_nc.pyx":228
  *     else:
  *         for r in range(nr):
  *             rr = r * 2             # <<<<<<<<<<<<<<
@@ -26353,7 +26343,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
  */
       __pyx_v_rr = (__pyx_v_r * 2);
 
-      /* "sisl/physics/_matrix_phase_nc.pyx":230
+      /* "sisl/physics/_matrix_phase_nc.pyx":229
  *         for r in range(nr):
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):             # <<<<<<<<<<<<<<
@@ -26368,7 +26358,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
       for (__pyx_t_19 = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_49)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":231
+        /* "sisl/physics/_matrix_phase_nc.pyx":230
  *             rr = r * 2
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2             # <<<<<<<<<<<<<<
@@ -26378,7 +26368,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_50 = __pyx_v_ind;
         __pyx_v_c = (((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_50)) ))) % __pyx_v_nr) * 2);
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":232
+        /* "sisl/physics/_matrix_phase_nc.pyx":231
  *             for ind in range(ptr[r], ptr[r] + ncol[r]):
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]             # <<<<<<<<<<<<<<
@@ -26389,7 +26379,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_52 = ((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_col.data) + __pyx_t_51)) ))) / __pyx_v_nr);
         __pyx_v_ph = (*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_phases.data) + __pyx_t_52)) )));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":233
+        /* "sisl/physics/_matrix_phase_nc.pyx":232
  *                 c = (col[ind] % nr) * 2
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])             # <<<<<<<<<<<<<<
@@ -26405,7 +26395,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_58 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_57 * __pyx_v_v.strides[0]) )) + __pyx_t_58)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_53 * __pyx_v_v.strides[0]) )) + __pyx_t_54)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":234
+        /* "sisl/physics/_matrix_phase_nc.pyx":233
  *                 ph = phases[col[ind] / nr]
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])             # <<<<<<<<<<<<<<
@@ -26421,7 +26411,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_64 = (__pyx_v_c + 1);
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_63 * __pyx_v_v.strides[0]) )) + __pyx_t_64)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_59 * __pyx_v_v.strides[0]) )) + __pyx_t_60)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":235
+        /* "sisl/physics/_matrix_phase_nc.pyx":234
  *                 v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])             # <<<<<<<<<<<<<<
@@ -26435,7 +26425,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_26 = __Pyx_c_diff_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_65 * __pyx_v_D.strides[0]) )) + __pyx_t_66)) ))), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), (*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_D.data + __pyx_t_67 * __pyx_v_D.strides[0]) )) + __pyx_t_68)) )))));
         __pyx_v_v12 = __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26)));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":236
+        /* "sisl/physics/_matrix_phase_nc.pyx":235
  *                 v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12             # <<<<<<<<<<<<<<
@@ -26448,7 +26438,7 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
         __pyx_t_72 = __pyx_v_c;
         *((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_71 * __pyx_v_v.strides[0]) )) + __pyx_t_72)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( /* dim=1 */ ((char *) (((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_v.data + __pyx_t_69 * __pyx_v_v.strides[0]) )) + __pyx_t_70)) ))), __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_v12));
 
-        /* "sisl/physics/_matrix_phase_nc.pyx":237
+        /* "sisl/physics/_matrix_phase_nc.pyx":236
  *                 v12 = <double complex> (D[ind, 2] - 1j * D[ind, 3])
  *                 v[rr+1, c] = v[rr+1, c] + ph * v12
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()             # <<<<<<<<<<<<<<
@@ -26465,19 +26455,17 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_nc_60_phase_nc_array_c1
   }
   __pyx_L3:;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":239
+  /* "sisl/physics/_matrix_phase_nc.pyx":238
  *                 v[rr, c+1] = v[rr, c+1] + ph * v12.conjugate()
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
@@ -42627,45 +42615,45 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                        np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                        np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                         np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                         np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                          np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                          np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
@@ -42992,41 +42980,41 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__30);
   __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(6, 0, 26, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_matrix_phase_nc_pyx, __pyx_n_s_phase_nc_csr_c64, 29, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 29, __pyx_L1_error)
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                        np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                        np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_tuple__32 = PyTuple_Pack(26, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_nr, __pyx_n_s_V_PTR, __pyx_n_s_V_NCOL, __pyx_n_s_V_COL, __pyx_n_s_v_ptr, __pyx_n_s_v_ncol, __pyx_n_s_v_col, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_ph, __pyx_n_s_v12, __pyx_n_s_r, __pyx_n_s_rr, __pyx_n_s_ind, __pyx_n_s_c, __pyx_n_s_s_idx); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(26, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_nr, __pyx_n_s_V_PTR, __pyx_n_s_V_NCOL, __pyx_n_s_V_COL, __pyx_n_s_v_ptr, __pyx_n_s_v_ncol, __pyx_n_s_v_col, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_ph, __pyx_n_s_v12, __pyx_n_s_r, __pyx_n_s_rr, __pyx_n_s_ind, __pyx_n_s_c, __pyx_n_s_s_idx); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(6, 0, 26, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_matrix_phase_nc_pyx, __pyx_n_s_phase_nc_csr_c128, 89, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(6, 0, 26, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_matrix_phase_nc_pyx, __pyx_n_s_phase_nc_csr_c128, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 88, __pyx_L1_error)
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                         np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                         np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_tuple__34 = PyTuple_Pack(19, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_ph, __pyx_n_s_v12, __pyx_n_s_r, __pyx_n_s_rr, __pyx_n_s_ind, __pyx_n_s_c); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(19, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_ph, __pyx_n_s_v12, __pyx_n_s_r, __pyx_n_s_rr, __pyx_n_s_ind, __pyx_n_s_c); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
   __Pyx_GIVEREF(__pyx_tuple__34);
-  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(6, 0, 19, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_matrix_phase_nc_pyx, __pyx_n_s_phase_nc_array_c64, 148, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(6, 0, 19, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_matrix_phase_nc_pyx, __pyx_n_s_phase_nc_array_c64, 147, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 147, __pyx_L1_error)
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                          np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                          np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_tuple__36 = PyTuple_Pack(19, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_ph, __pyx_n_s_v12, __pyx_n_s_r, __pyx_n_s_rr, __pyx_n_s_ind, __pyx_n_s_c); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(19, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_ph, __pyx_n_s_v12, __pyx_n_s_r, __pyx_n_s_rr, __pyx_n_s_ind, __pyx_n_s_c); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(6, 0, 19, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_matrix_phase_nc_pyx, __pyx_n_s_phase_nc_array_c128, 197, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(6, 0, 19, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_matrix_phase_nc_pyx, __pyx_n_s_phase_nc_array_c128, 196, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 196, __pyx_L1_error)
 
   /* "View.MemoryView":285
  *         return self.name
@@ -43593,145 +43581,145 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_nc_csr_c64, __pyx_t_2) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":89
+  /* "sisl/physics/_matrix_phase_nc.pyx":88
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                        np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                        np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_23_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_23_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_int, __pyx_t_4) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_int, __pyx_t_4) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_25_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_25_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_long, __pyx_t_4) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_long, __pyx_t_4) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_27_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_27_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_float, __pyx_t_4) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_float, __pyx_t_4) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_29_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_29_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_double, __pyx_t_4) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_double, __pyx_t_4) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_4__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_31_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_4__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_31_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_kp_s_float_complex, __pyx_t_4) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_kp_s_float_complex, __pyx_t_4) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_5__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_33_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_5__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_33_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_kp_s_double_complex, __pyx_t_4) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_kp_s_double_complex, __pyx_t_4) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_3_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_3_phase_nc_csr_c128, 0, __pyx_n_s_phase_nc_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_empty_tuple);
   ((__pyx_FusedFunctionObject *) __pyx_t_4)->__signatures__ = __pyx_t_3;
   __Pyx_GIVEREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_nc_csr_c128, __pyx_t_4) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_nc_csr_c128, __pyx_t_4) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":148
+  /* "sisl/physics/_matrix_phase_nc.pyx":147
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                         np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                         np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_37_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_37_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_6, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_int, __pyx_t_6) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_int, __pyx_t_6) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_39_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_39_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_6, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_long, __pyx_t_6) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_long, __pyx_t_6) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_41_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_41_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_6, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_float, __pyx_t_6) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_float, __pyx_t_6) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_43_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_43_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_6, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_double, __pyx_t_6) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_double, __pyx_t_6) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_4__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_45_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_4__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_45_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_6, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_kp_s_float_complex, __pyx_t_6) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_kp_s_float_complex, __pyx_t_6) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_5__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_47_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_5__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_47_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_6, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_kp_s_double_complex, __pyx_t_6) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_kp_s_double_complex, __pyx_t_6) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_5_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_5_phase_nc_array_c64, 0, __pyx_n_s_phase_nc_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_6, __pyx_empty_tuple);
   ((__pyx_FusedFunctionObject *) __pyx_t_6)->__signatures__ = __pyx_t_5;
   __Pyx_GIVEREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_nc_array_c64, __pyx_t_6) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_nc_array_c64, __pyx_t_6) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "sisl/physics/_matrix_phase_nc.pyx":197
+  /* "sisl/physics/_matrix_phase_nc.pyx":196
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,             # <<<<<<<<<<<<<<
  *                          np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
  *                          np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
  */
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_51_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_51_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_8, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_int, __pyx_t_8) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_int, __pyx_t_8) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_53_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_53_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_8, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_long, __pyx_t_8) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_long, __pyx_t_8) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_55_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_55_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_8, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_float, __pyx_t_8) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_float, __pyx_t_8) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_57_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_57_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_8, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_double, __pyx_t_8) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_double, __pyx_t_8) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_4__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_59_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_4__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_59_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_8, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_kp_s_float_complex, __pyx_t_8) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_kp_s_float_complex, __pyx_t_8) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_5__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_61_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_5__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_61_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_8, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_kp_s_double_complex, __pyx_t_8) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_kp_s_double_complex, __pyx_t_8) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_7_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_mdef_4sisl_7physics_16_matrix_phase_nc_7_phase_nc_array_c128, 0, __pyx_n_s_phase_nc_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase_nc, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_8, __pyx_empty_tuple);
   ((__pyx_FusedFunctionObject *) __pyx_t_8)->__signatures__ = __pyx_t_7;
   __Pyx_GIVEREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_nc_array_c128, __pyx_t_8) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_nc_array_c128, __pyx_t_8) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
   /* "sisl/physics/_matrix_phase_nc.pyx":1

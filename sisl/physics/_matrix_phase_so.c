@@ -24507,8 +24507,6 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_so_50_phase_so_array_c1
  *                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -25325,8 +25323,6 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_so_52_phase_so_array_c1
  *                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -26143,8 +26139,6 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_so_54_phase_so_array_c1
  *                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -26961,8 +26955,6 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_so_56_phase_so_array_c1
  *                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -27797,8 +27789,6 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_so_58_phase_so_array_c1
  *                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -28615,8 +28605,6 @@ static PyObject *__pyx_pf_4sisl_7physics_16_matrix_phase_so_60_phase_so_array_c1
  *                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));

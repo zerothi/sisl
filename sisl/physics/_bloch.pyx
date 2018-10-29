@@ -9,11 +9,11 @@ cimport numpy as np
 __all__ = ['bloch_unfold']
 
 
-def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B, 
+def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
                  np.ndarray[np.float64_t, ndim=2, mode='c'] k,
                  np.ndarray M):
     """ Exposed unfolding method using the TILING method
-    
+
     Parameters
     ----------
     B : [x, y, z]
@@ -132,7 +132,7 @@ cdef void _unfold64_matrix(const double w,
                         ph2 = ph2 * aph2
                     J += 1
 
-                    
+
 @cython.cdivision(True)
 @cython.boundscheck(False)
 @cython.wraparound(False)

@@ -127,8 +127,8 @@ def _phase3_csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[ind, 0]
                 vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[ind, 1]
                 vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[ind, 2]
-                
-    else:        
+
+    else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
@@ -141,7 +141,7 @@ def _phase3_csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
-    
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
@@ -250,7 +250,7 @@ def _phase3_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[s, 0]
                 vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[s, 1]
                 vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[s, 2]
-        
+
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
 
@@ -288,7 +288,7 @@ def _phase3_array_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 vx[r, c] = vx[r, c] + d * phases[ind, 0]
                 vy[r, c] = vy[r, c] + d * phases[ind, 1]
                 vz[r, c] = vz[r, c] + d * phases[ind, 2]
-            
+
     else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
@@ -446,5 +446,3 @@ def _phase3_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 vz[r, c] = vz[r, c] + d * phases[s, 2]
 
     return Vx, Vy, Vz
-
-    

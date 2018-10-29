@@ -2556,7 +2556,7 @@ static PyObject *__pyx_codeobj__40;
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4sisl_7physics_6_bloch_1bloch_unfold(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4sisl_7physics_6_bloch_bloch_unfold[] = " Exposed unfolding method using the TILING method\n    \n    Parameters\n    ----------\n    B : [x, y, z]\n      the number of unfolds per direction\n    k : [product(B), 3]\n      k-points where M has been evaluated at\n    M : [B[2], B[1], B[0], :, :]\n       matrix at given k-points\n    dtype : dtype\n       resulting unfolded matrix dtype\n    ";
+static char __pyx_doc_4sisl_7physics_6_bloch_bloch_unfold[] = " Exposed unfolding method using the TILING method\n\n    Parameters\n    ----------\n    B : [x, y, z]\n      the number of unfolds per direction\n    k : [product(B), 3]\n      k-points where M has been evaluated at\n    M : [B[2], B[1], B[0], :, :]\n       matrix at given k-points\n    dtype : dtype\n       resulting unfolded matrix dtype\n    ";
 static PyMethodDef __pyx_mdef_4sisl_7physics_6_bloch_1bloch_unfold = {"bloch_unfold", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_6_bloch_1bloch_unfold, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_7physics_6_bloch_bloch_unfold};
 static PyObject *__pyx_pw_4sisl_7physics_6_bloch_1bloch_unfold(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_B = 0;

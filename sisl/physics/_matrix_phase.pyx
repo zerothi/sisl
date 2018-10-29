@@ -10,7 +10,7 @@ from sisl._indices cimport _index_sorted
 from sisl._sparse import fold_csr_matrix
 
 __all__ = ['_csr_f32', '_csr_f64', '_phase_csr_c64', '_phase_csr_c128',
-           '_array_f32', '_array_f64', '_phase_array_c64', '_phase_array_c128'] 
+           '_array_f32', '_array_f64', '_phase_array_c64', '_phase_array_c128']
 
 # The fused data-types forces the data input to be of "correct" values.
 ctypedef fused numeric_real:
@@ -26,6 +26,7 @@ ctypedef fused numeric_complex:
     double
     float complex
     double complex
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -259,13 +260,13 @@ def _phase_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 v[r, c] = v[r, c] + <float complex> (phases[ind] * D[ind, idx])
-                
+
     else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 v[r, c] = v[r, c] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
-            
+
     return V
 
 
@@ -301,7 +302,5 @@ def _phase_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 v[r, c] = v[r, c] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
-            
-    return V
 
-    
+    return V

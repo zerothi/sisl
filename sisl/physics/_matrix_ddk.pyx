@@ -51,7 +51,7 @@ def _matrix_ddk(csr, const int idx, Rd, Ro, dtype, format, p_opt):
     dd = [None, None, None, None, None, None]
 
     if dtype == np.complex128:
-        
+
         if format == 'array':
             dd[:3] = _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
             dd[3:] = _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)

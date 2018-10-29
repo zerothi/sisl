@@ -20820,7 +20820,6 @@ static PyObject *__pyx_pf_4sisl_7physics_21_matrix_phase_nc_diag_50_phase_nc_dia
  *                 v[rr+1, c+1] = v[rr+1, c+1] + vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -21445,7 +21444,6 @@ static PyObject *__pyx_pf_4sisl_7physics_21_matrix_phase_nc_diag_52_phase_nc_dia
  *                 v[rr+1, c+1] = v[rr+1, c+1] + vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -22070,7 +22068,6 @@ static PyObject *__pyx_pf_4sisl_7physics_21_matrix_phase_nc_diag_54_phase_nc_dia
  *                 v[rr+1, c+1] = v[rr+1, c+1] + vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -22695,7 +22692,6 @@ static PyObject *__pyx_pf_4sisl_7physics_21_matrix_phase_nc_diag_56_phase_nc_dia
  *                 v[rr+1, c+1] = v[rr+1, c+1] + vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -23323,7 +23319,6 @@ static PyObject *__pyx_pf_4sisl_7physics_21_matrix_phase_nc_diag_58_phase_nc_dia
  *                 v[rr+1, c+1] = v[rr+1, c+1] + vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
@@ -23948,7 +23943,6 @@ static PyObject *__pyx_pf_4sisl_7physics_21_matrix_phase_nc_diag_60_phase_nc_dia
  *                 v[rr+1, c+1] = v[rr+1, c+1] + vv
  * 
  *     return V             # <<<<<<<<<<<<<<
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));

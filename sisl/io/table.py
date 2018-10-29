@@ -160,17 +160,20 @@ class tableSile(Sile):
             # in a file.
             return
         elif len(args) == 1:
-            dat = np.vstack(args[0])
+            dat = np.asarray(args[0])
         else:
             dat = np.vstack(args)
 
         _fmt = '{:' + fmt + '}'
 
-        # Reshape
-        if len(dat.shape) > 2:
+        # Reshape such that it becomes easy
+        ndim = dat.ndim
+        if ndim > 2:
             dat.shape = (-1, dat.shape[-2], dat.shape[-1])
+        elif ndim == 1:
+            dat.shape = (1, -1)
 
-        if len(dat.shape) > 2:
+        if ndim > 2:
             _fmt = kwargs.get('fmts', (_fmt + delimiter) * (dat.shape[1] - 1) + _fmt + newline)
             for i in range(dat.shape[0]):
                 for j in range(dat.shape[2]):

@@ -44664,8 +44664,6 @@ static PyObject *__pyx_pf_4sisl_7physics_14_matrix_phase3_98_phase3_array_c128(C
  *                 vz[r, c] = vz[r, c] + d * phases[s, 2]
  * 
  *     return Vx, Vy, Vz             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 448, __pyx_L1_error)
@@ -45505,8 +45503,6 @@ static PyObject *__pyx_pf_4sisl_7physics_14_matrix_phase3_100_phase3_array_c128(
  *                 vz[r, c] = vz[r, c] + d * phases[s, 2]
  * 
  *     return Vx, Vy, Vz             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 448, __pyx_L1_error)
@@ -46346,8 +46342,6 @@ static PyObject *__pyx_pf_4sisl_7physics_14_matrix_phase3_102_phase3_array_c128(
  *                 vz[r, c] = vz[r, c] + d * phases[s, 2]
  * 
  *     return Vx, Vy, Vz             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 448, __pyx_L1_error)
@@ -47187,8 +47181,6 @@ static PyObject *__pyx_pf_4sisl_7physics_14_matrix_phase3_104_phase3_array_c128(
  *                 vz[r, c] = vz[r, c] + d * phases[s, 2]
  * 
  *     return Vx, Vy, Vz             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 448, __pyx_L1_error)
@@ -48031,8 +48023,6 @@ static PyObject *__pyx_pf_4sisl_7physics_14_matrix_phase3_106_phase3_array_c128(
  *                 vz[r, c] = vz[r, c] + d * phases[s, 2]
  * 
  *     return Vx, Vy, Vz             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 448, __pyx_L1_error)
@@ -48875,8 +48865,6 @@ static PyObject *__pyx_pf_4sisl_7physics_14_matrix_phase3_108_phase3_array_c128(
  *                 vz[r, c] = vz[r, c] + d * phases[s, 2]
  * 
  *     return Vx, Vy, Vz             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 448, __pyx_L1_error)

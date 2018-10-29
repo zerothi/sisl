@@ -36,15 +36,15 @@ def matrix_k(gauge, M, const int idx, sc,
 def _matrix_k(csr, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
-        
+
         if format == 'array':
             return _phase_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
         elif format == 'matrix' or format == 'dense':
             return np.asmatrix(_phase_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt))
-        
+
         # Default must be something else.
         return _phase_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
-    
+
     elif dtype == np.float64:
         if format == 'array':
             return _array_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx)
@@ -68,6 +68,7 @@ def _matrix_k(csr, const int idx, phases, dtype, format, p_opt):
 
     raise ValueError('matrix_k: currently only supports dtype in [float32, float64, complex64, complex128].')
 
+
 def matrix_k_nc(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, dtype, True)
@@ -90,15 +91,15 @@ def _matrix_k_nc(csr, phases, dtype, format, p_opt):
         raise ValueError('matrix_k_nc requires input matrix to have 4 components')
 
     if dtype == np.complex128:
-        
+
         if format == 'array':
             return _phase_nc_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
         elif format == 'matrix' or format == 'dense':
             return np.asmatrix(_phase_nc_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt))
-        
+
         # Default must be something else.
         return _phase_nc_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
-    
+
     elif dtype == np.complex64:
         if format == 'array':
             return _phase_nc_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
@@ -131,15 +132,15 @@ def _matrix_k_so(csr, phases, dtype, format, p_opt):
         raise ValueError('matrix_sc_so requires input matrix to have 8 components')
 
     if dtype == np.complex128:
-        
+
         if format == 'array':
             return _phase_so_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
         elif format == 'matrix' or format == 'dense':
             return np.asmatrix(_phase_so_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt))
-        
+
         # Default must be something else.
         return _phase_so_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
-    
+
     elif dtype == np.complex64:
         if format == 'array':
             return _phase_so_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
@@ -169,15 +170,15 @@ def matrix_k_nc_diag(gauge, M, const int idx, sc,
 def _matrix_k_nc_diag(csr, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
-        
+
         if format == 'array':
             return _phase_nc_diag_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
         elif format == 'matrix' or format == 'dense':
             return np.asmatrix(_phase_nc_diag_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt))
-        
+
         # Default must be something else.
         return _phase_nc_diag_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
-    
+
     elif dtype == np.complex64:
         if format == 'array':
             return _phase_nc_diag_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
