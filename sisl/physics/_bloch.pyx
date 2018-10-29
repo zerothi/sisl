@@ -1,4 +1,5 @@
-# Import libc functions
+#!python
+#cython: language_level=2
 cimport cython
 from libc.math cimport cos, sin, pi
 
@@ -43,7 +44,7 @@ def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 def _unfold64(const int[::1] B, const double[:, ::1] K2pi,
-               const float complex[:, :, ::1] m):
+              const float complex[:, :, ::1] m):
     """ Main unfolding routine for a matrix `m`. """
 
     # N should now equal K.shape[0]
@@ -86,7 +87,8 @@ cdef void _unfold64_matrix(const double w,
     cdef Py_ssize_t I, J # looping output M[J, I]
 
     # Faster memory views
-    cdef float complex[::1] MJ, mj
+    cdef float complex[::1] MJ
+    cdef const float complex[::1] mj
 
     # Phase handling variables (still in double precision because we accummulate)
     cdef double rph
@@ -168,7 +170,7 @@ cdef void _unfold64_single(const Py_ssize_t N, const double[:] K2pi,
     cdef Py_ssize_t T, NN2, c
     cdef Py_ssize_t i, j, I, J, Jj
     cdef double complex ph, phc, aph
-    cdef float complex[:, ::1] mT
+    cdef const float complex[:, ::1] mT
 
     # The algorithm for constructing the unfolded matrix can be done in the
     # following way:
@@ -271,7 +273,8 @@ cdef void _unfold128_matrix(const double w,
     cdef Py_ssize_t I, J # looping output M[J, I]
 
     # Faster memory views
-    cdef double complex[::1] MJ, mj
+    cdef double complex[::1] MJ
+    cdef const double complex[::1] mj
 
     # Phase handling variables
     cdef double rph
@@ -353,7 +356,7 @@ cdef void _unfold128_single(const Py_ssize_t N, const double[:] K2pi,
     cdef Py_ssize_t T, NN2, c
     cdef Py_ssize_t i, j, I, J, Jj
     cdef double complex ph, phc, aph
-    cdef double complex[:, ::1] mT
+    cdef const double complex[:, ::1] mT
 
     # The algorithm for constructing the unfolded matrix can be done in the
     # following way:
