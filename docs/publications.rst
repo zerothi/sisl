@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. D. Perera and J. Rohrer,
+   *Structure sensitivity of electronic transport across graphene grain boundaries*,
+   Physical Review B **98**, `155432 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.98.155432>`_
+
 #. Z. Nourbakhsh and R. Asgari,
    *Phosphorene as nanoelectromechanical material*,
    Physical Review B **98**, `125427 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.98.125427>`_
