@@ -348,12 +348,6 @@ class BaseSile(object):
                 # Call read
                 return func(kwargs[key], **kwargs)
 
-    def read_geom(self, *args, **kwargs):
-        """ Deprecated function which is superseeded by `read_geometry` """
-        if getattr(self, 'read_geometry'):
-            return self.read_geometry(*args, **kwargs)
-        raise ValueError('read_geom is deprecated, please use read_geometry')
-
     # Options for writing
     # The default routine for writing
     _write_default = None

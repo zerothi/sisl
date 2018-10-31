@@ -134,12 +134,23 @@ class winSileWannier90(SileWannier90):
         if not f:
             raise ValueError("The geometry coordinates (atoms_frac/cart) could not be found in the seed-file.")
 
-        # Read the next line to determine the units
-        unit = self.readline()
-        unit = unit_convert(unit.strip().capitalize(), 'Ang')
-
+        # Species and coordinate list
         s = []
         xyz = []
+
+        # Read the next line to determine the units
+        if is_frac:
+            unit = 1.
+        else:
+            unit = self.readline()
+            if len(unit.split()) > 1:
+                l = unit.split()
+                s.append(l[0])
+                xyz.append(list(map(float, l[1:4])))
+                unit = 1.
+            else:
+                unit = unit_convert(unit.strip().capitalize(), 'Ang')
+
         l = self.readline()
         while not 'end' in l:
             # Get the species and
@@ -192,7 +203,7 @@ class winSileWannier90(SileWannier90):
         self._write('end unit_cell_cart\n')
 
     def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
-        """ Writes the supercel to the contained file """
+        """ Writes the supercell to the contained file """
         self._set_file()
         self._write_supercell(sc, fmt, *args, **kwargs)
 
