@@ -160,7 +160,11 @@ class tableSile(Sile):
             # in a file.
             return
         elif len(args) == 1:
-            dat = np.asarray(args[0])
+            if isinstance(args[0], np.ndarray):
+                dat = args[0]
+            else:
+                # Probably a tuple/list passed
+                dat = np.vstack(args[0])
         else:
             dat = np.vstack(args)
 
@@ -260,7 +264,16 @@ class tableSile(Sile):
             s.pop(0)
             dat.shape = tuple(s)
 
-        dat = np.swapaxes(dat, -2, -1)
+        if dat.ndim == 2:
+            if dat.shape[1] == 1:
+                # surely a 1D data
+                dat.shape = (-1,)
+
+        # For 2D data we need to transpose because the data is
+        # read row wise, but stored column wise
+        if dat.ndim > 1:
+            dat = np.swapaxes(dat, -2, -1)
+
         ret_comment = kwargs.get('ret_comment', False)
         ret_header = kwargs.get('ret_header', False)
         if ret_comment:

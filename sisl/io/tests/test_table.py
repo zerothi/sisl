@@ -6,7 +6,7 @@ import numpy as np
 
 from sisl.io.table import *
 
-pytestmark = pytest.mark.io
+pytestmark = [pytest.mark.io, pytest.mark.table]
 _dir = 'sisl/io'
 
 
@@ -91,9 +91,25 @@ def test_tbl_accumulate(sisl_tmp):
     with io:
         io.write_data(header='Hello')
         for d in DAT.T:
-            io.write_data(d)
+            # Write a row at a time (otherwise 1D data will be written as a single column)
+            io.write_data(d.reshape(-1, 1))
     dat, header = tableSile(io.file, 'r').read_data(ret_header=True)
     assert np.allclose(dat, DAT)
+    assert header.index('Hello') >= 0
+
+
+def test_tbl_accumulate_1d(sisl_tmp):
+    DAT = np.arange(12).reshape(3, 4) + 1
+
+    io = tableSile(sisl_tmp('t.dat', _dir), 'w')
+    with io:
+        io.write_data(header='Hello')
+        for d in DAT:
+            # 1D data will be written as a single column
+            io.write_data(d)
+    dat, header = tableSile(io.file, 'r').read_data(ret_header=True)
+    assert dat.ndim == 1
+    assert np.allclose(dat, DAT.ravel())
     assert header.index('Hello') >= 0
 
 
