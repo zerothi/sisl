@@ -32,6 +32,17 @@ you should cite this (Zenodo DOI):
     }
 
 
+The `sgeom`, `sgrid` or `sdata` commands all print-out the above information in a suitable format:
+
+.. code-block:: bash
+
+    sgeom --cite
+    sgrid --cite
+    sdata --cite
+
+which fill in the version for you, all yield the same output.
+
+
 .. _citing-transport:
     
 Citing transport backend
