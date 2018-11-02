@@ -21,7 +21,6 @@ from .binaries import tshsSileSiesta, tsdeSileSiesta
 from .binaries import dmSileSiesta, hsxSileSiesta, onlysSileSiesta
 from .fc import fcSileSiesta
 from .fa import faSileSiesta
-from .pdos import pdosSileSiesta
 from .siesta_nc import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import orbindxSileSiesta
@@ -1668,7 +1667,7 @@ class fdfSileSiesta(SileSiesta):
         if isfile(f):
             tmp_p = sp.add_parser('pdos',
                                   help="Manipulate PDOS.xml file from the Siesta simulation")
-            tmp_p, tmp_ns = pdosSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = sis.pdosSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label + '.EIG'
