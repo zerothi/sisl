@@ -60,7 +60,7 @@ class SemiInfinite(SelfEnergy):
        the default imaginary part of the self-energy calculation
     """
 
-    def __init__(self, spgeom, infinite, eta=1e-6):
+    def __init__(self, spgeom, infinite, eta=1e-4):
         """ Create a `SelfEnergy` object from any `SparseGeometry` """
         self.eta = eta
 
@@ -414,7 +414,7 @@ class RealSpaceSE(SelfEnergy):
             # whether TRS is used in if get_integration is used (default)
             'trs': True,
             # imaginary part used in the Green function calculation (unless an imaginary energy is passed)
-            'eta': 1e-6,
+            'eta': 1e-4,
             # The BrillouinZone used for integration
             'bz': None,
         }
