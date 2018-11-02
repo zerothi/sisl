@@ -9,6 +9,7 @@ except ImportError:
 
 from ..sile import add_sile
 from .sile import SileSiesta
+from sisl.messages import warn
 from sisl._array import arrayd, emptyd
 from sisl.atom import PeriodicTable, Atom, Atoms
 from sisl.geometry import Geometry
@@ -57,7 +58,9 @@ class pdosSileSiesta(SileSiesta):
         # Try and find the fermi-level
         Ef = root.find('fermi_energy')
         E = arrayd(list(map(float, root.find('energy_values').text.split())))
-        if Ef is not None:
+        if Ef is None:
+            warn(str(self) + '.read_data could not locate the Fermi-level in the XML tree, using E_F = 0. eV')
+        else:
             Ef = float(Ef.text)
             E -= Ef
         ne = len(E)
