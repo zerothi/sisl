@@ -127,7 +127,7 @@ class BrillouinZone(object):
             self._k = _a.arrayd(k).reshape(-1, 3)
             if weight is None:
                 n = self._k.shape[0]
-                self._w = _a.onesd(n) / n
+                self._w = _a.fulld(n, 1. / n)
             else:
                 self._w = _a.arrayd(weight).ravel()
         if len(self.k) != len(self.weight):
@@ -858,12 +858,12 @@ class MonkhorstPack(BrillouinZone):
         if displacement is None:
             displacement = np.zeros(3, np.float64)
         elif isinstance(displacement, Real):
-            displacement = np.zeros(3, np.float64) + displacement
+            displacement = _a.fulld(3, displacement)
 
         if size is None:
             size = _a.onesd(3)
         elif isinstance(size, Real):
-            size = _a.zerosd(3) + size
+            size = _a.fulld(3, size)
         else:
             size = _a.arrayd(size)
 
@@ -1132,7 +1132,7 @@ class MonkhorstPack(BrillouinZone):
 
         # Move k to the primitive cell and generate weights
         k = cls.in_primitive(k)
-        w = _a.onesd(n) * size / n
+        w = _a.fulld(n, size / n)
 
         # Check for TRS points
         if trs and np.any(k < 0.):
@@ -1352,7 +1352,7 @@ class BandStructure(BrillouinZone):
             self.name = name
 
         self._k = _a.arrayd([k for k in self])
-        self._w = np.ones(len(self.k)) / len(self.k)
+        self._w = _a.fulld(len(self.k), 1 / len(self.k))
 
     def __iter__(self):
         """ Iterate through the path """

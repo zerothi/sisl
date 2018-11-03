@@ -236,7 +236,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
         # Instead of looping all atoms in the supercell we find the exact atoms
         # and their supercell indices.
-        add_R = _a.zerosd(3) + geometry.maxR()
+        add_R = _a.fulld(3, geometry.maxR())
         # Calculate the required additional vectors required to increase the fictitious
         # supercell by add_R in each direction.
         # For extremely skewed lattices this will be way too much, hence we make

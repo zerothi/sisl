@@ -89,7 +89,9 @@ fulli = _partial(np.full, dtype=np.int32)
 fulll = _partial(np.full, dtype=np.int64)
 fullf = _partial(np.full, dtype=np.float32)
 fulld = _partial(np.full, dtype=np.float64)
-__all__ += _append('full')
+fullc = _partial(np.full, dtype=np.complex64)
+fullz = _partial(np.full, dtype=np.complex128)
+__all__ += _append_c('full')
 
 
 del _append_c, _append

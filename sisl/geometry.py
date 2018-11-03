@@ -156,8 +156,8 @@ class Geometry(SuperCellChild):
             self.set_supercell(M-m)
             return
 
-        sc_cart = np.zeros([3], np.float64)
-        cart = np.zeros([3], np.float64)
+        sc_cart = _a.zerosd([3])
+        cart = _a.zerosd([3])
         for i in range(3):
             # Initialize cartesian direction
             cart[i] = 1.
