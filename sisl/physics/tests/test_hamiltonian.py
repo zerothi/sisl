@@ -1317,7 +1317,7 @@ class TestHamiltonian(object):
         assert len(H2.geom.o2a(edge, unique=True)) == 4
 
 
-def test_psi1():
+def test_wavefunction1():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
     G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
@@ -1328,10 +1328,10 @@ def test_psi1():
     # Plot in the full thing
     grid = Grid(0.1, geometry=H.geom)
     grid.fill(0.)
-    ES.sub(0).psi(grid)
+    ES.sub(0).wavefunction(grid)
 
 
-def test_psi2():
+def test_wavefunction2():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
     G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
@@ -1343,10 +1343,10 @@ def test_psi2():
     # (there could however still be psi weight).
     grid = Grid(0.1, sc=SuperCell([2, 2, 2], origo=[2] * 3))
     grid.fill(0.)
-    ES.sub(0).psi(grid)
+    ES.sub(0).wavefunction(grid)
 
 
-def test_psi3():
+def test_wavefunction3():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
     G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
@@ -1358,10 +1358,10 @@ def test_psi3():
     # Plot in the full thing
     grid = Grid(0.1, dtype=np.complex128, sc=SuperCell([2, 2, 2], origo=[-1] * 3))
     grid.fill(0.)
-    ES.sub(0).psi(grid)
+    ES.sub(0).wavefunction(grid)
 
 
-def test_psi_eta():
+def test_wavefunction_eta():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
     G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
@@ -1373,4 +1373,4 @@ def test_psi_eta():
     # Plot in the full thing
     grid = Grid(0.1, dtype=np.complex128, sc=SuperCell([2, 2, 2], origo=[-1] * 3))
     grid.fill(0.)
-    ES.sub(0).psi(grid, eta=True)
+    ES.sub(0).wavefunction(grid, eta=True)

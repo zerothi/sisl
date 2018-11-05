@@ -3173,9 +3173,9 @@ class Geometry(SuperCellChild):
 
         # 1. Number of times each lattice vector must be expanded to fit
         #    inside the "possibly" larger `sc`.
-        idx = dot(self.icell, sc.cell.T)
-        tile_min = np.floor(idx.min(1)).astype(dtype=int32)
-        tile_max = np.ceil(idx.max(1)).astype(dtype=int32)
+        idx = dot(sc.cell, self.icell.T)
+        tile_min = np.floor(idx.min(0)).astype(dtype=int32)
+        tile_max = np.ceil(idx.max(0)).astype(dtype=int32)
 
         # 2. Reduce tiling along non-periodic directions
         tile_min = np.where(periodic, tile_min, 0)
@@ -3184,7 +3184,7 @@ class Geometry(SuperCellChild):
         # 3. Find the *new* origo according to the *negative* tilings.
         #    This is important for skewed cells as the placement of the new
         #    larger geometry has to be shifted to have sc inside
-        big_origo = (tile_min.reshape(-1, 1) * self.cell).sum(0)
+        big_origo = (tile_min.reshape(3, 1) * self.cell).sum(0)
 
         # The xyz geometry that fully encompass the (possibly) larger supercell
         tile = tile_max - tile_min

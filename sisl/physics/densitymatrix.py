@@ -242,7 +242,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         # For extremely skewed lattices this will be way too much, hence we make
         # them square.
         o = sc.toCuboid(True)
-        sc = SuperCell(o._v, origo=o.origo - add_R) + np.diag(2 * add_R)
+        sc = SuperCell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)

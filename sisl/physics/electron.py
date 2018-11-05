@@ -960,7 +960,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         v = v.reshape(-1, 2)[:, spinor]
 
     if len(v) != geometry.no:
-        raise ValueError("wavefunction require wavefunction coefficients corresponding to number of orbitals in the geometry.")
+        raise ValueError("wavefunction: require wavefunction coefficients corresponding to number of orbitals in the geometry.")
 
     # Check for k-points
     k = _a.asarrayd(k)
@@ -975,7 +975,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # Likewise if a k-point has been passed.
     is_complex = np.iscomplexobj(v) or has_k
     if is_complex and not np.iscomplexobj(grid.grid):
-        raise SislError("wavefunction input coefficients are complex, while grid only contains real.")
+        raise SislError("wavefunction: input coefficients are complex, while grid only contains real.")
 
     if is_complex:
         psi_init = _a.zerosz
@@ -985,8 +985,12 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # Extract sub variables used throughout the loop
     shape = _a.asarrayi(grid.shape)
     dcell = grid.dcell
-    ic = grid.sc.icell
-    geom_shape = dot(ic, geometry.cell.T) * shape.reshape(1, -1)
+    ic_shape = grid.sc.icell * shape.reshape(3, 1)
+
+    # Convert the geometry (hosting the wavefunction coefficients) coordinates into
+    # grid-fractionals X grid-shape to get index-offsets in the grid for the geometry
+    # supercell.
+    geom_shape = dot(geometry.cell, ic_shape.T)
 
     # In the following we don't care about division
     # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
@@ -1020,19 +1024,20 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     del theta, phi, rad1
 
     # First we calculate the min/max indices for all atoms
-    idx_mm = _a.emptyi([geometry.na, 2, 3])
     rxyz = _a.emptyd(nrxyz)
     rxyz[..., 0] = ctheta_sphi
     rxyz[..., 1] = stheta_sphi
     rxyz[..., 2] = cphi
     # Reshape
     rxyz.shape = (-1, 3)
-    idx = dot(ic, rxyz.T).T * shape.reshape(1, -1)
+    idx = dot(rxyz, ic_shape.T)
     idxm = idx.min(0).reshape(1, 3)
     idxM = idx.max(0).reshape(1, 3)
     del ctheta_sphi, stheta_sphi, cphi, idx, rxyz, nrxyz
 
-    origo = grid.sc.origo.reshape(1, -1)
+    # Fast loop (only per specie)
+    origo = grid.sc.origo.reshape(1, 3)
+    idx_mm = _a.emptyd([geometry.na, 2, 3])
     for atom, ia in geometry.atom.iter(True):
         if len(ia) == 0:
             continue
@@ -1042,8 +1047,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         # the atoms
         # The coordinates are relative to origo, so we need to shift (when writing a grid
         # it is with respect to origo)
-        xyz = geometry.xyz[ia, :] - origo
-        idx = dot(ic, xyz.T).T * shape.reshape(1, -1)
+        idx = dot(geometry.xyz[ia, :] - origo, ic_shape.T)
 
         # Get min-max for all atoms
         idx_mm[ia, 0, :] = idxm * R + idx
@@ -1052,7 +1056,6 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # Now we have min-max for all atoms
     # When we run the below loop all indices can be retrieved by looking
     # up in the above table.
-
     # Before continuing, we can easily clean up the temporary arrays
     del origo, idx
 
@@ -1072,13 +1075,13 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     # Instead of looping all atoms in the supercell we find the exact atoms
     # and their supercell indices.
-    add_R = _a.zerosd(3) + geometry.maxR()
+    add_R = _a.fulld(3, geometry.maxR())
     # Calculate the required additional vectors required to increase the fictitious
     # supercell by add_R in each direction.
     # For extremely skewed lattices this will be way too much, hence we make
     # them square.
     o = sc.toCuboid(True)
-    sc = SuperCell(o._v, origo=o.origo - add_R) + np.diag(2 * add_R)
+    sc = SuperCell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)
@@ -1098,7 +1101,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         # Extract maximum R
         R = atom.maxR()
         if R <= 0.:
-            warn("Atom '{}' does not have a wave-function, skipping atom.".format(atom))
+            warn("wavefunction: Atom '{}' does not have a wave-function, skipping atom.".format(atom))
             eta.update()
             continue
 
@@ -1149,7 +1152,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
             oR = os[0].R
 
             if oR <= 0.:
-                warn("Orbital(s) '{}' does not have a wave-function, skipping orbital!".format(os))
+                warn("wavefunction: Orbital(s) '{}' does not have a wave-function, skipping orbital!".format(os))
                 # Skip these orbitals
                 io += len(os)
                 continue
@@ -1399,9 +1402,6 @@ class _electron_State(object):
             self.state *= np.exp(1j * phase).reshape(1, -1)
         elif gauge == 'R':
             self.state *= np.exp(-1j * phase).reshape(1, -1)
-
-    # TODO to be deprecated
-    psi = wavefunction
 
 
 class CoefficientElectron(Coefficient):
