@@ -11,6 +11,8 @@ to the implicit relationship between the developer of sisl and `Siesta`_.
 Additionally the TranSiesta output files are also intrinsically handled by
 sisl.
 
+Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO``,
+``IOCH``, ``TOCH`` ``VH``, ``VNA`` and ``VT`` binary output files.
 
 .. autosummary::
    :toctree:
@@ -29,11 +31,12 @@ sisl.
    ncSileSiesta - NetCDF output file
    ionxmlSileSiesta - Basis-information from the ion.xml files
    ionncSileSiesta - Basis-information from the ion.nc files
-   orbindxSileSiesta - Basis set information (no geometry information)
+   orbindxSileSiesta - Basis-information (no geometry information, only ranges)
    faSileSiesta - Forces on atoms
    fcSileSiesta - Force constant matrix
    kpSileSiesta - k-points from simulation
    rkpSileSiesta - k-points to simulation
+
 
 The TranSiesta specific output files are:
 
