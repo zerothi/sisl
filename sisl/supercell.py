@@ -87,6 +87,10 @@ class SuperCell(object):
         """ Set origo """
         self._origo[:] = origo
 
+    def area(self, ax0, ax1):
+        """ Calculate the area spanned by the two axis `ax0` and `ax1` """
+        return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
+
     def toCuboid(self, orthogonal=False):
         """ A cuboid with vectors as this unit-cell and center with respect to its origo
 
@@ -1005,6 +1009,10 @@ class SuperCellChild(object):
     def volume(self):
         """ Returns the inherent `SuperCell` objects `vol` """
         return self.sc.volume
+
+    def area(self, ax0, ax1):
+        """ Calculate the area spanned by the two axis `ax0` and `ax1` """
+        return (cross3(self.sc.cell[ax0, :], self.sc.cell[ax1, :]) ** 2).sum() ** 0.5
 
     @property
     def cell(self):

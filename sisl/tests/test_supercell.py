@@ -71,6 +71,9 @@ class TestSuperCell(object):
     def test_nsc5(self, setup):
         setup.sc.set_nsc([1, 2, 3])
 
+    def test_area1(self, setup):
+        setup.sc.area(0, 1)
+
     def test_fill(self, setup):
         sc = setup.sc.swapaxes(1, 2)
         i = sc._fill([1, 1])
