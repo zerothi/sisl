@@ -74,7 +74,7 @@ class Coefficient(ParentContainer):
         if self.parent is None:
             s += '}}'
         else:
-            s += '\n {}}}'.format(str(self.parent).replace('\n', '\n '))
+            s += ',\n {}\n}}'.format(str(self.parent).replace('\n', '\n '))
         return s
 
     def __len__(self):
@@ -220,7 +220,7 @@ class State(ParentContainer):
         if self.parent is None:
             s += '}}'
         else:
-            s += '\n {}}}'.format(str(self.parent).replace('\n', '\n '))
+            s += ',\n {}\n}}'.format(str(self.parent).replace('\n', '\n '))
         return s
 
     def __len__(self):
