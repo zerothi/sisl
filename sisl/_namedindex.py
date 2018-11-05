@@ -63,12 +63,9 @@ class NamedIndex(object):
         name : str
            name of group to delete
         """
-        try:
-            i = self._name.index(name)
-            del self._name[i]
-            del self._index[i]
-        except:
-            pass
+        i = self._name.index(name)
+        del self._name[i]
+        del self._index[i]
 
     def __str__(self):
         """ Representation of the object """
@@ -120,7 +117,8 @@ class NamedIndex(object):
         n = len(self)
         if n == 0:
             return
-        index = _a.arrayi(index)
+        index = arrayi(index).ravel()
         for i in range(n):
+            print(self._index[i], index)
             idx2 = indices_only(self._index[i], index)
             self._index[i] = np.delete(self._index[i], idx2)

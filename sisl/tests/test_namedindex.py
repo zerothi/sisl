@@ -7,10 +7,15 @@ import numpy as np
 from sisl._namedindex import NamedIndex
 
 
+pytestmark = pytest.mark.namedindex
+
+
 def test_ni_init():
 
     ni = NamedIndex()
+    str(ni)
     ni = NamedIndex('name', [1])
+    str(ni)
     ni = NamedIndex(['name-1', 'name-2'], [[1], [0]])
 
 
@@ -42,3 +47,12 @@ def test_ni_delete():
     ni.delete_name('name-1')
     for n in ni:
         assert n in ['name-2']
+
+
+def test_ni_items():
+    ni = NamedIndex()
+    ni['Hello'] = [0]
+    ni[[1, 2]] = 'Hello-1'
+    assert np.all(ni['Hello'] == [0])
+    ni.remove(1)
+    assert np.all(ni['Hello-1'] == [2])
