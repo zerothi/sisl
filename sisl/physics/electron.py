@@ -1348,7 +1348,8 @@ class _electron_State(object):
     def wavefunction(self, grid, spinor=0, eta=False):
         r""" Expand the coefficients as the wavefunction on `grid` *as-is*
 
-        See `~sisl.physics.electron.wavefunction` for argument details.
+        See `~sisl.physics.electron.wavefunction` for argument details, the arguments not present
+        in this method are automatically passed from this object.
         """
         try:
             spin = self.parent.spin
@@ -1369,8 +1370,7 @@ class _electron_State(object):
         # Retrieve k
         k = self.info.get('k', _a.zerosd(3))
 
-        wavefunction(self.state, grid, geometry=geometry, k=k, spinor=spinor,
-                     spin=spin, eta=eta)
+        wavefunction(self.state, grid, geometry=geometry, k=k, spinor=spinor, spin=spin, eta=eta)
 
     def change_gauge(self, gauge):
         r""" In-place change of the gauge of the state coefficients
