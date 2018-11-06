@@ -246,7 +246,8 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)
-        IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc, origo=grid.origo)
+        IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc, origo=geometry.origo)
+        XYZ -= o.origo.reshape(1, 3)
 
         # Retrieve progressbar
         eta = tqdm_eta(len(IA), self.__class__.__name__ + '.density', 'atom', eta)
