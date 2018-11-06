@@ -1080,12 +1080,15 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # supercell by add_R in each direction.
     # For extremely skewed lattices this will be way too much, hence we make
     # them square.
+
     o = sc.toCuboid(True)
     sc = SuperCell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)
-    IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc, origo=grid.origo)
+    # Note that we cannot pass the "moved" origo because then ISC would be wrong
+    IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc, origo=geometry.origo)
+    XYZ -= o.origo.reshape(1, 3)
 
     phk = k * 2 * np.pi
     phase = 1

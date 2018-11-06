@@ -3174,8 +3174,14 @@ class Geometry(SuperCellChild):
         # 1. Number of times each lattice vector must be expanded to fit
         #    inside the "possibly" larger `sc`.
         idx = dot(sc.cell, self.icell.T)
-        tile_min = np.floor(idx.min(0)).astype(dtype=int32)
+        tile_min = np.floor(idx.min(0))
         tile_max = np.ceil(idx.max(0)).astype(dtype=int32)
+
+        # 1a) correct for origo displacement
+        idx = np.floor(dot(sc.origo, self.icell.T))
+        tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
+        idx = np.floor(dot(origo, self.icell.T))
+        tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
 
         # 2. Reduce tiling along non-periodic directions
         tile_min = np.where(periodic, tile_min, 0)
