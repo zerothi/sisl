@@ -272,6 +272,7 @@ class Orbital(object):
         if R < 0:
             raise ValueError(self.__class__.__name__ + ".toGrid was unable to create "
                              "the orbital grid for plotting, the box size is negative.")
+
         # Since all these things depend on other elements
         # we will simply import them here.
         from .supercell import SuperCell
@@ -282,7 +283,7 @@ class Orbital(object):
         sc = SuperCell(R*2, origo=[-R] * 3)
         g = Geometry([0] * 3, Atom(Z, self), sc=sc)
         G = Grid(precision, dtype=dtype, geometry=g)
-        wavefunction(np.ones(1), G, geometry=g)
+        wavefunction(np.full(1, c), G, geometry=g)
         return G
 
     def __getstate__(self):

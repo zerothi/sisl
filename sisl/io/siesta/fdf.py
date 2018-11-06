@@ -654,7 +654,7 @@ class fdfSileSiesta(SileSiesta):
             raise SileError('Could not find LatticeConstant in file')
 
         # Read in cell
-        cell = np.empty([3, 3], np.float64)
+        cell = _a.emptyd([3, 3])
 
         lc = self.get('LatticeVectors')
         if lc:
@@ -1175,7 +1175,7 @@ class fdfSileSiesta(SileSiesta):
 
         # If the user requests a shifted geometry
         # we correct for this
-        origo = np.zeros([3], np.float64)
+        origo = _a.zerosd([3])
         lor = self.get('AtomicCoordinatesOrigin')
         if lor:
             if kwargs.get('origin', True):
@@ -1203,8 +1203,8 @@ class fdfSileSiesta(SileSiesta):
             raise SileError('NumberOfAtoms has been determined to be zero, no atoms.')
 
         # Create array
-        xyz = np.empty([na, 3], np.float64)
-        species = np.empty([na], np.int32)
+        xyz = _a.emptyd([na, 3])
+        species = _a.emptyi([na])
         for ia in range(na):
             l = atms[ia].split()
             xyz[ia, :] = [float(k) for k in l[:3]]
