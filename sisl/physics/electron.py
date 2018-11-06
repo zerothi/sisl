@@ -947,6 +947,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     # In case the user has passed several vectors we sum them to plot the summed state
     if v.ndim == 2:
+        info('wavefunction: summing {} different state coefficients, will continue silently!'.format(v.shape[0]))
         v = v.sum(0)
 
     if spin is None:
@@ -1093,7 +1094,10 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # (and the neighbours that connect into the cell)
     # Note that we cannot pass the "moved" origo because then ISC would be wrong
     IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc, origo=geometry.origo)
-    XYZ -= o.origo.reshape(1, 3)
+    # We need to revert the grid supercell origo as that is not subtracted in the `within_inf` returned
+    # coordinates (and the below loop expects positions with respect to the origo of the plotting
+    # grid).
+    XYZ -= grid.sc.origo.reshape(1, 3)
 
     phk = k * 2 * np.pi
     phase = 1

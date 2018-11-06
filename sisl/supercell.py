@@ -710,8 +710,8 @@ class SuperCell(object):
     def center(self, axis=None):
         """ Returns center of the `SuperCell`, possibly with respect to an axis """
         if axis is None:
-            return np.sum(self.cell, axis=0) / 2
-        return self.cell[axis, :] / 2
+            return self.cell.sum(0) * 0.5
+        return self.cell[axis, :] * 0.5
 
     @classmethod
     def tocell(cls, *args):
