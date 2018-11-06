@@ -52,6 +52,15 @@ class ParentContainer(object):
 class Coefficient(ParentContainer):
     """ An object holding coefficients for a parent with info
 
+    Attributes
+    ----------
+    c : ndarray
+        coefficients
+    info : dict
+        information regarding the creation of these coefficients
+    parent : obj
+        object from where the coefficients has been calculated, in one way or the other
+
     Parameters
     ----------
     c : array_like
@@ -192,6 +201,15 @@ class Coefficient(ParentContainer):
 
 class State(ParentContainer):
     """ An object handling a set of vectors describing a given *state*
+
+    Attributes
+    ----------
+    state : ndarray
+        state coefficients
+    info : dict
+        information regarding the creation of the states
+    parent : obj
+        object from where the states has been calculated, in one way or the other
 
     Parameters
     ----------
@@ -566,6 +584,17 @@ class State(ParentContainer):
 # I.e. we are forced to do *one* inheritance, which we choose to be State.
 class StateC(State):
     """ An object handling a set of vectors describing a given *state* with associated coefficients `c`
+
+    Attributes
+    ----------
+    c : ndarray
+        coefficients assigned to each state
+    state : ndarray
+        state coefficients
+    info : dict
+        information regarding the creation of the states
+    parent : obj
+        object from where the states has been calculated, in one way or the other
 
     Parameters
     ----------

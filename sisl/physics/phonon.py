@@ -236,7 +236,7 @@ def displacement(mode, hw, mass):
     return _displacement(mode, hw, mass)
 
 
-# Electron rest mass in units of proton mass (the units we use for the atoms)
+# Rest mass in units of proton mass (the units we use for the atoms)
 _displacement_const = (2 * units('Ry', 'eV') * constant.m_e('amu')) ** 0.5 * units('Bohr', 'Ang')
 
 
@@ -263,6 +263,7 @@ class _phonon_Mode(object):
 
     @property
     def mode(self):
+        """ Eigenmodes (states) """
         return self.state
 
     def change_gauge(self, gauge):
@@ -359,6 +360,7 @@ class EigenvaluePhonon(CoefficientPhonon):
 
     @property
     def hw(self):
+        r""" Eigenmode values in units of :math:`\hbar \omega` [eV] """
         return self.c
 
     def DOS(self, E, distribution='gaussian'):
@@ -386,6 +388,7 @@ class EigenmodePhonon(ModeCPhonon):
 
     @property
     def hw(self):
+        r""" Eigenmode values in units of :math:`\hbar \omega` [eV] """
         return self.c
 
     def DOS(self, E, distribution='gaussian'):

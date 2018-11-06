@@ -1038,10 +1038,12 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # Fast loop (only per specie)
     origo = grid.sc.origo.reshape(1, 3)
     idx_mm = _a.emptyd([geometry.na, 2, 3])
+    all_negative_R = True
     for atom, ia in geometry.atom.iter(True):
         if len(ia) == 0:
             continue
         R = atom.maxR()
+        all_negative_R = all_negative_R and R < 0.
 
         # Now do it for all the atoms to get indices of the middle of
         # the atoms
@@ -1052,6 +1054,9 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         # Get min-max for all atoms
         idx_mm[ia, 0, :] = idxm * R + idx
         idx_mm[ia, 1, :] = idxM * R + idx
+
+    if all_negative_R:
+        raise SislError("wavefunction: Cannot create wavefunction since no atoms have an associated basis-orbital on a real-space grid")
 
     # Now we have min-max for all atoms
     # When we run the below loop all indices can be retrieved by looking
@@ -1552,6 +1557,7 @@ class EigenvalueElectron(CoefficientElectron):
 
     @property
     def eig(self):
+        """ Eigenvalues """
         return self.c
 
     def occupation(self, distribution='fermi_dirac'):
@@ -1599,6 +1605,7 @@ class EigenstateElectron(StateCElectron):
 
     @property
     def eig(self):
+        """ Eigenvalues for each state """
         return self.c
 
     def occupation(self, distribution='fermi_dirac'):
