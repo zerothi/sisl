@@ -947,7 +947,8 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     # In case the user has passed several vectors we sum them to plot the summed state
     if v.ndim == 2:
-        info('wavefunction: summing {} different state coefficients, will continue silently!'.format(v.shape[0]))
+        if v.shape[0] > 1:
+            info('wavefunction: summing {} different state coefficients, will continue silently!'.format(v.shape[0]))
         v = v.sum(0)
 
     if spin is None:
