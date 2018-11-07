@@ -21,6 +21,7 @@ from .binaries import tshsSileSiesta, tsdeSileSiesta
 from .binaries import dmSileSiesta, hsxSileSiesta, onlysSileSiesta
 from .fc import fcSileSiesta
 from .fa import faSileSiesta
+from .siesta_grid import gridncSileSiesta
 from .siesta_nc import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import orbindxSileSiesta
@@ -1243,11 +1244,11 @@ class fdfSileSiesta(SileSiesta):
             case insensitive.
         order: list of str, optional
             the order of which to try and read the geometry.
-            By default this is ``['nc', 'grid.nc']``.
+            By default this is ``['nc', 'grid.nc', 'bin']`` (bin refers to the binary files)
         """
-        order = kwargs.pop('order', ['nc', 'grid.nc'])
+        order = kwargs.pop('order', ['nc', 'grid.nc', 'bin'])
         for f in order:
-            v = getattr(self, '_r_grid_{}'.format(f.lower()))(name, *args, **kwargs)
+            v = getattr(self, '_r_grid_{}'.format(f.lower().replace('.', '_')))(name, *args, **kwargs)
             if v is not None:
                 return v
         return None
@@ -1299,6 +1300,33 @@ class fdfSileSiesta(SileSiesta):
         if isfile(f):
             grid = gridncSileSiesta(f).read_grid(*args, **kwargs)
             grid.set_geometry(self.read_geometry(True))
+            return grid
+        return None
+
+    def _r_grid_bin(self, name, *args, **kwargs):
+        # Read grid from the <>.VT/... file
+        name = {'rho': '.RHO',
+                'rhoinit': '.RHOINIT',
+                'vna': '.VNA',
+                'chlocal': '.IOCH',
+                'rhotot': '.TOCH',
+                'totalcharge': '.TOCH',
+                'deltarho': '.DRHO',
+                'rhodelta': '.DRHO',
+                'electrostaticpotential': '.VH',
+                'vh': '.VH',
+                'rhoxc': '.RHOXC',
+                'totalpotential': '.VT',
+                'vt': '.VT',
+                'baderrho': '.BADER',
+                'rhobader': '.BADER'
+        }.get(name.lower())
+
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + name
+        if isfile(f):
+            grid = get_sile_class(f)(f).read_grid(*args, **kwargs)
+            grid.set_geometry(self.read_geometry(True))
+            return grid
         return None
 
     def read_basis(self, *args, **kwargs):

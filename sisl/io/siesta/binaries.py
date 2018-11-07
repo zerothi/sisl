@@ -437,7 +437,7 @@ class hsxSileSiesta(SileBinSiesta):
         return S
 
 
-class gridSileSiesta(SileBinSiesta):
+class _gridSileSiesta(SileBinSiesta):
     """ Binary real-space grid file """
 
     def read_supercell(self, *args, **kwargs):
@@ -479,8 +479,12 @@ class gridSileSiesta(SileBinSiesta):
         cell = np.array(cell.T, np.float64)
         cell.shape = (3, 3)
 
-        g = Grid(mesh, sc=SuperCell(cell), dtype=np.float32)
-        g.grid = np.array(grid.swapaxes(0, 2), np.float32) * self.grid_unit
+        # Simply create the grid (with no information)
+        # We will overwrite the actual grid
+        g = Grid([1, 1, 1], sc=SuperCell(cell))
+        # NOTE: there is no need to swap-axes since the returned array is in F ordering
+        #       and thus the first axis is the fast (x, y, z) is retained
+        g.grid = (grid * self.grid_unit).astype(dtype=np.float32, order='C', copy=False)
         return g
 
 
@@ -734,6 +738,7 @@ def _type(name, obj, dic=None):
 
 # Faster than class ... \ pass
 tsgfSileSiesta = _type("tsgfSileSiesta", _gfSileSiesta)
+gridSileSiesta = _type("gridSileSiesta", _gridSileSiesta, {'grid_unit': 1.})
 
 if found_module:
     add_sile('TSHS', tshsSileSiesta)
@@ -741,14 +746,16 @@ if found_module:
     add_sile('TSDE', tsdeSileSiesta)
     add_sile('DM', dmSileSiesta)
     add_sile('HSX', hsxSileSiesta)
+    add_sile('TSGF', tsgfSileSiesta)
     # These have unit-conversions
     BohrC2AngC = Bohr2Ang ** 3
-    add_sile('RHO', _type("rhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('RHOINIT', _type("rhoinitSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('DRHO', _type("drhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('IOCH', _type("iorhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('TOCH', _type("totalrhoSileSiesta", gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('VH', _type("hartreeSileSiesta", gridSileSiesta, {'grid_unit': Ry2eV}))
-    add_sile('VNA', _type("neutralatomhartreeSileSiesta", gridSileSiesta, {'grid_unit': Ry2eV}))
-    add_sile('VT', _type("totalhartreeSileSiesta", gridSileSiesta, {'grid_unit': Ry2eV}))
-    add_sile('TSGF', tsgfSileSiesta)
+    add_sile('RHO', _type("rhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('RHOINIT', _type("rhoinitSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('RHOXC', _type("rhoxcSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('DRHO', _type("drhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('BADER', _type("baderSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('IOCH', _type("iorhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('TOCH', _type("totalrhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('VH', _type("hartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))
+    add_sile('VNA', _type("neutralatomhartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))
+    add_sile('VT', _type("totalhartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))

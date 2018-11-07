@@ -1,6 +1,8 @@
 0.9.5
 =====
 
+- Bug fix for binary grid files with Siesta and also reads using fdf-files
+
 - Changed default self-energy eta values to 1e-4 eV
 
 - Added Zak-phase calculations (thanks to T. Frederiksen)

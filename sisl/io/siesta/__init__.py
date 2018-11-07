@@ -12,7 +12,7 @@ Additionally the TranSiesta output files are also intrinsically handled by
 sisl.
 
 Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO``,
-``IOCH``, ``TOCH`` ``VH``, ``VNA`` and ``VT`` binary output files.
+``RHOXC``, ``BADER``, ``IOCH``, ``TOCH`` ``VH``, ``VNA`` and ``VT`` binary output files.
 
 .. autosummary::
    :toctree:
