@@ -117,7 +117,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self._def_dim = self.S_idx
         self[key] = value
 
-    S = property(_get_S, _set_S)
+    S = property(_get_S, _set_S, doc="Access elements to the sparse overlap")
 
     @classmethod
     def fromsp(cls, geometry, P, S=None):

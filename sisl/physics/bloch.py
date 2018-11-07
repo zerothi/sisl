@@ -34,10 +34,45 @@ __all__ = ['Bloch']
 class Bloch(object):
     r""" Bloch's theorem object containing unfolding factors and unfolding algorithms
 
+    This class is a wrapper for expanding *any* matrix from a smaller matrix cell into
+    a larger, using Bloch's theorem.
+    The general idea may be summarized in the following equation:
+
+    .. math::
+        \mathbf M_{k}^N =\frac1N
+        \;
+        \sum_{
+         \mathclap{
+          \substack{j=0\\
+           k_j=2\pi\frac{k+j}N
+          }
+         }
+        }^{N-1}
+        \quad
+        \begin{bmatrix}
+         1 & \cdots & e^{i (1-N)k_j}
+         \\
+         e^{i k_j} & \cdots & e^{i (2-N)k_j}
+         \\
+         \vdots & \ddots & \vdots
+         \\
+         e^{i (N-1)k_j} & \cdots & 1
+        \end{bmatrix}
+        \otimes
+        \mathbf M_{k_j}^1.
+
+
     Parameters
     ----------
     bloch : (3,) int
        Bloch repetitions along each direction
+
+    Examples
+    --------
+    >>> bloch = Bloch([2, 1, 2])
+    >>> k_unfold = bloch.unfold_points([0] * 3)
+    >>> M = [func(*args, k=k) for k in k_unfold]
+    >>> bloch.unfold(M, k_unfold)
     """
 
     def __init__(self, *bloch):
@@ -89,8 +124,7 @@ class Bloch(object):
         unfold[:, :, :, 1] = (aranged(B[1]).reshape(1, -1, 1) + k[1]) / B[1]
         unfold[:, :, :, 2] = (aranged(B[2]).reshape(-1, 1, 1) + k[2]) / B[2]
         # Back-transform shape
-        unfold.shape = (-1, 3)
-        return unfold
+        return unfold.reshape(-1, 3)
 
     def __call__(self, func, k, *args, **kwargs):
         """ Return a functions return values as the Bloch unfolded equivalent according to this object

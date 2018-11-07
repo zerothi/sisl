@@ -112,7 +112,7 @@ class _SparseGeometry(object):
         self._def_dim = -1
 
     def empty(self, keep_nnz=False):
-        """ See `~sisl.sparse.SparseCSR.empty` for details """
+        """ See :meth:`~sisl.sparse.SparseCSR.empty` for details """
         self._csr.empty(keep_nnz)
 
     def copy(self, dtype=None):
@@ -317,7 +317,7 @@ class _SparseGeometry(object):
         self.geometry.set_nsc(*args, **kwargs)
 
     def spalign(self, other):
-        """ See `~sisl.sparse.SparseCSR.align` for details """
+        """ See :meth:`~sisl.sparse.SparseCSR.align` for details """
         if isinstance(other, SparseCSR):
             self._csr.align(other)
         else:

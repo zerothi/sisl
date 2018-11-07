@@ -216,7 +216,7 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
             self._def_dim = self.UP
         self[key] = value
 
-    E = property(_get_E, _set_E)
+    E = property(_get_E, _set_E, doc="Access elements to the sparse energy density matrix")
 
     def shift(self, E, DM):
         r""" Shift the energy density matrix to a common energy by using a reference density matrix

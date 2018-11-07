@@ -221,7 +221,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             self._def_dim = self.UP
         self[key] = value
 
-    H = property(_get_H, _set_H)
+    H = property(_get_H, _set_H, doc="Access elements to the sparse Hamiltonian")
 
     def shift(self, E):
         r""" Shift the electronic structure by a constant energy

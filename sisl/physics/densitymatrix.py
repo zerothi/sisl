@@ -711,7 +711,7 @@ class DensityMatrix(_realspace_DensityMatrix):
             self._def_dim = self.UP
         self[key] = value
 
-    D = property(_get_D, _set_D)
+    D = property(_get_D, _set_D, doc="Access elements to the sparse density matrix")
 
     @staticmethod
     def read(sile, *args, **kwargs):

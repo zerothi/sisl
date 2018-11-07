@@ -186,7 +186,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
             self._def_dim = 0
         self[key] = value
 
-    D = property(_get_D, _set_D)
+    D = property(_get_D, _set_D, doc="Access elements to the sparse dynamical matrix")
 
     def apply_newton(self):
         """ Sometimes the dynamical matrix does not obey Newtons 3rd law.
