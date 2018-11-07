@@ -112,7 +112,7 @@ class _SparseGeometry(object):
         self._def_dim = -1
 
     def empty(self, keep_nnz=False):
-        """ See :meth:`~sisl.sparse.SparseCSR.empty` for details """
+        """ See :meth:`~sparse.SparseCSR.empty` for details """
         self._csr.empty(keep_nnz)
 
     def copy(self, dtype=None):
@@ -415,10 +415,10 @@ class _SparseGeometry(object):
         ----------
         R : array_like
            radii parameters for different shells.
-           Must have same length as ``param`` or one less.
+           Must have same length as `param` or one less.
            If one less it will be extended with ``R[0]/100``
         param : array_like
-           coupling constants corresponding to the ``R``
+           coupling constants corresponding to the `R`
            ranges. ``param[0,:]`` are the elements
            for the all atoms within ``R[0]`` of each atom.
 
@@ -439,9 +439,9 @@ class _SparseGeometry(object):
 
         This may be called in two variants.
 
-        1. Pass a function (``func``), see e.g. ``create_construct``
+        1. Pass a function (`func`), see e.g. ``create_construct``
            which does the setting up.
-        2. Pass a tuple/list in ``func`` which consists of two
+        2. Pass a tuple/list in `func` which consists of two
            elements, one is ``R`` the radii parameters for
            the corresponding parameters.
            The second is the parameters
@@ -589,7 +589,7 @@ class _SparseGeometry(object):
         self._csr.finalize()
 
     def tocsr(self, dim=0, isc=None, **kwargs):
-        """ Return a ``scipy.sparse.csr_matrix`` for the specified dimension
+        """ Return a :class:`~scipy.sparse.csr_matrix` for the specified dimension
 
         Parameters
         ----------

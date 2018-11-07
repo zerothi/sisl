@@ -42,10 +42,8 @@ class Bloch(object):
         \mathbf M_{k}^N =\frac1N
         \;
         \sum_{
-         \mathclap{
-          \substack{j=0\\
+         \substack{j=0\\
            k_j=2\pi\frac{k+j}N
-          }
          }
         }^{N-1}
         \quad

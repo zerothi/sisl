@@ -35,7 +35,7 @@ __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 class SparseCSR(object):
     """
-    A compressed sparse row matrix, slightly different than ``scipy.sparse.csr_matrix``.
+    A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_matrix`.
 
     This class holds all required information regarding the CSR matrix format.
 
@@ -45,18 +45,18 @@ class SparseCSR(object):
 
 
     This sparse matrix class tries to resemble the
-    ``scipy.sparse.csr_matrix`` as much as possible with
+    :class:`~scipy.sparse.csr_matrix` as much as possible with
     the difference of this class being multi-dimensional.
 
     Creating a new sparse matrix is much similar to the
-    ``scipy`` equivalent.
+    `scipy` equivalent.
 
     `nnz` is only used if ``nnz > nr * nnzpr``.
 
     This class may be instantiated by verious means.
 
     - ``SparseCSR(S)``
-      where ``S`` is a ``scipy.sparse`` matrix
+      where ``S`` is a :module:`scipy.sparse` matrix
     - ``SparseCSR((M,N)[, dtype])``
       the shape of the sparse matrix (equivalent
       to ``SparseCSR((M,N,1)[, dtype])``.
@@ -68,7 +68,7 @@ class SparseCSR(object):
       and ``K`` elements per sparse element.
 
     Additionally these parameters control the
-    creation of the sparse matrix
+    creation of the sparse matrix.
 
     Parameters
     ----------
@@ -147,7 +147,7 @@ class SparseCSR(object):
                                   **kwargs)
 
             elif len(arg1) != 3:
-                raise ValueError('The sparse array *must* be created '
+                raise ValueError(self.__class__.__name__ + ' sparse array *must* be created '
                                  'with data, indices, indptr')
             else:
 
@@ -190,7 +190,7 @@ class SparseCSR(object):
             # extend to extra dimension
             arg1 = arg1 + (dim,)
         elif len(arg1) != 3:
-            raise ValueError("unrecognized shape input, either a 2-tuple or 3-tuple is required")
+            raise ValueError(self.__class__.__name__ + " unrecognized shape input, either a 2-tuple or 3-tuple is required")
 
         # Set default dtype
         if dtype is None:
@@ -199,7 +199,7 @@ class SparseCSR(object):
         # unpack size and check the sizes are "physical"
         M, N, K = arg1
         if M <= 0 or N <= 0 or K <= 0:
-            raise ValueError("invalid size of sparse matrix, one of the dimensions is zero: M={}, N={}, K={}".format(M, N, K))
+            raise ValueError(self.__class__.__name__ + " invalid size of sparse matrix, one of the dimensions is zero: M={}, N={}, K={}".format(M, N, K))
 
         # Store shape
         self._shape = (M, N, K)
@@ -346,7 +346,7 @@ class SparseCSR(object):
         One may still interact with the sparse matrix as one would previously.
 
         NOTE: This is mainly an internal used routine to ensure data structure
-        when converting to ``scipy.sparse.csr_matrix``
+        when converting to :class:`~scipy.sparse.csr_matrix`
 
         Parameters
         ----------
@@ -1113,14 +1113,14 @@ class SparseCSR(object):
         return new
 
     def tocsr(self, dim=0, **kwargs):
-        """ Return the data in ``scipy.sparse.csr_matrix`` format
+        """ Return the data in :class:`~scipy.sparse.csr_matrix` format
 
         Parameters
         ----------
         dim: int, optional
            the dimension of the data to create the sparse matrix
         **kwargs:
-           arguments passed to the ``scipy.sparse.csr_matrix`` routine
+           arguments passed to the :class:`~scipy.sparse.csr_matrix` routine
         """
         # We finalize because we do not expect the sparse pattern to change once
         # we request a csr matrix in another format.

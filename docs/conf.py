@@ -404,9 +404,9 @@ numpydoc_show_class_members = False
 # -----------------------------------------------------------------------------
 intersphinx_mapping = {
     'python': ('http://docs.python.org/dev', None),
-    'numpy': ('https://docs.scipy.org/doc/numpy', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
-    'matplotlib': ('https://matplotlib.org', None),
+    'numpy': ('http://docs.scipy.org/doc/numpy', None),
+    'scipy': ('http://docs.scipy.org/doc/scipy/reference', None),
+    'matplotlib': ('http://matplotlib.org', None),
 }
 
 # Tell nbsphinx to wait, at least X seconds for each cell
