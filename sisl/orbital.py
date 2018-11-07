@@ -127,8 +127,8 @@ class Orbital(object):
     def __str__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
-            return self.__class__.__name__ + '{{R: {0}, q0: {1}, tag: {2}}}'.format(self.R, self.q0, self.tag)
-        return self.__class__.__name__ + '{{R: {0}, q0: {1}}}'.format(self.R, self.q0)
+            return self.__class__.__name__ + '{{R: {0:.5f}, q0: {1}, tag: {2}}}'.format(self.R, self.q0, self.tag)
+        return self.__class__.__name__ + '{{R: {0:.5f}, q0: {1}}}'.format(self.R, self.q0)
 
     def name(self, tex=False):
         """ Return a named specification of the orbital (`tag`) """

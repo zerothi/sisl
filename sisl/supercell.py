@@ -880,7 +880,7 @@ class SuperCell(object):
 
     def __str__(self):
         """ Returns a string representation of the object """
-        return self.__class__.__name__ + '{{volume: {:.4e}, nsc: {} {} {}}}'.format(self.volume, *self.nsc)
+        return self.__class__.__name__ + '{{volume: {:.4e}, nsc: [{} {} {}]}}'.format(self.volume, *self.nsc)
 
     def __eq__(self, other):
         """ Equality check """

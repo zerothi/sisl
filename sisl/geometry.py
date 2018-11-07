@@ -52,11 +52,12 @@ class Geometry(SuperCellChild):
        >>> print(square)
        Geometry{na: 1, no: 1,
         Atoms{species: 1,
-         Atom{H, Z: 1, mass(au): 1.0079, maxR: -1.00000,
-          Orbital{R: -1.0, q0: 0.0}
+         Atom{H, Z: 1, mass(au): 1.00794, maxR: -1.00000,
+          Orbital{R: -1.00000, q0: 0.0}
          }: 1,
         },
-        nsc: [3, 3, 1], maxR: -1.0
+        maxR: -1.00000,
+        SuperCell{volume: 1.0000e+01, nsc: [3 3 1]}
        }
 
 
@@ -535,7 +536,7 @@ class Geometry(SuperCellChild):
         s += str(self.atom).replace('\n', '\n ')
         if len(self.names) > 0:
             s += ',\n ' + str(self.names).replace('\n', '\n ')
-        return (s + ',\n nsc: [{1}, {2}, {3}], maxR: {0}\n}}\n'.format(self.maxR(), *self.nsc)).strip()
+        return (s + ',\n maxR: {0:.5f},\n {1}\n}}'.format(self.maxR(), str(self.sc))).strip()
 
     def iter(self):
         """ An iterator over all atomic indices

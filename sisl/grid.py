@@ -93,7 +93,7 @@ class Grid(SuperCellChild):
             self.set_sc(sc)
 
     def __getitem__(self, key):
-        """ Returns the grid contained """
+        """ Grid value at `key` """
         return self.grid[key]
 
     def __setitem__(self, key, val):
@@ -102,6 +102,7 @@ class Grid(SuperCellChild):
 
     @property
     def geom(self):
+        """ Short-hand for `self.geometry`, may be deprecated later """
         return self.geometry
 
     def set_geometry(self, geometry):
@@ -131,7 +132,7 @@ class Grid(SuperCellChild):
         self.grid.fill(val)
 
     def interp(self, shape, method='linear', **kwargs):
-        """ Returns an interpolated version of the grid
+        """ Interpolate grid values to a new grid
 
         Parameters
         ----------
@@ -174,17 +175,17 @@ class Grid(SuperCellChild):
 
     @property
     def size(self):
-        """ Returns size of the grid """
+        """ Total number of elements in the grid """
         return np.prod(self.grid.shape)
 
     @property
     def shape(self):
-        """ Returns the shape of the grid """
+        r""" Grid shape in :math:`x`, :math:`y`, :math:`z` directions """
         return self.grid.shape
 
     @property
     def dtype(self):
-        """ Returns the data-type of the grid """
+        """ Data-type used in grid """
         return self.grid.dtype
 
     @property
@@ -253,7 +254,7 @@ class Grid(SuperCellChild):
         return d
 
     def copy(self):
-        """ Returns a copy of the object. """
+        """ Copy the object """
         d = self.__sc_geometry_dict()
         grid = self.__class__(np.copy(self.shape), bc=np.copy(self.bc),
                               dtype=self.dtype, **d)
@@ -261,7 +262,7 @@ class Grid(SuperCellChild):
         return grid
 
     def swapaxes(self, a, b):
-        """ Returns Grid with swapped axis
+        """ Swap two axes in the grid (also swaps axes in the supercell)
 
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
         """
@@ -280,13 +281,13 @@ class Grid(SuperCellChild):
 
     @property
     def dcell(self):
-        """ Returns the delta-cell """
+        """ Voxel cell size """
         # Calculate the grid-distribution
-        return self.cell / _a.asarrayi(self.shape).reshape(-1, 1)
+        return self.cell / _a.asarrayi(self.shape).reshape(3, 1)
 
     @property
     def dvolume(self):
-        """ Volume of the grids voxel elements """
+        """ Volume of the grid voxel elements """
         return self.sc.volume / self.size
 
     def _copy_sub(self, n, axis, scale_geometry=False):
@@ -330,7 +331,7 @@ class Grid(SuperCellChild):
         return grid
 
     def sum(self, axis):
-        """ Returns the grid summed along axis `axis`.
+        """ Sum grid values along axis `axis`.
 
         Parameters
         ----------
@@ -343,7 +344,7 @@ class Grid(SuperCellChild):
         return grid
 
     def average(self, axis, weights=None):
-        """ Returns the average grid along direction `axis`.
+        """ Average grid values along direction `axis`.
 
         Parameters
         ----------
@@ -600,7 +601,7 @@ class Grid(SuperCellChild):
         return self.index(rxyz)
 
     def index(self, coord, axis=None):
-        """ Returns the index along axis `axis` where `coord` exists
+        """ Find the grid index for a given coordinate (possibly only along a given lattice vector `axis`)
 
         Parameters
         ----------
@@ -707,7 +708,20 @@ class Grid(SuperCellChild):
 
     def __str__(self):
         """ String of object """
-        return self.__class__.__name__ + '{{kind={kind}, [{} {} {}]}}'.format(*self.shape, kind=self.dkind)
+        s = self.__class__.__name__ + '{{kind: {kind}, shape: [{shape[0]} {shape[1]} {shape[2]}],\n'.format(kind=self.dkind, shape=self.shape)
+        bc = {self.PERIODIC: 'periodic',
+              self.NEUMANN: 'neumann',
+              self.DIRICHLET: 'dirichlet',
+              self.OPEN: 'open'
+        }
+        s += ' bc: [{}, {},\n      {}, {},\n      {}, {}],\n '.format(bc[self.bc[0, 0]], bc[self.bc[0, 1]],
+                                                                      bc[self.bc[1, 0]], bc[self.bc[1, 1]],
+                                                                      bc[self.bc[2, 0]], bc[self.bc[2, 1]])
+        if not self.geometry is None:
+            s += '{}\n}}'.format(str(self.geometry).replace('\n', '\n '))
+        else:
+            s += '{}\n}}'.format(str(self.sc).replace('\n', '\n '))
+        return s
 
     def _check_compatibility(self, other, msg):
         """ Internal check for asserting two grids are commensurable """
@@ -719,32 +733,34 @@ class Grid(SuperCellChild):
                          s1 + '-' + s2 + '. ', msg)
 
     def _compatible_copy(self, other, *args, **kwargs):
-        """ Returns a copy of self with an additional check of commensurable """
+        """ Internally used copy function that also checks whether the two grids are compatible """
         if isinstance(other, Grid):
             self._check_compatibility(other, *args, **kwargs)
         return self.copy()
 
     def __eq__(self, other):
-        """ Returns true if the two grids are commensurable
+        """ Whether two grids are commensurable (no value checks, only grid shape)
 
         There will be no check of the values _on_ the grid. """
         return self.shape == other.shape
 
     def __ne__(self, other):
-        """ Returns whether two grids have the same shape """
+        """ Whether two grids are incommensurable (no value checks, only grid shape) """
         return not (self == other)
 
     def __abs__(self):
-        r""" Return the absolute value :math:`|grid|` """
+        r""" Take the absolute value of the grid :math:`|grid|` """
         dtype = dtype_complex_to_real(self.dtype)
         a = self.copy()
         a.grid = np.absolute(self.grid).astype(dtype, copy=False)
         return a
 
     def __add__(self, other):
-        """ Returns a new grid with the addition of two grids
+        """ Add two grid values (or add a single value to all grid values)
 
-        Returns same shape with same cell as the first
+        Raises
+        ------
+        ValueError: if the grids are not compatible (different shapes)
         """
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be added')
@@ -755,9 +771,11 @@ class Grid(SuperCellChild):
         return grid
 
     def __iadd__(self, other):
-        """ Returns a new grid with the addition of two grids
+        """ Add, in-place, values from another grid
 
-        Returns same shape with same cell as the first
+        Raises
+        ------
+        ValueError: if the grids are not compatible (different shapes)
         """
         if isinstance(other, Grid):
             self._check_compatibility(other, 'they cannot be added')
@@ -767,9 +785,11 @@ class Grid(SuperCellChild):
         return self
 
     def __sub__(self, other):
-        """ Returns a new grid with the difference of two grids
+        """ Subtract two grid values (or subtract a single value from all grid values)
 
-        Returns same shape with same cell as the first
+        Raises
+        ------
+        ValueError: if the grids are not compatible (different shapes)
         """
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be subtracted')
@@ -780,9 +800,11 @@ class Grid(SuperCellChild):
         return grid
 
     def __isub__(self, other):
-        """ Returns a same grid with the difference of two grids
+        """ Subtract, in-place, values from another grid
 
-        Returns same shape with same cell as the first
+        Raises
+        ------
+        ValueError: if the grids are not compatible (different shapes)
         """
         if isinstance(other, Grid):
             self._check_compatibility(other, 'they cannot be subtracted')
@@ -902,7 +924,7 @@ class Grid(SuperCellChild):
            the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
            correspond to returned quantities from `pyamg_indices`.
         """
-        b[_a.asarrayi(pyamg_indices)] = value
+        b[pyamg_indices] = value
 
     def pyamg_fix(self, A, b, pyamg_indices, value):
         r""" Fix values for the stencil to `value`.
@@ -919,7 +941,6 @@ class Grid(SuperCellChild):
         value : float
            the value of the grid to fix the value at
         """
-        pyamg_indices = _a.asarrayi(pyamg_indices)
         s = array_arange(A.indptr[pyamg_indices], A.indptr[pyamg_indices+1])
         A.data[s] = 0
         # clean-up
@@ -995,7 +1016,7 @@ class Grid(SuperCellChild):
             if self.bc[i, 0] == self.PERIODIC or \
                self.bc[i, 1] == self.PERIODIC:
                 if self.bc[i, 0] != self.bc[i, 1]:
-                    raise ValueError('*Must* not happen')
+                    raise ValueError(self.__class__.__name__ + '.pyamg_boundary_condition found a periodic and non-periodic direction in the same direction!')
                 new_sl[i] = slice(self.shape[i]-1, self.shape[i])
                 idx2 = sl2idx(new_sl) # upper
                 Periodic(idx1, idx2)

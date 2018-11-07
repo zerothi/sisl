@@ -1154,7 +1154,7 @@ class Atom(object):
     def __str__(self):
         # Create orbitals output
         orbs = ',\n '.join([str(o) for o in self.orbital])
-        return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5g}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
+        return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5f}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
 
     def __len__(self):
         """ Return number of orbitals in this atom """
