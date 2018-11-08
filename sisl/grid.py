@@ -8,6 +8,7 @@ import numpy as np
 from numpy import int32
 from numpy import floor, dot, add, cos, sin
 from numpy import ogrid, take
+from scipy.sparse import diags as sp_diags
 
 import sisl._array as _a
 from ._help import dtype_complex_to_real
@@ -931,7 +932,7 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        A : scipy.sparse.csr_matrix
+        A : `~scipy.sparse.csr_matrix`/`~scipy.sparse.csc_matrix`
            sparse matrix describing the LHS for the linear system of equations
         b : numpy.ndarray
            a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
@@ -941,16 +942,31 @@ class Grid(SuperCellChild):
         value : float
            the value of the grid to fix the value at
         """
+        if not A.format in ['csc', 'csr']:
+            raise ValueError(self.__class__.__name__ + '.pyamg_fix only works for csr/csc sparse matrices')
+
+        # Clean all couplings between the respective indices and all other data
         s = array_arange(A.indptr[pyamg_indices], A.indptr[pyamg_indices+1])
-        A.data[s] = 0
+        A.data[s] = 0.
         # clean-up
         del s
-        A.eliminate_zeros()
+
         # Specify that these indices are not to be tampered with
-        A[pyamg_indices, pyamg_indices] = 1.
+        d = np.zeros(A.shape[0], dtype=A.dtype)
+        d[pyamg_indices] = 1.
+        # BUG in scipy, sparse matrix += does not do in-place operations
+        # hence we need to overwrite the `A` matrix afterward
+        AA = A + sp_diags(d, format=A.format)
+        del d
+        # Restore data in the A array
+        A.indices = AA.indices
+        A.indptr = AA.indptr
+        A.data = AA.data
+        del AA
+        A.eliminate_zeros()
+
         # force RHS value
         self.pyamg_source(b, pyamg_indices, value)
-        A.prune() # try and clean-up unneccessary memory
 
     def pyamg_boundary_condition(self, A, b, bc=None):
         r""" Attach boundary conditions to the `pyamg` grid-matrix `A` with default boundary conditions as specified for this `Grid`
@@ -1046,9 +1062,9 @@ class Grid(SuperCellChild):
             elif bc == self.DIRICHLET:
                 Dirichlet(idx1)
 
-        A.prune()
+        A.eliminate_zeros()
 
-    def topyamg(self):
+    def topyamg(self, dtype=None):
         r""" Create a `pyamg` stencil matrix to be used in pyamg
 
         This allows retrieving the grid matrix equivalent of the real-space grid.
@@ -1056,6 +1072,11 @@ class Grid(SuperCellChild):
 
         The `pyamg` suite is it-self a rather complicated code with many options.
         For details we refer to `pyamg <pyamg https://github.com/pyamg/pyamg/>`_.
+
+        Parameters
+        ----------
+        dtype : numpy.dtype, optional
+           data-type used for the sparse matrix, default to use the grid data-type
 
         Returns
         -------
@@ -1083,8 +1104,10 @@ class Grid(SuperCellChild):
         pyamg_boundary_condition : setup the sparse matrix ``A`` to given boundary conditions (called in this routine)
         """
         from pyamg.gallery import poisson
+        if dtype is None:
+            dtype = self.dtype
         # Initially create the CSR matrix
-        A = poisson(self.shape, dtype=self.dtype, format='csr')
+        A = poisson(self.shape, dtype=dtype, format='csr')
         b = np.zeros(A.shape[0], dtype=A.dtype)
 
         # Now apply the boundary conditions
