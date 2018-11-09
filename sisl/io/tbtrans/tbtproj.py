@@ -248,6 +248,11 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 #        eig = mol.variable['eig'][:]
 
 
+class phtprojncSileTBtrans(tbtprojncSileTBtrans):
+    """ PHtrans projection file object """
+    _trans_type = 'PHT.Proj'
+
+
 # Clean up methods
 for _name in ['elecs', 'chemical_potential', 'mu',
               'electron_temperature', 'kT',
@@ -256,18 +261,11 @@ for _name in ['elecs', 'chemical_potential', 'mu',
               'orbital_COOP', 'atom_COOP',
               'orbital_COHP', 'atom_COHP']:
     setattr(tbtprojncSileTBtrans, _name, None)
-    delattr(tbtprojncSileTBtrans, _name)
 
 
 add_sile('TBT.Proj.nc', tbtprojncSileTBtrans)
 # Add spin-dependent files
 add_sile('TBT_DN.Proj.nc', tbtprojncSileTBtrans)
 add_sile('TBT_UP.Proj.nc', tbtprojncSileTBtrans)
-
-
-class phtprojncSileTBtrans(tbtprojncSileTBtrans):
-    """ PHtrans projection file object """
-    _trans_type = 'PHT.Proj'
-
 
 add_sile('PHT.Proj.nc', phtprojncSileTBtrans)

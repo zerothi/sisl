@@ -2478,36 +2478,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return p, namespace
 
 
-add_sile('TBT.nc', tbtncSileTBtrans)
-# Add spin-dependent files
-add_sile('TBT_DN.nc', tbtncSileTBtrans)
-add_sile('TBT_UP.nc', tbtncSileTBtrans)
-
-
-class phtncSileTBtrans(tbtncSileTBtrans):
-    """ PHtrans file object """
-    _trans_type = 'PHT'
-
-    def phonon_temperature(self, elec):
-        """ Phonon bath temperature [Kelvin] """
-        return self._value('kT', self._elec(elec))[0] * Ry2K
-
-    def kT(self, elec):
-        """ Phonon bath temperature [eV] """
-        return self._value('kT', self._elec(elec))[0] * Ry2eV
-
-
-# Clean up methods
-for _name in ['chemical_potential', 'electron_temperature',
-              'shot_noise', 'noise_power',
-              'current', 'current_parameter']:
-    setattr(phtncSileTBtrans, _name, None)
-    delattr(phtncSileTBtrans, _name)
-
-
-add_sile('PHT.nc', phtncSileTBtrans)
-
-
 # The average files
 # These are essentially equivalent to the TBT.nc files
 # with the exception that the k-points have been averaged out.
@@ -2659,14 +2629,42 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
     _write_default = write_tbtav
 
 
-add_sile('TBT.AV.nc', tbtavncSileTBtrans)
-# Add spin-dependent files
-add_sile('TBT_DN.AV.nc', tbtavncSileTBtrans)
-add_sile('TBT_UP.AV.nc', tbtavncSileTBtrans)
+# Phonon output
+
+class phtncSileTBtrans(tbtncSileTBtrans):
+    """ PHtrans file object """
+    _trans_type = 'PHT'
+
+    def phonon_temperature(self, elec):
+        """ Phonon bath temperature [Kelvin] """
+        return self._value('kT', self._elec(elec))[0] * Ry2K
+
+    def kT(self, elec):
+        """ Phonon bath temperature [eV] """
+        return self._value('kT', self._elec(elec))[0] * Ry2eV
 
 
 class phtavncSileTBtrans(tbtavncSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
 
+
+# Clean up methods
+for _name in ['chemical_potential', 'electron_temperature',
+              'shot_noise', 'noise_power',
+              'current', 'current_parameter']:
+    setattr(phtncSileTBtrans, _name, None)
+    setattr(phtavncSileTBtrans, _name, None)
+
+
+add_sile('TBT.nc', tbtncSileTBtrans)
+# Add spin-dependent files
+add_sile('TBT_DN.nc', tbtncSileTBtrans)
+add_sile('TBT_UP.nc', tbtncSileTBtrans)
+add_sile('TBT.AV.nc', tbtavncSileTBtrans)
+# Add spin-dependent files
+add_sile('TBT_DN.AV.nc', tbtavncSileTBtrans)
+add_sile('TBT_UP.AV.nc', tbtavncSileTBtrans)
+
+add_sile('PHT.nc', phtncSileTBtrans)
 add_sile('PHT.AV.nc', phtavncSileTBtrans)
