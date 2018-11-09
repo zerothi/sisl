@@ -43,6 +43,8 @@ Data extraction files
 - `tbtncSileTBtrans` (electronic TBtrans output)
 - `tbtavncSileTBtrans` (electronic k-averaged TBtrans output)
 - `tbtsencSileTBtrans` (electronic TBtrans self-energy output)
+- `tbtprojncSileTBtrans` (projected TBtrans output)
+
 
 Support files to complement TBtrans
 -----------------------------------
@@ -63,6 +65,7 @@ phonon transport.
 - `phtncSileTBtrans` (phononic PHtrans output)
 - `phtsencSileTBtrans` (phononic PHtrans self-energy output)
 - `phtavncSileTBtrans` (phononic k-averaged PHtrans output)
+- `phtprojncSileTBtrans` (projected PHtrans output)
 
 """
 from .sile import *
