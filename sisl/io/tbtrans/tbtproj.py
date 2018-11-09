@@ -203,7 +203,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 ns._data.append(data)
                 ns._data_header.append('T[G0]:{}-{}'.format(elec_mol_proj1, elec_mol_proj2))
                 ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), elec_mol_proj1, elec_mol_proj2))
-        p.add_argument('-T', '--transmission', nargs=2, metavar=('E.M.P-1', 'E.M.P-2'),
+        p.add_argument('-T', '--transmission', nargs=2, metavar=('E.M.P1', 'E.M.P2'),
                        action=DataT,
                        help='Store transmission between two projections.')
 
