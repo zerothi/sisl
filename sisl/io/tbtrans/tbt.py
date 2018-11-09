@@ -2255,7 +2255,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('-T', '--transmission', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataT,
-                       help='Store the transmission between two electrodes.')
+                       help='Store transmission between two electrodes.')
 
         class DataBT(argparse.Action):
 
@@ -2281,7 +2281,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 ns._data_description.append('Column {} is bulk-transmission'.format(len(ns._data)))
         p.add_argument('-BT', '--transmission-bulk', nargs=1, metavar='ELEC',
                        action=DataBT,
-                       help='Store the bulk transmission of an electrode.')
+                       help='Store bulk transmission of an electrode.')
 
         class DataDOS(argparse.Action):
 
@@ -2310,10 +2310,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         p.add_argument('--dos', '-D', nargs='?', metavar='ELEC',
                        action=DataDOS, default=None,
-                       help="""Store the DOS. If no electrode is specified, it is Green function, else it is the spectral function.""")
+                       help="""Store DOS. If no electrode is specified, it is Green function, else it is the spectral function.""")
         p.add_argument('--ados', '-AD', metavar='ELEC',
                        action=DataDOS, default=None,
-                       help="""Store the spectral DOS, same as --dos but requires an electrode-argument.""")
+                       help="""Store spectral DOS, same as --dos but requires an electrode-argument.""")
 
         class DataDOSBulk(argparse.Action):
 
@@ -2335,7 +2335,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 ns._data_description.append('Column {} is sum of all electrode[{}] atoms+orbitals with normalization 1/{}'.format(len(ns._data), e, no))
         p.add_argument('--bulk-dos', '-BD', nargs=1, metavar='ELEC',
                        action=DataDOSBulk, default=None,
-                       help="""Store the bulk DOS of an electrode.""")
+                       help="""Store bulk DOS of an electrode.""")
 
         class DataTEig(argparse.Action):
 
@@ -2367,7 +2367,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('--transmission-eig', '-Teig', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataTEig,
-                       help='Store the transmission eigenvalues between two electrodes.')
+                       help='Store transmission eigenvalues between two electrodes.')
 
         class Info(argparse.Action):
             """ Action to print information contained in the TBT.nc file, helpful before performing actions """
@@ -2418,7 +2418,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 ns._Erng = None
                 ns._krng = True
         p.add_argument('--out', '-o', nargs=1, action=Out,
-                       help='Store the currently collected information (at its current invocation) to the out file.')
+                       help='Store currently collected information (at its current invocation) to the out file.')
 
         class AVOut(argparse.Action):
 
@@ -2443,10 +2443,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 from matplotlib import pyplot as plt
                 plt.figure()
 
+                def _get_header(header):
+                    val_info = header.split(':')
+                    if len(val_info) == 1:
+                        # We smiply have the data
+                        return val_info[0].split('[')[0]
+                    # We have a value *and* the electrode
+                    return '{}:{}'.format(val_info[0].split('[')[0], val_info[1])
+
                 is_DOS = True
                 is_T = True
                 for i in range(1, len(ns._data)):
-                    plt.plot(ns._data[0], ns._data[i], label=ns._data_header[i].split('[')[0])
+                    plt.plot(ns._data[0], ns._data[i], label=_get_header(ns._data_header[i]))
                     is_DOS &= 'DOS' in ns._data_header[i]
                     is_T &= 'T' in ns._data_header[i]
 
@@ -2454,6 +2462,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     plt.ylabel('DOS [1/eV]')
                 elif is_T:
                     plt.ylabel('Transmission [G0]')
+                else:
+                    plt.ylabel('mixed units')
                 plt.xlabel('E - E_F [eV]')
 
                 plt.legend(loc=8, ncol=3, bbox_to_anchor=(0.5, 1.0))

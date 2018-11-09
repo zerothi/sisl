@@ -6,7 +6,8 @@ except Exception:
     from io import StringIO
 import numpy as np
 
-from sisl.utils import list2str
+from sisl._help import _str
+from sisl.utils import *
 from sisl.unit.siesta import unit_convert
 
 from ..sile import add_sile
@@ -53,6 +54,179 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         """
         mol = self.groups[molecule]
         return list(mol.groups.keys())
+
+    def ADOS(self, elec_mol_proj, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
+        r""" Projected spectral density of states (DOS) (1/eV)
+
+        Extract the projected spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
+
+        .. math::
+           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} [\mathbf{G}(E)|i\rangle\langle i|\Gamma_\mathfrak{el}|i\rangle\langle i|\mathbf{G}^\dagger]_{\nu\nu}(E)
+
+        where :math:`|i\rangle` may be a sum of states.
+        The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
+        arguments.
+
+        Parameters
+        ----------
+        elec_mol_proj: str, tuple
+           originating projected spectral function (<electrode>.<molecule>.<projection>)
+        E : float or int, optional
+           optionally only return the DOS of atoms at a given energy point
+        kavg: bool, int or array_like, optional
+           whether the returned DOS is k-averaged, an explicit k-point
+           or a selection of k-points
+        atom : array_like of int or bool, optional
+           only return for a given set of atoms (default to all).
+           *NOT* allowed with `orbital` keyword
+        orbital : array_like of int or bool, optional
+           only return for a given set of orbitals (default to all)
+           *NOT* allowed with `atom` keyword
+        sum : bool, optional
+           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
+        norm : {'none', 'atom', 'orbital', 'all'}
+           how the normalization of the summed DOS is performed (see `norm` routine).
+        """
+        if isinstance(elec_mol_proj, _str):
+            elec_mol_proj = elec_mol_proj.split('.')
+        mol_proj_elec = [elec_mol_proj[i] for i in [1, 2, 0]]
+        return self._DOS(self._value_E('ADOS', mol_proj_elec, kavg=kavg, E=E), atom, orbital, sum, norm) * eV2Ry
+
+    def transmission(self, elec_mol_proj_from, elec_mol_proj_to, kavg=True):
+        """ Transmission from `mol_proj_elec_from` to `mol_proj_elec_to`
+
+        Parameters
+        ----------
+        elec_mol_proj_from: str, tuple
+           the originating scattering projection (<electrode>.<molecule>.<projection>)
+        elec_mol_proj_to: str, tuple
+           the absorbing scattering projection (<electrode>.<molecule>.<projection>)
+        kavg: bool, int or array_like, optional
+           whether the returned transmission is k-averaged, an explicit k-point
+           or a selection of k-points
+
+        See Also
+        --------
+        transmission_eig : projected transmission decomposed in eigenchannels
+        """
+        if isinstance(elec_mol_proj_from, _str):
+            elec_mol_proj_from = elec_mol_proj_from.split('.')
+        if not isinstance(elec_mol_proj_to, _str):
+            elec_mol_proj_to = '.'.join(elec_mol_proj_to)
+        mol_proj_elec = [elec_mol_proj_from[i] for i in [1, 2, 0]]
+        return self._value_avg(elec_mol_proj_to + '.T', mol_proj_elec, kavg=kavg)
+
+    def transmission_eig(self, elec_mol_proj_from, elec_mol_proj_to, kavg=True):
+        """ Transmission eigenvalues from `elec_mol_proj_from` to `elec_mol_proj_to`
+
+        Parameters
+        ----------
+        elec_mol_proj_from: str, tuple
+           the originating scattering projection (<electrode>.<molecule>.<projection>)
+        elec_mol_proj_to: str, tuple
+           the absorbing scattering projection (<electrode>.<molecule>.<projection>)
+        kavg: bool, int or array_like, optional
+           whether the returned transmission is k-averaged, an explicit k-point
+           or a selection of k-points
+
+        See Also
+        --------
+        transmission : projected transmission
+        """
+        if isinstance(elec_mol_proj_from, _str):
+            elec_mol_proj_from = elec_mol_proj_from.split('.')
+        if not isinstance(elec_mol_proj_to, _str):
+            elec_mol_proj_to = '.'.join(elec_mol_proj_to)
+        mol_proj_elec = [elec_mol_proj_from[i] for i in [1, 2, 0]]
+        return self._value_avg(elec_mol_proj_to + '.T.Eig', mol_proj_elec, kavg=kavg)
+
+    @default_ArgumentParser(description="Extract data from a TBT.Proj.nc file")
+    def ArgumentParser(self, p=None, *args, **kwargs):
+        """ Returns the arguments that is available for this Sile """
+        p, namespace = super(tbtprojncSileTBtrans, self).ArgumentParser(p, *args, **kwargs)
+
+        # We limit the import to occur here
+        import argparse
+
+        # Remove the ones we don't have in the projected ones
+        indices = []
+        for i, action in enumerate(p._actions):
+            if action.dest in ['dos', 'bulk_dos', 'transmission_bulk']:
+                indices.append(i)
+        indices.sort(reverse=True)
+        for i in indices:
+            p._actions.pop(i)
+
+        def ensure_E(func):
+            """ This decorater ensures that E is the first element in the _data container """
+
+            def assign_E(self, *args, **kwargs):
+                ns = args[1]
+                if len(ns._data) == 0:
+                    # We immediately extract the energies
+                    ns._data.append(ns._tbt.E[ns._Erng].flatten())
+                    ns._data_header.append('Energy[eV]')
+                return func(self, *args, **kwargs)
+            return assign_E
+
+        class DataDOS(argparse.Action):
+
+            @collect_action
+            @ensure_E
+            def __call__(self, parser, ns, value, option_string=None):
+                data = ns._tbt.ADOS(value, kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
+                ns._data_header.append('ADOS[1/eV]:{}'.format(value))
+                NORM = int(ns._tbt.norm(orbital=ns._Orng, norm=ns._norm))
+
+                # The flatten is because when ns._Erng is None, then a new
+                # dimension (of size 1) is created
+                ns._data.append(data[ns._Erng].flatten())
+                if ns._Orng is None:
+                    ns._data_description.append('Column {} is sum of all device atoms+orbitals with normalization 1/{}'.format(len(ns._data), NORM))
+                else:
+                    ns._data_description.append('Column {} is atoms[orbs] {} with normalization 1/{}'.format(len(ns._data), ns._Ovalue, NORM))
+        p.add_argument('--ados', '-AD', metavar='E.M.P',
+                       action=DataDOS, default=None,
+                       help="""Store projected spectral DOS""")
+
+        class DataT(argparse.Action):
+
+            @collect_action
+            @ensure_E
+            def __call__(self, parser, ns, values, option_string=None):
+                elec_mol_proj1 = values[0]
+                elec_mol_proj2 = values[1]
+
+                # Grab the information
+                data = ns._tbt.transmission(elec_mol_proj1, elec_mol_proj2, kavg=ns._krng)[ns._Erng]
+                data.shape = (-1,)
+                ns._data.append(data)
+                ns._data_header.append('T[G0]:{}-{}'.format(elec_mol_proj1, elec_mol_proj2))
+                ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), elec_mol_proj1, elec_mol_proj2))
+        p.add_argument('-T', '--transmission', nargs=2, metavar=('E.M.P-1', 'E.M.P-2'),
+                       action=DataT,
+                       help='Store transmission between two projections.')
+
+        class DataTEig(argparse.Action):
+
+            @collect_action
+            @ensure_E
+            def __call__(self, parser, ns, values, option_string=None):
+                elec_mol_proj1 = values[0]
+                elec_mol_proj2 = values[1]
+
+                # Grab the information
+                data = ns._tbt.transmission_eig(elec_mol_proj1, elec_mol_proj2, kavg=ns._krng)[ns._Erng]
+                neig = data.shape[-1]
+                for eig in range(neig):
+                    ns._data.append(data[ns._Erng, ..., eig].flatten())
+                    ns._data_header.append('Teig({})[G0]:{}-{}'.format(eig+1, elec_mol_proj1, elec_mol_proj2))
+                    ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), elec_mol_proj1, elec_mol_proj2))
+        p.add_argument('-Teig', '--transmission-eig', nargs=2, metavar=('E.M.P-1', 'E.M.P-2'),
+                       action=DataT,
+                       help='Store transmission eigenvalues between two projections.')
+
+        return p, namespace
 
     def info(self, molecule=None):
         """ Information about the calculated quantities available for extracting in this file
@@ -217,45 +391,55 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         out.close()
         return s
 
+    def eigenstate(self, molecule, k=None, all=True):
+        r""" Return the eigenstate on the projected `molecule`
 
-#    def eigenstate(self, molecule, k=None, all=True):
-#        r""" Return the eigenstate on the projected `molecule`
-#
-#        The eigenstate object will contain the geometry as the parent object.
-#        The eigenstate will be in the Lowdin basis:
-#        .. math::
-#            |\psi'_i\rangle = \mathbf S^{1/2} |\psi_i\rangle
-#
-#        Parameters
-#        ----------
-#        molecule : str
-#           name of the molecule to retrieve the eigenstate from
-#        k : optional
-#           k-index for retrieving a specific k-point (default to all)
-#        all : bool, optional
-#           whether all states should be returned
-#
-#        Returns
-#        -------
-#        EigenstateElectron
-#        """
-#        if 'PHT' in self._trans_type:
-#            from sisl.physics import EigenmodePhonon as cls
-#        else:
-#            from sisl.physics import EigenstateElectronn as cls
-#
-#        mol = self.groups[molecule]
-#        suf = 'state'
-#        if all:
-#            if ('states' not in mol.variable) and ('Restates' not in mol.variable):
-#                suf = 'states'
-#
-#        is_gamma = suf in mol.variable
-#        if is_gamma:
-#            state = mol.variable['Re' + suf][:] + 1j * mol.variable['Im' + suf][:]
-#        else:
-#            state = mol.variable[suf][:]
-#        eig = mol.variable['eig'][:]
+        The eigenstate object will contain the geometry as the parent object.
+        The eigenstate will be in the Lowdin basis:
+        .. math::
+            |\psi'_i\rangle = \mathbf S^{1/2} |\psi_i\rangle
+
+        Parameters
+        ----------
+        molecule : str
+           name of the molecule to retrieve the eigenstate from
+        k : optional
+           k-index for retrieving a specific k-point (default to all)
+        all : bool, optional
+           whether all states should be returned
+
+        Returns
+        -------
+        EigenstateElectron
+        """
+        if 'PHT' in self._trans_type:
+            from sisl.physics import EigenmodePhonon as cls
+        else:
+            from sisl.physics import EigenstateElectron as cls
+
+        mol = self.groups[molecule]
+        if all and ('states' in mol.variables or 'Restates' in mol.variables):
+            suf = 'states'
+        else:
+            all = False
+            suf = 'state'
+
+        is_gamma = suf in mol.variables
+        if is_gamma:
+            state = mol.variables[suf][:]
+        else:
+            state = mol.variables['Re' + suf][:] + 1j * mol.variables['Im' + suf][:]
+        eig = mol.variables['eig'][:]
+
+        if eig.ndim > 1:
+            raise NotImplementedError(self.__class__.__name__ + ".eigenstate currently does not implement "
+                                      "the k-point version.")
+
+        geom = self.read_geometry()
+        if all:
+            return cls(state, eig, parent=geom)
+        lvl = mol.variables['lvl'][:] - 1
+        return cls(state, eig[lvl], parent=geom)
 
 
 class phtprojncSileTBtrans(tbtprojncSileTBtrans):
