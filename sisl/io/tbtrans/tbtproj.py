@@ -7,12 +7,18 @@ except Exception:
 import numpy as np
 
 from sisl.utils import list2str
+from sisl.unit.siesta import unit_convert
 
 from ..sile import add_sile
 from .tbt import tbtncSileTBtrans
 
 
 __all__ = ['tbtprojncSileTBtrans', 'phtprojncSileTBtrans']
+
+Bohr2Ang = unit_convert('Bohr', 'Ang')
+Ry2eV = unit_convert('Ry', 'eV')
+Ry2K = unit_convert('Ry', 'K')
+eV2Ry = unit_convert('eV', 'Ry')
 
 
 class tbtprojncSileTBtrans(tbtncSileTBtrans):
@@ -22,6 +28,10 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
     def _elec(self, mol_proj_elec):
         """ In projections we re-use the _* methods from tbtncSileTBtrans by forcing _elec to return its argument """
         return mol_proj_elec
+
+    def eta(self):
+        r""" Device region :math:`\eta` value """
+        return self._value('eta')[0] * Ry2eV
 
     @property
     def molecules(self):
@@ -256,7 +266,7 @@ class phtprojncSileTBtrans(tbtprojncSileTBtrans):
 # Clean up methods
 for _name in ['elecs', 'chemical_potential', 'mu',
               'electron_temperature', 'kT',
-              'eta', 'current', 'current_parameter',
+              'current', 'current_parameter',
               'shot_noise', 'fano', 'density_matrix',
               'orbital_COOP', 'atom_COOP',
               'orbital_COHP', 'atom_COHP']:
