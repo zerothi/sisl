@@ -110,7 +110,7 @@ def test_1_graphene_all_content(sisl_files):
     for elec in elecs:
         assert tbt.n_btd(elec) == len(tbt.btd(elec))
         assert tbt.chemical_potential(elec) == pytest.approx(0.)
-        assert tbt.electronic_temperature(elec) == pytest.approx(300., abs=1)
+        assert tbt.electron_temperature(elec) == pytest.approx(300., abs=1)
         assert tbt.eta(elec) == pytest.approx(1e-4, abs=1e-6)
 
     # Check electrode relevant stuff

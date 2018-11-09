@@ -19,6 +19,10 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
     """ TBtrans projection file object """
     _trans_type = 'TBT.Proj'
 
+    def _elec(self, mol_proj_elec):
+        """ In projections we re-use the _* methods from tbtncSileTBtrans by forcing _elec to return its argument """
+        return mol_proj_elec
+
     @property
     def molecules(self):
         """ List of regions where state projections may happen """
@@ -242,6 +246,17 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 #        else:
 #            state = mol.variable[suf][:]
 #        eig = mol.variable['eig'][:]
+
+
+# Clean up methods
+for _name in ['elecs', 'chemical_potential', 'mu',
+              'electron_temperature', 'kT',
+              'eta', 'current', 'current_parameter',
+              'shot_noise', 'fano', 'density_matrix',
+              'orbital_COOP', 'atom_COOP',
+              'orbital_COHP', 'atom_COHP']:
+    setattr(tbtprojncSileTBtrans, _name, None)
+    delattr(tbtprojncSileTBtrans, _name)
 
 
 add_sile('TBT.Proj.nc', tbtprojncSileTBtrans)

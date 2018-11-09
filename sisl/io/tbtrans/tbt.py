@@ -232,12 +232,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self._value('mu', self._elec(elec))[0] * Ry2eV
     mu = chemical_potential
 
-    def electronic_temperature(self, elec):
-        """ Return temperature of the electrode electronic distribution in Kelvin """
+    def electron_temperature(self, elec):
+        """ Electron bath temperature [Kelvin] """
         return self._value('kT', self._elec(elec))[0] * Ry2K
 
     def kT(self, elec):
-        """ Return temperature of the electrode electronic distribution in eV """
+        """ Electron bath temperature [eV] """
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
     def eta(self, elec=None):
@@ -393,6 +393,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
+        DOS : ndarray
+           data to process
         atom : array_like of int, optional
            only return for a given set of atoms (default to all).
            *NOT* allowed with `orbital` keyword
@@ -424,7 +426,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         if atom is None and orbital is None:
             # We simply return *everything*
             if sum:
-                return _a.sumd(DOS, axis=-1) / NORM
+                return DOS.sum(-1) / NORM
             # We return the sorted DOS
             p = np.argsort(self.pivot())
             return DOS[..., p] / NORM
@@ -444,7 +446,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
 
             if sum:
-                return _a.sumd(DOS[..., p], axis=-1) / NORM
+                return DOS[..., p].sum(-1) / NORM
             # Else, we have to return the full subset
             return DOS[..., p] / NORM
 
@@ -457,7 +459,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         if sum or isinstance(atom, Integral):
             # Regardless of SUM, when requesting a single atom
             # we return it
-            return _a.sumd(DOS[..., p], axis=-1) / NORM
+            return DOS[..., p].sum(-1) / NORM
 
         # We default the case where 1-orbital systems are in use
         # Then it becomes *very* easy
@@ -468,7 +470,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         # We will return per-atom
         shp = list(DOS.shape[:-1])
-        nDOS = np.empty(shp + [len(atom)], np.float64)
+        nDOS = np.empty(shp + [len(atom)], DOS.dtype)
 
         # Quicker than re-creating the geometry on every instance
         geom = self.geom
@@ -479,7 +481,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             if len(pvt) == 0:
                 nDOS[..., i] = 0.
             else:
-                nDOS[..., i] = _a.sumd(DOS[..., pvt], axis=-1) / NORM
+                nDOS[..., i] = DOS[..., pvt].sum(-1) / NORM
 
         return nDOS
 
@@ -518,8 +520,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ADOS : the spectral density of states from an electrode
         BDOS : the bulk density of states in an electrode
         """
-        return self._DOS(self._value_E('DOS', kavg=kavg, E=E),
-                                  atom, orbital, sum, norm) * eV2Ry
+        return self._DOS(self._value_E('DOS', kavg=kavg, E=E), atom, orbital, sum, norm) * eV2Ry
 
     def ADOS(self, elec=0, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
         r""" Spectral density of states (DOS) (1/eV).
@@ -558,8 +559,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         BDOS : the bulk density of states in an electrode
         """
         elec = self._elec(elec)
-        return self._DOS(self._value_E('ADOS', elec, kavg=kavg, E=E),
-                         atom, orbital, sum, norm) * eV2Ry
+        return self._DOS(self._value_E('ADOS', elec, kavg=kavg, E=E), atom, orbital, sum, norm) * eV2Ry
 
     def BDOS(self, elec=0, E=None, kavg=True, sum=True, norm='none'):
         r""" Bulk density of states (DOS) (1/eV).
@@ -600,7 +600,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         else:
             N = 1.
         if sum:
-            return _a.sumd(self._value_E('DOS', elec, kavg=kavg, E=E), axis=-1) * eV2Ry * N
+            return self._value_E('DOS', elec, kavg=kavg, E=E).sum(-1) * eV2Ry * N
         else:
             return self._value_E('DOS', elec, kavg=kavg, E=E) * eV2Ry * N
 
@@ -710,7 +710,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                  "accurately calculate the current due to the calculated energy range. "
                  "Increase the calculated energy-range.\n" + s)
 
-        I = _a.sumd(T * dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to)))
+        I = (T * dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to))).sum()
         return I * units('eV', 'J') / constant.h('eV s')
 
     def shot_noise(self, elec_from=0, elec_to=1, classical=False, kavg=True):
@@ -2011,8 +2011,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 prnt("  - number of BTD blocks: {}".format(self.n_btd(elec)))
                 prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
                 gelec = self.groups[elec]
-                prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
-                prnt("  - electronic temperature: {:.2f} K".format(self.electronic_temperature(elec)))
+                if 'TBT' in self._trans_type:
+                    prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
+                    prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))
+                else:
+                    prnt("  - phonon temperature: {:.4f} K".format(self.phonon_temperature(elec)))
                 prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
                 truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
                 truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
@@ -2484,6 +2487,23 @@ add_sile('TBT_UP.nc', tbtncSileTBtrans)
 class phtncSileTBtrans(tbtncSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
+
+    def phonon_temperature(self, elec):
+        """ Phonon bath temperature [Kelvin] """
+        return self._value('kT', self._elec(elec))[0] * Ry2K
+
+    def kT(self, elec):
+        """ Phonon bath temperature [eV] """
+        return self._value('kT', self._elec(elec))[0] * Ry2eV
+
+
+# Clean up methods
+for _name in ['chemical_potential', 'electron_temperature',
+              'shot_noise', 'noise_power',
+              'current', 'current_parameter']:
+    setattr(phtncSileTBtrans, _name, None)
+    delattr(phtncSileTBtrans, _name)
+
 
 add_sile('PHT.nc', phtncSileTBtrans)
 

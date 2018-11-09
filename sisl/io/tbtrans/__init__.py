@@ -40,9 +40,9 @@ The above extraction of data is the most frequent use of this module.
 Data extraction files
 ^^^^^^^^^^^^^^^^^^^^^
 
-- `tbtncSileTBtrans` (electronic TBtrans output)
-- `tbtavncSileTBtrans` (electronic k-averaged TBtrans output)
-- `tbtsencSileTBtrans` (electronic TBtrans self-energy output)
+- `tbtncSileTBtrans` (electron TBtrans output)
+- `tbtavncSileTBtrans` (electron k-averaged TBtrans output)
+- `tbtsencSileTBtrans` (electron TBtrans self-energy output)
 - `tbtprojncSileTBtrans` (projected TBtrans output)
 
 
@@ -62,9 +62,9 @@ PHtrans
 PHtrans is the same program as TBtrans, it however uses the dynamical matrix to calculate
 phonon transport.
 
-- `phtncSileTBtrans` (phononic PHtrans output)
-- `phtsencSileTBtrans` (phononic PHtrans self-energy output)
-- `phtavncSileTBtrans` (phononic k-averaged PHtrans output)
+- `phtncSileTBtrans` (phonon PHtrans output)
+- `phtsencSileTBtrans` (phonon PHtrans self-energy output)
+- `phtavncSileTBtrans` (phonon k-averaged PHtrans output)
 - `phtprojncSileTBtrans` (projected PHtrans output)
 
 """
