@@ -11,7 +11,7 @@ pytestmark = [pytest.mark.io, pytest.mark.tbtrans]
 _dir = 'sisl/io/tbtrans'
 
 
-def test_tbt_dH1(sisl_tmp, sisl_system):
+def test_tbt_delta1(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.dH.nc', _dir)
     H = Hamiltonian(sisl_system.gtb)
     H.construct([sisl_system.R, sisl_system.t])
@@ -63,7 +63,7 @@ def test_tbt_dH1(sisl_tmp, sisl_system):
 
 
 @pytest.mark.xfail(raises=ValueError)
-def test_tbt_dH_fail(sisl_tmp, sisl_system):
+def test_tbt_delta_fail(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.dH.nc', _dir)
     H = Hamiltonian(sisl_system.gtb)
     H.construct([sisl_system.R, sisl_system.t])
@@ -76,7 +76,7 @@ def test_tbt_dH_fail(sisl_tmp, sisl_system):
         sile.write_delta(H, k=[0.2] * 3)
 
 
-def test_tbt_dH_write_read(sisl_tmp, sisl_system):
+def test_tbt_delta_write_read(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.dH.nc', _dir)
     H = Hamiltonian(sisl_system.gtb, dtype=np.complex64)
     H.construct([sisl_system.R, sisl_system.t])
@@ -88,3 +88,33 @@ def test_tbt_dH_write_read(sisl_tmp, sisl_system):
         h = sile.read_delta()
     assert h.spsame(H)
     assert h.dkind == H.dkind
+
+
+@pytest.mark.xfail(raises=ValueError)
+def test_tbt_delta_fail_list_col(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.dH.nc', _dir)
+    H = Hamiltonian(sisl_system.gtb)
+    H.construct([sisl_system.R, sisl_system.t])
+
+    with deltancSileTBtrans(f, 'w') as sile:
+        sile.write_delta(H, E=-1.)
+        edges = H.edges(0)
+        i = edges.max() + 1
+        del H[0, i - 1]
+        H[0, i] = 1.
+        sile.write_delta(H, E=1.)
+
+
+@pytest.mark.xfail(raises=ValueError)
+def test_tbt_delta_fail_ncol(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.dH.nc', _dir)
+    H = Hamiltonian(sisl_system.gtb)
+    H.construct([sisl_system.R, sisl_system.t])
+
+    with deltancSileTBtrans(f, 'w') as sile:
+        sile.write_delta(H, E=-1.)
+        edges = H.edges(0)
+        i = edges.max() + 1
+        H[0, i] = 1.
+        H.finalize()
+        sile.write_delta(H, E=1.)

@@ -283,9 +283,8 @@ class Test_atomicorbital(object):
             for j in range(i+1, len(a)):
                 assert a[i] == a[j] and a[i].equal(a[j], psi=True, radial=True)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_init2(self):
-        AtomicOrbital('pzP')
+        assert AtomicOrbital('pzP') == AtomicOrbital(n=2, l=1, m=0, P=True)
 
     def test_init3(self):
         rf = r_f(6)

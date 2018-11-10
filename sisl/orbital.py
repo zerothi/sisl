@@ -859,6 +859,8 @@ class AtomicOrbital(Orbital):
 
         if self.l > 4:
             raise ValueError(self.__class__.__name__ + ' does not implement shell h and above!')
+        if abs(self.m) > self.l:
+            raise ValueError(self.__class__.__name__ + ' requires |m| <= l.')
 
         # Retrieve user-passed spherical orbital
         s = kwargs.get('spherical', None)

@@ -113,12 +113,6 @@ def test11(setup):
         assert np.allclose(PT.radius([1, 2], method=m), PT.radius(['H', 'He'], method=m))
 
 
-@pytest.mark.xfail(raises=KeyError)
-def test12():
-    a = Atom(1.2)
-
-
-@pytest.mark.xfail(raises=KeyError)
 def test_fail_equal():
     assert Atom(1.2) != 2.
 

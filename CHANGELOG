@@ -1,6 +1,12 @@
 0.9.5
 =====
 
+- Fixed temperature for phonon output pht*nc files
+
+- Added tbtprojncSileTBtrans sile for analyzing projected transmissions
+
+- Removed deprecated dhSileTBtrans
+
 - Bug fix for binary grid files with Siesta and also reads using fdf-files
 
 - Changed default self-energy eta values to 1e-4 eV
