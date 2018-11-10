@@ -1484,7 +1484,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             DM = DensityMatrix.fromsp(geom, dm)
         else:
             if geom.no != geometry.no:
-                raise ValueError(self.__class__.__name__ + '.density_matrix requires input geometry to contain the correct number of orbitals. Please correct input!')
+                raise ValueError(self.__class__.__name__ + '.Adensity_matrix requires input geometry to contain the correct number of orbitals. Please correct input!')
             DM = DensityMatrix.fromsp(geometry, dm)
         return DM
 
@@ -1555,7 +1555,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     def orbital_ACOOP(self, elec, E, kavg=True, isc=None):
         r""" Orbital COOP analysis of the spectral function
 
-        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
+        This will return a sparse matrix, see `~scipy.sparse.csr_matrix` for details.
         Each matrix element of the sparse matrix corresponds to the COOP of the
         underlying geometry.
 

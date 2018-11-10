@@ -26,6 +26,21 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
     """ TBtrans projection file object """
     _trans_type = 'TBT.Proj'
 
+    @classmethod
+    def _mol_proj_elec(self, elec_mol_proj):
+        """ Parse the electrode-molecule-projection str/tuple into the molecule-projected-electrode
+
+        Parameters
+        ----------
+        elec_mol_proj : str or tuple
+           electrode-molecule-projection
+        """
+        if isinstance(elec_mol_proj, _str):
+            elec_mol_proj = elec_mol_proj.split('.')
+        if len(elec_mol_proj) == 1:
+            return elec_mol_proj
+        return [elec_mol_proj[i] for i in [1, 2, 0]]
+
     def _elec(self, mol_proj_elec):
         """ In projections we re-use the _* methods from tbtncSileTBtrans by forcing _elec to return its argument """
         return mol_proj_elec
@@ -69,7 +84,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
         Parameters
         ----------
-        elec_mol_proj: str, tuple
+        elec_mol_proj: str or tuple
            originating projected spectral function (<electrode>.<molecule>.<projection>)
         E : float or int, optional
            optionally only return the DOS of atoms at a given energy point
@@ -87,9 +102,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         norm : {'none', 'atom', 'orbital', 'all'}
            how the normalization of the summed DOS is performed (see `norm` routine).
         """
-        if isinstance(elec_mol_proj, _str):
-            elec_mol_proj = elec_mol_proj.split('.')
-        mol_proj_elec = [elec_mol_proj[i] for i in [1, 2, 0]]
+        mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
         return self._DOS(self._value_E('ADOS', mol_proj_elec, kavg=kavg, E=E), atom, orbital, sum, norm) * eV2Ry
 
     def transmission(self, elec_mol_proj_from, elec_mol_proj_to, kavg=True):
@@ -97,9 +110,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
         Parameters
         ----------
-        elec_mol_proj_from: str, tuple
+        elec_mol_proj_from: str or tuple
            the originating scattering projection (<electrode>.<molecule>.<projection>)
-        elec_mol_proj_to: str, tuple
+        elec_mol_proj_to: str or tuple
            the absorbing scattering projection (<electrode>.<molecule>.<projection>)
         kavg: bool, int or array_like, optional
            whether the returned transmission is k-averaged, an explicit k-point
@@ -109,14 +122,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         --------
         transmission_eig : projected transmission decomposed in eigenchannels
         """
-        if isinstance(elec_mol_proj_from, _str):
-            elec_mol_proj_from = elec_mol_proj_from.split('.')
+        mol_proj_elec = self._mol_proj_elec(elec_mol_proj_from)
         if not isinstance(elec_mol_proj_to, _str):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
-        if len(elec_mol_proj_from) > 2:
-            mol_proj_elec = [elec_mol_proj_from[i] for i in [1, 2, 0]]
-        else:
-            mol_proj_elec = elec_mol_proj_from
         return self._value_avg(elec_mol_proj_to + '.T', mol_proj_elec, kavg=kavg)
 
     def transmission_eig(self, elec_mol_proj_from, elec_mol_proj_to, kavg=True):
@@ -124,9 +132,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
         Parameters
         ----------
-        elec_mol_proj_from: str, tuple
+        elec_mol_proj_from: str or tuple
            the originating scattering projection (<electrode>.<molecule>.<projection>)
-        elec_mol_proj_to: str, tuple
+        elec_mol_proj_to: str or tuple
            the absorbing scattering projection (<electrode>.<molecule>.<projection>)
         kavg: bool, int or array_like, optional
            whether the returned transmission is k-averaged, an explicit k-point
@@ -136,15 +144,173 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         --------
         transmission : projected transmission
         """
-        if isinstance(elec_mol_proj_from, _str):
-            elec_mol_proj_from = elec_mol_proj_from.split('.')
+        mol_proj_elec = self._mol_proj_elec(elec_mol_proj_from)
         if not isinstance(elec_mol_proj_to, _str):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
-        if len(elec_mol_proj_from) > 2:
-            mol_proj_elec = [elec_mol_proj_from[i] for i in [1, 2, 0]]
-        else:
-            mol_proj_elec = elec_mol_proj_from
         return self._value_avg(elec_mol_proj_to + '.T.Eig', mol_proj_elec, kavg=kavg)
+
+    def Adensity_matrix(self, elec_mol_proj, E, kavg=True, isc=None, geometry=None):
+        r""" Projected spectral function density matrix at energy `E` (1/eV)
+
+        The projected density matrix can be used to calculate the LDOS in real-space.
+
+        The :math:`\mathrm{LDOS}(E, \mathbf r)` may be calculated using the `~sisl.physics.DensityMatrix.density`
+        routine. Basically the LDOS in real-space may be calculated as
+
+        .. math::
+            \rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, \nu\mu}(E)]
+
+        where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations
+        ensures the broadening of the density, i.e. it should not be necessary to perform energy
+        averages over the density matrices.
+
+        Parameters
+        ----------
+        elec_mol_proj: str or tuple
+           the projected electrode of originating electrons
+        E : float or int
+           the energy or the energy index of density matrix. If an integer
+           is passed it is the index, otherwise the index corresponding to
+           ``Eindex(E)`` is used.
+        kavg: bool, int or array_like, optional
+           whether the returned density matrix is k-averaged, an explicit k-point
+           or a selection of k-points
+        isc: array_like, optional
+           the returned density matrix from unit-cell (``[None, None, None]``) to
+           the given supercell, the default is all density matrix elements for the supercell.
+           To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+        geometry: Geometry, optional
+           geometry that will be associated with the density matrix. By default the
+           geometry contained in this file will be used. However, then the
+           atomic species are probably incorrect, nor will the orbitals contain
+           the basis-set information required to generate the required density
+           in real-space.
+
+        Returns
+        -------
+        DensityMatrix: the object containing the Geometry and the density matrix elements
+        """
+        mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
+        dm = self._sparse_data('DM', mol_proj_elec, E, kavg, isc) * eV2Ry
+        dm.eliminate_zeros()
+        dm.sort_indices()
+        # Now create the density matrix object
+        geom = self.read_geometry()
+        if geometry is None:
+            DM = DensityMatrix.fromsp(geom, dm)
+        else:
+            if geom.no != geometry.no:
+                raise ValueError(self.__class__.__name__ + '.Adensity_matrix requires input geometry to contain the correct number of orbitals. Please correct input!')
+            DM = DensityMatrix.fromsp(geometry, dm)
+        return DM
+
+    def orbital_ACOOP(self, elec_mol_proj, E, kavg=True, isc=None):
+        r""" Orbital COOP analysis of the projected spectral function
+
+        This will return a sparse matrix, see `~scipy.sparse.csr_matrix` for details.
+        Each matrix element of the sparse matrix corresponds to the COOP of the
+        underlying geometry.
+
+        The COOP analysis can be written as:
+
+        .. math::
+            \mathrm{COOP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu} \mathbf S_{\mu\nu} \big]
+
+        The sum of the COOP DOS is equal to the DOS:
+
+        .. math::
+            \mathrm{ADOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf A}_{\nu\mu}
+
+        One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),
+        7751-7761 for details. The DBCOOP is given by:
+
+        .. math::
+            D &= \sum_\nu \mathrm{COOP}^{\mathbf A}_{\nu\nu}
+            \\
+            \mathrm{DBCOOP}^{\mathbf A}_{\nu\mu} &= \mathrm{COOP}^{\mathbf A}_{\nu\mu} / D
+
+        The BCOOP can be looked up in the reference above.
+
+        Parameters
+        ----------
+        elec_mol_proj: str or tuple
+           the electrode of the spectral function
+        E: float or int
+           the energy or the energy index of COOP. If an integer
+           is passed it is the index, otherwise the index corresponding to
+           ``Eindex(E)`` is used.
+        kavg: bool, int or array_like, optional
+           whether the returned COOP is k-averaged, an explicit k-point
+           or a selection of k-points
+        isc: array_like, optional
+           the returned COOP from unit-cell (``[None, None, None]``) to
+           the given supercell, the default is all COOP for the supercell.
+           To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+
+        Examples
+        --------
+        >>> ACOOP = tbt.orbital_ACOOP('Left.C60.HOMO', -1.0) # COOP @ E = -1 eV from ``Left.C60.HOMO`` spectral function # doctest: +SKIP
+        >>> ACOOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
+        >>> ACOOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
+        >>> D = ACOOP.diagonal().sum() # doctest: +SKIP
+        >>> ADBCOOP = ACOOP / D # doctest: +SKIP
+
+        See Also
+        --------
+        atom_COOP_from_orbital : transfer an orbital COOP to atomic COOP
+        atom_ACOOP : atomic COOP analysis of the projected spectral function
+        atom_COHP_from_orbital : atomic COHP analysis from an orbital COHP
+        orbital_ACOHP : orbital resolved COHP analysis of the projected  spectral function
+        atom_ACOHP : atomic COHP analysis of the projected spectral function
+        """
+        mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
+        COOP = self._sparse_data('COOP', mol_proj_elec, E, kavg, isc) * eV2Ry
+        COOP.eliminate_zeros()
+        COOP.sort_indices()
+        return COOP
+
+    def orbital_ACOHP(self, elec_mol_proj, E, kavg=True, isc=None):
+        r""" Orbital COHP analysis of the projected spectral function
+
+        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
+        Each matrix element of the sparse matrix corresponds to the COHP of the
+        underlying geometry.
+
+        The COHP analysis can be written as:
+
+        .. math::
+            \mathrm{COHP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu}
+                \mathbf H_{\nu\mu} \big]
+
+        Parameters
+        ----------
+        elec_mol_proj: str or tuple
+           the electrode of the projected spectral function
+        E: float or int
+           the energy or the energy index of COHP. If an integer
+           is passed it is the index, otherwise the index corresponding to
+           ``Eindex(E)`` is used.
+        kavg: bool, int or array_like, optional
+           whether the returned COHP is k-averaged, an explicit k-point
+           or a selection of k-points
+        isc: array_like, optional
+           the returned COHP from unit-cell (``[None, None, None]``) to
+           the given supercell, the default is all COHP for the supercell.
+           To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+
+        See Also
+        --------
+        atom_COHP_from_orbital : atomic COHP analysis from an orbital COHP
+        atom_ACOHP : atomic COHP analysis of the projected spectral function
+        atom_COOP_from_orbital : transfer an orbital COOP to atomic COOP
+        orbital_ACOOP : orbital resolved COOP analysis of the projected spectral function
+        atom_ACOOP : atomic COOP analysis of the projected spectral function
+        """
+        mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
+        COHP = self._sparse_data('COHP', mol_proj_elec, E, kavg, isc)
+        COHP.eliminate_zeros()
+        COHP.sort_indices()
+        return COHP
 
     @default_ArgumentParser(description="Extract data from a TBT.Proj.nc file")
     def ArgumentParser(self, p=None, *args, **kwargs):
