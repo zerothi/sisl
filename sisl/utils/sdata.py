@@ -89,7 +89,7 @@ changing ways. It handles files dependent on type AND content.
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-    p = argparse.ArgumentParser("Manipulates sisl Sile's for manipulation.",
+    p = argparse.ArgumentParser("Manipulates generic sisl Sile's.",
                                 formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description=description, conflict_handler='resolve')
 

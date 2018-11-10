@@ -113,7 +113,10 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             elec_mol_proj_from = elec_mol_proj_from.split('.')
         if not isinstance(elec_mol_proj_to, _str):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
-        mol_proj_elec = [elec_mol_proj_from[i] for i in [1, 2, 0]]
+        if len(elec_mol_proj_from) > 2:
+            mol_proj_elec = [elec_mol_proj_from[i] for i in [1, 2, 0]]
+        else:
+            mol_proj_elec = elec_mol_proj_from
         return self._value_avg(elec_mol_proj_to + '.T', mol_proj_elec, kavg=kavg)
 
     def transmission_eig(self, elec_mol_proj_from, elec_mol_proj_to, kavg=True):
@@ -137,7 +140,10 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             elec_mol_proj_from = elec_mol_proj_from.split('.')
         if not isinstance(elec_mol_proj_to, _str):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
-        mol_proj_elec = [elec_mol_proj_from[i] for i in [1, 2, 0]]
+        if len(elec_mol_proj_from) > 2:
+            mol_proj_elec = [elec_mol_proj_from[i] for i in [1, 2, 0]]
+        else:
+            mol_proj_elec = elec_mol_proj_from
         return self._value_avg(elec_mol_proj_to + '.T.Eig', mol_proj_elec, kavg=kavg)
 
     @default_ArgumentParser(description="Extract data from a TBT.Proj.nc file")
@@ -147,15 +153,6 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
         # We limit the import to occur here
         import argparse
-
-        # Remove the ones we don't have in the projected ones
-        indices = []
-        for i, action in enumerate(p._actions):
-            if action.dest in ['dos', 'bulk_dos', 'transmission_bulk']:
-                indices.append(i)
-        indices.sort(reverse=True)
-        for i in indices:
-            p._actions.pop(i)
 
         def ensure_E(func):
             """ This decorater ensures that E is the first element in the _data container """
@@ -222,8 +219,8 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                     ns._data.append(data[ns._Erng, ..., eig].flatten())
                     ns._data_header.append('Teig({})[G0]:{}-{}'.format(eig+1, elec_mol_proj1, elec_mol_proj2))
                     ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), elec_mol_proj1, elec_mol_proj2))
-        p.add_argument('-Teig', '--transmission-eig', nargs=2, metavar=('E.M.P-1', 'E.M.P-2'),
-                       action=DataT,
+        p.add_argument('-Teig', '--transmission-eig', nargs=2, metavar=('E.M.P1', 'E.M.P2'),
+                       action=DataTEig,
                        help='Store transmission eigenvalues between two projections.')
 
         return p, namespace

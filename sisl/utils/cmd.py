@@ -188,8 +188,7 @@ def default_ArgumentParser(*A_args, **A_kwargs):
         # for the function is the parser with default=None
         def new_func(self, parser=None, *args, **kwargs):
             if parser is None:
-                # Create the new parser and insert in the
-                # argument list
+                # Create the new parser and insert in the argument list
                 parser = argparse.ArgumentParser(*A_args, **A_kwargs)
             return func(self, parser, *args, **kwargs)
         return new_func
