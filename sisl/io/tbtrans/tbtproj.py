@@ -615,7 +615,8 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         geom = self.read_geometry()
         if all:
             return cls(state, eig, parent=geom)
-        lvl = mol.variables['lvl'][:] - 1
+        lvl = mol.variables['lvl'][:]
+        lvl = np.where(lvl > 0, lvl - 1, lvl) + mol.HOMO_index
         return cls(state, eig[lvl], parent=geom)
 
 

@@ -40,6 +40,13 @@ def test_2_projection_content(sisl_files):
             assert np.allclose(t1, te1.sum(-1))
             assert np.allclose(t2, te2.sum(-1))
 
+    # Check eigenstate
+    es = tbtp.eigenstate('C60')
+    assert len(es) == 3 # 1-HOMO, 2-LUMO
+    assert (es.eig < 0.).nonzero()[0].size == 1
+    assert (es.eig > 0.).nonzero()[0].size == 2
+    assert np.allclose(es.norm2(), 1)
+
 
 @pytest.mark.slow
 def test_2_projection_tbtav(sisl_files, sisl_tmp):
