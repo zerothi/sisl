@@ -122,7 +122,7 @@ def test_real_space_HS(setup, k_axis, semi_axis, trs, bz, unfold):
     RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz)
     # Initialize and print
     with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
+        #warnings.simplefilter('ignore')
         RSE.initialize()
 
     RSE.green(0.1)
@@ -142,6 +142,27 @@ def test_real_space_H(setup, k_axis, semi_axis, trs, bz, unfold):
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         RSE.initialize()
+
+    RSE.green(0.1)
+    RSE.self_energy(0.1)
+
+
+def test_real_space_H_3d():
+    sc = SuperCell(1., nsc=[3] * 3)
+    H = Atom(Z=1, R=[1.001])
+    geom = Geometry([0] * 3, atom=H, sc=sc)
+    H = Hamiltonian(geom)
+    H.construct(([0.001, 1.01], (0, -1)))
+    RSE = RealSpaceSE(H, (3, 4, 2))
+    RSE.update_option(semi_axis=0, k_axis=(1, 2), dk=100, trs=True)
+    # Initialize and print
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+    nk = np.ones(3, np.int32)
+    nk[RSE._options['k_axis']] = 23
+    bz = BrillouinZone(H, nk)
+    RSE.update_option(bz=bz)
 
     RSE.green(0.1)
     RSE.self_energy(0.1)
