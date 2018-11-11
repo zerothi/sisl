@@ -108,6 +108,9 @@ def test_2_projection_ArgumentParser(sisl_files, sisl_tmp):
     assert out._data_header[0][0] == 'E'
     assert out._data_header[1][0] == 'T'
 
+    out = p.parse_args(['--molecules', '-P', 'C60'], namespace=copy(ns))
+    run(out)
+
     out = p.parse_args(['--transmission', 'Left', 'Right.C60.LUMO',
                         '--transmission', 'Left.C60.LUMO', 'Right'], namespace=copy(ns))
     run(out)

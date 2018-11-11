@@ -332,6 +332,20 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 return func(self, *args, **kwargs)
             return assign_E
 
+        class InfoMols(argparse.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                print(' '.join(ns._tbt.molecules))
+        p.add_argument('--molecules', '-M', nargs=0,
+                       action=InfoMols,
+                       help="""Show molecules in the projection file""")
+
+        class InfoProjs(argparse.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                print(' '.join(ns._tbt.projections(value[0])))
+        p.add_argument('--projections', '-P', nargs=1, metavar='MOL',
+                       action=InfoProjs,
+                       help="""Show projections on molecule.""")
+
         class DataDOS(argparse.Action):
 
             @collect_action
