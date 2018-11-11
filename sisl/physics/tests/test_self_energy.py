@@ -166,6 +166,9 @@ def test_real_space_H_3d():
 
     RSE.green(0.1)
     RSE.self_energy(0.1)
+    RSE.self_energy(0.1, bulk=True)
+    RSE.self_energy(0.1, coupling=True)
+    RSE.self_energy(0.1, bulk=True, coupling=True)
 
 
 def test_real_space_H_dtype(setup):
