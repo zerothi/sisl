@@ -378,14 +378,40 @@ class RealSpaceSE(SelfEnergy):
     Parameters
     ----------
     parent : SparseOrbitalBZ
-       a physical object from which to calculate the real-space self-energy.
-       The parent object *must* have only 3 supercells along the direction where
-       self-energies are used.
+        a physical object from which to calculate the real-space self-energy.
+        The parent object *must* have only 3 supercells along the direction where
+        self-energies are used.
 
     unfold : (3,) of int
-       number of times the `parent` structure is tiled along each direction
-       The resulting Green function/self-energy ordering is always tiled along
-       the semi-infinite direction first, and then the transverse direction.
+        number of times the `parent` structure is tiled along each direction
+        The resulting Green function/self-energy ordering is always tiled along
+        the semi-infinite direction first, and then the transverse direction.
+
+    semi_axis : int
+        semi-infinite direction (where self-energies are used and thus *exact* precision)
+    k_axes : array_like of int
+        the axes where k-points are desired. 1 or 2 values are required and the `semi_axis`
+        cannot be one of them
+    eta : float, optional
+        imaginary part in the self-energy calculations (default 1e-4 eV)
+    dk : float, optional
+        fineness of the default integration grid, specified in units of Ang, default to 1000 which
+        translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
+    bz : BrillouinZone, optional
+        integration k-points, if not passed the number of k-points will be determined using
+        `dk` and time-reversal symmetry will be determined by `trs`
+    trs: bool, optional
+        whether time-reversal symmetry is used in the BrillouinZone integration, default
+        to true.
+
+    Notes
+    -----
+    Once created it is vital that `initialize` is called before calculating the real-space Green function.
+    The basic procedure is:
+
+    >>> rse = RealSpaceSE(...)
+    >>> rse.initialize()
+    >>> rse.green(...)
     """
 
     def __init__(self, parent, unfold=(1, 1, 1), **options):
@@ -410,7 +436,7 @@ class RealSpaceSE(SelfEnergy):
             # the direction of the self-energy (removed in BZ)
             'semi_axis': None,
             # the direction of the k-points (to be integrated)
-            'k_axis': None,
+            'k_axes': None,
             # fineness of the integration grid close to the poles [Ang]
             'dk': 1000,
             # whether TRS is used in if get_integration is used (default)
@@ -423,9 +449,31 @@ class RealSpaceSE(SelfEnergy):
         self.update_option(**options)
 
     def update_option(self, **options):
-        """ Update options in the real-space self-energy """
+        """ Update options in the real-space self-energy
+
+        After updating options one should re-call `initialize` for consistency.
+
+        Parameters
+        ----------
+        semi_axis : int
+            semi-infinite direction (where self-energies are used and thus *exact* precision)
+        k_axes : array_like of int
+            the axes where k-points are desired. 1 or 2 values are required and the `semi_axis`
+            cannot be one of them
+        eta : float, optional
+            imaginary part in the self-energy calculations (default 1e-4 eV)
+        dk : float, optional
+            fineness of the default integration grid, specified in units of Ang, default to 1000 which
+            translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
+        bz : BrillouinZone, optional
+            integration k-points, if not passed the number of k-points will be determined using
+            `dk` and time-reversal symmetry will be determined by `trs`
+        trs: bool, optional
+            whether time-reversal symmetry is used in the BrillouinZone integration, default
+            to true.
+        """
         self._options.update(options)
-        for ax in ['k_axis', 'axes']:
+        for ax in ['k_axes', 'axes']:
             opt = options.get(ax, None)
             if not opt is None:
                 self._options[ax] = _a.arrayi(opt).ravel()
@@ -434,7 +482,7 @@ class RealSpaceSE(SelfEnergy):
         """ Return the parent object in the real-space unfolded region """
         opt = self._options
         s_ax = opt['semi_axis']
-        k_ax = opt['k_axis']
+        k_ax = opt['k_axes']
         # Always start with the semi-infinite direction, since we
         # Bloch expand the other directions
         P0 = self.parent.tile(self._unfold[s_ax], s_ax)
@@ -461,7 +509,7 @@ class RealSpaceSE(SelfEnergy):
         """
         opt = self._options
         s_ax = opt['semi_axis']
-        k_ax = opt['k_axis']
+        k_ax = opt['k_axes']
         PC = self.parent.tile(self._unfold[s_ax], s_ax)
         for ax in k_ax:
             PC = PC.tile(self._unfold[ax], ax)
@@ -472,7 +520,7 @@ class RealSpaceSE(SelfEnergy):
         # elements that couple out of the real-space region
         n = PC.shape[0]
         idx = g.sc.sc_index([0, 0, 0])
-        cols = _a.arangei(n) + idx * n
+        cols = _a.arangei(idx * n, (idx + 1) * n)
         csr = PC._csr.copy([0]) # we just want the sparse pattern, so forget about the other elements
         csr.delete_columns(cols, keep_shape=True)
         # Now PC only contains couplings along the k and semi-inf directions
@@ -533,31 +581,31 @@ class RealSpaceSE(SelfEnergy):
                               'out of two for the chosen integration axes: {}. '
                               'For 1D systems the regular surface self-energy method is appropriate.').format(_ax_str(axes)))
 
-        if self._options['semi_axis'] is None and self._options['k_axis'] is None:
+        if self._options['semi_axis'] is None and self._options['k_axes'] is None:
             # None of the axis has been described
             sc = self.parent.sc * self._unfold
             i3 = (nsc[axes] == 3).nonzero()[0]
             if len(i3) == 0:
                 raise ValueError(self.__class__.__name__ + '.initialize could not find a suitable semi-infinite direction, all used directions have nsc != 3')
             s_ax = np.argmin(fnorm(sc.rcell)[axes[i3]])
-            # Now determine the k_axis
+            # Now determine the k_axes
             k_ax = axes[axes != s_ax]
             self._options['semi_axis'] = s_ax
-            self._options['k_axis'] = k_ax
+            self._options['k_axes'] = k_ax
 
             info(self.__class__.__name__ + '.initialize determined the semi-inf- and k-directions to be: {} and {}'.format(_ax_str(s_ax), _ax_str(k_ax)))
 
-        elif self._options['k_axis'] is None:
+        elif self._options['k_axes'] is None:
             s_ax = self._options['semi_axis']
             k_ax = axes[axes != s_ax]
             if k_ax is None:
                 raise ValueError(self.__class__.__name__ + '.initialize could not find suitable k-direction(s).')
-            self._options['k_axis'] = k_ax
+            self._options['k_axes'] = k_ax
 
             info(self.__class__.__name__ + '.initialize determined the k direction to be: {}'.format(_ax_str(k_ax)))
 
         elif self._options['semi_axis'] is None:
-            k_ax = self._options['k_axis']
+            k_ax = self._options['k_axes']
             s_ax = None
             for ax in axes:
                 if not ax in k_ax:
@@ -569,9 +617,12 @@ class RealSpaceSE(SelfEnergy):
             info(self.__class__.__name__ + '.initialize determined the semi-infinite direction to be: {}'.format(_ax_str(s_ax)))
 
         # The k-axis HAS to be sorted because this is the way the Bloch expansion works
-        k_ax = np.sort(self._options['k_axis'])
-        self._options['k_axis'] = k_ax
+        k_ax = np.sort(self._options['k_axes'])
+        self._options['k_axes'] = k_ax
         s_ax = self._options['semi_axis']
+        if s_ax in k_ax:
+            raise ValueError(self.__class__.__name__ + '.initialize found the self-energy direction to be '
+                             'the same as one of the k-axes, this is not allowed.')
         if nsc[s_ax] != 3:
             raise ValueError(self.__class__.__name__ + '.initialize found the self-energy direction to be '
                              'incompatible with the parent object. It *must* have 3 supercells along the '
@@ -678,8 +729,7 @@ class RealSpaceSE(SelfEnergy):
         # Used axes
         s_ax = opt['semi_axis']
 
-        # Calculation options
-        # calculate both left and right at the same time.
+        # Calculate both left and right at the same time.
         SE = self._calc['SE'].self_energy_lr
 
         # Define Bloch unfolding routine and number of tiles along the semi-inf direction

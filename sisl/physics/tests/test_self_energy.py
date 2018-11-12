@@ -110,16 +110,16 @@ def test_sancho_lr(setup):
     assert np.allclose(RB_SER, R_SE)
 
 
-@pytest.mark.parametrize("k_axis", [None, 0, 1])
+@pytest.mark.parametrize("k_axes", [None, 0, 1])
 @pytest.mark.parametrize("semi_axis", [None, 0, 1])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
 @pytest.mark.parametrize("unfold", [1, 2])
-def test_real_space_HS(setup, k_axis, semi_axis, trs, bz, unfold):
-    if k_axis == semi_axis:
+def test_real_space_HS(setup, k_axes, semi_axis, trs, bz, unfold):
+    if k_axes == semi_axis:
         return
     RSE = RealSpaceSE(setup.HS, (unfold, unfold, 1))
-    RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz)
+    RSE.update_option(semi_axis=semi_axis, k_axes=k_axes, dk=100, trs=trs, bz=bz)
     # Initialize and print
     with warnings.catch_warnings():
         #warnings.simplefilter('ignore')
@@ -128,16 +128,16 @@ def test_real_space_HS(setup, k_axis, semi_axis, trs, bz, unfold):
     RSE.green(0.1)
 
 
-@pytest.mark.parametrize("k_axis", [None, 0, 1])
+@pytest.mark.parametrize("k_axes", [None, 0, 1])
 @pytest.mark.parametrize("semi_axis", [None, 0, 1])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
 @pytest.mark.parametrize("unfold", [1, 2])
-def test_real_space_H(setup, k_axis, semi_axis, trs, bz, unfold):
-    if k_axis == semi_axis:
+def test_real_space_H(setup, k_axes, semi_axis, trs, bz, unfold):
+    if k_axes == semi_axis:
         return
     RSE = RealSpaceSE(setup.H, (unfold, unfold, 1))
-    RSE.update_option(semi_axis=semi_axis, k_axis=k_axis, dk=100, trs=trs, bz=bz)
+    RSE.update_option(semi_axis=semi_axis, k_axes=k_axes, dk=100, trs=trs, bz=bz)
     # Initialize and print
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
@@ -154,26 +154,26 @@ def test_real_space_H_3d():
     H = Hamiltonian(geom)
     H.construct(([0.001, 1.01], (0, -1)))
     RSE = RealSpaceSE(H, (3, 4, 2))
-    RSE.update_option(semi_axis=0, k_axis=(1, 2), dk=100, trs=True)
+    RSE.update_option(semi_axis=0, k_axes=(1, 2), dk=100, trs=True)
     # Initialize and print
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         RSE.initialize()
     nk = np.ones(3, np.int32)
-    nk[RSE._options['k_axis']] = 23
+    nk[RSE._options['k_axes']] = 23
     bz = BrillouinZone(H, nk)
     RSE.update_option(bz=bz)
 
     RSE.green(0.1)
-    RSE.self_energy(0.1)
-    RSE.self_energy(0.1, bulk=True)
-    RSE.self_energy(0.1, coupling=True)
-    RSE.self_energy(0.1, bulk=True, coupling=True)
+    # Since there is only 2 repetitions along one direction we will have the full matrix
+    # coupled!
+    assert np.allclose(RSE.self_energy(0.1), RSE.self_energy(0.1, coupling=True))
+    assert np.allclose(RSE.self_energy(0.1, bulk=True), RSE.self_energy(0.1, bulk=True, coupling=True))
 
 
 def test_real_space_H_dtype(setup):
     RSE = RealSpaceSE(setup.H, (2, 2, 1))
-    RSE.update_option(semi_axis=0, k_axis=1, dk=100)
+    RSE.update_option(semi_axis=0, k_axes=1, dk=100)
 
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
@@ -194,8 +194,8 @@ def test_real_space_H_dtype(setup):
 
 def test_real_space_H_SE_unfold(setup):
     # check that calculating the real-space Green function is equivalent for two equivalent systems
-    RSE = RealSpaceSE(setup.H, (2, 2, 1), semi_axis=0, k_axis=1, dk=100)
-    RSE_big = RealSpaceSE(setup.H.tile(2, 0).tile(2, 1), semi_axis=0, k_axis=1, dk=100)
+    RSE = RealSpaceSE(setup.H, (2, 2, 1), semi_axis=0, k_axes=1, dk=100)
+    RSE_big = RealSpaceSE(setup.H.tile(2, 0).tile(2, 1), semi_axis=0, k_axes=1, dk=100)
 
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
@@ -214,8 +214,8 @@ def test_real_space_H_SE_unfold(setup):
 
 def test_real_space_HS_SE_unfold(setup):
     # check that calculating the real-space Green function is equivalent for two equivalent systems
-    RSE = RealSpaceSE(setup.HS, (2, 2, 1), semi_axis=0, k_axis=1, dk=100)
-    RSE_big = RealSpaceSE(setup.HS.tile(2, 0).tile(2, 1), semi_axis=0, k_axis=1, dk=100)
+    RSE = RealSpaceSE(setup.HS, (2, 2, 1), semi_axis=0, k_axes=1, dk=100)
+    RSE_big = RealSpaceSE(setup.HS.tile(2, 0).tile(2, 1), semi_axis=0, k_axes=1, dk=100)
 
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
