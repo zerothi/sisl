@@ -13,6 +13,7 @@ __all__ += ['dtype_complex_to_real', 'dtype_real_to_complex']
 # Wrappers typically used
 __all__ += ['_str', '_range', '_zip', '_map']
 __all__ += ['is_python2', 'is_python3']
+__all__ += ['xml_parse']
 
 
 # Base-class for string object checks
@@ -28,6 +29,21 @@ else:
     _range = xrange
     from itertools import izip as _zip
     from itertools import imap as _map
+
+
+# Load the correct xml-parser
+try:
+    from defusedxml.ElementTree import parse as xml_parse
+    if sys.version_info > (3, 6):
+        from defusedxml import __version__ as defusedxml_version
+        try:
+            defusedxml_version = list(map(int, defusedxml_version.split('.')))
+            if defusedxml_version[0] == 0 and defusedxml_version[1] <= 5:
+                raise ImportError
+        except:
+            raise ImportError
+except ImportError:
+    from xml.etree.ElementTree import parse as xml_parse
 
 
 def array_fill_repeat(array, size, cls=None):

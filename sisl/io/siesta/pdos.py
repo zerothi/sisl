@@ -2,11 +2,7 @@ from __future__ import print_function
 
 import numpy as np
 
-try:
-    from defusedxml import ElementTree
-except ImportError:
-    from xml.etree.ElementTree import ElementTree
-
+from sisl._help import xml_parse
 from ..sile import add_sile
 from .sile import SileSiesta
 from sisl.messages import warn
@@ -50,8 +46,7 @@ class pdosSileSiesta(SileSiesta):
         DataArray : if `as_dataarray` is True, only this data array is returned, in this case all data can be post-processed using the `xarray` selection routines.
         """
         # Get the element-tree
-        ET = ElementTree('pdos', self.file)
-        root = ET.getroot()
+        root = xml_parse(self.file).getroot()
 
         # Get number of orbitals
         nspin = int(root.find('nspin').text)

@@ -1,10 +1,6 @@
 from __future__ import print_function, division
 
-try:
-    from defusedxml import ElementTree
-except ImportError:
-    from xml.etree.ElementTree import ElementTree
-
+from sisl._help import xml_parse
 from sisl.atom import Atom
 from sisl.orbital import SphericalOrbital
 from sisl.io import add_sile
@@ -25,8 +21,7 @@ class ionxmlSileSiesta(SileSiesta):
     def read_basis(self):
         """ Returns data associated with the ion.xml file """
         # Get the element-tree
-        ET = ElementTree(None, self.file)
-        root = ET.getroot()
+        root = xml_parse(self.file).getroot()
 
         # Get number of orbitals
         label = root.find('label').text.strip()
