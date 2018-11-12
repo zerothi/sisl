@@ -164,7 +164,7 @@ class RecursiveSI(SemiInfinite):
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep_shape=True)
 
-    def self_energy(self, E, k=None, dtype=None, eps=1e-14, bulk=False):
+    def self_energy(self, E, k=None, dtype=None, eps=1e-14, bulk=False, **kwargs):
         r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
         Parameters
@@ -182,6 +182,8 @@ class RecursiveSI(SemiInfinite):
         bulk : bool, optional
           if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else
           :math:`\boldsymbol\Sigma` is returned (default).
+        **kwargs : dict, optional
+           arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
 
         Returns
         -------
@@ -202,7 +204,7 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        GB = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array')
+        GB = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array', **kwargs)
         n = GB.shape[0]
 
         ab = empty([n, 2, n], dtype=dtype)
@@ -217,10 +219,10 @@ class RecursiveSI(SemiInfinite):
         ab2.shape = (n, 2 * n)
 
         if sp1.orthogonal:
-            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array')
+            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
             beta[:, :] = conjugate(alpha.T)
         else:
-            P = sp1.Pk(k, dtype=dtype, format='array')
+            P = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
             S = sp1.Sk(k, dtype=dtype, format='array')
             alpha[:, :] = P - S * E
             beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
@@ -258,7 +260,7 @@ class RecursiveSI(SemiInfinite):
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')
 
-    def self_energy_lr(self, E, k=None, dtype=None, eps=1e-14, bulk=False):
+    def self_energy_lr(self, E, k=None, dtype=None, eps=1e-14, bulk=False, **kwargs):
         r""" Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
 
         Note calculating the LR self-energies simultaneously requires that their chemical potentials are the same.
@@ -279,6 +281,8 @@ class RecursiveSI(SemiInfinite):
         bulk : bool, optional
           if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else
           :math:`\boldsymbol\Sigma` is returned (default).
+        **kwargs : dict, optional
+           arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
 
         Returns
         -------
@@ -300,7 +304,7 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        SmH0 = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array')
+        SmH0 = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array', **kwargs)
         GB = SmH0.copy()
         n = GB.shape[0]
 
@@ -316,10 +320,10 @@ class RecursiveSI(SemiInfinite):
         ab2.shape = (n, 2 * n)
 
         if sp1.orthogonal:
-            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array')
+            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
             beta[:, :] = conjugate(alpha.T)
         else:
-            P = sp1.Pk(k, dtype=dtype, format='array')
+            P = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
             S = sp1.Sk(k, dtype=dtype, format='array')
             alpha[:, :] = P - S * E
             beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
@@ -635,8 +639,8 @@ class RealSpaceSE(SelfEnergy):
             # if changed, B, C should be reversed below
             'SE': RecursiveSI(self.parent, '-' + 'ABC'[s_ax], eta=self._options['eta']),
             # Used to calculate the real-space self-energy
-            'P0': P0.Pk(), # in sparse format
-            'S0': P0.Sk(), # in sparse format
+            'P0': P0.Pk,
+            'S0': P0.Sk,
             # Orbitals in the coupling atoms
             'orbs': P0.a2o(V_atoms, True).reshape(-1, 1),
         }
@@ -652,7 +656,7 @@ class RealSpaceSE(SelfEnergy):
             self._options['bz'] = MonkhorstPack(sc, nk, trs=self._options['trs'])
             info(self.__class__.__name__ + '.initialize determined the number of k-points: {}'.format(' / '.join(map(str, nk[k_ax]))))
 
-    def self_energy(self, E, bulk=False, coupling=False, dtype=None):
+    def self_energy(self, E, bulk=False, coupling=False, dtype=None, **kwargs):
         r""" Calculate the real-space self-energy
 
         The real space self-energy is calculated via:
@@ -673,6 +677,8 @@ class RealSpaceSE(SelfEnergy):
         coupling: bool, optional
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
+        **kwargs : dict, optional
+           arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
         if dtype is None:
             dtype = complex128
@@ -687,14 +693,13 @@ class RealSpaceSE(SelfEnergy):
             I[orbs.ravel(), iorbs.ravel()] = 1.
             if bulk:
                 return solve(G, I, True, True)[orbs, iorbs]
-            return (self._calc['S0'] * E - self._calc['P0']).astype(dtype, copy=False).toarray()[orbs, orbs.T] \
+            return (self._calc['S0'](dtype=dtype) * E - self._calc['P0'](dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
                 - solve(G, I, True, True)[orbs, iorbs]
-        else:
-            if bulk:
-                return inv(G, True)
-            return (self._calc['S0'] * E - self._calc['P0']).astype(dtype, copy=False).toarray() - inv(G, True)
+        if bulk:
+            return inv(G, True)
+        return (self._calc['S0'](dtype=dtype) * E - self._calc['P0'](dtype=dtype, **kwargs)).toarray() - inv(G, True)
 
-    def green(self, E, dtype=None):
+    def green(self, E, dtype=None, **kwargs):
         r""" Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -708,6 +713,8 @@ class RealSpaceSE(SelfEnergy):
            energy to evaluate the real-space Green function at
         dtype : numpy.dtype, optional
           the resulting data type, default to ``np.complex128``
+        **kwargs : dict, optional
+           arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
         opt = self._options
 
@@ -746,13 +753,13 @@ class RealSpaceSE(SelfEnergy):
                 # Orthogonal *always* identity
                 S0E = identity(len(M0), dtype=dtype) * E
                 def _calc_green(k, no, tile, idx0):
-                    SL, SR = SE(E, k, dtype=dtype)
-                    return inv(S0E - M0Pk(k, dtype=dtype, format='array') - SL - SR, True)
+                    SL, SR = SE(E, k, dtype=dtype, **kwargs)
+                    return inv(S0E - M0Pk(k, dtype=dtype, format='array', **kwargs) - SL - SR, True)
             else:
                 M0Sk = M0.Sk
                 def _calc_green(k, no, tile, idx0):
-                    SL, SR = SE(E, k, dtype=dtype)
-                    return inv(M0Sk(k, dtype=dtype, format='array') * E - M0Pk(k, dtype=dtype, format='array') - SL - SR, True)
+                    SL, SR = SE(E, k, dtype=dtype, **kwargs)
+                    return inv(M0Sk(k, dtype=dtype, format='array') * E - M0Pk(k, dtype=dtype, format='array', **kwargs) - SL - SR, True)
 
         else:
             M1 = self._calc['SE'].spgeom1
@@ -760,8 +767,8 @@ class RealSpaceSE(SelfEnergy):
             if self.parent.orthogonal:
                 def _calc_green(k, no, tile, idx0):
                     # Calculate left/right self-energies
-                    Gf, A2 = SE(E, k, dtype=dtype, bulk=True) # A1 == Gf, because of memory usage
-                    B = - M1Pk(k, dtype=dtype, format='array')
+                    Gf, A2 = SE(E, k, dtype=dtype, bulk=True, **kwargs) # A1 == Gf, because of memory usage
+                    B = - M1Pk(k, dtype=dtype, format='array', **kwargs)
                     # C = conjugate(B.T)
 
                     tY = - solve(Gf, conjugate(B.T), True, True)
@@ -782,9 +789,9 @@ class RealSpaceSE(SelfEnergy):
             else:
                 M1Sk = M1.Sk
                 def _calc_green(k, no, tile, idx0):
-                    Gf, A2 = SE(E, k, dtype=dtype, bulk=True) # A1 == Gf, because of memory usage
+                    Gf, A2 = SE(E, k, dtype=dtype, bulk=True, **kwargs) # A1 == Gf, because of memory usage
                     tY = M1Sk(k, dtype=dtype, format='array') # S
-                    tX = M1Pk(k, dtype=dtype, format='array') # H
+                    tX = M1Pk(k, dtype=dtype, format='array', **kwargs) # H
                     B = tY * E - tX
                     # C = _conj(tY.T) * E - _conj(tX.T)
 

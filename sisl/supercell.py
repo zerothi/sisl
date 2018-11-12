@@ -695,7 +695,7 @@ class SuperCell(object):
         return self.append(other, axis)
 
     def move(self, v):
-        """ Appends additional space in the SuperCell object """
+        """ Appends additional space to the object """
         # check which cell vector resembles v the most,
         # use that
         cell = np.copy(self.cell)
@@ -845,7 +845,7 @@ class SuperCell(object):
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads SuperCell from the `Sile` using `Sile.read_supercell`
+        """ Reads the supercell from the `Sile` using ``Sile.read_supercell``
 
         Parameters
         ----------
