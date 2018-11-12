@@ -922,14 +922,14 @@ class Geometry(SuperCellChild):
     def sort(self, axes=(2, 1, 0)):
         """ Return an equivalent geometry by sorting the coordinates according to the axis orders
 
-        This is equivalent to:
-
+        Examples
+        --------
         >>> idx = np.lexsort((self.xyz[:, i] for i in axis))
         >>> new = self.sub(idx)
 
         Parameters
         ----------
-        axes : (*,)
+        axes : tuple, optional
            sorting axes (note the last element has highest precedence)
 
         Returns

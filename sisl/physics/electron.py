@@ -927,7 +927,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     k : array_like, optional
        k-point associated with wavefunction, by default the inherent k-point used
        to calculate the eigenstate will be used (generally shouldn't be used unless the `EigenstateElectron` object
-       has not been created via `~Hamiltonian.eigenstate`).
+       has not been created via :meth:`~.Hamiltonian.eigenstate`).
     spinor : int, optional
        the spinor for non-collinear/spin-orbit calculations. This is only used if the
        eigenstate object has been created from a parent object with a `Spin` object

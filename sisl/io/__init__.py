@@ -190,12 +190,6 @@ Additionally the PHtrans code also has these files
    phtavncSileTBtrans
    phtprojncSileTBtrans
 
-.. autosummary::
-   :toctree:
-   :hidden:
-
-   dhncSileTBtrans
-
 
 .. _toc-io-vasp:
 

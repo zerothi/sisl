@@ -38,8 +38,8 @@ class omxSileOpenMX(SileOpenMX):
 
     Examples
     --------
-    >>> omx = omxSileOpenMX('tmp/input.dat') # reads output files in 'tmp/' folder
-    >>> omx = omxSileOpenMX('tmp/input.dat', base='.') # reads output files in './' folder
+    >>> omx = omxSileOpenMX("tmp/input.dat") # reads output files in 'tmp/' folder
+    >>> omx = omxSileOpenMX("tmp/input.dat", base=".") # reads output files in './' folder
 
     When using this file in conjunction with the `sgeom` script while your input data-files are
     named *.dat, please do this:
