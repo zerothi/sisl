@@ -8,7 +8,7 @@
 The `sgrid` executable is a tool for manipulating a simulation grid and transforming
 it into CUBE format for plotting 3D data in, *e.g.* VMD or XCrySDen.
 
-Currently this is primarily intended for usage with Siesta.
+Any `Sile` which implements a ``read_grid`` method can be used to post-process data.
 
 For a short help description of the possible uses do:
 

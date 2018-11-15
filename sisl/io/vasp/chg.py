@@ -44,14 +44,17 @@ class chgSileVASP(carSileVASP):
         nx, ny, nz = list(map(int, self.readline().split()))
         n = nx * ny * nz
 
+        rl = self.readline
         i = 0
         vals = []
+        vapp = vals.append
         while i < n * (index + 1):
-            dat = [float(l) for l in self.readline().split()]
-            vals.append(dat)
+            dat = [float(l) for l in rl().split()]
+            vapp(dat)
             i += len(dat)
-        vals = np.swapaxes(np.array(vals).reshape(nz, ny, nx), 0, 2)
-        vals = vals[index * n:(index + 1) * n] / V
+        # Cut size before proceeding (otherwise it *may* fail)
+        vals = np.array(vals, dtype=dtype).ravel()[n * index:n * (index+1)]
+        vals = np.swapaxes(vals.reshape(nz, ny, nx), 0, 2) / V
 
         # Create the grid with data
         # Since we populate the grid data afterwards there

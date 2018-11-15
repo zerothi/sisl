@@ -12,7 +12,10 @@ _dir = 'sisl/io/vasp'
 
 def test_graphene_locpot(sisl_files):
     f = sisl_files(_dir, 'graphene/LOCPOT')
-    grid = locpotSileVASP(f).read_grid()
+    gridf64 = locpotSileVASP(f).read_grid()
+    gridf32 = locpotSileVASP(f).read_grid(dtype=np.float32)
     geom = locpotSileVASP(f).read_geometry()
 
-    assert geom == grid.geometry
+    assert gridf64.dtype == np.float64
+    assert gridf32.dtype == np.float32
+    assert geom == gridf32.geometry

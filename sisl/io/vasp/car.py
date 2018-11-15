@@ -85,10 +85,10 @@ class carSileVASP(SileVASP):
 
         # The species labels are not always included in *CAR
         line1 = self.readline().split()
-        opt = self.readline()
+        opt = self.readline().split()
         try:
             species = line1
-            species_count = np.array(opt.split(), np.int32)
+            species_count = np.array(opt, np.int32)
         except:
             species_count = np.array(line1, np.int32)
             # We have no species...
@@ -131,7 +131,7 @@ class carSileVASP(SileVASP):
             # The unit of the coordinates are cartesian
             xyz *= self._scale
         else:
-            xyz = np.dot(xyz, sc.cell.T)
+            xyz = np.dot(xyz, sc.cell)
 
         # The POT/CONT-CAR does not contain information on the atomic species
         return Geometry(xyz=xyz, atom=atom, sc=sc)
