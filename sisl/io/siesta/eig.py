@@ -180,7 +180,7 @@ class eigSileSiesta(SileSiesta):
 
         # Energy grabs
         class DOSPlot(argparse.Action):
-            def __call__(self, parser, ns, value, option_string=None):
+            def __call__(dos_self, parser, ns, value, option_string=None):
                 import matplotlib.pyplot as plt
                 if not hasattr(ns, '_weight'):
                     # Try and read in the k-point-weights
