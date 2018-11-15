@@ -476,7 +476,7 @@ class State(ParentContainer):
     def align(self, other, copy=False):
         r""" Align `other.state` with the angles for this state, a copy of `other` is returned with rotated elements
 
-        States will be rotated provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
+        States will be rotated by :math:`\pi` provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
 
         Parameters
         ----------
