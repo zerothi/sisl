@@ -23,5 +23,5 @@ def test_si_pdos_kgrid_grid_cell(sisl_files):
 def test_si_pdos_kgrid_grid_fractions(sisl_files):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.VT'))
     grid = si.read_grid()
-    grid_halve = si.read_grid(spin=[0.5])
+    grid_halve = si.read_grid(index=[0.5])
     assert np.allclose(grid.grid * 0.5, grid_halve.grid)

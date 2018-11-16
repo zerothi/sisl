@@ -448,12 +448,12 @@ class _gridSileSiesta(SileBinSiesta):
 
         return SuperCell(cell)
 
-    def read_grid(self, spin=0, *args, **kwargs):
+    def read_grid(self, index=0, *args, **kwargs):
         """ Read grid contained in the Grid file
 
         Parameters
         ----------
-        spin : int or array_like, optional
+        index : int or array_like, optional
            the spin-index for retrieving one of the components. If a vector
            is passed it refers to the fraction per indexed component. I.e.
            ``[0.5, 0.5]`` will return sum of half the first two components.
@@ -465,14 +465,15 @@ class _gridSileSiesta(SileBinSiesta):
         cell = _siesta.read_grid_cell(self.file)
         grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
 
-        if isinstance(spin, Integral):
-            grid = grid[:, :, :, spin]
+        if isinstance(index, Integral):
+            grid = grid[:, :, :, index]
         else:
-            if len(spin) > grid.shape[0]:
+            if len(index) > grid.shape[0]:
                 raise ValueError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
                                  'an array of length equal to the number of spin components.')
-            g = grid[:, :, :, 0] * spin[0]
-            for i, scale in enumerate(spin[1:]):
+            # It is F-contiguous, hence the last index
+            g = grid[:, :, :, 0] * index[0]
+            for i, scale in enumerate(index[1:]):
                 g += grid[:, :, :, 1+i] * scale
             grid = g
 

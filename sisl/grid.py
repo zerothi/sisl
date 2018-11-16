@@ -682,9 +682,9 @@ class Grid(SuperCellChild):
             sile, spec = str_spec(sile)
             if spec is not None:
                 if ',' in spec:
-                    kwargs['spin'] = list(map(float, spec.split(',')))
+                    kwargs['index'] = list(map(float, spec.split(',')))
                 else:
-                    kwargs['spin'] = int(spec)
+                    kwargs['index'] = int(spec)
             with get_sile(sile) as fh:
                 return fh.read_grid(*args, **kwargs)
 
@@ -1393,9 +1393,9 @@ This may be unexpected but enables one to do advanced manipulations.
             input_file, spec = str_spec(input_file)
             if spec is not None:
                 if ',' in spec:
-                    kwargs['spin'] = list(map(float, spec.split(',')))
+                    kwargs['index'] = list(map(float, spec.split(',')))
                 else:
-                    kwargs['spin'] = int(spec)
+                    kwargs['index'] = int(spec)
 
             if isfile(input_file):
                 grid = get_sile(input_file).read_grid(**kwargs)

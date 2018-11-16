@@ -19,3 +19,11 @@ def test_graphene_locpot(sisl_files):
     assert gridf64.dtype == np.float64
     assert gridf32.dtype == np.float32
     assert geom == gridf32.geometry
+
+
+def test_graphene_locpot_index_float(sisl_files):
+    f = sisl_files(_dir, 'graphene/LOCPOT')
+    grid = locpotSileVASP(f).read_grid()
+    gridh = locpotSileVASP(f).read_grid(index=[0.5])
+
+    assert grid.grid.sum() / 2 == pytest.approx(gridh.grid.sum())

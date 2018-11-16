@@ -1,3 +1,10 @@
+0.9.6
+=====
+
+- Fixed *.EIG sdata processing when using --dos
+
+- Fixed reading geometries from grids from VASP (grid values were correct)
+
 0.9.5
 =====
 
