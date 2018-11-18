@@ -136,7 +136,8 @@ class bandsSileSiesta(SileSiesta):
 
                 if b.shape[1] == 2:
                     _, ax = plt.subplots(2, 1)
-                    ax[0].set_xticks([])
+                    ax[0].set_xticks(xlbls)
+                    ax[0].set_xticklabels([''] * len(xlbls))
                     ax[1].set_xticks(xlbls)
                     ax[1].set_xticklabels(lbls, rotation=45)
                     # We must plot spin-up/down separately
