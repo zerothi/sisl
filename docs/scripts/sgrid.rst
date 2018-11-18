@@ -53,7 +53,7 @@ takes one additional grid file for the difference. I.e.
    sgrid Rho.grid.nc{0} -G RUN.fdf --diff Rho.grid.nc{1} diff_up-down.cube
 
 which takes the difference between the spin up and spin down in the same ``Rho.grid.nc`` file.
-The spin specification takes either a single integer or a list of floating point values, as can be
+The spin (index) specification takes either a single integer or a list of floating point values, as can be
 seen in the below and shorter equivalent syntax:
 
 ::
@@ -69,7 +69,7 @@ Note that these spin specifications *only* work for files that contain **all** s
 The above is largely equivalent to this small snippet::
 
   geom = sisl.get_sile('RUN.fdf').read_geometry()
-  diff = sisl.get_sile('Rho.grid.nc').read_grid(spin=[1, -1])
+  diff = sisl.get_sile('Rho.grid.nc').read_grid(index=[1, -1])
   diff.set_geometry(geom)
   diff.write('diff_up-down.cube')
 
