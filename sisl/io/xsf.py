@@ -70,7 +70,7 @@ class xsfSile(Sile):
         # to a conventional cell (90-90-90))
         # It seems this simply allows to store both formats in
         # the same file.
-        self._write('\n# Conventional lattice vectors:\n#\n')
+        self._write('#\n# Conventional lattice vectors:\n#\n')
         if self._md_steps is None:
             self._write('CONVVEC\n')
         else:
