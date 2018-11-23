@@ -1119,6 +1119,12 @@ class Geometry(SuperCellChild):
 
         The atomic indices are retained for the base structure.
 
+        This method allows to utilise Bloch's theorem when creating
+        Hamiltonian parameter sets for TBtrans.
+
+        Tiling and repeating a geometry will result in the same geometry.
+        The *only* difference between the two is the final ordering of the atoms.
+
         Parameters
         ----------
         reps : int
@@ -1175,7 +1181,7 @@ class Geometry(SuperCellChild):
     def repeat(self, reps, axis):
         """ Create a repeated geometry
 
-        The atomic indices are *NOT* retained for the base structure.
+        The atomic indices are *NOT* retained from the base structure.
 
         The expansion of the atoms are basically performed using this
         algorithm:
@@ -1192,8 +1198,8 @@ class Geometry(SuperCellChild):
         For geometries with a single atom this routine returns the same as
         `tile`.
 
-        It is adviced to only use this for electrode Bloch's theorem
-        purposes as `tile` is faster.
+        Tiling and repeating a geometry will result in the same geometry.
+        The *only* difference between the two is the final ordering of the atoms.
 
         Parameters
         ----------
@@ -1918,18 +1924,29 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atom=self.atoms.reverse(atom), sc=self.sc.copy())
 
     def mirror(self, plane, atom=None):
-        """ Mirrors the structure around the center of the atoms """
+        """ Mirrors the atomic coordinates by multiplying by -1
+
+        This will typically move the atomic coordinates outside of the unit-cell.
+        This method should be used with care.
+
+        Parameters
+        ----------
+        plane : {'xy'/'ab', 'yz'/'bc', 'xz'/'ac'}
+           mirror the structure across the lattice vector plane
+        atom : array_like, optional
+           only mirror a subset of atoms
+        """
         if not atom is None:
             atom = _a.asarrayi(atom)
         else:
             atom = slice(None)
         g = self.copy()
         lplane = ''.join(sorted(plane.lower()))
-        if lplane == 'xy':
+        if lplane in ['xy', 'ab']:
             g.xyz[atom, 2] *= -1
-        elif lplane == 'yz':
+        elif lplane in ['yz', 'bc']:
             g.xyz[atom, 0] *= -1
-        elif lplane == 'xz':
+        elif lplane in ['xz', 'ac']:
             g.xyz[atom, 1] *= -1
         return self.__class__(g.xyz, atom=g.atom, sc=self.sc.copy())
 

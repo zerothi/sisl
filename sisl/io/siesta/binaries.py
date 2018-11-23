@@ -581,7 +581,10 @@ class _gfSileSiesta(SileBinSiesta):
         k, E = _siesta.read_gf_header(self._iu, nkpt, NE)
         k = k.T
         self._nspin = nspin
-        self._no_u = no_u
+        if self._nspin > 2:
+            self._no_u = no_u * 2
+        else:
+            self._no_u = no_u
         self._E = E
         self._k = k
         return nspin, no_u, k, E * Ry2eV
@@ -718,13 +721,22 @@ class _gfSileSiesta(SileBinSiesta):
         """
         # get everything
         e = self._E * Ry2eV
-        for ispin in range(self._nspin):
-            for k in self._k:
-                yield ispin, True, k, e[0]
-                for E in e[1:]:
-                    yield ispin, False, k, E
+        if self._nspin in [1, 2]:
+            for ispin in range(self._nspin):
+                for k in self._k:
+                    yield ispin, True, k, e[0]
+                    for E in e[1:]:
+                        yield ispin, False, k, E
 
-            # Reset counters for k and e
+                # Reset counters for k and e
+                self._ik = 0
+                self._ie = 0
+        else:
+            for k in self._k:
+                yield True, k, e[0]
+                for E in e[1:]:
+                    yield False, k, E
+
             self._ik = 0
             self._ie = 0
 
