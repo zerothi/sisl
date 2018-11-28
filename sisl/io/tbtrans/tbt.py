@@ -247,10 +247,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             return 0. # unknown!
 
     def transmission(self, elec_from=0, elec_to=1, kavg=True):
-        """ Transmission from `elec_from` to `elec_to`.
+        r""" Transmission from `elec_from` to `elec_to`.
 
         The transmission between two electrodes may be retrieved
         from the `Sile`.
+
+        The transmission is calculated as:
+
+        .. math::
+
+            T(E) = \mathrm{Tr}[\mathbf{G}\boldsymbol\Gamma_{\mathrm{from}}\mathbf{G}^\dagger\boldsymbol\Gamma_{\mathrm{to}}]
+
+        where all quantities are energy dependent.
 
         Parameters
         ----------
@@ -266,6 +274,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         --------
         transmission_eig : the transmission decomposed in eigenchannels
         transmission_bulk : the total transmission in a periodic lead
+        reflection : total reflection back into the electrode
         """
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
@@ -273,6 +282,58 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             raise ValueError(self.__class__.__name__ + ".transmission elec_from and elec_to must not be the same.")
 
         return self._value_avg(elec_to + '.T', elec_from, kavg=kavg)
+
+    def reflection(self, elec=0, kavg=True, from_single=False):
+        r""" Reflection into electrode `elec`
+
+        The reflection into electrode `elec` is calculated as:
+
+        .. math::
+
+             R(E) = T_{\mathrm{bulk}}(E) - \sum_{\mathrm{to}} T_{\mathrm{elec}\to\mathrm{to}}(E)
+
+        Another way of calculating the reflection is via:
+
+        .. math::
+
+             R(E) = T_{\mathrm{bulk}}(E) - \big\{i \mathrm{Tr}[(\mathbf G-\mathbf G^\dagger)\boldsymbol\Gamma_{\mathrm{elec}}]
+                   - \mathrm{Tr}[\mathbf G\boldsymbol\Gamma_{\mathrm{elec}}\mathbf G^\dagger\boldsymbol\Gamma_{\mathrm{elec}}]
+
+        Both are identical, however, numerically they may be different. Particularly when the bulk transmission
+        is very large compared to the transmission to the other electrodes one should prefer the first equation.
+
+        Parameters
+        ----------
+        elec: str, int, optional
+           the backscattered electrode
+        kavg: bool, int, optional
+           whether the returned reflection is k-averaged, or an explicit (unweighed) k-point
+           is returned
+        from_single: bool, optional
+           whether the reflection is calculated using the Green function and a
+           single scattering matrix Eq. (2) above (true), otherwise Eq. (1) will be used (false).
+
+        See Also
+        --------
+        transmission : the total transmission
+        transmission_eig : the transmission decomposed in eigenchannels
+        transmission_bulk : the total transmission in a periodic lead
+        """
+        elec = self._elec(elec)
+        BT = self.transmission_bulk(elec, kavg=kavg)
+
+        # Find full transmission out of electrode
+        if from_single:
+            T = self._value_avg(elec + '.T', elec, kavg=kavg) - self._value_avg(elec + '.C', elec, kavg=kavg)
+        else:
+            T = 0.
+            for to in self.elecs:
+                to = self._elec(to)
+                if elec == to:
+                    continue
+                T = T + self.transmission(elec, to, kavg=kavg)
+
+        return BT - T
 
     def transmission_eig(self, elec_from=0, elec_to=1, kavg=True):
         """ Transmission eigenvalues from `elec_from` to `elec_to`.
@@ -317,6 +378,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         --------
         transmission : the total transmission
         transmission_eig : the transmission decomposed in eigenchannels
+        reflection : total reflection back into the electrode
         """
         return self._value_avg('T', self._elec(elec), kavg=kavg)
 

@@ -135,6 +135,9 @@ def test_1_graphene_all_content(sisl_files):
     assert np.allclose(tbt.transmission(left, right, kavg=False),
                        tbt.transmission(right, left, kavg=False))
 
+    # Both methods should be identical for simple bulk systems
+    assert np.allclose(tbt.reflection(left), tbt.reflection(left, from_single=True), atol=1e-5)
+
     # Also check for each k
     for ik in range(nk):
         assert np.allclose(tbt.transmission(left, right, ik),
