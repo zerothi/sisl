@@ -1,0 +1,13 @@
+This directory contains contributed examples which may be used
+as examples in extended calculations.
+
+We welcome *any* user to contribute a toolbox such that other users
+may benefit from it.
+
+When contributing it is essential that these guidelines regarding the
+code is followed:
+
+- Name of developer should be present in the code, preferentially contact details
+- Which version of sisl it was originally developed and tested with
+- Document the use in the script
+- Ensure the script is Python 2 and 3 compliant
