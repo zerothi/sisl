@@ -12,6 +12,7 @@ _dir = 'sisl/io/tbtrans'
 
 
 @pytest.mark.slow
+@pytest.mark.only
 def test_1_graphene_all_content(sisl_files):
     """ This tests manifolds itself as:
 
@@ -182,14 +183,30 @@ def test_1_graphene_all_content(sisl_files):
 
     # Since this is a perfect system there should be *no* QM shot-noise
     # Also, the shot-noise is related to the applied bias, so NO shot-noise
+    assert np.allclose((tbt.shot_noise(left, right, kavg=False) * tbt.wkpt.reshape(-1, 1)).sum(0), 0.)
     assert np.allclose(tbt.shot_noise(left, right), 0.)
     assert np.allclose(tbt.shot_noise(right, left), 0.)
+    assert np.allclose(tbt.shot_noise(left, right, kavg=1), 0.)
+    assert np.allclose(tbt.shot_noise(left, right, kavg=[0, 1]), 0.)
+
     # Since the data-file does not contain all T-eigs (only the first two)
     # we can't correctly calculate the fano factors
-    assert np.all(tbt.fano(left, right) > 0.)
-    assert np.all(tbt.fano(right, left) > 0.)
+    # This is a pristine system, hence all fano-factors should be more or less zero
+    # All transmissions are step-functions, however close to band-edges there is some
+    # smearing.
+    # When calculating the Fano factor it is extremely important that the zero_T is *sufficient*
+    # I don't now which value is *good*
+    assert np.all((tbt.fano(left, right, kavg=False) * tbt.wkpt.reshape(-1, 1)).sum(0) <= 1)
+    assert np.all(tbt.fano(left, right) <= 1)
+    assert np.all(tbt.fano(right, left) <= 1)
+    assert np.all(tbt.fano(left, right, kavg=0) <= 1)
+    assert np.all(tbt.fano(left, right, kavg=[0, 1]) <= 1)
+
     # Neither should the noise_power exist
+    assert (tbt.noise_power(right, left, kavg=False) * tbt.wkpt).sum() == pytest.approx(0.)
     assert tbt.noise_power(right, left) == pytest.approx(0.)
+    assert tbt.noise_power(right, left, kavg=0) == pytest.approx(0.)
+    assert tbt.noise_power(right, left, kavg=[0, 1]) == pytest.approx(0.)
 
     # Check specific DOS queries
     DOS = tbt.DOS

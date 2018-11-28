@@ -713,6 +713,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         I = (T * dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to))).sum()
         return I * units('eV', 'J') / constant.h('eV s')
 
+    def _check_Teig(self, func_name, TE, eps=0.001):
+        """ Internal method to check whether all transmission eigenvalues are present """
+        if np.any(np.logical_and.reduce(TE > eps, axis=-1)):
+            info('{}.{} does possibly not have all relevant transmission eigenvalues in the '
+                 'calculation. For some energy values all transmission eigenvalues are above {}!'.format(self.__class__.__name__,
+                                                                                                         func_name, eps))
+
     def shot_noise(self, elec_from=0, elec_to=1, classical=False, kavg=True):
         r""" Shot-noise term `from` to `to` using the k-weights
 
@@ -722,14 +729,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         .. math::
            S_P(E, V) = \frac{2e^2}{h}|V|\sum_n T_n(E) = \frac{2e^3}{h}|V|T(E)
 
-        while for `classical` False the Fermi-Dirac statistics is taken into account:
+        while for `classical` False (default) the Fermi-Dirac statistics is taken into account:
 
         .. math::
-           S(E, V) = \frac{2e^2}{h}|V|\sum_n T_n(E) (1 - T_n(E))
+           S(E, V) = \frac{2e^2}{h}|V|\sum_k\sum_n T_{k,n}(E) (1 - T_{k,n}(E)) w_k
 
         Raises
         ------
-        SislInfo: If *all* of the calculated :math:`T_n(E)` values in the file are above 0.001.
+        SislInfo: If *all* of the calculated :math:`T_{k,n}(E)` values in the file are above 0.001.
 
         Parameters
         ----------
@@ -738,7 +745,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
         classical: bool, optional
-           which shot-noise to calculate
+           which shot-noise to calculate, default to non-classical
         kavg: bool, int or array_like, optional
            whether the returned shot-noise is k-averaged, an explicit k-point
            or a selection of k-points
@@ -759,13 +766,31 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         if classical:
             # Calculate the Poisson shot-noise (equal to 2eI in the low T and zero kT limit)
             return _noise_const * self.transmission(elec_from, elec_to, kavg=kavg)
-        else:
-            T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
-            # Check that at least one value is below the 0.001 limit
-            if np.any(np.logical_and.reduce(T > 0.001, axis=-1)):
-                info(self.__class__.__name__ + ".shot_noise does possibly not have all relevant transmission eigenvalues in the "
-                     "calculation. For some energy values all transmission eigenvalues are above 0.001!")
-            return _noise_const * (T * (1 - T)).sum(-1)
+
+        # Non-classical
+        if isinstance(kavg, bool):
+            if not kavg:
+                # The user wants it k-resolved
+                T = self.transmission_eig(elec_from, elec_to, kavg=False)
+                self._check_Teig('shot_noise', T)
+                return _noise_const * (T * (1 - T)).sum(-1)
+
+            # We will average all k-points
+            kavg = range(self.nkpt)
+
+        elif isinstance(kavg, Integral):
+            kavg = [kavg]
+
+        # Now do the actual conversion
+        T = self.transmission_eig(elec_from, elec_to, kavg=kavg[0])
+        self._check_Teig('shot_noise', T)
+        sn = (T * (1 - T)).sum(-1) * self.wkpt[kavg[0]]
+
+        for ik in kavg[1:]:
+            T = self.transmission_eig(elec_from, elec_to, kavg=ik)
+            self._check_Teig('shot_noise', T)
+            sn += (T * (1 - T)).sum(-1) * self.wkpt[ik]
+        return _noise_const * sn
 
     def noise_power(self, elec_from=0, elec_to=1, kavg=True):
         r""" Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)
@@ -773,15 +798,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         Calculates the noise power as
 
         .. math::
-           S(V) = \frac{2e^2}{h}\sum_n \int\mathrm d E
-                  \big\{T_n(E)[f_L(1-f_L)+f_R(1-f_R)] +
-                        T_n(E)[1 - T_n(E)](f_L - f_R)^2\big\}
+           S(V) = \frac{2e^2}{h}\sum_k\sum_n \int\mathrm d E
+                  \big\{T_{k,n}(E)[f_L(1-f_L)+f_R(1-f_R)] +
+                        T_{k,n}(E)[1 - T_{k,n}(E)](f_L - f_R)^2\big\} w_k
 
         Where :math:`f_i` are the Fermi-Dirac distributions for the electrodes.
 
         Raises
         ------
-        SislInfo: If *all* of the calculated :math:`T_n(E)` values in the file are above 0.001.
+        SislInfo: If *all* of the calculated :math:`T_{k,n}(E)` values in the file are above 0.001.
 
         Parameters
         ----------
@@ -812,25 +837,52 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # 2 e ^ 2 / h
         # Note that h in eV units will cancel the units in the dE integration
         _noise_const = 2 * units('eV', 'J') ** 2 / constant.h('eV s')
-        T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
-        # Check that at least one value is below the 0.001 limit
-        if np.any(np.logical_and.reduce(T > 0.001, axis=-1)):
-            info(self.__class__.__name__ + ".shot_noise does possibly not have all relevant transmission eigenvalues in the "
-                 "calculation. For some energy values all transmission eigenvalues are above 0.001!")
 
+        # Determine the k-average
+        if isinstance(kavg, bool):
+            if not kavg:
+                # The user wants it k-resolved
+                T = self.transmission_eig(elec_from, elec_to, kavg=False)
+                self._check_Teig('noise_power', T)
+                eq = (T.sum(-1) * dE * (fd_f * (1 - fd_f) + fd_t * (1 - fd_t))).sum(-1)
+                neq = ((T * (1 - T)).sum(-1) * dE * (fd_f - fd_t) ** 2).sum(-1)
+                return _noise_const * (eq + neq)
+
+            # We will average all k-points
+            kavg = range(self.nkpt)
+
+        elif isinstance(kavg, Integral):
+            kavg = [kavg]
+
+        # Now do the actual conversion
+        T = self.transmission_eig(elec_from, elec_to, kavg=kavg[0])
+        self._check_Teig('noise_power', T)
         # Separate the calculation into two terms (see Ya.M. Blanter, M. Buttiker, Physics Reports 336 2000)
         eq = (T.sum(-1) * dE * (fd_f * (1 - fd_f) + fd_t * (1 - fd_t))).sum()
         neq = ((T * (1 - T)).sum(-1) * dE * (fd_f - fd_t) ** 2).sum()
+        np = (eq + neq) * self.wkpt[kavg[0]]
 
-        return _noise_const * (eq + neq)
+        for ik in kavg[1:]:
+            T = self.transmission_eig(elec_from, elec_to, kavg=ik)
+            self._check_Teig('noise_power', T)
+            eq = (T.sum(-1) * dE * (fd_f * (1 - fd_f) + fd_t * (1 - fd_t))).sum()
+            neq = ((T * (1 - T)).sum(-1) * dE * (fd_f - fd_t) ** 2).sum()
+            np += (eq + neq) * self.wkpt[ik]
 
-    def fano(self, elec_from=0, elec_to=1, kavg=True):
+        # Do final conversion
+        return _noise_const * np
+
+    def fano(self, elec_from=0, elec_to=1, kavg=True, zero_T=1e-6):
         r""" The Fano-factor for the calculation (requires calculated transmission eigenvalues)
 
         Calculate the Fano factor defined as:
 
         .. math::
-           F(E) = \frac{\sum_n T_n(1 - T_n)}{\sum_n T_n}
+           F(E) = \sum_k\frac{\sum_n T_{k,n}(E)[1 - T_{k,n}(E)]}{\sum_n T_{k,n}(E)} w_k
+
+        Notes
+        -----
+        The default `zero_T` may change in the future.
 
         Parameters
         ----------
@@ -838,20 +890,48 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the originating electrode
         elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
-        kavg: bool, int or array_like, optional
+        kavg: bool, int or array of int, optional
            whether the returned Fano factor is k-averaged, an explicit k-point
-           or a selection of k-points
+           or a selection of k-points. Note the latter two refer to indices in ``self.kpt``.
+        zero_T : float, optional
+           any transmission eigen value lower than this value will be treated as exactly 0.
 
         See Also
         --------
         shot_noise : shot-noise term (zero temperature limit)
         noise_power : temperature dependent noise power
         """
-        TE = self.transmission_eig(elec_from, elec_to, kavg=kavg)
-        if np.any(np.logical_and.reduce(TE > 0.001, axis=-1)):
-            info(self.__class__.__name__ + ".fano does possibly not have all relevant transmission eigenvalues in the "
-                 "calculation. For some energy values all transmission eigenvalues are above 0.001!")
-        return (TE * (1 - TE)).sum(-1) / TE.sum(-1)
+        def _fano(T):
+            T[T <= zero_T] = 0.
+            r = (T * (1 - T)).sum(-1)
+            fano = r / T.sum(-1)
+            # If the transmission is zero, so is the Fano-factor
+            fano[T.sum(-1) <= zero_T] = 0.
+            return fano
+
+        if isinstance(kavg, bool):
+            if not kavg:
+                # The user wants it k-resolved
+                T = self.transmission_eig(elec_from, elec_to, kavg=False)
+                self._check_Teig('fano', T)
+                return _fano(T)
+
+            # We will average all k-points
+            kavg = range(self.nkpt)
+
+        elif isinstance(kavg, Integral):
+            kavg = [kavg]
+
+        # Now do the actual conversion
+        T = self.transmission_eig(elec_from, elec_to, kavg=kavg[0])
+        self._check_Teig('fano', T)
+        fano = _fano(T) * self.wkpt[kavg[0]]
+
+        for ik in kavg[1:]:
+            T = self.transmission_eig(elec_from, elec_to, kavg=ik)
+            self._check_Teig('fano', T)
+            fano += _fano(T) * self.wkpt[ik]
+        return fano
 
     def _sparse_data(self, data, elec, E, kavg=True, isc=None):
         """ Internal routine for retrieving sparse data (orbital current, COOP) """
@@ -2638,8 +2718,14 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
     # Denote default writing routine
     _write_default = write_tbtav
 
+# Clean up methods in the average one, if there were multiple k-points
+# We can't ensure the results are the same, hence it is more
+# safe to delete the methods
+for _name in ['shot_noise', 'noise_power', 'fano']:
+    setattr(tbtavncSileTBtrans, _name, None)
 
 # Phonon output
+
 
 class phtncSileTBtrans(tbtncSileTBtrans):
     """ PHtrans file object """
