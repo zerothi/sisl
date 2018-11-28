@@ -61,7 +61,7 @@ sisl consists of several distinct features:
    :maxdepth: 2
 
    introduction
-   contributing
+   contribute
    other
 
 .. toctree::
