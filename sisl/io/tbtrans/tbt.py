@@ -297,7 +297,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         .. math::
 
              R(E) = T_{\mathrm{bulk}}(E) - \big\{i \mathrm{Tr}[(\mathbf G-\mathbf G^\dagger)\boldsymbol\Gamma_{\mathrm{elec}}]
-                   - \mathrm{Tr}[\mathbf G\boldsymbol\Gamma_{\mathrm{elec}}\mathbf G^\dagger\boldsymbol\Gamma_{\mathrm{elec}}]
+                   - \mathrm{Tr}[\mathbf G\boldsymbol\Gamma_{\mathrm{elec}}\mathbf G^\dagger\boldsymbol\Gamma_{\mathrm{elec}}]\big\}
 
         Both are identical, however, numerically they may be different. Particularly when the bulk transmission
         is very large compared to the transmission to the other electrodes one should prefer the first equation.
