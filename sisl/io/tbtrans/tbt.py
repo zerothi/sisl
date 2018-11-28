@@ -724,7 +724,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         while for `classical` False (default) the Fermi-Dirac statistics is taken into account:
 
         .. math::
-           S(E, V) = \frac{2e^2}{h}|V|\sum_k\sum_n T_{k,n}(E) (1 - T_{k,n}(E)) w_k
+           S(E, V) = \frac{2e^2}{h}|V|\sum_k\sum_n T_{k,n}(E) [1 - T_{k,n}(E)] w_k
 
         Raises
         ------
