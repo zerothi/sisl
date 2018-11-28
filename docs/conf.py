@@ -440,9 +440,7 @@ def sisl_skip(app, what, name, obj, skip, options):
         if name in ['isDataset', 'isDimension', 'isGroup',
                     'isRoot', 'isVariable']:
             return True
-        if name in ['read_es', 'read_geom', 'read_sc',
-                    'write_es', 'write_geom', 'write_sc',
-                    'ArgumentParser', 'ArgumentParser_out']:
+        if name in ['ArgumentParser', 'ArgumentParser_out']:
             return True
     return skip
 
