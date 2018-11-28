@@ -1,6 +1,9 @@
 0.9.6
 =====
 
+- Removed possibility of using kavg=list(...) due to complexity, now single
+	kavg requests are *not* k-averaged.
+
 - Bugfix in calculating shot_noise, noise_power and fano factors in tbtncSileSiesta
 	They were only correct for Gamma-point calculations
 
