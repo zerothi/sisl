@@ -37,7 +37,9 @@ External toolbox codes may be contributed `here <issue_>`_, then press
 "Issue" and select *Contribute toolbox*.
 
 There are two cases of external contributions:
+
 1. If the code is directly integratable into sisl it will be merged into the sisl source.
+
 2. If the code is showing how to use sisl to calculate some physical quantity but is not a general
    implementation, it will be placed in toolbox directory.
 
