@@ -223,7 +223,7 @@ class Grid(SuperCellChild):
         """
         if not boundary is None:
             if isinstance(boundary, Integral):
-                self.bc = _a.arrayi([[boundary] * 2] * 3)
+                self.bc = _a.fulli([3, 2], boundary)
             else:
                 self.bc = _a.asarrayi(boundary)
         if not a is None:
