@@ -422,6 +422,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         else:
             raise ValueError(self.__class__.__name__ + '.norm error on norm keyword in when requesting normalization!')
 
+        # If the user simply requests a specific norm
         if atom is None and orbital is None:
             return NORM
 
@@ -437,9 +438,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
             return NORM
 
-        # atom is specified
+        if not orbital is None:
+            raise ValueError(self.__class__.__name__ + '.norm both atom and orbital cannot be specified!')
+
+        # atom is specified, this will result in the same normalization
+        # regardless of norm == [orbital, atom] since it is all orbitals
+        # on the given atoms.
         if norm in ['orbital', 'atom']:
-            NORM = float(len(self.o2p(atom)))
+            NORM = float(len(self.a2p(atom)))
+
         return NORM
 
     def _DOS(self, DOS, atom, orbital, sum, norm):
@@ -531,7 +538,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         # Sum for new return stuff
         for i, a in enumerate(atom):
-            pvt = self.o2p(geom.a2o(a, True))
+            pvt = self.a2p(a)
             if len(pvt) == 0:
                 nDOS[..., i] = 0.
             else:

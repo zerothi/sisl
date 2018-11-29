@@ -440,3 +440,17 @@ def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     out = p.parse_args(['--transmission', 'Left', 'Right',
                         '--transmission-bulk', 'Left',
                         '--plot', f], namespace=copy(ns))
+
+
+# Requesting an orbital outside of the device region
+def test_1_graphene_all_warn_orbital(sisl_files):
+    tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
+    with pytest.warns(sisl.SislWarning):
+        tbt.o2p(1)
+
+
+# Requesting an atom outside of the device region
+def test_1_graphene_all_warn_atom(sisl_files):
+    tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
+    with pytest.warns(sisl.SislWarning):
+        tbt.a2p(1)

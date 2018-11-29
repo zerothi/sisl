@@ -342,20 +342,30 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
         >>> p = self.o2p(self.geom.a2o(atom, True)) # doctest: +SKIP
 
+        Will warn if an atom requested is not in the device list of atoms.
+
         Parameters
         ----------
         atom : array_like or int
            atomic indices (0-based)
         """
-        orbs = self.geom.a2o(atom, True)
-        return self.o2p(orbs)
+        return self.o2p(self.geom.a2o(atom, True))
 
     def o2p(self, orbital):
         """ Return the pivoting indices (0-based) for the orbitals
+
+        Will warn if an orbital requested is not in the device list of orbitals.
 
         Parameters
         ----------
         orbital : array_like or int
            orbital indices (0-based)
         """
-        return in1d(self.pivot(), orbital).nonzero()[0]
+        # We need asarray, otherwise taking len of an int will fail
+        orbital = np.asarray(orbital).ravel()
+        porb = in1d(self.pivot(), orbital).nonzero()[0]
+        d = len(orbital) - len(porb)
+        if d != 0:
+            warn('{}.o2p requesting an orbital outside the device region, '
+                 '{} orbitals will be removed from the returned list'.format(self.__class__.__name__, d))
+        return porb

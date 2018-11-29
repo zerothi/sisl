@@ -32,7 +32,8 @@ def sc(alat, atom):
                              [0, 1, 0],
                              [0, 0, 1]], np.float64) * alat)
     g = Geometry([0, 0, 0], atom, sc=sc)
-    g.optimize_nsc()
+    if np.all(g.maxR(True) > 0.):
+        g.optimize_nsc()
     return g
 
 
@@ -59,7 +60,8 @@ def bcc(alat, atom, orthogonal=False):
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2)
         g = Geometry([0, 0, 0], atom, sc=sc)
-    g.optimize_nsc()
+    if np.all(g.maxR(True) > 0.):
+        g.optimize_nsc()
     return g
 
 
@@ -87,7 +89,8 @@ def fcc(alat, atom, orthogonal=False):
                                  [1, 0, 1],
                                  [1, 1, 0]], np.float64) * alat / 2)
         g = Geometry([0, 0, 0], atom, sc=sc)
-    g.optimize_nsc()
+    if np.all(g.maxR(True) > 0.):
+        g.optimize_nsc()
     return g
 
 
@@ -127,5 +130,6 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
         sc = SuperCell([a, a, c, 90, 90, 60])
         g = Geometry([[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]],
                      atom, sc=sc)
-    g.optimize_nsc()
+    if np.all(g.maxR(True) > 0.):
+        g.optimize_nsc()
     return g
