@@ -2837,6 +2837,8 @@ class Geometry(SuperCellChild):
            only plot a subset of the axis, defaults to all axis
         supercell : bool, optional
            If `True` also plot the supercell structure
+        atom_indices : bool, optional
+           if true, also add atomic numbering in the plot (0-based)
         axes : bool or matplotlib.Axes, optional
            the figure axes to plot in (if ``matplotlib.Axes`` object).
            If `True` it will create a new figure to plot in.
@@ -2866,25 +2868,27 @@ class Geometry(SuperCellChild):
         elif axes is True:
             axes = plt.mlibplt.figure().add_subplot(111, **d)
 
-        colors = np.linspace(0, 1, num=len(self.atoms.atom), endpoint=False)
+        colors = np.linspace(0, 1, num=self.atoms.nspecie, endpoint=False)
         colors = colors[self.atoms.specie]
-        area = np.array([a.Z for a in self.atoms.atom], np.float64)
-        ma = np.min(area)
-        area[:] *= 20 * np.pi / ma
-        area = area[self.atoms.specie]
+        area = _a.arrayd(self.atoms.Z)
+        area[:] *= 20 * np.pi / area.min()
 
+        # Create short-hand
         xyz = self.xyz
 
         if isinstance(axes, plt.mlib3d.Axes3D):
             # We should plot in 3D plots
             axes.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], s=area, c=colors, alpha=0.8)
             axes.set_zlabel('Ang')
+            if atom_indices:
+                for i, loc in enumerate(xyz):
+                    axes.text(loc[0], loc[1], loc[2], str(i), verticalalignment='bottom')
+
         else:
             axes.scatter(xyz[:, axis[0]], xyz[:, axis[1]], s=area, c=colors, alpha=0.8)
-
-        if atom_indices:
-            for i, loc in enumerate(xyz):
-                axes.text(loc[axis[0]], loc[axis[1]], str(i))
+            if atom_indices:
+                for i, loc in enumerate(xyz):
+                    axes.text(loc[axis[0]], loc[axis[1]], str(i), verticalalignment='bottom')
 
         axes.set_xlabel('Ang')
         axes.set_ylabel('Ang')

@@ -915,6 +915,12 @@ class SuperCell(object):
         # Default dictionary for passing to newly created figures
         d = dict()
 
+        # Try and default the color and alpha
+        if 'color' not in kwargs and len(args) == 0:
+            kwargs['color'] = 'k'
+        if 'alpha' not in kwargs:
+            kwargs['alpha'] = 0.5
+
         if axis is None:
             axis = [0, 1, 2]
 

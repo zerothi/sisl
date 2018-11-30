@@ -1332,12 +1332,17 @@ class Atoms(object):
 
     @property
     def atom(self):
-        """ Return the unique atoms list """
+        """ List of unique atoms in this group of atoms """
         return self._atom
 
     @property
+    def nspecie(self):
+        """ Number of different species """
+        return len(self._atom)
+
+    @property
     def specie(self):
-        """ Return the specie list """
+        """ Atomic specie list """
         return self._specie
 
     @property
