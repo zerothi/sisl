@@ -2827,7 +2827,8 @@ class Geometry(SuperCellChild):
         """
         return self.sc.offset(self.o2isc(o))
 
-    def __plot__(self, axis=None, supercell=True, axes=False, *args, **kwargs):
+    def __plot__(self, axis=None, supercell=True, axes=False,
+                 atom_indices=False, *args, **kwargs):
         """ Plot the geometry in a specified ``matplotlib.Axes`` object.
 
         Parameters
@@ -2880,6 +2881,10 @@ class Geometry(SuperCellChild):
             axes.set_zlabel('Ang')
         else:
             axes.scatter(xyz[:, axis[0]], xyz[:, axis[1]], s=area, c=colors, alpha=0.8)
+
+        if atom_indices:
+            for i, loc in enumerate(xyz):
+                axes.text(loc[axis[0]], loc[axis[1]], str(i))
 
         axes.set_xlabel('Ang')
         axes.set_ylabel('Ang')
