@@ -2227,7 +2227,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 for a, idx in g.atom:
                     for i in idx:
                         atoms[i] = a.copy(orbital=old_g.atom[i].R)
-                g._atom = Atoms(atoms)
+                g._atoms = Atoms(atoms)
 
                 ns._geometry = g
         p.add_argument('--geometry', '-G',

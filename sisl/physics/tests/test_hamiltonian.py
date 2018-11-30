@@ -1262,9 +1262,32 @@ class TestHamiltonian(object):
         H = Hamiltonian(setup.g.copy(), orthogonal=False)
         H.construct([R, param])
         bz = MonkhorstPack(H, [10, 10, 1])
-        Ef = H.fermi_level(bz, q=1)
+        q = 0.9
+        Ef = H.fermi_level(bz, q=q)
         H.shift(-Ef)
-        assert H.fermi_level(bz, q=1) == pytest.approx(0., abs=1e-6)
+        assert H.fermi_level(bz, q=q) == pytest.approx(0., abs=1e-6)
+
+    def test_fermi_level_spin(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (2.1, 0.1)]
+        H = Hamiltonian(setup.g.copy(), spin=Spin('P'))
+        H.construct([R, param])
+        bz = MonkhorstPack(H, [10, 10, 1])
+        q = 1.1
+        Ef = H.fermi_level(bz, q=q)
+        assert np.asarray(Ef).ndim == 0
+        H.shift(-Ef)
+        assert H.fermi_level(bz, q=q) == pytest.approx(0., abs=1e-6)
+
+    def test_fermi_level_spin_separate(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (2.1, 0.1)]
+        H = Hamiltonian(setup.g.copy(), spin=Spin('P'))
+        H.construct([R, param])
+        bz = MonkhorstPack(H, [10, 10, 1])
+        q = [0.5, 0.3]
+        Ef = H.fermi_level(bz, q=q)
+        assert len(Ef) == 2
+        H.shift(-Ef)
+        assert np.allclose(H.fermi_level(bz, q=q), 0.)
 
     def test_edges1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

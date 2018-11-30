@@ -34,6 +34,7 @@ from __future__ import print_function, division
 from functools import partial
 
 import numpy as np
+from numpy import exp
 from scipy.special import erf
 _pi = np.pi
 _sqrt_2pi = (2 * _pi) ** 0.5
@@ -95,7 +96,7 @@ def gaussian(x, sigma=0.1, x0=0.):
     numpy.ndarray
         the Gaussian distribution, same length as `x`
     """
-    return np.exp(-(x - x0) ** 2 / (2 * sigma ** 2)) / (_sqrt_2pi * sigma)
+    return exp(-(x - x0) ** 2 / (2 * sigma * sigma)) / (_sqrt_2pi * sigma)
 
 
 def lorentzian(x, gamma=0.1, x0=0.):
@@ -118,7 +119,7 @@ def lorentzian(x, gamma=0.1, x0=0.):
     numpy.ndarray
         the Lorentzian distribution, same length as `x`
     """
-    return (gamma / _pi) / ((x - x0) ** 2 + gamma ** 2)
+    return (gamma / _pi) / ((x - x0) ** 2 + gamma * gamma)
 
 
 def fermi_dirac(E, kT=0.1, mu=0.):
@@ -141,7 +142,7 @@ def fermi_dirac(E, kT=0.1, mu=0.):
     numpy.ndarray
         the Fermi-Dirac distribution, same length as `E`
     """
-    return 1. / (np.exp((E - mu) / kT) + 1.)
+    return 1. / (exp((E - mu) / kT) + 1.)
 
 
 def bose_einstein(E, kT=0.1, mu=0.):
@@ -164,7 +165,7 @@ def bose_einstein(E, kT=0.1, mu=0.):
     numpy.ndarray
         the Bose-Einstein distribution, same length as `E`
     """
-    return 1. / (np.exp((E - mu) / kT) - 1.)
+    return 1. / (exp((E - mu) / kT) - 1.)
 
 
 def cold(E, kT=0.1, mu=0.):
@@ -189,4 +190,4 @@ def cold(E, kT=0.1, mu=0.):
         the Cold smearing distribution function, same length as `E`
     """
     x = - (E - mu) / kT - 1 / 2 ** 0.5
-    return 0.5 + 0.5 * erf(x) + 1 / _sqrt_2pi * np.exp(-x**2)
+    return 0.5 + 0.5 * erf(x) + exp(-x**2) / _sqrt_2pi

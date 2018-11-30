@@ -123,7 +123,7 @@ class Geometry(SuperCellChild):
             atom = Atom('H')
 
         # Create the local Atoms object
-        self._atom = Atoms(atom, na=self.na)
+        self._atoms = Atoms(atom, na=self.na)
 
         # Assign a group specifier
         self._names = NamedIndex()
@@ -189,7 +189,7 @@ class Geometry(SuperCellChild):
     @property
     def atoms(self):
         """ Atoms for the geometry (`Atoms` object) """
-        return self._atom
+        return self._atoms
 
     # Backwards compatability (do not use)
     atom = atoms
@@ -202,7 +202,7 @@ class Geometry(SuperCellChild):
     @property
     def q0(self):
         """ Total initial charge in this geometry (sum of q0 in all atoms) """
-        return self._atom.q0.sum()
+        return self._atoms.q0.sum()
 
     def maxR(self, all=False):
         """ Maximum orbital range of the atoms """
@@ -390,7 +390,7 @@ class Geometry(SuperCellChild):
         -----
         This is an in-place operation.
         """
-        self._atom = self._atom.reorder(in_place=True)
+        self._atoms = self._atoms.reorder(in_place=True)
 
     def reduce(self):
         """ Remove all atoms not currently used in the ``self.atom`` object
@@ -399,7 +399,7 @@ class Geometry(SuperCellChild):
         -----
         This is an in-place operation.
         """
-        self._atom = self._atom.reduce(in_place=True)
+        self._atoms = self._atoms.reduce(in_place=True)
 
     def rij(self, ia, ja):
         r""" Distance between atom `ia` and `ja`, atoms can be in super-cell indices

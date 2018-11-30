@@ -59,7 +59,7 @@ class rhamSileScaleUp(SileScaleUp):
             try:
                 species = get_sile(self.file.rsplit('rham', 1)[0] + 'orbocc').read_atom()
                 for i, atom in enumerate(species.atom):
-                    g.atom._atom[i] = atom
+                    g.atoms._atom[i] = atom
             except Exception:
                 # Allowed pass due to pythonic reading
                 pass
