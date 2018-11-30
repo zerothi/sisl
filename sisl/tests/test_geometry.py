@@ -1211,3 +1211,18 @@ class TestGeometry(object):
         assert np.allclose(p.xyz, g.xyz)
         assert np.allclose(p.cell, g.cell)
         assert np.all(supercell == [2, 3, 1])
+
+    # Test ASE (but only fail if present)
+
+    def test_geometry_toASE(self):
+        ase = pytest.importorskip("ase")
+        sisl_geom.graphene().toASE()
+
+    def test_geometry_fromASE(self):
+        ase = pytest.importorskip("ase")
+        gr = sisl_geom.graphene()
+        ase_geom = gr.toASE()
+        from_ase = Geometry.fromASE(ase_geom)
+        assert np.allclose(gr.xyz, from_ase.xyz)
+        assert np.allclose(gr.cell, from_ase.cell)
+        assert np.allclose(gr.atoms.Z, from_ase.atoms.Z)
