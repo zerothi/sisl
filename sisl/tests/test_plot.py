@@ -39,9 +39,26 @@ def test_geometry_2d():
     plt.close('all')
 
 
+def test_geometry_2d_atom_indices():
+    g = sisl.geom.graphene()
+    sisl.plot(g, axis=[0, 1])
+    sisl.plot(g, axis=[0, 2])
+    sisl.plot(g, axis=[1, 2])
+
+    ax = plt.subplot(111)
+    sisl.plot(g, axis=[1, 2], axes=ax, atom_indices=True)
+    plt.close('all')
+
+
 def test_geometry_3d():
     g = sisl.geom.graphene()
     sisl.plot(g)
+    plt.close('all')
+
+
+def test_geometry_3d_atom_indices():
+    g = sisl.geom.graphene()
+    sisl.plot(g, atom_indices=True)
     plt.close('all')
 
 
