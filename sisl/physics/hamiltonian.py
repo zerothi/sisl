@@ -1,7 +1,8 @@
 from __future__ import print_function, division
 
-import numpy as np
 import math as ma
+import numpy as np
+from scipy.interpolate import CubicSpline
 
 from sisl._help import _range as range
 import sisl._array as _a
@@ -424,7 +425,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         return self.eigenstate(k, **kwargs).PDOS(E, distribution)
 
-    def fermi_level(self, bz=None, q=None, distribution='fermi_dirac', q_tol=1e-10):
+    def fermi_level(self, bz=None, q=None, distribution='fermi_dirac', q_tol=1e-12):
         """ Calculate the Fermi-level using a Brillouinzone sampling and a target charge
 
         The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues
@@ -471,34 +472,41 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         # Internal class to calculate the Fermi-level
         def _Ef(q, eig):
-            # Initial guess, probably not that far
-            # Since DFT eigh's may have *very* large eigenvalues
-            # it seems better to start close, but above the
-            # Fermi-level, we are here assuming E'_F = 10 eV
-            # is above the actual Fermi-level
-            iq_min = max(int(ma.floor(q)) - 1, 0)
-            iq_max = min(int(ma.ceil(q)) + 1, eig.shape[1] - 1)
+            # We could reduce it depending on the temperature,
+            # however the distribution does not have the kT
+            # parameter available.
+            Ef = np.average(eig[:, int(q)])
 
-            # Initialize bounds
-            E_min = eig[:, iq_min].min()
-            E_max = eig[:, iq_max].max()
-            Ef = E_max
+            l_Ef = []
+            l_q = []
+            def list_append(q, Ef):
+                l_q.append(q)
+                l_Ef.append(Ef)
 
             # Calculate guessed charge
             qt = (distribution(eig, mu=Ef) * w).sum()
-            if qt < q:
-                # Correct for certain cases
-                E_max = eig.max()
+
             while abs(qt - q) > q_tol:
-                # Update limits
-                if qt > q:
-                    E_max = Ef
-                elif qt < q:
-                    E_min = Ef
+                # Add to cubic-spline
+                list_append(qt, Ef)
+
                 # Estimate new Fermi-level
-                Ef = (E_min + E_max) / 2
+                if len(l_q) > 1:
+                    # We can do a spline interpolation
+                    lq = np.array(l_q)
+                    idx = np.argsort(lq)
+                    lEf = np.array(l_Ef)
+                    Ef = CubicSpline(lq[idx], lEf[idx], extrapolate=True)(q)
+                else:
+                    # Update limits
+                    if qt > q:
+                        Ef = Ef - 0.5
+                    elif qt < q:
+                        Ef = Ef + 0.5
+
                 # Calculate new guessed charge
                 qt = (distribution(eig, mu=Ef) * w).sum()
+
             return Ef
 
         if self.spin.is_polarized and q.size == 2:
