@@ -52,18 +52,9 @@ def _matrix_ddk(csr, const int idx, Rd, Ro, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             dd[:3] = _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
             dd[3:] = _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            dd[:3] = _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
-            dd[3:] = _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
-            dd[0] = np.asmatrix(dd[0])
-            dd[1] = np.asmatrix(dd[1])
-            dd[2] = np.asmatrix(dd[2])
-            dd[3] = np.asmatrix(dd[3])
-            dd[4] = np.asmatrix(dd[4])
-            dd[5] = np.asmatrix(dd[5])
 
         else:
             # Default must be something else.
@@ -77,18 +68,9 @@ def _matrix_ddk(csr, const int idx, Rd, Ro, dtype, format, p_opt):
             dd[5] = dd[5].asformat(format)
 
     elif dtype == np.float64:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             dd[:3] = _phase3_array_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
             dd[3:] = _phase3_array_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            dd[:3] = _phase3_array_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
-            dd[3:] = _phase3_array_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
-            dd[0] = np.asmatrix(dd[0])
-            dd[1] = np.asmatrix(dd[1])
-            dd[2] = np.asmatrix(dd[2])
-            dd[3] = np.asmatrix(dd[3])
-            dd[4] = np.asmatrix(dd[4])
-            dd[5] = np.asmatrix(dd[5])
         else:
             dd[:3] = _phase3_csr_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
             dd[3:] = _phase3_csr_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
@@ -100,18 +82,9 @@ def _matrix_ddk(csr, const int idx, Rd, Ro, dtype, format, p_opt):
             dd[5] = dd[5].asformat(format)
 
     elif dtype == np.complex64:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             dd[:3] = _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
             dd[3:] = _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            dd[:3] = _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
-            dd[3:] = _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
-            dd[0] = np.asmatrix(dd[0])
-            dd[1] = np.asmatrix(dd[1])
-            dd[2] = np.asmatrix(dd[2])
-            dd[3] = np.asmatrix(dd[3])
-            dd[4] = np.asmatrix(dd[4])
-            dd[5] = np.asmatrix(dd[5])
         else:
             dd[:3] = _phase3_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
             dd[3:] = _phase3_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
@@ -123,18 +96,9 @@ def _matrix_ddk(csr, const int idx, Rd, Ro, dtype, format, p_opt):
             dd[5] = dd[5].asformat(format)
 
     elif dtype == np.float32:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             dd[:3] = _phase3_array_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
             dd[3:] = _phase3_array_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            dd[:3] = _phase3_array_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
-            dd[3:] = _phase3_array_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
-            dd[0] = np.asmatrix(dd[0])
-            dd[1] = np.asmatrix(dd[1])
-            dd[2] = np.asmatrix(dd[2])
-            dd[3] = np.asmatrix(dd[3])
-            dd[4] = np.asmatrix(dd[4])
-            dd[5] = np.asmatrix(dd[5])
         else:
             dd[:3] = _phase3_csr_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
             dd[3:] = _phase3_csr_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)

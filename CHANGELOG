@@ -1,6 +1,8 @@
 0.9.6
 =====
 
+- Removed numpy deprecated class numpy.matrix, now everything is array
+
 - Removed possibility of using kavg=list(...) due to complexity, now single
 	kavg requests are *not* k-averaged.
 

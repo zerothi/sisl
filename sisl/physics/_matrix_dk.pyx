@@ -42,22 +42,16 @@ def _matrix_dk(csr, const int idx, iRs, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            d1, d2, d3 = _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
-            return np.asmatrix(d1), np.asmatrix(d2), np.asmatrix(d3)
 
         # Default must be something else.
         d1, d2, d3 = _phase3_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
     elif dtype == np.complex64:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            d1, d2, d3 = _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
-            return np.asmatrix(d1), np.asmatrix(d2), np.asmatrix(d3)
         d1, d2, d3 = _phase3_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 

@@ -279,7 +279,7 @@ class SparseOrbitalBZ(SparseOrbital):
         format : {'csr', 'array', 'matrix', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'matrix'`).
+           return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
 
         See Also
         --------
@@ -301,10 +301,8 @@ class SparseOrbitalBZ(SparseOrbital):
         # the matrix only describes neighbouring couplings it is vital
         # to not return anything
         # TODO
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return np.diag(np.ones(no, dtype=dtype))
-        elif format == 'matrix' or format == 'dense':
-            return np.diag(np.ones(no, dtype=dtype)).asmatrix()
         S = csr_matrix((no, no), dtype=dtype)
         S.setdiag(1.)
         return S.asformat(format)
@@ -360,7 +358,7 @@ class SparseOrbitalBZ(SparseOrbital):
         format : {'csr', 'array', 'matrix', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'matrix'`).
+           return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
 
         See Also
         --------
@@ -424,7 +422,7 @@ class SparseOrbitalBZ(SparseOrbital):
         format : {'csr', 'array', 'matrix', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'matrix'`).
+           return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
 
         See Also
         --------

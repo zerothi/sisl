@@ -89,7 +89,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+           return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
            if the Hamiltonian is a spin polarized one can extract the specific spin direction
            matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`
@@ -143,7 +143,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+           return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
            if the Hamiltonian is a spin polarized one can extract the specific spin direction
            matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`
@@ -197,7 +197,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
-           return in `numpy.ndarray` (`'array'`) or `numpy.matrix` (`'dense'`).
+           return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
            if the Hamiltonian is a spin polarized one can extract the specific spin direction
            matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`

@@ -37,33 +37,25 @@ def _matrix_k(csr, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_phase_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt))
 
         # Default must be something else.
         return _phase_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
     elif dtype == np.float64:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _array_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_array_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx))
         return _csr_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx).asformat(format)
 
     elif dtype == np.complex64:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_phase_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt))
         return _phase_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
     elif dtype == np.float32:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _array_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_array_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx))
         return _csr_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx).asformat(format)
 
     raise ValueError('matrix_k: currently only supports dtype in [float32, float64, complex64, complex128].')
@@ -92,19 +84,15 @@ def _matrix_k_nc(csr, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase_nc_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_phase_nc_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt))
 
         # Default must be something else.
         return _phase_nc_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
     elif dtype == np.complex64:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase_nc_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_phase_nc_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt))
         return _phase_nc_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
     raise ValueError('matrix_k_nc: only supports dtype in [complex64, complex128].')
@@ -133,19 +121,15 @@ def _matrix_k_so(csr, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase_so_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_phase_so_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt))
 
         # Default must be something else.
         return _phase_so_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
     elif dtype == np.complex64:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase_so_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_phase_so_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt))
         return _phase_so_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
     raise ValueError('matrix_sc_so: only supports dtype in [complex64, complex128].')
@@ -171,19 +155,15 @@ def _matrix_k_nc_diag(csr, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase_nc_diag_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_phase_nc_diag_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt))
 
         # Default must be something else.
         return _phase_nc_diag_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
     elif dtype == np.complex64:
-        if format == 'array':
+        if format in ['array', 'matrix', 'dense']:
             return _phase_nc_diag_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
-        elif format == 'matrix' or format == 'dense':
-            return np.asmatrix(_phase_nc_diag_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt))
         return _phase_nc_diag_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
     raise ValueError('matrix_k_nc_diag: only supports dtype in [complex64, complex128].')
