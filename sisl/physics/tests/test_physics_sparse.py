@@ -73,3 +73,31 @@ def test_eigsh_non_orthogonal():
     # The most simple setup.
     sp = SparseOrbitalBZ(gr, orthogonal=False)
     sp.eigsh()
+
+
+def test_pickle_non_orthogonal():
+    import pickle as p
+    gr = _get()
+    sp = SparseOrbitalBZ(gr, orthogonal=False)
+    sp[0, 0] = 0.5
+    sp[1, 1] = 0.5
+    sp.S[0, 0] = 1.
+    sp.S[1, 1] = 1.
+    s = p.dumps(sp)
+    SP = p.loads(s)
+    assert sp.spsame(SP)
+    assert np.allclose(sp.eigh(), SP.eigh())
+
+
+def test_pickle_non_orthogonal_spin():
+    import pickle as p
+    gr = _get()
+    sp = SparseOrbitalBZSpin(gr, spin=Spin('p'), orthogonal=False)
+    sp[0, 0, :] = 0.5
+    sp[1, 1, :] = 0.5
+    sp.S[0, 0] = 1.
+    sp.S[1, 1] = 1.
+    s = p.dumps(sp)
+    SP = p.loads(s)
+    assert sp.spsame(SP)
+    assert np.allclose(sp.eigh(), SP.eigh())

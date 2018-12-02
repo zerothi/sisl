@@ -8,6 +8,7 @@ from numpy import unique
 
 import sisl._array as _a
 from .atom import Atom
+from .geometry import Geometry
 from .messages import warn, SislError, SislWarning, tqdm_eta
 from ._indices import index_sorted
 from ._help import get_dtype
@@ -763,6 +764,23 @@ class _SparseGeometry(object):
         else:
             self._csr **= b
         return self
+
+    def __getstate__(self):
+        """ Return dictionary with the current state """
+        d = {}
+        d['geometry'] = self.geometry.__getstate__()
+        d['csr'] = self._csr.__getstate__()
+        return d
+
+    def __setstate__(self, state):
+        """ Return dictionary with the current state """
+        geom = Geometry([0] * 3, Atom(1))
+        geom.__setstate__(state['geometry'])
+        self._geometry = geom
+        csr = SparseCSR((10, 10, 2))
+        csr.__setstate__(state['csr'])
+        self._csr = csr
+        self._def_dim = -1
 
 
 class SparseAtom(_SparseGeometry):

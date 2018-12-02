@@ -23,6 +23,13 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         super(DynamicalMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        self._reset()
+
+    def _reset(self):
+        super(DynamicalMatrix, self)._reset()
+        self.Dk = self.Pk
+        self.dDk = self.dPk
+        self.ddDk = self.ddPk
 
         self.Dk = self._Pk
         self.dDk = self.dPk

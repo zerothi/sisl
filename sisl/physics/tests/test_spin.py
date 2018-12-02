@@ -186,3 +186,12 @@ def test_pauli():
     assert np.allclose(y, (np.conj(W)*np.dot(S.Y, W.T).T).sum(1).real)
     z = np.array([0, 0, 0, 0, 0, 0, 0, 0, 1, -1])
     assert np.allclose(z, (np.conj(W)*np.dot(S.Z, W.T).T).sum(1).real)
+
+
+def test_pickle():
+    import pickle as p
+
+    S = Spin('nc')
+    n = p.dumps(S)
+    s = p.loads(n)
+    assert S == s

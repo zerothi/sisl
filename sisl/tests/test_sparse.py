@@ -924,3 +924,13 @@ class TestSparseCSR(object):
         S1[2, 0] = [1, 2]
         S1[2, 2] = [1, 2]
         S1.sum(1)
+
+    def test_pickle(self, setup):
+        import pickle as p
+        S = SparseCSR((10, 10, 2), dtype=np.int32)
+        S[0, 0] = [1, 2]
+        S[2, 0] = [1, 2]
+        S[2, 2] = [1, 2]
+        n = p.dumps(S)
+        s = p.loads(n)
+        assert s.spsame(S)

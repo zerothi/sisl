@@ -27,7 +27,6 @@ from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
-from .sparse_geometry import SparseAtom
 from ._namedindex import NamedIndex
 
 __all__ = ['Geometry', 'sgeom']
@@ -2971,6 +2970,7 @@ class Geometry(SuperCellChild):
         iter_block : the method for looping the atoms
         distance : create a list of distances
         """
+        from .sparse_geometry import SparseAtom
         rij = SparseAtom(self, nnzpr=20, dtype=dtype)
 
         # Get R

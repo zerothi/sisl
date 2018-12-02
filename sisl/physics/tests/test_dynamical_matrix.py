@@ -115,3 +115,12 @@ class TestDynamicalMatrix(object):
         assert np.allclose(D.PDOS(E), em.PDOS(E))
         assert np.allclose(D.displacement(), em.displacement())
         assert np.allclose(D.velocity(), em.velocity())
+
+    def test_pickle(self, setup):
+        import pickle as p
+        D = setup.D.copy()
+        D.construct(setup.func)
+        s = p.dumps(D)
+        d = p.loads(s)
+        assert d.spsame(D)
+        assert np.allclose(d.eigh(), D.eigh())

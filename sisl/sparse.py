@@ -1537,6 +1537,25 @@ class SparseCSR(object):
             self._D **= other
         return self
 
+    def __getstate__(self):
+        """ Return dictionary with the current state """
+        d = {}
+        # Reduce array sizes
+        self.finalize()
+        d['shape'] = self._shape[:]
+        d['ncol'] = self.ncol.copy()
+        d['col'] = self.col.copy()
+        d['D'] = self._D.copy()
+        return d
+
+    def __setstate__(self, state):
+        """ Reset state of the object """
+        self._shape = tuple(state['shape'][:])
+        self.ncol = state['ncol']
+        self.ptr = np.insert(_a.cumsumi(self.ncol), 0, 0)
+        self.col = state['col']
+        self._D = state['D']
+
 
 def ispmatrix(matrix, map_row=None, map_col=None):
     """ Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)

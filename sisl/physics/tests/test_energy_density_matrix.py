@@ -113,3 +113,12 @@ class TestEnergyDensityMatrix(object):
         assert setup.E[0, 0] == 1.
         assert setup.E[1, 0] == 0.
         setup.E.empty()
+
+    def test_pickle(self, setup):
+        import pickle as p
+        E = setup.E.copy()
+        E.construct(setup.func)
+        s = p.dumps(E)
+        e = p.loads(s)
+        assert e.spsame(E)
+        assert np.allclose(e.eigh(), E.eigh())

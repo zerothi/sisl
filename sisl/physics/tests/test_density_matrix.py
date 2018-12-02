@@ -217,3 +217,12 @@ class TestDensityMatrix(object):
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.1, 0.1, 0.1)]])
         grid = Grid(0.2, geometry=D.geom)
         D.density(grid, [1., 0.])
+
+    def test_pickle(self, setup):
+        import pickle as p
+        D = setup.D.copy()
+        D.construct(setup.func)
+        s = p.dumps(D)
+        d = p.loads(s)
+        assert d.spsame(D)
+        assert np.allclose(d.eigh(), D.eigh())

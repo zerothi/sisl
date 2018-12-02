@@ -177,3 +177,15 @@ class Spin(object):
 
     def __ge__(self, other):
         return self.kind >= other.kind
+
+    def __getstate__(self):
+        d = {}
+        d['spins'] = self.spins
+        d['kind'] = self.kind
+        d['dtype'] = self.dtype
+        return d
+
+    def __setstate__(self, state):
+        self._spins = state['spins']
+        self._kind = state['kind']
+        self._dtype = state['dtype']

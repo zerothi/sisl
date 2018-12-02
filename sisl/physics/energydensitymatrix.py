@@ -41,7 +41,10 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         super(EnergyDensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        self._reset()
 
+    def _reset(self):
+        super(EnergyDensityMatrix, self)._reset()
         self.Ek = self.Pk
         self.dEk = self.dPk
         self.ddEk = self.ddPk
