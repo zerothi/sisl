@@ -17,13 +17,11 @@ physics/_matrix_dk.pyx
 physics/_matrix_ddk.pyx
 "
 
+# Ensure we are using the correct Cythonize
+which cythonize
 for file in $files
 do
-    echo "Parsing: $file"
-    d=$(dirname $file)
-    f=$(basename $file)
-    pushd sisl/$d 2>/dev/null
-    cythonize -a $f
+    echo "Parsing: sisl/$file"
+    cythonize -a sisl/$file
     [ $? -ne 0 ] && exit 1
-    popd 2>/dev/null
 done
