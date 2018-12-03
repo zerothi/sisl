@@ -25,6 +25,12 @@ def test_distribution2():
     assert np.allclose(d(x), gaussian(x, 0.025))
     d = get_distribution('lorentzian', smearing=1e-3)
     assert np.allclose(d(x), lorentzian(x, 1e-3))
+    d = get_distribution('step', smearing=1e-3)
+    assert np.allclose(d(x), step_function(x))
+    d = get_distribution('heaviside', smearing=1e-3, x0=1)
+    assert np.allclose(d(x), 1 - step_function(x, 1))
+    d = get_distribution('heaviside', x0=-0.5)
+    assert np.allclose(d(x), heaviside(x, -0.5))
 
 
 @pytest.mark.xfail(raises=ValueError)
