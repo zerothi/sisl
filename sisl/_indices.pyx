@@ -11,7 +11,7 @@ cimport numpy as np
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):
-    """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+    """ Return indices of all `value` in the search array.
 
     Parameters
     ----------
@@ -101,7 +101,7 @@ def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32
 @cython.initializedcheck(False)
 cdef void _indices(const int n_search, const int[::1] search,
               const int n_value, const int[::1] value,
-              int offset, int[::1] idx) nogil:
+              const int offset, int[::1] idx) nogil:
     cdef int i, j
 
     # Fast return

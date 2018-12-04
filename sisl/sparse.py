@@ -23,7 +23,7 @@ from scipy.sparse import isspmatrix_lil
 
 from . import _array as _a
 from ._array import asarrayi, arrayi
-from ._indices import indices, sorted_unique
+from ._indices import indices, indices_only, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype
 from ._help import _range as range, _zip as zip, _map as map
@@ -759,9 +759,10 @@ class SparseCSR(object):
         # Get list of new elements to be added
         new_n = len(new_j)
 
+        ncol_ptr_i = ptr_i + ncol[i]
         # Check how many elements cannot fit in the currently
         # allocated sparse matrix...
-        new_nnz = ncol[i] + new_n - ptr[i + 1] + ptr_i
+        new_nnz = new_n - ptr[i + 1] + ncol_ptr_i
 
         if new_nnz > 0:
 
@@ -779,8 +780,7 @@ class SparseCSR(object):
 
             # Insert new empty elements in the column index
             # after the column
-            self.col = insert(self.col, ptr_i + ncol[i],
-                              empty(ns, col.dtype))
+            self.col = insert(self.col, ncol_ptr_i, empty(ns, col.dtype))
 
             # update reference
             col = self.col
@@ -798,16 +798,15 @@ class SparseCSR(object):
         if new_n > 0:
             # Ensure that we write the new elements to the matrix...
 
-            # new data begins from this index location
-            old_ptr = ptr_i + ncol[i]
-
             # assign the column indices for the new entries
             # NOTE that this may not assign them in the order
             # of entry as new_j is sorted and thus new_j != j
-            col[old_ptr:old_ptr + new_n] = new_j[:]
+            col[ncol_ptr_i:ncol_ptr_i + new_n] = new_j[:]
 
             # Step the size of the stored non-zero elements
             ncol[i] += new_n
+
+            ncol_ptr_i += new_n
 
             # Step the number of non-zero elements
             self._nnz += new_n
@@ -816,7 +815,7 @@ class SparseCSR(object):
         # information that is required...
 
         # ... retrieve the indices and return
-        return indices(col[ptr_i:ptr_i + ncol[i]], j, ptr_i)
+        return indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
 
     def _get(self, i, j):
         """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``
@@ -841,6 +840,29 @@ class SparseCSR(object):
 
         return indices(self.col[ptr:ptr+self.ncol[i]], j, ptr)
 
+    def _get_only(self, i, j):
+        """ Retrieves the data pointer arrays of the elements, only return elements in the sparse array
+
+        Parameters
+        ----------
+        i : int
+           the row of the matrix
+        j : int or array_like of int
+           columns belonging to row `i` where a non-zero element is stored.
+
+        Returns
+        -------
+        numpy.ndarray : indicies of the existing elements
+        """
+
+        # Ensure flattened array...
+        j = asarrayi(j).ravel()
+
+        # Make it a little easier
+        ptr = self.ptr[i]
+
+        return indices_only(self.col[ptr:ptr+self.ncol[i]], j) + ptr
+
     def __delitem__(self, key):
         """ Remove items from the sparse patterns """
         # Get indices of sparse data (-1 if non-existing)
@@ -857,11 +879,7 @@ class SparseCSR(object):
 
         i = key[0]
         key[1] = self._slice2list(key[1], 1)
-        index = self._get(i, key[1])
-
-        # First remove all negative indices.
-        # The element isn't there anyway...
-        index = index[index >= 0]
+        index = self._get_only(i, key[1])
         index.sort()
 
         if len(index) == 0:
@@ -912,7 +930,7 @@ class SparseCSR(object):
 
             # user requests a specific element
             # get dimension retrieved
-            r = np.zeros(n, dtype=self.dtype)
+            r = zeros(n, dtype=self._D.dtype)
             r[ret_idx] = self._D[get_idx, key[2]]
 
         else:
@@ -921,10 +939,10 @@ class SparseCSR(object):
 
             s = self.shape[2]
             if s == 1:
-                r = np.zeros(n, dtype=self.dtype)
+                r = zeros(n, dtype=self._D.dtype)
                 r[ret_idx] = self._D[get_idx, 0]
             else:
-                r = np.zeros([n, s], dtype=self.dtype)
+                r = zeros([n, s], dtype=self._D.dtype)
                 r[ret_idx, :] = self._D[get_idx, :]
 
         return r
@@ -1370,9 +1388,7 @@ class SparseCSR(object):
                 bcol = other.col[bptr:bptr+bn]
 
                 # Get positions of b-elements in a:
-                in_a = self._get(r, bcol)
-                # remove all -1's
-                in_a = in_a[in_a > -1]
+                in_a = self._get_only(r, bcol)
                 # Everything else *must* be zeroes! :)
                 self._D[in_a, :] *= other._D[bptr:bptr+bn, :]
 

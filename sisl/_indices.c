@@ -2147,7 +2147,7 @@ static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
 static int __pyx_f_4sisl_8_indices__index_sorted(__Pyx_memviewslice, int const ); /*proto*/
 static int __pyx_f_4sisl_8_indices__indices_only(int const , __Pyx_memviewslice, int const , __Pyx_memviewslice, __Pyx_memviewslice); /*proto*/
-static void __pyx_f_4sisl_8_indices__indices(int const , __Pyx_memviewslice, int const , __Pyx_memviewslice, int, __Pyx_memviewslice); /*proto*/
+static void __pyx_f_4sisl_8_indices__indices(int const , __Pyx_memviewslice, int const , __Pyx_memviewslice, int const , __Pyx_memviewslice); /*proto*/
 static int __pyx_f_4sisl_8_indices__indices_in_sphere(__Pyx_memviewslice, double const , __Pyx_memviewslice); /*proto*/
 static int __pyx_f_4sisl_8_indices__indices_in_sphere_with_dist(__Pyx_memviewslice, double const , __Pyx_memviewslice, __Pyx_memviewslice); /*proto*/
 static int __pyx_f_4sisl_8_indices__indices_le1(__Pyx_memviewslice, double const , __Pyx_memviewslice); /*proto*/
@@ -2612,13 +2612,13 @@ static PyObject *__pyx_codeobj__53;
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):             # <<<<<<<<<<<<<<
- *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+ *     """ Return indices of all `value` in the search array.
  * 
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4sisl_8_indices_1indices_only(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4sisl_8_indices_indices_only[] = " Return indices of all `value` in the search array. If not found the index will be ``-1``\n\n    Parameters\n    ----------\n    search : np.ndarray(np.int32)\n        array to search in\n    value : np.ndarray(np.int32)\n        values to find the indices of in `search`\n    ";
+static char __pyx_doc_4sisl_8_indices_indices_only[] = " Return indices of all `value` in the search array.\n\n    Parameters\n    ----------\n    search : np.ndarray(np.int32)\n        array to search in\n    value : np.ndarray(np.int32)\n        values to find the indices of in `search`\n    ";
 static PyMethodDef __pyx_mdef_4sisl_8_indices_1indices_only = {"indices_only", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_8_indices_1indices_only, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_8_indices_indices_only};
 static PyObject *__pyx_pw_4sisl_8_indices_1indices_only(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_search = 0;
@@ -2871,7 +2871,7 @@ static PyObject *__pyx_pf_4sisl_8_indices_indices_only(CYTHON_UNUSED PyObject *_
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):             # <<<<<<<<<<<<<<
- *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+ *     """ Return indices of all `value` in the search array.
  * 
  */
 
@@ -3516,10 +3516,10 @@ static PyObject *__pyx_pf_4sisl_8_indices_2indices(CYTHON_UNUSED PyObject *__pyx
  * @cython.initializedcheck(False)
  * cdef void _indices(const int n_search, const int[::1] search,             # <<<<<<<<<<<<<<
  *               const int n_value, const int[::1] value,
- *               int offset, int[::1] idx) nogil:
+ *               const int offset, int[::1] idx) nogil:
  */
 
-static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_memviewslice __pyx_v_search, int const __pyx_v_n_value, __Pyx_memviewslice __pyx_v_value, int __pyx_v_offset, __Pyx_memviewslice __pyx_v_idx) {
+static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_memviewslice __pyx_v_search, int const __pyx_v_n_value, __Pyx_memviewslice __pyx_v_value, int const __pyx_v_offset, __Pyx_memviewslice __pyx_v_idx) {
   int __pyx_v_i;
   int __pyx_v_j;
   int __pyx_t_1;
@@ -3789,7 +3789,7 @@ static void __pyx_f_4sisl_8_indices__indices(int const __pyx_v_n_search, __Pyx_m
  * @cython.initializedcheck(False)
  * cdef void _indices(const int n_search, const int[::1] search,             # <<<<<<<<<<<<<<
  *               const int n_value, const int[::1] value,
- *               int offset, int[::1] idx) nogil:
+ *               const int offset, int[::1] idx) nogil:
  */
 
   /* function exit code */
@@ -24416,7 +24416,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):             # <<<<<<<<<<<<<<
- *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+ *     """ Return indices of all `value` in the search array.
  * 
  */
   __pyx_tuple__29 = PyTuple_Pack(9, __pyx_n_s_search, __pyx_n_s_value, __pyx_n_s_SEARCH, __pyx_n_s_VALUE, __pyx_n_s_n_search, __pyx_n_s_n_value, __pyx_n_s_idx, __pyx_n_s_IDX, __pyx_n_s_n); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 13, __pyx_L1_error)
@@ -24966,7 +24966,7 @@ if (!__Pyx_RefNanny) {
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
  * def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):             # <<<<<<<<<<<<<<
- *     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+ *     """ Return indices of all `value` in the search array.
  * 
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_8_indices_1indices_only, NULL, __pyx_n_s_sisl__indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
