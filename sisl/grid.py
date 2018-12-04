@@ -10,7 +10,7 @@ from numpy import floor, dot, add, cos, sin
 from numpy import ogrid, take
 from scipy.sparse import diags as sp_diags
 
-import sisl._array as _a
+from . import _array as _a
 from ._help import dtype_complex_to_real
 from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace

@@ -6,7 +6,7 @@ from numbers import Integral
 import numpy as np
 from numpy import unique
 
-import sisl._array as _a
+from . import _array as _a
 from .atom import Atom
 from .geometry import Geometry
 from .messages import warn, SislError, SislWarning, tqdm_eta

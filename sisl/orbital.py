@@ -15,9 +15,9 @@ from scipy.interpolate import UnivariateSpline
 
 
 from . import _plot as plt
+from . import _array as _a
 from ._help import _str
 from .shape import Sphere
-import sisl._array as _a
 from sisl.utils.mathematics import cart2spher
 
 

@@ -9,9 +9,9 @@ from numbers import Integral
 import numpy as np
 from numpy import dot
 
+from . import _plot as plt
+from . import _array as _a
 from sisl.utils.mathematics import fnorm
-import sisl._array as _a
-import sisl._plot as plt
 from sisl.shape.prism4 import Cuboid
 from .quaternion import Quaternion
 from ._math_small import cross3, dot3

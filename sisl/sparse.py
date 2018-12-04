@@ -12,6 +12,7 @@ from numpy import intersect1d, setdiff1d, unique, in1d
 from numpy import diff, count_nonzero
 from numpy import any as np_any
 from numpy import all as np_all
+from numpy import isnan
 from numpy import argsort
 
 from scipy.sparse import isspmatrix
@@ -20,7 +21,8 @@ from scipy.sparse import csr_matrix, isspmatrix_csr
 from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
-import sisl._array as _a
+from . import _array as _a
+from ._array import asarrayi, arrayi
 from ._indices import indices, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype
@@ -225,7 +227,7 @@ class SparseCSR(object):
         # in the sparsity pattern
         self.ncol = _a.zerosi([M])
         # Create pointer array
-        self.ptr = _a.cumsumi(_a.arrayi([nnzpr] * (M+1))) - nnzpr
+        self.ptr = _a.cumsumi(arrayi([nnzpr] * (M+1))) - nnzpr
         # Create column array
         self.col = _a.emptyi(nnz)
         # Store current number of non-zero elements
@@ -729,15 +731,17 @@ class SparseCSR(object):
         #                     "However, multiple columns at a time are allowed.")
 
         # Ensure flattened array...
-        j = _a.asarrayi(j).ravel()
+        j = asarrayi(j).ravel()
         if len(j) == 0:
-            return _a.arrayi([])
+            return arrayi([])
 
         # fast reference
         ptr = self.ptr
-        ptr_i = ptr[i]
         ncol = self.ncol
         col = self.col
+
+        # Get index pointer
+        ptr_i = ptr[i]
 
         # To create the indices for the sparse elements
         # we first find which values are _not_ in the sparse
@@ -747,18 +751,17 @@ class SparseCSR(object):
             # Checks whether any non-zero elements are
             # already in the sparse pattern
             # If so we remove those from the j
-            exists = intersect1d(j, col[ptr_i:ptr_i+ncol[i]],
-                                 assume_unique=True)
+            new_j = j[in1d(j, col[ptr_i:ptr_i+ncol[i]],
+                           invert=True, assume_unique=True)]
         else:
-            exists = _a.arrayi([])
+            new_j = j
 
         # Get list of new elements to be added
-        new_j = setdiff1d(j, exists, assume_unique=True)
         new_n = len(new_j)
 
         # Check how many elements cannot fit in the currently
         # allocated sparse matrix...
-        new_nnz = ncol[i] + new_n - (ptr[i + 1] - ptr_i)
+        new_nnz = ncol[i] + new_n - ptr[i + 1] + ptr_i
 
         if new_nnz > 0:
 
@@ -777,7 +780,7 @@ class SparseCSR(object):
             # Insert new empty elements in the column index
             # after the column
             self.col = insert(self.col, ptr_i + ncol[i],
-                              empty(ns, self.col.dtype))
+                              empty(ns, col.dtype))
 
             # update reference
             col = self.col
@@ -831,7 +834,7 @@ class SparseCSR(object):
         """
 
         # Ensure flattened array...
-        j = _a.asarrayi(j).ravel()
+        j = asarrayi(j).ravel()
 
         # Make it a little easier
         ptr = self.ptr[i]
@@ -945,17 +948,9 @@ class SparseCSR(object):
         # TODO we need some way to reduce these things
         # for integer stuff.
         data = asarray(data, self._D.dtype)
-        isnan = np.isnan(data)
-        if np_all(isnan):
-            # If the entries are nan's
-            # then we return without adding the
-            # entry.
-            return
-        else:
-            # Places where there are nan will be set
-            # to zero
-            data[isnan] = 0
-            del isnan
+        # Places where there are nan will be set
+        # to zero
+        data[isnan(data)] = 0
 
         # Retrieve indices in the 1D data-structure
         index = self._extend(key[0], key[1])
@@ -967,7 +962,7 @@ class SparseCSR(object):
         else:
             # Ensure correct shape
             if data.ndim == 0:
-                data = np.array([data])
+                data = asarray([data])
                 data.shape = (1, 1)
             else:
                 data.shape = (-1, self.shape[2])
@@ -1005,7 +1000,7 @@ class SparseCSR(object):
                     rows[j:j+N] = r
                     j += N
         else:
-            row = _a.asarrayi(row).ravel()
+            row = asarrayi(row).ravel()
             idx = array_arange(self.ptr[row], n=self.ncol[row])
             if not only_col:
                 N = _a.sumi(self.ncol[row])
@@ -1140,7 +1135,7 @@ class SparseCSR(object):
         indices : array_like
            the indices of the rows *and* columns that are removed in the sparse pattern
         """
-        indices = _a.asarrayi(indices)
+        indices = asarrayi(indices)
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] >= self.shape[1]:
@@ -1159,7 +1154,7 @@ class SparseCSR(object):
         indices : array_like
            the indices of the rows *and* columns that are retained in the sparse pattern
         """
-        indices = _a.asarrayi(indices).ravel()
+        indices = asarrayi(indices).ravel()
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] == self.shape[1]:
@@ -1552,7 +1547,7 @@ class SparseCSR(object):
         """ Reset state of the object """
         self._shape = tuple(state['shape'][:])
         self.ncol = state['ncol']
-        self.ptr = np.insert(_a.cumsumi(self.ncol), 0, 0)
+        self.ptr = insert(_a.cumsumi(self.ncol), 0, 0)
         self.col = state['col']
         self._D = state['D']
 

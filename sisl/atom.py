@@ -8,8 +8,8 @@ from numbers import Integral, Real
 import numpy as np
 
 from .messages import info
+from . import _array as _a
 from ._help import array_fill_repeat, _str
-import sisl._array as _a
 from .shape import Sphere
 from .orbital import Orbital
 

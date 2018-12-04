@@ -184,7 +184,8 @@ class TestSparseCSR(object):
         setup.s1d.empty()
         assert setup.s1d.nnz == 0
         setup.s1d[0, 0] = np.nan
-        assert setup.s1d.nnz == 0
+        # nan produces zeros
+        assert setup.s1d.nnz == 1
         setup.s1d.empty()
 
     def test_create2(self, setup):

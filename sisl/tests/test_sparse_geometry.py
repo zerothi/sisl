@@ -46,8 +46,9 @@ class TestSparseAtom(object):
         assert setup.s1.nnz == 6
         setup.s1.empty()
         assert setup.s1.nnz == 0
+        # nan produces zeros
         setup.s1[0, 0] = np.nan
-        assert setup.s1.nnz == 0
+        assert setup.s1.nnz == 1
         setup.s1.empty()
 
     def test_create2(self, setup):

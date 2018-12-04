@@ -10,9 +10,8 @@ import numpy as np
 from numpy import int32
 from numpy import dot, square, sqrt
 
-import sisl._plot as plt
-import sisl._array as _a
-
+from . import _plot as plt
+from . import _array as _a
 from ._math_small import is_ascending
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from .messages import info, warn, SislError
@@ -2846,6 +2845,14 @@ class Geometry(SuperCellChild):
         # Default dictionary for passing to newly created figures
         d = dict()
 
+        colors = np.linspace(0, 1, num=self.atoms.nspecie, endpoint=False)
+        colors = colors[self.atoms.specie]
+        if 's' in kwargs:
+            area = kwargs.pop('s')
+        else:
+            area = _a.arrayd(self.atoms.Z)
+            area[:] *= 20 * np.pi / area.min()
+
         # Start by plotting the supercell
         if supercell:
             self.sc.__plot__(axis, axes=axes, *args, **kwargs)
@@ -2866,11 +2873,6 @@ class Geometry(SuperCellChild):
                 axes = plt.mlibplt.figure().add_subplot(111, **d)
         elif axes is True:
             axes = plt.mlibplt.figure().add_subplot(111, **d)
-
-        colors = np.linspace(0, 1, num=self.atoms.nspecie, endpoint=False)
-        colors = colors[self.atoms.specie]
-        area = _a.arrayd(self.atoms.Z)
-        area[:] *= 20 * np.pi / area.min()
 
         # Create short-hand
         xyz = self.xyz
