@@ -1,4 +1,5 @@
-subroutine write_open_gf( fname, iu )
+subroutine write_open_gf(fname, iu)
+  use io_m, only: free_unit, iostat_update
 
   implicit none
 
@@ -9,16 +10,20 @@ subroutine write_open_gf( fname, iu )
   ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(out) :: iu, test
-  
+
+  integer :: ierr
+
   ! Open file
   call free_unit(iu)
-  open( iu, file=trim(fname), form='unformatted', status='unknown', action='write' )
-  
+  open(iu, file=trim(fname), form='unformatted', status='unknown', action='write', iostat=ierr)
+  call iostat_update(ierr)
+
 end subroutine write_open_gf
 
 subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
-    xa_used, lasto_used, Bloch, pre_expand, mu, nkpt, kpt, kw, NE, E )
-  
+    xa_used, lasto_used, Bloch, pre_expand, mu, nkpt, kpt, kw, NE, E)
+  use io_m, only: iostat_update
+
   implicit none
 
   ! Precision 
@@ -47,24 +52,37 @@ subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
 !f2py intent(in) :: mu
 !f2py intent(in) :: nkpt, kpt, w, NE, E
 
-  write(iu) nspin, cell
-  write(iu) na_u, no_u
-  write(iu) na_used, no_used
-  write(iu) xa_used, lasto_used
-  write(iu) .false., Bloch, pre_expand
-  write(iu) mu
+  integer :: ierr
+
+  write(iu, iostat=ierr) nspin, cell
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) na_u, no_u
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) na_used, no_used
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) xa_used, lasto_used
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) .false., Bloch, pre_expand
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) mu
+  call iostat_update(ierr)
 
   ! k-points
-  write(iu) nkpt
-  write(iu) kpt, kw
-  
-  write(iu) NE
-  write(iu) E
+  write(iu, iostat=ierr) nkpt
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) kpt, kw
+  call iostat_update(ierr)
+
+  write(iu, iostat=ierr) NE
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) E
+  call iostat_update(ierr)
 
 end subroutine write_gf_header
 
-subroutine write_gf_hs( iu, ik, iE, E, no_u, H, S)
-  
+subroutine write_gf_hs(iu, ik, iE, E, no_u, H, S)
+  use io_m, only: iostat_update
+
   implicit none
 
   ! Precision 
@@ -83,15 +101,21 @@ subroutine write_gf_hs( iu, ik, iE, E, no_u, H, S)
 !f2py intent(in) :: ik, iE, E
 !f2py intent(in) :: no_u
 !f2py intent(in) :: H, S
-  
-  write(iu) ik, iE, E
-  write(iu) H
-  write(iu) S
+
+  integer :: ierr
+
+  write(iu, iostat=ierr) ik, iE, E
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) H
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) S
+  call iostat_update(ierr)
 
 end subroutine write_gf_hs
 
-subroutine write_gf_se( iu, ik, iE, E, no_u, SE )
-  
+subroutine write_gf_se(iu, ik, iE, E, no_u, SE)
+  use io_m, only: iostat_update
+
   implicit none
 
   ! Precision 
@@ -111,14 +135,18 @@ subroutine write_gf_se( iu, ik, iE, E, no_u, SE )
 !f2py intent(in) :: no_u
 !f2py intent(in) :: SE
 
+  integer :: ierr
+
   if ( iE > 1 ) then
-    write(iu) ik, iE, E
+    write(iu, iostat=ierr) ik, iE, E
+    call iostat_update(ierr)
   end if
-  write(iu) SE
+  write(iu, iostat=ierr) SE
+  call iostat_update(ierr)
 
 end subroutine write_gf_se
 
-subroutine close_gf( iu )
+subroutine close_gf(iu)
 
   implicit none
 
@@ -127,8 +155,8 @@ subroutine close_gf( iu )
 
   ! Define f2py intents
 !f2py intent(in) :: iu
-  
+
   ! Open file
-  close( iu )
-  
+  close(iu)
+
 end subroutine close_gf

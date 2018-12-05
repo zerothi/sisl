@@ -1,7 +1,8 @@
 subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
-  
+  use io_m, only: free_unit, iostat_update
+
   implicit none
-  
+
   integer, parameter :: dp = selected_real_kind(p=15)
 
   ! Input parameters
@@ -17,28 +18,33 @@ subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
 !f2py intent(in) :: DM
 
 ! Internal variables and arrays
-  integer :: iu, is, i, idx
+  integer :: iu, is, i, idx, ierr
 
   call free_unit(iu)
-  open( iu, file=trim(fname), status='unknown', form='unformatted', action='write')
+  open(iu, file=trim(fname), status='unknown', form='unformatted', action='write', iostat=ierr)
+  call iostat_update(ierr)
 
   ! Also write the supercell.
-  write(iu) no_u, nspin, nsc
+  write(iu, iostat=ierr) no_u, nspin, nsc
+  call iostat_update(ierr)
 
   ! Sparse pattern
-  write(iu) ncol
+  write(iu, iostat=ierr) ncol
+  call iostat_update(ierr)
   idx = 0
   do i = 1 , no_u
-     write(iu) list_col(idx+1:idx+ncol(i))
-     idx = idx + ncol(i)
+    write(iu, iostat=ierr) list_col(idx+1:idx+ncol(i))
+    call iostat_update(ierr)
+    idx = idx + ncol(i)
   end do
   ! Density matrix
   do is = 1, nspin
-     idx = 0
-     do i = 1 , no_u
-        write(iu) DM(idx+1:idx+ncol(i),is)
-        idx = idx + ncol(i)
-     end do
+    idx = 0
+    do i = 1 , no_u
+      write(iu, iostat=ierr) DM(idx+1:idx+ncol(i),is)
+      call iostat_update(ierr)
+      idx = idx + ncol(i)
+    end do
   end do
 
   close(iu)

@@ -1,11 +1,12 @@
 subroutine write_tshs_hs(fname, &
-     nspin, na_u, no_u, nnz, &
-     nsc1, nsc2, nsc3, &
-     cell, xa, lasto, &
-     ncol, list_col, H, S, isc)
-  
+    nspin, na_u, no_u, nnz, &
+    nsc1, nsc2, nsc3, &
+    cell, xa, lasto, &
+    ncol, list_col, H, S, isc)
+  use io_m, only: free_unit, iostat_update
+
   implicit none
-  
+
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
   real(dp), parameter :: eV = 13.60580_dp
@@ -31,51 +32,67 @@ subroutine write_tshs_hs(fname, &
 !f2py intent(in) :: isc
 
 ! Internal variables and arrays
-  integer :: iu, is, i, idx
+  integer :: iu, ierr, is, i, idx
 
   call free_unit(iu)
-  open( iu, file=trim(fname), status='unknown', form='unformatted', action='write')
-  ! version
-  write(iu) 1
-  write(iu) na_u, no_u, no_u * nsc1 * nsc2 * nsc3, nspin, nnz
+  open(iu, file=trim(fname), status='unknown', form='unformatted', action='write', iostat=ierr)
+  call iostat_update(ierr)
 
-  write(iu) nsc1, nsc2, nsc3
-  write(iu) cell, xa
+  ! version
+  write(iu, iostat=ierr) 1
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) na_u, no_u, no_u * nsc1 * nsc2 * nsc3, nspin, nnz
+  call iostat_update(ierr)
+
+  write(iu, iostat=ierr) nsc1, nsc2, nsc3
+  call iostat_update(ierr)
+  write(iu, iostat=ierr) cell, xa
+  call iostat_update(ierr)
   ! TSGamma, Gamma, onlyS
-  write(iu) .false., .false., .false.
+  write(iu, iostat=ierr) .false., .false., .false.
+  call iostat_update(ierr)
   ! kgrid, kdispl
-  write(iu) (/2, 0, 0, 0, 2, 0, 0, 0, 2/), (/0._dp, 0._dp, 0._dp/)
+  write(iu, iostat=ierr) (/2, 0, 0, 0, 2, 0, 0, 0, 2/), (/0._dp, 0._dp, 0._dp/)
+  call iostat_update(ierr)
   ! Ef, qtot, Temp
-  write(iu) 0._dp, 1._dp, 0.001_dp
+  write(iu, iostat=ierr) 0._dp, 1._dp, 0.001_dp
+  call iostat_update(ierr)
 
   ! istep, ia1
-  write(iu) 0, 0
+  write(iu, iostat=ierr) 0, 0
+  call iostat_update(ierr)
 
-  write(iu) lasto
+  write(iu, iostat=ierr) lasto
+  call iostat_update(ierr)
 
   ! Sparse pattern
-  write(iu) ncol
+  write(iu, iostat=ierr) ncol
+  call iostat_update(ierr)
   idx = 0
   do i = 1 , no_u
-     write(iu) list_col(idx+1:idx+ncol(i))
-     idx = idx + ncol(i)
+    write(iu, iostat=ierr) list_col(idx+1:idx+ncol(i))
+    call iostat_update(ierr)
+    idx = idx + ncol(i)
   end do
   ! Overlap matrix
   idx = 0
   do i = 1 , no_u
-     write(iu) S(idx+1:idx+ncol(i))
-     idx = idx + ncol(i)
+    write(iu, iostat=ierr) S(idx+1:idx+ncol(i))
+    call iostat_update(ierr)
+    idx = idx + ncol(i)
   end do
   ! Hamiltonian matrix
   do is = 1, nspin
-     idx = 0
-     do i = 1 , no_u
-        write(iu) H(idx+1:idx+ncol(i),is)
-        idx = idx + ncol(i)
-     end do
+    idx = 0
+    do i = 1 , no_u
+      write(iu, iostat=ierr) H(idx+1:idx+ncol(i),is)
+      call iostat_update(ierr)
+      idx = idx + ncol(i)
+    end do
   end do
 
-  write(iu) isc
+  write(iu, iostat=ierr) isc
+  call iostat_update(ierr)
 
   close(iu)
 

@@ -1,4 +1,5 @@
-subroutine read_open_gf( fname, iu )
+subroutine read_open_gf(fname, iu )
+  use io_m, only: free_unit, iostat_update
 
   implicit none
 
@@ -9,14 +10,18 @@ subroutine read_open_gf( fname, iu )
   ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(out) :: iu
-  
+
+  integer :: ierr
+
   ! Open file
   call free_unit(iu)
-  open( iu, file=trim(fname), form='unformatted', status='old', action='read' )
-  
+  open(iu, file=trim(fname), form='unformatted', status='old', action='read', iostat=ierr)
+  call iostat_update(ierr)
+
 end subroutine read_open_gf
 
-subroutine read_gf_sizes( iu, nspin, no_u, nkpt, NE)
+subroutine read_gf_sizes(iu, nspin, no_u, nkpt, NE)
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -35,25 +40,35 @@ subroutine read_gf_sizes( iu, nspin, no_u, nkpt, NE)
 !f2py intent(out) :: NE
 
   ! Local variables
-  integer :: na_used
+  integer :: na_used, ierr
 
-  read(iu) nspin !cell
-  read(iu) !na_u, no_u
-  read(iu) na_used, no_u
-  read(iu) !xa_used, lasto_used
-  read(iu) !.false., Bloch, pre_expand
-  read(iu) !mu
+  read(iu, iostat=ierr) nspin !cell
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !na_u, no_u
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) na_used, no_u
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !xa_used, lasto_used
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !.false., Bloch, pre_expand
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !mu
+  call iostat_update(ierr)
 
   ! k-points
-  read(iu) nkpt
-  read(iu) !
-  
-  read(iu) NE
+  read(iu, iostat=ierr) nkpt
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !
+  call iostat_update(ierr)
+
+  read(iu, iostat=ierr) NE
+  call iostat_update(ierr)
 
 end subroutine read_gf_sizes
 
-subroutine read_gf_header( iu, nkpt, kpt, NE, E )
-  
+subroutine read_gf_header(iu, nkpt, kpt, NE, E)
+  use io_m, only: iostat_update
+
   implicit none
 
   ! Precision 
@@ -72,24 +87,37 @@ subroutine read_gf_header( iu, nkpt, kpt, NE, E )
 !f2py intent(out) :: kpt
 !f2py intent(out) :: E
 
-  read(iu) !nspin, cell
-  read(iu) !na_u, no_u
-  read(iu) !na_used, no_used
-  read(iu) !xa_used, lasto_used
-  read(iu) !.false., Bloch, pre_expand
-  read(iu) !mu
+  integer :: ierr
+
+  read(iu, iostat=ierr) !nspin, cell
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !na_u, no_u
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !na_used, no_used
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !xa_used, lasto_used
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !.false., Bloch, pre_expand
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !mu
+  call iostat_update(ierr)
 
   ! k-points
-  read(iu) !nkpt
-  read(iu) kpt
-  
-  read(iu) !NE
-  read(iu) E
+  read(iu, iostat=ierr) !nkpt
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) kpt
+  call iostat_update(ierr)
+
+  read(iu, iostat=ierr) !NE
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) E
+  call iostat_update(ierr)
 
 end subroutine read_gf_header
 
-subroutine read_gf_hs( iu, no_u, H, S)
-  
+subroutine read_gf_hs(iu, no_u, H, S)
+  use io_m, only: iostat_update
+
   implicit none
 
   ! Precision 
@@ -108,14 +136,20 @@ subroutine read_gf_hs( iu, no_u, H, S)
 !f2py intent(out) :: H
 !f2py intent(out) :: S
 
-  read(iu) !ik, iE, E
-  read(iu) H
-  read(iu) S
+  integer :: ierr
+
+  read(iu, iostat=ierr) !ik, iE, E
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) H
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) S
+  call iostat_update(ierr)
 
 end subroutine read_gf_hs
 
 subroutine read_gf_se( iu, no_u, iE, SE )
-  
+  use io_m, only: iostat_update
+
   implicit none
 
   ! Precision 
@@ -133,9 +167,13 @@ subroutine read_gf_se( iu, no_u, iE, SE )
 !f2py intent(in) :: iE
 !f2py intent(out) :: SE
 
+  integer :: ierr
+
   if ( iE > 1 ) then
-    read(iu) !ik, iE, E
+    read(iu, iostat=ierr) !ik, iE, E
+    call iostat_update(ierr)
   end if
-  read(iu) SE
+  read(iu, iostat=ierr) SE
+  call iostat_update(ierr)
 
 end subroutine read_gf_se

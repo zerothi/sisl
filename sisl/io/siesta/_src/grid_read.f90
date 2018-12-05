@@ -1,5 +1,6 @@
 subroutine read_grid_sizes(fname, nspin, mesh)
-  
+  use io_m, only: free_unit, iostat_update
+
   implicit none
 
   ! Precision 
@@ -19,23 +20,27 @@ subroutine read_grid_sizes(fname, nspin, mesh)
 !f2py intent(out) :: mesh
 
 ! Internal variables and arrays
-  integer :: iu
+  integer :: iu, ierr
 
   call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted')
+  open(iu, file=trim(fname), status='old', form='unformatted', iostat=ierr)
+  call iostat_update(ierr)
 
-  read(iu) ! cell(:,:)
+  read(iu, iostat=ierr) ! cell(:,:)
+  call iostat_update(ierr)
 
-  read(iu) mesh, nspin
+  read(iu, iostat=ierr) mesh, nspin
+  call iostat_update(ierr)
 
   close(iu)
 
 end subroutine read_grid_sizes
 
 subroutine read_grid_cell(fname, cell)
+  use io_m, only: free_unit, iostat_update
 
   implicit none
-  
+
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
@@ -45,18 +50,20 @@ subroutine read_grid_cell(fname, cell)
   ! Input parameters
   character(len=*), intent(in):: fname
   real(dp), intent(out) :: cell(3,3)
-  
+
 ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(out) :: cell
 
 ! Internal variables and arrays
-  integer :: iu
+  integer :: iu, ierr
 
   call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted')
+  open(iu, file=trim(fname), status='old', form='unformatted', iostat=ierr)
+  call iostat_update(ierr)
 
-  read(iu) cell(:,:)
+  read(iu, iostat=ierr) cell(:,:)
+  call iostat_update(ierr)
   cell = cell * Ang
 
   close(iu)
@@ -64,6 +71,7 @@ subroutine read_grid_cell(fname, cell)
 end subroutine read_grid_cell
 
 subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
+  use io_m, only: free_unit, iostat_update
 
   implicit none
 
@@ -76,25 +84,28 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
   character(len=*), intent(in) :: fname
   integer, intent(in) :: nspin, mesh1, mesh2, mesh3
   real(sp), intent(out) :: grid(mesh1,mesh2,mesh3,nspin)
-  
+
 ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(in) :: nspin, mesh1, mesh2, mesh3
 !f2py intent(out) :: cell, grid
 
 ! Internal variables and arrays
-  integer :: iu
+  integer :: iu, ierr
   integer :: is, iz, iy
 
   ! Local readables
   integer :: lnspin, lmesh(3)
 
   call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted')
+  open(iu, file=trim(fname), status='old', form='unformatted', iostat=ierr)
+  call iostat_update(ierr)
 
-  read(iu) ! cell
+  read(iu, iostat=ierr) ! cell
+  call iostat_update(ierr)
 
-  read(iu) lmesh, lnspin
+  read(iu, iostat=ierr) lmesh, lnspin
+  call iostat_update(ierr)
   if ( lnspin /= nspin ) stop 'Error in reading data, not allocated, nspin'
   if ( lmesh(1) /= mesh1 ) stop 'Error in reading data, not allocated, mesh'
   if ( lmesh(2) /= mesh2 ) stop 'Error in reading data, not allocated, mesh'
@@ -102,12 +113,13 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
 
   do is = 1, nspin
 
-     do iz = 1, mesh3
-        do iy = 1, mesh2
-           read(iu) grid(:,iy,iz,is)
-        end do
-     end do
-     
+    do iz = 1, mesh3
+      do iy = 1, mesh2
+        read(iu, iostat=ierr) grid(:,iy,iz,is)
+        call iostat_update(ierr)
+      end do
+    end do
+
   end do
 
   close(iu)

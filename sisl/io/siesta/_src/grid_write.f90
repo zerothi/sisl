@@ -1,4 +1,5 @@
 subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
+  use io_m, only: free_unit, iostat_update
 
   implicit none
 
@@ -12,35 +13,39 @@ subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
   integer, intent(in) :: nspin, mesh1, mesh2, mesh3
   real(dp), intent(in) :: cell(3,3)
   real(sp), intent(in) :: grid(mesh1, mesh2, mesh3)
-  
+
 ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(in) :: nspin, mesh1, mesh2, mesh3
 !f2py intent(in) :: cell, grid
 
 ! Internal variables and arrays
-  integer :: iu
+  integer :: iu, ierr
   integer :: is, iz, iy
 
   call free_unit(iu)
-  open( iu, file=trim(fname), form='unformatted', status='unknown', action='write' )
+  open(iu, file=trim(fname), form='unformatted', status='unknown', action='write', iostat=ierr)
+  call iostat_update(ierr)
 
-  write(iu) cell(:,:)
+  write(iu, iostat=ierr) cell(:,:)
+  call iostat_update(ierr)
 
-  write(iu) mesh1, mesh2, mesh3, nspin
+  write(iu, iostat=ierr) mesh1, mesh2, mesh3, nspin
+  call iostat_update(ierr)
 
   do is = 1, nspin
 
-     do iz = 1, mesh3
-        do iy = 1, mesh2
-           write(iu) grid(:,iy,iz)
-        end do
-     end do
-     
+    do iz = 1, mesh3
+      do iy = 1, mesh2
+        write(iu, iostat=ierr) grid(:,iy,iz)
+        call iostat_update(ierr)
+      end do
+    end do
+
   end do
-  
+
   close(iu)
-  
+
 end subroutine write_grid
 
 

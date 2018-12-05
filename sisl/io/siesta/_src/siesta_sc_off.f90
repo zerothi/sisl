@@ -21,9 +21,9 @@ subroutine siesta_sc_off(nsa, nsb, nsc, isc)
       end do
     end do
   end do
-  
+
 contains
-  
+
   pure function linear2pm(i,n) result(j)
     integer, intent(in) :: i, n
     integer :: j
@@ -33,7 +33,7 @@ contains
       j = i
     end if
   end function linear2pm
-  
+
 end subroutine siesta_sc_off
 
 

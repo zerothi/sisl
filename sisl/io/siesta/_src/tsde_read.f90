@@ -1,11 +1,12 @@
-subroutine read_tsde_sizes(fname,nspin,no_u,nsc,nnz)
+subroutine read_tsde_sizes(fname, nspin, no_u, nsc, nnz)
+  use io_m, only: free_unit, iostat_update
 
   implicit none
-  
+
   ! Input parameters
   character(len=*), intent(in) :: fname
   integer, intent(out) :: no_u, nspin, nsc(3), nnz
-  
+
 ! Define f2py intents
 !f2py intent(in)  :: fname
 !f2py intent(out) :: no_u, nspin, nsc, nnz
@@ -15,18 +16,21 @@ subroutine read_tsde_sizes(fname,nspin,no_u,nsc,nnz)
   integer, allocatable :: num_col(:)
 
   call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted')
+  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
+  call iostat_update(ierr)
 
   ! First try and see if nsc is present
-  read(iu,iostat=ierr) no_u, nspin, nsc
+  read(iu, iostat=ierr) no_u, nspin, nsc
   if ( ierr /= 0 ) then
     rewind(iu)
-    read(iu) no_u, nspin
+    read(iu, iostat=ierr) no_u, nspin
     nsc(:) = 0
   end if
+  call iostat_update(ierr)
 
   allocate(num_col(no_u))
-  read(iu) num_col
+  read(iu, iostat=ierr) num_col
+  call iostat_update(ierr)
   nnz = sum(num_col)
   deallocate(num_col)
 
@@ -35,7 +39,8 @@ subroutine read_tsde_sizes(fname,nspin,no_u,nsc,nnz)
 end subroutine read_tsde_sizes
 
 subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
-     ncol,list_col,DM)
+    ncol, list_col, DM)
+  use io_m, only: free_unit, iostat_update
 
   implicit none
 
@@ -48,7 +53,7 @@ subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
   integer, intent(in) :: no_u, nspin, nsc(3), nnz
   integer, intent(out) :: ncol(no_u), list_col(nnz)
   real(dp), intent(out) :: DM(nnz,nspin)
-  
+
 ! Define f2py intents
 !f2py intent(in)  :: fname
 !f2py intent(in) :: no_u, nspin, nsc, nnz
@@ -63,36 +68,41 @@ subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
   integer :: lno_u, lnspin, lnsc(3)
 
   call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted')
+  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
+  call iostat_update(ierr)
 
   ! First try and see if nsc is present
   read(iu,iostat=ierr) lno_u, lnspin, lnsc
   if ( ierr /= 0 ) then
     rewind(iu)
-    read(iu) lno_u, lnspin
+    read(iu, iostat=ierr) lno_u, lnspin
     lnsc(:) = 0
   end if
+  call iostat_update(ierr)
   if ( lno_u /= no_u ) stop 'Error in reading data, not allocated, no_u'
   if ( lnspin /= nspin ) stop 'Error in reading data, not allocated, nspin'
   if ( any(lnsc /= nsc) ) stop 'Error in reading data, not allocated, nsc'
 
-  read(iu) ncol
+  read(iu, iostat=ierr) ncol
+  call iostat_update(ierr)
   if ( nnz /= sum(ncol) ) stop 'Error in reading data, not allocated, nnz'
 
   ! Read list_col
   n = 0
   do io = 1 , no_u
-     read(iu) list_col(n+1:n+ncol(io))
-     n = n + ncol(io)
+    read(iu, iostat=ierr) list_col(n+1:n+ncol(io))
+    call iostat_update(ierr)
+    n = n + ncol(io)
   end do
 
 ! Read Density matrix
   do is = 1 , nspin
-     n = 0
-     do io = 1 , no_u
-        read(iu) DM(n+1:n+ncol(io), is)
-        n = n + ncol(io)
-     end do
+    n = 0
+    do io = 1 , no_u
+      read(iu, iostat=ierr) DM(n+1:n+ncol(io), is)
+      call iostat_update(ierr)
+      n = n + ncol(io)
+    end do
   end do
 
   close(iu)
@@ -100,7 +110,8 @@ subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
 end subroutine read_tsde_dm
 
 subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
-     ncol,list_col,EDM)
+    ncol, list_col, EDM)
+  use io_m, only: free_unit, iostat_update
 
   implicit none
 
@@ -114,7 +125,7 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   integer, intent(in) :: no_u, nspin, nsc(3), nnz
   integer, intent(out) :: ncol(no_u), list_col(nnz)
   real(dp), intent(out) :: EDM(nnz,nspin)
-  
+
 ! Define f2py intents
 !f2py intent(in)  :: fname
 !f2py intent(in) :: no_u, nspin, nsc, nnz
@@ -132,20 +143,23 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   real(dp), allocatable :: DM(:,:)
 
   call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted')
+  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
+  call iostat_update(ierr)
 
   ! First try and see if nsc is present
-  read(iu,iostat=ierr) lno_u, lnspin, lnsc
+  read(iu, iostat=ierr) lno_u, lnspin, lnsc
   if ( ierr /= 0 ) then
     rewind(iu)
-    read(iu) lno_u, lnspin
+    read(iu, iostat=ierr) lno_u, lnspin
     lnsc(:) = 0
   end if
+  call iostat_update(ierr)
   if ( lno_u /= no_u ) stop 'Error in reading data, not allocated, no_u'
   if ( lnspin /= nspin ) stop 'Error in reading data, not allocated, nspin'
   if ( any(lnsc /= nsc) ) stop 'Error in reading data, not allocated, nsc'
 
   read(iu) ncol
+  call iostat_update(ierr)
   if ( nnz /= sum(ncol) ) stop 'Error in reading data, not allocated, nnz'
 
   allocate(DM(nnz, nspin))
@@ -153,7 +167,8 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   ! Read list_col
   n = 0
   do io = 1 , no_u
-    read(iu) list_col(n+1:n+ncol(io))
+    read(iu, iostat=ierr) list_col(n+1:n+ncol(io))
+    call iostat_update(ierr)
     n = n + ncol(io)
   end do
 
@@ -161,7 +176,8 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   do is = 1 , nspin
     n = 0
     do io = 1 , no_u
-      read(iu) DM(n+1:n+ncol(io), is)
+      read(iu, iostat=ierr) DM(n+1:n+ncol(io), is)
+      call iostat_update(ierr)
       n = n + ncol(io)
     end do
   end do
@@ -170,14 +186,16 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   do is = 1 , nspin
     n = 0
     do io = 1 , no_u
-      read(iu) EDM(n+1:n+ncol(io), is)
+      read(iu, iostat=ierr) EDM(n+1:n+ncol(io), is)
+      call iostat_update(ierr)
       n = n + ncol(io)
     end do
     EDM(:, is) = EDM(:, is) * eV
   end do
 
   ! Read Fermi energy
-  read(iu) Ef
+  read(iu, iostat=ierr) Ef
+  call iostat_update(ierr)
   Ef = Ef * eV
 
   do is = 1 , nspin

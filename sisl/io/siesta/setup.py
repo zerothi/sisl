@@ -11,7 +11,7 @@ def configuration(parent_package='', top_path=None):
 
     all_info = get_info('ALL')
     sources = [
-        'free_unit.f90',
+        'io_m.f90',
         'siesta_sc_off.f90'
     ]
     for f in ['hsx', 'dm', 'tshs', 'grid', 'gf']:

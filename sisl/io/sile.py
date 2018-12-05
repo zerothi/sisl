@@ -64,6 +64,13 @@ class _sile_rule(object):
         self.bases = self.build_bases()
         self.base_names = [c.__name__.lower() for c in self.bases]
 
+    def __str__(self):
+        s = '{cls}{{case={case}, suffix={suffix}, gzip={gzip},\n '.format(cls=self.cls.__name__, case=self.case,
+                                                                          suffix=self.suffix, gzip=self.gzip)
+        for b in self.bases:
+            s += ' {},\n '.format(b.__name__)
+        return s[:-3] + '\n}'
+
     def build_bases(self):
         """ Return a list of all classes that this file is inheriting from (except Sile, SileBin or SileCDF) """
         children = list(self.cls.__bases__) + [self.cls]

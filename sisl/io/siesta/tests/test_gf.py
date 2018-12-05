@@ -104,3 +104,8 @@ def test_gf_write_read_spin(sisl_tmp, sisl_system):
 
         SE_file = gf.read_self_energy()
         assert np.allclose(SE_file, S * e - Hk)
+
+
+@pytest.mark.xfail(raises=sisl.SileError)
+def test_gf_sile_error():
+    sisl.get_sile('non_existing_file.TSGF').read_header()

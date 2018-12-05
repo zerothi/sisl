@@ -32,13 +32,20 @@ __all__ += ['gridSileSiesta']
 __all__ += ['tsgfSileSiesta']
 
 
+def _bin_check(obj, method, message):
+    if _siesta.io_m.iostat_query() != 0:
+        raise SileError('{}.{} {}'.format(str(obj), method, message))
+
+
 class onlysSileSiesta(SileBinSiesta):
     """ Geometry and overlap matrix """
 
     def read_supercell(self):
         """ Returns a SuperCell object from a siesta.TSHS file """
         n_s = _siesta.read_tshs_sizes(self.file)[3]
+        _bin_check(self, 'read_supercell', 'could not read sizes.')
         arr = _siesta.read_tshs_cell(self.file, n_s)
+        _bin_check(self, 'read_supercell', 'could not read cell.')
         nsc = np.array(arr[0], np.int32)
         cell = np.array(arr[1].T, np.float64)
         cell.shape = (3, 3)
@@ -51,7 +58,9 @@ class onlysSileSiesta(SileBinSiesta):
         sc = self.read_supercell()
 
         na = _siesta.read_tshs_sizes(self.file)[1]
+        _bin_check(self, 'read_geometry', 'could not read sizes.')
         arr = _siesta.read_tshs_geom(self.file, na)
+        _bin_check(self, 'read_geometry', 'could not read geometry.')
         xyz = np.array(arr[0].T, np.float64)
         xyz.shape = (-1, 3)
         lasto = np.array(arr[1], np.int32)
@@ -98,10 +107,13 @@ class onlysSileSiesta(SileBinSiesta):
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
+        _bin_check(self, 'read_overlap', 'could not read sizes.')
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
+        _bin_check(self, 'read_overlap', 'could not read cell.')
         no = sizes[2]
         nnz = sizes[4]
         ncol, col, dS = _siesta.read_tshs_s(self.file, no, nnz)
+        _bin_check(self, 'read_overlap', 'could not read overlap matrix.')
 
         # Create the Hamiltonian container
         S = SparseOrbitalBZ(geom, nnzpr=1)
@@ -140,11 +152,14 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
+        _bin_check(self, 'read_hamiltonian', 'could not read sizes.')
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
+        _bin_check(self, 'read_hamiltonian', 'could not read cell.')
         spin = sizes[0]
         no = sizes[2]
         nnz = sizes[4]
         ncol, col, dH, dS = _siesta.read_tshs_hs(self.file, spin, no, nnz)
+        _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian and overlap matrix.')
 
         # Check whether it is an orthogonal basis set
         orthogonal = np.abs(dS).sum() == geom.no
@@ -175,7 +190,7 @@ class tshsSileSiesta(onlysSileSiesta):
         if np.any(idx > no):
             print('Number of orbitals: {}'.format(no))
             print(idx)
-            raise SileError(self.__class__.__name__ + '.read_hamiltonian could not assert '
+            raise SileError(str(self) + '.read_hamiltonian could not assert '
                             'the supercell connections in the primary unit-cell.')
 
         return H
@@ -224,6 +239,7 @@ class tshsSileSiesta(onlysSileSiesta):
         _siesta.write_tshs_hs(self.file, nsc[0], nsc[1], nsc[2],
                               cell.T, xyz.T, H.geometry.firsto,
                               csr.ncol, csr.col + 1, h, s, isc)
+        _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrix.')
 
 
 class dmSileSiesta(SileBinSiesta):
@@ -234,7 +250,10 @@ class dmSileSiesta(SileBinSiesta):
 
         # Now read the sizes used...
         spin, no, nsc, nnz = _siesta.read_dm_sizes(self.file)
+        _bin_check(self, 'read_density_matrix', 'could not read density matrix sizes.')
+
         ncol, col, dDM = _siesta.read_dm(self.file, spin, no, nsc, nnz)
+        _bin_check(self, 'read_density_matrix', 'could not read density matrix.')
 
         # Try and immediately attach a geometry
         geom = kwargs.get('geometry', kwargs.get('geom', None))
@@ -250,7 +269,7 @@ class dmSileSiesta(SileBinSiesta):
             geom.set_nsc(nsc)
 
         if geom.no != no:
-            raise SileError(self.__class__.__name__ + '.read_density_matrix could not use the '
+            raise SileError(str(self) + '.read_density_matrix could not use the '
                             'passed geometry as the number of atoms or orbitals is '
                             'inconsistent with DM file.')
 
@@ -300,6 +319,7 @@ class dmSileSiesta(SileBinSiesta):
         nsc = DM.geometry.sc.nsc.astype(np.int32)
 
         _siesta.write_dm(self.file, nsc, csr.ncol, csr.col + 1, dm)
+        _bin_check(self, 'write_density_matrix', 'could not write density matrix.')
 
 
 class tsdeSileSiesta(dmSileSiesta):
@@ -310,7 +330,9 @@ class tsdeSileSiesta(dmSileSiesta):
 
         # Now read the sizes used...
         spin, no, nsc, nnz = _siesta.read_tsde_sizes(self.file)
+        _bin_check(self, 'read_energy_density_matrix', 'could not read energy density matrix sizes.')
         ncol, col, dEDM = _siesta.read_tsde_edm(self.file, spin, no, nsc, nnz)
+        _bin_check(self, 'read_energy_density_matrix', 'could not read energy density matrix.')
 
         # Try and immediately attach a geometry
         geom = kwargs.get('geometry', kwargs.get('geom', None))
@@ -326,7 +348,7 @@ class tsdeSileSiesta(dmSileSiesta):
             geom.set_nsc(nsc)
 
         if geom.no != no:
-            raise SileError(self.__class__.__name__ + '.read_energy_density_matrix could '
+            raise SileError(str(self) + '.read_energy_density_matrix could '
                             'not use the passed geometry as the number of atoms or orbitals '
                             'is inconsistent with DM file.')
 
@@ -363,7 +385,9 @@ class hsxSileSiesta(SileBinSiesta):
 
         # Now read the sizes used...
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian sizes.')
         ncol, col, dH, dS, dxij = _siesta.read_hsx_hsx(self.file, Gamma, spin, no, no_s, nnz)
+        _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian.')
 
         # Try and immediately attach a geometry
         geom = kwargs.get('geometry', kwargs.get('geom', None))
@@ -379,7 +403,7 @@ class hsxSileSiesta(SileBinSiesta):
                 warn(self.__class__.__name__ + '.read_hamiltonian '
                      '(currently we can not calculate atomic positions from xij array)')
         if geom.no != no:
-            raise SileError(self.__class__.__name__ + '.read_hamiltonian could not use the '
+            raise SileError(str(self) + '.read_hamiltonian could not use the '
                             'passed geometry as the number of atoms or orbitals is '
                             'inconsistent with HSX file.')
 
@@ -407,13 +431,15 @@ class hsxSileSiesta(SileBinSiesta):
         """ Returns the overlap matrix from the siesta.HSX file """
         # Now read the sizes used...
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        _bin_check(self, 'read_overlap', 'could not read overlap matrix sizes.')
         ncol, col, dS = _siesta.read_hsx_s(self.file, Gamma, spin, no, no_s, nnz)
+        _bin_check(self, 'read_overlap', 'could not read overlap matrix.')
 
         geom = kwargs.get('geometry', kwargs.get('geom', None))
         if geom is None:
             warn(self.__class__.__name__ + ".read_overlap requires input geometry to assign S")
         if geom.no != no:
-            raise SileError(self.__class__.__name__ + '.read_overlap could not use the '
+            raise SileError(str(self) + '.read_overlap could not use the '
                             'passed geometry as the number of atoms or orbitals is '
                             'inconsistent with HSX file.')
 
@@ -443,6 +469,7 @@ class _gridSileSiesta(SileBinSiesta):
     def read_supercell(self, *args, **kwargs):
 
         cell = _siesta.read_grid_cell(self.file)
+        _bin_check(self, 'read_supercell', 'could not read cell.')
         cell = np.array(cell.T, np.float64)
         cell.shape = (3, 3)
 
@@ -461,9 +488,12 @@ class _gridSileSiesta(SileBinSiesta):
         """
         # Read the sizes
         nspin, mesh = _siesta.read_grid_sizes(self.file)
+        _bin_check(self, 'read_grid', 'could not read grid sizes.')
         # Read the cell and grid
         cell = _siesta.read_grid_cell(self.file)
+        _bin_check(self, 'read_grid', 'could not read grid cell.')
         grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
+        _bin_check(self, 'read_grid', 'could not read grid.')
 
         if isinstance(index, Integral):
             grid = grid[:, :, :, index]
@@ -528,6 +558,7 @@ class _gfSileSiesta(SileBinSiesta):
             self._iu = _siesta.read_open_gf(self.file)
         elif mode == 'w':
             self._iu = _siesta.write_open_gf(self.file)
+        _bin_check(self, '_open_gf', 'could not open for {}.'.format({'r': 'reading', 'w': 'writing'}[mode]))
 
         # Counters to keep track
         self._ie = 0
@@ -573,12 +604,15 @@ class _gfSileSiesta(SileBinSiesta):
         self._close_gf()
         self._open_gf('r')
         nspin, no_u, nkpt, NE = _siesta.read_gf_sizes(self._iu)
+        _bin_check(self, 'read_header', 'could not read sizes.')
 
         # We need to re-read (because of k-points)
         self._close_gf()
         self._open_gf('r')
 
         k, E = _siesta.read_gf_header(self._iu, nkpt, NE)
+        _bin_check(self, 'read_header', 'could not read header information.')
+
         k = k.T
         self._nspin = nspin
         if self._nspin > 2:
@@ -601,6 +635,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._ie = 1
 
         H, S = _siesta.read_gf_hs(self._iu, self._no_u)
+        _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian and overlap matrices.')
         return H.T * Ry2eV, S.T
 
     def read_self_energy(self):
@@ -616,6 +651,7 @@ class _gfSileSiesta(SileBinSiesta):
         complex128 : Self-energy matrix
         """
         SE = _siesta.read_gf_se(self._iu, self._no_u, self._ie).T * Ry2eV
+        _bin_check(self, 'read_self_energy', 'could not read self-energy.')
         self._ie += 1
         return SE
 
@@ -672,6 +708,7 @@ class _gfSileSiesta(SileBinSiesta):
         # Now write to it...
         _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,
                                 bloch, 0, mu, k.T, w, self._E, **sizes)
+        _bin_check(self, 'write_header', 'could not write header information.')
 
     def write_hamiltonian(self, H, S=None):
         """ Write the current energy, k-point and H and S to the file
@@ -692,6 +729,7 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.write_gf_hs(self._iu, self._ik, self._ie, self._E[self._ie-1],
                             H.astype(np.complex128, 'C', copy=False).T * eV2Ry,
                             S.astype(np.complex128, 'C', copy=False).T, no_u=no)
+        _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
 
     def write_self_energy(self, SE):
         r""" Write the current self energy, k-point and H and S to the file
@@ -710,6 +748,8 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.write_gf_se(self._iu, self._ik, self._ie,
                             self._E[self._ie-1],
                             SE.astype(np.complex128, 'C', copy=False).T * eV2Ry, no_u=no)
+        _bin_check(self, 'write_self_energy', 'could not write self-energy.')
+
         self._ie += 1
 
     def __iter__(self):
