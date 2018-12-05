@@ -99,7 +99,7 @@ class cubeSile(Sile):
         tmp = ' {:' + fmt + '}'
         _fmt = '{:d} 0.0' + tmp + tmp + tmp + '\n'
         for ia in geometry:
-            self._write(_fmt.format(geometry.atom[ia].Z, *geometry.xyz[ia, :] * Ang2Bohr))
+            self._write(_fmt.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :] * Ang2Bohr))
 
     @sile_fh_open()
     def write_grid(self, grid, fmt='.5e', imag=False, *args, **kwargs):

@@ -118,11 +118,11 @@ class xsfSile(Sile):
             fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}   {{4:{0}}}  {{5:{0}}}  {{6:{0}}}\n'.format(fmt)
             for ia in geometry:
                 tmp = np.append(geometry.xyz[ia, :], data[ia, :])
-                self._write(fmt_str.format(geometry.atom[ia].Z, *tmp))
+                self._write(fmt_str.format(geometry.atoms[ia].Z, *tmp))
         else:
             fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
             for ia in geometry:
-                self._write(fmt_str.format(geometry.atom[ia].Z, *geometry.xyz[ia, :]))
+                self._write(fmt_str.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :]))
 
     @sile_fh_open()
     def read_geometry(self, data=False):

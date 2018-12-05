@@ -190,7 +190,7 @@ class pdbSile(Sile):
         xyz = geometry.xyz
         # Current U is used for "UNKNOWN" input. Possibly the user can specify this later.
         for ia in geometry:
-            a = geometry.atom[ia]
+            a = geometry.atoms[ia]
             args = [self._serial, a.tag, 'U', 'U1', 'U', 1, 'U', xyz[ia, 0], xyz[ia, 1], xyz[ia, 2], a.q0.sum(), 0., a.symbol, '0']
             # Step serial
             self._serial += 1

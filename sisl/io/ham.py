@@ -183,8 +183,8 @@ class hamiltonianSile(Sile):
             xyz_fmt)
 
         for ia in geom:
-            Z = geom.atom[ia].Z
-            no = geom.atom[ia].no
+            Z = geom.atoms[ia].Z
+            no = geom.atoms[ia].no
             if no == 1:
                 self._write(fmt1_str.format(Z, *geom.xyz[ia, :]))
             else:

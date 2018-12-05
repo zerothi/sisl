@@ -582,10 +582,10 @@ class Geometry(SuperCellChild):
         """
         if atom is None:
             for ia in self:
-                yield ia, self.atom[ia], self.atoms.specie[ia]
+                yield ia, self.atoms[ia], self.atoms.specie[ia]
         else:
             for ia in _a.asarrayi(atom).ravel():
-                yield ia, self.atom[ia], self.atoms.specie[ia]
+                yield ia, self.atoms[ia], self.atoms.specie[ia]
 
     def iter_orbitals(self, atom=None, local=True):
         """
@@ -1881,7 +1881,7 @@ class Geometry(SuperCellChild):
                 raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
 
             # This is the empirical distance between the atoms
-            d = self.atom[s_idx].radius(dist) + other.atom[o_idx].radius(dist)
+            d = self.atoms[s_idx].radius(dist) + other.atoms[o_idx].radius(dist)
             if isinstance(axis, Integral):
                 v = self.cell[axis, :]
             else:
@@ -2486,8 +2486,8 @@ class Geometry(SuperCellChild):
                 rad = float(method)
             except Exception:
                 # get radius
-                rad = self.atom[idx].radius(method) \
-                      + self.atom[ia].radius(method)
+                rad = self.atoms[idx].radius(method) \
+                      + self.atoms[ia].radius(method)
 
             # Update the coordinate
             self.xyz[ia, :] = c + bv / d * rad
@@ -3734,7 +3734,7 @@ lattice vector.
         print('  {0:d} {1:d} {2:d}'.format(*g.nsc))
         print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x', 'y', 'z', 'Z'))
         for ia in g:
-            print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atom[ia].Z,
+            print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atoms[ia].Z,
                                                                   *g.xyz[ia, :]))
 
     if ret_geometry:
