@@ -14,3 +14,4 @@ dependencies:
   - pip:
     - coveralls
     - pytest-cov
+    - pytest-faulthandler
