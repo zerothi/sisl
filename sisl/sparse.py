@@ -513,7 +513,7 @@ class SparseCSR(object):
             del idx
 
         # Update number of non-zeroes
-        self._nnz = np.sum(ncol)
+        self._nnz = int(ncol.sum())
 
         if not keep_shape:
             shape = list(self.shape)
@@ -550,7 +550,7 @@ class SparseCSR(object):
         ptr[1:] -= _a.cumsumi(ndel)
 
         # Update number of non-zeroes
-        self._nnz = np.sum(ncol)
+        self._nnz = int(ncol.sum())
 
         # We are *only* deleting columns, so if it is finalized,
         # it will still be
@@ -724,6 +724,7 @@ class SparseCSR(object):
         index : array_like
            the indicies of the existing/added elements
         """
+        i1 = int(i) + 1
         # We skip this check and let sisl die if wrong input is given...
         #if not isinstance(i, Integral):
         #    raise ValueError("Retrieving/Setting elements in a sparse matrix"
@@ -766,7 +767,7 @@ class SparseCSR(object):
 
         # Check how many elements cannot fit in the currently
         # allocated sparse matrix...
-        new_nnz = new_n - int(ptr[i+1]) + ncol_ptr_i
+        new_nnz = new_n - int(ptr[i1]) + ncol_ptr_i
 
         if new_nnz > 0:
 
@@ -792,12 +793,12 @@ class SparseCSR(object):
             # Insert zero data in the data array
             # We use `zeros` as then one may set each dimension
             # individually...
-            self._D = insert(self._D, ptr[i+1],
+            self._D = insert(self._D, ptr[i1],
                              zeros([ns, self.shape[2]], self._D.dtype), axis=0)
 
             # Lastly, shift all pointers above this row to account for the
             # new non-zero elements
-            ptr[i + 1:] += int32(ns)
+            ptr[i1:] += int32(ns)
 
         if new_n > 0:
             # Ensure that we write the new elements to the matrix...
@@ -805,7 +806,7 @@ class SparseCSR(object):
             # assign the column indices for the new entries
             # NOTE that this may not assign them in the order
             # of entry as new_j is sorted and thus new_j != j
-            col[ncol_ptr_i:ncol_ptr_i + new_n] = new_j[:]
+            col[ncol_ptr_i:ncol_ptr_i+new_n] = new_j[:]
 
             # Step the size of the stored non-zero elements
             ncol[i] += int32(new_n)
@@ -1267,7 +1268,7 @@ class SparseCSR(object):
         NotImplementedError : when ``axis = 1``
         """
         if axis is None:
-            return np.sum(self._D)
+            return self._D.sum()
         if axis == -1 or axis == 2:
             # We simply create a new sparse matrix with only one entry
             ret = self.copy([0])
