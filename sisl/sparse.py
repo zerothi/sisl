@@ -724,7 +724,6 @@ class SparseCSR(object):
         index : array_like
            the indicies of the existing/added elements
         """
-
         # We skip this check and let sisl die if wrong input is given...
         #if not isinstance(i, Integral):
         #    raise ValueError("Retrieving/Setting elements in a sparse matrix"
@@ -742,17 +741,18 @@ class SparseCSR(object):
         col = self.col
 
         # Get index pointer
-        ptr_i = ptr[i]
+        ptr_i = int(ptr[i])
+        ncol_i = int(ncol[i])
 
         # To create the indices for the sparse elements
         # we first find which values are _not_ in the sparse
         # matrix
-        if ncol[i] > 0:
+        if ncol_i > 0:
 
             # Checks whether any non-zero elements are
             # already in the sparse pattern
             # If so we remove those from the j
-            new_j = j[in1d(j, col[ptr_i:ptr_i+ncol[i]],
+            new_j = j[in1d(j, col[ptr_i:ptr_i+ncol_i],
                            invert=True, assume_unique=True)]
         else:
             new_j = j
@@ -760,13 +760,13 @@ class SparseCSR(object):
         # Get list of new elements to be added
         # astype(...) is necessary since len(...) returns a long
         # and adding long and 32 is horribly slow in Python!
-        new_n = int32(len(new_j))
+        new_n = len(new_j)
 
-        ncol_ptr_i = ptr_i + ncol[i]
+        ncol_ptr_i = ptr_i + ncol_i
 
         # Check how many elements cannot fit in the currently
         # allocated sparse matrix...
-        new_nnz = new_n - ptr[i + 1] + ncol_ptr_i
+        new_nnz = new_n - int(ptr[i+1]) + ncol_ptr_i
 
         if new_nnz > 0:
 
@@ -808,7 +808,7 @@ class SparseCSR(object):
             col[ncol_ptr_i:ncol_ptr_i + new_n] = new_j[:]
 
             # Step the size of the stored non-zero elements
-            ncol[i] += new_n
+            ncol[i] += int32(new_n)
 
             ncol_ptr_i += new_n
 
@@ -835,7 +835,6 @@ class SparseCSR(object):
         -------
         numpy.ndarray : indicies of the existing elements
         """
-
         # Ensure flattened array...
         j = asarrayi(j).ravel()
 
@@ -858,7 +857,6 @@ class SparseCSR(object):
         -------
         numpy.ndarray : indicies of the existing elements
         """
-
         # Ensure flattened array...
         j = asarrayi(j).ravel()
 

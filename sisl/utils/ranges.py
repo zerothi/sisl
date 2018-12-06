@@ -3,7 +3,7 @@ from __future__ import print_function, division
 import re
 from itertools import groupby
 
-from numpy import zeros, ones, cumsum, take, int32
+from numpy import zeros, ones, cumsum, take, int32, int64
 from numpy import asarray
 
 __all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2str', 'fileindex']
@@ -260,7 +260,7 @@ def fileindex(f, cast=int):
     return fname, rng
 
 
-def array_arange(start, end=None, n=None, dtype=int32):
+def array_arange(start, end=None, n=None, dtype=int64):
     """ Creates a single array from a sequence of `numpy.arange`
 
     Parameters
@@ -279,11 +279,11 @@ def array_arange(start, end=None, n=None, dtype=int32):
     Examples
     --------
     >>> array_arange([1, 5], [3, 6])
-    array([1, 2, 5], dtype=int32)
+    array([1, 2, 5], dtype=int64)
     >>> array_arange([1, 6], [4, 9])
-    array([1, 2, 3, 6, 7, 8], dtype=int32)
+    array([1, 2, 3, 6, 7, 8], dtype=int64)
     >>> array_arange([1, 6], n=[2, 2])
-    array([1, 2, 6, 7], dtype=int32)
+    array([1, 2, 6, 7], dtype=int64)
     """
     # Tests show that the below code is faster than
     # implicit for-loops, or list-comprehensions
@@ -291,9 +291,9 @@ def array_arange(start, end=None, n=None, dtype=int32):
     # The below is much faster and does not require _any_ loops
     if n is None:
         # We need n to speed things up
-        n = asarray(end, dtype) - asarray(start, dtype)
+        n = asarray(end) - asarray(start)
     else:
-        n = asarray(n, dtype)
+        n = asarray(n)
     # The below algorithm only works for non-zero n
     idx = n.nonzero()[0]
 
@@ -311,7 +311,7 @@ def array_arange(start, end=None, n=None, dtype=int32):
 
     # set pointers such that we can
     # correct for final cumsum
-    ptr = cumsum(n[:-1], dtype=dtype)
+    ptr = cumsum(n[:-1])
     a[0] = start[0]
     # Define start and correct for previous values
     a[ptr] = start[1:] - start[:-1] - n[:-1] + 1
