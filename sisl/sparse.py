@@ -6,6 +6,7 @@ from collections import Iterable
 # To speed up the extension algorithm we limit
 # the lookup table
 import numpy as np
+from numpy import int32
 from numpy import empty, zeros, asarray, arange
 from numpy import insert, take, delete, copyto, split
 from numpy import intersect1d, setdiff1d, unique, in1d
@@ -757,9 +758,12 @@ class SparseCSR(object):
             new_j = j
 
         # Get list of new elements to be added
-        new_n = len(new_j)
+        # astype(...) is necessary since len(...) returns a long
+        # and adding long and 32 is horribly slow in Python!
+        new_n = int32(len(new_j))
 
         ncol_ptr_i = ptr_i + ncol[i]
+
         # Check how many elements cannot fit in the currently
         # allocated sparse matrix...
         new_nnz = new_n - ptr[i + 1] + ncol_ptr_i
@@ -793,7 +797,7 @@ class SparseCSR(object):
 
             # Lastly, shift all pointers above this row to account for the
             # new non-zero elements
-            ptr[i + 1:] += ns
+            ptr[i + 1:] += int32(ns)
 
         if new_n > 0:
             # Ensure that we write the new elements to the matrix...
@@ -901,7 +905,8 @@ class SparseCSR(object):
 
         # Update new count of the number of
         # non-zero elements
-        ncol[i] -= len(index)
+        n_index = int32(len(index))
+        ncol[i] -= n_index
 
         # Now update the column indices and the data
         sl = slice(ptr[i], ptr[i] + ncol[i], None)
@@ -911,7 +916,7 @@ class SparseCSR(object):
         # Once we remove some things, it is NOT
         # finalized...
         self._finalized = False
-        self._nnz -= len(index)
+        self._nnz -= n_index
 
     def __getitem__(self, key):
         """ Intrinsic sparse matrix retrieval of a non-zero element """
