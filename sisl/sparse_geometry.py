@@ -4,7 +4,9 @@ import warnings
 import functools as ftool
 from numbers import Integral
 import numpy as np
-from numpy import unique
+from numpy import int32
+from numpy import unique, insert, take
+from numpy import tile, repeat
 
 from . import _array as _a
 from .atom import Atom
@@ -298,7 +300,7 @@ class _SparseGeometry(object):
             new = new[keep]
 
             # Create the translation tables
-            n = np.tile([size], len(old))
+            n = tile([size], len(old))
 
             old = array_arange(old * size, n=n)
             new = array_arange(new * size, n=n)
@@ -346,7 +348,7 @@ class _SparseGeometry(object):
 
             c = col[ptr[ia]:ptr[ia] + ncol[ia]]
             ja = c % na
-            h_col = (sc.sc_index(-geom.a2isc(c)) * na + ia).astype(np.int32, copy=False)
+            h_col = (sc.sc_index(-geom.a2isc(c)) * na + ia).astype(int32, copy=False)
             h_idx = arangei(len(h_col))
             # Now we have the Hermitian column indices
             for i, j in enumerate(ja):
@@ -917,7 +919,7 @@ class SparseAtom(_SparseGeometry):
         # First we need to figure out how long the interaction range is
         # in the cut-direction
         # We initialize to be the same as the parent direction
-        nsc = np.array(self.nsc, np.int32, copy=True) // 2
+        nsc = _a.arrayi(self.nsc, copy=True) // 2
         nsc[axis] = 0  # we count the new direction
         isc = _a.zerosi([3])
         isc[axis] -= 1
@@ -964,7 +966,7 @@ class SparseAtom(_SparseGeometry):
 
         def _sca2sca(M, a, m, seps, axis):
             # Converts an o from M to m
-            isc = np.array(M.a2isc(a), np.int32, copy=True)
+            isc = _a.arrayi(M.a2isc(a), copy=True)
             isc[axis] = isc[axis] * seps
             # Correct for cell-offset
             isc[axis] = isc[axis] + (a % M.na) // m.na
@@ -1013,7 +1015,7 @@ class SparseAtom(_SparseGeometry):
         atom = self.sc2uc(atom)
         geom = self.geometry.sub(atom)
 
-        idx = np.tile(atom, self.n_s)
+        idx = tile(atom, self.n_s)
         # Use broadcasting rules
         idx.shape = (self.n_s, -1)
         idx += (_a.arangei(self.n_s) * self.na).reshape(-1, 1)
@@ -1057,20 +1059,21 @@ class SparseAtom(_SparseGeometry):
         # Retrieve local pointers to the information
         # regarding the current Hamiltonian sparse matrix
         geom = self.geometry
-        na = self.na
-        ncol = self._csr.ncol
-        if self.finalized:
-            col = self._csr.col
-            D = self._csr._D
+        na = int32(self.na)
+        csr = self._csr
+        ncol = csr.ncol
+        if self.finalized or csr.nnz == csr.ptr[-1]:
+            col = csr.col
+            D = csr._D
         else:
-            ptr = self._csr.ptr
+            ptr = csr.ptr
             idx = array_arange(ptr[:-1], n=ncol)
-            col = np.take(self._csr.col, idx)
-            D = np.take(self._csr._D, idx, 0)
+            col = csr.col[idx]
+            D = csr._D[idx, :]
             del ptr, idx
 
         # Information for the new Hamiltonian sparse matrix
-        na_n = S.na
+        na_n = int32(S.na)
         geom_n = S.geom
 
         # First loop on axis tiling and local
@@ -1078,9 +1081,9 @@ class SparseAtom(_SparseGeometry):
         sc_index = geom_n.sc_index
 
         # Create new indptr, indices and D
-        ncol = np.tile(ncol, reps)
+        ncol = tile(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(_a.cumsumi(ncol), 0, 0)
+        indptr = insert(_a.cumsumi(ncol), 0, 0)
         del ncol
         indices = _a.emptyi([indptr[-1]])
         indices.shape = (reps, -1)
@@ -1103,8 +1106,7 @@ class SparseAtom(_SparseGeometry):
         # Clean-up
         del isc, JA
 
-        indices.shape = (-1,)
-        S._csr = SparseCSR((np.tile(D, (reps, 1)), indices, indptr),
+        S._csr = SparseCSR((tile(D, (reps, 1)), indices.ravel(), indptr),
                            shape=(geom_n.na, geom_n.na_s))
 
         return S
@@ -1136,20 +1138,21 @@ class SparseAtom(_SparseGeometry):
         # Retrieve local pointers to the information
         # regarding the current Hamiltonian sparse matrix
         geom = self.geometry
-        na = self.na
-        ncol = self._csr.ncol
-        if self.finalized:
-            col = self._csr.col
-            D = self._csr._D
+        na = int32(self.na)
+        csr = self._csr
+        ncol = csr.ncol
+        if self.finalized or csr.nnz == csr.ptr[-1]:
+            col = csr.col
+            D = csr._D
         else:
-            ptr = self._csr.ptr
+            ptr = csr.ptr
             idx = array_arange(ptr[:-1], n=ncol)
-            col = np.take(self._csr.col, idx)
-            D = np.take(self._csr._D, idx, 0)
+            col = csr.col[idx]
+            D = csr._D[idx, :]
             del ptr, idx
 
         # Information for the new Hamiltonian sparse matrix
-        na_n = S.na
+        na_n = int32(S.na)
         geom_n = S.geom
 
         # First loop on axis tiling and local
@@ -1157,9 +1160,9 @@ class SparseAtom(_SparseGeometry):
         sc_index = geom_n.sc_index
 
         # Create new indptr, indices and D
-        ncol = np.repeat(ncol, reps)
+        ncol = repeat(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(_a.cumsumi(ncol), 0, 0)
+        indptr = insert(_a.cumsumi(ncol), 0, 0)
         del ncol
         indices = _a.emptyi([indptr[-1]])
 
@@ -1179,7 +1182,7 @@ class SparseAtom(_SparseGeometry):
             isc[:, axis] = A // reps
 
             # Create the indices for the repetition
-            idx = array_arange(indptr[rep:-1:reps], n=self._csr.ncol)
+            idx = array_arange(indptr[rep:-1:reps], n=csr.ncol)
             indices[idx] = JA + A % reps + sc_index(isc) * na_n
 
         # Clean-up
@@ -1189,10 +1192,10 @@ class SparseAtom(_SparseGeometry):
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
         if geom.na == 1:
-            D = np.tile(D, (reps, 1))
+            D = tile(D, (reps, 1))
         else:
-            ntile = ftool.partial(np.tile, reps=(reps, 1))
-            D = np.vstack(map(ntile, np.split(D, _a.cumsumi(self._csr.ncol[:-1]), axis=0)))
+            ntile = ftool.partial(tile, reps=(reps, 1))
+            D = np.vstack(map(ntile, np.split(D, _a.cumsumi(csr.ncol[:-1]), axis=0)))
 
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
@@ -1369,7 +1372,7 @@ class SparseOrbital(_SparseGeometry):
 
             c = col[ptr[io]:ptr[io] + ncol[io]]
             jo = c % no
-            h_col = (sc.sc_index(-geom.o2isc(c)) * no + io).astype(np.int32, copy=False)
+            h_col = (sc.sc_index(-geom.o2isc(c)) * no + io).astype(int32, copy=False)
             h_idx = arangei(len(h_col))
             # Now we have the Hermitian column indices
             for i, j in enumerate(jo):
@@ -1627,7 +1630,7 @@ class SparseOrbital(_SparseGeometry):
         orbs = self.a2o(atom, all=True)
         geom = self.geometry.sub(atom)
 
-        idx = np.tile(orbs, self.n_s)
+        idx = tile(orbs, self.n_s)
         # Use broadcasting rules
         idx.shape = (self.n_s, -1)
         idx += (_a.arangei(self.n_s) * self.no).reshape(-1, 1)
@@ -1683,7 +1686,7 @@ class SparseOrbital(_SparseGeometry):
         # Generate full supercell indices
         n_s = self.geometry.n_s
         sc_off = _a.arangei(n_s) * self.no
-        sub_idx = np.tile(sub_idx, n_s).reshape(n_s, -1) + sc_off.reshape(-1, 1)
+        sub_idx = tile(sub_idx, n_s).reshape(n_s, -1) + sc_off.reshape(-1, 1)
         S._csr = self._csr.sub(sub_idx)
 
         return S
@@ -1715,20 +1718,21 @@ class SparseOrbital(_SparseGeometry):
         # Retrieve local pointers to the information
         # regarding the current Hamiltonian sparse matrix
         geom = self.geometry
-        no = self.no
-        ncol = self._csr.ncol
-        if self.finalized:
-            col = self._csr.col
-            D = self._csr._D
+        no = int32(self.no)
+        csr = self._csr
+        ncol = csr.ncol
+        if self.finalized or csr.nnz == csr.ptr[-1]:
+            col = csr.col
+            D = csr._D
         else:
-            ptr = self._csr.ptr
+            ptr = csr.ptr
             idx = array_arange(ptr[:-1], n=ncol)
-            col = np.take(self._csr.col, idx)
-            D = np.take(self._csr._D, idx, 0)
+            col = csr.col[idx]
+            D = csr._D[idx, :]
             del ptr, idx
 
         # Information for the new Hamiltonian sparse matrix
-        no_n = S.no
+        no_n = int32(S.no)
         geom_n = S.geom
 
         # First loop on axis tiling and local
@@ -1736,9 +1740,9 @@ class SparseOrbital(_SparseGeometry):
         sc_index = geom_n.sc_index
 
         # Create new indptr, indices and D
-        ncol = np.tile(ncol, reps)
+        ncol = tile(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(_a.cumsumi(ncol), 0, 0)
+        indptr = insert(_a.cumsumi(ncol), 0, 0)
         del ncol
         indices = _a.emptyi([indptr[-1]])
         indices.shape = (reps, -1)
@@ -1761,8 +1765,7 @@ class SparseOrbital(_SparseGeometry):
         # Clean-up
         del isc, JO
 
-        indices.shape = (-1,)
-        S._csr = SparseCSR((np.tile(D, (reps, 1)), indices, indptr),
+        S._csr = SparseCSR((tile(D, (reps, 1)), indices.ravel(), indptr),
                            shape=(geom_n.no, geom_n.no_s))
 
         return S
@@ -1794,20 +1797,21 @@ class SparseOrbital(_SparseGeometry):
         # Retrieve local pointers to the information
         # regarding the current Hamiltonian sparse matrix
         geom = self.geometry
-        no = self.no
-        ncol = self._csr.ncol
-        if self.finalized:
-            col = self._csr.col
-            D = self._csr._D
+        no = int32(self.no)
+        csr = self._csr
+        ncol = csr.ncol
+        if self.finalized or csr.nnz == csr.ptr[-1]:
+            col = csr.col
+            D = csr._D
         else:
-            ptr = self._csr.ptr
+            ptr = csr.ptr
             idx = array_arange(ptr[:-1], n=ncol)
-            col = np.take(self._csr.col, idx)
-            D = np.take(self._csr._D, idx, 0)
+            col = csr.col[idx]
+            D = csr._D[idx, :]
             del ptr, idx
 
         # Information for the new Hamiltonian sparse matrix
-        no_n = S.no
+        no_n = int32(S.no)
         geom_n = S.geom
 
         # First loop on axis tiling and local
@@ -1815,9 +1819,9 @@ class SparseOrbital(_SparseGeometry):
         sc_index = geom_n.sc_index
 
         # Create new indptr, indices and D
-        ncol = np.repeat(ncol, reps)
+        ncol = repeat(ncol, reps)
         # Now indptr is complete
-        indptr = np.insert(_a.cumsumi(ncol), 0, 0)
+        indptr = insert(_a.cumsumi(ncol), 0, 0)
         del ncol
         indices = _a.emptyi([indptr[-1]])
 
@@ -1873,9 +1877,9 @@ class SparseOrbital(_SparseGeometry):
         # So we should split the arrays and tile them individually
         # Now D is made up of D values, per atom
         if geom.na == 1:
-            D = np.tile(D, (reps, 1))
+            D = tile(D, (reps, 1))
         else:
-            ntile = ftool.partial(np.tile, reps=(reps, 1))
+            ntile = ftool.partial(tile, reps=(reps, 1))
             D = np.vstack(map(ntile, np.split(D, _a.cumsumi(ncol)[geom.lasto[:geom.na-1]], axis=0)))
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
@@ -1982,7 +1986,7 @@ class SparseOrbital(_SparseGeometry):
 
         geom = self.geometry
         # Create a conversion vector
-        orb2atom = np.tile(geom.o2a(_a.arangei(geom.no)), geom.n_s)
+        orb2atom = tile(geom.o2a(_a.arangei(geom.no)), geom.n_s)
         orb2atom.shape = (geom.no, -1)
         orb2atom += _a.arangei(geom.n_s).reshape(1, -1) * geom.na
         orb2atom.shape = (-1,)
@@ -2009,7 +2013,7 @@ class SparseOrbital(_SparseGeometry):
             ptr[ia+1] = ptr[ia] + len(acol)
 
         # Now we can create the sparse atomic
-        col = np.concatenate(col, axis=0).astype(np.int32, copy=False)
+        col = np.concatenate(col, axis=0).astype(int32, copy=False)
         spAtom = SparseAtom(geom, dim=1, dtype=dtype, nnzpr=0)
         spAtom._csr.ptr[:] = ptr[:]
         spAtom._csr.ncol[:] = np.diff(ptr)
