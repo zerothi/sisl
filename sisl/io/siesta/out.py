@@ -123,9 +123,9 @@ class outSileSiesta(SileSiesta):
             xyz *= Bohr2Ang
 
         try:
-            geom = Geometry(xyz, atom, sc=cell)
+            geom = Geometry(xyz, atom, cell=cell)
         except:
-            geom = Geometry(xyz, [species[int(i)-1] for i in spec], sc=cell)
+            geom = Geometry(xyz, [species[int(i)-1] for i in spec], cell=cell)
 
         if all:
             tmp = self._read_geometry_outcoor(last, all, species)
@@ -159,7 +159,7 @@ class outSileSiesta(SileSiesta):
         if not Ang:
             xyz *= Bohr2Ang
 
-        geom = Geometry(xyz, atom, sc=cell)
+        geom = Geometry(xyz, atom, cell=cell)
 
         return geom
 

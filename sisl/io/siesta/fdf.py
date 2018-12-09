@@ -1225,7 +1225,7 @@ class fdfSileSiesta(SileSiesta):
             atom = [atom[i] for i in species]
 
         # Create and return geometry object
-        return Geometry(xyz, atom=atom, sc=sc)
+        return Geometry(xyz, atom=atom, cell=sc)
 
     def read_grid(self, name, *args, **kwargs):
         """ Read grid related information from any of the output files

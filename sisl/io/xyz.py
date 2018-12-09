@@ -93,7 +93,7 @@ class xyzSile(Sile):
         if not cell_set:
             cell = xyz.max(0) - xyz.min(0) + 10.
 
-        return Geometry(xyz, atom=sp, sc=Cell(cell, nsc=nsc))
+        return Geometry(xyz, atom=sp, cell=Cell(cell, nsc=nsc))
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

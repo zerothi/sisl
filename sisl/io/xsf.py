@@ -176,11 +176,11 @@ class xsfSile(Sile):
             xyz = xyz[:, :3]
 
         if len(atom) == 0:
-            geom = Geometry(xyz, sc=Cell(cell))
+            geom = Geometry(xyz, cell=Cell(cell))
         elif len(atom) == 1 and atom[0].Z == -999:
             geom = None
         else:
-            geom = Geometry(xyz, atom=atom, sc=Cell(cell))
+            geom = Geometry(xyz, atom=atom, cell=Cell(cell))
 
         if data:
             return geom, dat
@@ -192,8 +192,8 @@ class xsfSile(Sile):
 
         Examples
         --------
-        >>> g1 = Grid(0.1, sc=2.) # doctest: +SKIP
-        >>> g2 = Grid(0.1, sc=2.) # doctest: +SKIP
+        >>> g1 = Grid(0.1, cell=2.) # doctest: +SKIP
+        >>> g2 = Grid(0.1, cell=2.) # doctest: +SKIP
         >>> get_sile('output.xsf', 'w').write_grid(g1, g2) # doctest: +SKIP
 
         Parameters
@@ -214,7 +214,7 @@ class xsfSile(Sile):
 
         geom = kwargs.get('geometry', args[0].geom)
         if geom is None:
-            geom = Geometry([0, 0, 0], Atom(-999), sc=args[0].sc)
+            geom = Geometry([0, 0, 0], Atom(-999), cell=args[0].sc)
         self.write_geometry(geom)
 
         # Buffer size for writing

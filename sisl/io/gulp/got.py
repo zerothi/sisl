@@ -47,7 +47,7 @@ class gotSileGULP(SileGULP):
 
     def set_cell_key(self, key):
         """ Overwrites internal key lookup value for the cell vectors """
-        self.set_key('sc', key)
+        self.set_key('cell', key)
 
     @sile_fh_open()
     def read_super(self, key=None):
@@ -70,11 +70,11 @@ class gotSileGULP(SileGULP):
         """ Reads a `Cell` and creates the GULP cell """
         self.set_cell_key(key)
 
-        f, _ = self.step_to(self._keys['sc'])
+        f, _ = self.step_to(self._keys['cell'])
         if not f:
             raise ValueError(
                 ('SileGULP tries to lookup the Cell vectors '
-                 'using key "' + self._keys['sc'] + '". \n'
+                 'using key "' + self._keys['cell'] + '". \n'
                  'Use ".set_cell_key(...)" to search for different name.\n'
                  'This could not be found found in file: "' + self.file + '".'))
 
@@ -99,10 +99,10 @@ class gotSileGULP(SileGULP):
 
         for _ in [0, 1]:
             # Step to either the geometry or
-            f, ki, _ = self.step_either([self._keys['sc'], self._keys['geometry']])
+            f, ki, _ = self.step_either([self._keys['cell'], self._keys['geometry']])
             if not f and ki == 0:
                 raise ValueError('SileGULP tries to lookup the Cell vectors '
-                                 'using key "' + self._keys['sc'] + '". \n'
+                                 'using key "' + self._keys['cell'] + '". \n'
                                  'Use ".set_cell_key(...)" to search for different name.\n'
                                  'This could not be found found in file: "' + self.file + '".')
             elif f and ki == 0:
@@ -119,7 +119,7 @@ class gotSileGULP(SileGULP):
             elif not f and ki == 1:
                 raise ValueError('SileGULP tries to lookup the Geometry coordinates '
                                  'using key "' + self._keys['geometry'] + '". \n'
-                                 'Use ".set_geom_key(...)" to search for different name.\n'
+                                 'Use ".set_geometry_key(...)" to search for different name.\n'
                                  'This could not be found found in file: "' + self.file + '".')
             elif f and ki == 1:
 
@@ -160,7 +160,7 @@ class gotSileGULP(SileGULP):
             xyz = np.dot(xyz, sc.cell)
 
         # Return the geometry
-        return Geometry(xyz, Z, sc=sc)
+        return Geometry(xyz, Z, cell=sc)
 
     def set_dynamical_matrix_key(self, key):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """

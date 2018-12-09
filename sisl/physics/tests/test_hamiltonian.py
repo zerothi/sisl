@@ -28,14 +28,14 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01])
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atom=C, cell=self.sc)
             self.H = Hamiltonian(self.g)
             self.HS = Hamiltonian(self.g, orthogonal=False)
 
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g2 = Geometry(np.array([[0., 0., 0.],
                                          [1., 0., 0.]], np.float64) * bond,
-                               atom=C, sc=self.sc)
+                               atom=C, cell=self.sc)
             self.H2 = Hamiltonian(self.g2)
             self.HS2 = Hamiltonian(self.g2, orthogonal=False)
     return t()
@@ -276,7 +276,7 @@ class TestHamiltonian(object):
         assert H.spsame(h)
 
     def test_op1(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), cell=[100])
         H = Hamiltonian(g, dtype=np.int32)
         for i in range(10):
             j = range(i*4, i*4+3)
@@ -313,7 +313,7 @@ class TestHamiltonian(object):
                 assert H[1, jj] == 0
 
     def test_op2(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), cell=[100])
         H = Hamiltonian(g, dtype=np.int32)
         for i in range(10):
             j = range(i*4, i*4+3)
@@ -369,7 +369,7 @@ class TestHamiltonian(object):
                 assert s[1, jj] == 0
 
     def test_op3(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), cell=[100])
         H = Hamiltonian(g, dtype=np.int32)
         Hc = H.copy()
         del Hc
@@ -412,7 +412,7 @@ class TestHamiltonian(object):
                 assert h.dtype == np.complex128
 
     def test_op4(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), cell=[100])
         H = Hamiltonian(g, dtype=np.int32)
         # Create initial stuff
         for i in range(10):
@@ -612,7 +612,7 @@ class TestHamiltonian(object):
 
     def test_berry_phase_zak(self):
         # SSH model, topological cell
-        g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
+        g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), cell=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
         H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
@@ -627,7 +627,7 @@ class TestHamiltonian(object):
 
     @pytest.mark.xfail(raises=SislError)
     def test_berry_phase_method_fail(self):
-        g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
+        g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), cell=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
         H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
@@ -822,7 +822,7 @@ class TestHamiltonian(object):
         assert np.allclose(PDOS.sum(0), DOS)
 
     def test_spin1(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), cell=Cell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
         for i in range(10):
             j = range(i*2, i*2+3)
@@ -835,7 +835,7 @@ class TestHamiltonian(object):
         assert H.spsame(H2)
 
     def test_spin2(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), cell=Cell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
         for i in range(10):
             j = range(i*2, i*2+3)
@@ -860,7 +860,7 @@ class TestHamiltonian(object):
         assert H.spsame(H2)
 
     def test_non_colinear1(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), cell=Cell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.NONCOLINEAR)
         for i in range(10):
             j = range(i*2, i*2+3)
@@ -906,7 +906,7 @@ class TestHamiltonian(object):
         assert np.allclose(PDOS.sum(1)[0, :], DOS)
 
     def test_non_colinear_non_orthogonal(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), cell=Cell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin.NONCOLINEAR)
         for i in range(10):
             j = range(i*2, i*2+3)
@@ -953,7 +953,7 @@ class TestHamiltonian(object):
         assert np.allclose(PDOS.sum(1)[0, :], DOS)
 
     def test_so1(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), cell=Cell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
             j = range(i*2, i*2+3)
@@ -1053,7 +1053,7 @@ class TestHamiltonian(object):
         R, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
 
         # Create reference
-        g = Geometry([[0] * 3], Atom('H', R=[4.]), sc=[1.] * 3)
+        g = Geometry([[0] * 3], Atom('H', R=[4.]), cell=[1.] * 3)
         g.set_nsc([7] * 3)
 
         # Now create bigger geometry
@@ -1136,7 +1136,7 @@ class TestHamiltonian(object):
         R, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
 
         # Create reference
-        g = Geometry([[0] * 3], Atom('H', R=[4.]), sc=[1.] * 3)
+        g = Geometry([[0] * 3], Atom('H', R=[4.]), cell=[1.] * 3)
         g.set_nsc([7] * 3)
 
         # Now create bigger geometry
@@ -1355,7 +1355,7 @@ class TestHamiltonian(object):
 def test_wavefunction1():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
-    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
+    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), cell=[4, 4, 4])
     H = Hamiltonian(G)
     R, param = [0.1, 1.5], [1., 0.1]
     H.construct([R, param])
@@ -1369,14 +1369,14 @@ def test_wavefunction1():
 def test_wavefunction2():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
-    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
+    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), cell=[4, 4, 4])
     H = Hamiltonian(G)
     R, param = [0.1, 1.5], [1., 0.1]
     H.construct([R, param])
     ES = H.eigenstate(dtype=np.float64)
     # This is effectively plotting outside where no atoms exists
     # (there could however still be psi weight).
-    grid = Grid(0.1, sc=Cell([2, 2, 2], origo=[2] * 3))
+    grid = Grid(0.1, cell=Cell([2, 2, 2], origo=[2] * 3))
     grid.fill(0.)
     ES.sub(0).wavefunction(grid)
 
@@ -1384,14 +1384,14 @@ def test_wavefunction2():
 def test_wavefunction3():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
-    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
+    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), cell=[4, 4, 4])
     H = Hamiltonian(G, spin=Spin('nc'))
     R, param = [0.1, 1.5], [[0., 0., 0.1, -0.1],
                             [1., 1., 0.1, -0.1]]
     H.construct([R, param])
     ES = H.eigenstate()
     # Plot in the full thing
-    grid = Grid(0.1, dtype=np.complex128, sc=Cell([2, 2, 2], origo=[-1] * 3))
+    grid = Grid(0.1, dtype=np.complex128, cell=Cell([2, 2, 2], origo=[-1] * 3))
     grid.fill(0.)
     ES.sub(0).wavefunction(grid)
 
@@ -1399,13 +1399,13 @@ def test_wavefunction3():
 def test_wavefunction_eta():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
-    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), sc=[4, 4, 4])
+    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), cell=[4, 4, 4])
     H = Hamiltonian(G, spin=Spin('nc'))
     R, param = [0.1, 1.5], [[0., 0., 0.1, -0.1],
                             [1., 1., 0.1, -0.1]]
     H.construct([R, param])
     ES = H.eigenstate()
     # Plot in the full thing
-    grid = Grid(0.1, dtype=np.complex128, sc=Cell([2, 2, 2], origo=[-1] * 3))
+    grid = Grid(0.1, dtype=np.complex128, cell=Cell([2, 2, 2], origo=[-1] * 3))
     grid.fill(0.)
     ES.sub(0).wavefunction(grid, eta=True)

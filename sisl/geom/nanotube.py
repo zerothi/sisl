@@ -133,6 +133,6 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
 
     sc = Cell([rs * 4, rs * 4, t], nsc=[1, 1, 3])
 
-    geom = Geometry(xyz, atom, sc=sc)
+    geom = Geometry(xyz, atom, cell=sc)
     # Return a geometry with the first atom at (0,0,0)
     return geom.translate(-np.amin(geom.xyz, axis=0))

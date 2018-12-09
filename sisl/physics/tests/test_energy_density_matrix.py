@@ -21,7 +21,7 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01] * 3)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atom=C, cell=self.sc)
             self.E = EnergyDensityMatrix(self.g)
             self.ES = EnergyDensityMatrix(self.g, orthogonal=False)
 

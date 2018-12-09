@@ -17,12 +17,12 @@ class kpSileSiesta(SileSiesta):
     """ k-points file in 1/Bohr units """
 
     @sile_fh_open()
-    def read_data(self, sc=None):
+    def read_data(self, cell=None):
         """ Returns K-points from the file (note that these are in reciprocal units)
 
         Parameters
         ----------
-        sc : CellChild, optional
+        cell : CellChild, optional
            if supplied the returned k-points will be in reduced coordinates
 
         Returns
@@ -42,9 +42,9 @@ class kpSileSiesta(SileSiesta):
         # Correct units to 1/Ang
         k /= Bohr2Ang
 
-        if sc is None:
+        if cell is None:
             return k, w
-        return np.dot(k, sc.cell.T / (2 * np.pi)), w
+        return np.dot(k, cell.cell.T / (2 * np.pi)), w
 
     @sile_fh_open()
     def write_data(self, k, weight, fmt='.9e'):
@@ -69,22 +69,22 @@ class kpSileSiesta(SileSiesta):
             self._write(_fmt.format(i + 1, kk[0], kk[1], kk[2], w))
 
     @sile_fh_open()
-    def read_brillouinzone(self, sc):
+    def read_brillouinzone(self, cell):
         """ Returns K-points from the file (note that these are in reciprocal units)
 
         Parameters
         ----------
-        sc : CellChild
+        cell : Cell, CellChild
            required supercell for the BrillouinZone object
 
         Returns
         -------
         bz : BrillouinZone
         """
-        k, w = self.read_data(sc)
+        k, w = self.read_data(cell)
         from sisl.physics.brillouinzone import BrillouinZone
 
-        bz = BrillouinZone(sc)
+        bz = BrillouinZone(cell)
         bz._k = k
         bz._w = w
         return bz
@@ -133,12 +133,12 @@ class rkpSileSiesta(kpSileSiesta):
         return k, w
 
     @sile_fh_open()
-    def read_brillouinzone(self, sc):
+    def read_brillouinzone(self, cell):
         """ Returns K-points from the file
 
         Parameters
         ----------
-        sc : CellChild
+        cell : CellChild
            required supercell for the BrillouinZone object
 
         Returns
@@ -148,7 +148,7 @@ class rkpSileSiesta(kpSileSiesta):
         k, w = self.read_data()
         from sisl.physics.brillouinzone import BrillouinZone
 
-        bz = BrillouinZone(sc)
+        bz = BrillouinZone(cell)
         bz._k = k
         bz._w = w
         return bz

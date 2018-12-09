@@ -24,9 +24,9 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01]*2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atom=C, cell=self.sc)
 
-            self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
+            self.mol = Geometry([[i, 0, 0] for i in range(10)], cell=[50])
     return t()
 
 
@@ -943,13 +943,13 @@ class TestGeometry(object):
         # Create new geometry with only the coordinates
         # and atoms
         s1 = Cell([2, 2, 2])
-        g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=s1)
+        g1 = Geometry([[0, 0, 0], [1, 1, 1]], cell=s1)
         g2 = Geometry(np.copy(g1.xyz))
         assert np.allclose(g1.cell, g2.cell)
 
         # Assert that it correctly calculates the bond-length in the
         # directions of actual distance
-        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atom='H', sc=s1)
+        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atom='H', cell=s1)
         g2 = Geometry(np.copy(g1.xyz))
         for i in range(2):
             assert np.allclose(g1.cell[i, :], g2.cell[i, :])
@@ -994,7 +994,7 @@ class TestGeometry(object):
 
     def test_distance6(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom = Geometry([0]*3, Atom(1, R=1.), cell=1)
         geom.set_nsc([77, 1, 1])
         d = geom.distance(0)
         assert len(d) == 1
@@ -1027,7 +1027,7 @@ class TestGeometry(object):
 
     def test_distance7(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom = Geometry([0]*3, Atom(1, R=1.), cell=1)
         geom.set_nsc([77, 1, 1])
         # Try with a short R and a long tolerance list
         # We know that the tolerance list prevails, because
@@ -1036,7 +1036,7 @@ class TestGeometry(object):
         assert np.allclose(d, [1.])
 
     def test_distance8(self, setup):
-        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom = Geometry([0]*3, Atom(1, R=1.), cell=1)
         geom.set_nsc([77, 1, 1])
         d = geom.distance(0, method='min')
         assert len(d) == 1
@@ -1047,7 +1047,7 @@ class TestGeometry(object):
 
     def test_optimize_nsc1(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom = Geometry([0]*3, Atom(1, R=1.), cell=1)
         geom.set_nsc([77, 77, 77])
         assert np.allclose(geom.optimize_nsc(), [3, 3, 3])
         geom.set_nsc([77, 77, 77])
@@ -1128,7 +1128,7 @@ class TestGeometry(object):
         # Create new geometry with only the coordinates
         # and atoms
         s1 = Cell([2, 2, 2])
-        g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=[2, 2, 1])
+        g1 = Geometry([[0, 0, 0], [1, 1, 1]], cell=[2, 2, 1])
         g1.set_cell(s1)
         assert g1.sc == s1
 

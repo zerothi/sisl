@@ -22,12 +22,12 @@ def setup():
             C = Atom(Z=6, R=bond * 1.01)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atom=C, cell=self.sc)
 
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g2 = Geometry(np.array([[0., 0., 0.],
                                          [1., 0., 0.]], np.float64) * bond,
-                               atom=C, sc=self.sc)
+                               atom=C, cell=self.sc)
     return t()
 
 

@@ -387,7 +387,7 @@ class BaseSile(object):
     def write_geom(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `write_geometry` """
         warnings.warn('write_geom is deprecated, please use write_geometry instead',
-                      PendingDeprecationWarning, stacklevel=1)
+                      PendingDeprecationWarning, stacklevel=2)
         if getattr(self, 'write_geometry'):
             return self.write_geometry(*args, **kwargs)
         return NotImplemented
@@ -395,7 +395,7 @@ class BaseSile(object):
     def write_supercell(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `write_cell` """
         warnings.warn('write_supercell is deprecated, please use write_cell instead',
-                      PendingDeprecationWarning, stacklevel=1)
+                      PendingDeprecationWarning, stacklevel=2)
         if getattr(self, 'write_cell'):
             return self.write_cell(*args, **kwargs)
         return NotImplemented
@@ -403,7 +403,7 @@ class BaseSile(object):
     def read_supercell(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `read_cell` """
         warnings.warn('read_supercell is deprecated, please use read_cell instead',
-                      PendingDeprecationWarning, stacklevel=1)
+                      PendingDeprecationWarning, stacklevel=2)
         if getattr(self, 'read_cell'):
             return self.read_cell(*args, **kwargs)
         return NotImplemented

@@ -86,7 +86,7 @@ class refSileScaleUp(SileScaleUp):
             atoms[ia] = species[int(line[4]) - 1]
             xyz[ia, :] = _a.fromiterd(map(float, line[5:8]))
 
-        return Geometry(xyz * Bohr2Ang, atoms, sc=sc)
+        return Geometry(xyz * Bohr2Ang, atoms, cell=sc)
 
     @sile_fh_open()
     def write_geometry(self, geom, fmt='18.8e'):

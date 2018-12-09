@@ -111,7 +111,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
             atms = [Atom('H', [-1] * o) for o in nos]
 
         # Create and return geometry object
-        geom = Geometry(xyz, atms, sc=sc)
+        geom = Geometry(xyz, atms, cell=sc)
 
         return geom
 

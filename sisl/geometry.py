@@ -362,13 +362,13 @@ class Geometry(CellChild):
             raise SislError(self.__class__.__name__ + '.as_primary could not determine the optimal supercell.')
 
         # Cut down the supercell (TODO this does not correct the number of supercell connections!)
-        sc = self.sc.copy()
+        cell = self.sc.copy()
         for i in range(3):
-            sc = sc.cut(supercell[i], i)
+            cell = cell.cut(supercell[i], i)
 
         # Now we need to find the atoms that are in the primary cell
         # We do this by finding all coordinates within the primary unit-cell
-        fxyz = dot(self.xyz, sc.icell.T)
+        fxyz = dot(self.xyz, cell.icell.T)
         # Move to 0 and shift in 0.05 Ang in each direction
         fxyz -= fxyz.min(0)
 
@@ -384,7 +384,7 @@ class Geometry(CellChild):
         ind = np.logical_and.reduce(fxyz < 1., axis=1).nonzero()[0]
 
         geom = self.sub(ind)
-        geom.set_cell(sc)
+        geom.set_cell(cell)
         if ret_super:
             return geom, supercell
         return geom

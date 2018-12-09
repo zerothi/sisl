@@ -20,7 +20,7 @@ def setup():
             self.sc = Cell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
-            self.g = Grid([10, 10, 100], sc=self.sc)
+            self.g = Grid([10, 10, 100], cell=self.sc)
             self.g.fill(2.)
     return t()
 
@@ -32,7 +32,7 @@ class TestGrid(object):
         print(setup.g)
 
     def test_init(self, setup):
-        Grid(0.1, sc=setup.sc)
+        Grid(0.1, cell=setup.sc)
 
     def test_append(self, setup):
         g = setup.g.append(setup.g, 0)
@@ -95,7 +95,7 @@ class TestGrid(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_add_fail1(self, setup):
-        g = Grid(np.array(setup.g.shape) // 2 + 1, sc=setup.g.sc.copy())
+        g = Grid(np.array(setup.g.shape) // 2 + 1, cell=setup.g.sc.copy())
         setup.g + g
 
     def test_iadd1(self):
@@ -248,8 +248,13 @@ class TestGrid(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_sub_fail(self, setup):
-        g = Grid(np.array(setup.g.shape) // 2 + 1, sc=setup.g.sc.copy())
+        g = Grid(np.array(setup.g.shape) // 2 + 1, cell=setup.g.sc.copy())
         g.sub([], 0)
+
+    def test_deprecatewarning(self, setup, recwarn):
+        Grid(0.1, sc=setup.g.sc.copy())
+        assert len(recwarn) == 1
+        assert recwarn.pop(PendingDeprecationWarning)
 
     def test_sub_part(self, setup):
         for i in range(3):

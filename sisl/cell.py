@@ -1001,8 +1001,7 @@ class SuperCell(Cell):
         warnings.warn('the SuperCell class is not recommend to be used, '
                       'instead use Cell which is the new class for handling '
                       'unit-cells and supercells.',
-                      PendingDeprecationWarning,
-                      stacklevel=1)
+                      PendingDeprecationWarning, stacklevel=2)
         super(SuperCell, self).__init__(*args, **kwargs)
 
 
@@ -1027,7 +1026,7 @@ class CellChild(object):
     def set_supercell(self, *args, **kwargs):
         """ Deprecated method, please use `set_cell` instead """
         warnings.warn('set_supercell is deprecated, please use set_cell instead.',
-                      PendingDeprecationWarning, stacklevel=1)
+                      PendingDeprecationWarning, stacklevel=2)
         self.set_cell(*args, **kwargs)
 
     def set_cell(self, cell):

@@ -140,7 +140,7 @@ class ncSileSiesta(SileCDFSiesta):
         xyz *= Bohr2Ang
 
         # Create and return geometry object
-        geom = Geometry(xyz, atom, sc=sc)
+        geom = Geometry(xyz, atom, cell=sc)
         return geom
 
     def read_force(self):

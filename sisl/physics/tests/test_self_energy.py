@@ -28,7 +28,7 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01])
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                            atom=C, sc=self.sc)
+                            atom=C, cell=self.sc)
             self.H = Hamiltonian(self.g)
             func = self.H.create_construct([0.1, bond+0.1], [0., -2.7])
             self.H.construct(func)
@@ -157,7 +157,7 @@ def test_real_space_H(setup, k_axes, semi_axis, trs, bz, unfold):
 def test_real_space_H_3d():
     sc = Cell(1., nsc=[3] * 3)
     H = Atom(Z=1, R=[1.001])
-    geom = Geometry([0] * 3, atom=H, sc=sc)
+    geom = Geometry([0] * 3, atom=H, cell=sc)
     H = Hamiltonian(geom)
     H.construct(([0.001, 1.01], (0, -1)))
     RSE = RealSpaceSE(H, 0, [1, 2], (3, 4, 2))

@@ -88,7 +88,7 @@ class onlysSileSiesta(SileBinSiesta):
             atom.append(get_atom(atoms, orb))
 
         # Create and return geometry object
-        geom = Geometry(xyz, atom, sc=sc)
+        geom = Geometry(xyz, atom, cell=sc)
 
         return geom
 
@@ -262,7 +262,7 @@ class dmSileSiesta(SileBinSiesta):
             # Just generate a boxed system
             xyz = [[x, 0, 0] for x in range(no)]
             sc = Cell([no, 1, 1], nsc=nsc)
-            geom = Geometry(xyz, Atom(1), sc=sc)
+            geom = Geometry(xyz, Atom(1), cell=sc)
 
         if nsc[0] != 0 and np.any(geom.nsc != nsc):
             # We have to update the number of supercells!
@@ -341,7 +341,7 @@ class tsdeSileSiesta(dmSileSiesta):
             # Just generate a boxed system
             xyz = [[x, 0, 0] for x in range(no)]
             sc = Cell([no, 1, 1], nsc=nsc)
-            geom = Geometry(xyz, Atom(1), sc=sc)
+            geom = Geometry(xyz, Atom(1), cell=sc)
 
         if nsc[0] != 0 and np.any(geom.nsc != nsc):
             # We have to update the number of supercells!
@@ -397,7 +397,7 @@ class hsxSileSiesta(SileBinSiesta):
                 # We truly, have no clue,
                 # Just generate a boxed system
                 xyz = [[x, 0, 0] for x in range(no)]
-                geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
+                geom = Geometry(xyz, Atom(1), cell=[no, 1, 1])
             else:
                 # Try to figure out the supercell
                 warn(self.__class__.__name__ + '.read_hamiltonian '
@@ -516,7 +516,7 @@ class _gridSileSiesta(SileBinSiesta):
 
         # Simply create the grid (with no information)
         # We will overwrite the actual grid
-        g = Grid([1, 1, 1], sc=Cell(cell))
+        g = Grid([1, 1, 1], cell=Cell(cell))
         # NOTE: there is no need to swap-axes since the returned array is in F ordering
         #       and thus the first axis is the fast (x, y, z) is retained
         g.grid = (grid * self.grid_unit).astype(dtype=np.float32, order='C', copy=False)

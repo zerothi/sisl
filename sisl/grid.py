@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 
+import warnings
 from functools import partial
 from numbers import Integral, Real
 from math import pi
@@ -75,8 +76,11 @@ class Grid(CellChild):
         # Create the atomic structure in the grid, if possible
         self.set_geometry(geometry)
 
-        if cell is None:
-            cell = kwargs.get('sc', None)
+        if cell is None and 'sc' in kwargs:
+            warnings.warn('"sc" keyword is deprecated in favor of "cell", future versions '
+                          'may remove the keyword.',
+                          PendingDeprecationWarning, stacklevel=2)
+            cell = kwargs['sc']
 
         if not cell is None:
             self.set_cell(cell)
@@ -251,17 +255,17 @@ class Grid(CellChild):
     set_boundary = set_bc
     set_boundary_condition = set_bc
 
-    def __sc_geometry_dict(self, copy=True):
+    def __cell_geometry_dict(self, copy=True):
         """ Internal routine for copying the Cell and Geometry """
         d = dict()
-        d['sc'] = self.sc.copy()
+        d['cell'] = self.sc.copy()
         if not self.geometry is None:
             d['geometry'] = self.geometry.copy()
         return d
 
     def copy(self):
         """ Copy the object """
-        d = self.__sc_geometry_dict()
+        d = self.__cell_geometry_dict()
         grid = self.__class__(np.copy(self.shape), bc=np.copy(self.bc),
                               dtype=self.dtype, **d)
         grid.grid = self.grid.copy()
@@ -277,8 +281,8 @@ class Grid(CellChild):
         idx[b] = a
         idx[a] = b
         s = np.copy(self.shape)
-        d = self.__sc_geometry_dict()
-        d['sc'] = d['sc'].swapaxes(a, b)
+        d = self.__cell_geometry_dict()
+        d['cell'] = d['cell'].swapaxes(a, b)
         grid = self.__class__(s[idx], bc=self.bc[idx],
                               dtype=self.dtype, **d)
         # We need to force the C-order or we loose the contiguity
@@ -305,7 +309,7 @@ class Grid(CellChild):
         shape[axis] = n
         if n < 1:
             raise ValueError('You cannot retain no indices.')
-        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
+        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__cell_geometry_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_cell(cell)
         if scale_geometry and not self.geometry is None:
@@ -659,7 +663,7 @@ class Grid(CellChild):
         """ Appends other `Grid` to this grid along axis """
         shape = list(self.shape)
         shape[axis] += other.shape[axis]
-        d = self.__sc_geometry_dict()
+        d = self.__cell_geometry_dict()
         if 'geometry' in d:
             if not other.geometry is None:
                 d['geometry'] = d['geometry'].append(other.geometry, axis)

@@ -120,7 +120,7 @@ class xvSileSiesta(SileSiesta):
             else:
                 atms2[idx] = atms[idx[0]]
 
-        geom = Geometry(xyz, atms2.reduce(), sc=sc)
+        geom = Geometry(xyz, atms2.reduce(), cell=sc)
         if velocity:
             return geom, vel
         return geom

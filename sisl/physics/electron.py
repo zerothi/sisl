@@ -1076,7 +1076,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         # Create the actual geometry that encompass the grid
         ia, xyz, _ = geometry.within_inf(sc, periodic=pbc)
         if len(ia) > 0:
-            grid.set_geometry(Geometry(xyz, geometry.atoms[ia], sc=sc))
+            grid.set_geometry(Geometry(xyz, geometry.atoms[ia], cell=sc))
 
     # Instead of looping all atoms in the supercell we find the exact atoms
     # and their supercell indices.

@@ -82,7 +82,7 @@ class hamiltonianSile(Sile):
                 self.readline()  # step past the block
 
         # Create geometry with associated supercell and atoms
-        geom = Geometry(xyz, atom=Atom[Z], sc=Cell(cell, nsc))
+        geom = Geometry(xyz, atom=Atom[Z], cell=Cell(cell, nsc))
 
         return geom
 

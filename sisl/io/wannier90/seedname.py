@@ -165,7 +165,7 @@ class winSileWannier90(SileWannier90):
         if is_frac:
             xyz = np.dot(sc.cell.T, xyz.T).T
 
-        return Geometry(xyz, atom=s, sc=sc)
+        return Geometry(xyz, atom=s, cell=sc)
 
     def read_geometry(self, *args, **kwargs):
         """ Reads a `Geometry` and creates the Wannier90 cell """

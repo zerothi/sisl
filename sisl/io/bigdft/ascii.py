@@ -124,7 +124,7 @@ class asciiSileBigDFT(SileBigDFT):
             # correct unit
             xyz *= Bohr2Ang
 
-        return Geometry(xyz, spec, sc=sc)
+        return Geometry(xyz, spec, cell=sc)
 
     @sile_fh_open()
     def write_geometry(self, geom, fmt='.8f'):

@@ -203,7 +203,7 @@ class cubeSile(Sile):
             xyz[ia, 2] = float(tmp[4])
 
         xyz /= Ang2Bohr
-        return Geometry(xyz, atom, sc=sc)
+        return Geometry(xyz, atom, cell=sc)
 
     @sile_fh_open()
     def read_grid(self, imag=None):
@@ -243,7 +243,7 @@ class cubeSile(Sile):
             self.readline()
 
         if geom is None:
-            grid = Grid(ngrid, dtype=np.float64, sc=sc)
+            grid = Grid(ngrid, dtype=np.float64, cell=sc)
         else:
             grid = Grid(ngrid, dtype=np.float64, geometry=geom)
         grid.grid.shape = (-1,)

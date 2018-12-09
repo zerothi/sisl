@@ -454,7 +454,7 @@ class omxSileOpenMX(SileOpenMX):
         elif conv == 'FRAC':
             xyz = np.dot(xyz, sc.cell)
 
-        return Geometry(xyz, atom=atom, sc=sc)
+        return Geometry(xyz, atom=atom, cell=sc)
 
     _r_geometry_dat = _r_geometry_omx
 

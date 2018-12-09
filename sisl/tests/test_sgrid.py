@@ -21,11 +21,11 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atom=C, cell=self.sc)
             self.grid = Grid(0.2, geometry=self.g)
             self.grid.grid[:, :, :] = np.random.rand(*self.grid.shape)
 
-            self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
+            self.mol = Geometry([[i, 0, 0] for i in range(10)], cell=[50])
 
             self.grid_mol = Grid(0.2, geometry=self.mol)
             self.grid_mol.grid[:, :, :] = np.random.rand(*self.grid_mol.shape)

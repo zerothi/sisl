@@ -21,9 +21,9 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atom=C, cell=self.sc)
 
-            self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
+            self.mol = Geometry([[i, 0, 0] for i in range(10)], cell=[50])
 
             def sg_g(**kwargs):
                 kwargs['ret_geometry'] = True

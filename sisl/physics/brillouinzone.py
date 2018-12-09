@@ -1101,7 +1101,7 @@ class MonkhorstPack(BrillouinZone):
 
             # Create the grid in the reciprocal cell
             sc = Cell(cell, origo=origo)
-            grid = Grid(diag, sc=sc, dtype=v.dtype)
+            grid = Grid(diag, cell=sc, dtype=v.dtype)
             if data_axis is None:
                 grid[k2idx(k[0])] = v
             else:

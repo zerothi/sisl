@@ -31,7 +31,7 @@ def sc(alat, atom):
     sc = Cell(np.array([[1, 0, 0],
                              [0, 1, 0],
                              [0, 0, 1]], np.float64) * alat)
-    g = Geometry([0, 0, 0], atom, sc=sc)
+    g = Geometry([0, 0, 0], atom, cell=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
@@ -54,12 +54,12 @@ def bcc(alat, atom, orthogonal=False):
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
-        g = Geometry([[0, 0, 0], [ah, ah, ah]], atom, sc=sc)
+        g = Geometry([[0, 0, 0], [ah, ah, ah]], atom, cell=sc)
     else:
         sc = Cell(np.array([[1, 1, 1],
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2)
-        g = Geometry([0, 0, 0], atom, sc=sc)
+        g = Geometry([0, 0, 0], atom, cell=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
@@ -83,12 +83,12 @@ def fcc(alat, atom, orthogonal=False):
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, 0],
-                      [ah, 0, ah], [0, ah, ah]], atom, sc=sc)
+                      [ah, 0, ah], [0, ah, ah]], atom, cell=sc)
     else:
         sc = Cell(np.array([[0, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 0]], np.float64) * alat / 2)
-        g = Geometry([0, 0, 0], atom, sc=sc)
+        g = Geometry([0, 0, 0], atom, cell=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
@@ -116,7 +116,7 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
         gt = Geometry([[0, 0, 0],
                        [a, 0, 0],
                        [a * _s30, a * _c30, 0],
-                       [a * (1 + _s30), a * _c30, 0]], atom, sc=sc)
+                       [a * (1 + _s30), a * _c30, 0]], atom, cell=sc)
         # Create the rotated one on top
         gr = gt.copy()
         # mirror structure
@@ -129,7 +129,7 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
     else:
         sc = Cell([a, a, c, 90, 90, 60])
         g = Geometry([[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]],
-                     atom, sc=sc)
+                     atom, cell=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g

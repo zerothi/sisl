@@ -244,7 +244,7 @@ class pdbSile(Sile):
                 atoms._atom.append(a)
             atoms._specie[i] = s
 
-        return Geometry(xyz, atoms, sc=sc)
+        return Geometry(xyz, atoms, cell=sc)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
