@@ -17,7 +17,7 @@ class orbindxSileSiesta(SileSiesta):
     """ Orbital information file """
 
     @sile_fh_open()
-    def read_supercell_nsc(self):
+    def read_cell_nsc(self):
         """ Reads the supercell number of supercell information """
         # First line contains no no_s
         line = self.readline().split()

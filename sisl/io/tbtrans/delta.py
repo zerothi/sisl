@@ -56,7 +56,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
     >>> dH.write_delta(H, E=1., k=[0, 0, 0]) # only at 1 eV and Gamma-point
     """
 
-    def read_supercell(self):
+    def read_cell(self):
         """ Returns the `Cell` object from this file """
         cell = _a.arrayd(np.copy(self._value('cell')))
         cell.shape = (3, 3)
@@ -73,7 +73,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
     def read_geometry(self, *args, **kwargs):
         """ Returns the `Geometry` object from this file """
-        sc = self.read_supercell()
+        sc = self.read_cell()
 
         xyz = _a.arrayd(np.copy(self._value('xa')))
         xyz.shape = (-1, 3)
@@ -103,7 +103,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         return geom
 
-    def write_supercell(self, sc):
+    def write_cell(self, sc):
         """ Creates the NetCDF file and writes the supercell information """
         sile_raise_write(self)
 
@@ -132,7 +132,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         sile_raise_write(self)
 
         # Create initial dimensions
-        self.write_supercell(geometry.sc)
+        self.write_cell(geometry.sc)
         self._crt_dim(self, 'no_s', np.prod(geometry.nsc) * geometry.no)
         self._crt_dim(self, 'no_u', geometry.no)
         self._crt_dim(self, 'na_u', geometry.na)

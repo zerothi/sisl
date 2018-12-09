@@ -1024,19 +1024,28 @@ class CellChild(object):
         """
         self.sc.set_nsc(*args, **kwargs)
 
-    def set_cell(self, sc):
-        """ Overwrites the local supercell """
-        if sc is None:
+    def set_supercell(self, *args, **kwargs):
+        """ Deprecated method, please use `set_cell` instead """
+        warnings.warn('set_supercell is deprecated, please use set_cell instead.',
+                      PendingDeprecationWarning, stacklevel=1)
+        self.set_cell(*args, **kwargs)
+
+    def set_cell(self, cell):
+        """ Overwrites the local cell """
+        if cell is None:
             # Default supercell is a simple
             # 1x1x1 unit-cell
-            self.sc = Cell([1., 1., 1.])
-        elif isinstance(sc, Cell):
-            self.sc = sc
-        elif isinstance(sc, CellChild):
-            self.sc = sc.sc
+            self.sc = Cell(1.)
+
+        elif isinstance(cell, Cell):
+            self.sc = cell
+
+        elif isinstance(cell, CellChild):
+            self.sc = cell.sc
+
         else:
             # The supercell is given as a cell
-            self.sc = Cell(sc)
+            self.sc = Cell(cell)
 
         # Loop over attributes in this class
         # if it inherits CellChild, we call

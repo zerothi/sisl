@@ -63,7 +63,7 @@ class winSileWannier90(SileWannier90):
             self._file = self._seed + suffix
 
     @sile_fh_open()
-    def _read_supercell(self):
+    def _read_cell(self):
         """ Deferred routine """
 
         f, l = self.step_to('unit_cell_cart', case=False)
@@ -92,12 +92,12 @@ class winSileWannier90(SileWannier90):
 
         return Cell(cell * unit)
 
-    def read_supercell(self):
+    def read_cell(self):
         """ Reads a `Cell` and creates the Wannier90 cell """
         # Reset
         self._set_file()
 
-        return self._read_supercell()
+        return self._read_cell()
 
     @sile_fh_open()
     def _read_geometry_centres(self, *args, **kwargs):
@@ -171,7 +171,7 @@ class winSileWannier90(SileWannier90):
         """ Reads a `Geometry` and creates the Wannier90 cell """
 
         # Read in the super-cell
-        sc = self.read_supercell()
+        sc = self.read_cell()
 
         self._set_file('_centres.xyz')
         if self.exist():
@@ -188,7 +188,7 @@ class winSileWannier90(SileWannier90):
         return geom
 
     @sile_fh_open()
-    def _write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+    def _write_cell(self, sc, fmt='.8f', *args, **kwargs):
         """ Writes the supercel to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -202,10 +202,10 @@ class winSileWannier90(SileWannier90):
         self._write(fmt_str.format(*sc.cell[2, :]))
         self._write('end unit_cell_cart\n')
 
-    def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+    def write_cell(self, sc, fmt='.8f', *args, **kwargs):
         """ Writes the supercell to the contained file """
         self._set_file()
-        self._write_supercell(sc, fmt, *args, **kwargs)
+        self._write_cell(sc, fmt, *args, **kwargs)
 
     @sile_fh_open()
     def _write_geometry(self, geom, fmt='.8f', *args, **kwargs):
@@ -213,10 +213,10 @@ class winSileWannier90(SileWannier90):
         # Check that we can write to the file
         sile_raise_write(self)
 
-        # We have to have the _write_supercell here
+        # We have to have the _write_cell here
         # due to the open function re-instantiating the mode,
         # and if it isn't 'a', then it cleans it... :(
-        self._write_supercell(geom.sc, fmt, *args, **kwargs)
+        self._write_cell(geom.sc, fmt, *args, **kwargs)
 
         fmt_str = ' {{1:2s}} {{2:{0}}} {{3:{0}}} {{4:{0}}} # {{0}}\n'.format(fmt)
 

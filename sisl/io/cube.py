@@ -18,7 +18,7 @@ class cubeSile(Sile):
     """ CUBE file object """
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt='15.10e', size=None, origo=None,
+    def write_cell(self, sc, fmt='15.10e', size=None, origo=None,
                         *args, **kwargs):
         """ Writes `Cell` object attached to this grid
 
@@ -121,7 +121,7 @@ class cubeSile(Sile):
         sile_raise_write(self)
 
         if grid.geometry is None:
-            self.write_supercell(grid.sc, size=grid.shape, *args, **kwargs)
+            self.write_cell(grid.sc, size=grid.shape, *args, **kwargs)
         else:
             self.write_geometry(grid.geometry, size=grid.shape, *args, **kwargs)
 
@@ -156,7 +156,7 @@ class cubeSile(Sile):
         self._write('\n')
 
     @sile_fh_open()
-    def read_supercell(self, na=False):
+    def read_cell(self, na=False):
         """ Returns `Cell` object from the CUBE file
 
         Parameters
@@ -187,7 +187,7 @@ class cubeSile(Sile):
     @sile_fh_open()
     def read_geometry(self):
         """ Returns `Geometry` object from the CUBE file """
-        na, sc = self.read_supercell(na=True)
+        na, sc = self.read_cell(na=True)
 
         if na == 0:
             return None
@@ -221,7 +221,7 @@ class cubeSile(Sile):
         geom = self.read_geometry()
         if geom is None:
             self.fh.seek(0)
-            sc = self.read_supercell()
+            sc = self.read_cell()
         else:
             sc = geom.sc
 

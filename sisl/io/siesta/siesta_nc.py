@@ -29,18 +29,18 @@ Ry2eV = unit_convert('Ry', 'eV')
 class ncSileSiesta(SileCDFSiesta):
     """ Generic NetCDF output file containing a large variety of information """
 
-    def read_supercell_nsc(self):
+    def read_cell_nsc(self):
         """ Returns number of supercell connections """
         return np.array(self._value('nsc'), np.int32)
 
-    def read_supercell(self):
+    def read_cell(self):
         """ Returns a Cell object from a Siesta.nc file """
         cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
         cell.shape = (3, 3)
 
-        nsc = self.read_supercell_nsc()
+        nsc = self.read_cell_nsc()
 
         return Cell(cell, nsc=nsc)
 
@@ -125,7 +125,7 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns Geometry object from a Siesta.nc file """
 
         # Read supercell
-        sc = self.read_supercell()
+        sc = self.read_cell()
 
         xyz = np.array(self._value('xa'), np.float64)
         xyz.shape = (-1, 3)

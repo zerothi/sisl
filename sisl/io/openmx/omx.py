@@ -340,7 +340,7 @@ class omxSileOpenMX(SileOpenMX):
             atom.append(Atom(Z, orbs, tag=d[0]))
         return atom
 
-    def read_supercell(self, output=False, *args, **kwargs):
+    def read_cell(self, output=False, *args, **kwargs):
         """ Reads supercell
 
         One can limit the tried files to only one file by passing
@@ -417,7 +417,7 @@ class omxSileOpenMX(SileOpenMX):
 
     def _r_geometry_omx(self, *args, **kwargs):
         """ Returns `Geometry` """
-        sc = self.read_supercell(order=['omx'])
+        sc = self.read_cell(order=['omx'])
 
         na = self.get('Atoms.Number', default=0)
         conv = self.get('Atoms.SpeciesAndCoordinates.Unit', default='Ang')

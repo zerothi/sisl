@@ -29,7 +29,7 @@ def test_fdf1(sisl_tmp, sisl_system):
         assert fdf.get('LatticeConstant') > 0.
         assert fdf.get('LatticeConstant') > 0.
 
-        fdf.read_supercell()
+        fdf.read_cell()
         fdf.read_geometry()
 
 
@@ -75,7 +75,7 @@ def test_supercell(sisl_tmp):
         fh.write('\n'.join(lines))
 
     cell = np.array([[1.]*3, [0, 0, 1], [1, 0, 1]])
-    sc = fdfSileSiesta(f).read_supercell()
+    sc = fdfSileSiesta(f).read_cell()
     assert np.allclose(sc.cell, cell)
 
     lines = [
@@ -89,7 +89,7 @@ def test_supercell(sisl_tmp):
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
 
-    sc = fdfSileSiesta(f).read_supercell()
+    sc = fdfSileSiesta(f).read_cell()
     assert np.allclose(sc.cell, cell * unit_convert('Bohr', 'Ang'))
 
     cell = np.diag([2.] * 3)
@@ -102,7 +102,7 @@ def test_supercell(sisl_tmp):
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
 
-    sc = fdfSileSiesta(f).read_supercell()
+    sc = fdfSileSiesta(f).read_cell()
     assert np.allclose(sc.cell, cell)
 
 
@@ -118,7 +118,7 @@ def test_supercell_fail(sisl_tmp):
     ]
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
-    fdfSileSiesta(f).read_supercell()
+    fdfSileSiesta(f).read_cell()
 
 
 def test_geometry(sisl_tmp):

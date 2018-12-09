@@ -40,12 +40,12 @@ def _bin_check(obj, method, message):
 class onlysSileSiesta(SileBinSiesta):
     """ Geometry and overlap matrix """
 
-    def read_supercell(self):
+    def read_cell(self):
         """ Returns a Cell object from a siesta.TSHS file """
         n_s = _siesta.read_tshs_sizes(self.file)[3]
-        _bin_check(self, 'read_supercell', 'could not read sizes.')
+        _bin_check(self, 'read_cell', 'could not read sizes.')
         arr = _siesta.read_tshs_cell(self.file, n_s)
-        _bin_check(self, 'read_supercell', 'could not read cell.')
+        _bin_check(self, 'read_cell', 'could not read cell.')
         nsc = np.array(arr[0], np.int32)
         cell = np.array(arr[1].T, np.float64)
         cell.shape = (3, 3)
@@ -55,7 +55,7 @@ class onlysSileSiesta(SileBinSiesta):
         """ Returns Geometry object from a siesta.TSHS file """
 
         # Read supercell
-        sc = self.read_supercell()
+        sc = self.read_cell()
 
         na = _siesta.read_tshs_sizes(self.file)[1]
         _bin_check(self, 'read_geometry', 'could not read sizes.')
@@ -470,10 +470,10 @@ class _gridSileSiesta(SileBinSiesta):
     units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
     """
 
-    def read_supercell(self, *args, **kwargs):
+    def read_cell(self, *args, **kwargs):
 
         cell = _siesta.read_grid_cell(self.file)
-        _bin_check(self, 'read_supercell', 'could not read cell.')
+        _bin_check(self, 'read_cell', 'could not read cell.')
         cell = np.array(cell.T, np.float64)
         cell.shape = (3, 3)
 

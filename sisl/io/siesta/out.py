@@ -56,7 +56,7 @@ class outSileSiesta(SileSiesta):
 
         return atom
 
-    def _read_supercell_outcell(self):
+    def _read_cell_outcell(self):
         """ Wrapper for reading the unit-cell from the outcoor block """
 
         # Read until outcell is found
@@ -106,7 +106,7 @@ class outSileSiesta(SileSiesta):
                 pass
             line = self.readline()
 
-        cell = self._read_supercell_outcell()
+        cell = self._read_cell_outcell()
         xyz = np.array(xyz, np.float64)
 
         # Now create the geometry
@@ -153,7 +153,7 @@ class outSileSiesta(SileSiesta):
             line = self.readline()
 
         # Retrieve the unit-cell
-        cell = self._read_supercell_outcell()
+        cell = self._read_cell_outcell()
         # Convert xyz
         xyz = np.array(xyz, np.float64)
         if not Ang:

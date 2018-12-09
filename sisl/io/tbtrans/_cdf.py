@@ -64,7 +64,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
             # Reset the access pattern
             self._access = access
 
-    def read_supercell(self):
+    def read_cell(self):
         """ Returns `Cell` object from this file """
         cell = _a.arrayd(np.copy(self.cell))
         cell.shape = (3, 3)
@@ -85,7 +85,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     def read_geometry(self, *args, **kwargs):
         """ Returns `Geometry` object from this file """
-        sc = self.read_supercell()
+        sc = self.read_cell()
 
         xyz = _a.arrayd(np.copy(self.xa))
         xyz.shape = (-1, 3)

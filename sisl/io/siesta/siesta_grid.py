@@ -20,7 +20,7 @@ Ry2eV = unit_convert('Ry', 'eV')
 class gridncSileSiesta(SileCDFSiesta):
     """ NetCDF real-space grid file """
 
-    def read_supercell(self):
+    def read_cell(self):
         """ Returns a Cell object from a Siesta.grid.nc file
         """
         cell = np.array(self._value('cell'), np.float64)
@@ -30,7 +30,7 @@ class gridncSileSiesta(SileCDFSiesta):
 
         return Cell(cell)
 
-    def write_supercell(self, sc):
+    def write_cell(self, sc):
         """ Write a supercell to the grid.nc file """
         sile_raise_write(self)
 
@@ -86,7 +86,7 @@ class gridncSileSiesta(SileCDFSiesta):
             show_info = False
 
         # Swap as we swap back in the end
-        sc = self.read_supercell().swapaxes(0, 2)
+        sc = self.read_cell().swapaxes(0, 2)
 
         # Create the grid
         nx = len(self._dimension('n1'))
@@ -124,7 +124,7 @@ class gridncSileSiesta(SileCDFSiesta):
         """ Write a grid to the grid.nc file """
         sile_raise_write(self)
 
-        self.write_supercell(grid.sc)
+        self.write_cell(grid.sc)
 
         if nspin is not None:
             self._crt_dim(self, 'spin', nspin)

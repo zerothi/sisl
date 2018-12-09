@@ -456,7 +456,7 @@ class fdfSileSiesta(SileSiesta):
         return s
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+    def write_cell(self, sc, fmt='.8f', *args, **kwargs):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -484,7 +484,7 @@ class fdfSileSiesta(SileSiesta):
         # Check that we can write to the file
         sile_raise_write(self)
 
-        self.write_supercell(geom.sc, fmt, *args, **kwargs)
+        self.write_cell(geom.sc, fmt, *args, **kwargs)
 
         self._write('\n')
         self._write('NumberOfAtoms {0}\n'.format(geom.na))
@@ -585,7 +585,7 @@ class fdfSileSiesta(SileSiesta):
             spgeom.geom.reduce()
         return no_no
 
-    def read_supercell_nsc(self, *args, **kwargs):
+    def read_cell_nsc(self, *args, **kwargs):
         """ Read supercell size using any method available
 
         Raises
@@ -604,16 +604,16 @@ class fdfSileSiesta(SileSiesta):
     def _r_supercell_nsc_nc(self, *args, **kwargs):
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
-            return ncSileSiesta(f).read_supercell_nsc()
+            return ncSileSiesta(f).read_cell_nsc()
         return None
 
     def _r_supercell_nsc_orb_indx(self, *args, **kwargs):
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
         if isfile(f):
-            return orbindxSileSiesta(f).read_supercell_nsc()
+            return orbindxSileSiesta(f).read_cell_nsc()
         return None
 
-    def read_supercell(self, output=False, *args, **kwargs):
+    def read_cell(self, output=False, *args, **kwargs):
         """ Returns Cell object by reading fdf or Siesta output related files.
 
         One can limit the tried files to only one file by passing
@@ -632,10 +632,10 @@ class fdfSileSiesta(SileSiesta):
         Examples
         --------
         >>> fdf = get_sile('RUN.fdf') # doctest: +SKIP
-        >>> fdf.read_supercell() # read from fdf # doctest: +SKIP
-        >>> fdf.read_supercell(True) # read from [XV, nc, fdf] # doctest: +SKIP
-        >>> fdf.read_supercell(order=['nc']) # read from [nc] # doctest: +SKIP
-        >>> fdf.read_supercell(True, order=['nc']) # read from [nc] # doctest: +SKIP
+        >>> fdf.read_cell() # read from fdf # doctest: +SKIP
+        >>> fdf.read_cell(True) # read from [XV, nc, fdf] # doctest: +SKIP
+        >>> fdf.read_cell(order=['nc']) # read from [nc] # doctest: +SKIP
+        >>> fdf.read_cell(True, order=['nc']) # read from [nc] # doctest: +SKIP
         """
         if output:
             order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
@@ -673,7 +673,7 @@ class fdfSileSiesta(SileSiesta):
         # When reading from the fdf, the warning should be suppressed
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            nsc = self.read_supercell_nsc()
+            nsc = self.read_cell_nsc()
 
         return Cell(cell, nsc=nsc)
 
@@ -681,15 +681,15 @@ class fdfSileSiesta(SileSiesta):
         # Read supercell from <>.nc file
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
-            return ncSileSiesta(f).read_supercell()
+            return ncSileSiesta(f).read_cell()
         return None
 
     def _r_supercell_xv(self, *args, **kwargs):
         """ Returns `Cell` object from the FDF file """
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.XV'
         if isfile(f):
-            nsc = self.read_supercell_nsc()
-            sc = xvSileSiesta(f).read_supercell()
+            nsc = self.read_cell_nsc()
+            sc = xvSileSiesta(f).read_cell()
             sc.set_nsc(nsc)
             return sc
         return None
@@ -1137,7 +1137,7 @@ class fdfSileSiesta(SileSiesta):
                     for atom, _ in geom.atom.iter(True):
                         geom.atom.replace(atom, basis[atom.Z-1])
                     geom.reduce()
-            nsc = self.read_supercell_nsc()
+            nsc = self.read_cell_nsc()
             geom.set_nsc(nsc)
         return geom
 
@@ -1153,7 +1153,7 @@ class fdfSileSiesta(SileSiesta):
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
-        sc = self.read_supercell(order=['fdf'])
+        sc = self.read_cell(order=['fdf'])
 
         # No fractional coordinates
         is_frac = False

@@ -34,27 +34,27 @@ class Grid(CellChild):
     shape : float or (3,) of int
         the shape of the grid. A ``float`` specifies the grid spacing in Angstrom, while
         a list of integers specifies the exact grid size.
-    bc : list of int (3, 2) or (3, ), optional
-        the boundary conditions for each of the cell's planes. Default to periodic BC.
-    sc : Cell, optional
-        the supercell that this grid represents. `sc` has precedence if both `geometry` and `sc`
+    cell : Cell, optional
+        the supercell that this grid represents. `cell` has precedence if both `geometry` and `cell`
         has been specified. Default to ``[1, 1, 1]``.
     dtype : numpy.dtype, optional
         the data-type of the grid, default to `numpy.float64`.
+    bc : list of int (3, 2) or (3, ), optional
+        the boundary conditions for each of the cell's planes. Default to periodic BC.
     geometry : Geometry, optional
-        associated geometry with the grid. If `sc` has not been passed the supercell will
+        associated geometry with the grid. If `cell` has not been passed the supercell will
         be taken from this geometry.
 
     Examples
     --------
-    >>> grid1 = Grid(0.1, sc=10)
-    >>> grid2 = Grid(0.1, sc=Cell(10))
-    >>> grid3 = Grid(0.1, sc=Cell([10] * 3))
+    >>> grid1 = Grid(0.1, 10)
+    >>> grid2 = Grid(0.1, cell=Cell(10))
+    >>> grid3 = Grid(0.1, cell=Cell([10] * 3))
     >>> grid1 == grid2
     True
     >>> grid1 == grid3
     True
-    >>> grid = Grid(0.1, sc=10, dtype=np.complex128)
+    >>> grid = Grid(0.1, 10, np.complex128)
     >>> grid == grid1
     False
     """
@@ -68,14 +68,26 @@ class Grid(CellChild):
     #: Constant for defining an open boundary condition
     OPEN = 4
 
-    def __init__(self, shape, bc=None, sc=None, dtype=None, geometry=None):
+    def __init__(self, shape, cell=None, dtype=None, bc=None, geometry=None, **kwargs):
         if bc is None:
             bc = [[self.PERIODIC] * 2] * 3
 
-        self.set_cell(sc)
-
         # Create the atomic structure in the grid, if possible
         self.set_geometry(geometry)
+
+        if cell is None:
+            cell = kwargs.get('sc', None)
+
+        if not cell is None:
+            self.set_cell(cell)
+            # Also update geometry cell
+            if not self.geometry is None:
+                self.geometry.set_cell(cell)
+
+        elif self.geometry is None:
+            # cell is None, and geometry is None,
+            # reset cell size to size 1
+            self.set_cell(1.)
 
         if isinstance(shape, Real):
             d = (self.cell ** 2).sum(1) ** 0.5
@@ -86,12 +98,6 @@ class Grid(CellChild):
 
         # Create the grid boundary conditions
         self.set_bc(bc)
-
-        # If the user sets the super-cell, that has precedence.
-        if sc is not None:
-            if not self.geometry is None:
-                self.geometry.set_cell(sc)
-            self.set_cell(sc)
 
     def __getitem__(self, key):
         """ Grid value at `key` """
@@ -150,11 +156,10 @@ class Grid(CellChild):
         from scipy.interpolate import RegularGridInterpolator
 
         # Get current grid spacing
-        flinspace = partial(np.linspace, dtype=np.float32)
         dold = (
-            flinspace(0, 1, self.shape[0]),
-            flinspace(0, 1, self.shape[1]),
-            flinspace(0, 1, self.shape[2])
+            _a.linspacef(0, 1, self.shape[0]),
+            _a.linspacef(0, 1, self.shape[1]),
+            _a.linspacef(0, 1, self.shape[2])
         )
 
         # Create new grid and clean-up to reduce memory
@@ -1387,7 +1392,7 @@ This may be unexpected but enables one to do advanced manipulations.
         kwargs = {}
         if input_file is None:
             stdout_grid = False
-            grid = Grid(0.1, geometry=Geometry([0] * 3, sc=1))
+            grid = Grid(0.1, geometry=Geometry([0] * 3, cell=1))
         else:
             # Extract specification of the input file
             input_file, spec = str_spec(input_file)

@@ -59,7 +59,7 @@ class xvSileSiesta(SileSiesta):
             self._write(fmt_str.format(ips + 1, a.Z, *tmp))
 
     @sile_fh_open()
-    def read_supercell(self):
+    def read_cell(self):
         """ Returns `Cell` object from the XV file """
 
         cell = np.empty([3, 3], np.float64)
@@ -86,7 +86,7 @@ class xvSileSiesta(SileSiesta):
         Geometry
         velocity : only if `velocity` is true.
         """
-        sc = self.read_supercell()
+        sc = self.read_cell()
 
         # Read number of atoms
         na = int(self.readline())
@@ -133,7 +133,7 @@ class xvSileSiesta(SileSiesta):
         -------
         velocity : 
         """
-        self.read_supercell()
+        self.read_cell()
         na = int(self.readline())
         vel = np.empty([na, 3], np.float64)
         for ia in range(na):

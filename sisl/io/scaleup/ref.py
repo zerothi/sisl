@@ -21,7 +21,7 @@ class refSileScaleUp(SileScaleUp):
     """ REF file object for ScaleUp """
 
     @sile_fh_open()
-    def read_supercell(self):
+    def read_cell(self):
         """ Reads a supercell from the Sile """
         # 1st line is number of supercells
         nsc = _a.fromiteri(map(int, self.readline().split()[:3]))
