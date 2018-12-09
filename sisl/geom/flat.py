@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from sisl import Atom, Geometry, SuperCell
+from sisl import Atom, Geometry, Cell
 
 __all__ = ['honeycomb', 'graphene']
 
@@ -27,7 +27,7 @@ def honeycomb(bond, atom, orthogonal=False):
     """
     sq3h = 3.**.5 * 0.5
     if orthogonal:
-        sc = SuperCell(np.array([[3., 0., 0.],
+        sc = Cell(np.array([[3., 0., 0.],
                                  [0., 2 * sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
         g = Geometry(np.array([[0., 0., 0.],
@@ -36,7 +36,7 @@ def honeycomb(bond, atom, orthogonal=False):
                                [2., 0., 0.]], np.float64) * bond,
                      atom, sc=sc)
     else:
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        sc = Cell(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
         g = Geometry(np.array([[0., 0., 0.],

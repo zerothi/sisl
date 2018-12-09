@@ -6,7 +6,7 @@ from .sile import SileSiesta
 from ..sile import *
 from sisl.io._help import *
 
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Cell
 from sisl.utils.cmd import *
 from sisl.unit.siesta import unit_convert
 
@@ -79,7 +79,7 @@ class outSileSiesta(SileSiesta):
         if not Ang:
             cell *= Bohr2Ang
 
-        return SuperCell(cell)
+        return Cell(cell)
 
     def _read_geometry_outcoor(self, line, last, all, species=None):
         """ Wrapper for reading the geometry as in the outcoor output """

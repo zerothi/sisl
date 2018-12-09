@@ -7,11 +7,11 @@ import math as m
 import numpy as np
 
 import sisl.linalg as lin
-from sisl import SuperCell, SuperCellChild
+from sisl import Cell, CellChild
 from sisl.geom import graphene
 
 
-pytestmark = [pytest.mark.supercell, pytest.mark.sc]
+pytestmark = [pytest.mark.cell, pytest.mark.sc]
 
 
 @pytest.fixture
@@ -20,18 +20,18 @@ def setup():
         def __init__(self):
             alat = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+            self.sc = Cell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
     return t()
 
 
-class TestSuperCell(object):
+class TestCell(object):
 
     def test_str(self, setup):
         str(setup.sc)
         str(setup.sc)
-        assert setup.sc != 'Not a SuperCell'
+        assert setup.sc != 'Not a Cell'
 
     def test_nsc1(self, setup):
         sc = setup.sc.copy()
@@ -180,34 +180,34 @@ class TestSuperCell(object):
 
     def test_creation1(self, setup):
         # full cell
-        tmp1 = SuperCell([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        tmp1 = Cell([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         # diagonal cell
-        tmp2 = SuperCell([1, 1, 1])
+        tmp2 = Cell([1, 1, 1])
         # cell parameters
-        tmp3 = SuperCell([1, 1, 1, 90, 90, 90])
-        tmp4 = SuperCell([1])
+        tmp3 = Cell([1, 1, 1, 90, 90, 90])
+        tmp4 = Cell([1])
         assert np.allclose(tmp1.cell, tmp2.cell)
         assert np.allclose(tmp1.cell, tmp3.cell)
         assert np.allclose(tmp1.cell, tmp4.cell)
 
     def test_creation2(self, setup):
         # full cell
-        class P(SuperCellChild):
+        class P(CellChild):
 
             def copy(self):
                 a = P()
-                a.set_supercell(setup.sc)
+                a.set_cell(setup.sc)
                 return a
         tmp1 = P()
-        tmp1.set_supercell([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        tmp1.set_cell([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         # diagonal cell
         tmp2 = P()
-        tmp2.set_supercell([1, 1, 1])
+        tmp2.set_cell([1, 1, 1])
         # cell parameters
         tmp3 = P()
-        tmp3.set_supercell([1, 1, 1, 90, 90, 90])
+        tmp3.set_cell([1, 1, 1, 90, 90, 90])
         tmp4 = P()
-        tmp4.set_supercell([1])
+        tmp4.set_cell([1])
         assert np.allclose(tmp1.cell, tmp2.cell)
         assert np.allclose(tmp1.cell, tmp3.cell)
         assert np.allclose(tmp1.cell, tmp4.cell)
@@ -235,7 +235,7 @@ class TestSuperCell(object):
         param = np.array([1, 2, 3, 45, 60, 80], np.float64)
         parama = param.copy()
         parama[3:] *= np.pi / 180
-        sc = SuperCell(param)
+        sc = Cell(param)
         assert np.allclose(param, sc.parameters())
         assert np.allclose(parama, sc.parameters(True))
         for ang in range(0, 91, 5):
@@ -268,7 +268,7 @@ class TestSuperCell(object):
         s = p.dumps(setup.sc)
         n = p.loads(s)
         assert setup.sc == n
-        s = SuperCell([1, 1, 1])
+        s = Cell([1, 1, 1])
         assert setup.sc != s
 
     def test_orthogonal(self, setup):
@@ -330,17 +330,17 @@ class TestSuperCell(object):
         assert g.sc.angle(0, 1) == 90
 
     def test_angle2(self, setup):
-        sc = SuperCell([1, 1, 1])
+        sc = Cell([1, 1, 1])
         assert sc.angle(0, 1) == 90
         assert sc.angle(0, 2) == 90
         assert sc.angle(1, 2) == 90
-        sc = SuperCell([[1, 1, 0],
+        sc = Cell([[1, 1, 0],
                         [1, -1, 0],
                         [0, 0, 2]])
         assert sc.angle(0, 1) == 90
         assert sc.angle(0, 2) == 90
         assert sc.angle(1, 2) == 90
-        sc = SuperCell([[3, 4, 0],
+        sc = Cell([[3, 4, 0],
                         [4, 3, 0],
                         [0, 0, 2]])
         assert sc.angle(0, 1, rad=True) == approx(0.28379, abs=1e-4)
@@ -365,7 +365,7 @@ def _dot(u, v):
 
 
 def test_plane1():
-    sc = SuperCell([1] * 3)
+    sc = Cell([1] * 3)
     # Check point [0.5, 0.5, 0.5]
     pp = np.array([0.5] * 3)
 
@@ -384,7 +384,7 @@ def test_plane1():
 
 
 def test_plane2():
-    sc = SuperCell([1] * 3)
+    sc = Cell([1] * 3)
     # Check point [-0.5, -0.5, -0.5]
     pp = np.array([-0.5] * 3)
 
@@ -403,7 +403,7 @@ def test_plane2():
 
 
 def test_tocuboid_simple():
-    sc = SuperCell([1, 1, 1, 90, 90, 90])
+    sc = Cell([1, 1, 1, 90, 90, 90])
     c1 = sc.toCuboid()
     assert np.allclose(sc.cell, c1._v)
     c2 = sc.toCuboid(True)
@@ -411,7 +411,7 @@ def test_tocuboid_simple():
 
 
 def test_tocuboid_complex():
-    sc = SuperCell([1, 1, 1, 60, 60, 60])
+    sc = Cell([1, 1, 1, 60, 60, 60])
     print(sc.cell)
     c1 = sc.toCuboid()
     assert np.allclose(sc.cell, c1._v)

@@ -9,7 +9,7 @@ import numpy as np
 import sisl.geom as sisl_geom
 from sisl import SislWarning, SislError
 from sisl import Cube, Sphere
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Cell
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+            self.sc = Cell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
             C = Atom(Z=6, R=[bond * 1.01]*2)
@@ -734,7 +734,7 @@ class TestGeometry(object):
 
     def test_within_inf2(self, setup):
         g = setup.mol.translate([0.05] * 3)
-        sc = SuperCell(1.5)
+        sc = Cell(1.5)
         for o in range(10):
             origo = [o - 0.5, -0.5, -0.5]
             sc.origo = origo
@@ -942,7 +942,7 @@ class TestGeometry(object):
     def test_unit_cell_estimation2(self, setup):
         # Create new geometry with only the coordinates
         # and atoms
-        s1 = SuperCell([2, 2, 2])
+        s1 = Cell([2, 2, 2])
         g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=s1)
         g2 = Geometry(np.copy(g1.xyz))
         assert np.allclose(g1.cell, g2.cell)
@@ -1127,9 +1127,9 @@ class TestGeometry(object):
     def test_set_sc(self, setup):
         # Create new geometry with only the coordinates
         # and atoms
-        s1 = SuperCell([2, 2, 2])
+        s1 = Cell([2, 2, 2])
         g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=[2, 2, 1])
-        g1.set_sc(s1)
+        g1.set_cell(s1)
         assert g1.sc == s1
 
     def test_attach1(self, setup):

@@ -7,7 +7,7 @@ import math as m
 import numpy as np
 
 from sisl import SislError, geom
-from sisl import Geometry, Atom, SuperCell, SuperCellChild
+from sisl import Geometry, Atom, Cell, CellChild
 from sisl import BrillouinZone, BandStructure
 from sisl import MonkhorstPack
 
@@ -16,8 +16,8 @@ from sisl import MonkhorstPack
 def setup():
     class t():
         def __init__(self):
-            self.s1 = SuperCell(1, nsc=[3, 3, 1])
-            self.s2 = SuperCell([2, 2, 10, 90, 90, 60], [5, 5, 1])
+            self.s1 = Cell(1, nsc=[3, 3, 1])
+            self.s2 = Cell([2, 2, 10, 90, 90, 60], [5, 5, 1])
     return t()
 
 
@@ -26,8 +26,8 @@ def setup():
 class TestBrillouinZone(object):
 
     def setUp(self, setup):
-        setup.s1 = SuperCell(1, nsc=[3, 3, 1])
-        setup.s2 = SuperCell([2, 2, 10, 90, 90, 60], [5, 5, 1])
+        setup.s1 = Cell(1, nsc=[3, 3, 1])
+        setup.s2 = Cell([2, 2, 10, 90, 90, 60], [5, 5, 1])
 
     def test_bz1(self, setup):
         bz = BrillouinZone(1.)
@@ -64,9 +64,9 @@ class TestBrillouinZone(object):
             assert np.allclose(rec, k)
 
     def test_class1(self, setup):
-        class Test(SuperCellChild):
+        class Test(CellChild):
             def __init__(self, sc):
-                self.set_supercell(sc)
+                self.set_cell(sc)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -77,9 +77,9 @@ class TestBrillouinZone(object):
         assert np.allclose(bz.eig(), np.arange(3)-1)
 
     def test_class2(self, setup):
-        class Test(SuperCellChild):
+        class Test(CellChild):
             def __init__(self, sc):
-                self.set_supercell(sc)
+                self.set_cell(sc)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -99,9 +99,9 @@ class TestBrillouinZone(object):
         assert np.allclose(bz.asaverage().eigh(eta=True), np.arange(3))
 
     def test_class3(self, setup):
-        class Test(SuperCellChild):
+        class Test(CellChild):
             def __init__(self, sc):
-                self.set_supercell(sc)
+                self.set_cell(sc)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -119,9 +119,9 @@ class TestBrillouinZone(object):
     @pytest.mark.parametrize("N", [2, 3, 4, 5, 7])
     @pytest.mark.parametrize("centered", [True, False])
     def test_mp_asgrid(self, setup, N, centered):
-        class Test(SuperCellChild):
+        class Test(CellChild):
             def __init__(self, sc):
-                self.set_supercell(sc)
+                self.set_cell(sc)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
         bz = MonkhorstPack(Test(setup.s1), [2] * 3).asgrid()
@@ -143,9 +143,9 @@ class TestBrillouinZone(object):
 
     @pytest.mark.xfail(raises=SislError)
     def test_mp_asgrid_fail(self, setup):
-        class Test(SuperCellChild):
+        class Test(CellChild):
             def __init__(self, sc):
-                self.set_supercell(sc)
+                self.set_cell(sc)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
         bz = MonkhorstPack(Test(setup.s1), [2] * 3, displacement=[0.1] * 3).asgrid()
@@ -371,7 +371,7 @@ class TestBrillouinZone(object):
     def test_param_circle(self, n):
         bz = BrillouinZone.param_circle(1, 10, 0.1, n, [1/2] * 3)
         assert len(bz) == 10
-        sc = SuperCell(1)
+        sc = Cell(1)
         bz_loop = BrillouinZone.param_circle(sc, 10, 0.1, n, [1/2] * 3, True)
         assert len(bz_loop) == 10
         assert not np.allclose(bz.k, bz_loop.k)

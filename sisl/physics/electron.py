@@ -58,7 +58,7 @@ from numpy import int32, complex128
 from numpy import add, angle, sort
 
 from sisl import units, constant
-from sisl.supercell import SuperCell
+from sisl.cell import Cell
 from sisl.geometry import Geometry
 from sisl._indices import indices_le
 from sisl._math_small import xyz_to_spherical_cos_phi
@@ -1087,7 +1087,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # them square.
 
     o = sc.toCuboid(True)
-    sc = SuperCell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
+    sc = Cell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)

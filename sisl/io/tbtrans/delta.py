@@ -9,7 +9,7 @@ from sisl.utils import *
 import sisl._array as _a
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Cell
 from sisl import SparseOrbitalBZSpin
 from sisl.messages import warn
 from sisl._help import _range as range
@@ -57,12 +57,12 @@ class deltancSileTBtrans(SileCDFTBtrans):
     """
 
     def read_supercell(self):
-        """ Returns the `SuperCell` object from this file """
+        """ Returns the `Cell` object from this file """
         cell = _a.arrayd(np.copy(self._value('cell')))
         cell.shape = (3, 3)
 
         nsc = self._value('nsc')
-        sc = SuperCell(cell, nsc=nsc)
+        sc = Cell(cell, nsc=nsc)
         try:
             sc.sc_off = self._value('isc_off')
         except:

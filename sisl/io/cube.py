@@ -6,7 +6,7 @@ import numpy as np
 from sisl.io.sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell, Grid, SislError
+from sisl import Geometry, Atom, Cell, Grid, SislError
 from sisl.unit import unit_convert
 
 __all__ = ['cubeSile']
@@ -20,11 +20,11 @@ class cubeSile(Sile):
     @sile_fh_open()
     def write_supercell(self, sc, fmt='15.10e', size=None, origo=None,
                         *args, **kwargs):
-        """ Writes `SuperCell` object attached to this grid
+        """ Writes `Cell` object attached to this grid
 
         Parameters
         ----------
-        sc : SuperCell
+        sc : Cell
             supercell to be written
         fmt : str, optional
             floating point format for stored values
@@ -157,7 +157,7 @@ class cubeSile(Sile):
 
     @sile_fh_open()
     def read_supercell(self, na=False):
-        """ Returns `SuperCell` object from the CUBE file
+        """ Returns `Cell` object from the CUBE file
 
         Parameters
         ----------
@@ -181,8 +181,8 @@ class cubeSile(Sile):
         cell = cell / Ang2Bohr
         origo = origo / Ang2Bohr
         if na:
-            return lna, SuperCell(cell, origo=origo)
-        return SuperCell(cell, origo=origo)
+            return lna, Cell(cell, origo=origo)
+        return Cell(cell, origo=origo)
 
     @sile_fh_open()
     def read_geometry(self):

@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from sisl import Atom, Geometry, SuperCell
+from sisl import Atom, Geometry, Cell
 
 __all__ = ['nanotube']
 
@@ -131,7 +131,7 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
     idx = np.argsort(xyz[:, 2])
     xyz = xyz[idx, :]
 
-    sc = SuperCell([rs * 4, rs * 4, t], nsc=[1, 1, 3])
+    sc = Cell([rs * 4, rs * 4, t], nsc=[1, 1, 3])
 
     geom = Geometry(xyz, atom, sc=sc)
     # Return a geometry with the first atom at (0,0,0)

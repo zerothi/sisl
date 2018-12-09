@@ -184,7 +184,7 @@ if not os.path.exists('zz.gout'):
 print('Reading output')
 gout = sisl.get_sile('zz.gout')
 # Correct what to read from the gulp output
-gout.set_supercell_key("Cartesian lattice vectors")
+gout.set_cell_key("Cartesian lattice vectors")
 # Selectively decide whether you want to read the dynamical
 # matrix from the GULP output file or from the
 # FORCE_CONSTANTS_2ND file.

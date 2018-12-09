@@ -6,7 +6,7 @@ import os
 import numpy as np
 
 import pytest
-from sisl import Atom, Geometry, SuperCell, Hamiltonian
+from sisl import Atom, Geometry, Cell, Hamiltonian
 
 
 # Here we create the necessary methods and fixtures to enabled/disable
@@ -128,7 +128,7 @@ def sisl_system():
     alat = 1.42
     sq3h = 3.**.5 * 0.5
     C = Atom(Z=6, R=1.42)
-    sc = SuperCell(np.array([[1.5, sq3h, 0.],
+    sc = Cell(np.array([[1.5, sq3h, 0.],
                              [1.5, -sq3h, 0.],
                              [0., 0., 10.]], np.float64) * alat,
                    nsc=[3, 3, 1])
@@ -141,7 +141,7 @@ def sisl_system():
     d.tS = np.array([(0., 1.0),
                      (2.7, 0.)])
     d.C = Atom(Z=6, R=max(d.R))
-    d.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+    d.sc = Cell(np.array([[1.5, sq3h, 0.],
                                [1.5, -sq3h, 0.],
                                [0., 0., 10.]], np.float64) * alat,
                      nsc=[3, 3, 1])

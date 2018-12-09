@@ -272,12 +272,12 @@ class Orbital(object):
 
         # Since all these things depend on other elements
         # we will simply import them here.
-        from .supercell import SuperCell
+        from .cell import Cell
         from .geometry import Geometry
         from .grid import Grid
         from .atom import Atom
         from .physics.electron import wavefunction
-        sc = SuperCell(R*2, origo=[-R] * 3)
+        sc = Cell(R*2, origo=[-R] * 3)
         g = Geometry([0] * 3, Atom(Z, self), sc=sc)
         G = Grid(precision, dtype=dtype, geometry=g)
         wavefunction(np.full(1, c), G, geometry=g)

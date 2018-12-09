@@ -6,7 +6,7 @@ from ..sile import *
 
 # Import the geometry object
 import sisl._array as _a
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Cell
 from sisl.unit import unit_convert
 
 import numpy as np
@@ -30,7 +30,7 @@ class refSileScaleUp(SileScaleUp):
         cell = _a.fromiterd(map(float, self.readline().split()[:9]))
         # Typically ScaleUp uses very large unit-cells
         # so supercells will typically be restricted to [3, 3, 3]
-        return SuperCell(cell * Bohr2Ang, nsc=nsc)
+        return Cell(cell * Bohr2Ang, nsc=nsc)
 
     @sile_fh_open()
     def read_geometry(self, primary=False, **kwargs):
@@ -70,7 +70,7 @@ class refSileScaleUp(SileScaleUp):
             c[2, 1] = cell[3] / 2.
             c[2, 2] = 1. + cell[2]
             cell = c * Ang2Bohr
-        sc = SuperCell(cell * Bohr2Ang, nsc=nsc)
+        sc = Cell(cell * Bohr2Ang, nsc=nsc)
 
         # Create list of coordinates and atoms
         xyz = np.empty([na * ns, 3], np.float64)
@@ -162,7 +162,7 @@ class restartSileScaleUp(refSileScaleUp):
 
         restart = super(restartSileScaleUp, self).read_geometry()
         if not ref is None:
-            restart.sc = SuperCell(np.dot(ref.sc.cell, restart.sc.cell.T),
+            restart.sc = Cell(np.dot(ref.sc.cell, restart.sc.cell.T),
                                    nsc=restart.nsc)
             restart.xyz += ref.xyz
 

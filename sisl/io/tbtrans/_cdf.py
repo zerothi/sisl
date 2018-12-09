@@ -13,7 +13,7 @@ from sisl.utils import *
 import sisl._array as _a
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Cell
 from sisl._help import _str
 from sisl.unit.siesta import unit_convert
 
@@ -29,7 +29,7 @@ eV2Ry = unit_convert('eV', 'Ry')
 class _ncSileTBtrans(SileCDFTBtrans):
     r""" Common TBtrans NetCDF file object due to a lot of the files having common entries
 
-    This enables easy read of the Geometry and SuperCells etc.
+    This enables easy read of the Geometry and Cells etc.
     """
 
     def _setup(self, *args, **kwargs):
@@ -65,7 +65,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
             self._access = access
 
     def read_supercell(self):
-        """ Returns `SuperCell` object from this file """
+        """ Returns `Cell` object from this file """
         cell = _a.arrayd(np.copy(self.cell))
         cell.shape = (3, 3)
 
@@ -74,7 +74,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
         except:
             nsc = None
 
-        sc = SuperCell(cell, nsc=nsc)
+        sc = Cell(cell, nsc=nsc)
         try:
             sc.sc_off = self._value('isc_off')
         except:

@@ -11,7 +11,7 @@ from .sile import SileWannier90
 from ..sile import *
 
 # Import the geometry object
-from sisl import Geometry, SuperCell
+from sisl import Geometry, Cell
 from sisl.physics import Hamiltonian
 from sisl.unit import unit_convert
 
@@ -90,10 +90,10 @@ class winSileWannier90(SileWannier90):
         for i in [0, 1, 2]:
             cell[i, :] = [float(x) for x in lines[i].split()]
 
-        return SuperCell(cell * unit)
+        return Cell(cell * unit)
 
     def read_supercell(self):
-        """ Reads a `SuperCell` and creates the Wannier90 cell """
+        """ Reads a `Cell` and creates the Wannier90 cell """
         # Reset
         self._set_file()
 
@@ -184,7 +184,7 @@ class winSileWannier90(SileWannier90):
         self._set_file()
 
         # Specify the supercell and return
-        geom.set_sc(sc)
+        geom.set_cell(sc)
         return geom
 
     @sile_fh_open()

@@ -18,13 +18,13 @@ from .utils import cmd, strseq, direction, str_spec
 from .utils import array_arange
 from .utils.mathematics import fnorm
 
-from .supercell import SuperCellChild
+from .cell import CellChild
 from .geometry import Geometry
 
 __all__ = ['Grid', 'sgrid']
 
 
-class Grid(SuperCellChild):
+class Grid(CellChild):
     """ Real-space grid information with associated geometry.
 
     This grid object handles cell vectors and divisions of said grid.
@@ -36,7 +36,7 @@ class Grid(SuperCellChild):
         a list of integers specifies the exact grid size.
     bc : list of int (3, 2) or (3, ), optional
         the boundary conditions for each of the cell's planes. Default to periodic BC.
-    sc : SuperCell, optional
+    sc : Cell, optional
         the supercell that this grid represents. `sc` has precedence if both `geometry` and `sc`
         has been specified. Default to ``[1, 1, 1]``.
     dtype : numpy.dtype, optional
@@ -48,8 +48,8 @@ class Grid(SuperCellChild):
     Examples
     --------
     >>> grid1 = Grid(0.1, sc=10)
-    >>> grid2 = Grid(0.1, sc=SuperCell(10))
-    >>> grid3 = Grid(0.1, sc=SuperCell([10] * 3))
+    >>> grid2 = Grid(0.1, sc=Cell(10))
+    >>> grid3 = Grid(0.1, sc=Cell([10] * 3))
     >>> grid1 == grid2
     True
     >>> grid1 == grid3
@@ -72,7 +72,7 @@ class Grid(SuperCellChild):
         if bc is None:
             bc = [[self.PERIODIC] * 2] * 3
 
-        self.set_supercell(sc)
+        self.set_cell(sc)
 
         # Create the atomic structure in the grid, if possible
         self.set_geometry(geometry)
@@ -90,8 +90,8 @@ class Grid(SuperCellChild):
         # If the user sets the super-cell, that has precedence.
         if sc is not None:
             if not self.geometry is None:
-                self.geometry.set_sc(sc)
-            self.set_sc(sc)
+                self.geometry.set_cell(sc)
+            self.set_cell(sc)
 
     def __getitem__(self, key):
         """ Grid value at `key` """
@@ -119,7 +119,7 @@ class Grid(SuperCellChild):
             self.geometry = None
         else:
             self.geometry = geometry
-            self.set_sc(geometry.sc)
+            self.set_cell(geometry.sc)
     set_geom = set_geometry
 
     def fill(self, val):
@@ -247,7 +247,7 @@ class Grid(SuperCellChild):
     set_boundary_condition = set_bc
 
     def __sc_geometry_dict(self, copy=True):
-        """ Internal routine for copying the SuperCell and Geometry """
+        """ Internal routine for copying the Cell and Geometry """
         d = dict()
         d['sc'] = self.sc.copy()
         if not self.geometry is None:
@@ -302,11 +302,11 @@ class Grid(SuperCellChild):
             raise ValueError('You cannot retain no indices.')
         grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
-        grid.set_sc(cell)
+        grid.set_cell(cell)
         if scale_geometry and not self.geometry is None:
             geom = self.geometry.copy()
             fxyz = geom.fxyz.copy()
-            geom.set_supercell(grid.sc)
+            geom.set_cell(grid.sc)
             geom.xyz[:, :] = np.dot(fxyz, grid.sc.cell)
             grid.set_geometry(geom)
 
@@ -452,7 +452,7 @@ class Grid(SuperCellChild):
             min_xyz = self.dcell[axis, :] * idx[0]
             # Now shift the geometry according to what is retained
             geom = self.geometry.translate(-min_xyz)
-            geom.set_supercell(grid.sc)
+            geom.set_cell(grid.sc)
             grid.set_geometry(geom)
         else:
             grid = self._copy_sub(len(idx), axis, scale_geometry=True)

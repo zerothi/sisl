@@ -11,7 +11,7 @@ plt = pytest.importorskip('matplotlib.pyplot')
 mlib3d = pytest.importorskip('mpl_toolkits.mplot3d')
 
 
-def test_supercell_2d():
+def test_cell_2d():
     g = sisl.geom.graphene()
     sisl.plot(g.sc, axis=[0, 1])
     sisl.plot(g.sc, axis=[0, 2])
@@ -22,7 +22,7 @@ def test_supercell_2d():
     plt.close('all')
 
 
-def test_supercell_3d():
+def test_cell_3d():
     g = sisl.geom.graphene()
     sisl.plot(g.sc)
     plt.close('all')

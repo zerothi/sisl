@@ -5,7 +5,7 @@ import numpy as np
 from .sile import SileSiesta
 from ..sile import *
 
-from sisl import Geometry, Atom, Atoms, SuperCell
+from sisl import Geometry, Atom, Atoms, Cell
 from sisl.unit.siesta import unit_convert
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
@@ -60,14 +60,14 @@ class xvSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_supercell(self):
-        """ Returns `SuperCell` object from the XV file """
+        """ Returns `Cell` object from the XV file """
 
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
             cell[i, :] = list(map(float, self.readline().split()[:3]))
         cell *= Bohr2Ang
 
-        return SuperCell(cell)
+        return Cell(cell)
 
     @sile_fh_open()
     def read_geometry(self, velocity=False, species_Z=False):

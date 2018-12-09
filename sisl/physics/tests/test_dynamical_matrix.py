@@ -5,7 +5,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, DynamicalMatrix
+from sisl import Geometry, Atom, Cell, DynamicalMatrix
 
 
 @pytest.fixture
@@ -14,7 +14,7 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+            self.sc = Cell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 

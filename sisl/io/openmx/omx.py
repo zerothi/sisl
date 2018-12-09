@@ -11,7 +11,7 @@ from .._help import *
 from ..sile import *
 from .sile import SileOpenMX
 
-from sisl import Geometry, SphericalOrbital, Atom, SuperCell
+from sisl import Geometry, SphericalOrbital, Atom, Cell
 
 
 __all__ = ['omxSileOpenMX']
@@ -367,7 +367,7 @@ class omxSileOpenMX(SileOpenMX):
         return None
 
     def _r_supercell_omx(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the omx file """
+        """ Returns `Cell` object from the omx file """
         conv = self.get('Atoms.UnitVectors.Unit', default='Ang')
         if conv.upper() == 'AU':
             conv = units('Bohr', 'Ang')
@@ -385,7 +385,7 @@ class omxSileOpenMX(SileOpenMX):
             raise SileError('Could not find Atoms.UnitVectors in file')
         cell *= conv
 
-        return SuperCell(cell)
+        return Cell(cell)
 
     _r_supercell_dat = _r_supercell_omx
 

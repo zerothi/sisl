@@ -9,7 +9,7 @@ from .sile import SileBigDFT
 from ..sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Cell
 from sisl.unit import unit_convert
 
 import numpy as np
@@ -106,9 +106,9 @@ class asciiSileBigDFT(SileBigDFT):
         # Create the supercell
         if is_angdeg:
             # The input is in skewed axis
-            sc = SuperCell([dxx, dyx, dyy, dzx, dzy, dzz])
+            sc = Cell([dxx, dyx, dyy, dzx, dzy, dzz])
         else:
-            sc = SuperCell([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
+            sc = Cell([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
 
         # Now create the geometry
         xyz = np.array(xyz, np.float64)

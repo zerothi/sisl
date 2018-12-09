@@ -26,7 +26,7 @@ depending on the size of the supercell.
 Specifying the number of super-cells may be done when creating the geometry,
 or after it has been created::
 
-   >>> geometry = Geometry([[0, 0, 0]], sc=SuperCell(5, [3, 3, 3]))
+   >>> geometry = Geometry([[0, 0, 0]], sc=Cell(5, [3, 3, 3]))
    >>> geometry.nsc
    array([3, 3, 3], dtype=int32)
    >>> geometry.set_nsc([3, 1, 5])
@@ -46,7 +46,7 @@ Here we show a square 2D lattice with one atom in the unit-cell and a supercell
 which extends 2 cells along the Cartesian :math:`x` lattice vector (5 in total) and 1
 cell along the Cartesian :math:`y` lattice vector (3 in total)::
 
-  >>> square = Geometry([[0.5,0.5,0]], sc=SuperCell([1,1,10], [5, 3, 1]))
+  >>> square = Geometry([[0.5,0.5,0]], sc=Cell([1,1,10], [5, 3, 1]))
 
 which results in this underlying geometry:
 

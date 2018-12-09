@@ -14,7 +14,7 @@ from ..sile import add_sile, SileError
 from .sile import SileBinSiesta
 
 import sisl._array as _a
-from sisl import Geometry, Atom, SuperCell, Grid
+from sisl import Geometry, Atom, Cell, Grid
 from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
@@ -41,7 +41,7 @@ class onlysSileSiesta(SileBinSiesta):
     """ Geometry and overlap matrix """
 
     def read_supercell(self):
-        """ Returns a SuperCell object from a siesta.TSHS file """
+        """ Returns a Cell object from a siesta.TSHS file """
         n_s = _siesta.read_tshs_sizes(self.file)[3]
         _bin_check(self, 'read_supercell', 'could not read sizes.')
         arr = _siesta.read_tshs_cell(self.file, n_s)
@@ -49,7 +49,7 @@ class onlysSileSiesta(SileBinSiesta):
         nsc = np.array(arr[0], np.int32)
         cell = np.array(arr[1].T, np.float64)
         cell.shape = (3, 3)
-        return SuperCell(cell, nsc=nsc)
+        return Cell(cell, nsc=nsc)
 
     def read_geometry(self):
         """ Returns Geometry object from a siesta.TSHS file """
@@ -261,7 +261,7 @@ class dmSileSiesta(SileBinSiesta):
             # We truly, have no clue,
             # Just generate a boxed system
             xyz = [[x, 0, 0] for x in range(no)]
-            sc = SuperCell([no, 1, 1], nsc=nsc)
+            sc = Cell([no, 1, 1], nsc=nsc)
             geom = Geometry(xyz, Atom(1), sc=sc)
 
         if nsc[0] != 0 and np.any(geom.nsc != nsc):
@@ -340,7 +340,7 @@ class tsdeSileSiesta(dmSileSiesta):
             # We truly, have no clue,
             # Just generate a boxed system
             xyz = [[x, 0, 0] for x in range(no)]
-            sc = SuperCell([no, 1, 1], nsc=nsc)
+            sc = Cell([no, 1, 1], nsc=nsc)
             geom = Geometry(xyz, Atom(1), sc=sc)
 
         if nsc[0] != 0 and np.any(geom.nsc != nsc):
@@ -477,7 +477,7 @@ class _gridSileSiesta(SileBinSiesta):
         cell = np.array(cell.T, np.float64)
         cell.shape = (3, 3)
 
-        return SuperCell(cell)
+        return Cell(cell)
 
     def read_grid(self, index=0, *args, **kwargs):
         """ Read grid contained in the Grid file
@@ -516,7 +516,7 @@ class _gridSileSiesta(SileBinSiesta):
 
         # Simply create the grid (with no information)
         # We will overwrite the actual grid
-        g = Grid([1, 1, 1], sc=SuperCell(cell))
+        g = Grid([1, 1, 1], sc=Cell(cell))
         # NOTE: there is no need to swap-axes since the returned array is in F ordering
         #       and thus the first axis is the fast (x, y, z) is retained
         g.grid = (grid * self.grid_unit).astype(dtype=np.float32, order='C', copy=False)

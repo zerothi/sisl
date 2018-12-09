@@ -99,7 +99,7 @@ from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import allow_kwargs
 import sisl._array as _a
 from sisl.messages import info, SislError, tqdm_eta
-from sisl.supercell import SuperCell
+from sisl.cell import Cell
 from sisl.grid import Grid
 
 
@@ -119,14 +119,14 @@ class BrillouinZone(object):
     2. `rcell` which is the reciprocal lattice vectors.
 
     The object may also be an array of floats in which case an internal
-    `SuperCell` object will be created from the cell vectors (see `SuperCell` for
+    `Cell` object will be created from the cell vectors (see `Cell` for
     details).
 
     Parameters
     ----------
     parent : object or array_like
        An object with associated ``parent.cell`` and ``parent.rcell`` or
-       an array of floats which may be turned into a `SuperCell`
+       an array of floats which may be turned into a `Cell`
     k : array_like, optional
        k-points that this Brillouin zone represents
     weight : array_like, optional
@@ -155,7 +155,7 @@ class BrillouinZone(object):
 
     def __str__(self):
         """ String representation of the BrillouinZone """
-        if isinstance(self.parent, SuperCell):
+        if isinstance(self.parent, Cell):
             return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent).replace('\n', '\n '))
         return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent.sc).replace('\n', '\n '))
 
@@ -178,7 +178,7 @@ class BrillouinZone(object):
 
         Parameters
         ----------
-        sc : SuperCell, or SuperCellChild
+        sc : Cell, or CellChild
            the supercell used to construct the k-points
         func : callable
            method that parameterizes the k-points, *must* at least accept two arguments, ``sc``
@@ -208,7 +208,7 @@ class BrillouinZone(object):
 
         Parameters
         ----------
-        sc : SuperCell, or SuperCellChild
+        sc : Cell, or CellChild
            the supercell used to construct the k-points
         N_or_dk : int
            number of k-points generated using the parameterization (if an integer),
@@ -227,12 +227,12 @@ class BrillouinZone(object):
         Examples
         --------
 
-        >>> sc = SuperCell([1, 1, 10, 90, 90, 60])
+        >>> sc = Cell([1, 1, 10, 90, 90, 60])
         >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
 
         To generate a circular set of k-points in reduced coordinates (reciprocal
 
-        >>> sc = SuperCell([1, 1, 10, 90, 90, 60])
+        >>> sc = Cell([1, 1, 10, 90, 90, 60])
         >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
         >>> bz_rec = BrillouinZone.param_circle(2*np.pi, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
         >>> bz.k[:, :] = bz_rec.k[:, :]
@@ -302,7 +302,7 @@ class BrillouinZone(object):
             parent.rcell
             self.parent = parent
         except:
-            self.parent = SuperCell(parent)
+            self.parent = Cell(parent)
 
     def copy(self):
         """ Create a copy of this object """
@@ -870,7 +870,7 @@ class MonkhorstPack(BrillouinZone):
     ----------
     parent : object or array_like
        An object with associated `parent.cell` and `parent.rcell` or
-       an array of floats which may be turned into a `SuperCell`
+       an array of floats which may be turned into a `Cell`
     nktp : array_like of ints
        a list of number of k-points along each cell direction
     displacement : float or array_like of float, optional
@@ -890,7 +890,7 @@ class MonkhorstPack(BrillouinZone):
 
     Examples
     --------
-    >>> sc = SuperCell(3.)
+    >>> sc = Cell(3.)
     >>> MonkhorstPack(sc, 10) # 10 x 10 x 10 (with TRS)
     >>> MonkhorstPack(sc, [10, 5, 5]) # 10 x 5 x 5 (with TRS)
     >>> MonkhorstPack(sc, [10, 5, 5], trs=False) # 10 x 5 x 5 (without TRS)
@@ -1100,7 +1100,7 @@ class MonkhorstPack(BrillouinZone):
                                                    centered=self._centered, trs=True)[1])
 
             # Create the grid in the reciprocal cell
-            sc = SuperCell(cell, origo=origo)
+            sc = Cell(cell, origo=origo)
             grid = Grid(diag, sc=sc, dtype=v.dtype)
             if data_axis is None:
                 grid[k2idx(k[0])] = v
@@ -1239,21 +1239,21 @@ class MonkhorstPack(BrillouinZone):
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 3x3x3 Monkhorst-Pack grid.
 
-        >>> sc = SuperCell(1.)
+        >>> sc = Cell(1.)
         >>> mp = MonkhorstPack(sc, [3, 3, 3])
         >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [3, 3, 3], size=1./3))
 
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 4x4x4 Monkhorst-Pack grid.
 
-        >>> sc = SuperCell(1.)
+        >>> sc = Cell(1.)
         >>> mp = MonkhorstPack(sc, [3, 3, 3])
         >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [4, 4, 4], size=1./3))
 
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 4x4x1 Monkhorst-Pack grid.
 
-        >>> sc = SuperCell(1.)
+        >>> sc = Cell(1.)
         >>> mp = MonkhorstPack(sc, [3, 3, 3])
         >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [4, 4, 1], size=1./3))
 
@@ -1330,7 +1330,7 @@ class BandStructure(BrillouinZone):
     ----------
     parent : object or array_like
        An object with associated `parentcell` and `parent.rcell` or
-       an array of floats which may be turned into a `SuperCell`
+       an array of floats which may be turned into a `Cell`
     point : array_like of float
        a list of points that are the *corners* of the path
     division : int or array_like of int
@@ -1344,7 +1344,7 @@ class BandStructure(BrillouinZone):
 
     Examples
     --------
-    >>> sc = SuperCell(10)
+    >>> sc = Cell(10)
     >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3], 200)
     >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200)
     >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])

@@ -22,7 +22,7 @@ class kpSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        sc : SuperCellChild, optional
+        sc : CellChild, optional
            if supplied the returned k-points will be in reduced coordinates
 
         Returns
@@ -74,7 +74,7 @@ class kpSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        sc : SuperCellChild
+        sc : CellChild
            required supercell for the BrillouinZone object
 
         Returns
@@ -138,7 +138,7 @@ class rkpSileSiesta(kpSileSiesta):
 
         Parameters
         ----------
-        sc : SuperCellChild
+        sc : CellChild
            required supercell for the BrillouinZone object
 
         Returns

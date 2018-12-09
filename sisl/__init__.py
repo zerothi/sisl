@@ -28,7 +28,7 @@ Generic classes
    Atom
    Atoms
    Geometry
-   SuperCell
+   Cell
    Grid
 
 Below are a group of advanced classes rarely needed.
@@ -99,7 +99,7 @@ from . import utils
 from .quaternion import *
 from .shape import *
 
-from .supercell import *
+from .cell import *
 from .atom import *
 
 from .orbital import *

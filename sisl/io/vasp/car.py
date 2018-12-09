@@ -8,7 +8,7 @@ from ..sile import *
 
 # Import the geometry object
 from sisl.messages import warn
-from sisl import Geometry, PeriodicTable, Atom, SuperCell
+from sisl import Geometry, PeriodicTable, Atom, Cell
 
 __all__ = ['carSileVASP']
 
@@ -71,7 +71,7 @@ class carSileVASP(SileVASP):
 
     @sile_fh_open(True)
     def read_supercell(self):
-        """ Returns `SuperCell` object from the CONTCAR/POSCAR file """
+        """ Returns `Cell` object from the CONTCAR/POSCAR file """
 
         # read first line
         self.readline()  # LABEL
@@ -84,7 +84,7 @@ class carSileVASP(SileVASP):
             cell[i, :] = list(map(float, self.readline().split()[:3]))
         cell *= self._scale
 
-        return SuperCell(cell)
+        return Cell(cell)
 
     @sile_fh_open()
     def read_geometry(self):

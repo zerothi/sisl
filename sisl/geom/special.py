@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from sisl import Atom, Geometry, SuperCell
+from sisl import Atom, Geometry, Cell
 
 __all__ = ['diamond']
 
@@ -20,7 +20,7 @@ def diamond(alat=3.57, atom=None):
     dist = alat * 3. ** .5 / 4
     if atom is None:
         atom = Atom(Z=6, R=dist * 1.01)
-    sc = SuperCell(np.array([[0, 1, 1],
+    sc = Cell(np.array([[0, 1, 1],
                              [1, 0, 1],
                              [1, 1, 0]], np.float64) * alat / 2,
                    nsc=[3, 3, 3])

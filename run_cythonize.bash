@@ -3,7 +3,7 @@
 files="
 _math_small.pyx
 _indices.pyx
-_supercell.pyx
+_cell.pyx
 _sparse.pyx
 physics/_bloch.pyx
 physics/_phase.pyx

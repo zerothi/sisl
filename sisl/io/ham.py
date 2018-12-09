@@ -9,7 +9,7 @@ from .sile import *
 
 # Import the geometry object
 from sisl.messages import warn
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Cell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
 from sisl._help import _range as range
@@ -82,7 +82,7 @@ class hamiltonianSile(Sile):
                 self.readline()  # step past the block
 
         # Create geometry with associated supercell and atoms
-        geom = Geometry(xyz, atom=Atom[Z], sc=SuperCell(cell, nsc))
+        geom = Geometry(xyz, atom=Atom[Z], sc=Cell(cell, nsc))
 
         return geom
 

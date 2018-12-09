@@ -8,7 +8,7 @@ from .sile import SileCDFSiesta
 from ..sile import *
 
 from sisl.messages import info
-from sisl import SuperCell, Grid
+from sisl import Cell, Grid
 from sisl.unit.siesta import unit_convert
 
 __all__ = ['gridncSileSiesta']
@@ -21,14 +21,14 @@ class gridncSileSiesta(SileCDFSiesta):
     """ NetCDF real-space grid file """
 
     def read_supercell(self):
-        """ Returns a SuperCell object from a Siesta.grid.nc file
+        """ Returns a Cell object from a Siesta.grid.nc file
         """
         cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
         cell.shape = (3, 3)
 
-        return SuperCell(cell)
+        return Cell(cell)
 
     def write_supercell(self, sc):
         """ Write a supercell to the grid.nc file """

@@ -7,7 +7,7 @@ import numpy as np
 from .sile import *
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Cell
 from sisl.utils import str_spec
 
 
@@ -33,7 +33,7 @@ class xsfSile(Sile):
 
         Parameters
         ----------
-        sc : SuperCell
+        sc : Cell
            the supercell to be written
         fmt : str, optional
            used format for the precision of the data
@@ -176,11 +176,11 @@ class xsfSile(Sile):
             xyz = xyz[:, :3]
 
         if len(atom) == 0:
-            geom = Geometry(xyz, sc=SuperCell(cell))
+            geom = Geometry(xyz, sc=Cell(cell))
         elif len(atom) == 1 and atom[0].Z == -999:
             geom = None
         else:
-            geom = Geometry(xyz, atom=atom, sc=SuperCell(cell))
+            geom = Geometry(xyz, atom=atom, sc=Cell(cell))
 
         if data:
             return geom, dat

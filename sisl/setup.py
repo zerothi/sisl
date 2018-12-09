@@ -9,7 +9,7 @@ def configuration(parent_package='', top_path=None):
     # Add Cython extensions
     config.add_extension('_math_small', sources=['_math_small.c'])
     config.add_extension('_indices', sources=['_indices.c'])
-    config.add_extension('_supercell', sources=['_supercell.c'])
+    config.add_extension('_cell', sources=['_cell.c'])
     config.add_extension('_sparse', sources=['_sparse.c'])
 
     config.add_subpackage('geom')

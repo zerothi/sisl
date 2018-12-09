@@ -6,7 +6,7 @@ import math as m
 import warnings
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, Hamiltonian
+from sisl import Geometry, Atom, Cell, Hamiltonian
 from sisl import BrillouinZone
 from sisl import SelfEnergy, SemiInfinite, RecursiveSI
 from sisl import RealSpaceSE, RealSpaceSI
@@ -21,7 +21,7 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+            self.sc = Cell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -155,7 +155,7 @@ def test_real_space_H(setup, k_axes, semi_axis, trs, bz, unfold):
 
 
 def test_real_space_H_3d():
-    sc = SuperCell(1., nsc=[3] * 3)
+    sc = Cell(1., nsc=[3] * 3)
     H = Atom(Z=1, R=[1.001])
     geom = Geometry([0] * 3, atom=H, sc=sc)
     H = Hamiltonian(geom)

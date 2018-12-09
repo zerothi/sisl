@@ -24,7 +24,7 @@ from .utils import angle, direction
 from .utils import lstranges, strmap, array_arange
 from .utils.mathematics import fnorm
 from .quaternion import Quaternion
-from .supercell import SuperCell, SuperCellChild
+from .cell import Cell, CellChild
 from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
@@ -32,7 +32,7 @@ from ._namedindex import NamedIndex
 __all__ = ['Geometry', 'sgeom']
 
 
-class Geometry(SuperCellChild):
+class Geometry(CellChild):
     """ Holds atomic information, coordinates, species, lattice vectors
 
     The `Geometry` class holds information regarding atomic coordinates,
@@ -47,7 +47,7 @@ class Geometry(SuperCellChild):
     .. code:: python
 
        >>> square = Geometry([[0.5, 0.5, 0.5]], Atom(1),
-       ...                   sc=SuperCell([1, 1, 10], nsc=[3, 3, 1]))
+       ...                   sc=Cell([1, 1, 10], nsc=[3, 3, 1]))
        >>> print(square)
        Geometry{na: 1, no: 1,
         Atoms{species: 1,
@@ -56,7 +56,7 @@ class Geometry(SuperCellChild):
          }: 1,
         },
         maxR: -1.00000,
-        SuperCell{volume: 1.0000e+01, nsc: [3 3 1]}
+        Cell{volume: 1.0000e+01, nsc: [3 3 1]}
        }
 
 
@@ -67,7 +67,7 @@ class Geometry(SuperCellChild):
         atomic coordinates
     atoms
     orbitals
-    sc : SuperCell
+    sc : Cell
         the supercell describing the periodicity of the
         geometry
     no
@@ -83,7 +83,7 @@ class Geometry(SuperCellChild):
         ``xyz[i, :]`` is the atomic coordinate of the i'th atom.
     atom : array_like or Atoms
         atomic species retrieved from the `PeriodicTable`
-    sc : SuperCell
+    sc : Cell
         the unit-cell describing the atoms in a periodic
         super-cell
 
@@ -94,7 +94,7 @@ class Geometry(SuperCellChild):
 
     >>> xyz = [[0, 0, 0],
     ...        [1, 1, 1]]
-    >>> sc = SuperCell([2,2,2])
+    >>> sc = Cell([2,2,2])
     >>> g = Geometry(xyz, Atom('H'), sc)
 
     The following estimates the lattice vectors from the
@@ -138,7 +138,7 @@ class Geometry(SuperCellChild):
         """
         # We still need the *default* super cell for
         # estimating the supercell
-        self.set_supercell(sc)
+        self.set_cell(sc)
 
         if sc is not None:
             return
@@ -153,7 +153,7 @@ class Geometry(SuperCellChild):
 
             # We create a molecule box with +10 A in each direction
             m, M = np.amin(self.xyz, axis=0), np.amax(self.xyz, axis=0) + 10.
-            self.set_supercell(M-m)
+            self.set_cell(M-m)
             return
 
         sc_cart = _a.zerosd([3])
@@ -183,7 +183,7 @@ class Geometry(SuperCellChild):
             cart[i] = 0.
 
         # Re-set the supercell to the newly found one
-        self.set_supercell(sc_cart)
+        self.set_cell(sc_cart)
 
     @property
     def atoms(self):
@@ -382,7 +382,7 @@ class Geometry(SuperCellChild):
         ind = np.logical_and.reduce(fxyz < 1., axis=1).nonzero()[0]
 
         geom = self.sub(ind)
-        geom.set_supercell(sc)
+        geom.set_cell(sc)
         if ret_super:
             return geom, supercell
         return geom
@@ -1024,12 +1024,12 @@ class Geometry(SuperCellChild):
         ----------
         atom : array_like
             indices of all atoms to be removed.
-        cell   : array_like or SuperCell, optional
+        cell   : array_like or Cell, optional
             the new associated cell of the geometry (defaults to the same cell)
 
         See Also
         --------
-        SuperCell.fit : update the supercell according to a reference supercell
+        Cell.fit : update the supercell according to a reference supercell
         remove : the negative of this routine, i.e. remove a subset of atoms
         """
         atms = self.sc2uc(atom)
@@ -1529,7 +1529,7 @@ class Geometry(SuperCellChild):
         else:
             g.xyz[_a.asarrayi(atom).ravel(), :] += np.asarray(v, g.xyz.dtype)[None, :]
         if cell:
-            g.set_supercell(g.sc.translate(v))
+            g.set_cell(g.sc.translate(v))
         return g
     translate = move
 
@@ -1633,9 +1633,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        other : Geometry or SuperCell
+        other : Geometry or Cell
             Other geometry class which needs to be appended
-            If a `SuperCell` only the super cell will be extended
+            If a `Cell` only the super cell will be extended
         axis : int
             Cell direction to which the `other` geometry should be
             appended.
@@ -1653,7 +1653,7 @@ class Geometry(SuperCellChild):
         insert : insert a geometry
         """
         align = align.lower()
-        if isinstance(other, SuperCell):
+        if isinstance(other, Cell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atom = self.atoms.copy()
@@ -1691,9 +1691,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        other : Geometry or SuperCell
+        other : Geometry or Cell
             Other geometry class which needs to be prepended
-            If a `SuperCell` only the super cell will be extended
+            If a `Cell` only the super cell will be extended
         axis : int
             Cell direction to which the `other` geometry should be
             prepended
@@ -1711,7 +1711,7 @@ class Geometry(SuperCellChild):
         insert : insert a geometry
         """
         align = align.lower()
-        if isinstance(other, SuperCell):
+        if isinstance(other, Cell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atom = self.atoms.copy()
@@ -1733,14 +1733,14 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atom=atom, sc=sc)
 
     def add(self, other):
-        """ Merge two geometries (or a Geometry and SuperCell) by adding the two atoms together
+        """ Merge two geometries (or a Geometry and Cell) by adding the two atoms together
 
         If `other` is a Geometry only the atoms gets added, to also add the supercell vectors
         simply do ``geom.add(other).add(other.sc)``.
 
         Parameters
         ----------
-        other : Geometry or SuperCell
+        other : Geometry or Cell
             Other geometry class which is added
 
         See Also
@@ -1750,7 +1750,7 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(other, SuperCell):
+        if isinstance(other, Cell):
             xyz = self.xyz.copy()
             sc = self.sc + other
             atom = self.atoms.copy()
@@ -1789,12 +1789,12 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        self, b : Geometry or SuperCell or tuple or list
+        self, b : Geometry or Cell or tuple or list
            when adding a Geometry with a Geometry it defaults to using `add` function
            with the LHS retaining the cell-vectors.
            a tuple/list may be of length 2 with the first element being a Geometry and the second
            being an integer specifying the lattice vector where it is appended.
-           One may also use a `SuperCell` instead of a `Geometry` which behaves similarly.
+           One may also use a `Cell` instead of a `Geometry` which behaves similarly.
 
         Examples
         --------
@@ -1810,7 +1810,7 @@ class Geometry(SuperCellChild):
         append : appending geometries
         prepend : prending geometries
         """
-        if isinstance(b, (SuperCell, Geometry)):
+        if isinstance(b, (Cell, Geometry)):
             return self.add(b)
         return self.append(b[0], b[1])
 
@@ -1819,12 +1819,12 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        self, b : Geometry or SuperCell or tuple or list
+        self, b : Geometry or Cell or tuple or list
            when adding a Geometry with a Geometry it defaults to using `add` function
            with the LHS retaining the cell-vectors.
            a tuple/list may be of length 2 with the first element being a Geometry and the second
            being an integer specifying the lattice vector where it is appended.
-           One may also use a `SuperCell` instead of a `Geometry` which behaves similarly.
+           One may also use a `Cell` instead of a `Geometry` which behaves similarly.
 
         Examples
         --------
@@ -1840,7 +1840,7 @@ class Geometry(SuperCellChild):
         append : appending geometries
         prepend : prending geometries
         """
-        if isinstance(b, (SuperCell, Geometry)):
+        if isinstance(b, (Cell, Geometry)):
             return b.add(self)
         return self + b
 
@@ -3025,7 +3025,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = Geometry([0]*3, Atom(1, R=1.), sc=SuperCell(1., nsc=[5, 5, 1]))
+        >>> geom = Geometry([0]*3, Atom(1, R=1.), sc=Cell(1., nsc=[5, 5, 1]))
         >>> geom.distance() # use geom.maxR() # doctest: +NORMALIZE_WHITESPACE
         array([1.])
         >>> geom.distance(tol=[0.5, 0.4, 0.3, 0.2])
@@ -3165,7 +3165,7 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        sc : SuperCell or SuperCellChild
+        sc : Cell or CellChild
             the supercell in which this geometry should be expanded into.
         periodic : list of bool
             explicitly define the periodic directions, by default the periodic
@@ -3273,7 +3273,7 @@ class Geometry(SuperCellChild):
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        sc = SuperCell([1, 1, 1])
+        sc = Cell([1, 1, 1])
         sc.__setstate__(d)
         atoms = Atoms()
         atoms.__setstate__(d['atom'])
@@ -3735,7 +3735,7 @@ lattice vector.
         print('Cell:')
         for i in (0, 1, 2):
             print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i, :]))
-        print('SuperCell:')
+        print('Cell:')
         print('  {0:d} {1:d} {2:d}'.format(*g.nsc))
         print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x', 'y', 'z', 'Z'))
         for ia in g:

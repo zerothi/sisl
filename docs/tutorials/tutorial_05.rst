@@ -45,7 +45,7 @@ Let us try and continue from :ref:`tutorial-01` and create a square
 2D lattice with one atom in the unit-cell and a supercell which couples only
 to nearest neighbour atoms.
 
-  >>> square = Geometry([[0.5,0.5,0]], sc=SuperCell([1, 1, 10], [3, 3, 1]))
+  >>> square = Geometry([[0.5,0.5,0]], sc=Cell([1, 1, 10], [3, 3, 1]))
   >>> H = Hamiltonian(square)
 
 Now we have a periodic structure with couplings allowed only to nearest neighbour

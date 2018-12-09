@@ -1,7 +1,7 @@
 from sisl import *
 
 # Generate square lattice with nearest neighbour couplings
-square = Geometry([[0.5, 0.5, 0]], sc=SuperCell([1, 1, 10], [3, 3, 1]))
+square = Geometry([[0.5, 0.5, 0]], sc=Cell([1, 1, 10], [3, 3, 1]))
 
 # Generate Hamiltonian
 H = Hamiltonian(square)

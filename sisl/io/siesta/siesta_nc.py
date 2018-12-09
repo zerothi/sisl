@@ -8,7 +8,7 @@ from ..sile import *
 
 from sisl._array import aranged
 from sisl.unit.siesta import unit_convert
-from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
+from sisl import Geometry, Atom, Atoms, Cell, Grid, SphericalOrbital
 from sisl.physics import SparseOrbitalBZ
 from sisl.physics import DensityMatrix, EnergyDensityMatrix
 from sisl.physics import DynamicalMatrix
@@ -34,7 +34,7 @@ class ncSileSiesta(SileCDFSiesta):
         return np.array(self._value('nsc'), np.int32)
 
     def read_supercell(self):
-        """ Returns a SuperCell object from a Siesta.nc file """
+        """ Returns a Cell object from a Siesta.nc file """
         cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
@@ -42,7 +42,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         nsc = self.read_supercell_nsc()
 
-        return SuperCell(cell, nsc=nsc)
+        return Cell(cell, nsc=nsc)
 
     def read_basis(self):
         """ Returns a set of atoms corresponding to the basis-sets in the nc file """

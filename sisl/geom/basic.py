@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import numpy as np
 
-from sisl import Geometry, SuperCell
+from sisl import Geometry, Cell
 
 __all__ = ['sc', 'bcc', 'fcc', 'hcp']
 
@@ -28,7 +28,7 @@ def sc(alat, atom):
     atom : Atom
         the atom in the SC lattice
     """
-    sc = SuperCell(np.array([[1, 0, 0],
+    sc = Cell(np.array([[1, 0, 0],
                              [0, 1, 0],
                              [0, 0, 1]], np.float64) * alat)
     g = Geometry([0, 0, 0], atom, sc=sc)
@@ -50,13 +50,13 @@ def bcc(alat, atom, orthogonal=False):
         whether the lattice is orthogonal (2 atoms)
     """
     if orthogonal:
-        sc = SuperCell(np.array([[1, 0, 0],
+        sc = Cell(np.array([[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, ah]], atom, sc=sc)
     else:
-        sc = SuperCell(np.array([[-1, 1, 1],
+        sc = Cell(np.array([[1, 1, 1],
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2)
         g = Geometry([0, 0, 0], atom, sc=sc)
@@ -78,14 +78,14 @@ def fcc(alat, atom, orthogonal=False):
         whether the lattice is orthogonal (4 atoms)
     """
     if orthogonal:
-        sc = SuperCell(np.array([[1, 0, 0],
+        sc = Cell(np.array([[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, 0],
                       [ah, 0, ah], [0, ah, ah]], atom, sc=sc)
     else:
-        sc = SuperCell(np.array([[0, 1, 1],
+        sc = Cell(np.array([[0, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 0]], np.float64) * alat / 2)
         g = Geometry([0, 0, 0], atom, sc=sc)
@@ -110,7 +110,7 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
     c = a * coa
     a2sq = a / 2 ** .5
     if orthogonal:
-        sc = SuperCell([[a + a * _c60 * 2, 0, 0],
+        sc = Cell([[a + a * _c60 * 2, 0, 0],
                         [0, a * _c30 * 2, 0],
                         [0, 0, c / 2]])
         gt = Geometry([[0, 0, 0],
@@ -127,7 +127,7 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
         gr = gr.translate([0, a * _s30 / 2, 0])
         g = gt.append(gr, 2)
     else:
-        sc = SuperCell([a, a, c, 90, 90, 60])
+        sc = Cell([a, a, c, 90, 90, 60])
         g = Geometry([[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]],
                      atom, sc=sc)
     if np.all(g.maxR(True) > 0.):

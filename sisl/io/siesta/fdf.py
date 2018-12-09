@@ -26,7 +26,7 @@ from .siesta_nc import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import orbindxSileSiesta
 from .xv import xvSileSiesta
-from sisl import Geometry, Orbital, Atom, SuperCell, DynamicalMatrix
+from sisl import Geometry, Orbital, Atom, Cell, DynamicalMatrix
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances, str_spec
@@ -614,7 +614,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def read_supercell(self, output=False, *args, **kwargs):
-        """ Returns SuperCell object by reading fdf or Siesta output related files.
+        """ Returns Cell object by reading fdf or Siesta output related files.
 
         One can limit the tried files to only one file by passing
         only a single file ending.
@@ -648,7 +648,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_supercell_fdf(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the FDF file """
+        """ Returns `Cell` object from the FDF file """
         s = self.get('LatticeConstant', unit='Ang')
         if s is None:
             raise SileError('Could not find LatticeConstant in file')
@@ -664,7 +664,7 @@ class fdfSileSiesta(SileSiesta):
             lc = self.get('LatticeParameters')
             if lc:
                 tmp = [float(k) for k in lc[0].split()[:6]]
-                cell = SuperCell.tocell(*tmp)
+                cell = Cell.tocell(*tmp)
         if lc is None:
             # the fdf file contains neither the latticevectors or parameters
             raise SileError('Could not find LatticeVectors or LatticeParameters block in file')
@@ -675,7 +675,7 @@ class fdfSileSiesta(SileSiesta):
             warnings.simplefilter("ignore")
             nsc = self.read_supercell_nsc()
 
-        return SuperCell(cell, nsc=nsc)
+        return Cell(cell, nsc=nsc)
 
     def _r_supercell_nc(self):
         # Read supercell from <>.nc file
@@ -685,7 +685,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_supercell_xv(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the FDF file """
+        """ Returns `Cell` object from the FDF file """
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.XV'
         if isfile(f):
             nsc = self.read_supercell_nsc()
@@ -946,7 +946,7 @@ class fdfSileSiesta(SileSiesta):
                 for i in range(3):
                     nsc[i] = min(nsc[i], nsc_R[i])
                 del nsc_R
-            sc = SuperCell(sc, nsc=nsc)
+            sc = Cell(sc, nsc=nsc)
             geom_small = Geometry(geom.xyz[FC_atoms], geom.atoms[FC_atoms], sc)
             D = DynamicalMatrix(geom_small)
 
@@ -1123,7 +1123,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_geometry_xv(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the FDF file """
+        """ Returns `Cell` object from the FDF file """
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.XV'
         geom = None
         if isfile(f):

@@ -6,7 +6,7 @@ import math as m
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from sisl import SuperCell, SphericalOrbital, Atom, Geometry
+from sisl import Cell, SphericalOrbital, Atom, Geometry
 from sisl import Grid
 from sisl import Ellipsoid, Cuboid
 
@@ -17,7 +17,7 @@ def setup():
         def __init__(self):
             alat = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+            self.sc = Cell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
             self.g = Grid([10, 10, 100], sc=self.sc)

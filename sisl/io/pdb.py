@@ -9,7 +9,7 @@ import numpy as np
 from .sile import *
 
 # Import the geometry object
-from sisl import Geometry, SuperCell, Atoms, Atom
+from sisl import Geometry, Cell, Atoms, Atom
 
 
 __all__ = ['pdbSile']
@@ -130,7 +130,7 @@ class pdbSile(Sile):
         alpha = float(line[33:40])
         beta = float(line[40:47])
         gamma = float(line[47:54])
-        cell = SuperCell.tocell([a, b, c, alpha, beta, gamma])
+        cell = Cell.tocell([a, b, c, alpha, beta, gamma])
 
         f, line = self._step_record('SCALE1')
         if f:
@@ -150,7 +150,7 @@ class pdbSile(Sile):
             if f:
                 origo[i] = float(line[45:55])
 
-        return SuperCell(cell, origo=origo)
+        return Cell(cell, origo=origo)
 
     @sile_fh_open()
     def write_geometry(self, geometry):

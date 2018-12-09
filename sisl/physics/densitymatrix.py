@@ -7,7 +7,7 @@ import numpy as np
 from numpy import dot, unique
 
 from sisl.geometry import Geometry
-from sisl.supercell import SuperCell
+from sisl.cell import Cell
 import sisl._array as _a
 from sisl._indices import indices_le, indices_fabs_le
 from sisl._math_small import xyz_to_spherical_cos_phi
@@ -242,7 +242,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         # For extremely skewed lattices this will be way too much, hence we make
         # them square.
         o = sc.toCuboid(True)
-        sc = SuperCell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
+        sc = Cell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)

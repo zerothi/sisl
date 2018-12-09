@@ -3,6 +3,7 @@ from __future__ import print_function, division
 from functools import wraps
 from os.path import splitext, isfile, dirname, join, abspath, basename
 import gzip
+import warnings
 
 import numpy as np
 
@@ -385,9 +386,27 @@ class BaseSile(object):
 
     def write_geom(self, *args, **kwargs):
         """ Deprecated function which is superseeded by `write_geometry` """
+        warnings.warn('write_geom is deprecated, please use write_geometry instead',
+                      PendingDeprecationWarning, stacklevel=1)
         if getattr(self, 'write_geometry'):
             return self.write_geometry(*args, **kwargs)
-        raise ValueError('write_geom is deprecated, please use write_geometry')
+        return NotImplemented
+
+    def write_supercell(self, *args, **kwargs):
+        """ Deprecated function which is superseeded by `write_cell` """
+        warnings.warn('write_supercell is deprecated, please use write_cell instead',
+                      PendingDeprecationWarning, stacklevel=1)
+        if getattr(self, 'write_cell'):
+            return self.write_cell(*args, **kwargs)
+        return NotImplemented
+
+    def read_supercell(self, *args, **kwargs):
+        """ Deprecated function which is superseeded by `read_cell` """
+        warnings.warn('read_supercell is deprecated, please use read_cell instead',
+                      PendingDeprecationWarning, stacklevel=1)
+        if getattr(self, 'read_cell'):
+            return self.read_cell(*args, **kwargs)
+        return NotImplemented
 
     def _setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization
