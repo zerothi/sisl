@@ -33,9 +33,9 @@ if not found_module:
 def _csr_from_sc_off(geom, sc_off, csr):
     """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
     nsc = geom.sc.nsc.astype(np.int32)
-    sc = geom.sc.__class__([1], nsc=nsc)
-    sc.sc_off = sc_off
-    from_sc_off = sc.sc_index(geom.sc_off)
+    cell = geom.sc.__class__([1], nsc=nsc)
+    cell.sc_off = sc_off
+    from_sc_off = cell.sc_index(geom.sc_off)
     # this transfers the local siesta csr matrix ordering to the geometry ordering
     col_from = (from_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)).ravel()
     _csr_from(col_from, csr)

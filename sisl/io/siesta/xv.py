@@ -86,7 +86,7 @@ class xvSileSiesta(SileSiesta):
         Geometry
         velocity : only if `velocity` is true.
         """
-        sc = self.read_cell()
+        cell = self.read_cell()
 
         # Read number of atoms
         na = int(self.readline())
@@ -120,7 +120,7 @@ class xvSileSiesta(SileSiesta):
             else:
                 atms2[idx] = atms[idx[0]]
 
-        geom = Geometry(xyz, atms2.reduce(), cell=sc)
+        geom = Geometry(xyz, atms2.reduce(), cell=cell)
         if velocity:
             return geom, vel
         return geom

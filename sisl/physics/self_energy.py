@@ -671,11 +671,11 @@ class RealSpaceSE(SelfEnergy):
         if self._options['bz'] is None:
             # Update the integration grid
             # Note this integration grid is based on the big system.
-            sc = self.parent.sc * self._unfold
-            rcell = fnorm(sc.rcell)[k_ax]
+            cell = self.parent.sc * self._unfold
+            rcell = fnorm(cell.rcell)[k_ax]
             nk = _a.onesi(3)
             nk[k_ax] = np.ceil(self._options['dk'] * rcell).astype(np.int32)
-            self._options['bz'] = MonkhorstPack(sc, nk, trs=self._options['trs'])
+            self._options['bz'] = MonkhorstPack(cell, nk, trs=self._options['trs'])
 
     def self_energy(self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs):
         r""" Calculate the real-space self-energy

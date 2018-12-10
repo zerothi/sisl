@@ -20,7 +20,7 @@ def setup():
         def __init__(self):
             alat = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = Cell(np.array([[1.5, sq3h, 0.],
+            self.cell = Cell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
     return t()
@@ -29,154 +29,154 @@ def setup():
 class TestCell(object):
 
     def test_str(self, setup):
-        str(setup.sc)
-        str(setup.sc)
-        assert setup.sc != 'Not a Cell'
+        str(setup.cell)
+        str(setup.cell)
+        assert setup.cell != 'Not a Cell'
 
     def test_nsc1(self, setup):
-        sc = setup.sc.copy()
-        sc.set_nsc([5, 5, 0])
-        assert np.allclose([5, 5, 1], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
+        cell = setup.cell.copy()
+        cell.set_nsc([5, 5, 0])
+        assert np.allclose([5, 5, 1], cell.nsc)
+        assert len(cell.sc_off) == np.prod(cell.nsc)
 
     def test_nsc2(self, setup):
-        sc = setup.sc.copy()
-        sc.set_nsc([0, 1, 0])
-        assert np.allclose([1, 1, 1], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
-        sc.set_nsc(a=3)
-        assert np.allclose([3, 1, 1], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
-        sc.set_nsc(b=3)
-        assert np.allclose([3, 3, 1], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
-        sc.set_nsc(c=5)
-        assert np.allclose([3, 3, 5], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
+        cell = setup.cell.copy()
+        cell.set_nsc([0, 1, 0])
+        assert np.allclose([1, 1, 1], cell.nsc)
+        assert len(cell.sc_off) == np.prod(cell.nsc)
+        cell.set_nsc(a=3)
+        assert np.allclose([3, 1, 1], cell.nsc)
+        assert len(cell.sc_off) == np.prod(cell.nsc)
+        cell.set_nsc(b=3)
+        assert np.allclose([3, 3, 1], cell.nsc)
+        assert len(cell.sc_off) == np.prod(cell.nsc)
+        cell.set_nsc(c=5)
+        assert np.allclose([3, 3, 5], cell.nsc)
+        assert len(cell.sc_off) == np.prod(cell.nsc)
 
     def test_nsc3(self, setup):
-        assert setup.sc.sc_index([0, 0, 0]) == 0
-        for s in range(setup.sc.n_s):
-            assert setup.sc.sc_index(setup.sc.sc_off[s, :]) == s
-        arng = np.arange(setup.sc.n_s)
+        assert setup.cell.sc_index([0, 0, 0]) == 0
+        for s in range(setup.cell.n_s):
+            assert setup.cell.sc_index(setup.cell.sc_off[s, :]) == s
+        arng = np.arange(setup.cell.n_s)
         np.random.shuffle(arng)
-        sc_off = setup.sc.sc_off[arng, :]
-        assert np.all(setup.sc.sc_index(sc_off) == arng)
+        sc_off = setup.cell.sc_off[arng, :]
+        assert np.all(setup.cell.sc_index(sc_off) == arng)
 
     @pytest.mark.xfail(raises=ValueError)
     def test_nsc4(self, setup):
-        setup.sc.set_nsc(a=2)
+        setup.cell.set_nsc(a=2)
 
     @pytest.mark.xfail(raises=ValueError)
     def test_nsc5(self, setup):
-        setup.sc.set_nsc([1, 2, 3])
+        setup.cell.set_nsc([1, 2, 3])
 
     def test_area1(self, setup):
-        setup.sc.area(0, 1)
+        setup.cell.area(0, 1)
 
     def test_fill(self, setup):
-        sc = setup.sc.swapaxes(1, 2)
-        i = sc._fill([1, 1])
+        cell = setup.cell.swapaxes(1, 2)
+        i = cell._fill([1, 1])
         assert i.dtype == np.int32
-        i = sc._fill([1., 1.])
+        i = cell._fill([1., 1.])
         assert i.dtype == np.float64
         for dt in [np.int32, np.int64, np.float32, np.float64, np.complex64]:
-            i = sc._fill([1., 1.], dt)
+            i = cell._fill([1., 1.], dt)
             assert i.dtype == dt
-            i = sc._fill(np.ones([2], dt))
+            i = cell._fill(np.ones([2], dt))
             assert i.dtype == dt
 
     def test_add_vacuum1(self, setup):
-        sc = setup.sc.copy()
+        cell = setup.cell.copy()
         for i in range(3):
-            s = sc.add_vacuum(10, i)
-            ax = setup.sc.cell[i, :]
+            s = cell.add_vacuum(10, i)
+            ax = setup.cell.cell[i, :]
             ax += ax / np.sum(ax ** 2) ** .5 * 10
             assert np.allclose(ax, s.cell[i, :])
 
     def test_add1(self, setup):
-        sc = setup.sc.copy()
+        cell = setup.cell.copy()
         for R in range(1, 10):
-            s = sc + R
-            assert np.allclose(s.cell, sc.cell + np.diag([R] * 3))
+            s = cell + R
+            assert np.allclose(s.cell, cell.cell + np.diag([R] * 3))
 
     def test_rotation1(self, setup):
-        rot = setup.sc.rotate(180, [0, 0, 1])
+        rot = setup.cell.rotate(180, [0, 0, 1])
         rot.cell[2, 2] *= -1
-        assert np.allclose(-rot.cell, setup.sc.cell)
+        assert np.allclose(-rot.cell, setup.cell.cell)
 
-        rot = setup.sc.rotate(m.pi, [0, 0, 1], rad=True)
+        rot = setup.cell.rotate(m.pi, [0, 0, 1], rad=True)
         rot.cell[2, 2] *= -1
-        assert np.allclose(-rot.cell, setup.sc.cell)
+        assert np.allclose(-rot.cell, setup.cell.cell)
 
         rot = rot.rotate(180, [0, 0, 1])
         rot.cell[2, 2] *= -1
-        assert np.allclose(rot.cell, setup.sc.cell)
+        assert np.allclose(rot.cell, setup.cell.cell)
 
     def test_rotation2(self, setup):
-        rot = setup.sc.rotatec(180)
+        rot = setup.cell.rotatec(180)
         rot.cell[2, 2] *= -1
-        assert np.allclose(-rot.cell, setup.sc.cell)
+        assert np.allclose(-rot.cell, setup.cell.cell)
 
-        rot = setup.sc.rotatec(m.pi, rad=True)
+        rot = setup.cell.rotatec(m.pi, rad=True)
         rot.cell[2, 2] *= -1
-        assert np.allclose(-rot.cell, setup.sc.cell)
+        assert np.allclose(-rot.cell, setup.cell.cell)
 
         rot = rot.rotatec(180)
         rot.cell[2, 2] *= -1
-        assert np.allclose(rot.cell, setup.sc.cell)
+        assert np.allclose(rot.cell, setup.cell.cell)
 
     def test_rotation3(self, setup):
-        rot = setup.sc.rotatea(180)
-        assert np.allclose(rot.cell[0, :], setup.sc.cell[0, :])
-        assert np.allclose(-rot.cell[2, 2], setup.sc.cell[2, 2])
+        rot = setup.cell.rotatea(180)
+        assert np.allclose(rot.cell[0, :], setup.cell.cell[0, :])
+        assert np.allclose(-rot.cell[2, 2], setup.cell.cell[2, 2])
 
-        rot = setup.sc.rotateb(m.pi, rad=True)
-        assert np.allclose(rot.cell[1, :], setup.sc.cell[1, :])
-        assert np.allclose(-rot.cell[2, 2], setup.sc.cell[2, 2])
+        rot = setup.cell.rotateb(m.pi, rad=True)
+        assert np.allclose(rot.cell[1, :], setup.cell.cell[1, :])
+        assert np.allclose(-rot.cell[2, 2], setup.cell.cell[2, 2])
 
     def test_swapaxes1(self, setup):
-        sab = setup.sc.swapaxes(0, 1)
-        assert np.allclose(sab.cell[0, :], setup.sc.cell[1, :])
-        assert np.allclose(sab.cell[1, :], setup.sc.cell[0, :])
+        sab = setup.cell.swapaxes(0, 1)
+        assert np.allclose(sab.cell[0, :], setup.cell.cell[1, :])
+        assert np.allclose(sab.cell[1, :], setup.cell.cell[0, :])
 
     def test_swapaxes2(self, setup):
-        sab = setup.sc.swapaxes(0, 2)
-        assert np.allclose(sab.cell[0, :], setup.sc.cell[2, :])
-        assert np.allclose(sab.cell[2, :], setup.sc.cell[0, :])
+        sab = setup.cell.swapaxes(0, 2)
+        assert np.allclose(sab.cell[0, :], setup.cell.cell[2, :])
+        assert np.allclose(sab.cell[2, :], setup.cell.cell[0, :])
 
     def test_swapaxes3(self, setup):
-        sab = setup.sc.swapaxes(1, 2)
-        assert np.allclose(sab.cell[1, :], setup.sc.cell[2, :])
-        assert np.allclose(sab.cell[2, :], setup.sc.cell[1, :])
+        sab = setup.cell.swapaxes(1, 2)
+        assert np.allclose(sab.cell[1, :], setup.cell.cell[2, :])
+        assert np.allclose(sab.cell[2, :], setup.cell.cell[1, :])
 
     def test_offset1(self, setup):
-        off = setup.sc.offset()
+        off = setup.cell.offset()
         assert np.allclose(off, [0, 0, 0])
-        off = setup.sc.offset([1, 1, 1])
-        cell = setup.sc.cell[:, :]
+        off = setup.cell.offset([1, 1, 1])
+        cell = setup.cell.cell[:, :]
         assert np.allclose(off, cell[0, :] + cell[1, :] + cell[2, :])
 
     def test_sc_index1(self, setup):
-        sc_index = setup.sc.sc_index([0, 0, 0])
+        sc_index = setup.cell.sc_index([0, 0, 0])
         assert sc_index == 0
-        sc_index = setup.sc.sc_index([0, 0, None])
-        assert len(sc_index) == setup.sc.nsc[2]
+        sc_index = setup.cell.sc_index([0, 0, None])
+        assert len(sc_index) == setup.cell.nsc[2]
 
     def test_sc_index2(self, setup):
-        sc_index = setup.sc.sc_index([[0, 0, 0],
+        sc_index = setup.cell.sc_index([[0, 0, 0],
                                       [1, 1, 0]])
         print(sc_index)
         assert len(sc_index) == 2
 
     @pytest.mark.xfail(raises=Exception)
     def test_sc_index3(self, setup):
-        setup.sc.sc_index([100, 100, 100])
+        setup.cell.sc_index([100, 100, 100])
 
     def test_cut1(self, setup):
-        cut = setup.sc.cut(2, 0)
-        assert np.allclose(cut.cell[0, :] * 2, setup.sc.cell[0, :])
-        assert np.allclose(cut.cell[1, :], setup.sc.cell[1, :])
+        cut = setup.cell.cut(2, 0)
+        assert np.allclose(cut.cell[0, :] * 2, setup.cell.cell[0, :])
+        assert np.allclose(cut.cell[1, :], setup.cell.cell[1, :])
 
     def test_creation1(self, setup):
         # full cell
@@ -196,7 +196,7 @@ class TestCell(object):
 
             def copy(self):
                 a = P()
-                a.set_cell(setup.sc)
+                a.set_cell(setup.cell)
                 return a
         tmp1 = P()
         tmp1.set_cell([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
@@ -220,89 +220,89 @@ class TestCell(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_creation3(self, setup):
-        setup.sc.tocell([3, 6])
+        setup.cell.tocell([3, 6])
 
     @pytest.mark.xfail(raises=ValueError)
     def test_creation4(self, setup):
-        setup.sc.tocell([3, 4, 5, 6])
+        setup.cell.tocell([3, 4, 5, 6])
 
     @pytest.mark.xfail(raises=ValueError)
     def test_creation5(self, setup):
-        setup.sc.tocell([3, 4, 5, 6, 7, 6, 7])
+        setup.cell.tocell([3, 4, 5, 6, 7, 6, 7])
 
     def test_creation_rotate(self, setup):
         # cell parameters
         param = np.array([1, 2, 3, 45, 60, 80], np.float64)
         parama = param.copy()
         parama[3:] *= np.pi / 180
-        sc = Cell(param)
-        assert np.allclose(param, sc.parameters())
-        assert np.allclose(parama, sc.parameters(True))
+        cell = Cell(param)
+        assert np.allclose(param, cell.parameters())
+        assert np.allclose(parama, cell.parameters(True))
         for ang in range(0, 91, 5):
-            s = sc.rotatea(ang).rotateb(ang).rotatec(ang)
+            s = cell.rotatea(ang).rotateb(ang).rotatec(ang)
             assert np.allclose(param, s.parameters())
             assert np.allclose(parama, s.parameters(True))
 
     def test_rcell(self, setup):
         # LAPACK inverse algorithm implicitly does
         # a transpose.
-        rcell = lin.inv(setup.sc.cell) * 2. * np.pi
-        assert np.allclose(rcell.T, setup.sc.rcell)
-        assert np.allclose(rcell.T / (2 * np.pi), setup.sc.icell)
+        rcell = lin.inv(setup.cell.cell) * 2. * np.pi
+        assert np.allclose(rcell.T, setup.cell.rcell)
+        assert np.allclose(rcell.T / (2 * np.pi), setup.cell.icell)
 
     def test_icell(self, setup):
-        assert np.allclose(setup.sc.rcell, setup.sc.icell * 2 * np.pi)
+        assert np.allclose(setup.cell.rcell, setup.cell.icell * 2 * np.pi)
 
     def test_translate1(self, setup):
-        sc = setup.sc.translate([0, 0, 10])
-        assert np.allclose(sc.cell[2, :2], setup.sc.cell[2, :2])
-        assert np.allclose(sc.cell[2, 2], setup.sc.cell[2, 2]+10)
+        cell = setup.cell.translate([0, 0, 10])
+        assert np.allclose(cell.cell[2, :2], setup.cell.cell[2, :2])
+        assert np.allclose(cell.cell[2, 2], setup.cell.cell[2, 2]+10)
 
     def test_center1(self, setup):
-        assert np.allclose(setup.sc.center(), np.sum(setup.sc.cell, axis=0) / 2)
+        assert np.allclose(setup.cell.center(), np.sum(setup.cell.cell, axis=0) / 2)
         for i in [0, 1, 2]:
-            assert np.allclose(setup.sc.center(i), setup.sc.cell[i, :] / 2)
+            assert np.allclose(setup.cell.center(i), setup.cell.cell[i, :] / 2)
 
     def test_pickle(self, setup):
         import pickle as p
-        s = p.dumps(setup.sc)
+        s = p.dumps(setup.cell)
         n = p.loads(s)
-        assert setup.sc == n
+        assert setup.cell == n
         s = Cell([1, 1, 1])
-        assert setup.sc != s
+        assert setup.cell != s
 
     def test_orthogonal(self, setup):
-        assert not setup.sc.is_orthogonal()
+        assert not setup.cell.is_orthogonal()
 
     def test_fit1(self, setup):
         g = graphene()
         gbig = g.repeat(40, 0).repeat(40, 1)
         gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
-        sc = g.sc.fit(gbig)
-        assert np.allclose(sc.cell, gbig.cell)
+        cell = g.sc.fit(gbig)
+        assert np.allclose(cell.cell, gbig.cell)
 
     def test_fit2(self, setup):
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)
         gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
-        sc = g.sc.fit(gbig)
-        assert np.allclose(sc.cell, gbig.cell)
+        cell = g.sc.fit(gbig)
+        assert np.allclose(cell.cell, gbig.cell)
 
     def test_fit3(self, setup):
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)
         gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
-        sc = g.sc.fit(gbig, axis=0)
-        assert np.allclose(sc.cell[0, :], gbig.cell[0, :])
-        assert np.allclose(sc.cell[1:, :], g.cell[1:, :])
+        cell = g.sc.fit(gbig, axis=0)
+        assert np.allclose(cell.cell[0, :], gbig.cell[0, :])
+        assert np.allclose(cell.cell[1:, :], g.cell[1:, :])
 
     def test_fit4(self, setup):
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)
         gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
-        sc = g.sc.fit(gbig, axis=[0, 1])
-        assert np.allclose(sc.cell[0:2, :], gbig.cell[0:2, :])
-        assert np.allclose(sc.cell[2, :], g.cell[2, :])
+        cell = g.sc.fit(gbig, axis=[0, 1])
+        assert np.allclose(cell.cell[0:2, :], gbig.cell[0:2, :])
+        assert np.allclose(cell.cell[2, :], g.cell[2, :])
 
     def test_parallel1(self, setup):
         g = graphene(orthogonal=True)
@@ -313,16 +313,16 @@ class TestCell(object):
         assert not g.sc.parallel(gbig.sc)
 
     def test_tile_multiply_orthogonal(self):
-        sc = graphene(orthogonal=True).sc
-        assert np.allclose(sc.tile(3, 0).tile(2, 1).tile(4, 2).cell, (sc * (3, 2, 4)).cell)
-        assert np.allclose(sc.tile(3, 0).tile(2, 1).cell, (sc * [3, 2]).cell)
-        assert np.allclose(sc.tile(3, 0).tile(3, 1).tile(3, 2).cell, (sc * 3).cell)
+        cell = graphene(orthogonal=True).sc
+        assert np.allclose(cell.tile(3, 0).tile(2, 1).tile(4, 2).cell, (cell * (3, 2, 4)).cell)
+        assert np.allclose(cell.tile(3, 0).tile(2, 1).cell, (cell * [3, 2]).cell)
+        assert np.allclose(cell.tile(3, 0).tile(3, 1).tile(3, 2).cell, (cell * 3).cell)
 
     def test_tile_multiply_non_orthogonal(self):
-        sc = graphene(orthogonal=False).sc
-        assert np.allclose(sc.tile(3, 0).tile(2, 1).tile(4, 2).cell, (sc * (3, 2, 4)).cell)
-        assert np.allclose(sc.tile(3, 0).tile(2, 1).cell, (sc * [3, 2]).cell)
-        assert np.allclose(sc.tile(3, 0).tile(3, 1).tile(3, 2).cell, (sc * 3).cell)
+        cell = graphene(orthogonal=False).sc
+        assert np.allclose(cell.tile(3, 0).tile(2, 1).tile(4, 2).cell, (cell * (3, 2, 4)).cell)
+        assert np.allclose(cell.tile(3, 0).tile(2, 1).cell, (cell * [3, 2]).cell)
+        assert np.allclose(cell.tile(3, 0).tile(3, 1).tile(3, 2).cell, (cell * 3).cell)
 
     def test_angle1(self, setup):
         g = graphene(orthogonal=True)
@@ -330,22 +330,22 @@ class TestCell(object):
         assert g.sc.angle(0, 1) == 90
 
     def test_angle2(self, setup):
-        sc = Cell([1, 1, 1])
-        assert sc.angle(0, 1) == 90
-        assert sc.angle(0, 2) == 90
-        assert sc.angle(1, 2) == 90
-        sc = Cell([[1, 1, 0],
+        cell = Cell([1, 1, 1])
+        assert cell.angle(0, 1) == 90
+        assert cell.angle(0, 2) == 90
+        assert cell.angle(1, 2) == 90
+        cell = Cell([[1, 1, 0],
                         [1, -1, 0],
                         [0, 0, 2]])
-        assert sc.angle(0, 1) == 90
-        assert sc.angle(0, 2) == 90
-        assert sc.angle(1, 2) == 90
-        sc = Cell([[3, 4, 0],
+        assert cell.angle(0, 1) == 90
+        assert cell.angle(0, 2) == 90
+        assert cell.angle(1, 2) == 90
+        cell = Cell([[3, 4, 0],
                         [4, 3, 0],
                         [0, 0, 2]])
-        assert sc.angle(0, 1, rad=True) == approx(0.28379, abs=1e-4)
-        assert sc.angle(0, 2) == 90
-        assert sc.angle(1, 2) == 90
+        assert cell.angle(0, 1, rad=True) == approx(0.28379, abs=1e-4)
+        assert cell.angle(0, 2) == 90
+        assert cell.angle(1, 2) == 90
 
     def test_cell_length(self):
         sc = (graphene(orthogonal=True) * (40, 40, 1)).rotatec(24).sc
@@ -354,9 +354,9 @@ class TestCell(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_set_nsc1(self, setup):
-        sc = setup.sc.copy()
-        sc.sc_off = np.zeros([10000, 3])
-        setup.sc.set_nsc(a=2)
+        cell = setup.cell.copy()
+        cell.sc_off = np.zeros([10000, 3])
+        setup.cell.set_nsc(a=2)
 
 
 def _dot(u, v):
@@ -365,55 +365,55 @@ def _dot(u, v):
 
 
 def test_plane1():
-    sc = Cell([1] * 3)
+    cell = Cell([1] * 3)
     # Check point [0.5, 0.5, 0.5]
     pp = np.array([0.5] * 3)
 
-    n, p = sc.plane(0, 1, True)
+    n, p = cell.plane(0, 1, True)
     assert -0.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(0, 2, True)
+    n, p = cell.plane(0, 2, True)
     assert -0.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(1, 2, True)
+    n, p = cell.plane(1, 2, True)
     assert -0.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(0, 1, False)
+    n, p = cell.plane(0, 1, False)
     assert -0.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(0, 2, False)
+    n, p = cell.plane(0, 2, False)
     assert -0.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(1, 2, False)
+    n, p = cell.plane(1, 2, False)
     assert -0.5 == approx(_dot(n, pp - p))
 
 
 def test_plane2():
-    sc = Cell([1] * 3)
+    cell = Cell([1] * 3)
     # Check point [-0.5, -0.5, -0.5]
     pp = np.array([-0.5] * 3)
 
-    n, p = sc.plane(0, 1, True)
+    n, p = cell.plane(0, 1, True)
     assert 0.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(0, 2, True)
+    n, p = cell.plane(0, 2, True)
     assert 0.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(1, 2, True)
+    n, p = cell.plane(1, 2, True)
     assert 0.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(0, 1, False)
+    n, p = cell.plane(0, 1, False)
     assert -1.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(0, 2, False)
+    n, p = cell.plane(0, 2, False)
     assert -1.5 == approx(_dot(n, pp - p))
-    n, p = sc.plane(1, 2, False)
+    n, p = cell.plane(1, 2, False)
     assert -1.5 == approx(_dot(n, pp - p))
 
 
 def test_tocuboid_simple():
-    sc = Cell([1, 1, 1, 90, 90, 90])
-    c1 = sc.toCuboid()
-    assert np.allclose(sc.cell, c1._v)
-    c2 = sc.toCuboid(True)
+    cell = Cell([1, 1, 1, 90, 90, 90])
+    c1 = cell.toCuboid()
+    assert np.allclose(cell.cell, c1._v)
+    c2 = cell.toCuboid(True)
     assert np.allclose(c1._v, c2._v)
 
 
 def test_tocuboid_complex():
-    sc = Cell([1, 1, 1, 60, 60, 60])
-    print(sc.cell)
-    c1 = sc.toCuboid()
-    assert np.allclose(sc.cell, c1._v)
-    c2 = sc.toCuboid(True)
+    cell = Cell([1, 1, 1, 60, 60, 60])
+    print(cell.cell)
+    c1 = cell.toCuboid()
+    assert np.allclose(cell.cell, c1._v)
+    c2 = cell.toCuboid(True)
     assert not np.allclose(np.diagonal(c1._v), np.diagonal(c2._v))

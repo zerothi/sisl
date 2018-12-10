@@ -14,7 +14,7 @@ class moldenSile(Sile):
     """ Molden file object """
 
     @sile_fh_open()
-    def write_supercell(self, sc):
+    def write_cell(self, cell):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)

@@ -73,13 +73,13 @@ class pdbSile(Sile):
         return found, l
 
     @sile_fh_open()
-    def write_cell(self, sc):
+    def write_cell(self, cell):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
 
         # Get parameters and append the space group and specification
-        args = sc.parameters() + ('P 1', 1)
+        args = cell.parameters() + ('P 1', 1)
 
         #COLUMNS       DATA  TYPE    FIELD          DEFINITION
         #-------------------------------------------------------------
@@ -102,7 +102,7 @@ class pdbSile(Sile):
         #31 - 40         Real(10.6)    s[n][3]            Sn3
         #46 - 55         Real(10.5)    u[n]               Un
         for i in range(3):
-            args = [i + 1] + sc.cell[i, :].tolist() + [0.]
+            args = [i + 1] + cell.cell[i, :].tolist() + [0.]
             self._write(('SCALE{:1d}    {:10.6f}{:10.6f}{:10.6f}     {:10.5f}\n').format(*args))
 
         #COLUMNS        DATA  TYPE     FIELD         DEFINITION
@@ -114,7 +114,7 @@ class pdbSile(Sile):
         #46 - 55         Real(10.5)    t[n]          Tn
         fmt = 'ORIGX{:1d}   ' + '{:10.6f}' * 3 + '{:10.5f}\n'
         for i in range(3):
-            args = [i + 1, 0, 0, 0, sc.origo[i]]
+            args = [i + 1, 0, 0, 0, cell.origo[i]]
             self._write(fmt.format(*args))
 
     @sile_fh_open()
@@ -204,7 +204,7 @@ class pdbSile(Sile):
         """ Read geometry from the contained file """
 
         # First we read in the geometry
-        sc = self.read_cell()
+        cell = self.read_cell()
 
         # Try and go to the first model record
         in_model, l = self._step_record('MODEL')
@@ -244,7 +244,7 @@ class pdbSile(Sile):
                 atoms._atom.append(a)
             atoms._specie[i] = s
 
-        return Geometry(xyz, atoms, cell=sc)
+        return Geometry(xyz, atoms, cell=cell)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

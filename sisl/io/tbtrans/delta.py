@@ -62,18 +62,18 @@ class deltancSileTBtrans(SileCDFTBtrans):
         cell.shape = (3, 3)
 
         nsc = self._value('nsc')
-        sc = Cell(cell, nsc=nsc)
+        cell = Cell(cell, nsc=nsc)
         try:
-            sc.sc_off = self._value('isc_off')
+            cell.sc_off = self._value('isc_off')
         except:
             # This is ok, we simply do not have the supercell offsets
             pass
 
-        return sc
+        return cell
 
     def read_geometry(self, *args, **kwargs):
         """ Returns the `Geometry` object from this file """
-        sc = self.read_cell()
+        cell = self.read_cell()
 
         xyz = _a.arrayd(np.copy(self._value('xa')))
         xyz.shape = (-1, 3)
@@ -99,30 +99,30 @@ class deltancSileTBtrans(SileCDFTBtrans):
             atms = [Atom('H', [-1] * o) for o in nos]
 
         # Create and return geometry object
-        geom = Geometry(xyz, atms, cell=sc)
+        geom = Geometry(xyz, atms, cell=cell)
 
         return geom
 
-    def write_cell(self, sc):
+    def write_cell(self, cell):
         """ Creates the NetCDF file and writes the supercell information """
         sile_raise_write(self)
 
         # Create initial dimensions
         self._crt_dim(self, 'one', 1)
-        self._crt_dim(self, 'n_s', np.prod(sc.nsc))
+        self._crt_dim(self, 'n_s', np.prod(cell.nsc))
         self._crt_dim(self, 'xyz', 3)
 
         # Create initial geometry
         v = self._crt_var(self, 'nsc', 'i4', ('xyz',))
         v.info = 'Number of supercells in each unit-cell direction'
-        v[:] = sc.nsc[:]
+        v[:] = cell.nsc[:]
         v = self._crt_var(self, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = sc.sc_off[:, :]
+        v[:] = cell.sc_off[:, :]
         v = self._crt_var(self, 'cell', 'f8', ('xyz', 'xyz'))
         v.info = 'Unit cell'
         v.unit = 'Bohr'
-        v[:] = sc.cell[:, :] / Bohr2Ang
+        v[:] = cell.cell[:, :] / Bohr2Ang
 
         # Create designation of the creation
         self.method = 'sisl'

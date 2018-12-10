@@ -417,7 +417,7 @@ class omxSileOpenMX(SileOpenMX):
 
     def _r_geometry_omx(self, *args, **kwargs):
         """ Returns `Geometry` """
-        sc = self.read_cell(order=['omx'])
+        cell = self.read_cell(order=['omx'])
 
         na = self.get('Atoms.Number', default=0)
         conv = self.get('Atoms.SpeciesAndCoordinates.Unit', default='Ang')
@@ -452,9 +452,9 @@ class omxSileOpenMX(SileOpenMX):
         if conv == 'AU':
             xyz *= units('Bohr', 'Ang')
         elif conv == 'FRAC':
-            xyz = np.dot(xyz, sc.cell)
+            xyz = np.dot(xyz, cell.cell)
 
-        return Geometry(xyz, atom=atom, cell=sc)
+        return Geometry(xyz, atom=atom, cell=cell)
 
     _r_geometry_dat = _r_geometry_omx
 

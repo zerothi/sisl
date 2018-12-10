@@ -20,10 +20,10 @@ def diamond(alat=3.57, atom=None):
     dist = alat * 3. ** .5 / 4
     if atom is None:
         atom = Atom(Z=6, R=dist * 1.01)
-    sc = Cell(np.array([[0, 1, 1],
+    cell = Cell(np.array([[0, 1, 1],
                              [1, 0, 1],
                              [1, 1, 0]], np.float64) * alat / 2,
                    nsc=[3, 3, 3])
     dia = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
-                   atom, cell=sc)
+                   atom, cell=cell)
     return dia

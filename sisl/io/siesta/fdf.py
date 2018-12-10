@@ -456,7 +456,7 @@ class fdfSileSiesta(SileSiesta):
         return s
 
     @sile_fh_open()
-    def write_cell(self, sc, fmt='.8f', *args, **kwargs):
+    def write_cell(self, cell, fmt='.8f', *args, **kwargs):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -473,9 +473,9 @@ class fdfSileSiesta(SileSiesta):
         # Write out the cell
         self._write('LatticeConstant 1.0 {}\n'.format(unit))
         self._write('%block LatticeVectors\n')
-        self._write(fmt_str.format(*sc.cell[0, :] * conv))
-        self._write(fmt_str.format(*sc.cell[1, :] * conv))
-        self._write(fmt_str.format(*sc.cell[2, :] * conv))
+        self._write(fmt_str.format(*cell.cell[0, :] * conv))
+        self._write(fmt_str.format(*cell.cell[1, :] * conv))
+        self._write(fmt_str.format(*cell.cell[2, :] * conv))
         self._write('%endblock LatticeVectors\n')
 
     @sile_fh_open()
@@ -689,9 +689,9 @@ class fdfSileSiesta(SileSiesta):
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.XV'
         if isfile(f):
             nsc = self.read_cell_nsc()
-            sc = xvSileSiesta(f).read_cell()
-            sc.set_nsc(nsc)
-            return sc
+            cell = xvSileSiesta(f).read_cell()
+            cell.set_nsc(nsc)
+            return cell
         return None
 
     def read_force(self, *args, **kwargs):
@@ -931,23 +931,23 @@ class fdfSileSiesta(SileSiesta):
 
             # We have an actual supercell. Lets try and fix it.
             # First lets recreate the smallest geometry
-            sc = geom.sc.cell.copy()
-            sc[0, :] /= supercell[0]
-            sc[1, :] /= supercell[1]
-            sc[2, :] /= supercell[2]
+            cell = geom.sc.cell.copy()
+            cell[0, :] /= supercell[0]
+            cell[1, :] /= supercell[1]
+            cell[2, :] /= supercell[2]
 
             # Ensure nsc is at least an odd number, later down we will symmetrize the FC matrix
             nsc = supercell + (supercell + 1) % 2
             if R > 0:
                 # Correct for the optional radius
-                sc_norm = fnorm(sc)
+                cell_norm = fnorm(sc)
                 # R is already "twice" the "orbital" range
-                nsc_R = 1 + 2 * np.ceil(R / sc_norm).astype(np.int32)
+                nsc_R = 1 + 2 * np.ceil(R / cell_norm).astype(np.int32)
                 for i in range(3):
                     nsc[i] = min(nsc[i], nsc_R[i])
                 del nsc_R
-            sc = Cell(sc, nsc=nsc)
-            geom_small = Geometry(geom.xyz[FC_atoms], geom.atoms[FC_atoms], sc)
+            cell = Cell(cell, nsc=nsc)
+            geom_small = Geometry(geom.xyz[FC_atoms], geom.atoms[FC_atoms], cell)
             D = DynamicalMatrix(geom_small)
 
             # Now we need to figure out how the atoms are laid out.
@@ -1153,7 +1153,7 @@ class fdfSileSiesta(SileSiesta):
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
-        sc = self.read_cell(order=['fdf'])
+        cell = self.read_cell(order=['fdf'])
 
         # No fractional coordinates
         is_frac = False
@@ -1210,7 +1210,7 @@ class fdfSileSiesta(SileSiesta):
             xyz[ia, :] = [float(k) for k in l[:3]]
             species[ia] = int(l[3]) - 1
         if is_frac:
-            xyz = np.dot(xyz, sc.cell)
+            xyz = np.dot(xyz, cell.cell)
         xyz *= s
         xyz += origo
 
@@ -1225,7 +1225,7 @@ class fdfSileSiesta(SileSiesta):
             atom = [atom[i] for i in species]
 
         # Create and return geometry object
-        return Geometry(xyz, atom=atom, cell=sc)
+        return Geometry(xyz, atom=atom, cell=cell)
 
     def read_grid(self, name, *args, **kwargs):
         """ Read grid related information from any of the output files

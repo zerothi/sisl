@@ -128,13 +128,13 @@ def sisl_system():
     alat = 1.42
     sq3h = 3.**.5 * 0.5
     C = Atom(Z=6, R=1.42)
-    sc = Cell(np.array([[1.5, sq3h, 0.],
-                             [1.5, -sq3h, 0.],
-                             [0., 0., 10.]], np.float64) * alat,
-                   nsc=[3, 3, 1])
+    cell = Cell(np.array([[1.5, sq3h, 0.],
+                          [1.5, -sq3h, 0.],
+                          [0., 0., 10.]], np.float64) * alat,
+                nsc=[3, 3, 1])
     d.g = Geometry(np.array([[0., 0., 0.],
                              [1., 0., 0.]], np.float64) * alat,
-                   atom=C, cell=sc)
+                   atom=C, cell=cell)
 
     d.R = np.array([0.1, 1.5])
     d.t = np.array([0., 2.7])
@@ -147,7 +147,7 @@ def sisl_system():
                      nsc=[3, 3, 1])
     d.gtb = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * alat,
-                     atom=C, cell=sc)
+                     atom=C, cell=cell)
 
     d.ham = Hamiltonian(d.gtb)
     d.ham.construct([(0.1, 1.5), (0.1, 2.7)])

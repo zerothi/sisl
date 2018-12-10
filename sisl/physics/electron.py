@@ -1069,14 +1069,14 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # In case this grid does not have a Geometry associated
     # We can *perhaps* easily attach a geometry with the given
     # atoms in the unit-cell
-    sc = grid.sc.copy()
+    cell = grid.sc.copy()
     # Find the periodic directions
     pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1 for i, bc in enumerate(grid.bc[:, 0])]
     if grid.geometry is None:
         # Create the actual geometry that encompass the grid
-        ia, xyz, _ = geometry.within_inf(sc, periodic=pbc)
+        ia, xyz, _ = geometry.within_inf(cell, periodic=pbc)
         if len(ia) > 0:
-            grid.set_geometry(Geometry(xyz, geometry.atoms[ia], cell=sc))
+            grid.set_geometry(Geometry(xyz, geometry.atoms[ia], cell=cell))
 
     # Instead of looping all atoms in the supercell we find the exact atoms
     # and their supercell indices.
@@ -1086,13 +1086,13 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     # For extremely skewed lattices this will be way too much, hence we make
     # them square.
 
-    o = sc.toCuboid(True)
-    sc = Cell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
+    o = cell.toCuboid(True)
+    cell = Cell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)
     # Note that we cannot pass the "moved" origo because then ISC would be wrong
-    IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc)
+    IA, XYZ, ISC = geometry.within_inf(cell, periodic=pbc)
     # We need to revert the grid supercell origo as that is not subtracted in the `within_inf` returned
     # coordinates (and the below loop expects positions with respect to the origo of the plotting
     # grid).

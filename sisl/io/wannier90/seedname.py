@@ -121,7 +121,7 @@ class winSileWannier90(SileWannier90):
         return Geometry(xyz[:na, :], atom='H')
 
     @sile_fh_open()
-    def _read_geometry(self, sc, *args, **kwargs):
+    def _read_geometry(self, cell, *args, **kwargs):
         """ Defered routine """
 
         is_frac = True
@@ -163,32 +163,32 @@ class winSileWannier90(SileWannier90):
         xyz = np.array(xyz, np.float64) * unit
 
         if is_frac:
-            xyz = np.dot(sc.cell.T, xyz.T).T
+            xyz = np.dot(xyz, cell.cell)
 
-        return Geometry(xyz, atom=s, cell=sc)
+        return Geometry(xyz, atom=s, cell=cell)
 
     def read_geometry(self, *args, **kwargs):
         """ Reads a `Geometry` and creates the Wannier90 cell """
 
         # Read in the super-cell
-        sc = self.read_cell()
+        cell = self.read_cell()
 
         self._set_file('_centres.xyz')
         if self.exist():
             geom = self._read_geometry_centres()
         else:
             self._set_file()
-            geom = self._read_geometry(sc, *args, **kwargs)
+            geom = self._read_geometry(cell, *args, **kwargs)
 
         # Reset file
         self._set_file()
 
         # Specify the supercell and return
-        geom.set_cell(sc)
+        geom.set_cell(cell)
         return geom
 
     @sile_fh_open()
-    def _write_cell(self, sc, fmt='.8f', *args, **kwargs):
+    def _write_cell(self, cell, fmt='.8f', *args, **kwargs):
         """ Writes the supercel to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -197,15 +197,15 @@ class winSileWannier90(SileWannier90):
 
         self._write('begin unit_cell_cart\n')
         self._write(' Ang\n')
-        self._write(fmt_str.format(*sc.cell[0, :]))
-        self._write(fmt_str.format(*sc.cell[1, :]))
-        self._write(fmt_str.format(*sc.cell[2, :]))
+        self._write(fmt_str.format(*cell.cell[0, :]))
+        self._write(fmt_str.format(*cell.cell[1, :]))
+        self._write(fmt_str.format(*cell.cell[2, :]))
         self._write('end unit_cell_cart\n')
 
-    def write_cell(self, sc, fmt='.8f', *args, **kwargs):
+    def write_cell(self, cell, fmt='.8f', *args, **kwargs):
         """ Writes the supercell to the contained file """
         self._set_file()
-        self._write_cell(sc, fmt, *args, **kwargs)
+        self._write_cell(cell, fmt, *args, **kwargs)
 
     @sile_fh_open()
     def _write_geometry(self, geom, fmt='.8f', *args, **kwargs):

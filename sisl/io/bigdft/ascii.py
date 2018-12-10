@@ -106,9 +106,9 @@ class asciiSileBigDFT(SileBigDFT):
         # Create the supercell
         if is_angdeg:
             # The input is in skewed axis
-            sc = Cell([dxx, dyx, dyy, dzx, dzy, dzz])
+            cell = Cell([dxx, dyx, dyy, dzx, dzy, dzz])
         else:
-            sc = Cell([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
+            cell = Cell([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
 
         # Now create the geometry
         xyz = np.array(xyz, np.float64)
@@ -116,7 +116,7 @@ class asciiSileBigDFT(SileBigDFT):
         if is_frac:
             # Transform from fractional to actual
             # coordinates
-            xyz = np.dot(xyz, sc.cell.T)
+            xyz = np.dot(xyz, cell.cell)
 
         elif is_bohr:
             # Not when fractional coordinates are used
@@ -124,7 +124,7 @@ class asciiSileBigDFT(SileBigDFT):
             # correct unit
             xyz *= Bohr2Ang
 
-        return Geometry(xyz, spec, cell=sc)
+        return Geometry(xyz, spec, cell=cell)
 
     @sile_fh_open()
     def write_geometry(self, geom, fmt='.8f'):

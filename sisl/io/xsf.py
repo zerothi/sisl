@@ -28,12 +28,12 @@ class xsfSile(Sile):
         self._md_index += 1
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt='.8f'):
+    def write_supercell(self, cell, fmt='.8f'):
         """ Writes the supercell to the contained file
 
         Parameters
         ----------
-        sc : Cell
+        cell : Cell
            the supercell to be written
         fmt : str, optional
            used format for the precision of the data
@@ -64,7 +64,7 @@ class xsfSile(Sile):
         # We write the cell coordinates as the cell coordinates
         fmt_str = '{{:{0}}} '.format(fmt) * 3 + '\n'
         for i in [0, 1, 2]:
-            self._write(fmt_str.format(*sc.cell[i, :]))
+            self._write(fmt_str.format(*cell.cell[i, :]))
 
         # Currently not written (we should convert the unit cell
         # to a conventional cell (90-90-90))
@@ -75,7 +75,7 @@ class xsfSile(Sile):
             self._write('CONVVEC\n')
         else:
             self._write('CONVVEC {}\n'.format(self._md_index))
-        convcell = sc.toCuboid(True)._v
+        convcell = cell.toCuboid(True)._v
         for i in [0, 1, 2]:
             self._write(fmt_str.format(*convcell[i, :]))
 

@@ -125,7 +125,7 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns Geometry object from a Siesta.nc file """
 
         # Read supercell
-        sc = self.read_cell()
+        cell = self.read_cell()
 
         xyz = np.array(self._value('xa'), np.float64)
         xyz.shape = (-1, 3)
@@ -140,7 +140,7 @@ class ncSileSiesta(SileCDFSiesta):
         xyz *= Bohr2Ang
 
         # Create and return geometry object
-        geom = Geometry(xyz, atom, cell=sc)
+        geom = Geometry(xyz, atom, cell=cell)
         return geom
 
     def read_force(self):

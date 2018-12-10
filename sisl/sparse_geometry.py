@@ -247,10 +247,10 @@ class _SparseGeometry(object):
         --------
         Cell.set_nsc : the underlying called method
         """
-        sc = self.sc.copy()
+        cell = self.sc.copy()
         # Try first in the new one, then we figure out what to do
-        sc.set_nsc(*args, **kwargs)
-        if np.all(sc.nsc == self.sc.nsc):
+        cell.set_nsc(*args, **kwargs)
+        if np.all(cell.nsc == self.sc.nsc):
             return
 
         # Create an array of all things that should be translated
@@ -258,7 +258,7 @@ class _SparseGeometry(object):
         new = []
         deleted = np.empty(self.n_s, np.bool_)
         deleted[:] = True
-        for i, sc_off in sc:
+        for i, sc_off in cell:
             try:
                 # Luckily there are *only* one time wrap-arounds
                 j = self.sc.sc_index(sc_off)
@@ -270,7 +270,7 @@ class _SparseGeometry(object):
                 # Not found, i.e. new, so no need to translate
                 pass
 
-        if len(old) not in [self.n_s, sc.n_s]:
+        if len(old) not in [self.n_s, cell.n_s]:
             raise SislError("Not all supercells are accounted for")
 
         # 1. Ensure that any one of the *old* supercells that
@@ -280,7 +280,7 @@ class _SparseGeometry(object):
             old.append(j)
             # Move to the end (*HAS* to be higher than the number of
             # cells in the new supercell structure)
-            new.append(sc.n_s + i)
+            new.append(cell.n_s + i)
 
         old = _a.arrayi(old)
         new = _a.arrayi(new)
@@ -314,7 +314,7 @@ class _SparseGeometry(object):
             max_n = 0
 
         # Make sure we delete all column values where we have put fake values
-        delete = _a.arangei(sc.n_s * size, max(max_n, self.shape[1]))
+        delete = _a.arangei(cell.n_s * size, max(max_n, self.shape[1]))
         if len(delete) > 0:
             self._csr.delete_columns(delete, keep_shape=True)
 

@@ -30,7 +30,7 @@ class gridncSileSiesta(SileCDFSiesta):
 
         return Cell(cell)
 
-    def write_cell(self, sc):
+    def write_cell(self, cell):
         """ Write a supercell to the grid.nc file """
         sile_raise_write(self)
 
@@ -41,7 +41,7 @@ class gridncSileSiesta(SileCDFSiesta):
         v = self._crt_var(self, 'cell', 'f8', ('abc', 'xyz'))
         v.info = 'Unit cell'
         v.unit = 'Bohr'
-        v[:, :] = sc.cell[:, :] / Bohr2Ang
+        v[:, :] = cell.cell[:, :] / Bohr2Ang
 
     def read_grid(self, spin=0, name='gridfunc', *args, **kwargs):
         """ Reads a grid in the current Siesta.grid.nc file
@@ -86,7 +86,7 @@ class gridncSileSiesta(SileCDFSiesta):
             show_info = False
 
         # Swap as we swap back in the end
-        sc = self.read_cell().swapaxes(0, 2)
+        cell = self.read_cell().swapaxes(0, 2)
 
         # Create the grid
         nx = len(self._dimension('n1'))
@@ -99,7 +99,7 @@ class gridncSileSiesta(SileCDFSiesta):
             v = self._variable(name)
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, cell=sc, dtype=v.dtype)
+        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, cell=cell, dtype=v.dtype)
 
         if v.ndim == 3:
             grid.grid[:, :, :] = v[:, :, :] * unit

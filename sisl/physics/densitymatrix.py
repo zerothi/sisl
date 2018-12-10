@@ -225,14 +225,14 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         csrDM.prune()
 
         # 1. Ensure the grid has a geometry associated with it
-        sc = grid.sc.copy()
+        cell = grid.sc.copy()
         # Find the periodic directions
         pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1 for i, bc in enumerate(grid.bc[:, 0])]
         if grid.geometry is None:
             # Create the actual geometry that encompass the grid
-            ia, xyz, _ = geometry.within_inf(sc, periodic=pbc)
+            ia, xyz, _ = geometry.within_inf(cell, periodic=pbc)
             if len(ia) > 0:
-                grid.set_geometry(Geometry(xyz, geometry.atoms[ia], cell=sc))
+                grid.set_geometry(Geometry(xyz, geometry.atoms[ia], cell=cell))
 
         # Instead of looping all atoms in the supercell we find the exact atoms
         # and their supercell indices.
@@ -241,12 +241,12 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         # supercell by add_R in each direction.
         # For extremely skewed lattices this will be way too much, hence we make
         # them square.
-        o = sc.toCuboid(True)
-        sc = Cell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
+        o = cell.toCuboid(True)
+        cell = Cell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)
-        IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc)
+        IA, XYZ, ISC = geometry.within_inf(cell, periodic=pbc)
         XYZ -= grid.sc.origo.reshape(1, 3)
 
         # Retrieve progressbar

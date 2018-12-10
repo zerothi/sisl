@@ -70,7 +70,7 @@ class refSileScaleUp(SileScaleUp):
             c[2, 1] = cell[3] / 2.
             c[2, 2] = 1. + cell[2]
             cell = c * Ang2Bohr
-        sc = Cell(cell * Bohr2Ang, nsc=nsc)
+        cell = Cell(cell * Bohr2Ang, nsc=nsc)
 
         # Create list of coordinates and atoms
         xyz = np.empty([na * ns, 3], np.float64)
@@ -86,7 +86,7 @@ class refSileScaleUp(SileScaleUp):
             atoms[ia] = species[int(line[4]) - 1]
             xyz[ia, :] = _a.fromiterd(map(float, line[5:8]))
 
-        return Geometry(xyz * Bohr2Ang, atoms, cell=sc)
+        return Geometry(xyz * Bohr2Ang, atoms, cell=cell)
 
     @sile_fh_open()
     def write_geometry(self, geom, fmt='18.8e'):

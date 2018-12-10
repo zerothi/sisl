@@ -65,8 +65,8 @@ class TestBrillouinZone(object):
 
     def test_class1(self, setup):
         class Test(CellChild):
-            def __init__(self, sc):
-                self.set_cell(sc)
+            def __init__(self, cell):
+                self.set_cell(cell)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -78,8 +78,8 @@ class TestBrillouinZone(object):
 
     def test_class2(self, setup):
         class Test(CellChild):
-            def __init__(self, sc):
-                self.set_cell(sc)
+            def __init__(self, cell):
+                self.set_cell(cell)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -100,8 +100,8 @@ class TestBrillouinZone(object):
 
     def test_class3(self, setup):
         class Test(CellChild):
-            def __init__(self, sc):
-                self.set_cell(sc)
+            def __init__(self, cell):
+                self.set_cell(cell)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -120,8 +120,8 @@ class TestBrillouinZone(object):
     @pytest.mark.parametrize("centered", [True, False])
     def test_mp_asgrid(self, setup, N, centered):
         class Test(CellChild):
-            def __init__(self, sc):
-                self.set_cell(sc)
+            def __init__(self, cell):
+                self.set_cell(cell)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
         bz = MonkhorstPack(Test(setup.s1), [2] * 3).asgrid()
@@ -144,8 +144,8 @@ class TestBrillouinZone(object):
     @pytest.mark.xfail(raises=SislError)
     def test_mp_asgrid_fail(self, setup):
         class Test(CellChild):
-            def __init__(self, sc):
-                self.set_cell(sc)
+            def __init__(self, cell):
+                self.set_cell(cell)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
         bz = MonkhorstPack(Test(setup.s1), [2] * 3, displacement=[0.1] * 3).asgrid()
@@ -371,8 +371,8 @@ class TestBrillouinZone(object):
     def test_param_circle(self, n):
         bz = BrillouinZone.param_circle(1, 10, 0.1, n, [1/2] * 3)
         assert len(bz) == 10
-        sc = Cell(1)
-        bz_loop = BrillouinZone.param_circle(sc, 10, 0.1, n, [1/2] * 3, True)
+        cell = Cell(1)
+        bz_loop = BrillouinZone.param_circle(cell, 10, 0.1, n, [1/2] * 3, True)
         assert len(bz_loop) == 10
         assert not np.allclose(bz.k, bz_loop.k)
         assert np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :])

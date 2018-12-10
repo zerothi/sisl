@@ -61,9 +61,9 @@ class gotSileGULP(SileGULP):
         xyz = l.split('=')[1:]
 
         # Now read off the quantities...
-        sc = [int(i.split()[0]) for i in xyz]
+        nsc = [int(i.split()[0]) for i in xyz]
 
-        return np.array(sc[:3], np.int32)
+        return np.array(nsc[:3], np.int32)
 
     @sile_fh_open()
     def read_cell(self, key=None, **kwargs):
@@ -95,7 +95,7 @@ class gotSileGULP(SileGULP):
     def read_geometry(self, **kwargs):
         """ Reads a geometry and creates the GULP dynamical geometry """
         # create default supercell
-        sc = Cell([1, 1, 1])
+        cell = Cell([1, 1, 1])
 
         for _ in [0, 1]:
             # Step to either the geometry or
@@ -114,7 +114,7 @@ class gotSileGULP(SileGULP):
                     cell[i, 0] = float(l[0])
                     cell[i, 1] = float(l[1])
                     cell[i, 2] = float(l[2])
-                sc = Cell(cell)
+                cell = Cell(cell)
 
             elif not f and ki == 1:
                 raise ValueError('SileGULP tries to lookup the Geometry coordinates '
@@ -157,10 +157,10 @@ class gotSileGULP(SileGULP):
         # to wait until here to convert from fractional
         if 'fractional' in self._keys['geometry'].lower():
             # Correct for fractional coordinates
-            xyz = np.dot(xyz, sc.cell)
+            xyz = np.dot(xyz, cell.cell)
 
         # Return the geometry
-        return Geometry(xyz, Z, cell=sc)
+        return Geometry(xyz, Z, cell=cell)
 
     def set_dynamical_matrix_key(self, key):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """

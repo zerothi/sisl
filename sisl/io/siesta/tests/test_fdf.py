@@ -74,9 +74,9 @@ def test_supercell(sisl_tmp):
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
 
-    cell = np.array([[1.]*3, [0, 0, 1], [1, 0, 1]])
-    sc = fdfSileSiesta(f).read_cell()
-    assert np.allclose(sc.cell, cell)
+    cell1 = np.array([[1.]*3, [0, 0, 1], [1, 0, 1]])
+    cell = fdfSileSiesta(f).read_cell()
+    assert np.allclose(cell.cell, cell1)
 
     lines = [
         'Latticeconstant 1. Bohr',
@@ -89,10 +89,10 @@ def test_supercell(sisl_tmp):
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
 
-    sc = fdfSileSiesta(f).read_cell()
-    assert np.allclose(sc.cell, cell * unit_convert('Bohr', 'Ang'))
+    cell = fdfSileSiesta(f).read_cell()
+    assert np.allclose(cell.cell, cell1 * unit_convert('Bohr', 'Ang'))
 
-    cell = np.diag([2.] * 3)
+    cell1 = np.diag([2.] * 3)
     lines = [
         'Latticeconstant 2. Ang',
         '%block Latticeparameters',
@@ -102,8 +102,8 @@ def test_supercell(sisl_tmp):
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
 
-    sc = fdfSileSiesta(f).read_cell()
-    assert np.allclose(sc.cell, cell)
+    cell = fdfSileSiesta(f).read_cell()
+    assert np.allclose(cell.cell, cell1)
 
 
 @pytest.mark.xfail(raises=SileError)

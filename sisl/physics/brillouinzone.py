@@ -160,7 +160,7 @@ class BrillouinZone(object):
         return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent.sc).replace('\n', '\n '))
 
     @classmethod
-    def parametrize(self, sc, func, N, *args, **kwargs):
+    def parametrize(self, cell, func, N, *args, **kwargs):
         """ Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
@@ -168,7 +168,7 @@ class BrillouinZone(object):
 
         Basically this generates a new BrillouinZone object as:
 
-        >>> def func(sc, frac):
+        >>> def func(cell, frac):
         ...    return [frac, 0, 0]
         >>> bz = BrillouinZone.parametrize(1, func, 10)
         >>> len(bz) == 10
@@ -178,10 +178,10 @@ class BrillouinZone(object):
 
         Parameters
         ----------
-        sc : Cell, or CellChild
+        cell : Cell, or CellChild
            the supercell used to construct the k-points
         func : callable
-           method that parameterizes the k-points, *must* at least accept two arguments, ``sc``
+           method that parameterizes the k-points, *must* at least accept two arguments, `sc`
            (super-cell object containing the unit-cell and reciprocal cell) and ``frac``
            (current parametrization fraction, between 0 and ``(N-1)/N``. It must return
            a k-point in 3 dimensions.
@@ -194,11 +194,11 @@ class BrillouinZone(object):
         """
         k = np.empty([N, 3], np.float64)
         for i in range(N):
-            k[i, :] = func(sc, i / N, *args, **kwargs)
-        return BrillouinZone(sc, k)
+            k[i, :] = func(cell, i / N, *args, **kwargs)
+        return BrillouinZone(cell, k)
 
     @classmethod
-    def param_circle(self, sc, N_or_dk, kR, normal, origo, loop=False):
+    def param_circle(self, cell, N_or_dk, kR, normal, origo, loop=False):
         r""" Create a parameterized k-point list where the k-points are generated on a circle around an origo
 
         The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
@@ -208,7 +208,7 @@ class BrillouinZone(object):
 
         Parameters
         ----------
-        sc : Cell, or CellChild
+        cell : Cell, or CellChild
            the supercell used to construct the k-points
         N_or_dk : int
            number of k-points generated using the parameterization (if an integer),
@@ -227,13 +227,13 @@ class BrillouinZone(object):
         Examples
         --------
 
-        >>> sc = Cell([1, 1, 10, 90, 90, 60])
-        >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
+        >>> cell = Cell([1, 1, 10, 90, 90, 60])
+        >>> bz = BrillouinZone.param_circle(cell, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
 
         To generate a circular set of k-points in reduced coordinates (reciprocal
 
-        >>> sc = Cell([1, 1, 10, 90, 90, 60])
-        >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
+        >>> cell = Cell([1, 1, 10, 90, 90, 60])
+        >>> bz = BrillouinZone.param_circle(cell, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
         >>> bz_rec = BrillouinZone.param_circle(2*np.pi, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
         >>> bz.k[:, :] = bz_rec.k[:, :]
 
@@ -251,7 +251,7 @@ class BrillouinZone(object):
                 info('BrillouinZone.param_circle increased the number of circle points to 4.')
 
         # Conversion object
-        bz = BrillouinZone(sc)
+        bz = BrillouinZone(cell)
 
         normal = _a.arrayd(normal)
         origo = _a.arrayd(origo)
@@ -286,7 +286,7 @@ class BrillouinZone(object):
         W = np.pi * kR ** 2
         w = np.repeat([W / N], N)
 
-        return BrillouinZone(sc, k, w)
+        return BrillouinZone(cell, k, w)
 
     def set_parent(self, parent):
         """ Update the parent associated to this object
@@ -890,10 +890,10 @@ class MonkhorstPack(BrillouinZone):
 
     Examples
     --------
-    >>> sc = Cell(3.)
-    >>> MonkhorstPack(sc, 10) # 10 x 10 x 10 (with TRS)
-    >>> MonkhorstPack(sc, [10, 5, 5]) # 10 x 5 x 5 (with TRS)
-    >>> MonkhorstPack(sc, [10, 5, 5], trs=False) # 10 x 5 x 5 (without TRS)
+    >>> cell = Cell(3.)
+    >>> MonkhorstPack(cell, 10) # 10 x 10 x 10 (with TRS)
+    >>> MonkhorstPack(cell, [10, 5, 5]) # 10 x 5 x 5 (with TRS)
+    >>> MonkhorstPack(cell, [10, 5, 5], trs=False) # 10 x 5 x 5 (without TRS)
     """
 
     def __init__(self, parent, nkpt, displacement=None, size=None, centered=True, trs=True):
@@ -1100,8 +1100,8 @@ class MonkhorstPack(BrillouinZone):
                                                    centered=self._centered, trs=True)[1])
 
             # Create the grid in the reciprocal cell
-            sc = Cell(cell, origo=origo)
-            grid = Grid(diag, cell=sc, dtype=v.dtype)
+            cell = Cell(cell, origo=origo)
+            grid = Grid(diag, cell=cell, dtype=v.dtype)
             if data_axis is None:
                 grid[k2idx(k[0])] = v
             else:
@@ -1239,23 +1239,23 @@ class MonkhorstPack(BrillouinZone):
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 3x3x3 Monkhorst-Pack grid.
 
-        >>> sc = Cell(1.)
-        >>> mp = MonkhorstPack(sc, [3, 3, 3])
-        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [3, 3, 3], size=1./3))
+        >>> cell = Cell(1.)
+        >>> mp = MonkhorstPack(cell, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(cell, [3, 3, 3], size=1./3))
 
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 4x4x4 Monkhorst-Pack grid.
 
-        >>> sc = Cell(1.)
-        >>> mp = MonkhorstPack(sc, [3, 3, 3])
-        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [4, 4, 4], size=1./3))
+        >>> cell = Cell(1.)
+        >>> mp = MonkhorstPack(cell, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(cell, [4, 4, 4], size=1./3))
 
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 4x4x1 Monkhorst-Pack grid.
 
-        >>> sc = Cell(1.)
-        >>> mp = MonkhorstPack(sc, [3, 3, 3])
-        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [4, 4, 1], size=1./3))
+        >>> cell = Cell(1.)
+        >>> mp = MonkhorstPack(cell, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(cell, [4, 4, 1], size=1./3))
 
         Raises
         ------
@@ -1344,10 +1344,10 @@ class BandStructure(BrillouinZone):
 
     Examples
     --------
-    >>> sc = Cell(10)
-    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3], 200)
-    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200)
-    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
+    >>> cell = Cell(10)
+    >>> bs = BandStructure(cell, [[0] * 3, [0.5] * 3], 200)
+    >>> bs = BandStructure(cell, [[0] * 3, [0.5] * 3, [1.] * 3], 200)
+    >>> bs = BandStructure(cell, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
     """
 
     def __init__(self, parent, point, division, name=None):

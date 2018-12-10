@@ -18,13 +18,13 @@ class cubeSile(Sile):
     """ CUBE file object """
 
     @sile_fh_open()
-    def write_cell(self, sc, fmt='15.10e', size=None, origo=None,
+    def write_cell(self, cell, fmt='15.10e', size=None, origo=None,
                         *args, **kwargs):
         """ Writes `Cell` object attached to this grid
 
         Parameters
         ----------
-        sc : Cell
+        cell : Cell
             supercell to be written
         fmt : str, optional
             floating point format for stored values
@@ -42,7 +42,7 @@ class cubeSile(Sile):
         if size is None:
             size = np.ones([3], np.int32)
         if origo is None:
-            origo = sc.origo[:]
+            origo = cell.origo[:]
 
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
@@ -51,7 +51,7 @@ class cubeSile(Sile):
 
         # Write the cell and voxels
         for ix in range(3):
-            dcell = sc.cell[ix, :] / size[ix] * Ang2Bohr
+            dcell = cell.cell[ix, :] / size[ix] * Ang2Bohr
             self._write(_fmt.format(size[ix], *dcell))
 
         self._write('1 0. 0. 0. 0.\n')
@@ -187,7 +187,7 @@ class cubeSile(Sile):
     @sile_fh_open()
     def read_geometry(self):
         """ Returns `Geometry` object from the CUBE file """
-        na, sc = self.read_cell(na=True)
+        na, cell = self.read_cell(na=True)
 
         if na == 0:
             return None
@@ -203,7 +203,7 @@ class cubeSile(Sile):
             xyz[ia, 2] = float(tmp[4])
 
         xyz /= Ang2Bohr
-        return Geometry(xyz, atom, cell=sc)
+        return Geometry(xyz, atom, cell=cell)
 
     @sile_fh_open()
     def read_grid(self, imag=None):
@@ -221,9 +221,9 @@ class cubeSile(Sile):
         geom = self.read_geometry()
         if geom is None:
             self.fh.seek(0)
-            sc = self.read_cell()
+            cell = self.read_cell()
         else:
-            sc = geom.sc
+            cell = geom.sc
 
         # Now seek behind to read grid sizes
         self.fh.seek(0)
@@ -243,7 +243,7 @@ class cubeSile(Sile):
             self.readline()
 
         if geom is None:
-            grid = Grid(ngrid, dtype=np.float64, cell=sc)
+            grid = Grid(ngrid, dtype=np.float64, cell=cell)
         else:
             grid = Grid(ngrid, dtype=np.float64, geometry=geom)
         grid.grid.shape = (-1,)

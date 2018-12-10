@@ -121,7 +121,7 @@ class TestDensityMatrix(object):
     def test_rho2(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = Cell(np.array([[1.5, sq3h, 0.],
+        cell = Cell(np.array([[1.5, sq3h, 0.],
                                       [1.5, -sq3h, 0.],
                                       [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -132,7 +132,7 @@ class TestDensityMatrix(object):
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, cell=sc)
+                        atom=C, cell=cell)
         D = DensityMatrix(g)
         D.construct([[0.1, bond + 0.01], [1., 0.1]])
         grid = Grid(0.2, geometry=D.geom)
@@ -170,15 +170,15 @@ class TestDensityMatrix(object):
     def test_rho_smaller_grid1(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)
-        sc = setup.D.geom.cell.copy() / 2
-        grid = Grid(0.2, geometry=setup.D.geom.copy(), cell=sc)
+        cell = setup.D.geom.cell.copy() / 2
+        grid = Grid(0.2, geometry=setup.D.geom.copy(), cell=cell)
         D.density(grid)
 
     @pytest.mark.xfail(raises=ValueError)
     def test_rho_fail_p(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = Cell(np.array([[1.5, sq3h, 0.],
+        cell = Cell(np.array([[1.5, sq3h, 0.],
                                       [1.5, -sq3h, 0.],
                                       [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -189,7 +189,7 @@ class TestDensityMatrix(object):
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, cell=sc)
+                        atom=C, cell=cell)
 
         D = DensityMatrix(g, spin=Spin('P'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.1)]])
@@ -200,7 +200,7 @@ class TestDensityMatrix(object):
     def test_rho_fail_nc(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = Cell(np.array([[1.5, sq3h, 0.],
+        cell = Cell(np.array([[1.5, sq3h, 0.],
                                       [1.5, -sq3h, 0.],
                                       [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -211,7 +211,7 @@ class TestDensityMatrix(object):
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, cell=sc)
+                        atom=C, cell=cell)
 
         D = DensityMatrix(g, spin=Spin('NC'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.1, 0.1, 0.1)]])

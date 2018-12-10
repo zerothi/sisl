@@ -28,10 +28,10 @@ def sc(alat, atom):
     atom : Atom
         the atom in the SC lattice
     """
-    sc = Cell(np.array([[1, 0, 0],
+    cell = Cell(np.array([[1, 0, 0],
                              [0, 1, 0],
                              [0, 0, 1]], np.float64) * alat)
-    g = Geometry([0, 0, 0], atom, cell=sc)
+    g = Geometry([0, 0, 0], atom, cell=cell)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
@@ -50,16 +50,16 @@ def bcc(alat, atom, orthogonal=False):
         whether the lattice is orthogonal (2 atoms)
     """
     if orthogonal:
-        sc = Cell(np.array([[1, 0, 0],
+        cell = Cell(np.array([[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
-        g = Geometry([[0, 0, 0], [ah, ah, ah]], atom, cell=sc)
+        g = Geometry([[0, 0, 0], [ah, ah, ah]], atom, cell=cell)
     else:
-        sc = Cell(np.array([[1, 1, 1],
+        cell = Cell(np.array([[1, 1, 1],
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2)
-        g = Geometry([0, 0, 0], atom, cell=sc)
+        g = Geometry([0, 0, 0], atom, cell=cell)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
@@ -78,17 +78,17 @@ def fcc(alat, atom, orthogonal=False):
         whether the lattice is orthogonal (4 atoms)
     """
     if orthogonal:
-        sc = Cell(np.array([[1, 0, 0],
+        cell = Cell(np.array([[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, 0],
-                      [ah, 0, ah], [0, ah, ah]], atom, cell=sc)
+                      [ah, 0, ah], [0, ah, ah]], atom, cell=cell)
     else:
-        sc = Cell(np.array([[0, 1, 1],
+        cell = Cell(np.array([[0, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 0]], np.float64) * alat / 2)
-        g = Geometry([0, 0, 0], atom, cell=sc)
+        g = Geometry([0, 0, 0], atom, cell=cell)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
@@ -110,26 +110,26 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
     c = a * coa
     a2sq = a / 2 ** .5
     if orthogonal:
-        sc = Cell([[a + a * _c60 * 2, 0, 0],
+        cell = Cell([[a + a * _c60 * 2, 0, 0],
                         [0, a * _c30 * 2, 0],
                         [0, 0, c / 2]])
         gt = Geometry([[0, 0, 0],
                        [a, 0, 0],
                        [a * _s30, a * _c30, 0],
-                       [a * (1 + _s30), a * _c30, 0]], atom, cell=sc)
+                       [a * (1 + _s30), a * _c30, 0]], atom, cell=cell)
         # Create the rotated one on top
         gr = gt.copy()
         # mirror structure
-        gr.xyz[0, 1] += sc.cell[1, 1]
-        gr.xyz[1, 1] += sc.cell[1, 1]
+        gr.xyz[0, 1] += cell.cell[1, 1]
+        gr.xyz[1, 1] += cell.cell[1, 1]
         gr = gr.translate(-np.amin(gr.xyz, axis=0))
         # Now displace to get the correct offset
         gr = gr.translate([0, a * _s30 / 2, 0])
         g = gt.append(gr, 2)
     else:
-        sc = Cell([a, a, c, 90, 90, 60])
+        cell = Cell([a, a, c, 90, 90, 60])
         g = Geometry([[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]],
-                     atom, cell=sc)
+                     atom, cell=cell)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g

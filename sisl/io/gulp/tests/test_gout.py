@@ -25,6 +25,6 @@ def test_zz_dynamical_matrix(sisl_files):
 
 def test_zz_sc_geom(sisl_files):
     si = sisl.get_sile(sisl_files(_dir, 'zz.gout'))
-    sc = si.read_cell()
+    cell = si.read_cell()
     geom = si.read_geometry()
-    assert sc == geom.sc
+    assert cell == geom.sc

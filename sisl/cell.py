@@ -417,7 +417,7 @@ class Cell(object):
 
         All 6 faces of the supercell can be retrieved like this:
 
-        >>> sc = Cell(4)
+        >>> cell = Cell(4)
         >>> n1, p1 = sc.plane(0, 1, True)
         >>> n2, p2 = sc.plane(0, 1, False)
         >>> n3, p3 = sc.plane(0, 2, True)
@@ -428,7 +428,7 @@ class Cell(object):
         However, for performance critical calculations it may be advantageous to
         do this:
 
-        >>> sc = Cell(4)
+        >>> cell = Cell(4)
         >>> uc = sc.cell.sum(0)
         >>> n1, p1 = sc.plane(0, 1)
         >>> n2 = -n1
@@ -481,10 +481,10 @@ class Cell(object):
         if isinstance(m, Integral):
             return self.tile(m, 0).tile(m, 1).tile(m, 2)
 
-        sc = self.copy()
+        cell = self.copy()
         for i, r in enumerate(m):
-            sc = sc.tile(r, i)
-        return sc
+            cell = cell.tile(r, i)
+        return cell
 
     @property
     def icell(self):

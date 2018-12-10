@@ -18,13 +18,13 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = Cell(np.array([[1.5, sq3h, 0.],
+            self.cell = Cell(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
             C = Atom(Z=6, R=[bond * 1.01]*2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, cell=self.sc)
+                              atom=C, cell=self.cell)
 
             self.mol = Geometry([[i, 0, 0] for i in range(10)], cell=[50])
     return t()
@@ -311,18 +311,18 @@ class TestGeometry(object):
         assert setup.g == setup.g.copy()
 
     def test_nsc1(self, setup):
-        sc = setup.g.sc.copy()
-        nsc = np.copy(sc.nsc)
-        sc.set_nsc([5, 5, 0])
-        assert np.allclose([5, 5, 1], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
+        cell = setup.cell.copy()
+        nsc = np.copy(cell.nsc)
+        cell.set_nsc([5, 5, 0])
+        assert np.allclose([5, 5, 1], cell.nsc)
+        assert len(cell.sc_off) == np.prod(cell.nsc)
 
     def test_nsc2(self, setup):
-        sc = setup.g.sc.copy()
-        nsc = np.copy(sc.nsc)
-        sc.set_nsc([0, 1, 0])
-        assert np.allclose([1, 1, 1], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
+        cell = setup.cell.copy()
+        nsc = np.copy(cell.nsc)
+        cell.set_nsc([0, 1, 0])
+        assert np.allclose([1, 1, 1], cell.nsc)
+        assert len(cell.sc_off) == np.prod(cell.nsc)
 
     def test_rotation1(self, setup):
         rot = setup.g.rotate(180, [0, 0, 1])
@@ -734,11 +734,11 @@ class TestGeometry(object):
 
     def test_within_inf2(self, setup):
         g = setup.mol.translate([0.05] * 3)
-        sc = Cell(1.5)
+        cell = Cell(1.5)
         for o in range(10):
             origo = [o - 0.5, -0.5, -0.5]
-            sc.origo = origo
-            idx = g.within_inf(sc)[0]
+            cell.origo = origo
+            idx = g.within_inf(cell)[0]
             assert len(idx) == 1
             assert idx[0] == o
 

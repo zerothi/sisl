@@ -90,7 +90,7 @@ class carSileVASP(SileVASP):
     def read_geometry(self):
         """ Returns Geometry object from the CONTCAR/POSCAR file
         """
-        sc = self.read_cell()
+        cell = self.read_cell()
 
         # The species labels are not always included in *CAR
         line1 = self.readline().split()
@@ -140,10 +140,10 @@ class carSileVASP(SileVASP):
             # The unit of the coordinates are cartesian
             xyz *= self._scale
         else:
-            xyz = np.dot(xyz, sc.cell)
+            xyz = np.dot(xyz, cell.cell)
 
         # The POT/CONT-CAR does not contain information on the atomic species
-        return Geometry(xyz=xyz, atom=atom, cell=sc)
+        return Geometry(xyz=xyz, atom=atom, cell=cell)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
