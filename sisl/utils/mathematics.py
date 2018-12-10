@@ -263,6 +263,13 @@ def curl(m, axis=-2, axisv=-1):
     vy.pop(axis)
     vz.pop(axis)
 
+    slx = tuple(slx)
+    sly = tuple(sly)
+    slz = tuple(slz)
+    vx = tuple(vx)
+    vy = tuple(vy)
+    vz = tuple(vz)
+
     # Create curl by removing the v dimension
     curl = empty(delete(m.shape, axis), dtype=m.dtype)
     curl[vx] = m[sly][vz] - m[slz][vy]
