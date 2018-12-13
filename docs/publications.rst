@@ -9,6 +9,11 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+
+#. G. Calogero, N. Papior, B. Kretz, A. Garcia-Lekue, T. Frederiksen and M. Brandbyge,
+   *Electron Transport in Nanoporous Graphene: Probing the Talbot Effect*,
+   Nanoletters, `X (2018) <www.doi.org/10.1021/acs.nanolett.8b04616>`_
+
 #. D. Perera and J. Rohrer,
    *Structure sensitivity of electronic transport across graphene grain boundaries*,
    Physical Review B **98**, `155432 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.98.155432>`_
@@ -21,7 +26,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    *Large-scale tight-binding simulations of quantum transport in ballistic graphene*,
    Journal of Physics: Condensed Matter, `(2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aad6f1>`_
 
-#. Bálint Fülöp, Zoltán Tajkov, János Pető, Péter Kun, János Koltai, László Oroszlány, Endre Tóvári, Hiroshi Murakawa, Yoshinori Tokura, Sándor Bordács, Levente Tapasztó and Szabolcs Csonka,
+#. B. Fülöp, Z. Tajkov, J. Pető, P. Kun, J. Koltai, L. Oroszlány, E. Tóvári, H. Murakawa, Y. Tokura, S. Bordács, L. Tapasztó and S. Csonka,
    *Exfoliation of single layer BiTeI flakes*,
    2D Materials **5** `3 (2018) <http://stacks.iop.org/2053-1583/5/i=3/a=031013>`_.
 
@@ -63,3 +68,6 @@ arXiv publications
 
 These publications are as far as we know in the review process.
 
+- L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
+  *Exchange interactions from a nonorthogonal basis: applications to 3d ferromagnets and graphene based systems*,
+  `1809.09252 <https://arxiv.org/abs/1809.09252>`_

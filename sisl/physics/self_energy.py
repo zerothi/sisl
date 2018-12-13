@@ -434,16 +434,15 @@ class RealSpaceSE(SelfEnergy):
             axes = None
 
         self._options = {
-            # the axes to use (semi_direction and k_direction *must* be in this array of length 2)
-            # This option is generally only necessary if parent.nsc
+            # the axes to use (semi_direction and k_direction *must* be in this array)
             'axes': axes,
             # the direction of the self-energy (removed in BZ)
             'semi_axis': None,
-            # the direction of the k-points (to be integrated)
+            # the direction of the k-points (to be integrated), can be one or two axes
             'k_axes': None,
-            # fineness of the integration grid close to the poles [Ang]
+            # fineness of the integration k-grid [Ang]
             'dk': 1000,
-            # whether TRS is used in if get_integration is used (default)
+            # whether TRS is used (G + G.T) * 0.5
             'trs': True,
             # imaginary part used in the Green function calculation (unless an imaginary energy is passed)
             'eta': 1e-4,
@@ -597,16 +596,12 @@ class RealSpaceSE(SelfEnergy):
             self._options['semi_axis'] = s_ax
             self._options['k_axes'] = k_ax
 
-            info(self.__class__.__name__ + '.initialize determined the semi-inf- and k-directions to be: {} and {}'.format(_ax_str(s_ax), _ax_str(k_ax)))
-
         elif self._options['k_axes'] is None:
             s_ax = self._options['semi_axis']
             k_ax = axes[axes != s_ax]
             if k_ax is None:
                 raise ValueError(self.__class__.__name__ + '.initialize could not find suitable k-direction(s).')
             self._options['k_axes'] = k_ax
-
-            info(self.__class__.__name__ + '.initialize determined the k direction to be: {}'.format(_ax_str(k_ax)))
 
         elif self._options['semi_axis'] is None:
             k_ax = self._options['k_axes']
@@ -617,8 +612,6 @@ class RealSpaceSE(SelfEnergy):
             if s_ax is None:
                 raise ValueError(self.__class__.__name__ + '.initialize could not find a suitable semi-infinite direction, the k-axis seems to utilize all directions?')
             self._options['semi_axis'] = s_ax
-
-            info(self.__class__.__name__ + '.initialize determined the semi-infinite direction to be: {}'.format(_ax_str(s_ax)))
 
         # The k-axis HAS to be sorted because this is the way the Bloch expansion works
         k_ax = np.sort(self._options['k_axes'])
