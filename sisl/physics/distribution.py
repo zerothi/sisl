@@ -240,7 +240,7 @@ def heaviside(x, x0=0.):
 
 
 def step_function(x, x0=0.):
-    r""" Distribution using the step function, also known as :math:`1 - H(x)`
+    r""" Step function, also known as :math:`1 - H(x)`
 
     This function equals one minus the Heaviside step function
 
