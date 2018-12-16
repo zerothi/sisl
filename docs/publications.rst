@@ -12,7 +12,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. G. Calogero, N. Papior, B. Kretz, A. Garcia-Lekue, T. Frederiksen and M. Brandbyge,
    *Electron Transport in Nanoporous Graphene: Probing the Talbot Effect*,
-   Nanoletters, `X (2018) <www.doi.org/10.1021/acs.nanolett.8b04616>`_
+   Nanoletters, `X (2018) <https://www.doi.org/10.1021/acs.nanolett.8b04616>`_
 
 #. D. Perera and J. Rohrer,
    *Structure sensitivity of electronic transport across graphene grain boundaries*,

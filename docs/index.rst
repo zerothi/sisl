@@ -15,7 +15,7 @@
 |codecov|_
 
 
-.. title:: Tight-binding and DFT-LCAO post-processing tool in Python
+.. title:: Scientific Python toolbox for electronic structure calculations
 .. meta::
    :description: sisl is a tool to manipulate an increasing amount of density functional
 		 theory code input and/or output. It also implements generic tight-binding
