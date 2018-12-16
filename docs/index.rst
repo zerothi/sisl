@@ -29,7 +29,7 @@ sisl is a tool to manipulate an increasing amount of density functional
 theory code input and/or output.
 It is also a tight-binding code implementing extremely fast and scalable
 tight-binding creation algorithms (for millions of orbitals).
-sisl is developed in particular with `TBtrans`_ in mind to act as a tight-binding
+sisl also allows interaction with `TBtrans`_ to act as a tight-binding
 Hamiltonian input engine for *N*-electrode non-equilibrium Green function transport
 calculations.
 
@@ -46,11 +46,12 @@ sisl consists of several distinct features:
 
 * Hamiltonian; easily create tight-binding Hamiltonians with user chosen number of
   orbitals per atom. Or read in Hamiltonians from DFT software such as `Siesta`_,
-  `Wannier90`_, etc. Secondly, there is intrinsic capability of orthogonal *and*
-  non-orthogonal Hamiltonians.
+  `Wannier90`_, `GULP`_ etc. Secondly, there is intrinsic capability of orthogonal
+  *and* non-orthogonal Hamiltonians.
 
-* Generic output files from DFT-software. A set of output files are implemented
-  which provides easy examination of output files.
+* Post-process output from several DFT codes: `Siesta`_,
+  `Wannier90`_, `VASP`_, `OpenMX`_, `GULP`_, `BigDFT`_, see `sisl.io` for a complete
+  list of allowed files.
 
 * Command line utilities for processing of data files for a wide
   variety of file formats.
