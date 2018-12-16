@@ -104,6 +104,8 @@ Distribution functions (:mod:`~sisl.physics.distribution`)
    fermi_dirac
    bose_einstein
    cold
+   step_function
+   heaviside
 
 
 

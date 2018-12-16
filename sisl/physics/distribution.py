@@ -183,8 +183,9 @@ def cold(E, kT=0.1, mu=0.):
     r""" Cold smearing function, Marzari-Vanderbilt, PRL 82, 16, 1999
 
     .. math::
-        C(E,k_BT,\mu) = \frac12 + \mathrm{erf}\Big(-\frac{E-\mu}{k_BT}-\frac1{\sqrt2}\Big)
-        + \frac1{\sqrt{2\pi}} \exp\Bigg\{-\Big[\frac{E-\mu}{k_BT}+\frac1{\sqrt2}\Big]^2\Bigg\}
+        C(E,k_BT,\mu) = \frac12 &+ \mathrm{erf}\Big(-\frac{E-\mu}{k_BT}-\frac1{\sqrt2}\Big)
+        \\
+        &+ \frac1{\sqrt{2\pi}} \exp\Bigg\{-\Big[\frac{E-\mu}{k_BT}+\frac1{\sqrt2}\Big]^2\Bigg\}
 
     Parameters
     ----------
@@ -208,12 +209,17 @@ def heaviside(x, x0=0.):
     r""" Heaviside step function
 
     .. math::
-        H(x,x_0) = \left\{\begin{array}0\quad \text{for }x < x_0
+      :nowrap:
+
+       \begin{align}
+        H(x,x_0) = \left\{\begin{aligned}0&\quad \text{for }x < x_0
                \\
-               0.5\quad \text{for }x = x_0
+               0.5&\quad \text{for }x = x_0
                \\
-               1\quad \text{for }x>x_0
-             \end{array}
+               1&\quad \text{for }x>x_0
+             \end{aligned}\right.
+       \end{align}
+
 
     Parameters
     ----------
@@ -239,11 +245,17 @@ def step_function(x, x0=0.):
     This function equals one minus the Heaviside step function
 
     .. math::
-        S(x,x_0) = \left\{\begin{array}1\quad \text{for }x < x_0
+      :nowrap:
+
+       \begin{align}
+        S(x,x_0) = \left\{\begin{aligned}1&\quad \text{for }x < x_0
                \\
-               0.5\quad \text{for }x = x_0
+               0.5&\quad \text{for }x = x_0
                \\
-               0\quad \text{for }x>x_0
+               0&\quad \text{for }x>x_0
+             \end{aligned}\right.
+       \end{align}
+
 
     Parameters
     ----------
