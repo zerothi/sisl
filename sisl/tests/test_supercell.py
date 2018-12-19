@@ -347,6 +347,11 @@ class TestSuperCell(object):
         assert sc.angle(0, 2) == 90
         assert sc.angle(1, 2) == 90
 
+    def test_cell_length(self):
+        sc = (graphene(orthogonal=True) * (40, 40, 1)).rotatec(24).sc
+        assert np.allclose(sc.length, (sc.cell_length(sc.length) ** 2).sum(1) ** 0.5)
+        assert np.allclose(1, (sc.cell_length(1) ** 2).sum(0))
+
     @pytest.mark.xfail(raises=ValueError)
     def test_set_nsc1(self, setup):
         sc = setup.sc.copy()

@@ -78,6 +78,11 @@ class SuperCell(object):
         self.set_nsc(nsc=nsc)
 
     @property
+    def length(self):
+        """ Length of each lattice vector """
+        return fnorm(self.cell)
+
+    @property
     def origo(self):
         """ Origo for the cell """
         return self._origo
@@ -496,6 +501,27 @@ class SuperCell(object):
         and not as returned by an inverse LAPACK algorithm.
         """
         return cell_reciprocal(self.cell)
+
+    def cell_length(self, length):
+        """ Calculate cell vectors such that they each have length `length`
+
+        Parameters
+        ----------
+        length : float or array_like
+            length for cell vectors, if an array it corresponds to the individual
+            vectors and it must have length 3
+
+        Returns
+        -------
+        cell : cell-vectors with prescribed length
+        """
+        length = _a.asarrayd(length)
+        if length.size == 1:
+            length = np.tile(length, 3)
+        if length.size != 3:
+            raise ValueError(self.__class__.__name__ + '.cell_length length parameter should be a single '
+                             'float, or an array of 3 values.')
+        return self.cell * (length.ravel() / self.length).reshape(3, 1)
 
     def rotatea(self, angle, only='abc', rad=False):
         return self.rotate(angle, self.cell[0, :], only=only, rad=rad)

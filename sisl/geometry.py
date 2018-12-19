@@ -9,6 +9,7 @@ from itertools import product
 import numpy as np
 from numpy import int32
 from numpy import dot, square, sqrt
+from numpy import floor, ceil
 
 from . import _plot as plt
 from . import _array as _a
@@ -106,7 +107,7 @@ class Geometry(SuperCellChild):
 
     See Also
     --------
-    Atoms : contained atoms `self.atom`
+    Atoms : contained atoms `self.atoms`
     Atom : contained atoms are each an object of this
     """
 
@@ -200,7 +201,12 @@ class Geometry(SuperCellChild):
     @property
     def q0(self):
         """ Total initial charge in this geometry (sum of q0 in all atoms) """
-        return self._atoms.q0.sum()
+        return self.atoms.q0.sum()
+
+    @property
+    def mass(self):
+        """ The mass of all atoms as an array """
+        return self.atoms.mass
 
     def maxR(self, all=False):
         """ Maximum orbital range of the atoms """
@@ -388,16 +394,16 @@ class Geometry(SuperCellChild):
         -----
         This is an in-place operation.
         """
-        self._atoms = self._atoms.reorder(in_place=True)
+        self._atoms = self.atoms.reorder(in_place=True)
 
     def reduce(self):
-        """ Remove all atoms not currently used in the ``self.atom`` object
+        """ Remove all atoms not currently used in the ``self.atoms`` object
 
         Notes
         -----
         This is an in-place operation.
         """
-        self._atoms = self._atoms.reduce(in_place=True)
+        self._atoms = self.atoms.reduce(in_place=True)
 
     def rij(self, ia, ja):
         r""" Distance between atom `ia` and `ja`, atoms can be in super-cell indices
@@ -793,7 +799,7 @@ class Geometry(SuperCellChild):
 
         # Figure out number of segments in each iteration
         # (minimum 1)
-        ixyz = _a.arrayi(np.ceil(dxyz / ir + 0.0001))
+        ixyz = _a.arrayi(ceil(dxyz / ir + 0.0001))
 
         # Calculate the steps required for each iteration
         for i in [0, 1, 2]:
@@ -967,7 +973,7 @@ class Geometry(SuperCellChild):
 
         ic = self.icell
         nrc = 1 / fnorm(ic)
-        idiv = np.floor(np.maximum(nrc / (2 * R), 1.1)).astype(np.int32, copy=False)
+        idiv = floor(np.maximum(nrc / (2 * R), 1.1)).astype(np.int32, copy=False)
         imcell = ic * idiv.reshape(-1, 1)
 
         # We know this is the maximum
@@ -978,7 +984,7 @@ class Geometry(SuperCellChild):
         # However, until I am sure that this wouldn't change, regardless of the
         # cell. I will keep it.
         Rimcell = R * fnorm(imcell)[axis]
-        nsc[axis] = (np.floor(Rimcell) + np.ceil(Rimcell % 0.5 - 0.5)).astype(np.int32)
+        nsc[axis] = (floor(Rimcell) + ceil(Rimcell % 0.5 - 0.5)).astype(np.int32)
         # Since for 1 it is not sure that it is a connection or not, we limit the search by
         # removing it.
         nsc[axis] = np.where(nsc[axis] > 1, nsc[axis], 0)
@@ -2916,11 +2922,6 @@ class Geometry(SuperCellChild):
         return ASE_Atoms(symbols=self.atoms.Z, positions=self.xyz.tolist(),
                          cell=self.cell.tolist())
 
-    @property
-    def mass(self):
-        """ Returns the mass of all atoms as an array """
-        return self.atoms.mass
-
     def equal(self, other, R=True, tol=1e-4):
         """ Whether two geometries are the same (optional not check of the orbital radius)
 
@@ -3203,13 +3204,21 @@ class Geometry(SuperCellChild):
         # 1. Number of times each lattice vector must be expanded to fit
         #    inside the "possibly" larger `sc`.
         idx = dot(sc.cell, self.icell.T)
-        tile_min = np.floor(idx.min(0))
-        tile_max = np.ceil(idx.max(0)).astype(dtype=int32)
+        tile_min = floor(idx.min(0))
+        tile_max = ceil(idx.max(0)).astype(dtype=int32)
+
+        # Intrinsic offset (when atomic coordinates are outside primary unit-cell)
+        idx = dot(self.xyz, self.icell.T)
+        tmp = floor(idx.min(0))
+        tile_min = np.where(tile_min < tmp, tile_min, tmp).astype(dtype=int32)
+        tmp = ceil(idx.max(0))
+        tile_max = np.where(tmp < tile_max, tile_max, tmp).astype(dtype=int32)
+        del idx, tmp
 
         # 1a) correct for origo displacement
-        idx = np.floor(dot(sc.origo, self.icell.T))
+        idx = floor(dot(sc.origo, self.icell.T))
         tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
-        idx = np.floor(dot(origo, self.icell.T))
+        idx = floor(dot(origo, self.icell.T))
         tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
 
         # 2. Reduce tiling along non-periodic directions
@@ -3243,12 +3252,12 @@ class Geometry(SuperCellChild):
         # we *have* to account for possible sign-errors
         # This is done by a length tolerance
         ftol = tol / fnorm(self.cell).reshape(1, 3)
-        isc = np.floor(fxyz - ftol).astype(int32)
+        isc = floor(fxyz - ftol).astype(int32)
 
         # Now we can extract the indices where the two are non-matching.
         # At these indices we have some "errors" that we have to fix and
         # thus select the correct isc.
-        idx_diff = (isc - np.floor(fxyz + ftol).astype(int32)).nonzero()
+        idx_diff = (isc - floor(fxyz + ftol).astype(int32)).nonzero()
 
         # For these indices we can use the nearest integer as that
         # selects the closest. floor will ONLY be wrong for -0.0000, 0.99999, ...
