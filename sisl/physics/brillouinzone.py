@@ -58,6 +58,22 @@ weight:
 ...    return eigenstate.DOS(E) * k[0] * weight
 >>> DOS = mp.assum().eigenstate(wrap=wrap_DOS, eta=True)
 
+When using wrap to calculate more than one quantity per eigenstate it may be advantageous
+to use `oplist` to handle cases of `BrillouinZone.asaverage` and `BrillouinZone.assum`.
+
+>>> H = Hamiltonian(...)
+>>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> E = np.linspace(-2, 2, 100)
+>>> def wrap_multiple(eigenstate):
+...    # Calculate DOS/PDOS for eigenstates
+...    DOS = eigenstate.DOS(E)
+...    PDOS = eigenstate.PDOS(E)
+...    # Calculate velocity for the eigenstates
+...    v = eigenstate.velocity()
+...    return oplist([DOS, PDOS, v])
+>>> DOS, PDOS, v = mp.asaverage().eigenstate(wrap=wrap_multiple, eta=True)
+
+Which does all averaging etc. using `oplist`.
 
 .. autosummary::
    :toctree:
@@ -444,10 +460,7 @@ class BrillouinZone(object):
         ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0)
         ...    return oplist(DOS, PDOS, spin_moment)
         >>> bz = BrillouinZone(hamiltonian)
-        >>> results = bz.asaverage().eigenstate(wrap=wrap)
-        >>> DOS = results[0]
-        >>> PDOS = results[1]
-        >>> spin_moment = results[2]
+        >>> DOS, PDOS, spin_moment = bz.asaverage().eigenstate(wrap=wrap)
 
         See Also
         --------
@@ -730,20 +743,16 @@ class BrillouinZone(object):
         >>> obj.DOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
         >>> obj.PDOS(np.linspace(-2, 2, 100), eta=True) # doctest: +SKIP
 
-
         >>> E = np.linspace(-2, 2, 100)
         >>> dist = get_distribution('gaussian', smearing=0.1)
         >>> def wrap(es, parent, k, weight):
         ...    DOS = es.DOS(E, distribution=dist) * weight
         ...    PDOS = es.PDOS(E, distribution=dist) * weight
-        ...    occ = es.occupation() * weight
-        ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0)
+        ...    occ = es.occupation()
+        ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0) * weight
         ...    return oplist(DOS, PDOS, spin_moment)
         >>> bz = BrillouinZone(hamiltonian)
-        >>> results = bz.assum().eigenstate(wrap=wrap)
-        >>> DOS = results[0]
-        >>> PDOS = results[1]
-        >>> spin_moment = results[2]
+        >>> DOS, PDOS, spin_moment = bz.assum().eigenstate(wrap=wrap)
 
         See Also
         --------
