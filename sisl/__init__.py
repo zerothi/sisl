@@ -67,6 +67,9 @@ from .info import cite
 # Import the Selector
 from .selector import *
 
+# Import oplist
+from .oplist import oplist
+
 # Import plot routine
 from ._plot import plot as plot
 
