@@ -9,9 +9,9 @@ from __future__ import print_function, division
 
 import sys
 if sys.version_info >= (3, 0):
-    from collections import Iterable
-else:
     from collections.abc import Iterable
+else:
+    from collections import Iterable
 from numbers import Integral
 
 

@@ -59,7 +59,7 @@ weight:
 >>> DOS = mp.assum().eigenstate(wrap=wrap_DOS, eta=True)
 
 When using wrap to calculate more than one quantity per eigenstate it may be advantageous
-to use `oplist` to handle cases of `BrillouinZone.asaverage` and `BrillouinZone.assum`.
+to use `~sisl.oplist` to handle cases of `BrillouinZone.asaverage` and `BrillouinZone.assum`.
 
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
@@ -73,7 +73,7 @@ to use `oplist` to handle cases of `BrillouinZone.asaverage` and `BrillouinZone.
 ...    return oplist([DOS, PDOS, v])
 >>> DOS, PDOS, v = mp.asaverage().eigenstate(wrap=wrap_multiple, eta=True)
 
-Which does all averaging etc. using `oplist`.
+Which does all averaging etc. using `~sisl.oplist`.
 
 .. autosummary::
    :toctree:
