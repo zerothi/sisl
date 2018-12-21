@@ -432,6 +432,23 @@ class BrillouinZone(object):
         >>> obj = BrillouinZone(...) # doctest: +SKIP
         >>> obj.asarray().eigh(eta=True) # doctest: +SKIP
 
+        To compute multiple things in one go one should use wrappers to contain
+        the calculation
+
+        >>> E = np.linspace(-2, 2, 100)
+        >>> dist = get_distribution('gaussian', smearing=0.1)
+        >>> def wrap(es, parent, k, weight):
+        ...    DOS = es.DOS(E, distribution=dist)
+        ...    PDOS = es.PDOS(E, distribution=dist)
+        ...    occ = es.occupation()
+        ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0)
+        ...    return oplist(DOS, PDOS, spin_moment)
+        >>> bz = BrillouinZone(hamiltonian)
+        >>> results = bz.asaverage().eigenstate(wrap=wrap)
+        >>> DOS = results[0]
+        >>> PDOS = results[1]
+        >>> spin_moment = results[2]
+
         See Also
         --------
         asyield : all output returned through an iterator
@@ -712,6 +729,21 @@ class BrillouinZone(object):
         >>> obj.assum() # doctest: +SKIP
         >>> obj.DOS(np.linspace(-2, 2, 100)) # doctest: +SKIP
         >>> obj.PDOS(np.linspace(-2, 2, 100), eta=True) # doctest: +SKIP
+
+
+        >>> E = np.linspace(-2, 2, 100)
+        >>> dist = get_distribution('gaussian', smearing=0.1)
+        >>> def wrap(es, parent, k, weight):
+        ...    DOS = es.DOS(E, distribution=dist) * weight
+        ...    PDOS = es.PDOS(E, distribution=dist) * weight
+        ...    occ = es.occupation() * weight
+        ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0)
+        ...    return oplist(DOS, PDOS, spin_moment)
+        >>> bz = BrillouinZone(hamiltonian)
+        >>> results = bz.assum().eigenstate(wrap=wrap)
+        >>> DOS = results[0]
+        >>> PDOS = results[1]
+        >>> spin_moment = results[2]
 
         See Also
         --------

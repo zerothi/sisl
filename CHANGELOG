@@ -1,6 +1,18 @@
 0.9.6
 =====
 
+- Enabled complex averaged calculations using oplist
+	The `oplist` object is a container allowing inter-element operations
+
+	    >>> l1 = oplist([0, 1])
+		  >>> l2 = oplist([2, 3])
+			>>> l = l1 + l2
+			>>> print(l)
+			[2, 4]
+
+  This is extremely handy for BrillouinZone.asaverage/assum when calculating
+	multiple values using eigenstate objects.
+
 - Added more distribution functions (step and heaviside)
 
 - Removed numpy deprecated class numpy.matrix, now everything is array

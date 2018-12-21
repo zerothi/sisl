@@ -6,6 +6,8 @@ import warnings
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
+from sisl import get_distribution
+from sisl import oplist
 from sisl import Grid, SphericalOrbital, SislError
 from sisl.physics.electron import berry_phase
 
@@ -1288,6 +1290,23 @@ class TestHamiltonian(object):
         assert len(Ef) == 2
         H.shift(-Ef)
         assert np.allclose(H.fermi_level(bz, q=q), 0.)
+
+    def test_wrap_oplist(self, setup):
+        R, param = [0.1, 1.5], [1, 2.1]
+        H = Hamiltonian(setup.g.copy())
+        H.construct([R, param])
+        bz = MonkhorstPack(H, [10, 10, 1])
+        E = np.linspace(-4, 4, 1000)
+        dist = get_distribution('gaussian', smearing=0.05)
+        def wrap(es, parent, k, weight):
+            DOS = es.DOS(E, distribution=dist)
+            PDOS = es.PDOS(E, distribution=dist)
+            vel = es.velocity() * es.occupation().reshape(-1, 1)
+            return oplist([DOS, PDOS, vel])
+        bz.asaverage()
+        results = bz.eigenstate(wrap=wrap)
+        assert np.allclose(bz.DOS(E, distribution=dist), results[0])
+        assert np.allclose(bz.PDOS(E, distribution=dist), results[1])
 
     def test_edges1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
