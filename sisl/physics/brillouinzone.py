@@ -73,7 +73,7 @@ to use `~sisl.oplist` to handle cases of `BrillouinZone.asaverage` and `Brilloui
 ...    return oplist([DOS, PDOS, v])
 >>> DOS, PDOS, v = mp.asaverage().eigenstate(wrap=wrap_multiple, eta=True)
 
-Which does all averaging etc. using `~sisl.oplist`.
+Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
 
 .. autosummary::
    :toctree:
@@ -458,7 +458,7 @@ class BrillouinZone(object):
         ...    PDOS = es.PDOS(E, distribution=dist)
         ...    occ = es.occupation()
         ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0)
-        ...    return oplist(DOS, PDOS, spin_moment)
+        ...    return oplist([DOS, PDOS, spin_moment])
         >>> bz = BrillouinZone(hamiltonian)
         >>> DOS, PDOS, spin_moment = bz.asaverage().eigenstate(wrap=wrap)
 
@@ -750,7 +750,7 @@ class BrillouinZone(object):
         ...    PDOS = es.PDOS(E, distribution=dist) * weight
         ...    occ = es.occupation()
         ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0) * weight
-        ...    return oplist(DOS, PDOS, spin_moment)
+        ...    return oplist([DOS, PDOS, spin_moment])
         >>> bz = BrillouinZone(hamiltonian)
         >>> DOS, PDOS, spin_moment = bz.assum().eigenstate(wrap=wrap)
 

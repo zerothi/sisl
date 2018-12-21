@@ -21,7 +21,7 @@ __all__ = ['oplist']
 class oplist(object):
     """ list with inter-operations
 
-    Class implementing direct element operations instead of list-extensions/compressions.
+    List-like class implementing direct element operations instead of list-extensions/compressions.
     When having multiple lists and one wishes to create a sum of individual elements, thus
     creating the summed elements list one could do:
 
@@ -59,13 +59,26 @@ class oplist(object):
     >>> print(l * 2)
     [18, 24]
 
+
+    The class also implements iterating elements and accessing elements via
+    integer keys (just as `list`)
+
+    >>> l = oplist([1, 2, 3])
+    >>> for val in l:
+    ...    print(val)
+    1
+    2
+    3
+    >>> print(l[1])
+    2
+
     Currently this class implements:
 
-    - additions (`__add__`, `__iadd__`, `__radd__`)
-    - subtractions (`__sub__`, `__isub__`, `__rsub__`)
-    - multiplications (`__mul__`, `__imul__`, `__rmul__`)
-    - divisions (`__truediv__`, `__itruediv__`, `__rtruediv__`)
-    - powers (`__pow__`, `__ipow__`, `__rpow__`)
+    - additions
+    - subtractions
+    - multiplications
+    - divisions
+    - powers
 
     Parameters
     ----------
