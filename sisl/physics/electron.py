@@ -48,6 +48,7 @@ automatically passes the correct ``S`` because it knows the states :math:`k`-poi
 """
 from __future__ import print_function, division
 
+from functools import reduce
 import numpy as np
 from numpy import find_common_type
 from numpy import floor, ceil
@@ -115,10 +116,7 @@ def DOS(E, eig, distribution='gaussian'):
     if isinstance(distribution, str):
         distribution = get_distribution(distribution)
 
-    DOS = distribution(E - eig[0])
-    for i in range(1, len(eig)):
-        DOS += distribution(E - eig[i])
-    return DOS
+    return reduce(lambda DOS, eig: DOS + distribution(E - eig), eig, 0.)
 
 
 def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
