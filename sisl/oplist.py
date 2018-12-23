@@ -72,7 +72,7 @@ class oplist(object):
     >>> print(l[1])
     2
 
-    Currently this class implements:
+    Currently this class implements the following elementwise mathematical operations
 
     - additions
     - subtractions

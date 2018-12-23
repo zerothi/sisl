@@ -295,6 +295,26 @@ class TestBrillouinZone(object):
         mylist = [wrap_reverse(H.eigh(k=k)) for k in bz]
         assert np.allclose(aslist, mylist)
 
+    @pytest.mark.only
+    def test_as_wrap_default_oplist(self):
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False).asaverage()
+        assert len(bz) == 2 ** 3
+
+        # Check with a wrap function
+        E = np.linspace(-2, 2, 100)
+        def wrap_sum(es, weight):
+            PDOS = es.PDOS(E) * weight
+            return PDOS.sum(0), PDOS
+
+        DOS, PDOS = bz.assum().eigenstate(wrap=wrap_sum)
+        assert np.allclose(bz.DOS(E), DOS)
+        assert np.allclose(bz.PDOS(E), PDOS)
+
     # Check with a wrap function and the weight argument
     def test_wrap_kwargs(arg):
         from sisl import geom, Hamiltonian
