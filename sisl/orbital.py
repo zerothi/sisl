@@ -216,15 +216,10 @@ class Orbital(object):
         d = dict()
 
         if harmonics:
+            # We are plotting the harmonic part
             d['projection'] = 'polar'
 
-        if axes is False:
-            try:
-                axes = plt.mlibplt.gca()
-            except:
-                axes = plt.mlibplt.figure().add_subplot(111, **d)
-        elif axes is True:
-            axes = plt.mlibplt.figure().add_subplot(111, **d)
+        axes = plt.get_axes(axes, **d)
 
         # Add plots
         if harmonics:
@@ -250,6 +245,8 @@ class Orbital(object):
             axes.set_xlim(left=0)
             axes.set_xlabel('Radius [Ang]')
             axes.set_ylabel(r'$f(r)$ [1/Ang$^{3/2}$]')
+
+        return axes
 
     def toGrid(self, precision=0.05, c=1., R=None, dtype=np.float64, Z=1):
         """ Create a Grid with *only* this orbital wavefunction on it

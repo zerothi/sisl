@@ -2859,12 +2859,6 @@ class Geometry(SuperCellChild):
             area = _a.arrayd(self.atoms.Z)
             area[:] *= 20 * np.pi / area.min()
 
-        # Start by plotting the supercell
-        if supercell:
-            self.sc.__plot__(axis, axes=axes, *args, **kwargs)
-            if axes is True:
-                axes = False
-
         if axis is None:
             axis = [0, 1, 2]
 
@@ -2872,13 +2866,12 @@ class Geometry(SuperCellChild):
         if len(axis) == 3:
             d['projection'] = '3d'
 
-        if axes is False:
-            try:
-                axes = plt.mlibplt.gca()
-            except Exception:
-                axes = plt.mlibplt.figure().add_subplot(111, **d)
-        elif axes is True:
-            axes = plt.mlibplt.figure().add_subplot(111, **d)
+        # The Geometry determines the axes, then we pass it to supercell.
+        axes = plt.get_axes(axes, **d)
+
+        # Start by plotting the supercell
+        if supercell:
+            axes = self.sc.__plot__(axis, axes=axes, *args, **kwargs)
 
         # Create short-hand
         xyz = self.xyz
@@ -2899,6 +2892,8 @@ class Geometry(SuperCellChild):
 
         axes.set_xlabel('Ang')
         axes.set_ylabel('Ang')
+
+        return axes
 
     @classmethod
     def fromASE(cls, aseg):

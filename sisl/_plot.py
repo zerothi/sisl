@@ -14,7 +14,18 @@ except Exception as _matplotlib_import_exception:
     mlib3d = NotImplementedError
     has_matplotlib = False
 
-__all__ = ['plot', 'mlib', 'mlibplt', 'mlib3d']
+__all__ = ['plot', 'mlib', 'mlibplt', 'mlib3d', 'get_axes']
+
+
+def get_axes(axes=False, **kwargs):
+    if axes is False:
+        try:
+            axes = mlibplt.gca()
+        except Exception:
+            axes = mlibplt.figure().add_subplot(111, **kwargs)
+    elif axes is True:
+        axes = mlibplt.figure().add_subplot(111, **kwargs)
+    return axes
 
 
 def _plot(obj, *args, **kwargs):

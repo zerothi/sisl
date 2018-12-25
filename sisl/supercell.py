@@ -954,13 +954,7 @@ class SuperCell(object):
         if len(axis) == 3:
             d['projection'] = '3d'
 
-        if axes is False:
-            try:
-                axes = plt.mlibplt.gca()
-            except:
-                axes = plt.mlibplt.figure().add_subplot(111, **d)
-        elif axes is True:
-            axes = plt.mlibplt.figure().add_subplot(111, **d)
+        axes = plt.get_axes(axes, **d)
 
         # Create vector objects
         o = self.origo
@@ -989,6 +983,8 @@ class SuperCell(object):
 
         axes.set_xlabel('Ang')
         axes.set_ylabel('Ang')
+
+        return axes
 
 
 class SuperCellChild(object):
