@@ -119,7 +119,7 @@ def test_real_space_HS(setup, k_axes, semi_axis, trs, bz, unfold):
     if k_axes == semi_axis:
         return
     RSE = RealSpaceSE(setup.HS, (unfold, unfold, 1))
-    RSE.update_option(semi_axis=semi_axis, k_axes=k_axes, dk=100, trs=trs, bz=bz)
+    RSE.set_option(semi_axis=semi_axis, k_axes=k_axes, dk=100, trs=trs, bz=bz)
     # Initialize and print
     with warnings.catch_warnings():
         #warnings.simplefilter('ignore')
@@ -137,7 +137,7 @@ def test_real_space_H(setup, k_axes, semi_axis, trs, bz, unfold):
     if k_axes == semi_axis:
         return
     RSE = RealSpaceSE(setup.H, (unfold, unfold, 1))
-    RSE.update_option(semi_axis=semi_axis, k_axes=k_axes, dk=100, trs=trs, bz=bz)
+    RSE.set_option(semi_axis=semi_axis, k_axes=k_axes, dk=100, trs=trs, bz=bz)
     # Initialize and print
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
@@ -154,7 +154,7 @@ def test_real_space_H_3d():
     H = Hamiltonian(geom)
     H.construct(([0.001, 1.01], (0, -1)))
     RSE = RealSpaceSE(H, (3, 4, 2))
-    RSE.update_option(semi_axis=0, k_axes=(1, 2), dk=100, trs=True)
+    RSE.set_option(semi_axis=0, k_axes=(1, 2), dk=100, trs=True)
     # Initialize and print
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
@@ -162,7 +162,7 @@ def test_real_space_H_3d():
     nk = np.ones(3, np.int32)
     nk[RSE._options['k_axes']] = 23
     bz = BrillouinZone(H, nk)
-    RSE.update_option(bz=bz)
+    RSE.set_option(bz=bz)
 
     RSE.green(0.1)
     # Since there is only 2 repetitions along one direction we will have the full matrix
@@ -173,7 +173,7 @@ def test_real_space_H_3d():
 
 def test_real_space_H_dtype(setup):
     RSE = RealSpaceSE(setup.H, (2, 2, 1))
-    RSE.update_option(semi_axis=0, k_axes=1, dk=100)
+    RSE.set_option(semi_axis=0, k_axes=1, dk=100)
 
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')

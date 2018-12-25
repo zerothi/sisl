@@ -295,7 +295,6 @@ class TestBrillouinZone(object):
         mylist = [wrap_reverse(H.eigh(k=k)) for k in bz]
         assert np.allclose(aslist, mylist)
 
-    @pytest.mark.only
     def test_as_wrap_default_oplist(self):
         from sisl import geom, Hamiltonian
         g = geom.graphene()

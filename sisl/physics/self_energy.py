@@ -13,6 +13,7 @@ from numpy import abs as _abs
 from sisl.messages import warn, info
 from sisl.utils.mathematics import fnorm
 from sisl.utils.ranges import array_arange
+from sisl._help import array_replace
 import sisl._array as _a
 import sisl.linalg as lin
 from sisl.linalg import solve, inv
@@ -41,7 +42,7 @@ class SelfEnergy(object):
         """ Class specific setup routine """
         pass
 
-    def self_energy(self, E):
+    def self_energy(self, *args, **kwargs):
         raise NotImplementedError
 
     def __getattr__(self, attr):
@@ -91,27 +92,10 @@ class SemiInfinite(SelfEnergy):
         self._setup(spgeom)
 
     def __str__(self):
-        """ String representation of the SemiInfinite """
-        direction = {-1: '-', 1: '+'}
-        axis = {0: 'A', 1: 'B', 2: 'C'}
-        return self.__class__.__name__ + '{{direction: {0}{1}\n}}'.format(
-            direction[self.semi_inf_dir], axis[self.semi_inf])
-
-    def _correct_k(self, k=None):
-        """ Return a corrected k-point
-
-        Notes
-        -----
-        This is strictly not required because any `k` along the semi-infinite direction
-        is *integrated* out and thus the self-energy is the same for all k along the
-        semi-infinite direction.
-        """
-        if k is None:
-            k = _a.zerosd([3])
-        else:
-            k = self._fill(k, np.float64)
-            k[self.semi_inf] = 0.
-        return k
+        """ String representation of SemiInfinite """
+        return  '{0}{{direction: {1}{2}}}'.format(self.__class__.__name__,
+                                                  {-1: '-', 1: '+'}.get(self.semi_inf_dir),
+                                                  {0: 'A', 1: 'B', 2: 'C'}.get(self.semi_inf))
 
 
 class RecursiveSI(SemiInfinite):
@@ -125,9 +109,9 @@ class RecursiveSI(SemiInfinite):
         """ Representation of the RecursiveSI model """
         direction = {-1: '-', 1: '+'}
         axis = {0: 'A', 1: 'B', 2: 'C'}
-        return self.__class__.__name__ + '{{direction: {0}{1},\n {2}\n}}'.format(
-            direction[self.semi_inf_dir], axis[self.semi_inf],
-            str(self.spgeom0).replace('\n', '\n '),
+        return '{0}{{direction: {1}{2},\n {3}\n}}'.format(self.__class__.__name__,
+                                                          direction[self.semi_inf_dir], axis[self.semi_inf],
+                                                          str(self.spgeom0).replace('\n', '\n '),
         )
 
     def _setup(self, spgeom):
@@ -164,7 +148,7 @@ class RecursiveSI(SemiInfinite):
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep_shape=True)
 
-    def self_energy(self, E, k=None, dtype=None, eps=1e-14, bulk=False, **kwargs):
+    def self_energy(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, bulk=False, **kwargs):
         r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
         Parameters
@@ -193,7 +177,7 @@ class RecursiveSI(SemiInfinite):
             E = E.real + 1j * self.eta
 
         # Get k-point
-        k = self._correct_k(k)
+        k = _a.asarrayd(k)
 
         if dtype is None:
             dtype = complex128
@@ -260,7 +244,7 @@ class RecursiveSI(SemiInfinite):
 
         raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')
 
-    def self_energy_lr(self, E, k=None, dtype=None, eps=1e-14, bulk=False, **kwargs):
+    def self_energy_lr(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, bulk=False, **kwargs):
         r""" Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
 
         Note calculating the LR self-energies simultaneously requires that their chemical potentials are the same.
@@ -293,7 +277,7 @@ class RecursiveSI(SemiInfinite):
             E = E.real + 1j * self.eta
 
         # Get k-point
-        k = self._correct_k(k)
+        k = _a.asarrayd(k)
 
         if dtype is None:
             dtype = complex128
@@ -369,15 +353,15 @@ class RecursiveSI(SemiInfinite):
 
 
 class RealSpaceSE(SelfEnergy):
-    r""" Calculate real-space self-energy (or green function) for a given physical object with periodicity
+    r""" Calculate real-space self-energy (or Green function) for a given physical object with periodicity
 
-    The real-space self-energy is calculated via k-averaged Green functions:
+    The real-space self-energy is calculated via the k-averaged Green function:
 
     .. math::
         \boldsymbol\Sigma^\mathcal{R}(E) = \mathbf S^\mathcal{R} (E+i\eta) - \mathbf H^\mathcal{R}
              - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
 
-    The method actually used is relying on the `RecursiveSI` and `Bloch` objects.
+    The method actually used is relying on `RecursiveSI` and `~sisl.physics.Bloch` objects.
 
     Parameters
     ----------
@@ -411,11 +395,30 @@ class RealSpaceSE(SelfEnergy):
     Notes
     -----
     Once created it is vital that `initialize` is called before calculating the real-space Green function.
+    Once done, memory can be saved by issuing `clear`.
     The basic procedure is:
 
-    >>> rse = RealSpaceSE(...)
+    Examples
+    --------
+    >>> graphene = geom.graphene()
+    >>> H = Hamiltonian(graphene)
+    >>> H.construct([(0.1, 1.44), (0, -2.7)])
+    >>> rse = RealSpaceSE(H, (3, 4, 1))
     >>> rse.initialize()
-    >>> rse.green(...)
+    >>> rse.green(0.1)
+
+    The Brillouin zone integration is determined naturally.
+
+    >>> graphene = geom.graphene()
+    >>> H = Hamiltonian(graphene)
+    >>> H.construct([(0.1, 1.44), (0, -2.7)])
+    >>> rse = RealSpaceSE(H, (3, 4, 1))
+    >>> rse.set_option(semi_axis=0, k_axes=[1], eta=1e-3, bz=MonkhorstPack(H, [1, 1000, 1]))
+    >>> rse.initialize()
+    >>> rse.green(0.1) # eta = 1e-3
+    >>> rse.green(0.1 + 1j * 1e-4) # eta = 1e-4
+
+    Manually specify Brillouin zone integration and default :math:`\eta` value.
     """
 
     def __init__(self, parent, unfold=(1, 1, 1), **options):
@@ -424,7 +427,6 @@ class RealSpaceSE(SelfEnergy):
 
         # Local variables for the completion of the details
         self._unfold = _a.arrayi([max(1, un) for un in unfold])
-        self._initialized = False
 
         # Guess on the axes used
         idx = (parent.nsc == 1).nonzero()[0]
@@ -449,9 +451,9 @@ class RealSpaceSE(SelfEnergy):
             # The BrillouinZone used for integration
             'bz': None,
         }
-        self.update_option(**options)
+        self.set_option(**options)
 
-    def update_option(self, **options):
+    def set_option(self, **options):
         """ Update options in the real-space self-energy
 
         After updating options one should re-call `initialize` for consistency.
@@ -479,7 +481,7 @@ class RealSpaceSE(SelfEnergy):
         for ax in ['k_axes', 'axes']:
             opt = options.get(ax, None)
             if not opt is None:
-                self._options[ax] = _a.arrayi(opt).ravel()
+                self._options[ax] = np.sort(_a.arrayi(opt).ravel())
 
     def real_space_parent(self):
         """ Return the parent object in the real-space unfolded region """
@@ -491,11 +493,15 @@ class RealSpaceSE(SelfEnergy):
         P0 = self.parent.tile(self._unfold[s_ax], s_ax)
         for ax in k_ax:
             P0 = P0.tile(self._unfold[ax], ax)
-        P0.set_nsc([1, 1, 1])
+        # Only specify the used axis without periodicity
+        # This will allow one to use the real-space self-energy
+        # for *circles*
+        ones = array_replace(P0.nsc, (s_ax, 1), (k_ax, 1))
+        P0.set_nsc(ones)
         return P0
 
     def real_space_coupling(self, ret_indices=False):
-        """ Return the real-space coupling parent where they fold into the parent real-space unit cell
+        """ Real-space coupling parent where sites fold into the parent real-space unit cell
 
         The resulting parent object only contains the inner-cell couplings for the elements that couple
         out of the real-space matrix.
@@ -513,9 +519,17 @@ class RealSpaceSE(SelfEnergy):
         opt = self._options
         s_ax = opt['semi_axis']
         k_ax = opt['k_axes']
+
+        # If there are any axes that still has k-point sampling (for e.g. circles)
+        # we should remove that periodicity before figuring out which atoms that connect out.
+        # This is because the self-energy should *only* remain on the sites connecting
+        # out of the self-energy used. The k-axis retains all atoms, per see.
         PC = self.parent.tile(self._unfold[s_ax], s_ax)
         for ax in k_ax:
             PC = PC.tile(self._unfold[ax], ax)
+
+        nsc = array_replace(PC.nsc, (s_ax, None), (k_ax, None), other=1)
+        PC.set_nsc(nsc)
 
         # Geometry short-hand
         g = PC.geometry
@@ -530,13 +544,18 @@ class RealSpaceSE(SelfEnergy):
         # Extract the connecting orbitals and reduce them to unique atomic indices
         orbs = g.osc2uc(csr.col[array_arange(csr.ptr[:-1], n=csr.ncol)], True)
         atom_idx = g.o2a(orbs, True)
+
         # Only retain coupling atoms
+        # Remove all out-of-cell couplings such that we only have inner-cell couplings
+        # Or, if we retain periodicity along a given direction, we will retain those
+        # as well.
+        PC = self.parent.tile(self._unfold[s_ax], s_ax)
+        for ax in k_ax:
+            PC = PC.tile(self._unfold[ax], ax)
         PC = PC.sub(atom_idx)
 
-        # Remove all out-of-cell couplings such that we only have inner-cell couplings.
-        nsc = PC.nsc.copy()
-        nsc[s_ax] = 1
-        nsc[k_ax] = 1
+        # Truncate nsc along the repititions
+        nsc = array_replace(PC.nsc, (s_ax, 1), (k_ax, 1))
         PC.set_nsc(nsc)
         if ret_indices:
             return PC, atom_idx
@@ -562,6 +581,7 @@ class RealSpaceSE(SelfEnergy):
         # Try and guess the directions
         unfold = self._unfold
         nsc = self.parent.nsc.copy()
+
         axes = self._options['axes']
         if axes is None:
             if nsc[2] == 1:
@@ -647,9 +667,9 @@ class RealSpaceSE(SelfEnergy):
             nk = _a.onesi(3)
             nk[k_ax] = np.ceil(self._options['dk'] * rcell).astype(np.int32)
             self._options['bz'] = MonkhorstPack(sc, nk, trs=self._options['trs'])
-            info(self.__class__.__name__ + '.initialize determined the number of k-points: {}'.format(' / '.join(map(str, nk[k_ax]))))
+            info(self.__class__.__name__ + '.initialize determined number of k-points: {}'.format(' / '.join(map(str, nk[k_ax]))))
 
-    def self_energy(self, E, bulk=False, coupling=False, dtype=None, **kwargs):
+    def self_energy(self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs):
         r""" Calculate the real-space self-energy
 
         The real space self-energy is calculated via:
@@ -662,6 +682,9 @@ class RealSpaceSE(SelfEnergy):
         ----------
         E : float/complex
            energy to evaluate the real-space self-energy at
+        k : array_like, optional
+           only viable for 3D bulk systems with real-space self-energies along 2 directions.
+           I.e. this would correspond to circular self-energies.
         bulk : bool, optional
            if true, :math:`\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}`
            is returned, otherwise :math:`\boldsymbol\Sigma^\mathcal{R}` is returned
@@ -677,7 +700,10 @@ class RealSpaceSE(SelfEnergy):
             dtype = complex128
         if E.imag == 0:
             E = E.real + 1j * self._options['eta']
-        G = self.green(E, dtype=dtype)
+
+        # Calculate the Green function
+        G = self.green(E, k, dtype=dtype)
+
         if coupling:
             orbs = self._calc['orbs']
             iorbs = _a.arangei(orbs.size).reshape(1, -1)
@@ -686,13 +712,13 @@ class RealSpaceSE(SelfEnergy):
             I[orbs.ravel(), iorbs.ravel()] = 1.
             if bulk:
                 return solve(G, I, True, True)[orbs, iorbs]
-            return (self._calc['S0'](dtype=dtype) * E - self._calc['P0'](dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
+            return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
                 - solve(G, I, True, True)[orbs, iorbs]
         if bulk:
             return inv(G, True)
-        return (self._calc['S0'](dtype=dtype) * E - self._calc['P0'](dtype=dtype, **kwargs)).toarray() - inv(G, True)
+        return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)).toarray() - inv(G, True)
 
-    def green(self, E, dtype=None, **kwargs):
+    def green(self, E, k=(0, 0, 0), dtype=None, **kwargs):
         r""" Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -704,6 +730,9 @@ class RealSpaceSE(SelfEnergy):
         ----------
         E : float/complex
            energy to evaluate the real-space Green function at
+        k : array_like, optional
+           only viable for 3D bulk systems with real-space Green functions along 2 directions.
+           I.e. this would correspond to a circular real-space Green function
         dtype : numpy.dtype, optional
           the resulting data type, default to ``np.complex128``
         **kwargs : dict, optional
@@ -728,6 +757,18 @@ class RealSpaceSE(SelfEnergy):
 
         # Used axes
         s_ax = opt['semi_axis']
+        k_ax = opt['k_axes']
+
+        k = _a.asarrayd(k)
+        is_k = np.any(k != 0.)
+        if is_k:
+            axes = list(s_ax) + list(k_ax)
+            if np.any(k[axes] != 0.):
+                raise ValueError('{}.green requires the k-point to be zero along the integrated axes.'.format(self.__class__.__name__))
+            if trs:
+                raise ValueError('{}.green requires a k-point sampled Green function to not use time reversal symmetry.'.format(self.__class__.__name__))
+            # Shift k-points to get the correct k-point in the larger one.
+            bz.k += k.reshape(1, 3)
 
         # Calculate both left and right at the same time.
         SE = self._calc['SE'].self_energy_lr
@@ -807,7 +848,7 @@ class RealSpaceSE(SelfEnergy):
         # If using Bloch's theorem we need to wrap the Green function calculation
         # as the method call.
         if len(bloch) > 1:
-            def _func_bloch(k, no, tile, idx0, weight=None, parent=None):
+            def _func_bloch(k, no, tile, idx0):
                 return bloch(_calc_green, k, no=no, tile=tile, idx0=idx0)
         else:
             _func_bloch = _calc_green
@@ -818,11 +859,16 @@ class RealSpaceSE(SelfEnergy):
 
         # calculate the Green function
         G = bz.asaverage().call(_func_bloch, no=no, tile=tile, idx0=idx0)
+
+        if is_k:
+            # Revert k-points
+            bz.k -= k.reshape(1, 3)
+
         if trs:
             # Faster to do it once, than per G
             return (G + G.T) * 0.5
         return G
 
     def clear(self):
-        """ Clears the internal arrays created in `RealSpaceSE.initialize` """
+        """ Clears the internal arrays created in `initialize` """
         del self._calc

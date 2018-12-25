@@ -165,3 +165,44 @@ def dtype_real_to_complex(dtype):
     elif dtype == np.float32:
         return np.complex64
     return dtype
+
+
+# TODO Py3 *replace, *, other=None)
+def array_replace(array, *replace, **kwargs):
+    """ Replace values in `array` using `replace`
+
+    Replaces values in `array` using tuple/val in `replace`.
+
+    Parameters
+    ----------
+    array : ndarray
+       array in which to replace values from `replace`
+    replace: tuple
+       replacement values, if `replace` is a tuple, it will be interpreted as
+       ``array[replace[0]] = replace[1]``.
+    other : val
+       value replaced in `array` for all indices not in ``replace[0]``
+
+    Examples
+    --------
+    >>> ar = [1, 2, 3]
+    >>> array_replace(ar, (1, 1), (2, 1), other=2)
+    [2, 1, 1]
+    >>> array_replace(ar, (1, 1), (2, 1))
+    [1, 1, 1]
+    >>> array_replace(ar, (1, 1), (0, 3))
+    [3, 1, 3]
+    """
+    ar = array.copy()
+    others = list()
+
+    for idx, val in replace:
+        if not val is None:
+            ar[idx] = val
+        others.append(np.asarray(idx).ravel())
+
+    if 'other' in kwargs:
+        others = np.delete(np.arange(ar.size), np.unique(np.concatenate(others)))
+        ar[others] = kwargs['other']
+
+    return ar
