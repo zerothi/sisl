@@ -601,7 +601,7 @@ class RealSpaceSE(SelfEnergy):
                              'for the chosen integration axes: {}.'.format(_ax_str(axes)))
         elif nsc_sum < 6:
             raise ValueError((self.__class__.__name__ + '.initialize found one periodic direction '
-                              'out of two for the chosen integration axes: {}. '
+                              'out of the chosen integration axes: {}. '
                               'For 1D systems the regular surface self-energy method is appropriate.').format(_ax_str(axes)))
 
         if self._options['semi_axis'] is None and self._options['k_axes'] is None:
