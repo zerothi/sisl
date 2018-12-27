@@ -230,3 +230,78 @@ def test_real_space_HS_SE_unfold(setup):
         SE = RSE.self_energy(E)
         SE_big = RSE_big.self_energy(E)
         assert np.allclose(SE, SE_big)
+
+
+def test_real_space_HS_SE_unfold_with_k():
+    # check that calculating the real-space Green function is equivalent for two equivalent systems
+    sq = Geometry([0] * 3, Atom(1, 1.01), [1])
+    sq.set_nsc([3] * 3)
+    H = Hamiltonian(sq)
+    H.construct([(0.1, 1.1), (4, -1)])
+
+    RSE = RealSpaceSE(H, (3, 4, 1), semi_axis=0, k_axes=1, dk=100, trs=False)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+
+    k1 = [0, 0, 0.2]
+    k2 = [0, 0, 0.3]
+    for E in [0.1, 1.5]:
+        G1 = RSE.green(E, k1)
+        G2 = RSE.green(E, k2)
+        assert not np.allclose(G1, G2)
+
+        SE1 = RSE.self_energy(E, k1)
+        SE2 = RSE.self_energy(E, k2)
+        assert not np.allclose(SE1, SE2)
+
+
+def test_real_space_HS_SE_manual_setup():
+    # fails because there in an unfolding along a non-k axes
+
+    # check that calculating the real-space Green function is equivalent for two equivalent systems
+    sq = Geometry([0] * 3, Atom(1, 1.01), [1])
+    sq.set_nsc([3] * 3)
+    H = Hamiltonian(sq)
+    H.construct([(0.1, 1.1), (4, -1)])
+
+    RSE = RealSpaceSE(H, (3, 4, 5), semi_axis=0, dk=100, trs=False)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+        assert np.all(RSE._options['k_axes'] == [1, 2])
+
+    RSE = RealSpaceSE(H, (3, 4, 5), semi_axis=1, dk=100, trs=False)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+        assert np.all(RSE._options['k_axes'] == [0, 2])
+
+    RSE = RealSpaceSE(H, (3, 4, 5), semi_axis=2, dk=100, trs=False)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+        assert np.all(RSE._options['k_axes'] == [0, 1])
+
+    RSE = RealSpaceSE(H, (3, 1, 5), k_axes=2, axes=[0, 2], dk=100, trs=False)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+        assert RSE._options['semi_axis'] == 0
+        assert np.all(RSE._options['k_axes'] == [2])
+
+    RSE = RealSpaceSE(H, (3, 1, 5), semi_axis=2, axes=[0, 2], dk=100, trs=False)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+        assert RSE._options['semi_axis'] == 2
+        assert np.all(RSE._options['k_axes'] == [0])
+
+    RSE = RealSpaceSE(H, (3, 4, 1), axes=[0, 1], dk=100, trs=False)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        RSE.initialize()
+        assert RSE._options['semi_axis'] in [0, 1]
+        assert len(RSE._options['k_axes']) == 1
+        assert RSE._options['k_axes'][0] in [0, 1]

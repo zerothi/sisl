@@ -613,15 +613,14 @@ class RealSpaceSE(SelfEnergy):
             s_ax = np.argmin(fnorm(sc.rcell)[axes[i3]])
             # Now determine the k_axes
             k_ax = axes[axes != s_ax]
-            self._options['semi_axis'] = s_ax
-            self._options['k_axes'] = k_ax
+            self.set_option(semi_axis=s_ax, k_axes=k_ax)
 
         elif self._options['k_axes'] is None:
             s_ax = self._options['semi_axis']
             k_ax = axes[axes != s_ax]
             if k_ax is None:
                 raise ValueError(self.__class__.__name__ + '.initialize could not find suitable k-direction(s).')
-            self._options['k_axes'] = k_ax
+            self.set_option(k_axes=k_ax)
 
         elif self._options['semi_axis'] is None:
             k_ax = self._options['k_axes']
@@ -631,11 +630,10 @@ class RealSpaceSE(SelfEnergy):
                     s_ax = ax
             if s_ax is None:
                 raise ValueError(self.__class__.__name__ + '.initialize could not find a suitable semi-infinite direction, the k-axis seems to utilize all directions?')
-            self._options['semi_axis'] = s_ax
+            self.set_option(semi_axis=s_ax)
 
         # The k-axis HAS to be sorted because this is the way the Bloch expansion works
-        k_ax = np.sort(self._options['k_axes'])
-        self._options['k_axes'] = k_ax
+        k_ax = self._options['k_axes']
         s_ax = self._options['semi_axis']
         if s_ax in k_ax:
             raise ValueError(self.__class__.__name__ + '.initialize found the self-energy direction to be '
@@ -644,6 +642,13 @@ class RealSpaceSE(SelfEnergy):
             raise ValueError(self.__class__.__name__ + '.initialize found the self-energy direction to be '
                              'incompatible with the parent object. It *must* have 3 supercells along the '
                              'semi-infinite direction.')
+
+        # Check that the unfold is 1 for the non-k/semi axes
+        check_unfold = array_replace(self._unfold, (k_ax, 1), (s_ax, 1))
+        if np.any(check_unfold > 1):
+            raise ValueError(self.__class__.__name__ + '.initialize found unfolding along a non-k, non-semi '
+                             'direction. Please correct your settings by having all unfolded axes in either '
+                             'a semi-infinite or k-averaged direction.')
 
         P0 = self.real_space_parent()
         V_atoms = self.real_space_coupling(True)[1]
@@ -744,7 +749,7 @@ class RealSpaceSE(SelfEnergy):
         bz = opt['bz']
         try:
             # If the BZ implements TRS (MonkhorstPack) then force it
-            trs = bz._trs
+            trs = bz._trs >= 0
         except:
             trs = opt['trs']
 
@@ -762,13 +767,13 @@ class RealSpaceSE(SelfEnergy):
         k = _a.asarrayd(k)
         is_k = np.any(k != 0.)
         if is_k:
-            axes = list(s_ax) + list(k_ax)
+            axes = [s_ax] + k_ax.tolist()
             if np.any(k[axes] != 0.):
                 raise ValueError('{}.green requires the k-point to be zero along the integrated axes.'.format(self.__class__.__name__))
             if trs:
                 raise ValueError('{}.green requires a k-point sampled Green function to not use time reversal symmetry.'.format(self.__class__.__name__))
             # Shift k-points to get the correct k-point in the larger one.
-            bz.k += k.reshape(1, 3)
+            bz._k += k.reshape(1, 3)
 
         # Calculate both left and right at the same time.
         SE = self._calc['SE'].self_energy_lr
@@ -862,7 +867,7 @@ class RealSpaceSE(SelfEnergy):
 
         if is_k:
             # Revert k-points
-            bz.k -= k.reshape(1, 3)
+            bz._k -= k.reshape(1, 3)
 
         if trs:
             # Faster to do it once, than per G
