@@ -15,7 +15,6 @@ from sisl.utils.mathematics import fnorm
 from sisl.utils.ranges import array_arange
 from sisl._help import array_replace
 import sisl._array as _a
-import sisl.linalg as lin
 from sisl.linalg import solve, inv
 from sisl.physics.brillouinzone import BrillouinZone, MonkhorstPack
 from sisl.physics.bloch import Bloch
@@ -436,8 +435,6 @@ class RealSpaceSE(SelfEnergy):
             axes = None
 
         self._options = {
-            # the axes to use (semi_direction and k_direction *must* be in this array)
-            'axes': axes,
             # the direction of the self-energy (removed in BZ)
             'semi_axis': None,
             # the direction of the k-points (to be integrated), can be one or two axes
@@ -478,10 +475,9 @@ class RealSpaceSE(SelfEnergy):
             to true.
         """
         self._options.update(options)
-        for ax in ['k_axes', 'axes']:
-            opt = options.get(ax, None)
-            if not opt is None:
-                self._options[ax] = np.sort(_a.arrayi(opt).ravel())
+        opt = options.get('k_axes', None)
+        if not opt is None:
+            self._options['k_axes'] = np.sort(_a.arrayi(opt).ravel())
 
     def real_space_parent(self):
         """ Return the parent object in the real-space unfolded region """
@@ -569,72 +565,19 @@ class RealSpaceSE(SelfEnergy):
         If the user hasn't specified the ``bz`` value as an option this method will update the internal
         integration Brillouin zone based on the ``dk`` option.
         """
-        def _ax_str(axes, delim=' / '):
-            ABC = 'ABC'
-            if isinstance(axes, Integral):
-                return ABC[axes]
-            s = ABC[axes[0]]
-            for ax in axes[1:]:
-                s += delim + ABC[ax]
-            return s
-
         # Try and guess the directions
         unfold = self._unfold
         nsc = self.parent.nsc.copy()
 
-        axes = self._options['axes']
-        if axes is None:
-            if nsc[2] == 1:
-                axes = _a.arrayi([0, 1])
-            elif nsc[1] == 1:
-                axes = _a.arrayi([0, 2])
-            elif nsc[0] == 1:
-                axes = _a.arrayi([1, 2])
-            else:
-                axes = _a.arangei(3)
-            self._options['axes'] = axes
-
-        # Check that we have periodicity along the chosen axes
-        nsc_sum = nsc[axes].sum()
-        if nsc_sum == 1:
-            raise ValueError(self.__class__.__name__ + '.initialize found no periodic directions '
-                             'for the chosen integration axes: {}.'.format(_ax_str(axes)))
-        elif nsc_sum < 6:
-            raise ValueError((self.__class__.__name__ + '.initialize found one periodic direction '
-                              'out of the chosen integration axes: {}. '
-                              'For 1D systems the regular surface self-energy method is appropriate.').format(_ax_str(axes)))
-
-        if self._options['semi_axis'] is None and self._options['k_axes'] is None:
-            # None of the axis has been described
-            sc = self.parent.sc * self._unfold
-            i3 = (nsc[axes] == 3).nonzero()[0]
-            if len(i3) == 0:
-                raise ValueError(self.__class__.__name__ + '.initialize could not find a suitable semi-infinite direction, all used directions have nsc != 3')
-            s_ax = np.argmin(fnorm(sc.rcell)[axes[i3]])
-            # Now determine the k_axes
-            k_ax = axes[axes != s_ax]
-            self.set_option(semi_axis=s_ax, k_axes=k_ax)
-
-        elif self._options['k_axes'] is None:
-            s_ax = self._options['semi_axis']
-            k_ax = axes[axes != s_ax]
-            if k_ax is None:
-                raise ValueError(self.__class__.__name__ + '.initialize could not find suitable k-direction(s).')
-            self.set_option(k_axes=k_ax)
-
-        elif self._options['semi_axis'] is None:
-            k_ax = self._options['k_axes']
-            s_ax = None
-            for ax in axes:
-                if not ax in k_ax:
-                    s_ax = ax
-            if s_ax is None:
-                raise ValueError(self.__class__.__name__ + '.initialize could not find a suitable semi-infinite direction, the k-axis seems to utilize all directions?')
-            self.set_option(semi_axis=s_ax)
-
         # The k-axis HAS to be sorted because this is the way the Bloch expansion works
-        k_ax = self._options['k_axes']
         s_ax = self._options['semi_axis']
+        k_ax = self._options['k_axes']
+        if s_ax is None:
+            raise ValueError(self.__class__.__name__ + '.initialize did not specify semi_axis '
+                             'via .set_option or when initializing object.')
+        if k_ax is None:
+            raise ValueError(self.__class__.__name__ + '.initialize did not specify k_axes '
+                             'via .set_option or when initializing object.')
         if s_ax in k_ax:
             raise ValueError(self.__class__.__name__ + '.initialize found the self-energy direction to be '
                              'the same as one of the k-axes, this is not allowed.')
@@ -650,6 +593,8 @@ class RealSpaceSE(SelfEnergy):
                              'direction. Please correct your settings by having all unfolded axes in either '
                              'a semi-infinite or k-averaged direction.')
 
+        # Create temporary access elements in the calculation dictionary
+        # to be used in .green and .self_energy
         P0 = self.real_space_parent()
         V_atoms = self.real_space_coupling(True)[1]
         self._calc = {
