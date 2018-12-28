@@ -368,17 +368,15 @@ class RealSpaceSE(SelfEnergy):
         a physical object from which to calculate the real-space self-energy.
         The parent object *must* have only 3 supercells along the direction where
         self-energies are used.
-
-    unfold : (3,) of int
-        number of times the `parent` structure is tiled along each direction
-        The resulting Green function/self-energy ordering is always tiled along
-        the semi-infinite direction first, and then the transverse direction.
-
     semi_axis : int
         semi-infinite direction (where self-energies are used and thus *exact* precision)
     k_axes : array_like of int
         the axes where k-points are desired. 1 or 2 values are required and the `semi_axis`
         cannot be one of them
+    unfold : (3,) of int
+        number of times the `parent` structure is tiled along each direction
+        The resulting Green function/self-energy ordering is always tiled along
+        the semi-infinite direction first, and then the transverse direction.
     eta : float, optional
         imaginary part in the self-energy calculations (default 1e-4 eV)
     dk : float, optional
@@ -402,8 +400,7 @@ class RealSpaceSE(SelfEnergy):
     >>> graphene = geom.graphene()
     >>> H = Hamiltonian(graphene)
     >>> H.construct([(0.1, 1.44), (0, -2.7)])
-    >>> rse = RealSpaceSE(H, (3, 4, 1))
-    >>> rse.initialize()
+    >>> rse = RealSpaceSE(H, 0, 1, (3, 4, 1))
     >>> rse.green(0.1)
 
     The Brillouin zone integration is determined naturally.
@@ -411,8 +408,8 @@ class RealSpaceSE(SelfEnergy):
     >>> graphene = geom.graphene()
     >>> H = Hamiltonian(graphene)
     >>> H.construct([(0.1, 1.44), (0, -2.7)])
-    >>> rse = RealSpaceSE(H, (3, 4, 1))
-    >>> rse.set_option(semi_axis=0, k_axes=[1], eta=1e-3, bz=MonkhorstPack(H, [1, 1000, 1]))
+    >>> rse = RealSpaceSE(H, 0, 1, (3, 4, 1))
+    >>> rse.set_options(eta=1e-3, bz=MonkhorstPack(H, [1, 1000, 1]))
     >>> rse.initialize()
     >>> rse.green(0.1) # eta = 1e-3
     >>> rse.green(0.1 + 1j * 1e-4) # eta = 1e-4
@@ -420,25 +417,39 @@ class RealSpaceSE(SelfEnergy):
     Manually specify Brillouin zone integration and default :math:`\eta` value.
     """
 
-    def __init__(self, parent, unfold=(1, 1, 1), **options):
+    def __init__(self, parent, semi_axis, k_axes, unfold=(1, 1, 1), **options):
         """ Initialize real-space self-energy calculator """
         self.parent = parent
+
+        # Store axes
+        self._semi_axis = semi_axis
+        self._k_axes = np.sort(_a.asarrayi(k_axes).ravel())
+
+        # Check axis
+        s_ax = self._semi_axis
+        k_ax = self._k_axes
+        if s_ax in k_ax:
+            raise ValueError(self.__class__.__name__ + ' found the self-energy direction to be '
+                             'the same as one of the k-axes, this is not allowed.')
+        if np.any(self.parent.nsc[k_ax] < 3):
+            raise ValueError(self.__class__.__name__ + ' found k-axes without periodicity. '
+                             'Correct k_axes via .set_options.')
+        if self.parent.nsc[s_ax] != 3:
+            raise ValueError(self.__class__.__name__ + ' found the self-energy direction to be '
+                             'incompatible with the parent object. It *must* have 3 supercells along the '
+                             'semi-infinite direction.')
 
         # Local variables for the completion of the details
         self._unfold = _a.arrayi([max(1, un) for un in unfold])
 
-        # Guess on the axes used
-        idx = (parent.nsc == 1).nonzero()[0]
-        if len(idx) == 1:
-            axes = np.delete(_a.arangei(3), idx[0])
-        else:
-            axes = None
+        # Check that the unfold is 1 for the non-k/semi axes
+        check_unfold = array_replace(self._unfold, (k_ax, 1), (s_ax, 1))
+        if np.any(check_unfold > 1):
+            raise ValueError(self.__class__.__name__ + ' found unfolding along a non-k, non-semi '
+                             'direction. Please correct your settings by having all unfolded axes in either '
+                             'a semi-infinite or k-averaged direction.')
 
         self._options = {
-            # the direction of the self-energy (removed in BZ)
-            'semi_axis': None,
-            # the direction of the k-points (to be integrated), can be one or two axes
-            'k_axes': None,
             # fineness of the integration k-grid [Ang]
             'dk': 1000,
             # whether TRS is used (G + G.T) * 0.5
@@ -448,20 +459,16 @@ class RealSpaceSE(SelfEnergy):
             # The BrillouinZone used for integration
             'bz': None,
         }
-        self.set_option(**options)
+        self.set_options(**options)
+        self.initialize()
 
-    def set_option(self, **options):
+    def set_options(self, **options):
         """ Update options in the real-space self-energy
 
         After updating options one should re-call `initialize` for consistency.
 
         Parameters
         ----------
-        semi_axis : int
-            semi-infinite direction (where self-energies are used and thus *exact* precision)
-        k_axes : array_like of int
-            the axes where k-points are desired. 1 or 2 values are required and the `semi_axis`
-            cannot be one of them
         eta : float, optional
             imaginary part in the self-energy calculations (default 1e-4 eV)
         dk : float, optional
@@ -475,15 +482,11 @@ class RealSpaceSE(SelfEnergy):
             to true.
         """
         self._options.update(options)
-        opt = options.get('k_axes', None)
-        if not opt is None:
-            self._options['k_axes'] = np.sort(_a.arrayi(opt).ravel())
 
     def real_space_parent(self):
         """ Return the parent object in the real-space unfolded region """
-        opt = self._options
-        s_ax = opt['semi_axis']
-        k_ax = opt['k_axes']
+        s_ax = self._semi_axis
+        k_ax = self._k_axes
         # Always start with the semi-infinite direction, since we
         # Bloch expand the other directions
         P0 = self.parent.tile(self._unfold[s_ax], s_ax)
@@ -492,8 +495,8 @@ class RealSpaceSE(SelfEnergy):
         # Only specify the used axis without periodicity
         # This will allow one to use the real-space self-energy
         # for *circles*
-        ones = array_replace(P0.nsc, (s_ax, 1), (k_ax, 1))
-        P0.set_nsc(ones)
+        nsc = array_replace(P0.nsc, (s_ax, 1), (k_ax, 1))
+        P0.set_nsc(nsc)
         return P0
 
     def real_space_coupling(self, ret_indices=False):
@@ -512,9 +515,8 @@ class RealSpaceSE(SelfEnergy):
         parent : parent object only retaining the elements of the atoms that couple out of the primary unit cell
         atom_index : indices for the atoms that couple out of the geometry (`ret_indices`)
         """
-        opt = self._options
-        s_ax = opt['semi_axis']
-        k_ax = opt['k_axes']
+        s_ax = self._semi_axis
+        k_ax = self._k_axes
 
         # If there are any axes that still has k-point sampling (for e.g. circles)
         # we should remove that periodicity before figuring out which atoms that connect out.
@@ -563,35 +565,10 @@ class RealSpaceSE(SelfEnergy):
         This method should first be called *after* all options has been specified.
 
         If the user hasn't specified the ``bz`` value as an option this method will update the internal
-        integration Brillouin zone based on the ``dk`` option.
+        integration Brillouin zone based on ``dk`` and ``trs`` options.
         """
-        # Try and guess the directions
-        unfold = self._unfold
-        nsc = self.parent.nsc.copy()
-
-        # The k-axis HAS to be sorted because this is the way the Bloch expansion works
-        s_ax = self._options['semi_axis']
-        k_ax = self._options['k_axes']
-        if s_ax is None:
-            raise ValueError(self.__class__.__name__ + '.initialize did not specify semi_axis '
-                             'via .set_option or when initializing object.')
-        if k_ax is None:
-            raise ValueError(self.__class__.__name__ + '.initialize did not specify k_axes '
-                             'via .set_option or when initializing object.')
-        if s_ax in k_ax:
-            raise ValueError(self.__class__.__name__ + '.initialize found the self-energy direction to be '
-                             'the same as one of the k-axes, this is not allowed.')
-        if nsc[s_ax] != 3:
-            raise ValueError(self.__class__.__name__ + '.initialize found the self-energy direction to be '
-                             'incompatible with the parent object. It *must* have 3 supercells along the '
-                             'semi-infinite direction.')
-
-        # Check that the unfold is 1 for the non-k/semi axes
-        check_unfold = array_replace(self._unfold, (k_ax, 1), (s_ax, 1))
-        if np.any(check_unfold > 1):
-            raise ValueError(self.__class__.__name__ + '.initialize found unfolding along a non-k, non-semi '
-                             'direction. Please correct your settings by having all unfolded axes in either '
-                             'a semi-infinite or k-averaged direction.')
+        s_ax = self._semi_axis
+        k_ax = self._k_axes
 
         # Create temporary access elements in the calculation dictionary
         # to be used in .green and .self_energy
@@ -617,7 +594,6 @@ class RealSpaceSE(SelfEnergy):
             nk = _a.onesi(3)
             nk[k_ax] = np.ceil(self._options['dk'] * rcell).astype(np.int32)
             self._options['bz'] = MonkhorstPack(sc, nk, trs=self._options['trs'])
-            info(self.__class__.__name__ + '.initialize determined number of k-points: {}'.format(' / '.join(map(str, nk[k_ax]))))
 
     def self_energy(self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs):
         r""" Calculate the real-space self-energy
@@ -706,8 +682,8 @@ class RealSpaceSE(SelfEnergy):
             E = E.real + 1j * opt['eta']
 
         # Used axes
-        s_ax = opt['semi_axis']
-        k_ax = opt['k_axes']
+        s_ax = self._semi_axis
+        k_ax = self._k_axes
 
         k = _a.asarrayd(k)
         is_k = np.any(k != 0.)
