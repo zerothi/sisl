@@ -63,6 +63,7 @@ class oplist(list):
 
     The class also implements a decorator for automatic returning of
     oplist lists.
+
     >>> @oplist.decorate
     >>> def my_func():
     ...     return 1
@@ -88,6 +89,14 @@ class oplist(list):
     def decorate(cls, func):
         """ Decorate a function to always return an `oplist`, regardless of return values from `func`
 
+        Parameters
+        ----------
+        func : callable
+
+        Returns
+        -------
+        callable which returns `oplist`
+
         Examples
         --------
 
@@ -100,13 +109,6 @@ class oplist(list):
         >>> print(a)
         [1]
 
-        Parameters
-        ----------
-        func : callable
-
-        Returns
-        -------
-        callable which returns `oplist`
         """
         @wraps(func)
         def wrap_func(*args, **kwargs):
