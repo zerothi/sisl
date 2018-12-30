@@ -147,6 +147,85 @@ class RecursiveSI(SemiInfinite):
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep_shape=True)
 
+    def green(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, **kwargs):
+        r""" Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).
+
+        Parameters
+        ----------
+        E : float/complex
+          energy at which the calculation will take place
+        k : array_like, optional
+          k-point at which the Green function should be evaluated.
+          the k-point should be in units of the reciprocal lattice vectors.
+        dtype : numpy.dtype
+          the resulting data type
+        eps : float, optional
+          convergence criteria for the recursion
+        **kwargs : dict, optional
+           arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
+
+        Returns
+        -------
+        self-energy : the self-energy corresponding to the semi-infinite direction
+        """
+        if E.imag == 0.:
+            E = E.real + 1j * self.eta
+
+        # Get k-point
+        k = _a.asarrayd(k)
+
+        if dtype is None:
+            dtype = complex128
+
+        sp0 = self.spgeom0
+        sp1 = self.spgeom1
+
+        # As the SparseGeometry inherently works for
+        # orthogonal and non-orthogonal basis, there is no
+        # need to have two algorithms.
+        GB = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array', **kwargs)
+        n = GB.shape[0]
+
+        ab = empty([n, 2, n], dtype=dtype)
+        shape = ab.shape
+
+        # Get direct arrays
+        alpha = ab[:, 0, :].view()
+        beta = ab[:, 1, :].view()
+
+        # Get solve step arary
+        ab2 = ab.view()
+        ab2.shape = (n, 2 * n)
+
+        if sp1.orthogonal:
+            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
+            beta[:, :] = conjugate(alpha.T)
+        else:
+            P = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
+            S = sp1.Sk(k, dtype=dtype, format='array')
+            alpha[:, :] = P - S * E
+            beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
+            del P, S
+
+        while True:
+            tab = solve(GB, ab2).reshape(shape)
+
+            # Update bulk Green function
+            subtract(GB, dot(alpha, tab[:, 1, :]), out=GB)
+            subtract(GB, dot(beta, tab[:, 0, :]), out=GB)
+
+            # Update forward/backward
+            alpha[:, :] = dot(alpha, tab[:, 0, :])
+            beta[:, :] = dot(beta, tab[:, 1, :])
+
+            # Convergence criteria, it could be stricter
+            if _abs(alpha).max() < eps:
+                # Return the pristine Green function
+                del ab, alpha, beta, ab2, tab
+                return inv(GB, True)
+
+        raise ValueError(self.__class__.__name__+'.green could not converge Green function calculation')
+
     def self_energy(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, bulk=False, **kwargs):
         r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
@@ -156,8 +235,7 @@ class RecursiveSI(SemiInfinite):
           energy at which the calculation will take place
         k : array_like, optional
           k-point at which the self-energy should be evaluated.
-          the k-point should be in units of the reciprocal lattice vectors, and
-          the semi-infinite component will be automatically set to zero.
+          the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype
           the resulting data type
         eps : float, optional
@@ -255,8 +333,7 @@ class RecursiveSI(SemiInfinite):
           energy at which the calculation will take place, if complex, the hosting ``eta`` won't be used.
         k : array_like, optional
           k-point at which the self-energy should be evaluated.
-          the k-point should be in units of the reciprocal lattice vectors, and
-          the semi-infinite component will be automatically set to zero.
+          the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype, optional
           the resulting data type, default to ``np.complex128``
         eps : float, optional
@@ -388,12 +465,6 @@ class RealSpaceSE(SelfEnergy):
     trs: bool, optional
         whether time-reversal symmetry is used in the BrillouinZone integration, default
         to true.
-
-    Notes
-    -----
-    Once created it is vital that `initialize` is called before calculating the real-space Green function.
-    Once done, memory can be saved by issuing `clear`.
-    The basic procedure is:
 
     Examples
     --------

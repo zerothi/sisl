@@ -110,6 +110,23 @@ def test_sancho_lr(setup):
     assert np.allclose(RB_SER, R_SE)
 
 
+def test_sancho_green(setup):
+    SL = RecursiveSI(setup.HS, '-A')
+    SR = RecursiveSI(setup.HS, '+A')
+
+    E = 0.1
+    k = [0, 0.13, 0]
+
+    # Check that left/right are different
+
+    L_SE = SL.self_energy(E, k, bulk=True)
+    R_SE = SR.self_energy(E, k)
+    g = np.linalg.inv(L_SE - R_SE)
+    G = SL.green(E, k)
+    assert np.allclose(g, G)
+    assert np.allclose(SL.green(E, k), SR.green(E, k))
+
+
 @pytest.mark.parametrize("k_axes", [0, 1])
 @pytest.mark.parametrize("semi_axis", [0, 1])
 @pytest.mark.parametrize("trs", [True, False])
