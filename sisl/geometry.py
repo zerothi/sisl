@@ -2752,7 +2752,7 @@ class Geometry(SuperCellChild):
         ----------
         io: array_like
              List of indices to return the atoms for
-        uniq : bool, optional
+        unique : bool, optional
              If True only return the unique atoms.
         """
         if isinstance(io, Integral):
@@ -2775,7 +2775,7 @@ class Geometry(SuperCellChild):
         ----------
         atom : array_like or int
            the atomic indices converted from supercell indices to unit-cell indices
-        uniq : bool, optional
+        unique : bool, optional
            If True the returned indices are unique and sorted.
         """
         atom = _a.asarrayi(atom) % self.na
@@ -2791,7 +2791,7 @@ class Geometry(SuperCellChild):
         ----------
         orb : array_like or int
            the orbital indices converted from supercell indices to unit-cell indices
-        uniq : bool, optional
+        unique : bool, optional
            If True the returned indices are unique and sorted.
         """
         orb = _a.asarrayi(orb) % self.no

@@ -25,7 +25,7 @@ class ionxmlSileSiesta(SileSiesta):
 
         # Get number of orbitals
         label = root.find('label').text.strip()
-        Z = int(root.find('z').text) # atomic number
+        Z = int(root.find('z').text) # atomic number, negative for floating
         mass = float(root.find('mass').text)
 
         # Read in the PAO's

@@ -685,11 +685,11 @@ class RealSpaceSE(SelfEnergy):
         bulk : bool, optional
            if true, :math:`\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}`
            is returned, otherwise :math:`\boldsymbol\Sigma^\mathcal{R}` is returned
-        dtype : numpy.dtype, optional
-          the resulting data type, default to ``np.complex128``
         coupling: bool, optional
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
+        dtype : numpy.dtype, optional
+          the resulting data type, default to ``np.complex128``
         **kwargs : dict, optional
            arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
@@ -783,12 +783,12 @@ class RealSpaceSE(SelfEnergy):
             if self.parent.orthogonal:
                 # Orthogonal *always* identity
                 S0E = identity(len(M0), dtype=dtype) * E
-                def _calc_green(k, no, tile, idx0):
+                def _calc_green(k, dtype, no, tile, idx0):
                     SL, SR = SE(E, k, dtype=dtype, **kwargs)
                     return inv(S0E - M0Pk(k, dtype=dtype, format='array', **kwargs) - SL - SR, True)
             else:
                 M0Sk = M0.Sk
-                def _calc_green(k, no, tile, idx0):
+                def _calc_green(k, dtype, no, tile, idx0):
                     SL, SR = SE(E, k, dtype=dtype, **kwargs)
                     return inv(M0Sk(k, dtype=dtype, format='array') * E - M0Pk(k, dtype=dtype, format='array', **kwargs) - SL - SR, True)
 
@@ -796,7 +796,7 @@ class RealSpaceSE(SelfEnergy):
             M1 = self._calc['SE'].spgeom1
             M1Pk = M1.Pk
             if self.parent.orthogonal:
-                def _calc_green(k, no, tile, idx0):
+                def _calc_green(k, dtype, no, tile, idx0):
                     # Calculate left/right self-energies
                     Gf, A2 = SE(E, k, dtype=dtype, bulk=True, **kwargs) # A1 == Gf, because of memory usage
                     B = - M1Pk(k, dtype=dtype, format='array', **kwargs)
@@ -819,7 +819,7 @@ class RealSpaceSE(SelfEnergy):
 
             else:
                 M1Sk = M1.Sk
-                def _calc_green(k, no, tile, idx0):
+                def _calc_green(k, dtype, no, tile, idx0):
                     Gf, A2 = SE(E, k, dtype=dtype, bulk=True, **kwargs) # A1 == Gf, because of memory usage
                     tY = M1Sk(k, dtype=dtype, format='array') # S
                     tX = M1Pk(k, dtype=dtype, format='array', **kwargs) # H
@@ -845,8 +845,8 @@ class RealSpaceSE(SelfEnergy):
         # If using Bloch's theorem we need to wrap the Green function calculation
         # as the method call.
         if len(bloch) > 1:
-            def _func_bloch(k, no, tile, idx0):
-                return bloch(_calc_green, k, no=no, tile=tile, idx0=idx0)
+            def _func_bloch(k, dtype, no, tile, idx0):
+                return bloch(_calc_green, k, dtype=dtype, no=no, tile=tile, idx0=idx0)
         else:
             _func_bloch = _calc_green
 
@@ -855,7 +855,7 @@ class RealSpaceSE(SelfEnergy):
         no = len(self.parent)
 
         # calculate the Green function
-        G = bz.asaverage().call(_func_bloch, no=no, tile=tile, idx0=idx0)
+        G = bz.asaverage().call(_func_bloch, dtype=dtype, no=no, tile=tile, idx0=idx0)
 
         if is_k:
             # Revert k-points
