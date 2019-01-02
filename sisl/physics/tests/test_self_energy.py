@@ -135,7 +135,7 @@ def test_sancho_green(setup):
 def test_real_space_HS(setup, k_axes, semi_axis, trs, bz, unfold):
     if k_axes == semi_axis:
         return
-    RSE = RealSpaceSE(setup.HS, semi_axis, k_axes, (unfold, unfold, 1))
+    RSE = RealSpaceSE(setup.HS, semi_axis, k_axes, (unfold, unfold, unfold))
     RSE.set_options(dk=100, trs=trs, bz=bz)
     RSE.initialize()
     RSE.green(0.1)
@@ -188,6 +188,8 @@ def test_real_space_H_dtype(setup):
     assert s64.dtype == np.complex64
     assert s128.dtype == np.complex128
     assert np.allclose(s64, s128, atol=1e-2)
+    RSE.real_space_coupling()
+    RSE.clear()
 
 
 def test_real_space_H_SE_unfold(setup):
@@ -242,7 +244,7 @@ def test_real_space_HS_SE_unfold_with_k():
 
 
 @pytest.mark.xfail(raises=ValueError)
-def test_real_space_SE_fail_k():
+def test_real_space_SE_fail_k_trs():
     sq = Geometry([0] * 3, Atom(1, 1.01), [1])
     sq.set_nsc([3] * 3)
     H = Hamiltonian(sq)
@@ -292,16 +294,6 @@ def test_real_space_SE_fail_nsc_semi():
     RSE = RealSpaceSE(H, 1, 0, (3, 4, 1), dk=100)
 
 
-@pytest.mark.xfail(raises=ValueError)
-def test_real_space_SE_fail_unfold_non_axes():
-    sq = Geometry([0] * 3, Atom(1, 1.01), [1])
-    sq.set_nsc([3, 5, 3])
-    H = Hamiltonian(sq)
-    H.construct([(0.1, 1.1), (4, -1)])
-
-    RSE = RealSpaceSE(H, 0, 1, (3, 4, 3), dk=100)
-
-
 @pytest.mark.parametrize("k_axes", [0])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
@@ -312,7 +304,7 @@ def test_real_space_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
     semi = RecursiveSI(setup.HS, '-B')
     surf = setup.HS.tile(4, 1)
     surf.set_nsc(b=1)
-    RSI = RealSpaceSI(semi, surf, k_axes, (unfold, 1, 1))
+    RSI = RealSpaceSI(semi, surf, k_axes, (unfold, 1, unfold))
     RSI.set_options(dk=100, trs=trs, bz=bz)
     RSI.initialize()
     RSI.self_energy(0.1, bulk=bulk, coupling=coupling)
@@ -324,15 +316,39 @@ def test_real_space_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
 @pytest.mark.parametrize("unfold", [1, 3])
 @pytest.mark.parametrize("bulk", [True, False])
+@pytest.mark.parametrize("semi_bulk", [True, False])
 @pytest.mark.parametrize("coupling", [True, False])
-def test_real_space_H(setup, semi_dir, k_axes, trs, bz, unfold, bulk, coupling):
+def test_real_space_H(setup, semi_dir, k_axes, trs, bz, unfold, bulk, semi_bulk, coupling):
     semi = RecursiveSI(setup.H, semi_dir)
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
-    RSI = RealSpaceSI(semi, surf, k_axes, (unfold, 1, 1))
-    RSI.set_options(dk=100, trs=trs, bz=bz)
+    RSI = RealSpaceSI(semi, surf, k_axes, (unfold, 1, unfold))
+    RSI.set_options(dk=100, trs=trs, bz=bz, semi_bulk=semi_bulk)
     RSI.initialize()
     RSI.self_energy(0.1, bulk=bulk, coupling=coupling)
+
+
+def test_real_space_H_test(setup):
+    semi = RecursiveSI(setup.H, '-B')
+    surf = setup.H.tile(4, 1)
+    surf.set_nsc(b=1)
+    RSI = RealSpaceSI(semi, surf, 0, (3, 1, 3))
+    RSI.set_options(dk=100, trs=False, bz=None)
+    RSI.initialize()
+    RSI.green(0.1, [0, 0, 0.1], dtype=np.complex128)
+    RSI.self_energy(0.1, [0, 0, 0.1])
+    RSI.clear()
+
+
+@pytest.mark.xfail(raises=ValueError)
+def test_real_space_H_k_trs(setup):
+    semi = RecursiveSI(setup.H, '-B')
+    surf = setup.H.tile(4, 1)
+    surf.set_nsc(b=1)
+    RSI = RealSpaceSI(semi, surf, 0, (3, 1, 3))
+    RSI.set_options(dk=100, trs=True, bz=None)
+    RSI.initialize()
+    RSI.green(0.1, [0, 0, 0.1], dtype=np.complex128)
 
 
 @pytest.mark.xfail(raises=ValueError)

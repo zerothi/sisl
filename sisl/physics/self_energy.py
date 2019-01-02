@@ -455,7 +455,7 @@ class RealSpaceSE(SelfEnergy):
     unfold : (3,) of int
         number of times the `parent` structure is tiled along each direction
         The resulting Green function/self-energy ordering is always tiled along
-        the semi-infinite direction first, and then the transverse direction.
+        the semi-infinite direction first, and then the other directions in order.
     eta : float, optional
         imaginary part in the self-energy calculations (default 1e-4 eV)
     dk : float, optional
@@ -515,14 +515,6 @@ class RealSpaceSE(SelfEnergy):
         # Local variables for the completion of the details
         self._unfold = _a.arrayi([max(1, un) for un in unfold])
 
-        # TODO in fact unfolding *could* be allowed in a non-(k-axes/semi) since
-        #      Bloch expansion could work for k-points! TODO
-        check_unfold = array_replace(self._unfold, (k_ax, 1), (s_ax, 1))
-        if np.any(check_unfold > 1):
-            raise ValueError(self.__class__.__name__ + ' found unfolding along a non-k, non-semi '
-                             'direction. Please correct your settings by having all unfolded axes in either '
-                             'a semi-infinite or k-averaged direction.')
-
         self._options = {
             # fineness of the integration k-grid [Ang]
             'dk': 1000,
@@ -563,9 +555,11 @@ class RealSpaceSE(SelfEnergy):
         k_ax = self._k_axes
         # Always start with the semi-infinite direction, since we
         # Bloch expand the other directions
-        P0 = self.parent.tile(self._unfold[s_ax], s_ax)
-        for ax in k_ax:
-            P0 = P0.tile(self._unfold[ax], ax)
+        unfold = self._unfold.copy()
+        P0 = self.parent.tile(unfold[s_ax], s_ax)
+        unfold[s_ax] = 1
+        for ax in range(3):
+            P0 = P0.tile(unfold[ax], ax)
         # Only specify the used axis without periodicity
         # This will allow one to use the real-space self-energy
         # for *circles*
@@ -596,10 +590,13 @@ class RealSpaceSE(SelfEnergy):
         # we should remove that periodicity before figuring out which atoms that connect out.
         # This is because the self-energy should *only* remain on the sites connecting
         # out of the self-energy used. The k-axis retains all atoms, per see.
-        PC = self.parent.tile(self._unfold[s_ax], s_ax)
-        for ax in k_ax:
-            PC = PC.tile(self._unfold[ax], ax)
+        unfold = self._unfold.copy()
+        PC = self.parent.tile(unfold[s_ax], s_ax)
+        unfold[s_ax] = 1
+        for ax in range(3):
+            PC = PC.tile(unfold[ax], ax)
 
+        # Reduce periodicity along non-semi/k axes
         nsc = array_replace(PC.nsc, (s_ax, None), (k_ax, None), other=1)
         PC.set_nsc(nsc)
 
@@ -621,9 +618,11 @@ class RealSpaceSE(SelfEnergy):
         # Remove all out-of-cell couplings such that we only have inner-cell couplings
         # Or, if we retain periodicity along a given direction, we will retain those
         # as well.
-        PC = self.parent.tile(self._unfold[s_ax], s_ax)
-        for ax in k_ax:
-            PC = PC.tile(self._unfold[ax], ax)
+        unfold = self._unfold.copy()
+        PC = self.parent.tile(unfold[s_ax], s_ax)
+        unfold[s_ax] = 1
+        for ax in range(3):
+            PC = PC.tile(unfold[ax], ax)
         PC = PC.sub(atom_idx)
 
         # Truncate nsc along the repititions
@@ -902,9 +901,7 @@ class RealSpaceSI(SelfEnergy):
         along the `semi` semi-infinite direction.
     unfold : (3,) of int
         number of times the `surface` structure is tiled along each direction
-        The resulting Green function/self-energy ordering is always tiled along
-        the semi-infinite direction first, and then the transverse direction. Since this is
-        a surface there will maximally be 2 unfolds being non-unity.
+        Since this is a surface there will maximally be 2 unfolds being non-unity.
     eta : float, optional
         imaginary part in the self-energy calculations (default 1e-4 eV)
     dk : float, optional
@@ -963,15 +960,6 @@ class RealSpaceSI(SelfEnergy):
 
         # Local variables for the completion of the details
         self._unfold = _a.arrayi([max(1, un) for un in unfold])
-
-        # Check that the unfold is 1 for the non-k/semi axes
-        # TODO in fact unfolding *could* be allowed in a non-(k-axes/semi) since
-        #      Bloch expansion could work for k-points! TODO
-        check_unfold = array_replace(self._unfold, (k_ax, 1), (self.semi.semi_inf, 1))
-        if np.any(check_unfold > 1):
-            raise ValueError(self.__class__.__name__ + ' found unfolding along a non-k, non-semi '
-                             'direction. Please correct your settings by having all unfolded axes in either '
-                             'a semi-infinite or k-averaged direction.')
 
         if self.surface.nsc[semi.semi_inf] > 1:
             raise ValueError(self.__class__.__name__ + ' surface has periodicity along the semi-infinite '
@@ -1065,7 +1053,7 @@ class RealSpaceSI(SelfEnergy):
         correspond to the `self.surface` object, always!
         """
         P0 = self.surface
-        for ax in self._k_axes:
+        for ax in range(3):
             P0 = P0.tile(self._unfold[ax], ax)
         nsc = array_replace(P0.nsc, (self._k_axes, 1))
         P0.set_nsc(nsc)
@@ -1097,7 +1085,7 @@ class RealSpaceSI(SelfEnergy):
         PC_k = self.semi.spgeom0
         PC_semi = self.semi.spgeom1
         PC = self.surface
-        for ax in k_ax:
+        for ax in range(3):
             PC_k = PC_k.tile(self._unfold[ax], ax)
             PC_semi = PC_semi.tile(self._unfold[ax], ax)
             PC = PC.tile(self._unfold[ax], ax)
@@ -1160,7 +1148,7 @@ class RealSpaceSI(SelfEnergy):
         # Or, if we retain periodicity along a given direction, we will retain those
         # as well.
         PC = self.surface
-        for ax in k_ax:
+        for ax in range(3):
             PC = PC.tile(self._unfold[ax], ax)
         PC = PC.sub(atom_idx)
 
