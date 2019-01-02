@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 from numbers import Integral
+from functools import partial
 
 import numpy as np
 from numpy import dot, amax, conjugate
@@ -21,7 +22,8 @@ from sisl.physics.bloch import Bloch
 
 
 __all__ = ['SelfEnergy', 'SemiInfinite']
-__all__ += ['RecursiveSI', 'RealSpaceSE']
+__all__ += ['RecursiveSI']
+__all__ += ['RealSpaceSE', 'RealSpaceSI']
 
 
 class SelfEnergy(object):
@@ -130,7 +132,7 @@ class RecursiveSI(SemiInfinite):
         # Already now limit the sparse matrices
         self.spgeom1.set_nsc(nsc)
         if self.spgeom1.nnz < old_nnz:
-            warn("RecursiveSI: SparseGeometry has connections across the first neighbouring cell. "
+            warn(self.__class__.__name__ + ": SparseGeometry has connections across the first neighbouring cell. "
                  "These values will be forced to 0 as the principal cell-interaction is a requirement")
 
         # I.e. we will delete all interactions that are un-important
@@ -141,7 +143,7 @@ class RecursiveSI(SemiInfinite):
         nsc[self.semi_inf] = self.semi_inf_dir
         # Get all supercell indices that we should delete
         idx = np.delete(_a.arangei(n_s),
-                        _a.arrayi(spgeom.geometry.sc.sc_index(nsc)))
+                        _a.arrayi(self.spgeom1.geometry.sc.sc_index(nsc)))
 
         cols = array_arange(idx * n, (idx + 1) * n)
         # Delete all values in columns, but keep them to retain the supercell information
@@ -513,7 +515,8 @@ class RealSpaceSE(SelfEnergy):
         # Local variables for the completion of the details
         self._unfold = _a.arrayi([max(1, un) for un in unfold])
 
-        # Check that the unfold is 1 for the non-k/semi axes
+        # TODO in fact unfolding *could* be allowed in a non-(k-axes/semi) since
+        #      Bloch expansion could work for k-points! TODO
         check_unfold = array_replace(self._unfold, (k_ax, 1), (s_ax, 1))
         if np.any(check_unfold > 1):
             raise ValueError(self.__class__.__name__ + ' found unfolding along a non-k, non-semi '
@@ -859,6 +862,490 @@ class RealSpaceSE(SelfEnergy):
 
         if is_k:
             # Revert k-points
+            bz._k -= k.reshape(1, 3)
+
+        if trs:
+            # Faster to do it once, than per G
+            return (G + G.T) * 0.5
+        return G
+
+    def clear(self):
+        """ Clears the internal arrays created in `initialize` """
+        del self._calc
+
+
+class RealSpaceSI(SelfEnergy):
+    r""" Calculate real-space surface self-energy (or Green function) for a given physical object with limited periodicity
+
+    The real-space self-energy is calculated via the k-averaged Green function:
+
+    .. math::
+        \boldsymbol\Sigma^\mathcal{R}(E) = \mathbf S^\mathcal{R} (E+i\eta) - \mathbf H^\mathcal{R}
+             - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+
+    The method actually used is relying on `RecursiveSI` and `~sisl.physics.Bloch` objects.
+
+    Parameters
+    ----------
+    semi : SemiInfinite
+        physical object which contains the semi-infinite direction, it is from
+        this object we calculate the self-energy to be put into the surface.
+        a physical object from which to calculate the real-space self-energy.
+        `semi` and `surface` must have parallel lattice vectors.
+    surface : SparseOrbitalBZ
+        parent object containing the surface of system. `semi` is attached into this
+        object via the overlapping regions, the atoms that overlap `semi` and `surface`
+        are determined in the `initialize` routine.
+        `semi` and `surface` must have parallel lattice vectors.
+    k_axes : array_like of int
+        axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
+        along the `semi` semi-infinite direction.
+    unfold : (3,) of int
+        number of times the `surface` structure is tiled along each direction
+        The resulting Green function/self-energy ordering is always tiled along
+        the semi-infinite direction first, and then the transverse direction. Since this is
+        a surface there will maximally be 2 unfolds being non-unity.
+    eta : float, optional
+        imaginary part in the self-energy calculations (default 1e-4 eV)
+    dk : float, optional
+        fineness of the default integration grid, specified in units of Ang, default to 1000 which
+        translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
+    bz : BrillouinZone, optional
+        integration k-points, if not passed the number of k-points will be determined using
+        `dk` and time-reversal symmetry will be determined by `trs`
+    trs: bool, optional
+        whether time-reversal symmetry is used in the BrillouinZone integration, default
+        to true.
+
+    Examples
+    --------
+    >>> graphene = geom.graphene()
+    >>> H = Hamiltonian(graphene)
+    >>> H.construct([(0.1, 1.44), (0, -2.7)])
+    >>> se = RecursiveSI(H, '-A')
+    >>> Hsurf = H.tile(3, 0)
+    >>> Hsurf.set_nsc(a=1)
+    >>> rsi = RealSpaceSI(se, Hsurf, 1, (1, 4, 1))
+    >>> rsi.green(0.1)
+
+    The Brillouin zone integration is determined naturally.
+
+    >>> graphene = geom.graphene()
+    >>> H = Hamiltonian(graphene)
+    >>> H.construct([(0.1, 1.44), (0, -2.7)])
+    >>> se = RecursiveSI(H, '-A')
+    >>> Hsurf = H.tile(3, 0)
+    >>> Hsurf.set_nsc(a=1)
+    >>> rsi = RealSpaceSI(se, Hsurf, 1, (1, 4, 1))
+    >>> rsi.set_options(eta=1e-3, bz=MonkhorstPack(H, [1, 1000, 1]))
+    >>> rsi.initialize()
+    >>> rsi.green(0.1) # eta = 1e-3
+    >>> rsi.green(0.1 + 1j * 1e-4) # eta = 1e-4
+
+    Manually specify Brillouin zone integration and default :math:`\eta` value.
+    """
+
+    def __init__(self, semi, surface, k_axes, unfold=(1, 1, 1), **options):
+        """ Initialize real-space self-energy calculator """
+        self.semi = semi
+        self.surface = surface
+
+        if not self.semi.sc.parallel(surface.sc):
+            raise ValueError(self.__class__.__name__ + ' requires semi and surface to have parallel '
+                             'lattice vectors.')
+
+        self._k_axes = np.sort(_a.arrayi(k_axes).ravel())
+        k_ax = self._k_axes
+
+        if self.semi.semi_inf in k_ax:
+            raise ValueError(self.__class__.__name__ + ' found the self-energy direction to be '
+                             'the same as one of the k-axes, this is not allowed.')
+
+        # Local variables for the completion of the details
+        self._unfold = _a.arrayi([max(1, un) for un in unfold])
+
+        # Check that the unfold is 1 for the non-k/semi axes
+        # TODO in fact unfolding *could* be allowed in a non-(k-axes/semi) since
+        #      Bloch expansion could work for k-points! TODO
+        check_unfold = array_replace(self._unfold, (k_ax, 1), (self.semi.semi_inf, 1))
+        if np.any(check_unfold > 1):
+            raise ValueError(self.__class__.__name__ + ' found unfolding along a non-k, non-semi '
+                             'direction. Please correct your settings by having all unfolded axes in either '
+                             'a semi-infinite or k-averaged direction.')
+
+        if self.surface.nsc[semi.semi_inf] > 1:
+            raise ValueError(self.__class__.__name__ + ' surface has periodicity along the semi-infinite '
+                             'direction. This is not allowed.')
+        if np.any(self.surface.nsc[k_ax] < 3):
+            raise ValueError(self.__class__.__name__ + ' found k-axes without periodicity. '
+                             'Correct k_axes via .set_option.')
+
+        if self._unfold[semi.semi_inf] > 1:
+            raise ValueError(self.__class__.__name__ + ' cannot unfold along the semi-infinite direction. '
+                             'This is a surface real-space self-energy.')
+
+        # Now we need to figure out the atoms in the surface that corresponds to the
+        # semi-infinite direction.
+        # Now figure out which atoms in `semi` intersects those in `surface`
+        semi_inf = self.semi.semi_inf
+        semi_na = self.semi.geometry.na
+        semi_min = self.semi.geometry.xyz.min(0)
+
+        surf_na = self.surface.geometry.na
+
+        # Check the coordinates...
+        if self.semi.semi_inf_dir == 1:
+            # "right", last atoms
+            atoms = np.arange(surf_na - semi_na, surf_na)
+        else:
+            # "left", first atoms
+            atoms = np.arange(semi_na)
+
+        # Semi-infinite atoms in surface
+        surf_min = self.surface.geometry.xyz[atoms, :].min(0)
+
+        g_surf = self.surface.geometry.xyz[atoms, :] - (surf_min - semi_min)
+
+        # Check atomic coordinates are the same
+        # Precision is 0.001 Ang
+        if not np.allclose(self.semi.geometry.xyz, g_surf, rtol=0, atol=1e-3):
+            print('Coordinate difference:')
+            print(self.semi.geometry.xyz - g_surf)
+            raise ValueError(self.__class__.__name__ + ' overlapping semi-infinite '
+                             'and surface atoms does not coincide!')
+
+        # Surface orbitals to put in the semi-infinite self-energy into.
+        self._surface_orbs = self.surface.geometry.a2o(atoms, True).reshape(-1, 1)
+
+        self._options = {
+            # For true, the semi-infinite direction will use the bulk values for the
+            # elements that overlap with the semi-infinito
+            'semi_bulk': True,
+            # fineness of the integration k-grid [Ang]
+            'dk': 1000,
+            # whether TRS is used (G + G.T) * 0.5
+            'trs': True,
+            # imaginary part used in the Green function calculation (unless an imaginary energy is passed)
+            'eta': 1e-4,
+            # The BrillouinZone used for integration
+            'bz': None,
+        }
+        self.set_options(**options)
+        self.initialize()
+
+    def set_options(self, **options):
+        """ Update options in the real-space self-energy
+
+        After updating options one should re-call `initialize` for consistency.
+
+        Parameters
+        ----------
+        semi_bulk : bool, optional
+            whether the semi-infinite matrix elements are used for in the surface. Default to true.
+        eta : float, optional
+            imaginary part in the self-energy calculations (default 1e-4 eV)
+        dk : float, optional
+            fineness of the default integration grid, specified in units of Ang, default to 1000 which
+            translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
+        bz : BrillouinZone, optional
+            integration k-points, if not passed the number of k-points will be determined using
+            `dk` and time-reversal symmetry will be determined by `trs`
+        trs: bool, optional
+            whether time-reversal symmetry is used in the BrillouinZone integration, default
+            to true.
+        """
+        self._options.update(options)
+
+    def real_space_parent(self):
+        """ Fully expanded real-space surface parent
+
+        Notes
+        -----
+        The returned object does *not* obey the ``semi_bulk`` option. I.e. the matrix elements
+        correspond to the `self.surface` object, always!
+        """
+        P0 = self.surface
+        for ax in self._k_axes:
+            P0 = P0.tile(self._unfold[ax], ax)
+        nsc = array_replace(P0.nsc, (self._k_axes, 1))
+        P0.set_nsc(nsc)
+        return P0
+
+    def real_space_coupling(self, ret_indices=False):
+        """ Real-space coupling surafec where the outside fold into the surface real-space unit cell
+
+        The resulting parent object only contains the inner-cell couplings for the elements that couple
+        out of the real-space matrix.
+
+        Parameters
+        ----------
+        ret_indices : bool, optional
+           if true, also return the atomic indices (corresponding to `real_space_parent`) that encompass the coupling matrix
+
+        Returns
+        -------
+        parent : parent object only retaining the elements of the atoms that couple out of the primary unit cell
+        atom_index : indices for the atoms that couple out of the geometry (`ret_indices`)
+        """
+        opt = self._options
+        k_ax = self._k_axes
+        n_unfold = np.prod(self._unfold)
+
+        # There are 2 things to check:
+        #  1. The semi-infinite system
+        #  2. The full surface
+        PC_k = self.semi.spgeom0
+        PC_semi = self.semi.spgeom1
+        PC = self.surface
+        for ax in k_ax:
+            PC_k = PC_k.tile(self._unfold[ax], ax)
+            PC_semi = PC_semi.tile(self._unfold[ax], ax)
+            PC = PC.tile(self._unfold[ax], ax)
+
+        # If there are any axes that still has k-point sampling (for e.g. circles)
+        # we should remove that periodicity before figuring out which atoms that connect out.
+        # This is because the self-energy should *only* remain on the sites connecting
+        # out of the self-energy used. The k-axis retains all atoms, per see.
+        nsc = array_replace(PC_k.nsc, (k_ax, None), (self.semi.semi_inf, None), other=1)
+        PC_k.set_nsc(nsc)
+        nsc = array_replace(PC_semi.nsc, (k_ax, None), (self.semi.semi_inf, None), other=1)
+        PC_semi.set_nsc(nsc)
+        nsc = array_replace(PC.nsc, (k_ax, None), other=1)
+        PC.set_nsc(nsc)
+
+        # Now we need to figure out the coupled elements
+        # In all cases we remove the inner cell components
+        def get_connections(PC, nrep=1, na=0, na_off=0):
+            # Geometry short-hand
+            g = PC.geometry
+            # Remove all inner-cell couplings (0, 0, 0) to figure out the
+            # elements that couple out of the real-space region
+            n = PC.shape[0]
+            idx = g.sc.sc_index([0, 0, 0])
+            cols = _a.arangei(idx * n, (idx + 1) * n)
+            csr = PC._csr.copy([0]) # we just want the sparse pattern, so forget about the other elements
+            csr.delete_columns(cols, keep_shape=True)
+            # Now PC only contains couplings along the k and semi-inf directions
+            # Extract the connecting orbitals and reduce them to unique atomic indices
+            orbs = g.osc2uc(csr.col[array_arange(csr.ptr[:-1], n=csr.ncol)], True)
+            atom = g.o2a(orbs, True)
+            expand(atom, nrep, na, na_off)
+            return atom
+
+        def expand(atom, nrep, na, na_off):
+            if nrep > 1:
+                la = np.logical_and
+                off = na_off - na
+                for rep in range(nrep - 1, 0, -1):
+                    r_na = rep * na
+                    atom[la(r_na + na > atom, atom >= r_na)] += rep * off
+
+        # The semi-infinite direction is a bit different since now we want what couples out along the
+        # semi-infinite direction
+        atom_semi = []
+        for atom in PC_semi.geometry:
+            if len(PC_semi.edges(atom, exclude=[])) > 0:
+                atom_semi.append(atom)
+        atom_semi = _a.arrayi(atom_semi)
+        expand(atom_semi, n_unfold, self.semi.spgeom1.geometry.na, self.surface.geometry.na)
+        atom_k = get_connections(PC_k, n_unfold, self.semi.spgeom0.geometry.na, self.surface.geometry.na)
+        atom = get_connections(PC)
+        del PC_k, PC_semi, PC
+
+        # Now join the lists and find the unique set of atoms
+        atom_idx = np.unique(np.concatenate([atom_k, atom_semi, atom]))
+
+        # Only retain coupling atoms
+        # Remove all out-of-cell couplings such that we only have inner-cell couplings
+        # Or, if we retain periodicity along a given direction, we will retain those
+        # as well.
+        PC = self.surface
+        for ax in k_ax:
+            PC = PC.tile(self._unfold[ax], ax)
+        PC = PC.sub(atom_idx)
+
+        # Remove all out-of-cell couplings such that we only have inner-cell couplings.
+        nsc = array_replace(PC.nsc, (k_ax, 1))
+        PC.set_nsc(nsc)
+
+        if ret_indices:
+            return PC, atom_idx
+        return PC
+
+    def initialize(self):
+        """ Initialize the internal data-arrays used for efficient calculation of the real-space quantities
+
+        This method should first be called *after* all options has been specified.
+
+        If the user hasn't specified the ``bz`` value as an option this method will update the internal
+        integration Brillouin zone based on the ``dk`` option.
+        """
+        P0 = self.real_space_parent()
+        V_atoms = self.real_space_coupling(True)[1]
+        self._calc = {
+            # Used to calculate the real-space self-energy
+            'P0': P0.Pk,
+            'S0': P0.Sk,
+            # Orbitals in the coupling atoms
+            'orbs': P0.a2o(V_atoms, True).reshape(-1, 1),
+        }
+
+        # Update the BrillouinZone integration grid in case it isn't specified
+        if self._options['bz'] is None:
+            # Update the integration grid
+            # Note this integration grid is based on the big system.
+            sc = self.surface.sc * self._unfold
+            rcell = fnorm(sc.rcell)[self._k_axes]
+            nk = _a.onesi(3)
+            nk[self._k_axes] = np.ceil(self._options['dk'] * rcell).astype(np.int32)
+            self._options['bz'] = MonkhorstPack(sc, nk, trs=self._options['trs'])
+
+    def self_energy(self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs):
+        r""" Calculate real-space surface self-energy
+
+        The real space self-energy is calculated via:
+        .. math::
+            \boldsymbol\Sigma^{\mathcal{R}}(E) = \mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}}
+               - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+
+        Parameters
+        ----------
+        E : float/complex
+           energy to evaluate the real-space self-energy at
+        k : array_like, optional
+           only viable for 3D bulk systems with real-space self-energies along 2 directions.
+           I.e. this would correspond to circular self-energies.
+        bulk : bool, optional
+           if true, :math:`\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}`
+           is returned, otherwise :math:`\boldsymbol\Sigma^\mathcal{R}` is returned
+        coupling: bool, optional
+           if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
+           are returned
+        dtype : numpy.dtype, optional
+          the resulting data type, default to ``np.complex128``
+        **kwargs : dict, optional
+           arguments passed directly to the ``self.surface.Pk`` method (not ``self.surface.Sk``), for instance ``spin``
+        """
+        if dtype is None:
+            dtype = complex128
+        if E.imag == 0:
+            E = E.real + 1j * self._options['eta']
+
+        G = self.green(E, k, dtype=dtype)
+
+        if coupling:
+            orbs = self._calc['orbs']
+            iorbs = _a.arangei(orbs.size).reshape(1, -1)
+            I = zeros([G.shape[0], orbs.size], dtype)
+            # Set diagonal
+            I[orbs.ravel(), iorbs.ravel()] = 1.
+            if bulk:
+                return solve(G, I, True, True)[orbs, iorbs]
+            return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
+                - solve(G, I, True, True)[orbs, iorbs]
+        if bulk:
+            return inv(G, True)
+        return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)).toarray() - inv(G, True)
+
+    def green(self, E, k=(0, 0, 0), dtype=None, **kwargs):
+        r""" Calculate the real-space Green function
+
+        The real space Green function is calculated via:
+
+        .. math::
+            \mathbf G^\mathcal{R}(E) = \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+
+        Parameters
+        ----------
+        E : float/complex
+           energy to evaluate the real-space Green function at
+        k : array_like, optional
+           only viable for 3D bulk systems with real-space Green functions along 2 directions.
+           I.e. this would correspond to a circular real-space Green function
+        dtype : numpy.dtype, optional
+          the resulting data type, default to ``np.complex128``
+        **kwargs : dict, optional
+           arguments passed directly to the ``self.surface.Pk`` method (not ``self.surface.Sk``), for instance ``spin``
+        """
+        opt = self._options
+
+        # Retrieve integration k-grid
+        bz = opt['bz']
+        try:
+            # If the BZ implements TRS (MonkhorstPack) then force it
+            trs = bz._trs >= 0
+        except:
+            trs = opt['trs']
+
+        if dtype is None:
+            dtype = complex128
+
+        # Now we are to calculate the real-space self-energy
+        if E.imag == 0:
+            E = E.real + 1j * opt['eta']
+
+        # Used k-axes
+        k_ax = self._k_axes
+
+        k = _a.asarrayd(k)
+        is_k = np.any(k != 0.)
+        if is_k:
+            axes = [self.semi.semi_inf] + k_ax.tolist()
+            if np.any(k[axes] != 0.):
+                raise ValueError('{}.green requires k-point to be zero along the integrated axes.'.format(self.__class__.__name__))
+            if trs:
+                raise ValueError('{}.green requires a k-point sampled Green function to not use time reversal symmetry.'.format(self.__class__.__name__))
+            # Shift k-points to get the correct k-point in the larger one.
+            bz._k += k.reshape(1, 3)
+
+        # Self-energy function
+        SE = self.semi.self_energy
+
+        M0 = self.surface
+        M0Pk = M0.Pk
+        if M0.orthogonal:
+            # Orthogonal *always* identity
+            S0E = identity(len(M0), dtype=dtype) * E
+            def _calc_green(k, dtype, surf_orbs, semi_bulk):
+                invG = S0E - M0Pk(k, dtype=dtype, format='array', **kwargs)
+                if semi_bulk:
+                    invG[surf_orbs, surf_orbs.T] = SE(E, k, dtype=dtype, bulk=semi_bulk, **kwargs)
+                else:
+                    invG[surf_orbs, surf_orbs.T] -= SE(E, k, dtype=dtype, bulk=semi_bulk, **kwargs)
+                return inv(invG, True)
+        else:
+            M0Sk = M0.Sk
+            def _calc_green(k, dtype, surf_orbs, semi_bulk):
+                invG = M0Sk(k, dtype=dtype, format='array') * E - M0Pk(k, dtype=dtype, format='array', **kwargs)
+                if semi_bulk:
+                    invG[surf_orbs, surf_orbs.T] = SE(E, k, dtype=dtype, bulk=semi_bulk, **kwargs)
+                else:
+                    invG[surf_orbs, surf_orbs.T] -= SE(E, k, dtype=dtype, bulk=semi_bulk, **kwargs)
+                return inv(invG, True)
+
+        # Create functions used to calculate the real-space Green function
+        # For TRS we only-calculate +k and average by using G(k) = G(-k)^T
+        # The extra arguments is because the internal decorator is actually pretty slow
+        # to filter out unused arguments.
+
+        # Define Bloch unfolding routine and number of tiles along the semi-inf direction
+        bloch = Bloch(self._unfold)
+
+        # If using Bloch's theorem we need to wrap the Green function calculation
+        # as the method call.
+        if len(bloch) > 1:
+            def _func_bloch(k, dtype, surf_orbs, semi_bulk):
+                return bloch(_calc_green, k, dtype=dtype, surf_orbs=surf_orbs, semi_bulk=semi_bulk)
+        else:
+            _func_bloch = _calc_green
+
+        # calculate the Green function
+        G = bz.asaverage().call(_func_bloch, dtype=dtype,
+                                surf_orbs=self._surface_orbs,
+                                semi_bulk=opt['semi_bulk'])
+
+        if is_k:
+            # Restore Brillouin zone k-points
             bz._k -= k.reshape(1, 3)
 
         if trs:

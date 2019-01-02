@@ -315,7 +315,12 @@ class _SparseGeometry(object):
         # Make sure we delete all column values where we have put fake values
         delete = _a.arangei(sc.n_s * size, max(max_n, self.shape[1]))
         if len(delete) > 0:
-            self._csr.delete_columns(delete)
+            self._csr.delete_columns(delete, keep_shape=True)
+
+        # Ensure the shape is correct
+        shape = list(self._csr.shape)
+        shape[1] = size * sc.n_s
+        self._csr._shape = tuple(shape)
 
         self.geometry.set_nsc(*args, **kwargs)
 
@@ -1092,16 +1097,17 @@ class SparseAtom(_SparseGeometry):
         isc = geom.a2isc(col)
         # resulting atom in the new geometry (without wrapping
         # for correct supercell, that will happen below)
-        JA = col % na + na * isc[:, axis] - na
+        JA = col % na + na * isc[:, axis]
 
         # Create repetitions
         for rep in range(reps):
-            # Figure out the JA atoms
-            JA += na
             # Correct the supercell information
             isc[:, axis] = JA // na_n
 
             indices[rep, :] = JA % na_n + sc_index(isc) * na_n
+
+            # Step atoms
+            JA += na
 
         # Clean-up
         del isc, JA
@@ -1751,16 +1757,17 @@ class SparseOrbital(_SparseGeometry):
         isc = geom.o2isc(col)
         # resulting atom in the new geometry (without wrapping
         # for correct supercell, that will happen below)
-        JO = col % no + no * isc[:, axis] - no
+        JO = col % no + no * isc[:, axis]
 
         # Create repetitions
         for rep in range(reps):
-            # Figure out the JO orbitals
-            JO += no
             # Correct the supercell information
             isc[:, axis] = JO // no_n
 
             indices[rep, :] = JO % no_n + sc_index(isc) * no_n
+
+            # Step orbitals
+            JO += no
 
         # Clean-up
         del isc, JO
