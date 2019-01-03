@@ -820,6 +820,9 @@ class _gfSileSiesta(SileBinSiesta):
 def _type(name, obj, dic=None):
     if dic is None:
         dic = {}
+    # Always pass the docstring
+    if not '__doc__' in dic:
+        dic['__doc__'] = obj.__doc__.replace(obj.__name__, name)
     return type(name, (obj, ), dic)
 
 # Faster than class ... \ pass

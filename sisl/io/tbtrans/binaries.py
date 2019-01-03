@@ -7,7 +7,8 @@ from sisl.io.siesta.binaries import _gfSileSiesta
 __all__ = ['tbtgfSileTBtrans', 'TBTGFSileTBtrans']
 
 
-tbtgfSileTBtrans = type("tbtgfSileTBtrans", (_gfSileSiesta, ), {})
+tbtgfSileTBtrans = type("tbtgfSileTBtrans", (_gfSileSiesta, ),
+                        {'__doc__': _gfSileSiesta.__doc__.replace(_gfSileSiesta.__name__, 'tbtgfSileTBtrans')})
 TBTGFSileTBtrans = tbtgfSileTBtrans
 
 add_sile('TBTGF', tbtgfSileTBtrans)
