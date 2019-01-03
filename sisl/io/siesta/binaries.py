@@ -623,6 +623,32 @@ class _gfSileSiesta(SileBinSiesta):
         self._k = k
         return nspin, no_u, k, E * Ry2eV
 
+    def disk_usage(self):
+        """ Calculate the estimated size of the resulting file
+
+        Returns
+        -------
+        estimated disk-space used in GB
+        """
+        is_open = self._is_open()
+        if not is_open:
+            self.read_header()
+
+        # HS are only stored per k-point
+        HS = 2 * self._nspin * len(self._k)
+        SE = HS / 2 * len(self._E)
+
+        # Now calculate the full size
+        # no_u ** 2 = matrix size
+        # 16 = bytes in double complex
+        # 1024 ** 3 = B -> GB
+        mem = (HS + SE) * self._no_u ** 2 * 16 / 1024 ** 3
+
+        if not is_open:
+            self._close_gf()
+
+        return mem
+
     def read_hamiltonian(self):
         """ Return current Hamiltonian and overlap matrix from the GF file
 
@@ -700,6 +726,10 @@ class _gfSileSiesta(SileBinSiesta):
         self._nspin = nspin
         self._E = np.copy(E) * eV2Ry
         self._k = np.copy(k)
+        if self._nspin > 2:
+            self._no_u = no_u * 2
+        else:
+            self._no_u = no_u
 
         # Ensure it is open (in write mode)
         self._close_gf()
