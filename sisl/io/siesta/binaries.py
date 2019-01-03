@@ -674,14 +674,14 @@ class _gfSileSiesta(SileBinSiesta):
         if obj is None:
             obj = bz.parent
         nspin = len(obj.spin)
-        cell = obj.geom.sc.cell * Ang2Bohr
-        na_u = obj.geom.na
-        no_u = obj.geom.no
-        xa = obj.geom.xyz * Ang2Bohr
+        cell = obj.geometry.sc.cell * Ang2Bohr
+        na_u = obj.geometry.na
+        no_u = obj.geometry.no
+        xa = obj.geometry.xyz * Ang2Bohr
         # The lasto in siesta requires lasto(0) == 0
         # and secondly, the Python index to fortran
         # index makes firsto behave like fortran lasto
-        lasto = obj.geom.firsto
+        lasto = obj.geometry.firsto
         bloch = _a.onesi(3)
         mu = mu * eV2Ry
         NE = len(E)
@@ -751,6 +751,9 @@ class _gfSileSiesta(SileBinSiesta):
         _bin_check(self, 'write_self_energy', 'could not write self-energy.')
 
         self._ie += 1
+
+    def __len__(self):
+        return len(self._E) * len(self._k) * self._nspin
 
     def __iter__(self):
         """ Iterate through the energies and k-points that this GF file is associated with

@@ -161,7 +161,8 @@ class tableSile(Sile):
             return
         elif len(args) == 1:
             if isinstance(args[0], np.ndarray):
-                dat = args[0]
+                # Ensure that when we change the shape we are doing it on a view
+                dat = args[0].view()
             else:
                 # Probably a tuple/list passed
                 dat = np.vstack(args[0])
