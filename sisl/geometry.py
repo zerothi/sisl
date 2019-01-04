@@ -2876,7 +2876,7 @@ class Geometry(SuperCellChild):
         # Create short-hand
         xyz = self.xyz
 
-        if isinstance(axes, plt.mlib3d.Axes3D):
+        if axes.__class__.__name__.startswith('Axes3D'):
             # We should plot in 3D plots
             axes.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], s=area, c=colors, alpha=0.8)
             axes.set_zlabel('Ang')

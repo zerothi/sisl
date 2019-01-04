@@ -963,7 +963,7 @@ class SuperCell(object):
             v.append(np.vstack((o[axis], o[axis] + self.cell[a, axis])))
         v = np.array(v)
 
-        if isinstance(axes, plt.mlib3d.Axes3D):
+        if axes.__class__.__name__.startswith('Axes3D'):
             # We should plot in 3D plots
             for vv in v:
                 axes.plot(vv[:, 0], vv[:, 1], vv[:, 2], *args, **kwargs)

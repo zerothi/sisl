@@ -56,7 +56,7 @@ def bcc(alat, atom, orthogonal=False):
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, ah]], atom, sc=sc)
     else:
-        sc = SuperCell(np.array([[1, 1, 1],
+        sc = SuperCell(np.array([[-1, 1, 1],
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2)
         g = Geometry([0, 0, 0], atom, sc=sc)
