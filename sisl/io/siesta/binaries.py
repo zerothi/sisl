@@ -464,7 +464,11 @@ class hsxSileSiesta(SileBinSiesta):
 
 
 class _gridSileSiesta(SileBinSiesta):
-    """ Binary real-space grid file """
+    """ Binary real-space grid file
+
+    The Siesta binary grid sile will automatically convert the units from Siesta
+    units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
+    """
 
     def read_supercell(self, *args, **kwargs):
 
@@ -822,7 +826,10 @@ def _type(name, obj, dic=None):
         dic = {}
     # Always pass the docstring
     if not '__doc__' in dic:
-        dic['__doc__'] = obj.__doc__.replace(obj.__name__, name)
+        try:
+            dic['__doc__'] = obj.__doc__.replace(obj.__name__, name)
+        except:
+            pass
     return type(name, (obj, ), dic)
 
 # Faster than class ... \ pass
