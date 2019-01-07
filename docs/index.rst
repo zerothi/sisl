@@ -17,23 +17,38 @@
 
 .. title:: Scientific Python toolbox for electronic structure calculations
 .. meta::
-   :description: sisl is a tool to manipulate an increasing amount of density functional
-		 theory code input and/or output. It also implements generic tight-binding
+   :description: sisl is a tool to manipulate density functional
+		 theory code input and/or output. It also implements tight-binding
 		 tools to create and manipulate multi-orbital (non)-orthogonal basis sets.
+   :keywords: LCAO, Siesta, TranSiesta, TBtrans, VASP, GULP, DFT, tight-binding, electrons, phonons
 
 
-Welcome to sisl documentation!
-==============================
+sisl: a tight-binding and DFT postprocessing library
+====================================================
 
-sisl is a tool to manipulate an increasing amount of density functional
+sisl is an open source Python library to manipulate density functional
 theory code input and/or output.
-It is also a tight-binding code implementing extremely fast and scalable
-tight-binding creation algorithms (for millions of orbitals).
-sisl also allows interaction with `TBtrans`_ to act as a tight-binding
-Hamiltonian input engine for *N*-electrode non-equilibrium Green function transport
-calculations.
+It also allows constructing and analyzing custom made tight-binding models with high
+throughput for millions of orbitals/atoms.
+Any user tight-binding model may be used as input to the non-equilibrium Green function
+transport calculator `TBtrans`_.
+sisl deals with both electrons and phonons.
 
-sisl is hosted here http://github.com/zerothi/sisl.
+sisl is hosted `here <http://github.com/zerothi/sisl>`_.
+
+Tight-binding and localized orbitals are an essential part of the electronic structure
+community. A great deal of codes are implementing either of the afore mentioned methodologies.
+However, every code implements their own analysis and post-processing utilities which typically
+turns out to be equivalent utilities only having the interface differently.
+
+sisl tries to solve some of the analysis issues by creating a unified scripting approach
+in Python which does analysis using the same interface, regardless of code being used.
+For instance one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
+in a consistent manner so the post-processing is the same, regardless of code being used.
+
+Tight-binding models are created dynamically in sisl using a custom sparse Hamiltonian.
+Having *any* electronic structure one can calculate physical properties such as (projected)
+density of states, wavefunctions, spin moments, band velocities and Berry phases.
 
 
 Features

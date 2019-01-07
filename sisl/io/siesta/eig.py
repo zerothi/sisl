@@ -98,7 +98,7 @@ class eigSileSiesta(SileSiesta):
 
         return eigs - Ef
 
-    @default_ArgumentParser(description="Manipulate EIG file in sisl.")
+    @default_ArgumentParser(description="Manipulate Siesta EIG file.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         #limit_args = kwargs.get('limit_arguments', True)
