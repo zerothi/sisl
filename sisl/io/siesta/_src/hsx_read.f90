@@ -1,5 +1,6 @@
 subroutine read_hsx_sizes(fname, Gamma, nspin, no_u, no_s, maxnh)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -15,10 +16,7 @@ subroutine read_hsx_sizes(fname, Gamma, nspin, no_u, no_s, maxnh)
 ! Internal variables and arrays
   integer :: iu, ierr
 
-  ! Open file
-  call free_unit(iu)
-  open(iu, file=trim(fname), form='unformatted', status='unknown', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
 ! Read overall data
   read(iu, iostat=ierr) no_u, no_s, nspin, maxnh
@@ -34,7 +32,8 @@ end subroutine read_hsx_sizes
 
 subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
     numh, listh, H, S, xij)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -67,10 +66,7 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   real(sp), allocatable :: buf(:)
 
-! Open file
-  call free_unit(iu)
-  open(iu, file=trim(fname), form='unformatted', status='unknown', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
 ! Read overall data
   read(iu, iostat=ierr) lno_u, lno_s, lnspin, lmaxnh
@@ -149,7 +145,8 @@ end subroutine read_hsx_hsx
 
 subroutine read_hsx_s(fname, Gamma, nspin, no_u, no_s, maxnh, &
     numh, listh, S)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -180,10 +177,7 @@ subroutine read_hsx_s(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   real(sp), allocatable :: buf(:)
 
-  ! Open file
-  call free_unit(iu)
-  open(iu, file=trim(fname), form='unformatted', status='unknown', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   ! Read overall data
   read(iu, iostat=ierr) lno_u, lno_s, lnspin, lmaxnh

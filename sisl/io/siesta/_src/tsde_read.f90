@@ -1,5 +1,6 @@
 subroutine read_tsde_sizes(fname, nspin, no_u, nsc, nnz)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -15,9 +16,7 @@ subroutine read_tsde_sizes(fname, nspin, no_u, nsc, nnz)
   integer :: iu, ierr
   integer, allocatable :: num_col(:)
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   ! First try and see if nsc is present
   read(iu, iostat=ierr) no_u, nspin, nsc
@@ -40,7 +39,8 @@ end subroutine read_tsde_sizes
 
 subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
     ncol, list_col, DM)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -67,9 +67,7 @@ subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
   ! Local readables
   integer :: lno_u, lnspin, lnsc(3)
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   ! First try and see if nsc is present
   read(iu,iostat=ierr) lno_u, lnspin, lnsc
@@ -111,7 +109,8 @@ end subroutine read_tsde_dm
 
 subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
     ncol, list_col, EDM)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -142,9 +141,7 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   real(dp) :: Ef
   real(dp), allocatable :: DM(:,:)
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   ! First try and see if nsc is present
   read(iu, iostat=ierr) lno_u, lnspin, lnsc

@@ -1,5 +1,6 @@
 subroutine read_hs_header(fname, Gamma, nspin, no_u, no_s, maxnh)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -15,9 +16,7 @@ subroutine read_hs_header(fname, Gamma, nspin, no_u, no_s, maxnh)
 ! Internal variables and arrays
   integer :: iu, ierr
 
-  call free_unit(iu)
-  open(iu, file=trim(fname), status='old', form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) no_u, no_s, nspin, maxnh
   call iostat_update(ierr)
@@ -31,7 +30,8 @@ end subroutine read_hs_header
 
 subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
     numh,listhptr,listh,H,S,xij)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -62,9 +62,7 @@ subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
   logical :: lGamma
   integer :: lno_s, lno_u, lnspin, lmaxnh
 
-  call free_unit(iu)
-  open(iu, file=trim(fname), status='old', form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) lno_u, lno_s, lnspin, lmaxnh
   call iostat_update(ierr)

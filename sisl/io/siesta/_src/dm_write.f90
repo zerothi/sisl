@@ -1,5 +1,6 @@
 subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -20,9 +21,7 @@ subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
 ! Internal variables and arrays
   integer :: iu, is, i, idx, ierr
 
-  call free_unit(iu)
-  open(iu, file=trim(fname), status='unknown', form='unformatted', action='write', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(iu, fname, 'write', 'unknown', 'unformatted', iu)
 
   ! Also write the supercell.
   write(iu, iostat=ierr) no_u, nspin, nsc

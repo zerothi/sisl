@@ -1,5 +1,6 @@
 subroutine read_tshs_version(fname, version)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -14,9 +15,7 @@ subroutine read_tshs_version(fname, version)
   integer :: iu, ierr
   integer :: tmp(5)
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) tmp
   if ( ierr /= 0 ) then
@@ -33,7 +32,8 @@ subroutine read_tshs_version(fname, version)
 end subroutine read_tshs_version
 
 subroutine read_tshs_sizes(fname, nspin, na_u, no_u, n_s, nnz)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -63,9 +63,8 @@ subroutine read_tshs_sizes(fname, nspin, na_u, no_u, n_s, nnz)
 
   end if
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
   read(iu, iostat=ierr) ! version
   call iostat_update(ierr)
   ! Read the sizes
@@ -85,7 +84,8 @@ subroutine read_tshs_sizes(fname, nspin, na_u, no_u, n_s, nnz)
 end subroutine read_tshs_sizes
 
 subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -123,9 +123,7 @@ subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
 
   end if
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) ! version
   call iostat_update(ierr)
@@ -181,7 +179,8 @@ subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
 end subroutine read_tshs_cell
 
 subroutine read_tshs_geom(fname, na_u, xa, lasto)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -217,9 +216,7 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
 
   end if
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) ! version
   call iostat_update(ierr)
@@ -249,7 +246,8 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
 end subroutine read_tshs_geom
 
 subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -289,9 +287,7 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
 
   end if
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) ! version
   call iostat_update(ierr)
@@ -356,7 +352,8 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
 end subroutine read_tshs_hs
 
 subroutine read_tshs_s(fname, no_u, nnz, ncol, list_col, S)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -393,9 +390,7 @@ subroutine read_tshs_s(fname, no_u, nnz, ncol, list_col, S)
 
   end if
 
-  call free_unit(iu)
-  open(iu,file=trim(fname),status='old',form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) ! version
   call iostat_update(ierr)

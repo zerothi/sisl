@@ -1,5 +1,6 @@
 subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -23,9 +24,8 @@ subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
   integer :: iu, ierr
   integer :: is, iz, iy
 
-  call free_unit(iu)
-  open(iu, file=trim(fname), form='unformatted', status='unknown', action='write', iostat=ierr)
-  call iostat_update(ierr)
+  ! Open file (ensure we start from a clean slate)!
+  call open_file(iu, fname, 'write', 'unknown', 'unformatted', iu)
 
   write(iu, iostat=ierr) cell(:,:)
   call iostat_update(ierr)

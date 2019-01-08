@@ -3,7 +3,7 @@ module io_m
 
   implicit none
 
-  public :: free_unit
+  public :: open_file
   public :: iostat_reset
   public :: iostat_update
   public :: iostat_query
@@ -12,34 +12,53 @@ module io_m
 
 contains
 
-  !< Get the next free unit
-  subroutine free_unit(u, stat_reset)
-    integer, intent(out) :: u
-    logical, intent(in), optional :: stat_reset
-
-    ! Define f2py intents
-!f2py intent(out) :: u
-!f2py intent(in), optional :: u
+  !< Open the file `file` using the given `action`, `status` and `form` specifications.
+  subroutine open_file(file, action, status, form, unit)
+    character(len=*), intent(in) :: file
+    character(len=*), intent(in) :: action, status, form
+    integer, intent(out) :: unit
 
     logical :: opened
 
-    u = 999
+    ! Check out whether the file is already opened and
+    ! if we can reuse it...
+    unit = -1
+    inquire(file=file, number=unit, opened=opened, iostat=ierr)
+    call iostat_update(ierr)
+
+    if ( unit > 0 ) then
+
+      ! The file is already open
+      ! Depending on the action, we need to rewind or close it
+      select case ( action )
+      case ( 'r', 'R', 'read', 'READ' )
+
+        ! It is already opened, simply rewind and return...
+        rewind(unit)
+        return
+
+      case ( 'w', 'W', 'write', 'WRITE' )
+
+        close(unit_open)
+
+      end select
+
+    end if
+
+    ! We need to open it a-new
+    unit = 999
     opened = .true.
     do while ( opened )
 
-      u = u + 1
-      inquire(u, opened=opened)
+      unit = unit + 1
+      inquire(unit, opened=opened)
 
     end do
 
-    ! Default to reset the global iostat
-    opened = .true.
-    if ( present(stat_reset) ) opened = stat_reset
-    if ( opened ) then
-      call iostat_reset()
-    end if
+    open(unit, file=trim(file), status=status, form=form, action=action, iostat=ierr)
+    call iostat_update(ierr)
 
-  end subroutine free_unit
+  end subroutine open_file
 
   !< Initialize global io stat
   subroutine iostat_reset()
@@ -49,6 +68,10 @@ contains
   !< Update global status, only overwrite if not used
   subroutine iostat_update(iostat)
     integer, intent(in) :: iostat
+
+    ! Define f2py intents
+!f2py intent(out)  :: iostat
+
     if ( io_stat == 0 ) io_stat = iostat
   end subroutine iostat_update
 

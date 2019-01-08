@@ -1,5 +1,5 @@
 subroutine read_open_gf(fname, iu )
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
 
   implicit none
 
@@ -14,9 +14,7 @@ subroutine read_open_gf(fname, iu )
   integer :: ierr
 
   ! Open file
-  call free_unit(iu)
-  open(iu, file=trim(fname), form='unformatted', status='old', action='read', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
 end subroutine read_open_gf
 

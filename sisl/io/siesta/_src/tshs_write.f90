@@ -3,7 +3,8 @@ subroutine write_tshs_hs(fname, &
     nsc1, nsc2, nsc3, &
     cell, xa, lasto, &
     ncol, list_col, H, S, isc)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -34,9 +35,8 @@ subroutine write_tshs_hs(fname, &
 ! Internal variables and arrays
   integer :: iu, ierr, is, i, idx
 
-  call free_unit(iu)
-  open(iu, file=trim(fname), status='unknown', form='unformatted', action='write', iostat=ierr)
-  call iostat_update(ierr)
+  ! Open file (ensure we start from a clean slate)!
+  call open_file(iu, fname, 'write', 'unknown', 'unformatted', iu)
 
   ! version
   write(iu, iostat=ierr) 1

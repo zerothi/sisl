@@ -1,5 +1,6 @@
 subroutine read_grid_sizes(fname, nspin, mesh)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -22,9 +23,7 @@ subroutine read_grid_sizes(fname, nspin, mesh)
 ! Internal variables and arrays
   integer :: iu, ierr
 
-  call free_unit(iu)
-  open(iu, file=trim(fname), status='old', form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) ! cell(:,:)
   call iostat_update(ierr)
@@ -37,7 +36,8 @@ subroutine read_grid_sizes(fname, nspin, mesh)
 end subroutine read_grid_sizes
 
 subroutine read_grid_cell(fname, cell)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -58,9 +58,7 @@ subroutine read_grid_cell(fname, cell)
 ! Internal variables and arrays
   integer :: iu, ierr
 
-  call free_unit(iu)
-  open(iu, file=trim(fname), status='old', form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) cell(:,:)
   call iostat_update(ierr)
@@ -71,7 +69,8 @@ subroutine read_grid_cell(fname, cell)
 end subroutine read_grid_cell
 
 subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -97,9 +96,7 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
   ! Local readables
   integer :: lnspin, lmesh(3)
 
-  call free_unit(iu)
-  open(iu, file=trim(fname), status='old', form='unformatted', iostat=ierr)
-  call iostat_update(ierr)
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
 
   read(iu, iostat=ierr) ! cell
   call iostat_update(ierr)

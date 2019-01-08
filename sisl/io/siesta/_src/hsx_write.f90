@@ -1,6 +1,7 @@
 subroutine write_hsx(fname, Gamma, no_u, no_s, nspin, maxnh, &
     numh, listhptr, listh, H, S, xij, Qtot, temp)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
+  use io_m, only: iostat_update
 
   implicit none
 
@@ -24,10 +25,8 @@ subroutine write_hsx(fname, Gamma, no_u, no_s, nspin, maxnh, &
   integer :: is, ih, im, k
   integer :: indxuo(no_s)
 
-! Open file
-  call free_unit(iu)
-  open(iu, file=trim(fname), form='unformatted', status='unknown', action='write', iostat=ierr)
-  call iostat_update(ierr)
+  ! Open file (ensure we start from a clean slate)!
+  call open_file(iu, fname, 'write', 'unknown', 'unformatted', iu)
 
 ! Write overall data
   write(iu, iostat=ierr) no_u, no_s, nspin, maxnh

@@ -1,5 +1,5 @@
 subroutine write_open_gf(fname, iu)
-  use io_m, only: free_unit, iostat_update
+  use io_m, only: open_file
 
   implicit none
 
@@ -9,14 +9,12 @@ subroutine write_open_gf(fname, iu)
 
   ! Define f2py intents
 !f2py intent(in) :: fname
-!f2py intent(out) :: iu, test
+!f2py intent(out) :: iu
 
   integer :: ierr
 
-  ! Open file
-  call free_unit(iu)
-  open(iu, file=trim(fname), form='unformatted', status='unknown', action='write', iostat=ierr)
-  call iostat_update(ierr)
+  ! Open file (ensure we start from a clean slate)!
+  call open_file(fname, 'write', 'unknown', 'unformatted', iu)
 
 end subroutine write_open_gf
 
