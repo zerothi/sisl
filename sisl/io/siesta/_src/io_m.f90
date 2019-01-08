@@ -46,6 +46,9 @@ contains
 
     end if
 
+    ! Always reset
+    call iostat_reset()
+
     ! We need to open it a-new
     unit = 999
     opened = .true.
@@ -74,6 +77,7 @@ contains
 !f2py intent(out)  :: iostat
 
     if ( io_stat == 0 ) io_stat = iostat
+
   end subroutine iostat_update
 
   !< Query the status of io
