@@ -26,7 +26,7 @@ subroutine write_hsx(fname, Gamma, no_u, no_s, nspin, maxnh, &
   integer :: indxuo(no_s)
 
   ! Open file (ensure we start from a clean slate)!
-  call open_file(iu, fname, 'write', 'unknown', 'unformatted', iu)
+  call open_file(fname, 'write', 'unknown', 'unformatted', iu)
 
 ! Write overall data
   write(iu, iostat=ierr) no_u, no_s, nspin, maxnh

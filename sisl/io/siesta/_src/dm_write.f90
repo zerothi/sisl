@@ -21,7 +21,7 @@ subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
 ! Internal variables and arrays
   integer :: iu, is, i, idx, ierr
 
-  call open_file(iu, fname, 'write', 'unknown', 'unformatted', iu)
+  call open_file(fname, 'write', 'unknown', 'unformatted', iu)
 
   ! Also write the supercell.
   write(iu, iostat=ierr) no_u, nspin, nsc

@@ -11,8 +11,6 @@ subroutine read_open_gf(fname, iu )
 !f2py intent(in) :: fname
 !f2py intent(out) :: iu
 
-  integer :: ierr
-
   ! Open file
   call open_file(fname, 'read', 'old', 'unformatted', iu)
 

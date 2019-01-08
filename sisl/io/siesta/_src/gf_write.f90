@@ -11,8 +11,6 @@ subroutine write_open_gf(fname, iu)
 !f2py intent(in) :: fname
 !f2py intent(out) :: iu
 
-  integer :: ierr
-
   ! Open file (ensure we start from a clean slate)!
   call open_file(fname, 'write', 'unknown', 'unformatted', iu)
 

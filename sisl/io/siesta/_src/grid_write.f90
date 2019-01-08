@@ -25,7 +25,7 @@ subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
   integer :: is, iz, iy
 
   ! Open file (ensure we start from a clean slate)!
-  call open_file(iu, fname, 'write', 'unknown', 'unformatted', iu)
+  call open_file(fname, 'write', 'unknown', 'unformatted', iu)
 
   write(iu, iostat=ierr) cell(:,:)
   call iostat_update(ierr)

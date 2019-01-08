@@ -19,6 +19,7 @@ contains
     integer, intent(out) :: unit
 
     logical :: opened
+    integer :: ierr
 
     ! Check out whether the file is already opened and
     ! if we can reuse it...
@@ -39,7 +40,7 @@ contains
 
       case ( 'w', 'W', 'write', 'WRITE' )
 
-        close(unit_open)
+        close(unit)
 
       end select
 

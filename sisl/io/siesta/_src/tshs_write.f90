@@ -36,7 +36,7 @@ subroutine write_tshs_hs(fname, &
   integer :: iu, ierr, is, i, idx
 
   ! Open file (ensure we start from a clean slate)!
-  call open_file(iu, fname, 'write', 'unknown', 'unformatted', iu)
+  call open_file(fname, 'write', 'unknown', 'unformatted', iu)
 
   ! version
   write(iu, iostat=ierr) 1
