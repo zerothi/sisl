@@ -5,7 +5,7 @@ import functools as ftool
 from numbers import Integral
 import numpy as np
 from numpy import int32
-from numpy import unique, insert, take
+from numpy import insert, unique
 from numpy import tile, repeat
 
 from . import _array as _a
@@ -924,7 +924,7 @@ class SparseAtom(_SparseGeometry):
         # First we need to figure out how long the interaction range is
         # in the cut-direction
         # We initialize to be the same as the parent direction
-        nsc = _a.arrayi(self.nsc, copy=True) // 2
+        nsc = _a.arrayi(self.nsc // 2)
         nsc[axis] = 0  # we count the new direction
         isc = _a.zerosi([3])
         isc[axis] -= 1
@@ -971,7 +971,7 @@ class SparseAtom(_SparseGeometry):
 
         def _sca2sca(M, a, m, seps, axis):
             # Converts an o from M to m
-            isc = _a.arrayi(M.a2isc(a), copy=True)
+            isc = _a.arrayi(M.a2isc(a))
             isc[axis] = isc[axis] * seps
             # Correct for cell-offset
             isc[axis] = isc[axis] + (a % M.na) // m.na

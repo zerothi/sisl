@@ -143,9 +143,9 @@ class RecursiveSI(SemiInfinite):
         nsc[self.semi_inf] = self.semi_inf_dir
         # Get all supercell indices that we should delete
         idx = np.delete(_a.arangei(n_s),
-                        _a.arrayi(self.spgeom1.geometry.sc.sc_index(nsc)))
+                        _a.arrayi(self.spgeom1.geometry.sc.sc_index(nsc))) * n
 
-        cols = array_arange(idx * n, (idx + 1) * n)
+        cols = array_arange(idx, idx + n)
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep_shape=True)
 
