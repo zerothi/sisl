@@ -639,12 +639,17 @@ class SuperCell(object):
             return self._isc_off[sc_off[0], sc_off[1], sc_off[2]]
 
         # We build it because there are 'none'
-        idx = []
-        for i in range(self.n_s):
-            if (sc_off[0] == self.sc_off[i, 0] or sc_off[0] is None) and \
-               (sc_off[1] == self.sc_off[i, 1] or sc_off[1] is None) and \
-               (sc_off[2] == self.sc_off[i, 2] or sc_off[2] is None):
-                idx.append(i)
+        if sc_off[0] is None:
+            idx = _a.arangei(self.n_s)
+        else:
+            idx = (self.sc_off[:, 0] == sc_off[0]).nonzero()[0]
+
+        if not sc_off[1] is None:
+            idx = idx[(self.sc_off[idx, 1] == sc_off[1]).nonzero()[0]]
+
+        if not sc_off[2] is None:
+            idx = idx[(self.sc_off[idx, 2] == sc_off[2]).nonzero()[0]]
+
         return idx
 
     def scale(self, scale):

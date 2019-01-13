@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
 from numbers import Integral
-from collections import Iterable
 
 # To speed up the extension algorithm we limit
 # the lookup table
@@ -26,7 +25,7 @@ from . import _array as _a
 from ._array import asarrayi, arrayi
 from ._indices import indices, indices_only, sorted_unique
 from .messages import warn, SislError
-from ._help import array_fill_repeat, get_dtype
+from ._help import array_fill_repeat, get_dtype, isiterable
 from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
 
@@ -175,9 +174,9 @@ class SparseCSR(object):
                                   nnz=1, **kwargs)
 
                 # Copy data to the arrays
-                self.ptr = arg1[2].astype(np.int32, copy=False)
+                self.ptr = arg1[2].astype(int32, copy=False)
                 self.ncol = diff(self.ptr)
-                self.col = arg1[1].astype(np.int32, copy=False)
+                self.col = arg1[1].astype(int32, copy=False)
                 self._nnz = len(self.col)
                 self._D = empty([len(arg1[1]), self.shape[-1]], dtype=self.dtype)
                 if len(arg1[0].shape) == 2:
@@ -871,7 +870,7 @@ class SparseCSR(object):
         # Get indices of sparse data (-1 if non-existing)
         key = list(key)
         key[0] = self._slice2list(key[0], 0)
-        if isinstance(key[0], Iterable):
+        if isiterable(key[0]):
             if len(key) == 2:
                 for i in key[0]:
                     del self[i, key[1]]
@@ -1130,23 +1129,28 @@ class SparseCSR(object):
         return new
 
     def tocsr(self, dim=0, **kwargs):
-        """ Return the data in :class:`~scipy.sparse.csr_matrix` format
+        """ Convert dimension `dim` into a :class:`~scipy.sparse.csr_matrix` format
 
         Parameters
         ----------
         dim: int, optional
-           the dimension of the data to create the sparse matrix
+           dimension of the data returned in a scipy sparse matrix format
         **kwargs:
            arguments passed to the :class:`~scipy.sparse.csr_matrix` routine
         """
-        # We finalize because we do not expect the sparse pattern to change once
-        # we request a csr matrix in another format.
-        # Otherwise we *could* do array_arange
-        self.finalize()
-
         shape = self.shape[:2]
-        return csr_matrix((self._D[:, dim].copy(), self.col.astype(np.int32),
-                           self.ptr.astype(np.int32)),
+        if self.finalized:
+            # Easy case...
+            return csr_matrix((self._D[:, dim].copy(),
+                               self.col.astype(int32, copy=True), self.ptr.astype(int32, copy=True)),
+                              shape=shape, **kwargs)
+
+        # Use array_arange
+        idx = array_arange(self.ptr[:-1], n=self.ncol)
+        # create new pointer
+        ptr = insert(_a.cumsumi(self.ncol), 0, 0)
+
+        return csr_matrix((self._D[idx, dim].copy(), self.col[idx], ptr.astype(int32, copy=False)),
                           shape=shape, **kwargs)
 
     def remove(self, indices):
@@ -1608,8 +1612,8 @@ def ispmatrix(matrix, map_row=None, map_col=None):
     map_row = np.vectorize(map_row)
     map_col = np.vectorize(map_col)
 
-    nrow = len(unique(map_row(arange(matrix.shape[0], dtype=np.int32))))
-    ncol = len(unique(map_col(arange(matrix.shape[1], dtype=np.int32))))
+    nrow = len(unique(map_row(arange(matrix.shape[0], dtype=int32))))
+    ncol = len(unique(map_col(arange(matrix.shape[1], dtype=int32))))
     rows = zeros(nrow, dtype=np.bool_)
     cols = zeros(ncol, dtype=np.bool_)
 

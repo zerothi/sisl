@@ -440,3 +440,30 @@ class TestSparseAtom(object):
         n = p.dumps(S)
         s = p.loads(n)
         assert s.spsame(S)
+
+
+@pytest.mark.parametrize("n0", [1, 2, 4])
+@pytest.mark.parametrize("n1", [1, 2, 4])
+@pytest.mark.parametrize("n2", [1, 2, 4])
+def test_sparse_atom_symmetric(n0, n1, n2):
+    g = fcc(1., Atom(1, R=1.5)) * 2
+    s = SparseAtom(g)
+    s.construct([[0.1, 1.51], [1, 2]])
+    s = s.tile(n0, 0).tile(n1, 1).tile(n2, 2)
+    na = s.geometry.na
+
+    nnz = na
+    for ia in range(na):
+        # orbitals connecting to ia
+        edges = s.edges(ia)
+        # Figure out the transposed supercell indices of the edges
+        isc = - s.geometry.a2isc(edges)
+        # Convert to supercell
+        IA = s.geometry.sc.sc_index(isc) * na + ia
+        # Figure out if 'ia' is also in the back-edges
+        for ja, edge in zip(IA, edges % na):
+            assert ja in s.edges(edge)
+            nnz += 1
+
+    # Check that we have counted all nnz
+    assert s.nnz == nnz

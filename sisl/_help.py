@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
 import sys
-import collections
 
 import numpy as np
 
@@ -20,15 +19,17 @@ __all__ += ['xml_parse']
 is_python3 = sys.version_info >= (3, 0)
 is_python2 = not is_python3
 if is_python3:
+    import collections.abc as collections_abc
     _str = str
     _range = range
     _zip = zip
     _map = map
 else:
-    _str = basestring
-    _range = xrange
+    import collections as collections_abc
     from itertools import izip as _zip
     from itertools import imap as _map
+    _str = basestring
+    _range = xrange
 
 
 # Load the correct xml-parser
@@ -71,8 +72,8 @@ def array_fill_repeat(array, size, cls=None):
             return np.tile(np.array(array, dtype=cls), reps)
         return np.array(array, dtype=cls)
 
-# To speed up isiterable
-_Iterable = collections.Iterable
+
+_Iterable = collections_abc.Iterable
 
 
 def isiterable(obj):

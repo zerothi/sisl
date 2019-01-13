@@ -7,13 +7,10 @@ This sub-module implements a list which allows to make operations with it-self o
 """
 from __future__ import print_function, division
 
-import sys
-if sys.version_info >= (3, 0):
-    from collections.abc import Iterable
-else:
-    from collections import Iterable
 from numbers import Integral
 from functools import wraps
+
+from ._help import isiterable
 
 
 __all__ = ['oplist']
@@ -126,7 +123,7 @@ class oplist(list):
     # Implement math operations
 
     def __add__(self, other):
-        if isinstance(other, Iterable):
+        if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
@@ -135,7 +132,7 @@ class oplist(list):
 
     def __iadd__(self, other):
         n = len(self)
-        if isinstance(other, Iterable):
+        if isiterable(other):
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
             for i in range(n):
@@ -149,7 +146,7 @@ class oplist(list):
         return self + other
 
     def __sub__(self, other):
-        if isinstance(other, Iterable):
+        if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
@@ -158,7 +155,7 @@ class oplist(list):
 
     def __isub__(self, other):
         n = len(self)
-        if isinstance(other, Iterable):
+        if isiterable(other):
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
             for i in range(n):
@@ -169,7 +166,7 @@ class oplist(list):
         return self
 
     def __rsub__(self, other):
-        if isinstance(other, Iterable):
+        if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
@@ -177,7 +174,7 @@ class oplist(list):
         return oplist([other - data for data in self])
 
     def __mul__(self, other):
-        if isinstance(other, Iterable):
+        if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
@@ -186,7 +183,7 @@ class oplist(list):
 
     def __imul__(self, other):
         n = len(self)
-        if isinstance(other, Iterable):
+        if isiterable(other):
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
             for i in range(n):
@@ -200,7 +197,7 @@ class oplist(list):
         return self * other
 
     def __pow__(self, other):
-        if isinstance(other, Iterable):
+        if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
@@ -209,7 +206,7 @@ class oplist(list):
 
     def __ipow__(self, other):
         n = len(self)
-        if isinstance(other, Iterable):
+        if isiterable(other):
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
             for i in range(n):
@@ -220,7 +217,7 @@ class oplist(list):
         return self
 
     def __rpow__(self, other):
-        if isinstance(other, Iterable):
+        if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
@@ -228,7 +225,7 @@ class oplist(list):
         return oplist([other ** data for data in self])
 
     def __truediv__(self, other):
-        if isinstance(other, Iterable):
+        if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
@@ -237,7 +234,7 @@ class oplist(list):
 
     def __itruediv__(self, other):
         n = len(self)
-        if isinstance(other, Iterable):
+        if isiterable(other):
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
             for i in range(n):
@@ -248,7 +245,7 @@ class oplist(list):
         return self
 
     def __rtruediv__(self, other):
-        if isinstance(other, Iterable):
+        if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')

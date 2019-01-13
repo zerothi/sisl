@@ -2254,12 +2254,12 @@ class Geometry(SuperCellChild):
 
         # Get atomic coordinate in principal cell
         if idx_xyz is None:
-            dxa = np.add(self.axyz(idx), foff.reshape(1, 3))
+            dxa = self.axyz(idx) + foff.reshape(1, 3)
         else:
             # For extremely large systems re-using the
             # idx_xyz is faster than indexing
             # a very large array
-            dxa = np.add(idx_xyz, foff.reshape(1, 3))
+            dxa = idx_xyz + foff.reshape(1, 3)
 
         # Immediately downscale by easy checking
         # This will reduce the computation of the vector-norm

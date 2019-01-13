@@ -5,7 +5,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import geom, Geometry, Spin
+from sisl import geom, Atom, Geometry, Spin
 from sisl.physics.sparse import SparseOrbitalBZ, SparseOrbitalBZSpin
 
 pytestmark = pytest.mark.sparse
@@ -101,3 +101,50 @@ def test_pickle_non_orthogonal_spin():
     SP = p.loads(s)
     assert sp.spsame(SP)
     assert np.allclose(sp.eigh(), SP.eigh())
+
+
+@pytest.mark.parametrize("n0", [1, 2, 4])
+@pytest.mark.parametrize("n1", [1, 2, 4])
+@pytest.mark.parametrize("n2", [1, 2, 4])
+def test_sparse_orbital_bz_hermitian(n0, n1, n2):
+    g = geom.fcc(1., Atom(1, R=1.5)) * 2
+    s = SparseOrbitalBZ(g)
+    s.construct([[0.1, 1.51], [1, 2]])
+    s = s.tile(n0, 0).tile(n1, 1).tile(n2, 2)
+    no = s.geometry.no
+
+    nnz = no
+    for io in range(no):
+        # orbitals connecting to io
+        edges = s.edges(io)
+        # Figure out the transposed supercell indices of the edges
+        isc = - s.geometry.o2isc(edges)
+        # Convert to supercell
+        IO = s.geometry.sc.sc_index(isc) * no + io
+        # Figure out if 'io' is also in the back-edges
+        for jo, edge in zip(IO, edges % no):
+            assert jo in s.edges(edge)
+            nnz += 1
+
+    # Check that we have counted all nnz
+    assert s.nnz == nnz
+
+    # Since we are also dealing with f32 data-types we cannot go beyond 1e-7
+    approx_zero = pytest.approx(0., abs=1e-5)
+    for k0 in [0, 0.1]:
+        for k1 in [0, -0.15]:
+            for k2 in [0, 0.33333]:
+                k = (k0, k1, k2)
+
+                if np.allclose(k, 0.):
+                    dtypes = [None, np.float32, np.float64]
+                else:
+                    dtypes = [None, np.complex64, np.complex128]
+
+                # Also assert Pk == Pk.H for all data-types
+                for dtype in dtypes:
+                    Pk = s.Pk(k=k, format='csr', dtype=dtype)
+                    assert abs(Pk - Pk.getH()).toarray().max() == approx_zero
+
+                    Pk = s.Pk(k=k, format='array', dtype=dtype)
+                    assert np.abs(Pk - np.conj(Pk.T)).max() == approx_zero

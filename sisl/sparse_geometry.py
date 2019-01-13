@@ -1016,7 +1016,6 @@ class SparseAtom(_SparseGeometry):
         Geometry.sub : equivalent to the resulting `Geometry` from this routine
         remove : the negative of `sub`, i.e. remove a subset of atoms
         """
-        """ Atomic indices """
         atom = self.sc2uc(atom)
         geom = self.geometry.sub(atom)
 
@@ -1978,24 +1977,29 @@ class SparseOrbital(_SparseGeometry):
 
         return R
 
-    def toSparseAtom(self, dtype=None):
+    def toSparseAtom(self, dim=None, dtype=None):
         """ Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern
 
         This converts the orbital sparse pattern to an atomic sparse pattern.
 
         Parameters
         ----------
+        dim : int, optional
+           number of dimensions allocated in the SparseAtom object, default to the same
         dtype: numpy.dtype, optional
-           the data-container for the sparse object. Defaults to the same.
+           used data-type for the sparse object. Defaults to the same.
         """
+        if dim is None:
+            dim = self.shape[-1]
         if dtype is None:
             dtype = self.dtype
 
         geom = self.geometry
+
         # Create a conversion vector
         orb2atom = tile(geom.o2a(_a.arangei(geom.no)), geom.n_s)
-        orb2atom.shape = (geom.no, -1)
-        orb2atom += _a.arangei(geom.n_s).reshape(1, -1) * geom.na
+        orb2atom.shape = (-1, geom.no)
+        orb2atom += _a.arangei(geom.n_s).reshape(-1, 1) * geom.na
         orb2atom.shape = (-1,)
 
         # First convert all rows to the same
@@ -2021,11 +2025,11 @@ class SparseOrbital(_SparseGeometry):
 
         # Now we can create the sparse atomic
         col = np.concatenate(col, axis=0).astype(int32, copy=False)
-        spAtom = SparseAtom(geom, dim=1, dtype=dtype, nnzpr=0)
+        spAtom = SparseAtom(geom, dim=dim, dtype=dtype, nnzpr=0)
         spAtom._csr.ptr[:] = ptr[:]
         spAtom._csr.ncol[:] = np.diff(ptr)
         spAtom._csr.col = col
-        spAtom._csr._D = np.zeros([len(col), 1], dtype=dtype)
+        spAtom._csr._D = np.zeros([len(col), dim], dtype=dtype)
         spAtom._csr._nnz = len(col)
         spAtom._csr._finalized = True # unique returns sorted elements
         return spAtom
