@@ -229,7 +229,7 @@ class SparseCSR(object):
         # Create pointer array
         self.ptr = _a.cumsumi(arrayi([nnzpr] * (M+1))) - nnzpr
         # Create column array
-        self.col = _a.emptyi(nnz)
+        self.col = _a.zerosi(nnz)
         # Store current number of non-zero elements
         self._nnz = 0
 
@@ -789,7 +789,7 @@ class SparseCSR(object):
 
             # Insert new empty elements in the column index
             # after the column
-            self.col = insert(self.col, ncol_ptr_i, empty(ns, col.dtype))
+            self.col = insert(self.col, ncol_ptr_i, zeros(ns, col.dtype))
 
             # update reference
             col = self.col
@@ -1122,7 +1122,7 @@ class SparseCSR(object):
         new._nnz = self.nnz
 
         if dims is None:
-            new._D = self._D.astype(dtype)
+            new._D = self._D.astype(dtype, copy=True)
         else:
             new._D = empty([len(self.col), dim], dtype)
             for i, dim in enumerate(dims):

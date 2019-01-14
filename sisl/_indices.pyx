@@ -26,7 +26,7 @@ def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.
     cdef int n_search = SEARCH.shape[0]
     cdef int n_value = VALUE.shape[0]
 
-    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)
+    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([max(n_value, n_search)], dtype=np.int32)
     cdef int[::1] IDX = idx
 
     cdef int n = _indices_only(n_search, SEARCH, n_value, VALUE, IDX)
@@ -38,8 +38,8 @@ def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 cdef int _indices_only(const int n_search, const int[::1] search,
-                        const int n_value, const int[::1] value,
-                        int[::1] idx) nogil:
+                       const int n_value, const int[::1] value,
+                       int[::1] idx) nogil:
     cdef int i, j, n
 
     # Fast return
