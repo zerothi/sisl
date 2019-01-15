@@ -1894,6 +1894,87 @@ class SparseOrbital(_SparseGeometry):
 
         return R
 
+    def transpose(self):
+        """ Create the transposed sparse geometry by interchanging supercell indices
+
+        Sparse geometries are (typically) relying on symmetry in the supercell picture.
+        Thus when one transposes a sparse geometry one should *ideally* get the same
+        matrix. This is true for the Hamiltonian, density matrix, etc.
+
+        This routine transposes all rows and columns such that any interaction between
+        row, `r`, and column `c` in a given supercell `(i,j,k)` will be transposed
+        into row `c`, column `r` in the supercell `(-i,-j,-k)`.
+
+        Returns
+        -------
+        an equivalent sparse geometry with transposed matrix elements
+        """
+        # Create a temporary copy to put data into
+        T = self.copy()
+        T._csr.ptr = None
+        T._csr.col = None
+        T._csr.ncol = None
+        T._csr._D = None
+
+        # Short-linkes
+        geom = self.geometry
+        sc = geom.sc
+
+        # Create "DOK" format indices
+        csr = self._csr
+
+        # First extract the actual data
+        ncol = csr.ncol.view()
+        if csr.finalized:
+            ptr = csr.ptr.view()
+            col = csr.col.copy()
+        else:
+            idx = array_arange(csr.ptr[:-1], n=ncol, dtype=int32)
+            ptr = insert(_a.cumsumi(ncol), 0, 0)
+            col = csr.col[idx]
+            del idx
+
+        # Create an array ready for holding all transposed columns
+        row = _a.zerosi(len(col))
+        row[ptr[1:-1]] = 1
+        _a.cumsumi(row, out=row)
+        D = csr._D.copy()
+
+        # Now we have the DOK format
+        #  row, col, _D
+
+        # Retrieve all sc-indices in the new transposed array
+        new_sc_off = sc.sc_index(- sc.sc_off)
+
+        # Calculate the row-offsets in the new sparse geometry
+        row += new_sc_off[sc.sc_index(geom.o2isc(col))] * geom.no
+
+        # Now convert columns into unit-cell
+        col %= geom.no
+
+        # Now we can re-create the sparse matrix
+        # All we need is to count the number of non-zeros per column.
+        _, nrow = unique(col, return_counts=True)
+
+        # Now we have everything ready...
+        # Simply figure out how to sort the columns
+        # such that we have them unified.
+        idx = argsort(col)
+
+        # Our new data will then be
+        T._csr.col = take(row, idx, out=row).astype(int32, copy=False)
+        del row
+        T._csr._D = take(D, idx, axis=0)
+        del D
+        T._csr.ncol = nrow.astype(int32, copy=False)
+        T._csr.ptr = insert(_a.cumsumi(nrow), 0, 0)
+
+        # For-sure we haven't sorted the columns.
+        # We haven't changed the number of non-zeros
+        T._csr._finalized = False
+
+        return T
+
     def append(self, other, axis, eps=0.01):
         """ Append `other` along `axis` to construct a new connected sparse matrix
 
@@ -1910,6 +1991,11 @@ class SparseOrbital(_SparseGeometry):
         When appending sparse matrices made up of atoms, this method assumes that
         the orbitals on the overlapping atoms have the same orbitals, as well as the
         same orbital ordering.
+
+        Examples
+        --------
+        >>> sporb = SparseOrbital(....)
+        >>> forced_hermitian = (sporb + sporb.transpose()) * 0.5
 
         Notes
         -----
@@ -1934,6 +2020,7 @@ class SparseOrbital(_SparseGeometry):
         See Also
         --------
         prepend : equivalent scheme as this method
+        transpose : ensure hermiticity by using this routine
         Geometry.append
         Geometry.prepend
 
@@ -2049,7 +2136,7 @@ class SparseOrbital(_SparseGeometry):
             if len(spg1_idx) != len(spg2_idx):
                 raise ValueError(_error + 'did not find an equivalent overlap atoms between the two geometries.')
             if len(idx) != len(spg2_idx):
-                raise ValueError(_error'did not find all overlapping atoms.')
+                raise ValueError(_error + 'did not find all overlapping atoms.')
 
             if len(warn_atoms) > 0:
                 # Sort them and ensure they are a list

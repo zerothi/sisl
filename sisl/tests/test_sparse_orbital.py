@@ -6,7 +6,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
-from sisl import Geometry, Atom
+from sisl import Geometry, Atom, SuperCell
 from sisl.geom import fcc
 from sisl.sparse_geometry import *
 
@@ -69,3 +69,33 @@ def test_sparse_orbital_append(n0, n1, n2, axis):
 
         s = sf.sub(np.concatenate([idx1, s1.na + idx2]))
         assert sout.spsame(s)
+
+
+def test_sparse_orbital_hermitian():
+    g = Geometry([0] * 3, Atom(1, R=1), sc=SuperCell(1, nsc=[3, 1, 1]))
+
+    for f in [True, False]:
+        spo = SparseOrbital(g)
+        spo[0, 0] = 1.
+
+        # Create only a single coupling to the neighouring element
+        spo[0, 1] = 2.
+
+        if f:
+            spo.finalize()
+
+        assert spo.nnz == 2
+
+        spoT = spo.transpose()
+        assert not spoT.finalized
+        assert spoT.nnz == 2
+        assert spoT[0, 0] == 1.
+        assert spoT[0, 1] == 0.
+        assert spoT[0, 2] == 2.
+
+        spoH = (spo + spoT) * 0.5
+
+        assert spoH.nnz == 3
+        assert spoH[0, 0] == 1.
+        assert spoH[0, 1] == 1.
+        assert spoH[0, 2] == 1.
