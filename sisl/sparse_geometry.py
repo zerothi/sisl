@@ -5,14 +5,14 @@ import functools as ftool
 from numbers import Integral
 import numpy as np
 from numpy import int32
-from numpy import insert, unique
-from numpy import tile, repeat
+from numpy import insert, unique, take, argsort
+from numpy import tile, repeat, concatenate
 
 from . import _array as _a
 from .atom import Atom
 from .geometry import Geometry
 from .messages import warn, SislError, SislWarning, tqdm_eta
-from ._indices import index_sorted
+from ._indices import index_sorted, indices_only
 from ._help import get_dtype
 from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
@@ -331,47 +331,6 @@ class _SparseGeometry(object):
         else:
             self._csr.align(other._csr)
 
-    def make_hermitian(self):
-        """ Ensures the matrix is Hermitian by doing an *in-place* symmetrization """
-        geom = self.geometry
-        na = geom.na
-        sc = geom.sc
-        arangei = _a.arangei
-
-        # We finalize to make searching faster
-        self.finalize()
-
-        # Loop on all atoms
-        ptr = self._csr.ptr
-        ncol = self._csr.ncol
-        col = self._csr.col
-        D = self._csr._D
-
-        for ia in range(self.shape[0]):
-            if ncol[ia] == 0:
-                continue
-
-            c = col[ptr[ia]:ptr[ia] + ncol[ia]]
-            ja = c % na
-            h_col = (sc.sc_index(-geom.a2isc(c)) * na + ia).astype(int32, copy=False)
-            h_idx = arangei(len(h_col))
-            # Now we have the Hermitian column indices
-            for i, j in enumerate(ja):
-                idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
-                if idx < 0:
-                    self[j, h_col[i]] = 0.
-                    self.finalize()
-                    ptr = self._csr.ptr
-                    ncol = self._csr.ncol
-                    col = self._csr.col
-                    D = self._csr._D
-                    idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
-                h_idx[i] = ptr[j] + idx
-            # Now make it hermitian
-            idx = slice(ptr[ia], ptr[ia] + ncol[ia])
-            D[idx, :] = (D[idx, :] + D[h_idx, :].conj()) / 2
-            D[h_idx, :] = D[idx, :]
-
     def eliminate_zeros(self, atol=0.):
         """ Removes all zero elements from the sparse matrix
 
@@ -380,7 +339,7 @@ class _SparseGeometry(object):
         Parameters
         ----------
         atol : float, optional
-            absolute tolerance below this value will be considered 0.
+            absolute tolerance equal or below this value will be considered 0.
         """
         self._csr.eliminate_zeros(atol)
 
@@ -1355,48 +1314,6 @@ class SparseOrbital(_SparseGeometry):
         row = self.geometry.a2o(atom, all=True)
         return self._csr.nonzero(row=row, only_col=only_col)
 
-    def make_hermitian(self):
-        """ Ensures the matrix is Hermitian by doing an *in-place* symmetrization """
-        geom = self.geometry
-        no = geom.no
-        sc = geom.sc
-        arangei = _a.arangei
-
-        # We finalize to make searching faster
-        self.finalize()
-
-        # Loop on all orbitals
-        ptr = self._csr.ptr
-        ncol = self._csr.ncol
-        col = self._csr.col
-        D = self._csr._D
-
-        for io in range(self.shape[0]):
-            if ncol[io] == 0:
-                continue
-
-            c = col[ptr[io]:ptr[io] + ncol[io]]
-            jo = c % no
-            h_col = (sc.sc_index(-geom.o2isc(c)) * no + io).astype(int32, copy=False)
-            h_idx = arangei(len(h_col))
-            # Now we have the Hermitian column indices
-            for i, j in enumerate(jo):
-                idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
-                if idx < 0:
-                    # Add a new element
-                    self[j, h_col[i]] = 0.
-                    self.finalize()
-                    ptr = self._csr.ptr
-                    ncol = self._csr.ncol
-                    col = self._csr.col
-                    D = self._csr._D
-                    idx = index_sorted(col[ptr[j]:ptr[j]+ncol[j]], h_col[i])
-                h_idx[i] = ptr[j] + idx
-            # Now make it hermitian
-            idx = slice(ptr[io], ptr[io] + ncol[io])
-            D[idx, :] = (D[idx, :] + D[h_idx, :].conj()) / 2
-            D[h_idx, :] = D[idx, :]
-
     def iter_nnz(self, atom=None, orbital=None):
         """ Iterations of the non-zero elements
 
@@ -2231,7 +2148,7 @@ class SparseOrbital(_SparseGeometry):
         csr._D = concatenate((csr._D, other_csr._D), axis=0)
 
         # Small clean-up
-        del self_o2n, other_o2n
+        del self_o2n, other_o2n, idx
 
         # At this point `csr` contains all data.
         # but the columns are incorrect. I.e. self -> self along the append axis
@@ -2245,10 +2162,9 @@ class SparseOrbital(_SparseGeometry):
 
         def _transfer_indices(csr, rows, old_col, new_col):
             " Transfer indices in col to the equivalent column indices "
-            #print('transfer indices')
             col_idx = array_arange(csr.ptr[rows], n=csr.ncol[rows], dtype=int32)
-
             col_idx = col_idx[indices_only(csr.col[col_idx], old_col)]
+
             # Indices are now the indices in csr.col such that
             #   col[col_idx] in old_col
             # Now we need to find the indices (in order)
@@ -2260,9 +2176,14 @@ class SparseOrbital(_SparseGeometry):
             # Since indices does not return a sorted index list
             # but only indices of elements in other list
             # we need to sort them correctly
-            old = csr.col[col_idx]
-            old_idx = _a.arrayi([indices_only(old_col, o.ravel()) for o in old]).ravel()
-            csr.col[col_idx] = new_col[old_idx]
+            # Create the linear index that transfers from old -> new
+            # Since old_col/new_col does not contain the full supercell picture
+            # we need to create a fake indexing converter
+            min_col = (old_col[0] // csr.shape[0]) * csr.shape[0]
+            max_col = (old_col[-1] // csr.shape[0] + 1) * csr.shape[0]
+            new_col_idx = _a.arangei(max_col - min_col)
+            new_col_idx[old_col - min_col] = new_col
+            csr.col[col_idx] = new_col_idx[csr.col[col_idx] - min_col]
 
         ## nomenclature in new supercell
         # self[0] -> other[0]
