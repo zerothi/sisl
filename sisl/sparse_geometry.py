@@ -2043,17 +2043,29 @@ class SparseOrbital(_SparseGeometry):
         other_isc = [0] * 3
 
         def _2(spg1, spg1_idx, spg1_isc, spg2, spg2_idx, spg2_isc, name):
+            _error = self.__class__.__name__ + '.append({}) '.format(name)
             idx, warn_atoms = _find_overlap(spg1.geometry, spg1_idx, spg1_isc,
                                             spg2.geometry, spg2_idx, spg2_isc, R)
             if len(spg1_idx) != len(spg2_idx):
-                raise ValueError(self.__class__.__name__ + '.append did not find an equivalent overlap atoms between the two geometries.')
+                raise ValueError(_error + 'did not find an equivalent overlap atoms between the two geometries.')
             if len(idx) != len(spg2_idx):
-                raise ValueError(self.__class__.__name__ + '.append did not find all overlapping atoms.')
+                raise ValueError(_error'did not find all overlapping atoms.')
 
             if len(warn_atoms) > 0:
                 # Sort them and ensure they are a list
                 warn_atoms = str(np.sort(warn_atoms).tolist())
-                warn(self.__class__.__name__ + '.append {} atoms farther than 0.001 Ang: {}.'.format(name, warn_atoms))
+                warn(_error + 'atoms farther than 0.001 Ang: {}.'.format(warn_atoms))
+
+            # Now we have the atomic indices that we know are "dublicated"
+            # Ensure the number of orbitals are the same in both geometries
+            # (we don't check explicitly names etc. since this should be the users
+            #  responsibility)
+            s1 = spg1.geometry.atoms.sub(spg1_idx).reorder().firsto
+            s2 = spg2.geometry.atoms.sub(idx).reorder().firsto
+            if not np.all(s1 == s2):
+                raise ValueError(_error + 'requires geometries to have the same '
+                                 'number of orbitals in the overlapping region.')
+
             return idx
 
         # in the full sparse geometry:
@@ -2082,20 +2094,6 @@ class SparseOrbital(_SparseGeometry):
 
         # Clean-up
         del self_isc, other_isc
-
-        # Now we have the atomic indices that we know are "dublicated"
-        # Ensure the number of orbitals are the same in both geometries
-        # (we don't check explicitly names etc. since this should be the users
-        #  responsibility)
-        for sA1, sA2 in [(self_P_10, self_P_10_to_other_M_01),
-                         (other_M_10_to_self_P_01, other_M_10),
-                         (self_M_10, self_M_10_to_other_P_01),
-                         (other_P_10_to_self_M_01, other_P_01)]:
-            sA1 = self.geometry.atoms.sub(sA1).reorder().firsto
-            sA2 = other.geometry.atoms.sub(sA2).reorder().firsto
-            if not np.all(sA1 == sA2):
-                raise ValueError(self.__class__.__name__ + '.append requires geometries to have the same '
-                                 'number of orbitals in the overlapping region.')
 
         # Now we have the following operations to perform
         self_no = self.geometry.no
