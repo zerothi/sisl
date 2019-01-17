@@ -324,6 +324,101 @@ class _SparseGeometry(object):
 
         self.geometry.set_nsc(*args, **kwargs)
 
+    def transpose(self):
+        """ Create the transposed sparse geometry by interchanging supercell indices
+
+        Sparse geometries are (typically) relying on symmetry in the supercell picture.
+        Thus when one transposes a sparse geometry one should *ideally* get the same
+        matrix. This is true for the Hamiltonian, density matrix, etc.
+
+        This routine transposes all rows and columns such that any interaction between
+        row, `r`, and column `c` in a given supercell `(i,j,k)` will be transposed
+        into row `c`, column `r` in the supercell `(-i,-j,-k)`.
+
+        Notes
+        -----
+        For Hamiltonians with non-collinear or spin-orbit there is no transposing of the
+        sub-spin matrix box. This needs to be done *manually*.
+
+        Examples
+        --------
+
+        Force a sparse geometry to be Hermitian:
+
+        >>> sp = SparseOrbital(...)
+        >>> sp = (sp + sp.transpose()) * 0.5
+
+        Returns
+        -------
+        an equivalent sparse geometry with transposed matrix elements
+        """
+        # Create a temporary copy to put data into
+        T = self.copy()
+        T._csr.ptr = None
+        T._csr.col = None
+        T._csr.ncol = None
+        T._csr._D = None
+
+        # Short-linkes
+        sc = self.geometry.sc
+
+        # Create "DOK" format indices
+        csr = self._csr
+        # Number of rows (used for converting to supercell indices)
+        size = csr.shape[0]
+
+        # First extract the actual data
+        ncol = csr.ncol.view()
+        if csr.finalized:
+            ptr = csr.ptr.view()
+            col = csr.col.copy()
+        else:
+            idx = array_arange(csr.ptr[:-1], n=ncol, dtype=int32)
+            ptr = insert(_a.cumsumi(ncol), 0, 0)
+            col = csr.col[idx]
+            del idx
+
+        # Create an array ready for holding all transposed columns
+        row = _a.zerosi(len(col))
+        row[ptr[1:-1]] = 1
+        _a.cumsumi(row, out=row)
+        D = csr._D.copy()
+
+        # Now we have the DOK format
+        #  row, col, _D
+
+        # Retrieve all sc-indices in the new transposed array
+        new_sc_off = sc.sc_index(- sc.sc_off)
+
+        # Calculate the row-offsets in the new sparse geometry
+        row += new_sc_off[sc.sc_index(sc.sc_off[col // size, :])] * size
+
+        # Now convert columns into unit-cell
+        col %= size
+
+        # Now we can re-create the sparse matrix
+        # All we need is to count the number of non-zeros per column.
+        _, nrow = unique(col, return_counts=True)
+
+        # Now we have everything ready...
+        # Simply figure out how to sort the columns
+        # such that we have them unified.
+        idx = argsort(col)
+
+        # Our new data will then be
+        T._csr.col = take(row, idx, out=row).astype(int32, copy=False)
+        del row
+        T._csr._D = take(D, idx, axis=0)
+        del D
+        T._csr.ncol = nrow.astype(int32, copy=False)
+        T._csr.ptr = insert(_a.cumsumi(nrow), 0, 0)
+
+        # For-sure we haven't sorted the columns.
+        # We haven't changed the number of non-zeros
+        T._csr._finalized = False
+
+        return T
+
     def spalign(self, other):
         """ See :meth:`~sisl.sparse.SparseCSR.align` for details """
         if isinstance(other, SparseCSR):
@@ -1894,86 +1989,14 @@ class SparseOrbital(_SparseGeometry):
 
         return R
 
-    def transpose(self):
-        """ Create the transposed sparse geometry by interchanging supercell indices
+    def prepend(self, other, axis, eps=0.01):
+        """ See `append` for details
 
-        Sparse geometries are (typically) relying on symmetry in the supercell picture.
-        Thus when one transposes a sparse geometry one should *ideally* get the same
-        matrix. This is true for the Hamiltonian, density matrix, etc.
+        This is currently equivalent to:
 
-        This routine transposes all rows and columns such that any interaction between
-        row, `r`, and column `c` in a given supercell `(i,j,k)` will be transposed
-        into row `c`, column `r` in the supercell `(-i,-j,-k)`.
-
-        Returns
-        -------
-        an equivalent sparse geometry with transposed matrix elements
+        >>> other.append(self, axis, eps)
         """
-        # Create a temporary copy to put data into
-        T = self.copy()
-        T._csr.ptr = None
-        T._csr.col = None
-        T._csr.ncol = None
-        T._csr._D = None
-
-        # Short-linkes
-        geom = self.geometry
-        sc = geom.sc
-
-        # Create "DOK" format indices
-        csr = self._csr
-
-        # First extract the actual data
-        ncol = csr.ncol.view()
-        if csr.finalized:
-            ptr = csr.ptr.view()
-            col = csr.col.copy()
-        else:
-            idx = array_arange(csr.ptr[:-1], n=ncol, dtype=int32)
-            ptr = insert(_a.cumsumi(ncol), 0, 0)
-            col = csr.col[idx]
-            del idx
-
-        # Create an array ready for holding all transposed columns
-        row = _a.zerosi(len(col))
-        row[ptr[1:-1]] = 1
-        _a.cumsumi(row, out=row)
-        D = csr._D.copy()
-
-        # Now we have the DOK format
-        #  row, col, _D
-
-        # Retrieve all sc-indices in the new transposed array
-        new_sc_off = sc.sc_index(- sc.sc_off)
-
-        # Calculate the row-offsets in the new sparse geometry
-        row += new_sc_off[sc.sc_index(geom.o2isc(col))] * geom.no
-
-        # Now convert columns into unit-cell
-        col %= geom.no
-
-        # Now we can re-create the sparse matrix
-        # All we need is to count the number of non-zeros per column.
-        _, nrow = unique(col, return_counts=True)
-
-        # Now we have everything ready...
-        # Simply figure out how to sort the columns
-        # such that we have them unified.
-        idx = argsort(col)
-
-        # Our new data will then be
-        T._csr.col = take(row, idx, out=row).astype(int32, copy=False)
-        del row
-        T._csr._D = take(D, idx, axis=0)
-        del D
-        T._csr.ncol = nrow.astype(int32, copy=False)
-        T._csr.ptr = insert(_a.cumsumi(nrow), 0, 0)
-
-        # For-sure we haven't sorted the columns.
-        # We haven't changed the number of non-zeros
-        T._csr._finalized = False
-
-        return T
+        return other.append(self, axis, eps)
 
     def append(self, other, axis, eps=0.01):
         """ Append `other` along `axis` to construct a new connected sparse matrix
