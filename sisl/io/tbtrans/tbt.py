@@ -95,7 +95,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             if name in self._data:
                 return self._data[name]
 
-        v = self._variable(name, tree=tree)
+        try:
+            v = self._variable(name, tree=tree)
+        except KeyError as err:
+            group = None
+            if isinstance(tree, list):
+                group = '.'.join(tree)
+            elif not tree is None:
+                group = tree
+            if not group is None:
+                raise KeyError(self.__class__.__name__ + ' could not retrieve key "{}.{}" due to missing flags in the input file.'.format(group, name))
+            raise KeyError(self.__class__.__name__ + ' could not retrieve key "{}" due to missing flags in the input file.'.format(name))
+
         if self._k_avg:
             return v[:]
 
@@ -133,7 +144,17 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Ensure that it is an index
         iE = self.Eindex(E)
 
-        v = self._variable(name, tree=tree)
+        try:
+            v = self._variable(name, tree=tree)
+        except KeyError as err:
+            group = None
+            if isinstance(tree, list):
+                group = '.'.join(tree)
+            elif not tree is None:
+                group = tree
+            if not group is None:
+                raise KeyError(self.__class__.__name__ + ' could not retrieve key "{}.{}" due to missing flags in the input file.'.format(group, name))
+            raise KeyError(self.__class__.__name__ + ' could not retrieve key "{}" due to missing flags in the input file.'.format(name))
         if self._k_avg:
             return v[iE, ...]
 
@@ -2144,44 +2165,44 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         # Print out information for each electrode
         for elec in elecs:
-            try:
-                try:
-                    bloch = self._value('bloch', elec)
-                except:
-                    bloch = [1] * 3
-                prnt()
-                prnt("Electrode: {}".format(elec))
-                prnt("  - number of BTD blocks: {}".format(self.n_btd(elec)))
-                prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
-                gelec = self.groups[elec]
-                if 'TBT' in self._trans_type:
-                    prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
-                    prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))
-                else:
-                    prnt("  - phonon temperature: {:.4f} K".format(self.phonon_temperature(elec)))
-                prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
-                truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
-                truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
-                truefalse('J' in gelec.variables, "orbital-current", ['TBT.Current.Orb'])
-                truefalse('DM' in gelec.variables, "Density matrix spectral", ['TBT.DM.A'])
-                truefalse('COOP' in gelec.variables, "COOP spectral", ['TBT.COOP.A'])
-                truefalse('COHP' in gelec.variables, "COHP spectral", ['TBT.COHP.A'])
-                truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
-                truefalse(elec + '.T' in gelec.variables, "transmission out", ['TBT.T.Out'])
-                truefalse(elec + '.C' in gelec.variables, "transmission out correction", ['TBT.T.Out'])
-                truefalse(elec + '.C.Eig' in gelec.variables, "transmission out correction (eigen)", ['TBT.T.Out', 'TBT.T.Eig'])
-                for elec2 in self.elecs:
-                    # Skip it self, checked above in .T and .C
-                    if elec2 == elec:
-                        continue
-                    truefalse(elec2 + '.T' in gelec.variables, "transmission -> " + elec2)
-                    truefalse(elec2 + '.T.Eig' in gelec.variables, "transmission (eigen) -> " + elec2, ['TBT.T.Eig'])
-            except:
+            if not elec in self.groups:
                 prnt("  * no information available")
-                if len(elecs) == 1:
-                    prnt("\n\nAvailable electrodes are:")
-                    for elec in self.elecs:
-                        prnt(" - " + elec)
+                continue
+
+            try:
+                bloch = self._value('bloch', elec)
+                n_btd = n_btd(elec)
+            except:
+                bloch = [1] * 3
+                n_btd = 'unknown'
+            prnt()
+            prnt("Electrode: {}".format(elec))
+            prnt("  - number of BTD blocks: {}".format(n_btd))
+            prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
+            gelec = self.groups[elec]
+            if 'TBT' in self._trans_type:
+                prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
+                prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))
+            else:
+                prnt("  - phonon temperature: {:.4f} K".format(self.phonon_temperature(elec)))
+            prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
+            truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
+            truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
+            truefalse('J' in gelec.variables, "orbital-current", ['TBT.Current.Orb'])
+            truefalse('DM' in gelec.variables, "Density matrix spectral", ['TBT.DM.A'])
+            truefalse('COOP' in gelec.variables, "COOP spectral", ['TBT.COOP.A'])
+            truefalse('COHP' in gelec.variables, "COHP spectral", ['TBT.COHP.A'])
+            truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
+            truefalse(elec + '.T' in gelec.variables, "transmission out", ['TBT.T.Out'])
+            truefalse(elec + '.C' in gelec.variables, "transmission out correction", ['TBT.T.Out'])
+            truefalse(elec + '.C.Eig' in gelec.variables, "transmission out correction (eigen)", ['TBT.T.Out', 'TBT.T.Eig'])
+            for elec2 in self.elecs:
+                # Skip it self, checked above in .T and .C
+                if elec2 == elec:
+                    continue
+                truefalse(elec2 + '.T' in gelec.variables, "transmission -> " + elec2)
+                truefalse(elec2 + '.T.Eig' in gelec.variables, "transmission (eigen) -> " + elec2, ['TBT.T.Eig'])
+
         s = out.getvalue()
         out.close()
         return s

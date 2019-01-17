@@ -87,7 +87,8 @@ metadata = dict(
         'console_scripts':
         ['sgeom = sisl.geometry:sgeom',
          'sgrid = sisl.grid:sgrid',
-         'sdata = sisl.utils.sdata:sdata']
+         'sdata = sisl.utils.sdata:sdata',
+         'sisl = sisl.utils.sdata:sdata']
     },
     classifiers=[_f.strip() for _f in CLASSIFIERS.split('\n') if _f],
     platforms=['Unix', 'Linux', 'Mac OS-X', 'Windows'],
