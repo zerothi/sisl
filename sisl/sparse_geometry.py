@@ -2247,6 +2247,11 @@ class SparseOrbital(_SparseGeometry):
 
         def _transfer_indices(csr, rows, old_col, new_col):
             " Transfer indices in col to the equivalent column indices "
+            if old_col.size != new_col.size:
+                raise ValueError(self.__class__.__name__ + '.append requires the overlapping basis to '
+                                 'be equivalent. We found different number of hopping elements between '
+                                 'the two regions.')
+
             col_idx = array_arange(csr.ptr[rows], n=csr.ncol[rows], dtype=int32)
             col_idx = col_idx[indices_only(csr.col[col_idx], old_col)]
 

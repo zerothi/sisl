@@ -1,6 +1,8 @@
 0.9.6
 =====
 
+- added `sisl` command line utility, it is exactly the same as `sdata`
+
 - Enabled pickling sparse matrices, this allows dask usage of sparse matrices
 
 - Performance increase for sparse matrix handling
