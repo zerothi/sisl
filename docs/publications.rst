@@ -72,7 +72,7 @@ arXiv publications
 These publications are as far as we know in the review process.
 
 - G. Calogero, N. Papior, M. Koleini, M. H. L. Larsen and M. Brandbyge,
-   *Multiscale approach to first-principles electron transport: Seamless integration of DFT and tight-binding*
+  *Multiscale approach to first-principles electron transport: Seamless integration of DFT and tight-binding*
   `1812.08054 <https://arxiv.org/abs/1812.08054>`_
 
 - L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
