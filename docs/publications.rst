@@ -9,10 +9,13 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. J. Li, S. Sanz, M. Corso, D.J. Choi, D. Pena, T. Frederiksen and J.I. Pascual,
+   *Single spin localization and manipulation in graphene open-shell nanostructures*,
+   Nature Communications **10**, `200 (2019) <https://www.nature.com/articles/s41467-018-08060-6>`_
 
 #. G. Calogero, N. Papior, B. Kretz, A. Garcia-Lekue, T. Frederiksen and M. Brandbyge,
    *Electron Transport in Nanoporous Graphene: Probing the Talbot Effect*,
-   Nanoletters, `X (2018) <https://www.doi.org/10.1021/acs.nanolett.8b04616>`_
+   Nanoletters **19**, `1 (2019) <https://www.doi.org/10.1021/acs.nanolett.8b04616>`_
 
 #. D. Perera and J. Rohrer,
    *Structure sensitivity of electronic transport across graphene grain boundaries*,
@@ -67,6 +70,10 @@ arXiv publications
 ------------------
 
 These publications are as far as we know in the review process.
+
+- G. Calogero, N. Papior, M. Koleini, M. H. L. Larsen and M. Brandbyge,
+   *Multiscale approach to first-principles electron transport: Seamless integration of DFT and tight-binding*
+  `1812.08054 <https://arxiv.org/abs/1812.08054>`_
 
 - L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
   *Exchange interactions from a nonorthogonal basis: applications to 3d ferromagnets and graphene based systems*,

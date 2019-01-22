@@ -1,5 +1,9 @@
-recursive-include sisl *.py *.f90
+recursive-include sisl *.py *.pyx *.pxd *.c
+recursive-include toolbox README *.py
 include LICENSE
+include CHANGELOG
 include requirements.txt setup.cfg README.md
 exclude DEPLOY.md pep8.sh tag.sh
+exclude docs
+exclude benchmarks
 exclude .codecov.yml .gitignore .gitmodules .readthedocs.yml .travis.yml
