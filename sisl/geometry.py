@@ -1425,7 +1425,8 @@ class Geometry(SuperCellChild):
         Parameters
         ----------
         angle : float
-             the angle in radians of which the geometry should be rotated
+             the angle in degrees to rotate the geometry. Set the ``rad``
+             argument to use radians.
         v     : array_like
              the normal vector to the rotated plane, i.e.
              v = [1,0,0] will rotate the ``yz`` plane
