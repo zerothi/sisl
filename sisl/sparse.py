@@ -1178,7 +1178,9 @@ class SparseCSR(object):
         return self.sub(rindices)
 
     def sub(self, indices):
-        """ Return a new sparse CSR matrix with the data only for the given indices
+        """ Create a new sparse CSR matrix with the data only for the given rows and columns
+
+        All rows and columns in `indices` are retained, everything else is removed.
 
         Parameters
         ----------

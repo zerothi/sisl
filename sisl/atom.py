@@ -1033,6 +1033,13 @@ class Atom(object):
         """ Orbital initial charges """
         return _a.arrayd([o.q0 for o in self.orbital])
 
+    def index(self, orbital):
+        """ Return the index of the orbital in the atom object """
+        for i, o in enumerate(self.orbital):
+            if o == orbital:
+                return i
+        raise KeyError('Could not find `orbital` in the list of orbitals.')
+
     def sub(self, orbitals):
         """ Return the same atom with only a subset of the orbitals present
 
@@ -1321,13 +1328,14 @@ class Atoms(object):
         """ Internal routine for updating the `firsto` attribute """
         # Get number of orbitals per specie
         uorbs = _a.arrayi([a.no for a in self.atom])
-        self._firsto = np.insert(_a.cumsumi(uorbs[self.specie[:]]), 0, 0)
+        self._firsto = np.insert(_a.cumsumi(uorbs[self.specie]), 0, 0)
 
     def copy(self):
         """ Return a copy of this atom """
         atoms = Atoms()
         atoms._atom = [a.copy() for a in self._atom]
         atoms._specie = np.copy(self._specie)
+        atoms._update_orbitals()
         return atoms
 
     @property
@@ -1429,7 +1437,7 @@ class Atoms(object):
         raise KeyError('Could not find `atom` in the list of atoms.')
 
     def reorder(self, in_place=False):
-        """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists """
+        """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists) """
 
         # Contains the minimum atomic index for a given specie
         smin = _a.emptyi(len(self.atom))
@@ -1513,13 +1521,28 @@ class Atoms(object):
         return atoms
 
     def swap(self, a, b):
-        """ Swaps atoms """
+        """ Swaps all atoms """
         a = _a.asarrayi(a)
         b = _a.asarrayi(b)
         atoms = self.copy()
         spec = np.copy(atoms._specie)
         atoms._specie[a] = spec[b]
         atoms._specie[b] = spec[a]
+        atoms._update_orbitals()
+        return atoms
+
+    def swap_atom(self, a, b):
+        """ Swap specie index positions """
+        speciea = self.index(a)
+        specieb = self.index(b)
+
+        idx_a = (self._specie == speciea).nonzero()[0]
+        idx_b = (self._specie == specieb).nonzero()[0]
+
+        atoms = self.copy()
+        atoms._atom[speciea], atoms._atom[specieb] = atoms._atom[specieb], atoms._atom[speciea]
+        atoms._specie[idx_a] = specieb
+        atoms._specie[idx_b] = speciea
         atoms._update_orbitals()
         return atoms
 
