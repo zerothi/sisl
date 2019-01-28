@@ -197,13 +197,6 @@ class TestHamiltonian(object):
         Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.complex64)
         assert Hk.dtype == np.complex64
 
-    @pytest.mark.parametrize("dtype", [np.float32, np.float64])
-    @pytest.mark.xfail(raises=ValueError)
-    def test_Hk_dtype_valueerror(self, setup, dtype):
-        H = setup.HS.copy()
-        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        H.Hk(k=[0.15, 0.15, 0.15], dtype=dtype)
-
     @pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
     def test_Hk5(self, setup, dtype):
         H = setup.H.copy()
