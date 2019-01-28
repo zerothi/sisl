@@ -13,6 +13,7 @@ from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
 from sisl._help import _range as range
+from sisl import _array as _a
 
 
 __all__ = ['hamiltonianSile']
@@ -73,15 +74,14 @@ class hamiltonianSile(Sile):
                     except Exception:
                         no = 1
                     z, no = Z2no(ls[0], no)
-                    Z.append({'Z': z, 'orbs': no})
+                    Z.append({'Z': z, 'orbital': [-1. for _ in range(no)]})
                     xyz.append([float(f) for f in ls[1:4]])
                     l = self.readline()
-                xyz = np.array(xyz, np.float64)
+                xyz = _a.arrayd(xyz)
                 xyz.shape = (-1, 3)
                 self.readline()  # step past the block
 
-        # Return the geometry
-        # Create list of atoms
+        # Create geometry with associated supercell and atoms
         geom = Geometry(xyz, atom=Atom[Z], sc=SuperCell(cell, nsc))
 
         return geom

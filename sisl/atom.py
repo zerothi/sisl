@@ -922,15 +922,14 @@ class AtomMeta(type):
             # if the key already is an atomic object
             # return it
             return key
-        if isinstance(key, dict):
+        elif isinstance(key, dict):
             # The key is a dictionary, hence
             # we can return the atom directly
             return cls(**key)
-        if isinstance(key, list):
+        elif isinstance(key, list):
             # The key is a list,
             # we need to create a list of atoms
-            atm = [cls[k] for k in key]
-            return np.array(atm, dtype=Atom)
+            return [cls[k] for k in key]
         # Index Z based
         return cls(key)
 
@@ -988,7 +987,7 @@ class Atom(object):
         self.Z = _ptbl.Z_int(Z)
 
         self.orbital = None
-        if isinstance(orbital, (list, np.ndarray)):
+        if isinstance(orbital, (tuple, list, np.ndarray)):
             if isinstance(orbital[0], Orbital):
                 # all is good
                 self.orbital = orbital

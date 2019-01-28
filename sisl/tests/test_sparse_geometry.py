@@ -176,9 +176,6 @@ class TestSparseAtom(object):
         so = SparseOrbital(Geometry([[0] *3, [1]* 3], [Atom[1], Atom[2]], 2))
         so2 = so.remove(Atom[1])
         assert so.geometry.na - 1 == so2.geometry.na
-        so = SparseOrbital(Geometry([[0] *3, [1]* 3], [Atom(1, [1, 2]), Atom(2, [1, 2])], 2))
-        so2 = so.remove(so.geometry.atoms[0], [0])
-        assert so.geometry.na == so2.geometry.na
         assert so.geometry.no -1 == so2.geometry.no
 
     def test_remove1(self, setup):
@@ -319,7 +316,7 @@ class TestSparseAtom(object):
         I = np.ones(1, dtype=np.complex128)[0]
         # Create initial stuff
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i, i*2)
             S[0, j] = i
         S.finalize()
 
@@ -366,10 +363,10 @@ class TestSparseAtom(object):
 
     def test_fromsp1(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
-        csr = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr[0, [1, 2, 3]] = 1
-        csr[1, [2, 4, 1]] = 2
-        s1 = SparseAtom.fromsp(g, [csr])
+        lil = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil[0, [1, 2, 3]] = 1
+        lil[1, [2, 4, 1]] = 2
+        s1 = SparseAtom.fromsp(g, [lil])
         assert s1.nnz == 6
         assert np.allclose(s1.shape, [g.na, g.na_s, 1])
 
@@ -377,16 +374,16 @@ class TestSparseAtom(object):
         assert np.allclose(s1[1, [1, 2, 4]], np.ones([3], np.int32)*2)
 
         # Different instantiating
-        s2 = SparseAtom.fromsp(g, csr)
+        s2 = SparseAtom.fromsp(g, lil)
         assert s1.spsame(s2)
 
     def test_fromsp2(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
-        csr1 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr2 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr1[0, [1, 2, 3]] = 1
-        csr2[1, [2, 4, 1]] = 2
-        s1 = SparseAtom.fromsp(g, [csr1, csr2])
+        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil1[0, [1, 2, 3]] = 1
+        lil2[1, [2, 4, 1]] = 2
+        s1 = SparseAtom.fromsp(g, [lil1, lil2])
         assert s1.nnz == 6
         assert np.allclose(s1.shape, [g.na, g.na_s, 2])
 
@@ -395,7 +392,7 @@ class TestSparseAtom(object):
         assert np.allclose(s1[1, [1, 2, 4], 0], np.zeros([3], np.int32))
         assert np.allclose(s1[1, [1, 2, 4], 1], np.ones([3], np.int32)*2)
 
-        s2 = SparseAtom.fromsp(g, csr1, csr2)
+        s2 = SparseAtom.fromsp(g, lil1, lil2)
         assert s2.nnz == 6
         assert np.allclose(s2.shape, [g.na, g.na_s, 2])
 
@@ -409,34 +406,34 @@ class TestSparseAtom(object):
     @pytest.mark.xfail(raises=ValueError)
     def test_fromsp3(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
-        csr1 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr2 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr1[0, [1, 2, 3]] = 1
-        csr2[1, [2, 4, 1]] = 2
+        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil1[0, [1, 2, 3]] = 1
+        lil2[1, [2, 4, 1]] = 2
 
         # Ensure that one does not mix everything.
-        SparseAtom.fromsp(g, [csr1], csr2)
+        SparseAtom.fromsp(g, [lil1], lil2)
 
     @pytest.mark.xfail(raises=ValueError)
     def test_fromsp4(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
-        csr1 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr2 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr1[0, [1, 2, 3]] = 1
-        csr2[1, [2, 4, 1]] = 2
+        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil1[0, [1, 2, 3]] = 1
+        lil2[1, [2, 4, 1]] = 2
 
         # Ensure that one does not mix everything.
-        SparseAtom.fromsp(setup.g.copy(), [csr1, csr2])
+        SparseAtom.fromsp(setup.g.copy(), [lil1, lil2])
 
     def test_pickle(self, setup):
         import pickle as p
 
         g = setup.g.repeat(2, 0).tile(2, 1)
-        csr1 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr2 = sc.sparse.csr_matrix((g.na, g.na_s), dtype=np.int32)
-        csr1[0, [1, 2, 3]] = 1
-        csr2[1, [2, 4, 1]] = 2
-        S = SparseAtom.fromsp(g, [csr1, csr2])
+        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil1[0, [1, 2, 3]] = 1
+        lil2[1, [2, 4, 1]] = 2
+        S = SparseAtom.fromsp(g, [lil1, lil2])
         n = p.dumps(S)
         s = p.loads(n)
         assert s.spsame(S)

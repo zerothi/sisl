@@ -10,6 +10,7 @@ pytestmark = pytest.mark.io
 _dir = 'sisl/io'
 
 
+@pytest.mark.only
 def test_ham1(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.ham', _dir)
     sisl_system.g.write(hamiltonianSile(f, 'w'))
