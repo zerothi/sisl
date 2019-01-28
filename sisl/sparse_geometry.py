@@ -10,6 +10,7 @@ from numpy import tile, repeat, concatenate
 
 from . import _array as _a
 from .atom import Atom
+from .orbital import Orbital
 from .geometry import Geometry
 from .messages import warn, SislError, SislWarning, tqdm_eta
 from ._indices import index_sorted, indices_only
@@ -1609,7 +1610,7 @@ class SparseOrbital(_SparseGeometry):
             # All atoms with this specie
             atom = self.geometry.atoms.index(atom)
             atom = (self.geometry.atoms.specie == atom).nonzero()[0]
-        atom = np.asarray(atom)
+        atom = np.asarray(atom).ravel()
 
         # Figure out if all atoms have the same species
         specie = self.geometry.atoms.specie[atom]
@@ -1625,13 +1626,13 @@ class SparseOrbital(_SparseGeometry):
 
         # Get the atom object we wish to reduce
         # We know np.all(geom.atoms[atom] == old_atom)
-        old_atom = geom.atoms[atom[0]]
+        old_atom = self.geometry.atoms[atom[0]]
 
         # Retrieve index of orbital
         if isinstance(orbital, Orbital):
             orbital = old_atom.index(orbital)
         # Create the reverse index-table to delete those not required
-        orbital = delete(_a.arangei(len(old_atom), np.asarray(orbital)))
+        orbital = delete(_a.arangei(len(old_atom)), np.asarray(orbital).ravel())
         return self.sub_orbital(atom, orbital)
 
     def sub(self, atom):
@@ -1708,7 +1709,7 @@ class SparseOrbital(_SparseGeometry):
             # All atoms with this specie
             atom = self.geometry.atoms.index(atom)
             atom = (self.geometry.atoms.specie == atom).nonzero()[0]
-        atom = np.asarray(atom)
+        atom = np.asarray(atom).ravel()
 
         # Figure out if all atoms have the same species
         specie = self.geometry.atoms.specie[atom]
@@ -1731,7 +1732,9 @@ class SparseOrbital(_SparseGeometry):
         # Retrieve index of orbital
         if isinstance(orbital, Orbital):
             orbital = old_atom.index(orbital)
-        orbital = np.sort(np.asarray(orbital))
+        orbital = np.sort(np.asarray(orbital).ravel())
+        if len(orbital) == 0:
+            raise ValueError('trying to retain 0 orbitals on a given atom. This is not allowed!')
 
         new_atom = old_atom.sub(orbital)
         # Rename the new-atom to <>_1_2 for orbital == [1, 2]

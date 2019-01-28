@@ -1103,6 +1103,15 @@ class Atom(object):
         """ Return short atomic name (Au==79). """
         return _ptbl.Z_short(self.Z)
 
+    def __getitem__(self, key):
+        """ The orbital corresponding to index `key` """
+        if isinstance(key, slice):
+            ol = key.indices(len(self))
+            return [self.orbital[o] for o in range(ol[0], ol[1], ol[2])]
+        elif isinstance(key, Integral):
+            return self.orbital[key]
+        return [self.orbital[o] for o in np.asarray(key).ravel()]
+
     def maxR(self):
         """ Return the maximum range of orbitals. """
         mR = -1e10

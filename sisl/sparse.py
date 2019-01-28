@@ -739,6 +739,8 @@ class SparseCSR(object):
         j = asarrayi(j).ravel()
         if len(j) == 0:
             return arrayi([])
+        if np.any(j < 0) or np.any(j > self.shape[1]):
+            raise ValueError('column index is out-of-bounds')
 
         # fast reference
         ptr = self.ptr
