@@ -99,3 +99,49 @@ def test_sparse_orbital_hermitian():
         assert spoH[0, 0] == 1.
         assert spoH[0, 1] == 1.
         assert spoH[0, 2] == 1.
+
+
+def test_sparse_orbital_sub_orbital():
+    a0 = Atom(1, R=(1.1, 1.4, 1.6))
+    a1 = Atom(2, R=(1.3, 1.1))
+    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], sc=SuperCell(2, nsc=[3, 1, 1]))
+    assert g.no == 5
+
+    spo = SparseOrbital(g)
+    for io in range(g.no):
+        spo[io, io] = io + 1
+        spo[io, io + g.no - 1] = io - 2
+        spo[io, io + 1] = io + 2
+    # Ensure we have a Hermitian matrix
+    spo = spo + spo.transpose()
+
+    # Ensure sub and remove does the same
+    for i in [0, a0]:
+        spo_rem = spo.remove_orbital(i, 0)
+        spo_sub = spo.sub_orbital(i, [1, 2])
+        assert spo_rem.spsame(spo_sub)
+
+        spo_rem = spo.remove_orbital(i, [0, 2])
+        spo_sub = spo.sub_orbital(i, 1)
+        assert spo_rem.spsame(spo_sub)
+
+        spo_rem = spo.remove_orbital(i, 2)
+        spo_sub = spo.sub_orbital(i, [0, 1])
+        assert spo_rem.spsame(spo_sub)
+
+        spo_rem = spo.remove_orbital(i, a0[0])
+        spo_sub = spo.sub_orbital(i, [1, 2])
+        assert spo_rem.spsame(spo_sub)
+
+    for i in [1, a1]:
+        spo_rem = spo.remove_orbital(i, a1[0])
+        spo_sub = spo.sub_orbital(i, a1[1])
+        assert spo_rem.spsame(spo_sub)
+
+    spo_rem = spo.remove_orbital([0, 1], 0)
+    spo_sub = spo.sub_orbital(0, [1, 2]).sub_orbital(1, 1)
+    assert spo_rem.spsame(spo_sub)
+
+    spo_rem = spo.remove_orbital([0, 1], 1)
+    spo_sub = spo.sub_orbital(0, [0, 2]).sub_orbital(1, 0)
+    assert spo_rem.spsame(spo_sub)

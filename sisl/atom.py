@@ -922,15 +922,14 @@ class AtomMeta(type):
             # if the key already is an atomic object
             # return it
             return key
-        if isinstance(key, dict):
+        elif isinstance(key, dict):
             # The key is a dictionary, hence
             # we can return the atom directly
             return cls(**key)
-        if isinstance(key, list):
+        elif isinstance(key, list):
             # The key is a list,
             # we need to create a list of atoms
-            atm = [cls[k] for k in key]
-            return np.array(atm, dtype=Atom)
+            return [cls[k] for k in key]
         # Index Z based
         return cls(key)
 
@@ -988,7 +987,7 @@ class Atom(object):
         self.Z = _ptbl.Z_int(Z)
 
         self.orbital = None
-        if isinstance(orbital, (list, np.ndarray)):
+        if isinstance(orbital, (tuple, list, np.ndarray)):
             if isinstance(orbital[0], Orbital):
                 # all is good
                 self.orbital = orbital
@@ -1032,6 +1031,13 @@ class Atom(object):
     def q0(self):
         """ Orbital initial charges """
         return _a.arrayd([o.q0 for o in self.orbital])
+
+    def index(self, orbital):
+        """ Return the index of the orbital in the atom object """
+        for i, o in enumerate(self.orbital):
+            if o == orbital:
+                return i
+        raise KeyError('Could not find `orbital` in the list of orbitals.')
 
     def sub(self, orbitals):
         """ Return the same atom with only a subset of the orbitals present
@@ -1095,6 +1101,15 @@ class Atom(object):
     def symbol(self):
         """ Return short atomic name (Au==79). """
         return _ptbl.Z_short(self.Z)
+
+    def __getitem__(self, key):
+        """ The orbital corresponding to index `key` """
+        if isinstance(key, slice):
+            ol = key.indices(len(self))
+            return [self.orbital[o] for o in range(ol[0], ol[1], ol[2])]
+        elif isinstance(key, Integral):
+            return self.orbital[key]
+        return [self.orbital[o] for o in np.asarray(key).ravel()]
 
     def maxR(self):
         """ Return the maximum range of orbitals. """
@@ -1321,13 +1336,14 @@ class Atoms(object):
         """ Internal routine for updating the `firsto` attribute """
         # Get number of orbitals per specie
         uorbs = _a.arrayi([a.no for a in self.atom])
-        self._firsto = np.insert(_a.cumsumi(uorbs[self.specie[:]]), 0, 0)
+        self._firsto = np.insert(_a.cumsumi(uorbs[self.specie]), 0, 0)
 
     def copy(self):
         """ Return a copy of this atom """
         atoms = Atoms()
         atoms._atom = [a.copy() for a in self._atom]
         atoms._specie = np.copy(self._specie)
+        atoms._update_orbitals()
         return atoms
 
     @property
@@ -1429,7 +1445,7 @@ class Atoms(object):
         raise KeyError('Could not find `atom` in the list of atoms.')
 
     def reorder(self, in_place=False):
-        """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists """
+        """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists) """
 
         # Contains the minimum atomic index for a given specie
         smin = _a.emptyi(len(self.atom))
@@ -1513,13 +1529,28 @@ class Atoms(object):
         return atoms
 
     def swap(self, a, b):
-        """ Swaps atoms """
+        """ Swaps all atoms """
         a = _a.asarrayi(a)
         b = _a.asarrayi(b)
         atoms = self.copy()
         spec = np.copy(atoms._specie)
         atoms._specie[a] = spec[b]
         atoms._specie[b] = spec[a]
+        atoms._update_orbitals()
+        return atoms
+
+    def swap_atom(self, a, b):
+        """ Swap specie index positions """
+        speciea = self.index(a)
+        specieb = self.index(b)
+
+        idx_a = (self._specie == speciea).nonzero()[0]
+        idx_b = (self._specie == specieb).nonzero()[0]
+
+        atoms = self.copy()
+        atoms._atom[speciea], atoms._atom[specieb] = atoms._atom[specieb], atoms._atom[speciea]
+        atoms._specie[idx_a] = specieb
+        atoms._specie[idx_b] = speciea
         atoms._update_orbitals()
         return atoms
 

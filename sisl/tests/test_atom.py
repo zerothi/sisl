@@ -209,13 +209,17 @@ def test_multiple_orbitals():
         a2 = a1.sub([i])
         assert len(a2) == 1
         assert a2.orbital[0] == o[i]
+        assert a2.orbital[0] == a2[0]
         a2 = a1.remove([i])
         assert len(a2) == 2
 
     a2 = a1.sub([1, 2, 0])
     assert a2.orbital[0] == o[1]
+    assert a2[0] == o[1]
     assert a2.orbital[1] == o[2]
+    assert a2[1] == o[2]
     assert a2.orbital[2] == o[0]
+    assert a2[2] == o[0]
 
 
 @pytest.mark.xfail(raises=ValueError)

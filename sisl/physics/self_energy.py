@@ -528,6 +528,18 @@ class RealSpaceSE(SelfEnergy):
         self.set_options(**options)
         self.initialize()
 
+    def __str__(self):
+        """ String representation of RealSpaceSE """
+        d = {'class': self.__class__.__name__}
+        for i in range(3):
+            d['u{}'.format(i)] = self._unfold[i]
+        d['semi'] = self._semi_axis
+        d['k'] = str(list(self._k_axes))
+        d['parent'] = str(self.parent).replace('\n', '\n ')
+        return  ('{class}{{unfold: [{u0}, {u1}, {u2}],\n '
+                 'semi-axis: {semi}, k-axes: {k},\n '
+                 '{parent}\n}}').format(**d)
+
     def set_options(self, **options):
         """ Update options in the real-space self-energy
 
@@ -1020,6 +1032,19 @@ class RealSpaceSI(SelfEnergy):
         }
         self.set_options(**options)
         self.initialize()
+
+    def __str__(self):
+        """ String representation of RealSpaceSI """
+        d = {'class': self.__class__.__name__}
+        for i in range(3):
+            d['u{}'.format(i)] = self._unfold[i]
+        d['k'] = str(list(self._k_axes))
+        d['semi'] = str(self.semi).replace('\n', '\n  ')
+        d['surface'] = str(self.surface).replace('\n', '\n  ')
+        return  ('{class}{{unfold: [{u0}, {u1}, {u2}],\n '
+                 'k-axes: {k},\n '
+                 'semi-infinite:\n  {semi},\n '
+                 'surface:\n  {surface}\n}}').format(**d)
 
     def set_options(self, **options):
         """ Update options in the real-space self-energy

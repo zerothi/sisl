@@ -829,48 +829,48 @@ class TestHamiltonian(object):
         assert np.allclose(PDOS.sum(0), DOS)
 
     def test_spin1(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H[0, j] = (i, i*2)
 
         H2 = Hamiltonian(g, 2, dtype=np.int32)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
 
     def test_spin2(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H[0, j] = (i, i*2)
 
         H2 = Hamiltonian(g, 2, dtype=np.int32)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
 
         H2 = Hamiltonian(g, Spin(Spin.POLARIZED), dtype=np.int32)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
 
         H2 = Hamiltonian(g, Spin('polarized'), dtype=np.int32)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
 
     def test_non_colinear1(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.NONCOLINEAR)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H[i, i, 0] = 0.
             H[i, i, 1] = 0.
             H[i, i, 2] = 0.1
@@ -888,7 +888,7 @@ class TestHamiltonian(object):
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H1[i, i, 0] = 0.
             H1[i, i, 1] = 0.
             H1[i, i, 2] = 0.1
@@ -913,10 +913,10 @@ class TestHamiltonian(object):
         assert np.allclose(PDOS.sum(1)[0, :], DOS)
 
     def test_non_colinear_non_orthogonal(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin.NONCOLINEAR)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H[i, i, 0] = 0.
             H[i, i, 1] = 0.
             H[i, i, 2] = 0.1
@@ -934,7 +934,7 @@ class TestHamiltonian(object):
 
         H1 = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin('non-collinear'))
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H1[i, i, 0] = 0.
             H1[i, i, 1] = 0.
             H1[i, i, 2] = 0.1
@@ -960,10 +960,10 @@ class TestHamiltonian(object):
         assert np.allclose(PDOS.sum(1)[0, :], DOS)
 
     def test_so1(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=[100])
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H[i, i, 0] = 0.
             H[i, i, 1] = 0.
             H[i, i, 2] = 0.1
@@ -984,7 +984,7 @@ class TestHamiltonian(object):
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('spin-orbit'))
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i*2, i*2+3)
             H1[i, i, 0] = 0.
             H1[i, i, 1] = 0.
             H1[i, i, 2] = 0.1
