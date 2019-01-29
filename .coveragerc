@@ -2,6 +2,7 @@
 omit =
     benchmarks
     examples
+    sisl/tests/*
     sisl/*/tests/*
     */__config__.py
     */setup.py
