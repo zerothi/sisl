@@ -7,7 +7,6 @@ This sub-module implements a list which allows to make operations with it-self o
 """
 from __future__ import print_function, division
 
-from numbers import Integral
 from functools import wraps
 
 from ._help import isiterable

@@ -5,7 +5,6 @@ from __future__ import print_function, division
 
 import os.path as osp
 import numpy as np
-from numpy import where
 from numpy import abs as np_abs
 
 

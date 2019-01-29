@@ -61,7 +61,7 @@ def test_nc_overlap(sisl_tmp, sisl_system):
 def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     f = sisl_tmp('grS.nc', _dir)
     dm = DynamicalMatrix(sisl_system.gtb)
-    for ia, ix in dm:
+    for _, ix in dm:
         dm[ix, ix] = ix / 2.
     dm.write(ncSileSiesta(f, 'w'))
 

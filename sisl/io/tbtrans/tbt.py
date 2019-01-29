@@ -146,7 +146,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         try:
             v = self._variable(name, tree=tree)
-        except KeyError as err:
+        except KeyError:
             group = None
             if isinstance(tree, list):
                 group = '.'.join(tree)

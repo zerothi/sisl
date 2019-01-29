@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-import math as ma
 import numpy as np
 from scipy.interpolate import CubicSpline
 

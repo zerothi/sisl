@@ -1,10 +1,7 @@
 from __future__ import print_function, division
 
-from numbers import Integral
-from functools import partial
-
 import numpy as np
-from numpy import dot, amax, conjugate
+from numpy import dot, conjugate
 from numpy import subtract
 from numpy import empty, zeros, identity
 from numpy import zeros_like, empty_like
@@ -17,7 +14,7 @@ from sisl.utils.ranges import array_arange
 from sisl._help import array_replace
 import sisl._array as _a
 from sisl.linalg import solve, inv
-from sisl.physics.brillouinzone import BrillouinZone, MonkhorstPack
+from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.physics.bloch import Bloch
 
 
@@ -1100,7 +1097,6 @@ class RealSpaceSI(SelfEnergy):
         parent : parent object only retaining the elements of the atoms that couple out of the primary unit cell
         atom_index : indices for the atoms that couple out of the geometry (`ret_indices`)
         """
-        opt = self._options
         k_ax = self._k_axes
         n_unfold = np.prod(self._unfold)
 

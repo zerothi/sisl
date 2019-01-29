@@ -418,7 +418,6 @@ class fdfSileSiesta(SileSiesta):
                     fh.write('\n')
             else:
                 raise NotImplementedError('Currently blocks are not implemented in set!')
-                fh.write(self.print(key, value) + '\n')
 
         # Now loop, write and edit
         do_write = True

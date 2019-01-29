@@ -16,11 +16,10 @@ the periodicity of a given direction to describe the complete system.
 """
 from __future__ import print_function, division
 
-from itertools import product
 import numpy as np
 from numpy import zeros, empty
 from numpy import add, multiply
-from numpy import pi, exp
+from numpy import exp
 
 from sisl._help import dtype_real_to_complex
 import sisl._array as _a
