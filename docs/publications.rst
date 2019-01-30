@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. G. Singh, K. Kumar and R.K. Moudgil,
+   *On topology-tuned thermoelectric properties of noble metal atomic wires*,
+   Physica E: Low-dimensional Systems and Nanostructures **109**, `114 (2019) <https://doi.org/10.1016/j.physe.2019.01.007>`_
+
 #. J. Li, S. Sanz, M. Corso, D.J. Choi, D. Pena, T. Frederiksen and J.I. Pascual,
    *Single spin localization and manipulation in graphene open-shell nanostructures*,
    Nature Communications **10**, `200 (2019) <https://www.nature.com/articles/s41467-018-08060-6>`_
@@ -71,8 +75,12 @@ arXiv publications
 
 These publications are as far as we know in the review process.
 
+- D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
+  *Moiré ordered current loops in the graphene twist bilayer*,
+  `1901.04712 <https://arxiv.org/abs/1901.04712>`_
+
 - G. Calogero, N. Papior, M. Koleini, M. H. L. Larsen and M. Brandbyge,
-  *Multiscale approach to first-principles electron transport: Seamless integration of DFT and tight-binding*
+  *Multiscale approach to first-principles electron transport: Seamless integration of DFT and tight-binding*,
   `1812.08054 <https://arxiv.org/abs/1812.08054>`_
 
 - L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
