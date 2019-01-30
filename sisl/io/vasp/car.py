@@ -45,11 +45,20 @@ class carSileVASP(SileVASP):
         # Figure out how many species
         pt = PeriodicTable()
         s, d = [], []
-        for ia, a, idx_specie in geom.iter_species():
-            if idx_specie >= len(d):
-                s.append(pt.Z_label(a.Z))
-                d.append(0)
-            d[idx_specie] += + 1
+        ia = 0
+        while ia < geom.na:
+            atom = geom.atoms[ia]
+            specie = geom.atoms.specie[ia]
+            ia_end = (np.diff(geom.atoms.specie[ia:]) != 0).nonzero()[0]
+            if len(ia_end) == 0:
+                # remaining atoms
+                ia_end = geom.na
+            else:
+                ia_end = ia + ia_end[0] + 1
+            s.append(pt.Z_label(atom.Z))
+            d.append(ia_end - ia)
+            ia += d[-1]
+
         fmt = ' {:s}' * len(d) + '\n'
         self._write(fmt.format(*s))
         fmt = ' {:d}' * len(d) + '\n'
