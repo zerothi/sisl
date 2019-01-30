@@ -936,3 +936,17 @@ class TestSparseCSR(object):
         n = p.dumps(S)
         s = p.loads(n)
         assert s.spsame(S)
+
+
+@pytest.mark.xfail(raises=IndexError)
+@pytest.mark.parametrize("i", [-1, 10])
+def test_sparse_row_out_of_bounds(i):
+    S = SparseCSR((10, 10, 1), dtype=np.int32)
+    S[i, 0] = 1
+
+
+@pytest.mark.xfail(raises=IndexError)
+@pytest.mark.parametrize("j", [-1, 10])
+def test_sparse_column_out_of_bounds(j):
+    S = SparseCSR((10, 10, 1), dtype=np.int32)
+    S[0, j] = 1
