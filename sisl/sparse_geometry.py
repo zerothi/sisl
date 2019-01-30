@@ -1255,7 +1255,7 @@ class SparseAtom(_SparseGeometry):
             D = tile(D, (reps, 1))
         else:
             ntile = ftool.partial(tile, reps=(reps, 1))
-            D = np.vstack(map(ntile, np.split(D, _a.cumsumi(csr.ncol[:-1]), axis=0)))
+            D = np.vstack(tuple(map(ntile, np.split(D, _a.cumsumi(csr.ncol[:-1]), axis=0))))
 
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.na, geom_n.na_s))
@@ -1953,7 +1953,7 @@ class SparseOrbital(_SparseGeometry):
             D = tile(D, (reps, 1))
         else:
             ntile = ftool.partial(tile, reps=(reps, 1))
-            D = np.vstack(map(ntile, np.split(D, _a.cumsumi(ncol)[geom.lasto[:geom.na-1]], axis=0)))
+            D = np.vstack(tuple(map(ntile, np.split(D, _a.cumsumi(ncol)[geom.lasto[:geom.na-1]], axis=0))))
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
 
