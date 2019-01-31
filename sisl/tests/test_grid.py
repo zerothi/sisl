@@ -338,3 +338,26 @@ class TestGrid(object):
         A = csr_matrix((n, n))
         b = np.zeros(A.shape[0])
         g.pyamg_boundary_condition(A, b)
+
+
+def test_grid_fold():
+    grid = Grid([4, 5, 6])
+    # Assert shapes
+    assert grid.index_fold([-1] * 3).shape == (3,)
+    assert grid.index_fold([[-1] * 3] * 2, False).shape == (2, 3)
+    assert grid.index_fold([[-1] * 3] * 2, True).shape == (1, 3)
+
+    assert np.all(grid.index_fold([-1, -1, -1]) == [3, 4, 5])
+    assert np.all(grid.index_fold([[-1, -1, -1]] * 2) == [3, 4, 5])
+    assert np.all(grid.index_fold([[-1, -1, -1]] * 2, False) == [[3, 4, 5]] * 2)
+
+    idx = [[-1, 0, 0],
+           [3, 0, 0]]
+    assert np.all(grid.index_fold(idx) == [3, 0, 0])
+    assert np.all(grid.index_fold(idx, False) == [[3, 0, 0]] * 2)
+
+    idx = [[3, 0, 0],
+           [2, 0, 0]]
+    assert np.all(grid.index_fold(idx, False) == idx)
+    assert not np.all(grid.index_fold(idx) == idx) # sorted from unique
+    assert np.all(grid.index_fold(idx) == np.sort(idx, axis=0))

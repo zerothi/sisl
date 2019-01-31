@@ -51,7 +51,7 @@ if osp.exists('MANIFEST'):
 install_requires = [
     'six',
     'setuptools',
-    'numpy>=1.10',
+    'numpy>=1.13',
     'scipy>=0.18',
     'netCDF4',
     'pyparsing',

@@ -37,7 +37,7 @@ If performing a manual installation, these packages are required:
 
    - A C- and fortran-compiler
    - __six__
-   - __numpy__ (1.10 or later)
+   - __numpy__ (1.13 or later)
    - __scipy__ (0.18 or later)
    - __netCDF4__
    - __setuptools__

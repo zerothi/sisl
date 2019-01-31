@@ -3,8 +3,7 @@ mock
 # For running
 six
 setuptools
-# We use some functionality added in 1.10
-numpy>=1.10
+numpy>=1.13
 scipy>=0.18
 netCDF4
 pyparsing

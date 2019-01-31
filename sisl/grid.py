@@ -498,6 +498,38 @@ class Grid(SuperCellChild):
         """
         return dot(np.asarray(index), self.dcell)
 
+    def index_fold(self, index, unique=True):
+        """ Converts indices from *any* placement to only exist in the "primary" grid
+
+        Examples
+        --------
+        >>> grid = Grid([10, 10, 10])
+        >>> assert np.all(grid.index2primary([-1, -1, -1]) == 9)
+
+        Parameters
+        ----------
+        index : array_like
+           indices for grid-positions
+        unique : bool, optional
+           if true the returned indices are made unique after having folded the index points
+
+        Returns
+        -------
+        indices : all indices are then within the shape of the grid
+        """
+        index = _a.asarrayi(index)
+        ndim = index.ndim
+
+        # Convert to internal
+        if unique:
+            index = np.unique(index.reshape(-1, 3) % _a.asarrayi(self.shape)[None, :], axis=0)
+        else:
+            index = index.reshape(-1, 3) % _a.asarrayi(self.shape)[None, :]
+
+        if ndim == 1:
+            return index.ravel()
+        return index
+
     def _index_shape(self, shape):
         """ Internal routine for shape-indices """
         # First grab the sphere, subsequent indices will be reduced
