@@ -320,7 +320,7 @@ class _SparseGeometry(object):
 
         # Ensure the shape is correct
         shape = list(self._csr.shape)
-        shape[1] = size * sc.n_s
+        shape[1] = size * cell.n_s
         self._csr._shape = tuple(shape)
 
         self.geometry.set_nsc(*args, **kwargs)

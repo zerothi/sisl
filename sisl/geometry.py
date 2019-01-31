@@ -3201,7 +3201,7 @@ class Geometry(CellChild):
 
         # 1. Number of times each lattice vector must be expanded to fit
         #    inside the "possibly" larger `sc`.
-        idx = dot(sc.cell, self.icell.T)
+        idx = dot(cell.cell, self.icell.T)
         tile_min = floor(idx.min(0))
         tile_max = ceil(idx.max(0)).astype(dtype=int32)
 
@@ -3214,7 +3214,7 @@ class Geometry(CellChild):
         del idx, tmp
 
         # 1a) correct for origo displacement
-        idx = floor(dot(sc.origo, self.icell.T))
+        idx = floor(dot(cell.origo, self.icell.T))
         tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
         idx = floor(dot(origo, self.icell.T))
         tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
