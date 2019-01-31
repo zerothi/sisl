@@ -1,6 +1,11 @@
 0.9.6
 =====
 
+- added checks for SparseCSR to disallow out-of-bounds keys
+
+- Bug fixed for reading POSCAR files from VASP (only when multiple species are
+	used in a non-ordered fashion)
+
 - added `sisl` command line utility, it is exactly the same as `sdata`
 
 - Enabled pickling sparse matrices, this allows dask usage of sparse matrices
@@ -8,7 +13,7 @@
 - Performance increase for sparse matrix handling
 
 - Fixed a problem with Fortran IO + Jupyter notebooks, now the file-handles
-	are re-used if one terminated a code block before closing the file
+	are re-used if a code block is terminated before closing the file
 
 - Added SparseOrbital append + transpose
 	This enables appending Hamiltonian's (append) and makes hermiticity
