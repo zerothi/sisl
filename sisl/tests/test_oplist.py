@@ -53,6 +53,30 @@ def test_oplist_imath(op, key):
     op(l1, l2)
 
 
+@pytest.mark.xfail(raises=ValueError)
+@pytest.mark.parametrize("op", [ops.add, ops.sub, ops.mul, ops.truediv, ops.pow])
+def test_oplist_fail_math(op):
+    l1 = oplist([1, 2])
+    l2 = [1, 2, 3]
+    op(l1, l2)
+
+
+@pytest.mark.xfail(raises=ValueError)
+@pytest.mark.parametrize("op", [ops.sub, ops.mul, ops.truediv, ops.pow])
+def test_oplist_fail_rmath(op):
+    l1 = oplist([1, 2])
+    l2 = [1, 2, 3]
+    op(l2, l1)
+
+
+@pytest.mark.xfail(raises=ValueError)
+@pytest.mark.parametrize("op", [ops.iadd, ops.isub, ops.imul, ops.itruediv, ops.ipow])
+def test_oplist_fail_imath(op):
+    l1 = oplist([1, 2])
+    l2 = [1, 2, 3]
+    op(l1, l2)
+
+
 def test_oplist_deco():
     @oplist.decorate
     def my_func():
