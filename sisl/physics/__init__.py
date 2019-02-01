@@ -63,6 +63,7 @@ Electrons (:mod:`~sisl.physics.electron`)
    ~electron.berry_phase
    ~electron.wavefunction
    ~electron.spin_moment
+   ~electron.spin_squared
    EigenvalueElectron
    EigenvectorElectron
    EigenstateElectron
