@@ -9,7 +9,7 @@ from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, Mo
 from sisl import get_distribution
 from sisl import oplist
 from sisl import Grid, SphericalOrbital, SislError
-from sisl.physics.electron import berry_phase
+from sisl.physics.electron import berry_phase, spin_squared
 
 
 pytestmark = pytest.mark.hamiltonian
@@ -858,6 +858,32 @@ class TestHamiltonian(object):
             j = range(i*2, i*2+3)
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
+
+    @pytest.mark.parametrize("k", [[0, 0, 0], [0.1, 0, 0]])
+    def test_spin_squared(self, setup, k):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(1, nsc=[3, 1, 1]))
+        H = Hamiltonian(g, spin=Spin.POLARIZED)
+        H.construct(([0.1, 1.1], [[0, 0.1], [1, 1.1]]))
+        H[0, 0] = (0.1, 0.)
+        H[0, 1] = (0.5, 0.4)
+        es_alpha = H.eigenstate(k, spin=0)
+        es_beta = H.eigenstate(k, spin=1)
+
+        squared = spin_squared(es_alpha.state, es_beta.state)
+        assert np.all(H.spin_squared(k) == squared)
+        assert squared.shape == (es_alpha.shape[0], 2)
+        squared = spin_squared(es_alpha.sub(range(2)).state, es_beta.state)
+        assert squared.shape == (es_alpha.shape[0], 2)
+        squared = spin_squared(es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state)
+        assert np.all(H.spin_squared(k, 3, 2) == squared)
+        assert squared.shape == (3, 2)
+
+        squared = spin_squared(es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state)
+        assert squared.shape == (2, 2)
+        squared = spin_squared(es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel())
+        assert squared.shape == (2, )
+        squared = spin_squared(es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel())
+        assert squared.shape == (2, 2)
 
     def test_non_colinear1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))

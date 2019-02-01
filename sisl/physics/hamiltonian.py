@@ -6,7 +6,7 @@ from scipy.interpolate import CubicSpline
 from sisl._help import _range as range
 import sisl._array as _a
 from .distribution import get_distribution
-from .electron import EigenvalueElectron, EigenstateElectron
+from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
 from .sparse import SparseOrbitalBZSpin
 
 __all__ = ['Hamiltonian']
@@ -361,6 +361,32 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             with get_sile(sile, 'w') as fh:
                 fh.write_hamiltonian(self, *args, **kwargs)
+
+    def spin_squared(self, k=(0, 0, 0), n_up=None, n_down=None, **kwargs):
+        r""" Calculate spin-squared expectation value, see `~sisl.physics.electron.spin_squared` for details
+
+        Parameters
+        ----------
+        k : array_like, optional
+            k-point at which the spin-squared expectation value is
+        n_up : int, optional
+            number of states for spin up configuration, default to all. All states up to and including
+            `n_up`.
+        n_down : int, optional
+            same as `n_up` but for the spin-down configuration
+        **kwargs: optional
+            additional parameters passed to the `eigenstate` routine
+        """
+        if not self.spin.is_polarized:
+            raise ValueError(self.__class__.__name__ + '.spin_squared requires as spin-polarized system')
+        es_alpha = self.eigenstate(k, spin=0, **kwargs)
+        if not n_up is None:
+            es_alpha = es_alpha.sub(range(n_up))
+        es_beta = self.eigenstate(k, spin=1, **kwargs)
+        if not n_down is None:
+            es_beta = es_beta.sub(range(n_down))
+        # es_alpha.Sk should equal es_beta.Sk, so just pass one of them
+        return spin_squared(es_alpha.state, es_beta.state, es_alpha.Sk())
 
     def velocity(self, k=(0, 0, 0), **kwargs):
         r""" Calculate the velocity for the eigenstates for a given `k` point

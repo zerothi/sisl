@@ -79,7 +79,7 @@ class Coefficient(ParentContainer):
 
     def __str__(self):
         """ The string representation of this object """
-        s = self.__class__.__name__ + '{{coefficients: {0}'.format(len(self))
+        s = self.__class__.__name__ + '{{coefficients: {0}, kind: {1}'.format(len(self), self.dkind)
         if self.parent is None:
             s += '}}'
         else:
@@ -234,7 +234,7 @@ class State(ParentContainer):
 
     def __str__(self):
         """ The string representation of this object """
-        s = self.__class__.__name__ + '{{states: {0}'.format(len(self))
+        s = self.__class__.__name__ + '{{states: {0}, kind: {1}'.format(len(self), self.dkind)
         if self.parent is None:
             s += '}}'
         else:

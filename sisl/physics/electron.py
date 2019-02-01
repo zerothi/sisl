@@ -22,6 +22,7 @@ One may also plot real-space wavefunctions.
    berry_phase
    wavefunction
    spin_moment
+   spin_squared
 
 
 Supporting classes
@@ -323,6 +324,86 @@ def spin_moment(state, S=None):
         D = 2 * (conj(state[i, 1::2]) * Sstate[:, 0]).sum()
         s[i, 0] = D.real
         s[i, 1] = D.imag
+
+    return s
+
+
+def spin_squared(state_alpha, state_beta, S=None):
+    r""" Calculate the spin squared expectation value between states :math:`\langle S ^2\rangle`
+
+    This calculation only makes sense for spin-polarized calculations.
+
+    The expectation value is calculated using the following formula:
+
+    .. math::
+       \mathbf{S}^2_{\alpha,i} &= \sum_j |\langle \psi_j^\beta | \mathbf S | \psi_i^\alpha \rangle|^2
+       \\
+       \mathbf{S}^2_{\beta,i} &= \sum_j |\langle \psi_j^\alpha | \mathbf S | \psi_i^\beta \rangle|^2
+
+    where :math:`\alpha` and :math:`\beta` are different spin-components.
+
+    Parameters
+    ----------
+    state_alpha : array_like
+       vectors describing the electronic states of spin-channel :math:`\alpha`, 2nd dimension contains the states
+    state_beta : array_like
+       vectors describing the electronic states of spin-channel :math:`\beta`, 2nd dimension contains the states
+    S : array_like, optional
+       overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
+       matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
+       have been evaluated at.
+
+    Notes
+    -----
+    `state_alpha` and `state_beta` need not have the same number of states. The results returned are not the 
+
+    Returns
+    -------
+    numpy.ndarray
+        spin squared expectation value per state for both spin-channels with final dimension ``(max(state_alpha.shape[0], state_beta.shape[0]), 2)``.
+    """
+    if state_alpha.ndim == 1:
+        if state_beta.ndim == 1:
+            return spin_squared(state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S).ravel()
+        return spin_squared(state_alpha.reshape(1, -1), state_beta, S)
+    if state_beta.ndim == 1:
+        return spin_squared(state_alpha, state_beta.reshape(1, -1), S)
+
+    if state_alpha.shape[1] != state_beta.shape[1]:
+        raise ValueError('spin_squared requires alpha and beta states to have same number of orbitals')
+
+    if S is None:
+        class S(object):
+            __slots__ = []
+            shape = (state_alpha.shape[1], state_alpha.shape[1])
+            @staticmethod
+            def dot(v):
+                return v
+
+    n_alpha = state_alpha.shape[0]
+    n_beta = state_beta.shape[0]
+    n_max = max(n_alpha, n_beta)
+
+    # Initialize
+    s = np.zeros([n_max, 2], dtype=dtype_complex_to_real(state_alpha.dtype))
+
+    if n_alpha > n_beta:
+        # Loop beta...
+        state_alpha = conj(state_alpha)
+        for i in range(n_beta):
+            D = dot(state_alpha, S.dot(state_beta[i]))
+            D *= conj(D)
+            s[:, 0] += D.real
+            s[i, 1] += D.sum().real
+
+    else:
+        # Loop alpha
+        state_beta = conj(state_beta)
+        for i in range(n_alpha):
+            D = dot(state_beta, S.dot(state_alpha[i]))
+            D *= conj(D)
+            s[:, 1] += D.real
+            s[i, 0] += D.sum().real
 
     return s
 
