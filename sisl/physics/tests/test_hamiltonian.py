@@ -859,7 +859,6 @@ class TestHamiltonian(object):
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
 
-    @pytest.mark.only
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.1, 0, 0]])
     def test_spin_squared(self, setup, k):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(1, nsc=[3, 1, 1]))
