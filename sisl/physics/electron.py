@@ -365,8 +365,8 @@ def spin_squared(state_alpha, state_beta, S=None):
     """
     if state_alpha.ndim == 1:
         if state_beta.ndim == 1:
-            Sup, Sdn = spin_squared(state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S)
-            return Sup[0], Sdn[0]
+            Sa, Sb = spin_squared(state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S)
+            return Sa[0], Sb[0]
         return spin_squared(state_alpha.reshape(1, -1), state_beta, S)
     elif state_beta.ndim == 1:
         return spin_squared(state_alpha, state_beta.reshape(1, -1), S)
