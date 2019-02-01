@@ -329,18 +329,20 @@ def spin_moment(state, S=None):
 
 
 def spin_squared(state_alpha, state_beta, S=None):
-    r""" Calculate the spin squared expectation value between states :math:`\langle S ^2\rangle`
+    r""" Calculate the spin squared expectation value between two spin states
 
     This calculation only makes sense for spin-polarized calculations.
 
     The expectation value is calculated using the following formula:
 
     .. math::
-       \mathbf{S}^2_{\alpha,i} &= \sum_j |\langle \psi_j^\beta | \mathbf S | \psi_i^\alpha \rangle|^2
+       S^2_{\alpha,i} &= \sum_j |\langle \psi_j^\beta | \mathbf S | \psi_i^\alpha \rangle|^2
        \\
-       \mathbf{S}^2_{\beta,i} &= \sum_j |\langle \psi_j^\alpha | \mathbf S | \psi_i^\beta \rangle|^2
+       S^2_{\beta,j} &= \sum_i |\langle \psi_i^\alpha | \mathbf S | \psi_j^\beta \rangle|^2
 
     where :math:`\alpha` and :math:`\beta` are different spin-components.
+
+    The arrays :math:`\mathbf S^2_\alpha` and :math:`\mathbf S^2_\beta` are returned.
 
     Parameters
     ----------
@@ -355,18 +357,18 @@ def spin_squared(state_alpha, state_beta, S=None):
 
     Notes
     -----
-    `state_alpha` and `state_beta` need not have the same number of states. The results returned are not the 
+    `state_alpha` and `state_beta` need not have the same number of states.
 
     Returns
     -------
-    numpy.ndarray
-        spin squared expectation value per state for both spin-channels with final dimension ``(max(state_alpha.shape[0], state_beta.shape[0]), 2)``.
+    tuple of spin squared expectation value per state, ``(S^2_alpha, S^2_beta)``
     """
     if state_alpha.ndim == 1:
         if state_beta.ndim == 1:
-            return spin_squared(state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S).ravel()
+            Sup, Sdn = spin_squared(state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S)
+            return Sup[0], Sdn[0]
         return spin_squared(state_alpha.reshape(1, -1), state_beta, S)
-    if state_beta.ndim == 1:
+    elif state_beta.ndim == 1:
         return spin_squared(state_alpha, state_beta.reshape(1, -1), S)
 
     if state_alpha.shape[1] != state_beta.shape[1]:
@@ -385,7 +387,8 @@ def spin_squared(state_alpha, state_beta, S=None):
     n_max = max(n_alpha, n_beta)
 
     # Initialize
-    s = np.zeros([n_max, 2], dtype=dtype_complex_to_real(state_alpha.dtype))
+    Sa = np.zeros([n_alpha], dtype=dtype_complex_to_real(state_alpha.dtype))
+    Sb = np.zeros([n_beta], dtype=dtype_complex_to_real(state_alpha.dtype))
 
     if n_alpha > n_beta:
         # Loop beta...
@@ -393,8 +396,8 @@ def spin_squared(state_alpha, state_beta, S=None):
         for i in range(n_beta):
             D = dot(state_alpha, S.dot(state_beta[i]))
             D *= conj(D)
-            s[:, 0] += D.real
-            s[i, 1] += D.sum().real
+            Sa += D.real
+            Sb[i] += D.sum().real
 
     else:
         # Loop alpha
@@ -402,10 +405,10 @@ def spin_squared(state_alpha, state_beta, S=None):
         for i in range(n_alpha):
             D = dot(state_beta, S.dot(state_alpha[i]))
             D *= conj(D)
-            s[:, 1] += D.real
-            s[i, 0] += D.sum().real
+            Sb += D.real
+            Sa[i] += D.sum().real
 
-    return s
+    return Sa, Sb
 
 
 def velocity(state, dHk, energy=None, dSk=None, degenerate=None):

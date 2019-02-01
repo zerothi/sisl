@@ -859,6 +859,7 @@ class TestHamiltonian(object):
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
 
+    @pytest.mark.only
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.1, 0, 0]])
     def test_spin_squared(self, setup, k):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(1, nsc=[3, 1, 1]))
@@ -869,21 +870,42 @@ class TestHamiltonian(object):
         es_alpha = H.eigenstate(k, spin=0)
         es_beta = H.eigenstate(k, spin=1)
 
-        squared = spin_squared(es_alpha.state, es_beta.state)
-        assert np.all(H.spin_squared(k) == squared)
-        assert squared.shape == (es_alpha.shape[0], 2)
-        squared = spin_squared(es_alpha.sub(range(2)).state, es_beta.state)
-        assert squared.shape == (es_alpha.shape[0], 2)
-        squared = spin_squared(es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state)
-        assert np.all(H.spin_squared(k, 3, 2) == squared)
-        assert squared.shape == (3, 2)
+        sup, sdn = spin_squared(es_alpha.state, es_beta.state)
+        sup1, sdn1 = H.spin_squared(k)
+        assert sup.sum() == pytest.approx(sdn.sum())
+        assert np.all(sup1 == sup)
+        assert np.all(sdn1 == sdn)
+        assert len(sup) == es_alpha.shape[0]
+        assert len(sdn) == es_beta.shape[0]
 
-        squared = spin_squared(es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state)
-        assert squared.shape == (2, 2)
-        squared = spin_squared(es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel())
-        assert squared.shape == (2, )
-        squared = spin_squared(es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel())
-        assert squared.shape == (2, 2)
+        sup, sdn = spin_squared(es_alpha.sub(range(2)).state, es_beta.state)
+        assert sup.sum() == pytest.approx(sdn.sum())
+        assert len(sup) == 2
+        assert len(sdn) == es_beta.shape[0]
+
+        sup, sdn = spin_squared(es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state)
+        sup1, sdn1 = H.spin_squared(k, 3, 2)
+        assert sup.sum() == pytest.approx(sdn.sum())
+        assert np.all(sup1 == sup)
+        assert np.all(sdn1 == sdn)
+        assert len(sup) == 3
+        assert len(sdn) == 2
+
+        sup, sdn = spin_squared(es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state)
+        assert sup.sum() == pytest.approx(sdn.sum())
+        assert sup.ndim == 1
+        assert len(sup) == 1
+        assert len(sdn) == 2
+
+        sup, sdn = spin_squared(es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel())
+        assert sup.sum() == pytest.approx(sdn.sum())
+        assert sup.ndim == 0
+        assert sdn.ndim == 0
+
+        sup, sdn = spin_squared(es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel())
+        assert sup.sum() == pytest.approx(sdn.sum())
+        assert len(sup) == 2
+        assert len(sdn) == 1
 
     def test_non_colinear1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
