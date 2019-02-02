@@ -62,6 +62,7 @@ from sisl import units, constant
 from sisl.supercell import SuperCell
 from sisl.geometry import Geometry
 from sisl._indices import indices_le
+from sisl.oplist import oplist
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.linalg import svd_destroy, eigvals_destroy
@@ -366,7 +367,7 @@ def spin_squared(state_alpha, state_beta, S=None):
     if state_alpha.ndim == 1:
         if state_beta.ndim == 1:
             Sa, Sb = spin_squared(state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S)
-            return Sa[0], Sb[0]
+            return oplist((Sa[0], Sb[0]))
         return spin_squared(state_alpha.reshape(1, -1), state_beta, S)
     elif state_beta.ndim == 1:
         return spin_squared(state_alpha, state_beta.reshape(1, -1), S)
@@ -408,7 +409,7 @@ def spin_squared(state_alpha, state_beta, S=None):
             Sb += D.real
             Sa[i] += D.sum().real
 
-    return Sa, Sb
+    return oplist(Sa, Sb)
 
 
 def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
