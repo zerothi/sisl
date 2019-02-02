@@ -342,7 +342,7 @@ def spin_squared(state_alpha, state_beta, S=None):
 
     where :math:`\alpha` and :math:`\beta` are different spin-components.
 
-    The arrays :math:`\mathbf S^2_\alpha` and :math:`\mathbf S^2_\beta` are returned.
+    The arrays :math:`S^2_\alpha` and :math:`S^2_\beta` are returned.
 
     Parameters
     ----------
