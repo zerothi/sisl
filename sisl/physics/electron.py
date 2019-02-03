@@ -409,7 +409,7 @@ def spin_squared(state_alpha, state_beta, S=None):
             Sb += D.real
             Sa[i] += D.sum().real
 
-    return oplist(Sa, Sb)
+    return oplist((Sa, Sb))
 
 
 def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
