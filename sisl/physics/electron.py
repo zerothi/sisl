@@ -52,6 +52,7 @@ from __future__ import print_function, division
 from functools import reduce
 import numpy as np
 from numpy import find_common_type
+from numpy import zeros, empty
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid
 from numpy import cos, sin, pi
@@ -362,7 +363,7 @@ def spin_squared(state_alpha, state_beta, S=None):
 
     Returns
     -------
-    tuple of spin squared expectation value per state, ``(S^2_alpha, S^2_beta)``
+    `~sisl.oplist.oplist` with spin squared expectation value per state, ``(S^2_alpha, S^2_beta)``
     """
     if state_alpha.ndim == 1:
         if state_beta.ndim == 1:
@@ -385,29 +386,30 @@ def spin_squared(state_alpha, state_beta, S=None):
 
     n_alpha = state_alpha.shape[0]
     n_beta = state_beta.shape[0]
-    n_max = max(n_alpha, n_beta)
-
-    # Initialize
-    Sa = np.zeros([n_alpha], dtype=dtype_complex_to_real(state_alpha.dtype))
-    Sb = np.zeros([n_beta], dtype=dtype_complex_to_real(state_alpha.dtype))
 
     if n_alpha > n_beta:
         # Loop beta...
-        state_alpha = conj(state_alpha)
+        Sa = zeros([n_alpha], dtype=dtype_complex_to_real(state_alpha.dtype))
+        Sb = empty([n_beta], dtype=Sa.dtype)
+
+        S_state_alpha = S.dot(state_alpha.T)
         for i in range(n_beta):
-            D = dot(state_alpha, S.dot(state_beta[i]))
+            D = dot(conj(state_beta[i]), S_state_alpha)
             D *= conj(D)
             Sa += D.real
-            Sb[i] += D.sum().real
+            Sb[i] = D.sum().real
 
     else:
-        # Loop alpha
-        state_beta = conj(state_beta)
+        # Loop alpha...
+        Sa = empty([n_alpha], dtype=dtype_complex_to_real(state_alpha.dtype))
+        Sb = zeros([n_beta], dtype=Sa.dtype)
+
+        S_state_beta = S.dot(state_beta.T)
         for i in range(n_alpha):
-            D = dot(state_beta, S.dot(state_alpha[i]))
+            D = dot(conj(state_alpha[i]), S_state_beta)
             D *= conj(D)
             Sb += D.real
-            Sa[i] += D.sum().real
+            Sa[i] = D.sum().real
 
     return oplist((Sa, Sb))
 
