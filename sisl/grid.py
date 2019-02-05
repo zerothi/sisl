@@ -493,7 +493,7 @@ class Grid(SuperCellChild):
 
         Returns
         -------
-        numpy.ndarray:
+        numpy.ndarray
            coordinates of the indices with respect to this grid spacing
         """
         return dot(np.asarray(index), self.dcell)
@@ -515,7 +515,8 @@ class Grid(SuperCellChild):
 
         Returns
         -------
-        indices : all indices are then within the shape of the grid
+        numpy.ndarray
+            all indices are then within the shape of the grid
         """
         index = _a.asarrayi(index)
         ndim = index.ndim
@@ -903,7 +904,8 @@ class Grid(SuperCellChild):
 
         Returns
         -------
-        indices : (:, 3), linear indices for each of the sliced values
+        numpy.ndarray
+            linear indices for each of the sliced values, shape ``(*, 3)``
         """
         if len(slices) == 1:
             g = np.mgrid[slices[0]]
@@ -926,7 +928,8 @@ class Grid(SuperCellChild):
 
         Returns
         -------
-        pyamg linear indices for the matrix
+        numpy.ndarray
+            linear indices for the matrix
 
         See Also
         --------
@@ -1112,8 +1115,10 @@ class Grid(SuperCellChild):
 
         Returns
         -------
-        A : scipy.sparse.csr_matrix which contains the grid stencil for a `pyamg` solver.
-        b : numpy.ndarray containing RHS of the linear system of equations.
+        scipy.sparse.csr_matrix
+            the stencil for the `pyamg` solver
+        numpy.ndarray
+            RHS of the linear system of equations
 
         Examples
         --------

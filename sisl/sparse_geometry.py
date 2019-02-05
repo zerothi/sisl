@@ -351,7 +351,8 @@ class _SparseGeometry(object):
 
         Returns
         -------
-        an equivalent sparse geometry with transposed matrix elements
+        object
+            an equivalent sparse geometry with transposed matrix elements
         """
         # Create a temporary copy to put data into
         T = self.copy()
@@ -675,7 +676,7 @@ class _SparseGeometry(object):
 
     @classmethod
     def fromsp(cls, geom, *sp):
-        """ Returns a sparse model from a preset Geometry and a list of sparse matrices """
+        """ Create a sparse model from a preset Geometry and a list of sparse matrices """
         # Ensure it is a list (no tuples can be used)
         sp = list(sp)
         for i, s in enumerate(sp):
@@ -2108,7 +2109,8 @@ class SparseOrbital(_SparseGeometry):
 
         Returns
         -------
-        a new object with the two sparse matrix elements appended together
+        object
+            a new instance with two sparse matrices joined and appended together
         """
         if not (type(self) is type(other)):
             raise ValueError(self.__class__.__name__ + '.append requires other to be of same type: {}'.format(other.__class__.__name__))
@@ -2133,8 +2135,10 @@ class SparseOrbital(_SparseGeometry):
 
             Returns
             -------
-            self_connect : atoms in `spO` which connects across `direction`
-            other_connect : atoms in `spO` which self_connect connects to along `direction`
+            self_connect
+                atoms in `spO` which connects across `direction`
+            other_connect
+                atoms in `spO` which self_connect connects to along `direction`
             """
             geom = spO.geometry
             # We need to copy since we are deleting elements below

@@ -139,7 +139,9 @@ class Orbital(object):
 
         Returns
         -------
-        Sphere : the sphere with a radius equal to the radius of this orbital"""
+        ~sisl.shape.Sphere
+            sphere with a radius equal to the radius of this orbital
+        """
         return Sphere(self.R, center)
 
     def equal(self, other, psi=False, radial=False):
@@ -524,7 +526,8 @@ class SphericalOrbital(Orbital):
 
         Returns
         -------
-        f : the orbital value at point `r`
+        numpy.ndarray
+            radial orbital value at point `r`
         """
         r = _a.asarrayd(r).ravel()
         if is_radius:
@@ -558,7 +561,8 @@ class SphericalOrbital(Orbital):
 
         Returns
         -------
-        psi : the orbital value at point `r`
+        numpy.ndarray
+             basis function value at point `r`
         """
         r = _a.asarrayd(r)
         s = r.shape[:-1]
@@ -589,7 +593,8 @@ class SphericalOrbital(Orbital):
 
         Returns
         -------
-        spher : the spherical harmonics at angles :math:`\theta` and :math:`\phi`.
+        numpy.ndarray
+            spherical harmonics at angles :math:`\theta` and :math:`\phi` and given quantum number `m`
         """
         if cos_phi:
             return _rspherical_harm(m, self.l, theta, phi)
@@ -616,7 +621,8 @@ class SphericalOrbital(Orbital):
 
         Returns
         -------
-        psi : the orbital value at point `r`
+        numpy.ndarray
+             basis function value at point `r`
         """
         return self.f(r) * self.spher(theta, phi, m, cos_phi)
 
@@ -970,7 +976,8 @@ class AtomicOrbital(Orbital):
 
         Returns
         -------
-        f : the orbital value at point `r`
+        numpy.ndarray
+            radial orbital value at point `r`
         """
         return self.orb.radial(r, is_radius=is_radius)
 
@@ -986,7 +993,8 @@ class AtomicOrbital(Orbital):
 
         Returns
         -------
-        psi : the orbital value at point `r`
+        numpy.ndarray
+             basis function value at point `r`
         """
         return self.orb.psi(r, self.m)
 
@@ -1005,7 +1013,8 @@ class AtomicOrbital(Orbital):
 
         Returns
         -------
-        spher : the spherical harmonics at angles :math:`\theta` and :math:`\phi`.
+        numpy.ndarray
+            spherical harmonics at angles :math:`\theta` and :math:`\phi`
         """
         return self.orb.spher(theta, phi, self.m, cos_phi)
 
@@ -1028,7 +1037,8 @@ class AtomicOrbital(Orbital):
 
         Returns
         -------
-        psi : the orbital value at point `r`
+        numpy.ndarray
+             basis function value at point `r`
         """
         return self.orb.psi_spher(r, theta, phi, self.m, cos_phi)
 

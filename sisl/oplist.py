@@ -91,7 +91,8 @@ class oplist(list):
 
         Returns
         -------
-        callable which returns `oplist`
+        callable
+            a wrapped function which ensures the returned argument is an instance of `oplist`
 
         Examples
         --------

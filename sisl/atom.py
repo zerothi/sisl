@@ -801,8 +801,8 @@ class PeriodicTable(object):
 
         Returns
         -------
-        Z : ndarray or int
-            The atomic number corresponding to `key`, if `key` is array_like, so
+        numpy.ndarray or int
+            atomic number corresponding to `key`, if `key` is array_like, so
             will the returned value be.
 
         Examples
@@ -835,8 +835,8 @@ class PeriodicTable(object):
 
         Returns
         -------
-        name : ndarray or str
-            The atomic short name corresponding to `key`, if `key`
+        numpy.ndarray or str
+            atomic short name corresponding to `key`, if `key`
             is array_like, so will the returned value be.
         """
         ak = np.asarray(key).ravel()
@@ -860,8 +860,8 @@ class PeriodicTable(object):
 
         Returns
         -------
-        name : ndarray or float
-            The atomic mass in atomic units corresponding to `key`,
+        numpy.ndarray or float
+            atomic mass in atomic units corresponding to `key`,
             if `key` is array_like, so will the returned value be.
         """
         Z = self.Z_int(key)
@@ -889,8 +889,8 @@ class PeriodicTable(object):
 
         Returns
         -------
-        radius : ndarray or float
-            The atomic radius in `Ang`
+        numpy.ndarray or float
+            atomic radius in `Ang`
         """
         Z = self.Z_int(key)
         if method == 'calc':
@@ -1049,7 +1049,8 @@ class Atom(object):
 
         Returns
         -------
-        Atom : with only the subset of orbitals
+        Atom
+            with only the subset of orbitals
 
         Raises
         ------
@@ -1074,7 +1075,8 @@ class Atom(object):
 
         Returns
         -------
-        Atom : with only the subset of orbitals
+        Atom
+            without the specified orbitals
 
         See Also
         --------
@@ -1146,8 +1148,9 @@ class Atom(object):
 
         Returns
         -------
-        Orbital : the current orbital, if `group` is ``True`` this is a list of orbitals,
-                  otherwise a single orbital is returned
+        Orbital
+            current orbital, if `group` is ``True`` this is a list of orbitals,
+            otherwise a single orbital is returned
         """
         if group:
             i = 0
@@ -1180,7 +1183,9 @@ class Atom(object):
 
         Returns
         -------
-        Sphere : the sphere with a radius equal to the maximum radius of the orbitals"""
+        ~sisl.shape.Sphere
+             a sphere with radius equal to the maximum radius of the orbitals
+        """
         return Sphere(self.maxR(), center)
 
     def equal(self, other, R=True, psi=False):
@@ -1564,7 +1569,8 @@ class Atoms(object):
 
         Returns
         -------
-        Atoms : a merging of this objects atoms and the `other` objects atoms.
+        Atoms
+            merging of this objects atoms and the `other` objects atoms.
         """
         if not isinstance(other, Atoms):
             other = Atoms(other)

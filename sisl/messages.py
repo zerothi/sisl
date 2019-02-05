@@ -182,7 +182,7 @@ def tqdm_eta(count, desc, unit, eta):
 
     Returns
     -------
-    bar : object
+    object
        progress bar if `eta` is true, otherwise an object which does nothing
     """
     if eta:

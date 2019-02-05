@@ -233,9 +233,11 @@ class Selector(object):
 
         Returns
         -------
-        int, func :
-           a tuple with the `int` specifying the routine index. `func` is the
-           routine that is to be runned.
+        int
+           routine index
+        callable
+           `func` is the routine that is to be runned next (or if index is negative, then
+           it refers to the most optimal routine
         """
         for i, v in enumerate(self.performances):
             if v is None:

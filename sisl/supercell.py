@@ -119,7 +119,7 @@ class SuperCell(object):
         return Cuboid(cmax - cmin, self.center() + self.origo)
 
     def parameters(self, rad=False):
-        r""" Return the cell-parameters of this cell
+        r""" Cell parameters of this cell in 3 lengths and 3 angles
 
         Notes
         -----
@@ -291,7 +291,7 @@ class SuperCell(object):
             yield i, sc
 
     def copy(self, cell=None, origo=None):
-        """ Returns a copy of the object with possibly some quantities overwritten
+        """ A deepcopy of the object
 
         Parameters
         ----------
@@ -383,7 +383,7 @@ class SuperCell(object):
         return self.copy(cell)
 
     def swapaxes(self, a, b):
-        """ Returns `SuperCell` with swapped axis
+        """ Swap axis `a` and `b` in a new `SuperCell`
 
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
         """
