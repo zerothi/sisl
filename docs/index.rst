@@ -7,12 +7,12 @@
 |pypi|_
 |conda|_
 |zenodo|_
-|license|_
-|donate|_
-
-|buildstatus|_
 |gitter|_
+
+|license|_
+|buildstatus|_
 |codecov|_
+|donate|_
 
 
 .. title:: Scientific Python toolbox for electronic structure calculations
@@ -34,7 +34,7 @@ Any user tight-binding model may be used as input to the non-equilibrium Green f
 transport calculator `TBtrans`_.
 sisl deals with both electrons and phonons.
 
-sisl is hosted `here <http://github.com/zerothi/sisl>`_.
+sisl is hosted on Github `here <http://github.com/zerothi/sisl>`_.
 
 Tight-binding and localized orbitals are an essential part of the electronic structure
 community. A great deal of codes are implementing either of the afore mentioned methodologies.
