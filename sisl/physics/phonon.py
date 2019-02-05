@@ -86,7 +86,8 @@ def DOS(E, hw, distribution='gaussian'):
 
     Returns
     -------
-    numpy.ndarray : DOS calculated at energies, has same length as `E`
+    numpy.ndarray
+        DOS calculated at energies, has same length as `E`
     """
     return electron_DOS(E, hw, distribution)
 
@@ -205,7 +206,7 @@ def _velocity(mode, hw, dDk, degenerate):
 
 
 def displacement(mode, hw, mass):
-    r""" Calculate the real-space displacements for a given mode (in units of the characteristic length)
+    r""" Calculate real-space displacements for a given mode (in units of the characteristic length)
 
     The displacements per mode may be written as:
 
@@ -228,7 +229,7 @@ def displacement(mode, hw, mass):
     Returns
     -------
     numpy.ndarray
-        displacements per mode with final dimension ``(mode.shape[0], 3)``, the displacements are in Ang
+        displacements per mode with final dimension ``(mode.shape[0], 3)``, displacements are in Ang
     """
     if mode.ndim == 1:
         return displacement(mode.reshape(1, -1), hw, mass).reshape(-1, 3)
@@ -363,6 +364,23 @@ class EigenvaluePhonon(CoefficientPhonon):
         r""" Eigenmode values in units of :math:`\hbar \omega` [eV] """
         return self.c
 
+    def occupation(self, distribution='bose_einstein'):
+        """ Calculate the occupations for the states according to a distribution function
+
+        Parameters
+        ----------
+        distribution : str or func, optional
+           distribution used to find occupations
+
+        Returns
+        -------
+        numpy.ndarray
+             ``len(self)`` with occupation values
+        """
+        if isinstance(distribution, str):
+            distribution = get_distribution(distribution)
+        return distribution(self.hw)
+
     def DOS(self, E, distribution='gaussian'):
         r""" Calculate DOS for provided energies, `E`.
 
@@ -390,6 +408,23 @@ class EigenmodePhonon(ModeCPhonon):
     def hw(self):
         r""" Eigenmode values in units of :math:`\hbar \omega` [eV] """
         return self.c
+
+    def occupation(self, distribution='bose_einstein'):
+        """ Calculate the occupations for the states according to a distribution function
+
+        Parameters
+        ----------
+        distribution : str or func, optional
+           distribution used to find occupations
+
+        Returns
+        -------
+        numpy.ndarray
+             ``len(self)`` with occupation values
+        """
+        if isinstance(distribution, str):
+            distribution = get_distribution(distribution)
+        return distribution(self.hw)
 
     def DOS(self, E, distribution='gaussian'):
         r""" Calculate DOS for provided energies, `E`.

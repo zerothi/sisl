@@ -114,7 +114,8 @@ def DOS(E, eig, distribution='gaussian'):
 
     Returns
     -------
-    numpy.ndarray : DOS calculated at energies, has same length as `E`
+    numpy.ndarray
+        DOS calculated at energies, has same length as `E`
     """
     if isinstance(distribution, str):
         distribution = get_distribution(distribution)
@@ -363,7 +364,8 @@ def spin_squared(state_alpha, state_beta, S=None):
 
     Returns
     -------
-    `~sisl.oplist.oplist` with spin squared expectation value per state, ``(S^2_alpha, S^2_beta)``
+    ~sisl.oplist.oplist
+         list of spin squared expectation value per state for spin state :math:`\alpha` and :math:`\beta`
     """
     if state_alpha.ndim == 1:
         if state_beta.ndim == 1:
@@ -1411,7 +1413,8 @@ class _electron_State(object):
 
         Returns
         -------
-        expectation : a vector if `diag` is true, otherwise the expectation matrix
+        numpy.ndarray
+            a vector if `diag` is true, otherwise a matrix with expectation values
         """
         ndim = A.ndim
         n = len(self)
@@ -1660,7 +1663,8 @@ class EigenvalueElectron(CoefficientElectron):
 
         Returns
         -------
-        numpy.ndarray : len(self) with occupation values
+        numpy.ndarray
+             ``len(self)`` with occupation values
         """
         if isinstance(distribution, str):
             distribution = get_distribution(distribution)
@@ -1708,7 +1712,8 @@ class EigenstateElectron(StateCElectron):
 
         Returns
         -------
-        numpy.ndarray : len(self) with occupation values
+        numpy.ndarray
+             ``len(self)`` with occupation values
         """
         if isinstance(distribution, str):
             distribution = get_distribution(distribution)

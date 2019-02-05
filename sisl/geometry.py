@@ -298,8 +298,10 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        Geometry : the primary unit cell
-        supercell : the tiled supercell numbers used to find the primary unit cell
+        Geometry
+             the primary unit cell
+        SuperCell
+             the tiled supercell numbers used to find the primary unit cell (only if `ret_super` is true)
 
         Raises
         ------
@@ -649,7 +651,8 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        int : number of radius needed to contain `na` atoms. Minimally 2 will be returned.
+        int
+            number of radius needed to contain `na` atoms. Minimally 2 will be returned.
         """
         ia = np.random.randint(len(self))
 
@@ -892,8 +895,10 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        Two lists with ``[0]`` being a list of atoms to be looped and ``[1]`` being the atoms that
-        need searched.
+        numpy.ndarray
+            current list of atoms currently searched
+        numpy.ndarray
+            atoms that needs searching
         """
         if iR < 2:
             raise SislError(self.__class__.__name__ + '.iter_block too small iR!')
@@ -938,7 +943,8 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        Geometry : the sorted geometry
+        Geometry
+            sorted geometry
         """
         axes = _a.arrayi(axes).ravel()
         idx = np.lexsort(tuple((self.xyz[:, i] for i in axes)))
@@ -1040,7 +1046,7 @@ class Geometry(SuperCellChild):
                               atom=self.atoms.sub(atms), sc=cell)
 
     def cut(self, seps, axis, seg=0, rtol=1e-4, atol=1e-4):
-        """ Returns a subset of atoms from the geometry by cutting the geometry into `seps` parts along the direction `axis`.
+        """ A subset of atoms from the geometry by cutting the geometry into `seps` parts along the direction `axis`.
 
         This will effectively change the unit-cell in the `axis` as-well
         as removing ``self.na/seps`` atoms.
@@ -2060,9 +2066,12 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        index : indices of atoms (in supercell indices) within the shape
-        xyz : atomic coordinates of the indexed atoms (only for true ``ret_xyz``)
-        rij : distance of the indexed atoms to the center of the shape (only for true ``ret_rij``)
+        index
+            indices of atoms (in supercell indices) within the shape
+        xyz
+            atomic coordinates of the indexed atoms (only for true `ret_xyz`)
+        rij
+            distance of the indexed atoms to the center of the shape (only for true `ret_rij`)
         """
 
         # Ensure that `shapes` is a list
@@ -2223,9 +2232,12 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        index : indices of atoms (in supercell indices) within the shells of radius `R`
-        xyz : atomic coordinates of the indexed atoms (only for true ``ret_xyz``)
-        rij : distance of the indexed atoms to the center coordinate (only for true ``ret_rij``)
+        index
+            indices of atoms (in supercell indices) within the shells of radius `R`
+        xyz
+            atomic coordinates of the indexed atoms (only for true `ret_xyz`)
+        rij
+            distance of the indexed atoms to the center coordinate (only for true `ret_rij`)
         """
         if R is None:
             R = np.array([self.maxR()], np.float64)
@@ -2531,9 +2543,12 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        index : indices of atoms (in supercell indices) within the shape
-        xyz : atomic coordinates of the indexed atoms (only for true ``ret_xyz``)
-        rij : distance of the indexed atoms to the center of the shape (only for true ``ret_rij``)
+        index
+            indices of atoms (in supercell indices) within the shape
+        xyz
+            atomic coordinates of the indexed atoms (only for true `ret_xyz`)
+        rij
+            distance of the indexed atoms to the center of the shape (only for true `ret_rij`)
         """
 
         # Ensure that `shapes` is a list
@@ -2639,9 +2654,12 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        index : indices of atoms (in supercell indices) within the shells of radius `R`
-        xyz : atomic coordinates of the indexed atoms (only for true ``ret_xyz``)
-        rij : distance of the indexed atoms to the center coordinate (only for true ``ret_rij``)
+        index
+            indices of atoms (in supercell indices) within the shells of radius `R`
+        xyz
+            atomic coordinates of the indexed atoms (only for true `ret_xyz`)
+        rij
+            distance of the indexed atoms to the center coordinate (only for true `ret_rij`)
         """
         if R is None:
             R = self.maxR()
@@ -3179,11 +3197,11 @@ class Geometry(SuperCellChild):
 
         Returns
         -------
-        ia : numpy.ndarray
+        numpy.ndarray
            unit-cell atomic indices which are inside the `sc` cell
-        xyz : numpy.ndarray
+        numpy.ndarray
            atomic coordinates for the `ia` atoms (including supercell offsets)
-        isc : numpy.ndarray
+        numpy.ndarray
            integer supercell offsets for `ia` atoms
         """
         if periodic is None:
