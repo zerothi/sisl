@@ -460,7 +460,8 @@ class RealSpaceSE(SelfEnergy):
         translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
     bz : BrillouinZone, optional
         integration k-points, if not passed the number of k-points will be determined using
-        `dk` and time-reversal symmetry will be determined by `trs`
+        `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
+        to the unfolded system.
     trs: bool, optional
         whether time-reversal symmetry is used in the BrillouinZone integration, default
         to true.
@@ -551,7 +552,8 @@ class RealSpaceSE(SelfEnergy):
             translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
         bz : BrillouinZone, optional
             integration k-points, if not passed the number of k-points will be determined using
-            `dk` and time-reversal symmetry will be determined by `trs`
+            `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
+            to the unfolded system.
         trs: bool, optional
             whether time-reversal symmetry is used in the BrillouinZone integration, default
             to true.
@@ -647,7 +649,9 @@ class RealSpaceSE(SelfEnergy):
         This method should first be called *after* all options has been specified.
 
         If the user hasn't specified the ``bz`` value as an option this method will update the internal
-        integration Brillouin zone based on ``dk`` and ``trs`` options.
+        integration Brillouin zone based on ``dk`` and ``trs`` options. The :math:`\mathbf k` point sampling corresponds
+        to the number of points in the non-folded system and thus the final sampling is equivalent to the
+        sampling times the unfolding (per :math:`\mathbf k` direction).
         """
         s_ax = self._semi_axis
         k_ax = self._k_axes
@@ -918,7 +922,8 @@ class RealSpaceSI(SelfEnergy):
         translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
     bz : BrillouinZone, optional
         integration k-points, if not passed the number of k-points will be determined using
-        `dk` and time-reversal symmetry will be determined by `trs`
+        `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
+        to the unfolded system.
     trs: bool, optional
         whether time-reversal symmetry is used in the BrillouinZone integration, default
         to true.
@@ -1059,7 +1064,8 @@ class RealSpaceSI(SelfEnergy):
             translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
         bz : BrillouinZone, optional
             integration k-points, if not passed the number of k-points will be determined using
-            `dk` and time-reversal symmetry will be determined by `trs`
+            `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
+            to the unfolded system.
         trs: bool, optional
             whether time-reversal symmetry is used in the BrillouinZone integration, default
             to true.
@@ -1182,12 +1188,14 @@ class RealSpaceSI(SelfEnergy):
         return PC
 
     def initialize(self):
-        """ Initialize the internal data-arrays used for efficient calculation of the real-space quantities
+        r""" Initialize the internal data-arrays used for efficient calculation of the real-space quantities
 
         This method should first be called *after* all options has been specified.
 
         If the user hasn't specified the ``bz`` value as an option this method will update the internal
-        integration Brillouin zone based on the ``dk`` option.
+        integration Brillouin zone based on the ``dk`` option. The :math:`\mathbf k` point sampling corresponds
+        to the number of points in the non-folded system and thus the final sampling is equivalent to the
+        sampling times the unfolding (per :math:`\mathbf k` direction).
         """
         P0 = self.real_space_parent()
         V_atoms = self.real_space_coupling(True)[1]

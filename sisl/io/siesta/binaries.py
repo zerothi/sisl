@@ -728,7 +728,7 @@ class _gfSileSiesta(SileBinSiesta):
         }
 
         self._nspin = nspin
-        self._E = np.copy(E) * eV2Ry
+        self._E = E * eV2Ry
         self._k = np.copy(k)
         if self._nspin > 2:
             self._no_u = no_u * 2
