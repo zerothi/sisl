@@ -62,13 +62,17 @@ sumi = _partial(np.sum, dtype=np.int32)
 suml = _partial(np.sum, dtype=np.int64)
 sumf = _partial(np.sum, dtype=np.float32)
 sumd = _partial(np.sum, dtype=np.float64)
-__all__ += _append('sum')
+sumc = _partial(np.sum, dtype=np.complex64)
+sumz = _partial(np.sum, dtype=np.complex128)
+__all__ += _append_c('sum')
 
 cumsumi = _partial(np.cumsum, dtype=np.int32)
 cumsuml = _partial(np.cumsum, dtype=np.int64)
 cumsumf = _partial(np.cumsum, dtype=np.float32)
 cumsumd = _partial(np.cumsum, dtype=np.float64)
-__all__ += _append('cumsum')
+cumsumc = _partial(np.cumsum, dtype=np.complex64)
+cumsumz = _partial(np.cumsum, dtype=np.complex128)
+__all__ += _append_c('cumsum')
 
 arangei = _partial(np.arange, dtype=np.int32)
 arangel = _partial(np.arange, dtype=np.int64)
@@ -92,6 +96,12 @@ fulld = _partial(np.full, dtype=np.float64)
 fullc = _partial(np.full, dtype=np.complex64)
 fullz = _partial(np.full, dtype=np.complex128)
 __all__ += _append_c('full')
+
+linspacef = _partial(np.linspace, dtype=np.float32)
+linspaced = _partial(np.linspace, dtype=np.float64)
+linspacec = _partial(np.linspace, dtype=np.complex64)
+linspacez = _partial(np.linspace, dtype=np.complex128)
+__all__ += _append('linspace', ('f', 'd', 'c', 'z'))
 
 
 del _append_c, _append

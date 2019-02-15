@@ -111,8 +111,9 @@ class xsfSile(Sile):
             self._write('PRIMCOORD {}\n'.format(self._md_index))
         self._write('{} {}\n'.format(len(geometry), 1))
 
-        valid_Z = (geometry.atoms.Z > 0).nonzero()[0]
-        geometry = geometry.sub(valid_Z)
+        non_valid_Z = (geometry.atoms.Z <= 0).nonzero()[0]
+        if len(non_valid_Z) > 0:
+            geometry = geometry.remove(non_valid_Z)
 
         if has_data:
             fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}   {{4:{0}}}  {{5:{0}}}  {{6:{0}}}\n'.format(fmt)

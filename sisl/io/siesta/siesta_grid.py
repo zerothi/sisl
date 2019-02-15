@@ -134,9 +134,9 @@ class gridncSileSiesta(SileCDFSiesta):
         self._crt_dim(self, 'n3', grid.shape[2])
 
         if nspin is None:
-            v = self._crt_var(self, 'gridfunc', 'f4', ('n3', 'n2', 'n1'))
+            v = self._crt_var(self, 'gridfunc', grid.dtype, ('n3', 'n2', 'n1'))
         else:
-            v = self._crt_var(self, 'gridfunc', 'f4', ('spin', 'n3', 'n2', 'n1'))
+            v = self._crt_var(self, 'gridfunc', grid.dtype, ('spin', 'n3', 'n2', 'n1'))
         v.info = 'Grid function'
 
         if nspin is None:
