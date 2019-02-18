@@ -390,8 +390,8 @@ class TestSparseCSR(object):
 
     def test_eliminate_zeros_tolerance_ndim(self, setup):
         s = SparseCSR((3, 3, 3))
-        s[1, [1, 2, 3]] = 0.1
-        s[1, [1, 2, 3], 1] = 0.05
+        s[1, [0, 1, 2]] = 0.1
+        s[1, [0, 1, 2], 1] = 0.05
         assert s.nnz == 3
         s.eliminate_zeros()
         assert s.nnz == 3

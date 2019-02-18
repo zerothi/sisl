@@ -741,12 +741,11 @@ class SparseCSR(object):
         #    raise ValueError("Retrieving/Setting elements in a sparse matrix"
         #                     " must only be performed at one row-element at a time.\n"
         #                     "However, multiple columns at a time are allowed.")
-
         # Ensure flattened array...
         j = asarrayi(j).ravel()
         if len(j) == 0:
             return arrayi([])
-        if np.any(j < 0) or np.any(j > self.shape[1]):
+        if np_any(j < 0) or np_any(j >= self.shape[1]):
             raise IndexError('column index is out-of-bounds')
 
         # fast reference
