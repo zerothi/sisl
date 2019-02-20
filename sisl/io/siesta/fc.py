@@ -41,8 +41,9 @@ class fcSileSiesta(SileSiesta):
 
         Returns
         -------
-        forces : numpy.ndarray with 5 dimensions containing all the forces. The 2nd dimensions contains
-                 contains the directions, and 3rd dimensions contains -/+ displacements.
+        numpy.ndarray : (displacement, d[xyz], [-+], atoms, xyz)
+             force constant matrix times the displacement, see `read_force_constant` for details regarding
+             data layout.
         """
         if displacement is None:
             line = self.readline().split()
@@ -70,8 +71,9 @@ class fcSileSiesta(SileSiesta):
 
         Returns
         -------
-        force constants : numpy.ndarray with 5 dimensions containing all the forces. The 2nd dimensions contains
-                 contains the directions, and 3rd dimensions contains -/+ displacements.
+        numpy.ndarray : (displacement, d[xyz], [-+], atoms, xyz)
+             force constant matrix containing all forces. The 2nd dimension contains
+             contains the directions, 3rd dimension contains -/+ displacements.
         """
         # Force constants matrix
         line = self.readline().split()
