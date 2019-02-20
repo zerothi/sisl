@@ -195,7 +195,7 @@ class TestObject(object):
             sile(f, mode='w').write_geometry(G)
 
     @pytest.mark.parametrize("sile", _my_intersect(['read_geometry'], ['write_geometry']))
-    def test_read_write_geom(self, sisl_tmp, sisl_system, sile):
+    def test_read_write_geometry(self, sisl_tmp, sisl_system, sile):
         G = sisl_system.g.rotatec(-30)
         G.set_nsc([1, 1, 1])
         f = sisl_tmp('test_read_write_geom.win', _dir)

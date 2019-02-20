@@ -383,12 +383,6 @@ class BaseSile(object):
                 # Call write
                 func(kwargs[key], **kwargs)
 
-    def write_geom(self, *args, **kwargs):
-        """ Deprecated function which is superseeded by `write_geometry` """
-        if getattr(self, 'write_geometry'):
-            return self.write_geometry(*args, **kwargs)
-        raise ValueError('write_geom is deprecated, please use write_geometry')
-
     def _setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization
 

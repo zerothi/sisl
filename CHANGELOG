@@ -1,6 +1,8 @@
 0.9.6
 =====
 
+- Finally removed deprecated write_geom from the API
+
 - Enabled calculation of <S^2> for spin-polarized calculations, this
 	may be used for calculating spin-contaminations, for instance.
 
