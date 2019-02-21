@@ -549,13 +549,13 @@ class Geometry(SuperCellChild):
 
         This iterator is the same as:
 
-        >>> for ia in range(len(self)): # doctest: +SKIP
-        ...    <do something> # doctest: +SKIP
+        >>> for ia in range(len(self)):
+        ...    <do something>
 
         or equivalently
 
-        >>> for ia in self: # doctest: +SKIP
-        ...    <do something> # doctest: +SKIP
+        >>> for ia in self:
+        ...    <do something>
 
         See Also
         --------
@@ -570,10 +570,10 @@ class Geometry(SuperCellChild):
     def iter_species(self, atom=None):
         """ Iterator over all atoms (or a subset) and species as a tuple in this geometry
 
-        >>> for ia, a, idx_specie in self.iter_species(): # doctest: +SKIP
-        ...     isinstance(ia, int) == True # doctest: +SKIP
-        ...     isinstance(a, Atom) == True # doctest: +SKIP
-        ...     isinstance(idx_specie, int) == True # doctest: +SKIP
+        >>> for ia, a, idx_specie in self.iter_species():
+        ...     isinstance(ia, int) == True
+        ...     isinstance(a, Atom) == True
+        ...     isinstance(idx_specie, int) == True
 
         with ``ia`` being the atomic index, ``a`` the `Atom` object, ``idx_specie``
         is the index of the specie
@@ -599,7 +599,7 @@ class Geometry(SuperCellChild):
         """
         Returns an iterator over all atoms and their associated orbitals
 
-        >>> for ia, io in self.iter_orbitals(): # doctest: +SKIP
+        >>> for ia, io in self.iter_orbitals():
 
         with ``ia`` being the atomic index, ``io`` the associated orbital index on atom ``ia``.
         Note that ``io`` will start from ``0``.
@@ -868,9 +868,9 @@ class Geometry(SuperCellChild):
 
         I.e. the loop would look like this:
 
-        >>> for ias, idxs in self.iter_block(): # doctest: +SKIP
-        ...    for ia in ias: # doctest: +SKIP
-        ...        idx_a = self.close(ia, R = R, idx = idxs) # doctest: +SKIP
+        >>> for ias, idxs in self.iter_block():
+        ...    for ia in ias:
+        ...        idx_a = self.close(ia, R = R, idx = idxs)
 
         This iterator is intended for systems with more than 1000 atoms.
 
@@ -1196,11 +1196,11 @@ class Geometry(SuperCellChild):
         The expansion of the atoms are basically performed using this
         algorithm:
 
-        >>> ja = 0 # doctest: +SKIP
-        >>> for ia in range(self.na): # doctest: +SKIP
-        ...     for id,r in args: # doctest: +SKIP
-        ...        for i in range(r): # doctest: +SKIP
-        ...           ja = ia + cell[id,:] * i # doctest: +SKIP
+        >>> ja = 0
+        >>> for ia in range(self.na):
+        ...     for id,r in args:
+        ...        for i in range(r):
+        ...           ja = ia + cell[id,:] * i
 
         This method allows to utilise Bloch's theorem when creating
         Hamiltonian parameter sets for TBtrans.
@@ -1629,9 +1629,9 @@ class Geometry(SuperCellChild):
 
         The basic algorithm is this:
 
-        >>> oxa = other.xyz + self.cell[axis,:][None,:] # doctest: +SKIP
-        >>> self.xyz = np.append(self.xyz,oxa) # doctest: +SKIP
-        >>> self.cell[axis,:] += other.cell[axis,:] # doctest: +SKIP
+        >>> oxa = other.xyz + self.cell[axis,:][None,:]
+        >>> self.xyz = np.append(self.xyz,oxa)
+        >>> self.cell[axis,:] += other.cell[axis,:]
 
         NOTE: The cell appended is only in the axis that
         is appended, which means that the other cell directions
@@ -1687,9 +1687,9 @@ class Geometry(SuperCellChild):
 
         The basic algorithm is this:
 
-        >>> oxa = other.xyz # doctest: +SKIP
-        >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:]) # doctest: +SKIP
-        >>> self.cell[axis,:] += other.cell[axis,:] # doctest: +SKIP
+        >>> oxa = other.xyz
+        >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:])
+        >>> self.cell[axis,:] += other.cell[axis,:]
 
         NOTE: The cell prepended is only in the axis that
         is prependend, which means that the other cell directions
@@ -1805,10 +1805,10 @@ class Geometry(SuperCellChild):
         Examples
         --------
 
-        >>> A + B == A.add(B) # doctest: +SKIP
-        >>> A + (B, 1) == A.append(B, 1) # doctest: +SKIP
-        >>> A + (B, 2) == A.append(B, 2) # doctest: +SKIP
-        >>> (A, 1) + B == A.prepend(B, 1) # doctest: +SKIP
+        >>> A + B == A.add(B)
+        >>> A + (B, 1) == A.append(B, 1)
+        >>> A + (B, 2) == A.append(B, 2)
+        >>> (A, 1) + B == A.append(B, 1)
 
         See Also
         --------
@@ -1835,10 +1835,10 @@ class Geometry(SuperCellChild):
         Examples
         --------
 
-        >>> A + B == A.add(B) # doctest: +SKIP
-        >>> A + (B, 1) == A.append(B, 1) # doctest: +SKIP
-        >>> A + (B, 2) == A.append(B, 2) # doctest: +SKIP
-        >>> (A, 1) + B == A.prepend(B, 1) # doctest: +SKIP
+        >>> A + B == A.add(B)
+        >>> A + (B, 1) == A.append(B, 1)
+        >>> A + (B, 2) == A.append(B, 2)
+        >>> (A, 1) + B == A.append(B, 1)
 
         See Also
         --------
@@ -2041,7 +2041,7 @@ class Geometry(SuperCellChild):
         If R is a tuple/list/array it will return the indices:
         in the ranges:
 
-        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] ) # doctest: +SKIP
+        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
         Parameters
         ----------
@@ -2203,7 +2203,7 @@ class Geometry(SuperCellChild):
         If `R` is a tuple/list/array it will return the indices:
         in the ranges:
 
-        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] ) # doctest: +SKIP
+        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
         Parameters
         ----------
@@ -2383,7 +2383,7 @@ class Geometry(SuperCellChild):
         If `R` is a tuple/list/array it will return the indices:
         in the ranges:
 
-        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] ) # doctest: +SKIP
+        >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
         Parameters
         ----------
@@ -2635,11 +2635,11 @@ class Geometry(SuperCellChild):
             If `R` is an array it will return the indices:
             in the ranges:
 
-            >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] ) # doctest: +SKIP
+            >>> ( x <= R[0] , R[0] < x <= R[1], R[1] < x <= R[2] )
 
             If a single float it will return:
 
-            >>> x <= R # doctest: +SKIP
+            >>> x <= R
 
         idx : array_like, optional
             List of indices for atoms that are to be considered

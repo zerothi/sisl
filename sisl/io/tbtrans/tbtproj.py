@@ -249,11 +249,11 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
         Examples
         --------
-        >>> ACOOP = tbt.orbital_ACOOP('Left.C60.HOMO', -1.0) # COOP @ E = -1 eV from ``Left.C60.HOMO`` spectral function # doctest: +SKIP
-        >>> ACOOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
-        >>> ACOOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
-        >>> D = ACOOP.diagonal().sum() # doctest: +SKIP
-        >>> ADBCOOP = ACOOP / D # doctest: +SKIP
+        >>> ACOOP = tbt.orbital_ACOOP('Left.C60.HOMO', -1.0) # COOP @ E = -1 eV from ``Left.C60.HOMO`` spectral function
+        >>> ACOOP[10, 11] # COOP value between the 11th and 12th orbital
+        >>> ACOOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)]
+        >>> D = ACOOP.diagonal().sum()
+        >>> ADBCOOP = ACOOP / D
 
         See Also
         --------

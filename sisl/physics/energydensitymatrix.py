@@ -12,8 +12,8 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
 
     Assigning or changing elements is as easy as with standard `numpy` assignments:
 
-    >>> EDM = EnergyDensityMatrix(...) # doctest: +SKIP
-    >>> EDM.E[1,2] = 0.1 # doctest: +SKIP
+    >>> EDM = EnergyDensityMatrix(...)
+    >>> EDM.E[1,2] = 0.1
 
     which assigns 0.1 as the density element between orbital 2 and 3.
     (remember that Python is 0-based elements).

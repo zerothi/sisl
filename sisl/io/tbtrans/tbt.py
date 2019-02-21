@@ -1213,8 +1213,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
-        >>> Jij[10, 11] # orbital current from the 11th to the 12th orbital # doctest: +SKIP
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Jij[10, 11] # orbital current from the 11th to the 12th orbital
 
         See Also
         --------
@@ -1275,9 +1275,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
-        >>> Jab = tbt.bond_current_from_orbital(Jij) # doctest: +SKIP
-        >>> Jab[2,3] # bond current between atom 3 and 4 # doctest: +SKIP
+        >>> Jij = tbt.orbital_current(0, -1.0) # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Jab = tbt.bond_current_from_orbital(Jij)
+        >>> Jab[2,3] # bond current between atom 3 and 4
 
         See Also
         --------
@@ -1335,10 +1335,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.0, only='+') # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
-        >>> Jab1 = tbt.bond_current_from_orbital(Jij) # doctest: +SKIP
-        >>> Jab2 = tbt.bond_current(0, -1.0) # doctest: +SKIP
-        >>> Jab1 == Jab2 # doctest: +SKIP
+        >>> Jij = tbt.orbital_current(0, -1.0, only='+') # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Jab1 = tbt.bond_current_from_orbital(Jij)
+        >>> Jab2 = tbt.bond_current(0, -1.0)
+        >>> Jab1 == Jab2
         True
 
         See Also
@@ -1389,8 +1389,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.03) # orbital current @ E = -1 eV originating from electrode ``0`` # doctest: +SKIP
-        >>> Ja = tbt.atom_current_from_orbital(Jij) # doctest: +SKIP
+        >>> Jij = tbt.orbital_current(0, -1.03) # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Ja = tbt.atom_current_from_orbital(Jij)
         """
         # Create the bond-currents with all summations
         Jab = self.bond_current_from_orbital(Jij, only='all')
@@ -1696,11 +1696,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> COOP = tbt.orbital_COOP(-1.0) # COOP @ E = -1 eV  # doctest: +SKIP
-        >>> COOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
-        >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.DOS(sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
-        >>> D = COOP.diagonal().sum() # doctest: +SKIP
-        >>> DBCOOP = COOP / D # doctest: +SKIP
+        >>> COOP = tbt.orbital_COOP(-1.0) # COOP @ E = -1 eV 
+        >>> COOP[10, 11] # COOP value between the 11th and 12th orbital
+        >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.DOS(sum=False)[tbt.Eindex(-1.0)]
+        >>> D = COOP.diagonal().sum()
+        >>> DBCOOP = COOP / D
 
         See Also
         --------
@@ -1761,11 +1761,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> ACOOP = tbt.orbital_ACOOP(0, -1.0) # COOP @ E = -1 eV from ``0`` spectral function # doctest: +SKIP
-        >>> ACOOP[10, 11] # COOP value between the 11th and 12th orbital # doctest: +SKIP
-        >>> ACOOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)] # doctest: +SKIP
-        >>> D = ACOOP.diagonal().sum() # doctest: +SKIP
-        >>> ADBCOOP = ACOOP / D # doctest: +SKIP
+        >>> ACOOP = tbt.orbital_ACOOP(0, -1.0) # COOP @ E = -1 eV from ``0`` spectral function
+        >>> ACOOP[10, 11] # COOP value between the 11th and 12th orbital
+        >>> ACOOP.sum(1).A[tbt.o_dev, 0] == tbt.ADOS(0, sum=False)[tbt.Eindex(-1.0)]
+        >>> D = ACOOP.diagonal().sum()
+        >>> ADBCOOP = ACOOP / D
 
         See Also
         --------
@@ -1908,8 +1908,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> COHP = tbt.orbital_COHP(-1.0) # COHP @ E = -1 eV  # doctest: +SKIP
-        >>> COHP[10, 11] # COHP value between the 11th and 12th orbital # doctest: +SKIP
+        >>> COHP = tbt.orbital_COHP(-1.0) # COHP @ E = -1 eV 
+        >>> COHP[10, 11] # COHP value between the 11th and 12th orbital
 
         See Also
         --------

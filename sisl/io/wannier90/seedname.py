@@ -44,10 +44,10 @@ class winSileWannier90(SileWannier90):
 
     Examples
     --------
-    >>> wan90 = get_sile('seedname.win') # doctest: +SKIP
-    >>> H = wan90.read_hamiltonian() # doctest: +SKIP
-    >>> H = wan90.read_hamiltonian(dtype=numpy.float64) # doctest: +SKIP
-    >>> H = wan90.read_hamiltonian(cutoff=0.00001) # doctest: +SKIP
+    >>> wan90 = get_sile('seedname.win')
+    >>> H = wan90.read_hamiltonian()
+    >>> H = wan90.read_hamiltonian(dtype=numpy.float64)
+    >>> H = wan90.read_hamiltonian(cutoff=0.00001)
     """
 
     def _setup(self, *args, **kwargs):

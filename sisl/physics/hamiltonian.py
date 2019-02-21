@@ -17,8 +17,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     Assigning or changing Hamiltonian elements is as easy as with standard `numpy` assignments:
 
-    >>> ham = Hamiltonian(...) # doctest: +SKIP
-    >>> ham.H[1,2] = 0.1 # doctest: +SKIP
+    >>> ham = Hamiltonian(...)
+    >>> ham.H[1,2] = 0.1
 
     which assigns 0.1 as the coupling constant between orbital 2 and 3.
     (remember that Python is 0-based elements).

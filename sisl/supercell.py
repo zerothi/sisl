@@ -317,7 +317,7 @@ class SuperCell(object):
         The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
         corresponding to the current supercell vectors.
 
-        >>> numpy.linalg.solve(self.cell.T, xyz.T) # doctest: +SKIP
+        >>> numpy.linalg.solve(self.cell.T, xyz.T)
 
         It is important to know that this routine will *only* work if at least some of the atoms are
         integer offsets of the lattice vectors. I.e. the resulting fit will depend on the translation

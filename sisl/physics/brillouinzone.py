@@ -446,8 +446,8 @@ class BrillouinZone(object):
 
         Examples
         --------
-        >>> obj = BrillouinZone(...) # doctest: +SKIP
-        >>> obj.asarray().eigh(eta=True) # doctest: +SKIP
+        >>> obj = BrillouinZone(...)
+        >>> obj.asarray().eigh(eta=True)
 
         To compute multiple things in one go one should use wrappers to contain
         the calculation
@@ -524,8 +524,8 @@ class BrillouinZone(object):
 
         Examples
         --------
-        >>> obj = BrillouinZone(...) # doctest: +SKIP
-        >>> obj.asnone().eigh(eta=True) # doctest: +SKIP
+        >>> obj = BrillouinZone(...)
+        >>> obj.asnone().eigh(eta=True)
 
         See Also
         --------
@@ -568,10 +568,10 @@ class BrillouinZone(object):
 
         Examples
         --------
-        >>> obj = BrillouinZone(...) # doctest: +SKIP
+        >>> obj = BrillouinZone(...)
         >>> def first_ten(es):
         ...    return es.sub(range(10))
-        >>> obj.aslist().eigenstate(eta=True, wrap=first_ten) # doctest: +SKIP
+        >>> obj.aslist().eigenstate(eta=True, wrap=first_ten)
 
         See Also
         --------
@@ -624,8 +624,8 @@ class BrillouinZone(object):
 
         Examples
         --------
-        >>> obj = BrillouinZone(Hamiltonian) # doctest: +SKIP
-        >>> obj.asyield().eigh(eta=True) # doctest: +SKIP
+        >>> obj = BrillouinZone(Hamiltonian)
+        >>> obj.asyield().eigh(eta=True)
 
         See Also
         --------

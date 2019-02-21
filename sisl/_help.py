@@ -108,7 +108,7 @@ def get_dtype(var, int=None, other=None):
     other : numpy.dtype
        If supplied the returned value will be extracted from:
 
-       >>> np.result_type(dtype(var)(1), other(1)) # doctest: +SKIP
+       >>> np.result_type(dtype(var)(1), other(1))
 
        such that one can select the highest among `var` and
        the input `other`.

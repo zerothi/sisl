@@ -702,7 +702,7 @@ class SileCDF(BaseSile):
     def _cmp_args(self):
         """ Returns the compression arguments for the NetCDF file
 
-        >>> nc.createVariable(..., **self._cmp_args) # doctest: +SKIP
+        >>> nc.createVariable(..., **self._cmp_args)
         """
         return {'zlib': self._lvl > 0, 'complevel': self._lvl}
 
@@ -873,13 +873,13 @@ class SileCDF(BaseSile):
 
         Script for looping and checking each instance.
 
-        >>> for gv in self.iter(): # doctest: +SKIP
-        ...     if self.isGroup(gv): # doctest: +SKIP
-        ...         # is group # doctest: +SKIP
-        ...     elif self.isDimension(gv): # doctest: +SKIP
-        ...         # is dimension # doctest: +SKIP
-        ...     elif self.isVariable(gv): # doctest: +SKIP
-        ...         # is variable # doctest: +SKIP
+        >>> for gv in self.iter():
+        ...     if self.isGroup(gv):
+        ...         # is group
+        ...     elif self.isDimension(gv):
+        ...         # is dimension
+        ...     elif self.isVariable(gv):
+        ...         # is variable
 
         """
         if root is None:

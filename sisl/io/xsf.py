@@ -193,9 +193,9 @@ class xsfSile(Sile):
 
         Examples
         --------
-        >>> g1 = Grid(0.1, sc=2.) # doctest: +SKIP
-        >>> g2 = Grid(0.1, sc=2.) # doctest: +SKIP
-        >>> get_sile('output.xsf', 'w').write_grid(g1, g2) # doctest: +SKIP
+        >>> g1 = Grid(0.1, sc=2.)
+        >>> g2 = Grid(0.1, sc=2.)
+        >>> get_sile('output.xsf', 'w').write_grid(g1, g2)
 
         Parameters
         ----------

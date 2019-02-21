@@ -340,7 +340,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
         This is equivalent to:
 
-        >>> p = self.o2p(self.geom.a2o(atom, True)) # doctest: +SKIP
+        >>> p = self.o2p(self.geom.a2o(atom, True))
 
         Will warn if an atom requested is not in the device list of atoms.
 

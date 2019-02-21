@@ -673,11 +673,11 @@ class SparseCSR(object):
 
         An iterator returning the current row index and the corresponding column index.
 
-        >>> for r, c in self: # doctest: +SKIP
+        >>> for r, c in self:
 
         In the above case ``r`` and ``c`` are rows and columns such that
 
-        >>> self[r, c] # doctest: +SKIP
+        >>> self[r, c]
 
         returns the non-zero element of the sparse matrix.
 

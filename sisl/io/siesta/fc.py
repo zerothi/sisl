@@ -25,7 +25,7 @@ class fcSileSiesta(SileSiesta):
         the displacements in reverse order (-x/+x vs. +x/-x). In this case one should reorder
         the elements like this:
 
-        >>> fc = np.roll(fc, 1, axis=2) # doctest: +SKIP
+        >>> fc = np.roll(fc, 1, axis=2)
 
         Parameters
         ----------

@@ -33,25 +33,25 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
     Examples
     --------
-    >>> H = Hamiltonian(device) # doctest: +SKIP
-    >>> se = tbtsencSileTBtrans(...) # doctest: +SKIP
+    >>> H = Hamiltonian(device)
+    >>> se = tbtsencSileTBtrans(...)
     >>> # Return the self-energy for the left electrode (unsorted)
-    >>> se_unsorted = se.self_energy('Left', 0.1, [0, 0, 0]) # doctest: +SKIP
+    >>> se_unsorted = se.self_energy('Left', 0.1, [0, 0, 0])
     >>> # Return the self-energy for the left electrode (sorted)
-    >>> se_sorted = se.self_energy('Left', 0.1, [0, 0, 0], sort=True) # doctest: +SKIP
+    >>> se_sorted = se.self_energy('Left', 0.1, [0, 0, 0], sort=True)
     >>> #
     >>> # Query the indices in the full Hamiltonian
-    >>> pvt_unsorted = se.pivot('Left').reshape(-1, 1) # doctest: +SKIP
-    >>> pvt_sorted = se.pivot('Left', sort=True).reshape(-1, 1) # doctest: +SKIP
+    >>> pvt_unsorted = se.pivot('Left').reshape(-1, 1)
+    >>> pvt_sorted = se.pivot('Left', sort=True).reshape(-1, 1)
     >>> # The following two lines are equivalent
-    >>> Hfull[pvt_unsorted, pvt_unsorted.T] -= se_unsorted[:, :] # doctest: +SKIP
-    >>> Hfull[pvt_sorted, pvt_sorted.T] -= se_sorted[:, :] # doctest: +SKIP
+    >>> Hfull[pvt_unsorted, pvt_unsorted.T] -= se_unsorted[:, :]
+    >>> Hfull[pvt_sorted, pvt_sorted.T] -= se_sorted[:, :]
     >>> # Query the indices in the device Hamiltonian
-    >>> dpvt_unsorted = se.pivot('Left', in_device=True).reshape(-1, 1) # doctest: +SKIP
-    >>> dpvt_sorted = se.pivot('Left', in_device=True, sort=True).reshape(-1, 1) # doctest: +SKIP
+    >>> dpvt_unsorted = se.pivot('Left', in_device=True).reshape(-1, 1)
+    >>> dpvt_sorted = se.pivot('Left', in_device=True, sort=True).reshape(-1, 1)
     >>> # Following inserts are equivalent
-    >>> Hdev[dpvt_unsorted, dpvt_unsorted.T] -= se_unsorted[:, :] # doctest: +SKIP
-    >>> Hdev[dpvt_sorted, dpvt_sorted.T] -= se_sorted[:, :] # doctest: +SKIP
+    >>> Hdev[dpvt_unsorted, dpvt_unsorted.T] -= se_unsorted[:, :]
+    >>> Hdev[dpvt_sorted, dpvt_sorted.T] -= se_sorted[:, :]
     """
     _SE2eV = Ry2eV
 
@@ -106,18 +106,18 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> se = tbtsencSileTBtrans(...) # doctest: +SKIP
-        >>> se.pivot() # doctest: +SKIP
+        >>> se = tbtsencSileTBtrans(...)
+        >>> se.pivot()
         [3, 4, 6, 5, 2]
-        >>> se.pivot(sort=True) # doctest: +SKIP
+        >>> se.pivot(sort=True)
         [2, 3, 4, 5, 6]
-        >>> se.pivot(0) # doctest: +SKIP
+        >>> se.pivot(0)
         [2, 3]
-        >>> se.pivot(0, in_device=True) # doctest: +SKIP
+        >>> se.pivot(0, in_device=True)
         [4, 0]
-        >>> se.pivot(0, in_device=True, sort=True) # doctest: +SKIP
+        >>> se.pivot(0, in_device=True, sort=True)
         [0, 1]
-        >>> se.pivot(0, sort=True) # doctest: +SKIP
+        >>> se.pivot(0, sort=True)
         [2, 3]
         """
         if elec is None:
@@ -157,7 +157,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         This is equivalent to:
 
-        >>> p = self.o2p(self.geom.a2o(atom, True)) # doctest: +SKIP
+        >>> p = self.o2p(self.geom.a2o(atom, True))
 
         Parameters
         ----------

@@ -448,8 +448,8 @@ class _SparseGeometry(object):
 
         Examples
         --------
-        >>> for i, j in self.iter_nnz(): # doctest: +SKIP
-        ...    self[i, j] # is then the non-zero value # doctest: +SKIP
+        >>> for i, j in self.iter_nnz():
+        ...    self[i, j] # is then the non-zero value
         """
         for i, j in self._csr:
             yield i, j
@@ -464,10 +464,10 @@ class _SparseGeometry(object):
 
         Basically this returns a function:
 
-        >>> def func(self, ia, idxs, idxs_xyz=None): # doctest: +SKIP
-        ...     idx = self.geometry.close(ia, R=R, idx=idxs) # doctest: +SKIP
-        ...     for ix, p in zip(idx, param): # doctest: +SKIP
-        ...         self[ia, ix] = p # doctest: +SKIP
+        >>> def func(self, ia, idxs, idxs_xyz=None):
+        ...     idx = self.geometry.close(ia, R=R, idx=idxs)
+        ...     for ix, p in zip(idx, param):
+        ...         self[ia, ix] = p
 
         Notes
         -----
@@ -523,10 +523,10 @@ class _SparseGeometry(object):
            4. Is the currently bounded indices atomic coordinates (``idxs_xyz``)
            An example `func` could be:
 
-           >>> def func(self, ia, idxs, idxs_xyz=None): # doctest: +SKIP
-           ...     idx = self.geometry.close(ia, R=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz) # doctest: +SKIP
-           ...     self[ia, idx[0]] = 0 # doctest: +SKIP
-           ...     self[ia, idx[1]] = -2.7 # doctest: +SKIP
+           >>> def func(self, ia, idxs, idxs_xyz=None):
+           ...     idx = self.geometry.close(ia, R=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz)
+           ...     self[ia, idx[0]] = 0
+           ...     self[ia, idx[1]] = -2.7
 
         na_iR : int, optional
            number of atoms within the sphere for speeding
@@ -911,8 +911,8 @@ class SparseAtom(_SparseGeometry):
 
         Examples
         --------
-        >>> for i, j in self.iter_nnz(): # doctest: +SKIP
-        ...    self[i, j] # is then the non-zero value # doctest: +SKIP
+        >>> for i, j in self.iter_nnz():
+        ...    self[i, j] # is then the non-zero value
 
         Parameters
         ----------
@@ -1418,8 +1418,8 @@ class SparseOrbital(_SparseGeometry):
 
         Examples
         --------
-        >>> for i, j in self.iter_nnz(): # doctest: +SKIP
-        ...    self[i, j] # is then the non-zero value # doctest: +SKIP
+        >>> for i, j in self.iter_nnz():
+        ...    self[i, j] # is then the non-zero value
 
         Parameters
         ----------
@@ -1601,7 +1601,7 @@ class SparseOrbital(_SparseGeometry):
         Examples
         --------
 
-        >>> obj = SparseOrbital(...) # doctest: +SKIP
+        >>> obj = SparseOrbital(...)
         >>> # remove the second orbital on the 2nd atom
         >>> # all other orbitals are retained
         >>> obj.remove_orbital(1, 1)
@@ -1649,7 +1649,7 @@ class SparseOrbital(_SparseGeometry):
         Examples
         --------
 
-        >>> obj = SparseOrbital(...) # doctest: +SKIP
+        >>> obj = SparseOrbital(...)
         >>> obj.sub(1) # only retain the second atom in the SparseGeometry
         >>> obj.sub(obj.atoms.atom[0]) # retain all atoms which is equivalent to
         >>>                            # the first atomic specie
@@ -1700,7 +1700,7 @@ class SparseOrbital(_SparseGeometry):
         Examples
         --------
 
-        >>> obj = SparseOrbital(...) # doctest: +SKIP
+        >>> obj = SparseOrbital(...)
         >>> # only retain the second orbital on the 2nd atom
         >>> # all other orbitals are retained
         >>> obj.sub_orbital(1, 1)

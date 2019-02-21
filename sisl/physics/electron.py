@@ -966,9 +966,9 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     It may be instructive to check that an eigenstate is normalized:
 
-    >>> grid = Grid(...) # doctest: +SKIP
-    >>> psi(state, grid) # doctest: +SKIP
-    >>> (np.abs(grid.grid) ** 2).sum() * grid.dvolume == 1. # doctest: +SKIP
+    >>> grid = Grid(...)
+    >>> psi(state, grid)
+    >>> (np.abs(grid.grid) ** 2).sum() * grid.dvolume == 1.
 
     Note: To calculate :math:`\psi(\mathbf r)` in a unit-cell different from the
     originating geometry, simply pass a grid with a unit-cell smaller than the originating
