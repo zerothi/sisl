@@ -336,7 +336,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        sile : `Sile`, str
+        sile : Sile, str or pathlib.Path
             a `Sile` object which will be used to read the Hamiltonian
             and the overlap matrix (if any)
             if it is a string it will create a new sile using `get_sile`.

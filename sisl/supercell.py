@@ -888,7 +888,7 @@ class SuperCell(object):
 
         Parameters
         ----------
-        sile : `Sile` or str
+        sile : Sile, str or pathlib.Path
             a `Sile` object which will be used to read the supercell
             if it is a string it will create a new sile using `sisl.io.get_sile`.
         """
