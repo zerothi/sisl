@@ -707,7 +707,7 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        sile : Sile, str
+        sile : Sile, str or pathlib.Path
             a `Sile` object which will be used to read the grid
             if it is a string it will create a new sile using `get_sile`.
         * : args passed directly to ``read_grid(,**)``
@@ -718,6 +718,7 @@ class Grid(SuperCellChild):
         if isinstance(sile, BaseSile):
             return sile.read_grid(*args, **kwargs)
         else:
+            sile = str(sile)
             sile, spec = str_spec(sile)
             if spec is not None:
                 if ',' in spec:
@@ -732,7 +733,7 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        sile : Sile, str
+        sile : Sile, str or pathlib.Path
             a `Sile` object which will be used to write the grid
             if it is a string it will create a new sile using `get_sile`
         """

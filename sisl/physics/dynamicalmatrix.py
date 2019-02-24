@@ -318,7 +318,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         Parameters
         ----------
-        sile : `Sile`, str
+        sile : Sile, str or pathlib.Path
             a `Sile` object which will be used to read the dynamical matrix.
             If it is a string it will create a new sile using `get_sile`.
         * : args passed directly to ``read_dynamical_matrix(,**)``

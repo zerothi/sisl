@@ -278,7 +278,7 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
 
         Parameters
         ----------
-        sile : `Sile`, str
+        sile : Sile, str or pathlib.Path
             a `Sile` object which will be used to read the density matrix
             and the overlap matrix (if any)
             if it is a string it will create a new sile using `get_sile`.
