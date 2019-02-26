@@ -53,6 +53,8 @@ class NamedIndex(object):
         if name in self._name:
             raise SislError(self.__class__.__name__ + '.add_name already contains name {}, please delete group name before adding.'.format(name))
         self._name.append(name)
+        if isinstance(index, np.ndarray) and index.dtype is np.dtype('bool'):
+            index = np.flatnonzero(index)
         self._index.append(arrayi(index).ravel())
 
     def delete_name(self, name):

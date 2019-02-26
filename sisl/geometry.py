@@ -1029,7 +1029,8 @@ class Geometry(SuperCellChild):
         Parameters
         ----------
         atom : array_like
-            indices of all atoms to be removed.
+            indices of all atoms to be removed. Can also be an array of
+            booleans, or in the case of a string, a named region.
         cell   : array_like or SuperCell, optional
             the new associated cell of the geometry (defaults to the same cell)
 
@@ -1038,6 +1039,10 @@ class Geometry(SuperCellChild):
         SuperCell.fit : update the supercell according to a reference supercell
         remove : the negative of this routine, i.e. remove a subset of atoms
         """
+        if isinstance(atom, np.ndarray) and atom.dtype is np.dtype('bool'):
+            atom = np.flatnonzero(atom)
+        elif isinstance(atom, str):
+            atom = self.names[atom]
         atms = self.sc2uc(atom)
         if cell is None:
             return self.__class__(self.xyz[atms, :],
@@ -1114,12 +1119,17 @@ class Geometry(SuperCellChild):
         Parameters
         ----------
         atom : array_like
-            indices of all atoms to be removed.
+            indices of all atoms to be removed. Can also be an array of
+            booleans, or in the case of a string, a named region.
 
         See Also
         --------
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
+        if isinstance(atom, np.ndarray) and atom.dtype is np.dtype('bool'):
+            atom = np.flatnonzero(atom)
+        elif isinstance(atom, str):
+            atom = self.names[atom]
         atom = self.sc2uc(atom)
         atom = np.delete(_a.arangei(self.na), atom)
         return self.sub(atom)
