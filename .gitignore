@@ -1,5 +1,11 @@
+__pycache__
+.eggs
+.pytest_cache
+dist
 build
 *.pyc
+*.so
+__config__.py
 index.rst
 docs/build
 docs/sisl
