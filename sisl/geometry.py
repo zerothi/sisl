@@ -111,7 +111,7 @@ class Geometry(SuperCellChild):
     Atom : contained atoms are each an object of this
     """
 
-    def __init__(self, xyz, atom=None, sc=None):
+    def __init__(self, xyz, atom=None, sc=None, names=None):
 
         # Create the geometry coordinate
         # We need flatten to ensure a copy
@@ -125,7 +125,14 @@ class Geometry(SuperCellChild):
         self._atoms = Atoms(atom, na=self.na)
 
         # Assign a group specifier
-        self._names = NamedIndex()
+        if names is None:
+            self._names = NamedIndex()
+        elif isinstance(names, dict):
+            nms = tuple(names.keys())
+            idx = tuple(names.values())
+            self._names = NamedIndex(name=nms, index=idx)
+        elif isinstance(names, NamedIndex):
+            self._names = names
 
         self.__init_sc(sc)
 
@@ -1760,11 +1767,13 @@ class Geometry(SuperCellChild):
             xyz = self.xyz.copy()
             sc = self.sc + other
             atom = self.atoms.copy()
+            names = self._names.copy()
         else:
             xyz = np.append(self.xyz, other.xyz, axis=0)
             sc = self.sc.copy()
             atom = self.atoms.add(other.atom)
-        return self.__class__(xyz, atom=atom, sc=sc)
+            names = self._names.add(other._names, offset=len(self))
+        return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
     def insert(self, atom, geom):
         """ Inserts other atoms right before index

@@ -4,6 +4,7 @@ This module implements the base-class which allows named indices
 
 >>> nidx = NamedIndex('hello', [1, 2])
 """
+from collections import Counter
 import numpy as np
 
 from ._indices import indices_only
@@ -105,6 +106,25 @@ class NamedIndex(object):
     def __contains__(self, name):
         """ Check whether a name exists in this group a named group """
         return name in self._name
+
+    def add(self, other, offset=0):
+        new = self.copy()
+        # Add others' names and ensure uniqueness
+        new._name.extend(other._name)
+        names = new._name
+        total_cnt = Counter(names)
+        while any(v > 1 for v in total_cnt.values()):
+            names_cnt = Counter()
+            for i, n in enumerate(names):
+                if total_cnt[n] > 1:
+                    print(f"renaming {n}!")
+                    names[i] = n + ".{}".format(names_cnt[n] + 1)
+                    names_cnt.update([n])
+            total_cnt = Counter(names)
+
+        # Add others' indexes
+        new._index.extend(i.copy() + offset for i in other._index)
+        return new
 
     def remove(self, index):
         """ Remove indices from all named index groups
