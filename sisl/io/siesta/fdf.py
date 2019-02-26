@@ -64,8 +64,9 @@ class fdfSileSiesta(SileSiesta):
     >>> fdf = fdfSileSiesta('tmp/RUN.fdf', base='.') # reads output files in './' folder
     """
 
-    def __init__(self, filename, mode='r', base=None):
-        super(fdfSileSiesta, self).__init__(filename, mode=mode, comment=['#', '!', ';'], base=base)
+    def __init__(self, filename, mode='r', base=None, **kwargs):
+        super(fdfSileSiesta, self).__init__(
+            filename, mode=mode, comment=['#', '!', ';'], base=base, **kwargs)
 
     @property
     def file(self):

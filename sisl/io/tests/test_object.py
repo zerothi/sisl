@@ -3,6 +3,13 @@ from __future__ import print_function, division
 import pytest
 
 import numpy as np
+import sys
+import os
+try:
+    from pathlib import Path
+except ImportError:
+    pass
+import tempfile
 
 from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
@@ -24,7 +31,10 @@ def _my_intersect(a, b):
 
 
 def _fnames(base, variants):
-    return [base + '.' + v if len(v) > 0 else base for v in variants]
+    files = [base + '.' + v if len(v) > 0 else base for v in variants]
+    if files and sys.version_info >= (3, 5):
+        files.append(Path(files[0]))
+    return files
 
 
 def test_get_sile1():
@@ -37,7 +47,7 @@ def test_get_sile1():
     cls = gsc('test.fdf{xyz}')
     assert issubclass(cls, xyzSile)
 
-    cls = gsc('test.fdf{xyz}')
+    cls = gsc(Path('test.fdf{xyz}'))
     assert issubclass(cls, xyzSile)
 
     cls = gsc('test.xyz{fdf}')
@@ -55,6 +65,26 @@ class TestObject(object):
 
     def test_siesta_sources(self):
         pytest.importorskip("sisl.io.siesta._siesta")
+
+    def test_direct_path_instantiation(self):
+        if sys.version_info < (3, 5):
+            return
+        fp = Path("/tmp/shouldnotexist.1234567")
+        if fp.exists():
+            os.remove(str(fp))
+        for Sile in get_siles():
+            sile = Sile(fp, _open=False)
+            assert isinstance(sile, Sile)
+            assert not fp.exists()
+
+    def test_direct_string_instantiation(self):
+        fp = "/tmp/shouldnotexist.1234567"
+        if os.path.exists(fp):
+            os.remove(fp)
+        for Sile in get_siles():
+            sile = Sile(fp, _open=False)
+            assert isinstance(sile, Sile)
+            assert not os.path.exists(fp)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['cube', 'CUBE', 'cube.gz', 'CUBE.gz']))
     def test_cube(self, sile):
@@ -104,13 +134,15 @@ class TestObject(object):
         for obj in [BaseSile, Sile, SileSiesta, outSileSiesta]:
             assert isinstance(s, obj)
 
-    def test_siesta_nc(self):
-        s = gs('test.nc', _open=False)
+    @pytest.mark.parametrize("sile", _fnames('test', ['nc']))
+    def test_siesta_nc(self, sile):
+        s = gs(sile, _open=False)
         for obj in [BaseSile, SileCDF, SileCDFSiesta, ncSileSiesta]:
             assert isinstance(s, obj)
 
-    def test_siesta_grid_nc(self):
-        sile = gs('test.grid.nc', _open=False)
+    @pytest.mark.parametrize("sile", _fnames('test', ['grid.nc']))
+    def test_siesta_grid_nc(self, sile):
+        sile = gs(sile, _open=False)
         for obj in [BaseSile, SileCDF, SileCDFSiesta, gridncSileSiesta]:
             assert isinstance(sile, obj)
 
@@ -138,13 +170,15 @@ class TestObject(object):
         for obj in [BaseSile, Sile, hamiltonianSile]:
             assert isinstance(s, obj)
 
-    def test_tbtrans_nc(self):
-        s = gs('test.TBT.nc', _open=False)
+    @pytest.mark.parametrize("sile", _fnames('test', ['TBT.nc']))
+    def test_tbtrans_nc(self, sile):
+        s = gs(sile, _open=False)
         for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans]:
             assert isinstance(s, obj)
 
-    def test_phtrans_nc(self):
-        s = gs('test.PHT.nc', _open=False)
+    @pytest.mark.parametrize("sile", _fnames('test', ['PHT.nc']))
+    def test_phtrans_nc(self, sile):
+        s = gs(sile, _open=False)
         for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans, phtncSilePHtrans]:
             assert isinstance(s, obj)
 
@@ -178,8 +212,9 @@ class TestObject(object):
         for obj in [BaseSile, Sile, xsfSile]:
             assert isinstance(s, obj)
 
-    def test_wannier90_seed(self):
-        sile = gs('test.win', cls=SileWannier90)
+    @pytest.mark.parametrize("sile", _fnames('test', ['win']))
+    def test_wannier90_seed(self, sile):
+        sile = gs(sile, cls=SileWannier90)
         for obj in [BaseSile, Sile, SileWannier90, winSileWannier90]:
             assert isinstance(sile, obj)
 

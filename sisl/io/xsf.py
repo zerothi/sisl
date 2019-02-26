@@ -353,7 +353,7 @@ class xsfSile(Sile):
         p.add_argument('--vector', '-v', metavar=('DATA', '*ARGS, FILE'), nargs='+',
                        action=Vectors,
                        help='''Adds vector arrows for each atom, first argument is type (force, moment, ...).
-If the current input file contains the vectors no second argument is necessary, else 
+If the current input file contains the vectors no second argument is necessary, else
 the file containing the data is required as the last input.
 
 Any arguments inbetween are passed to the `read_data` function (in order).
@@ -378,10 +378,8 @@ class axsfSile(Sile):
     """
 
     def _setup(self, *args, **kwargs):
+        kwargs["_md_steps"] = kwargs.get("_md_steps", 1)
         super(axsfSile, self)._setup(*args, **kwargs)
-        # Correct number of steps
-        if self._md_steps is None:
-            self._md_steps = 1
 
     write_grid = None
 
