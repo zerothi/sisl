@@ -49,9 +49,6 @@ class omxSileOpenMX(SileOpenMX):
     which forces the use of the omx file.
     """
 
-    def __init__(self, filename, mode='r', base=None):
-        super().__init__(filename, mode=mode, base=base)
-
     @property
     def file(self):
         """ Return the current file name (without the directory prefix) """

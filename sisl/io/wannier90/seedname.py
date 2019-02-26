@@ -52,7 +52,7 @@ class winSileWannier90(SileWannier90):
     def _setup(self, *args, **kwargs):
         """ Setup `winSileWannier90` after initialization """
         self._comment = ['!', '#']
-        self._seed = self.file.replace('.win', '')
+        self._seed = str(self.file).replace('.win', '')
 
     def _set_file(self, suffix=None):
         """ Update readed file """

@@ -201,7 +201,7 @@ def get_sile_class(filename, *args, **kwargs):
 
     # Split filename into proper file name and
     # the Specification of the type
-    tmp_file, fcls = str_spec(filename)
+    tmp_file, fcls = str_spec(str(filename))
 
     if cls is None and not fcls is None:
         # cls has not been set, and fcls is found
@@ -288,10 +288,8 @@ def get_sile(file, *args, **kwargs):
        function returns a random one.
     """
     cls = kwargs.pop('cls', None)
-    if isinstance(file, Path):
-        file = str(file)
     sile = get_sile_class(file, *args, cls=cls, **kwargs)
-    return sile(str_spec(file)[0], *args, **kwargs)
+    return sile(Path(str_spec(str(file))[0]), *args, **kwargs)
 
 
 def get_siles(attrs=None):
@@ -511,10 +509,11 @@ class Sile(BaseSile):
         self._base_setup(*args, **kwargs)
 
     def _open(self):
-        if self.file.endswith('gz'):
-            self.fh = gzip.open(self.file)
+        file = str(self.file)
+        if file.endswith('gz'):
+            self.fh = gzip.open(file)
         else:
-            self.fh = open(self.file, self._mode)
+            self.fh = open(file, self._mode)
         self._line = 0
 
     def __enter__(self):
@@ -697,7 +696,7 @@ class SileCDF(BaseSile):
             # The CDF file can easily open the file
         if kwargs.pop('_open', True):
             _import_netCDF4()
-            self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
+            self.__dict__['fh'] = _netCDF4.Dataset(str(self.file), self._mode,
                                                    format='NETCDF4')
 
         # Must call setup-methods
@@ -716,7 +715,7 @@ class SileCDF(BaseSile):
         # We do the import here
         if 'fh' not in self.__dict__:
             _import_netCDF4()
-            self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode, format='NETCDF4')
+            self.__dict__['fh'] = _netCDF4.Dataset(str(self.file), self._mode, format='NETCDF4')
         return self
 
     def __exit__(self, type, value, traceback):
