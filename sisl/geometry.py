@@ -111,7 +111,7 @@ class Geometry(SuperCellChild):
     Atom : contained atoms are each an object of this
     """
 
-    def __init__(self, xyz, atom=None, sc=None):
+    def __init__(self, xyz, atom=None, sc=None, names=None):
 
         # Create the geometry coordinate
         # We need flatten to ensure a copy
@@ -125,7 +125,14 @@ class Geometry(SuperCellChild):
         self._atoms = Atoms(atom, na=self.na)
 
         # Assign a group specifier
-        self._names = NamedIndex()
+        if names is None:
+            self._names = NamedIndex()
+        elif isinstance(names, dict):
+            nms = tuple(names.keys())
+            idx = tuple(names.values())
+            self._names = NamedIndex(name=nms, index=idx)
+        elif isinstance(names, NamedIndex):
+            self._names = names
 
         self.__init_sc(sc)
 
@@ -1039,10 +1046,11 @@ class Geometry(SuperCellChild):
         remove : the negative of this routine, i.e. remove a subset of atoms
         """
         atms = self.sc2uc(atom)
+        names = self.names.sub(atms)
         if cell is None:
-            return self.__class__(self.xyz[atms, :],
-                                  atom=self.atoms.sub(atms), sc=self.sc.copy())
-        return self.__class__(self.xyz[atms, :],
+            cell = self.sc.copy()
+
+        return self.__class__(self.xyz[atms, :], names=names,
                               atom=self.atoms.sub(atms), sc=cell)
 
     def cut(self, seps, axis, seg=0, rtol=1e-4, atol=1e-4):

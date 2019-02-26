@@ -106,6 +106,20 @@ class NamedIndex(object):
         """ Check whether a name exists in this group a named group """
         return name in self._name
 
+    def sub(self, index):
+        """ Get a new NamedIndex with only the indexes in idx.
+
+        Parameters
+        ----------
+        index : array_like of int
+            indices to select
+        """
+        new_idxes = [np.intersect1d(i, index) for i in self._index]
+        nonzero = [bool(len(i)) for i in new_idxes]
+        new_idxes = [idx for i, idx in enumerate(new_idxes) if nonzero[i]]
+        new_names = [name for i, name in enumerate(self._name) if nonzero[i]]
+        return self.__class__(new_names, new_idxes)
+
     def remove(self, index):
         """ Remove indices from all named index groups
 
