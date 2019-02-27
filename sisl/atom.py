@@ -1450,7 +1450,13 @@ class Atoms(object):
         raise KeyError('Could not find `atom` in the list of atoms.')
 
     def reorder(self, in_place=False):
-        """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists) """
+        """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists)
+
+        Parameters
+        ----------
+        in_place : bool, optional
+            whether the re-order is done *in-place*
+        """
 
         # Contains the minimum atomic index for a given specie
         smin = _a.emptyi(len(self.atom))

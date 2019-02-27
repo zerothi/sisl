@@ -75,6 +75,10 @@ class eigSileSiesta(SileSiesta):
 
         # Read the total length of the path
         no, ns, nk = map(int, self.readline().split())
+        if ns > 2:
+            # This is simply a NC/SOC calculation which is irrelevant in
+            # regards of the eigenvalues.
+            ns = 1
         # Now we may read the eigenvalues
 
         # Allocate
