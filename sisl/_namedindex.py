@@ -4,7 +4,7 @@ This module implements the base-class which allows named indices
 
 >>> nidx = NamedIndex('hello', [1, 2])
 """
-from collections import Counter
+from collections import Counter, defaultdict
 import numpy as np
 
 from ._indices import indices_only
@@ -107,23 +107,70 @@ class NamedIndex(object):
         """ Check whether a name exists in this group a named group """
         return name in self._name
 
-    def add(self, other, offset=0):
+    @staticmethod
+    def _get_mask_first_uniques(names):
+        """ Helper function to determine what names (and idx) to keep/del."""
+        uniq_names = set()
+        nn = []
+        for n in names:
+            if n in uniq_names:
+                nn.append(False)
+            else:
+                nn.append(True)
+                uniq_names.add(n)
+        return nn
+
+    def add(self, other, offset=0, duplicates=None):
+        """ Return a new NamedIndex which is a type of union of self and other.
+        By default, name conflict between self and other will raise a ValueError.
+        See the `duplicates` parameter for information on how to change this.
+
+        Parameters
+        ----------
+        other : NamedIndex
+            The NamedIndex to perform the addition with
+        offset : int, optional
+            `other` will have `offset` added to all indices.
+            Useful for adding geometries.
+        duplicates: str, optional, one of "raise", "union", "left", "right", "omit".
+            Selects the default behaviour in case of name conflict.
+            Default ("raise") is to raise a ValueError in the case of conflict.
+            If "union", each name will contain indices from both `self` and `other`.
+            If "left" or "right", the name from `self` or `other`, respectively,
+            will take precedence.
+            If "omit", duplicate names are completely omitted.
+        """
+        # Add the two NIs directly
         new = self.copy()
-        # Add others' names and ensure uniqueness
         new._name.extend(other._name)
         names = new._name
-        total_cnt = Counter(names)
-        while any(v > 1 for v in total_cnt.values()):
-            names_cnt = Counter()
-            for i, n in enumerate(names):
-                if total_cnt[n] > 1:
-                    print(f"renaming {n}!")
-                    names[i] = n + ".{}".format(names_cnt[n] + 1)
-                    names_cnt.update([n])
-            total_cnt = Counter(names)
+        new._index.extend(idx.copy() + offset for idx in other._index)
 
-        # Add others' indexes
-        new._index.extend(i.copy() + offset for i in other._index)
+        # Handle duplicates
+        if set(self._name).intersection(set(other._name)):
+            if duplicates is None or duplicates == "raise":
+                raise ValueError(
+                    "There are duplicate names and behaviour in this case is "
+                    "currently unspecified. Names: {} and {}."
+                    "".format(self._name, other._name))
+            elif duplicates == "union":
+                union = defaultdict(lambda: np.empty((0,), dtype="int32"))
+                for name, index in zip(new._name, new._index):
+                    union[name] = np.union1d(union[name], index)
+                new._name, new._index = zip(*tuple(union.items()))
+                return new
+            elif duplicates == "omit":
+                total_cnt = Counter(names)
+                mask = [total_cnt[n] == 1 for n in names]
+            elif duplicates == "left":
+                mask = NamedIndex._get_mask_first_uniques(names)
+            elif duplicates == "right":
+                mask = NamedIndex._get_mask_first_uniques(names[::-1])[::-1]
+            else:
+                raise ValueError("{} is not a valid value for `duplicates`"
+                                 "".format(duplicates))
+            new._name = [n for i, n in enumerate(new._name) if mask[i]]
+            new._index = [n for i, n in enumerate(new._index) if mask[i]]
         return new
 
     def remove(self, index):

@@ -1745,7 +1745,7 @@ class Geometry(SuperCellChild):
 
         return self.__class__(xyz, atom=atom, sc=sc)
 
-    def add(self, other):
+    def add(self, other, duplicate_names=None):
         """ Merge two geometries (or a Geometry and SuperCell) by adding the two atoms together
 
         If `other` is a Geometry only the atoms gets added, to also add the supercell vectors
@@ -1755,6 +1755,10 @@ class Geometry(SuperCellChild):
         ----------
         other : Geometry or SuperCell
             Other geometry class which is added
+        duplicate_names : str, optional, one of "raise", "union", "left", "right", "omit".
+            How to handle duplicate names in the two geometries.
+            By default a ValueError is raised on duplicates.
+            See `NamedIndex.add` for detailed information.
 
         See Also
         --------
@@ -1772,7 +1776,7 @@ class Geometry(SuperCellChild):
             xyz = np.append(self.xyz, other.xyz, axis=0)
             sc = self.sc.copy()
             atom = self.atoms.add(other.atom)
-            names = self._names.add(other._names, offset=len(self))
+            names = self._names.add(other._names, offset=len(self), duplicates=duplicate_names)
         return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
     def insert(self, atom, geom):
