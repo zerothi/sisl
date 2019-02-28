@@ -106,18 +106,44 @@ class NamedIndex(object):
         """ Check whether a name exists in this group a named group """
         return name in self._name
 
-    def sub(self, index):
+    def sub_index(self, index, name=None):
         """ Get a new NamedIndex with only the indexes in idx.
 
         Parameters
         ----------
         index : array_like of int
             indices to select
+        name : str, optional
+            If given, perform sub only on the indices for `name`. Other names
+            are preserved.
         """
-        new_idxes = [np.intersect1d(i, index) for i in self._index]
-        nonzero = [bool(len(i)) for i in new_idxes]
-        new_idxes = [idx for i, idx in enumerate(new_idxes) if nonzero[i]]
-        new_names = [name for i, name in enumerate(self._name) if nonzero[i]]
+        if name is None:
+            name = set(self._name)
+        else:
+            if name not in self._name:
+                raise ValueError("{} is not in this NamedIndex".format(name))
+            name = {name, }
+        new_idxes = [np.intersect1d(i, index) if n in name else i.copy()
+                     for i, n in zip(self._index, self._name)]
+        new_names = self._name.copy()
+        return self.__class__(new_names, new_idxes)
+
+    def sub_name(self, names):
+        """ Get a new NamedIndex with only the names in `names`.
+        Parameters
+        ----------
+        names : str or iterable of str
+            The name(s) which the new NamedIndex is allowed to contain.
+        """
+        if isinstance(names, str):
+            names = (names,)
+        names = set(names)
+        for name in names:
+            if name not in self._name:
+                raise ValueError("{} is not in this NamedIndex".format(name))
+        mask = [n in names for n in self._name]
+        new_idxes = [idx.copy() for i, idx in enumerate(self._index) if mask[i]]
+        new_names = [name for i, name in enumerate(self._name) if mask[i]]
         return self.__class__(new_names, new_idxes)
 
     def remove(self, index):
@@ -136,3 +162,9 @@ class NamedIndex(object):
             print(self._index[i], index)
             idx2 = indices_only(self._index[i], index)
             self._index[i] = np.delete(self._index[i], idx2)
+
+    def reduce(self):
+        """ Removes names in this NamedIndex which have no index associated."""
+        idx_len = [len(idx) for idx in self._index]
+        self._name = [name for i, name in enumerate(self._name) if idx_len[i]]
+        self._index = [idx for i, idx in enumerate(self._index) if idx_len[i]]

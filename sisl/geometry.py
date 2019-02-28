@@ -1046,7 +1046,7 @@ class Geometry(SuperCellChild):
         remove : the negative of this routine, i.e. remove a subset of atoms
         """
         atms = self.sc2uc(atom)
-        names = self.names.sub(atms)
+        names = self.names.sub_index(atms)
         if cell is None:
             cell = self.sc.copy()
 
