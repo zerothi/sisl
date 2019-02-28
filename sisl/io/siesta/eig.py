@@ -79,26 +79,18 @@ class eigSileSiesta(SileSiesta):
             # This is simply a NC/SOC calculation which is irrelevant in
             # regards of the eigenvalues.
             ns = 1
-        # Now we may read the eigenvalues
 
         # Allocate
         eigs = np.empty([ns, nk, no], np.float32)
 
+        readline = self.readline
         for ik in range(nk):
             # The first line is special
-            E = list(map(float, self.readline().split()[1:]))
-            s = 0
-            e = len(E)
-            tmp_E = np.empty([ns*no], np.float32)
-            tmp_E[s:e] = E
+            E_list = list(map(float, readline().split()[1:]))
             for _ in range(ns):
-                while e < ns*no:
-                    E = list(map(float, self.readline().split()))
-                    s = e
-                    e += len(E)
-                    tmp_E[s:e] = E
-            tmp_E.shape = (ns, no)
-            eigs[:, ik, :] = tmp_E
+                while len(E_list) < ns*no:
+                    E_list.extend(list(map(float, readline().split())))
+            eigs[:, ik, :] = np.asarray(E_list, np.float32).reshape(ns, no)
 
         return eigs - Ef
 
