@@ -5,6 +5,7 @@ This module implements the base-class which allows named indices
 >>> nidx = NamedIndex('hello', [1, 2])
 """
 import numpy as np
+from numpy import ndarray, bool_
 
 from ._indices import indices_only
 from ._array import arrayi
@@ -53,7 +54,7 @@ class NamedIndex(object):
         if name in self._name:
             raise SislError(self.__class__.__name__ + '.add_name already contains name {}, please delete group name before adding.'.format(name))
         self._name.append(name)
-        if isinstance(index, np.ndarray) and index.dtype is np.dtype('bool'):
+        if isinstance(index, ndarray) and index.dtype == bool_:
             index = np.flatnonzero(index)
         self._index.append(arrayi(index).ravel())
 

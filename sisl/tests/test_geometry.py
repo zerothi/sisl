@@ -227,6 +227,8 @@ class TestGeometry(object):
         assert len(setup.g.sub([0, 1])) == 2
         assert len(setup.g.sub([-1])) == 1
 
+        assert np.allclose(setup.g.sub([0]).xyz, setup.g.sub(np.array([True, False])).xyz)
+
     def test_sub2(self, setup):
         assert len(setup.g.sub(range(1))) == 1
         assert len(setup.g.sub(range(2))) == 2
