@@ -40,8 +40,8 @@ class NamedIndex(object):
 
     def clear(self):
         """ Clear all names in this object, no names will exist after this call (in-place) """
-        self._name.clear()
-        self._index.clear()
+        self._name = []
+        self._index = []
 
     def __iter__(self):
         """ Iterate names in the group """
