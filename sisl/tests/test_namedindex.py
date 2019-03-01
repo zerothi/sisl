@@ -63,8 +63,8 @@ def test_ni_items():
     ni['Hello'] = [0]
     ni[[1, 2]] = 'Hello-1'
     assert np.all(ni['Hello'] == [0])
-    ni.remove(1)
-    assert np.all(ni['Hello-1'] == [2])
+    no = ni.remove_index(1)
+    assert np.all(no['Hello-1'] == [2])
 
 
 def test_ni_dict():
@@ -72,6 +72,18 @@ def test_ni_dict():
     assert len(ni) == 2
     assert np.all(ni["r1"] == [1, 2])
     assert np.all(ni["r2"] == [3, 4])
+
+
+def test_ni_sub_index():
+    ni = NamedIndex({"r1": [1, 2], "r2": [3, 4]})
+    no = ni.sub_index([2, 4])
+    assert len(no) == 2
+    assert len(no["r1"]) == 1
+    assert len(no["r2"]) == 1
+
+    no = ni.sub_name("r1")
+    assert no.names[0] == "r1"
+    assert len(no) == 1
 
 
 def test_ni_merge():
