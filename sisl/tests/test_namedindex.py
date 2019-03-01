@@ -58,28 +58,42 @@ def test_ni_items():
     assert np.all(ni['Hello-1'] == [2])
 
 
-def test_ni_add():
+def test_ni_dict():
+    ni = NamedIndex({"r1": [1, 2], "r2": [3, 4]})
+    assert len(ni) == 2
+    assert np.all(ni["r1"] == [1, 2])
+    assert np.all(ni["r2"] == [3, 4])
+
+
+def test_ni_merge():
     ni1 = NamedIndex(["r1", "r2"], [[1, 2], [3, 4]])
     ni2 = ni1.copy()
     ni2.add_name("r3", [5, 6])
 
     with pytest.raises(ValueError):
-        ni1.add(ni2)
+        ni1.merge(ni2)
+    with pytest.raises(ValueError):
+        ni1.merge(ni2, duplicate="raise")
+    with pytest.raises(ValueError):
+        ni1.merge(ni2, duplicate="not something viable")
 
-    ni3 = ni1.add(ni2, offset=10, duplicates="union")
+    ni3 = ni1.merge(ni2, offset=10, duplicate="union")
     assert len(ni3) == 3
-    assert all(len(ni3[r]) == 4 for r in ("r1", "r2"))
+    assert len(ni3["r1"]) == 4
+    assert len(ni3["r2"]) == 4
     assert len(ni3["r3"]) == 2
 
-    ni3 = ni1.add(ni2, offset=10, duplicates="omit")
+    ni3 = ni1.merge(ni2, offset=10, duplicate="omit")
     assert len(ni3) == 1
 
-    ni3 = ni1.add(ni2, offset=10, duplicates="left")
+    ni3 = ni1.merge(ni2, offset=10, duplicate="left")
     assert len(ni3) == 3
-    assert all(np.array_equal(ni3[r], ni1[r]) for r in ("r1", "r2"))
+    assert np.array_equal(ni3["r1"], ni1["r1"])
+    assert np.array_equal(ni3["r2"], ni1["r2"])
     assert np.array_equal(ni3["r3"], ni2["r3"] + 10)
 
-    ni3 = ni1.add(ni2, offset=10, duplicates="right")
+    ni3 = ni1.merge(ni2, offset=10, duplicate="right")
     assert len(ni3) == 3
-    assert all(np.array_equal(ni3[r], ni2[r] + 10) for r in ("r1", "r2"))
+    assert np.array_equal(ni3["r1"], ni2["r1"] + 10)
+    assert np.array_equal(ni3["r2"], ni2["r2"] + 10)
     assert np.array_equal(ni3["r3"], ni2["r3"] + 10)

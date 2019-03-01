@@ -4,7 +4,6 @@ This module implements the base-class which allows named indices
 
 >>> nidx = NamedIndex('hello', [1, 2])
 """
-from collections import Counter, defaultdict
 import numpy as np
 
 from ._indices import indices_only
@@ -18,6 +17,11 @@ class NamedIndex(object):
     __slots__ = ['_name', '_index']
 
     def __init__(self, name=None, index=None):
+        if isinstance(name, dict):
+            # Also allow dictionary inputs!
+            self.__init__(name.keys(), name.values())
+            return
+
         # Initialize lists
         self._name = []
         self._index = []
@@ -36,6 +40,11 @@ class NamedIndex(object):
     def __len__(self):
         """ Number of uniquely defined names """
         return len(self._name)
+
+    @property
+    def names(self):
+        """ All names contained """
+        return self._name
 
     def copy(self):
         """ Create a copy of this """
@@ -79,7 +88,7 @@ class NamedIndex(object):
         return s + '\n}'
 
     def __setitem__(self, name, index):
-        """ Equivalent to `add` """
+        """ Equivalent to `add_name` """
         if isinstance(name, _str):
             self.add_name(name, index)
         else:
@@ -107,32 +116,19 @@ class NamedIndex(object):
         """ Check whether a name exists in this group a named group """
         return name in self._name
 
-    @staticmethod
-    def _get_mask_first_uniques(names):
-        """ Helper function to determine what names (and idx) to keep/del."""
-        uniq_names = set()
-        nn = []
-        for n in names:
-            if n in uniq_names:
-                nn.append(False)
-            else:
-                nn.append(True)
-                uniq_names.add(n)
-        return nn
+    def merge(self, other, offset=0, duplicate="raise"):
+        """ Return a new NamedIndex which is a merge of self and other
 
-    def add(self, other, offset=0, duplicates=None):
-        """ Return a new NamedIndex which is a type of union of self and other.
-        By default, name conflict between self and other will raise a ValueError.
-        See the `duplicates` parameter for information on how to change this.
+        By default, name conflicts between self and other will raise a ValueError.
+        See the `duplicate` parameter for information on how to change this.
 
         Parameters
         ----------
         other : NamedIndex
             The NamedIndex to perform the addition with
         offset : int, optional
-            `other` will have `offset` added to all indices.
-            Useful for adding geometries.
-        duplicates: str, optional, one of "raise", "union", "left", "right", "omit".
+            `other` will have `offset` added to all indices before merge is done.
+        duplicate: {"raise", "union", "left", "right", "omit"}
             Selects the default behaviour in case of name conflict.
             Default ("raise") is to raise a ValueError in the case of conflict.
             If "union", each name will contain indices from both `self` and `other`.
@@ -140,37 +136,51 @@ class NamedIndex(object):
             will take precedence.
             If "omit", duplicate names are completely omitted.
         """
-        # Add the two NIs directly
         new = self.copy()
-        new._name.extend(other._name)
-        names = new._name
-        new._index.extend(idx.copy() + offset for idx in other._index)
 
-        # Handle duplicates
-        if set(self._name).intersection(set(other._name)):
-            if duplicates is None or duplicates == "raise":
-                raise ValueError(
-                    "There are duplicate names and behaviour in this case is "
-                    "currently unspecified. Names: {} and {}."
-                    "".format(self._name, other._name))
-            elif duplicates == "union":
-                union = defaultdict(lambda: np.empty((0,), dtype="int32"))
-                for name, index in zip(new._name, new._index):
-                    union[name] = np.union1d(union[name], index)
-                new._name, new._index = zip(*tuple(union.items()))
-                return new
-            elif duplicates == "omit":
-                total_cnt = Counter(names)
-                mask = [total_cnt[n] == 1 for n in names]
-            elif duplicates == "left":
-                mask = NamedIndex._get_mask_first_uniques(names)
-            elif duplicates == "right":
-                mask = NamedIndex._get_mask_first_uniques(names[::-1])[::-1]
-            else:
-                raise ValueError("{} is not a valid value for `duplicates`"
-                                 "".format(duplicates))
-            new._name = [n for i, n in enumerate(new._name) if mask[i]]
-            new._index = [n for i, n in enumerate(new._index) if mask[i]]
+        set_self = set(self.names)
+        set_other = set(other.names)
+
+        # Figure out if there are duplicate names
+        intersection = set_self & set_other
+
+        # First add all unique names (equivalent to duplicate == "left")
+        for name in other:
+            if not name in intersection:
+                new[name] = other[name] + offset
+
+        if len(intersection) == 0:
+            # If there are no duplicates then we are done, all unique names are already present
+            pass
+
+        elif duplicate == "raise":
+            raise ValueError("{}.merge has overlapping names without a duplicate handler: {}".format(self.__class__.__name__, list(intersection)))
+
+        elif duplicate == "union":
+            # Indices are made a union
+            for name in intersection:
+                # Clean the name (currently add_name raises an issue if already existing)
+                del new[name]
+
+                # Create a union of indices
+                new[name] = np.union1d(self[name], other[name] + offset)
+
+        elif duplicate == "left":
+            # Indices are chosen from `self`, but since new is already a copy of self
+            # we do not have to do anything
+            pass
+
+        elif duplicate == "right":
+            for name in intersection:
+                del new[name]
+                new[name] = other[name] + offset
+
+        elif duplicate == "omit":
+            for name in intersection:
+                del new[name]
+        else:
+            raise ValueError("{}.merge wrong argument: duplicate.".format(self.__class__.__name__))
+
         return new
 
     def remove(self, index):
@@ -186,6 +196,5 @@ class NamedIndex(object):
             return
         index = arrayi(index).ravel()
         for i in range(n):
-            print(self._index[i], index)
             idx2 = indices_only(self._index[i], index)
             self._index[i] = np.delete(self._index[i], idx2)
