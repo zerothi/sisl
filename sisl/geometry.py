@@ -111,7 +111,7 @@ class Geometry(SuperCellChild):
     Atom : contained atoms are each an object of this
     """
 
-    def __init__(self, xyz, atom=None, sc=None):
+    def __init__(self, xyz, atom=None, sc=None, names=None):
 
         # Create the geometry coordinate
         # We need flatten to ensure a copy
@@ -125,7 +125,10 @@ class Geometry(SuperCellChild):
         self._atoms = Atoms(atom, na=self.na)
 
         # Assign a group specifier
-        self._names = NamedIndex()
+        if isinstance(names, NamedIndex):
+            self._names = names.copy()
+        else:
+            self._names = NamedIndex(names)
 
         self.__init_sc(sc)
 
@@ -1664,6 +1667,8 @@ class Geometry(SuperCellChild):
             xyz = np.copy(self.xyz)
             atom = self.atoms.copy()
             sc = self.sc.append(other, axis)
+            names = self._names.copy()
+
         else:
             if align == 'none':
                 xyz = np.append(self.xyz, self.cell[axis, :][None, :] + other.xyz, axis=0)
@@ -1677,7 +1682,9 @@ class Geometry(SuperCellChild):
                 raise ValueError(self.__class__.__name__ + '.append requires align keyword to be one of [none, min]')
             atom = self.atoms.append(other.atom)
             sc = self.sc.append(other.sc, axis)
-        return self.__class__(xyz, atom=atom, sc=sc)
+            names = self._names.merge(other._names, offset=len(self))
+
+        return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
     def prepend(self, other, axis, align='none'):
         """ Prepend two structures along `axis`
@@ -1722,6 +1729,8 @@ class Geometry(SuperCellChild):
             xyz = np.copy(self.xyz)
             atom = self.atoms.copy()
             sc = self.sc.prepend(other, axis)
+            names = self._names.copy()
+
         else:
             if align == 'none':
                 xyz = np.append(other.xyz, other.cell[axis, :][None, :] + self.xyz, axis=0)
@@ -1735,8 +1744,9 @@ class Geometry(SuperCellChild):
                 raise ValueError(self.__class__.__name__ + '.prepend requires align keyword to be one of [none, min]')
             atom = self.atoms.prepend(other.atom)
             sc = self.sc.append(other.sc, axis)
+            names = other._names.merge(self._names, offset=len(other))
 
-        return self.__class__(xyz, atom=atom, sc=sc)
+        return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
     def add(self, other):
         """ Merge two geometries (or a Geometry and SuperCell) by adding the two atoms together
@@ -1760,11 +1770,13 @@ class Geometry(SuperCellChild):
             xyz = self.xyz.copy()
             sc = self.sc + other
             atom = self.atoms.copy()
+            names = self._names.copy()
         else:
             xyz = np.append(self.xyz, other.xyz, axis=0)
             sc = self.sc.copy()
             atom = self.atoms.add(other.atom)
-        return self.__class__(xyz, atom=atom, sc=sc)
+            names = self._names.merge(other._names, offset=len(self))
+        return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
     def insert(self, atom, geom):
         """ Inserts other atoms right before index
