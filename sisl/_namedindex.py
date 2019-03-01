@@ -33,6 +33,11 @@ class NamedIndex(object):
             for n, i in zip(name, index):
                 self.add_name(n, i)
 
+    def clear(self):
+        """ Clear all names in this object, no names will exist after this call (in-place) """
+        self._name.clear()
+        self._index.clear()
+
     def __iter__(self):
         """ Iterate names in the group """
         for name in self._name:
@@ -181,6 +186,7 @@ class NamedIndex(object):
         elif duplicate == "omit":
             for name in intersection:
                 del new[name]
+
         else:
             raise ValueError("{}.merge wrong argument: duplicate.".format(self.__class__.__name__))
 

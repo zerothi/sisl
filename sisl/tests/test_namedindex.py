@@ -32,6 +32,15 @@ def test_ni_iter():
     assert 'name-2' in ni
 
 
+def test_ni_clear():
+    ni = NamedIndex()
+    assert len(ni) == 0
+    ni.add_name('name-1', [0])
+    assert len(ni) == 1
+    ni.clear()
+    assert len(ni) == 0
+
+
 def test_ni_copy():
     ni = NamedIndex()
     ni.add_name('name-1', [0])
