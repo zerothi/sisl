@@ -29,17 +29,13 @@
 sisl: a tight-binding and DFT postprocessing library
 ====================================================
 
-`sisl <http://github.com/zerothi/sisl>`_ was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
+The Python library `sisl <http://github.com/zerothi/sisl>`_ was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
 It was initially developed by Nick R. Papior (co-developer of `Siesta`_) as a side-project to `TranSiesta`_
 and `TBtrans`_ to efficiently analyse TBtrans output for N-electrode calculations.  
 Since then it has expanded to accommodate a rich set of DFT code input/outputs such as (but not limited to)
 `VASP`_, `OpenMX`_, `BigDFT`_, `Wannier90`_.
-Since sisl is tightly integrated with TBtrans and Siesta it has an extensive implementation for sparse matrices
-in forms of Hamiltonian, density matrices, energy density matrices, bond currents etc. Effectively it provides
-an easy interface for creating arbitrary Hamiltonian's that *may* be used as input for the NEGF code TBtrans.
-It also allows analysis of wavefunctions (external or calculated in sisl).
 
-A great deal of codes are implementing either of the afore mentioned methodologies.
+A great deal of codes are implementing, roughly, the same thing.
 However, every code implements their own analysis and post-processing utilities which typically
 turns out to be equivalent utilities only having the interface differently.
 
@@ -47,8 +43,6 @@ sisl tries to solve some of the analysis issues by creating a unified scripting 
 in Python which does analysis using the same interface, regardless of code being used.
 For instance one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
 in a consistent manner so the post-processing is the same, regardless of code being used.
-
-sisl is a Python library which has both command-line-interfaces and scripting capabilities.
 
 In some regards it has overlap with `ASE`_ and sisl also interfaces with ASE.
 

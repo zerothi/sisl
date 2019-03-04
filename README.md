@@ -10,22 +10,18 @@
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
 [![Donate money to support development of sisl](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NGNU2AA3JXX94&lc=DK&item_name=Papior%2dCodes&item_number=codes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
 
-[Documentation][sisl-api] can be found [here][sisl-api].
+[Documentation][sisl-api] can be found [here][sisl-api].  
 By Nick R. Papior.
 
 ## Why sisl ##
 
-sisl was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
+The Python library sisl was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
 It was initially developed by Nick R. Papior (co-developer of [Siesta][siesta]) as a side-project to TranSiesta
 and TBtrans to efficiently analyse TBtrans output for N-electrode calculations.  
 Since then it has expanded to accommodate a rich set of DFT code input/outputs such as (but not limited to)
 VASP, OpenMX, BigDFT, Wannier90.
-Since sisl is tightly integrated with TBtrans and Siesta it has an extensive implementation for sparse matrices
-in forms of Hamiltonian, density matrices, energy density matrices, bond currents etc. Effectively it provides
-an easy interface for creating arbitrary Hamiltonian's that *may* be used as input for the NEGF code TBtrans.
-It also allows analysis of wavefunctions (external or calculated in sisl).
 
-A great deal of codes are implementing either of the afore mentioned methodologies.
+A great deal of codes are implementing, roughly, the same thing.
 However, every code implements their own analysis and post-processing utilities which typically
 turns out to be equivalent utilities only having the interface differently.
 
@@ -33,8 +29,6 @@ sisl tries to solve some of the analysis issues by creating a unified scripting 
 in Python which does analysis using the same interface, regardless of code being used.
 For instance one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
 in a consistent manner so the post-processing is the same, regardless of code being used.
-
-sisl is a Python library which has both command-line-interfaces and scripting capabilities.
 
 In some regards it has overlap with [ASE][ase] and sisl also interfaces with ASE.
 
@@ -135,14 +129,14 @@ To get the BibTeX entry easily you may issue the following command:
 
 which fills in the version number.
 
-## Help sisl ##
+## Help sisl help you! ##
 
-sisl is a spare time project and is developed based on use-cases.
+- If you've ideas of missing features
+- If you've ideas for improving documentation
+- If you've found a bug
+- If you've found a documentation error
 
-- If you have ideas of missing features, please share them [here][issue]!
-- If you have ideas for improving documentation, please share them [here][issue]!
-- If you found a bug, please share it [here][issue]!
-- If you found a documentation error, please report it [here][issue]!
+Then please share them [here]issue]!
 
 All of the above may be done via a [pull-request][pr] or by opening
 an [issue].
