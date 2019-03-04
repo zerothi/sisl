@@ -131,7 +131,7 @@ which fills in the version number.
 - If you've found a documentation error
 - If you've created a tutorial
 
-Then please share them [here]issue]!
+Then please share them [here][issue]!
 
 All of the above may be done via a [pull-request][pr] or by opening
 an [issue].
