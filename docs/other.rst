@@ -9,12 +9,10 @@ calculations.
 
 
 However, sisl is far from the only Python package that implements simplistic tight-binding calculations.
-Here a short introduction to some of the other methods is also highlighted. 
-
 We are currently aware of 3 established tight-binding methods used in litterature (in random order):
 
 - `PythTB <http://physics.rutgers.edu/pythtb/index.html>`_
-- `kwant <https://kwant-project.org/>`_
+- `kwant`_
 - `pybinding <http://pybinding.site/>`_
 
 sisl's philosophy is drastically different in the sense that the Hamiltonian (and other

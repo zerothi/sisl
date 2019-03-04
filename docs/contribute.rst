@@ -6,28 +6,15 @@ Contributing
 The sisl code is open-source, and thus we encourage external users to contribute
 back to the code base.
 
-Any size of contribution is extremely welcome and especially bug-reports!
+Any size of contribution is extremely welcome!
 
+- If you've ideas of missing features
+- If you've ideas for improving documentation
+- If you've found a bug
+- If you've found a documentation error
+- If you've created a tutorial
 
-Bug-reports
------------
-
-Bug-reports should be opened at the development site `here <issue_>`_, then press
-"Issue" and select *Bug report*.
-
-
-Issues
-------
-
-If you have problems using sisl, please let us know `here <issue_>`_, then press
-"Issue" and select *Issue*.
-
-
-Feature requests
-----------------
-
-Missing features may be requested at the development site `here <issue_>`_, then press
-"Issue" and select *Feature request*.
+Then please share them `here <issue_>`_.
 
 
 Contribute external code

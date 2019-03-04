@@ -30,26 +30,19 @@ in Python which does analysis using the same interface, regardless of code being
 For instance one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
 in a consistent manner so the post-processing is the same, regardless of code being used.
 
+sisl is also part of the training material for a series of workshops hosted [here][workshop].
+
 In some regards it has overlap with [ASE][ase] and sisl also interfaces with ASE.
 
-
-### Users ###
-
-sisl is an open-source project ([LGPL][lgpl]) intended to be used by users of DFT codes to analyse outputs
-such as real-space charge/potential, density of states calculations from eigenspectrum as well as
-post-processing of DFT Hamiltonians. Users ranging from Ph.D. students to professors may find this tool useful.
-
-sisl has been part of the training material for a series of workshops hosted [here][workshop].
-
-### First use ###
+### Example use ###
 
 Here we show 2 examples of using sisl together with [Siesta][siesta].
 
 To read in a Hamiltonian from a Siesta calculation and calculate the DOS for a given Monkhorst-Pack grid
 one would do:
 
-    import sisl
     import numpy as np
+    import sisl
     H = sisl.get_sile('RUN.fdf').read_hamiltonian()
     mp = sisl.MonkhorstPack(H, [13, 13, 13])
     E = np.linspace(-4, 4, 500)
@@ -85,6 +78,7 @@ If performing a manual installation, these packages are required:
    - __netCDF4__
    - __setuptools__
    - __pyparsing__
+   - __pytest__, optional dependency for running the tests
    - __matplotlib__, encouraged optional dependency
    - __tqdm__, encouraged optional dependency
    - __xarray__, optional dependency
@@ -107,10 +101,10 @@ Once installed, the installation can be tested by executing the following:
 There are different places for getting information on using sisl, here is a short list
 of places to search/ask for answers:
 
-- [Documentation][sisl-api] (recommended goto-place)
-- Workshop examples showing different uses, see [here][workshop]
-- Ask questions on its use on the Github issue page [here][issue]
-- Ask questions on the Gitter page [here][sisl-gitter]
+- [Documentation][sisl-api], recommended reference page
+- [Workshop][workshop] examples showing different uses
+- Ask questions on the Github [issue page][issue]
+- Ask questions on the [Gitter page][sisl-gitter]
 
 If sisl was used to produce scientific contributions, please use this [DOI][doi] for citation.
 We recommend to specify the version of sisl in combination of this citation:
@@ -135,6 +129,7 @@ which fills in the version number.
 - If you've ideas for improving documentation
 - If you've found a bug
 - If you've found a documentation error
+- If you've created a tutorial
 
 Then please share them [here]issue]!
 

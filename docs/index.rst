@@ -44,17 +44,9 @@ in Python which does analysis using the same interface, regardless of code being
 For instance one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
 in a consistent manner so the post-processing is the same, regardless of code being used.
 
+sisl is also part of the training material for a series of workshops hosted [here][workshop].
+
 In some regards it has overlap with `ASE`_ and sisl also interfaces with ASE.
-
-
-Intended users
---------------
-
-sisl is an open-source project (`LGPL`_) intended to be used by users of DFT codes to analyse outputs
-such as real-space charge/potential, density of states calculations from eigenspectrum as well as
-post-processing of DFT Hamiltonians. Users ranging from Ph.D. students to professors may find this tool useful.
-
-sisl has been part of the training material for a series of workshops hosted `here <workshop>`_.
 
 
 First time use
@@ -94,10 +86,10 @@ of places to search/ask for answers:
 
 - [Documentation][sisl-api] (recommended goto-place)
 - Workshop examples showing different uses, see `workshop`_
-- Ask questions on its use on the Github issue page `here <issue>`_
-- Ask questions on the Gitter page `here <sisl-gitter>`_
+- Ask questions on its use on the Github issue page `here <issue_>`_
+- Ask questions on the Gitter page `here <sisl-gitter_>`_
 
-If sisl was used to produce scientific contributions, please use this `DOI <sisl-doi>`_ for citation.
+If sisl was used to produce scientific contributions, please use this `DOI <sisl-doi_>`_ for citation.
 We recommend to specify the version of sisl in combination of this citation:
 
     @misc{zerothi_sisl,
