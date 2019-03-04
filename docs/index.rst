@@ -20,24 +20,26 @@
    :description: sisl is a tool to manipulate density functional
 		 theory code input and/or output. It also implements tight-binding
 		 tools to create and manipulate multi-orbital (non)-orthogonal basis sets.
-   :keywords: LCAO, Siesta, TranSiesta, TBtrans, VASP, GULP, DFT, tight-binding, electrons, phonons
+   :keywords: LCAO, Siesta, TranSiesta, OpenMX, TBtrans,
+	      VASP, GULP, BigDFT,
+	      DFT,
+	      tight-binding, electron, electrons, phonon, phonons
 
 
 sisl: a tight-binding and DFT postprocessing library
 ====================================================
 
-sisl is an open source Python library to manipulate density functional
-theory code input and/or output.
-It also allows constructing and analyzing custom made tight-binding models with high
-throughput for millions of orbitals/atoms.
-Any user tight-binding model may be used as input to the non-equilibrium Green function
-transport calculator `TBtrans`_.
-sisl deals with both electrons and phonons.
+`sisl <http://github.com/zerothi/sisl>`_ was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
+It was initially developed by Nick R. Papior (co-developer of `Siesta`_) as a side-project to `TranSiesta`_
+and `TBtrans`_ to efficiently analyse TBtrans output for N-electrode calculations.  
+Since then it has expanded to accommodate a rich set of DFT code input/outputs such as (but not limited to)
+`VASP`_, `OpenMX`_, `BigDFT`_, `Wannier90`_.
+Since sisl is tightly integrated with TBtrans and Siesta it has an extensive implementation for sparse matrices
+in forms of Hamiltonian, density matrices, energy density matrices, bond currents etc. Effectively it provides
+an easy interface for creating arbitrary Hamiltonian's that *may* be used as input for the NEGF code TBtrans.
+It also allows analysis of wavefunctions (external or calculated in sisl).
 
-sisl is hosted on Github `here <http://github.com/zerothi/sisl>`_.
-
-Tight-binding and localized orbitals are an essential part of the electronic structure
-community. A great deal of codes are implementing either of the afore mentioned methodologies.
+A great deal of codes are implementing either of the afore mentioned methodologies.
 However, every code implements their own analysis and post-processing utilities which typically
 turns out to be equivalent utilities only having the interface differently.
 
@@ -46,30 +48,79 @@ in Python which does analysis using the same interface, regardless of code being
 For instance one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
 in a consistent manner so the post-processing is the same, regardless of code being used.
 
-Tight-binding models are created dynamically in sisl using a custom sparse Hamiltonian.
-Having *any* electronic structure one can calculate physical properties such as (projected)
-density of states, wavefunctions, spin moments, band velocities and Berry phases.
+sisl is a Python library which has both command-line-interfaces and scripting capabilities.
+
+In some regards it has overlap with `ASE`_ and sisl also interfaces with ASE.
 
 
-Features
---------
+Intended users
+--------------
 
-sisl consists of several distinct features:
+sisl is an open-source project (`LGPL`_) intended to be used by users of DFT codes to analyse outputs
+such as real-space charge/potential, density of states calculations from eigenspectrum as well as
+post-processing of DFT Hamiltonians. Users ranging from Ph.D. students to professors may find this tool useful.
 
-* Geometries; create, extend, combine, manipulate different geometries readed from
-  a large variety of DFT-codes and/or from generically used file formats.
+sisl has been part of the training material for a series of workshops hosted `here <workshop>`_.
 
-* Hamiltonian; easily create tight-binding Hamiltonians with user chosen number of
-  orbitals per atom. Or read in Hamiltonians from DFT software such as `Siesta`_,
-  `Wannier90`_, `GULP`_ etc. Secondly, there is intrinsic capability of orthogonal
-  *and* non-orthogonal Hamiltonians.
 
-* Post-process output from several DFT codes: `Siesta`_,
-  `Wannier90`_, `VASP`_, `OpenMX`_, `GULP`_, `BigDFT`_, see `sisl.io` for a complete
-  list of allowed files.
+First time use
+--------------
 
-* Command line utilities for processing of data files for a wide
-  variety of file formats.
+Here we show 2 examples of using sisl together with [Siesta][siesta].
+
+To read in a Hamiltonian from a Siesta calculation and calculate the DOS for a given Monkhorst-Pack grid
+one would do::
+
+    import sisl
+    import numpy as np
+    H = sisl.get_sile('RUN.fdf').read_hamiltonian()
+    mp = sisl.MonkhorstPack(H, [13, 13, 13])
+    E = np.linspace(-4, 4, 500)
+    DOS = mp.asaverage().DOS(E)
+    from matplotlib import pyplot as plt
+    plt.plot(E, DOS)
+
+Which calculates the DOS for a 13x13x13 Monkhorst-Pack grid.
+
+Another common analysis is real-space charge analysis, the following command line subtracts two real-space
+charge grids and writes them to a CUBE file:
+
+.. code-block:: bash
+
+   sgrid reference/Rho.grid.nc --diff Rho.grid.nc --geometry RUN.fdf --out diff.cube
+
+which may be analysed using VMD, XCrySDen or other tools.
+
+
+Every use of sisl
+-----------------
+
+There are different places for getting information on using sisl, here is a short list
+of places to search/ask for answers:
+
+- [Documentation][sisl-api] (recommended goto-place)
+- Workshop examples showing different uses, see `workshop`_
+- Ask questions on its use on the Github issue page `here <issue>`_
+- Ask questions on the Gitter page `here <sisl-gitter>`_
+
+If sisl was used to produce scientific contributions, please use this `DOI <sisl-doi>`_ for citation.
+We recommend to specify the version of sisl in combination of this citation:
+
+    @misc{zerothi_sisl,
+      author       = {Papior, Nick R.},
+      title        = {sisl: v<fill-version>},
+      year         = {2018},
+      doi          = {10.5281/zenodo.597181},
+      url          = {https://doi.org/10.5281/zenodo.597181}
+    }
+
+To get the BibTeX entry easily you may issue the following command:
+
+.. code-block: bash
+
+    sdata --cite
+
+which fills in the version number.
 
 
 .. toctree::

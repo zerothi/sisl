@@ -2,11 +2,14 @@
 .. _sisl-git: http://github.com/zerothi/sisl/
 .. _pr: http://github.com/zerothi/sisl/pulls
 .. _issue: http://github.com/zerothi/sisl/issues
+.. _sisl-gitter: https://gitter.im/sisl-tool/Lobby
 .. _gh-releases: http://github.com/zerothi/sisl/releases
 .. _pypi-releases: http://pypi.python.org/pypi/sisl
 .. _conda-releases: https://anaconda.org/conda-forge/sisl
+.. _sisl-doi: http://dx.doi.org/10.5281/zenodo.597181
 
 .. These are external links:
+.. _LGPL: http://www.gnu.org/licenses/lgpl.html
 .. _Python: https://www.python.org/
 .. _six: https://pypi.python.org/pypi/six
 .. _setuptools: https://pypi.python.org/pypi/setuptools
@@ -19,6 +22,7 @@
 .. _pytest: https://docs.pytest.org/en/stable/
 .. _tqdm: https://github.com/tqdm/tqdm
 .. _xarray: http://xarray.pydata.org/en/stable/index.html
+.. _workshop: https://github.com/zerothi/ts-tbt-sisl-tutorial
 
 .. DFT codes
 .. _Siesta: https://departments.icmab.es/leem/siesta
