@@ -84,7 +84,7 @@ Every use of sisl
 There are different places for getting information on using sisl, here is a short list
 of places to search/ask for answers:
 
-- [Documentation][sisl-api] (recommended goto-place)
+- This page for the documentation!
 - Workshop examples showing different uses, see `workshop`_
 - Ask questions on its use on the Github issue page `here <issue_>`_
 - Ask questions on the Gitter page `here <sisl-gitter_>`_
@@ -92,6 +92,8 @@ of places to search/ask for answers:
 If sisl was used to produce scientific contributions, please use this `DOI <sisl-doi_>`_ for citation.
 We recommend to specify the version of sisl in combination of this citation:
 
+.. code-block:: bash
+   
     @misc{zerothi_sisl,
       author       = {Papior, Nick R.},
       title        = {sisl: v<fill-version>},
@@ -102,7 +104,7 @@ We recommend to specify the version of sisl in combination of this citation:
 
 To get the BibTeX entry easily you may issue the following command:
 
-.. code-block: bash
+.. code-block:: bash
 
     sdata --cite
 
