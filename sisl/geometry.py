@@ -5,6 +5,7 @@ from numbers import Integral, Real
 from six import string_types
 from math import acos
 from itertools import product
+from functools import reduce
 
 import numpy as np
 from numpy import ndarray, int32, bool_
@@ -1794,6 +1795,42 @@ class Geometry(SuperCellChild):
             atom = self.atoms.add(other.atom)
             names = self._names.merge(other._names, offset=len(self))
         return self.__class__(xyz, atom=atom, sc=sc, names=names)
+
+    def union(*geoms):
+        """ This is akin to geoms[0].add(geoms[1]).add(geoms[2])..., except the
+        named regions in the output are the union of the named regions in the inputs.
+
+        Parameters
+        ----------
+        *args : any number of geometries
+
+        Returns
+        -------
+        Geometry
+            A union of the passed geometries
+        """
+        if len(geoms) == 0:
+            raise TypeError("union takes at least one geometry, got 0.")
+
+        xyz = np.concatenate([g.xyz for g in geoms], axis=0)
+        sc = geoms[0].sc.copy()
+
+        if len(geoms) > 1:
+            atoms = [g.atoms for g in geoms]
+            atoms = reduce(lambda a1, a2: a1.append(a2), atoms[1:], atoms[0])
+            names = reduce(
+                lambda no, g: (
+                    no[0].merge(g.names, offset=no[1], duplicate="union"),
+                    no[1] + len(g)
+                ),
+                geoms[1:],
+                (geoms[0].names, len(geoms[0]))
+            )[0]
+        else:
+            atoms = geoms[0].atoms.copy()
+            names = geoms[0].names.copy()
+
+        return geoms[0].__class__(xyz, atom=atoms, sc=sc, names=names)
 
     def insert(self, atom, geom):
         """ Inserts other atoms right before index
