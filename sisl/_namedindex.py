@@ -262,3 +262,26 @@ class NamedIndex(object):
         for i in range(len(self))[::-1]:
             if len(self._index[n]) == 0:
                 del self[self.names[i]]
+
+    def tile(self, reps, offset):
+        """ Returns a new NamedIndex corresponding to the case where the overlying
+        geometry was tiled a number of times."""
+        new_names = self._name.copy()
+        new_indices = []
+        offset = np.arange(reps).reshape(reps, 1) * offset
+        for i, index in enumerate(self._index):
+            n_idx = np.tile(index, reps).reshape(reps, -1) + offset
+            new_indices.append(n_idx.flatten())
+        return self.__class__(new_names, new_indices)
+
+    def repeat(self, reps, offset):
+        """ Returns a new NamedIndex corresponding to the case where the overlying
+        geometry was repeated a number of times."""
+        new_names = self._name.copy()
+        new_indices = []
+        areps = np.arange(reps).reshape(1, -1)
+        for i, index in enumerate(self._index):
+            new = index * reps
+            new = new.reshape(-1, 1) + areps
+            new_indices.append(new.reshape(-1))
+        return self.__class__(new_names, new_indices)

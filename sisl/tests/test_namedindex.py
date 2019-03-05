@@ -118,3 +118,18 @@ def test_ni_merge():
     assert np.array_equal(ni3["r1"], ni2["r1"] + 10)
     assert np.array_equal(ni3["r2"], ni2["r2"] + 10)
     assert np.array_equal(ni3["r3"], ni2["r3"] + 10)
+
+
+def test_ni_tile_repeat():
+    size = 5
+    ni = NamedIndex(["r1", "r2"], [[0, 1, 3], []])
+
+    ni2 = ni.repeat(2, size)
+    assert ni2._name == ni._name
+    assert np.array_equal(ni2._index[0], np.array([0, 1, 2, 3, 6, 7]))
+    assert len(ni2._index[1]) == 0
+
+    ni2 = ni.tile(2, size)
+    assert ni2._name == ni._name
+    assert np.array_equal(ni2._index[0], np.array([0, 1, 3, 5, 6, 8]))
+    assert len(ni2._index[1]) == 0

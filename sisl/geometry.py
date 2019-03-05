@@ -1206,7 +1206,7 @@ class Geometry(SuperCellChild):
 
         # Create the geometry and return it (note the smaller atoms array
         # will also expand via tiling)
-        return self.__class__(xyz, atom=self.atoms.tile(reps), sc=sc)
+        return self.__class__(xyz, atom=self.atoms.tile(reps), sc=sc, names=self.names.tile(reps, len(self)))
 
     def repeat(self, reps, axis):
         """ Create a repeated geometry
@@ -1280,7 +1280,7 @@ class Geometry(SuperCellChild):
         xyz.shape = (-1, 3)
 
         # Create the geometry and return it
-        return self.__class__(xyz, atom=self.atoms.repeat(reps), sc=sc)
+        return self.__class__(xyz, atom=self.atoms.repeat(reps), sc=sc, names=self.names.repeat(reps, len(self)))
 
     def __mul__(self, m):
         """ Implement easy repeat function
