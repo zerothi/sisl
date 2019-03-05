@@ -26,8 +26,8 @@
 	      tight-binding, electron, electrons, phonon, phonons
 
 
-sisl: a tight-binding and DFT postprocessing library
-====================================================
+sisl: tight-binding and DFT interface library
+=============================================
 
 The Python library `sisl <http://github.com/zerothi/sisl>`_ was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
 It was initially developed by Nick R. Papior (co-developer of `Siesta`_) as a side-project to `TranSiesta`_
