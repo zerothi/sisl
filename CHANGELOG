@@ -52,6 +52,11 @@
 
 - Fixed reading geometries from grids from VASP (grid values were correct)
 
+- Toolboxes:
+
+  * Added a toolbox to calculate the Poisson solution for arbitrary
+		electrodes for TranSiesta
+
 0.9.5
 =====
 
