@@ -24,7 +24,7 @@ you should cite this (Zenodo DOI):
 .. code-block:: bash
 
     @misc{zerothi_sisl,
-      author       = {Papior, Nick R.},
+      author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
       year         = {2018},
       doi          = {10.5281/zenodo.597181},
@@ -55,7 +55,7 @@ When using sisl as tight-binding setup for Hamiltonians and dynamical matrices f
 .. code-block:: bash
 
     @misc{zerothi_sisl,
-      author       = {Papior, Nick R.},
+      author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
       year         = {2018},
       doi          = {10.5281/zenodo.597181},

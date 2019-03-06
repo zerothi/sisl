@@ -51,7 +51,7 @@ Advanced classes
 """
 from __future__ import print_function
 
-__author__ = "Nick R. Papior"
+__author__ = "Nick Papior"
 __copyright__ = "LGPL-3.0"
 
 # Import bibtex, version string and the major, minor, micro as well

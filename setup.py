@@ -74,7 +74,7 @@ def readme():
 
 metadata = dict(
     name='sisl',
-    maintainer="Nick R. Papior",
+    maintainer="Nick Papior",
     maintainer_email="nickpapior@gmail.com",
     description="Python interface for tight-binding model creation and analysis of DFT output. Input mechanism for large scale transport calculations using NEGF TBtrans (TranSiesta)",
     long_description=readme(),
@@ -206,7 +206,7 @@ if git_count > 2 and not released:
 
 # BibTeX information if people wish to cite
 bibtex = '''@misc{{{{zerothi_sisl,
-    author = {{{{Papior, Nick R.}}}},
+    author = {{{{Papior, Nick}}}},
     title  = {{{{sisl: v{{0}}}}}},
     year   = {{{{{rev_year}}}}},
     doi    = {{{{10.5281/zenodo.597181}}}},

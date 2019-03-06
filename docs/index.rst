@@ -30,7 +30,7 @@ sisl: tight-binding and DFT interface library
 =============================================
 
 The Python library `sisl <http://github.com/zerothi/sisl>`_ was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
-It was initially developed by Nick R. Papior (co-developer of `Siesta`_) as a side-project to `TranSiesta`_
+It was initially developed by Nick Papior (co-developer of `Siesta`_) as a side-project to `TranSiesta`_
 and `TBtrans`_ to efficiently analyse TBtrans output for N-electrode calculations.  
 Since then it has expanded to accommodate a rich set of DFT code input/outputs such as (but not limited to)
 `VASP`_, `OpenMX`_, `BigDFT`_, `Wannier90`_.
@@ -95,7 +95,7 @@ We recommend to specify the version of sisl in combination of this citation:
 .. code-block:: bash
    
     @misc{zerothi_sisl,
-      author       = {Papior, Nick R.},
+      author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
       year         = {2018},
       doi          = {10.5281/zenodo.597181},

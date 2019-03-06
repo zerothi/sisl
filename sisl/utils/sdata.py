@@ -15,7 +15,7 @@ def argparse_patch(parser):
 
     This patch have been created by:
       paul.j3 (http://bugs.python.org/file44363/issue27859test.py)
-    and adapted by Nick R. Papior with minor edits.
+    and adapted by Nick Papior with minor edits.
 
     Parameters
     ----------

@@ -125,7 +125,7 @@ autosummary_generate = [f for f in autosummary_generate if 'api-generated' not i
 
 # General information about the project.
 project = u'sisl'
-author = u'Nick R. Papior'
+author = u'Nick Papior'
 copyright = u'2015-2018, ' + author
 
 # If building this on RTD, mock out fortran sources
@@ -327,7 +327,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   (master_doc, 'sisl.tex', u'sisl Documentation',
-   u'Nick R. Papior', 'manual'),
+   u'Nick Papior', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

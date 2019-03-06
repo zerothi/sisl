@@ -1,6 +1,6 @@
 """ Poisson solver for arbitrary electrode positions
 
-Developer: Nick R. Papior
+Developer: Nick Papior
 Contact: nickpapior <at> gmail.com
 sisl-version: >=0.9.3
 
