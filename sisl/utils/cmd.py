@@ -102,7 +102,7 @@ def add_sisl_version_cite_arg(parser):
 
     class PrintVersion(argparse.Action):
         def __call__(self, parser, ns, values, option_string=None):
-            print("sisl: {} + {}\nrevision: {}".format(version, git_count, git_revision))
+            print("sisl: {}\ngit-hash: {}".format(version, git_count, git_revision))
     parser.add_argument('--version', nargs=0, action=PrintVersion,
                         help='Show detailed sisl version information (v{})'.format(version))
 

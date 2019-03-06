@@ -1221,7 +1221,7 @@ class Grid(SuperCellChild):
 
             def __call__(self, parser, ns, values, option_string=None):
                 ns._grid = ns._grid.interp([int(x) for x in values])
-        p.add_argument(*opts('--interp'), nargs=3,
+        p.add_argument(*opts('--interp'), nargs=3, metavar=('NX', 'NY', 'NZ'),
                        action=InterpGrid,
                        help='Interpolate the grid.')
 
@@ -1393,11 +1393,11 @@ def sgrid(grid=None, argv=None, ret_grid=False):
 This manipulation utility is highly advanced and one should note that the ORDER of
 options is determining the final structure. For instance:
 
-   {0} ElectrostaticPotential.grid.nc --diff Other.grid.nc --sub z 0.:0.2f
+   $> {0} Reference.grid.nc --diff Other.grid.nc --sub 0.:0.2f z
 
 is NOT equivalent to:
 
-   {0} ElectrostaticPotential.grid.nc --sub z 0.:0.2f --diff Other.grid.nc
+   $> {0} Reference.grid.nc --sub 0.:0.2f z --diff Other.grid.nc
 
 This may be unexpected but enables one to do advanced manipulations.
     """.format(osp.basename(sys.argv[0]))
