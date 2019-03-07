@@ -15,7 +15,7 @@
 |donate|_
 
 
-.. title:: Scientific Python toolbox for electronic structure calculations
+.. title:: sisl: Toolbox for electronic structure calculations
 .. meta::
    :description: sisl is a tool to manipulate density functional
 		 theory code input and/or output. It also implements tight-binding
