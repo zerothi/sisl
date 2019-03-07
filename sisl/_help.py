@@ -1,6 +1,8 @@
 from __future__ import print_function, division
 
 import sys
+import functools
+import warnings
 
 import numpy as np
 
@@ -8,6 +10,7 @@ __all__ = ['array_fill_repeat']
 __all__ += ['isndarray', 'isiterable']
 __all__ += ['get_dtype']
 __all__ += ['dtype_complex_to_real', 'dtype_real_to_complex']
+__all__ += ['wrap_filterwarnings']
 
 # Wrappers typically used
 __all__ += ['_str', '_range', '_zip', '_map']
@@ -207,3 +210,33 @@ def array_replace(array, *replace, **kwargs):
         ar[others] = kwargs['other']
 
     return ar
+
+
+def wrap_filterwarnings(*args, **kwargs):
+    """ Instead of creating nested `with` statements one can wrap entire functions with a filter
+
+    The following two are equivalent:
+
+    >>> def func():
+    ...    with warnings.filterwarnings(*args, **kwargs):
+    ...        ...
+
+    >>> @wrap_filterwarnings(*args, **kwargs)
+    >>> def func():
+    ...    ...
+
+    Parameters
+    ----------
+    *args :
+       arguments passed to `warnings.filterwarnings`
+    **kwargs :
+       keyword arguments passed to `warnings.filterwarnings`
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrap_func(*func_args, **func_kwargs):
+            with warnings.catch_warnings():
+                warnings.filterwarnings(*args, **kwargs)
+                return func(*func_args, **func_kwargs)
+        return wrap_func
+    return decorator

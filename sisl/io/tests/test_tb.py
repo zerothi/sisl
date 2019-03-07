@@ -6,7 +6,7 @@ import numpy as np
 from sisl.io.ham import *
 
 
-pytestmark = pytest.mark.io
+pytestmark = [pytest.mark.io, pytest.mark.ham]
 _dir = 'sisl/io'
 
 

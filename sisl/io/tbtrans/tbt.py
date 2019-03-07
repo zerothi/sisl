@@ -13,6 +13,7 @@ import itertools
 # The sparse matrix for the orbital/bond currents
 from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
+from scipy.sparse import SparseEfficiencyWarning
 
 # Import sile objects
 from ..sile import add_sile, sile_raise_write
@@ -24,6 +25,7 @@ from sisl import Geometry, Atoms
 from sisl import units, constant
 from sisl.messages import warn, info, SislError
 from sisl._help import _range as range
+from sisl._help import wrap_filterwarnings
 from sisl.unit.siesta import unit_convert
 from sisl.physics.distribution import get_distribution, fermi_dirac
 from sisl.physics.densitymatrix import DensityMatrix
@@ -1442,6 +1444,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.atom_current_from_orbital(Jorb, activity=activity)
 
+    @wrap_filterwarnings("ignore", category=SparseEfficiencyWarning)
     def vector_current_from_bond(self, Jab):
         r""" Vector for each atom being the sum of bond-current times the normalized bond between the atoms
 

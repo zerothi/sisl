@@ -3,6 +3,7 @@ from __future__ import print_function, division
 import numpy as np
 from scipy.sparse import lil_matrix
 from scipy.sparse import triu
+from scipy.sparse import SparseEfficiencyWarning
 
 # Import sile objects
 from .sile import *
@@ -13,6 +14,7 @@ from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
 from sisl._help import _range as range
+from sisl._help import wrap_filterwarnings
 from sisl import _array as _a
 
 
@@ -192,6 +194,7 @@ class hamiltonianSile(Sile):
 
         self._write('end atom\n')
 
+    @wrap_filterwarnings("ignore", category=SparseEfficiencyWarning)
     @sile_fh_open()
     def write_hamiltonian(self, ham, hermitian=True, **kwargs):
         """ Writes the Hamiltonian model to the file
@@ -208,7 +211,6 @@ class hamiltonianSile(Sile):
         ham : `Hamiltonian` model
         hermitian : boolean=True
             whether the stored data is halved using the Hermitian property
-
         """
         ham.finalize()
 

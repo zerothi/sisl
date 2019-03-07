@@ -9,9 +9,10 @@ from numpy import int32
 from numpy import floor, dot, add, cos, sin
 from numpy import ogrid, take
 from scipy.sparse import diags as sp_diags
+from scipy.sparse import SparseEfficiencyWarning
 
 from . import _array as _a
-from ._help import dtype_complex_to_real
+from ._help import dtype_complex_to_real, wrap_filterwarnings
 from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction, str_spec
@@ -252,7 +253,7 @@ class Grid(SuperCellChild):
     set_boundary = set_bc
     set_boundary_condition = set_bc
 
-    def __sc_geometry_dict(self, copy=True):
+    def __sc_geometry_dict(self):
         """ Internal routine for copying the SuperCell and Geometry """
         d = dict()
         d['sc'] = self.sc.copy()
@@ -263,8 +264,9 @@ class Grid(SuperCellChild):
     def copy(self):
         """ Copy the object """
         d = self.__sc_geometry_dict()
-        grid = self.__class__(np.copy(self.shape), bc=np.copy(self.bc),
-                              dtype=self.dtype, **d)
+        d['dtype'] = self.dtype
+        grid = self.__class__([1] * 3, bc=np.copy(self.bc), **d)
+        # This also ensures the shape is copied!
         grid.grid = self.grid.copy()
         return grid
 
@@ -280,8 +282,8 @@ class Grid(SuperCellChild):
         s = np.copy(self.shape)
         d = self.__sc_geometry_dict()
         d['sc'] = d['sc'].swapaxes(a, b)
-        grid = self.__class__(s[idx], bc=self.bc[idx],
-                              dtype=self.dtype, **d)
+        d['dtype'] = self.dtype
+        grid = self.__class__(s[idx], bc=self.bc[idx], **d)
         # We need to force the C-order or we loose the contiguity
         grid.grid = np.copy(np.swapaxes(self.grid, a, b), order='C')
         return grid
@@ -306,7 +308,7 @@ class Grid(SuperCellChild):
         shape[axis] = n
         if n < 1:
             raise ValueError('You cannot retain no indices.')
-        grid = self.__class__(shape, bc=np.copy(self.bc), **self.__sc_geometry_dict())
+        grid = self.__class__(shape, bc=np.copy(self.bc), dtype=self.dtype, **self.__sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_sc(cell)
         if scale_geometry and not self.geometry is None:
@@ -699,6 +701,7 @@ class Grid(SuperCellChild):
                 d['geometry'] = d['geometry'].append(other.geometry, axis)
         else:
             d['geometry'] = other.geometry
+        d['dtype'] = self.dtype
         return self.__class__(shape, bc=np.copy(self.bc), **d)
 
     @staticmethod
@@ -1010,6 +1013,7 @@ class Grid(SuperCellChild):
         # force RHS value
         self.pyamg_source(b, pyamg_indices, value)
 
+    @wrap_filterwarnings("ignore", category=SparseEfficiencyWarning)
     def pyamg_boundary_condition(self, A, b, bc=None):
         r""" Attach boundary conditions to the `pyamg` grid-matrix `A` with default boundary conditions as specified for this `Grid`
 
@@ -1025,6 +1029,7 @@ class Grid(SuperCellChild):
            with elements corresponding to `Grid.PERIODIC`/`Grid.NEUMANN`...
         """
         C = -1
+
         def Neumann(idx_bc, idx_p1):
             # TODO check this BC
             # Set all boundary equations to 0
