@@ -1412,33 +1412,6 @@ class Geometry(SuperCellChild):
             return ang
         return np.degrees(ang)
 
-    def rotatea(self, angle, origo=None, atom=None, only='abc+xyz', rad=False):
-        """ Rotate around first lattice vector
-
-        See Also
-        --------
-        rotate : generic function of this, this routine calls `rotate` with `v = self.cell[0, :]`
-        """
-        return self.rotate(angle, self.cell[0, :], origo, atom, only, rad)
-
-    def rotateb(self, angle, origo=None, atom=None, only='abc+xyz', rad=False):
-        """ Rotate around second lattice vector
-
-        See Also
-        --------
-        rotate : generic function of this, this routine calls `rotate` with `v = self.cell[1, :]`
-        """
-        return self.rotate(angle, self.cell[1, :], origo, atom, only, rad)
-
-    def rotatec(self, angle, origo=None, atom=None, only='abc+xyz', rad=False):
-        """ Rotate around third lattice vector
-
-        See Also
-        --------
-        rotate : generic function of this, this routine calls `rotate` with `v = self.cell[2, :]`
-        """
-        return self.rotate(angle, self.cell[2, :], origo, atom, only, rad)
-
     def rotate(self, angle, v, origo=None, atom=None, only='abc+xyz', rad=False):
         """ Rotate geometry around vector and return a new geometry
 
