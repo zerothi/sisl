@@ -531,15 +531,6 @@ class SuperCell(object):
                              'float, or an array of 3 values.')
         return self.cell * (length.ravel() / self.length).reshape(3, 1)
 
-    def rotatea(self, angle, only='abc', rad=False):
-        return self.rotate(angle, self.cell[0, :], only=only, rad=rad)
-
-    def rotateb(self, angle, only='abc', rad=False):
-        return self.rotate(angle, self.cell[1, :], only=only, rad=rad)
-
-    def rotatec(self, angle, only='abc', rad=False):
-        return self.rotate(angle, self.cell[2, :], only=only, rad=rad)
-
     def rotate(self, angle, v, only='abc', rad=False):
         """ Rotates the supercell, in-place by the angle around the vector
 

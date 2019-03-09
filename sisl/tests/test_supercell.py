@@ -114,26 +114,17 @@ class TestSuperCell(object):
         assert np.allclose(rot.cell, setup.sc.cell)
 
     def test_rotation2(self, setup):
-        rot = setup.sc.rotatec(180)
+        rot = setup.sc.rotate(180, setup.sc.cell[2, :])
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.sc.cell)
 
-        rot = setup.sc.rotatec(m.pi, rad=True)
+        rot = setup.sc.rotate(m.pi, setup.sc.cell[2, :], rad=True)
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.sc.cell)
 
-        rot = rot.rotatec(180)
+        rot = rot.rotate(180, setup.sc.cell[2, :])
         rot.cell[2, 2] *= -1
         assert np.allclose(rot.cell, setup.sc.cell)
-
-    def test_rotation3(self, setup):
-        rot = setup.sc.rotatea(180)
-        assert np.allclose(rot.cell[0, :], setup.sc.cell[0, :])
-        assert np.allclose(-rot.cell[2, 2], setup.sc.cell[2, 2])
-
-        rot = setup.sc.rotateb(m.pi, rad=True)
-        assert np.allclose(rot.cell[1, :], setup.sc.cell[1, :])
-        assert np.allclose(-rot.cell[2, 2], setup.sc.cell[2, 2])
 
     def test_swapaxes1(self, setup):
         sab = setup.sc.swapaxes(0, 1)
@@ -239,7 +230,7 @@ class TestSuperCell(object):
         assert np.allclose(param, sc.parameters())
         assert np.allclose(parama, sc.parameters(True))
         for ang in range(0, 91, 5):
-            s = sc.rotatea(ang).rotateb(ang).rotatec(ang)
+            s = sc.rotate(ang, sc.cell[0, :]).rotate(ang, sc.cell[1, :]).rotate(ang, sc.cell[2, :])
             assert np.allclose(param, s.parameters())
             assert np.allclose(parama, s.parameters(True))
 
@@ -309,7 +300,7 @@ class TestSuperCell(object):
         gbig = g.repeat(40, 0).repeat(40, 1)
         assert g.sc.parallel(gbig.sc)
         assert gbig.sc.parallel(g.sc)
-        g = g.rotatea(90)
+        g = g.rotate(90, g.cell[0, :])
         assert not g.sc.parallel(gbig.sc)
 
     def test_tile_multiply_orthogonal(self):
@@ -348,7 +339,8 @@ class TestSuperCell(object):
         assert sc.angle(1, 2) == 90
 
     def test_cell_length(self):
-        sc = (graphene(orthogonal=True) * (40, 40, 1)).rotatec(24).sc
+        gr = graphene(orthogonal=True)
+        sc = (gr * (40, 40, 1)).rotate(24, gr.cell[2, :]).sc
         assert np.allclose(sc.length, (sc.cell_length(sc.length) ** 2).sum(1) ** 0.5)
         assert np.allclose(1, (sc.cell_length(1) ** 2).sum(0))
 

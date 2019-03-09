@@ -371,15 +371,6 @@ class TestGeometry(object):
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
-    def test_rotation4(self, setup):
-        rot = setup.g.rotatea(180, only='xyz')
-        rot = setup.g.rotateb(180, only='xyz')
-        rot = setup.g.rotatec(180, only='xyz')
-
-    def test_rotation5(self, setup):
-        g = setup.g.copy()
-        rot = g.rotatea(180, origo=g.center(what='xyz'), only='xyz')
-
     def test_translate(self, setup):
         t = setup.g.translate([0, 0, 1])
         assert np.allclose(setup.g.xyz[:, 0], t.xyz[:, 0])
@@ -552,8 +543,8 @@ class TestGeometry(object):
         assert np.allclose(double.xyz, d.xyz)
 
     def test___add2__(self, setup):
-        g1 = setup.g.rotatec(15)
-        g2 = setup.g.rotatec(30)
+        g1 = setup.g.rotate(15, setup.g.cell[2, :])
+        g2 = setup.g.rotate(30, setup.g.cell[2, :])
 
         assert g1 != g2
         assert g1 + g2 == g1.add(g2)

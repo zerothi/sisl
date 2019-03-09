@@ -1446,9 +1446,6 @@ class Geometry(SuperCellChild):
         See Also
         --------
         Quaternion : class to rotate
-        rotatea : generic function for rotating around first lattice vector
-        rotateb : generic function for rotating around second lattice vector
-        rotatec : generic function for rotating around third lattice vector
         """
         if origo is None:
             origo = [0., 0., 0.]
