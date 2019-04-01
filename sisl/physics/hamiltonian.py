@@ -405,6 +405,23 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         return self.eigenstate(k, **kwargs).velocity()
 
+    def spin_moment(self, k=(0, 0, 0), **kwargs):
+        r""" Calculate the spin moment for the eigenstates for a given `k` point
+
+        Parameters
+        ----------
+        k : array_like, optional
+            k-point at which the spin moments are calculated
+        **kwargs: optional
+            additional parameters passed to the `eigenstate` routine
+
+        See Also
+        --------
+        eigenstate : method used to calculate the eigenstates
+        EigenvalueElectron.spin_moment : Underlying method used to calculate the spin moment
+        """
+        return self.eigenstate(k, **kwargs).spin_moment()
+
     def DOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
         r""" Calculate the DOS at the given energies for a specific `k` point
 
