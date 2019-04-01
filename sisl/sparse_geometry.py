@@ -1706,6 +1706,12 @@ class SparseOrbital(_SparseGeometry):
         >>> obj.sub_orbital(1, 1)
         """
         # Get specie index of the atom
+        if isinstance(atom, (tuple, list)):
+            if isinstance(atom[0], Atom):
+                spg = self
+                for a in atom:
+                    spg = spg.sub_orbital(a, orbital)
+                return spg
         if isinstance(atom, Atom):
             # All atoms with this specie
             atom = self.geometry.atoms.index(atom)
