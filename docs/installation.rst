@@ -39,9 +39,9 @@ Installing sisl using PyPi can be done using
 
 .. code-block:: bash
 
-    pip install sisl
-    # or
-    pip install sisl[analysis]
+   pip install sisl
+   # or
+   pip install sisl[analysis]
 
 :code:`pip` will automatically install the required dependencies. The optional dependencies
 will be used if later installed.
@@ -49,6 +49,14 @@ will be used if later installed.
 The latter installation call also installs :code:`tqdm` and :code:`xarray` which are part of
 extended analysis methods. These are not required and may be installed later if their usage
 is desired.
+
+When wanting to pass options to :code:`pip` simply use the following
+
+.. code-block:: bash
+
+   pip install --install-option="--compiler=intelem" --install-option="--fcompiler-intelem" sisl
+
+note that options are accummulated.
 
 
 conda
@@ -58,8 +66,8 @@ Installing sisl using conda can be done by
 
 .. code-block:: bash
 
-    conda config --add channels conda-forge
-    conda install sisl
+   conda config --add channels conda-forge
+   conda install sisl
 
 To find more information about the conda-forge installation please see
 `here <conda-releases_>`_.
@@ -75,7 +83,7 @@ appear). The dependencies may be installed using this :code:`pip` command:
 
 .. code-block:: bash
 
-    pip install -r requirements.txt
+   pip install -r requirements.txt
 
 
 Simply download the release tar from `this page <gh-releases_>`_, or clone
@@ -83,7 +91,7 @@ the `git repository <sisl-git_>`_ for the latest developments
 
 .. code-block:: bash
 
-    python setup.py install --prefix=<prefix>
+   python setup.py install --prefix=<prefix>
 
 
 Testing your installation
@@ -97,7 +105,7 @@ Testing the installation may be done by:
 
 .. code-block:: bash
 
-    pytest --pyargs sisl
+   pytest --pyargs sisl
 
 
 Development version
@@ -107,6 +115,17 @@ To install the development version using :code:`pip` you may use the URL command
 
 .. code-block:: bash
 
-    pip install git+https://github.com/zerothi/sisl.git
+   pip install git+https://github.com/zerothi/sisl.git
 
 Otherwise follow the manual installation by cloning the `git repository <sisl-git_>`_.
+Remark that the :code:`git+https` protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
+options to :code:`setup.py`. If you want to install the development version with e.g.
+the Intel compilers you should do:
+
+.. code-block:: bash
+
+   git clone git+https://github.com/zerothi/sisl.git
+   cd sisl
+   pip install --global-option="build" --global-option="--compiler=intelem" --global-option="--fcompiler=intelem" .
+
+which will pass the correct options to the build system.
