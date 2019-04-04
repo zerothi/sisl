@@ -367,6 +367,37 @@ class TestBrillouinZone(object):
         assert np.allclose(bz1.k, bz2.k)
         assert np.allclose(bz1.weight, bz2.weight)
 
+    def test_brillouinzone_pickle(self, setup):
+        import pickle as p
+        bz1 = BrillouinZone(geom.graphene(), [[0] * 3, [0.25] * 3], [1/2] * 2)
+        n = p.dumps(bz1)
+        bz2 = p.loads(n)
+        assert np.allclose(bz1.k, bz2.k)
+        assert np.allclose(bz1.weight, bz2.weight)
+        assert bz1.parent == bz2.parent
+
+    def test_monkhorstpack_pickle(self, setup):
+        import pickle as p
+        bz1 = MonkhorstPack(geom.graphene(), [10, 11, 1], centered=False)
+        n = p.dumps(bz1)
+        bz2 = p.loads(n)
+        assert np.allclose(bz1.k, bz2.k)
+        assert np.allclose(bz1.weight, bz2.weight)
+        assert bz1.parent == bz2.parent
+        assert bz1._centered == bz2._centered
+
+    def test_bandstructure_pickle(self, setup):
+        import pickle as p
+        bz1 = BandStructure(setup.s1, [[0]*2, [.5]*2], 300, ['A', 'C'])
+        n = p.dumps(bz1)
+        bz2 = p.loads(n)
+        assert np.allclose(bz1.k, bz2.k)
+        assert np.allclose(bz1.weight, bz2.weight)
+        assert bz1.parent == bz2.parent
+        assert np.allclose(bz1.point, bz2.point)
+        assert np.allclose(bz1.division, bz2.division)
+        assert bz1.name == bz2.name
+
     @pytest.mark.parametrize("n", [[0, 0, 1], [0.5] * 3])
     def test_param_circle(self, n):
         bz = BrillouinZone.param_circle(1, 10, 0.1, n, [1/2] * 3)

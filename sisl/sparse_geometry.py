@@ -840,7 +840,7 @@ class _SparseGeometry(object):
         geom = Geometry([0] * 3, Atom(1))
         geom.__setstate__(state['geometry'])
         self._geometry = geom
-        csr = SparseCSR((10, 10, 2))
+        csr = SparseCSR((2, 2, 2))
         csr.__setstate__(state['csr'])
         self._csr = csr
         self._def_dim = -1

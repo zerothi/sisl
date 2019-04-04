@@ -153,6 +153,39 @@ class BrillouinZone(object):
         # Instantiate the array call
         self.asarray()
 
+    def set_parent(self, parent):
+        """ Update the parent associated to this object
+
+        Parameters
+        ----------
+        parent : object or array_like
+           an object containing cell vectors
+        """
+        try:
+            # It probably has the supercell attached
+            parent.cell
+            parent.rcell
+            self.parent = parent
+        except:
+            self.parent = SuperCell(parent)
+
+    def __getstate__(self):
+        """ Return dictionary with the current state """
+        state = {}
+        state['parent_class'] = self.parent.__class__
+        state['parent'] = self.parent.__getstate__()
+        state['k'] = self._k.copy()
+        state['weight'] = self._w.copy()
+        return state
+
+    def __setstate__(self, state):
+        """ Reset state of the object """
+        self._k = state['k']
+        self._w = state['weight']
+        parent = state['parent_class'].__new__(state['parent_class'])
+        parent.__setstate__(state['parent'])
+        self.set_parent(parent)
+
     def __str__(self):
         """ String representation of the BrillouinZone """
         if isinstance(self.parent, SuperCell):
@@ -287,22 +320,6 @@ class BrillouinZone(object):
         w = np.repeat([W / N], N)
 
         return BrillouinZone(sc, k, w)
-
-    def set_parent(self, parent):
-        """ Update the parent associated to this object
-
-        Parameters
-        ----------
-        parent : object or array_like
-           an object containing cell vectors
-        """
-        try:
-            # It probably has the supercell attached
-            parent.cell
-            parent.rcell
-            self.parent = parent
-        except:
-            self.parent = SuperCell(parent)
 
     def copy(self):
         """ Create a copy of this object """
@@ -966,6 +983,25 @@ class MonkhorstPack(BrillouinZone):
         self._centered = centered
         self._trs = i_trs
 
+    def __getstate__(self):
+        """ Return dictionary with the current state """
+        state = super(MonkhorstPack, self).__getstate__()
+        state['diag'] = self._diag
+        state['displ'] = self._displ
+        state['size'] = self._size
+        state['centered'] = self._centered
+        state['trs'] = self._trs
+        return state
+
+    def __setstate__(self, state):
+        """ Reset state of the object """
+        super(MonkhorstPack, self).__setstate__(state)
+        self._diag = state['diag']
+        self._displ = state['displ']
+        self._size = state['size']
+        self._centered = state['centered']
+        self._trs = state['trs']
+
     def copy(self):
         """ Create a copy of this object """
         bz = self.__class__(self.parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0)
@@ -1406,6 +1442,21 @@ class BandStructure(BrillouinZone):
 
         self._k = _a.arrayd([k for k in self])
         self._w = _a.fulld(len(self.k), 1 / len(self.k))
+
+    def __getstate__(self):
+        """ Return dictionary with the current state """
+        state = super(BandStructure, self).__getstate__()
+        state['point'] = self.point.copy()
+        state['division'] = self.division.copy()
+        state['name'] = list(self.name)
+        return state
+
+    def __setstate__(self, state):
+        """ Reset state of the object """
+        super(BandStructure, self).__setstate__(state)
+        self.point = state['point']
+        self.division = state['division']
+        self.name = state['name']
 
     def __iter__(self):
         """ Iterate through the path """
