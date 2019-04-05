@@ -14,7 +14,7 @@ from ..sile import add_sile, SileError
 from .sile import SileBinSiesta
 
 import sisl._array as _a
-from sisl import Geometry, Atom, SuperCell, Grid
+from sisl import Geometry, Atom, Atoms, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
@@ -35,6 +35,74 @@ __all__ += ['tsgfSileSiesta']
 def _bin_check(obj, method, message):
     if _siesta.io_m.iostat_query() != 0:
         raise SileError('{}.{} {}'.format(str(obj), method, message))
+
+
+def _geometry_align(geom_b, geom_u, cls, method):
+    """ Routine used to align two geometries
+
+    There are a few twists in this since the fdf-reads will automatically
+    try and pass a geometry from the output files.
+    In cases where the *.ion* files are non-existing this will
+    result in a twist.
+
+    This routine will select and return a merged Geometry which
+    fulfills the correct number of atoms and orbitals.
+
+    However, if the input geometries have mis-matching number
+    of atoms a SislError will be raised.
+
+    Parameters
+    ----------
+    geom_b : Geometry from binary file
+    geom_u : Geometry supplied by user
+
+    Raises
+    ------
+    SislError : if the geometries have non-equal atom count
+    """
+    # Default to use the users geometry
+    geom = geom_u
+
+    is_copy = False
+    def get_copy(geom, is_copy):
+        if is_copy:
+            return geom, True
+        return geom.copy(), True
+
+    if geom_b.na != geom.na:
+        # we have no way of solving this issue...
+        raise SileError("{cls}.{method} could not use the passed geometry as the "
+                        "of atoms is not consistent, user-atoms={u_na}, file-atoms={b_na}.".format(cls=cls.__name__, method=method,
+                                                                                                   b_na=geom_b.na, u_na=geom_u.na))
+
+    # Try and figure out what to do
+    if not np.allclose(geom_b.xyz, geom.xyz):
+        warn("{cls}.{method} has mismatched atomic coordinates, will copy geometry and use file XYZ.".format(cls=cls.__name__, method=method))
+        geom, is_copy = get_copy(geom, is_copy)
+        geom.xyz[:, :] = geom_b.xyz[:, :]
+    if not np.allclose(geom_b.sc.cell, geom.sc.cell):
+        warn("{cls}.{method} has non-equal lattice vectors, will copy geometry and use file lattice.".format(cls=cls.__name__, method=method))
+        geom, is_copy = get_copy(geom, is_copy)
+        geom.sc.cell[:, :] = geom_b.sc.cell[:, :]
+    if not np.array_equal(geom_b.nsc, geom.nsc):
+        warn("{cls}.{method} has non-equal number of supercells, will copy geometry and use file supercell count.".format(cls=cls.__name__, method=method))
+        geom, is_copy = get_copy(geom, is_copy)
+        geom.set_nsc(geom_b.nsc)
+
+    # Now for the difficult part.
+    # If there is a mismatch in the number of orbitals we will
+    # prefer to use the user-supplied atomic species, but fill with
+    # *random* orbitals
+    if not np.array_equal(geom_b.atoms.orbitals, geom.atoms.orbitals):
+        warn("{cls}.{method} has non-equal number of orbitals per atom, will correct with *empty* orbitals.".format(cls=cls.__name__, method=method))
+        geom, is_copy = get_copy(geom, is_copy)
+
+        # Now create a new atom specie with the correct number of orbitals
+        norbs = geom_b.atoms.orbitals[:]
+        atoms = Atoms([geom.atoms[i].copy(orbital=[-1] * norbs[i]) for i in range(geom.na)])
+        geom._atoms = atoms
+
+    return geom
 
 
 class onlysSileSiesta(SileBinSiesta):
@@ -95,15 +163,7 @@ class onlysSileSiesta(SileBinSiesta):
     def read_overlap(self, **kwargs):
         """ Returns the overlap matrix from the siesta.TSHS file """
         tshs_g = self.read_geometry()
-        geom = kwargs.get('geometry', tshs_g)
-        if geom.na != tshs_g.na or geom.no != tshs_g.no:
-            raise SileError(self.__class__.__name__ + '.read_overlap could not use the '
-                            'passed geometry as the number of atoms or orbitals is '
-                            'inconsistent with TSHS file.')
-
-        # Ensure that the number of supercells is correct
-        if np.any(geom.nsc != tshs_g.nsc):
-            geom.set_nsc(tshs_g.nsc)
+        geom = _geometry_align(tshs_g, kwargs.get('geometry', tshs_g), self.__class__, 'read_overlap')
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
@@ -140,15 +200,7 @@ class tshsSileSiesta(onlysSileSiesta):
     def read_hamiltonian(self, **kwargs):
         """ Returns the electronic structure from the siesta.TSHS file """
         tshs_g = self.read_geometry()
-        geom = kwargs.get('geometry', tshs_g)
-        if geom.na != tshs_g.na or geom.no != tshs_g.no:
-            raise SileError(self.__class__.__name__ + '.read_hamiltonian could not use the '
-                            'passed geometry as the number of atoms or orbitals is inconsistent '
-                            'with TSHS file.')
-
-        # Ensure that the number of supercells is correct
-        if np.any(geom.nsc != tshs_g.nsc):
-            geom.set_nsc(tshs_g.nsc)
+        geom = _geometry_align(tshs_g, kwargs.get('geometry', tshs_g), self.__class__, 'read_hamiltonian')
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
@@ -371,8 +423,7 @@ class tsdeSileSiesta(dmSileSiesta):
         if nsc[0] != 0 or geom.no_s >= col.max():
             _csr_from_siesta(geom, EDM._csr)
         else:
-            warn(str(self) + '.read_energy_density_matrix may '
-                 'result in a wrong sparse pattern!')
+            warn(str(self) + '.read_energy_density_matrix may result in a wrong sparse pattern!')
 
         return EDM
 

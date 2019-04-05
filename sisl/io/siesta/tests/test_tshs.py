@@ -23,6 +23,34 @@ def test_si_pdos_kgrid_tshs(sisl_files, sisl_tmp):
     assert np.allclose(HS1._csr._D, HS2._csr._D)
 
 
+def test_tshs_warn(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
+
+    # check number of orbitals
+    geom = si.read_geometry()
+    geom._atoms = sisl.Atoms([sisl.Atom(i + 1) for i in range(geom.na)])
+    with pytest.warns(sisl.SislWarning, match='number of orbitals'):
+        si.read_hamiltonian(geometry=geom)
+
+    # check cell
+    geom = si.read_geometry()
+    geom.sc.cell[:, :] = 1.
+    with pytest.warns(sisl.SislWarning, match='lattice vectors'):
+        si.read_hamiltonian(geometry=geom)
+
+    # check atomic coordinates
+    geom = si.read_geometry()
+    geom.xyz[0, :] += 10.
+    with pytest.warns(sisl.SislWarning, match='atomic coordinates'):
+        si.read_hamiltonian(geometry=geom)
+
+    # check supercell
+    geom = si.read_geometry()
+    geom.set_nsc([1, 1, 1])
+    with pytest.warns(sisl.SislWarning, match='supercell'):
+        si.read_hamiltonian(geometry=geom)
+
+
 def test_si_pdos_kgrid_tshs_overlap(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
     HS = si.read_hamiltonian()
