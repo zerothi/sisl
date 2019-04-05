@@ -74,7 +74,7 @@ If performing a manual installation, these packages are required:
    - __scipy__ (0.18 or later)
    - __netCDF4__
    - __setuptools__
-   - __pyparsing__
+   - __pyparsing__ (1.5.7 or later)
    - __pytest__, optional dependency for running the tests
    - __matplotlib__, encouraged optional dependency
    - __tqdm__, encouraged optional dependency

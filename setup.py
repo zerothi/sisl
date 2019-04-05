@@ -54,7 +54,7 @@ install_requires = [
     'numpy>=1.13',
     'scipy>=0.18',
     'netCDF4',
-    'pyparsing',
+    'pyparsing>=1.5.7',
 ]
 
 # Create list of all sub-directories with

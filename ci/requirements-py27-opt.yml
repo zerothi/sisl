@@ -10,7 +10,7 @@ dependencies:
   - pip
   - six
   - setuptools
-  - pyparsing
+  - pyparsing>=1.5.7
   - numpy>=1.13
   - scipy
   - netcdf4
