@@ -830,10 +830,10 @@ class _SparseGeometry(object):
 
     def __getstate__(self):
         """ Return dictionary with the current state """
-        d = {}
-        d['geometry'] = self.geometry.__getstate__()
-        d['csr'] = self._csr.__getstate__()
-        return d
+        return {
+            'geometry': self.geometry.__getstate__(),
+            'csr': self._csr.__getstate__()
+        }
 
     def __setstate__(self, state):
         """ Return dictionary with the current state """

@@ -171,12 +171,12 @@ class BrillouinZone(object):
 
     def __getstate__(self):
         """ Return dictionary with the current state """
-        state = {}
-        state['parent_class'] = self.parent.__class__
-        state['parent'] = self.parent.__getstate__()
-        state['k'] = self._k.copy()
-        state['weight'] = self._w.copy()
-        return state
+        return {
+            'parent_class': self.parent.__class__,
+            'parent': self.parent.__getstate__(),
+            'k': self._k.copy(),
+            'weight': self._w.copy()
+        }
 
     def __setstate__(self, state):
         """ Reset state of the object """

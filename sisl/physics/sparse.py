@@ -507,10 +507,10 @@ class SparseOrbitalBZ(SparseOrbital):
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
     def __getstate__(self):
-        d = {}
-        d['sparseorbitalbz'] = super(SparseOrbitalBZ, self).__getstate__()
-        d['orthogonal'] = self._orthogonal
-        return d
+        return {
+            'sparseorbitalbz': super(SparseOrbitalBZ, self).__getstate__(),
+            'orthogonal': self._orthogonal
+        }
 
     def __setstate__(self, state):
         self._orthogonal = state['orthogonal']
@@ -861,11 +861,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
     def __getstate__(self):
-        d = {}
-        d['sparseorbitalbzspin'] = super(SparseOrbitalBZSpin, self).__getstate__()
-        d['spin'] = self._spin.__getstate__()
-        d['orthogonal'] = self._orthogonal
-        return d
+        return {
+            'sparseorbitalbzspin': super(SparseOrbitalBZSpin, self).__getstate__(),
+            'spin': self._spin.__getstate__(),
+            'orthogonal': self._orthogonal
+        }
 
     def __setstate__(self, state):
         self._orthogonal = state['orthogonal']

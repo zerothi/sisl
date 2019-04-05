@@ -179,11 +179,11 @@ class Spin(object):
         return self.kind >= other.kind
 
     def __getstate__(self):
-        d = {}
-        d['spins'] = self.spins
-        d['kind'] = self.kind
-        d['dtype'] = self.dtype
-        return d
+        return {
+            'spins': self.spins,
+            'kind': self.kind,
+            'dtype': self.dtype
+        }
 
     def __setstate__(self, state):
         self._spins = state['spins']

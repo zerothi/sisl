@@ -1578,11 +1578,12 @@ class SparseCSR(object):
         d = {}
         # Reduce array sizes
         self.finalize()
-        d['shape'] = self._shape[:]
-        d['ncol'] = self.ncol.copy()
-        d['col'] = self.col.copy()
-        d['D'] = self._D.copy()
-        return d
+        return {
+            'shape': self._shape[:],
+            'ncol': self.ncol.copy(),
+            'col': self.col.copy(),
+            'D': self._D.copy()
+        }
 
     def __setstate__(self, state):
         """ Reset state of the object """
