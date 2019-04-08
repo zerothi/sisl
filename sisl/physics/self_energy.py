@@ -13,7 +13,7 @@ from sisl.utils.mathematics import fnorm
 from sisl.utils.ranges import array_arange
 from sisl._help import array_replace
 import sisl._array as _a
-from sisl.linalg import solve, inv
+from sisl.linalg import linalg_info, solve, inv
 from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.physics.bloch import Bloch
 
@@ -206,8 +206,14 @@ class RecursiveSI(SemiInfinite):
             beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
             del P, S
 
+        # Get faster methods since we don't want overhead of solve
+        gesv = linalg_info('gesv', dtype)
+
         while True:
-            tab = solve(GB, ab2).reshape(shape)
+            _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
+            tab.shape = shape
+            if info != 0:
+                raise ValueError(self.__class__.__name__ + '.green could not solve G x = B system!')
 
             # Update bulk Green function
             subtract(GB, dot(alpha, tab[:, 1, :]), out=GB)
@@ -294,10 +300,16 @@ class RecursiveSI(SemiInfinite):
         else:
             GS = zeros_like(GB)
 
+        # Get faster methods since we don't want overhead of solve
+        gesv = linalg_info('gesv', dtype)
+
         # Specifying dot with 'out' argument should be faster
         tmp = empty_like(GS)
         while True:
-            tab = solve(GB, ab2).reshape(shape)
+            _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
+            tab.shape = shape
+            if info != 0:
+                raise ValueError(self.__class__.__name__ + '.self_energy could not solve G x = B system!')
 
             dot(alpha, tab[:, 1, :], tmp)
             # Update bulk Green function
@@ -394,10 +406,16 @@ class RecursiveSI(SemiInfinite):
         else:
             GS = zeros_like(GB)
 
+        # Get faster methods since we don't want overhead of solve
+        gesv = linalg_info('gesv', dtype)
+
         # Specifying dot with 'out' argument should be faster
         tmp = empty_like(GS)
         while True:
-            tab = solve(GB, ab2).reshape(shape)
+            _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
+            tab.shape = shape
+            if info != 0:
+                raise ValueError(self.__class__.__name__ + '.self_energy_lr could not solve G x = B system!')
 
             dot(alpha, tab[:, 1, :], tmp)
             # Update bulk Green function
@@ -808,18 +826,25 @@ class RealSpaceSE(SelfEnergy):
                     return inv(M0Sk(k, dtype=dtype, format='array') * E - M0Pk(k, dtype=dtype, format='array', **kwargs) - SL - SR, True)
 
         else:
+            # Get faster methods since we don't want overhead of solve
+            gesv = linalg_info('gesv', dtype)
             M1 = self._calc['SE'].spgeom1
             M1Pk = M1.Pk
             if self.parent.orthogonal:
                 def _calc_green(k, dtype, no, tile, idx0):
                     # Calculate left/right self-energies
                     Gf, A2 = SE(E, k, dtype=dtype, bulk=True, **kwargs) # A1 == Gf, because of memory usage
-                    B = - M1Pk(k, dtype=dtype, format='array', **kwargs)
+                    # skip negation since we don't do negation on tY/tX
+                    B = M1Pk(k, dtype=dtype, format='array', **kwargs)
                     # C = conjugate(B.T)
 
-                    tY = - solve(Gf, conjugate(B.T), True, True)
-                    Gf = inv(A2 + dot(B, tY), True)
-                    tX = - solve(A2, B, True, True)
+                    _, _, tY, info = gesv(Gf, conjugate(B.T), overwrite_a=True, overwrite_b=True)
+                    if info != 0:
+                        raise ValueError(self.__class__.__name__ + '.green could not solve tY x = B system!')
+                    Gf[:, :] = inv(A2 - dot(B, tY), True)
+                    _, _, tX, info = gesv(A2, B, overwrite_a=True, overwrite_b=True)
+                    if info != 0:
+                        raise ValueError(self.__class__.__name__ + '.green could not solve tX x = B system!')
 
                     # Since this is the pristine case, we know that
                     # G11 and G22 are the same:
@@ -838,12 +863,17 @@ class RealSpaceSE(SelfEnergy):
                     Gf, A2 = SE(E, k, dtype=dtype, bulk=True, **kwargs) # A1 == Gf, because of memory usage
                     tY = M1Sk(k, dtype=dtype, format='array') # S
                     tX = M1Pk(k, dtype=dtype, format='array', **kwargs) # H
-                    B = tY * E - tX
+                    # negate B to allow faster gesv method
+                    B = tX - tY * E
                     # C = _conj(tY.T) * E - _conj(tX.T)
 
-                    tY = - solve(Gf, conjugate(tY.T) * E - conjugate(tX.T), True, True)
-                    Gf = inv(A2 + dot(B, tY), True)
-                    tX = - solve(A2, B, True, True)
+                    _, _, tY[:, :], info = gesv(Gf, conjugate(tX.T) - conjugate(tY.T) * E, overwrite_a=True, overwrite_b=True)
+                    if info != 0:
+                        raise ValueError(self.__class__.__name__ + '.green could not solve tY x = B system!')
+                    Gf[:, :] = inv(A2 - dot(B, tY), True)
+                    _, _, tX[:, :], info = gesv(A2, B, overwrite_a=True, overwrite_b=True)
+                    if info != 0:
+                        raise ValueError(self.__class__.__name__ + '.green could not solve tX x = B system!')
 
                     G = empty([tile, no, tile, no], dtype=dtype)
                     G[idx0, :, idx0, :] = Gf.reshape(1, no, no)

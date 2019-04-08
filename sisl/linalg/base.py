@@ -2,6 +2,7 @@ from functools import partial as _partial
 
 # Create a _copy_ of the scipy.linalg.solve routine and implement
 # our own refine keyword.
+import numpy as np
 from numpy import atleast_1d, atleast_2d
 from scipy.linalg.lapack import get_lapack_funcs, _compute_lwork
 from scipy.linalg.misc import LinAlgError, _datacopied
@@ -11,7 +12,60 @@ import scipy.linalg as sl
 import scipy.sparse.linalg as ssl
 
 
-__all__ = []
+__all__ = ['linalg_info']
+
+
+# Placeholder for basic linear algebra methods
+# I.e. when fetching the same method over and over
+# we should be able to reduce the overhead by retrieving the intrinsic version.
+_linalg_info_dtype = {
+    np.float32: 'f4',
+    np.float64: 'f8',
+    np.complex64: 'c8',
+    np.complex128: 'c16',
+    'f4': 'f4',
+    'f8': 'f8',
+    'c8': 'c8',
+    'c16': 'c16',
+}
+_linalg_info_base = {}
+# Initialize the base-dtype dicts
+for _, item in _linalg_info_dtype.items():
+    _linalg_info_base[item] = {}
+
+
+def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg_info_dtype):
+    """ Faster LAPACK methods to be returned without too many lookups an array checks
+
+    Parameters
+    ----------
+    method : str
+       LAPACK instance to retrieve
+    dtype : numpy.dtype
+       matrix corresponding data-type
+
+    Returns
+    -------
+    Function to call corresponding to method `method` in precision `dtype`.
+
+    Raises
+    ------
+    ValueError: if the corresponding method is not present
+    """
+    # dtype as string
+    dtype_str = dtype_dict[dtype]
+
+    # Get dictionary for methods
+    m_dict = method_dict[dtype_str]
+
+    # Check if it exists
+    if method in m_dict:
+        return m_dict[method]
+
+    # Get the corresponding method and store it before returning it
+    func = get_lapack_funcs(method, dtype=dtype)
+    m_dict[method] = func
+    return func
 
 
 def inv(a, overwrite_a=False):
