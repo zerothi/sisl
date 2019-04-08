@@ -4,7 +4,7 @@ from functools import partial as _partial
 # our own refine keyword.
 import numpy as np
 from numpy import atleast_1d, atleast_2d
-from scipy.linalg.lapack import get_lapack_funcs, _compute_lwork
+from scipy.linalg.lapack import get_lapack_funcs
 from scipy.linalg.misc import LinAlgError, _datacopied
 from scipy._lib._util import _asarray_validated
 
@@ -66,6 +66,34 @@ def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg
     func = get_lapack_funcs(method, dtype=dtype)
     m_dict[method] = func
     return func
+
+
+def _compute_lwork(routine, *args, **kwargs):
+    """ See scipy.linalg.lapack._compute_lwork """
+    wi = routine(*args, **kwargs)
+    if len(wi) < 2:
+        raise ValueError('')
+    info = wi[-1]
+    if info != 0:
+        raise ValueError("Internal work array size computation failed: "
+                         "%d" % (info,))
+
+    lwork = [w.real for w in wi[:-1]]
+
+    dtype = getattr(routine, 'dtype', None)
+    if dtype == np.float32 or dtype == np.complex64:
+        # Single-precision routine -- take next fp value to work
+        # around possible truncation in LAPACK code
+        lwork = np.nextafter(lwork, np.inf, dtype=np.float32)
+
+    lwork = np.array(lwork, np.int64)
+    if np.any(np.logical_or(lwork < 0, lwork > np.iinfo(np.int32).max)):
+        raise ValueError("Too large work array required -- computation cannot "
+                         "be performed with standard 32-bit LAPACK.")
+    lwork = lwork.astype(np.int32)
+    if lwork.size == 1:
+        return lwork[0]
+    return lwork
 
 
 def inv(a, overwrite_a=False):
