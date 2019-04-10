@@ -40,7 +40,8 @@ using automatic arguments.
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import conj, dot
+from numpy import conj, dot, fabs, exp
+from numpy import delete
 
 import sisl._array as _a
 from sisl import units, constant
@@ -216,6 +217,9 @@ def displacement(mode, hw, mass):
 
     where :math:`i` is the atomic index.
 
+    Even for negative frequencies the characteristic length is calculated for use of non-equilibrium
+    modes.
+
     Parameters
     ----------
     mode : array_like
@@ -243,15 +247,15 @@ _displacement_const = (2 * units('Ry', 'eV') * constant.m_e('amu')) ** 0.5 * uni
 
 def _displacement(mode, hw, mass):
     """ Real space displacements """
-    idx = (hw < 0).nonzero()[0]
+    idx = (hw == 0).nonzero()[0]
     U = mode.copy()
     U[idx, :] = 0.
 
     # Now create the remaining displacements
-    idx = np.delete(_a.arangei(mode.shape[0]), idx)
+    idx = delete(_a.arangei(mode.shape[0]), idx)
 
     # Generate displacement factor
-    factor = _displacement_const / hw[idx].reshape(-1, 1) ** 0.5
+    factor = _displacement_const / fabs(hw[idx]).reshape(-1, 1) ** 0.5
 
     U.shape = (mode.shape[0], -1, 3)
     U[idx, :, :] = (mode[idx, :] * factor).reshape(-1, mass.shape[0], 3) / mass.reshape(1, -1, 1) ** 0.5
@@ -302,9 +306,9 @@ class _phonon_Mode(object):
         phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(k, g.rcell))
 
         if gauge == 'r':
-            self.state *= np.exp(1j * phase).reshape(1, -1)
+            self.state *= exp(1j * phase).reshape(1, -1)
         elif gauge == 'R':
-            self.state *= np.exp(-1j * phase).reshape(1, -1)
+            self.state *= exp(-1j * phase).reshape(1, -1)
 
 
 class CoefficientPhonon(Coefficient):
