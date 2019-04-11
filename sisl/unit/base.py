@@ -381,7 +381,7 @@ class UnitParser(object):
             conv = self._p_left(args[0])
             self._empty_list(self._left)
             return conv
-        return (self._convert(args[i], args[i+1]) for i in range(len(args)-1))
+        return tuple(self._convert(args[i], args[i+1]) for i in range(len(args)-1))
 
     def __call__(self, *args):
         return self.convert(*args)
