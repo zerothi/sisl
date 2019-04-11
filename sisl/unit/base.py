@@ -360,7 +360,7 @@ class UnitParser(object):
         If 1 parameter is passed a conversion to the default values will be returned.
         If 2 parameters are passed then a single float will be returned that converts between
         ``args[0]`` and ``args[1]``.
-        If 3 or more2 parameters are passed then a tuple of floats will be returned where
+        If 3 or more parameters are passed then a tuple of floats will be returned where
         ``tuple[0]`` is the conversion between ``args[0]`` and ``args[1]``,
         ``tuple[1]`` is the conversion between ``args[1]`` and `args[2]`` and so on.
 
@@ -381,7 +381,7 @@ class UnitParser(object):
             conv = self._p_left(args[0])
             self._empty_list(self._left)
             return conv
-        return [self._convert(args[i], args[i+1]) for i in range(len(args)-1)]
+        return (self._convert(args[i], args[i+1]) for i in range(len(args)-1))
 
     def __call__(self, *args):
         return self.convert(*args)

@@ -88,6 +88,8 @@ from . import unit
 
 # Import numerical constants (they required unit)
 from . import constant
+# To make it easier to type ;)
+C = constant
 
 # Specific linear algebra
 from . import linalg

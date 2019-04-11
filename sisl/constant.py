@@ -13,11 +13,13 @@ The currently stored constants are (all are given in SI units):
 .. autosummary::
 
    PhysicalConstant
+   q
    c
    h
    hbar
    m_e
    m_p
+   G0
    G
 
 
@@ -29,11 +31,13 @@ The currently stored constants are (all are given in SI units):
    :hidden:
 
    PhysicalConstant
+   q
    c
    h
    hbar
    m_e
    m_p
+   G0
    G
 
 
@@ -95,9 +99,11 @@ class PhysicalConstant(float):
         return PhysicalConstant(self * units(self.unit, unit), unit)
 
 
-__all__ += ['c', 'h', 'hbar', 'm_e', 'm_p', 'G']
+__all__ += ['q', 'c', 'h', 'hbar', 'm_e', 'm_p', 'G', 'G0']
 
 
+#: Unit of charge [C], or [A s]
+q = PhysicalConstant(1.602176634e-19, 'A s')
 #: Speed of light [m/s]
 c = PhysicalConstant(299792458, 'm/s')
 #: Plancks constant [J s]
@@ -108,5 +114,7 @@ hbar = PhysicalConstant(1.0545718176461565e-34, 'J s')
 m_e = PhysicalConstant(9.1093835611e-31, 'kg')
 #: Mass of proton [kg]
 m_p = PhysicalConstant(1.67262189821e-27, 'kg')
+#: Conductance quantum [S], or [m^2/s^2]
+G0 = PhysicalConstant(2 * (q ** 2 / h), 'm^2/s^2')
 #: Gravitational constant [m^3/kg/s^2]
 G = PhysicalConstant(6.6740831e-11, 'm^3/kg/s^2')
