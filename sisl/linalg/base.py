@@ -4,6 +4,7 @@ from functools import partial as _partial
 # our own refine keyword.
 import numpy as np
 from numpy import atleast_1d, atleast_2d
+from scipy.linalg.blas import get_blas_funcs
 from scipy.linalg.lapack import get_lapack_funcs
 from scipy.linalg.misc import LinAlgError, _datacopied
 from scipy._lib._util import _asarray_validated
@@ -35,12 +36,12 @@ for _, item in _linalg_info_dtype.items():
 
 
 def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg_info_dtype):
-    """ Faster LAPACK methods to be returned without too many lookups an array checks
+    """ Faster BLAS/LAPACK methods to be returned without too many lookups an array checks
 
     Parameters
     ----------
     method : str
-       LAPACK instance to retrieve
+       BLAS/LAPACK instance to retrieve
     dtype : numpy.dtype
        matrix corresponding data-type
 
@@ -63,7 +64,13 @@ def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg
         return m_dict[method]
 
     # Get the corresponding method and store it before returning it
-    func = get_lapack_funcs(method, dtype=dtype)
+    try:
+        func = get_lapack_funcs(method, dtype=dtype)
+    except ValueError as e:
+        if 'LAPACK function' in str(e):
+            func = get_blas_funcs(method, dtype=dtype)
+        else:
+            raise e
     m_dict[method] = func
     return func
 
