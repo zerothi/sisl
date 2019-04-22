@@ -71,6 +71,7 @@ from .binaries import *
 from .delta import *
 from .se import *
 from .tbt import *
+from .pht import *
 from .tbtproj import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
