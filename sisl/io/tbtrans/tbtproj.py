@@ -14,7 +14,7 @@ from ..sile import add_sile
 from .tbt import tbtncSileTBtrans
 
 
-__all__ = ['tbtprojncSileTBtrans', 'phtprojncSileTBtrans']
+__all__ = ['tbtprojncSileTBtrans']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
@@ -620,11 +620,6 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         return cls(state, eig[lvl], parent=geom)
 
 
-class phtprojncSileTBtrans(tbtprojncSileTBtrans):
-    """ PHtrans projection file object """
-    _trans_type = 'PHT.Proj'
-
-
 # Clean up methods
 for _name in ['elecs', 'chemical_potential', 'mu',
               'electron_temperature', 'kT',
@@ -639,5 +634,3 @@ add_sile('TBT.Proj.nc', tbtprojncSileTBtrans)
 # Add spin-dependent files
 add_sile('TBT_DN.Proj.nc', tbtprojncSileTBtrans)
 add_sile('TBT_UP.Proj.nc', tbtprojncSileTBtrans)
-
-add_sile('PHT.Proj.nc', phtprojncSileTBtrans)
