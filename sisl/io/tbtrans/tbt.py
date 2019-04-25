@@ -194,7 +194,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Returns
         -------
-        str : the electrode name
+        str
+            the electrode name
         """
         try:
             elec = int(elec)
@@ -490,8 +491,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Returns
         -------
-        numpy.ndarray : in order of the geometry orbitals (i.e. pivoted back to the device region).
-                        If `atom` or `orbital` is specified they are returned in that order.
+        numpy.ndarray
+            in order of the geometry orbitals (i.e. pivoted back to the device region).
+            If `atom` or `orbital` is specified they are returned in that order.
         """
         if not atom is None and not orbital is None:
             raise ValueError(('Both atom and orbital keyword in DOS request '
@@ -818,7 +820,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Raises
         ------
-        SislInfo: If *all* of the calculated :math:`T_{k,n}(E)` values in the file are above 0.001.
+        SislInfo
+            If *all* of the calculated :math:`T_{k,n}(E)` values in the file are above 0.001.
 
         Parameters
         ----------
@@ -889,7 +892,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Raises
         ------
-        SislInfo: If *all* of the calculated :math:`T_{k,n}(E)` values in the file are above 0.001.
+        SislInfo
+            If *all* of the calculated :math:`T_{k,n}(E)` values in the file are above 0.001.
 
         Parameters
         ----------
@@ -975,6 +979,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         --------
 
         For a spin-polarized calculation one should calculate the Fano factor as:
+
         >>> up = get_sile('siesta.TBT_UP.nc')
         >>> down = get_sile('siesta.TBT_DN.nc')
         >>> fano = up.fano() * up.transmission() + down.fano() * down.transmission()
@@ -1478,7 +1483,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Returns
         -------
-        numpy.ndarray : an array of vectors per atom in the Geometry (only non-zero for device atoms)
+        numpy.ndarray
+            array of vectors per atom in the Geometry (only non-zero for device atoms)
 
         See Also
         --------
@@ -1545,7 +1551,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Returns
         -------
-        numpy.ndarray : an array of vectors per atom in the Geometry (only non-zero for device atoms)
+        numpy.ndarray
+            array of vectors per atom in the Geometry (only non-zero for device atoms)
 
         See Also
         --------
@@ -1608,7 +1615,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Returns
         -------
-        DensityMatrix: the object containing the Geometry and the density matrix elements
+        DensityMatrix
+            object containing the Geometry and the density matrix elements
         """
         return self.Adensity_matrix(None, E, kavg, isc, geometry=geometry)
 
@@ -1655,7 +1663,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Returns
         -------
-        DensityMatrix: the object containing the Geometry and the density matrix elements
+        DensityMatrix
+            object containing the Geometry and the density matrix elements
         """
         dm = self._sparse_data('DM', elec, E, kavg, isc) * eV2Ry
         dm.eliminate_zeros()
