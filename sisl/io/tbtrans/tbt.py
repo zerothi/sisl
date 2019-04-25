@@ -27,7 +27,7 @@ from sisl.messages import warn, info, SislError
 from sisl._help import _range as range
 from sisl._help import wrap_filterwarnings
 from sisl.unit.siesta import unit_convert
-from sisl.physics.distribution import get_distribution, fermi_dirac
+from sisl.physics.distribution import fermi_dirac
 from sisl.physics.densitymatrix import DensityMatrix
 
 
@@ -111,12 +111,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         if self._k_avg:
             return v[:]
 
-        wkpt = self.wk
-
         # Perform normalization
         orig_shape = v.shape
         if isinstance(kavg, bool):
             if kavg:
+                wkpt = self.wk
                 nk = len(wkpt)
                 data = v[0, ...] * wkpt[0]
                 for i in range(1, nk):
@@ -794,7 +793,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                  "Increase the calculated energy-range.\n" + s)
 
         I = (T * dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to))).sum()
-        return I * units('eV', 'J') / constant.h('eV s')
+        return I * constant.q / constant.h('eV s')
 
     def _check_Teig(self, func_name, TE, eps=0.001):
         """ Internal method to check whether all transmission eigenvalues are present """
@@ -810,7 +809,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         If `classical` is True the shot-noise calculated is:
 
         .. math::
-           S_P(E, V) = \frac{2e^2}{h}|V|\sum_n T_n(E) = \frac{2e^3}{h}|V|T(E)
+           S_P(E, V) = \frac{2e^2}{h}|V|\sum_k\sum_n T_{k,n}(E) w_k = \frac{2e^3}{h}|V|T(E)
 
         while for `classical` False (default) the Fermi-Dirac statistics is taken into account:
 
@@ -845,10 +844,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Pre-factor
         # 2 e ^ 3 V / h
         # Note that h in eV units will cancel the units in the applied bias
-        _noise_const = 2 * units('eV', 'J') ** 2 * (eV / constant.h('eV s'))
+        noise_const = 2 * constant.q ** 2 * (eV / constant.h('eV s'))
         if classical:
             # Calculate the Poisson shot-noise (equal to 2eI in the low T and zero kT limit)
-            return _noise_const * self.transmission(elec_from, elec_to, kavg=kavg)
+            return noise_const * self.transmission(elec_from, elec_to, kavg=kavg)
 
         # Non-classical
         if isinstance(kavg, bool):
@@ -856,7 +855,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 # The user wants it k-resolved
                 T = self.transmission_eig(elec_from, elec_to, kavg=False)
                 self._check_Teig('shot_noise', T)
-                return _noise_const * (T * (1 - T)).sum(-1)
+                return noise_const * (T * (1 - T)).sum(-1)
 
             # We need to manually weigh the k-points
             wkpt = self.wkpt
@@ -874,7 +873,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             self._check_Teig('shot_noise', T)
             sn = (T * (1 - T)).sum(-1)
 
-        return _noise_const * sn
+        return noise_const * sn
 
     def noise_power(self, elec_from=0, elec_to=1, kavg=True):
         r""" Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)
@@ -911,8 +910,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         kT_t = self.kT(elec_to)
         mu_f = self.chemical_potential(elec_from)
         mu_t = self.chemical_potential(elec_to)
-        fd_f = get_distribution('fd', kT_f, mu_f)(self.E)
-        fd_t = get_distribution('fd', kT_t, mu_t)(self.E)
+        fd_f = fermi_dirac(self.E, kT_f, mu_f)
+        fd_t = fermi_dirac(self.E, kT_t, mu_t)
 
         # Get the energy spacing (probably we should add a routine)
         dE = self.E[1] - self.E[0]
@@ -925,7 +924,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Pre-factor
         # 2 e ^ 2 / h
         # Note that h in eV units will cancel the units in the dE integration
-        _noise_const = 2 * units('eV', 'J') ** 2 / constant.h('eV s')
+        noise_const = 2 * constant.q ** 2 / constant.h('eV s')
 
         # Determine the k-average
         if isinstance(kavg, bool):
@@ -933,7 +932,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 # The user wants it k-resolved
                 T = self.transmission_eig(elec_from, elec_to, kavg=False)
                 self._check_Teig('noise_power', T)
-                return _noise_const * ((T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1))
+                return noise_const * ((T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1))
 
             # We need to manually weigh the k-points
             wkpt = self.wkpt
@@ -953,19 +952,33 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             np = (T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)
 
         # Do final conversion
-        return _noise_const * np
+        return noise_const * np
 
     def fano(self, elec_from=0, elec_to=1, kavg=True, zero_T=1e-6):
         r""" The Fano-factor for the calculation (requires calculated transmission eigenvalues)
 
-        Calculate the Fano factor defined as:
+        Calculate the Fano factor defined as (or through the shot-noise):
 
         .. math::
-           F(E) = \sum_k\frac{\sum_n T_{k,n}(E)[1 - T_{k,n}(E)]}{\sum_n T_{k,n}(E)} w_k
+           F(E) &= \frac{\sum_{k,n} T_{k,n}(E)[1 - T_{k,n}(E)] w_k}{\sum_{k,n} T_{k,n}(E) w_k}
+           \\
+                &= S(E, V) / S_P(E, V)
 
         Notes
         -----
         The default `zero_T` may change in the future.
+        This calculation will *only* work for non-polarized calculations since the divisor needs
+        to be the spin-sum.
+        The current implementation uses the full transmission as the divisor.
+
+        Examples
+        --------
+
+        For a spin-polarized calculation one should calculate the Fano factor as:
+        >>> up = get_sile('siesta.TBT_UP.nc')
+        >>> down = get_sile('siesta.TBT_DN.nc')
+        >>> fano = up.fano() * up.transmission() + down.fano() * down.transmission()
+        >>> fano /= up.transmission() + down.transmission()
 
         Parameters
         ----------
@@ -975,7 +988,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the absorbing electrode (different from `elec_from`)
         kavg: bool, int, optional
            whether the returned Fano factor is k-averaged, or an explicit (unweighed) k-point
-           is returned
+           is returned. In any case the divisor will always be the k-averaged transmission.
         zero_T : float, optional
            any transmission eigen value lower than this value will be treated as exactly 0.
 
@@ -984,38 +997,41 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         shot_noise : shot-noise term (zero temperature limit)
         noise_power : temperature dependent noise power
         """
-        def _fano(T):
+        def dividend(T):
             T[T <= zero_T] = 0.
-            r = (T * (1 - T)).sum(-1)
-            T = T.sum(-1)
-            fano = r / T
-            # If the transmission is zero, so is the Fano-factor
-            fano[T <= zero_T] = 0.
-            return fano
+            return (T * (1 - T)).sum(-1)
 
         if isinstance(kavg, bool):
             if not kavg:
                 # The user wants it k-resolved
                 T = self.transmission_eig(elec_from, elec_to, kavg=False)
                 self._check_Teig('fano', T)
-                return _fano(T)
+                fano = dividend(T)
+                T = self.transmission(elec_from, elec_to)
+                fano /= T[None, :]
+                fano[:, T <= 0.] = 0.
+                return fano
 
             # We need to manually weigh the k-points
             wkpt = self.wkpt
 
             T = self.transmission_eig(elec_from, elec_to, kavg=0)
             self._check_Teig('fano', T)
-            fano = _fano(T) * wkpt[0]
+            fano = dividend(T) * wkpt[0]
             for ik in range(1, self.nkpt):
                 T = self.transmission_eig(elec_from, elec_to, kavg=ik)
                 self._check_Teig('fano', T)
-                fano += _fano(T) * wkpt[ik]
+                fano += dividend(T) * wkpt[ik]
 
         else:
             T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
             self._check_Teig('fano', T)
-            fano = _fano(T)
+            fano = dividend(T)
 
+        # Divide by k-averaged transmission
+        T = self.transmission(elec_from, elec_to)
+        fano /= T
+        fano[T <= 0.] = 0.
         return fano
 
     def _sparse_data(self, data, elec, E, kavg=True, isc=None):
