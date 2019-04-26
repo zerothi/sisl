@@ -1,0 +1,16 @@
+{
+    "creators": [
+	{
+	    "affiliation": "Department of Applied Mathematics and Computer Science",
+	    "name": "Papior, Nick",
+	    "orcid": "0000-0003-3038-1855",
+	    "researcherid": "G-8288-2015",
+	},
+    ],
+    "keywords": [
+	"physics",
+	"condensed-matter-physics"
+    ],
+    "license": "LGPLv3",
+    "upload_type": "software"
+}
