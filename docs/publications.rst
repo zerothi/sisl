@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. G. Calogero, N. Papior, M. Koleini, M. H. L. Larsen and M. Brandbyge,
+  *Multi-scale approach to first-principles electron transport beyond 100 nm*,
+   Nanoscale **11**, `6153 (2019) <https://www.doi.org/10.1039/C9NR00866G>`_
+
 #. G. Singh, K. Kumar and R.K. Moudgil,
    *On topology-tuned thermoelectric properties of noble metal atomic wires*,
    Physica E: Low-dimensional Systems and Nanostructures **109**, `114 (2019) <https://doi.org/10.1016/j.physe.2019.01.007>`_
@@ -75,13 +79,13 @@ arXiv publications
 
 These publications are as far as we know in the review process.
 
+- S. Leitherer, N. Papior, M. Brandbyge,
+  *Current-induced atomic forces in gated graphene nanoconstrictions*,
+  `1905.01100 <https://arxiv.org/abs/1905.01100>`_
+
 - D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
   *Moiré ordered current loops in the graphene twist bilayer*,
   `1901.04712 <https://arxiv.org/abs/1901.04712>`_
-
-- G. Calogero, N. Papior, M. Koleini, M. H. L. Larsen and M. Brandbyge,
-  *Multiscale approach to first-principles electron transport: Seamless integration of DFT and tight-binding*,
-  `1812.08054 <https://arxiv.org/abs/1812.08054>`_
 
 - L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
   *Exchange interactions from a nonorthogonal basis: applications to 3d ferromagnets and graphene based systems*,
