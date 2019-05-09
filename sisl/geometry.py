@@ -15,6 +15,7 @@ from . import _plot as plt
 from . import _array as _a
 from ._math_small import is_ascending
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
+from ._indices import list_index_le
 from .messages import info, warn, SislError
 from ._help import _str
 from ._help import _range as range
@@ -2779,10 +2780,7 @@ class Geometry(SuperCellChild):
                 return np.unique(np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na)
             return np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na
 
-        a = _a.asarrayi(io).ravel() % self.no
-        # Use b-casting rules
-        a.shape = (-1, 1)
-        a = np.argmax(a <= self.lasto, axis=1)
+        a = list_index_le(_a.asarrayi(io).ravel() % self.no, self.lasto)
         if unique:
             return np.unique(a + (io // self.no) * self.na)
         return a + (io // self.no) * self.na

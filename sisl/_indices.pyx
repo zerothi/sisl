@@ -573,3 +573,48 @@ cdef int _sorted_unique(const int n_a, const int[::1] a) nogil:
         if a[i] == a[i+1]:
             return 0
     return 1
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def list_index_le(np.ndarray[np.int32_t, ndim=1, mode='c'] a, np.ndarray[np.int32_t, ndim=1, mode='c'] b):
+    """ Find indices for each ``a`` such that the returned ``a[i] <= b[ret[i]]`` where `b` is assumed sorted
+
+    This corresponds to:
+
+    >>> a.shape = (-1, 1)
+    >>> ret = np.argmax(a <= b, axis=1)
+
+    Parameters
+    ----------
+    a : np.ndarray(np.int32)
+        values to check indicies of
+    b : np.ndarray(np.int32)
+        sorted array to check against
+
+    Returns
+    -------
+    np.ndarray(np.int32): same length as `a` with indicies
+    """
+    # Ensure contiguous arrays
+    cdef int[::1] A = a
+    cdef int[::1] B = b
+    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] c = np.empty([A.shape[0]], dtype=np.int32)
+    cdef int[::1] C = c
+
+    _list_index_le(A, B, C)
+    return c
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef inline void _list_index_le(const int[::1] a, const int[::1] b, int[::1] c) nogil:
+    cdef int na = a.shape[0]
+    cdef int nb = b.shape[0]
+
+    for ia in range(na):
+        for ib in range(nb):
+            if a[ia] <= b[ib]:
+                c[ia] = ib
+                break

@@ -9,6 +9,7 @@ import numpy as np
 
 from .messages import info
 from . import _array as _a
+from ._indices import list_index_le
 from ._help import array_fill_repeat, _str
 from .shape import Sphere
 from .orbital import Orbital
@@ -1396,7 +1397,7 @@ class Atoms(object):
     def orbital(self, io):
         """ Return an array of orbital of the contained objects """
         io = _a.asarrayi(io).ravel() % self.no
-        a = np.argmax(io.reshape(-1, 1) <= self.lasto, axis=1)
+        a = list_index_le(io, self.lasto)
         io = io - self.firsto[a]
         a = self.specie[a]
         # Now extract the list of orbitals
