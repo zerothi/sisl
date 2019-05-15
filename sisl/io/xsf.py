@@ -145,26 +145,27 @@ class xsfSile(Sile):
         while line != '':
             # skip comments
             line = self.readline()
+            key = line.strip()
 
             # We prefer the primvec
-            if line.startswith('CONVVEC') and not cell_set:
+            if key.startswith('CONVVEC') and not cell_set:
                 for i in [0, 1, 2]:
                     line = self.readline()
                     cell[i, :] = [float(x) for x in line.split()]
 
-            elif line.startswith('PRIMVEC'):
+            elif key.startswith('PRIMVEC'):
                 cell_set = True
                 for i in [0, 1, 2]:
                     line = self.readline()
                     cell[i, :] = [float(x) for x in line.split()]
 
-            elif line.startswith('PRIMCOORD'):
+            elif key.startswith('PRIMCOORD'):
                 # First read # of atoms
                 line = self.readline().split()
                 na = int(line[0])
 
                 # currently line[1] is unused!
-                for i in range(na):
+                for _ in range(na):
                     line = self.readline().split()
                     atom.append(int(line[0]))
                     xyz.append([float(x) for x in line[1:]])
@@ -178,7 +179,7 @@ class xsfSile(Sile):
 
         if len(atom) == 0:
             geom = Geometry(xyz, sc=SuperCell(cell))
-        elif len(atom) == 1 and atom[0].Z == -999:
+        elif len(atom) == 1 and atom[0] == -999:
             geom = None
         else:
             geom = Geometry(xyz, atom=atom, sc=SuperCell(cell))

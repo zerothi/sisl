@@ -1,6 +1,8 @@
 0.9.6
 =====
 
+- Bug-fix for reading white-space prefixed keywords in XSF files, #127
+
 - Performance increase for self-energy calculations for very small
 	systems
 
