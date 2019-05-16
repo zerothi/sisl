@@ -300,6 +300,19 @@ class Geometry(SuperCellChild):
         # a 0D vector.
         return _a.asarrayi(atom)
 
+    def _sanitize_orb(self, orbital):
+        """ Converts an `orbital` to index under given inputs
+
+        `orbital` may be one of the following:
+
+        - boolean array -> nonzero()[0]
+        """
+        if isinstance(orbital, ndarray) and orbital.dtype == bool_:
+            return np.flatnonzero(orbital)
+        # We shouldn't .ravel() since the calling routine may expect
+        # a 0D vector.
+        return _a.asarrayi(orbital)
+
     def as_primary(self, na_primary, ret_super=False):
         """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
@@ -2731,6 +2744,130 @@ class Geometry(SuperCellChild):
 
         return ret[0]
 
+    def a2transpose(self, atom1, atom2=None):
+        """ Transposes connections from `atom1` to `atom2` such that supercell connections are transposed
+
+        When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
+        a connection from site ``i`` (in unit cell indices) to site ``j`` (in supercell indices) it may be
+        useful to get the equivalent supercell connection such for site ``j`` (in unit cell indices) to
+        site ``i`` (in supercell indices) such that they correspond to the transposed coupling.
+
+        Note that since this transposes couplings the indices returned are always expanded to the full
+        length if either of the inputs are a single index.
+
+        Examples
+        --------
+        >>> gr = geom.graphene()
+        >>> idx = gr.close(0, 1.5)
+        >>> idx
+        array([0, 1, 5, 9], dtype=int32)
+        >>> gr.a2transpose(0, idx)
+        (array([0, 1, 1, 1], dtype=int32), array([ 0,  0, 14, 10], dtype=int32))
+
+        Parameters
+        ----------
+        atom1 : array_like
+            atomic indices must have same length as `atom2` or length 1
+        atom2 : array_like, optional
+            atomic indices must have same length as `atom1` or length 1.
+            If not present then only `atom1` will be returned in transposed indices.
+
+        Returns
+        -------
+        atom2 : array_like
+            transposed indices for atom2 (only returned if `atom2` is not None)
+        atom1 : array_like
+            transposed indices for atom1
+        """
+        # First check whether they have the same size, if so then do not pre-process
+        atom1 = self._sanitize_atom(atom1)
+        if atom2 is None:
+            # we only need to transpose atom1
+            offset = self.sc.sc_index(-self.a2isc(atom1)) * self.na
+            return atom1 % self.na + offset
+
+        atom2 = self._sanitize_atom(atom2)
+        if atom1.size == atom2.size:
+            pass
+        elif atom1.size == 1: # typical case where atom1 is a single number
+            atom1 = np.tile(atom1, atom2.size)
+        elif atom2.size == 1:
+            atom2 = np.tile(atom2, atom1.size)
+        else:
+            raise ValueError(self.__class__.__name__ + '.a2transpose only allows length 1 or same length arrays.')
+
+        # Now convert atoms
+        na = self.na
+        sc_index = self.sc.sc_index
+        isc1 = self.a2isc(atom1)
+        isc2 = self.a2isc(atom2)
+
+        atom1 = atom1 % na + sc_index(-isc2) * na
+        atom2 = atom2 % na + sc_index(-isc1) * na
+        return atom2, atom1
+
+    def o2transpose(self, orb1, orb2=None):
+        """ Transposes connections from `orb1` to `orb2` such that supercell connections are transposed
+
+        When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
+        a connection from site ``i`` (in unit cell indices) to site ``j`` (in supercell indices) it may be
+        useful to get the equivalent supercell connection such for site ``j`` (in unit cell indices) to
+        site ``i`` (in supercell indices) such that they correspond to the transposed coupling.
+
+        Note that since this transposes couplings the indices returned are always expanded to the full
+        length if either of the inputs are a single index.
+
+        Examples
+        --------
+        >>> gr = geom.graphene() # one orbital per site
+        >>> idx = gr.close(0, 1.5)
+        >>> idx
+        array([0, 1, 5, 9], dtype=int32)
+        >>> gr.o2transpose(0, idx)
+        (array([0, 1, 1, 1], dtype=int32), array([ 0,  0, 14, 10], dtype=int32))
+
+        Parameters
+        ----------
+        orb1 : array_like
+            orbital indices must have same length as `orb2` or length 1
+        orb2 : array_like, optional
+            orbital indices must have same length as `orb1` or length 1.
+            If not present then only `orb1` will be returned in transposed indices.
+
+        Returns
+        -------
+        orb2 : array_like
+            transposed indices for orb2 (only returned if `orb2` is not None)
+        orb1 : array_like
+            transposed indices for orb1
+        """
+        # First check whether they have the same size, if so then do not pre-process
+        orb1 = self._sanitize_orb(orb1)
+        if orb2 is None:
+            # we only need to transpose orb1
+            offset = self.sc.sc_index(-self.o2isc(orb1)) * self.no
+            return orb1 % self.no + offset
+
+        orb2 = self._sanitize_orb(orb2)
+        if orb1.size == orb2.size:
+            pass
+        elif orb1.size == 1: # typical case where orb1 is a single number
+            orb1 = np.tile(orb1, orb2.size)
+        elif orb2.size == 1:
+            orb2 = np.tile(orb2, orb1.size)
+        else:
+            raise ValueError(self.__class__.__name__ + '.o2transpose only allows length 1 or same length arrays.')
+
+        # Now convert orbs
+        no = self.no
+        sc_index = self.sc.sc_index
+        isc1 = self.o2isc(orb1)
+        isc2 = self.o2isc(orb2)
+
+        orb1 = orb1 % no + sc_index(-isc2) * no
+        orb2 = orb2 % no + sc_index(-isc1) * no
+        return orb2, orb1
+
     def a2o(self, ia, all=False):
         """
         Returns an orbital index of the first orbital of said atom.
@@ -2785,13 +2922,30 @@ class Geometry(SuperCellChild):
             return np.unique(a + (io // self.no) * self.na)
         return a + (io // self.no) * self.na
 
-    def sc2uc(self, atom, unique=False):
-        """ Returns atom from super-cell indices to unit-cell indices, possibly removing dublicates
+    def uc2sc(self, atom, unique=False):
+        """ Returns atom from unit-cell indices to supercell indices, possibly removing dublicates
 
         Parameters
         ----------
         atom : array_like or int
-           the atomic indices converted from supercell indices to unit-cell indices
+           the atomic unit-cell indices to be converted to supercell indices
+        unique : bool, optional
+           If True the returned indices are unique and sorted.
+        """
+        atom = self._sanitize_atom(atom) % self.na
+        atom = (atom.reshape(1, -1) + _a.arangei(self.n_s).reshape(-1, 1) * self.na).ravel()
+        if unique:
+            return np.unique(atom)
+        return atom
+    auc2sc = uc2sc
+
+    def sc2uc(self, atom, unique=False):
+        """ Returns atom from supercell indices to unit-cell indices, possibly removing dublicates
+
+        Parameters
+        ----------
+        atom : array_like or int
+           the atomic supercell indices to be converted to unit-cell indices
         unique : bool, optional
            If True the returned indices are unique and sorted.
         """
@@ -2802,16 +2956,32 @@ class Geometry(SuperCellChild):
     asc2uc = sc2uc
 
     def osc2uc(self, orb, unique=False):
-        """ Returns orbitals from super-cell indices to unit-cell indices, possibly removing dublicates
+        """ Returns orbitals from supercell indices to unit-cell indices, possibly removing dublicates
 
         Parameters
         ----------
         orb : array_like or int
-           the orbital indices converted from supercell indices to unit-cell indices
+           the orbital supercell indices to be converted to unit-cell indices
         unique : bool, optional
            If True the returned indices are unique and sorted.
         """
         orb = _a.asarrayi(orb) % self.no
+        if unique:
+            return np.unique(orb)
+        return orb
+
+    def ouc2sc(self, orb, unique=False):
+        """ Returns orbitals from unit-cell indices to supercell indices, possibly removing dublicates
+
+        Parameters
+        ----------
+        orb : array_like or int
+           the orbital unit-cell indices to be converted to supercell indices
+        unique : bool, optional
+           If True the returned indices are unique and sorted.
+        """
+        orb = _a.asarrayi(orb) % self.no
+        orb = (orb.reshape(1, -1) + _a.arangei(self.n_s).reshape(-1, 1) * self.no).ravel()
         if unique:
             return np.unique(orb)
         return orb

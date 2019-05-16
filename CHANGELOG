@@ -1,6 +1,12 @@
 0.9.6
 =====
 
+- Added several routines for retrieving transposed coupling elements.
+	When having connections `i -> j` it may be beneficial to easily get
+	the transposed connection `j -> i` by taking into account the
+	supercell. `Geometry.a2transpose` enables this functionality making
+	construct functions much simpler when having edges/boundaries.
+
 - Bug-fix for reading white-space prefixed keywords in XSF files, #127
 
 - Performance increase for self-energy calculations for very small

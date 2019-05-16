@@ -615,7 +615,10 @@ class SuperCell(object):
                 raise ValueError("Requesting a non-existing supercell index")
         hsc = self.nsc // 2
 
-        if isinstance(sc_off[0], np.ndarray):
+        if len(sc_off) == 0:
+            return _a.arrayi([[]])
+
+        elif isinstance(sc_off[0], np.ndarray):
             _assert(hsc[0], sc_off[:, 0])
             _assert(hsc[1], sc_off[:, 1])
             _assert(hsc[2], sc_off[:, 2])

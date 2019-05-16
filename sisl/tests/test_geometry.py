@@ -246,6 +246,44 @@ class TestGeometry(object):
         off = setup.g.sc.offset(isc)
         assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(2))
 
+    def test_atranspose_indices(self, setup):
+        g = setup.g
+        # All supercell indices
+        ia2 = np.arange(g.na * g.n_s)
+        ja2, ja1 = g.a2transpose(0, ia2)
+        assert (ja2 < g.na).sum() == ja2.size
+        assert (ja1 % g.na == 0).sum() == ja1.size
+
+        IA1, IA2 = g.a2transpose(ja2, ja1)
+        assert np.all(IA1 == 0)
+        assert np.all(IA2 == ia2)
+
+    def test_otranspose_indices(self, setup):
+        g = setup.g
+        # All supercell indices
+        io2 = np.arange(g.no * g.n_s)
+        jo2, jo1 = g.o2transpose(0, io2)
+        assert (jo2 < g.no).sum() == jo2.size
+        assert (jo1 % g.no == 0).sum() == jo1.size
+
+        IO1, IO2 = g.o2transpose(jo2, jo1)
+        assert np.all(IO1 == 0)
+        assert np.all(IO2 == io2)
+
+    def test_auc2sc(self, setup):
+        g = setup.g
+        # All supercell indices
+        asc = g.uc2sc(0)
+        assert asc.size == g.n_s
+        assert (asc % g.na == 0).sum() == g.n_s
+
+    def test_ouc2sc(self, setup):
+        g = setup.g
+        # All supercell indices
+        asc = g.ouc2sc(0)
+        assert asc.size == g.n_s
+        assert (asc % g.no == 0).sum() == g.n_s
+
     def test_rij1(self, setup):
         assert np.allclose(setup.g.rij(0, 1), 1.42)
         assert np.allclose(setup.g.rij(0, [0, 1]), [0., 1.42])
@@ -615,7 +653,6 @@ class TestGeometry(object):
         # functions for any-thing to SC
         c = setup.g.cell
 
-        print(setup)
         # check indices
         assert np.all(setup.g.a2isc([1, 2]) == [[0,  0, 0],
                                                 [-1, -1, 0]])
@@ -682,7 +719,6 @@ class TestGeometry(object):
         # 2 * 200 ** 2
         g = setup.g * (200, 200, 1)
         i = g.close(0, R=(0.1, 1.43))
-        print(i)
         assert len(i) == 2
         assert len(i[0]) == 1
         assert len(i[1]) == 3

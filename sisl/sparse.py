@@ -733,6 +733,8 @@ class SparseCSR(object):
         ------
         IndexError for indices out of bounds
         """
+        if asarrayi(i).size == 0:
+            return arrayi([])
         if i < 0:
             raise IndexError('row index is out-of-bounds')
         i1 = int(i) + 1
