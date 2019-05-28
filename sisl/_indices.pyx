@@ -100,8 +100,8 @@ def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 cdef void _indices(const int n_search, const int[::1] search,
-              const int n_value, const int[::1] value,
-              const int offset, int[::1] idx) nogil:
+                   const int n_value, const int[::1] value,
+                   const int offset, int[::1] idx) nogil:
     cdef int i, j
 
     # Fast return
@@ -216,7 +216,7 @@ def indices_in_sphere_with_dist(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 cdef int _indices_in_sphere_with_dist(const double[:, ::1] dxyz, const double R,
-                            double[::1] dist, int[::1] idx) nogil:
+                                      double[::1] dist, int[::1] idx) nogil:
     cdef int N = dxyz.shape[0]
     cdef double R2 = R * R
     cdef double d

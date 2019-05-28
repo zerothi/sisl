@@ -1,6 +1,10 @@
 0.9.6
 =====
 
+- Bugfix for tbtse files when requesting pivoting indices using this
+	combination ``in_device=True, sort=False`` which in most cases
+	return wrong indices, thanks to J. Bertelsen for bug-find!
+
 - Added several routines for retrieving transposed coupling elements.
 	When having connections `i -> j` it may be beneficial to easily get
 	the transposed connection `j -> i` by taking into account the

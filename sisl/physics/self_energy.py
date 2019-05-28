@@ -459,7 +459,7 @@ class RecursiveSI(SemiInfinite):
 
 
 class RealSpaceSE(SelfEnergy):
-    r""" Calculate real-space self-energy (or Green function) for a given physical object with periodicity
+    r""" Bulk real-space self-energy (or Green function) for a given physical object with periodicity
 
     The real-space self-energy is calculated via the k-averaged Green function:
 
@@ -943,9 +943,9 @@ class RealSpaceSE(SelfEnergy):
 
 
 class RealSpaceSI(SelfEnergy):
-    r""" Calculate real-space surface self-energy (or Green function) for a given physical object with limited periodicity
+    r""" Surface real-space self-energy (or Green function) for a given physical object with limited periodicity
 
-    The real-space self-energy is calculated via the k-averaged Green function:
+    The surface real-space self-energy is calculated via the k-averaged Green function:
 
     .. math::
         \boldsymbol\Sigma^\mathcal{R}(E) = \mathbf S^\mathcal{R} (E+i\eta) - \mathbf H^\mathcal{R}

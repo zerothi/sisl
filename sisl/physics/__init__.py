@@ -47,6 +47,8 @@ Physical quantites
    SelfEnergy
    SemiInfinite
    RecursiveSI
+   RealSpaceSE
+   RealSpaceSI
 
 
 
@@ -125,7 +127,7 @@ Distribution functions (:mod:`~sisl.physics.distribution`)
 Low level objects
 =================
 
-The low level objects are the driven objects for a majority of the physical
+The low level objects are the driving objects for a majority of the physical
 objects found here. They are rarely (if ever) required to be used, but they
 may be important for developers wishing to extend the functionality of `sisl`
 using generic class-structures. For instance the `~Hamiltonian` inherits the

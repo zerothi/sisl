@@ -4,10 +4,11 @@ import numpy as np
 from numpy import in1d, argsort
 
 # Import sile objects
-from ..sile import add_sile
-from ._cdf import _devncSileTBtrans
+from sisl._indices import indices
 from sisl.utils import *
 import sisl._array as _a
+from ..sile import add_sile
+from ._cdf import _devncSileTBtrans
 
 # Import the geometry object
 from sisl.unit.siesta import unit_convert
@@ -133,11 +134,6 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
                 pvt = np.sort(pvt)
             return pvt
 
-        if in_device:
-            pvt = self._value('pivot') - 1
-            if sort:
-                pvt = np.sort(pvt)
-
         # Get electrode pivoting elements
         se_pvt = self._value('pivot', tree=self._elec(elec)) - 1
         if sort:
@@ -148,8 +144,11 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             se_pvt = np.sort(se_pvt)
 
         if in_device:
+            pvt = self._value('pivot') - 1
+            if sort:
+                pvt = np.sort(pvt)
             # translate to the device indices
-            se_pvt = in1d(pvt, se_pvt, assume_unique=True).nonzero()[0]
+            se_pvt = indices(pvt, se_pvt, 0)
         return se_pvt
 
     def a2p(self, atom, elec=None):
@@ -209,8 +208,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :])
         if sort:
             pvt = self.pivot(elec)
-            idx = argsort(pvt)
-            idx.shape = (-1, 1)
+            idx = argsort(pvt).reshape(-1, 1)
 
             # pivot for sorted device region
             return SE[idx, idx.T] * self._SE2eV
