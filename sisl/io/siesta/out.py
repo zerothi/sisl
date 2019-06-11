@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 
+import os
 import numpy as np
 
 from .sile import SileSiesta
@@ -28,6 +29,20 @@ class outSileSiesta(SileSiesta):
 
     This enables reading the output quantities from the Siesta output.
     """
+    _job_completed = False
+
+    def readline(self):
+        line = super(outSileSiesta, self).readline()
+        if 'Job completed' in line:
+            self._job_completed = True
+        return line
+
+    readline.__doc__ = SileSiesta.readline.__doc__
+
+    @property
+    def job_completed(self):
+        """ True if the full file has been read and "Job completed" was found. """
+        return self._job_completed
 
     @sile_fh_open()
     def read_species(self):
@@ -74,14 +89,14 @@ class outSileSiesta(SileSiesta):
             cell.append([float(x) for x in line[:3]])
             line = self.readline()
 
-        cell = np.array(cell, np.float64)
+        cell = np.array(cell)
 
         if not Ang:
             cell *= Bohr2Ang
 
         return SuperCell(cell)
 
-    def _read_geometry_outcoor(self, line, last, all, species=None):
+    def _read_geometry_outcoor(self, line, species=None):
         """ Wrapper for reading the geometry as in the outcoor output """
         species = _ensure_species(species)
 
@@ -106,8 +121,9 @@ class outSileSiesta(SileSiesta):
                 pass
             line = self.readline()
 
+        # in outcoor we know it is always just after
         cell = self._read_supercell_outcell()
-        xyz = np.array(xyz, np.float64)
+        xyz = np.array(xyz)
 
         # Now create the geometry
         if scaled:
@@ -116,9 +132,7 @@ class outSileSiesta(SileSiesta):
             # So... :(
             raise ValueError("Could not read the lattice-constant for the scaled geometry")
         elif fractional:
-            xyz = xyz[:, 0] * cell[0, :][None, :] + \
-                  xyz[:, 1] * cell[1, :][None, :] + \
-                  xyz[:, 2] * cell[2, :][None, :]
+            xyz = np.dot(xyz, cell.cell)
         elif not Ang:
             xyz *= Bohr2Ang
 
@@ -126,12 +140,6 @@ class outSileSiesta(SileSiesta):
             geom = Geometry(xyz, atom, sc=cell)
         except:
             geom = Geometry(xyz, [species[int(i)-1] for i in spec], sc=cell)
-
-        if all:
-            tmp = self._read_geometry_outcoor(last, all, species)
-            if tmp is None:
-                return [geom]
-            return tmp.extend([geom])
 
         return geom
 
@@ -152,16 +160,18 @@ class outSileSiesta(SileSiesta):
             atom.append(species[int(line[4])-1])
             line = self.readline()
 
-        # Retrieve the unit-cell
+        # Retrieve the unit-cell (but do not skip file-descriptor position)
+        # This is because the current unit-cell is not always written.
+        pos = self.fh.tell()
         cell = self._read_supercell_outcell()
+        self.fh.seek(pos, os.SEEK_SET)
+
         # Convert xyz
-        xyz = np.array(xyz, np.float64)
+        xyz = np.array(xyz)
         if not Ang:
             xyz *= Bohr2Ang
 
-        geom = Geometry(xyz, atom, sc=cell)
-
-        return geom
+        return Geometry(xyz, atom, sc=cell)
 
     @sile_fh_open()
     def read_geometry(self, last=True, all=False):
@@ -169,11 +179,17 @@ class outSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        last: bool, True
+        last: bool, optional
            only read the last geometry
-        all: bool, False
+        all: bool, optional
            return a list of all geometries (like an MD)
            If `True` `last` is ignored
+
+        Returns
+        -------
+        geometries: list or Geometry or None
+             if all is False only one geometry will be returned (or None). Otherwise
+             a list of geometries corresponding to the MD-runs.
         """
 
         # The first thing we do is reading the species.
@@ -182,6 +198,9 @@ class outSileSiesta(SileSiesta):
         # Perhaps we should rewind to ensure this...
         # But...
         species = self.read_species()
+        if all:
+            # force last to be false
+            last = False
 
         def type_coord(line):
             if 'outcoor' in line:
@@ -191,22 +210,44 @@ class outSileSiesta(SileSiesta):
             # Signal not found
             return 0
 
+        def next_geom():
+            coord = 0
+            while coord == 0:
+                line = self.readline()
+                if line == '':
+                    return 0, None
+                coord = type_coord(line)
+
+            if coord == 1:
+                return coord, self._read_geometry_outcoor(line, species)
+            elif coord == 2:
+                return coord, self._read_geometry_atomic(line, species)
+
         # Read until a coordinate block is found
-        line = self.readline()
-        while type_coord(line) == 0:
-            line = self.readline()
-            if line == '':
-                break
+        geom0 = None
+        mds = []
 
-        coord = type_coord(line)
+        if all or last:
+            # we need to read through all things!
+            while True:
+                coord, geom = next_geom()
+                if coord == 0:
+                    break
+                if coord == 2:
+                    geom0 = geom
+                else:
+                    mds.append(geom)
 
-        if coord == 1:
-            return self._read_geometry_outcoor(line, last, all, species)
-        elif coord == 2:
-            return self._read_geometry_atomic(line, species)
+            # Since the user requests only the MD geometries
+            # we only return those
+            if last:
+                if len(mds) > 0:
+                    return mds[-1]
+                return geom0
+            return mds
 
-        # Signal not found
-        return None
+        # just read the next geometry we hit
+        return next_geom()[1]
 
     @sile_fh_open()
     def read_force(self, last=True, all=False):
@@ -214,34 +255,115 @@ class outSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        last: bool, True
+        last: bool, optional
            only read the last force
-        all: bool, False
+        all: bool, optional
            return a list of all forces (like an MD)
            If `True` `last` is ignored
+
+        Returns
+        -------
+        forces: np.ndarray or None
+            returns ``None`` if the forces are not found in the
+            output, otherwise forces will be returned
         """
-
-        # Read until outcoor is found
-        line = self.readline()
-        while not 'siesta: Atomic forces' in line:
-            line = self.readline()
-            if line == '':
-                return None
-
-        F = []
-        line = self.readline()
-        while not line.startswith('--'):
-            F.append([float(x) for x in line.split()[1:]])
-            line = self.readline()
-
-        F = np.array(F)
-
         if all:
-            tmp = self.read_force(last, all)
-            if tmp is None:
-                return []
-            return tmp.extend([F])
-        return F
+            last = False
+
+        # Read until forces are found
+        def next_force():
+            line = self.readline()
+            while not 'siesta: Atomic forces' in line:
+                line = self.readline()
+                if line == '':
+                    return None
+
+            # Now read data
+            F = []
+            line = self.readline()
+            while '---' not in line:
+                line = line.split()
+                F.append([float(x) for x in line[-3:]])
+                line = self.readline()
+                if line == '':
+                    break
+
+            return np.array(F)
+
+        # list of all forces
+        Fs = []
+
+        if all or last:
+            while True:
+                F = next_force()
+                if F is None:
+                    break
+                Fs.append(F)
+
+            if last:
+                return Fs[-1]
+            if self.job_completed:
+                return Fs[:-1]
+            return Fs
+
+        return next_force()
+
+    @sile_fh_open()
+    def read_stress(self, key='static', last=True, all=False):
+        """ Reads the stresses from the Siesta output file
+
+        Parameters
+        ----------
+        key : {'static', 'total'}
+           which stress to read from the output.
+        last: bool, optional
+           only read the last stress
+        all: bool, optional
+           return a list of all stresses (like an MD)
+           If `True` `last` is ignored
+
+        Returns
+        -------
+        stresses: np.ndarray or None
+            returns ``None`` if the stresses are not found in the
+            output, otherwise stresses will be returned
+        """
+        if all:
+            last = False
+
+        # Read until stress are found
+        def next_stress():
+            line = self.readline()
+            while not ('siesta: Stress tensor' in line and key in line):
+                line = self.readline()
+                if line == '':
+                    return None
+
+            # Now read data
+            S = []
+            for _ in range(3):
+                line = self.readline().split()
+                S.append([float(x) for x in line[-3:]])
+
+            return np.array(S)
+
+        # list of all stresses
+        Ss = []
+
+        if all or last:
+            while True:
+                S = next_stress()
+                if S is None:
+                    break
+                Ss.append(S)
+
+            if last:
+                return Ss[-1]
+            if self.job_completed and key == 'static':
+                return Ss[:-1]
+            return Ss
+
+        return next_stress()
 
     @sile_fh_open()
     def read_moment(self, orbital=False, quantity='S', last=True, all=False):
@@ -332,13 +454,13 @@ class outSileSiesta(SileSiesta):
         of keywords, so:
 
         >>> read_data(geometry=True, force=True)
-        <geom>, <forces>
-        >>> read_data(force=True,geometry=True)
-        <forces>, <geom>
+        <geometry>, <force>
+        >>> read_data(force=True, geometry=True)
+        <force>, <geometry>
 
         Parameters
         ----------
-        geom: bool
+        geometry: bool
            return the last geometry in the `outSileSiesta`
         force: bool
            return the last force in the `outSileSiesta`
@@ -348,7 +470,7 @@ class outSileSiesta(SileSiesta):
         val = []
         for kw in kwargs:
 
-            if kw == 'geom':
+            if kw == 'geometry':
                 if kwargs[kw]:
                     val.append(self.read_geometry())
 
@@ -361,7 +483,7 @@ class outSileSiesta(SileSiesta):
                     val.append(self.read_moment())
 
         if len(val) == 0:
-            val = None
+            return None
         elif len(val) == 1:
             val = val[0]
         return val
