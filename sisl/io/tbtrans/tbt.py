@@ -67,6 +67,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     tool, with the execption that the command-line tool uses Fortran indexing numbers (1-based).
     """
     _trans_type = 'TBT'
+    _E2eV = Ry2eV
+
     _k_avg = False
 
     def write_tbtav(self, *args, **kwargs):
@@ -264,7 +266,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            region eta will be returned.
         """
         try:
-            return self._value('eta', self._elec(elec))[0] * Ry2eV
+            return self._value('eta', self._elec(elec))[0] * self._E2eV
         except:
             return 0. # unknown!
 
@@ -2692,6 +2694,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
     """
     _trans_type = 'TBT'
     _k_avg = True
+    _E2eV = Ry2eV
 
     @property
     def nkpt(self):

@@ -145,7 +145,7 @@ class TestObject(object):
 
     def test_phtrans_nc(self):
         s = gs('test.PHT.nc', _open=False)
-        for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans, phtncSileTBtrans]:
+        for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans, phtncSilePHtrans]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames('CONTCAR', ['', 'gz']))

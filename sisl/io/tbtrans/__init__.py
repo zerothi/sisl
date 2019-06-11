@@ -59,10 +59,10 @@ PHtrans
 PHtrans is the same program as TBtrans, it however uses the dynamical matrix to calculate
 phonon transport.
 
-- `phtncSileTBtrans` (phonon PHtrans output)
-- `phtsencSileTBtrans` (phonon PHtrans self-energy output)
-- `phtavncSileTBtrans` (phonon k-averaged PHtrans output)
-- `phtprojncSileTBtrans` (projected PHtrans output)
+- `phtncSilePHtrans` (phonon PHtrans output)
+- `phtsencSilePHtrans` (phonon PHtrans self-energy output)
+- `phtavncSilePHtrans` (phonon k-averaged PHtrans output)
+- `phtprojncSilePHtrans` (projected PHtrans output)
 
 """
 from .sile import *

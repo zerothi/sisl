@@ -185,10 +185,10 @@ Additionally the PHtrans code also has these files
 .. autosummary::
    :toctree:
 
-   phtncSileTBtrans
-   phtsencSileTBtrans
-   phtavncSileTBtrans
-   phtprojncSileTBtrans
+   phtncSilePHtrans
+   phtsencSilePHtrans
+   phtavncSilePHtrans
+   phtprojncSilePHtrans
 
 
 .. _toc-io-vasp:

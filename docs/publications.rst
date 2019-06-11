@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. G. Singh, K. Kumar, B. Singh, R.K. Moudgil,
+   *Ballistic phonon thermal transport across nano-junctions on aluminum and platinum nanowires*,
+   AIP Conference Proceedings **2093**, `020029 (2019) <https://doi.org/10.1063/1.5097098>`_
+
 #. G. Calogero, N. Papior, M. Koleini, M. H. L. Larsen and M. Brandbyge,
   *Multi-scale approach to first-principles electron transport beyond 100 nm*,
    Nanoscale **11**, `6153 (2019) <https://www.doi.org/10.1039/C9NR00866G>`_
@@ -78,6 +82,10 @@ arXiv publications
 ------------------
 
 These publications are as far as we know in the review process.
+
+- N. Papior, G. Calogero, S. Leitherer, M. Brandbyge,
+  *Removing all periodic boundary conditions: Efficient non-equilibrium Green function calculations*
+  `1905.11113 <https://arxiv.org/abs/1905.11113>`_
 
 - S. Leitherer, N. Papior, M. Brandbyge,
   *Current-induced atomic forces in gated graphene nanoconstrictions*,

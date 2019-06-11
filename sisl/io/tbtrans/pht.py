@@ -4,12 +4,13 @@ from ..sile import add_sile
 from .tbt import tbtncSileTBtrans, tbtavncSileTBtrans, Ry2K, Ry2eV
 
 
-__all__ = ['phtncSileTBtrans', 'phtavncSileTBtrans']
+__all__ = ['phtncSilePHtrans', 'phtavncSilePHtrans']
 
 
-class phtncSileTBtrans(tbtncSileTBtrans):
+class phtncSilePHtrans(tbtncSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
+    _E2eV = Ry2eV ** 2
 
     def phonon_temperature(self, elec):
         """ Phonon bath temperature [Kelvin] """
@@ -20,18 +21,19 @@ class phtncSileTBtrans(tbtncSileTBtrans):
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
 
-class phtavncSileTBtrans(tbtavncSileTBtrans):
+class phtavncSilePHtrans(tbtavncSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
+    _E2eV = Ry2eV ** 2
 
 
 # Clean up methods
 for _name in ['chemical_potential', 'electron_temperature',
               'shot_noise', 'noise_power',
               'current', 'current_parameter']:
-    setattr(phtncSileTBtrans, _name, None)
-    setattr(phtavncSileTBtrans, _name, None)
+    setattr(phtncSilePHtrans, _name, None)
+    setattr(phtavncSilePHtrans, _name, None)
 
 
-add_sile('PHT.nc', phtncSileTBtrans)
-add_sile('PHT.AV.nc', phtavncSileTBtrans)
+add_sile('PHT.nc', phtncSilePHtrans)
+add_sile('PHT.AV.nc', phtavncSilePHtrans)

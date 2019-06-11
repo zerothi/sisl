@@ -4,10 +4,10 @@ from ..sile import add_sile
 from .tbtproj import tbtprojncSileTBtrans
 
 
-__all__ = ['phtprojncSileTBtrans']
+__all__ = ['phtprojncSilePHtrans']
 
 
-class phtprojncSileTBtrans(tbtprojncSileTBtrans):
+class phtprojncSilePHtrans(tbtprojncSileTBtrans):
     """ PHtrans projection file object """
     _trans_type = 'PHT.Proj'
 
@@ -16,7 +16,7 @@ class phtprojncSileTBtrans(tbtprojncSileTBtrans):
 for _name in ['chemical_potential', 'electron_temperature',
               'shot_noise', 'noise_power',
               'current', 'current_parameter']:
-    setattr(phtprojncSileTBtrans, _name, None)
+    setattr(phtprojncSilePHtrans, _name, None)
 
 
-add_sile('PHT.Proj.nc', phtprojncSileTBtrans)
+add_sile('PHT.Proj.nc', phtprojncSilePHtrans)

@@ -143,8 +143,8 @@ class hamiltonianSile(Sile):
                 H[jo, io + off1] = h
                 S[jo, io + off1] = s
                 if hermitian:
-                    S[io, jo + off2] = s
                     H[io, jo + off2] = h
+                    S[io, jo + off2] = s
                 l = self.readline()
 
         return Hamiltonian.fromsp(geom, H, S)
@@ -212,8 +212,6 @@ class hamiltonianSile(Sile):
         hermitian : boolean=True
             whether the stored data is halved using the Hermitian property
         """
-        ham.finalize()
-
         # We use the upper-triangular form of the Hamiltonian
         # and the overlap matrix for hermitian problems
 
