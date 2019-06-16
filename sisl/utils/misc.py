@@ -59,7 +59,7 @@ def merge_instances(*args, **kwargs):
     *args : obj
        all objects dictionaries gets appended to a new class
        which is returned.
-    name: str, optional
+    name : str, optional
        name of class to merge, default to ``'MergedClass'``
     """
     name = kwargs.get('name', 'MergedClass')
@@ -123,7 +123,7 @@ def str_spec(name):
 
     Parameters
     ----------
-    name: str
+    name : str
        string to split
 
     Returns
@@ -151,7 +151,7 @@ def direction(d):
 
     Parameters
     ----------
-    d: {0, 'X', 'x', 1, 'Y', 'y',  2, 'Z', 'z'}
+    d : {0, 'X', 'x', 1, 'Y', 'y',  2, 'Z', 'z'}
        returns the integer that corresponds to the coordinate index.
        If it is an integer, it is returned *as is*.
 

@@ -131,7 +131,7 @@ class xsfSile(Sile):
 
         Parameters
         ----------
-        data: bool, optional
+        data : bool, optional
            in case the XSF file has auxiliary data, return that as well.
         """
         # Prepare containers...

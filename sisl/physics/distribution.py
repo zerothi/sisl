@@ -57,11 +57,11 @@ def get_distribution(method, smearing=0.1, x0=0.):
 
     Parameters
     ----------
-    method: {'gaussian', 'lorentzian', 'fermi_dirac', 'bose_einstein', 'step_function', 'heaviside'}
+    method : {'gaussian', 'lorentzian', 'fermi_dirac', 'bose_einstein', 'step_function', 'heaviside'}
        distribution function
-    smearing: float, optional
+    smearing : float, optional
        smearing parameter for methods that have a smearing
-    x0: float, optional
+    x0 : float, optional
        maximum/middle of the distribution function
 
     Returns
@@ -95,11 +95,11 @@ def gaussian(x, sigma=0.1, x0=0.):
 
     Parameters
     ----------
-    x: array_like
+    x : array_like
         points at which the Gaussian distribution is calculated
-    sigma: float, optional
+    sigma : float, optional
         spread of the Gaussian
-    x0: float, optional
+    x0 : float, optional
         maximum position of the Gaussian
 
     Returns
@@ -119,11 +119,11 @@ def lorentzian(x, gamma=0.1, x0=0.):
 
     Parameters
     ----------
-    x: array_like
+    x : array_like
         points at which the Lorentzian distribution is calculated
-    gamma: float, optional
+    gamma : float, optional
         spread of the Lorentzian
-    x0: float, optional
+    x0 : float, optional
         maximum position of the Lorentzian
 
     Returns
@@ -142,11 +142,11 @@ def fermi_dirac(E, kT=0.1, mu=0.):
 
     Parameters
     ----------
-    E: array_like
+    E : array_like
         energy evaluation points
-    kT: float, optional
+    kT : float, optional
         temperature broadening
-    mu: float, optional
+    mu : float, optional
         chemical potential
 
     Returns
@@ -165,11 +165,11 @@ def bose_einstein(E, kT=0.1, mu=0.):
 
     Parameters
     ----------
-    E: array_like
+    E : array_like
         energy evaluation points
-    kT: float, optional
+    kT : float, optional
         temperature broadening
-    mu: float, optional
+    mu : float, optional
         chemical potential
 
     Returns
@@ -190,11 +190,11 @@ def cold(E, kT=0.1, mu=0.):
 
     Parameters
     ----------
-    E: array_like
+    E : array_like
         energy evaluation points
-    kT: float, optional
+    kT : float, optional
         temperature broadening
-    mu: float, optional
+    mu : float, optional
         chemical potential
 
     Returns
@@ -224,9 +224,9 @@ def heaviside(x, x0=0.):
 
     Parameters
     ----------
-    x: array_like
+    x : array_like
         points at which the Heaviside step distribution is calculated
-    x0: float, optional
+    x0 : float, optional
         step position
 
     Returns
@@ -260,9 +260,9 @@ def step_function(x, x0=0.):
 
     Parameters
     ----------
-    x: array_like
+    x : array_like
         points at which the step distribution is calculated
-    x0: float, optional
+    x0 : float, optional
         step position
 
     Returns

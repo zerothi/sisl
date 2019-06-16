@@ -350,7 +350,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         ----------
         k : array_like, optional
             k-point at which the velocities are calculated
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenmode` routine
 
         See Also
@@ -368,7 +368,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         ----------
         k : array_like, optional
             k-point at which the displacement are calculated
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenmode` routine
 
         See Also
@@ -391,7 +391,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         distribution : func or str, optional
             a function that accepts :math:`E-\hbar\omega` as argument and calculates the
             distribution function.
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenvalue` routine
 
         See Also
@@ -415,7 +415,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         distribution : func or str, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenmode` routine
 
         See Also

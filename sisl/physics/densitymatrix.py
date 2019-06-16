@@ -100,7 +100,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         tol : float, optional
            DM tolerance for accepted values. For all density matrix elements with absolute values below
            the tolerance, they will be treated as strictly zeros.
-        eta: bool, optional
+        eta : bool, optional
            show a progressbar on stdout
         """
         try:

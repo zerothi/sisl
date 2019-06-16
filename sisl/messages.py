@@ -58,7 +58,7 @@ def deprecate(message):
 
     Parameters
     ----------
-    message: str
+    message : str
     """
     warnings.warn_explicit(message, SislDeprecation, 'dep', 0, registry=_sisl_warn_registry)
 
@@ -68,12 +68,12 @@ def warn(message, category=None, register=False):
 
     Parameters
     ----------
-    message: str, Warning
+    message : str, Warning
        the warning to issue, default to issue a `SislWarning`
-    category: Warning, optional
+    category : Warning, optional
        the category of the warning to issue. Default to `SislWarning', unless `message` is
        a subclass of `Warning`
-    register: bool, optional
+    register : bool, optional
        whether the warning is registered to limit the number of times this is output
     """
     if isinstance(message, Warning):
@@ -91,12 +91,12 @@ def info(message, category=None, register=False):
 
     Parameters
     ----------
-    message: str, Warning
+    message : str, Warning
        the information to issue, default to issue a `SislInfo`
-    category: Warning, optional
+    category : Warning, optional
        the category of the warning to issue. Default to `SislInfo', unless `message` is
        a subclass of `Warning`
-    register: bool, optional
+    register : bool, optional
        whether the information is registered to limit the number of times this is output
     """
     if isinstance(message, Warning):

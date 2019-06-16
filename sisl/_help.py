@@ -181,7 +181,7 @@ def array_replace(array, *replace, **kwargs):
     ----------
     array : ndarray
        array in which to replace values from `replace`
-    replace: tuple
+    replace : tuple
        replacement values, if `replace` is a tuple, it will be interpreted as
        ``array[replace[0]] = replace[1]``.
     other : val

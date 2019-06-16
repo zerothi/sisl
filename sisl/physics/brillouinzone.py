@@ -220,9 +220,9 @@ class BrillouinZone(object):
            a k-point in 3 dimensions.
         N : int
            number of k-points generated using the parameterization
-        args: list of arguments
+        args : list of arguments
            arguments passed directly to `func`
-        kwargs: dictionary of arguments
+        kwargs : dictionary of arguments
            keyword arguments passed directly to `func`
         """
         k = np.empty([N, 3], np.float64)

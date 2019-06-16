@@ -136,7 +136,7 @@ class NamedIndex(object):
             the object to merge names(+indices) with
         offset : int, optional
             `other` will have `offset` added to all indices before merge is done.
-        duplicate: {"raise", "union", "left", "right", "omit"}
+        duplicate : {"raise", "union", "left", "right", "omit"}
             Selects the default behaviour in case of name conflict.
             Default ("raise") is to raise a ValueError in the case of conflict.
             If "union", each name will contain indices from both `self` and `other`.

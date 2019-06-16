@@ -14,11 +14,11 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
 
     Parameters
     ----------
-    bond: float
+    bond : float
        length between atoms in nano-tube
-    atom: Atom(6)
+    atom : Atom(6)
        nanotube atoms
-    chirality: (int, int)
+    chirality : (int, int)
        chirality of nanotube (n, m)
     """
     if atom is None:

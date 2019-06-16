@@ -89,21 +89,21 @@ class SparseCSR(object):
 
     Attributes
     ----------
-    ncol: int-array, ``self.shape[0]``
+    ncol : int-array, ``self.shape[0]``
        number of entries per row
-    ptr: int-array, ``self.shape[0]+1``
+    ptr : int-array, ``self.shape[0]+1``
        pointer index in the 1D column indices of the corresponding row
-    col: int-array
+    col : int-array
        column indices of the sparse elements
     data:
        the data in the sparse matrix
-    dim: int
+    dim : int
        the extra dimension of the sparse matrix
-    nnz: int
+    nnz : int
        number of contained sparse elements
-    shape: tuple, 3*(,)
+    shape : tuple, 3*(,)
        size of contained matrix, M, N, K
-    finalized: boolean
+    finalized : boolean
        whether the sparse matrix is finalized and non-set elements
        are removed
     """
@@ -286,7 +286,7 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        keep_nnz: boolean, optional
+        keep_nnz : boolean, optional
            if ``True`` keeps the sparse elements *as is*.
            I.e. it will merely set the stored sparse elements to zero.
            This may be advantagegous when re-constructing a new sparse
@@ -352,7 +352,7 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        sort: bool, optional
+        sort : bool, optional
            sort the column indices for each row
         """
         if self.finalized:
@@ -1103,7 +1103,7 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        dims: array-like, optional
+        dims : array-like, optional
            which dimensions to store in the copy, defaults to all.
         dtype : `numpy.dtype`
            this defaults to the dtype of the object,
@@ -1150,7 +1150,7 @@ class SparseCSR(object):
 
         Parameters
         ----------
-        dim: int, optional
+        dim : int, optional
            dimension of the data returned in a scipy sparse matrix format
         **kwargs:
            arguments passed to the :class:`~scipy.sparse.csr_matrix` routine

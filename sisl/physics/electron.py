@@ -110,7 +110,7 @@ def DOS(E, eig, distribution='gaussian'):
     --------
     sisl.physics.distribution : a selected set of implemented distribution functions
     PDOS : projected DOS (same as this, but projected onto each orbital)
-    spin_moment: spin moment for states
+    spin_moment : spin moment for states
 
     Returns
     -------
@@ -187,7 +187,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
     --------
     sisl.physics.distribution : a selected set of implemented distribution functions
     DOS : total DOS (same as summing over orbitals)
-    spin_moment: spin moment for states
+    spin_moment : spin moment for states
 
     Returns
     -------
@@ -446,7 +446,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
        :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
        provided in a non-orthogonal basis (otherwise the results will be wrong).
        Same derivative as `dHk`
-    degenerate: list of array_like, optional
+    degenerate : list of array_like, optional
        a list containing the indices of degenerate states. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
 
@@ -561,7 +561,7 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
        :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
        provided in a non-orthogonal basis (otherwise the results will be wrong).
        Same derivative as `dHk`
-    degenerate: list of array_like, optional
+    degenerate : list of array_like, optional
        a list containing the indices of degenerate states. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
 
@@ -689,7 +689,7 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
        overlap matrix required for non-orthogonal basis. This and `energy` *must* both be
        provided when the states are defined in a non-orthogonal basis (otherwise the results will be wrong).
        Same order as `ddHk`.
-    degenerate: list of array_like, optional
+    degenerate : list of array_like, optional
        a list containing the indices of degenerate states. In that case a subsequent diagonalization
        is required to decouple them. This is done 3 times along the diagonal Cartesian directions.
     as_matrix : bool, optional
@@ -1314,7 +1314,7 @@ class _electron_State(object):
 
         Parameters
         ----------
-        format: str, optional
+        format : str, optional
            the returned format of the overlap matrix. This only takes effect for
            non-orthogonal parents.
         spin : Spin, optional

@@ -215,13 +215,13 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        boundary: (3, 2) or (3, ) or int, optional
+        boundary : (3, 2) or (3, ) or int, optional
            boundary condition for all boundaries (or the same for all)
-        a: int or list of int, optional
+        a : int or list of int, optional
            boundary condition for the first unit-cell vector direction
-        b: int or list of int, optional
+        b : int or list of int, optional
            boundary condition for the second unit-cell vector direction
-        c: int or list of int, optional
+        c : int or list of int, optional
            boundary condition for the third unit-cell vector direction
 
         Raises
@@ -400,7 +400,7 @@ class Grid(SuperCellChild):
            for ``above=False`` grid[idx:,...]
         axis : int
            the axis segment from which we retain the indices `idx`
-        above: bool
+        above : bool
            if ``True`` will retain the grid:
               ``grid[:idx,...]``
            else it will retain the grid:
@@ -421,7 +421,7 @@ class Grid(SuperCellChild):
            for ``above=False`` grid[:idx,...]
         axis : int
            the axis segment from which we retain the indices `idx`
-        above: bool
+        above : bool
            if ``True`` will retain the grid:
               ``grid[idx:,...]``
            else it will retain the grid:
@@ -1180,15 +1180,15 @@ class Grid(SuperCellChild):
 
         Parameters
         ----------
-        p: ArgumentParser, None
+        p : ArgumentParser, None
            in case the arguments should be added to a specific parser. It defaults
            to create a new.
-        limit_arguments: bool, True
+        limit_arguments : bool, True
            If `False` additional options will be created which are similar to other options.
            For instance `--repeat-x` which is equivalent to `--repeat x`.
-        short: bool, False
+        short : bool, False
            Create short options for a selected range of options
-        positional_out: bool, False
+        positional_out : bool, False
            If `True`, adds a positional argument which acts as --out. This may be handy if only the geometry is in the argument list.
         """
         limit_args = kwargs.get('limit_arguments', True)

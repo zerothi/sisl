@@ -153,7 +153,7 @@ def velocity(mode, hw, dDk, degenerate=None):
     dDk : list of array_like
        Dynamical matrix derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
        list of the dynamical matrix derivative along the 3 Cartesian directions.
-    degenerate: list of array_like, optional
+    degenerate : list of array_like, optional
        a list containing the indices of degenerate modes. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
 

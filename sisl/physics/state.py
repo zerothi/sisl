@@ -121,7 +121,7 @@ class Coefficient(ParentContainer):
 
         Returns
         -------
-        list of numpy.ndarray: a list of indices
+        list of numpy.ndarray : a list of indices
         """
         deg = list()
         sidx = np.argsort(self.c)
@@ -178,15 +178,15 @@ class Coefficient(ParentContainer):
 
         Parameters
         ----------
-        asarray: bool, optional
+        asarray : bool, optional
            if true the yielded values are the coefficient vectors, i.e. a numpy array.
            Otherwise an equivalent object is yielded.
 
         Yields
         ------
-        coeff: Coefficent
+        coeff : Coefficent
            the current coefficent as an object, only returned if `asarray` is false.
-        coeff: numpy.ndarray
+        coeff : numpy.ndarray
            the current the coefficient as an array, only returned if `asarray` is true.
         """
         if asarray:
@@ -304,7 +304,7 @@ class State(ParentContainer):
 
         Parameters
         ----------
-        asarray: bool, optional
+        asarray : bool, optional
            if true the yielded values are the state vectors, i.e. a numpy array.
            Otherwise an equivalent object is yielded.
 
@@ -482,7 +482,7 @@ class State(ParentContainer):
         ----------
         other : State
            the other state to align onto this state
-        copy: bool, optional
+        copy : bool, optional
            sometimes no states require rotation, if this is the case this flag determines whether `other` will be
            copied or not
         """
@@ -518,7 +518,7 @@ class State(ParentContainer):
         ----------
         phi : float, optional
            angle to align the state at (in radians), 0 is the positive real axis
-        individual: bool, optional
+        individual : bool, optional
            whether the rotation is per state, or a single maximum component is chosen.
         """
         # Convert angle to complex phase
@@ -694,7 +694,7 @@ class StateC(State):
 
         Returns
         -------
-        list of numpy.ndarray: a list of indices
+        list of numpy.ndarray : a list of indices
         """
         deg = list()
         sidx = np.argsort(self.c)

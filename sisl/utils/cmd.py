@@ -95,7 +95,7 @@ def add_sisl_version_cite_arg(parser):
 
     Parameters
     ----------
-    parser: `argparse.ArgumentParser`
+    parser : `argparse.ArgumentParser`
        the parser to add the version string too
     """
     from sisl.info import version, git_revision, git_count, bibtex

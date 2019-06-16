@@ -84,12 +84,12 @@ class _SparseGeometry(object):
 
         Parameters
         ----------
-        dim: int, optional
+        dim : int, optional
            number of dimensions per element, default to the current number of
            elements per matrix element.
-        dtype: numpy.dtype, optional
+        dtype : numpy.dtype, optional
            the datatype of the sparse elements
-        nnzpr: int, optional
+        nnzpr : int, optional
            number of non-zero elements per row
         """
         # I know that this is not the most efficient way to
@@ -515,7 +515,7 @@ class _SparseGeometry(object):
 
         Parameters
         ----------
-        func: callable or array_like
+        func : callable or array_like
            this function *must* take 4 arguments.
            1. Is this object (``self``)
            2. Is the currently examined atom (``ia``)
@@ -533,7 +533,7 @@ class _SparseGeometry(object):
            up the `iter_block` loop.
         method : {'rand', str}
            method used in `Geometry.iter_block`, see there for details
-        eta: bool, optional
+        eta : bool, optional
            whether an ETA will be printed
 
         See Also
@@ -2447,7 +2447,7 @@ class SparseOrbital(_SparseGeometry):
         ----------
         dim : int, optional
            number of dimensions allocated in the SparseAtom object, default to the same
-        dtype: numpy.dtype, optional
+        dtype : numpy.dtype, optional
            used data-type for the sparse object. Defaults to the same.
         """
         if dim is None:

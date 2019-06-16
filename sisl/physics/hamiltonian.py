@@ -374,7 +374,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             `n_up`.
         n_down : int, optional
             same as `n_up` but for the spin-down configuration
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenstate` routine
         """
         if not self.spin.is_polarized:
@@ -395,7 +395,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         ----------
         k : array_like, optional
             k-point at which the velocities are calculated
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenstate` routine
 
         See Also
@@ -412,7 +412,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         ----------
         k : array_like, optional
             k-point at which the spin moments are calculated
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenstate` routine
 
         See Also
@@ -434,7 +434,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         distribution : func or str, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenvalue` routine
 
         See Also
@@ -458,7 +458,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         distribution : func or str, optional
             a function that accepts :math:`E-\epsilon` as argument and calculates the
             distribution function.
-        **kwargs: optional
+        **kwargs : optional
             additional parameters passed to the `eigenstate` routine
 
         See Also

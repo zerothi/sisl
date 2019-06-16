@@ -493,7 +493,7 @@ class RealSpaceSE(SelfEnergy):
         integration k-points, if not passed the number of k-points will be determined using
         `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
         to the unfolded system.
-    trs: bool, optional
+    trs : bool, optional
         whether time-reversal symmetry is used in the BrillouinZone integration, default
         to true.
 
@@ -585,7 +585,7 @@ class RealSpaceSE(SelfEnergy):
             integration k-points, if not passed the number of k-points will be determined using
             `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
             to the unfolded system.
-        trs: bool, optional
+        trs : bool, optional
             whether time-reversal symmetry is used in the BrillouinZone integration, default
             to true.
         """
@@ -731,7 +731,7 @@ class RealSpaceSE(SelfEnergy):
         bulk : bool, optional
            if true, :math:`\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}`
            is returned, otherwise :math:`\boldsymbol\Sigma^\mathcal{R}` is returned
-        coupling: bool, optional
+        coupling : bool, optional
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
         dtype : numpy.dtype, optional
@@ -980,7 +980,7 @@ class RealSpaceSI(SelfEnergy):
         integration k-points, if not passed the number of k-points will be determined using
         `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
         to the unfolded system.
-    trs: bool, optional
+    trs : bool, optional
         whether time-reversal symmetry is used in the BrillouinZone integration, default
         to true.
 
@@ -1122,7 +1122,7 @@ class RealSpaceSI(SelfEnergy):
             integration k-points, if not passed the number of k-points will be determined using
             `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
             to the unfolded system.
-        trs: bool, optional
+        trs : bool, optional
             whether time-reversal symmetry is used in the BrillouinZone integration, default
             to true.
         """
@@ -1291,7 +1291,7 @@ class RealSpaceSI(SelfEnergy):
         bulk : bool, optional
            if true, :math:`\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}`
            is returned, otherwise :math:`\boldsymbol\Sigma^\mathcal{R}` is returned
-        coupling: bool, optional
+        coupling : bool, optional
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
         dtype : numpy.dtype, optional

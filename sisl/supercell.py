@@ -205,13 +205,13 @@ class SuperCell(object):
     def set_nsc(self, nsc=None, a=None, b=None, c=None):
         """ Sets the number of supercells in the 3 different cell directions
 
-        nsc: list of int, optional
+        nsc : list of int, optional
            number of supercells in each direction
-        a: integer, optional
+        a : integer, optional
            number of supercells in the first unit-cell vector direction
-        b: integer, optional
+        b : integer, optional
            number of supercells in the second unit-cell vector direction
-        c: integer, optional
+        c : integer, optional
            number of supercells in the third unit-cell vector direction
         """
         if not nsc is None:

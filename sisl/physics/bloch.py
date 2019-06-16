@@ -148,7 +148,7 @@ class Bloch(object):
            k-point to be unfolded
         *args : list
            arguments passed directly to `func`
-        **kwargs: dict
+        **kwargs : dict
            keyword arguments passed directly to `func`
 
         Returns

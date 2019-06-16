@@ -156,7 +156,7 @@ class hamiltonianSile(Sile):
 
         Parameters
         ----------
-        geom: Geometry
+        geom : Geometry
               The geometry we wish to write
         """
 

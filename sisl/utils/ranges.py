@@ -104,9 +104,9 @@ def strseq(cast, s, start=None, end=None):
 
     Parameters
     ----------
-    cast: function
+    cast : function
        parser of the individual elements
-    s: str
+    s : str
        string with content
 
     Examples

@@ -72,9 +72,9 @@ class Geometry(SuperCellChild):
         the supercell describing the periodicity of the
         geometry
     no
-    n_s: int
+    n_s : int
         total number of supercells in the supercell
-    no_s: int
+    no_s : int
         total number of orbitals in the geometry times number of supercells
 
     Parameters
@@ -2907,7 +2907,7 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        io: array_like
+        io : array_like
              List of indices to return the atoms for
         unique : bool, optional
              If True only return the unique atoms.
@@ -3482,16 +3482,16 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        parser: ArgumentParser, optional
+        parser : ArgumentParser, optional
            in case the arguments should be added to a specific parser. It defaults
            to create a new.
-        limit_arguments: bool, optional
+        limit_arguments : bool, optional
            If ``False`` additional options will be created which are similar to other options.
            For instance ``--repeat-x`` which is equivalent to ``--repeat x``.
            Default `True`.
-        short: bool, optional
+        short : bool, optional
            Create short options for a selected range of options.
-        positional_out: bool, optional
+        positional_out : bool, optional
            If ``True``, adds a positional argument which acts as --out. This may be handy if only the geometry is in the argument list.
         """
         limit_args = kwargs.get('limit_arguments', True)

@@ -440,7 +440,7 @@ class BaseSile(object):
 
         Parameters
         ----------
-        p: ArgumentParser
+        p : ArgumentParser
            the argument parser to add the arguments to.
         """
         raise NotImplementedError("The ArgumentParser of '"+self.__class__.__name__+"' has not been implemented yet.")
@@ -450,7 +450,7 @@ class BaseSile(object):
 
         Parameters
         ----------
-        p: ArgumentParser
+        p : ArgumentParser
            the argument parser to add the arguments to.
         """
         pass

@@ -19,7 +19,7 @@ def argparse_patch(parser):
 
     Parameters
     ----------
-    parser: ArgumentParser
+    parser : ArgumentParser
        parser to be patched
     """
     class MySubParsersAction(argparse._SubParsersAction):
