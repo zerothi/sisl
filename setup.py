@@ -33,11 +33,11 @@ Topic :: Utilities
 
 MAJOR = 0
 MINOR = 9
-MICRO = 5
-ISRELEASED = False
+MICRO = 6
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION = "305080f5119b26cedaf5513ec6f9ea1389334ab9"
-REVISION_YEAR = 2018
+GIT_REVISION = "cc0e705432a2c2d496cea86bb068147b0cb64763"
+REVISION_YEAR = 2019
 
 
 # The MANIFEST should be updated (which it only is
