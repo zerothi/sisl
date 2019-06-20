@@ -14,7 +14,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    AIP Conference Proceedings **2093**, `020029 (2019) <https://doi.org/10.1063/1.5097098>`_
 
 #. G. Calogero, N. Papior, M. Koleini, M. H. L. Larsen and M. Brandbyge,
-  *Multi-scale approach to first-principles electron transport beyond 100 nm*,
+   *Multi-scale approach to first-principles electron transport beyond 100 nm*,
    Nanoscale **11**, `6153 (2019) <https://www.doi.org/10.1039/C9NR00866G>`_
 
 #. G. Singh, K. Kumar and R.K. Moudgil,
