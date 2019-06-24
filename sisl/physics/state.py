@@ -325,17 +325,7 @@ class State(ParentContainer):
 
     __iter__ = iter
 
-    def norm(self):
-        r""" Return a vector with the norm of each state :math:`\sqrt{\langle\psi|\psi\rangle}`
-
-        Returns
-        -------
-        numpy.ndarray
-            the normalization for each state
-        """
-        return np.sqrt(self.norm2())
-
-    def norm2(self, sum=True):
+    def norm(self, sum=True):
         r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
@@ -363,7 +353,7 @@ class State(ParentContainer):
         This is roughly equivalent to:
 
         >>> state = State(np.arange(10))
-        >>> n = state.norm()
+        >>> n = state.norm() ** 0.5
         >>> norm_state = State(state.state / n.reshape(-1, 1))
 
         Notes
@@ -375,7 +365,7 @@ class State(ParentContainer):
         State
             a new state with all states normalized, otherwise equal to this
         """
-        n = self.norm()
+        n = self.norm() ** 0.5
         s = self.__class__(self.state / n.reshape(-1, 1), parent=self.parent)
         s.info = self.info
         return s
@@ -415,7 +405,7 @@ class State(ParentContainer):
                 m += _outer(self.state[i, :], right.state[i, :])
         return m
 
-    def inner(self, right=None, diagonal=True, align=True):
+    def inner(self, right=None, diagonal=True, align=False):
         r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
 
         Parameters
@@ -541,15 +531,15 @@ class State(ParentContainer):
         --------
         align_phase : rotate states such that their phases align
         """
-        snorm2 = self.norm2(False)
-        onorm2 = other.norm2(False)
+        snorm = self.norm(False)
+        onorm = other.norm(False)
 
         # Now find new orderings
         show_warn = False
         idx = _a.fulli(len(other), -1)
         idxr = _a.emptyi(len(other))
         for i in range(len(other)):
-            R = ((snorm2 - onorm2[i, :].reshape(1, -1)) ** 2).sum(1)
+            R = ((snorm - onorm[i, :].reshape(1, -1)) ** 2).sum(1)
 
             # Figure out which band it should correspond to
             # find closest largest one
@@ -700,7 +690,7 @@ class StateC(State):
         This is roughly equivalent to:
 
         >>> state = StateC(np.arange(10), 1)
-        >>> n = state.norm()
+        >>> n = state.norm() ** 0.5
         >>> norm_state = StateC(state.state / n.reshape(-1, 1), state.c.copy())
         >>> norm_state.c[0] == 1
 
@@ -708,7 +698,7 @@ class StateC(State):
         -------
         state : a new state with all states normalized, otherwise equal to this
         """
-        n = self.norm()
+        n = self.norm() ** 0.5
         s = self.__class__(self.state / n.reshape(-1, 1), self.c.copy(), parent=self.parent)
         s.info = self.info
         return s

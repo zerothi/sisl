@@ -1,6 +1,15 @@
 0.9.7
 =====
 
+- Forced align=False in inner such that users should take care of this
+
+- Added align_norm to swap states such that they more or less
+	correspond to the same band (which should have a closer residual
+  for on-site coefficients).
+
+- Removed norm2 and made norm equal to norm2 for states. This is
+	the more natural thing, besides. Doing norm() ** 0.5 shouldn't be
+  too much of a problem.
 
 
 0.9.6

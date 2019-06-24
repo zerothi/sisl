@@ -74,7 +74,7 @@ def test_state_creation1():
     state = State(ar(6))
     assert len(state) == 1
     assert state.shape == (1, 6)
-    assert state.norm2()[0] == pytest.approx((ar(6) ** 2).sum())
+    assert state.norm()[0] == pytest.approx((ar(6) ** 2).sum())
     state_c = state.copy()
     assert len(state) == len(state_c)
     str(state)
@@ -99,7 +99,6 @@ def test_state_norm1():
     str(state)
     assert len(state) == 1
     assert state.norm()[0] == pytest.approx(1)
-    assert state.norm2()[0] == pytest.approx(1)
 
 
 def test_state_sub1():
@@ -107,18 +106,16 @@ def test_state_sub1():
     state = State(state)
     assert len(state) == 10
     norm = state.norm()
-    norm2 = state.norm2()
     for i in range(len(state)):
         assert len(state.sub(i)) == 1
         assert state.sub(i).norm()[0] == norm[i]
         assert state[i].norm()[0] == norm[i]
-        assert state[i].norm2()[0] == norm2[i]
     for i, sub in enumerate(state):
         assert len(sub) == 1
         assert sub.norm()[0] == norm[i]
 
     for i, sub in enumerate(state.iter(True)):
-        assert (sub ** 2).sum() ** .5 == norm[i]
+        assert (sub ** 2).sum() == norm[i]
 
 
 def test_state_outer1():
@@ -227,26 +224,6 @@ def test_state_rotate_1():
     assert pytest.approx(np.angle(s.state[1, 0]), np.pi / 4)
     assert pytest.approx(np.angle(s.state[1, 1]), np.pi / 2)
 
-# def test_state_toStateC1():
-#     state = State(ar(6)).toStateC()
-#     assert len(state) == 1
-#     assert state.c[0] == pytest.approx((ar(6) ** 2).sum() ** .5)
-#     assert state.norm()[0] == pytest.approx(1)
-
-
-# def test_state_toStateC2():
-#     state = State(ar(2, 5)).toStateC()
-#     assert np.allclose(state.norm2(), 1.)
-#     state = State(ar(2, 5)).toStateC(norm=[0.5, 0.5])
-#     assert np.allclose(state.norm2(), 0.5)
-#     state = State(ar(2, 5)).toStateC(norm=[0.25, 0.75])
-#     assert np.allclose(state.norm2(), [0.25, 0.75])
-
-
-# @pytest.mark.xfail(raises=ValueError)
-# def test_state_toStateC_fail():
-#     State(ar(2, 5)).toStateC(norm=[0.2, 0.5, 0.5])
-
 
 def test_cstate_creation1():
     state = StateC(ar(6), 1)
@@ -300,7 +277,6 @@ def test_cstate_norm1():
     state = StateC(ar(10, 10), ar(10)).normalize()
     assert len(state) == 10
     assert np.allclose(state.norm(), 1)
-    assert np.allclose(state.norm2(), 1)
 
 
 def test_cstate_outer1():

@@ -45,7 +45,7 @@ def test_2_projection_content(sisl_files):
     assert len(es) == 3 # 1-HOMO, 2-LUMO
     assert (es.eig < 0.).nonzero()[0].size == 1
     assert (es.eig > 0.).nonzero()[0].size == 2
-    assert np.allclose(es.norm2(), 1)
+    assert np.allclose(es.norm(), 1)
 
 
 @pytest.mark.slow
