@@ -13,6 +13,17 @@ def ar(*args):
     return np.arange(l, dtype=np.float64).reshape(args)
 
 
+def ortho_matrix(n, m=None):
+    if m is None:
+        m = n
+    max_nm = max(n, m)
+    from scipy.linalg import qr
+    H = np.random.randn(max_nm, max_nm) + 1j * np.random.randn(max_nm, max_nm)
+    Q, _ = qr(H)
+    M = Q.dot(np.conjugate(Q.T))
+    return M[:n, :]
+
+
 def outer(v):
     return np.outer(v, np.conjugate(v))
 
@@ -151,14 +162,39 @@ def test_state_phase_all():
     assert np.allclose(ph1, ph2 + np.pi)
 
 
-def test_state_align1():
-    state = np.random.rand(10, 10) + 1j * np.random.rand(10, 10)
+def test_state_align_phase1():
+    state = ortho_matrix(10)
     state1 = State(state)
     state2 = State(-state)
 
     # This should rotate all back
-    align2 = state1.align(state2)
+    align2 = state1.align_phase(state2)
     assert np.allclose(state1.state, align2.state)
+
+
+def test_state_align_norm1():
+    state = ortho_matrix(10)
+    state1 = State(state)
+    idx = np.arange(len(state))
+    np.random.shuffle(idx)
+    state2 = state1.sub(idx)
+
+    # This should swap all back
+    align2 = state1.align_norm(state2)
+    assert np.allclose(state1.state, align2.state)
+
+
+def test_state_align_norm2():
+    state = ortho_matrix(15)
+    state1 = State(state)
+    idx = np.arange(len(state))
+    np.random.shuffle(idx)
+    state2 = state1.sub(idx)
+
+    # This should swap all back
+    align2, idx2 = state1.align_norm(state2, ret_index=True)
+    assert np.allclose(state1.state, align2.state)
+    assert np.allclose(state1.state, state2.sub(idx2).state)
 
 
 def test_state_rotate_1():
