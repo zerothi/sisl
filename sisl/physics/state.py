@@ -3,6 +3,7 @@ from __future__ import print_function, division
 import numpy as np
 
 import sisl._array as _a
+from sisl.messages import warn
 from sisl._help import _range as range
 
 
@@ -408,7 +409,7 @@ class State(ParentContainer):
                 raise ValueError(self.__class__.__name__ + '.outer requires the objects to have the same shape')
             if align:
                 # Align the states
-                right = self.align(right, copy=False)
+                right = self.align_phase(right, copy=False)
             m = _outer(self.state[0, :], right.state[0, :])
             for i in range(1, len(self)):
                 m += _outer(self.state[i, :], right.state[i, :])
@@ -446,7 +447,7 @@ class State(ParentContainer):
                 raise ValueError(self.__class__.__name__ + '.inner requires the objects to have the same shape')
             if align:
                 # Align the states
-                right = self.align(right, copy=False)
+                right = self.align_phase(right, copy=False)
             if diagonal:
                 m = (_conj(self.state) * right.state).sum(1)
             else:
@@ -473,8 +474,8 @@ class State(ParentContainer):
             return _phase(self.state)
         raise ValueError(self.__class__.__name__ + '.phase only accepts method in ["max", "all"]')
 
-    def align(self, other, copy=False):
-        r""" Align `other.state` with the angles for this state, a copy of `other` is returned with rotated elements
+    def align_phase(self, other, copy=False):
+        r""" Align `other.state` with the phases for this state, a copy of `other` is returned with rotated elements
 
         States will be rotated by :math:`\pi` provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
 
@@ -485,6 +486,10 @@ class State(ParentContainer):
         copy : bool, optional
            sometimes no states require rotation, if this is the case this flag determines whether `other` will be
            copied or not
+
+        See Also
+        --------
+        align_norm : re-order states such that site-norms have a smaller residual
         """
         phase, idx = self.phase(return_indices=True)
         other_phase = _phase(other.state[_a.arangei(len(other)), idx])
@@ -501,6 +506,67 @@ class State(ParentContainer):
         out = other.copy()
         out.state[idx, :] *= -1
         return out
+
+    def align_norm(self, other, ret_index=False):
+        r""" Align `other.state` with the site-norms for this state, a copy of `other` is returned with re-ordered states
+
+        To determine the new ordering of `other` we first calculate the residual norm of the site-norms.
+
+        .. math::
+           \delta N_{\alpha\beta} = \sum_i \big(\langle \psi^\alpha_i | \psi^\alpha_i\rangle - \langle \psi^\beta_i | \psi^\beta_i\rangle\big)^2
+
+        where :math:`\alpha` and :math:`\beta` correspond to state indices in `self` and `other`, respectively.
+        The new states (from `other`) returned is then ordered such that the index
+        :math:`\alpha \equiv \beta'` where :math:`\delta N_{\alpha\beta}` is smallest.
+
+        Parameters
+        ----------
+        other : State
+           the other state to align onto this state
+        ret_index : bool, optional
+           also return indices for the swapped indices
+
+        Returns
+        -------
+        other_swap : State
+            A swapped instance of `other`
+        index : array of int
+            the indices that swaps `other` to be ``other_swap``, i.e. ``other_swap = other.sub(index)``
+
+        Notes
+        -----
+        The input state and output state have the same states, but their ordering is not necessarily the same.
+
+        See Also
+        --------
+        align_phase : rotate states such that their phases align
+        """
+        snorm2 = self.norm2(False)
+        onorm2 = other.norm2(False)
+
+        # Now find new orderings
+        show_warn = False
+        idx = _a.fulli(len(other), -1)
+        idxr = _a.emptyi(len(other))
+        for i in range(len(other)):
+            R = ((snorm2 - onorm2[i, :].reshape(1, -1)) ** 2).sum(1)
+
+            # Figure out which band it should correspond to
+            # find closest largest one
+            for j in np.argsort(R):
+                if j not in idx[:i]:
+                    idx[i] = j
+                    idxr[j] = i
+                    break
+                show_warn = True
+
+        if show_warn:
+            warn(self.__class__.__name__ + '.align_norm found multiple possible candidates with minimal residue, swapping not unique')
+
+        if ret_index:
+            return other.sub(idxr), idxr
+        return other.sub(idxr)
+
 
     def rotate(self, phi=0., individual=False):
         r""" Rotate all states (in-place) to rotate the largest component to be along the angle `phi`

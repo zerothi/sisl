@@ -106,4 +106,4 @@ linspacec = _partial(np.linspace, dtype=np.complex64)
 linspacez = _partial(np.linspace, dtype=np.complex128)
 __all__ += _append('linspace', 'fdcz')
 
-del _append
+del _append, _partial
