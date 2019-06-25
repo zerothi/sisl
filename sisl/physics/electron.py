@@ -1302,7 +1302,7 @@ class _electron_State(object):
     def __is_nc(self):
         """ Internal routine to check whether this is a non-collinear calculation """
         try:
-            return self.parent.spin > Spin.POLARIZED
+            return self.parent.spin.has_noncolinear
         except:
             return False
 
@@ -1333,51 +1333,95 @@ class _electron_State(object):
                     opt['gauge'] = gauge
                 return self.parent.Sk(**opt)
 
+        if self.__is_nc():
+            n = self.shape[1] // 2
+        else:
+            n = self.shape[1]
+
         class __FakeSk(object):
             """ Replacement object which superseedes a matrix """
             __slots__ = []
-            shape = (self.shape[1], self.shape[1])
+            shape = (n, n)
             @staticmethod
             def dot(v):
                 return v
+            @property
+            def T(self):
+                return self
 
-        if spin is None:
-            return __FakeSk
-        if spin.kind > Spin.POLARIZED:
-            class __FakeSk(object):
-                """ Replacement object which superseedes a matrix """
-                __slots__ = []
-                shape = (self.shape[1] // 2, self.shape[1] // 2)
-                @staticmethod
-                def dot(v):
-                    return v
         return __FakeSk
 
-    def norm(self, sum=True):
+    def norm2(self, sum=True):
         r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
+
+        This will take into account any overlap matrix if present.
 
         Parameters
         ----------
         sum : bool, optional
-           if true the summed orbital square is returned (a vector). For false a matrix
-           with normalization squared per orbital is returned.
+           for true only a single number per state will be returned, otherwise the norm
+           per basis element will be returned.
 
         Returns
         -------
         numpy.ndarray
-            the normalization on each orbital for each state
+            the squared norm for each state
+        """
+        if sum:
+            return self.inner()
+
+        # Retrieve the overlap matrix (FULL S is required for NC)
+        S = self.Sk()
+        return conj(self.state) * S.dot(self.state.T).T
+
+    def inner(self, right=None, diagonal=True, align=False):
+        r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
+
+        Parameters
+        ----------
+        right : State, optional
+           the right object to calculate the inner product with, if not passed it will do the inner
+           product with itself. This object will always be the left :math:`\langle\psi_i|`.
+        diagonal : bool, optional
+           only return the diagonal matrix :math:`\mathbf M_{ii}`.
+        align : bool, optional
+           first align `right` with the angles for this state (see `align`)
+
+        Raises
+        ------
+        ValueError : in case where `right` is not None and `self` and `right` has differing overlap matrix.
+
+        Returns
+        -------
+        numpy.ndarray
+            a matrix with the sum of inner state products
         """
         # Retrieve the overlap matrix (FULL S is required for NC)
         S = self.Sk()
 
         # TODO, perhaps check that it is correct... and fix multiple transposes
-        if sum:
-            if self.__is_nc():
-                return (conj(self.state) * S.dot(self.state.T).T).real.reshape(len(self), -1, 2).sum(-1).sum(1)
-            return (conj(self.state) * S.dot(self.state.T).T).real.sum(1)
-        if self.__is_nc():
-            return (conj(self.state) * S.dot(self.state.T).T).real.reshape(len(self), -1, 2).sum(-1)
-        return (conj(self.state) * S.dot(self.state.T).T).real
+        if right is None:
+            if diagonal:
+                return (conj(self.state) * S.dot(self.state.T).T).sum(1).real
+            return dot(conj(self.state), S.dot(self.state.T))
+
+        else:
+            if 'FakeSk' in S.__class__.__name__:
+                raise NotImplementedError(self.__class__.__name__ + '.inner does not implement the inner product between two different overlap matrices.')
+
+            # Same as State.inner
+            # In the current implementation we require no overlap matrix!
+            if align:
+                if self.shape[0] != right.shape[0]:
+                    raise ValueError(self.__class__.__name__ + '.inner with align=True requires exactly the same shape!')
+                # Align the states
+                right = self.align_phase(right, copy=False)
+
+            if diagonal:
+                if self.shape[0] != right.shape[0]:
+                    return np.diag(dot(conj(self.state), S.dot(right.state.T)))
+                return (conj(self.state) * S.dot(right.state.T).T).sum(1)
+            return dot(conj(self.state), S.dot(right.state.T))
 
     def spin_moment(self):
         r""" Calculate spin moment from the states

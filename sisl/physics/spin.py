@@ -106,7 +106,7 @@ class Spin(object):
         if self.is_polarized:
             return s + '{{polarized, kind={}}}'.format(self.dkind)
         if self.is_noncolinear:
-            return s + '{{non-collinear, kind={}}}'.format(self.dkind)
+            return s + '{{non-colinear, kind={}}}'.format(self.dkind)
         return s + '{{spin-orbit, kind={}}}'.format(self.dkind)
 
     def copy(self):
@@ -150,6 +150,11 @@ class Spin(object):
     def is_noncolinear(self):
         """ True if the configuration non-collinear """
         return self.kind == Spin.NONCOLINEAR
+
+    @property
+    def has_noncolinear(self):
+        """ True if the configuration is non-collinear or spin-orbit """
+        return self.kind >= Spin.NONCOLINEAR
 
     @property
     def is_spinorbit(self):

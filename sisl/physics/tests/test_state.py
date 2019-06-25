@@ -74,7 +74,7 @@ def test_state_creation1():
     state = State(ar(6))
     assert len(state) == 1
     assert state.shape == (1, 6)
-    assert state.norm()[0] == pytest.approx((ar(6) ** 2).sum())
+    assert state.norm2()[0] == pytest.approx((ar(6) ** 2).sum())
     state_c = state.copy()
     assert len(state) == len(state_c)
     str(state)
@@ -106,6 +106,7 @@ def test_state_sub1():
     state = State(state)
     assert len(state) == 10
     norm = state.norm()
+    norm2 = state.norm2()
     for i in range(len(state)):
         assert len(state.sub(i)) == 1
         assert state.sub(i).norm()[0] == norm[i]
@@ -115,7 +116,7 @@ def test_state_sub1():
         assert sub.norm()[0] == norm[i]
 
     for i, sub in enumerate(state.iter(True)):
-        assert (sub ** 2).sum() == norm[i]
+        assert (sub ** 2).sum() == norm2[i]
 
 
 def test_state_outer1():
@@ -139,6 +140,17 @@ def test_state_inner1():
     assert np.allclose(inner, state.inner(state))
     inner = state.inner(diagonal=False)
     assert np.allclose(inner, state.inner(state, diagonal=False))
+
+
+def test_state_inner_differing_size():
+    state1 = State(ar(8, 10))
+    state2 = State(ar(4, 10))
+
+    inner = state1.inner(state2, diagonal=False)
+    assert inner.shape == (8, 4)
+
+    inner = state1.inner(state2)
+    assert inner.shape == (4, )
 
 
 def test_state_phase_max():
@@ -254,10 +266,12 @@ def test_cstate_sub1():
     state = StateC(ar(10, 10), ar(10))
     assert len(state) == 10
     norm = state.norm()
+    norm2 = state.norm2()
     for i in range(len(state)):
         assert len(state.sub(i)) == 1
         assert state.sub(i).norm()[0] == norm[i]
         assert state[i].norm()[0] == norm[i]
+        assert state[i].norm2()[0] == norm2[i]
         assert state[i].c[0] == state.c[i]
     for i, sub in enumerate(state):
         assert len(sub) == 1

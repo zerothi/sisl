@@ -93,7 +93,7 @@ class TestDynamicalMatrix(object):
         ev = D.eigenvalue()
         em = D.eigenmode()
         assert np.allclose(ev.hw, em.hw)
-        assert np.allclose(em.norm(), 1)
+        assert np.allclose(em.norm2(), 1)
 
     def test_change_gauge(self, setup):
         D = setup.D.copy()

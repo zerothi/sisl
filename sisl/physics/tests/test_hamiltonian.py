@@ -543,7 +543,12 @@ class TestHamiltonian(object):
             es = HS.eigenstate(k)
             assert np.allclose(e, es.eig)
             assert np.allclose(v, es.state.T)
-            assert np.allclose(es.norm(), 1)
+            assert np.allclose(es.norm2(), 1)
+            assert np.allclose(es.inner(diagonal=False) - np.eye(len(es)), 0)
+
+            assert es.inner(es.sub(0)).shape == (1, )
+            assert es.inner(es.sub(0), diagonal=False).shape == (len(es), 1)
+
             eig1 = HS.eigh(k)
             eig2 = np.sort(HS.eig(k).real)
             eig3 = np.sort(HS.eig(k, eigvals_only=False)[0].real)
@@ -758,7 +763,7 @@ class TestHamiltonian(object):
             DOS = es.DOS(E)
             assert DOS.dtype.kind == 'f'
             assert np.allclose(DOS, HS.DOS(E, k))
-            assert np.allclose(es.norm(), 1)
+            assert np.allclose(es.norm2(), 1)
             str(es)
 
     def test_pdos1(self, setup):
@@ -947,6 +952,7 @@ class TestHamiltonian(object):
         es = H1.eigenstate(dtype=np.complex128)
         assert np.allclose(es.eig, eig1)
         es.spin_moment()
+        assert np.allclose(es.inner(), 1)
 
         PDOS = es.PDOS(np.linspace(-1, 1, 100))
         DOS = es.DOS(np.linspace(-1, 1, 100))

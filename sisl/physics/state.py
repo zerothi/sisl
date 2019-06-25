@@ -325,27 +325,33 @@ class State(ParentContainer):
 
     __iter__ = iter
 
-    def norm(self, sum=True):
+    def norm(self):
+        r""" Return a vector with the Euclidean norm of each state :math:`\sqrt{\langle\psi|\psi\rangle}`
+
+        Returns
+        -------
+        numpy.ndarray
+            the Euclidean norm for each state
+        """
+        return self.norm2() ** 0.5
+
+    def norm2(self, sum=True):
         r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
         ----------
         sum : bool, optional
-           if true the summed site square is returned (a vector). For false a matrix
-           with normalization squared per site is returned.
-
-        Notes
-        -----
-        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
+           for true only a single number per state will be returned, otherwise the norm
+           per basis element will be returned.
 
         Returns
         -------
         numpy.ndarray
-            the normalization for each state
+            the squared norm for each state
         """
         if sum:
-            return (_conj(self.state) * self.state).real.sum(1)
-        return (_conj(self.state) * self.state).real
+            return self.inner()
+        return _conj(self.state) * self.state
 
     def normalize(self):
         r""" Return a normalized state where each state has :math:`|\psi|^2=1`
@@ -353,7 +359,7 @@ class State(ParentContainer):
         This is roughly equivalent to:
 
         >>> state = State(np.arange(10))
-        >>> n = state.norm() ** 0.5
+        >>> n = state.norm()
         >>> norm_state = State(state.state / n.reshape(-1, 1))
 
         Notes
@@ -365,7 +371,7 @@ class State(ParentContainer):
         State
             a new state with all states normalized, otherwise equal to this
         """
-        n = self.norm() ** 0.5
+        n = self.norm()
         s = self.__class__(self.state / n.reshape(-1, 1), parent=self.parent)
         s.info = self.info
         return s
@@ -406,7 +412,7 @@ class State(ParentContainer):
         return m
 
     def inner(self, right=None, diagonal=True, align=False):
-        r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
+        r""" Return the inner product as :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
 
         Parameters
         ----------
@@ -425,24 +431,28 @@ class State(ParentContainer):
         Returns
         -------
         numpy.ndarray
-            a matrix with the sum of outer state products
+            a matrix with the sum of inner state products
         """
         if right is None:
             if diagonal:
-                m = (_conj(self.state) * self.state).sum(1)
-            else:
-                m = _inner(self.state, self.state.T)
-        else:
-            if not np.array_equal(self.shape, right.shape):
-                raise ValueError(self.__class__.__name__ + '.inner requires the objects to have the same shape')
-            if align:
-                # Align the states
-                right = self.align_phase(right, copy=False)
-            if diagonal:
-                m = (_conj(self.state) * right.state).sum(1)
-            else:
-                m = _inner(self.state, right.state.T)
-        return m
+                return (_conj(self.state) * self.state).sum(1).real
+            return _inner(self.state, self.state.T)
+
+        # They *must* have same number of basis points per state
+        if self.shape[-1] != right.shape[-1]:
+            raise ValueError(self.__class__.__name__ + '.inner requires the objects to have the same shape')
+
+        if align:
+            if self.shape[0] != right.shape[0]:
+                raise ValueError(self.__class__.__name__ + '.inner with align=True requires exactly the same shape!')
+            # Align the states
+            right = self.align_phase(right, copy=False)
+
+        if diagonal:
+            if self.shape[0] != right.shape[0]:
+                return np.diag(_inner(self.state, right.state.T))
+            return (_conj(self.state) * right.state).sum(1)
+        return _inner(self.state, right.state.T)
 
     def phase(self, method='max', return_indices=False):
         r""" Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
@@ -455,12 +465,12 @@ class State(ParentContainer):
         return_indices : bool, optional
            return indices for the elements used when ``method=='max'``
         """
-        if method.lower() == 'max':
+        if method == 'max':
             idx = _argmax(_abs(self.state), 1)
             if return_indices:
                 return _phase(self.state[_a.arangei(len(self)), idx]), idx
             return _phase(self.state[_a.arangei(len(self)), idx])
-        elif method.lower() == 'all':
+        elif method == 'all':
             return _phase(self.state)
         raise ValueError(self.__class__.__name__ + '.phase only accepts method in ["max", "all"]')
 
@@ -531,8 +541,8 @@ class State(ParentContainer):
         --------
         align_phase : rotate states such that their phases align
         """
-        snorm = self.norm(False)
-        onorm = other.norm(False)
+        snorm = self.norm2(False)
+        onorm = other.norm2(False)
 
         # Now find new orderings
         show_warn = False
@@ -556,7 +566,6 @@ class State(ParentContainer):
         if ret_index:
             return other.sub(idxr), idxr
         return other.sub(idxr)
-
 
     def rotate(self, phi=0., individual=False):
         r""" Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
@@ -690,7 +699,7 @@ class StateC(State):
         This is roughly equivalent to:
 
         >>> state = StateC(np.arange(10), 1)
-        >>> n = state.norm() ** 0.5
+        >>> n = state.norm()
         >>> norm_state = StateC(state.state / n.reshape(-1, 1), state.c.copy())
         >>> norm_state.c[0] == 1
 
@@ -698,7 +707,7 @@ class StateC(State):
         -------
         state : a new state with all states normalized, otherwise equal to this
         """
-        n = self.norm() ** 0.5
+        n = self.norm()
         s = self.__class__(self.state / n.reshape(-1, 1), self.c.copy(), parent=self.parent)
         s.info = self.info
         return s
