@@ -4,7 +4,7 @@ from ..sile import add_sile
 
 from sisl.io.siesta.binaries import _gfSileSiesta
 
-__all__ = ['tbtgfSileTBtrans', 'TBTGFSileTBtrans']
+__all__ = ['tbtgfSileTBtrans']
 
 
 dic = {}
@@ -14,7 +14,5 @@ except:
     pass
 tbtgfSileTBtrans = type("tbtgfSileTBtrans", (_gfSileSiesta, ), dic)
 del dic
-
-TBTGFSileTBtrans = tbtgfSileTBtrans
 
 add_sile('TBTGF', tbtgfSileTBtrans)
