@@ -152,3 +152,20 @@ def sisl_system():
     d.ham = Hamiltonian(d.gtb)
     d.ham.construct([(0.1, 1.5), (0.1, 2.7)])
     return d
+
+
+def pytest_configure(config):
+
+    # Locally manage pytest.ini input
+    for mark in ['io', 'bloch', 'hamiltonian', 'geometry', 'geom', 'shape',
+                 'state', 'electron', 'phonon', 'utils', 'unit', 'distribution',
+                 'spin', 'self_energy', 'help', 'messages', 'namedindex', 'sparse',
+                 'supercell', 'sc', 'quaternion', 'sparse_geometry', 'ranges',
+                 'orbital', 'oplist', 'grid', 'atoms', 'atom', 'sgrid', 'sdata', 'sgeom',
+                 'version', 'bz', 'brillouinzone', 'inv', 'eig', 'linalg',
+                 'density_matrix', 'dynamicalmatrix', 'energydensity_matrix',
+                 'siesta', 'tbtrans', 'ham', 'vasp', 'w90', 'wannier90', 'gulp', 'fdf',
+                 'table', 'cube', 'slow', 'selector']:
+        config.addinivalue_line(
+            "markers", "{}: mark test to run only on named environment".format(mark)
+        )
