@@ -82,7 +82,7 @@ class xyzSile(Sile):
                 if len(values) != 9:
                     raise ValueError(
                         "There are not exactly 9 values associated to the"
-                        f" {cellkey} values")
+                        " {cellkey} values".format(cellkey=cellkey))
                 cell.shape = (9,)
                 for i, il in enumerate(values):
                     cell[i] = float(il)
@@ -93,8 +93,8 @@ class xyzSile(Sile):
             except ValueError as e:
                 import warnings
                 warnings.warn(
-                    f"Found a key indicating {cellkey} in xyz file, but "
-                    f"could not parse it: {e!s}")
+                    "Found a key indicating {cellkey} in xyz file, but "
+                    "could not parse it: {e!s}".format(cellkey=cellkey, e=e))
 
         # Now set nsc if its there
         try:
@@ -111,7 +111,7 @@ class xyzSile(Sile):
             import warnings
             warnings.warn(
                 "Found a key indicating nsc in xyz file, but "
-                f"could not parse it: {e!s}")
+                "could not parse it: {e!s}".format(e=e))
 
         sp = [None] * na
         xyz = np.empty([na, 3], np.float64)
