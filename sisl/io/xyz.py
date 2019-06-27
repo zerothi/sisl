@@ -3,6 +3,7 @@ Sile object for reading/writing XYZ files
 """
 from __future__ import print_function
 
+from collections import defaultdict
 import numpy as np
 
 # Import sile objects
@@ -10,6 +11,7 @@ from .sile import *
 
 # Import the geometry object
 from sisl import Geometry, SuperCell
+import re
 
 
 __all__ = ['xyzSile']
@@ -56,30 +58,60 @@ class xyzSile(Sile):
         nsc = [1, 1, 1]
         l = self.readline()
         na = int(l)
+
+        # Attempt parsing comment line for key=value pairs
         l = self.readline()
         l = l.split()
+        keymatch = re.compile(r"(\w+)=(.*)")
+        keyval = defaultdict(lambda: [])
+        cur_key = "nokey"
+        for w in l:
+            key = keymatch.match(w)
+            if key is not None:
+                cur_key = key.group(1).lower()
+                w = key.group(2)
+            w = w.strip().strip("\"")
+            keyval[cur_key].append(w)
+        keyval = {k: " ".join(v) for k, v in keyval.items()}
+
+        # Now set cell if given
         cell_set = False
-        if len(l) == 9:
-            # we possibly have the cell as a comment
+        for cellkey in ("lattice", "cell"):
             try:
+                values = keyval[cellkey].split()
+                if len(values) != 9:
+                    raise ValueError(
+                        "There are not exactly 9 values associated to the"
+                        f" {cellkey} values")
                 cell.shape = (9,)
-                for i, il in enumerate(l):
+                for i, il in enumerate(values):
                     cell[i] = float(il)
                 cell_set = True
-            finally:
                 cell.shape = (3, 3)
-        elif len(l) > 9:
-            # We may have the latest version of sisl xyz coordinates
-            try:
-                cell.shape = (9,)
-                for i, il in enumerate(l[1:10]):
-                    cell[i] = float(il)
-                # Try and read the nsc
-                for i, il in enumerate(l[11:14]):
-                    nsc[i] = int(il)
-                cell_set = True
-            finally:
-                cell.shape = (3, 3)
+            except KeyError:  # cellkey not in keyvals
+                continue
+            except ValueError as e:
+                import warnings
+                warnings.warn(
+                    f"Found a key indicating {cellkey} in xyz file, but "
+                    f"could not parse it: {e!s}")
+
+        # Now set nsc if its there
+        try:
+            values = keyval["nsc"].split()
+            if len(values) != 3:
+                raise ValueError(
+                    "There are not exactly 3 values associated to the"
+                    " cell/lattice values")
+            for i, il in enumerate(values):
+                nsc[i] = int(il)
+        except KeyError:
+            pass
+        except ValueError as e:
+            import warnings
+            warnings.warn(
+                "Found a key indicating nsc in xyz file, but "
+                f"could not parse it: {e!s}")
 
         sp = [None] * na
         xyz = np.empty([na, 3], np.float64)
