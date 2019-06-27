@@ -199,8 +199,6 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
         dm = self._sparse_data('DM', mol_proj_elec, E, kavg, isc) * eV2Ry
-        dm.eliminate_zeros()
-        dm.sort_indices()
         # Now create the density matrix object
         geom = self.read_geometry()
         if geometry is None:
@@ -272,8 +270,6 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
         COOP = self._sparse_data('COOP', mol_proj_elec, E, kavg, isc) * eV2Ry
-        COOP.eliminate_zeros()
-        COOP.sort_indices()
         return COOP
 
     def orbital_ACOHP(self, elec_mol_proj, E, kavg=True, isc=None):
@@ -315,8 +311,6 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
         COHP = self._sparse_data('COHP', mol_proj_elec, E, kavg, isc)
-        COHP.eliminate_zeros()
-        COHP.sort_indices()
         return COHP
 
     @default_ArgumentParser(description="Extract data from a TBT.Proj.nc file")

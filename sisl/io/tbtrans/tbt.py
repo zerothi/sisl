@@ -7,7 +7,7 @@ except Exception:
     from io import StringIO
 
 import numpy as np
-from numpy import in1d
+from numpy import in1d, sqrt
 import itertools
 
 # The sparse matrix for the orbital/bond currents
@@ -1173,10 +1173,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             raise ValueError(self.__class__.__name__ + '.orbital_current "only" keyword has '
                              'wrong value ["all", "+", "-"] allowed.')
 
-        # We will always remove the zeroes and sort the indices... (they should be sorted anyways)
-        J.eliminate_zeros()
-        J.sort_indices()
-
         return J
 
     def bond_current_from_orbital(self, Jij, only='+', uc=False):
@@ -1236,8 +1232,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                              'wrong value ["+", "-", "all"] allowed.')
 
         # Do in-place operations by removing all the things not required
-        Jab.eliminate_zeros()
-        Jab.sort_indices()
         Jab.sum_duplicates()
 
         return Jab
@@ -1346,7 +1340,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             # Return the geometric mean of the atomic current X orbital
             # current.
-            Ja = np.sqrt(Ja * Jo)
+            Ja = sqrt(Ja * Jo)
 
         # Scale correctly
         Ja *= 0.5
@@ -1415,9 +1409,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         na = geom.na
         # vector currents
         Ja = _a.zerosd([na, 3])
-
-        # Short-hand
-        sqrt = np.sqrt
 
         # Loop atoms in the device region
         # These are the only atoms which may have bond-currents,
@@ -1584,8 +1575,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             object containing the Geometry and the density matrix elements
         """
         dm = self._sparse_data('DM', elec, E, kavg, isc) * eV2Ry
-        dm.eliminate_zeros()
-        dm.sort_indices()
         # Now create the density matrix object
         geom = self.read_geometry()
         if geometry is None:
@@ -1724,8 +1713,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_ACOHP : atomic COHP analysis of the spectral function
         """
         COOP = self._sparse_data('COOP', elec, E, kavg, isc) * eV2Ry
-        COOP.eliminate_zeros()
-        COOP.sort_indices()
         return COOP
 
     def atom_COOP_from_orbital(self, COOP, uc=False):
@@ -1753,8 +1740,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_COOP : atomic COOP analysis of the Green function
         """
         COOP = self._sparse_data_orb_to_atom(COOP, uc)
-        COOP.eliminate_zeros()
-        COOP.sort_indices()
         COOP.sum_duplicates()
         return COOP
 
@@ -1911,8 +1896,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_ACOOP : atomic COOP analysis of the spectral function
         """
         COHP = self._sparse_data('COHP', elec, E, kavg, isc)
-        COHP.eliminate_zeros()
-        COHP.sort_indices()
         return COHP
 
     def atom_COHP_from_orbital(self, COHP, uc=False):

@@ -271,33 +271,70 @@ def test_1_graphene_all_content(sisl_files):
     coop = tbt.orbital_COOP(E)
     coop_l = tbt.orbital_ACOOP(left, E)
     coop_r = tbt.orbital_ACOOP(right, E)
-    assert np.allclose(coop.data, (coop_l + coop_r).data)
+    coop_lr = coop_l + coop_r
+
+    # Ensure aligment
+    coop.eliminate_zeros()
+    coop.sorted_indices()
+    coop_lr.eliminate_zeros()
+    coop_lr.sorted_indices()
+    assert np.allclose(coop.data, coop_lr.data)
 
     coop = tbt.orbital_COOP(E, isc=[0, 0, 0])
     coop_l = tbt.orbital_ACOOP(left, E, isc=[0, 0, 0])
     coop_r = tbt.orbital_ACOOP(right, E, isc=[0, 0, 0])
-    assert np.allclose(coop.data, (coop_l + coop_r).data)
+    coop_lr = coop_l + coop_r
+
+    coop.eliminate_zeros()
+    coop.sorted_indices()
+    coop_lr.eliminate_zeros()
+    coop_lr.sorted_indices()
+    assert np.allclose(coop.data, coop_lr.data)
 
     coop = tbt.atom_COOP(E)
     coop_l = tbt.atom_ACOOP(left, E)
     coop_r = tbt.atom_ACOOP(right, E)
-    assert np.allclose(coop.data, (coop_l + coop_r).data)
+    coop_lr = coop_l + coop_r
+
+    coop.eliminate_zeros()
+    coop.sorted_indices()
+    coop_lr.eliminate_zeros()
+    coop_lr.sorted_indices()
+    assert np.allclose(coop.data, coop_lr.data)
 
     coop = tbt.atom_COOP(E, isc=[0, 0, 0])
     coop_l = tbt.atom_ACOOP(left, E, isc=[0, 0, 0])
     coop_r = tbt.atom_ACOOP(right, E, isc=[0, 0, 0])
-    assert np.allclose(coop.data, (coop_l + coop_r).data)
+    coop_lr = coop_l + coop_r
+
+    coop.eliminate_zeros()
+    coop.sorted_indices()
+    coop_lr.eliminate_zeros()
+    coop_lr.sorted_indices()
+    assert np.allclose(coop.data, coop_lr.data)
 
     # Check COHP curves
     coop = tbt.orbital_COHP(E)
     coop_l = tbt.orbital_ACOHP(left, E)
     coop_r = tbt.orbital_ACOHP(right, E)
-    assert np.allclose(coop.data, (coop_l + coop_r).data)
+    coop_lr = coop_l + coop_r
+
+    coop.eliminate_zeros()
+    coop.sorted_indices()
+    coop_lr.eliminate_zeros()
+    coop_lr.sorted_indices()
+    assert np.allclose(coop.data, coop_lr.data)
 
     coop = tbt.atom_COHP(E)
     coop_l = tbt.atom_ACOHP(left, E)
     coop_r = tbt.atom_ACOHP(right, E)
-    assert np.allclose(coop.data, (coop_l + coop_r).data)
+    coop_lr = coop_l + coop_r
+
+    coop.eliminate_zeros()
+    coop.sorted_indices()
+    coop_lr.eliminate_zeros()
+    coop_lr.sorted_indices()
+    assert np.allclose(coop.data, coop_lr.data)
 
     # Simply print out information
     tbt.info()
