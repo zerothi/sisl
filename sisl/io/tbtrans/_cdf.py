@@ -70,18 +70,9 @@ class _ncSileTBtrans(SileCDFTBtrans):
         cell = _a.arrayd(np.copy(self.cell))
         cell.shape = (3, 3)
 
-        try:
-            nsc = self._value('nsc')
-        except:
-            nsc = None
-
+        nsc = self._value('nsc')
         sc = SuperCell(cell, nsc=nsc)
-        try:
-            sc.sc_off = self._value('isc_off')
-        except:
-            # This is ok, we simply do not have the supercell offsets
-            pass
-
+        sc.sc_off = self._value('isc_off')
         return sc
 
     def read_geometry(self, *args, **kwargs):
@@ -115,10 +106,6 @@ class _ncSileTBtrans(SileCDFTBtrans):
         geom = Geometry(xyz, atms, sc=sc)
 
         return geom
-
-    def write_geometry(self, *args, **kwargs):
-        """ This is not meant to be used """
-        raise ValueError(self.__class__.__name__ + " can not write a geometry")
 
     # This class also contains all the important quantities elements of the
     # file.
@@ -197,9 +184,6 @@ class _ncSileTBtrans(SileCDFTBtrans):
         """
         if isinstance(E, Integral):
             return E
-        elif isinstance(E, _str):
-            # This will always be converted to a float
-            E = float(E)
         idxE = np.abs(self.E - E).argmin()
         ret_E = self.E[idxE]
         if abs(ret_E - E) > 5e-3:
@@ -215,14 +199,12 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
         Parameters
         ----------
-        k : array_like of float
-           the queried k-point in reduced coordinates :math:`]-0.5;0.5]`.
+        k : array_like of float or int
+           the queried k-point in reduced coordinates :math:`]-0.5;0.5]`. If ``int``
+           return it-self.
         """
         if isinstance(k, Integral):
             return k
-        elif isinstance(k, _str):
-            # This will always be converted to an integer (single index)
-            return int(k)
         ik = np.sum(np.abs(self.k - _a.asarrayd(k)[None, :]), axis=1).argmin()
         ret_k = self.k[ik, :]
         if not np.allclose(ret_k, k, atol=0.0001):
@@ -352,6 +334,11 @@ class _devncSileTBtrans(_ncSileTBtrans):
         except:
             return elec
 
+    @property
+    def elecs(self):
+        """ List of electrodes """
+        return list(self.groups.keys())
+
     def chemical_potential(self, elec):
         """ Return the chemical potential associated with the electrode `elec` """
         return self._value('mu', self._elec(elec))[0] * Ry2eV
@@ -440,7 +427,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
         Examples
         --------
-        >>> se = tbtsencSileTBtrans(...)
+        >>> se = tbtncSileTBtrans(...)
         >>> se.pivot()
         [3, 4, 6, 5, 2]
         >>> se.pivot(sort=True)

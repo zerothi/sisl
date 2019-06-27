@@ -185,22 +185,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Return data
         return data
 
-    @property
-    def elecs(self):
-        """ List of electrodes """
-        elecs = list(self.groups.keys())
-
-        # in cases of not calculating all
-        # electrode transmissions we must ensure that
-        # we add the last one
-        var = self.groups[elecs[0]].variables.keys()
-        for tvar in var:
-            if tvar.endswith('.T'):
-                tvar = tvar.split('.')[0]
-                if tvar not in elecs:
-                    elecs.append(tvar)
-        return elecs
-
     def transmission(self, elec_from=0, elec_to=1, kavg=True):
         r""" Transmission from `elec_from` to `elec_to`.
 

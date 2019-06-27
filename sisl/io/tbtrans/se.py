@@ -62,11 +62,6 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
     _trans_type = 'TBT'
     _E2eV = Ry2eV
 
-    @property
-    def elecs(self):
-        """ List of electrodes """
-        return list(self.groups.keys())
-
     def self_energy(self, elec, E, k=0, sort=False):
         """ Return the self-energy from the electrode `elec`
 
