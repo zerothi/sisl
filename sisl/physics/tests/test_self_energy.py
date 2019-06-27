@@ -68,6 +68,11 @@ def test_sancho_non_orthogonal(setup):
     assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
 
 
+def test_sancho_scattering_matrix(setup):
+    SE = RecursiveSI(setup.HS, '-A')
+    assert np.allclose(SE.scattering_matrix(0.1), SE.se2scat(SE.self_energy(0.1)))
+
+
 def test_sancho_non_orthogonal(setup):
     SE = RecursiveSI(setup.HS, '-A')
     s64 = SE.self_energy(0.1, dtype=np.complex64)

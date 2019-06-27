@@ -37,12 +37,53 @@ class SelfEnergy(object):
         """ Self-energy class for constructing a self-energy. """
         pass
 
+    @staticmethod
+    def se2scat(SE):
+        return 1j * (SE - conjugate(SE.T))
+
     def _setup(self, *args, **kwargs):
         """ Class specific setup routine """
         pass
 
     def self_energy(self, *args, **kwargs):
         raise NotImplementedError
+
+    def scattering_matrix(self, *args, **kwargs):
+        """ Calculate the scattering matrix by first calculating the self-energy
+
+        Any arguments that is passed to this method is directly passed to `self_energy`.
+
+        See `self_energy` for details.
+
+        This corresponds to:
+
+        .. math::
+            \boldsymbol Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)
+
+        Examples
+        --------
+
+        Calculating both the self-energy and the scattering matrix.
+        >>> SE = SelfEnergy(...)
+        >>> self_energy = SE.self_energy(0.1)
+        >>> gamma = SE.scattering_matrix(0.1)
+
+        For a huge performance boost, please do:
+        >>> SE = SelfEnergy(...)
+        >>> self_energy = SE.self_energy(0.1)
+        >>> gamma = SE.se2scat(self_energy)
+
+        Notes
+        -----
+        When using *both* the self-energy *and* the scattering matrix please use `se2scat` after having
+        calculated the self-energy, this will be *much*, *MUCH* faster!
+
+        See Also
+        --------
+        se2scat : converting the self-energy to the scattering matrix
+        self_energy : the used routine to calculate the self-energy before calculating the scattering matrix
+        """
+        return self.se2scat(self.self_energy(*args, **kwargs))
 
     def __getattr__(self, attr):
         """ Overload attributes from the hosting object """
