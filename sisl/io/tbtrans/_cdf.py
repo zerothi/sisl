@@ -4,6 +4,7 @@ from numbers import Integral
 
 import numpy as np
 from numpy import in1d
+from numpy import sort as npsort
 
 # Import sile objects
 from ..sile import SileWarning
@@ -296,6 +297,31 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """ Atomic indices (0-based) of device atoms """
         return self._value('a_dev') - 1
 
+    def a_elec(self, elec):
+        """ Electrode atomic indices for the full geometry
+
+        Parameters
+        ----------
+        elec : str or int
+           electrode to retrieve indices for
+        """
+        return self._value('a', self._elec(elec)) - 1
+
+    def a_down(self, elec, bulk=False):
+        """ Down-folding atomic indices for a given electrode
+
+        Parameters
+        ----------
+        elec : str or int
+           electrode to retrieve indices for
+        bulk : bool, optional
+           whether the returned indices are *only* in the pristine electrode,
+           or the down-folding region (electrode + downfolding region, not in device)
+        """
+        if bulk:
+            return self.a_elec(elec)
+        return  self._value('a_down', self._elec(elec)) - 1
+
     @property
     def o_dev(self):
         """ Orbital indices (0-based) of device orbitals """
@@ -306,37 +332,164 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """ Number of orbitals in the device region """
         return len(self.dimensions['no_d'])
 
-    def n_btd(self):
-        """ Number of blocks in the BTD partioning in the device region """
-        return len(self.dimensions['n_btd'])
-
-    def btd(self):
-        """ Block-sizes for the BTD method in the device region """
-        return self._value('btd')
-
-    def pivot(self, in_device=False, sort=False):
-        """ Pivoting orbitals for the full system
+    def _elec(self, elec):
+        """ Converts a string or integer to the corresponding electrode name
 
         Parameters
         ----------
-        in_device : bool, optional
-           whether the pivoting elements are with respect to the device region
-        sort : bool, optional
-           whether the pivoting elements are sorted
-        """
-        if in_device and sort:
-            return _a.arangei(self.no_d)
-        pvt = self._value('pivot') - 1
-        if in_device:
-            subn = _a.onesi(self.no)
-            subn[pvt] = 0
-            pvt -= _a.cumsumi(subn)[pvt]
-        elif sort:
-            pvt = np.sort(pvt)
-        return pvt
+        elec : str or int
+           if `str` it is the *exact* electrode name, if `int` it is the electrode
+           index
 
-    def a2p(self, atom):
-        """ Return the pivoting orbital indices (0-based) for the atoms
+        Returns
+        -------
+        str
+            the electrode name
+        """
+        try:
+            elec = int(elec)
+            return self.elecs[elec]
+        except:
+            return elec
+
+    def chemical_potential(self, elec):
+        """ Return the chemical potential associated with the electrode `elec` """
+        return self._value('mu', self._elec(elec))[0] * Ry2eV
+    mu = chemical_potential
+
+    def eta(self, elec=None):
+        """ The imaginary part used when calculating the self-energies in eV (or for the device
+
+        Parameters
+        ----------
+        elec : str, int, optional
+           electrode to extract the eta value from. If not specified (or None) the device
+           region eta will be returned.
+        """
+        try:
+            return self._value('eta', self._elec(elec))[0] * self._E2eV
+        except:
+            return 0. # unknown!
+
+    def electron_temperature(self, elec):
+        """ Electron bath temperature [Kelvin] """
+        return self._value('kT', self._elec(elec))[0] * Ry2K
+
+    def kT(self, elec):
+        """ Electron bath temperature [eV] """
+        return self._value('kT', self._elec(elec))[0] * Ry2eV
+
+    def bloch(self, elec):
+        """ Bloch-expansion coefficients for an electrode """
+        return self._value('bloch', self._elec(elec))
+
+    def n_btd(self, elec=None):
+        """ Number of blocks in the BTD partioning
+
+        Parameters
+        ----------
+        elec : str or int, optional
+           if None the number of blocks in the device region BTD matrix. Else
+           the number of BTD blocks in the electrode down-folding.
+        """
+        return len(self._dimension('n_btd', self._elec(elec)))
+
+    def btd(self, elec=None):
+        """ Block-sizes for the BTD method in the device region
+
+        Parameters
+        ----------
+        elec : str or int, optional
+           the BTD block sizes for the device (if none), otherwise the downfolding
+           BTD block sizes for the electrode
+        """
+        return self._value('btd', self._elec(elec))
+
+    def no_down(self, elec):
+        """ Number of orbitals in the downfolding region (plus device downfolded region)
+
+        Parameters
+        ----------
+        elec : str or int
+           Number of downfolding orbitals for electrode `elec`
+        """
+        return len(self._dimension('no_down', self._elec(elec)))
+
+    def pivot_down(self, elec):
+        """ Pivoting orbitals for the downfolding region of a given electrode
+
+        Parameters
+        ----------
+        elec : str or int
+           the corresponding electrode to get the pivoting indices for
+        """
+        return self._value('pivot_down', self._elec(elec)) - 1
+
+    def pivot(self, elec=None, in_device=False, sort=False):
+        """ Return the pivoting indices for a specific electrode (in the device region) or the device
+
+        Parameters
+        ----------
+        elec : str or int
+           the corresponding electrode to return the self-energy from
+        in_device : bool, optional
+           If ``True`` the pivoting table will be translated to the device region orbitals
+        sort : bool, optional
+           Whether the returned indices are sorted. Mostly useful if the self-energies are returned
+           sorted as well.
+
+        Examples
+        --------
+        >>> se = tbtsencSileTBtrans(...)
+        >>> se.pivot()
+        [3, 4, 6, 5, 2]
+        >>> se.pivot(sort=True)
+        [2, 3, 4, 5, 6]
+        >>> se.pivot(0)
+        [2, 3]
+        >>> se.pivot(0, in_device=True)
+        [4, 0]
+        >>> se.pivot(0, in_device=True, sort=True)
+        [0, 1]
+        >>> se.pivot(0, sort=True)
+        [2, 3]
+
+        See Also
+        --------
+        pivot_down : for the pivot table for electrodes down-folding regions
+        """
+        if elec is None:
+            if in_device and sort:
+                return _a.arangei(self.no_d)
+            pvt = self._value('pivot') - 1
+            if in_device:
+                # Count number of elements that we need to subtract from each orbital
+                subn = _a.onesi(self.no)
+                subn[pvt] = 0
+                pvt -= _a.cumsumi(subn)[pvt]
+            elif sort:
+                pvt = npsort(pvt)
+            return pvt
+
+        # Get electrode pivoting elements
+        se_pvt = self._value('pivot', tree=self._elec(elec)) - 1
+        if sort:
+            # Sort pivoting indices
+            # Since we know that pvt is also sorted, then
+            # the resulting in_device would also return sorted
+            # indices
+            se_pvt = npsort(se_pvt)
+
+        if in_device:
+            pvt = self._value('pivot') - 1
+            if sort:
+                pvt = npsort(pvt)
+            # translate to the device indices
+            se_pvt = indices(pvt, se_pvt, 0)
+        return se_pvt
+
+    def a2p(self, atom, elec=None):
+        """ Return the pivoting orbital indices (0-based) for the atoms, possibly on an electrode
 
         This is equivalent to:
 
@@ -348,11 +501,14 @@ class _devncSileTBtrans(_ncSileTBtrans):
         ----------
         atom : array_like or int
            atomic indices (0-based)
+        elec : str or int or None, optional
+           electrode to return pivoting indices of (if None it is the
+           device pivoting indices).
         """
         return self.o2p(self.geom.a2o(atom, True))
 
-    def o2p(self, orbital):
-        """ Return the pivoting indices (0-based) for the orbitals
+    def o2p(self, orbital, elec=None):
+        """ Return the pivoting indices (0-based) for the orbitals, possibly on an electrode
 
         Will warn if an orbital requested is not in the device list of orbitals.
 
@@ -360,10 +516,13 @@ class _devncSileTBtrans(_ncSileTBtrans):
         ----------
         orbital : array_like or int
            orbital indices (0-based)
+        elec : str or int or None, optional
+           electrode to return pivoting indices of (if None it is the
+           device pivoting indices).
         """
         # We need asarray, otherwise taking len of an int will fail
         orbital = np.asarray(orbital).ravel()
-        porb = in1d(self.pivot(), orbital).nonzero()[0]
+        porb = in1d(self.pivot(elec), orbital).nonzero()[0]
         d = len(orbital) - len(porb)
         if d != 0:
             warn('{}.o2p requesting an orbital outside the device region, '

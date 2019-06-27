@@ -1,5 +1,10 @@
 from __future__ import print_function, division
 
+try:
+    from StringIO import StringIO
+except Exception:
+    from io import StringIO
+
 import numpy as np
 from numpy import in1d, argsort
 
@@ -57,131 +62,10 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
     _trans_type = 'TBT'
     _E2eV = Ry2eV
 
-    def _elec(self, elec):
-        """ Converts a string or integer to the corresponding electrode name
-
-        Parameters
-        ----------
-        elec : str or int
-           if `str` it is the *exact* electrode name, if `int` it is the electrode
-           index
-
-        Returns
-        -------
-        str : the electrode name
-        """
-        try:
-            elec = int(elec)
-            return self.elecs[elec]
-        except:
-            return elec
-
     @property
     def elecs(self):
         """ List of electrodes """
         return list(self.groups.keys())
-
-    def chemical_potential(self, elec):
-        """ Return the chemical potential associated with the electrode `elec` """
-        return self._value('mu', self._elec(elec))[0] * Ry2eV
-    mu = chemical_potential
-
-    def eta(self, elec):
-        """ The imaginary part used when calculating the self-energies in eV """
-        try:
-            return self._value('eta', self._elec(elec))[0] * self._E2eV
-        except:
-            return 0.
-
-    def pivot(self, elec=None, in_device=False, sort=False):
-        """ Return the pivoting indices for a specific electrode
-
-        Parameters
-        ----------
-        elec : str or int
-           the corresponding electrode to return the self-energy from
-        in_device : bool, optional
-           If ``True`` the pivoting table will be translated to the device region orbitals
-        sort : bool, optional
-           Whether the returned indices are sorted. Mostly useful if the self-energies are returned
-           sorted as well.
-
-        Examples
-        --------
-        >>> se = tbtsencSileTBtrans(...)
-        >>> se.pivot()
-        [3, 4, 6, 5, 2]
-        >>> se.pivot(sort=True)
-        [2, 3, 4, 5, 6]
-        >>> se.pivot(0)
-        [2, 3]
-        >>> se.pivot(0, in_device=True)
-        [4, 0]
-        >>> se.pivot(0, in_device=True, sort=True)
-        [0, 1]
-        >>> se.pivot(0, sort=True)
-        [2, 3]
-        """
-        if elec is None:
-            if in_device and sort:
-                return _a.arangei(self.no_d)
-            pvt = self._value('pivot') - 1
-            if in_device:
-                # Count number of elements that we need to subtract from each orbital
-                subn = _a.onesi(self.no)
-                subn[pvt] = 0
-                pvt -= _a.cumsumi(subn)[pvt]
-            elif sort:
-                pvt = np.sort(pvt)
-            return pvt
-
-        # Get electrode pivoting elements
-        se_pvt = self._value('pivot', tree=self._elec(elec)) - 1
-        if sort:
-            # Sort pivoting indices
-            # Since we know that pvt is also sorted, then
-            # the resulting in_device would also return sorted
-            # indices
-            se_pvt = np.sort(se_pvt)
-
-        if in_device:
-            pvt = self._value('pivot') - 1
-            if sort:
-                pvt = np.sort(pvt)
-            # translate to the device indices
-            se_pvt = indices(pvt, se_pvt, 0)
-        return se_pvt
-
-    def a2p(self, atom, elec=None):
-        """ Return the pivoting orbital indices (0-based) for the atoms, possibly on an electrode
-
-        This is equivalent to:
-
-        >>> p = self.o2p(self.geom.a2o(atom, True))
-
-        Parameters
-        ----------
-        atom : array_like or int
-           atomic indices (0-based)
-        elec : str or int or None
-           electrode to return pivoting indices of (if None it is the
-           device pivoting indices).
-        """
-        orbs = self.geom.a2o(atom, True)
-        return self.o2p(orbs, elec=elec)
-
-    def o2p(self, orbital, elec=None):
-        """ Return the pivoting indices (0-based) for the orbitals, possibly on an electrode
-
-        Parameters
-        ----------
-        orbital : array_like or int
-           orbital indices (0-based)
-        elec : str or int or None
-           electrode to return pivoting indices of (if None it is the
-           device pivoting indices).
-        """
-        return in1d(self.pivot(elec=elec), orbital).nonzero()[0]
 
     def self_energy(self, elec, E, k=0, sort=False):
         """ Return the self-energy from the electrode `elec`
@@ -286,6 +170,118 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             return SE[idx, idx.T] * self._E2eV
 
         return SE * self._E2eV
+
+    def info(self, elec=None):
+        """ Information about the self-energy file available for extracting in this file
+
+        Parameters
+        ----------
+        elec : str or int
+           the electrode to request information from
+        """
+        if not elec is None:
+            elec = self._elec(elec)
+
+        # Create a StringIO object to retain the information
+        out = StringIO()
+        # Create wrapper function
+        def prnt(*args, **kwargs):
+            option = kwargs.pop('option', None)
+            if option is None:
+                print(*args, file=out)
+            else:
+                print('{:60s}[{}]'.format(' '.join(args), ', '.join(option)), file=out)
+
+        def truefalse(bol, string, fdf=None):
+            if bol:
+                prnt("  + " + string + ": true")
+            else:
+                prnt("  - " + string + ": false", option=fdf)
+
+        # Retrieve the device atoms
+        prnt("Device information:")
+        # Print out some more information related to the
+        # k-point sampling.
+        # However, we still do not know whether TRS is
+        # applied.
+        kpt = self.k
+        nA = len(np.unique(kpt[:, 0]))
+        nB = len(np.unique(kpt[:, 1]))
+        nC = len(np.unique(kpt[:, 2]))
+        prnt(("  - number of kpoints: {} <- "
+              "[ A = {} , B = {} , C = {} ] (time-reversal unknown)").format(self.nk, nA, nB, nC))
+        prnt("  - energy range:")
+        E = self.E
+        Em, EM = np.amin(E), np.amax(E)
+        dE = np.diff(E)
+        dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
+        if (dEM - dEm) < 1e-3: # 0.001 meV
+            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
+        else:
+            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
+        prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta() * 1e3))
+        prnt("  - atoms with DOS (fortran indices):")
+        prnt("     " + list2str(self.a_dev + 1))
+        prnt("  - number of BTD blocks: {}".format(self.n_btd()))
+        if elec is None:
+            elecs = self.elecs
+        else:
+            elecs = [elec]
+
+        # Print out information for each electrode
+        for elec in elecs:
+            if not elec in self.groups:
+                prnt("  * no information available")
+                continue
+
+            try:
+                bloch = self.bloch(elec)
+            except:
+                bloch = [1] * 3
+            try:
+                n_btd = self.n_btd(elec)
+            except:
+                n_btd = 'unknown'
+            prnt()
+            prnt("Electrode: {}".format(elec))
+            prnt("  - number of BTD blocks: {}".format(n_btd))
+            prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
+            gelec = self.groups[elec]
+            if 'TBT' in self._trans_type:
+                prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
+                prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))
+            else:
+                prnt("  - phonon temperature: {:.4f} K".format(self.phonon_temperature(elec)))
+            prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
+            prnt("  - atoms in down-folding region (not in device):")
+            prnt("     " + list2str(self.a_down(elec) + 1))
+            prnt("  - orbitals in down-folded device region:")
+            prnt("     " + list2str(np.sort(self.pivot(elec)) + 1))
+
+        s = out.getvalue()
+        out.close()
+        return s
+
+    @default_ArgumentParser(description="Show information about data in a TBT.SE.nc file")
+    def ArgumentParser(self, p=None, *args, **kwargs):
+        """ Returns the arguments that is available for this Sile """
+
+        # We limit the import to occur here
+        import argparse
+
+        namespace = default_namespace(_tbtse=self, _geometry=self.geom)
+
+        class Info(argparse.Action):
+            """ Action to print information contained in the TBT.SE.nc file, helpful before performing actions """
+
+            def __call__(self, parser, ns, value, option_string=None):
+                # First short-hand the file
+                print(ns._tbtse.info(value))
+
+        p.add_argument('--info', '-i', action=Info, nargs='?', metavar='ELEC',
+                       help='Print out what information is contained in the TBT.SE.nc file, optionally only for one of the electrodes.')
+
+        return p, namespace
 
 
 add_sile('TBT.SE.nc', tbtsencSileTBtrans)

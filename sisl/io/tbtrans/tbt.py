@@ -185,26 +185,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Return data
         return data
 
-    def _elec(self, elec):
-        """ Converts a string or integer to the corresponding electrode name
-
-        Parameters
-        ----------
-        elec : str or int
-           if `str` it is the *exact* electrode name, if `int` it is the electrode
-           index
-
-        Returns
-        -------
-        str
-            the electrode name
-        """
-        try:
-            elec = int(elec)
-            return self.elecs[elec]
-        except:
-            return elec
-
     @property
     def elecs(self):
         """ List of electrodes """
@@ -220,55 +200,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 if tvar not in elecs:
                     elecs.append(tvar)
         return elecs
-
-    def n_btd(self, elec=None):
-        """ Number of blocks in the BTD partioning
-
-        Parameters
-        ----------
-        elec : str or int, optional
-           if None the number of blocks in the device region BTD matrix. Else
-           the number of BTD blocks in the electrode down-folding.
-        """
-        return len(self._dimension('n_btd', self._elec(elec)))
-
-    def btd(self, elec=None):
-        """ Block-sizes for the BTD method
-
-        Parameters
-        ----------
-        elec : str or int, optional
-           if None the number of blocks in the device region BTD matrix. Else
-           the number of BTD blocks in the electrode down-folding.
-        """
-        return self._value('btd', self._elec(elec))
-
-    def chemical_potential(self, elec):
-        """ Return the chemical potential associated with the electrode `elec` """
-        return self._value('mu', self._elec(elec))[0] * Ry2eV
-    mu = chemical_potential
-
-    def electron_temperature(self, elec):
-        """ Electron bath temperature [Kelvin] """
-        return self._value('kT', self._elec(elec))[0] * Ry2K
-
-    def kT(self, elec):
-        """ Electron bath temperature [eV] """
-        return self._value('kT', self._elec(elec))[0] * Ry2eV
-
-    def eta(self, elec=None):
-        """ The imaginary part used when calculating the self-energies in eV (or for the device
-
-        Parameters
-        ----------
-        elec : str, int, optional
-           electrode to extract the eta value from. If not specified (or None) the device
-           region eta will be returned.
-        """
-        try:
-            return self._value('eta', self._elec(elec))[0] * self._E2eV
-        except:
-            return 0. # unknown!
 
     def transmission(self, elec_from=0, elec_to=1, kavg=True):
         r""" Transmission from `elec_from` to `elec_to`.
@@ -2199,10 +2130,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 continue
 
             try:
-                bloch = self._value('bloch', elec)
-                n_btd = n_btd(elec)
+                bloch = self.bloch(elec)
             except:
                 bloch = [1] * 3
+            try:
+                n_btd = self.n_btd(elec)
+            except:
                 n_btd = 'unknown'
             prnt()
             prnt("Electrode: {}".format(elec))
@@ -2832,9 +2765,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
     # Denote default writing routine
     _write_default = write_tbtav
 
-# Clean up methods in the average one, if there were multiple k-points
-# We can't ensure the results are the same, hence it is more
-# safe to delete the methods
+
 for _name in ['shot_noise', 'noise_power', 'fano']:
     setattr(tbtavncSileTBtrans, _name, None)
 

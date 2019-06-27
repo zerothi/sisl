@@ -41,13 +41,20 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             return elec_mol_proj
         return [elec_mol_proj[i] for i in [1, 2, 0]]
 
-    def _elec(self, mol_proj_elec):
-        """ In projections we re-use the _* methods from tbtncSileTBtrans by forcing _elec to return its argument """
-        return mol_proj_elec
+    @property
+    def elecs(self):
+        """ List of electrodes """
+        elecs = []
 
-    def eta(self):
-        r""" Device region :math:`\eta` value """
-        return self._value('eta')[0] * Ry2eV
+        # in cases of not calculating all
+        # electrode transmissions we must ensure that
+        # we add the last one
+        for group in self.groups.keys():
+            if group in elecs:
+                continue
+            if 'mu' in self.groups[group].variables.keys():
+                elecs.append(group)
+        return elecs
 
     @property
     def molecules(self):
@@ -421,7 +428,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             if option is None:
                 print(*args, file=out)
             else:
-                print('{:60s}[{}]'.format(' '.join(args), ', '.join(option)), file=out)
+                print('{:70s}[{}]'.format(' '.join(args), ', '.join(option)), file=out)
 
         def truefalse(bol, string, fdf=None, suf=2):
             if bol:
@@ -430,7 +437,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 prnt("{}- {}: false".format(' ' * suf, string), option=fdf)
 
         def true(string, fdf=None, suf=2):
-            prnt("{}+ {}: true".format(' ' * suf, string))
+            prnt("{}+ {}: true".format(' ' * suf, string), option=fdf)
 
         # Retrieve the device atoms
         prnt("Device information:")
@@ -507,7 +514,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             for proj in projs:
                 opt['proj1'] = proj
                 gproj = gmol.groups[proj]
-                prnt("    > Projection: {}".format(proj))
+                prnt("    > Projection: {mol1}|{proj1}".format(**opt))
                 prnt("      - number of states: {}".format(len(gproj.dimensions['nlvl'])))
                 # Figure out the electrode projections
                 elecs = gproj.groups.keys()
@@ -515,23 +522,24 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                     opt['elec1'] = elec
                     gelec = gproj.groups[elec]
                     vars = list(gelec.variables.keys()) # ensure a copy
+                    prnt("      > Electrode: {elec1}|{mol1}|{proj1}".format(**opt))
 
                     # Loop and figure out what is in it.
                     if 'ADOS' in vars:
                         vars.pop(vars.index('ADOS'))
-                        true("DOS spectral {elec1}|{proj1}".format(**opt), ['TBT.Projs.DOS.A'], suf=6)
+                        true("DOS spectral", ['TBT.Projs.DOS.A'], suf=8)
                     if 'J' in vars:
                         vars.pop(vars.index('J'))
-                        true("orbital-current {elec1}|{proj1}".format(**opt), ['TBT.Projs.Current.Orb'], suf=6)
+                        true("orbital-current", ['TBT.Projs.Current.Orb'], suf=8)
                     if 'DM' in vars:
                         vars.pop(vars.index('DM'))
-                        true("Density matrix spectral {elec1}|{proj1}".format(**opt), ['TBT.Projs.DM.A'], suf=6)
+                        true("Density matrix spectral", ['TBT.Projs.DM.A'], suf=8)
                     if 'COOP' in vars:
                         vars.pop(vars.index('COOP'))
-                        true("COOP spectral {elec1}|{proj1}".format(**opt), ['TBT.Projs.COOP.A'], suf=6)
+                        true("COOP spectral", ['TBT.Projs.COOP.A'], suf=8)
                     if 'COHP' in vars:
                         vars.pop(vars.index('COHP'))
-                        true("COHP spectral {elec1}|{proj1}".format(**opt), ['TBT.Projs.COHP.A'], suf=6)
+                        true("COHP spectral", ['TBT.Projs.COHP.A'], suf=8)
 
                     # Retrieve all vars with transmissions
                     vars_T = _get_all('.T', vars)
@@ -539,19 +547,36 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                     vars_C = _get_all('.C', vars)
                     vars_Ceig = _get_all('.C.Eig', vars)
 
-                    _print_to_full("      + transmission: {elec1}|{mol1}.{proj1}".format(**opt), vars_T)
-                    _print_to_full("      + transmission (eigen): {elec1}|{mol1}.{proj1}".format(**opt), vars_Teig)
-                    _print_to_full("      + transmission out corr.: {elec1}|{mol1}.{proj1}".format(**opt), vars_C)
-                    _print_to_full("      + transmission out corr. (eigen): {elec1}|{mol1}.{proj1}".format(**opt), vars_Ceig)
+                    _print_to_full("        + transmission:", vars_T)
+                    _print_to_full("        + transmission (eigen):", vars_Teig)
+                    _print_to_full("        + transmission out corr.:", vars_C)
+                    _print_to_full("        + transmission out corr. (eigen):", vars_Ceig)
 
         # Finally there may be only RHS projections in which case the remaining groups are for
         # *pristine* electrodes
-        elecs = [elec for elec in self.groups.keys() if len(self.groups[elec].groups) == 0]
-        for elec in elecs:
+        for elec in self.elecs:
             gelec = self.groups[elec]
             vars = list(gelec.variables.keys()) # ensure a copy
-            prnt("")
+
+            try:
+                bloch = self.bloch(elec)
+            except:
+                bloch = [1] * 3
+            try:
+                n_btd = self.n_btd(elec)
+            except:
+                n_btd = 'unknown'
+            prnt()
             prnt("Electrode: {}".format(elec))
+            prnt("  - number of BTD blocks: {}".format(n_btd))
+            prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
+            gelec = self.groups[elec]
+            if 'TBT' in self._trans_type:
+                prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
+                prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))
+            else:
+                prnt("  - phonon temperature: {:.4f} K".format(self.phonon_temperature(elec)))
+            prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
 
             # Retrieve all vars with transmissions
             vars_T = _get_all('.T', vars)
@@ -559,10 +584,10 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             vars_C = _get_all('.C', vars)
             vars_Ceig = _get_all('.C.Eig', vars)
 
-            _print_to_full("  + transmission: {elec}".format(elec=elec), vars_T)
-            _print_to_full("  + transmission (eigen): {elec}".format(elec=elec), vars_Teig)
-            _print_to_full("  + transmission out corr.: {elec}".format(elec=elec), vars_C)
-            _print_to_full("  + transmission out corr. (eigen): {elec}".format(elec=elec), vars_Ceig)
+            _print_to_full("  + transmission:", vars_T)
+            _print_to_full("  + transmission (eigen):", vars_Teig)
+            _print_to_full("  + transmission out corr.:", vars_C)
+            _print_to_full("  + transmission out corr. (eigen):", vars_Ceig)
 
         s = out.getvalue()
         out.close()
@@ -620,11 +645,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         return cls(state, eig[lvl], parent=geom)
 
 
-# Clean up methods
-for _name in ['elecs', 'chemical_potential', 'mu',
-              'electron_temperature', 'kT',
-              'current', 'current_parameter',
-              'shot_noise', 'fano', 'density_matrix',
+for _name in ['current', 'current_parameter',
+              'shot_noise', 'noise_power', 'fano',
+              'density_matrix',
               'orbital_COOP', 'atom_COOP',
               'orbital_COHP', 'atom_COHP']:
     setattr(tbtprojncSileTBtrans, _name, None)

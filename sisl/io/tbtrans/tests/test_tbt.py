@@ -93,8 +93,8 @@ def test_1_graphene_all_content(sisl_files):
     assert tbt.na_d == tbt.no_d
     assert tbt.na_d == 36 # 3 * 5 * 4 (and device is without electrodes, so 3 * 3 * 4)
     assert len(tbt.pivot()) == 3 * 3 * 4 # 3 * 5 * 4 (and device is without electrodes, so 3 * 3 * 4)
-    assert len(tbt.pivot(True)) == len(tbt.pivot())
-    assert np.all(tbt.pivot(True, True) == np.arange(tbt.no_d))
+    assert len(tbt.pivot(in_device=True)) == len(tbt.pivot())
+    assert np.all(tbt.pivot(in_device=True, sort=True) == np.arange(tbt.no_d))
     assert np.all(tbt.pivot(sort=True) == np.sort(tbt.pivot()))
 
     # Just check they are there

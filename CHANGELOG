@@ -1,6 +1,9 @@
 0.9.7
 =====
 
+- Upgraded handling of TBT.*.nc files to conform with the >=Siesta-4.1-b5
+	releases where all files contain the same device + electrode meta-data.
+
 - Deprecated TBTGFSileTBtrans (use tbtgfSileTBtrans instead)
 
 - Forced align=False in inner such that users should take care of this
