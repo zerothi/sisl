@@ -1,6 +1,9 @@
 0.9.7
 =====
 
+- Enabled reading arbitrary self-energy by requesting an energy and k-point
+	from TSGF files.
+
 - Upgraded handling of TBT.*.nc files to conform with the >=Siesta-4.1-b5
 	releases where all files contain the same device + electrode meta-data.
 

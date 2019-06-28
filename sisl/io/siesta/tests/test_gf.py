@@ -88,6 +88,9 @@ def test_gf_write_read_spin(sisl_tmp, sisl_system):
             gf.write_hamiltonian(Hk, S)
         gf.write_self_energy(S * e - Hk)
 
+    # Check it isn't opened
+    assert not gf._is_open()
+
     nspin, no_u, k, E_file = gf.read_header()
     assert nspin == 2
     assert np.allclose(E, E_file)
@@ -104,6 +107,81 @@ def test_gf_write_read_spin(sisl_tmp, sisl_system):
 
         SE_file = gf.read_self_energy()
         assert np.allclose(SE_file, S * e - Hk)
+
+
+def test_gf_write_read_direct(sisl_tmp, sisl_system):
+    f = sisl_tmp('file.TSGF', _dir)
+
+    tb = sisl.Hamiltonian(sisl_system.gtb, spin=sisl.Spin('P'))
+    tb.construct([(0.1, 1.5), ([0.1, -0.1], [2.7, 1.6])])
+
+    bz = sisl.MonkhorstPack(tb, [3, 3, 1])
+    E = np.linspace(-2, 2, 3) + 1j * 1e-4
+    S = np.eye(len(tb), dtype=np.complex128)
+
+    gf = sisl.io.get_sile(f)
+
+    gf.write_header(bz, E)
+    for i, (ispin, write_hs, k, e) in enumerate(gf):
+        Hk = tb.Hk(k, spin=ispin, format='array')
+        if write_hs and i % 2 == 0:
+            gf.write_hamiltonian(Hk)
+        elif write_hs:
+            gf.write_hamiltonian(Hk, S)
+        gf.write_self_energy(S * e - Hk)
+
+    # ensure it is not opened
+    assert not gf._is_open()
+
+    # First try from beginning
+    for e in [1, E[1]]:
+        SE1 = gf.self_energy(e, bz.k[2, :])
+        assert gf._state == 0
+        assert gf._ik == 2
+        assert gf._iE == 1
+        assert gf._ispin == 0
+
+        SE2 = gf.self_energy(e, bz.k[2, :], spin=1)
+        assert gf._state == 0
+        assert gf._ik == 2
+        assert gf._iE == 1
+        assert gf._ispin == 1
+
+        assert not np.allclose(SE1, SE2)
+
+        # In the middle we read some hamiltonians
+        H1, S1 = gf.HkSk(bz.k[2, :], spin=0)
+        assert gf._state == 0
+        assert gf._ik == 2
+        assert gf._iE == -1
+        assert gf._ispin == 0
+        assert np.allclose(S, S1)
+
+        H2, S1 = gf.HkSk(bz.k[2, :], spin=1)
+        assert gf._state == 0
+        assert gf._ik == 2
+        assert gf._iE == -1
+        assert gf._ispin == 1
+        assert np.allclose(S, S1)
+        assert not np.allclose(H1, H2)
+        assert not np.allclose(H1, SE1)
+
+        H2, S1 = gf.HkSk(bz.k[2, :], spin=0)
+        assert gf._state == 0
+        assert gf._ik == 2
+        assert gf._iE == -1
+        assert gf._ispin == 0
+        assert np.allclose(S, S1)
+        assert np.allclose(H1, H2)
+
+        # Now read self-energy
+        SE2 = gf.self_energy(e, bz.k[2, :], spin=0)
+        assert gf._state == 0
+        assert gf._ik == 2
+        assert gf._iE == 1
+        assert gf._ispin == 0
+
+        assert np.allclose(SE1, SE2)
 
 
 @pytest.mark.xfail(raises=sisl.SileError)

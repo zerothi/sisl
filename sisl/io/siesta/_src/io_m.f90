@@ -4,6 +4,7 @@ module io_m
   implicit none
 
   public :: open_file
+  public :: rewind_file
   public :: iostat_reset
   public :: iostat_update
   public :: iostat_query
@@ -63,6 +64,22 @@ contains
     call iostat_update(ierr)
 
   end subroutine open_file
+
+  !< Rewind file to read from beginning
+  subroutine rewind_file( iu )
+
+    implicit none
+
+    ! Input parameters
+    integer, intent(in) :: iu
+
+  ! Define f2py intents
+!f2py intent(in) :: iu
+
+    ! Open file
+    rewind(iu)
+
+  end subroutine rewind_file
 
   !< Initialize global io stat
   subroutine iostat_reset()

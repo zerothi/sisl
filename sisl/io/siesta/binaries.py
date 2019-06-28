@@ -34,7 +34,7 @@ __all__ += ['tsgfSileSiesta']
 
 def _bin_check(obj, method, message):
     if _siesta.io_m.iostat_query() != 0:
-        raise SileError('{}.{} {}'.format(str(obj), method, message))
+        raise SileError('{}.{} {} (ierr={})'.format(str(obj), method, message, _siesta.io_m.iostat_query()))
 
 
 def _geometry_align(geom_b, geom_u, cls, method):
@@ -608,16 +608,43 @@ class _gfSileSiesta(SileBinSiesta):
     def _is_open(self):
         return self._iu != -1
 
-    def _open_gf(self, mode):
-        if mode == 'r':
-            self._iu = _siesta.read_open_gf(self.file)
-        elif mode == 'w':
-            self._iu = _siesta.write_open_gf(self.file)
+    def _open_gf(self, mode, rewind=False):
+        if self._is_open() and mode == self._mode:
+            if rewind:
+                _siesta.io_m.rewind_file(self._iu)
+            else:
+                # retain indices
+                return
+        else:
+            if mode == 'r':
+                self._iu = _siesta.read_open_gf(self.file)
+            elif mode == 'w':
+                self._iu = _siesta.write_open_gf(self.file)
         _bin_check(self, '_open_gf', 'could not open for {}.'.format({'r': 'reading', 'w': 'writing'}[mode]))
 
-        # Counters to keep track
-        self._ie = 0
-        self._ik = 0
+        # They will at any given time
+        # correspond to the current Python indices that is to be read
+        # The process for identification is done on this basis:
+        #  iE is the current (Python) index for the energy-point to be read
+        #  ik is the current (Python) index for the k-point to be read
+        #  ispin is the current (Python) index for the spin-index to be read (only has meaning for a spin-polarized
+        #         GF files)
+        #  state is:
+        #        -1 : the file-descriptor has just been opened (i.e. in front of header)
+        #         0 : it means that the file-descriptor is NOT in front of H and S but somewhere in front of a self-energy
+        #         1 : it means that the file-descriptor IS in front of H and S
+        #  is_read is:
+        #         0 : means that the current indices HAVE NOT been read
+        #         1 : means that the current indices HAVE been read
+        #
+        # All routines in the gf_read/write sources requires input in Python indices
+        #
+        #  If any of the below integers is -1 it means that the header is unread
+        self._state = -1
+        self._is_read = 0
+        self._iE = -1
+        self._ik = -1
+        self._ispin = -1
 
     def _close_gf(self):
         if not self._is_open():
@@ -627,13 +654,10 @@ class _gfSileSiesta(SileBinSiesta):
         self._iu = -1
 
         # Clean variables
-        del self._ie
+        del self._state
+        del self._iE
         del self._ik
-        try:
-            del self._E
-            del self._k
-        except:
-            pass
+        del self._ispin
         try:
             del self._no_u
         except:
@@ -642,6 +666,109 @@ class _gfSileSiesta(SileBinSiesta):
             del self._nspin
         except:
             pass
+
+    def _step_counter(self, method, **kwargs):
+        """ Method for stepping values *must* be called before doing the actual read to check correct values """
+        opt = {'method': method}
+        if kwargs.get('header', False):
+
+            # The header only exists once, so check whether it is the correct place to read/write
+            for v in (self._state, self._ispin, self._ik, self._iE):
+                if v != -1:
+                    raise SileError(self.__class__.__name__ + '.{method} failed because the header has already '
+                                    'been read.'.format(**opt))
+            # signal
+            self._state = 1
+            self._iE = -1
+            self._ik = -1
+            # needs to start @ 0
+            self._ispin = 0
+            #print('header: ', self._state, self._ispin, self._ik, self._iE)
+
+        elif kwargs.get('HS', False):
+
+            # Check if we are in the correct place to read/write H, S
+            if self._state != 1:
+                raise SileError(self.__class__.__name__ + '.{method} failed because the file descriptor '
+                                'has read beyond the Hamiltonian and overlap matrices.'.format(**opt))
+
+            # Fix counters
+            self._state = 0
+            self._ik += 1
+            if self._ik >= self._nk:
+                # We need to step spin
+                self._ispin += 1
+                self._ik = 0
+            self._iE = -1
+
+            #print('HS: ', self._state, self._ispin, self._ik, self._iE)
+
+            if self._ispin > self._nspin:
+                opt['spin'] = self._ispin
+                opt['nspin'] = self._nspin - 1
+                raise SileError(self.__class__.__name__ + '.{method} failed because of missing information, '
+                                'a non-existing entry has been requested! spin={spin} max_spin={nspin}.'.format(**opt))
+
+        else:
+            if self._state != 0 or self._iE >= self._nE:
+                raise SileError(self.__class__.__name__ + '.{method} failed because the file descriptor '
+                                'has read beyond all self-energies.'.format(**opt))
+
+            # This method should *only* be called after reading/writing self-energies
+            self._iE += 1
+            if self._iE >= self._nE:
+                # You are trying to read beyond the entry
+                opt['iE'] = self._iE
+                opt['NE'] = self._nE - 1
+                raise SileError(self.__class__.__name__ + '.{method} failed because of missing information, '
+                                'a non-existing energy-point has been requested! E_index={iE} max_E_index={NE}.'.format(**opt))
+            if self._iE == self._nE - 1:
+                self._state = 1 # signal we need to read HS next time
+            #print('SE: ', self._state, self._ispin, self._ik, self._iE)
+
+        # Always signal (when stepping) that we have not yet read the thing
+        self._is_read = 0
+
+    def Eindex(self, E):
+        """ Return the closest energy index corresponding to the energy ``E``
+
+        Parameters
+        ----------
+        E : float or int
+           if ``int``, return it-self, else return the energy index which is
+           closests to the energy.
+        """
+        if isinstance(E, Integral):
+            return E
+        idxE = np.abs(self._E - E).argmin()
+        ret_E = self._E[idxE]
+        if abs(ret_E - E) > 5e-3:
+            warn(self.__class__.__name__ + " requesting energy " +
+                 "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E))
+        elif abs(ret_E - E) > 1e-3:
+            info(self.__class__.__name__ + " requesting energy " +
+                 "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E))
+        return idxE
+
+    def kindex(self, k):
+        """ Return the index of the k-point that is closests to the queried k-point (in reduced coordinates)
+
+        Parameters
+        ----------
+        k : array_like of float or int
+           the queried k-point in reduced coordinates :math:`]-0.5;0.5]`. If ``int``
+           return it-self.
+        """
+        if isinstance(k, Integral):
+            return k
+        ik = np.sum(np.abs(self._k - _a.asarrayd(k)[None, :]), axis=1).argmin()
+        ret_k = self._k[ik, :]
+        if not np.allclose(ret_k, k, atol=0.0001):
+            warn(SileWarning(self.__class__.__name__ + " requesting k-point " +
+                             "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*k) +
+                             " found " +
+                             "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*ret_k)))
+        return ik
 
     def read_header(self):
         """ Read the header of the file and open it for reading subsequently
@@ -656,15 +783,16 @@ class _gfSileSiesta(SileBinSiesta):
         E : energy points in the GF file
         """
         # Ensure it is open (in read-mode)
-        self._close_gf()
-        self._open_gf('r')
+        if self._is_open():
+            _siesta.io_m.rewind_file(self._iu)
+        else:
+            self._open_gf('r')
         nspin, no_u, nkpt, NE = _siesta.read_gf_sizes(self._iu)
         _bin_check(self, 'read_header', 'could not read sizes.')
 
-        # We need to re-read (because of k-points)
-        self._close_gf()
-        self._open_gf('r')
-
+        # We need to rewind (because of k and energy -points)
+        _siesta.io_m.rewind_file(self._iu)
+        self._step_counter('read_header', header=True)
         k, E = _siesta.read_gf_header(self._iu, nkpt, NE)
         _bin_check(self, 'read_header', 'could not read header information.')
 
@@ -675,7 +803,10 @@ class _gfSileSiesta(SileBinSiesta):
         else:
             self._no_u = no_u
         self._E = E
+        self._nE = len(E)
         self._k = k
+        self._nk = len(k)
+
         return nspin, no_u, k, E * Ry2eV
 
     def disk_usage(self):
@@ -690,8 +821,8 @@ class _gfSileSiesta(SileBinSiesta):
             self.read_header()
 
         # HS are only stored per k-point
-        HS = 2 * self._nspin * len(self._k)
-        SE = HS / 2 * len(self._E)
+        HS = 2 * self._nspin * self._nk
+        SE = HS / 2 * self._nE
 
         # Now calculate the full size
         # no_u ** 2 = matrix size
@@ -712,11 +843,10 @@ class _gfSileSiesta(SileBinSiesta):
         complex128 : Hamiltonian matrix
         complex128 : Overlap matrix
         """
-        self._ik += 1
-        self._ie = 1
-
+        self._step_counter('read_hamiltonian', HS=True)
         H, S = _siesta.read_gf_hs(self._iu, self._no_u)
         _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian and overlap matrices.')
+        self._is_read = 1
         return H.T * Ry2eV, S.T
 
     def read_self_energy(self):
@@ -731,10 +861,68 @@ class _gfSileSiesta(SileBinSiesta):
         -------
         complex128 : Self-energy matrix
         """
-        SE = _siesta.read_gf_se(self._iu, self._no_u, self._ie).T * Ry2eV
+        self._step_counter('read_self_energy')
+        SE = _siesta.read_gf_se(self._iu, self._no_u, self._iE).T * Ry2eV
         _bin_check(self, 'read_self_energy', 'could not read self-energy.')
-        self._ie += 1
+        self._is_read = 1
         return SE
+
+    def HkSk(self, k=(0, 0, 0), spin=0):
+        """ Retrieve H and S for the given k-point
+
+        Parameters
+        ----------
+        k : int or array_like of float, optional
+           k-point to read the corresponding Hamiltonian and overlap matrices
+           for. If a specific k-point is passed `kindex` will be used to find
+           the corresponding index.
+        spin : int, optional
+           spin-index for the Hamiltonian and overlap matrices
+        """
+        if not self._is_open():
+            self._open_gf('r')
+            self.read_header()
+
+        ik = self.kindex(k)
+        _siesta.read_gf_find(self._iu, self._nspin, self._nk, self._nE,
+                             self._state, self._ispin, self._ik, self._iE, self._is_read,
+                             1, spin, ik, 0)
+        _bin_check(self, 'HkSk', 'could not find Hamiltonian and overlap matrix.')
+
+        self._state = 1
+        self._ispin = spin
+        self._ik = ik - 1 # to be stepped
+        self._iE = 0
+        return self.read_hamiltonian()
+
+    def self_energy(self, E, k=0, spin=0):
+        """ Retrieve self-energy for a given energy-point and k-point
+
+        Parameters
+        ----------
+        E : int or float
+           energy to retrieve self-energy at
+        k : int or array_like of float, optional
+           k-point to retrieve k-point at
+        spin : int, optional
+           spin-index to retrieve self-energy at
+        """
+        if not self._is_open():
+            self._open_gf('r')
+            self.read_header()
+
+        ik = self.kindex(k)
+        iE = self.Eindex(E)
+        _siesta.read_gf_find(self._iu, self._nspin, self._nk, self._nE,
+                             self._state, self._ispin, self._ik, self._iE, self._is_read,
+                             0, spin, ik, iE)
+        _bin_check(self, 'self_energy', 'could not find requested self-energy.')
+
+        self._state = 0
+        self._ispin = spin
+        self._ik = ik
+        self._iE = iE - 1 # to be stepped
+        return self.read_self_energy()
 
     def write_header(self, bz, E, mu=0., obj=None):
         """ Write to the binary file the header of the file
@@ -781,6 +969,8 @@ class _gfSileSiesta(SileBinSiesta):
         self._nspin = nspin
         self._E = E * eV2Ry
         self._k = np.copy(k)
+        self._nE = len(E)
+        self._nk = len(k)
         if self._nspin > 2:
             self._no_u = no_u * 2
         else:
@@ -791,8 +981,10 @@ class _gfSileSiesta(SileBinSiesta):
         self._open_gf('w')
 
         # Now write to it...
+        self._step_counter('write_header', header=True)
         _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,
                                 bloch, 0, mu, k.T, w, self._E, **sizes)
+        self._is_read = 1
         _bin_check(self, 'write_header', 'could not write header information.')
 
     def write_hamiltonian(self, H, S=None):
@@ -806,15 +998,15 @@ class _gfSileSiesta(SileBinSiesta):
            a square matrix corresponding to the overlap, for efficiency reasons
            it may be advantageous to specify this argument for orthogonal cells.
         """
-        self._ik += 1
-        self._ie = 1
         no = len(H)
         if S is None:
             S = np.eye(no, dtype=np.complex128)
-        _siesta.write_gf_hs(self._iu, self._ik, self._ie, self._E[self._ie-1],
+        self._step_counter('write_hamiltonian', HS=True)
+        _siesta.write_gf_hs(self._iu, self._ik, self._iE, self._E[self._iE],
                             H.astype(np.complex128, 'C', copy=False).T * eV2Ry,
                             S.astype(np.complex128, 'C', copy=False).T, no_u=no)
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
+        self._is_read = 1
 
     def write_self_energy(self, SE):
         r""" Write the current self energy, k-point and H and S to the file
@@ -830,15 +1022,15 @@ class _gfSileSiesta(SileBinSiesta):
            a square matrix corresponding to the self-energy (Green function)
         """
         no = len(SE)
-        _siesta.write_gf_se(self._iu, self._ik, self._ie,
-                            self._E[self._ie-1],
+        self._step_counter('write_self_energy')
+        _siesta.write_gf_se(self._iu, self._ik, self._iE,
+                            self._E[self._iE],
                             SE.astype(np.complex128, 'C', copy=False).T * eV2Ry, no_u=no)
         _bin_check(self, 'write_self_energy', 'could not write self-energy.')
-
-        self._ie += 1
+        self._is_read = 1
 
     def __len__(self):
-        return len(self._E) * len(self._k) * self._nspin
+        return self._nE * self._nk * self._nspin
 
     def __iter__(self):
         """ Iterate through the energies and k-points that this GF file is associated with
@@ -856,17 +1048,11 @@ class _gfSileSiesta(SileBinSiesta):
                     for E in e[1:]:
                         yield ispin, False, k, E
 
-                # Reset counters for k and e
-                self._ik = 0
-                self._ie = 0
         else:
             for k in self._k:
                 yield True, k, e[0]
                 for E in e[1:]:
                     yield False, k, E
-
-            self._ik = 0
-            self._ie = 0
 
         # We will automatically close once we hit the end
         self._close_gf()

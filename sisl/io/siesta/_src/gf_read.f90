@@ -111,6 +111,101 @@ subroutine read_gf_header(iu, nkpt, kpt, NE, E)
 
 end subroutine read_gf_header
 
+subroutine read_gf_find(iu, nspin, nkpt, NE, &
+    cstate, cspin, ckpt, cE, cis_read, istate, ispin, ikpt, iE)
+  use io_m, only: iostat_update
+
+  implicit none
+
+  ! Input parameters
+  integer, intent(in) :: iu
+  integer, intent(in) :: nspin, nkpt, NE
+  integer, intent(in) :: cstate, cspin, ckpt, cE, cis_read
+  integer, intent(in) :: istate, ispin, ikpt, iE
+
+  ! Define f2py intents
+!f2py intent(in) :: iu, nspin, nkpt, NE
+!f2py intent(in) :: cstate, cspin, ckpt, cE, cis_read
+!f2py intent(in) :: istate, ispin, ikpt, iE
+
+  integer :: ierr, i
+
+  ! We calculate the current record position
+  ! Then we calculate the resulting record position
+  ! Finally we backspace or read to the record position
+  integer :: crec, irec
+
+  if ( istate == -1 ) then
+    ! Easy case, the file should be re-read from the beginning
+    rewind(iu, iostat=ierr)
+    call iostat_update(ierr)
+    return
+  end if
+
+  if ( cstate == -1 ) then
+    ! Skip to the start of the file
+    ! There are 10 fields that needs to be read past
+    do irec = 1, 10
+      read(iu, iostat=ierr)
+      call iostat_update(ierr)
+    end do
+  end if
+
+  ! Find linear record index
+  crec = linear_rec(cstate, cspin, ckpt, cE, cis_read)
+  irec = linear_rec(istate, ispin, ikpt, iE, 0)
+
+  if ( crec < irec ) then
+    do i = crec, irec - 1
+      read(iu, iostat=ierr) ! record
+      call iostat_update(ierr)
+    end do
+  else if ( crec > irec ) then
+    do i = irec, crec - 1
+      backspace(iu, iostat=ierr) ! record
+      call iostat_update(ierr)
+    end do
+  end if
+
+contains
+
+  function linear_rec(state, ispin, ikpt, iE, is_read) result(irec)
+    ! Note that these indices are 0-based
+    integer, intent(in) :: state, ispin, ikpt, iE, is_read
+    integer :: irec
+
+    integer :: nHS, nSE
+
+    ! Skip to the spin
+    nHS = max(0, ispin) * nkpt
+    nSE = max(0, ispin) * nkpt * NE
+    ! per H and S we also have ik, iE, E
+    ! per SE we also have ik, iE, E (except for the first energy-point where we don't have it)
+    irec = nHS * 3 + nSE * 2 - nHS
+
+    ! Skip to the k-point
+    nHS = max(0, ikpt)
+    nSE = max(0, ikpt) * NE
+    irec = irec + nHS * 3 + nSE * 2 - nHS
+
+    ! Skip to the energy-point
+    irec = irec + max(0, iE) * 2
+    if ( iE > 0 ) irec = irec - 1 ! correct the iE == 0 ik, iE, E line
+
+    ! If the state is 0, it means that we should read beyond H and S for the given k-point
+    if ( state == 0 ) irec = irec + 3
+
+    if ( is_read == 1 ) then
+      ! Means that we already have read past this entry
+      if ( iE > 0 ) then
+        irec = irec + 2
+      end if
+    end if
+
+  end function linear_rec
+
+end subroutine read_gf_find
+
 subroutine read_gf_hs(iu, no_u, H, S)
   use io_m, only: iostat_update
 
@@ -165,7 +260,7 @@ subroutine read_gf_se( iu, no_u, iE, SE )
 
   integer :: ierr
 
-  if ( iE > 1 ) then
+  if ( iE > 0 ) then
     read(iu, iostat=ierr) !ik, iE, E
     call iostat_update(ierr)
   end if

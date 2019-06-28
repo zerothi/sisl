@@ -133,7 +133,7 @@ subroutine write_gf_se(iu, ik, iE, E, no_u, SE)
 
   integer :: ierr
 
-  if ( iE > 1 ) then
+  if ( iE > 0 ) then
     write(iu, iostat=ierr) ik, iE, E
     call iostat_update(ierr)
   end if
