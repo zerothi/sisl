@@ -4,6 +4,7 @@ Sile object for reading/writing XYZ files
 from __future__ import print_function
 
 from collections import defaultdict
+import re
 import numpy as np
 
 # Import sile objects
@@ -11,7 +12,9 @@ from .sile import *
 
 # Import the geometry object
 from sisl import Geometry, SuperCell
-import re
+
+# Warnings
+from sisl.messages import warn
 
 
 __all__ = ['xyzSile']
@@ -91,8 +94,7 @@ class xyzSile(Sile):
             except KeyError:  # cellkey not in keyvals
                 continue
             except ValueError as e:
-                import warnings
-                warnings.warn(
+                warn(
                     "Found a key indicating {cellkey} in xyz file, but "
                     "could not parse it: {e!s}".format(cellkey=cellkey, e=e))
 
@@ -108,8 +110,7 @@ class xyzSile(Sile):
         except KeyError:
             pass
         except ValueError as e:
-            import warnings
-            warnings.warn(
+            warn(
                 "Found a key indicating nsc in xyz file, but "
                 "could not parse it: {e!s}".format(e=e))
 
