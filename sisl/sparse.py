@@ -733,7 +733,7 @@ class SparseCSR(object):
         ------
         IndexError for indices out of bounds
         """
-        if asarrayi(i).size == 0:
+        if asarray(i).size == 0:
             return arrayi([])
         if i < 0:
             raise IndexError('row index is out-of-bounds')
@@ -752,12 +752,11 @@ class SparseCSR(object):
 
         # fast reference
         ptr = self.ptr
-        ncol = self.ncol
         col = self.col
 
         # Get index pointer
         ptr_i = int(ptr[i])
-        ncol_i = int(ncol[i])
+        ncol_i = int(self.ncol[i])
 
         # To create the indices for the sparse elements
         # we first find which values are _not_ in the sparse
@@ -823,7 +822,7 @@ class SparseCSR(object):
             col[ncol_ptr_i:ncol_ptr_i+new_n] = new_j[:]
 
             # Step the size of the stored non-zero elements
-            ncol[i] += int32(new_n)
+            self.ncol[i] += int32(new_n)
 
             ncol_ptr_i += new_n
 

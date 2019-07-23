@@ -1395,8 +1395,8 @@ class Geometry(SuperCellChild):
         Parameters
         ----------
         atom : int or array_like
-           indices/boolean of all atoms to be removed
-        dir : str, int or vector
+           indices/boolean of all atoms where angles should be calculated on
+        dir : str, int or vector, optional
            the direction from which the angle is calculated from, default to ``x``
         ref : int or coordinate, optional
            the reference point from which the vectors are drawn, default to origo
@@ -1475,10 +1475,6 @@ class Geometry(SuperCellChild):
         vn = _a.asarrayd(v).flatten()
         vn /= fnorm(vn)
 
-        # Prepare quaternion...
-        q = Quaternion(angle, vn, rad=rad)
-        q /= q.norm()
-
         # Rotate by direct call
         if 'abc' in only:
             sc = self.sc.rotate(angle, vn, rad=rad, only=only)
@@ -1489,6 +1485,9 @@ class Geometry(SuperCellChild):
         xyz = np.copy(self.xyz)
 
         if 'xyz' in only:
+            # Prepare quaternion...
+            q = Quaternion(angle, vn, rad=rad)
+            q /= q.norm()
             # subtract and add origo, before and after rotation
             xyz[atom, :] = q.rotate(xyz[atom, :] - origo[None, :]) + origo[None, :]
 
