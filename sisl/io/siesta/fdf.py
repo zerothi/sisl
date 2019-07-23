@@ -1555,7 +1555,7 @@ class fdfSileSiesta(SileSiesta):
         if isfile(f):
             if 'geometry' not in kwargs:
                 kwargs['geometry'] = self.read_geometry(True)
-            S = onlySSileSiesta(f).read_overlap(*args, **kwargs)
+            S = onlysSileSiesta(f).read_overlap(*args, **kwargs)
         return S
 
     def read_hamiltonian(self, *args, **kwargs):
