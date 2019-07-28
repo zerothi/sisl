@@ -9,6 +9,14 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. G. Calogero, I. Alcon, N. Papior, A-P Jauho, M. Brandbyge,
+   *Quantum interference engineering of nanoporous graphene for carbon nanocircuitry*,
+   Journal of the American Chemical Society `unknown <https://doi.org/10.1021/jacs.9b04649>`_
+
+#. S. Leitherer, N. Papior, M. Brandbyge,
+   *Current-induced atomic forces in gated graphene nanoconstrictions*,
+   Physical Review B **100**, `035415 (2019) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.100.035415>`_
+
 #. G. Singh, K. Kumar, B. Singh, R.K. Moudgil,
    *Ballistic phonon thermal transport across nano-junctions on aluminum and platinum nanowires*,
    AIP Conference Proceedings **2093**, `020029 (2019) <https://doi.org/10.1063/1.5097098>`_
@@ -86,10 +94,6 @@ These publications are as far as we know in the review process.
 - N. Papior, G. Calogero, S. Leitherer, M. Brandbyge,
   *Removing all periodic boundary conditions: Efficient non-equilibrium Green function calculations*
   `1905.11113 <https://arxiv.org/abs/1905.11113>`_
-
-- S. Leitherer, N. Papior, M. Brandbyge,
-  *Current-induced atomic forces in gated graphene nanoconstrictions*,
-  `1905.01100 <https://arxiv.org/abs/1905.01100>`_
 
 - D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
   *Moiré ordered current loops in the graphene twist bilayer*,
