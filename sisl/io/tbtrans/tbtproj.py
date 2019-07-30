@@ -642,7 +642,6 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
 for _name in ['current', 'current_parameter',
               'shot_noise', 'noise_power', 'fano',
-              "write_tbtav",
               'density_matrix',
               'orbital_COOP', 'atom_COOP',
               'orbital_COHP', 'atom_COHP']:
