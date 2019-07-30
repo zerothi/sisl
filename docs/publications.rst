@@ -11,7 +11,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. G. Calogero, I. Alcon, N. Papior, A-P Jauho, M. Brandbyge,
    *Quantum interference engineering of nanoporous graphene for carbon nanocircuitry*,
-   Journal of the American Chemical Society `unknown <https://doi.org/10.1021/jacs.9b04649>`_
+   Journal of the American Chemical Society `(2019) <https://doi.org/10.1021/jacs.9b04649>`_
 
 #. S. Leitherer, N. Papior, M. Brandbyge,
    *Current-induced atomic forces in gated graphene nanoconstrictions*,
@@ -47,11 +47,11 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. G. Calogero, N. Papior, P. Bøggild and M. Brandbyge,
    *Large-scale tight-binding simulations of quantum transport in ballistic graphene*,
-   Journal of Physics: Condensed Matter, `(2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aad6f1>`_
+   Journal of Physics: Condensed Matter, **36**, `36 (2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aad6f1>`_
 
 #. B. Fülöp, Z. Tajkov, J. Pető, P. Kun, J. Koltai, L. Oroszlány, E. Tóvári, H. Murakawa, Y. Tokura, S. Bordács, L. Tapasztó and S. Csonka,
    *Exfoliation of single layer BiTeI flakes*,
-   2D Materials **5** `3 (2018) <http://stacks.iop.org/2053-1583/5/i=3/a=031013>`_.
+   2D Materials **5**, `3 (2018) <http://stacks.iop.org/2053-1583/5/i=3/a=031013>`_.
 
 #. Z. Nourbakhsh and R. Asgari,
    *Charge transport in doped zigzag phosphorene nanoribbons*,
@@ -59,7 +59,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. N. Papior, G. Calogero and M. Brandbyge,
    *Simple and efficient LCAO basis sets for the diffuse states in carbon nanostructures*,
-   Journal of Physics: Condensed Matter `(2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aac4dd>`_
+   Journal of Physics: Condensed Matter **30**, `25 (2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aac4dd>`_
 
 #. C. Moreno, M. Vila-Varela, B. Kretz, A. Garcia-Lekue, M.V. Costache, M. Paradinas, M. Panighel, G. Ceballos, S.O. Valenzuela, D. Pena and A.M. Mugarza,
    *Bottom-up synthesis of multifunctional nanoporous graphene*,
