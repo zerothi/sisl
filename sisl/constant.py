@@ -41,7 +41,7 @@ The currently stored constants are (all are given in SI units):
    G
 
 
-All constants may be used like an ordinary float (which converts it to a float:
+All constants may be used like an ordinary float (which converts it to a float):
 
 >>> c
 299792458.0 m/s

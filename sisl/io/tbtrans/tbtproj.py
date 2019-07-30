@@ -592,6 +592,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
         The eigenstate object will contain the geometry as the parent object.
         The eigenstate will be in the Lowdin basis:
+
         .. math::
             |\psi'_i\rangle = \mathbf S^{1/2} |\psi_i\rangle
 
@@ -641,6 +642,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
 for _name in ['current', 'current_parameter',
               'shot_noise', 'noise_power', 'fano',
+              "write_tbtav",
               'density_matrix',
               'orbital_COOP', 'atom_COOP',
               'orbital_COHP', 'atom_COHP']:

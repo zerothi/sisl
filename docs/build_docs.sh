@@ -1,5 +1,9 @@
 #!/bin/bash
 
+which python
+which python3
+which sphinx-build
+
 # First make clean
 make clean
 

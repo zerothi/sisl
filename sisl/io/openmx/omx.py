@@ -42,7 +42,7 @@ class omxSileOpenMX(SileOpenMX):
     >>> omx = omxSileOpenMX("tmp/input.dat", base=".") # reads output files in './' folder
 
     When using this file in conjunction with the `sgeom` script while your input data-files are
-    named *.dat, please do this:
+    named ``input.dat``, please do this:
 
     .. code:: bash
 
@@ -260,9 +260,8 @@ class omxSileOpenMX(SileOpenMX):
         output: bool, optional
             whether to read supercell from output files (default to read from
             the input file).
-        order: list of str, optional
+        order: {'dat', 'omx'}
             the order of which to try and read the supercell.
-            By default this is ``['dat'/'omx'], `` if `output` is true.
             If `order` is present `output` is disregarded.
         """
         order = kwargs.pop('order', ['dat', 'omx'])
@@ -351,9 +350,8 @@ class omxSileOpenMX(SileOpenMX):
         output: bool, optional
             whether to read supercell from output files (default to read from
             the input file).
-        order: list of str, optional
+        order: {'dat', 'omx'}
             the order of which to try and read the supercell.
-            By default this is ``['dat'/'omx'], `` if `output` is true.
             If `order` is present `output` is disregarded.
         """
         if output:
@@ -400,9 +398,8 @@ class omxSileOpenMX(SileOpenMX):
         output: bool, optional
             whether to read geometry from output files (default to read from
             the input file).
-        order: list of str, optional
+        order: {'dat', 'omx'}
             the order of which to try and read the geometry.
-            By default this is ``['dat'/'omx']`` if `output` is true
             If `order` is present `output` is disregarded.
         """
         if output:

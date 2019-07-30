@@ -168,8 +168,12 @@ language = None
 
 # Add __init__ classes to the documentation
 autoclass_content = 'class'
-autodoc_default_flags = ['members', 'undoc-members',
-                         'inherited-members', 'no-show-inheritance']
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+    'inherited-members': True,
+    'show-inheritance': True,
+}
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -426,8 +430,26 @@ nbsphinx_prolog = r"""
 
 """
 
+import inspect
+
+
+def sisl_method2class(meth):
+    # Method to retrieve the class from a method (bounded and unbounded)
+    # See stackoverflow.com/questions/3589311
+    if inspect.ismethod(meth):
+        for cls in inspect.getmro(meth.__self__.__class__):
+            if cls.__dict__.get(meth.__name__) is meth:
+                return cls
+    if inspect.isfunction(meth):
+        cls =  getattr(inspect.getmodule(meth),
+                       meth.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
+        if isinstance(cls, type):
+            return cls
+    return None  # not required since None would have been implicitly returned anyway
 
 # My custom detailed instructions for not documenting stuff
+
+
 def sisl_skip(app, what, name, obj, skip, options):
     # When adding routines here, please also add them
     # to the _templates/autosummary/class.rst file to limit
@@ -441,6 +463,29 @@ def sisl_skip(app, what, name, obj, skip, options):
                     'isRoot', 'isVariable']:
             return True
         if name in ['ArgumentParser', 'ArgumentParser_out']:
+            return True
+
+    cls = sisl_method2class(obj)
+
+    # Quick escape
+    if cls is None:
+        return skip
+
+    cls = cls.__name__
+    # Currently inherited members will never be processed
+    # Apparently they will be linked directly.
+    # Now we have some things to disable the output of
+    if "projncSile" in cls:
+        if name in ["current", "current_parameter", "shot_noise",
+                    "noise_power", "fano", "density_matrix",
+                    "write_tbtav",
+                    "orbital_COOP", "atom_COOP",
+                    "orbital_COHP", "atom_COHP"]:
+            return True
+    if "SilePHtrans" in cls:
+        if name in ["chemical_potential", "electron_temperature",
+                    "kT", "current", "current_parameter", "shot_noise",
+                    "noise_power"]:
             return True
     return skip
 

@@ -38,7 +38,7 @@ class eigSileSiesta(SileSiesta):
 
     This will default to plot the DOS using these parameters:
     dE = 5 meV, kT = 300 K (25 meV), Gaussian distribution and in the full energy-range of the eigenvalue spectrum.
-    By default the k-point weights will be read in the *.KP file, however if the file does not
+    By default the k-point weights will be read in the ``siesta.KP`` file, however if the file does not
     exist one may use the option ``--kp-file FILE`` to read in the weights from ``FILE``.
 
     To limit the shown energy region, simply use:

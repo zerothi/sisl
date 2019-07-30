@@ -170,9 +170,9 @@ class Bloch(object):
 
         Parameters
         ----------
-        M : (*, :, :)
-            an *-N-M matrix used for unfolding
-        k_unfold : (*, 3) of float
+        M : (:, :, :)
+            an ``*``-N-M matrix used for unfolding
+        k_unfold : (:, 3) of float
             unfolding k-points as returned by `Bloch.unfold_points`
 
         Returns
