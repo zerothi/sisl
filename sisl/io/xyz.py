@@ -3,6 +3,7 @@ Sile object for reading/writing XYZ files
 """
 from __future__ import print_function
 
+from re import compile as re_compile
 import re
 import numpy as np
 
@@ -15,6 +16,26 @@ import sisl._array as _a
 
 
 __all__ = ['xyzSile']
+
+
+def _header_to_dict(header):
+    """ Convert a header line with 'key=val key1=val1' sequences to a single dictionary """
+    e = re_compile(r"(\S+)=")
+
+    # 1. Remove *any* entry with 0 length
+    # 2. Ensure it is a list
+    # 3. Reverse the list order (for popping)
+    kv = list(filter(lambda x: len(x.strip()) > 0, e.split(header)))[::-1]
+
+    # Now create the dictionary
+    d = {}
+    while len(kv) >= 2:
+        # We have reversed the list
+        key = kv.pop().strip(' =') # remove white-space *and* =
+        val = kv.pop().strip() # remove outer whitespace
+        d[key] = val
+
+    return d
 
 
 class xyzSile(Sile):
@@ -50,25 +71,6 @@ class xyzSile(Sile):
         # Add a single new line
         self._write('\n')
 
-    @staticmethod
-    def _header_to_dict(header):
-        """ Convert a header line with 'key=val key1=val1' sequences to a single dictionary """
-        # Create regular expression with key=val based sequences
-        e = re.compile(r"(\S+)=")
-
-        # Remove *any* entry with 0 length
-        kv = list(filter(lambda x: len(x.strip()) > 0, e.split(header)))[::-1]
-
-        # Now create the dictionary
-        d = {}
-        while len(kv) >= 2:
-            # We have reversed the list
-            key = kv.pop().strip(' =') # remove white-space *and* =
-            val = kv.pop().strip() # remove outer whitespace
-            d[key] = val
-
-        return d
-
     def _r_geometry_sisl(self, na, header, sp, xyz):
         """ Read the geometry as though it was created with sisl """
         # Default version of the header is 1
@@ -102,7 +104,7 @@ class xyzSile(Sile):
 
         # Read header, and try and convert to dictionary
         header = self.readline()
-        kv = self._header_to_dict(header)
+        kv = _header_to_dict(header)
 
         # Read atoms and coordinates
         sp = [None] * na
