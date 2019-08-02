@@ -5,14 +5,15 @@ from numbers import Integral
 # To speed up the extension algorithm we limit
 # the lookup table
 import numpy as np
-from numpy import int32
+from numpy import ndarray, int32
 from numpy import empty, zeros, asarray, arange
 from numpy import insert, take, delete, copyto, split
 from numpy import intersect1d, setdiff1d, unique, in1d
 from numpy import diff, count_nonzero
 from numpy import any as np_any
 from numpy import all as np_all
-from numpy import isnan
+from numpy import atleast_1d
+from numpy import isnan, broadcast
 from numpy import argsort
 
 from scipy.sparse import isspmatrix
@@ -973,7 +974,7 @@ class SparseCSR(object):
         matrix if the dimensions match.
 
         If the `data` parameter is ``None`` or an array
-        only with `None` then the data will not be stored.
+        only with ``None`` then the data will not be stored.
         """
         # Ensure data type... possible casting...
         if data is None:
@@ -985,12 +986,81 @@ class SparseCSR(object):
         # TODO we need some way to reduce these things
         # for integer stuff.
         data = asarray(data, self._D.dtype)
-        # Places where there are nan will be set
-        # to zero
+        # Places where there are nan will be set to zero
         data[isnan(data)] = 0
 
+        # Determine how the indices should work
+        i = key[0]
+        j = key[1]
+        if isinstance(i, (list, ndarray)) and isinstance(j, (list, ndarray)):
+
+            # Create a b-cast object to iterate
+            # Note that this does not do the actual b-casting and thus
+            # we can iterate and operate as though it was an actual array
+            # When doing *array* assignments the data array *have* to be
+            # a matrix-like object (one cannot assume linear data indices
+            # works)
+            ij = broadcast(i, j)
+            if data.ndim == 0:
+                # enables checking for shape values
+                data.shape = (1,)
+            elif data.ndim == 1:
+                # this corresponds to:
+                #  [:, :, :] = data.reshape(1, 1, -1)
+                if ij.ndim == 2:
+                    data.shape = (1, -1)
+                # if ij.ndim == 1 we shouldn't need
+                # to reshape data since it should correspond to each value
+            elif data.ndim == 2:
+                if ij.ndim == 2:
+                    # this means we have two matrices
+                    # We will *not* allow any b-casting:
+                    # [:, :, :] = data[:, :]
+                    # *only* if
+                    # do a sanity check
+                    if self.dim > 1 and len(key) == 2:
+                        raise ValueError("could not broadcast input array from shape {} into shape {}".format(data.shape, ij.shape + (self.dim,)))
+                    if len(key) == 3:
+                        if atleast_1d(key[2]).size > 1:
+                            raise ValueError("could not broadcast input array from shape {} into shape {}".format(data.shape, ij.shape + (atleast_1d(key[2]).size,)))
+                    # flatten data
+                    data.shape = (-1,)
+                # ij.ndim == 1
+                # this should correspond to the diagonal specification case
+                # and we don't need to do anything
+                # if ij.size != data.shape[0] an error should occur down below
+            elif data.ndim == 3:
+                if ij.ndim != 2:
+                    raise ValueError("could not broadcast input array from 3 dimensions into 2")
+                data.shape = (-1, data.shape[2])
+
+            # Now we need to figure out the final dimension and how to
+            # assign elements.
+            if len(key) == 3:
+                # we are definitely assigning the final dimension
+                k = atleast_1d(key[2])
+
+                if len(k) == 1 and data.ndim == 2:
+                    data.shape = (-1,)
+
+                if data.shape[0] == ij.size:
+                    for (i, j), d in zip(ij, data):
+                        self.__setitem__((i, j, key[2]), d)
+                else:
+                    for i, j in ij:
+                        self.__setitem__((i, j, key[2]), data)
+            else:
+                if data.shape[0] == ij.size:
+                    for (i, j), d in zip(ij, data):
+                        self.__setitem__((i, j), d)
+                else:
+                    for i, j in ij:
+                        self.__setitem__((i, j), data)
+
+            return
+
         # Retrieve indices in the 1D data-structure
-        index = self._extend(key[0], key[1])
+        index = self._extend(i, j)
 
         if len(key) > 2:
             # Explicit data of certain dimension
@@ -998,8 +1068,7 @@ class SparseCSR(object):
 
         else:
             # Ensure correct shape
-            if data.ndim == 0:
-                data = asarray([data])
+            if data.size == 1:
                 data.shape = (1, 1)
             else:
                 data.shape = (-1, self.shape[2])
