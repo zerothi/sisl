@@ -860,11 +860,49 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
+    def transpose(self, hermitian=True):
+        """ A transpose copy of this object, possibly apply the Hermitian conjugate as well (default)
+
+        Parameters
+        ----------
+        hermitian : bool, optional
+           if true, also emply a spin-box Hermitian operator to ensure TRS, otherwise
+           only return the transpose values.
+        """
+        new = super(SparseOrbitalBZSpin, self).transpose()
+        if not hermitian:
+            return new
+
+        sp = self.spin
+        D = new._csr._D
+        if sp.is_noncolinear:
+            # conjugate the imaginary value
+            if sp.dkind == 'f':
+                D[:, 3] = -D[:, 3]
+            else:
+                D[:, 2] = np.conj(D[:, 2])
+        elif sp.is_spinorbit:
+            # conjugate the imaginary value and transpose spin-box
+            if sp.dkind == 'f':
+                # imaginary components
+                D[:, [4, 5]] = -D[:, [4, 5]]
+                # M21r -> M12r
+                D[:, [2, 6]] = D[:, [6, 2]]
+                # M21i -> M12i
+                # However, in this case the stored values
+                # are already stored with opposite signs
+                # so a mere swap is enough
+                D[:, [3, 7]] = D[:, [7, 3]]
+            else:
+                D[:, [0, 1]] = np.conj(D[:, [0, 1]])
+                D[:, [2, 3]] = np.conj(D[:, [3, 2]])
+        return new
+
     def __getstate__(self):
         return {
             'sparseorbitalbzspin': super(SparseOrbitalBZSpin, self).__getstate__(),
             'spin': self._spin.__getstate__(),
-            'orthogonal': self._orthogonal
+            'orthogonal': self._orthogonal,
         }
 
     def __setstate__(self, state):
