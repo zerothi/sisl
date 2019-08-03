@@ -14,6 +14,7 @@ from sisl import SparseOrbitalBZSpin
 from sisl.messages import warn
 from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
+from ..siesta._help import _mat_spin_convert
 
 
 __all__ = ['deltancSileTBtrans']
@@ -363,6 +364,9 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # Number of non-zero elements
         csize[-1] = delta.nnz
 
+        if delta.spin > delta.spin.POLARIZED:
+            raise ValueError(self.__class__.__name__ + '.write_delta only allows spin-polarized delta values')
+
         if delta.dtype.kind == 'c':
             v1 = self._crt_var(lvl, 'Redelta', 'f8', dim,
                                chunksizes=csize,
@@ -451,6 +455,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
             for ispin in range(nspin):
                 sl[-2] = ispin
                 C._csr._D[:, ispin] = lvl.variables['delta'][sl] * Ry2eV
+
+        _mat_spin_convert(C)
 
         return C
 

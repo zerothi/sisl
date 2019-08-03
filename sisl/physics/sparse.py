@@ -610,12 +610,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             if self.spin.dkind == 'f':
                 self.M11r = 0
                 self.M22r = 1
-                self.M21r = 2
-                self.M21_i = 3
+                self.M12r = 2
+                self.M12i = 3
                 self.M11i = 4
                 self.M22i = 5
-                self.M12r = 6
-                self.M12i = 7
+                self.M21r = 6
+                self.M21i = 7
             else:
                 self.M11 = 0
                 self.M22 = 1
@@ -884,15 +884,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         elif sp.is_spinorbit:
             # conjugate the imaginary value and transpose spin-box
             if sp.dkind == 'f':
-                # imaginary components
-                D[:, [4, 5]] = -D[:, [4, 5]]
+                # imaginary components (including transposing)
+                #    12,11,22,21
+                D[:, [3, 4, 5, 7]] = -D[:, [7, 4, 5, 3]]
                 # M21r -> M12r
                 D[:, [2, 6]] = D[:, [6, 2]]
-                # M21i -> M12i
-                # However, in this case the stored values
-                # are already stored with opposite signs
-                # so a mere swap is enough
-                D[:, [3, 7]] = D[:, [7, 3]]
             else:
                 D[:, [0, 1]] = np.conj(D[:, [0, 1]])
                 D[:, [2, 3]] = np.conj(D[:, [3, 2]])

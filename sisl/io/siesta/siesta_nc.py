@@ -231,6 +231,9 @@ class ncSileSiesta(SileCDFSiesta):
         for i in range(len(H.spin)):
             H._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV
 
+        # fix siesta specific notation
+        _mat_spin_convert(H)
+
         # Shift to the Fermi-level
         Ef = - self._value('Ef')[:] * Ry2eV
         H.shift(Ef)
@@ -261,6 +264,9 @@ class ncSileSiesta(SileCDFSiesta):
         for i in range(len(DM.spin)):
             DM._csr._D[:, i] = sp.variables['DM'][i, :]
 
+        # fix siesta specific notation
+        _mat_spin_convert(DM)
+
         return DM
 
     def read_energy_density_matrix(self, **kwargs):
@@ -277,6 +283,9 @@ class ncSileSiesta(SileCDFSiesta):
             EDM._csr._D[:, i] = sp.variables['EDM'][i, :] * Ry2eV
             if i < 2 and 'DM' in sp.variables:
                 EDM._csr._D[:, i] -= sp.variables['DM'][i, :] * Ef[i]
+
+        # fix siesta specific notation
+        _mat_spin_convert(EDM)
 
         return EDM
 
@@ -526,6 +535,7 @@ class ncSileSiesta(SileCDFSiesta):
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"
+        _mat_spin_convert(csr, H.spin)
         for i in range(len(H.spin)):
             v[i, :] = csr._D[:, i] / Ry2eV
 
@@ -617,6 +627,7 @@ class ncSileSiesta(SileCDFSiesta):
         v = self._crt_var(sp, 'DM', 'f8', ('spin', 'nnzs'),
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Density matrix"
+        _mat_spin_convert(csr, DM.spin)
         for i in range(len(DM.spin)):
             v[i, :] = csr._D[:, i]
 
@@ -713,6 +724,7 @@ class ncSileSiesta(SileCDFSiesta):
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Energy density matrix"
         v.unit = "Ry"
+        _mat_spin_convert(csr, EDM.spin)
         for i in range(len(EDM.spin)):
             v[i, :] = csr._D[:, i] / Ry2eV
 

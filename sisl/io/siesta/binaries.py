@@ -234,6 +234,8 @@ class tshsSileSiesta(onlysSileSiesta):
             H._csr._D[:, :spin] = dH[:, :]
             H._csr._D[:, spin] = dS[:]
 
+        _mat_spin_convert(H)
+
         # Convert to sisl supercell
         _csr_from_sc_off(H.geometry, isc, H._csr)
 
@@ -258,6 +260,7 @@ class tshsSileSiesta(onlysSileSiesta):
         # Convert to siesta CSR
         _csr_to_siesta(H.geometry, csr)
         csr.finalize()
+        _mat_spin_convert(csr, H.spin)
 
         # Extract the data to pass to the fortran routine
         cell = H.geometry.cell * Ang2Bohr
@@ -340,6 +343,8 @@ class dmSileSiesta(SileBinSiesta):
         # DM file does not contain overlap matrix... so neglect it for now.
         DM._csr._D[:, spin] = 0.
 
+        _mat_spin_convert(DM)
+
         # Convert the supercells to sisl supercells
         if nsc[0] != 0 or geom.no_s >= col.max():
             _csr_from_siesta(geom, DM._csr)
@@ -358,8 +363,9 @@ class dmSileSiesta(SileBinSiesta):
 
         _csr_to_siesta(DM.geometry, csr)
         csr.finalize()
+        _mat_spin_convert(csr, DM.spin)
 
-        # Get H and S
+        # Get DM
         if DM.orthogonal:
             dm = csr._D
         else:
@@ -419,6 +425,8 @@ class tsdeSileSiesta(dmSileSiesta):
         # EDM file does not contain overlap matrix... so neglect it for now.
         EDM._csr._D[:, spin] = 0.
 
+        _mat_spin_convert(EDM)
+
         # Convert the supercells to sisl supercells
         if nsc[0] != 0 or geom.no_s >= col.max():
             _csr_from_siesta(geom, EDM._csr)
@@ -471,6 +479,8 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr._D = np.empty([nnz, spin+1], np.float32)
         H._csr._D[:, :spin] = dH[:, :]
         H._csr._D[:, spin] = dS[:]
+
+        _mat_spin_convert(H)
 
         # Convert the supercells to sisl supercells
         if no_s // no == np.product(geom.nsc):

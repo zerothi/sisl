@@ -148,15 +148,15 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
             if self.spin.kind == Spin.NONCOLINEAR:
                 # non-collinear
                 DM[:, 0, 0] = csr._D[idx, 0]
+                DM[:, 0, 1] = csr._D[idx, 2] + 1j * csr._D[idx, 3]
+                DM[:, 1, 0] = np.conj(DM[:, 0, 1])
                 DM[:, 1, 1] = csr._D[idx, 1]
-                DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3] #TODO check sign here!
-                DM[:, 0, 1] = np.conj(DM[:, 1, 0])
             else:
                 # spin-orbit
                 DM[:, 0, 0] = csr._D[idx, 0] + 1j * csr._D[idx, 4]
+                DM[:, 0, 1] = csr._D[idx, 2] + 1j * csr._D[idx, 3]
+                DM[:, 1, 0] = csr._D[idx, 6] + 1j * csr._D[idx, 7]
                 DM[:, 1, 1] = csr._D[idx, 1] + 1j * csr._D[idx, 5]
-                DM[:, 1, 0] = csr._D[idx, 2] - 1j * csr._D[idx, 3] #TODO check sign here!
-                DM[:, 0, 1] = csr._D[idx, 6] + 1j * csr._D[idx, 7]
 
             # Perform dot-product with spinor, and take out the diagonal real part
             DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
