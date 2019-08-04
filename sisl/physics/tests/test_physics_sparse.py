@@ -148,3 +148,29 @@ def test_sparse_orbital_bz_hermitian(n0, n1, n2):
 
                     Pk = s.Pk(k=k, format='array', dtype=dtype)
                     assert np.abs(Pk - np.conj(Pk.T)).max() == approx_zero
+
+
+def test_sparse_orbital_bz_spin_orbit():
+    M = SparseOrbitalBZSpin(sisl.geom.graphene(), spin=Spin('SO'))
+
+    M.construct(([0.1, 1.44],
+                 [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+
+    MT = M.transpose()
+    MH = M.transpose(True)
+
+    assert np.abs((M - MT)._csr._D).sum() != 0
+    assert np.abs((M - MH)._csr._D).sum() != 0
+    assert np.abs((MT - MH)._csr._D).sum() != 0
+
+
+@pytest.mark.xfail(reason="Sparse.construct does not obey Hermitivity for complex values")
+def test_sparse_orbital_bz_spin_orbit():
+    M = SparseOrbitalBZSpin(sisl.geom.graphene(), spin=Spin('SO'))
+
+    M.construct(([0.1, 1.44],
+                 [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    new = (M + M.transpose(True)) / 2
+    assert np.abs((M - new)._csr._D).sum() == 0

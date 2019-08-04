@@ -860,7 +860,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
-    def transpose(self, hermitian=True):
+    def transpose(self, hermitian=False):
         """ A transpose copy of this object, possibly apply the Hermitian conjugate as well (default)
 
         Parameters
@@ -870,28 +870,35 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            only return the transpose values.
         """
         new = super(SparseOrbitalBZSpin, self).transpose()
-        if not hermitian:
-            return new
-
         sp = self.spin
         D = new._csr._D
-        if sp.is_noncolinear:
-            # conjugate the imaginary value
-            if sp.dkind == 'f':
-                D[:, 3] = -D[:, 3]
-            else:
-                D[:, 2] = np.conj(D[:, 2])
+
+        if hermitian:
+            if sp.is_noncolinear:
+                # conjugate the imaginary value
+                if sp.dkind == 'f':
+                    D[:, 3] = -D[:, 3]
+                else:
+                    D[:, 2] = np.conj(D[:, 2])
+            elif sp.is_spinorbit:
+                # conjugate the imaginary value and transpose spin-box
+                if sp.dkind == 'f':
+                    # imaginary components (including transposing)
+                    #    12,11,22,21
+                    D[:, [3, 4, 5, 7]] = -D[:, [7, 4, 5, 3]]
+                    # M21r -> M12r
+                    D[:, [2, 6]] = D[:, [6, 2]]
+                else:
+                    D[:, [0, 1]] = np.conj(D[:, [0, 1]])
+                    D[:, [2, 3]] = np.conj(D[:, [3, 2]])
         elif sp.is_spinorbit:
-            # conjugate the imaginary value and transpose spin-box
+            # transpose spin-box
             if sp.dkind == 'f':
-                # imaginary components (including transposing)
-                #    12,11,22,21
-                D[:, [3, 4, 5, 7]] = -D[:, [7, 4, 5, 3]]
-                # M21r -> M12r
-                D[:, [2, 6]] = D[:, [6, 2]]
+                #    12 -> 21
+                D[:, [2, 3, 6, 7]] = D[:, [6, 7, 2, 3]]
             else:
-                D[:, [0, 1]] = np.conj(D[:, [0, 1]])
-                D[:, [2, 3]] = np.conj(D[:, [3, 2]])
+                D[:, [2, 3]] = D[:, [3, 2]]
+
         return new
 
     def __getstate__(self):

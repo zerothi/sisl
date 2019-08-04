@@ -364,7 +364,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # Number of non-zero elements
         csize[-1] = delta.nnz
 
-        if delta.spin > delta.spin.POLARIZED:
+        if delta.spin.kind > delta.spin.POLARIZED:
             raise ValueError(self.__class__.__name__ + '.write_delta only allows spin-polarized delta values')
 
         if delta.dtype.kind == 'c':

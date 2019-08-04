@@ -602,7 +602,7 @@ class ncSileSiesta(SileCDFSiesta):
         v.info = "Index of supercell coordinates"
         v[:, :] = _siesta.siesta_sc_off(*DM.geometry.nsc).T
 
-        # Save tight-binding parameters
+        # Save sparse matrices
         v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
                           chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Overlap matrix"
