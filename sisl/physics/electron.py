@@ -9,7 +9,7 @@ specific for electrons. For instance density of states calculations from
 electronic eigenvalues and other quantities.
 
 This module implements the necessary tools required for calculating
-DOS, PDOS, band-velocities and spin moments of non-collinear calculations.
+DOS, PDOS, band-velocities and spin moments of non-colinear calculations.
 One may also plot real-space wavefunctions.
 
 .. autosummary::
@@ -22,6 +22,7 @@ One may also plot real-space wavefunctions.
    berry_phase
    wavefunction
    spin_moment
+   spin_orbital_moment
    spin_squared
 
 
@@ -78,7 +79,8 @@ from .state import Coefficient, State, StateC
 
 __all__ = ['DOS', 'PDOS']
 __all__ += ['velocity', 'velocity_matrix']
-__all__ += ['spin_moment', 'inv_eff_mass_tensor', 'berry_phase']
+__all__ += ['spin_moment', 'spin_orbital_moment']
+__all__ += ['inv_eff_mass_tensor', 'berry_phase']
 __all__ += ['wavefunction']
 __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
@@ -111,6 +113,7 @@ def DOS(E, eig, distribution='gaussian'):
     sisl.physics.distribution : a selected set of implemented distribution functions
     PDOS : projected DOS (same as this, but projected onto each orbital)
     spin_moment : spin moment for states
+    spin_orbital_moment : orbital resolved spin-moment
 
     Returns
     -------
@@ -141,7 +144,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
     .. math::
        \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS}_\nu(E)
 
-    For non-collinear calculations (this includes spin-orbit calculations) the PDOS is additionally
+    For non-colinear calculations (this includes spin-orbit calculations) the PDOS is additionally
     separated into 4 components (in this order):
 
     - Total projected DOS
@@ -174,13 +177,13 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
        eigenvectors
     S : array_like, optional
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
-       matrix is assumed. For non-collinear calculations this matrix may be halve the size of ``len(state[0, :])`` to
-       trigger the non-collinear calculation of PDOS.
+       matrix is assumed. For non-colinear calculations this matrix may be halve the size of ``len(state[0, :])`` to
+       trigger the non-colinear calculation of PDOS.
     distribution : func or str, optional
        a function that accepts :math:`E-\epsilon` as argument and calculates the
        distribution function.
     spin : str or Spin, optional
-       the spin configuration. This is generally only needed when the eigenvectors correspond to a non-collinear
+       the spin configuration. This is generally only needed when the eigenvectors correspond to a non-colinear
        calculation.
 
     See Also
@@ -188,18 +191,19 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
     sisl.physics.distribution : a selected set of implemented distribution functions
     DOS : total DOS (same as summing over orbitals)
     spin_moment : spin moment for states
+    spin_orbital_moment : orbital resolved spin-moment
 
     Returns
     -------
     numpy.ndarray
         projected DOS calculated at energies, has dimension ``(state.shape[1], len(E))``.
-        For non-collinear calculations it will be ``(4, state.shape[1] // 2, len(E))``, ordered as
+        For non-colinear calculations it will be ``(4, state.shape[1] // 2, len(E))``, ordered as
         indicated in the above list.
     """
     if isinstance(distribution, str):
         distribution = get_distribution(distribution)
 
-    # Figure out whether we are dealing with a non-collinear calculation
+    # Figure out whether we are dealing with a non-colinear calculation
     if S is None:
         class S(object):
             __slots__ = []
@@ -215,7 +219,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
         else:
             spin = Spin()
 
-    # check for non-collinear (or SO)
+    # check for non-colinear (or SO)
     if spin.kind > Spin.POLARIZED:
         # Non colinear eigenvectors
         if S.shape[1] == state.shape[1]:
@@ -257,7 +261,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 def spin_moment(state, S=None):
     r""" Calculate the spin magnetic moment (also known as spin texture)
 
-    This calculation only makes sense for non-collinear calculations.
+    This calculation only makes sense for non-colinear calculations.
 
     The returned quantities are given in this order:
 
@@ -282,17 +286,18 @@ def spin_moment(state, S=None):
     S : array_like, optional
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
-       have been evaluated at.
+       has been evaluated at.
 
     Notes
     -----
-    This routine cannot check whether the input eigenvectors originate from a non-collinear calculation.
+    This routine cannot check whether the input eigenvectors originate from a non-colinear calculation.
     If a non-polarized eigenvector is passed to this routine, the output will have no physical meaning.
 
     See Also
     --------
     DOS : total DOS
     PDOS : projected DOS
+    spin_orbital_moment : orbital resolved spin-moment
 
     Returns
     -------
@@ -327,6 +332,81 @@ def spin_moment(state, S=None):
         D = 2 * (conj(state[i, 1::2]) * Sstate[:, 0]).sum()
         s[i, 0] = D.real
         s[i, 1] = D.imag
+
+    return s
+
+
+def spin_orbital_moment(state, S=None):
+    r""" Calculate the spin magnetic moment per orbital site (equivalent to spin-moment per orbital)
+
+    This calculation only makes sense for non-colinear calculations.
+
+    The returned quantities are given in this order:
+
+    - Spin magnetic moment along :math:`x` direction
+    - Spin magnetic moment along :math:`y` direction
+    - Spin magnetic moment along :math:`z` direction
+
+    These are calculated using the Pauli matrices :math:`\boldsymbol\sigma_x`, :math:`\boldsymbol\sigma_y` and :math:`\boldsymbol\sigma_z`:
+
+    .. math::
+
+       \mathbf{S}_{i,o}^x &= \psi_{i,o}^* | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle
+       \\
+       \mathbf{S}_{i,o}^y &= \psi_{i,o}^* | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle
+       \\
+       \mathbf{S}_{i,o}^z &= \psi_{i,o}^* | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
+
+    Note that this is equivalent to `PDOS` *without* the distribution function and energy grid.
+
+    Parameters
+    ----------
+    state : array_like
+       vectors describing the electronic states, 2nd dimension contains the states
+    S : array_like, optional
+       overlap matrix used in the :math:`\mathbf S|\psi\rangle` calculation. If `None` the identity
+       matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
+       has been evaluated at.
+
+    Notes
+    -----
+    This routine cannot check whether the input eigenvectors originate from a non-colinear calculation.
+    If a non-polarized eigenvector is passed to this routine, the output will have no physical meaning.
+
+    See Also
+    --------
+    DOS : total DOS
+    PDOS : projected DOS
+    spin_moment : spin moment for states (equivalent to the ``spin_orbital_moment.sum(1)``)
+
+    Returns
+    -------
+    numpy.ndarray
+        spin moments per state with final dimension ``(state.shape[0], state.shape[1] // 2, 3)``.
+    """
+    if state.ndim == 1:
+        return spin_orbital_moment(state.reshape(1, -1), S)[0]
+
+    if S is None:
+        class S(object):
+            __slots__ = []
+            shape = (state.shape[1] // 2, state.shape[1] // 2)
+            @staticmethod
+            def dot(v):
+                return v
+
+    if S.shape[1] == state.shape[1]:
+        S = S[::2, ::2]
+
+    s = np.empty([state.shape[0], state.shape[1] // 2, 3], dtype=dtype_complex_to_real(state.dtype))
+
+    for i in range(len(state)):
+        Sstate = S.dot(state[i].reshape(-1, 2))
+        D = (conj(state[i]) * Sstate.ravel()).real.reshape(-1, 2)
+        s[i, :, 2] = D[:, 0] - D[:, 1]
+        D = 2 * conj(state[i, 1::2]) * Sstate[:, 0]
+        s[i, :, 0] = D.real
+        s[i, :, 1] = D.imag
 
     return s
 
@@ -979,7 +1059,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     .. math::
        \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
 
-    While for non-collinear/spin-orbit calculations the wavefunctions are determined from the
+    While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
     spinor component (`spinor`)
 
     .. math::
@@ -1016,13 +1096,13 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
        to calculate the eigenstate will be used (generally shouldn't be used unless the `EigenstateElectron` object
        has not been created via :meth:`~.Hamiltonian.eigenstate`).
     spinor : int, optional
-       the spinor for non-collinear/spin-orbit calculations. This is only used if the
+       the spinor for non-colinear/spin-orbit calculations. This is only used if the
        eigenstate object has been created from a parent object with a `Spin` object
-       contained, *and* if the spin-configuration is non-collinear or spin-orbit coupling.
+       contained, *and* if the spin-configuration is non-colinear or spin-orbit coupling.
        Default to the first spinor component.
     spin : Spin, optional
        specification of the spin configuration of the orbital coefficients. This only has
-       influence for non-collinear wavefunctions where `spinor` choice is important.
+       influence for non-colinear wavefunctions where `spinor` choice is important.
     eta : bool, optional
        Display a console progressbar.
     """
@@ -1040,12 +1120,12 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
 
     if spin is None:
         if len(v) // 2 == geometry.no:
-            # We can see from the input that the vector *must* be a non-collinear calculation
+            # We can see from the input that the vector *must* be a non-colinear calculation
             v = v.reshape(-1, 2)[:, spinor]
-            info('wavefunction assumes the input wavefunction coefficients to originate from a non-collinear calculation!')
+            info('wavefunction assumes the input wavefunction coefficients to originate from a non-colinear calculation!')
 
     elif spin.kind > Spin.POLARIZED:
-        # For non-collinear cases the user selects the spinor component.
+        # For non-colinear cases the user selects the spinor component.
         v = v.reshape(-1, 2)[:, spinor]
 
     if len(v) != geometry.no:
@@ -1300,7 +1380,7 @@ class _electron_State(object):
     __slots__ = []
 
     def __is_nc(self):
-        """ Internal routine to check whether this is a non-collinear calculation """
+        """ Internal routine to check whether this is a non-colinear calculation """
         try:
             return self.parent.spin.has_noncolinear
         except:
@@ -1318,7 +1398,7 @@ class _electron_State(object):
            the returned format of the overlap matrix. This only takes effect for
            non-orthogonal parents.
         spin : Spin, optional
-           for non-collinear spin configurations the *fake* overlap matrix returned
+           for non-colinear spin configurations the *fake* overlap matrix returned
            will have halve the size of the input matrix. If you want the *full* overlap
            matrix, simply do not specify the `spin` argument.
         """
@@ -1436,6 +1516,20 @@ class _electron_State(object):
         except:
             spin = None
         return spin_moment(self.state, self.Sk(spin=spin))
+
+    def spin_orbital_moment(self):
+        r""" Calculate spin moment per orbital from the states
+
+        This routine calls `~sisl.physics.electron.spin_orbital_moment` with appropriate arguments
+        and returns the spin moment for each orbital on the states.
+
+        See `~sisl.physics.electron.spin_orbital_moment` for details.
+        """
+        try:
+            spin = self.parent.spin
+        except:
+            spin = None
+        return spin_orbital_moment(self.state, self.Sk(spin=spin))
 
     def expectation(self, A, diag=True):
         r""" Calculate the expectation value of matrix `A`

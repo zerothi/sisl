@@ -951,8 +951,11 @@ class TestHamiltonian(object):
 
         es = H1.eigenstate(dtype=np.complex128)
         assert np.allclose(es.eig, eig1)
-        es.spin_moment()
+        sm = es.spin_moment()
         assert np.allclose(es.inner(), 1)
+
+        om = es.spin_orbital_moment()
+        assert np.allclose(sm, om.sum(1))
 
         PDOS = es.PDOS(np.linspace(-1, 1, 100))
         DOS = es.DOS(np.linspace(-1, 1, 100))
@@ -999,7 +1002,10 @@ class TestHamiltonian(object):
 
         es = H1.eigenstate(dtype=np.complex128)
         assert np.allclose(es.eig, eig1)
-        es.spin_moment()
+
+        sm = es.spin_moment()
+        om = es.spin_orbital_moment()
+        assert np.allclose(sm, om.sum(1))
 
         PDOS = es.PDOS(np.linspace(-1, 1, 100))
         DOS = es.DOS(np.linspace(-1, 1, 100))
@@ -1048,7 +1054,10 @@ class TestHamiltonian(object):
 
         es = H.eigenstate(dtype=np.complex128)
         assert np.allclose(es.eig, eig1)
-        es.spin_moment()
+
+        sm = es.spin_moment()
+        om = es.spin_orbital_moment()
+        assert np.allclose(sm, om.sum(1))
 
         PDOS = es.PDOS(np.linspace(-1, 1, 100))
         DOS = es.DOS(np.linspace(-1, 1, 100))
