@@ -901,6 +901,40 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
+    def trs(self):
+        """ Create a new matrix with applied time-reversal-symmetry
+
+        Time reversal symmetry is applied using the following equality:
+
+        .. math::
+
+            2M = M + \boldsymbol\sigma_y K M \boldsymbol\sigma_y
+
+        where :math:`K` is the conjugation operator.
+        """
+        new = self.copy()
+        sp = self.spin
+        D = new._csr._D
+
+        if sp.is_spinorbit:
+            # Apply Pauli-Y on the left and right of each spin-box
+            if sp.dkind == 'f':
+                # [R11, R22, R12, I12, I11, I22, R21, I21]
+                # [R11, R22] = [R22, R11]
+                # [I12, I21] = [I21, I12] (conj + Y @ Y[sign-changes conj])
+                D[:, [0, 1, 3, 7]] = D[:, [1, 0, 7, 3]]
+                # [I11, I22] = -[I22, I11] (conj + Y @ Y[no sign change])
+                # [R12, R21] = -[R21, R12] (Y @ Y)
+                D[:, [4, 5, 2, 6]] = -D[:, [5, 4, 6, 2]]
+            else:
+                # [11, 22, 12, 21]
+                # [11, 22] = K[22, 11]
+                D[:, [0, 1]] = np.conj(D[:, [1, 0]])
+                # [12, 21] = -K[21, 12]
+                D[:, [2, 3]] = -np.conj(D[:, [3, 2]])
+
+        return new
+
     def __getstate__(self):
         return {
             'sparseorbitalbzspin': super(SparseOrbitalBZSpin, self).__getstate__(),
