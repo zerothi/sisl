@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
+   *Exchange interactions from a nonorthogonal basis set: From bulk ferromagnetsto the magnetism in low-dimensional graphene systems*,
+   Physical Review B **99**, `224412 (2019) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.99.224412>`_
+
 #. G. Calogero, I. Alcon, N. Papior, A-P Jauho, M. Brandbyge,
    *Quantum interference engineering of nanoporous graphene for carbon nanocircuitry*,
    Journal of the American Chemical Society `(2019) <https://doi.org/10.1021/jacs.9b04649>`_
@@ -98,7 +102,3 @@ These publications are as far as we know in the review process.
 - D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
   *Moiré ordered current loops in the graphene twist bilayer*,
   `1901.04712 <https://arxiv.org/abs/1901.04712>`_
-
-- L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
-  *Exchange interactions from a nonorthogonal basis: applications to 3d ferromagnets and graphene based systems*,
-  `1809.09252 <https://arxiv.org/abs/1809.09252>`_
