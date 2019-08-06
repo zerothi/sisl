@@ -3,7 +3,7 @@ from __future__ import print_function, division
 import numpy as np
 from numpy import dot, conjugate
 from numpy import subtract
-from numpy import empty, zeros, identity
+from numpy import empty, zeros, eye, delete
 from numpy import zeros_like, empty_like
 from numpy import complex128
 from numpy import abs as _abs
@@ -642,6 +642,8 @@ class RealSpaceSE(SelfEnergy):
         P0 = self.parent.tile(unfold[s_ax], s_ax)
         unfold[s_ax] = 1
         for ax in range(3):
+            if unfold[ax] == 1:
+                continue
             P0 = P0.tile(unfold[ax], ax)
         # Only specify the used axis without periodicity
         # This will allow one to use the real-space self-energy
@@ -677,6 +679,8 @@ class RealSpaceSE(SelfEnergy):
         PC = self.parent.tile(unfold[s_ax], s_ax)
         unfold[s_ax] = 1
         for ax in range(3):
+            if unfold[ax] == 1:
+                continue
             PC = PC.tile(unfold[ax], ax)
 
         # Reduce periodicity along non-semi/k axes
@@ -705,6 +709,8 @@ class RealSpaceSE(SelfEnergy):
         PC = self.parent.tile(unfold[s_ax], s_ax)
         unfold[s_ax] = 1
         for ax in range(3):
+            if unfold[ax] == 1:
+                continue
             PC = PC.tile(unfold[ax], ax)
         PC = PC.sub(atom_idx)
 
@@ -785,19 +791,33 @@ class RealSpaceSE(SelfEnergy):
         if E.imag == 0:
             E = E.real + 1j * self._options['eta']
 
-        # Calculate the Green function
+        # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
 
         if coupling:
             orbs = self._calc['orbs']
-            iorbs = _a.arangei(orbs.size).reshape(1, -1)
-            I = zeros([G.shape[0], orbs.size], dtype)
-            # Set diagonal
-            I[orbs.ravel(), iorbs.ravel()] = 1.
+            iorbs = delete(_a.arangei(len(G)), orbs).reshape(-1, 1)
+            SeH = self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)
             if bulk:
-                return solve(G, I, True, True)[orbs, iorbs]
-            return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
-                - solve(G, I, True, True)[orbs, iorbs]
+                return solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
+            return SeH[orbs, orbs.T].toarray() - solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
+
+            # Another way to do the coupling calculation would be the *full* thing
+            # which should always be slower.
+            # However, I am not sure which is the most numerically accurate
+            # since comparing the two yields numerical differences on the order 1e-8 eV depending
+            # on the size of the full matrix G.
+
+            #orbs = self._calc['orbs']
+            #iorbs = _a.arangei(orbs.size).reshape(1, -1)
+            #I = zeros([G.shape[0], orbs.size], dtype)
+            ## Set diagonal
+            #I[orbs.ravel(), iorbs.ravel()] = 1.
+            #if bulk:
+            #    return solve(G, I, True, True)[orbs, iorbs]
+            #return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
+            #    - solve(G, I, True, True)[orbs, iorbs]
+
         if bulk:
             return inv(G, True)
         return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)).toarray() - inv(G, True)
@@ -882,7 +902,7 @@ class RealSpaceSE(SelfEnergy):
             M0Pk = M0.Pk
             if self.parent.orthogonal:
                 # Orthogonal *always* identity
-                S0E = identity(len(M0), dtype=dtype) * E
+                S0E = eye(len(M0), dtype=dtype) * E
                 def _calc_green(k, dtype, no, tile, idx0):
                     SL, SR = SE(E, k, dtype=dtype, **kwargs)
                     return inv(S0E - M0Pk(k, dtype=dtype, format='array', **kwargs) - SL - SR)
@@ -1179,6 +1199,8 @@ class RealSpaceSI(SelfEnergy):
         """
         P0 = self.surface
         for ax in range(3):
+            if self._unfold[ax] == 1:
+                continue
             P0 = P0.tile(self._unfold[ax], ax)
         nsc = array_replace(P0.nsc, (self._k_axes, 1))
         P0.set_nsc(nsc)
@@ -1210,6 +1232,8 @@ class RealSpaceSI(SelfEnergy):
         PC_semi = self.semi.spgeom1
         PC = self.surface
         for ax in range(3):
+            if self._unfold[ax] == 1:
+                continue
             PC_k = PC_k.tile(self._unfold[ax], ax)
             PC_semi = PC_semi.tile(self._unfold[ax], ax)
             PC = PC.tile(self._unfold[ax], ax)
@@ -1273,6 +1297,8 @@ class RealSpaceSI(SelfEnergy):
         # as well.
         PC = self.surface
         for ax in range(3):
+            if self._unfold[ax] == 1:
+                continue
             PC = PC.tile(self._unfold[ax], ax)
         PC = PC.sub(atom_idx)
 
@@ -1345,18 +1371,33 @@ class RealSpaceSI(SelfEnergy):
         if E.imag == 0:
             E = E.real + 1j * self._options['eta']
 
+        # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
 
         if coupling:
             orbs = self._calc['orbs']
-            iorbs = _a.arangei(orbs.size).reshape(1, -1)
-            I = zeros([G.shape[0], orbs.size], dtype)
-            # Set diagonal
-            I[orbs.ravel(), iorbs.ravel()] = 1.
+            iorbs = delete(_a.arangei(len(G)), orbs).reshape(-1, 1)
+            SeH = self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)
             if bulk:
-                return solve(G, I, True, True)[orbs, iorbs]
-            return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
-                - solve(G, I, True, True)[orbs, iorbs]
+                return solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
+            return SeH[orbs, orbs.T].toarray() - solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
+
+            # Another way to do the coupling calculation would be the *full* thing
+            # which should always be slower.
+            # However, I am not sure which is the most numerically accurate
+            # since comparing the two yields numerical differences on the order 1e-8 eV depending
+            # on the size of the full matrix G.
+
+            #orbs = self._calc['orbs']
+            #iorbs = _a.arangei(orbs.size).reshape(1, -1)
+            #I = zeros([G.shape[0], orbs.size], dtype)
+            # Set diagonal
+            #I[orbs.ravel(), iorbs.ravel()] = 1.
+            #if bulk:
+            #    return solve(G, I, True, True)[orbs, iorbs]
+            #return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
+            #    - solve(G, I, True, True)[orbs, iorbs]
+
         if bulk:
             return inv(G, True)
         return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)).toarray() - inv(G, True)
@@ -1432,7 +1473,7 @@ class RealSpaceSI(SelfEnergy):
 
         if M0.orthogonal:
             # Orthogonal *always* identity
-            S0E = identity(len(M0), dtype=dtype) * E
+            S0E = eye(len(M0), dtype=dtype) * E
             def _calc_green(k, dtype, surf_orbs, semi_bulk):
                 invG = S0E - M0Pk(k, dtype=dtype, format='array', **kwargs)
                 if semi_bulk:
