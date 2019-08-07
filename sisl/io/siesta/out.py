@@ -263,7 +263,7 @@ class outSileSiesta(SileSiesta):
 
         Returns
         -------
-        forces: np.ndarray or None
+        numpy.ndarray or None
             returns ``None`` if the forces are not found in the
             output, otherwise forces will be returned
         """
@@ -324,7 +324,7 @@ class outSileSiesta(SileSiesta):
 
         Returns
         -------
-        stresses: np.ndarray or None
+        numpy.ndarray or None
             returns ``None`` if the stresses are not found in the
             output, otherwise stresses will be returned
         """

@@ -19,8 +19,10 @@ class doscarSileVASP(SileVASP):
 
         Returns
         -------
-        E : np.ndarray energy points (in eV)
-        DOS : np.ndarray DOS points (in 1/eV)
+        E : numpy.ndarray
+            energy points (in eV)
+        DOS : numpy.ndarray
+            DOS points (in 1/eV)
         """
         # read first line
         line = self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ

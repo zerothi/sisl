@@ -55,7 +55,7 @@ class Coefficient(ParentContainer):
 
     Attributes
     ----------
-    c : ndarray
+    c : numpy.ndarray
         coefficients
     info : dict
         information regarding the creation of these coefficients
@@ -205,7 +205,7 @@ class State(ParentContainer):
 
     Attributes
     ----------
-    state : ndarray
+    state : numpy.ndarray
         state coefficients
     info : dict
         information regarding the creation of the states
@@ -652,9 +652,9 @@ class StateC(State):
 
     Attributes
     ----------
-    c : ndarray
+    c : numpy.ndarray
         coefficients assigned to each state
-    state : ndarray
+    state : numpy.ndarray
         state coefficients
     info : dict
         information regarding the creation of the states

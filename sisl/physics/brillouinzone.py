@@ -1191,9 +1191,9 @@ class MonkhorstPack(BrillouinZone):
 
         Returns
         -------
-        k : np.ndarray
+        k : numpy.ndarray
            the list of k-points in the Brillouin zone to be sampled
-        w : np.ndarray
+        w : numpy.ndarray
            weights for the k-points
         """
         # First ensure that displ is in the Brillouin

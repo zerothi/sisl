@@ -393,7 +393,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        DOS : ndarray
+        DOS : numpy.ndarray
            data to process
         atom : array_like of int, optional
            only return for a given set of atoms (default to all).

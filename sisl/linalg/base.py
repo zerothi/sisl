@@ -116,7 +116,7 @@ def inv(a, overwrite_a=False):
 
     Returns
     -------
-    x : (N, N) ndarray
+    x : (N, N) numpy.ndarray
         The inverted matrix
     """
     a1 = atleast_2d(_asarray_validated(a, check_finite=False))
@@ -158,7 +158,7 @@ def solve(a, b, overwrite_a=False, overwrite_b=False):
 
     Returns
     -------
-    x : (N, NRHS) ndarray
+    x : (N, NRHS) numpy.ndarray
         solution matrix
     """
     a1 = atleast_2d(_asarray_validated(a, check_finite=False))
