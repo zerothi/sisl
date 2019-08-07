@@ -205,6 +205,8 @@ class SuperCell(object):
     def set_nsc(self, nsc=None, a=None, b=None, c=None):
         """ Sets the number of supercells in the 3 different cell directions
 
+        Parameters
+        ----------
         nsc : list of int, optional
            number of supercells in each direction
         a : integer, optional
@@ -411,9 +413,9 @@ class SuperCell(object):
 
         Returns
         -------
-        numpy.ndarray
+        normal_V : numpy.ndarray
            planes normal vector (pointing outwards with regards to the cell)
-        numpy.ndarray
+        p : numpy.ndarray
            a point on the plane
 
         Examples
@@ -541,9 +543,9 @@ class SuperCell(object):
         ----------
         angle : float
              the angle of which the geometry should be rotated
-        v     : array_like [3]
+        v     : array_like
              the vector around the rotation is going to happen
-             v = [1,0,0] will rotate in the ``yz`` plane
+             ``v = [1,0,0]`` will rotate in the ``yz`` plane
         rad : bool, optional
              Whether the angle is in radians (True) or in degrees (False)
         only : ('abc'), str, optional

@@ -64,7 +64,7 @@ class Geometry(SuperCellChild):
     Attributes
     ----------
     na
-    xyz : ndarray
+    xyz : numpy.ndarray
         atomic coordinates
     atoms
     orbitals
@@ -335,11 +335,12 @@ class Geometry(SuperCellChild):
 
         Raises
         ------
-        SislError : in case the algorithm fails.
+        SislError
+             If the algorithm fails.
         """
         na = len(self)
         if na % na_primary != 0:
-            raise SislError(self.__class__.__name__ + '.as_primary requires the number of atoms to be divisable by the '
+            raise ValueError(self.__class__.__name__ + '.as_primary requires the number of atoms to be divisable by the '
                             'total number of atoms.')
 
         n_supercells = len(self) // na_primary
@@ -1396,9 +1397,9 @@ class Geometry(SuperCellChild):
         ----------
         atom : int or array_like
            indices/boolean of all atoms where angles should be calculated on
-        dir : str, int or vector, optional
+        dir : str, int or array_like, optional
            the direction from which the angle is calculated from, default to ``x``
-        ref : int or coordinate, optional
+        ref : int or array_like, optional
            the reference point from which the vectors are drawn, default to origo
         rad : bool, optional
            whether the returned value is in radians
@@ -1879,12 +1880,12 @@ class Geometry(SuperCellChild):
            the index of the atom in `other` that is inserted at `s_idx`.
         dist : array_like or float or str, optional
            the distance (in `Ang`) between the attached coordinates.
-           If `dist` is `arraylike it should be the vector between
+           If `dist` is `array_like` it should be the vector between
            the atoms;
            if `dist` is `float` the argument `axis` is required
            and the vector will be calculated along the corresponding latticevector;
            else if `dist` is `str` this will correspond to the
-           `method` argument of the ``Atom.radius`` class of the two
+           `method` argument of the `Atom.radius` class of the two
            atoms. Here `axis` is also required.
         axis : int
            specify the direction of the lattice vectors used.

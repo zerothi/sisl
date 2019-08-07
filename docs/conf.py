@@ -72,7 +72,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
-    'numpydoc',
+    'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
@@ -81,6 +81,7 @@ extensions = [
     'sphinx.ext.viewcode',
     #'sphinx.ext.inheritance_diagram',
 ]
+napoleon_numpy_docstring = True
 
 # Enable plots in documentation
 from matplotlib import __version__ as mpl_version

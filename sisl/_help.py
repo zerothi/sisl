@@ -179,11 +179,10 @@ def array_replace(array, *replace, **kwargs):
 
     Parameters
     ----------
-    array : ndarray
+    array : numpy.ndarray
        array in which to replace values from `replace`
-    replace : tuple
-       replacement values, if `replace` is a tuple, it will be interpreted as
-       ``array[replace[0]] = replace[1]``.
+    *replace : list of tuple arguments
+       replacement values, interpreted as ``array[replace[0]] = replace[1]``.
     other : val
        value replaced in `array` for all indices not in ``replace[0]``
 

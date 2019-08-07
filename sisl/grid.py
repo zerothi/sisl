@@ -143,7 +143,7 @@ class Grid(SuperCellChild):
         method : str
             the method used to perform the interpolation,
             see `scipy.interpolate.interpn` for further details.
-        **kwargs :
+        **kwargs : dict
             optional arguments passed to the interpolation algorithm
             The interpolation routine is `scipy.interpolate.interpn`
         """
@@ -274,6 +274,11 @@ class Grid(SuperCellChild):
         """ Swap two axes in the grid (also swaps axes in the supercell)
 
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
+
+        Parameters
+        ----------
+        a, b : int
+            axes indices to be swapped
         """
         # Create index vector
         idx = _a.arangei(3)
@@ -359,7 +364,7 @@ class Grid(SuperCellChild):
         ----------
         axis : int
             unit-cell direction to average across
-        weights : array_like
+        weights : array_like, optional
             the weights for the individual axis elements, if boolean it corresponds to 0 and 1
             for false/true.
 
@@ -444,10 +449,6 @@ class Grid(SuperCellChild):
            the indices of the grid axis `axis` to be retained
         axis : int
            the axis segment from which we retain the indices `idx`
-
-        Raises
-        ------
-        ValueError : if the length of the indices is 0
         """
         idx = _a.asarrayi(idx).ravel()
         shift_geometry = False
@@ -653,8 +654,8 @@ class Grid(SuperCellChild):
             lattice vector corresponding to `axis`.
             If a Shape a list of coordinates that fits the voxel positions
             are returned (all internal points also).
-        axis : int
-            the axis direction of the index
+        axis : int, optional
+            the axis direction of the index, or for all axes if none.
         """
         if isinstance(coord, Shape):
             # We have to do something differently
