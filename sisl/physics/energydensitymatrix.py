@@ -256,22 +256,6 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
         for i in range(min(self.spin.spins, 2)):
             self._csr._D[:, i] += DM._csr._D[:, i] * E[i]
 
-    def energy_charge(self, method='mulliken'):
-        """ Calculate orbital energy charges based on the energy density matrix
-
-        Parameters
-        ----------
-        method : str, optional
-            choice of method to calculate the charges, currently only Mulliken is allowed
-
-        Returns
-        -------
-        energy charges : csr_matrix of energy charges
-        """
-        if method.lower() == 'mulliken':
-            return self._mulliken()
-        raise NotImplementedError(self.__class__.__name__ + '.energy_charge does not implement the "{}" method.'.format(method))
-
     @staticmethod
     def read(sile, *args, **kwargs):
         """ Reads density matrix from `Sile` using `read_energy_density_matrix`.

@@ -24,8 +24,94 @@ __all__ = ['DensityMatrix']
 
 class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
-    def _mulliken(self):
-        # Calculate the Mulliken elements
+    def mulliken(self, method='atom'):
+        r""" Calculate Mulliken charges from the density matrix
+
+        In the following :math:`\nu` and :math:`\mu` are orbital indices.
+        Atomic indices noted by :math:`\alpha`, :math:`\beta`.
+        Matrices :math:`\boldsymbol\rho` and :math:`\mathbf S` are density
+        and overlap matrices, respectively.
+
+        For polarized calculations the Mulliken charges are calculated as
+        (for each spin-channel)
+
+        .. math::
+             M_{\nu} &= \sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu}
+             M_{\alpha} &= \sum_{\nu\in\alpha} M_{\nu}
+
+        For non-colinear calculations (including spin-orbit) they are calculated
+        as above but using the spin-box per orbital (:math:`\sigma` is spin)
+
+        .. math::
+             M_{\nu} &= \sum_\sigma\sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu,\sigma\sigma}
+             S_{\nu}^x &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} +
+                          \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
+             S_{\nu}^y &= \sum_mu \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} -
+                          \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
+             S_{\nu}^z &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\uparrow} -
+                          \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\downarrow}
+
+        Parameters
+        ----------
+        method : {'atom', 'orbital'}
+            how the Mulliken charges are returned.
+            Can be atom-resolved, orbital-resolved or the
+            charge matrix (off-diagonal elements)
+
+        Returns
+        -------
+        numpy.ndarray
+            if `method` does not contain matrix
+        list of scipy.sparse.csr_matrix
+            if `method` contains matrix
+        """
+        def _convert(M):
+            """ Converts a non-colinear DM from [11, 22, Re(12), Im(12)] -> [T, Sx, Sy, Sz] """
+            if M.shape[-1] == 8:
+                # We need to calculate the corresponding values
+                M[:, 2] = 0.5 * (M[:, 2] + M[:, 6])
+                M[:, 3] = 0.5 * (M[:, 3] - M[:, 7]) # sign change again below
+                M = M[:, :4]
+            if M.shape[-1] == 4:
+                m = np.empty_like(M)
+                m[:, 0] = M[:, [0, 1]].sum(1)
+                m[:, 3] = M[:, 0] - M[:, 1]
+                m[:, 1] = 2 * M[:, 2]
+                m[:, 2] = - 2 * M[:, 3]
+            else:
+                m = M
+            return m
+
+        if "orbital" == method:
+            # Orbital Mulliken population
+            if self.orthogonal:
+                D = np.array([self._csr.tocsr(i).diagonal() for i in range(self.shape[2])]).T
+            else:
+                D = self._csr.copy(range(self.shape[2] - 1))
+                D._D *= self._csr._D[:, -1].reshape(-1, 1)
+                D = D.sum(0)
+
+            return _convert(D).T
+
+        elif "atom" == method:
+            # Atomic Mulliken population
+            if self.orthogonal:
+                D = np.array([self._csr.tocsr(i).diagonal() for i in range(self.shape[2])]).T
+            else:
+                D = self._csr.copy(range(self.shape[2] - 1))
+                D._D *= self._csr._D[:, -1].reshape(-1, 1)
+                D = D.sum(0)
+
+            # Now perform summation per atom
+            geom = self.geometry
+            M = np.empty([geom.na, D.shape[1]], dtype=D.dtype)
+            for ia in geom:
+                M[ia, :] = D[geom.a2o(ia, True), :].sum(0)
+            del D
+
+            return _convert(M).T
+
+        raise NotImplementedError(self.__class__ + ".mulliken only allows method [orbital, atom]")
 
         # First we re-create the sparse matrix as required for csr_matrix
         ptr = self._csr.ptr
@@ -45,17 +131,15 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         Q = list()
 
         if self.orthogonal:
-            # We only need the diagonal elements
-            S = csr_matrix(shape, dtype=self.dtype)
-            S.setdiag(1.)
-
+            dm = csr_matrix((shape[0], shape[1]), dtype=self.dtype)
             for i in range(self.shape[2]):
                 DM = csr_matrix((self._csr._D[idx, i], col, new_ptr), shape=shape)
-                Q.append(DM.multiply(S))
+                dm.set_diag(DM.diagonal())
+                Q.append(dm)
                 Q[-1].eliminate_zeros()
         else:
 
-            # We now what S is and do it element-wise.
+            # We know what S is and do it element-wise.
             q = self._csr._D[idx, :-1] * self._csr._D[idx, self.S_idx].reshape(-1, 1)
             for i in range(q.shape[1]):
                 Q.append(csr_matrix((q[:, i], col, new_ptr), shape=shape))
@@ -686,24 +770,6 @@ class DensityMatrix(_realspace_DensityMatrix):
         tuple of tuples : for each of the Cartesian directions
         """
         pass
-
-    def charge(self, method='mulliken'):
-        """ Calculate orbital charges based on the density matrix
-
-        This returns CSR-matrices with each spin-components charges.
-
-        Parameters
-        ----------
-        method : str, optional
-            choice of method to calculate the charges, currently only Mulliken is allowed
-
-        Returns
-        -------
-        charge : csr_matrix of charges
-        """
-        if method.lower() == 'mulliken':
-            return self._mulliken()
-        raise NotImplementedError(self.__class__.__name__ + '.charge does not implement the "{}" method.'.format(method))
 
     def _get_D(self):
         self._def_dim = self.UP
