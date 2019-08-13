@@ -351,16 +351,16 @@ class SphericalOrbital(Orbital):
     # Additional slots (inherited classes retain the same slots)
     __slots__ = ['l', 'f']
 
-    def __init__(self, l, rf_or_func, q0=0., tag=''):
+    def __init__(self, l, rf_or_func, q0=0., tag='', **kwargs):
         """ Initialize spherical orbital object """
         self.l = l
 
         # Set the internal function
         if callable(rf_or_func):
-            self.set_radial(rf_or_func)
+            self.set_radial(rf_or_func, **kwargs)
         else:
             # it must be two arguments
-            self.set_radial(rf_or_func[0], rf_or_func[1])
+            self.set_radial(rf_or_func[0], rf_or_func[1], **kwargs)
 
         # Initialize R and tag through the parent
         # Note that the maximum range of the orbital will be the
@@ -503,6 +503,8 @@ class SphericalOrbital(Orbital):
             interp = kwargs.get('interp', interp)
 
             self.set_radial(interp(r, f))
+        elif 'R' in kwargs:
+            self.R = kwargs.get('R')
         else:
             raise ValueError('Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial')
 
@@ -739,7 +741,7 @@ class AtomicOrbital(Orbital):
 
     def __init__(self, *args, **kwargs):
         """ Initialize atomic orbital object """
-        super(AtomicOrbital, self).__init__(0., q0=kwargs.get('q0', 0.), tag=kwargs.get('tag', ''))
+        super(AtomicOrbital, self).__init__(kwargs.get('R', 0.), q0=kwargs.get('q0', 0.), tag=kwargs.get('tag', ''))
 
         # Ensure args is a list (to be able to pop)
         args = list(args)
@@ -879,7 +881,7 @@ class AtomicOrbital(Orbital):
         if self.orb is None:
             # Default orbital to none, this will not create any radial functions
             # But any use of the orbital will still work
-            self.orb = Orbital(-1.)
+            self.orb = Orbital(self.R)
 
         self.R = self.orb.R
 
