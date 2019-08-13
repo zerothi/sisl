@@ -1,6 +1,25 @@
 0.9.7
 =====
 
+- Added mulliken charge calculations and orbital angular momentum
+	for SO DM, fixes #136
+
+- Fixed reading overlap matrix in conjunction with DM from fdf-sile
+
+- Performance increase for the real-space self-energy calculations
+
+- Fixed transposing of the spin-box for NC and SO matrices
+
+- Enabled TRS handler for SO matrices, fixes #125
+
+- Enabled better b-casting assignments for sparse-matrices, fixes #134
+
+- Upgraded documentation to a layout that obeys numpydoc
+
+- Fixed reading ASE xyz outputs, thanksto JL. Bertelsen,
+
+- Fixed a tyo in fdf reading onlyS, thanks to JL. Bertelsen, #135
+
 - Enabled reading arbitrary self-energy by requesting an energy and k-point
 	from TSGF files.
 
