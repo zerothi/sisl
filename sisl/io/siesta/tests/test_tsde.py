@@ -20,7 +20,7 @@ def test_si_pdos_kgrid_tsde_dm(sisl_files):
     DM2 = fdf.read_density_matrix(order=['TSDE'])
 
     assert DM1._csr.spsame(DM2._csr)
-    assert np.allclose(DM1._csr._D, DM2._csr._D)
+    assert np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])
 
 
 def test_si_pdos_kgrid_tsde_edm(sisl_files):
@@ -32,4 +32,4 @@ def test_si_pdos_kgrid_tsde_edm(sisl_files):
     EDM2 = fdf.read_energy_density_matrix(order=['TSDE'])
 
     assert EDM1._csr.spsame(EDM2._csr)
-    assert np.allclose(EDM1._csr._D, EDM2._csr._D)
+    assert np.allclose(EDM1._csr._D[:, :-1], EDM2._csr._D[:, :-1])

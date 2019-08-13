@@ -1420,6 +1420,18 @@ class fdfSileSiesta(SileSiesta):
             atom[idx] = Atom(Z=Z, tag=lbl)
         return atom
 
+    def _r_add_overlap(self, parent_call, M):
+        """ Internal routine to ensure that the overlap matrix is read and added to the matrix `M` """
+        try:
+            S = self.read_overlap()
+            # Check for the same sparsity pattern
+            if np.all(M._csr.col == S._csr.col):
+                M._csr._D[:, -1] = S._csr._D[:, 0]
+            else:
+                raise ValueError
+        except:
+            warn(str(self) + ' could not succesfully read the overlap matrix in {}.'.format(parent_call))
+
     def read_density_matrix(self, *args, **kwargs):
         """ Try and read density matrix by reading the <>.nc, <>.TSDE files, <>.DM (in that order)
 
@@ -1434,17 +1446,19 @@ class fdfSileSiesta(SileSiesta):
         """
         order = kwargs.pop('order', ['nc', 'TSDE', 'DM'])
         for f in order:
-            v = getattr(self, '_r_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
-            if v is not None:
-                return v
+            DM = getattr(self, '_r_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
+            if DM is not None:
+                return DM
         return None
 
     def _r_density_matrix_nc(self, *args, **kwargs):
         """ Try and read the density matrix by reading the <>.nc """
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
+        DM = None
         if isfile(f):
-            return ncSileSiesta(f).read_density_matrix(*args, **kwargs)
-        return None
+            # this *should* also contain the overlap matrix
+            DM = ncSileSiesta(f).read_density_matrix(*args, **kwargs)
+        return DM
 
     def _r_density_matrix_tsde(self, *args, **kwargs):
         """ Read density matrix from the TSDE file """
@@ -1454,6 +1468,7 @@ class fdfSileSiesta(SileSiesta):
             if 'geometry' not in kwargs:
                 kwargs['geometry'] = self.read_geometry(True)
             DM = tsdeSileSiesta(f).read_density_matrix(*args, **kwargs)
+            self._r_add_overlap('_r_density_matrix_tsde', DM)
         return DM
 
     def _r_density_matrix_dm(self, *args, **kwargs):
@@ -1464,6 +1479,7 @@ class fdfSileSiesta(SileSiesta):
             if 'geometry' not in kwargs:
                 kwargs['geometry'] = self.read_geometry(True)
             DM = dmSileSiesta(f).read_density_matrix(*args, **kwargs)
+            self._r_add_overlap('_r_density_matrix_dm', DM)
         return DM
 
     def read_energy_density_matrix(self, *args, **kwargs):
@@ -1480,9 +1496,9 @@ class fdfSileSiesta(SileSiesta):
         """
         order = kwargs.pop('order', ['nc', 'TSDE'])
         for f in order:
-            v = getattr(self, '_r_energy_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
-            if v is not None:
-                return v
+            EDM = getattr(self, '_r_energy_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
+            if EDM is not None:
+                return EDM
         return None
 
     def _r_energy_density_matrix_nc(self, *args, **kwargs):
@@ -1500,6 +1516,7 @@ class fdfSileSiesta(SileSiesta):
             if 'geometry' not in kwargs:
                 kwargs['geometry'] = self.read_geometry(True)
             EDM = tsdeSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
+            self._r_add_overlap('_r_energy_density_matrix_tsde', EDM)
         return EDM
 
     def read_overlap(self, *args, **kwargs):
@@ -1572,9 +1589,9 @@ class fdfSileSiesta(SileSiesta):
         """
         order = kwargs.pop('order', ['nc', 'TSHS', 'HSX'])
         for f in order:
-            v = getattr(self, '_r_hamiltonian_{}'.format(f.lower()))(*args, **kwargs)
-            if v is not None:
-                return v
+            H = getattr(self, '_r_hamiltonian_{}'.format(f.lower()))(*args, **kwargs)
+            if H is not None:
+                return H
         return None
 
     def _r_hamiltonian_nc(self, *args, **kwargs):

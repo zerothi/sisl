@@ -20,4 +20,4 @@ def test_si_pdos_kgrid_dm(sisl_files):
     DM2 = fdf.read_density_matrix(order=['DM'])
 
     assert DM1._csr.spsame(DM2._csr)
-    assert np.allclose(DM1._csr._D, DM2._csr._D)
+    assert np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])
