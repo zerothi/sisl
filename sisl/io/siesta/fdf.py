@@ -1101,7 +1101,7 @@ class fdfSileSiesta(SileSiesta):
             the fdf file).
         order: list of str, optional
             the order of which to try and read the geometry.
-            By default this is ``['XV', 'nc', 'fdf']`` if `output` is true
+            By default this is ``['XV', 'nc', 'fdf', 'TSHS']`` if `output` is true
             If `order` is present `output` is disregarded.
 
         Examples
@@ -1112,8 +1112,13 @@ class fdfSileSiesta(SileSiesta):
         >>> fdf.read_geometry(order=['nc']) # read from [nc]
         >>> fdf.read_geometry(True, order=['nc']) # read from [nc]
         """
+        ##
+        # NOTE
+        # When adding more capabilities please check the read_geometry(True, order=...) in this
+        # code to correct.
+        ##
         if output:
-            order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
+            order = kwargs.pop('order', ['XV', 'nc', 'fdf', 'TSHS'])
         else:
             order = kwargs.pop('order', ['fdf'])
         for f in order:
@@ -1146,6 +1151,14 @@ class fdfSileSiesta(SileSiesta):
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
         if isfile(f):
             return ncSileSiesta(f).read_geometry()
+        return None
+
+    def _r_geometry_tshs(self):
+        # Read geometry from <>.TSHS file
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSHS'
+        if isfile(f):
+            # Default to a geometry with the correct atomic numbers etc.
+            return tshsSileSiesta(f).read_geometry(geometry=self.read_geometry(False))
         return None
 
     def _r_geometry_fdf(self, *args, **kwargs):
@@ -1466,7 +1479,8 @@ class fdfSileSiesta(SileSiesta):
         DM = None
         if isfile(f):
             if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
+                # to ensure we get the correct orbital count
+                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS'])
             DM = tsdeSileSiesta(f).read_density_matrix(*args, **kwargs)
             self._r_add_overlap('_r_density_matrix_tsde', DM)
         return DM
@@ -1477,7 +1491,8 @@ class fdfSileSiesta(SileSiesta):
         DM = None
         if isfile(f):
             if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
+                # to ensure we get the correct orbital count
+                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS'])
             DM = dmSileSiesta(f).read_density_matrix(*args, **kwargs)
             self._r_add_overlap('_r_density_matrix_dm', DM)
         return DM
@@ -1514,7 +1529,8 @@ class fdfSileSiesta(SileSiesta):
         EDM = None
         if isfile(f):
             if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
+                # to ensure we get the correct orbital count
+                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS'])
             EDM = tsdeSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
             self._r_add_overlap('_r_energy_density_matrix_tsde', EDM)
         return EDM
@@ -1551,7 +1567,8 @@ class fdfSileSiesta(SileSiesta):
         S = None
         if isfile(f):
             if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
+                # to ensure we get the correct orbital count
+                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS'])
             S = tshsSileSiesta(f).read_overlap(*args, **kwargs)
         return S
 
@@ -1561,7 +1578,8 @@ class fdfSileSiesta(SileSiesta):
         S = None
         if isfile(f):
             if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
+                # to ensure we get the correct orbital count
+                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS'])
             S = hsxSileSiesta(f).read_overlap(*args, **kwargs)
         return S
 
@@ -1571,7 +1589,8 @@ class fdfSileSiesta(SileSiesta):
         S = None
         if isfile(f):
             if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
+                # to ensure we get the correct orbital count
+                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS'])
             S = onlysSileSiesta(f).read_overlap(*args, **kwargs)
         return S
 
@@ -1607,7 +1626,8 @@ class fdfSileSiesta(SileSiesta):
         H = None
         if isfile(f):
             if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
+                # to ensure we get the correct orbital count
+                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS'])
             H = tshsSileSiesta(f).read_hamiltonian(*args, **kwargs)
         return H
 
@@ -1617,7 +1637,8 @@ class fdfSileSiesta(SileSiesta):
         H = None
         if isfile(f):
             if 'geometry' not in kwargs:
-                kwargs['geometry'] = self.read_geometry(True)
+                # to ensure we get the correct orbital count
+                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS'])
             H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
         return H
 

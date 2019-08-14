@@ -30,3 +30,13 @@ def test_si_pdos_kgrid_eig_ArgumentParser(sisl_files, sisl_tmp):
     p.parse_args([], namespace=ns)
     p.parse_args(['--energy', ' -2:2'], namespace=ns)
     p.parse_args(['--energy', ' -2:2', '--plot', png], namespace=ns)
+
+
+def test_soc_pt2_xx_eig(sisl_files):
+    f = sisl_files(_dir, 'SOC_Pt2_xx.EIG')
+    eig = eigSileSiesta(f).read_data()
+
+    # nspin, nk, nb
+    # Since SO/NC mixes spin-channels it makes no sense
+    # to have them separately
+    assert np.all(eig.shape == (1, 1, 60))

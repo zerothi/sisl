@@ -23,6 +23,25 @@ def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
     assert np.allclose(HS1._csr._D, HS2._csr._D)
 
 
+def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
+    fdf = sisl.get_sile(sisl_files(_dir, 'SOC_Pt2_xx.fdf'), base=sisl_files(_dir))
+    HS1 = fdf.read_hamiltonian()
+    f = sisl_tmp('tmp.TSHS', _dir)
+    HS1.write(f)
+    si = sisl.get_sile(f)
+    HS2 = si.read_hamiltonian()
+    assert HS1._csr.spsame(HS2._csr)
+    HS1.finalize()
+    HS2.finalize()
+    assert np.allclose(HS1._csr._D, HS2._csr._D)
+
+
+def test_tshs_soc_pt2_xx_pdos(sisl_files):
+    fdf = sisl.get_sile(sisl_files(_dir, 'SOC_Pt2_xx.fdf'), base=sisl_files(_dir))
+    HS = fdf.read_hamiltonian()
+    HS.eigenstate().PDOS(np.linspace(-2, 2, 0.01))
+
+
 def test_tshs_warn(sisl_files):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
 

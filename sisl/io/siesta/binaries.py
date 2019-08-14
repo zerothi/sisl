@@ -119,7 +119,7 @@ class onlysSileSiesta(SileBinSiesta):
         cell.shape = (3, 3)
         return SuperCell(cell, nsc=nsc)
 
-    def read_geometry(self):
+    def read_geometry(self, geometry=None):
         """ Returns Geometry object from a siesta.TSHS file """
 
         # Read supercell
@@ -133,32 +133,45 @@ class onlysSileSiesta(SileBinSiesta):
         xyz.shape = (-1, 3)
         lasto = np.array(arr[1], np.int32)
 
-        # Create all different atoms...
-        # The TSHS file does not contain the
-        # atomic numbers, so we will just
-        # create them individually
+        # Since the TSHS file does not contain species information
+        # and/or other stuff we *can* reuse an existing
+        # geometry which contains the correct atomic numbers etc.
         orbs = np.diff(lasto)
+        if geometry is None:
+            # Create all different atoms...
+            # The TSHS file does not contain the
+            # atomic numbers, so we will just
+            # create them individually
 
-        # Get unique orbitals
-        uorb = np.unique(orbs)
-        # Create atoms
-        atoms = []
-        for Z, orb in enumerate(uorb):
-            atoms.append(Atom(Z+1, [-1] * orb))
+            # Get unique orbitals
+            uorb = np.unique(orbs)
+            # Create atoms
+            atoms = []
+            for Z, orb in enumerate(uorb):
+                atoms.append(Atom(Z+1, [-1] * orb))
 
-        def get_atom(atoms, orbs):
-            for atom in atoms:
-                if atom.no == orbs:
-                    return atom
+            def get_atom(atoms, orbs):
+                for atom in atoms:
+                    if atom.no == orbs:
+                        return atom
 
-        atom = []
-        for orb in orbs:
-            atom.append(get_atom(atoms, orb))
+            atom = []
+            for orb in orbs:
+                atom.append(get_atom(atoms, orb))
+
+        else:
+            # Create a new geometry with the correct atomic numbers
+            atom = []
+            for ia, no in zip(geometry, orbs):
+                a = geometry.atoms[ia]
+                if a.no == no:
+                    atom.append(a)
+                else:
+                    # correct atom
+                    atom.append(Atom(a.Z, [-1. for io in range(no)], mass=a.mass, tag=a.tag))
 
         # Create and return geometry object
-        geom = Geometry(xyz, atom, sc=sc)
-
-        return geom
+        return Geometry(xyz, atom, sc=sc)
 
     def read_overlap(self, **kwargs):
         """ Returns the overlap matrix from the siesta.TSHS file """
