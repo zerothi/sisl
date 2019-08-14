@@ -150,6 +150,37 @@ def test_sparse_orbital_bz_hermitian(n0, n1, n2):
                     assert np.abs(Pk - np.conj(Pk.T)).max() == approx_zero
 
 
+def test_sparse_orbital_bz_non_colinear():
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('NC'))
+    M.construct(([0.1, 1.44],
+                 [[0.1, 0.2, 0.3, 0.4],
+                  [0.2, 0.3, 0.4, 0.5]]))
+
+    MT = M.transpose()
+    MH = M.transpose(True)
+
+    assert np.abs((M - MT)._csr._D).sum() != 0
+    assert np.abs((M - MH)._csr._D).sum() != 0
+    assert np.abs((MT - MH)._csr._D).sum() != 0
+
+
+def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('NC'))
+
+    M.construct(([0.1, 1.44],
+                 [[0.1, 0.2, 0.3, 0.4],
+                  [0.2, 0.3, 0.4, 0.5]]))
+
+    M = (M + M.transpose(True).trs()) / 2
+
+    # This will in principle also work for M since the above parameters preserve
+    # TRS
+    k = np.array([0.1, 0.1, 0])
+    eig1 = M.eigh(k=k)
+    eig2 = M.eigh(k=-k)
+    assert np.allclose(eig1, eig2)
+
+
 def test_sparse_orbital_bz_spin_orbit():
     M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
 
