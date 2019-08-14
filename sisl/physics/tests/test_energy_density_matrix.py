@@ -98,7 +98,7 @@ class TestEnergyDensityMatrix(object):
         mulliken = E.mulliken('orbital')
         assert np.allclose(mulliken[0, :2], [1., 2.])
         assert mulliken.sum() == pytest.approx(3)
-        mulliken = E.mulliken()
+        mulliken = E.mulliken('atom')
         assert mulliken[0, 0] == pytest.approx(3)
         assert mulliken.sum() == pytest.approx(3)
 
@@ -110,7 +110,7 @@ class TestEnergyDensityMatrix(object):
         mulliken = E.mulliken('orbital')
         assert np.allclose(mulliken[0, :2], [1., 3.])
         assert mulliken.sum() == pytest.approx(4.)
-        mulliken = E.mulliken()
+        mulliken = E.mulliken('atom')
         assert mulliken[0, 0] == pytest.approx(4)
         assert mulliken.sum() == pytest.approx(4)
 
