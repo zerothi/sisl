@@ -171,13 +171,14 @@ def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
                  [[0.1, 0.2, 0.3, 0.4],
                   [0.2, 0.3, 0.4, 0.5]]))
 
-    M = (M + M.transpose(True).trs()) / 2
+    M = (M + M.transpose(True)) * 0.5
+    MTRS = (M + M.trs()) * 0.5
 
     # This will in principle also work for M since the above parameters preserve
     # TRS
     k = np.array([0.1, 0.1, 0])
-    eig1 = M.eigh(k=k)
-    eig2 = M.eigh(k=-k)
+    eig1 = MTRS.eigh(k=k)
+    eig2 = MTRS.eigh(k=-k)
     assert np.allclose(eig1, eig2)
 
 
@@ -204,15 +205,13 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
                   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
 
     M = (M + M.transpose(True)) / 2
-    MTRS = M.trs()
-
-    m = (M + MTRS) / 2
+    MTRS = (M + M.trs()) * 0.5
 
     # This will in principle also work for M since the above parameters preserve
     # TRS
     k = np.array([0.1, 0.1, 0])
-    eig1 = m.eigh(k=k)
-    eig2 = m.eigh(k=-k)
+    eig1 = MTRS.eigh(k=k)
+    eig2 = MTRS.eigh(k=-k)
     assert np.allclose(eig1, eig2)
 
 
