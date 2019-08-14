@@ -5,7 +5,7 @@ from scipy.sparse import csr_matrix, triu, tril
 from scipy.sparse import hstack as ss_hstack
 import numpy as np
 from numpy import repeat, logical_and
-from numpy import dot, unique
+from numpy import dot, unique, add, subtract
 
 from sisl.geometry import Geometry
 from sisl.supercell import SuperCell
@@ -25,7 +25,7 @@ __all__ = ['DensityMatrix']
 
 class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
-    def mulliken(self, projection='atom'):
+    def mulliken(self, projection='orbital'):
         r""" Calculate Mulliken charges from the density matrix
 
         In the following :math:`\nu` and :math:`\mu` are orbital indices.
@@ -54,7 +54,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        projection : {'atom', 'orbital'}
+        projection : {'orbital', 'atom'}
             how the Mulliken charges are returned.
             Can be atom-resolved, orbital-resolved or the
             charge matrix (off-diagonal elements)
@@ -62,7 +62,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         Returns
         -------
         numpy.ndarray
-            if `projection` does not contain matrix
+            if `projection` does not contain matrix, the first dimension contains the spin information
         list of scipy.sparse.csr_matrix
             if `projection` contains matrix
         """
@@ -80,8 +80,8 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
                 m[:, 1] = 2 * M[:, 2]
                 m[:, 2] = - 2 * M[:, 3]
             else:
-                return M.T
-            return m.T
+                return M
+            return m
 
         if "orbital" == projection:
             # Orbital Mulliken population
@@ -92,7 +92,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
                 D._D *= self._csr._D[:, -1].reshape(-1, 1)
                 D = D.sum(0)
 
-            return _convert(D)
+            return _convert(D).T
 
         elif "atom" == projection:
             # Atomic Mulliken population
@@ -105,48 +105,13 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
             # Now perform summation per atom
             geom = self.geometry
-            M = np.empty([geom.na, D.shape[1]], dtype=D.dtype)
-            for ia in geom:
-                M[ia, :] = D[geom.a2o(ia, True), :].sum(0)
+            M = np.zeros([geom.na, D.shape[1]], dtype=D.dtype)
+            np.add.at(M, geom.o2a(np.arange(geom.no)), D)
             del D
 
-            return _convert(M)
+            return _convert(M).T
 
-        raise NotImplementedError(self.__class__ + ".mulliken only allows method [orbital, atom]")
-
-        # First we re-create the sparse matrix as required for csr_matrix
-        ptr = self._csr.ptr
-        ncol = self._csr.ncol
-        # Indices of non-zero elements
-        idx = array_arange(ptr[:-1], n=ncol)
-        # Create the new pointer array
-        new_ptr = _a.emptyi(len(ptr))
-        new_ptr[0] = 0
-        col = self._csr.col[idx]
-        _a.cumsumi(ncol, out=new_ptr[1:])
-
-        # The shape of the matrices
-        shape = self.shape[:2]
-
-        # Create list of charges to be returned
-        Q = list()
-
-        if self.orthogonal:
-            dm = csr_matrix((shape[0], shape[1]), dtype=self.dtype)
-            for i in range(self.shape[2]):
-                DM = csr_matrix((self._csr._D[idx, i], col, new_ptr), shape=shape)
-                dm.set_diag(DM.diagonal())
-                Q.append(dm)
-                Q[-1].eliminate_zeros()
-        else:
-
-            # We know what S is and do it element-wise.
-            q = self._csr._D[idx, :-1] * self._csr._D[idx, self.S_idx].reshape(-1, 1)
-            for i in range(q.shape[1]):
-                Q.append(csr_matrix((q[:, i], col, new_ptr), shape=shape))
-                Q[-1].eliminate_zeros()
-
-        return Q
+        raise NotImplementedError(self.__class__ + ".mulliken only allows projection [orbital, atom]")
 
     def density(self, grid, spinor=None, tol=1e-7, eta=False):
         r""" Expand the density matrix to the charge density on a grid
@@ -611,7 +576,7 @@ class DensityMatrix(_realspace_DensityMatrix):
         self.dDk = self.dPk
         self.ddDk = self.ddPk
 
-    def orbital_momentum(self, projection='atom', method='onsite'):
+    def orbital_momentum(self, projection='orbital', method='onsite'):
         r""" Calculate orbital angular momentum on either atoms or orbitals
 
         Currently this implementation equals the Siesta implementation in that
@@ -628,10 +593,15 @@ class DensityMatrix(_realspace_DensityMatrix):
 
         Parameters
         ----------
-        projection : {'atom', 'orbital'}
+        projection : {'orbital', 'atom'}
             whether the angular momentum is resolved per atom, or per orbital
         method : {'onsite'}
             method used to calculate the angular momentum
+
+        Returns
+        -------
+        numpy.ndarray
+            orbital angular momentum with the last dimension equalling the :math:`L_x`, :math:`L_y` and :math:`L_z` components
         """
         # Check that the spin configuration is correct
         if not self.spin.is_spinorbit:
@@ -692,42 +662,27 @@ class DensityMatrix(_realspace_DensityMatrix):
         jdx_m = orb_lmZ[jdx, 1]
         sidx = sidx[onsite_idx]
 
-        # Pre-allocate the L_xyz quantity per orbital
-        L = np.zeros([geom.no, 3])
-
         # Sum the spin-box diagonal imaginary parts
         DM = csr._D[sidx][:, [4, 5]].sum(1)
 
         # Define functions to calculate L projections
-        def yield_La(idx, idx_l, DM, sub):
+        def La(idx_l, DM, sub):
             if len(sub) == 0:
-                return
-            L = (idx_l[sub] * (idx_l[sub] + 1) * 0.5) ** 0.5 * DM[sub]
-            for i, l in zip(idx[sub], L):
-                yield i, l
+                return []
+            return (idx_l[sub] * (idx_l[sub] + 1) * 0.5) ** 0.5 * DM[sub]
 
-        def yield_Lb(idx, idx_l, DM, sub):
+        def Lb(idx_l, DM, sub):
             if len(sub) == 0:
                 return
-            L = (idx_l[sub] * (idx_l[sub] + 1) - 2) ** 0.5 * 0.5 * DM[sub]
-            for i, l in zip(idx[sub], L):
-                yield i, l
+            return (idx_l[sub] * (idx_l[sub] + 1) - 2) ** 0.5 * 0.5 * DM[sub]
 
-        def yield_Lc(idx, idx_l, DM, sub):
+        def Lc(idx, idx_l, DM, sub):
             if len(sub) == 0:
-                return
+                return [], []
             sub = sub[idx_l[sub] >= 3]
             if len(sub) == 0:
-                return
-            L = (idx_l[sub] * (idx_l[sub] + 1) - 6) ** 0.5 * 0.5 * DM[sub]
-            for i, l in zip(idx[sub], L):
-                yield i, l
-
-        # Pre-calculate all those which have m_i + m_j == 0
-        b = (idx_m + jdx_m == 0).nonzero()[0]
-        for i, LDM in zip(idx[b], idx_m[b] * DM[b]):
-            L[i, 2] -= LDM
-        del b
+                return [], []
+            return idx[sub], (idx_l[sub] * (idx_l[sub] + 1) - 6) ** 0.5 * 0.5 * DM[sub]
 
         # construct for different m
         # in Siesta the spin orbital angular momentum
@@ -737,115 +692,104 @@ class DensityMatrix(_realspace_DensityMatrix):
         # Additionally Siesta calculates L for <i|L|j> and then does:
         #    L(:) = [L(3), -L(2), -L(1)]
         # Here we *directly* store the quantities used
+        # Pre-allocate the L_xyz quantity per orbital
+        L = np.zeros([geom.no, 3])
+        L0 = L[:, 0]
+        L1 = L[:, 1]
+        L2 = L[:, 2]
+
+        # Pre-calculate all those which have m_i + m_j == 0
+        b = (idx_m + jdx_m == 0).nonzero()[0]
+        subtract.at(L2, idx[b], idx_m[b] * DM[b])
+        del b
 
         #   mi == 0
         i_m = idx_m == 0
         #     mj == -1
         sub = logical_and(i_m, jdx_m == -1).nonzero()[0]
-        for i, l in yield_La(idx, idx_l, DM, sub):
-            L[i, 0] -= l
+        subtract.at(L0, idx[sub], La(idx_l, DM, sub))
         #     mj == 1
         sub = logical_and(i_m, jdx_m == 1).nonzero()[0]
-        for i, l in yield_La(idx, idx_l, DM, sub):
-            L[i, 1] += l
+        add.at(L1, idx[sub], La(idx_l, DM, sub))
 
         #   mi == 1
         i_m = idx_m == 1
         #     mj == -2
         sub = logical_and(i_m, jdx_m == -2).nonzero()[0]
-        for i, l in yield_Lb(idx, idx_l, DM, sub):
-            L[i, 0] -= l
+        subtract.at(L0, idx[sub], Lb(idx_l, DM, sub))
         #     mj == 0
         sub = logical_and(i_m, jdx_m == 0).nonzero()[0]
-        for i, l in yield_La(idx, idx_l, DM, sub):
-            L[i, 1] -= l
+        subtract.at(L1, idx[sub], La(idx_l, DM, sub))
         #     mj == 2
         sub = logical_and(i_m, jdx_m == 2).nonzero()[0]
-        for i, l in yield_Lb(idx, idx_l, DM, sub):
-            L[i, 1] += l
+        add.at(L1, idx[sub], Lb(idx_l, DM, sub))
 
         #   mi == -1
         i_m = idx_m == -1
         #     mj == -2
         sub = logical_and(i_m, jdx_m == -2).nonzero()[0]
-        for i, l in yield_Lb(idx, idx_l, DM, sub):
-            L[i, 1] += l
+        add.at(L1, idx[sub], Lb(idx_l, DM, sub))
         #     mj == 0
         sub = logical_and(i_m, jdx_m == 0).nonzero()[0]
-        for i, l in yield_La(idx, idx_l, DM, sub):
-            L[i, 0] += l
+        add.at(L0, idx[sub], La(idx_l, DM, sub))
         #     mj == 2
         sub = logical_and(i_m, jdx_m == 2).nonzero()[0]
-        for i, l in yield_Lb(idx, idx_l, DM, sub):
-            L[i, 0] += l
+        add.at(L0, idx[sub], Lb(idx_l, DM, sub))
 
         #   mi == 2
         i_m = idx_m == 2
         #     mj == -3
         sub = logical_and(i_m, jdx_m == -3).nonzero()[0]
-        for i, l in yield_Lc(idx, idx_l, DM, sub):
-            L[i, 0] -= l
+        subtract.at(L0, *Lc(idx, idx_l, DM, sub))
         #     mj == -1
         sub = logical_and(i_m, jdx_m == -1).nonzero()[0]
-        for i, l in yield_Lb(idx, idx_l, DM, sub):
-            L[i, 0] -= l
+        subtract.at(L0, idx[sub], Lb(idx_l, DM, sub))
         #     mj == 1
         sub = logical_and(i_m, jdx_m == 1).nonzero()[0]
-        for i, l in yield_Lb(idx, idx_l, DM, sub):
-            L[i, 1] -= l
+        subtract.at(L1, idx[sub], Lb(idx_l, DM, sub))
         #     mj == 3
         sub = logical_and(i_m, jdx_m == 3).nonzero()[0]
-        for i, l in yield_Lc(idx, idx_l, DM, sub):
-            L[i, 1] += l
+        add.at(L1, *Lc(idx, idx_l, DM, sub))
 
         #   mi == -2
         i_m = idx_m == -2
         #     mj == -3
         sub = logical_and(i_m, jdx_m == -3).nonzero()[0]
-        for i, l in yield_Lc(idx, idx_l, DM, sub):
-            L[i, 1] += l
+        add.at(L1, *Lc(idx, idx_l, DM, sub))
         #     mj == -1
         sub = logical_and(i_m, jdx_m == -1).nonzero()[0]
-        for i, l in yield_Lb(idx, idx_l, DM, sub):
-            L[i, 1] -= l
+        subtract.at(L1, idx[sub], Lb(idx_l, DM, sub))
         #     mj == 1
         sub = logical_and(i_m, jdx_m == 1).nonzero()[0]
-        for i, l in yield_Lb(idx, idx_l, DM, sub):
-            L[i, 0] += l
+        add.at(L0, idx[sub], Lb(idx_l, DM, sub))
         #     mj == 3
         sub = logical_and(i_m, jdx_m == 3).nonzero()[0]
-        for i, l in yield_Lc(idx, idx_l, DM, sub):
-            L[i, 0] += l
+        add.at(L0, *Lc(idx, idx_l, DM, sub))
 
         #   mi == -3
         i_m = idx_m == -3
         #     mj == -2
         sub = logical_and(i_m, jdx_m == -2).nonzero()[0]
-        for i, l in yield_Lc(idx, idx_l, DM, sub):
-            L[i, 1] -= l
+        subtract.at(L1, *Lc(idx, idx_l, DM, sub))
         #     mj == 2
         sub = logical_and(i_m, jdx_m == 2).nonzero()[0]
-        for i, l in yield_Lc(idx, idx_l, DM, sub):
-            L[i, 0] += l
+        add.at(L0, *Lc(idx, idx_l, DM, sub))
 
         #   mi == 3
         i_m = idx_m == 3
         #     mj == -2
         sub = logical_and(i_m, jdx_m == -2).nonzero()[0]
-        for i, l in yield_Lc(idx, idx_l, DM, sub):
-            L[i, 0] -= l
+        subtract.at(L0, *Lc(idx, idx_l, DM, sub))
         #     mj == 2
         sub = logical_and(i_m, jdx_m == 2).nonzero()[0]
-        for i, l in yield_Lc(idx, idx_l, DM, sub):
-            L[i, 1] -= l
+        subtract.at(L1, *Lc(idx, idx_l, DM, sub))
 
         if "orbital" == projection:
             return L
         elif "atom" == projection:
             # Now perform summation per atom
-            l = np.empty([geom.na, 3], dtype=L.dtype)
-            for ia in geom:
-                l[ia, :] = L[geom.a2o(ia, True), :].sum(0)
+            l = np.zeros([geom.na, 3], dtype=L.dtype)
+            add.at(l, geom.o2a(np.arange(geom.no)), L)
             return l
         raise ValueError(self.__class__.__name__ + ".orbital_momentum must define projection to be orbital or atom.")
 
