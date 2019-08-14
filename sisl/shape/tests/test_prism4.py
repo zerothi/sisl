@@ -18,7 +18,7 @@ def test_create_cuboid():
     v1 = [1., -0.2, 1.0]
     v2 = [1., -0.2, -1.0]
     cube = Cuboid([v0, v1, v2])
-    print(cube)
+    str(cube)
 
 
 @pytest.mark.xfail(raises=ValueError)

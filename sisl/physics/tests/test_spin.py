@@ -16,7 +16,7 @@ def test_spin1():
                 'non-collinear', 'nc', Spin.NONCOLINEAR,
                 'spin-orbit', 'so', Spin.SPINORBIT]:
         s = Spin(val)
-        print(str(s))
+        str(s)
         s1 = s.copy()
         assert s == s1
 

@@ -157,7 +157,7 @@ class TestSuperCell(object):
     def test_sc_index2(self, setup):
         sc_index = setup.sc.sc_index([[0, 0, 0],
                                       [1, 1, 0]])
-        print(sc_index)
+        s = str(sc_index)
         assert len(sc_index) == 2
 
     @pytest.mark.xfail(raises=Exception)
@@ -404,7 +404,7 @@ def test_tocuboid_simple():
 
 def test_tocuboid_complex():
     sc = SuperCell([1, 1, 1, 60, 60, 60])
-    print(sc.cell)
+    s = str(sc.cell)
     c1 = sc.toCuboid()
     assert np.allclose(sc.cell, c1._v)
     c2 = sc.toCuboid(True)

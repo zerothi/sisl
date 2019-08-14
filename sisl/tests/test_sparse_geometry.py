@@ -28,7 +28,7 @@ class TestSparseAtom(object):
     @pytest.mark.xfail(raises=ValueError)
     def test_fail_align1(self, setup):
         s = SparseAtom(setup.g * 2)
-        print(s)
+        str(s)
         setup.s1.spalign(s)
 
     def test_align1(self, setup):

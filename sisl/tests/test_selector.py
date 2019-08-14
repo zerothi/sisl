@@ -25,7 +25,7 @@ class TestSelector(object):
         sel.prepend(self.sleep(1))
         sel.prepend(self.sleep(2))
         sel.append(self.sleep(3))
-        print(sel)
+        str(sel)
 
         i = 0
         while sel.best is None:

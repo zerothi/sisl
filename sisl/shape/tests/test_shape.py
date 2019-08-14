@@ -15,14 +15,14 @@ def test_binary_op():
     s = Sphere(1.)
 
     new = e + s
-    print(new)
+    str(new)
 
     new = new - new
     new = new & (new | e) ^ s
     new.center
 
     assert new.volume() < 0.
-    print(new)
+    str(new)
 
 
 def test_null():

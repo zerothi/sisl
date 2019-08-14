@@ -652,8 +652,8 @@ class TestHamiltonian(object):
         k = [0.1] * 3
         ie1 = H.eigenstate(k, gauge='R').inv_eff_mass_tensor()
         ie2 = H.eigenstate(k, gauge='r').inv_eff_mass_tensor()
-        print(ie1)
-        print(ie2)
+        str(ie1)
+        str(ie2)
         assert np.allclose(ie1, ie2)
 
     def test_change_gauge(self, setup):

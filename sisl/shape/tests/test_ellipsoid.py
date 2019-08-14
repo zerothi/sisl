@@ -32,7 +32,7 @@ def test_create_ellipsoid():
     e2 = el.scale([1.1, 2.1, 3.1])
     assert np.allclose(el.radius + [0.1, 1.1, 2.1], e2.radius)
     assert el.expand(2).volume() == pytest.approx(4/3 * np.pi * 3 ** 3)
-    print(el)
+    str(el)
 
 
 def test_tosphere():
@@ -150,7 +150,7 @@ def test_sphere_and():
     for i, d in enumerate(D):
         B = Sphere(1., center=v * d)
         C = (A & B).toSphere()
-        print(A, B, C)
+        str(A) + str(B) + str(C)
         if is_first and C.radius < A.radius:
             inside[i:] = False
             is_first = False

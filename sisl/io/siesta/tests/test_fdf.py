@@ -19,7 +19,7 @@ def test_fdf1(sisl_tmp, sisl_system):
     sisl_system.g.write(fdfSileSiesta(f, 'w'))
 
     fdf = fdfSileSiesta(f)
-    print(fdf)
+    str(fdf)
     with fdf:
 
         fdf.readline()

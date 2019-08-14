@@ -13,7 +13,6 @@ _dir = 'sisl/io'
 
 def test_default(sisl_tmp):
     f = sisl_tmp('GRID.xsf', _dir)
-    print(f)
     grid = Grid(0.2)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)

@@ -69,5 +69,4 @@ def test_bloch_one_direction(nx, ny, nz, dtype):
         H_unfold = b.unfold(np.stack(HK), k_unfold)
         H_big = HB.Hk(K, format='array', dtype=dtype)
 
-        print(np.amax(np.absolute(H_unfold - H_big)))
         assert np.allclose(H_unfold, H_big, atol=atol)

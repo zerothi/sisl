@@ -13,7 +13,6 @@ _dir = 'sisl/io/gulp'
 
 def test_zz_dynamical_matrix(sisl_files):
     si = sisl.get_sile(sisl_files(_dir, 'zz.gout'))
-    print(si)
     D1 = si.read_dynamical_matrix(order=['got'])
     D2 = si.read_dynamical_matrix(order=['FC'])
 

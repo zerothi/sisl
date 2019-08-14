@@ -147,7 +147,7 @@ class Test_sphericalorbital(object):
         r = np.linspace(0, 4, 300)
         f = np.exp(-r)
         o = SphericalOrbital(1, (r, f))
-        print(o)
+        str(o)
         def i_univariate(r, f):
             return interp.UnivariateSpline(r, f, k=5, s=0, ext=1, check_finite=False)
         def i_interp1d(r, f):

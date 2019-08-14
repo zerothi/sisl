@@ -29,7 +29,7 @@ def setup():
 class TestGrid(object):
 
     def test_print(self, setup):
-        print(setup.g)
+        str(setup.g)
 
     def test_init(self, setup):
         Grid(0.1, sc=setup.sc)
