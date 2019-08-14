@@ -26,7 +26,7 @@ you should cite this (Zenodo DOI):
     @misc{zerothi_sisl,
       author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
-      year         = {2018},
+      year         = {2019},
       doi          = {10.5281/zenodo.597181},
       url          = {https://doi.org/10.5281/zenodo.597181}
     }
