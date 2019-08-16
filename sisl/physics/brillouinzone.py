@@ -983,6 +983,18 @@ class MonkhorstPack(BrillouinZone):
         self._centered = centered
         self._trs = i_trs
 
+    def __str__(self):
+        """ String representation of MonkhorstPack """
+        if isinstance(self.parent, SuperCell):
+            p = self.parent
+        else:
+            p = self.parent.sc
+        return ('{cls}{{nk: {nk:d}, size: [{size[0]:.3f} {size[1]:.3f} {size[0]:.3f}], trs: {trs},'
+                '\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.3f} {disp[1]:.3f} {disp[2]:.3f}],'
+                '\n {sc}\n}}').format(cls=self.__class__.__name__, nk=len(self),
+                                      size=self._size, trs={0: 'A', 1: 'B', 2: 'C'}.get(self._trs, 'no'),
+                                      diag=self._diag, disp=self._displ, sc=str(p).replace('\n', '\n '))
+
     def __getstate__(self):
         """ Return dictionary with the current state """
         state = super(MonkhorstPack, self).__getstate__()

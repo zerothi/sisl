@@ -573,7 +573,7 @@ class Geometry(SuperCellChild):
         s += str(self.atom).replace('\n', '\n ')
         if len(self.names) > 0:
             s += ',\n ' + str(self.names).replace('\n', '\n ')
-        return (s + ',\n maxR: {0:.5f},\n {1}\n}}'.format(self.maxR(), str(self.sc))).strip()
+        return (s + ',\n maxR: {0:.5f},\n {1}\n}}'.format(self.maxR(), str(self.sc).replace('\n', '\n '))).strip()
 
     def iter(self):
         """ An iterator over all atomic indices
