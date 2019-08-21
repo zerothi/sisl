@@ -42,11 +42,16 @@ class orbindxSileSiesta(SileSiesta):
         return arrayi([n * 2 + 1 for n in nsc])
 
     @sile_fh_open()
-    def read_basis(self):
+    def read_basis(self, atoms=None):
         """ Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file
 
         The specie names have a short field in the ORB_INDX file, hence the name may
         not necessarily be the same as provided in the species block
+
+        Parameters
+        ----------
+        atoms : Atoms, optional
+           list of atoms used for the species index
         """
 
         # First line contains no no_s
@@ -57,12 +62,16 @@ class orbindxSileSiesta(SileSiesta):
 
         pt = PeriodicTable()
 
-        def crt_atom(spec, orbs):
-            i = pt.Z(spec)
-            if isinstance(i, int):
-                return Atom(i, orbs)
-            else:
-                return Atom(-1, orbs, tag=spec)
+        def crt_atom(i_s, spec, orbs):
+            if atoms is None:
+                # The user has not specified an atomic basis
+                i = pt.Z(spec)
+                if isinstance(i, int):
+                    return Atom(i, orbs)
+                else:
+                    return Atom(-1, orbs, tag=spec)
+            # Get the atom and add the orbitals
+            return atoms[i_s].copy(orbital=orbs)
 
         # Now we begin by reading the atoms
         atom = []
@@ -75,7 +84,7 @@ class orbindxSileSiesta(SileSiesta):
             i_a = int(line[1])
             if i_a != ia:
                 if i_s not in specs:
-                    atom.append(crt_atom(spec, orbs))
+                    atom.append(crt_atom(i_s, spec, orbs))
                 specs.append(i_s)
                 ia = i_a
                 orbs = []
@@ -88,12 +97,11 @@ class orbindxSileSiesta(SileSiesta):
             P = line[9] == 'T'
             rc = float(line[11]) * Bohr2Ang
             # Create the orbital
-            o = AtomicOrbital(n=nlmz[0], l=nlmz[1], m=nlmz[2], Z=nlmz[3], P=P,
-                              spherical=Orbital(rc))
+            o = AtomicOrbital(n=nlmz[0], l=nlmz[1], m=nlmz[2], Z=nlmz[3], P=P, R=rc)
             orbs.append(o)
 
         if i_s not in specs:
-            atom.append(crt_atom(spec, orbs))
+            atom.append(crt_atom(i_s, spec, orbs))
         specs.append(i_s)
 
         # Now re-arrange the atoms and create the Atoms object

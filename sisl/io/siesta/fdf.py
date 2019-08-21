@@ -1411,7 +1411,7 @@ class fdfSileSiesta(SileSiesta):
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
         if isfile(f):
             info(SileInfo('Siesta basis information is read from {}, the radial functions are in accessible.'.format(f)))
-            return orbindxSileSiesta(f).read_basis()
+            return orbindxSileSiesta(f).read_basis(atoms=self._r_basis_fdf())
         return None
 
     def _r_basis_fdf(self):
