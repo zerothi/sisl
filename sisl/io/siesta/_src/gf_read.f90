@@ -136,24 +136,16 @@ subroutine read_gf_find(iu, nspin, nkpt, NE, &
   integer :: crec, irec
 
   if ( istate == -1 ) then
-    ! Easy case, the file should be re-read from the beginning
+    ! Requested header read! REWIND!
     rewind(iu, iostat=ierr)
     call iostat_update(ierr)
     return
   end if
 
-  if ( cstate == -1 ) then
-    ! Skip to the start of the file
-    ! There are 10 fields that needs to be read past
-    do irec = 1, 10
-      read(iu, iostat=ierr)
-      call iostat_update(ierr)
-    end do
-  end if
-
+  ! ikpt and iE are Python indices
   ! Find linear record index
   crec = linear_rec(cstate, cspin, ckpt, cE, cis_read)
-  irec = linear_rec(istate, ispin, ikpt, iE, 0)
+  irec = linear_rec(istate, ispin, ikpt, iE, 0) ! stop just in front
 
   if ( crec < irec ) then
     do i = crec, irec - 1
@@ -176,29 +168,45 @@ contains
 
     integer :: nHS, nSE
 
+    if ( state == -1 .and. is_read == 0 ) then
+      ! We are at the start of the file
+      irec = 0
+    else
+      ! records in header
+      irec = 10
+    end if
+    ! Return if the record requested is the header
+    if ( state == -1 ) return
+
     ! Skip to the spin
-    nHS = max(0, ispin) * nkpt
-    nSE = max(0, ispin) * nkpt * NE
+    nHS = ispin * nkpt
+    nSE = ispin * nkpt * NE
     ! per H and S we also have ik, iE, E
     ! per SE we also have ik, iE, E (except for the first energy-point where we don't have it)
-    irec = nHS * 3 + nSE * 2 - nHS
+    irec = irec + nHS * (3 - 1) + nSE * 2
 
     ! Skip to the k-point
-    nHS = max(0, ikpt)
-    nSE = max(0, ikpt) * NE
-    irec = irec + nHS * 3 + nSE * 2 - nHS
-
-    ! Skip to the energy-point
-    irec = irec + max(0, iE) * 2
-    if ( iE > 0 ) irec = irec - 1 ! correct the iE == 0 ik, iE, E line
+    nHS = ikpt
+    nSE = ikpt * NE
+    irec = irec + nHS * (3 - 1) + nSE * 2
 
     ! If the state is 0, it means that we should read beyond H and S for the given k-point
-    if ( state == 0 ) irec = irec + 3
+    if ( state == 0 .and. is_read == 0 ) return
+    ! Skip the HS and line
+    irec = irec + 3
+    if ( state == 0 ) return
+
+    ! Skip to the energy-point
+    if ( iE > 0 ) then
+      irec = irec + iE * 2 - 1 ! correct the iE == 1 ik, iE, E line
+    end if
 
     if ( is_read == 1 ) then
       ! Means that we already have read past this entry
       if ( iE > 0 ) then
         irec = irec + 2
+      else
+        irec = irec + 1
       end if
     end if
 
@@ -226,10 +234,11 @@ subroutine read_gf_hs(iu, no_u, H, S)
 !f2py intent(in) :: no_u
 !f2py intent(out) :: H
 !f2py intent(out) :: S
+  integer :: f_ik, f_iE
 
   integer :: ierr
 
-  read(iu, iostat=ierr) !ik, iE, E
+  read(iu, iostat=ierr) f_ik, f_iE ! E
   call iostat_update(ierr)
   read(iu, iostat=ierr) H
   call iostat_update(ierr)
@@ -258,11 +267,16 @@ subroutine read_gf_se( iu, no_u, iE, SE )
 !f2py intent(in) :: iE
 !f2py intent(out) :: SE
 
+  integer :: f_ik, f_iE
   integer :: ierr
 
   if ( iE > 0 ) then
-    read(iu, iostat=ierr) !ik, iE, E
+    read(iu, iostat=ierr) f_ik, f_iE ! E
     call iostat_update(ierr)
+    if ( iE + 1 /= f_iE ) then
+      ! Signal something is wrong!
+      call iostat_update(999)
+    end if
   end if
   read(iu, iostat=ierr) SE
   call iostat_update(ierr)

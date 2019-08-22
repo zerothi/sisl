@@ -134,18 +134,21 @@ def test_gf_write_read_direct(sisl_tmp, sisl_system):
     assert not gf._is_open()
 
     # First try from beginning
-    for e in [1, E[1]]:
+    for e in [0, 1, E[1], 0, E[0]]:
+        ie = gf.Eindex(e)
         SE1 = gf.self_energy(e, bz.k[2, :])
-        assert gf._state == 0
+        assert gf._state == 1
         assert gf._ik == 2
-        assert gf._iE == 1
+        assert gf._iE == ie
         assert gf._ispin == 0
+        assert gf._is_read == 1
 
         SE2 = gf.self_energy(e, bz.k[2, :], spin=1)
-        assert gf._state == 0
+        assert gf._state == 1
         assert gf._ik == 2
-        assert gf._iE == 1
+        assert gf._iE == ie
         assert gf._ispin == 1
+        assert gf._is_read == 1
 
         assert not np.allclose(SE1, SE2)
 
@@ -153,15 +156,17 @@ def test_gf_write_read_direct(sisl_tmp, sisl_system):
         H1, S1 = gf.HkSk(bz.k[2, :], spin=0)
         assert gf._state == 0
         assert gf._ik == 2
-        assert gf._iE == -1
+        assert gf._iE == 0
         assert gf._ispin == 0
+        assert gf._is_read == 1
         assert np.allclose(S, S1)
 
         H2, S1 = gf.HkSk(bz.k[2, :], spin=1)
         assert gf._state == 0
         assert gf._ik == 2
-        assert gf._iE == -1
+        assert gf._iE == 0
         assert gf._ispin == 1
+        assert gf._is_read == 1
         assert np.allclose(S, S1)
         assert not np.allclose(H1, H2)
         assert not np.allclose(H1, SE1)
@@ -169,17 +174,19 @@ def test_gf_write_read_direct(sisl_tmp, sisl_system):
         H2, S1 = gf.HkSk(bz.k[2, :], spin=0)
         assert gf._state == 0
         assert gf._ik == 2
-        assert gf._iE == -1
+        assert gf._iE == 0
         assert gf._ispin == 0
+        assert gf._is_read == 1
         assert np.allclose(S, S1)
         assert np.allclose(H1, H2)
 
         # Now read self-energy
         SE2 = gf.self_energy(e, bz.k[2, :], spin=0)
-        assert gf._state == 0
+        assert gf._state == 1
         assert gf._ik == 2
-        assert gf._iE == 1
+        assert gf._iE == ie
         assert gf._ispin == 0
+        assert gf._is_read == 1
 
         assert np.allclose(SE1, SE2)
 

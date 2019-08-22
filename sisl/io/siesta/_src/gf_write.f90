@@ -76,7 +76,7 @@ subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
 
 end subroutine write_gf_header
 
-subroutine write_gf_hs(iu, ik, iE, E, no_u, H, S)
+subroutine write_gf_hs(iu, ik, E, no_u, H, S)
   use io_m, only: iostat_update
 
   implicit none
@@ -86,7 +86,7 @@ subroutine write_gf_hs(iu, ik, iE, E, no_u, H, S)
 
   ! Input parameters
   integer, intent(in) :: iu
-  integer, intent(in) :: ik, iE
+  integer, intent(in) :: ik
   complex(dp), intent(in) :: E
   ! Variables for the size
   integer, intent(in) :: no_u
@@ -94,13 +94,14 @@ subroutine write_gf_hs(iu, ik, iE, E, no_u, H, S)
 
 ! Define f2py intents
 !f2py intent(in) :: iu
-!f2py intent(in) :: ik, iE, E
+!f2py intent(in) :: ik, E
 !f2py intent(in) :: no_u
 !f2py intent(in) :: H, S
 
   integer :: ierr
 
-  write(iu, iostat=ierr) ik, iE, E
+  ! ik and iE are Python indices
+  write(iu, iostat=ierr) ik + 1, 1, E
   call iostat_update(ierr)
   write(iu, iostat=ierr) H
   call iostat_update(ierr)
@@ -133,8 +134,9 @@ subroutine write_gf_se(iu, ik, iE, E, no_u, SE)
 
   integer :: ierr
 
+  ! ik and iE are Python indices
   if ( iE > 0 ) then
-    write(iu, iostat=ierr) ik, iE, E
+    write(iu, iostat=ierr) ik + 1, iE + 1, E
     call iostat_update(ierr)
   end if
   write(iu, iostat=ierr) SE
