@@ -229,7 +229,8 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
   call iostat_update(ierr)
   read(iu, iostat=ierr) cell, xa
   call iostat_update(ierr)
-  xa = xa * Ang
+  cell(:,:) = cell(:,:) * Ang
+  xa(:,:) = xa(:,:) * Ang
   read(iu, iostat=ierr) ! Gamma, TSGamma, onlyS
   call iostat_update(ierr)
   read(iu, iostat=ierr) ! kscell, kdispl

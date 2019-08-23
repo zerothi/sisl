@@ -46,7 +46,7 @@ subroutine write_tshs_hs(fname, &
 
   write(iu, iostat=ierr) nsc1, nsc2, nsc3
   call iostat_update(ierr)
-  write(iu, iostat=ierr) cell, xa
+  write(iu, iostat=ierr) cell / Ang, xa / Ang
   call iostat_update(ierr)
   ! TSGamma, Gamma, onlyS
   write(iu, iostat=ierr) .false., .false., .false.
@@ -55,7 +55,7 @@ subroutine write_tshs_hs(fname, &
   write(iu, iostat=ierr) (/2, 0, 0, 0, 2, 0, 0, 0, 2/), (/0._dp, 0._dp, 0._dp/)
   call iostat_update(ierr)
   ! Ef, qtot, Temp
-  write(iu, iostat=ierr) 0._dp, 1._dp, 0.001_dp
+  write(iu, iostat=ierr) 0._dp / eV, 1._dp, 0.001_dp / eV
   call iostat_update(ierr)
 
   ! istep, ia1
@@ -85,7 +85,7 @@ subroutine write_tshs_hs(fname, &
   do is = 1, nspin
     idx = 0
     do i = 1 , no_u
-      write(iu, iostat=ierr) H(idx+1:idx+ncol(i),is)
+      write(iu, iostat=ierr) H(idx+1:idx+ncol(i),is) / eV
       call iostat_update(ierr)
       idx = idx + ncol(i)
     end do

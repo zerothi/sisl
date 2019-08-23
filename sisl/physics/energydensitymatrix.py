@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 
+import numpy as np
 import sisl._array as _a
 from sisl.messages import SislError
 from .densitymatrix import _realspace_DensityMatrix

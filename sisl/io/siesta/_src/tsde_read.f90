@@ -93,7 +93,7 @@ subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
     n = n + ncol(io)
   end do
 
-! Read Density matrix
+  ! Read Density matrix
   do is = 1 , nspin
     n = 0
     do io = 1 , no_u
@@ -131,7 +131,7 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
 !f2py intent(out) :: ncol, list_col
 !f2py intent(out) :: EDM
 
-! Internal variables and arrays
+  ! Internal variables and arrays
   integer :: iu, ierr
   integer :: is, io, n
 

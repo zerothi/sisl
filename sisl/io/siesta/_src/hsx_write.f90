@@ -8,6 +8,8 @@ subroutine write_hsx(fname, Gamma, no_u, no_s, nspin, maxnh, &
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
+  real(dp), parameter :: eV = 13.60580_dp
+  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*) :: fname
@@ -59,7 +61,7 @@ subroutine write_hsx(fname, Gamma, no_u, no_s, nspin, maxnh, &
 ! Write Hamiltonian
   do is = 1 , nspin
     do ih = 1 , no_u
-      write(iu, iostat=ierr) (real(H(listhptr(ih)+im,is),kind=sp),im=1,numh(ih))
+      write(iu, iostat=ierr) (real(H(listhptr(ih)+im,is)/eV,kind=sp),im=1,numh(ih))
       call iostat_update(ierr)
     end do
   end do
@@ -74,7 +76,7 @@ subroutine write_hsx(fname, Gamma, no_u, no_s, nspin, maxnh, &
   call iostat_update(ierr)
 
   do ih = 1 , no_u
-    write(iu, iostat=ierr) ((real(xij(k,listhptr(ih)+im),kind=sp), k=1,3),im =1,numh(ih))
+    write(iu, iostat=ierr) ((real(xij(k,listhptr(ih)+im)/Ang,kind=sp), k=1,3),im =1,numh(ih))
     call iostat_update(ierr)
   end do
 

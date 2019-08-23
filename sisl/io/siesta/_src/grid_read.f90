@@ -62,7 +62,7 @@ subroutine read_grid_cell(fname, cell)
 
   read(iu, iostat=ierr) cell(:,:)
   call iostat_update(ierr)
-  cell = cell * Ang
+  cell(:,:) = cell(:,:) * Ang
 
   close(iu)
 

@@ -24,6 +24,8 @@ subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
 
   ! Precision 
   integer, parameter :: dp = selected_real_kind(p=15)
+  real(dp), parameter :: eV = 13.60580_dp
+  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   integer, intent(in) :: iu
@@ -50,17 +52,17 @@ subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
 
   integer :: ierr
 
-  write(iu, iostat=ierr) nspin, cell
+  write(iu, iostat=ierr) nspin, cell / Ang
   call iostat_update(ierr)
   write(iu, iostat=ierr) na_u, no_u
   call iostat_update(ierr)
   write(iu, iostat=ierr) na_used, no_used
   call iostat_update(ierr)
-  write(iu, iostat=ierr) xa_used, lasto_used
+  write(iu, iostat=ierr) xa_used / Ang, lasto_used
   call iostat_update(ierr)
   write(iu, iostat=ierr) .false., Bloch, pre_expand
   call iostat_update(ierr)
-  write(iu, iostat=ierr) mu
+  write(iu, iostat=ierr) mu / eV
   call iostat_update(ierr)
 
   ! k-points
@@ -71,7 +73,7 @@ subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
 
   write(iu, iostat=ierr) NE
   call iostat_update(ierr)
-  write(iu, iostat=ierr) E
+  write(iu, iostat=ierr) E / eV
   call iostat_update(ierr)
 
 end subroutine write_gf_header
@@ -83,6 +85,7 @@ subroutine write_gf_hs(iu, ik, E, no_u, H, S)
 
   ! Precision 
   integer, parameter :: dp = selected_real_kind(p=15)
+  real(dp), parameter :: eV = 13.60580_dp
 
   ! Input parameters
   integer, intent(in) :: iu
@@ -101,9 +104,9 @@ subroutine write_gf_hs(iu, ik, E, no_u, H, S)
   integer :: ierr
 
   ! ik and iE are Python indices
-  write(iu, iostat=ierr) ik + 1, 1, E
+  write(iu, iostat=ierr) ik + 1, 1, E / eV
   call iostat_update(ierr)
-  write(iu, iostat=ierr) H
+  write(iu, iostat=ierr) H / eV
   call iostat_update(ierr)
   write(iu, iostat=ierr) S
   call iostat_update(ierr)
@@ -117,6 +120,7 @@ subroutine write_gf_se(iu, ik, iE, E, no_u, SE)
 
   ! Precision 
   integer, parameter :: dp = selected_real_kind(p=15)
+  real(dp), parameter :: eV = 13.60580_dp
 
   ! Input parameters
   integer, intent(in) :: iu
@@ -136,10 +140,10 @@ subroutine write_gf_se(iu, ik, iE, E, no_u, SE)
 
   ! ik and iE are Python indices
   if ( iE > 0 ) then
-    write(iu, iostat=ierr) ik + 1, iE + 1, E
+    write(iu, iostat=ierr) ik + 1, iE + 1, E / eV
     call iostat_update(ierr)
   end if
-  write(iu, iostat=ierr) SE
+  write(iu, iostat=ierr) SE / eV
   call iostat_update(ierr)
 
 end subroutine write_gf_se
