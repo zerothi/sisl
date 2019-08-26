@@ -25,7 +25,7 @@ __all__ += ['RealSpaceSE', 'RealSpaceSI']
 
 
 class SelfEnergy(object):
-    """ Self-energy object able to calculate the dense self-energy for a given sparse matrix
+    r""" Self-energy object able to calculate the dense self-energy for a given sparse matrix
 
     The self-energy object contains a `SparseGeometry` object which, in it-self
     contains the geometry.
@@ -49,7 +49,7 @@ class SelfEnergy(object):
         raise NotImplementedError
 
     def scattering_matrix(self, *args, **kwargs):
-        """ Calculate the scattering matrix by first calculating the self-energy
+        r""" Calculate the scattering matrix by first calculating the self-energy
 
         Any arguments that is passed to this method is directly passed to `self_energy`.
 
@@ -64,11 +64,13 @@ class SelfEnergy(object):
         --------
 
         Calculating both the self-energy and the scattering matrix.
+
         >>> SE = SelfEnergy(...)
         >>> self_energy = SE.self_energy(0.1)
         >>> gamma = SE.scattering_matrix(0.1)
 
         For a huge performance boost, please do:
+
         >>> SE = SelfEnergy(...)
         >>> self_energy = SE.self_energy(0.1)
         >>> gamma = SE.se2scat(self_energy)
@@ -86,12 +88,12 @@ class SelfEnergy(object):
         return self.se2scat(self.self_energy(*args, **kwargs))
 
     def __getattr__(self, attr):
-        """ Overload attributes from the hosting object """
+        r""" Overload attributes from the hosting object """
         pass
 
 
 class SemiInfinite(SelfEnergy):
-    """ Self-energy object able to calculate the dense self-energy for a given `SparseGeometry` in a semi-infinite chain.
+    r""" Self-energy object able to calculate the dense self-energy for a given `SparseGeometry` in a semi-infinite chain.
 
     Parameters
     ----------
@@ -614,7 +616,7 @@ class RealSpaceSE(SelfEnergy):
                  '{parent}\n}}').format(**d)
 
     def set_options(self, **options):
-        """ Update options in the real-space self-energy
+        r""" Update options in the real-space self-energy
 
         After updating options one should re-call `initialize` for consistency.
 
@@ -656,7 +658,7 @@ class RealSpaceSE(SelfEnergy):
         return P0
 
     def real_space_coupling(self, ret_indices=False):
-        """ Real-space coupling parent where sites fold into the parent real-space unit cell
+        r""" Real-space coupling parent where sites fold into the parent real-space unit cell
 
         The resulting parent object only contains the inner-cell couplings for the elements that couple
         out of the real-space matrix.
@@ -725,7 +727,7 @@ class RealSpaceSE(SelfEnergy):
         return PC
 
     def initialize(self):
-        """ Initialize the internal data-arrays used for efficient calculation of the real-space quantities
+        r""" Initialize the internal data-arrays used for efficient calculation of the real-space quantities
 
         This method should first be called *after* all options has been specified.
 
@@ -814,7 +816,7 @@ class RealSpaceSE(SelfEnergy):
             #orbs = self._calc['orbs']
             #iorbs = _a.arangei(orbs.size).reshape(1, -1)
             #I = zeros([G.shape[0], orbs.size], dtype)
-            ## Set diagonal
+            ### Set diagonal
             #I[orbs.ravel(), iorbs.ravel()] = 1.
             #if bulk:
             #    return solve(G, I, True, True)[orbs, iorbs]
@@ -1172,7 +1174,7 @@ class RealSpaceSI(SelfEnergy):
                  'surface:\n  {surface}\n}}').format(**d)
 
     def set_options(self, **options):
-        """ Update options in the real-space self-energy
+        r""" Update options in the real-space self-energy
 
         After updating options one should re-call `initialize` for consistency.
 
@@ -1196,7 +1198,7 @@ class RealSpaceSI(SelfEnergy):
         self._options.update(options)
 
     def real_space_parent(self):
-        """ Fully expanded real-space surface parent
+        r""" Fully expanded real-space surface parent
 
         Notes
         -----
@@ -1213,7 +1215,7 @@ class RealSpaceSI(SelfEnergy):
         return P0
 
     def real_space_coupling(self, ret_indices=False):
-        """ Real-space coupling surafec where the outside fold into the surface real-space unit cell
+        r""" Real-space coupling surafec where the outside fold into the surface real-space unit cell
 
         The resulting parent object only contains the inner-cell couplings for the elements that couple
         out of the real-space matrix.

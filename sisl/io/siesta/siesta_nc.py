@@ -468,7 +468,6 @@ class ncSileSiesta(SileCDFSiesta):
         Ef : float, optional
            the Fermi level of the electronic structure (in eV), default to 0.
         """
-        H.finalize()
         csr = H._csr.copy()
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_hamiltonian cannot write a zero element sparse matrix!')
