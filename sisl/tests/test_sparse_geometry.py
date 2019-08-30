@@ -392,28 +392,6 @@ class TestSparseAtom(object):
         assert np.allclose(s1[1, [1, 2, 4], 0], np.zeros([3], np.int32))
         assert np.allclose(s1[1, [1, 2, 4], 1], np.ones([3], np.int32)*2)
 
-        s2 = SparseAtom.fromsp(g, lil1, lil2)
-        assert s2.nnz == 6
-        assert np.allclose(s2.shape, [g.na, g.na_s, 2])
-
-        assert np.allclose(s2[0, [1, 2, 3], 0], np.ones([3], np.int32))
-        assert np.allclose(s2[0, [1, 2, 3], 1], np.zeros([3], np.int32))
-        assert np.allclose(s2[1, [1, 2, 4], 0], np.zeros([3], np.int32))
-        assert np.allclose(s2[1, [1, 2, 4], 1], np.ones([3], np.int32)*2)
-
-        assert s1.spsame(s2)
-
-    @pytest.mark.xfail(raises=ValueError)
-    def test_fromsp3(self, setup):
-        g = setup.g.repeat(2, 0).tile(2, 1)
-        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
-        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
-        lil1[0, [1, 2, 3]] = 1
-        lil2[1, [2, 4, 1]] = 2
-
-        # Ensure that one does not mix everything.
-        SparseAtom.fromsp(g, [lil1], lil2)
-
     @pytest.mark.xfail(raises=ValueError)
     def test_fromsp4(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)

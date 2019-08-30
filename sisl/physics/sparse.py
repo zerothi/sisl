@@ -122,34 +122,53 @@ class SparseOrbitalBZ(SparseOrbital):
     S = property(_get_S, _set_S, doc="Access elements to the sparse overlap")
 
     @classmethod
-    def fromsp(cls, geometry, P, S=None):
-        r""" Read and return the object with possible overlap """
-        # Calculate maximum number of connections per row
-        nc = 0
+    def fromsp(cls, geometry, P, S=None, **kwargs):
+        r""" Create a sparse model from a preset `Geometry` and a list of sparse matrices
 
+        The passed sparse matrices are in one of `scipy.sparse` formats.
+
+        Parameters
+        ----------
+        geometry : Geometry
+           geometry to describe the new sparse geometry
+        P : list of scipy.sparse or scipy.sparse
+           the new sparse matrices that are to be populated in the sparse
+           matrix
+        S : scipy.sparse, optional
+           if provided this refers to the overlap matrix and will force the
+           returned sparse matrix to be non-orthogonal
+        **kwargs : optional
+           any arguments that are directly passed to the ``__init__`` method
+           of the class.
+
+        Returns
+        -------
+        SparseGeometry
+             a new sparse matrix that holds the passed geometry and the elements of `P` and optionally being non-orthogonal if `S` is not none
+        """
         # Ensure list of csr format (to get dimensions)
         if isspmatrix(P):
             P = [P]
+        if isinstance(P, tuple):
+            P = list(P)
 
         # Number of dimensions
         dim = len(P)
+        nnzpr = 1
         # Sort all indices for the passed sparse matrices
         for i in range(dim):
             P[i] = P[i].tocsr()
             P[i].sort_indices()
             P[i].sum_duplicates()
 
-        # Figure out the maximum connections per
-        # row to reduce number of re-allocations to 0
-        for i in range(P[0].shape[0]):
-            nc = max(nc, P[0][i, :].getnnz())
+            nnzpr = max(nnzpr, P[i].nnz // P[i].shape[0])
 
         # Create the sparse object
-        p = cls(geometry, dim, P[0].dtype, nc, orthogonal=S is None)
+        p = cls(geometry, dim, P[0].dtype, nnzpr, orthogonal=S is None, **kwargs)
 
         if p._size != P[0].shape[0]:
             raise ValueError(cls.__name__ + '.fromsp cannot create a new class, the geometry ' + \
-                             'and sparse matrices does not have coinciding dimensions size != sp.shape[0]')
+                             'and sparse matrices does not have coinciding dimensions size != P[0].shape[0]')
 
         for i in range(dim):
             ptr = P[i].indptr
@@ -194,6 +213,13 @@ class SparseOrbitalBZ(SparseOrbital):
         local : bool, optional
            whether the orbital index is the global index, or the local index relative to
            the atom it resides on.
+
+        Yields
+        ------
+        ia
+           atomic index
+        io
+           orbital index
         """
         for ia, io in self.geometry.iter_orbitals(local=local):
             yield ia, io

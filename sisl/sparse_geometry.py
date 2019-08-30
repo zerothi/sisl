@@ -17,7 +17,7 @@ from ._indices import indices_only
 from ._help import get_dtype
 from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange
-from .sparse import SparseCSR
+from .sparse import SparseCSR, isspmatrix
 
 __all__ = ['SparseAtom', 'SparseOrbital']
 
@@ -675,49 +675,64 @@ class _SparseGeometry(object):
         return self._csr.spsame(other._csr)
 
     @classmethod
-    def fromsp(cls, geom, *sp):
-        """ Create a sparse model from a preset Geometry and a list of sparse matrices """
-        # Ensure it is a list (no tuples can be used)
-        sp = list(sp)
-        for i, s in enumerate(sp):
-            if isinstance(s, (tuple, list)):
-                # Downcast to a single list of sparse matrices
-                if len(sp) > 1:
-                    raise ValueError("Argument should be a single list or a sequence of arguments, not both.")
-                sp = s
-                break
+    def fromsp(cls, geometry, P, **kwargs):
+        r""" Create a sparse model from a preset `Geometry` and a list of sparse matrices
+
+        The passed sparse matrices are in one of `scipy.sparse` formats.
+
+        Parameters
+        ----------
+        geometry : Geometry
+           geometry to describe the new sparse geometry
+        P : list of scipy.sparse or scipy.sparse
+           the new sparse matrices that are to be populated in the sparse
+           matrix
+        **kwargs : optional
+           any arguments that are directly passed to the ``__init__`` method
+           of the class.
+
+        Returns
+        -------
+        SparseGeometry
+             a new sparse matrix that holds the passed geometry and the elements of `P`
+        """
+        # Ensure list of * format (to get dimensions)
+        if isspmatrix(P):
+            P = [P]
+        if isinstance(P, tuple):
+            P = list(P)
 
         # Number of dimensions
-        dim = len(sp)
+        dim = len(P)
         nnzpr = 1
         # Sort all indices for the passed sparse matrices
         for i in range(dim):
-            sp[i] = sp[i].tocsr()
-            sp[i].sort_indices()
-            sp[i].sum_duplicates()
+            P[i] = P[i].tocsr()
+            P[i].sort_indices()
+            P[i].sum_duplicates()
 
             # Figure out the maximum connections per
             # row to reduce number of re-allocations to 0
-            nnzpr = max(nnzpr, sp[i].nnz // sp[i].shape[0])
+            nnzpr = max(nnzpr, P[i].nnz // P[i].shape[0])
 
         # Create the sparse object
-        S = cls(geom, dim, sp[0].dtype, nnzpr)
+        p = cls(geometry, dim, P[0].dtype, nnzpr, **kwargs)
 
-        if S._size != sp[0].shape[0]:
+        if p._size != P[0].shape[0]:
             raise ValueError(cls.__name__ + '.fromsp cannot create a new class, the geometry ' + \
-                             'and sparse matrices does not have coinciding dimensions size != sp.shape[0]')
+                             'and sparse matrices does not have coinciding dimensions size != P[0].shape[0]')
 
         for i in range(dim):
-            ptr = sp[i].indptr
-            col = sp[i].indices
-            D = sp[i].data
+            ptr = P[i].indptr
+            col = P[i].indices
+            D = P[i].data
 
             # loop and add elements
-            for r in range(S.shape[0]):
+            for r in range(p.shape[0]):
                 sl = slice(ptr[r], ptr[r+1], None)
-                S[r, col[sl], i] = D[sl]
+                p[r, col[sl], i] = D[sl]
 
-        return S
+        return p
 
     ###############################
     # Overload of math operations #
