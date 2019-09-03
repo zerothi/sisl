@@ -1,6 +1,11 @@
 0.9.7
 =====
 
+- Changed edges method to not exclude it-self by default.
+	This is because it is not intuitive given the default exclude=None
+
+	Note: this may break compatibility with other software/scripts.
+
 - Added mulliken charge calculations and orbital angular momentum
 	for SO DM, fixes #136
 

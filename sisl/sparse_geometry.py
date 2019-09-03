@@ -202,9 +202,8 @@ class _SparseGeometry(object):
         ----------
         atom : int or list of int
             the edges are returned only for the given atom
-        exclude : int or list of int, optional
+        exclude : int or list of int or None, optional
            remove edges which are in the `exclude` list.
-           Default to `atom`.
 
         See Also
         --------
@@ -1390,9 +1389,8 @@ class SparseOrbital(_SparseGeometry):
         atom : int or list of int
             the edges are returned only for the given atom (but by using  all orbitals of the
             requested atom). The returned edges are also atoms.
-        exclude : int or list of int, optional
+        exclude : int or list of int or None, optional
            remove edges which are in the `exclude` list.
-           Default to `atom`.
         orbital : int or list of int
             the edges are returned only for the given orbital. The returned edges are orbitals.
 

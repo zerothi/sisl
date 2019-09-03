@@ -113,7 +113,7 @@ def test_sparse_orbital_bz_hermitian(n0, n1, n2):
     s = s.tile(n0, 0).tile(n1, 1).tile(n2, 2)
     no = s.geometry.no
 
-    nnz = no
+    nnz = 0
     for io in range(no):
         # orbitals connecting to io
         edges = s.edges(io)

@@ -780,7 +780,7 @@ def test_edges1(setup):
     s1[1, 2] = 2
     s1[1, 3] = 3
     assert np.all(s1.edges(1, exclude=[]) == [1, 2, 3])
-    assert np.all(s1.edges(1) == [2, 3])
+    assert np.all(s1.edges(1, exclude=[1]) == [2, 3])
     assert np.all(s1.edges(1, exclude=2) == [1, 3])
     assert len(s1.edges(2)) == 0
 

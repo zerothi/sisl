@@ -307,8 +307,8 @@ class TestSparseAtom(object):
         g = graphene(atom=Atom(6, R=1.43))
         s = SparseAtom(g)
         s.construct([[0.1, 1.43], [1, 2]])
-        assert len(s.edges(0)) == 3
-        assert len(s.edges(0, exclude=[])) == 4
+        assert len(s.edges(0)) == 4
+        assert len(s.edges(0, exclude=[0])) == 3
 
     def test_op_numpy_scalar(self, setup):
         g = graphene(atom=Atom(6, R=1.43))
@@ -427,7 +427,7 @@ def test_sparse_atom_symmetric(n0, n1, n2):
     s = s.tile(n0, 0).tile(n1, 1).tile(n2, 2)
     na = s.geometry.na
 
-    nnz = na
+    nnz = 0
     for ia in range(na):
         # orbitals connecting to ia
         edges = s.edges(ia)

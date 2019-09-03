@@ -1288,7 +1288,7 @@ class RealSpaceSI(SelfEnergy):
         # semi-infinite direction
         atom_semi = []
         for atom in PC_semi.geometry:
-            if len(PC_semi.edges(atom, exclude=[])) > 0:
+            if len(PC_semi.edges(atom)) > 0:
                 atom_semi.append(atom)
         atom_semi = _a.arrayi(atom_semi)
         expand(atom_semi, n_unfold, self.semi.spgeom1.geometry.na, self.surface.geometry.na)

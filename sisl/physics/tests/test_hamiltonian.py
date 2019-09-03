@@ -1367,7 +1367,7 @@ class TestHamiltonian(object):
         R, param = [0.1, 1.5], [1., 0.1]
         H = Hamiltonian(setup.g)
         H.construct([R, param])
-        assert len(H.edges(0)) == 3
+        assert len(H.edges(0)) == 4
 
     @pytest.mark.xfail(raises=ValueError)
     def test_edges2(self, setup):
@@ -1395,17 +1395,17 @@ class TestHamiltonian(object):
         H2 = setup.H2.copy()
         H2.construct(func)
         # first atom
-        assert len(H2.edges(0)) == 3
+        assert len(H2.edges(0)) == 4
         # orbitals of first atom
         edge = H2.edges(orbital=[0, 1])
-        assert len(edge) == 6
-        assert len(H2.geom.o2a(edge, unique=True)) == 3
+        assert len(edge) == 8
+        assert len(H2.geom.o2a(edge, unique=True)) == 4
 
         # first orbital on first two atoms
         edge = H2.edges(orbital=[0, 2])
         # The 1, 3 are still on the first two atoms, but aren't
         # excluded. Hence they are both there
-        assert len(edge) == 10
+        assert len(edge) == 12
         assert len(H2.geom.o2a(edge, unique=True)) == 6
 
         # first orbital on first two atoms

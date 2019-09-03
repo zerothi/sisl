@@ -419,11 +419,10 @@ class SparseCSR(object):
             the edges are returned only for the given row
         exclude : int or list of int, optional
            remove edges which are in the `exclude` list.
-           Default to `row`.
         """
         row = unique(_a.asarrayi(row))
         if exclude is None:
-            exclude = row
+            exclude = []
         else:
             exclude = unique(_a.asarrayi(exclude))
 
