@@ -66,7 +66,7 @@ class bandsSileSiesta(SileSiesta):
             k = np.empty([nk, 3], np.float64)
             for ik in range(nk):
                 l = [float(x) for x in self.readline().split()]
-                k[ik, :] = l[0:2]
+                k[ik, :] = l[0:3]
                 del l[2]
                 del l[1]
                 del l[0]
