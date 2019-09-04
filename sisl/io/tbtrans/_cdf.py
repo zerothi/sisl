@@ -12,6 +12,7 @@ from .sile import SileCDFTBtrans
 from sisl.messages import warn, info
 from sisl.utils import *
 import sisl._array as _a
+from sisl._indices import indices
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
@@ -456,7 +457,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
            to the geometry ``self.geometry.sub(self.a_dev)``.
         sort : bool, optional
            Whether the returned indices are sorted. Mostly useful if you want to handle
-           the device in a non-pivoted manner.
+           the device in a non-pivoted order.
 
         Examples
         --------
