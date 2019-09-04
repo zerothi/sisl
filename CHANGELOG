@@ -1,6 +1,8 @@
 0.9.7
 =====
 
+- Added Siesta LDOS charge handling
+
 - Changed edges method to not exclude it-self by default.
 	This is because it is not intuitive given the default exclude=None
 
@@ -23,7 +25,7 @@
 
 - Fixed reading ASE xyz outputs, thanksto JL. Bertelsen,
 
-- Fixed a tyo in fdf reading onlyS, thanks to JL. Bertelsen, #135
+- Fixed a typo in fdf reading onlyS, thanks to JL. Bertelsen, #135
 
 - Enabled reading arbitrary self-energy by requesting an energy and k-point
 	from TSGF files.
