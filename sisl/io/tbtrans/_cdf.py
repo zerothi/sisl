@@ -276,11 +276,11 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     @property
     def a_dev(self):
-        """ Atomic indices (0-based) of device atoms """
+        """ Atomic indices (0-based) of device atoms (sorted) """
         return self._value('a_dev') - 1
 
     def a_elec(self, elec):
-        """ Electrode atomic indices for the full geometry
+        """ Electrode atomic indices for the full geometry (sorted)
 
         Parameters
         ----------
@@ -306,7 +306,12 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     @property
     def o_dev(self):
-        """ Orbital indices (0-based) of device orbitals """
+        """ Orbital indices (0-based) of device orbitals (sorted)
+
+        See Also
+        --------
+        pivot : retrieve the device orbitals, non-sorted
+        """
         return self.pivot(sort=True)
 
     @property
@@ -359,15 +364,41 @@ class _devncSileTBtrans(_ncSileTBtrans):
             return 0. # unknown!
 
     def electron_temperature(self, elec):
-        """ Electron bath temperature [Kelvin] """
+        """ Electron bath temperature [Kelvin]
+
+        Parameters
+        ----------
+        elec : str or int
+           electrode to extract the temperature from
+
+        See Also
+        --------
+        kT: bath temperature in [eV]
+        """
         return self._value('kT', self._elec(elec))[0] * Ry2K
 
     def kT(self, elec):
-        """ Electron bath temperature [eV] """
+        """ Electron bath temperature [eV]
+
+        Parameters
+        ----------
+        elec : str or int
+           electrode to extract the temperature from
+
+        See Also
+        --------
+        electron_temperature: bath temperature in [K]
+        """
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
     def bloch(self, elec):
-        """ Bloch-expansion coefficients for an electrode """
+        """ Bloch-expansion coefficients for an electrode
+
+        Parameters
+        ----------
+        elec : str or int
+           bloch expansions of electrode
+        """
         return self._value('bloch', self._elec(elec))
 
     def n_btd(self, elec=None):
@@ -382,7 +413,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return len(self._dimension('n_btd', self._elec(elec)))
 
     def btd(self, elec=None):
-        """ Block-sizes for the BTD method in the device region
+        """ Block-sizes for the BTD method in the device/electrode region
 
         Parameters
         ----------
@@ -418,12 +449,14 @@ class _devncSileTBtrans(_ncSileTBtrans):
         Parameters
         ----------
         elec : str or int
-           the corresponding electrode to return the self-energy from
+           the corresponding electrode to return the pivoting indices from
         in_device : bool, optional
-           If ``True`` the pivoting table will be translated to the device region orbitals
+           If ``True`` the pivoting table will be translated to the device region orbitals.
+           If `sort` is also true, this would correspond to the orbitals directly translated
+           to the geometry ``self.geometry.sub(self.a_dev)``.
         sort : bool, optional
-           Whether the returned indices are sorted. Mostly useful if the self-energies are returned
-           sorted as well.
+           Whether the returned indices are sorted. Mostly useful if you want to handle
+           the device in a non-pivoted manner.
 
         Examples
         --------
