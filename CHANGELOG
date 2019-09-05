@@ -1,6 +1,9 @@
 0.9.7
 =====
 
+- Added `overlap` method to `Geometry` to find overlapping atoms
+	between two geometries.
+
 - Added Siesta LDOS charge handling
 
 - Changed edges method to not exclude it-self by default.
