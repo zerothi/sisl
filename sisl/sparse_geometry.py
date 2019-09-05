@@ -249,7 +249,7 @@ class _SparseGeometry(object):
         sc = self.sc.copy()
         # Try first in the new one, then we figure out what to do
         sc.set_nsc(*args, **kwargs)
-        if np.all(sc.nsc == self.sc.nsc):
+        if np.allclose(sc.nsc, self.sc.nsc):
             return
 
         # Create an array of all things that should be translated
@@ -2253,7 +2253,7 @@ class SparseOrbital(_SparseGeometry):
             #  responsibility)
             s1 = spg1.geometry.atoms.sub(spg1_idx).reorder().firsto
             s2 = spg2.geometry.atoms.sub(idx).reorder().firsto
-            if not np.all(s1 == s2):
+            if not np.allclose(s1, s2):
                 raise ValueError(_error + 'requires geometries to have the same '
                                  'number of orbitals in the overlapping region.')
 

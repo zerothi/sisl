@@ -9,7 +9,7 @@ from numpy import ndarray, int32
 from numpy import empty, zeros, asarray, arange
 from numpy import insert, take, delete, copyto, split
 from numpy import intersect1d, setdiff1d, unique, in1d
-from numpy import diff, count_nonzero
+from numpy import diff, count_nonzero, allclose
 from numpy import any as np_any
 from numpy import all as np_all
 from numpy import atleast_1d
@@ -575,7 +575,7 @@ class SparseCSR(object):
             raise ValueError(self.__class__.__name__+".translate_columns requires input and output columns with "
                              "equal length")
 
-        if np_all(old == new):
+        if allclose(old, new):
             # No need to translate anything...
             return
 

@@ -309,7 +309,7 @@ class SuperCell(object):
         else:
             copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc), origo=origo)
         # Ensure that the correct super-cell information gets carried through
-        if not np.all(copy.sc_off == self.sc_off):
+        if not np.allclose(copy.sc_off, self.sc_off):
             copy.sc_off = self.sc_off
         return copy
 
@@ -909,7 +909,7 @@ class SuperCell(object):
             return False
         for tol in [1e-2, 1e-3, 1e-4]:
             same = np.allclose(self.cell, other.cell, atol=tol)
-        same = same and np.all(self.nsc == other.nsc)
+        same = same and np.allclose(self.nsc, other.nsc)
         same = same and np.allclose(self.origo, other.origo, atol=tol)
         return same
 

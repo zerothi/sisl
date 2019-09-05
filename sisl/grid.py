@@ -453,7 +453,7 @@ class Grid(SuperCellChild):
         idx = _a.asarrayi(idx).ravel()
         shift_geometry = False
         if len(idx) > 1:
-            if np.all(np.diff(idx) == 1):
+            if np.allclose(np.diff(idx), 1):
                 shift_geometry = not self.geometry is None
 
         if shift_geometry:
