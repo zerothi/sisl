@@ -959,6 +959,59 @@ class Geometry(SuperCellChild):
         g._names = self.names.copy()
         return g
 
+    def overlap(self, other, eps=0.1, offset=(0., 0., 0.), offset_other=(0., 0., 0.)):
+        """ Calculate the overlapping indices between two geometries
+
+        Find equivalent atoms (in the primary unit-cell only) in two geometries.
+        This routine finds which atoms have the same atomic positions in `self` and `other`.
+
+        Note that this will return duplicate overlapping atoms if one atoms lies within `eps`
+        of more than 1 atom in `other`.
+
+        Parameters
+        ----------
+        other : Geometry
+           Geometry to compare with `self`
+        eps : float, optional
+           atoms within this distance will be considered *equivalent*
+        offset : list of float, optional
+           offset for `self.xyz` before comparing
+        offset_other : list of float, optional
+           offset for `other.xyz` before comparing
+
+        Examples
+        --------
+        >>> gr22 = sisl.geom.graphene().tile(2, 0).tile(2, 1)
+        >>> gr44 = gr22.tile(2, 0).tile(2, 1)
+        >>> offset = np.array([0.2, 0.4, 0.4])
+        >>> gr22 = gr22.translate(offset)
+        >>> idx = np.arange(len(gr22))
+        >>> np.random.shuffle(idx)
+        >>> gr22 = gr22.sub(idx)
+        >>> idx22, idx44 = gr22.overlapping_atoms(gr44, offset=-offset)
+        >>> assert idx22 == np.arange(len(gr22))
+        >>> assert idx44 == idx
+
+        Returns
+        -------
+        idx_self : numpy.ndarray of int
+             indices in `self` that are equivalent with `idx_other`
+        idx_other : numpy.ndarray of int
+             indices in `other` that are equivalent with `idx_self`
+        """
+        s_xyz = self.xyz + (_a.arrayd(offset) - _a.arrayd(offset_other)).reshape(1, 3)
+        idx_self = []
+        self_append = idx_self.append
+        idx_other = []
+        other_append = idx_other.append
+
+        for ia, xyz in enumerate(s_xyz):
+            idx = other.close_sc(xyz, R=(eps,))
+            for ja in idx:
+                self_append(ia)
+                other_append(ja)
+        return _a.arrayi(idx_self), _a.arrayi(idx_other)
+
     def sort(self, axes=(2, 1, 0)):
         """ Return an equivalent geometry by sorting the coordinates according to the axis orders
 

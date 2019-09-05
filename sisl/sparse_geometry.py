@@ -1297,7 +1297,7 @@ class SparseAtom(_SparseGeometry):
         return R
 
     def Rij(self, dtype=np.float64):
-        r""" Create a sparse matrix with the vectors between atoms
+        r""" Create a sparse matrix with vectors between atoms
 
         Parameters
         ----------

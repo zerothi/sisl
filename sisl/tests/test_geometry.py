@@ -1255,3 +1255,15 @@ class TestGeometry(object):
         assert np.allclose(gr.xyz, from_ase.xyz)
         assert np.allclose(gr.cell, from_ase.cell)
         assert np.allclose(gr.atoms.Z, from_ase.atoms.Z)
+
+    def test_geometry_overlapping_atoms(self):
+        gr22 = sisl_geom.graphene().tile(2, 0).tile(2, 1)
+        gr44 = gr22.tile(2, 0).tile(2, 1)
+        offset = np.array([0.2, 0.4, 0.4])
+        gr22 = gr22.translate(offset)
+        idx = np.arange(gr22.na)
+        np.random.shuffle(idx)
+        gr22 = gr22.sub(idx)
+        idx22, idx44 = gr22.overlap(gr44, offset=-offset)
+        assert np.allclose(idx22, np.arange(gr22.na))
+        assert np.allclose(idx44, idx)
