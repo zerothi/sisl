@@ -2093,7 +2093,10 @@ class SparseOrbital(_SparseGeometry):
         Examples
         --------
         >>> sporb = SparseOrbital(....)
-        >>> forced_hermitian = (sporb + sporb.transpose()) * 0.5
+        >>> sporb2 = sporb.append(sporb, 0)
+        >>> sporbt = sporb.tile(2, 0)
+        >>> sporb2.spsame(sporbt)
+        True
 
         Notes
         -----

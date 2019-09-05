@@ -16,7 +16,7 @@ __all__ = ['oplist']
 
 
 class oplist(list):
-    """ list with inter-operations
+    """ list with element-wise operations
 
     List-inherited class implementing direct element operations instead of list-extensions/compressions.
     When having multiple lists and one wishes to create a sum of individual elements, thus
