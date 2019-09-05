@@ -988,7 +988,7 @@ class Geometry(SuperCellChild):
         >>> idx = np.arange(len(gr22))
         >>> np.random.shuffle(idx)
         >>> gr22 = gr22.sub(idx)
-        >>> idx22, idx44 = gr22.overlapping_atoms(gr44, offset=-offset)
+        >>> idx22, idx44 = gr22.overlap(gr44, offset=-offset)
         >>> assert idx22 == np.arange(len(gr22))
         >>> assert idx44 == idx
 
