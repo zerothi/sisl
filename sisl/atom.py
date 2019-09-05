@@ -1471,7 +1471,7 @@ class Atoms(object):
         # This will give the indices of the species
         # in the ascending order
         isort = np.argsort(smin)
-        if np.all(np.diff(isort) == 0):
+        if np.allclose(np.diff(isort), 0):
             # No swaps required
             return self.copy()
 

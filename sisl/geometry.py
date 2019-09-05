@@ -480,7 +480,7 @@ class Geometry(SuperCellChild):
 
         if isinstance(ja, Integral):
             return xj[:] - xi[:]
-        elif np.all(xi.shape == xj.shape):
+        elif np.allclose(xi.shape, xj.shape):
             return xj - xi
 
         return xj - xi[None, :]
