@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. G. Singh, K. Kumar, R. K. Moudgil,
+   *Alloying-induced Spin Seebeck Effect and Spin Figure of Merit in Pt-based Bimetallic Atomic Wires of Noble Metals*,
+   Physical Chemistry Chemical Physics `(2019) <https://doi.org/10.1039/C9CP01671F>`_
+
 #. L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
    *Exchange interactions from a nonorthogonal basis set: From bulk ferromagnetsto the magnetism in low-dimensional graphene systems*,
    Physical Review B **99**, `224412 (2019) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.99.224412>`_
