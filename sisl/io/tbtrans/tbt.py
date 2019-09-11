@@ -2214,10 +2214,26 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             @collect_action
             def __call__(self, parser, ns, value, option_string=None):
-                ns._krng = int(value)
+                try:
+                    ns._krng = int(value)
+                except:
+                    # Parse it as an array
+                    if ',' in value:
+                        k = map(float, value.split(','))
+                    else:
+                        k = map(float, value.split())
+                    k = list(k)
+                    if len(k) != 3:
+                        raise ValueError('Argument --kpoint *must* be an integer or 3 values to find the corresponding k-index')
+                    ns._krng = ns._tbt.kindex(k)
+                # Add a description on which k-point this is
+                k = ns._tbt.k[ns._krng]
+                ns._data_description.append('Data is extracted at k-point: [{} {} {}]'.format(k[0], k[1], k[2]))
+
         if not self._k_avg:
             p.add_argument('--kpoint', '-k', action=kRange,
-                           help="""Denote a specific k-index that is extracted, default to k-averaged quantity.
+                           help="""Denote a specific k-index or comma/white-space separated k-point that is extracted, default to k-averaged quantity.
+                           For specific k-points the k weight will not be used.
 
                            This flag takes effect on all k-resolved quantities and is reset whenever --plot or --out is called""")
 
