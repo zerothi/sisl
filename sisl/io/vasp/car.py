@@ -135,7 +135,7 @@ class carSileVASP(SileVASP):
 
         xyz = np.empty([na, 3], np.float64)
         for ia in range(na):
-            xyz[ia, :] = list(map(float, self.readline().split()))
+            xyz[ia, :] = list(map(float, self.readline().split()[:3]))
         if cart:
             # The unit of the coordinates are cartesian
             xyz *= self._scale
