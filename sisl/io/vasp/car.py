@@ -14,18 +14,24 @@ __all__ = ['carSileVASP']
 
 
 class carSileVASP(SileVASP):
-    """ Geometry informaation
+    """ *CAR VASP files for defining geomtries
 
     This file-object handles both POSCAR and CONTCAR files
     """
 
     def _setup(self, *args, **kwargs):
-        """ Setup the `poscarSile` after initialization """
+        """ Setup the `carSile` after initialization """
         self._scale = 1.
 
     @sile_fh_open()
-    def write_geometry(self, geom):
-        """ Writes the geometry to the contained file """
+    def write_geometry(self, geometry):
+        """ Writes the geometry to the contained file
+
+        Parameters
+        ----------
+        geometry : Geometry
+           geometry to be written to the file
+        """
         # Check that we can write to the file
         sile_raise_write(self)
 
@@ -39,20 +45,20 @@ class carSileVASP(SileVASP):
         fmt = ('   ' + '{:18.9f}' * 3) + '\n'
         tmp = np.zeros([3], np.float64)
         for i in range(3):
-            tmp[:3] = geom.cell[i, :]
+            tmp[:3] = geometry.cell[i, :]
             self._write(fmt.format(*tmp))
 
         # Figure out how many species
         pt = PeriodicTable()
         s, d = [], []
         ia = 0
-        while ia < geom.na:
-            atom = geom.atoms[ia]
-            specie = geom.atoms.specie[ia]
-            ia_end = (np.diff(geom.atoms.specie[ia:]) != 0).nonzero()[0]
+        while ia < geometry.na:
+            atom = geometry.atoms[ia]
+            specie = geometry.atoms.specie[ia]
+            ia_end = (np.diff(geometry.atoms.specie[ia:]) != 0).nonzero()[0]
             if len(ia_end) == 0:
                 # remaining atoms
-                ia_end = geom.na
+                ia_end = geometry.na
             else:
                 ia_end = ia + ia_end[0] + 1
             s.append(pt.Z_label(atom.Z))
@@ -66,8 +72,8 @@ class carSileVASP(SileVASP):
         self._write('Cartesian\n')
 
         fmt = '{:18.9f}' * 3 + '\n'
-        for ia in geom:
-            self._write(fmt.format(*geom.xyz[ia, :]))
+        for ia in geometry:
+            self._write(fmt.format(*geometry.xyz[ia, :]))
 
     @sile_fh_open(True)
     def read_supercell(self):
