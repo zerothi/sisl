@@ -298,7 +298,10 @@ class Geometry(SuperCellChild):
             return np.flatnonzero(atom)
         # We shouldn't .ravel() since the calling routine may expect
         # a 0D vector.
-        return _a.asarrayi(atom)
+        atom = _a.asarrayi(atom)
+        if atom.ndim > 1:
+            raise ValueError('Indexing geometries with a multi-dimensional array is not supported, ensure 0D or 1D arrays.')
+        return atom
 
     def _sanitize_orb(self, orbital):
         """ Converts an `orbital` to index under given inputs
@@ -311,7 +314,10 @@ class Geometry(SuperCellChild):
             return np.flatnonzero(orbital)
         # We shouldn't .ravel() since the calling routine may expect
         # a 0D vector.
-        return _a.asarrayi(orbital)
+        orbital = _a.asarrayi(orbital)
+        if orbital.ndim > 1:
+            raise ValueError('Indexing geometries with a multi-dimensional array is not supported, ensure 0D or 1D arrays.')
+        return orbital
 
     def as_primary(self, na_primary, ret_super=False):
         """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms
