@@ -6,6 +6,7 @@ from numbers import Integral
 import numpy as np
 from numpy import int32
 from numpy import insert, unique, take, delete, argsort
+from numpy import diff, allclose
 from numpy import tile, repeat, concatenate
 
 from . import _array as _a
@@ -249,7 +250,7 @@ class _SparseGeometry(object):
         sc = self.sc.copy()
         # Try first in the new one, then we figure out what to do
         sc.set_nsc(*args, **kwargs)
-        if np.allclose(sc.nsc, self.sc.nsc):
+        if allclose(sc.nsc, self.sc.nsc):
             return
 
         # Create an array of all things that should be translated
@@ -546,7 +547,7 @@ class _SparseGeometry(object):
             if not isinstance(func, (tuple, list)):
                 raise ValueError('Passed `func` which is not a function, nor tuple/list of `R, param`')
 
-            if np.any(np.diff(self.geometry.lasto) > 1):
+            if np.any(diff(self.geometry.lasto) > 1):
                 raise ValueError("Automatically setting a sparse model "
                               "for systems with atoms having more than 1 "
                               "orbital *must* be done by your-self. You have to define a corresponding `func`.")
@@ -2073,7 +2074,7 @@ class SparseOrbital(_SparseGeometry):
         """
         return other.append(self, axis, eps)
 
-    def append(self, other, axis, eps=0.01):
+    def append(self, other, axis, eps=0.01, scale=1):
         """ Append `other` along `axis` to construct a new connected sparse matrix
 
         This method tries to append two sparse geometry objects together by
@@ -2098,13 +2099,21 @@ class SparseOrbital(_SparseGeometry):
         >>> sporb2.spsame(sporbt)
         True
 
+        To retain couplings only from the *left* sparse matrix, do:
+        >>> sporb = left.append(right, 0, scale=(2, 0))
+        >>> sporb = (sporb + sporb.transpose()) * 0.5
+
+        To retain couplings only from the *right* sparse matrix, do:
+        >>> sporb = left.append(right, 0, scale=(0, 2.))
+        >>> sporb = (sporb + sporb.transpose()) * 0.5
+
         Notes
         -----
-        This routine and how it is functioning may change in future releases.
-        There are many design choices in how to assign the matrix elements when
-        combining two models and it is not clear what is the best procedure.
-
         The current implentation does not preserve the hermiticity of the matrix.
+        If you want to preserve hermiticity of the matrix you have to do the
+        following:
+
+        >>> h = (h + h.transpose()) / 2
 
         Parameters
         ----------
@@ -2117,6 +2126,12 @@ class SparseOrbital(_SparseGeometry):
             It is important that this value is smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
             equivalent atoms. An internal stricter eps is used as a baseline, see above.
+        scale : float or array_like, optional
+            the scale used for the overlapping region. For scalar values it corresponds
+            to passing: ``(scale, scale)``.
+            For array-like input ``scale[0]`` refers to the scale of the matrix elements
+            coupling from `self`, while ``scale[1]`` is the scale of the matrix elements
+            in `other`.
 
         See Also
         --------
@@ -2124,10 +2139,11 @@ class SparseOrbital(_SparseGeometry):
         transpose : ensure hermiticity by using this routine
         Geometry.append
         Geometry.prepend
+        SparseCSR.scale_columns : method used to scale the two matrix elements values
 
         Raises
         ------
-        ValueError if atomic coordinates does not overlap within `eps`
+        ValueError if the two geometries are not compatible for either coordinate, orbital or supercell errors
 
         Returns
         -------
@@ -2141,318 +2157,160 @@ class SparseOrbital(_SparseGeometry):
             raise ValueError(self.__class__.__name__ + '.append requires sparse-geometries to maximally '
                              'have 3 supercells along appending axis.')
 
-        if np.any(self.geometry.nsc != other.geometry.nsc):
+        if not allclose(self.geometry.nsc, other.geometry.nsc):
             raise ValueError(self.__class__.__name__ + '.append requires sparse-geometries to have the same '
                              'number of supercells along all directions.')
+
+        if not allclose(self.geometry.sc._isc_off, other.geometry.sc._isc_off):
+            raise ValueError(self.__class__.__name__ + '.append requires supercell offsets to be the same.')
 
         if self.dim != other.dim:
             raise ValueError(self.__class__.__name__ + '.append requires the same number of dimensions in the matrix')
 
-        # Create sparsity pattern in the atomic picture.
-        # This makes it easier to find the coupling elements along axis.
-        # It could also be done in the orbital space...
+        if np.asarray(scale).size == 1:
+            scale = np.array([scale, scale])
+        scale = np.asarray(scale)
 
-        def _sep_connections(spO, direction):
-            """ Finds atoms that has connections crossing the `axis` along `direction`
+        # Our procedure will be to separate the sparsity patterns into separate chunks
+        # First generate the full geometry
+        full_G = self.geometry.append(other.geometry, axis)
 
-            Returns
-            -------
-            self_connect
-                atoms in `spO` which connects across `direction`
-            other_connect
-                atoms in `spO` which self_connect connects to along `direction`
-            """
-            geom = spO.geometry
-            # We need to copy since we are deleting elements below
-            csr = spO._csr.copy([0])
+        # create the new sparsity patterns with offset
+        # This will create *fake* sparsity patterns in a the space of full_G
+        # with interactions only to it-self.
+        csr = self._csr
+        # New indices and data (the constructor for SparseCSR copies)
+        full_self = self.__class__(full_G, self.dim, self.dtype, 1, **self._cls_kwargs())
+        full_self._csr._D = csr._D.copy()
+        full_self._csr.ptr[:] = csr.ptr[-1]
+        full_self._csr.ptr[:self.geometry.no+1] = csr.ptr[:]
+        full_self._csr.ncol[:] = 0
+        full_self._csr.ncol[:self.geometry.no] = csr.ncol[:]
+        full_self._csr._nnz = csr.ptr[-1]
+        full_self._csr._finalized = csr._finalized
+        # transfer indices
+        transfer_idx = _a.arangei(self.geometry.no_s).reshape(-1, self.geometry.no)
+        transfer_idx += _a.arangei(self.geometry.n_s).reshape(-1, 1) * other.geometry.no
+        # Now translate
+        full_self._csr.col = transfer_idx.ravel()[csr.col]
 
-            # We will retain all connections crossing along the given direction
-            n = spO.shape[0]
+        # create the new sparsity patterns with offset
+        # This will create *fake* sparsity patterns in a the space of full_G
+        # with interactions only to it-self.
+        csr = other._csr
+        # New indices and data (the constructor for SparseCSR copies)
+        full_other = other.__class__(full_G, other.dim, other.dtype, 1, **other._cls_kwargs())
+        full_other._csr._D = csr._D.copy()
+        full_other._csr.ptr[:] = 0
+        full_other._csr.ptr[self.geometry.no:] = csr.ptr[:]
+        full_other._csr.ncol[:] = 0
+        full_other._csr.ncol[self.geometry.no:] = csr.ncol[:]
+        full_other._csr._nnz = csr.ptr[-1]
+        full_other._csr._finalized = csr._finalized
+        # transfer indices
+        transfer_idx = _a.arangei(other.geometry.no_s).reshape(-1, other.geometry.no)
+        transfer_idx += (_a.arangei(1, other.geometry.n_s + 1).reshape(-1, 1)) * self.geometry.no
+        # Now translate
+        full_other._csr.col = transfer_idx.ravel()[csr.col]
 
-            # Figure out the matrix columns we should retain
-            nsc = [None] * 3
-            nsc[axis] = direction
+        # Now we have the two sparse geometries in the full geometry with only their own
+        # matrix elements
 
-            # Get all supercell indices that we should delete from the column specifications
-            idx = delete(_a.arangei(geom.sc.n_s), geom.sc.sc_index(nsc)) * n
+        # What needs to be done is to find the overlapping atoms and transfer indices in
+        # both these sparsity patterns (and then add them)
 
-            # Calculate columns to delete
-            cols = array_arange(idx, n=_a.fulli(idx.shape, n))
+        # 1. find overlapping atoms along axis
+        idx_s_first, idx_o_first = self.geometry.overlap(other.geometry, eps=eps)
+        idx_s_last, idx_o_last = self.geometry.overlap(other.geometry, eps=eps,
+                                                       offset=-self.geometry.sc.cell[axis, :],
+                                                       offset_other=-other.geometry.sc.cell[axis, :])
+        # IFF idx_s_* contains duplicates, then we have multiple overlapping atoms which is not
+        # allowed
+        def _test(diff):
+            if diff.size != diff.nonzero()[0].size:
+                raise ValueError(self.__class__.__name__ + '.append requires that there is maximally one '
+                                 'atom overlapping one other atom in the other structure.')
+        _test(diff(idx_s_first))
+        _test(diff(idx_s_last))
+        # Also ensure that atoms have the same number of orbitals in the two cases
+        if (not allclose(self.geometry.orbitals[idx_s_first], other.geometry.orbitals[idx_o_first])) or \
+           (not allclose(self.geometry.orbitals[idx_s_last], other.geometry.orbitals[idx_o_last])):
+            raise ValueError(self.__class__.__name__ + '.append requires the overlapping geometries '
+                             'to have the same number of orbitals per atom that is to be replaced.')
 
-            # Delete all values in columns, but keep them to retain the supercell information
-            csr.delete_columns(cols, keep_shape=True)
-            # Now we are in a position to find the indices along the append direction
-            self_connect = geom.sc2uc(geom.o2a((csr.ncol > 0).nonzero()[0], True), True)
-
-            # Retrieve the connected atoms in the other structure
-            other_connect = geom.sc2uc(geom.o2a(csr.col[array_arange(csr.ptr[:-1], n=csr.ncol)], True), True)
-
-            return self_connect, other_connect
-
-        # Naming convention:
-        #  P_01 -> [0] -> [1]
-        #  P_10 -> [1] -> [0]
-        #  M_01 -> [0] -> [-1]
-        #  M_10 -> [-1] -> [0]
-        self_P_01, self_P_10 = _sep_connections(self, +1)
-        self_M_01, self_M_10 = _sep_connections(self, -1)
-        other_P_01, other_P_10 = _sep_connections(other, +1)
-        other_M_01, other_M_10 = _sep_connections(other, -1)
-
-        # I.e. the connections in the supercell picture will be:
-        # Note that all indices are not in any supercell (which is why we need to
-        # translate them anyhow).
-
-        def _find_overlap(g1, g1_idx, isc1, g2, g2_idx, isc2, R):
-            """ Finds `g1_idx` atoms in `g2_idx` """
-            xyz1 = g1.axyz(g1_idx, isc=isc1)
-            g1_g2 = []
-            warn_atoms = []
-            for ia, xyz in zip(g1_idx, xyz1):
-                # Only search in the index
-                idx = g2.close_sc(xyz, isc2, R=R, idx=g2_idx)
-                g1_g2.append(_check(idx, ia, warn_atoms))
-            return _a.arrayi(g1_g2).ravel(), warn_atoms
-
-        def _check(idx, atom, warn_atoms):
-            if len(idx[0]) == 0:
-                warn_atoms.append(atom)
-                if len(idx[1]) == 0:
-                    raise ValueError(self.__class__.__name__ + '.append found incompatible self/other within the given eps value.')
-                idx = idx[1]
-            else:
-                idx = idx[0]
-            if len(idx) != 1:
-                raise ValueError(self.__class__.__name__ + '.append found two atoms close to a mirror atom, a too high eps value was given.')
-            return idx
-
-        # Radius to use as precision array
-        R = _a.arrayd([0.001, eps])
-
-        # Initialize arrays for checking
-        self_isc = [0] * 3
-        other_isc = [0] * 3
-
-        def _2(spg1, spg1_idx, spg1_isc, spg2, spg2_idx, spg2_isc, name):
-            _error = self.__class__.__name__ + '.append({}) '.format(name)
-            idx, warn_atoms = _find_overlap(spg1.geometry, spg1_idx, spg1_isc,
-                                            spg2.geometry, spg2_idx, spg2_isc, R)
-            if len(spg1_idx) != len(spg2_idx):
-                raise ValueError(_error + 'did not find an equivalent overlap atoms between the two geometries.')
-            if len(idx) != len(spg2_idx):
-                raise ValueError(_error + 'did not find all overlapping atoms.')
-
-            if len(warn_atoms) > 0:
-                # Sort them and ensure they are a list
-                warn_atoms = str(np.sort(warn_atoms).tolist())
-                warn(_error + 'atoms farther than 0.001 Ang: {}.'.format(warn_atoms))
-
-            # Now we have the atomic indices that we know are "dublicated"
-            # Ensure the number of orbitals are the same in both geometries
-            # (we don't check explicitly names etc. since this should be the users
-            #  responsibility)
-            s1 = spg1.geometry.atoms.sub(spg1_idx).reorder().firsto
-            s2 = spg2.geometry.atoms.sub(idx).reorder().firsto
-            if not np.allclose(s1, s2):
-                raise ValueError(_error + 'requires geometries to have the same '
-                                 'number of orbitals in the overlapping region.')
-
-            return idx
-
-        # in the full sparse geometry:
-        # [0] <-> [0]
-        self_isc[axis] = 0
-        other_isc[axis] = 0
-        self_P_10_to_other_M_01 = _2(self, self_P_10, self_isc,
-                                     other, other_M_01, other_isc, 'self[0] -> other[0]')
-
-        self_isc[axis] = -1
-        other_isc[axis] = -1
-        other_M_10_to_self_P_01 = _2(other, other_M_10, other_isc,
-                                     self, self_P_01, self_isc, 'other[0] -> self[0]')
-
-        # [0] -> [-1]
-        self_isc[axis] = -1
-        other_isc[axis] = -1
-        self_M_10_to_other_P_01 = _2(self, self_M_10, self_isc,
-                                     other, other_P_01, other_isc, 'self[0] -> other[-1]')
-
-        # [0] -> [1]
-        self_isc[axis] = 0
-        other_isc[axis] = 0
-        other_P_10_to_self_M_01 = _2(other, other_P_10, other_isc,
-                                     self, self_M_01, self_isc, 'other[0] -> self[1]')
-
-        # Clean-up
-        del self_isc, other_isc
-
-        # Now we have the following operations to perform
-        self_no = self.geometry.no
-        other_no = other.geometry.no
-        total_no = self_no + other_no
-
-        # Now create the combined geometry + sparse matrix
-        total_geom = self.geometry.append(other, axis)
-        sc = total_geom.sc
-
-        # 1. create a copy of the sparse-geometries
-        # 2. translate old columns to new columns
-        # 3. merge the two
-        # 4. insert the overlapping stuff (both +/-)
-        self_o2n = _a.arangei(self_no)
-        self_o2n.shape = (1, -1)
-        self_o2n = self_o2n + sc.sc_index(self.geometry.sc.sc_off).reshape(-1, 1) * total_no
-        self_o2n.shape = (-1,)
-
-        other_o2n = _a.arangei(other_no) + self_no
-        other_o2n.shape = (1, -1)
-        other_o2n = other_o2n + sc.sc_index(other.geometry.sc.sc_off).reshape(-1, 1) * total_no
-        other_o2n.shape = (-1,)
-
-        # Create a template new sparse matrix
-        self_csr = self._csr
-        other_csr = other._csr
-
-        total = self.copy()
-        # Overwrite geometry
-        total._geometry = total_geom
-        n_s = sc.n_s
-
-        # Correct the new csr shape
-        csr = total._csr
-        csr._shape = (total_no, total_no * n_s, csr.dim)
-
-        # Fix columns in the self part
-        idx = array_arange(csr.ptr[:-1], n=csr.ncol)
-        csr.col[idx] = self_o2n[csr.col[idx]]
-
-        # Now add the `other` sparse data while fixing the supercell indices
-        csr.ptr = concatenate((csr.ptr[:-1], csr.ptr[-1] + other_csr.ptr)).astype(int32, copy=False)
-        csr.ncol = concatenate((csr.ncol, other_csr.ncol)).astype(int32, copy=False)
-        # We use take since other_csr.col may contain non-finalized elements (i.e. too large values)
-        # In this case we use take to *clip* the indices to the largest available one.
-        # This may be done since col elements not touched by the .ptr + .ncol will never
-        # be used.
-        csr.col = concatenate((csr.col, take(other_o2n, other_csr.col, mode='clip'))).astype(int32, copy=False)
-        csr._D = concatenate((csr._D, other_csr._D), axis=0)
-
-        # Small clean-up
-        del self_o2n, other_o2n, idx
-
-        # At this point `csr` contains all data.
-        # but the columns are incorrect. I.e. self -> self along the append axis
-        # where it should connect to `other`.
-
-        # Below we are correcting the column indices such that they
-        # connect to the proper things.
-        # Since some systems has crossings over diagonal supercells we need
-        # all supercells with a non-zero component along the axis
+        def _check_edges_and_coordinates(spgeom, array, isc):
+            # Figure out if we have found all couplings
+            geom = spgeom.geometry
+            # Find orbitals that we wish to exclude from the orbital connections
+            # This ensures that we only find couplings crossing the supercell boundaries
+            exclude = _a.arangei(geom.no_s).reshape(geom.n_s, -1)
+            exclude = exclude[geom.sc.sc_index(isc), :].ravel()
+            # get connections and transfer them to the unit-cell
+            edges = geom.sc2uc(geom.o2a(spgeom.edges(orbital=_a.arangei(geom.no), exclude=exclude), True), True)
+            if not np.all(np.isin(edges, array, assume_unique=True)):
+                raise ValueError(self.__class__.__name__ + '.append requires that the coupling coordinates '
+                                 'coincide between the two geometries:\n   '
+                                 'overlapping atoms: {}'.format(list2str(idx_s_first)) + '\n   '
+                                 'connected atoms: {}'.format(list2str(edges)))
         isc = [None] * 3
 
-        def _transfer_indices(csr, rows, old_col, new_col):
-            " Transfer indices in col to the equivalent column indices "
-            if old_col.size != new_col.size:
-                raise ValueError(self.__class__.__name__ + '.append requires the overlapping basis to '
-                                 'be equivalent. We found different number of hopping elements between '
-                                 'the two regions.')
-
-            col_idx = array_arange(csr.ptr[rows], n=csr.ncol[rows], dtype=int32)
-            col_idx = col_idx[indices_only(csr.col[col_idx], old_col)]
-
-            # Indices are now the indices in csr.col such that
-            #   col[col_idx] in old_col
-            # Now we need to find the indices (in order)
-            # such that
-            #   col[col_idx] == old_col[old_idx]
-            # This will let us do:
-            #   col[col_idx] = new_col[old_idx]
-            # since old_col and new_col have the same order
-            # Since indices does not return a sorted index list
-            # but only indices of elements in other list
-            # we need to sort them correctly
-            # Create the linear index that transfers from old -> new
-            # Since old_col/new_col does not contain the full supercell picture
-            # we need to create a fake indexing converter
-            min_col = (old_col[0] // csr.shape[0]) * csr.shape[0]
-            max_col = (old_col[-1] // csr.shape[0] + 1) * csr.shape[0]
-            new_col_idx = _a.arangei(max_col - min_col)
-            new_col_idx[old_col - min_col] = new_col
-            csr.col[col_idx] = new_col_idx[csr.col[col_idx] - min_col]
-
-        ## nomenclature in new supercell
-        # self[0] -> other[0]
-
-        # Now we have the two matrices merged.
-        # We now need to fix connections crossing the border
+        # Check that edges and overlapping atoms are the same (or at least that the
+        # edges are all in the overlapping region)
         isc[axis] = 1
-        rows = self.geometry.a2o(self_P_01, True)
-        # We have to store isc_off since we require a one2one correspondance
-        # of the new supercells. Also we require the supercell indices to be
-        # sorted, and hence we sort the sc-indices (just in case)
-        isc_off = np.sort(sc.sc_index(isc))
-        sc_off = isc_off.reshape(-1, 1) * total_no
-        # These columns should have a one-to-one correspondance
-        old_col = (self.geometry.a2o(self_P_10, True).reshape(1, -1) + sc_off).ravel().astype(int32)
-        # Since we are appending we actually move it into the primary cell (this is where the
-        # requirement of nsc == 3 comes from...)
-        # Shift all supercell indices to the primary one (along the append axis)
-        sc_off = sc.sc_off[isc_off, :]
-        sc_off[:, axis] = 0
-        sc_off = sc.sc_index(sc_off).reshape(-1, 1) * total_no + self_no
-        new_col = (other.geometry.a2o(self_P_10_to_other_M_01, True).reshape(1, -1) + sc_off).ravel().astype(int32)
-
-        # Find columns in `rows` and transfer
-        # the elements with values `old_col` -> `new_col`
-        # Since this should catch *all* elements that cross the
-        # boundary we will only have elements that are actually used
-        # So we need simply to reduce idx to the indices that contain the elements
-        # in `old_col`
-        _transfer_indices(csr, rows, old_col, new_col)
-
-        ##
-        # other[0] -> self[0]
+        _check_edges_and_coordinates(self, idx_s_first, isc)
+        _check_edges_and_coordinates(other, idx_o_first, isc)
         isc[axis] = -1
-        rows = other.geometry.a2o(other_M_01, True) + self_no
-        isc_off = np.sort(sc.sc_index(isc))
-        sc_off = isc_off.reshape(-1, 1) * total_no + self_no
-        old_col = (other.geometry.a2o(other_M_10, True).reshape(1, -1) + sc_off).ravel().astype(int32)
-        sc_off = sc.sc_off[isc_off, :]
-        sc_off[:, axis] = 0
-        sc_off = sc.sc_index(sc_off).reshape(-1, 1) * total_no
-        new_col = (self.geometry.a2o(other_M_10_to_self_P_01, True).reshape(1, -1) + sc_off).ravel().astype(int32)
-        _transfer_indices(csr, rows, old_col, new_col)
+        _check_edges_and_coordinates(self, idx_s_last, isc)
+        _check_edges_and_coordinates(other, idx_o_last, isc)
 
-        ##
-        # self[0] -> other[-1]
-        isc[axis] = -1
-        rows = self.geometry.a2o(self_M_01, True)
-        isc_off = np.sort(sc.sc_index(isc))
-        sc_off = isc_off.reshape(-1, 1) * total_no
-        old_col = (self.geometry.a2o(self_M_10, True).reshape(1, -1) + sc_off).ravel().astype(int32)
-        #sc_off = sc.sc_off[isc_off, :]
-        #sc_off[:, axis] = -1
-        #sc_off = sc.sc_index(sc_off).reshape(-1, 1) * total_no
-        new_col = (other.geometry.a2o(self_M_10_to_other_P_01, True).reshape(1, -1) + self_no + sc_off).ravel().astype(int32)
-        _transfer_indices(csr, rows, old_col, new_col)
+        # Now we have ensured that the overlapping coordinates and the connectivity graph
+        # co-incide and that we can actually perform the merge.
+        idx = _a.arangei(full_G.n_s).reshape(-1, 1) * full_G.no
 
-        ##
-        # other[0] -> self[1]
+        def _sc_index_sort(isc):
+            idx = full_G.sc.sc_index(isc)
+            # Now sort so that all indices are corresponding one2one
+            # This is important since two different supercell indices
+            # need not be sorted in the same manner.
+            # This ensures that there is a correspondance between
+            # two different sparse elements
+            off = delete(full_G.sc.sc_off[idx].T, axis, axis=0)
+            return idx[np.lexsort(off)]
+
         isc[axis] = 1
-        rows = other.geometry.a2o(other_P_01, True) + self_no
-        isc_off = np.sort(sc.sc_index(isc))
-        sc_off = isc_off.reshape(-1, 1) * total_no
-        old_col = (other.geometry.a2o(other_P_10, True).reshape(1, -1) + self_no + sc_off).ravel().astype(int32)
-        #sc_off = sc.sc_off[isc_off, :]
-        #sc_off[:, axis] = 1
-        #sc_off = sc.sc_index(sc_off).reshape(-1, 1) * total_no
-        new_col = (self.geometry.a2o(other_P_10_to_self_M_01, True).reshape(1, -1) + sc_off).ravel().astype(int32)
-        _transfer_indices(csr, rows, old_col, new_col)
+        isc_idx1 = _sc_index_sort(isc)
+        isc[axis] = 0
+        isc_idx0 = _sc_index_sort(isc)
 
-        # Finally figure out the number of non-zero elements
-        csr._nnz = csr.ncol.sum()
-        csr._finalized = False
+        # other[0] -> other[1] changes to other[0] -> full_G[1] | self[1]
+        orb_s = self.geometry.a2o(idx_s_first, all=True).reshape(1, -1)
+        orb_o = other.geometry.a2o(idx_o_first, all=True).reshape(1, -1) + self.geometry.no
+        # First we scale the other geometry
+        full_other._csr.scale_columns((idx[isc_idx1] + orb_o).ravel(), scale[1])
+        full_other._csr.translate_columns((idx[isc_idx1] + orb_o).ravel(),
+                                          (idx[isc_idx1] + orb_s).ravel())
 
-        return total
+        # self[0] -> self[1] changes to self[0] -> full_G[0] | other[0]
+        full_self._csr.scale_columns((idx[isc_idx1] + orb_s).ravel(), scale[0])
+        full_self._csr.translate_columns((idx[isc_idx1] + orb_s).ravel(),
+                                         (idx[isc_idx0] + orb_o).ravel())
+
+        isc[axis] = -1
+        isc_idx1 = _sc_index_sort(isc)
+
+        # self[0] -> self[-1] changes to self[0] -> full_G[-1] | other[-1]
+        orb_s = self.geometry.a2o(idx_s_last, all=True).reshape(1, -1)
+        orb_o = other.geometry.a2o(idx_o_last, all=True).reshape(1, -1) + self.geometry.no
+        full_self._csr.scale_columns((idx[isc_idx1] + orb_s).ravel(), scale[0])
+        full_self._csr.translate_columns((idx[isc_idx1] + orb_s).ravel(),
+                                         (idx[isc_idx1] + orb_o).ravel())
+
+        # other[0] -> other[-1] changes to other[0] -> full_G[0] | self[0]
+        full_other._csr.scale_columns((idx[isc_idx1] + orb_o).ravel(), scale[1])
+        full_other._csr.translate_columns((idx[isc_idx1] + orb_o).ravel(),
+                                          (idx[isc_idx0] + orb_s).ravel())
+
+        return full_self + full_other
 
     def toSparseAtom(self, dim=None, dtype=None):
         """ Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern
@@ -2504,7 +2362,7 @@ class SparseOrbital(_SparseGeometry):
         col = np.concatenate(col, axis=0).astype(int32, copy=False)
         spAtom = SparseAtom(geom, dim=dim, dtype=dtype, nnzpr=0)
         spAtom._csr.ptr[:] = ptr[:]
-        spAtom._csr.ncol[:] = np.diff(ptr)
+        spAtom._csr.ncol[:] = diff(ptr)
         spAtom._csr.col = col
         spAtom._csr._D = np.zeros([len(col), dim], dtype=dtype)
         spAtom._csr._nnz = len(col)
