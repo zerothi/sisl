@@ -610,10 +610,16 @@ class SuperCell(object):
     def sc_index(self, sc_off):
         """ Returns the integer index in the sc_off list that corresponds to `sc_off`
 
-        Returns the integer for the supercell
+        Returns the index for the supercell in the global offset.
+
+        Parameters
+        ----------
+        sc_off : (3)
+            super cell specification. For each axis having value ``None`` all supercells
+            along that axis is returned.
         """
         def _assert(m, v):
-            if np.all(np.abs(v) > m):
+            if np.any(np.abs(v) > m):
                 raise ValueError("Requesting a non-existing supercell index")
         hsc = self.nsc // 2
 

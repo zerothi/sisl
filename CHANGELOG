@@ -1,6 +1,8 @@
 0.9.7
 =====
 
+- Fixed reading VASP CAR files with constraints (thanks to T. Frederiksen)
+
 - Added `overlap` method to `Geometry` to find overlapping atoms
 	between two geometries.
 

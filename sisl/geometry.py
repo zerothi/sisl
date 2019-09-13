@@ -1013,11 +1013,11 @@ class Geometry(SuperCellChild):
         return _a.arrayi(idx_self), _a.arrayi(idx_other)
 
     def sort(self, axes=(2, 1, 0)):
-        """ Return an equivalent geometry by sorting the coordinates according to the axis orders
+        """ Return an equivalent geometry by sorting the coordinates according to the order of axis
 
         Examples
         --------
-        >>> idx = np.lexsort((self.xyz[:, i] for i in axis))
+        >>> idx = np.lexsort((self.xyz[:, i] for i in axes))
         >>> new = self.sub(idx)
 
         Parameters

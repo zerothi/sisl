@@ -934,9 +934,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         .. math::
 
-            2M = M + \boldsymbol\sigma_y K M \boldsymbol\sigma_y
+            2\mathbf M^{\mathrm{TRS}} = \mathbf M + \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y
 
-        where :math:`K` is the conjugation operator.
+        where :math:`*` is the conjugation operator.
         """
         new = self.copy()
         sp = self.spin
