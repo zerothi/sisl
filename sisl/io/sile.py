@@ -337,8 +337,8 @@ class BaseSile(object):
     def dir_file(self, filename=None):
         """ File of the current `Sile` """
         if filename is None:
-            filename = basename(self._file)
-        return join(self._directory, filename)
+            filename = Path(self._file).name
+        return Path(self._directory)/filename
 
     def exist(self):
         """ Query whether the file exists """
@@ -408,12 +408,12 @@ class BaseSile(object):
         base = kwargs.get('base', None)
         if base is None:
             # Extract from filename
-            self._directory = dirname(self._file)
+            self._directory = Path(self._file).parent
         else:
             self._directory = base
-        if len(self._directory) == 0:
+        if not str(self._directory):
             self._directory = '.'
-        self._directory = abspath(self._directory)
+        self._directory = Path(self._directory).resolve()
 
         self._setup(*args, **kwargs)
 
@@ -455,7 +455,7 @@ class BaseSile(object):
 
     def __str__(self):
         """ Return a representation of the `Sile` """
-        return ''.join([self.__class__.__name__, '(', self.base_file, ', base=', self._directory, ')'])
+        return "{0}({1!s}, base={2!s})".format(self.__class__.__name__, self.base_file, self._directory)
 
 
 def sile_fh_open(from_closed=False):
@@ -497,7 +497,7 @@ class Sile(BaseSile):
     """
 
     def __init__(self, filename, mode='r', comment=None, *args, **kwargs):
-        self._file = filename
+        self._file = Path(filename)
         self._mode = mode
         if isinstance(comment, (list, tuple)):
             self._comment = list(comment)
@@ -681,7 +681,7 @@ class SileCDF(BaseSile):
     """
 
     def __init__(self, filename, mode='r', lvl=0, access=1, *args, **kwargs):
-        self._file = filename
+        self._file = Path(filename)
         # Open mode
         self._mode = mode
         # Save compression internally
@@ -924,7 +924,7 @@ class SileBin(BaseSile):
     """
 
     def __init__(self, filename, mode='r', *args, **kwargs):
-        self._file = filename
+        self._file = Path(filename)
         # Open mode
         self._mode = mode.replace('b', '') + 'b'
 

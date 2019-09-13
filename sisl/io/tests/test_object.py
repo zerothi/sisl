@@ -9,7 +9,6 @@ try:
     from pathlib import Path
 except ImportError:
     pass
-import tempfile
 
 from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
@@ -32,8 +31,7 @@ def _my_intersect(a, b):
 
 def _fnames(base, variants):
     files = [base + '.' + v if len(v) > 0 else base for v in variants]
-    if files and sys.version_info >= (3, 5):
-        files.append(Path(files[0]))
+    files.append(Path(files[0]))
     return files
 
 
@@ -67,8 +65,6 @@ class TestObject(object):
         pytest.importorskip("sisl.io.siesta._siesta")
 
     def test_direct_path_instantiation(self):
-        if sys.version_info < (3, 5):
-            return
         fp = Path("/tmp/shouldnotexist.1234567")
         if fp.exists():
             os.remove(str(fp))

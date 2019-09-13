@@ -279,7 +279,7 @@ class gotSileGULP(SileGULP):
         # The output of the force constant in the file does not contain the mass-scaling
         # nor the unit conversion
         f = self.dir_file('FORCE_CONSTANTS_2ND')
-        if not osp.isfile(f):
+        if not f.is_file():
             return None
 
         fc = fcSileGULP(f, 'r').read_force_constant(**kwargs)

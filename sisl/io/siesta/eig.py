@@ -180,7 +180,7 @@ class eigSileSiesta(SileSiesta):
                 import matplotlib.pyplot as plt
                 if not hasattr(ns, '_weight'):
                     # Try and read in the k-point-weights
-                    ns._weight = kpSileSiesta(self.file.replace('EIG', 'KP')).read_data()[1]
+                    ns._weight = kpSileSiesta(str(self.file).replace('EIG', 'KP')).read_data()[1]
 
                 if ns._Emap is None:
                     # We will plot the DOS in the entire energy window

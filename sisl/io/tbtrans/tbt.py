@@ -82,7 +82,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         file : str
             output filename
         """
-        f = self._file.replace('.nc', '.AV.nc')
+        f = self._file.with_suffix('.AV.nc')
         if len(args) > 0:
             f = args[0]
         f = kwargs.get('file', f)
@@ -1629,7 +1629,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> COOP = tbt.orbital_COOP(-1.0) # COOP @ E = -1 eV 
+        >>> COOP = tbt.orbital_COOP(-1.0) # COOP @ E = -1 eV
         >>> COOP[10, 11] # COOP value between the 11th and 12th orbital
         >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.DOS(sum=False)[tbt.Eindex(-1.0)]
         >>> D = COOP.diagonal().sum()
@@ -1837,7 +1837,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> COHP = tbt.orbital_COHP(-1.0) # COHP @ E = -1 eV 
+        >>> COHP = tbt.orbital_COHP(-1.0) # COHP @ E = -1 eV
         >>> COHP[10, 11] # COHP value between the 11th and 12th orbital
 
         See Also
@@ -2537,7 +2537,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 else:
                     ns._tbt.write_tbtav(value)
         p.add_argument('--tbt-av', action=AVOut, nargs='?', default=None,
-                       help='Create "{0}" with the k-averaged quantities of this file.'.format(self.file.replace('TBT.nc', 'TBT.AV.nc')))
+                       help='Create "{0}" with the k-averaged quantities of this file.'.format(
+                        str(self.file).replace('TBT.nc', 'TBT.AV.nc')))
 
         class Plot(argparse.Action):
 
@@ -2742,7 +2743,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
                 v[:] = dvg[:]
 
         # Update the source attribute to signal the originating file
-        self.setncattr('source', 'k-average of: ' + tbt._file)
+        self.setncattr('source', 'k-average of: ' + str(tbt._file))
         self.sync()
 
     # Denote default writing routine

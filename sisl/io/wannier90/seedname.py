@@ -2,6 +2,7 @@
 Sile object for reading/writing Wannier90 in/output
 """
 from __future__ import print_function
+from pathlib import Path
 
 import numpy as np
 from scipy.sparse import lil_matrix
@@ -58,9 +59,9 @@ class winSileWannier90(SileWannier90):
     def _set_file(self, suffix=None):
         """ Update readed file """
         if suffix is None:
-            self._file = self._seed + '.win'
+            self._file = Path(self._seed + '.win')
         else:
-            self._file = self._seed + suffix
+            self._file = Path(self._seed + suffix)
 
     @sile_fh_open()
     def _read_supercell(self):
