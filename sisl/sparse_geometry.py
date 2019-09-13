@@ -17,7 +17,7 @@ from .messages import warn, SislError, SislWarning, tqdm_eta
 from ._indices import indices_only
 from ._help import get_dtype
 from ._help import _zip as zip, _range as range, _map as map
-from .utils.ranges import array_arange
+from .utils.ranges import array_arange, list2str
 from .sparse import SparseCSR, isspmatrix
 
 __all__ = ['SparseAtom', 'SparseOrbital']
@@ -2164,8 +2164,11 @@ class SparseOrbital(_SparseGeometry):
         if not allclose(self.geometry.sc._isc_off, other.geometry.sc._isc_off):
             raise ValueError(self.__class__.__name__ + '.append requires supercell offsets to be the same.')
 
+        if self.dtype != other.dtype:
+            raise ValueError(self.__class__.__name__ + '.append requires the same datatypes in the two matrices.')
+
         if self.dim != other.dim:
-            raise ValueError(self.__class__.__name__ + '.append requires the same number of dimensions in the matrix')
+            raise ValueError(self.__class__.__name__ + '.append requires the same number of dimensions in the matrix.')
 
         if np.asarray(scale).size == 1:
             scale = np.array([scale, scale])
@@ -2173,51 +2176,46 @@ class SparseOrbital(_SparseGeometry):
 
         # Our procedure will be to separate the sparsity patterns into separate chunks
         # First generate the full geometry
-        full_G = self.geometry.append(other.geometry, axis)
+        geom = self.geometry.append(other.geometry, axis)
 
         # create the new sparsity patterns with offset
-        # This will create *fake* sparsity patterns in a the space of full_G
-        # with interactions only to it-self.
-        csr = self._csr
+
         # New indices and data (the constructor for SparseCSR copies)
-        full_self = self.__class__(full_G, self.dim, self.dtype, 1, **self._cls_kwargs())
-        full_self._csr._D = csr._D.copy()
-        full_self._csr.ptr[:] = csr.ptr[-1]
-        full_self._csr.ptr[:self.geometry.no+1] = csr.ptr[:]
-        full_self._csr.ncol[:] = 0
-        full_self._csr.ncol[:self.geometry.no] = csr.ncol[:]
-        full_self._csr._nnz = csr.ptr[-1]
-        full_self._csr._finalized = csr._finalized
-        # transfer indices
+        full = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        full._csr.ptr = concatenate((self._csr.ptr[:-1], other._csr.ptr))
+        full._csr.ptr[self.no:] += self._csr.ptr[-1]
+        full._csr.ncol = concatenate((self._csr.ncol, other._csr.ncol))
+        full._csr._D = concatenate((self._csr._D, other._csr._D))
+        full._csr._nnz = full._csr.ncol.sum()
+        full._csr._finalized = False
+
+        # First create a local copy of the columns, then we transfer, and then we collect.
+        s_col = self._csr.col.copy()
+        # transfer
         transfer_idx = _a.arangei(self.geometry.no_s).reshape(-1, self.geometry.no)
         transfer_idx += _a.arangei(self.geometry.n_s).reshape(-1, 1) * other.geometry.no
-        # Now translate
-        full_self._csr.col = transfer_idx.ravel()[csr.col]
+        idx = array_arange(self._csr.ptr[:-1], n=self._csr.ncol)
+        s_col[idx] = transfer_idx.ravel()[s_col[idx]]
 
-        # create the new sparsity patterns with offset
-        # This will create *fake* sparsity patterns in a the space of full_G
-        # with interactions only to it-self.
-        csr = other._csr
-        # New indices and data (the constructor for SparseCSR copies)
-        full_other = other.__class__(full_G, other.dim, other.dtype, 1, **other._cls_kwargs())
-        full_other._csr._D = csr._D.copy()
-        full_other._csr.ptr[:] = 0
-        full_other._csr.ptr[self.geometry.no:] = csr.ptr[:]
-        full_other._csr.ncol[:] = 0
-        full_other._csr.ncol[self.geometry.no:] = csr.ncol[:]
-        full_other._csr._nnz = csr.ptr[-1]
-        full_other._csr._finalized = csr._finalized
-        # transfer indices
+        o_col = other._csr.col.copy()
+        # transfer
         transfer_idx = _a.arangei(other.geometry.no_s).reshape(-1, other.geometry.no)
         transfer_idx += (_a.arangei(1, other.geometry.n_s + 1).reshape(-1, 1)) * self.geometry.no
-        # Now translate
-        full_other._csr.col = transfer_idx.ravel()[csr.col]
+        idx = array_arange(other._csr.ptr[:-1], n=other._csr.ncol)
+        o_col[idx] = transfer_idx.ravel()[o_col[idx]]
 
-        # Now we have the two sparse geometries in the full geometry with only their own
-        # matrix elements
+        # Store all column indices
+        del transfer_idx, idx
+        full._csr.col = concatenate((s_col, o_col))
+
+        # Clean up (they could potentially be very large arrays)
+        del s_col, o_col
+
+        # Now everything is contained in 1 sparse matrix.
+        # All matrix elements are as though they are in their own
 
         # What needs to be done is to find the overlapping atoms and transfer indices in
-        # both these sparsity patterns (and then add them)
+        # both these sparsity patterns to the correct elements.
 
         # 1. find overlapping atoms along axis
         idx_s_first, idx_o_first = self.geometry.overlap(other.geometry, eps=eps)
@@ -2265,52 +2263,60 @@ class SparseOrbital(_SparseGeometry):
 
         # Now we have ensured that the overlapping coordinates and the connectivity graph
         # co-incide and that we can actually perform the merge.
-        idx = _a.arangei(full_G.n_s).reshape(-1, 1) * full_G.no
+        idx = _a.arangei(geom.n_s).reshape(-1, 1) * geom.no
 
         def _sc_index_sort(isc):
-            idx = full_G.sc.sc_index(isc)
+            idx = geom.sc.sc_index(isc)
             # Now sort so that all indices are corresponding one2one
             # This is important since two different supercell indices
             # need not be sorted in the same manner.
             # This ensures that there is a correspondance between
             # two different sparse elements
-            off = delete(full_G.sc.sc_off[idx].T, axis, axis=0)
+            off = delete(geom.sc.sc_off[idx].T, axis, axis=0)
             return idx[np.lexsort(off)]
 
         isc[axis] = 1
-        isc_idx1 = _sc_index_sort(isc)
+        idx_iscP = idx[_sc_index_sort(isc)]
         isc[axis] = 0
-        isc_idx0 = _sc_index_sort(isc)
+        idx_isc0 = idx[_sc_index_sort(isc)]
+        isc[axis] = -1
+        idx_iscM = idx[_sc_index_sort(isc)]
+        # Clean (for me to know what to do in this code)
+        del idx, isc, _sc_index_sort
+
+        # First scale all values
+        idx_s_first = self.geometry.a2o(idx_s_first, all=True).reshape(1, -1)
+        idx_s_last = self.geometry.a2o(idx_s_last, all=True).reshape(1, -1)
+        col = concatenate(((idx_s_first + idx_iscP).ravel(),
+                           (idx_s_last + idx_iscM).ravel()))
+        full._csr.scale_columns(col, scale[0])
+
+        idx_o_first = other.geometry.a2o(idx_o_first, all=True).reshape(1, -1) + self.geometry.no
+        idx_o_last = other.geometry.a2o(idx_o_last, all=True).reshape(1, -1) + self.geometry.no
+        col = concatenate(((idx_o_first + idx_iscP).ravel(),
+                           (idx_o_last + idx_iscM).ravel()))
+        full._csr.scale_columns(col, scale[1])
+
+        # Clean up (they may be very large)
+        del col
+
+        # Now we can easily build from->to arrays
 
         # other[0] -> other[1] changes to other[0] -> full_G[1] | self[1]
-        orb_s = self.geometry.a2o(idx_s_first, all=True).reshape(1, -1)
-        orb_o = other.geometry.a2o(idx_o_first, all=True).reshape(1, -1) + self.geometry.no
-        # First we scale the other geometry
-        full_other._csr.scale_columns((idx[isc_idx1] + orb_o).ravel(), scale[1])
-        full_other._csr.translate_columns((idx[isc_idx1] + orb_o).ravel(),
-                                          (idx[isc_idx1] + orb_s).ravel())
-
         # self[0] -> self[1] changes to self[0] -> full_G[0] | other[0]
-        full_self._csr.scale_columns((idx[isc_idx1] + orb_s).ravel(), scale[0])
-        full_self._csr.translate_columns((idx[isc_idx1] + orb_s).ravel(),
-                                         (idx[isc_idx0] + orb_o).ravel())
-
-        isc[axis] = -1
-        isc_idx1 = _sc_index_sort(isc)
-
         # self[0] -> self[-1] changes to self[0] -> full_G[-1] | other[-1]
-        orb_s = self.geometry.a2o(idx_s_last, all=True).reshape(1, -1)
-        orb_o = other.geometry.a2o(idx_o_last, all=True).reshape(1, -1) + self.geometry.no
-        full_self._csr.scale_columns((idx[isc_idx1] + orb_s).ravel(), scale[0])
-        full_self._csr.translate_columns((idx[isc_idx1] + orb_s).ravel(),
-                                         (idx[isc_idx1] + orb_o).ravel())
-
         # other[0] -> other[-1] changes to other[0] -> full_G[0] | self[0]
-        full_other._csr.scale_columns((idx[isc_idx1] + orb_o).ravel(), scale[1])
-        full_other._csr.translate_columns((idx[isc_idx1] + orb_o).ravel(),
-                                          (idx[isc_idx0] + orb_s).ravel())
+        col_from = concatenate(((idx_o_first + idx_iscP).ravel(),
+                                (idx_s_first + idx_iscP).ravel(),
+                                (idx_s_last + idx_iscM).ravel(),
+                                (idx_o_last + idx_iscM).ravel()))
+        col_to = concatenate(((idx_s_first + idx_iscP).ravel(),
+                              (idx_o_first + idx_isc0).ravel(),
+                              (idx_o_last + idx_iscM).ravel(),
+                              (idx_s_last + idx_isc0).ravel()))
 
-        return full_self + full_other
+        full._csr.translate_columns(col_from, col_to)
+        return full
 
     def toSparseAtom(self, dim=None, dtype=None):
         """ Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern

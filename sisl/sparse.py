@@ -771,7 +771,7 @@ class SparseCSR(object):
         """
         if asarray(i).size == 0:
             return arrayi([])
-        if i < 0:
+        if i < 0 or i >= self.shape[0]:
             raise IndexError('row index is out-of-bounds')
         i1 = int(i) + 1
         # We skip this check and let sisl die if wrong input is given...
@@ -855,7 +855,7 @@ class SparseCSR(object):
             # assign the column indices for the new entries
             # NOTE that this may not assign them in the order
             # of entry as new_j is sorted and thus new_j != j
-            col[ncol_ptr_i:ncol_ptr_i+new_n] = new_j[:]
+            col[ncol_ptr_i:ncol_ptr_i+new_n] = new_j
 
             # Step the size of the stored non-zero elements
             self.ncol[i] += int32(new_n)
