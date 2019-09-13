@@ -28,8 +28,7 @@ def _my_intersect(a, b):
 
 def _fnames(base, variants):
     files = [base + '.' + v if len(v) > 0 else base for v in variants]
-    if files and sys.version_info >= (3, 5):
-        files.append(Path(files[0]))
+    files.append(Path(files[0]))
     return files
 
 

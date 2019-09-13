@@ -17,8 +17,8 @@ def test_tbl1(sisl_tmp):
     io0.write_data(dat0, dat1)
     io1.write_data((dat0, dat1))
 
-    F0 = open(io0.file).readlines()
-    F1 = open(io1.file).readlines()
+    F0 = open(str(io0.file)).readlines()
+    F1 = open(str(io1.file)).readlines()
     assert all([l0 == l1 for l0, l1 in zip(F0, F1)])
 
 
@@ -31,8 +31,8 @@ def test_tbl2(sisl_tmp):
     io0.write_data(dat0, dat1)
     io1.write_data((dat0, dat1))
 
-    F0 = open(io0.file).readlines()
-    F1 = open(io1.file).readlines()
+    F0 = open(str(io0.file)).readlines()
+    F1 = open(str(io1.file)).readlines()
     assert all([l0 == l1 for l0, l1 in zip(F0, F1)])
 
 

@@ -1,3 +1,4 @@
+from pathlib import Path
 import pytest
 import os.path as osp
 from sisl import geom
@@ -231,7 +232,7 @@ def test_include(sisl_tmp):
         fh.write('MyList [1 , 2 , 3]\n')
 
     fdf = fdfSileSiesta(f, base=sisl_tmp.getbase())
-    assert fdf.includes() == [hello, file2, file3]
+    assert fdf.includes() == [Path(hello), Path(file2), Path(file3)]
     assert fdf.get('Flag1') == 'date'
     assert fdf.get('Flag2') == 'date2'
     assert fdf.get('Flag3') == 'test'
