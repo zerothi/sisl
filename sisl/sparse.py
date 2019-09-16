@@ -872,6 +872,47 @@ class SparseCSR(object):
         if ret_indices:
             return indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
 
+    def _extend_empty(self, i, n):
+        """ Extends the sparsity pattern to retain elements `j` in row `i`
+
+        Parameters
+        ----------
+        i : int
+           the row of the matrix
+        n : int
+           number of elements to add in the space for row `i`
+
+        Raises
+        ------
+        IndexError for indices out of bounds
+        """
+        if i < 0 or i >= self.shape[0]:
+            raise IndexError('row index is out-of-bounds')
+
+        # fast reference
+        i1 = int(i) + 1
+
+        # Ensure that it is not-set as finalized
+        # There is no need to set it all the time.
+        # Simply because the first call to finalize
+        # will reduce the sparsity pattern, which
+        # on first expansion calls this part.
+        self._finalized = False
+
+        # Insert new empty elements in the column index
+        # after the column
+        self.col = insert(self.col, self.ptr[i] + self.ncol[i], full(n, -1, self.col.dtype))
+
+        # Insert zero data in the data array
+        # We use `zeros` as then one may set each dimension
+        # individually...
+        self._D = insert(self._D, self.ptr[i1],
+                         zeros([n, self.shape[2]], self._D.dtype), axis=0)
+
+        # Lastly, shift all pointers above this row to account for the
+        # new non-zero elements
+        self.ptr[i1:] += int32(n)
+
     def _get(self, i, j):
         """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``
 

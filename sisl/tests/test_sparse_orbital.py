@@ -56,7 +56,9 @@ def test_sparse_orbital_append(n0, n1, n2, axis):
     s2 = s1.copy()
     # Resulting full sparse-geometry
     sf = s1.tile(2, axis)
-    sf.finalize()
+    # Ensure the test works for empty rows
+    for i in range(sf.shape[0]):
+        sf._csr._extend_empty(i, 11)
 
     # Now perform some appends and randomizations
     idx1 = np.arange(s1.na)
@@ -90,7 +92,8 @@ def test_sparse_orbital_append_scale(n0, n1, n2, axis):
     s2 = s1.copy()
     # Resulting full sparse-geometry
     sf = s1.tile(2, axis)
-    sf.finalize()
+    for i in range(sf.shape[0]):
+        sf._csr._extend_empty(i, 11)
 
     # Now perform some appends and randomizations
     idx1 = np.arange(s1.na)
