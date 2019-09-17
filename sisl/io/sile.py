@@ -1,11 +1,7 @@
 from functools import wraps
 from os.path import splitext, isfile, dirname, join, abspath, basename
 import gzip
-try:
-    from pathlib import Path
-except ImportError:  # Ancient Python
-    class Path:
-        pass
+from pathlib import Path
 
 import numpy as np
 
@@ -336,7 +332,7 @@ class BaseSile:
         """ File of the current `Sile` """
         if filename is None:
             filename = Path(self._file).name
-        return Path(self._directory)/filename
+        return Path(self._directory) / filename
 
     def exist(self):
         """ Query whether the file exists """
@@ -509,11 +505,10 @@ class Sile(BaseSile):
         self._base_setup(*args, **kwargs)
 
     def _open(self):
-        file = str(self.file)
-        if file.endswith('gz'):
-            self.fh = gzip.open(file)
+        if self.file.suffix == ".gz":
+            self.fh = gzip.open(str(self.file))
         else:
-            self.fh = open(file, self._mode)
+            self.fh = self.file.open(self._mode)
         self._line = 0
 
     def __enter__(self):

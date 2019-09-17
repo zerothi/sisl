@@ -79,7 +79,7 @@ class fdfSileSiesta(SileSiesta):
     def _pushfile(self, f):
         if self.dir_file(f).is_file():
             self._parent_fh.append(self.fh)
-            self.fh = open(str(self.dir_file(f)), self._mode)
+            self.fh = self.dir_file(f).open(self._mode)
         else:
             warn(str(self) + f' is trying to include file: {f} but the file seems not to exist? Will disregard file!')
 
@@ -174,7 +174,7 @@ class fdfSileSiesta(SileSiesta):
                 if lsl[0] == '%block' and lsl[1] == labell:
                     # Correct line found
                     # Read the file content, removing any empty and/or comment lines
-                    lines = open(str(self.dir_file(ls[3])), 'r').readlines()
+                    lines = self.dir_file(ls[3]).open('r').readlines()
                     return [l.strip() for l in lines if valid_line(l)]
 
                 # 2. There are labels that should be read from a subsequent file
