@@ -367,7 +367,7 @@ By default the vectors scaled by 1 / max(|V|) such that the longest vector has l
                        help='Store the geometry/grid (plus any vector fields) the out file.')
 
 
-class axsfSile(Sile):
+class axsfSile(xsfSile):
     """ AXSF file for XCrySDen
 
     When creating an AXSF file one should denote how many MD steps to write out:
