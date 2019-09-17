@@ -67,7 +67,7 @@ class omxSileOpenMX(SileOpenMX):
     def _pushfile(self, f):
         if self.dir_file(f).is_file():
             self._parent_fh.append(self.fh)
-            self.fh = open(str(self.dir_file(f)), self._mode)
+            self.fh = self.dir_file(f).open(self._mode)
         else:
             warn(str(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
 

@@ -1,14 +1,12 @@
 from __future__ import print_function, division
 
+import tempfile
 import pytest
 
 import numpy as np
 import sys
 import os
-try:
-    from pathlib import Path
-except ImportError:
-    pass
+from pathlib import Path
 
 from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
@@ -65,22 +63,24 @@ class TestObject(object):
         pytest.importorskip("sisl.io.siesta._siesta")
 
     def test_direct_path_instantiation(self):
-        fp = Path("/tmp/shouldnotexist.1234567")
-        if fp.exists():
-            os.remove(str(fp))
-        for Sile in get_siles():
-            sile = Sile(fp, _open=False)
-            assert isinstance(sile, Sile)
-            assert not fp.exists()
+        with tempfile.TemporaryDirectory() as dir:
+            fp = Path(dir) / "shouldnotexist.1234567"
+            if fp.exists():
+                os.remove(str(fp))
+            for Sile in get_siles():
+                sile = Sile(fp, _open=False)
+                assert isinstance(sile, Sile)
+                assert not fp.exists()
 
     def test_direct_string_instantiation(self):
-        fp = "/tmp/shouldnotexist.1234567"
-        if os.path.exists(fp):
-            os.remove(fp)
-        for Sile in get_siles():
-            sile = Sile(fp, _open=False)
-            assert isinstance(sile, Sile)
-            assert not os.path.exists(fp)
+        with tempfile.TemporaryDirectory() as dir:
+            fp = str(Path(dir) / "shouldnotexist.1234567")
+            if os.path.exists(fp):
+                os.remove(fp)
+            for Sile in get_siles():
+                sile = Sile(fp, _open=False)
+                assert isinstance(sile, Sile)
+                assert not os.path.exists(fp)
 
     @pytest.mark.parametrize("sile", _fnames('test', ['cube', 'CUBE', 'cube.gz', 'CUBE.gz']))
     def test_cube(self, sile):

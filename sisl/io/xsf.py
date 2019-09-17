@@ -378,7 +378,6 @@ class axsfSile(Sile):
     """
 
     def _setup(self, *args, **kwargs):
-        kwargs["_md_steps"] = kwargs.get("_md_steps", 1)
         super(axsfSile, self)._setup(*args, **kwargs)
 
     write_grid = None
