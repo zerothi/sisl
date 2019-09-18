@@ -17,7 +17,7 @@ unit_table = {
         'kg': 1.,
         'g': 1.e-3,
         'amu': 1.66054e-27,
-        },
+    },
     'length': {
         'DEFAULT': 'Ang',
         'm': 1.,
@@ -27,7 +27,7 @@ unit_table = {
         'fm': 1.e-15,
         'Ang': 1.e-10,
         'Bohr': 5.29177249e-11,
-        },
+    },
     'time': {
         'DEFAULT': 'fs',
         's': 1.,
@@ -37,7 +37,7 @@ unit_table = {
         'min': 60.,
         'hour': 3600.,
         'day': 86400.,
-        },
+    },
     'energy': {
         'DEFAULT': 'eV',
         'J': 1.,
@@ -50,13 +50,13 @@ unit_table = {
         'Ha': 4.3597482e-18,
         'Hartree': 4.3597482e-18,
         'K': 1.380648780669e-23,
-        },
+    },
     'force': {
         'DEFAULT': 'eV/Ang',
         'N': 1.,
         'eV/Ang': 1.60217733e-9,
-        }
     }
+}
 
 
 def unit_group(unit, tbl=None):
@@ -83,7 +83,7 @@ def unit_group(unit, tbl=None):
     for k in tbl:
         if unit in tbl[k]:
             return k
-    raise ValueError('The unit "'+str(unit)+'" could not be located in the table.')
+    raise ValueError('The unit "' + str(unit) + '" could not be located in the table.')
 
 
 def unit_default(group, tbl=None):
@@ -158,7 +158,7 @@ def unit_convert(fr, to, opts=None, tbl=None):
             toU = k
             toV = tbl[k][to]
     if frU != toU:
-        raise ValueError('The unit conversion is not from the same group: '+frU+' to '+toU)
+        raise ValueError('The unit conversion is not from the same group: ' + frU + ' to ' + toU)
 
     # Calculate conversion factor
     val = frV / toV
@@ -200,12 +200,14 @@ class UnitParser(object):
                         return tbl[k][fr] / tbl[k][to]
                     break
             raise ValueError('The unit conversion is not from the same group: {} to {}!'.format(fr, to))
+
         def group(unit):
             tbl = self._table
             for k in tbl:
                 if unit in tbl[k]:
                     return k
-            raise ValueError('The unit "'+str(unit)+'" could not be located in the table.')
+            raise ValueError('The unit "' + str(unit) + '" could not be located in the table.')
+
         def default(group):
             tbl = self._table
             k = tbl.get(group, None)
@@ -231,15 +233,18 @@ class UnitParser(object):
         if group_table is None:
             def _convert(t):
                 return convert(t[0], default(group(t[0])))
+            
             def _float(t):
                 return float(t[0])
+            
         else:
             def _convert(t):
                 group_table.append(group(t[0]))
                 return convert(t[0], default(group_table[-1]))
+            
             def _float(t):
                 f = float(t[0])
-                group_table.append(f) # append nothing
+                group_table.append(f)  # append nothing
                 return f
 
         # The unit extractor
@@ -251,8 +256,8 @@ class UnitParser(object):
         e = pp.CaselessLiteral('E')
         sign_integer = pp.Combine(pp.Optional(plusorminus) + integer)
         exponent = pp.Combine(e + sign_integer)
-        number = pp.Or([pp.Combine(point + integer + pp.Optional(exponent)), # .[0-9][E+-[0-9]]
-                        pp.Combine(integer + pp.Optional(point + pp.Optional(integer)) + pp.Optional(exponent))] # [0-9].[0-9][E+-[0-9]]
+        number = pp.Or([pp.Combine(point + integer + pp.Optional(exponent)),  # .[0-9][E+-[0-9]]
+                        pp.Combine(integer + pp.Optional(point + pp.Optional(integer)) + pp.Optional(exponent))]  # [0-9].[0-9][E+-[0-9]]
         ).setParseAction(_float)
 
         #def _print_toks(name, op):
@@ -381,10 +386,11 @@ class UnitParser(object):
             conv = self._p_left(args[0])
             self._empty_list(self._left)
             return conv
-        return tuple(self._convert(args[i], args[i+1]) for i in range(len(args)-1))
+        return tuple(self._convert(args[i], args[i + 1]) for i in range(len(args) - 1))
 
     def __call__(self, *args):
         return self.convert(*args)
 
 # Create base sisl unit conversion object
 units = UnitParser(unit_table)
+
