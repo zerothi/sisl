@@ -81,7 +81,7 @@ class eigSileSiesta(SileSiesta):
             ns = 1
 
         # Allocate
-        eigs = np.empty([ns, nk, no], np.float32)
+        eigs = np.empty([ns, nk, no], np.float64)
 
         readline = self.readline
         for ik in range(nk):
@@ -90,7 +90,7 @@ class eigSileSiesta(SileSiesta):
             for _ in range(ns):
                 while len(E_list) < ns*no:
                     E_list.extend(list(map(float, readline().split())))
-            eigs[:, ik, :] = np.asarray(E_list, np.float32).reshape(ns, no)
+            eigs[:, ik, :] = np.asarray(E_list, np.float64).reshape(ns, no)
 
         return eigs - Ef
 
