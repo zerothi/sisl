@@ -1,17 +1,16 @@
 from __future__ import print_function, division
 
 import pytest
-
+import os.path as osp
 from sisl import geom
 from sisl import Geometry, Atom
 from sisl.io import fdfSileSiesta, SileError
 from sisl.unit.siesta import unit_convert
-
 import numpy as np
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.fdf]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_fdf1(sisl_tmp, sisl_system):

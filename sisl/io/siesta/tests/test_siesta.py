@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import pytest
 import numpy as np
-
+import os.path as osp
 import sisl
 from sisl import Hamiltonian, DynamicalMatrix, DensityMatrix
 from sisl import EnergyDensityMatrix
@@ -10,7 +10,7 @@ from sisl.io.siesta import *
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_nc1(sisl_tmp, sisl_system):

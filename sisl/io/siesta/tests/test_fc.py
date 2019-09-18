@@ -1,14 +1,13 @@
 from __future__ import print_function, division
 
 import pytest
-
+import os.path as osp
 from sisl.io.siesta.fc import *
 from sisl.unit.siesta import unit_convert
-
 import numpy as np
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_read_fc(sisl_tmp):

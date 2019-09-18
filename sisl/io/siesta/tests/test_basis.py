@@ -1,12 +1,12 @@
 from __future__ import print_function, division
 
 import pytest
-
+import os.path as osp
 from sisl.io.siesta.basis import *
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_si_ion_nc(sisl_files):

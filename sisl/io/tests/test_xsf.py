@@ -1,14 +1,14 @@
 from __future__ import print_function, division
 
 import pytest
-
+import os.path as osp
 from sisl import Geometry, Atom, Grid
 from sisl.io.xsf import *
-
 import numpy as np
 
+
 pytestmark = pytest.mark.io
-_dir = 'sisl/io'
+_dir = osp.join('sisl', 'io')
 
 
 def test_default(sisl_tmp):

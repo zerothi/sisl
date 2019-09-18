@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 import pytest
+import os.path as osp
 
 from sisl.atom import Atom
 from sisl.io.siesta.xv import *
@@ -8,7 +9,7 @@ from sisl.io.siesta.xv import *
 import numpy as np
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_xv1(sisl_tmp, sisl_system):

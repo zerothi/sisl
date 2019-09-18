@@ -1,13 +1,13 @@
 from __future__ import print_function, division
 
 import pytest
+import os.path as osp
 import numpy as np
-
 from sisl.io.ham import *
 
 
 pytestmark = [pytest.mark.io, pytest.mark.ham]
-_dir = 'sisl/io'
+_dir = osp.join('sisl', 'io')
 
 
 def test_ham1(sisl_tmp, sisl_system):

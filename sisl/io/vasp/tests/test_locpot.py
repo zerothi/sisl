@@ -1,13 +1,12 @@
 from __future__ import print_function, division
 
 import pytest
-
+import os.path as osp
 from sisl.io.vasp.locpot import *
-
 import numpy as np
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
-_dir = 'sisl/io/vasp'
+_dir = osp.join('sisl', 'io', 'vasp')
 
 
 def test_graphene_locpot(sisl_files):

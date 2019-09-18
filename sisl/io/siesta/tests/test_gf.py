@@ -1,12 +1,12 @@
 from __future__ import print_function, division
 
 import pytest
-
+import os.path as osp
 import sisl
 import numpy as np
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_gf_write(sisl_tmp, sisl_system):

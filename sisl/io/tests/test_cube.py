@@ -1,15 +1,14 @@
 from __future__ import print_function, division
 
 import pytest
-
+import os.path as osp
 from sisl import Geometry, Atom, Grid, SislError
 from sisl.io.cube import *
-
 import numpy as np
 
-pytestmark = [pytest.mark.io, pytest.mark.cube]
 
-_dir = 'sisl/io'
+pytestmark = [pytest.mark.io, pytest.mark.cube]
+_dir = osp.join('sisl', 'io')
 
 
 def test_default(sisl_tmp):

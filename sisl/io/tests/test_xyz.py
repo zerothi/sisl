@@ -1,14 +1,13 @@
 from __future__ import print_function, division
 
 import pytest
-
-from sisl.io.xyz import *
-
+import os.path as osp
 import numpy as np
+from sisl.io.xyz import *
 
 
 pytestmark = pytest.mark.io
-_dir = 'sisl/io'
+_dir = osp.join('sisl', 'io')
 
 
 def test_xyz1(sisl_tmp, sisl_system):

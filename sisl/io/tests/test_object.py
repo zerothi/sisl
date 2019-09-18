@@ -1,9 +1,8 @@
 from __future__ import print_function, division
 
 import pytest
-
+import os.path as osp
 import numpy as np
-
 from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
@@ -12,7 +11,7 @@ from sisl import DensityMatrix, EnergyDensityMatrix
 
 
 pytestmark = pytest.mark.io
-_dir = 'sisl/io'
+_dir = osp.join('sisl', 'io')
 
 
 gs = get_sile

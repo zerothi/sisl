@@ -2,13 +2,13 @@
 from __future__ import print_function
 
 import pytest
-import numpy as np
-
+import os.path as osp
 import sisl
+import numpy as np
 
 
 pytestmark = [pytest.mark.io, pytest.mark.gulp]
-_dir = 'sisl/io/gulp'
+_dir = osp.join('sisl', 'io', 'gulp')
 
 
 def test_zz_dynamical_matrix(sisl_files):

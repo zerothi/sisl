@@ -2,13 +2,13 @@
 from __future__ import print_function
 
 import pytest
+import os.path as osp
 import numpy as np
-
 import sisl
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_si_pdos_kgrid_tsde_dm(sisl_files):

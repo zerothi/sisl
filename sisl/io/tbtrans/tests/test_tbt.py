@@ -2,14 +2,14 @@
 from __future__ import print_function
 
 import pytest
+import os.path as osp
 import numpy as np
 import warnings
-
 import sisl
 
 
 pytestmark = [pytest.mark.io, pytest.mark.tbtrans]
-_dir = 'sisl/io/tbtrans'
+_dir = osp.join('sisl', 'io', 'tbtrans')
 
 
 @pytest.mark.slow
