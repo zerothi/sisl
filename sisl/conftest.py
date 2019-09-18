@@ -110,10 +110,10 @@ def sisl_files():
     be skipped.
     """
     env = os.environ[__env]
-    def _path(path, file=''):
-        if file == '':
+    def _path(path, *files):
+        if len(files) == 0:
             return os.path.join(os.environ[__env], path)
-        return os.path.join(os.environ[__env], path, file)
+        return os.path.join(os.environ[__env], path, *files)
     return _path
 
 
