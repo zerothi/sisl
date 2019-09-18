@@ -4,124 +4,109 @@ sudo: false
 # Manage sub-modules manually
 git:
   submodules: false
-#  lfs_skip_smudge: true
-
-# Reduce bandwidth usage for Git-LFS
-# see https://github.com/travis-ci/travis-ci/issues/8787#event-1875343357
-#cache:
-#  directories:
-#    - .git/lfs
 
 branches:
   except:
-  - /.*gh-pages.*/
+  - "/.*gh-pages.*/"
 
 notifications:
   email:
-     recipients:
-       - nickpapior@gmail.com
-     on_failure: always
-     on_success: change
+    recipients:
+    - nickpapior@gmail.com
+    on_failure: always
+    on_success: change
   webhooks:
-     urls:
-       - https://webhooks.gitter.im/e/fa6dc002908da5678b5f
-     on_success: change
-     on_failure: always
-     on_start: never
+    urls:
+    - https://webhooks.gitter.im/e/fa6dc002908da5678b5f
+    on_success: change
+    on_failure: always
+    on_start: never
 
 matrix:
   include:
-   - env:
-     - CONDA_ENV=py27
-   - env:
-     - CONDA_ENV=py27-opt
-     - OPTIONAL_DEPENDENCIES=true
-   - env:
-     - CONDA_ENV=py36
-   - env:
-     - CONDA_ENV=py36-opt
-     - OPTIONAL_DEPENDENCIES=true
+  - env:
+    - CONDA_ENV=py27
+  - env:
+    - CONDA_ENV=py27-opt
+    - OPTIONAL_DEPENDENCIES=true
+  - env:
+    - CONDA_ENV=py36
+  - env:
+    - CONDA_ENV=py36-opt
+    - OPTIONAL_DEPENDENCIES=true
 
 before_install:
-  - |
-    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-        wget https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh ;
-    else
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh ;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH=$HOME/miniconda/bin:$PATH
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
-  # Do actual package installations
-  #- conda update -q conda
-  - conda info -a
-  - | # In case we have optional dependencies, also download the sisl-files submodule to test large files
-    if [[ ${OPTIONAL_DEPENDENCIES:-false} == true ]]; then
-       export SISL_FILES_TESTS=$(pwd)/files/tests ;
-       git submodule update --init files ;
-    fi
-
+- |
+  if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh ;
+  else
+      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh ;
+  fi
+- bash miniconda.sh -b -p $HOME/miniconda
+- export PATH=$HOME/miniconda/bin:$PATH
+- hash -r
+- conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
+- conda info -a
+- |
+  if [[ ${OPTIONAL_DEPENDENCIES:-false} == true ]]; then
+     export SISL_FILES_TESTS=$(pwd)/files/tests ;
+     git submodule update --init files ;
+  fi
 
 install:
-  - conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
-  - source activate test_env
-  - conda info --envs
-  - conda list
-  # conda-forge is adopting a new scheme...
-  # When loading their modules the used binaries for compilation
-  # are available through env-vars.
-  # I.e.
-  # gfortran may be found under these flags:
-  #  GFORTRAN
-  #  FC
-  #  F77
-  #  F90
-  # This is also the same for gcc which goes (only) under the name:
-  #  GCC
-  # To be sure we have the correct flags, we do:
-  - export CC=$GCC
-  - export FC=$GFORTRAN
-  - export F77=$GFORTRAN
-  - export F90=$GFORTRAN
-  - $CC --version
-  - $FC --version
-  - python -c 'import sys ; print(sys.version)'
-  # verbose (max-out)
-  # We should let numpy use the LDFLAGS
-  - unset LDFLAGS
-  - pip install --no-deps -v -v -v -e .
+- conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
+- source activate test_env
+- conda info --envs
+- conda list
+- export CC=$GCC
+- export FC=$GFORTRAN
+- export F77=$GFORTRAN
+- export F90=$GFORTRAN
+- "$CC --version"
+- "$FC --version"
+- python -c 'import sys ; print(sys.version)'
+- unset LDFLAGS
+- pip install --no-deps -v -v -v -e .
 
 script:
-  - which python
-  - python --version
-  # Check that compiling without __doc__ works!
-  - python -OO -c "import sisl"
-  - |
-    if [[ ${COVERAGE:-true} == true ]]; then
-        echo "Running coverage tests..." ;
-        py.test --pyargs sisl -rX --cov=sisl --cov-report term-missing --cov-config=.coveragerc ;
-    else
-        echo "Running non-coverage tests..." ;
-        py.test --doctest-modules sisl ;
-        py.test --pyargs sisl -rX ;
-    fi
+- which python
+- python --version
+- python -OO -c "import sisl"
+- |
+  if [[ ${COVERAGE:-true} == true ]]; then
+      echo "Running coverage tests..." ;
+      py.test --pyargs sisl -rX --cov=sisl --cov-report term-missing --cov-config=.coveragerc ;
+  else
+      echo "Running non-coverage tests..." ;
+      py.test --doctest-modules sisl ;
+      py.test --pyargs sisl -rX ;
+  fi
 
 after_success:
-  - coveralls
-  - |
-    if [[ ${COVERAGE:-true} == true ]]; then
-       bash <(curl -s https://codecov.io/bash) ;
-       python-codacy-coverage -r coverage.xml ;
-    fi
+- coveralls
+- |
+  if [[ ${COVERAGE:-true} == true ]]; then
+     bash <(curl -s https://codecov.io/bash) ;
+     python-codacy-coverage -r coverage.xml ;
+  fi
 
 before_script:
-  - |
-    if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
-        export DISPLAY=:99.0 ;
-        sh -e /etc/init.d/xvfb start ;
-        sleep 2 ;
-    fi
-  # Try and force the simplest back-end...
-  - export MPLBACKEND=Agg
+- |
+  if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
+      export DISPLAY=:99.0 ;
+      sh -e /etc/init.d/xvfb start ;
+      sleep 2 ;
+  fi
+- export MPLBACKEND=Agg
 
+
+deploy:
+  provider: pypi
+  user: zeroth
+  password:
+    secure: pDCY0LPyJ8zU0x/AZSaFWGNYHD+I2ERr6a+EOq21Hczk0T3t57ASyQ0Zb9j1gLwNpV5Qnu/rVS54IelwUZrt1TZiXxL842wK1x3IZYzESwNTjkkhgdU6ptZIB3ujUsWaI64KL2U28cFAxmZj5i/RwsRSSjPzPp23sm5HVzrR6BVAzCURow+WUxQfF/SeeA8JBTo6fdfdrzSPsxaq4FCRzEdgXaW7e3Kza+2bEfwumWR/fDL7Uoflx8+lklWUeGPmnTL4h/icenAtcK3b0qieEf3gJMErlD2nfWIBPji7wWUpWNObV1M5VulADYBoZgb88/AGVyQW+x6PMvlM6MvqC+NsiSKYJYRbI+IP5Q8Acf3xeh/OzTTgj1SO3O7kgUcyZpqNBVgfjtMFvNWM4qQDzlnpDg0sruozO59PvEjTLMYIIoAtB5uLq5C0UrbuFpPUKup3xOfzKDqTWI09rz4IUcBW+3wbJ+xsZSPQIkBR5CakGcyeTRg0YVMErXUZr2fcgHwOxNvVtb1swP+kOHM/2ts3mpV8WSdR+xa6+TLkeDL4yp7A0Z9zRkzkDvjPi81IwDGRd2YPU15evT+cCTep3vPCMLlNXfwBiqs/tv4Q87EILj+mXcfLdHmXwKRkG6XWkgbIW2ZHvlS1qjul7nHTLOF8e/4sLJT4OTz3kR5oKzI=
+  on:
+    branch: master
+    tags: true
+  distributions: "sdist bdist_wheel"
+  skip_existing: true
