@@ -233,15 +233,15 @@ class UnitParser(object):
         if group_table is None:
             def _convert(t):
                 return convert(t[0], default(group(t[0])))
-            
+
             def _float(t):
                 return float(t[0])
-            
+
         else:
             def _convert(t):
                 group_table.append(group(t[0]))
                 return convert(t[0], default(group_table[-1]))
-            
+
             def _float(t):
                 f = float(t[0])
                 group_table.append(f)  # append nothing
@@ -393,4 +393,3 @@ class UnitParser(object):
 
 # Create base sisl unit conversion object
 units = UnitParser(unit_table)
-

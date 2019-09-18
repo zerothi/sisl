@@ -588,6 +588,7 @@ class _gridSileSiesta(SileBinSiesta):
     """
 
     def read_supercell(self, *args, **kwargs):
+        r""" Return the cell contained in the file """
 
         cell = _siesta.read_grid_cell(self.file)
         _bin_check(self, 'read_supercell', 'could not read cell.')
@@ -596,7 +597,21 @@ class _gridSileSiesta(SileBinSiesta):
 
         return SuperCell(cell)
 
-    def read_grid(self, index=0, *args, **kwargs):
+    def read_grid_size(self):
+        r""" Query grid size information such as the grid size and number of spin components
+
+        Returns
+        -------
+        int : number of spin-components
+        mesh : 3 values for the number of mesh-elements
+        """
+
+        # Read the sizes
+        nspin, mesh = _siesta.read_grid_sizes(self.file)
+        _bin_check(self, 'read_grid_size', 'could not read grid sizes.')
+        return nspin, mesh
+
+    def read_grid(self, index=0, dtype=np.float64, *args, **kwargs):
         """ Read grid contained in the Grid file
 
         Parameters
@@ -606,11 +621,11 @@ class _gridSileSiesta(SileBinSiesta):
            is passed it refers to the fraction per indexed component. I.e.
            ``[0.5, 0.5]`` will return sum of half the first two components.
            Default to the first component.
+        dtype : numpy.float64, optional
+           default data-type precision
         """
-        # Read the sizes
-        nspin, mesh = _siesta.read_grid_sizes(self.file)
-        _bin_check(self, 'read_grid', 'could not read grid sizes.')
-        # Read the cell and grid
+        # Read the sizes and cell
+        nspin, mesh = self.read_grid_size()
         cell = _siesta.read_grid_cell(self.file)
         _bin_check(self, 'read_grid', 'could not read grid cell.')
         grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
@@ -636,7 +651,7 @@ class _gridSileSiesta(SileBinSiesta):
         g = Grid([1, 1, 1], sc=SuperCell(cell))
         # NOTE: there is no need to swap-axes since the returned array is in F ordering
         #       and thus the first axis is the fast (x, y, z) is retained
-        g.grid = (grid * self.grid_unit).astype(dtype=np.float32, order='C', copy=False)
+        g.grid = (grid * self.grid_unit).astype(dtype=dtype, order='C', copy=False)
         return g
 
 
@@ -1180,6 +1195,12 @@ if found_module:
     add_sile('BADER', _type("baderSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
     add_sile('IOCH', _type("iorhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
     add_sile('TOCH', _type("totalrhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    # The following two files *require* that
+    #  STM.DensityUnits   Ele/bohr**3
+    #  which I can't check!
+    # They are however the default
+    add_sile('STS', _type("stsSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('STM.LDOS', _type("stmldosSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
     add_sile('VH', _type("hartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))
     add_sile('VNA', _type("neutralatomhartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))
     add_sile('VT', _type("totalhartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))
