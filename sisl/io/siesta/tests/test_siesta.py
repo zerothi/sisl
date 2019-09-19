@@ -63,7 +63,7 @@ def test_nc_overlap(sisl_tmp, sisl_system):
 def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     f = sisl_tmp('grdyn.nc', _dir)
     dm = DynamicalMatrix(sisl_system.gtb)
-    for _, ix in dm:
+    for _, ix in dm.iter_orbitals():
         dm[ix, ix] = ix / 2.
     dm.write(ncSileSiesta(f, 'w'))
 
@@ -81,7 +81,7 @@ def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
 def test_nc_density_matrix(sisl_tmp, sisl_system):
     f = sisl_tmp('grDM.nc', _dir)
     dm = DensityMatrix(sisl_system.gtb)
-    for _, ix in dm:
+    for _, ix in dm.iter_orbitals():
         dm[ix, ix] = ix / 2.
     dm.write(ncSileSiesta(f, 'w'))
 

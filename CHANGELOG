@@ -1,6 +1,14 @@
 0.9.7
 =====
 
+- Fixed an inheritance issue in `axsfSile` which meant it was unusable until
+	now
+
+- Maintenance fix for looping sparse matrices.
+	Now the default is to loop the sparse non-zero elements.
+  If one wishes to loop all atoms/orbitals one should use `iter_orbitals()`
+  NOTE: This *may* break some codes if they used loops on sparse matrices
+
 - Fixed reading VASP CAR files with constraints (thanks to T. Frederiksen)
 
 - Added `overlap` method to `Geometry` to find overlapping atoms

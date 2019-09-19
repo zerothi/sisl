@@ -428,17 +428,16 @@ class _SparseGeometry(object):
         else:
             self._csr.align(other._csr)
 
-    def eliminate_zeros(self, atol=0.):
+    def eliminate_zeros(self, *args, **kwargs):
         """ Removes all zero elements from the sparse matrix
 
         This is an *in-place* operation.
 
-        Parameters
-        ----------
-        atol : float, optional
-            absolute tolerance equal or below this value will be considered 0.
+        See Also
+        --------
+        SparseCSR.eliminate_zeros : method called, see there for parameters
         """
-        self._csr.eliminate_zeros(atol)
+        self._csr.eliminate_zeros(*args, **kwargs)
 
     # Create iterations on the non-zero elements
     def iter_nnz(self):
@@ -934,12 +933,12 @@ class SparseAtom(_SparseGeometry):
         atom : int or array_like
             only loop on the non-zero elements coinciding with the atoms
         """
-        if not atom is None:
-            atom = _a.asarrayi(atom).ravel()
-            for i, j in self._csr.iter_nnz(atom):
+        if atom is None:
+            for i, j in self._csr:
                 yield i, j
         else:
-            for i, j in self._csr.iter_nnz():
+            atom = _a.asarrayi(atom).ravel()
+            for i, j in self._csr.iter_nnz(atom):
                 yield i, j
 
     def set_nsc(self, *args, **kwargs):
@@ -1445,14 +1444,14 @@ class SparseOrbital(_SparseGeometry):
             (not compatible with the ``atom`` keyword)
         """
         if not atom is None:
-            orbital = self.geometry.a2o(atom)
+            orbital = self.geometry.a2o(atom, True)
         elif not orbital is None:
             orbital = _a.asarrayi(orbital)
-        if not orbital is None:
-            for i, j in self._csr.iter_nnz(orbital):
+        if orbital is None:
+            for i, j in self._csr:
                 yield i, j
         else:
-            for i, j in self._csr.iter_nnz():
+            for i, j in self._csr.iter_nnz(orbital):
                 yield i, j
 
     def set_nsc(self, *args, **kwargs):

@@ -43,6 +43,12 @@ _LOGICAL = _LOGICAL_FALSE + _LOGICAL_TRUE
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
+def _listify_str(arg):
+    if isinstance(arg, _str):
+        return [arg]
+    return arg
+
+
 class fdfSileSiesta(SileSiesta):
     """ FDF-input file
 
@@ -592,7 +598,7 @@ class fdfSileSiesta(SileSiesta):
         ------
         SislWarning if none of the files can be read
         """
-        order = kwargs.pop('order', ['nc', 'ORB_INDX'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'ORB_INDX']))
         for f in order:
             v = getattr(self, '_r_supercell_nsc_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -638,9 +644,9 @@ class fdfSileSiesta(SileSiesta):
         >>> fdf.read_supercell(True, order=['nc']) # read from [nc]
         """
         if output:
-            order = kwargs.pop('order', ['XV', 'nc', 'fdf'])
+            order = _listify_str(kwargs.pop('order', ['XV', 'nc', 'fdf']))
         else:
-            order = kwargs.pop('order', ['fdf'])
+            order = _listify_str(kwargs.pop('order', ['fdf']))
         for f in order:
             v = getattr(self, '_r_supercell_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -706,7 +712,7 @@ class fdfSileSiesta(SileSiesta):
         -------
         (*, 3) : vector with forces for each of the atoms
         """
-        order = kwargs.pop('order', ['FA', 'nc'])
+        order = _listify_str(kwargs.pop('order', ['FA', 'nc']))
         for f in order:
             v = getattr(self, '_r_force_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -747,7 +753,7 @@ class fdfSileSiesta(SileSiesta):
         -------
         (*, 3, 2, *, 3) : vector with force constant element for each of the atomic displacements
         """
-        order = kwargs.pop('order', ['nc', 'FC'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'FC']))
         for f in order:
             v = getattr(self, '_r_force_constant_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -809,7 +815,7 @@ class fdfSileSiesta(SileSiesta):
         -------
         DynamicalMatrix : Dynamical matrix
         """
-        order = kwargs.pop('order', ['nc', 'FC'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'FC']))
         for f in order:
             v = getattr(self, '_r_dynamical_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -1118,9 +1124,9 @@ class fdfSileSiesta(SileSiesta):
         # code to correct.
         ##
         if output:
-            order = kwargs.pop('order', ['XV', 'nc', 'fdf', 'TSHS'])
+            order = _listify_str(kwargs.pop('order', ['XV', 'nc', 'fdf', 'TSHS']))
         else:
-            order = kwargs.pop('order', ['fdf'])
+            order = _listify_str(kwargs.pop('order', ['fdf']))
         for f in order:
             v = getattr(self, '_r_geometry_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -1166,7 +1172,7 @@ class fdfSileSiesta(SileSiesta):
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
-        sc = self.read_supercell(order=['fdf'])
+        sc = self.read_supercell(order='fdf')
 
         # No fractional coordinates
         is_frac = False
@@ -1258,7 +1264,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the geometry.
             By default this is ``['nc', 'grid.nc', 'bin']`` (bin refers to the binary files)
         """
-        order = kwargs.pop('order', ['nc', 'grid.nc', 'bin'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'grid.nc', 'bin']))
         for f in order:
             v = getattr(self, '_r_grid_{}'.format(f.lower().replace('.', '_')))(name, *args, **kwargs)
             if v is not None:
@@ -1355,7 +1361,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the basis information.
             By default this is ``['nc', 'ion', 'ORB_INDX', 'fdf']``
         """
-        order = kwargs.pop('order', ['nc', 'ion', 'ORB_INDX', 'fdf'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'ion', 'ORB_INDX', 'fdf']))
         for f in order:
             v = getattr(self, '_r_basis_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -1457,7 +1463,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the density matrix
             By default this is ``['nc', 'TSDE', 'DM']``.
         """
-        order = kwargs.pop('order', ['nc', 'TSDE', 'DM'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'TSDE', 'DM']))
         for f in order:
             DM = getattr(self, '_r_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if DM is not None:
@@ -1509,7 +1515,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the density matrix
             By default this is ``['nc', 'TSDE']``.
         """
-        order = kwargs.pop('order', ['nc', 'TSDE'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'TSDE']))
         for f in order:
             EDM = getattr(self, '_r_energy_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if EDM is not None:
@@ -1547,7 +1553,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the overlap matrix
             By default this is ``['nc', 'TSHS', 'HSX', 'onlyS']``.
         """
-        order = kwargs.pop('order', ['nc', 'TSHS', 'HSX', 'onlyS'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'TSHS', 'HSX', 'onlyS']))
         for f in order:
             v = getattr(self, '_r_overlap_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -1606,7 +1612,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the Hamiltonian.
             By default this is ``['nc', 'TSHS', 'HSX']``.
         """
-        order = kwargs.pop('order', ['nc', 'TSHS', 'HSX'])
+        order = _listify_str(kwargs.pop('order', ['nc', 'TSHS', 'HSX']))
         for f in order:
             H = getattr(self, '_r_hamiltonian_{}'.format(f.lower()))(*args, **kwargs)
             if H is not None:

@@ -633,7 +633,7 @@ class Geometry(SuperCellChild):
                 yield ia, self.atoms[ia], self.atoms.specie[ia]
 
     def iter_orbitals(self, atom=None, local=True):
-        """
+        r"""
         Returns an iterator over all atoms and their associated orbitals
 
         >>> for ia, io in self.iter_orbitals():
@@ -648,6 +648,13 @@ class Geometry(SuperCellChild):
         local : bool, optional
            whether the orbital index is the global index, or the local index relative to
            the atom it resides on.
+
+        Yields
+        ------
+        ia
+           atomic index
+        io
+           orbital index
 
         See Also
         --------

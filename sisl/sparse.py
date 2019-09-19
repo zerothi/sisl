@@ -1005,8 +1005,6 @@ class SparseCSR(object):
         self.col[sl] = oC[keep]
         self._D[sl, :] = oD[keep, :]
 
-        # Once we remove some things, it is NOT
-        # finalized...
         self._finalized = False
         self._nnz -= n_index
 
@@ -1197,7 +1195,7 @@ class SparseCSR(object):
             return self.col[idx]
         return rows, self.col[idx]
 
-    def eliminate_zeros(self, atol=0.):
+    def eliminate_zeros(self, atol=1e-16):
         """ Remove all zero elememts from the sparse matrix
 
         This is an *in-place* operation
@@ -1224,10 +1222,10 @@ class SparseCSR(object):
         if (nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2).nonzero()[0].sum() == 0:
             return
 
-        for i in range(self.shape[0]):
+        for r in range(self.shape[0]):
 
             # Create short-hand slice
-            idx = arangei(ptr[i], ptr[i] + ncol[i])
+            idx = arangei(ptr[r], ptr[r] + ncol[r])
 
             # Retrieve columns with zero values (summed over all elements)
             C0 = (nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2).nonzero()[0]
@@ -1235,13 +1233,7 @@ class SparseCSR(object):
                 continue
 
             # Remove all entries with 0 values
-            del self[i, col[idx[C0]]]
-
-            # Since some elements may be deleted we need to ensure we have them all
-            ptr = self.ptr
-            ncol = self.ncol
-            col = self.col
-            D = self._D
+            del self[r, col[idx[C0]]]
 
     def copy(self, dims=None, dtype=None):
         """ A deepcopy of the sparse matrix

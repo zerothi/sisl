@@ -121,11 +121,11 @@ class TestHamiltonian(object):
         setup.HS.empty()
 
     def test_set4(self, setup):
-        for ia, io in setup.H:
+        for ia in setup.H.geometry:
             # Find atoms close to 'ia'
             idx = setup.H.geom.close(ia, R=(0.1, 1.5))
-            setup.H[io, idx[0]] = 1.
-            setup.H[io, idx[1]] = 0.1
+            setup.H[ia, idx[0]] = 1.
+            setup.H[ia, idx[1]] = 0.1
         assert setup.H.H[0, 0] == 1.
         assert setup.H.H[1, 1] == 1.
         assert setup.H.H[1, 0] == 0.1
@@ -152,7 +152,7 @@ class TestHamiltonian(object):
     def test_iter1(self, setup):
         setup.HS.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
         nnz = 0
-        for io, jo in setup.HS.iter_nnz():
+        for io, jo in setup.HS:
             nnz = nnz + 1
         assert nnz == setup.HS.nnz
         nnz = 0
@@ -165,7 +165,7 @@ class TestHamiltonian(object):
     def test_iter2(self, setup):
         setup.HS.H[0, 0] = 1.
         nnz = 0
-        for io, jo in setup.HS.iter_nnz():
+        for io, jo in setup.HS:
             nnz = nnz + 1
         assert nnz == setup.HS.nnz
         assert nnz == 1
