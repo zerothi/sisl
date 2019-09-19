@@ -19,7 +19,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. G. Calogero, I. Alcon, N. Papior, A-P Jauho, M. Brandbyge,
    *Quantum interference engineering of nanoporous graphene for carbon nanocircuitry*,
-   Journal of the American Chemical Society `(2019) <https://doi.org/10.1021/jacs.9b04649>`_
+   Journal of the American Chemical Society `141 (2019) <https://doi.org/10.1021/jacs.9b04649>`_
 
 #. S. Leitherer, N. Papior, M. Brandbyge,
    *Current-induced atomic forces in gated graphene nanoconstrictions*,
