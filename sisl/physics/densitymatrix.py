@@ -39,18 +39,21 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         .. math::
 
              M_{\nu} &= \sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu}
+             \\
              M_{\alpha} &= \sum_{\nu\in\alpha} M_{\nu}
 
         For non-colinear calculations (including spin-orbit) they are calculated
         as above but using the spin-box per orbital (:math:`\sigma` is spin)
 
         .. math::
-
              M_{\nu} &= \sum_\sigma\sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu,\sigma\sigma}
+             \\
              S_{\nu}^x &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} +
                           \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
+             \\
              S_{\nu}^y &= \sum_mu \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} -
                           \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
+             \\
              S_{\nu}^z &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\uparrow} -
                           \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\downarrow}
 
