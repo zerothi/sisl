@@ -147,6 +147,10 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns a vector with final forces contained. """
         return _a.arrayd(self._value('fa')) * Ry2eV / Bohr2Ang
 
+    def read_fermi_level(self):
+        """ Returns the fermi-level """
+        return self._value('Ef')[:] * Ry2eV
+
     def _read_class(self, cls, dim=1, **kwargs):
         # Get the default spin channel
         # First read the geometry

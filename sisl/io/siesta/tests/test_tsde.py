@@ -19,6 +19,11 @@ def test_si_pdos_kgrid_tsde_dm(sisl_files):
     DM1 = si.read_density_matrix(geometry=fdf.read_geometry())
     DM2 = fdf.read_density_matrix(order=['TSDE'])
 
+    Ef1 = si.read_fermi_level()
+    Ef2 = fdf.read_fermi_level()
+
+    assert Ef1 == Ef2
+
     assert DM1._csr.spsame(DM2._csr)
     assert np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])
 

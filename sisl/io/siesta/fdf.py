@@ -794,6 +794,38 @@ class fdfSileSiesta(SileSiesta):
             return fc
         return None
 
+    def read_fermi_level(self, *args, **kwargs):
+        """ Read fermi-level from output of the calculation
+
+        Parameters
+        ----------
+        order: list of str, optional
+            the order of which to try and read the fermi-level.
+            By default this is ``['nc', 'TSDE']``.
+
+        Returns
+        -------
+        float : fermi-level
+        """
+        order = _listify_str(kwargs.pop('order', ['nc', 'TSDE']))
+        for f in order:
+            v = getattr(self, '_r_fermi_level_{}'.format(f.lower()))(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
+
+    def _r_fermi_level_nc(self):
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
+        if isfile(f):
+            return ncSileSiesta(f).read_fermi_level()
+        return None
+
+    def _r_fermi_level_tsde(self):
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSDE'
+        if isfile(f):
+            return tsdeSileSiesta(f).read_fermi_level()
+        return None
+
     def read_dynamical_matrix(self, *args, **kwargs):
         """ Read dynamical matrix from output of the calculation
 

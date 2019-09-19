@@ -446,8 +446,29 @@ class tsdeSileSiesta(dmSileSiesta):
 
         return EDM
 
-    def write_density_matrices(self, DM, EDM, **kwargs):
-        """ Writes the density matrix to a siesta.DM file """
+    def read_fermi_level(self):
+        r""" Query the Fermi-level contained in the file
+
+        Returns
+        -------
+        Ef : fermi-level of the density matrix
+        """
+        Ef = _siesta.read_tsde_ef(self.file)
+        _bin_check(self, 'read_fermi_level', 'could not read fermi-level.')
+        return Ef
+
+    def write_density_matrices(self, DM, EDM, Ef=0.):
+        r""" Writes the density matrix to a siesta.DM file
+
+        Parameters
+        ----------
+        DM : DensityMatrix
+           density matrix to write to the file
+        EDM : EnergyDensityMatrix
+           energy density matrix to write to the file
+        Ef : float, optional
+           fermi-level to be contained
+        """
         DMcsr = DM._csr.copy()
         EDMcsr = EDM._csr.copy()
         DMcsr.align(EDMcsr)
@@ -487,7 +508,6 @@ class tsdeSileSiesta(dmSileSiesta):
 
         nsc = DM.geometry.sc.nsc.astype(np.int32)
 
-        Ef = kwargs.get('Ef', 0.)
         _siesta.write_tsde_dm_edm(self.file, nsc, DMcsr.ncol, DMcsr.col + 1, dm, edm, Ef)
         _bin_check(self, 'write_density_matrices', 'could not write DM + EDM matrices.')
 

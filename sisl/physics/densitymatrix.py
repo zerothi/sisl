@@ -37,6 +37,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         (for each spin-channel)
 
         .. math::
+
              M_{\nu} &= \sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu}
              M_{\alpha} &= \sum_{\nu\in\alpha} M_{\nu}
 
@@ -44,6 +45,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         as above but using the spin-box per orbital (:math:`\sigma` is spin)
 
         .. math::
+
              M_{\nu} &= \sum_\sigma\sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu,\sigma\sigma}
              S_{\nu}^x &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} +
                           \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
