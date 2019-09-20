@@ -460,27 +460,30 @@ class outSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        geometry: bool
-           return the last geometry in the `outSileSiesta`
-        force: bool
-           return the last force in the `outSileSiesta`
-        moment: bool
-           return the last moments in the `outSileSiesta` (only for spin-orbit coupling calculations)
+        geometry: bool, optional
+           read geometry, args are passed to `read_geometry`
+        force: bool, optional
+           read force, args are passed to `read_force`
+        stress: bool, optional
+           read stress, args are passed to `read_stress`
+        moment: bool, optional
+           read moment, args are passed to `read_moment` (only for spin-orbit calculations)
         """
+        run = []
+        # This loops ensures that we preserve the order of arguments
+        # From Py3.6 and onwards the **kwargs is an OrderedDictionary
+        for kw in kwargs.keys():
+            if kw in ['geometry', 'force', 'moment', 'stress']
+                if kwargs[kw]:
+                    run.append(kw)
+
+        # Clean running names
+        for name in run:
+            kwargs.pop(name)
+
         val = []
-        for kw in kwargs:
-
-            if kw == 'geometry':
-                if kwargs[kw]:
-                    val.append(self.read_geometry())
-
-            if kw == 'force':
-                if kwargs[kw]:
-                    val.append(self.read_force())
-
-            if kw == 'moment':
-                if kwargs[kw]:
-                    val.append(self.read_moment())
+        for name in run:
+            val.append(getattr(self, 'read_{}'.format(name.lower()))(*args, **kwargs))
 
         if len(val) == 0:
             return None
