@@ -3,6 +3,7 @@ from __future__ import print_function, division
 import pytest
 import os.path as osp
 import sisl
+from sisl.io.siesta.fdf import *
 from sisl.io.siesta.eig import *
 import numpy as np
 
@@ -39,3 +40,14 @@ def test_soc_pt2_xx_eig(sisl_files):
     # Since SO/NC mixes spin-channels it makes no sense
     # to have them separately
     assert np.all(eig.shape == (1, 1, 60))
+
+
+def test_soc_pt2_xx_eig_fermi_level(sisl_files):
+    f = sisl_files(_dir, 'SOC_Pt2_xx.EIG')
+    ef = eigSileSiesta(f).read_fermi_level()
+    fdf = sisl_files(_dir, 'SOC_Pt2_xx.fdf')
+    ef1 = fdfSileSiesta(fdf).read_fermi_level(order='EIG')
+    assert ef == pytest.approx(ef1)
+    # This should prefer the TSHS
+    ef2 = fdfSileSiesta(fdf).read_fermi_level(order='TSHS')
+    assert ef == pytest.approx(ef2)

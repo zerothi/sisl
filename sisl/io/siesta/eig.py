@@ -59,6 +59,16 @@ class eigSileSiesta(SileSiesta):
     the used distribution is a Lorentzian.
     """
 
+    @sile_fh_open(True)
+    def read_fermi_level(self):
+        r""" Query the Fermi-level contained in the file
+
+        Returns
+        -------
+        Ef : fermi-level of the system
+        """
+        return float(self.readline())
+
     @sile_fh_open()
     def read_data(self):
         r""" Read eigenvalues, as calculated and written by Siesta
@@ -69,9 +79,7 @@ class eigSileSiesta(SileSiesta):
                         where ``ns`` number of spin-components, ``nk`` number of k-points and
                         ``no`` number of orbitals.
         """
-
-        # Luckily the data is in eV
-        Ef = float(self.readline())
+        Ef = self.read_fermi_level()
 
         # Read the total length of the path
         no, ns, nk = map(int, self.readline().split())

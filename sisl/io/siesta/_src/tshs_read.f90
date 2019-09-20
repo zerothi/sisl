@@ -83,6 +83,48 @@ subroutine read_tshs_sizes(fname, nspin, na_u, no_u, n_s, nnz)
 
 end subroutine read_tshs_sizes
 
+subroutine read_tshs_ef(fname, Ef)
+  use io_m, only: open_file
+  use io_m, only: iostat_update
+
+  implicit none
+
+  integer, parameter :: dp = selected_real_kind(p=15)
+  real(dp), parameter :: eV = 13.60580_dp
+
+  ! Input parameters
+  character(len=*), intent(in) :: fname
+  real(dp), intent(out) :: Ef
+
+! Define f2py intents
+!f2py intent(in)  :: fname
+!f2py intent(out) :: Ef
+
+! Internal variables and arrays
+  integer :: iu, ierr
+
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  read(iu, iostat=ierr) ! version
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! na_u, no_u, no_s, nspin, n_nzsg
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! nsc
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! cell, xa
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! Gamma, TSGamma, onlyS
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! kscell, kdispl
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) Ef ! Qtot, Temp
+  call iostat_update(ierr)
+  Ef = Ef * eV
+
+  close(iu)
+
+end subroutine read_tshs_ef
+
 subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
   use io_m, only: open_file
   use io_m, only: iostat_update

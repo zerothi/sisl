@@ -25,7 +25,7 @@ def _ensure_species(species):
 
 
 class outSileSiesta(SileSiesta):
-    """ Output file
+    """ Output file from Siesta
 
     This enables reading the output quantities from the Siesta output.
     """

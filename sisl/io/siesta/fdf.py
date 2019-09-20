@@ -19,6 +19,7 @@ from .sile import SileSiesta
 
 from .binaries import tshsSileSiesta, tsdeSileSiesta
 from .binaries import dmSileSiesta, hsxSileSiesta, onlysSileSiesta
+from .eig import eigSileSiesta
 from .fc import fcSileSiesta
 from .fa import faSileSiesta
 from .siesta_grid import gridncSileSiesta
@@ -801,13 +802,13 @@ class fdfSileSiesta(SileSiesta):
         ----------
         order: list of str, optional
             the order of which to try and read the fermi-level.
-            By default this is ``['nc', 'TSDE']``.
+            By default this is ``['nc', 'TSDE', 'TSHS', 'EIG']``.
 
         Returns
         -------
         float : fermi-level
         """
-        order = _listify_str(kwargs.pop('order', ['nc', 'TSDE']))
+        order = _listify_str(kwargs.pop('order', ['nc', 'TSDE', 'TSHS', 'EIG']))
         for f in order:
             v = getattr(self, '_r_fermi_level_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -824,6 +825,18 @@ class fdfSileSiesta(SileSiesta):
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSDE'
         if isfile(f):
             return tsdeSileSiesta(f).read_fermi_level()
+        return None
+
+    def _r_fermi_level_tshs(self):
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSHS'
+        if isfile(f):
+            return tshsSileSiesta(f).read_fermi_level()
+        return None
+
+    def _r_fermi_level_eig(self):
+        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.EIG'
+        if isfile(f):
+            return eigSileSiesta(f).read_fermi_level()
         return None
 
     def read_dynamical_matrix(self, *args, **kwargs):

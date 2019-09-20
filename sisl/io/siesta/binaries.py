@@ -104,7 +104,7 @@ class onlysSileSiesta(SileBinSiesta):
     """ Geometry and overlap matrix """
 
     def read_supercell(self):
-        """ Returns a SuperCell object from a siesta.TSHS file """
+        """ Returns a SuperCell object from a TranSiesta file """
         n_s = _siesta.read_tshs_sizes(self.file)[3]
         _bin_check(self, 'read_supercell', 'could not read sizes.')
         arr = _siesta.read_tshs_cell(self.file, n_s)
@@ -115,7 +115,7 @@ class onlysSileSiesta(SileBinSiesta):
         return SuperCell(cell, nsc=nsc)
 
     def read_geometry(self, geometry=None):
-        """ Returns Geometry object from a siesta.TSHS file """
+        """ Returns Geometry object from a TranSiesta file """
 
         # Read supercell
         sc = self.read_supercell()
@@ -169,7 +169,7 @@ class onlysSileSiesta(SileBinSiesta):
         return Geometry(xyz, atom, sc=sc)
 
     def read_overlap(self, **kwargs):
-        """ Returns the overlap matrix from the siesta.TSHS file """
+        """ Returns the overlap matrix from the TranSiesta file """
         tshs_g = self.read_geometry()
         geom = _geometry_align(tshs_g, kwargs.get('geometry', tshs_g), self.__class__, 'read_overlap')
 
@@ -200,6 +200,17 @@ class onlysSileSiesta(SileBinSiesta):
         _csr_from_sc_off(S.geometry, isc, S._csr)
 
         return S
+
+    def read_fermi_level(self):
+        r""" Query the Fermi-level contained in the file
+
+        Returns
+        -------
+        Ef : fermi-level of the system
+        """
+        Ef = _siesta.read_tshs_ef(self.file)
+        _bin_check(self, 'read_fermi_level', 'could not read fermi-level.')
+        return Ef
 
 
 class tshsSileSiesta(onlysSileSiesta):
@@ -451,7 +462,7 @@ class tsdeSileSiesta(dmSileSiesta):
 
         Returns
         -------
-        Ef : fermi-level of the density matrix
+        Ef : fermi-level of the system
         """
         Ef = _siesta.read_tsde_ef(self.file)
         _bin_check(self, 'read_fermi_level', 'could not read fermi-level.')
