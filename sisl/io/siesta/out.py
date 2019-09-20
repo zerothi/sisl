@@ -473,7 +473,7 @@ class outSileSiesta(SileSiesta):
         # This loops ensures that we preserve the order of arguments
         # From Py3.6 and onwards the **kwargs is an OrderedDictionary
         for kw in kwargs.keys():
-            if kw in ['geometry', 'force', 'moment', 'stress']
+            if kw in ['geometry', 'force', 'moment', 'stress']:
                 if kwargs[kw]:
                     run.append(kw)
 
