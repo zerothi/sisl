@@ -108,17 +108,11 @@ class outSileSiesta(SileSiesta):
         # Read in data
         xyz = []
         spec = []
-        atom = []
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
             xyz.append([float(x) for x in line[:3]])
-            spec.append(line[3])
-            try:
-                atom.append(line[5])
-            except Exception:
-                # Allowed pass due to pythonic reading
-                pass
+            spec.append(int(line[3]))
             line = self.readline()
 
         # in outcoor we know it is always just after
@@ -136,10 +130,8 @@ class outSileSiesta(SileSiesta):
         elif not Ang:
             xyz *= Bohr2Ang
 
-        try:
-            geom = Geometry(xyz, atom, sc=cell)
-        except:
-            geom = Geometry(xyz, [species[int(i)-1] for i in spec], sc=cell)
+        # Assign the correct species
+        geom = Geometry(xyz, [species[ia - 1] for ia in spec], sc=cell)
 
         return geom
 
@@ -219,9 +211,9 @@ class outSileSiesta(SileSiesta):
                 coord = type_coord(line)
 
             if coord == 1:
-                return coord, self._read_geometry_outcoor(line, species)
+                return 1, self._read_geometry_outcoor(line, species)
             elif coord == 2:
-                return coord, self._read_geometry_atomic(line, species)
+                return 2, self._read_geometry_atomic(line, species)
 
         # Read until a coordinate block is found
         geom0 = None
