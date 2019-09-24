@@ -1,6 +1,12 @@
 0.9.7
 =====
 
+- Bug-fix for reading geometries in outSiesta
+
+- Enabled reading the fermi level from the output, fixes #126
+
+- Enabled Siesta STM and STS output
+
 - Fixed an inheritance issue in `axsfSile` which meant it was unusable until
 	now
 
