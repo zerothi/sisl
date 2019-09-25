@@ -61,8 +61,8 @@ which may be analysed using VMD, XCrySDen or other tools.
 
 Installing sisl using PyPi or Conda is the easiest:
 
-    pip install sisl
-    pip install sisl[analysis] # also installs tqdm and xarray
+    pip3 install sisl
+    pip3 install sisl[analysis] # also installs tqdm and xarray
     # or
     conda install -c conda-forge sisl
 
@@ -82,11 +82,11 @@ If performing a manual installation, these packages are required:
 
 Subsequently manual installation may be done using this command:
 
-    python setup.py install --prefix=<prefix>
+    python3 setup.py install --prefix=<prefix>
 
 If trying to install without root access, you may be required to use this command:
 
-    python setup.py install --user --prefix=<prefix>
+    python3 setup.py install --user --prefix=<prefix>
 
 
 Once installed, the installation can be tested by executing the following:
