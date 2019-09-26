@@ -83,7 +83,6 @@ script:
   fi
 
 after_success:
-- coveralls
 - |
   if [[ ${COVERAGE:-true} == true ]]; then
      bash <(curl -s https://codecov.io/bash) ;
