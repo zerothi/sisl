@@ -196,7 +196,7 @@ class gotSileGULP(SileGULP):
         return None
 
     @sile_fh_open()
-    def _r_dynamical_matrix_got(self, geom, **kwargs):
+    def _r_dynamical_matrix_got(self, geometry, **kwargs):
         """ In case the dynamical matrix is read from the file """
         # Easier for creation of the sparsity pattern
         from scipy.sparse import lil_matrix
@@ -205,8 +205,8 @@ class gotSileGULP(SileGULP):
         cutoff = kwargs.get('cutoff', 1.e-4)
         dtype = kwargs.get('dtype', np.float64)
 
-        no = geom.no
-        dyn = lil_matrix((no, no), dtype=dtype)
+        nxyz = geometry.no
+        dyn = lil_matrix((nxyz, nxyz), dtype=dtype)
 
         f, _ = self.step_to(self._keys['dyn'])
         if not f:
@@ -220,9 +220,10 @@ class gotSileGULP(SileGULP):
         self.readline()
 
         # default range
-        dat = np.empty([no], dtype=dtype)
+        dat = np.empty([nxyz], dtype=dtype)
         i, j = 0, 0
-        while i < no:
+        nxyzm1 = nxyz - 1
+        while i < nxyz:
             l = self.readline().strip()
             if len(l) == 0:
                 break
@@ -230,30 +231,20 @@ class gotSileGULP(SileGULP):
             # convert to float list
             ls = [float(x) for x in l.split()]
 
-            if j + 12 <= no:
-                # Here the full line can fit for the same row
-                dat[j:j + 12] = ls[:12]
-                j += 12
-                if j >= no:
-                    dyn[i, :] = dat[:]
-                    # step row
-                    i += 1
-                    # reset column
-                    j = 0
-            else:
-                # add the values (12 values == 3*4)
-                # for atoms on each line
-                for k in [0, 1, 2, 3]:
-                    dat[j:j + 3] = ls[k * 3:(k + 1) * 3]
+            k = min(12, nxyz - j)
 
-                    j += 3
-                    if j >= no:
-                        # Clear those below the cutoff
-                        dyn[i, :] = dat[:]
+            # GULP only prints columns corresponding
+            # to a full row. Hence the remaining
+            # data must be nxyz - j - 1
+            dat[j:j + k] = ls[:k]
+            j += k
 
-                        i += 1
-                        j = 0
-                        break
+            if j >= nxyz:
+                dyn[i, :] = dat[:]
+                # step row
+                i += 1
+                # reset column
+                j = 0
 
         # clean-up for memory
         del dat
@@ -262,7 +253,7 @@ class gotSileGULP(SileGULP):
         dyn = dyn.tocoo()
 
         # Construct mass ** (-.5), so we can check cutoff correctly
-        mass_sqrt = np.array(geom.atoms.mass, np.float64).repeat(3) ** 0.5
+        mass_sqrt = geometry.atoms.mass.repeat(3) ** 0.5
         dyn.data[:] *= mass_sqrt[dyn.row] * mass_sqrt[dyn.col]
         dyn.data[np_abs(dyn.data) < cutoff] = 0.
         dyn.data[:] *= 1 / (mass_sqrt[dyn.row] * mass_sqrt[dyn.col])
@@ -272,7 +263,7 @@ class gotSileGULP(SileGULP):
 
     _r_dynamical_matrix_gout = _r_dynamical_matrix_got
 
-    def _r_dynamical_matrix_fc(self, geom, **kwargs):
+    def _r_dynamical_matrix_fc(self, geometry, **kwargs):
         # The output of the force constant in the file does not contain the mass-scaling
         # nor the unit conversion
         f = self.dir_file('FORCE_CONSTANTS_2ND')
@@ -281,12 +272,12 @@ class gotSileGULP(SileGULP):
 
         fc = fcSileGULP(f, 'r').read_force_constant(**kwargs)
 
-        if fc.shape[0] != geom.no:
+        if fc.shape[0] != geometry.no:
             warn(self.__class__.__name__ + 'read_dynamical_matrix(FC) inconsistent force constant file, number of atoms not correct!')
             return None
 
         # Construct orbital mass ** (-.5)
-        rmass = 1 / np.array(geom.atoms.mass, np.float64).repeat(3) ** 0.5
+        rmass = 1 / geometry.atoms.mass.repeat(3) ** 0.5
 
         # Scale to get dynamical matrix
         fc.data[:] *= rmass[fc.row] * rmass[fc.col]
