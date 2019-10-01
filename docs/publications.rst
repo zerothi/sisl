@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. J. Brand, S. Leitherer, N. Papior, N. Neel, Y. Lei, M. Brandbyge and J. Kroger,
+   *Nonequilibrium Bond Forces in Single-Molecule Junctions*,
+   Nano Letters `(2019) <https://doi.org/10.1021/acs.nanolett.9b02845>`_
+
 #. G. Singh, K. Kumar, R. K. Moudgil,
    *Alloying-induced Spin Seebeck Effect and Spin Figure of Merit in Pt-based Bimetallic Atomic Wires of Noble Metals*,
    Physical Chemistry Chemical Physics `(2019) <https://doi.org/10.1039/C9CP01671F>`_
@@ -43,7 +47,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. G. Calogero, N. Papior, B. Kretz, A. Garcia-Lekue, T. Frederiksen and M. Brandbyge,
    *Electron Transport in Nanoporous Graphene: Probing the Talbot Effect*,
-   Nanoletters **19**, `1 (2019) <https://www.doi.org/10.1021/acs.nanolett.8b04616>`_
+   Nano Letters **19**, `1 (2019) <https://www.doi.org/10.1021/acs.nanolett.8b04616>`_
 
 #. D. Perera and J. Rohrer,
    *Structure sensitivity of electronic transport across graphene grain boundaries*,
