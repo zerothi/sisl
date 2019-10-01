@@ -222,7 +222,7 @@ class gotSileGULP(SileGULP):
         # default range
         dat = np.empty([no], dtype=dtype)
         i, j = 0, 0
-        while True:
+        while i < no:
             l = self.readline().strip()
             if len(l) == 0:
                 break
@@ -240,8 +240,6 @@ class gotSileGULP(SileGULP):
                     i += 1
                     # reset column
                     j = 0
-                    if i >= no:
-                        break
             else:
                 # add the values (12 values == 3*4)
                 # for atoms on each line
@@ -255,8 +253,7 @@ class gotSileGULP(SileGULP):
 
                         i += 1
                         j = 0
-                        if i >= no:
-                            break
+                        break
 
         # clean-up for memory
         del dat
