@@ -245,6 +245,8 @@ class TestGeometry(object):
         isc = setup.g.a2isc(2)
         off = setup.g.sc.offset(isc)
         assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(2))
+        assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(0, isc))
+        assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(isc=isc)[0])
 
     def test_atranspose_indices(self, setup):
         g = setup.g
