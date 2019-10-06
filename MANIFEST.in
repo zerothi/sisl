@@ -1,10 +1,11 @@
-recursive-include sisl *.py *.pyx *.pxd *.c
+graft sisl
 recursive-include toolbox README *.py
 include LICENSE
 include CHANGELOG
 include requirements.txt setup.cfg README.md
 exclude DEPLOY.md pep8.sh tag.sh
-exclude docs
-exclude benchmarks
-exclude .github ci files
+prune .github
+prune benchmarks
+prune ci
+prune files
 exclude .codecov.yml .gitignore .gitmodules .readthedocs.yml .travis.yml
