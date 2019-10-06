@@ -1217,11 +1217,7 @@ class Geometry(SuperCellChild):
         --------
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
-        if isinstance(atom, ndarray) and atom.dtype == bool_:
-            atom = np.flatnonzero(atom)
-        elif isinstance(atom, str):
-            atom = self.names[atom]
-        atom = self.sc2uc(atom)
+        atom = self.sc2uc(self._sanitize_atom(atom))
         atom = np.delete(_a.arangei(self.na), atom)
         return self.sub(atom)
 

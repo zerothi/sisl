@@ -1182,7 +1182,7 @@ class TestGeometry(object):
         assert len(g.names) == 0
         g['A'] = 1
         assert len(g.names) == 1
-        g['B'] = [1, 2]
+        g[[1, 2]] = 'B'
         assert len(g.names) == 2
         g.names.delete_name('B')
         assert len(g.names) == 1
@@ -1206,6 +1206,26 @@ class TestGeometry(object):
         g = sisl_geom.graphene()
         g['A'] = 1
         g['A'] = [1, 2]
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_geometry_sanitize_raise(self):
+        g = sisl_geom.graphene()
+        xyz = g.axyz([[[0, 1]]])
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_geometry_as_primary_raise_nondivisable(self):
+        g = sisl_geom.graphene()
+        g.as_primary(3)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_geometry_cut_raise_nondivisable(self):
+        g = sisl_geom.graphene()
+        g.cut(3, 0)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_geometry_iR_negative_R(self):
+        g = sisl_geom.graphene()
+        g.iR(-1.)
 
     @pytest.mark.parametrize("geometry", [sisl_geom.graphene(),
                                           sisl_geom.diamond(),
