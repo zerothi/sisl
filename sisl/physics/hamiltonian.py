@@ -505,7 +505,10 @@ class Hamiltonian(SparseOrbitalBZSpin):
         bz.asarray()
 
         if q is None:
-            q = self.geometry.q0
+            if self.spin.is_unpolarized:
+                q = self.geometry.q0 * 0.5
+            else:
+                q = self.geometry.q0
         # Ensure we have an "array" in case of spin-polarized calculations
         q = np.asarray(q, dtype=np.float64)
 
