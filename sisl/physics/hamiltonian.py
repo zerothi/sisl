@@ -518,17 +518,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
         # B-cast for easier weights
         w = bz.weight.reshape(-1, 1)
 
-        def min_max(eig, q):
-            min_q = max(0, int(q) - 1)
-            max_q = min(int(q) + 1, eig.shape[1] - 1)
-            return eig[:, min_q].min(), eig[:, max_q].max()
-
         # Internal class to calculate the Fermi-level
         def _Ef(q, eig):
             # We could reduce it depending on the temperature,
             # however the distribution does not have the kT
             # parameter available.
-            min_Ef, max_Ef = min_max(eig, q)
+            min_Ef, max_Ef = eig.min(), eig.max()
 
             while True:
                 Ef = (min_Ef + max_Ef) * 0.5
