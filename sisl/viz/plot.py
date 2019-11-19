@@ -49,7 +49,9 @@ class Plot(Configurable):
                     pass
             
             #Process data in the required files, optimally to build a dataframe that can be queried afterwards
-            dataRead = self.readData(**kwargs)
+            self.readData(**kwargs)
+    
+        return self
     
     def __str__(self):
         
@@ -85,10 +87,6 @@ class Plot(Configurable):
         else:
             log.error("\t the required files were not found, please check your file system.")
             raise Exception("The required files were not found, please check your file system.")
-
-        return self
-
-
 
         return self
     
