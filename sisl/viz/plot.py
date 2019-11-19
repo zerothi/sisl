@@ -67,14 +67,15 @@ class Plot(Configurable):
         
         return string
     
-    def setFiles(self, rootFdf):
+    @afterSettingsUpdate
+    def setFiles(self, **kwargs):
         '''
         Checks if the required files are available and then builds a list with them
         '''
         #Set the fdfSile
-        self.rootFdf = rootFdf
-        self.rootDir, fdfFile = os.path.split( self.rootFdf )
-        self.fdfSile = sisl.get_sile(self.rootFdf)
+        rootFdf = self.settings["rootFdf"]
+        self.rootDir, fdfFile = os.path.split( rootFdf )
+        self.fdfSile = sisl.get_sile(rootFdf)
         self.struct = self.fdfSile.get("SystemLabel")
             
         #Check that the required files are there
@@ -88,6 +89,7 @@ class Plot(Configurable):
 
         return self
     
+    @afterSettingsUpdate
     def setupHamiltonian(self):
         '''
         Sets up the hamiltonian for calculations with sisl.
