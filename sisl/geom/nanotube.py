@@ -4,7 +4,6 @@ from sisl import Atom, Geometry, SuperCell
 
 __all__ = ['nanotube']
 
-
 def nanotube(bond, atom=None, chirality=(1, 1)):
     """ Nanotube with user-defined chirality.
 
