@@ -222,9 +222,6 @@ class BandsPlot(Plot):
             the updated version of the figure.
 
         '''
-
-        def onClick(*args):
-            os.system("VESTA")
             
         self.figure = go.Figure({
             'data': [go.Scatter(**lineData) for lineData in self.data],
