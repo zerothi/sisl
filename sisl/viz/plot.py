@@ -51,8 +51,6 @@ class Plot(Configurable):
             #Process data in the required files, optimally to build a dataframe that can be queried afterwards
             self.readData(**kwargs)
     
-        return self
-    
     def __str__(self):
         
         string = '''
