@@ -26,6 +26,12 @@ class Plot(Configurable):
             "name": "Output reading/generating order",
             "default": ("guiOut", "siesOut", "fromH")
         },
+
+        {
+            "key": "rootFdf",
+            "name": "Path to fdf file",
+            "default": None
+        },
         
     )
     
@@ -35,10 +41,10 @@ class Plot(Configurable):
         #Give an ID to the plot
         self.id = time.time()
 
-        if "rootFdf" in kwargs.keys():
+        if self.settings["rootFdf"]:
             
             #Set the other relevant files
-            self.setFiles(kwargs["rootFdf"])
+            self.setFiles()
 
             #Try to read the hamiltonian
             if "readHamiltonian" in kwargs.keys() and kwargs["readHamiltonian"]:
