@@ -98,8 +98,6 @@ class BandsPlot(Plot):
             
         super().__init__(**kwargs)
     
-        return self
-    
     def _readfromH(self):
         
         #Get the path requested
