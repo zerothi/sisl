@@ -249,7 +249,4 @@ class BandsPlot(Plot):
             }
         })
         
-        for line in self.figure.data:
-            line.on_click(onClick)
-        
         return self.figure
