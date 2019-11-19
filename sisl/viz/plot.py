@@ -95,6 +95,25 @@ class Plot(Configurable):
 
         return self
     
+    def show(self):
+        
+        return self.figure
+    
+    def merge(self, plotsToMerge, inplace = True, **kwargs):
+        '''
+        Merges this plot's instance with the list of plots provided (EXPERIMENTAL)
+        '''
+        
+        #Make sure we deal with a list (user can provide a single plot)
+        if not isinstance(plotsToMerge, list):
+            plotsToMerge = [plotsToMerge]
+            
+        if inplace:
+            for plot in plotsToMerge:
+                self.data = [*self.data, *plot.data]
+            
+            return self
+    
     @afterSettingsUpdate
     def setupHamiltonian(self):
         '''
