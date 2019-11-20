@@ -16,6 +16,7 @@ def configuration(parent_package='', top_path=None):
     config.add_subpackage('shape')
     config.add_subpackage('unit')
     config.add_subpackage('utils')
+    config.add_subpackage('viz')
 
     config.add_data_dir('tests')
     config.make_config_py()

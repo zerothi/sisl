@@ -43,7 +43,8 @@ class BandsPlot(Plot):
             "tooltip": {
                 "message": "Energy range where the bands are displayed. Default: [-2,4]",
                 "position": "top"
-            }
+            },
+            "onUpdate": "setData",
         },
 
         {
@@ -60,7 +61,8 @@ class BandsPlot(Plot):
                             <br>p1x,p1y,p1z/<number of points from P1 to P2>/p2x,p2y,p2z/...
                             <br>Default: 0,0,0/100/0.5,0,0''',
                 "position": "top"
-            }
+            },
+            "onUpdate": "readData",
         },
 
         {
@@ -75,7 +77,8 @@ class BandsPlot(Plot):
             "tooltip": {
                 "message": "Ticks that should be displayed at the corners of the path (separated by commas). Default: A,B",
                 "position": "top"
-            }
+            },
+            "onUpdate": "getFigure",
         },
         
         {
@@ -89,7 +92,8 @@ class BandsPlot(Plot):
             "tooltip": {
                 "message": "Choose the colors to display the bands.<br>The second one will only be used if the calculation is spin polarized.",
                 "position": "top"
-            }
+            },
+            "onUpdate": "setData",
         },
 
     )
@@ -207,46 +211,3 @@ class BandsPlot(Plot):
             self.getFigure()
         
         return self
-    
-    @afterSettingsUpdate
-    def getFigure(self, **kwargs):
-
-        '''
-        Define the plot object using the actual data. 
-        
-        This method can be applied after updating the data so that the plot object is refreshed.
-
-        Returns
-        ---------
-        self.plotObject.figure: go.Figure()
-            the updated version of the figure.
-
-        '''
-            
-        self.figure = go.Figure({
-            'data': [go.Scatter(**lineData) for lineData in self.data],
-            'layout': {
-                'title': '{} band structure'.format(self.struct),
-                'showlegend': True,
-                'hovermode': 'closest',
-                'plot_bgcolor': "white",
-                'xaxis' : { 
-                    'title': 'K',
-                    'showgrid': False, 
-                    'zeroline' : False,
-                    'tickcolor': "black",
-                    'ticklen': 5,
-                    'tickvals': self.ticks[0],
-                    'ticktext': self.settings["ticks"].split(",") if self.source != "siesOut" else self.ticks[1]
-                    },
-                'yaxis' : { 
-                    'title': 'E - E<sub>f</sub> (eV)',
-                    'showgrid': False,
-                    'range': self.settings["Erange"],
-                    'tickcolor': "white",
-                    'ticklen': 10  
-                    }
-            }
-        })
-        
-        return self.figure
