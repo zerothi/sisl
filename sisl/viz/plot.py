@@ -1,8 +1,9 @@
 '''
 This file contains the Plot class, which should be inherited by all plot classes
 '''
-import time
+import uuid
 import os
+
 import plotly.graph_objects as go
 
 import sisl
@@ -28,12 +29,41 @@ class Plot(Configurable):
         "setData": lambda obj: obj.setData,
         "getFigure": lambda obj: obj.getFigure,
     }
+
+    _paramGroups = (
+
+        {
+            "key": "dataread",
+            "name": "Data reading settings",
+            "icon": "import_export",
+            "description": "In such a busy world, one may forget how the files are structured in their computer. Please take a moment to <b>make sure your data is being read exactly in the way you expect<b>."
+        },
+
+        {
+            "key": "layout",
+            "name": "Layout settings",
+            "icon": "format_paint",
+            "subGroups":[
+                {"key": "xaxis", "name": "X axis"},
+                {"key": "yaxis", "name": "Y axis"}
+            ],
+            "description": "Data may loose its value if it is not well presented. Play with this parameters to <b>make your plot as beautiful and easy to understand as you can</b>."
+        },
+
+        {
+            "key": None,
+            "name": "Other settings",
+            "icon": "settings",
+            "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important :) They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
+        }
+    )
     
     _parameters = (
         
         {
             "key": "readingOrder",
             "name": "Output reading/generating order",
+            "group": "dataread",
             "default": ("guiOut", "siesOut", "fromH"),
             "onUpdate": "readData"
         },
@@ -41,23 +71,70 @@ class Plot(Configurable):
         {
             "key": "rootFdf",
             "name": "Path to fdf file",
+            "group": "dataread",
+            "inputField": {
+                "type": "textinput",
+                "width": "s100%",
+                "params": {
+                    "placeholder": "Write the path here...",
+                }
+            },
             "default": None,
             "onUpdate": "readData"
         },
 
         {
-            "key": "showLegend",
+            "key": "resultsPath",
+            "name": "Path to your results",
+            "group": "dataread",
+            "inputField": {
+                "type": "textinput",
+                "width": "s100% m50% l33%",
+                "params": {
+                    "placeholder": "Write the path here...",
+                }
+            },
+            "default": ".",
+            "onUpdate": "readData"
+        },
+
+        {
+            "key": "showlegend",
             "name": "Show Legend",
             "group": "layout",
             "default": True,
+            "inputField": {
+                "type": "switch",
+                "width": "s50% m30% l15%",
+                "params": {
+                    "offLabel": "No",
+                    "onLabel": "Yes"
+                }
+            },
             "onUpdate": "getFigure",
         },
 
         {
-            "key": "backgroundColor",
-            "name": "Background color",
+            "key": "paper_bgcolor",
+            "name": "Figure color",
             "group": "layout",
             "default": "white",
+            "inputField": {
+                "type": "color",
+                "width": "s50% m30% l15%",
+            },
+            "onUpdate": "getFigure",
+        },
+
+        {
+            "key": "plot_bgcolor",
+            "name": "Plot color",
+            "group": "layout",
+            "default": "white",
+            "inputField": {
+                "type": "color",
+                "width": "s50% m30% l15%",
+            },
             "onUpdate": "getFigure",
         },
         
@@ -71,51 +148,56 @@ class Plot(Configurable):
               "group": "layout",
               "subGroup": axis,
               "default": "",
+              "inputField": {
+                    "type": "textinput",
+                    "width": "s100% m50%",
+                    "params": {
+                        "placeholder": "Write the axis title...",
+                    }
+                },
               "onUpdate": "getFigure",
             },
             
             {
               "key": "{}_type".format(axis),
-              "name": "Scale",
+              "name": "Type",
               "group": "layout",
               "subGroup": axis,
-              "default": "linear",
+              "default": "-",
+              "inputField": {
+                    "type": "dropdown",
+                    "width": "s100% m50% l33%",
+                    "params": {
+                        "placeholder": "Choose the axis scale...",
+                        "options": [
+                            {"label": "Automatic", "value": "-"},
+                            {"label": "Linear", "value": "linear"},
+                            {"label": "Logarithmic", "value": "log"},
+                            {"label": "Date", "value": "date"},
+                            {"label": "Category", "value": "category"},
+                            {"label": "Multicategory", "value": "multicategory"}
+                        ],
+                        "isClearable": False,
+                        "isSearchable": False,
+                    }
+                },
               "onUpdate": "getFigure",
             },
-            
-            {
-              "key": "{}_showline".format(axis),
-              "name": "Show axis line",
-              "group": "layout",
-              "subGroup": axis,
-              "default": False,
-              "onUpdate": "getFigure",
-            },
-                
-            {
-              "key": "{}_linecolor".format(axis),
-              "name": "Axis line color",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "black",
-              "onUpdate": "getFigure",
-            },
-                
-            {
-              "key": "{}_linewidth".format(axis),
-              "name": "Axis line width",
-              "group": "layout",
-              "subGroup": axis,
-              "default": 1,
-              "onUpdate": "getFigure",
-            },
-                
+
             {
               "key": "{}_visible".format(axis),
               "name": "Visible",
               "group": "layout",
               "subGroup": axis,
               "default": True,
+              "inputField": {
+                    "type": "switch",
+                    "width": "s50% m50% l25%",
+                    "params": {
+                        "offLabel": "No",
+                        "onLabel": "Yes"
+                    }
+                },
               "onUpdate": "getFigure",
             },
                 
@@ -125,6 +207,10 @@ class Plot(Configurable):
               "group": "layout",
               "subGroup": axis,
               "default": "black",
+              "inputField": {
+                    "type": "color",
+                    "width": "s50% m50% l25%",
+                },
               "onUpdate": "getFigure",
             },
             
@@ -134,6 +220,14 @@ class Plot(Configurable):
               "group": "layout",
               "subGroup": axis,
               "default": False,
+              "inputField": {
+                    "type": "switch",
+                    "width": "s50% m50% l25%",
+                    "params": {
+                        "offLabel": "No",
+                        "onLabel": "Yes"
+                    }
+                },
               "onUpdate": "getFigure",
             },
                 
@@ -143,6 +237,57 @@ class Plot(Configurable):
               "group": "layout",
               "subGroup": axis,
               "default": "#ccc",
+              "inputField": {
+                    "type": "color",
+                    "width": "s50% m50% l25%",
+                },
+              "onUpdate": "getFigure",
+            },
+
+            {
+              "key": "{}_showline".format(axis),
+              "name": "Show axis line",
+              "group": "layout",
+              "subGroup": axis,
+              "default": False,
+              "inputField": {
+                "type": "switch",
+                "width": "s50% m30% l30%",
+                "params": {
+                    "offLabel": "No",
+                    "onLabel": "Yes"
+                }
+            },
+              "onUpdate": "getFigure",
+            },
+
+            {
+              "key": "{}_linewidth".format(axis),
+              "name": "Axis line width",
+              "group": "layout",
+              "subGroup": axis,
+              "default": 1,
+              "inputField": {
+                    "type": "number",
+                    "width": "s50% m30% l30%",
+                    "params": {
+                        "min": 0,
+                        "step": 0.1
+                    }
+                },
+              "onUpdate": "getFigure",
+            },
+                
+            {
+              "key": "{}_linecolor".format(axis),
+              "name": "Axis line color",
+              "group": "layout",
+              "subGroup": axis,
+              "default": "black",
+              "inputField": {
+                    "type": "color",
+                    "width": "s50% m30% l30%",
+                },
               "onUpdate": "getFigure",
             },
             
@@ -152,6 +297,14 @@ class Plot(Configurable):
               "group": "layout",
               "subGroup": axis,
               "default": [False, True][iAxis],
+              "inputField": {
+                    "type": "switch",
+                    "width": "s50% m30% l15%",
+                    "params": {
+                        "offLabel": "Hide",
+                        "onLabel": "Show"
+                    }
+                },
               "onUpdate": "getFigure",
             },
                 
@@ -161,6 +314,10 @@ class Plot(Configurable):
               "group": "layout",
               "subGroup": axis,
               "default": "#ccc",
+              "inputField": {
+                    "type": "color",
+                    "width": "s50% m30% l15%",
+                },
               "onUpdate": "getFigure",
             },
             
@@ -170,6 +327,10 @@ class Plot(Configurable):
               "group": "layout",
               "subGroup": axis,
               "default": ["black", "white"][iAxis],
+              "inputField": {
+                    "type": "color",
+                    "width": "s50% m30% l15%",
+                },
               "onUpdate": "getFigure",
             },
             
@@ -179,6 +340,14 @@ class Plot(Configurable):
               "group": "layout",
               "subGroup": axis,
               "default": 20,
+              "inputField": {
+                    "type": "number",
+                    "width": "s50% m30% l15%",
+                    "params": {
+                        "min": 0,
+                        "step": 0.1
+                    }
+                },
               "onUpdate": "getFigure",
             }]
             
@@ -190,7 +359,7 @@ class Plot(Configurable):
     def __init__(self, **kwargs):
         
         #Give an ID to the plot
-        self.id = time.time()
+        self.id = str(uuid.uuid4())
 
         if self.settings["rootFdf"]:
             
@@ -239,7 +408,7 @@ class Plot(Configurable):
         #if RequirementsFilter().check(self.rootFdf, self.__class__.__name__ ):
         if True:
             #If they are there, we can confidently build this list
-            self.requiredFiles = [ os.path.join( self.rootDir, req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["files"] ]
+            self.requiredFiles = [ os.path.join( self.rootDir, self.settings["resultsPath"], req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["files"] ]
         else:
             log.error("\t the required files were not found, please check your file system.")
             raise Exception("The required files were not found, please check your file system.")
@@ -315,9 +484,10 @@ class Plot(Configurable):
 
         self.layout = {
             'title': '{} {}'.format(self.struct, self._plotType),
-            'showlegend': self.settings["showLegend"],
+            'showlegend': self.settings["showlegend"],
             'hovermode': 'closest',
-            'plot_bgcolor': self.settings["backgroundColor"],
+            'plot_bgcolor': self.settings["plot_bgcolor"],
+            'paper_bgcolor': self.settings["paper_bgcolor"],
             'xaxis' : {
                 'tickvals': self.ticks[0],
                 'ticktext': self.settings["ticks"].split(",") if self.source != "siesOut" else self.ticks[1],
@@ -360,3 +530,27 @@ class Plot(Configurable):
             self.getFigure()
             
             return self
+    
+    #-------------------------------------------
+    #           GUI ORIENTED METHODS
+    #-------------------------------------------
+    
+    def _getJsonifiableInfo(self):
+        '''
+        This method is thought mainly to prepare data to be sent through the API to the GUI.
+        Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
+        '''
+
+        infoDict = {
+            "id": self.id,
+            "figure": {
+                "data": self.data,
+                "layout": self.figure.__dict__["_layout"]
+            },
+            "settings": self.settings,
+            "params": self.params,
+            "paramGroups": self._paramGroups
+        }
+
+        return infoDict
+    
