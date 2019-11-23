@@ -31,14 +31,17 @@ class BandsPlot(Plot):
             "name": "Energy range",
             "default": [-2,4],
             "inputField": {
-                "type": "range",
-                "limits": [-10,10],
-                "displayValues": True,
-                "step": 0.1,
-                "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
-                "updatemode": "drag",
-                "units": "eV",
-                "width": "offset-s1 s10"
+                "type": "rangeslider",
+                "width": "s90%",
+                "params": {
+                    "min": -10,
+                    "max": 10,
+                    "allowCross": False,
+                    "step": 0.1,
+                    "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
+                    "updatemode": "drag",
+                    "units": "eV",
+                }
             },
             "tooltip": {
                 "message": "Energy range where the bands are displayed. Default: [-2,4]",
@@ -53,8 +56,10 @@ class BandsPlot(Plot):
             "default": "0,0,0/100/0.5,0,0",
             "inputField": {
                 "type": "textinput",
-                "placeholder": "Write your path here...",
-                "width": "offset-s1 offset-m1 m4 s10",
+                "width": "s100% m50% l33%",
+                "params": {
+                    "placeholder": "Write your path here...",
+                }
             },
             "tooltip": {
                 "message": '''Path along which bands are drawn in format:
@@ -71,8 +76,10 @@ class BandsPlot(Plot):
             "default": "A,B",
             "inputField": {
                 "type": "textinput",
-                "placeholder": "Write your ticks...",
-                "width": "offset-s1 offset-m1 m4 s10"
+                "width": "s100% m50%",
+                "params": {
+                    "placeholder": "Write your ticks...",
+                }
             },
             "tooltip": {
                 "message": "Ticks that should be displayed at the corners of the path (separated by commas). Default: A,B",
@@ -80,17 +87,47 @@ class BandsPlot(Plot):
             },
             "onUpdate": "getFigure",
         },
+
+        {
+            "key": "bandsWidth",
+            "name": "Band lines width",
+            "default": 1,
+            "inputField": {
+                "type": "number",
+                "width": "s50% m30% l30%",
+                "params": {
+                    "min": 0,
+                    "step": 0.1
+                }
+            },
+            "onUpdate": "setData",
+        },
         
         {
-            "key": "lineColors",
-            "name": "Lines colors",
-            "default": ["black", "blue"],
+            "key": "spinUpColor",
+            "name": "No spin/spin up line color",
+            "default": "black",
             "inputField": {
                 "type": "color",
-                "width": "offset-s1 offset-m1 m4 s10"
+                "width": "s50% m33% l15%",
             },
             "tooltip": {
-                "message": "Choose the colors to display the bands.<br>The second one will only be used if the calculation is spin polarized.",
+                "message": "Choose the color to display the bands. <br> This will be used for the spin up bands if the calculation is spin polarized",
+                "position": "top"
+            },
+            "onUpdate": "setData",
+        },
+
+        {
+            "key": "spinDownColor",
+            "name": "Spin down line color",
+            "default": "blue",
+            "inputField": {
+                "type": "color",
+                "width": "s50% m33% l15%",
+            },
+            "tooltip": {
+                "message": "Choose the color for the spin down bands.<br>Only used if the calculation is spin polarized.",
                 "position": "top"
             },
             "onUpdate": "setData",
@@ -148,6 +185,8 @@ class BandsPlot(Plot):
         dataRead: boolean
             whether data has been read succesfully or not
         '''
+
+        self.setFiles()
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
         bands = self._readFromSources()
@@ -198,7 +237,7 @@ class BandsPlot(Plot):
                             'y': (reqBandsDf[str(column)] - self.fermi)[~np.isnan(reqBandsDf[str(column)] - self.fermi)].tolist(),
                             'mode': 'lines', 
                             'name': "{} spin {}".format(int(column) + 1, PLOTS_CONSTANTS["spins"][iSpin]) if len(self.dfs) == 2 else str(int(column) + 1), 
-                            'line': {"color": self.settings["lineColors"][iSpin], 'width' : 1},
+                            'line': {"color": [self.settings["spinUpColor"],self.settings["spinDownColor"]][iSpin], 'width' : self.settings["bandsWidth"]},
                             'hoverinfo':'name',
                             "hovertemplate": '%{y:.2f} eV',
                         } for column in reqBandsDf.columns ] ]
