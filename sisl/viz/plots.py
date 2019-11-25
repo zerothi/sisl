@@ -12,6 +12,17 @@ import sisl
 from .configurable import *
 from .plot import Plot, PLOTS_CONSTANTS
 
+class PDOSPlot(Plot):
+
+    _parameters = ( {"key": "HEY", "name": "nom", "default": 1}, )
+
+    _plotType = "PDOS"
+
+    def __init__(self, **kwargs):
+
+        pass
+        
+
 class BandsPlot(Plot):
 
     '''
