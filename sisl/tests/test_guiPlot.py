@@ -29,6 +29,13 @@ def classVariableCheckType(*args, **kwargs):
         **kwargs,
     )
 
+
+def test_verybasics():
+    assert PlotToTest, errorMessage("Nothing was provided to be tested")
+    assert isinstance(PlotToTest, type), errorMessage("You didn't provide a class, this is a plot class tester",
+        "Please provide the class that you have defined for your analysis.\n A class should be defined as 'class MyPlot: ...'",
+        "https://www.w3schools.com/python/python_classes.asp")
+
 #------------------------------------
 #       Test class variables
 #------------------------------------
