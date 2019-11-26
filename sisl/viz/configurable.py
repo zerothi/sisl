@@ -82,6 +82,13 @@ class Configurable:
     def getSettingHistory(self, settingKey):
         
         return deepcopy([step[settingKey] for step in self.settingsHistory])
+    
+    def getSettingsGroup(self, groupKey):
+        '''
+        Gets the subset of the settings that corresponds to a given group
+        '''
+
+        return deepcopy({ setting["key"]: self.settings[setting["key"]] for setting in self.params if setting.get("group", None) == groupKey })
 
 
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable

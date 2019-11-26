@@ -3,7 +3,10 @@ This file contains the Plot class, which should be inherited by all plot classes
 '''
 import uuid
 import os
+import numpy as np
+import json
 
+import plotly
 import plotly.graph_objects as go
 
 import sisl
@@ -65,7 +68,9 @@ class Plot(Configurable):
             "name": "Output reading/generating order",
             "group": "dataread",
             "default": ("guiOut", "siesOut", "fromH"),
-            "onUpdate": "readData"
+            "help": "Order in which the plot tries to read the data it needs.",
+            "onUpdate": "readData",
+            
         },
 
         {
@@ -80,6 +85,7 @@ class Plot(Configurable):
                 }
             },
             "default": None,
+            "help": "Path to the fdf file that is the 'parent' of the results.",
             "onUpdate": "readData"
         },
 
@@ -95,6 +101,7 @@ class Plot(Configurable):
                 }
             },
             "default": ".",
+            "help": "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
             "onUpdate": "readData"
         },
 
@@ -320,13 +327,36 @@ class Plot(Configurable):
                 },
               "onUpdate": "getFigure",
             },
+
+            {
+              "key": "{}_ticks".format(axis),
+              "name": "Ticks position",
+              "group": "layout",
+              "subGroup": axis,
+              "default": "outside",
+              "inputField": {
+                    "type": "dropdown",
+                    "width": "s100% m50% l33%",
+                    "params": {
+                        "placeholder": "Choose the ticks positions...",
+                        "options": [
+                            {"label": "Outside", "value": "outside"},
+                            {"label": "Inside", "value": "Inside"},
+                            {"label": "No ticks", "value": ""},
+                        ],
+                        "isClearable": False,
+                        "isSearchable": False,
+                    }
+                },
+              "onUpdate": "getFigure",
+            },
             
             {
               "key": "{}_tickcolor".format(axis),
               "name": "Tick color",
               "group": "layout",
               "subGroup": axis,
-              "default": ["black", "white"][iAxis],
+              "default": "white",
               "inputField": {
                     "type": "color",
                     "width": "s50% m30% l15%",
@@ -339,7 +369,7 @@ class Plot(Configurable):
               "name": "Tick length",
               "group": "layout",
               "subGroup": axis,
-              "default": 20,
+              "default": 5,
               "inputField": {
                     "type": "number",
                     "width": "s50% m30% l15%",
@@ -361,21 +391,11 @@ class Plot(Configurable):
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
 
-        if self.settings["rootFdf"]:
-            
-            #Set the other relevant files
-            self.setFiles()
-
-            #Try to read the hamiltonian
-            if "readHamiltonian" in kwargs.keys() and kwargs["readHamiltonian"]:
-                try:
-                    self.setupHamiltonian()
-                except Exception:
-                    log.warning("Unable to find or read {}.HSX".format(self.struct))
-                    pass
-            
-            #Process data in the required files, optimally to build a dataframe that can be queried afterwards
-            self.readData(**kwargs)
+        #Try to generate the figure (if the settings required are still not there, it won't be generated)
+        try:
+            self.readData()
+        except Exception:
+            pass
     
     def __str__(self):
         
@@ -393,6 +413,33 @@ class Plot(Configurable):
         
         return string
     
+    @afterSettingsUpdate
+    def readData(self, updateFig = True, **kwargs):
+        '''
+        Gets the information for the bands plot and stores it into self.df
+
+        Returns
+        -----------
+        dataRead: boolean
+            whether data has been read succesfully or not
+        '''
+
+        if callable( getattr(self, "_beforeRead", None )):
+            self._beforeRead()
+
+        self.setFiles()
+        
+        #We try to read from the different sources using the _readFromSources method of the parent Plot class.
+        result = self._readFromSources()
+
+        if callable( getattr(self, "_afterRead", None )):
+            self._afterRead(result)
+
+        if updateFig:
+            self.setData(updateFig = updateFig)
+        
+        return self
+
     @afterSettingsUpdate
     def setFiles(self, **kwargs):
         '''
@@ -460,6 +507,22 @@ class Plot(Configurable):
                             .format(self.__class__.__name__, "\n".join(errors)) )
     
     @afterSettingsUpdate
+    def setData(self, updateFig = True, **kwargs):
+        
+        '''
+        Method to process the data that has been read beforehand by readData() and prepare the figure.
+        '''
+
+        self.data = []
+
+        self._setData()
+
+        if updateFig:
+            self.getFigure()
+        
+        return self
+
+    @afterSettingsUpdate
     def getFigure(self, **kwargs):
 
         '''
@@ -474,33 +537,18 @@ class Plot(Configurable):
 
         '''
 
-        #Get all the settings that correspond to the layout of the axes
-        axesParams = {}
-        for axis in "xaxis","yaxis":
-            
-            axisParams = {setting["key"].split("_")[-1]: self.settings[setting["key"]] for setting in self.params if setting.get("subGroup", None) == axis}
-            
-            axesParams = {**axesParams, axis: axisParams}
-
         self.layout = {
             'title': '{} {}'.format(self.struct, self._plotType),
-            'showlegend': self.settings["showlegend"],
             'hovermode': 'closest',
-            'plot_bgcolor': self.settings["plot_bgcolor"],
-            'paper_bgcolor': self.settings["paper_bgcolor"],
             'xaxis' : {
                 'tickvals': self.ticks[0],
                 'ticktext': self.settings["ticks"].split(",") if self.source != "siesOut" else self.ticks[1],
-                **axesParams["xaxis"]
-                },
-            'yaxis' : { 
-                'range': self.settings["Erange"],
-                **axesParams["yaxis"]
-                },
+            },
+            **self.getSettingsGroup("layout")
         }
             
         self.figure = go.Figure({
-            'data': [go.Scatter(**lineData) for lineData in self.data],
+            'data': self.data,
             'layout': self.layout,
         })
         
@@ -534,19 +582,27 @@ class Plot(Configurable):
     #-------------------------------------------
     #           GUI ORIENTED METHODS
     #-------------------------------------------
-    
+
     def _getJsonifiableInfo(self):
         '''
         This method is thought mainly to prepare data to be sent through the API to the GUI.
         Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
         '''
 
+        if hasattr(self, "figure"):
+
+            #This will take care of converting to JSON wierd datatypes such as np arrays and np.nan 
+            figure = json.dumps(self.figure, cls=plotly.utils.PlotlyJSONEncoder)
+
+        else:
+            figure = {
+                "data": [],
+                "layout": {}
+            }
+
         infoDict = {
             "id": self.id,
-            "figure": {
-                "data": self.data,
-                "layout": self.figure.__dict__["_layout"]
-            },
+            "figure": figure,
             "settings": self.settings,
             "params": self.params,
             "paramGroups": self._paramGroups
