@@ -58,7 +58,7 @@ class SelfEnergy(object):
         This corresponds to:
 
         .. math::
-            \boldsymbol Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)
+            \boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)
 
         Examples
         --------
